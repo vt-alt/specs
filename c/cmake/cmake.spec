@@ -6,7 +6,7 @@
 
 Name: cmake
 Version: 3.13.4
-Release: alt2
+Release: alt3
 
 Summary: Cross-platform, open-source make system
 
@@ -294,6 +294,11 @@ popd
 %filter_from_requires /^gnustep-Backbone.*/d
 
 %changelog
+* Wed May 15 2019 Dmitry V. Levin <ldv@altlinux.org> 3.13.4-alt3
+- NMU.
+- macros: fixed bug in definitions of %%cmake and %%cmake_insource
+  introduced in the previous release.
+
 * Sat May 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.13.4-alt2
 - macros: use %%_libsuff macro.
 - spec: add knobs useful for bootstrap.
