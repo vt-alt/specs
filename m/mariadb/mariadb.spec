@@ -47,7 +47,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.3.14
+Version: 10.3.15
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -99,7 +99,7 @@ Source102: rocksdb.tar
 Patch0: %name-%version.patch
 
 # ALTLinux
-Patch1: mariadb-10.2.7-alt-chroot.patch
+Patch1: mariadb-10.3.15-alt-chroot.patch
 Patch2: mysql-5.0.20-alt-libdir.patch
 Patch4: mariadb-10.1.8-alt-client.patch
 #Patch5: mariadb-10.0.21-alt-load_defaults.patch
@@ -119,7 +119,6 @@ Patch102: mariadb-10.3.10-alt-link-with-latomic-if-needed.patch
 Requires: %name-server = %EVR
 Requires: %name-client = %EVR
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ libncursesw-devel libreadline-devel libssl-devel perl-DBI libpam-devel libevent-devel cmake ctest bison doxygen groff-base groff-ps dos2unix xsltproc
 BuildRequires: libaio-devel libedit-devel perl-GD perl-threads perl-Memoize perl-devel
 BuildRequires: liblz4-devel zlib-devel bzlib-devel liblzma-devel liblzo2-devel libsnappy-devel libzstd-devel
@@ -184,7 +183,7 @@ Provides: %name-galera-server = %EVR
 Obsoletes: %name-galera-server < %EVR
 Provides: %name-galera = %EVR
 Obsoletes: %name-galera < %EVR
-Conflicts: %name-server < 10.3.8-alt2%ubt
+Conflicts: %name-server < 10.3.8-alt3
 
 %description server-galera
 MariaDB is a multi-user, multi-threaded SQL database server. It is a
@@ -984,6 +983,13 @@ fi
 %endif
 
 %changelog
+* Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 10.3.15-alt1
+- 10.3.15
+- Fixes for the following security vulnerabilities:
+  + CVE-2019-2614
+  + CVE-2019-2627
+  + CVE-2019-2628
+
 * Sun Apr 07 2019 Alexey Shabalin <shaba@altlinux.org> 10.3.14-alt1
 - 10.3.14
 - Fix build on e2kv4 through %%e2k macro use (mike@)
@@ -1032,10 +1038,10 @@ fi
 * Tue Oct 16 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.10-alt1
 - 10.3.10
 
-* Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.9-alt2%ubt
+* Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.9-alt2
 - rebuild with openssl-1.1
 
-* Sun Aug 19 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.9-alt1%ubt
+* Sun Aug 19 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.9-alt1
 - 10.3.9
 - Fixes for the following security vulnerabilities:
   + CVE-2018-3060
@@ -1046,19 +1052,19 @@ fi
 - fix path to plugin dir in chroot (ALT #35242)
 - change mode of plugin dir in chroot (ALT #33259)
 
-* Fri Jul 13 2018 Alexey Shabalin <shaba@altlinux.ru> 10.3.8-alt2%ubt
+* Fri Jul 13 2018 Alexey Shabalin <shaba@altlinux.ru> 10.3.8-alt2
 - split galera to mariadb-server-galera package
 
-* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 10.3.8-alt1%ubt
+* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 10.3.8-alt1
 - 10.3.8
 
-* Fri Jun 08 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 10.2.15-alt3%ubt
+* Fri Jun 08 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 10.2.15-alt3
 - NMU: reverted provides update.
 
-* Wed Jun 06 2018 Alexey Shabalin <shaba@altlinux.ru> 10.2.15-alt2%ubt
+* Wed Jun 06 2018 Alexey Shabalin <shaba@altlinux.ru> 10.2.15-alt2
 - add libmysqld-devel provides (ALT #34997)
 
-* Fri May 18 2018 Alexey Shabalin <shaba@altlinux.ru> 10.2.15-alt1%ubt
+* Fri May 18 2018 Alexey Shabalin <shaba@altlinux.ru> 10.2.15-alt1
 - 10.2.15
 - rename libmysqlclient18 to libmariadb
 - relocate plugindir to %%_libdir/%%name/plugin
@@ -1086,40 +1092,40 @@ fi
   + CVE-2018-2771
   + CVE-2018-2813
 
-* Tue Jan 09 2018 Alexey Shabalin <shaba@altlinux.ru> 10.1.30-alt1%ubt
+* Tue Jan 09 2018 Alexey Shabalin <shaba@altlinux.ru> 10.1.30-alt1
 - 10.1.30
 - Fixes for the following security vulnerabilities:
   + CVE-2017-15365
 
-* Wed Dec 06 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.29-alt1%ubt
+* Wed Dec 06 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.29-alt1
 - 10.1.29
 - Fixes for the following security vulnerabilities:
   + CVE-2017-10378
   + CVE-2017-10268
   + MDEV-13819
 
-* Thu Nov 02 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.28-alt1%ubt
+* Thu Nov 02 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.28-alt1
 - 10.1.28
 
-* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.27-alt1%ubt
+* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.27-alt1
 - 10.1.27
 
-* Thu Sep 14 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.26-alt1%ubt
+* Thu Sep 14 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.26-alt1
 - 10.1.26
 - Fixes for the following security vulnerabilities:
   + CVE-2017-3636
   + CVE-2017-3641
   + CVE-2017-3653
 
-* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 10.1.25-alt2%ubt
+* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 10.1.25-alt2
 - BOOTSTRAP: introduced systemd, krb5, galera, cassandra, oqgraph knobs
   (on by default)
 - E2K: avoid ABI check for now (fails)
 
-* Mon Jul 17 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.25-alt1%ubt
+* Mon Jul 17 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.25-alt1
 - 10.1.25
 
-* Fri May 05 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.23-alt1%ubt
+* Fri May 05 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.23-alt1
 - 10.1.23
 - add maria-backup package
 - Fixes for the following security vulnerabilities:
