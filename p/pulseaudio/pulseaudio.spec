@@ -1,6 +1,6 @@
 Name: pulseaudio
 Version: 12.2
-Release: alt1
+Release: alt2
 
 Summary: PulseAudio is a networked sound server
 Group: System/Servers
@@ -335,6 +335,9 @@ find %buildroot%_libdir -name \*.la -delete
 %doc doxygen/html
 
 %changelog
+* Tue May 14 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 12.2-alt2
+- fixed build with libalsa >= 1.1.9
+
 * Thu Aug 30 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 12.2-alt1
 - 12.2 released
 
