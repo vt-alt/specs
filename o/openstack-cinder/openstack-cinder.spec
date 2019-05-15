@@ -1,8 +1,9 @@
+%def_disable doc
 %define oname cinder
 %add_python_req_skip hp3parclient
 
 Name: openstack-%oname
-Version: 13.0.4
+Version: 13.0.5
 Release: alt1
 Epoch: 1
 Summary: OpenStack Volume service
@@ -33,6 +34,7 @@ Patch: cinder-13.0.2-system-urllib3.patch
 BuildArch: noarch
 BuildRequires: /proc
 BuildRequires: webserver-common rpm-build-webserver-common rpm-macros-apache2
+BuildRequires: git-core
 BuildRequires: crudini
 BuildRequires: python-module-pbr >= 2.0.0
 BuildRequires: python-module-six >= 1.10.0
@@ -101,7 +103,7 @@ BuildRequires: python-module-castellan >= 0.16.0
 BuildRequires: python-module-cryptography >= 2.1
 BuildRequires: python-module-cursive >= 0.2.1
 
-
+%if_enabled doc
 BuildRequires: python-module-sphinx
 BuildRequires: python-module-openstackdocstheme >= 1.18.1
 BuildRequires: python-module-reno >= 2.5.0
@@ -109,7 +111,7 @@ BuildRequires: python-module-doc8 >= 0.6.0
 BuildRequires: python-module-os-api-ref >= 1.4.0
 BuildRequires: python-module-sphinxcontrib-apidoc >= 0.2.0
 BuildRequires: python-module-sphinx-feature-classification >= 0.1.0
-
+%endif
 BuildRequires: python-module-testtools
 BuildRequires: python-module-subunit-tests
 
@@ -180,7 +182,7 @@ BuildRequires: python3-module-castellan >= 0.16.0
 BuildRequires: python3-module-cryptography >= 2.1
 BuildRequires: python3-module-cursive >= 0.2.1
 
-
+%if_enabled doc
 BuildRequires: python3-module-sphinx
 BuildRequires: python3-module-openstackdocstheme >= 1.18.1
 BuildRequires: python3-module-reno >= 2.5.0
@@ -188,7 +190,7 @@ BuildRequires: python3-module-doc8 >= 0.6.0
 BuildRequires: python3-module-os-api-ref >= 1.4.0
 BuildRequires: python3-module-sphinxcontrib-apidoc >= 0.2.0
 BuildRequires: python3-module-sphinx-feature-classification >= 0.1.0
-
+%endif
 BuildRequires: python3-module-testtools
 BuildRequires: python3-module-subunit-tests
 
@@ -268,7 +270,6 @@ find cinder -name \*.py -exec sed -i '/\/usr\/bin\/env python/{d;q}' {} +
 # to distutils requires_dist config
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires
 
-
 rm -rf ../python3
 cp -a . ../python3
 
@@ -282,9 +283,11 @@ pushd ../python3
 oslo-config-generator --config-file=tools/config/cinder-config-generator.conf
 oslopolicy-sample-generator --config-file=tools/config/cinder-policy-generator.conf
 
+%if_enabled doc
 PYTHONPATH=. python3 setup.py build_sphinx
 # Fix hidden-file-or-dir warnings
 rm -fr build/sphinx/html/.buildinfo
+%endif
 popd
 
 %install
@@ -442,10 +445,16 @@ rm -rf %buildroot/usr/etc
 %python3_sitelibdir/%oname/tests
 %python3_sitelibdir/%oname/test.*
 
+%if_enabled doc
 %files doc
 %doc ../python3/build/sphinx/html
+%endif
 
 %changelog
+* Mon May 13 2019 Alexey Shabalin <shaba@altlinux.org> 1:13.0.5-alt1
+- 13.0.5
+- disbale build docs
+
 * Mon Apr 22 2019 Alexey Shabalin <shaba@altlinux.org> 1:13.0.4-alt1
 - 13.0.4
 
