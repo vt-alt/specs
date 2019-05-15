@@ -2,7 +2,7 @@
 
 Name: webrtc-audio-processing
 Version: 0.3
-Release: alt1
+Release: alt2
 
 Summary: WebRTC Audio Processing library
 License: BSD
@@ -17,6 +17,7 @@ Source: %url/%name-%version.tar.xz
 #VCS: https://anongit.freedesktop.org/git/pulseaudio/%name
 Source: %name-%version.tar
 %endif
+Patch: webrtc-fix-typedefs-on-other-arches.patch
 
 BuildRequires: gcc-c++
 
@@ -47,6 +48,7 @@ develop programs which make use of %name
 
 %prep
 %setup
+%patch -p1
 
 %build
 %add_optflags -D_FILE_OFFSET_BITS=64
@@ -68,6 +70,9 @@ develop programs which make use of %name
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.3-alt2
+- Restored patch for generic arch support.
+
 * Thu Jun 07 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3-alt1
 - 0.3 from freedesktop.org
 
@@ -76,4 +81,3 @@ develop programs which make use of %name
 
 * Sun May 13 2012 Valery Inozemtsev <shrek@altlinux.ru> 0.1-alt1
 - initial release
-
