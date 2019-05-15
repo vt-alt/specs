@@ -3,8 +3,8 @@
 %def_with compression
 
 Name: python-module-django-%oname
-Version: 14.0.2
-Release: alt2
+Version: 14.0.3
+Release: alt1
 Epoch: 1
 Summary: Django application for talking to Openstack
 
@@ -544,6 +544,9 @@ sed -i "/^SECRET_KEY.*$/{N;s/^.*$/SECRET_KEY='`openssl rand -hex 10`'/}" /etc/op
 #%doc html
 
 %changelog
+* Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1:14.0.3-alt1
+- 14.0.3
+
 * Tue Feb 19 2019 Alexey Shabalin <shaba@altlinux.org> 1:14.0.2-alt2
 - fixed apache config for run wsgi.py
 - fixed collectstatic and compress static files in systemd drop-in config with python3
