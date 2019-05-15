@@ -1,7 +1,7 @@
 Summary: Terminal multiplexer
 Name: tmux
-Version: 2.8
-Release: alt2
+Version: 2.9a
+Release: alt1
 Source0: http://downloads.sourceforge.net/%name/%name-%version.tar.gz
 License: BSD
 Group: Terminals
@@ -18,14 +18,13 @@ such as GNU screen.
 
 %prep
 %setup
-./configure
 
 %build
-CFLAGS="-I/usr/include/asm" %make_build
+./configure
+%make_build
 
 %install
-install -D -m 755 %name %buildroot%_bindir/%name
-install -D -m 644 %name.1 %buildroot%_man1dir/%name.1
+%makeinstall
 
 %files
 %doc TODO CHANGES README
@@ -33,6 +32,12 @@ install -D -m 644 %name.1 %buildroot%_man1dir/%name.1
 %_man1dir/*
 
 %changelog
+* Wed May 15 2019 Fr. Br. George <george@altlinux.ru> 2.9a-alt1
+- Autobuild version bump to 2.9a
+
+* Wed May 15 2019 Fr. Br. George <george@altlinux.ru> 2.9-alt1
+- Autobuild version bump to 2.9
+
 * Wed Apr 03 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.8-alt2
 - fixed FTBFS: fixed build dependency
 
