@@ -58,7 +58,7 @@
 Name: systemd
 Epoch: 1
 Version: 242
-Release: alt5
+Release: alt6
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -1504,6 +1504,7 @@ fi
 %_tmpfilesdir/legacy.conf
 %_tmpfilesdir/x11.conf
 %_tmpfilesdir/tmp.conf
+%_tmpfilesdir/systemd-tmp.conf
 %_tmpfilesdir/var.conf
 %_tmpfilesdir/home.conf
 
@@ -1837,6 +1838,11 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt6
+- merge with v242-stable 298d13df7ef1097fa4801de573f668cef23a22b3
+- units: add usb-gadget.target (sbolshakov@)
+- dhcp-server: offer router address as next-server (sbolshakov@)
+
 * Sat May 04 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt5
 - merge with v242-stable db2e367bfc3b119609f837eb973d915f6c550b2f
 
