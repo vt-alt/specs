@@ -1,7 +1,7 @@
 
 Summary: Tools for managing the osinfo database
 Name: osinfo-db-tools
-Version: 1.4.0
+Version: 1.5.0
 Release: alt1
 License: GPLv2+
 Group: Development/Tools
@@ -17,6 +17,9 @@ BuildRequires: pkgconfig(libarchive) >= 3.0.0
 BuildRequires: pkgconfig(json-glib-1.0)
 
 BuildRequires: perl-podlators
+BuildRequires: python3
+BuildRequires: python3-module-pytest
+BuildRequires: python3-module-requests
 
 Conflicts: libosinfo < 1.0.0
 
@@ -37,12 +40,18 @@ information about operating systems for use with virtualization
 
 %find_lang %name
 
+%check
+%make check
+
 %files -f %name.lang
 %doc NEWS README
 %_bindir/*
 %_man1dir/*
 
 %changelog
+* Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.0-alt1
+- new version 1.5.0
+
 * Sat Mar 02 2019 Alexey Shabalin <shaba@altlinux.org> 1.4.0-alt1
 - new version 1.4.0
 
