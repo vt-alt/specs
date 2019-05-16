@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: cjdns
-Version: 20.2
+Version: 20.3
 Release: alt1
 
 Summary: Encrypted networking for regular people
@@ -9,9 +9,8 @@ License: GPLv3+
 Group: Networking/Other
 Url: https://github.com/cjdelisle/cjdns/
 
+# https://github.com/cjdelisle/cjdns.git
 Source: %name-%version.tar
-
-#https://github.com/cjdelisle/cjdns.git
 Patch1: %name-%version-alt.patch
 
 # don't use libuv-devel since it uses bundled patched libuv to build static library
@@ -223,6 +222,9 @@ done
 %_bindir/graphStats
 
 %changelog
+* Wed May 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20.3-alt1
+- Updated to upstream version 20.3.
+
 * Tue Oct 16 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 20.2-alt1
 - Updated to upstream version 20.2.
 
