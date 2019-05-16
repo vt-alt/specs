@@ -1,5 +1,5 @@
 Name: firmware-linux
-Version: 20190429
+Version: 20190514
 Release: alt1
 
 Summary: Firmware files used by the Linux kernel
@@ -58,6 +58,18 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/*
 
 %changelog
+* Thu May 16 2019 Cronbuild Service <cronbuild@altlinux.org> 20190514-alt1
+- upstream changes (GIT 711d329):
+  + Update firmware file for Intel Bluetooth 8265 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 22161 (thx Amit K Bag)
+  + amlogic: add video decoder firmwares (thx Maxime Jourdan)
+  + iwlwifi: update -46 firmwares for 22260 and 9000 series (thx Luca Coelho)
+  + iwlwifi: add firmware for 22260 and update 9000 series -46
+    firmwares (thx Luca Coelho)
+  + iwlwifi: add -46.ucode firmwares for 9000 series (thx Luca Coelho)
+
 * Wed May 08 2019 Cronbuild Service <cronbuild@altlinux.org> 20190429-alt1
 - upstream changes (GIT 92e17d0):
   + amdgpu: update vega20 to the latest 19.10 firmware (thx Alex Deucher)
