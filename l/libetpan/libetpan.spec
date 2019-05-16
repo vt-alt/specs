@@ -1,6 +1,6 @@
 Name: libetpan
 Version: 1.9.3
-Release: alt1
+Release: alt2
 
 Summary: This mail library  provide a portable, efficient middleware for different kinds of mail access
 License: %bsdstyle
@@ -11,6 +11,11 @@ Url: https://www.etpan.org/libetpan.html
 # git://github.com/dinhviethoa/libetpan.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
+# Patches from upstream git.
+# Must be dropped when new version is released.
+Patch1: Fixed-return-code-of-mailimap_logout-327.patch
+Patch2: Fix-mailmime_write-add-handler-for-MAILMIME_FIELD_LO.patch
+Patch3: Fix-TLS-timeouts-with-recent-versions-of-GnuTLS-330.patch
 
 %def_with gnutls
 %def_without openssl
@@ -51,6 +56,9 @@ program which use lib%name.
 %prep
 %setup
 %patch -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 ln -s README.md README
 
 %build
@@ -78,6 +86,13 @@ ln -s README.md README
 %_libdir/%name.so
 
 %changelog
+* Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 1.9.3-alt2
+- Patches from upstream:
+    + Fixed return code of mailimap_logout (#327).
+    + Fix mailmime_write(): add handler for
+      MAILMIME_FIELD_LOCATION (#329).
+    + Fix TLS timeouts with recent versions of GnuTLS (#330).
+
 * Thu Feb 21 2019 Mikhail Efremov <sem@altlinux.org> 1.9.3-alt1
 - Patches from upstream:
   + Fix the compiler warning against uninitialized use (#323)
