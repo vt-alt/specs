@@ -1,6 +1,6 @@
 Name: openblas
 Version: 0.2.20
-Release: alt1
+Release: alt2
 
 Summary: Optimized BLAS library based on GotoBLAS2 1.13 
 License: BSD
@@ -10,7 +10,10 @@ Url: https://github.com/xianyi/OpenBLAS
 # http://github.com/xianyi/OpenBLAS
 Source: %name-%version.tar
 
-BuildPreReq: gcc-fortran
+BuildRequires: gcc-fortran
+%ifarch ppc64le
+BuildRequires: libgomp-devel
+%endif
 
 %description
 GotoBLAS2 has been released by the Texas Advanced Computing Center as
@@ -109,6 +112,9 @@ sed -i 's,%buildroot,,' %buildroot%_pkgconfigdir/openblas.pc
 %_includedir/openblas
 
 %changelog
+* Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2.20-alt2
+- Added BR: libgomp-devel on ppc64le architecture.
+
 * Tue May 22 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.2.20-alt1
 - 0.2.20 released
 
