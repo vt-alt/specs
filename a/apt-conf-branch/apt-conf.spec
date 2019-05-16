@@ -4,7 +4,7 @@
 
 Name: %base_name-%distro
 Version: 9.0
-Release: alt1
+Release: alt2
 
 Summary: A set of apt configuration files for %distribution %Distro
 License: GPL-2.0-or-later
@@ -48,6 +48,9 @@ fi
 %config(noreplace) %_sysconfdir/apt
 
 %changelog
+* Thu May 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 9.0-alt2
+- Added [p9] and [sisyphus] keys to vendor.list.
+
 * Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 9.0-alt1
 - Added p9 branch.
 
