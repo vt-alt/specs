@@ -4,7 +4,7 @@
 %def_enable tls
 
 Name: memcached
-Version: 1.5.13
+Version: 1.5.14
 Release: alt1
 
 Summary: memcached - memory caching daemon
@@ -107,6 +107,9 @@ fi
 %_man1dir/%name-tool.*
 
 %changelog
+* Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.14-alt1
+- 1.5.14
+
 * Thu Apr 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.13-alt1
 - 1.5.13
 - build with tls support
