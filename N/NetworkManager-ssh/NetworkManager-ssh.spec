@@ -9,7 +9,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager-ssh
-Version: 1.2.9
+Version: 1.2.10
 Release: alt1%git_date
 License: %gpl2plus
 Group: System/Configuration/Networking
@@ -98,6 +98,9 @@ make check
 %exclude %_libdir/NetworkManager/*.la
 
 %changelog
+* Wed May 15 2019 Mikhail Efremov <sem@altlinux.org> 1.2.10-alt1
+- Updated to 1.2.10.
+
 * Tue Mar 19 2019 Mikhail Efremov <sem@altlinux.org> 1.2.9-alt1
 - Updated to 1.2.9.
 
