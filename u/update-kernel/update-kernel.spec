@@ -1,6 +1,6 @@
 Name: update-kernel
-Version: 0.9.11
-Release: alt2
+Version: 0.9.12
+Release: alt1
 
 Summary: Update kernel and modules
 License: GPL
@@ -39,6 +39,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Wed May 15 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.12-alt1
+- APT invocation (to install the modules) rewritten in a more robust way.
+  (A preparation for APT with support for disttags.)
+
 * Mon Apr 01 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.11-alt2
 - Rewritten with another bashism that doesn't require /proc/.
 - Requires: apt (important not for real systems, but for testing in hasher).

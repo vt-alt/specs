@@ -1,6 +1,6 @@
 %define module_name	virtualbox-addition
 %define module_version  5.2.26
-%define module_release	alt4
+%define module_release	alt5
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -50,19 +50,21 @@ Provides: kernel-modules-%vfs_module_name-%kversion-%flavour-%krelease = %versio
 Provides: kernel-modules-%vfs_module_name-%flavour = %version-%release
 Obsoletes: kernel-modules-%vfs_module_name-%flavour
 
-PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+%requires_kimage
 ExclusiveArch: %karch
 
 %description
 This package contains VirtualBox addition modules (vboxguest, vboxsf)
 that are needed for additonal guests support for VirtualBox.
 
+%update_kernel_modules_checkinstall %name
+
 %if "%kversion" < "5.0.0"
 %package -n kernel-modules-%module_name-video-%flavour
 Summary: VirtualBox video modules
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+%requires_kimage
 License: GPL
 Group: System/Kernel and hardware
 %description -n kernel-modules-%module_name-video-%flavour
@@ -70,8 +72,9 @@ This package contains VirtualBox addition vboxvideo module
 that are needed for additonal guests support for VirtualBox.
 You can also use vboxvideo module from staging subpackage of
 your kernel.
-%endif
 
+%update_kernel_modules_checkinstall kernel-modules-%module_name-video-%flavour
+%endif
 
 %prep
 %setup -T -c -n kernel-source-%module_name-%module_version
@@ -121,6 +124,10 @@ install -pD -m644 kernel-source-%video_module_name-%module_version/vboxvideo.ko 
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Apr 04 2019 Ivan Zakharyaschev <imz@altlinux.org> 5.2.26-alt5
+- (.spec) %%requires_kimage used
+- checkinstall pkgs added to check that update-kernel sees our modules pkgs
 
 * Fri Mar 29 2019 Anton V. Boyarshinov <boyarsh@altinux.org> 5.2.26-alt3
 - No more outdated vboxvideo for kernels >= 5.0
