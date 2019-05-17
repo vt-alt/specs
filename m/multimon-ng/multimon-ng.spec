@@ -1,6 +1,6 @@
 Name:     multimon-ng
 Version:  1.1.7
-Release:  alt1
+Release:  alt2
 
 Summary:  A fork of multimon that decodes multiple digital transmission modes
 License:  GPL-2.0
@@ -15,6 +15,8 @@ BuildRequires(pre): rpm-macros-cmake
 BuildRequires: cmake
 BuildRequires: pkgconfig(libpulse)
 BuildRequires: pkgconfig(x11)
+
+Requires: sox
 
 %description
 MultimonNG a fork of multimon. It decodes the following digital transmission modes:
@@ -44,5 +46,8 @@ MultimonNG a fork of multimon. It decodes the following digital transmission mod
 %_bindir/*
 
 %changelog
+* Fri May 17 2019 Anton Midyukov <antohami@altlinux.org> 1.1.7-alt2
+- Requires: sox
+
 * Tue May 14 2019 Anton Midyukov <antohami@altlinux.org> 1.1.7-alt1
 - Initial build for Sisyphus
