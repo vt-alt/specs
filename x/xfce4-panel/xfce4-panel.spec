@@ -1,7 +1,7 @@
 %define xfce_ver 4.12
 
 Name: xfce4-panel
-Version: 4.13.4
+Version: 4.13.5
 Release: alt1
 
 Summary: Panel for Xfce
@@ -111,11 +111,6 @@ This package contains files to develop plugins for Xfce panel
 %makeinstall_std
 %find_lang %name
 
-# FIXME: We need to own these dirs until all plugins are ported to Xfce 4.8
-mkdir -p %buildroot/%_libexecdir/xfce4/panel-plugins
-mkdir -p %buildroot/%_libdir/xfce4/panel-plugins
-mkdir -p %buildroot/%_datadir/xfce4/panel-plugins
-
 %files -f %name.lang
 %doc AUTHORS NEWS README
 %config(noreplace) %_sysconfdir/xdg/xfce4/*
@@ -126,10 +121,6 @@ mkdir -p %buildroot/%_datadir/xfce4/panel-plugins
 %_datadir/xfce4/panel/
 %_desktopdir/*.desktop
 %exclude %_libdir/xfce4/panel/plugins/*.la
-# FIXME: Remove these when no longer needed
-%dir %_libexecdir/xfce4/
-%dir %_libexecdir/xfce4/panel-plugins/
-%dir %_libdir/xfce4/panel-plugins
 
 %files -n libxfce4panel
 %_libdir/%libxfce4panel_name_gtk2.so.*
@@ -152,6 +143,10 @@ mkdir -p %buildroot/%_datadir/xfce4/panel-plugins
 %_includedir/xfce4/%libxfce4panel_name_gtk3/
 
 %changelog
+* Fri May 17 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
+- Updated to 4.13.5.
+- Drop no longer used directories.
+
 * Wed Jan 02 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Updated to 4.13.4.
 
