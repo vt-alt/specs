@@ -1,7 +1,7 @@
 Name: iputils
-%define timestamp 20190324
+%define timestamp 20190515
 Version: %timestamp
-Release: alt2
+Release: alt1
 
 Summary: Utilities for IPv4/IPv6 networking
 License: %bsd, %gpl2plus, AS-IS (SUN MICROSYSTEMS license)
@@ -24,7 +24,7 @@ BuildRequires(pre): rpm-build-licenses meson
 BuildRequires: libcap-devel
 BuildRequires: libsysfs-devel libssl-devel
 BuildRequires: libidn2-devel
-BuildRequires: docbook-style-xsl xsltproc
+BuildRequires: docbook5-style-xsl xsltproc
 
 %define _unpackaged_files_terminate_build 1
 
@@ -65,6 +65,7 @@ export LDFLAGS='-pie'
 %meson \
 	-DBUILD_TFTPD=false \
 	-Dsystemdunitdir=%_unitdir \
+	-DNO_SETCAP_OR_SUID=true \
 	-DUSE_CAP=true \
 	-DUSE_IDN=true \
 	-DUSE_CRYPTO=openssl \
@@ -152,6 +153,10 @@ fi
 %_man8dir/ninfod.*
 
 %changelog
+* Fri May 17 2019 Mikhail Efremov <sem@altlinux.org> 20190515-alt1
+- Fix docs build.
+- 20190324 -> 20190515.
+
 * Sun Mar 31 2019 Mikhail Efremov <sem@altlinux.org> 20190324-alt2
 - Don't package tftpd (closes: #36477).
 
