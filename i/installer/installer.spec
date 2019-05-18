@@ -1,5 +1,5 @@
 Name: installer
-Version: 1.8.48
+Version: 1.9.0
 Release: alt1
 
 Summary: Installer common parts
@@ -59,7 +59,7 @@ Requires: xorg-xvfb
 # needed for lvm binary, see 11-remount.sh
 Requires: libdevmapper-event
 
-Conflicts: alterator-pkg < 1.2-alt1, alterator-sysconfig < 0.6-alt1, alterator-datetime < 2.0-alt1
+Conflicts: alterator-pkg < 1.2-alt1, alterator-sysconfig < 0.6-alt1, alterator-datetime < 4.3.0-alt1
 # stage2 and stage3 are mutually exclusive
 Conflicts: %name-common-stage3
 
@@ -110,6 +110,13 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 1.9.0-alt1
+- preinstall: Drop options for mkinitrd.
+- postinstall: Generate host key files.
+- install2: Mount runfs to /run.
+- initinstall: Start NTP client if present.
+- install2: Use systemd-tmpfiles to create tmp files.
+
 * Tue Apr  9 2019 Leonid Krivoshein <klark@altlinux.org> 1.8.48-alt1
 - postinstall: fix for configurations without mdraid.
 

@@ -3,8 +3,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.2.3
-Release: alt2
+Version: 4.3.0
+Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
 
@@ -37,7 +37,7 @@ BuildRequires: alterator-fbi
 %ifarch %e2k
 BuildRequires: guile20-devel libguile20-devel
 %else
-BuildRequires: guile22-devel
+BuildRequires: guile-devel
 %endif
 
 %define _unpackaged_files_terminate_build 1
@@ -66,6 +66,11 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 4.3.0-alt1
+- installer: Fix ntp status detection.
+- installer: Don't use control directly.
+- installer: Fix NTP service status in the installed system.
+
 * Wed Mar 06 2019 Ivan Razzhivin <underwit@altlinux.org> 4.2.3-alt2
 - Avoid possible script failure.
 
