@@ -1,17 +1,16 @@
 %define modname beaker
 
 Name: python-module-%modname
-Version: 1.9.0
-Release: alt2
+Version: 1.10.1
+Release: alt1
 
 Summary: A Session and Caching library with WSGI Middleware
+
 License: BSD-3-Clause
 Group: Development/Python
-
 Url: https://github.com/bbangert/beaker
-BuildArch: noarch
+
 Source: %name-%version.tar
-Patch0: fix-var-causing-build-error.patch
 
 BuildRequires: python-module-setuptools
 BuildRequires: fdupes
@@ -24,11 +23,16 @@ BuildRequires(pre): rpm-build-python3
 BuildPreReq: python3-devel
 BuildPreReq: python3-module-setuptools
 
+BuildArch: noarch
+
 %add_python_req_skip jarray javax
 
 %description
 Beaker is a web session and general caching library that includes WSGI
-middleware for use in web applications. As a general caching library, Beaker can handle storing for various times any Python object that can be pickled with optional back-ends on a fine-grained basis. Beaker was built largely on the code from MyghtyUtils, then refactored and extended with database support.
+middleware for use in web applications. As a general caching library, Beaker can
+handle storing for various times any Python object that can be pickled with
+optional back-ends on a fine-grained basis. Beaker was built largely on the code
+from MyghtyUtils, then refactored and extended with database support.
 
 %package -n python3-module-%modname
 Summary: A Session and Caching library with WSGI Middleware
@@ -38,11 +42,13 @@ Group: Development/Python3
 
 %description -n python3-module-%modname
 Beaker is a web session and general caching library that includes WSGI
-middleware for use in web applications. As a general caching library, Beaker can handle storing for various times any Python object that can be pickled with optional back-ends on a fine-grained basis. Beaker was built largely on the code from MyghtyUtils, then refactored and extended with database support.
+middleware for use in web applications. As a general caching library, Beaker
+can handle storing for various times any Python object that can be pickled with
+optional back-ends on a fine-grained basis. Beaker was built largely on the code
+from MyghtyUtils, then refactored and extended with database support.
 
 %prep
 %setup
-%patch0 -p1
 
 cp -fR . ../python3
 
@@ -70,6 +76,10 @@ popd
 
 
 %changelog
+* Wed May 15 2019 Grigory Ustinov <grenka@altlinux.org> 1.10.1-alt1
+- Build new version.
+- Cleanup spec.
+
 * Fri Apr 19 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.9.0-alt2
 - Variable causing build error fixed
 
@@ -106,7 +116,7 @@ popd
 * Thu Nov 19 2009 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.3.1-alt1.1
 - Rebuilt with python 2.6
 
-* Fri Aug 04 2009 Paul Wolneykien <manowar at altlinux.ru> 1.3.1-alt1
+* Tue Aug 04 2009 Paul Wolneykien <manowar at altlinux.ru> 1.3.1-alt1
 - Initial build for ALTLinux
 
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-6
