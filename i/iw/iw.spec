@@ -1,5 +1,5 @@
 Name: iw
-Version: 3.10
+Version: 5.0.1
 Release: alt1
 
 Summary: nl80211 based CLI configuration utility for wireless devices
@@ -38,6 +38,9 @@ export CFLAGS="%optflags"
 %doc README COPYING
 
 %changelog
+* Mon May 20 2019 Alexey Shabalin <shaba@altlinux.org> 5.0.1-alt1
+- 5.0.1
+
 * Sun Jul 14 2013 Terechkov Evgenii <evg@altlinux.org> 3.10-alt1
 - 3.10
 
