@@ -3,7 +3,7 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 2.0
+Version: 2.1.0.post1
 Release: alt1
 Summary: Freetype python bindings
 License: BSD
@@ -22,6 +22,7 @@ BuildRequires: python-module-OpenGL python-module-pygobject3
 BuildRequires: python-module-Pillow python-module-pycairo
 BuildRequires: python2.7(sphinx_rtd_theme)
 BuildRequires: python-module-alabaster python-module-docutils python-module-html5lib python-module-objects.inv
+BuildRequires: python-module-setuptools_scm
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools
@@ -29,6 +30,7 @@ BuildRequires: python3-module-matplotlib
 BuildRequires: python3-module-OpenGL python3-module-pygobject3
 BuildRequires: python3-module-Pillow python3-module-pycairo
 BuildRequires: python3-module-cffi
+BuildRequires: python3-module-setuptools_scm
 %endif
 
 %py_provides %oname
@@ -79,7 +81,6 @@ This package contains documentation for %oname.
 
 %if_with python3
 cp -fR . ../python3
-# find ../python3/examples -type f -name '*.py' -exec 2to3 -w -n '{}' +
 %endif
 
 %prepare_sphinx .
@@ -135,6 +136,9 @@ popd
 %endif
 
 %changelog
+* Wed May 15 2019 Grigory Ustinov <grenka@altlinux.org> 2.1.0.post1-alt1
+- Build new version (Closes: #36320).
+
 * Thu Jan 24 2019 Grigory Ustinov <grenka@altlinux.org> 2.0-alt1
 - Build new version.
 
