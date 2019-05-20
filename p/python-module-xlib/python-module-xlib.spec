@@ -4,7 +4,7 @@
 #%%def_with check
 
 Name: python-module-%oname
-Version: 0.21
+Version: 0.25
 Release: alt1
 
 Summary: Python X Library
@@ -118,6 +118,9 @@ popd
 %doc examples doc/html/*.html
 
 %changelog
+* Tue May 14 2019 Grigory Ustinov <grenka@altlinux.org> 0.25-alt1
+- New version 0.25
+
 * Wed Mar 07 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.21-alt1
 - Updated to upstream version 0.21.
 
