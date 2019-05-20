@@ -1,7 +1,8 @@
 %define docbook_man %_datadir/xml/docbook/xsl-stylesheets/manpages/docbook.xsl
 
 Name: dosbox
-Version: 0.74.r3852
+Epoch: 1
+Version: 0.74.2
 Release: alt1
 
 Summary: i8086/DOS/VGA software emulator for running old games
@@ -27,27 +28,27 @@ Source5: %name.xpm
 Source6: %name.desktop
 
 # fix #24306 bug
-Source7: %name-0.74.conf
+Source7: %name-0.74-2.conf
 Source8: README_ru.ALT
 
-Patch: dosbox-0.74-alt-gcc4.6.patch
+Patch: fix_werror_return_type.patch
 
 Requires: shadow-utils unarj unzip unrar
 
 Conflicts: dosbox-russian
 
-BuildPreReq: docbook-dtds 
-BuildPreReq: docbook-style-xsl 
+BuildPreReq: docbook-dtds
+BuildPreReq: docbook-style-xsl
 BuildPreReq: gcc-c++
-BuildPreReq: libalsa-devel 
+BuildPreReq: libalsa-devel
 BuildPreReq: libGL-devel
 BuildPreReq: libGLU-devel
-BuildPreReq: libpng-devel 
+BuildPreReq: libpng-devel
 BuildPreReq: libSDL-devel
-BuildPreReq: libSDL_net-devel 
-BuildPreReq: libSDL_sound-devel 
+BuildPreReq: libSDL_net-devel
+BuildPreReq: libSDL_sound-devel
 BuildPreReq: libX11-devel
-BuildPreReq: xsltproc 
+BuildPreReq: xsltproc
 BuildPreReq: unzip
 
 # Automatically added by buildreq on Sat Jul 12 2014
@@ -112,10 +113,10 @@ cat > %name-set-lang << EOF
 #
 # This is a simple script that set default DOSBox language
 # to English or Russian language.
-# It requires setting one parameter: en or ru, 
+# It requires setting one parameter: en or ru,
 # which would set needed language.
 #
-# Это простой скрипт, переключающий используемый DOSBox 
+# Это простой скрипт, переключающий используемый DOSBox
 # язык на указанный пользователем.
 # Скрипту необходимо указать один параметр: en или ru,
 # который и установит нужный язык.
@@ -135,7 +136,7 @@ ru)
 	   -e 's/^keyboardlayout=auto/keyboardlayout=RU/' \
 	~/.%name/%name-%version.conf
 	;;
-en) 
+en)
     echo "Set DOSBox language to English"
     sed -i -e 's/language=\/usr\/share\/doc\/%name-%version\/DOSBox-russian-lang\/russian.txt/language=/' \
 	   -e 's/^keyboardlayout=RU/keyboardlayout=auto/' \
@@ -204,6 +205,9 @@ cp %{SOURCE7} %{SOURCE8} %buildroot/%_defaultdocdir/%name-%version
 %_desktopdir/*
 
 %changelog
+* Wed May 15 2019 Grigory Ustinov <grenka@altlinux.org> 1:0.74.2-alt1
+- Build new version (Closes: #36653).
+
 * Wed May 04 2016 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.74.r3852-alt1
 - svn snapshot, fpu problems on x86_64 should be fixed
 
