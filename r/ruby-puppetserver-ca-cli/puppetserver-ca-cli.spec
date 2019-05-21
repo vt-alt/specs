@@ -3,7 +3,7 @@
 
 Name:    ruby-%pkgname
 Version: 1.3.1
-Release: alt1
+Release: alt2
 
 Summary: A simple Ruby CLI tool to interact with the Puppet Server's included CA
 License: Apache-2.0
@@ -45,6 +45,9 @@ The actual CLI executable lives within the Puppet Server project.
 
 
 %changelog
+* Tue May 14 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.3.1-alt2
+- ca and puppet paths fixed
+
 * Tue May 14 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.3.1-alt1
 - Version updated to 1.3.1
 
