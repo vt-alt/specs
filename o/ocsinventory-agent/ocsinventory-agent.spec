@@ -1,7 +1,7 @@
 Name: ocsinventory-agent
-Version: 2.4.2
+Version: 2.6.0
 Release: alt1
-Serial: 1
+Epoch: 1
 
 Summary: Hardware and software inventory tool (Agent)
 Group: System/Servers
@@ -99,6 +99,9 @@ rm -f %buildroot%perl_vendorlib/Ocsinventory/postinst.pl
 %_var/lib/%name
 
 %changelog
+* Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.6.0-alt1
+- New version.
+
 * Tue Sep 25 2018 Andrey Cherepanov <cas@altlinux.org> 1:2.4.2-alt1
 - New version.
 
