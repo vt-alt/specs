@@ -11,8 +11,8 @@
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	60.6.1
-Release:	alt2
+Version:	60.7.0
+Release:	alt1
 License:	MPL/GPL
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -473,6 +473,9 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Mon May 20 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.0-alt1
+- New version (60.7.0).
+
 * Mon Apr 22 2019 Andrey Cherepanov <cas@altlinux.org> 60.6.1-alt2
 - Fix global serch indexing by link with bundled sqlite3 (ALT #35761).
 
@@ -1491,7 +1494,7 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 - %%post_ldconfig and %%postun_ldconfig was removed.
 - icons updated (thx shrek@);
 
-* Tue Jul 16 2004 Alexey Morozov <morozov@altlinux.org> 0.7.2-alt2
+* Fri Jul 16 2004 Alexey Morozov <morozov@altlinux.org> 0.7.2-alt2
 - new version (0.7.2)
 - rpm macros file is splitted to base and devel parts
 - Russian spec translation
