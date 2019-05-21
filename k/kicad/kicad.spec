@@ -7,7 +7,7 @@ Name: kicad
 Summary: An open source software for the creation of electronic schematic diagrams
 Summary(ru_RU.UTF-8): Программа с открытым исходным кодом для проектирования электронных схем
 Version: 5.1.2
-Release: alt1
+Release: alt2
 Epoch: 1
 Packager: Anton Midyukov <antohami@altlinux.org>
 
@@ -37,7 +37,7 @@ BuildRequires: openmpi-devel
 BuildRequires: ImageMagick-tools
 BuildRequires: desktop-file-utils
 Requires: %name-data = %EVR
-Requires: kicad-packages3D >= %majver
+#Requires: kicad-packages3D >= %majver
 Requires: kicad-symbols >= %majver
 Requires: kicad-footprints >= %majver
 Requires: kicad-templates >= %majver
@@ -160,6 +160,9 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_datadir/mime/packages/*
 
 %changelog
+* Mon May 20 2019 Anton Midyukov <antohami@altlinux.org> 1:5.1.2-alt2
+- Not requires to kicad-packages3D (large package)
+
 * Thu Apr 25 2019 Anton Midyukov <antohami@altlinux.org> 1:5.1.2-alt1
 - new version 5.1.2
 
