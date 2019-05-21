@@ -58,7 +58,7 @@
 Name: systemd
 Epoch: 1
 Version: 242
-Release: alt6
+Release: alt7
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -108,6 +108,7 @@ Source74: systemd-tmpfiles.filetrigger
 Source75: systemd-sysctl.filetrigger
 Source76: systemd-binfmt.filetrigger
 Source77: journal-catalog.filetrigger
+Source78: systemd-sysusers.filetrigger
 
 Patch1: %name-%version.patch
 
@@ -441,6 +442,7 @@ Group: System/Servers
 Summary: Journal Gateway Daemon
 Requires: %name = %EVR
 Requires: libnss-systemd  = %EVR
+Requires: %name-stateless = %EVR
 Provides: systemd-journal-gateway = %EVR
 Obsoletes: systemd-journal-gateway < %EVR
 
@@ -844,6 +846,7 @@ install -pD -m755 %SOURCE74 %buildroot%_rpmlibdir/systemd-tmpfiles.filetrigger
 install -pD -m755 %SOURCE75 %buildroot%_rpmlibdir/systemd-sysctl.filetrigger
 install -pD -m755 %SOURCE76 %buildroot%_rpmlibdir/systemd-binfmt.filetrigger
 install -pD -m755 %SOURCE77 %buildroot%_rpmlibdir/journal-catalog.filetrigger
+install -pD -m755 %SOURCE78 %buildroot%_rpmlibdir/systemd-sysusers.filetrigger
 
 cat >>%buildroot/lib/sysctl.d/50-default.conf <<EOF
 # Indicates the amount of address space which a user process will be
@@ -1747,6 +1750,7 @@ fi
 %_datadir/factory/*
 %_unitdir/systemd-sysusers.service
 %_unitdir/sysinit.target.wants/systemd-sysusers.service
+%_rpmlibdir/systemd-sysusers.filetrigger
 /lib/sysusers.d/systemd.conf
 /lib/sysusers.d/basic.conf
 %_tmpfilesdir/etc.conf
@@ -1838,6 +1842,11 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Tue May 21 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt7
+- add systemd-sysusers.filetrigger
+- update rpm filetriggers
+- add condition for run update resolv.conf
+
 * Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt6
 - merge with v242-stable 298d13df7ef1097fa4801de573f668cef23a22b3
 - units: add usb-gadget.target (sbolshakov@)
