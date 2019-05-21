@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.3.9
+Version:  1.3.10
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -36,6 +36,18 @@ gzip %buildroot%_man8dir/%name.8
 %_man8dir/%name.8*
 
 %changelog
+* Mon May 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.3.10-alt1
+- Add p9 branch.
+- Add --dry-run mode (ALT #35726).
+- Support to add archive of branch (ALT #30841).
+- Show and remove all non-commented and non-empty sources (ALT #30008).
+- Add key [<branch_name>] in addition to [updates] for branch source (ALT #32434).
+- Add arepo repository for added file: source.
+- Check task existance for apt-repo list task (ALT #34222).
+- Set new format only URL contains at least 3 parts.
+- Add new command `set` to remove all exising sources and add specified branch.
+- Ignore -devel* packages in task operation.
+
 * Tue Feb 28 2017 Andrey Cherepanov <cas@altlinux.org> 1.3.9-alt1
 - Add braches c8 and altlinuxclub.p8
 
