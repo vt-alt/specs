@@ -1,5 +1,5 @@
 Name: installer-feature-selinux
-Version: 0.11
+Version: 0.12
 Release: alt1
 
 Summary: Installer selinux hooks
@@ -27,6 +27,9 @@ install -pm755 postinstall.sh %buildroot%hookdir/postinstall.d/90-selinux.sh
 %hookdir/postinstall.d/*
 
 %changelog
+* Tue May 21 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.12-alt1
+- disable ipv6 in dovecot.conf
+
 * Mon Apr 15 2019 Denis Medvedev <nbr@altlinux.org> 0.11-alt1
 - added officer group wheel for him personally and setup
 smem and disable ipv6.
