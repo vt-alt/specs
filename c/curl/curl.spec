@@ -1,7 +1,7 @@
 %def_with nghttp2
 
 Name: curl
-Version: 7.64.1
+Version: 7.65.0
 Release: alt1
 
 Summary: Gets a file from a FTP, GOPHER or HTTP server
@@ -149,6 +149,12 @@ applications that utilize lib%name.
 %_libdir/*.a
 
 %changelog
+* Wed May 22 2019 Anton Farygin <rider@altlinux.ru> 7.65.0-alt1
+- 7.65.0
+- fixes:
+  * CVE-2019-5435: Integer overflows in curl_url_set
+  * CVE-2019-5436: tftp: use the current blksize for recvfrom
+
 * Thu Mar 28 2019 Anton Farygin <rider@altlinux.ru> 7.64.1-alt1
 - 7.64.1
 
