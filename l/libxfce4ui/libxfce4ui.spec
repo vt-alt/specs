@@ -1,5 +1,5 @@
 Name: libxfce4ui
-Version: 4.13.4
+Version: 4.13.5
 Release: alt1
 
 Summary: Various GTK+2 widgets for Xfce
@@ -145,6 +145,9 @@ This package contains the 'About Xfce' dialog.
 %_desktopdir/xfce4-about.desktop
 
 %changelog
+* Sat May 18 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
+- Updated to 4.13.5.
+
 * Mon Aug 06 2018 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Make devel-doc subpackage noarch.
 - Use _unpackaged_files_terminate_build.
