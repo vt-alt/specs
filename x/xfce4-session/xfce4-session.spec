@@ -1,6 +1,8 @@
 Name: xfce4-session
-Version: 4.13.1
-Release: alt2.git99294d961d5b3
+Version: 4.13.2
+Release: alt1
+
+%def_without devel
 
 Summary: Session manager for Xfce desktop environment
 Summary (ru): Менеджер сессий для окружения рабочего стола Xfce
@@ -12,10 +14,6 @@ Packager: Xfce Team <xfce@packages.altlinux.org>
 # Upstream: git://git.xfce.org/xfce/xfce4-session
 Source: %name-%version.tar
 Source1: xfce.wmsession
-# taken from polkit-gnome, license is LGPLv2+, requires because of
-# http://lists.fedoraproject.org/pipermail/devel-announce/2011-February/000758.html
-# Renamed to avoid file conflict with gdm.
-Source2: polkit-gnome-authentication-agent-1-xfce.desktop
 
 Patch: %name-%version-%release.patch
 
@@ -52,23 +50,16 @@ License: GPL
 %description -n libxfsm
 This package contains library for Xfce session manager.
 
+%if_with devel
 %package devel
 Summary: Development files to build Xfce session manager plugins
 Group: Development/C
 License: GPL
-PreReq: libxfsm = %version-%release
+Requires: libxfsm = %version-%release
 
 %description devel
 This package contains files to develop plugins for Xfce session manager.
-
-%package engines
-Summary: Additional splash screen engines for Xfce session manager
-Group: Graphical desktop/XFce
-License: GPL
-PreReq: %name = %version-%release
-
-%description engines
-Additional splash screen engines for Xfce session manager.
+%endif
 
 %prep
 %setup
@@ -88,7 +79,6 @@ Additional splash screen engines for Xfce session manager.
 %install
 %makeinstall_std
 install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
-install -Dm0644 %SOURCE2 %buildroot%_sysconfdir/xdg/autostart/polkit-gnome-authentication-agent-1-xfce.desktop
 %find_lang %name
 
 %files -f %name.lang
@@ -100,9 +90,6 @@ install -Dm0644 %SOURCE2 %buildroot%_sysconfdir/xdg/autostart/polkit-gnome-authe
 %_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
 %_bindir/*
 %dir %_libdir/xfce4/session
-%dir %_libdir/xfce4/session/splash-engines
-%_libdir/xfce4/session/splash-engines/libmice.so
-%exclude %_libdir/xfce4/session/splash-engines/*.la
 %_libdir/xfce4/session/xfsm-*
 %_desktopdir/*
 %_iconsdir/hicolor/*/*/*
@@ -113,18 +100,25 @@ install -Dm0644 %SOURCE2 %buildroot%_sysconfdir/xdg/autostart/polkit-gnome-authe
 %files -n libxfsm
 %_libdir/lib*.so.*
 
+%if_with devel
 %files devel
-%_includedir/xfce4/*
+#_includedir/xfce4/*
 %_libdir/lib*.so
 %_pkgconfigdir/*.pc
-
-%files engines
-%_datadir/themes/Default/balou
-%_libdir/xfce4/session/splash-engines/*.so
-%exclude %_libdir/xfce4/session/splash-engines/libmice.so
-%_libdir/xfce4/session/balou*
+%else
+%exclude %_libdir/lib*.so
+%exclude %_pkgconfigdir/*.pc
+%endif
 
 %changelog
+* Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt1
+- Don't use deprecated PreReq.
+- Drop devel subpackage.
+- Drop engines subpackage.
+- Drop gnome-authentication-agent autostart desktop-file
+  (closes: #36604).
+- Updated to 4.13.2.
+
 * Wed Jan 30 2019 Mikhail Efremov <sem@altlinux.org> 4.13.1-alt2.git99294d961d5b3
 - Upstream git snapshot (master branch).
 

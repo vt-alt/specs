@@ -1,10 +1,11 @@
 %define _name xfconf
 
 %def_with perl
+%def_disable gsettings
 
 Name: lib%_name
-Version: 4.13.6
-Release: alt1.1
+Version: 4.13.7
+Release: alt1
 
 Summary: Hierarchical configuration system for Xfce
 Summary (ru_RU.UTF-8): Система конфигурации Xfce
@@ -21,6 +22,7 @@ BuildRequires(pre): rpm-build-licenses
 
 %define _unpackaged_files_terminate_build 1
 
+Requires: xfce4-common
 Requires: dbus-tools-gui
 BuildPreReq: rpm-build-xfce4 libxfce4util-devel xfce4-dev-tools
 BuildRequires: libgio-devel libdbus-devel
@@ -37,7 +39,7 @@ beneath the channel nodes are called "properties".
 %package devel
 Summary: Development files for %name
 Group: Development/C
-PreReq: %name = %version-%release
+Requires: %name = %version-%release
 
 %description devel
 Header files for the %name library.
@@ -45,7 +47,7 @@ Header files for the %name library.
 %package -n %_name-utils
 Summary: Utils for Xfce configuration system
 Group: Graphical desktop/XFce
-PreReq: %name = %version-%release
+Requires: %name = %version-%release
 
 %description -n %_name-utils
 Xfconfd is a small daemon that handles storage and retrieval of settings, as well
@@ -81,7 +83,11 @@ interact with xfconf using perl.
 	--disable-static \
 	--enable-maintainer-mode \
 	--with-perl-options=INSTALLDIRS="vendor" \
+%if_enabled gsetings
 	--enable-gsettings-backend \
+%else
+	--disable-gsettings-backend \
+%endif
 	--enable-gtk-doc \
 	--enable-debug=minimum
 %make_build
@@ -96,9 +102,11 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %doc AUTHORS NEWS
 %_sysconfdir/xdg/xfce4/xfconf
 %_libdir/*.so.*
+%if_enabled gsetings
 %_libdir/gio/modules/*.so
 
 %exclude %_libdir/gio/modules/*.la
+%endif
 
 %files devel
 %doc %_datadir/gtk-doc/html/%_name
@@ -118,6 +126,12 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %endif
 
 %changelog
+* Mon May 20 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
+- Don't use deprecated PreReq.
+- Disable gsettings backend.
+- Require xfce4-common.
+- Updated to 4.13.7.
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 4.13.6-alt1.1
 - rebuild with new perl 5.28.1
 

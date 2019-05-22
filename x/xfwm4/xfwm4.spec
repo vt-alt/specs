@@ -1,6 +1,6 @@
 Name: xfwm4
-Version: 4.13.1
-Release: alt1
+Version: 4.13.2
+Release: alt2
 
 Summary: Window manager for Xfce
 Summary (ru_RU.UTF8): Менеджер окон для окружения рабочего стола Xfce
@@ -20,9 +20,9 @@ BuildPreReq: libxfce4ui-gtk3-devel libxfconf-devel
 BuildPreReq: exo-csource
 
 BuildRequires: gnome-doc-utils xml-utils xsltproc
-BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel libdrm-devel
+BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel libepoxy-devel
 BuildRequires: libstartup-notification-devel libwnck3-devel xorg-cf-files
-BuildRequires: libXinerama-devel
+BuildRequires: libXinerama-devel libXpresent-devel
 # For svg support in the glib-compile-resources
 BuildRequires: librsvg
 
@@ -53,7 +53,9 @@ Xfce.
 	--enable-randr \
 	--enable-render \
 	--enable-xsync \
+	--enable-xpresent \
 	--enable-compositor \
+	--enable-epoxy \
 	--disable-silent-rules \
 	--enable-debug=minimum
 
@@ -75,6 +77,13 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt2
+- Build with libXpresent.
+- Build with libepoxy.
+
+* Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt1
+- Updated to 4.13.2.
+
 * Tue Aug 07 2018 Mikhail Efremov <sem@altlinux.org> 4.13.1-alt1
 - Update description.
 - Update url.

@@ -2,7 +2,7 @@
 
 Name: xfce4
 Version: 4.14
-Release: alt4
+Release: alt5
 Summary: Set of Xfce4 Desktop installers.
 License: %gpl2plus
 Group: Graphical desktop/XFce
@@ -75,7 +75,6 @@ of Xfce4 Desktop.
 
 %define commonreqs \
 Requires: xfwm4-themes \
-Requires: xfce4-session-engines \
 Requires: xfce4-dict \
 Requires: orage \
 Requires: xfce4-screenshooter \
@@ -165,6 +164,9 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4
 %endif
 
 %changelog
+* Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt5
+- full,regular: Drop xfce4-session-engines.
+
 * Mon Apr 08 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt4
 - cleanup: Remove commented out xfce4-radio-plugin.
 - full,regular: Drop xfce4-wmdock-plugin.

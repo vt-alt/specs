@@ -1,5 +1,5 @@
 Name: xfce4-settings
-Version: 4.13.5
+Version: 4.13.6
 Release: alt1
 Summary: Settings Manager for Xfce
 Summary (ru_RU.UTF-8): Менеджер настроек Xfce
@@ -19,6 +19,7 @@ BuildRequires(pre): rpm-build-licenses
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools > 4.5
 BuildRequires: libxfce4ui-gtk3-devel libexo-gtk3-devel libxfconf-devel libgarcon-devel >= 0.1.10
 BuildRequires: intltool libICE-devel libXcursor-devel libXi-devel libXrandr-devel libglade-devel libnotify-devel libxklavier-devel libupower-devel >= 0.99.4-alt2
+BuildRequires: libcolord-devel
 BuildRequires: xorg-drv-libinput-devel
 
 Requires: libgarcon-settings-manager-menu
@@ -52,7 +53,8 @@ for the Xfce desktop.
 	--enable-xorg-libinput \
 	--enable-libxklavier \
 	--enable-sound-settings \
-	--enable-pluggable-dialogs
+	--enable-pluggable-dialogs \
+	--enable-colord
 %make
 
 %install
@@ -68,9 +70,13 @@ install -pDm0755 %SOURCE1 %buildroot%_bindir/xfce4-fixkeyboard
 %config(noreplace) %_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 %_sysconfdir/xdg/menus/xfce-settings-manager.menu
 %_desktopdir/*.desktop
-%_iconsdir/*/*/*/*.png
+%_iconsdir/*/*/*/*.*
 
 %changelog
+* Sat May 18 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt1
+- Enabled colord support.
+- Updated to 4.13.6.
+
 * Wed Oct 03 2018 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
 - Updated to 4.13.5.
 
