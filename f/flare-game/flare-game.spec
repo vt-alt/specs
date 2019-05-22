@@ -1,11 +1,15 @@
 %define _name flare
 
 Name: %_name-game
-Version: 1.09.01
+Version: 1.10
 Release: alt1
 
 Summary: Fantasy action RPG using the FLARE engine
-License: %gpl3plus
+# All of Flare's art and data files are released under CC-BY-SA 3.0.
+# Later versions are permitted.
+# The Liberation Sans fonts version 2 are released under the SIL Open
+# Font License, Version 1.1.
+License: %ccbysa30+, SIL Open Font License 1.1
 Group: Games/Adventure
 
 URL: http://flarerpg.org/
@@ -52,6 +56,10 @@ cd -
 %_datadir/metainfo/*.xml
 
 %changelog
+* Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 1.10-alt1
+- Fix license.
+- Updated to 1.10.
+
 * Fri Dec 14 2018 Mikhail Efremov <sem@altlinux.org> 1.09.01-alt1
 - Updated to 1.09.01.
 
