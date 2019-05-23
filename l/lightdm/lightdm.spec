@@ -6,34 +6,18 @@
 %def_enable qt5
 
 Name: lightdm
-Version: 1.16.7
-Release: alt24
+Version: 1.30.0
+Release: alt1
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
 Url: https://launchpad.net/lightdm
-#To get source code use the command "bzr branch lp:lightdm"
 
 Source: %name-%version.tar
-Source2: %name.pam
-Source3: %name-autologin.pam
-Source4: %name.wms
-##Source5: %name-greeter-session.sh
-Source6: %name-tmpfiles.conf
-Source7: %name-greeter.pam
-Source8: %name.rules
-Source9: %name.service
-Source10: %name-login-unknown.control
-Source11: %name-greeter-hide-users.control
-
 Patch1: %name-%version-%release.patch
-Patch2: %name-%version-%release-advanced.patch
 
-# Requires: %name-greeter
 Requires: accountsservice
-Requires: dbus-tools-gui
 Requires: dm-tool
-Requires: %name-aux
 
 BuildRequires: gcc-c++ intltool
 BuildRequires: pkgconfig(glib-2.0) >= 2.30 pkgconfig(gio-2.0) >= 2.26  pkgconfig(gio-unix-2.0)  pkgconfig(xdmcp)  pkgconfig(xcb)
@@ -57,29 +41,10 @@ manager use cases, with plugins where appropriate, low code complexity, and
 fast performance. Due to its cross-platform nature greeters can be written in
 several toolkits, including HTML/CSS/Javascript.
 
-%package aux
-Summary: Auxiliary package for Lightweight Display Manager
-Group: Graphical desktop/Other
-BuildArch: noarch
-
-# This package is an implementation of a simple trick:
-# if dm-tool requires lightdm-aux = EVR and lightdm requires
-# lightdm-aux = EVR, you can't install dm-tool and lightdm
-# with different EVRs onto the same system. This trick is
-# required since 'Conflicts: %%name <> %%EVR' doesn't work
-# with disttags, and usual dependency would be too strong for
-# our case. For more information, check out the thread around
-# https://lists.altlinux.org/pipermail/devel/2019-January/206337.html
-# and https://bugzilla.altlinux.org/34339.
-
-%description aux
-Empty auxiliary package for Lightweight Display Manager.
-
 %package -n liblightdm-gobject
 Group: System/Libraries
 Summary: LightDM GObject Greeter Library
 License: LGPLv2+
-Requires: %name-aux
 
 %description -n liblightdm-gobject
 A library for LightDM greeters based on GObject which interfaces with LightDM
@@ -89,7 +54,6 @@ and provides common greeter functionality.
 Group: System/Libraries
 Summary: LightDM Qt Greeter Library
 License: LGPLv2+
-Requires: %name-aux
 
 %description -n liblightdm-qt
 A library for LightDM greeters based on Qt which interfaces with LightDM and
@@ -99,7 +63,6 @@ provides common greeter functionality.
 Group: System/Libraries
 Summary: LightDM Qt5 Greeter Library
 License: LGPLv2+
-Requires: %name-aux
 
 %description -n liblightdm-qt5
 A library for LightDM greeters based on Qt5 which interfaces with LightDM and
@@ -118,7 +81,6 @@ additional interface libraries for LightDM.
 Summary: Development package for %name
 Group: Development/Documentation
 BuildArch: noarch
-Requires: %name-aux
 
 %description devel-doc
 Contains developer documentation for %name.
@@ -144,7 +106,6 @@ GObject introspection devel data for the %name
 Summary: Display Manager control utility
 Group: Graphical desktop/Other
 License: GPLv3+
-Requires: %name-aux
 
 %description -n dm-tool
 dm-tool utility controls a FreeDesktop.org-compatible display
@@ -153,7 +114,6 @@ manager via D-Bus.
 %prep
 %setup
 %patch1 -p1
-%patch2 -p1
 
 %ifarch %e2k
 # until apx. lcc-1.23.01
@@ -180,7 +140,7 @@ export CXXFLAGS="%optflags -std=gnu++11"
 %make_build
 
 %install
-%makeinstall_std
+%make DESTDIR=%buildroot install
 
 # We don't ship AppAmor
 rm -rf %buildroot%_sysconfdir/apparmor.d/
@@ -190,43 +150,27 @@ rm -rf %buildroot%_sysconfdir/init
 mkdir -p %buildroot%_sysconfdir/%name/lightdm.conf.d
 mkdir -p %buildroot%_datadir/%name/lightdm.conf.d
 mkdir -p %buildroot%_datadir/%name/remote-sessions
-mkdir -p %buildroot%_sysconfdir/%name/sessions
-mkdir -p %buildroot%_sysconfdir/X11/wms-methods.d
-mkdir -p %buildroot%_sysconfdir/pam.d
 mkdir -p %buildroot%_localstatedir/log/%name
 mkdir -p %buildroot%_localstatedir/cache/%name
-mkdir -p %buildroot%_localstatedir/run/%name
 mkdir -p %buildroot%_localstatedir/lib/{lightdm-data,ldm}
-
-# install pam config
-install -p -m 644 %SOURCE2 %buildroot%_sysconfdir/pam.d/%name
-install -p -m 644 %SOURCE3 %buildroot%_sysconfdir/pam.d/%name-autologin
-#install -p -m 644 %SOURCE7 %buildroot%_sysconfdir/pam.d/%name-greeter
 
 %if_disabled systemd
 sed -i '/pam_systemd.so/d' %buildroot%_sysconfdir/pam.d/%name-greeter
 %endif
 
-# install external hook for update_wms
-install -m755 %SOURCE4 %buildroot%_sysconfdir/X11/wms-methods.d/%name
-
-# install script to launch dbus
-##install -m755 %%SOURCE5 %buildroot%_libexecdir/%name/%name-greeter-session
-
-install -Dpm 644 %SOURCE6 %buildroot/lib/tmpfiles.d/%name.conf
-install -m644 -p -D %SOURCE8 %buildroot%_datadir/polkit-1/rules.d/%name.rules
-install -m644 -p -D %SOURCE9 %buildroot%_unitdir/%name.service
+install -Dpm 644 data/%name-tmpfiles.conf %buildroot/lib/tmpfiles.d/%name.conf
+install -m644 -p -D data/%name.rules %buildroot%_datadir/polkit-1/rules.d/%name.rules
+install -m644 -p -D data/%name.service %buildroot%_unitdir/%name.service
 echo "GDK_CORE_DEVICE_EVENTS=true" > %buildroot%_localstatedir/lib/ldm/.pam_environment
 
-install -m0755 -p -D %SOURCE10 %buildroot%_controldir/%name-login-unknown
-install -m0755 -p -D %SOURCE11 %buildroot%_controldir/%name-greeter-hide-users
+install -m0755 -p -D data/%name-login-unknown.control %buildroot%_controldir/%name-login-unknown
+install -m0755 -p -D data/%name-greeter-hide-users.control %buildroot%_controldir/%name-greeter-hide-users
 
 %find_lang --with-gnome %name
 
 %pre
 %_sbindir/groupadd -r -f _ldm >/dev/null 2>&1 || :
 %_sbindir/useradd -M -r -d %_localstatedir/lib/ldm -s /bin/false -c "LightDM daemon" -g _ldm _ldm >/dev/null 2>&1 || :
-
 
 %post
 if [ $1 -eq 1 ] ; then
@@ -248,10 +192,8 @@ fi
 %doc NEWS
 %config %_sysconfdir/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %dir %_sysconfdir/%name
-%dir %_sysconfdir/%name/sessions
-%_sysconfdir/X11/wms-methods.d/%name
 %config(noreplace) %_sysconfdir/%name/*.conf
-%config(noreplace) %_sysconfdir/pam.d/%{name}*
+%config(noreplace) %_sysconfdir/pam.d/*
 %_sbindir/%name
 %_unitdir/%name.service
 %exclude %_man1dir/dm-tool.*
@@ -262,15 +204,14 @@ fi
 %attr(750,_ldm,_ldm) %dir %_localstatedir/lib/ldm
 %attr(640,_ldm,_ldm) %_localstatedir/lib/ldm/.pam_environment
 %attr(750,_ldm,_ldm) %dir %_localstatedir/lib/lightdm-data
-%attr(775,_ldm,_ldm) %dir %_localstatedir/run/%name
 /lib/tmpfiles.d/%name.conf
 %_datadir/polkit-1/rules.d/%name.rules
+%_datadir/polkit-1/actions/org.freedesktop.DisplayManager.AccountsService.policy
+%_datadir/accountsservice/interfaces/org.freedesktop.DisplayManager.AccountsService.xml
+%_datadir/dbus-1/interfaces/org.freedesktop.DisplayManager.AccountsService.xml
 %exclude %_datadir/bash-completion/completions/dm-tool
 %_datadir/bash-completion/completions/*
 %_controldir/*
-
-%files aux
-# intentionally left blank
 
 %files -n liblightdm-gobject
 %_libdir/liblightdm-gobject-?.so.*
@@ -308,6 +249,12 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Fri May 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.30.0-alt1
+- 1.30.0
+
+* Wed May 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.28.0-alt1
+- 1.28.0
+
 * Tue Jan 15 2019 Ivan A. Melnikov <iv@altlinux.org> 1.16.7-alt24
 - Replace 'Conflicts <>' with auxiliary package
 
