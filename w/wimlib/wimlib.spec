@@ -1,6 +1,6 @@
 %define libname libwim
 Name: wimlib
-Version: 1.13.0
+Version: 1.13.1
 Release: alt1
 
 Summary: Library to extract, create, modify, and mount WIM files
@@ -11,7 +11,6 @@ Url: https://wimlib.net/
 
 ExclusiveArch: %ix86 x86_64
 
-#Source: http://prdownloads.sourceforge.net/wimlib/wimlib-%version.tar
 Source: https://wimlib.net/downloads/wimlib-%version.tar
 
 # manually removed: glibc-devel-static  ruby ruby-stdlibs  python3
@@ -61,19 +60,19 @@ but this package contains a free implementation of ImageX called
 %autoreconf
 
 %configure \
-           --disable-static		\
-           --disable-rpath		\
-	   --with-libcrypto		\
-	   --with-ntfs-3g		\
-	   --with-fuse			\
-	   --enable-xattr
+       --disable-static \
+       --disable-rpath  \
+       --with-libcrypto \
+       --with-ntfs-3g   \
+       --with-fuse      \
+       --enable-xattr
 %make_build
 
 %install
 %makeinstall_std
 
 %check
-:>tests/test-imagex-ntfs	# this one fails
+:>tests/test-imagex-ntfs # this one fails
 make check
 
 %files -n %libname
@@ -91,6 +90,9 @@ make check
 %_pkgconfigdir/wimlib.pc
 
 %changelog
+* Mon May 20 2019 Grigory Ustinov <grenka@altlinux.org> 1.13.1-alt1
+- Build new version.
+
 * Fri Dec 14 2018 Grigory Ustinov <grenka@altlinux.org> 1.13.0-alt1
 - Build new version.
 
