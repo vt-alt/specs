@@ -1,7 +1,7 @@
 %global v_major 7.0
 %global llvm_svnrel %nil
 %global clang_svnrel %nil
-%global rel alt3
+%global rel alt4
 %global llvm_name llvm%v_major
 %global clang_name clang%v_major
 %global lld_name lld
@@ -38,6 +38,9 @@ Patch10: 0001-Filter-out-cxxflags-not-supported-by-clang.patch
 Patch11: 0001-AMDGPU-test-for-uniformity-of-branch-instruction-not.patch
 Patch12: 0001-llvm-objdump-Implement-z-disassemble-zeroes.patch
 Patch13: 0001-llvm-nm-Add-portability-as-alias-for-format-posix.patch
+Patch14: lld-7-alt-mipsel-permit-textrels-by-default.patch
+Patch15: lld-rL342604-PPC64-Handle-ppc64le-triple-in-getBitcodeMa.patch
+Patch16: lld-rLLD344747-PPC64-Fix-offset-checks-on-rel24-call-rel.patch
 
 # ThinLTO requires /proc/cpuinfo to exists so the same does llvm
 BuildPreReq: /proc
@@ -227,6 +230,9 @@ mv compiler-rt-%version projects/compiler-rt
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
 
 %build
 %cmake -G Ninja \
@@ -399,6 +405,13 @@ ninja -C BUILD check-all || :
 %doc %_docdir/lld
 
 %changelog
+* Wed May 22 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 7.0.1-alt4.rel
+- Added mipsel-alt-linux and ppc64le-alt-linux triples support.
+- lld:
+  + mipsel: allowed textrels by default;
+  + ppc64le: backported upstream fixes for ThinLTO support and relocation
+  checks.
+
 * Mon Jan 21 2019 L.A. Kostis <lakostis@altlinux.ru> 7.0.1-alt3.rel
 - Added patches from stable:
   + llvm-nm: Add --portability as alias for --format=posix.
