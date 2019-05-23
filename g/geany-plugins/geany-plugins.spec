@@ -1,6 +1,6 @@
 Name: geany-plugins
-Version: 1.34.1
-Release: alt0.1
+Version: 1.35
+Release: alt1
 %define geany_ver %version
 
 Summary: Plugins for Geany
@@ -29,6 +29,7 @@ BuildRequires(pre): geany geany-devel intltool
 %add_python_req_skip scintilla
 %add_python_req_skip search
 %add_python_req_skip ui_utils
+%add_python_req_skip templates
 
 Requires: geany-plugins-vc
 
@@ -89,6 +90,9 @@ sed -i '/^geanyluadir/s@.*@geanyluadir = %_libdir/geany@' geanylua/Makefile.am
 %exclude %_libdir/geany/*.la
 
 %changelog
+* Wed May 22 2019 Fr. Br. George <george@altlinux.ru> 1.35-alt1
+- Autobuild version bump to 1.35
+
 * Wed Feb 27 2019 Fr. Br. George <george@altlinux.ru> 1.34.1-alt0.1
 - Autobuild version bump to 1.34
 - Build with Geany 1.34.1
