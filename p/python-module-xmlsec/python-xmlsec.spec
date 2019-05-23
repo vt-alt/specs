@@ -1,7 +1,7 @@
-%def_without check
+%def_enable check
 Name: python-module-xmlsec
-Version: 1.3.3
-Release: alt2
+Version: 1.3.6
+Release: alt1
 Source: %version.tar.gz
 Summary: Python bindings for the XML Security Library
 License: MIT
@@ -69,6 +69,9 @@ py.test-%_python3_version -vv
 %python3_sitelibdir/*
 
 %changelog
+* Sun Jan 20 2019 Grigory Ustinov <grenka@altlinux.org> 1.3.6-alt1
+- Build new version.
+
 * Tue May 29 2018 Grigory Ustinov <grenka@altlinux.org> 1.3.3-alt2
 - NMU: Add URL (Closes: #34693).
 
