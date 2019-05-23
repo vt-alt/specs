@@ -1,9 +1,70 @@
 %def_enable egl
 %def_enable gles2
-%def_enable xa
+
+%define dri_drivers_add() %{expand:%%global dri_drivers %{?dri_drivers:%dri_drivers,}%{1}}
+%define gallium_drivers_add() %{expand:%%global gallium_drivers %{?gallium_drivers:%gallium_drivers,}%{1}}
+%define vulkan_drivers_add() %{expand:%%global vulkan_drivers %{?vulkan_drivers:%vulkan_drivers,}%{1}}
+
+%define use_lld_arches x86_64
+%define link_static_llvm_arches x86_64
+
+%define radeon_arches %ix86 x86_64 aarch64 ppc64le mipsel
+%define vulkan_radeon_arches x86_64 ppc64le mipsel
+%define nouveau_arches %ix86 x86_64 aarch64 ppc64le mipsel
+%define intel_arches %ix86 x86_64
+%define vulkan_intel_arches x86_64
+%define virgl_arches %ix86 x86_64 aarch64 ppc64le mipsel
+%define armsoc_arches %arm aarch64
+# OpenCL requires static clang libraries
+# which may be built as ThinLTO objects (if lld
+# supports target architecture).
+%define opencl_arches x86_64
+%define gallium_pipe_arches x86_64
+
+#VDPAU state tracker requires at least one of the following gallium drivers: r300, r600, radeonsi, nouveau
+%define vdpau_arches %radeon_arches %nouveau_arches
+#XVMC state tracker requires at least one of the following gallium drivers: r600, nouveau
+%define xvmc_arches %radeon_arches %nouveau_arches
+# Mesa builds radeon and nouveau support as megadrivers
+%define dri_megadriver_arches %radeon_arches %nouveau_arches
+%define gallium_megadriver_arches %radeon_arches %nouveau_arches
+# Building xa requires at least one non swrast gallium driver.
+%define xa_arches %radeon_arches %nouveau_arches %virgl_arches %armsoc_arches
+
+%gallium_drivers_add swrast
+%ifarch %radeon_arches
+%dri_drivers_add r100
+%dri_drivers_add r200
+%gallium_drivers_add r300
+%gallium_drivers_add r600
+%gallium_drivers_add radeonsi
+%endif
+%ifarch %intel_arches
+%dri_drivers_add i915
+%dri_drivers_add i965
+%endif
+%ifarch %nouveau_arches
+%dri_drivers_add nouveau
+%gallium_drivers_add nouveau
+%endif
+%ifarch %virgl_arches
+%gallium_drivers_add virgl
+%endif
+%ifarch %armsoc_arches
+%gallium_drivers_add vc4
+%gallium_drivers_add etnaviv
+%gallium_drivers_add freedreno
+%gallium_drivers_add kmsro
+%endif
+%ifarch %vulkan_intel_arches
+%vulkan_drivers_add intel
+%endif
+%ifarch %vulkan_radeon_arches
+%vulkan_drivers_add amd
+%endif
 
 Name: Mesa
-Version: 19.0.4
+Version: 19.0.5
 Release: alt1
 Epoch: 4
 License: MIT
@@ -17,12 +78,22 @@ Source: %name-%version.tar
 Patch: %name-%version.patch
 
 BuildPreReq: /proc
+BuildRequires(pre): meson
 BuildRequires: gcc-c++ indent flex libXdamage-devel libXext-devel libXft-devel libXmu-devel libXi-devel libXrender-devel libXxf86vm-devel
 BuildRequires: libdrm-devel libexpat-devel python-modules libselinux-devel libxcb-devel libSM-devel libtinfo-devel libudev-devel
 BuildRequires: libXdmcp-devel libffi-devel libelf-devel libva-devel libvdpau-devel libXvMC-devel xorg-proto-devel libxshmfence-devel
 BuildRequires: libXrandr-devel libnettle-devel libelf-devel zlib-devel libwayland-client-devel libwayland-server-devel
-BuildRequires: libwayland-egl-devel python-module-libxml2 python-module-mako python-module-argparse wayland-protocols
-BuildRequires: llvm-devel llvm-devel-static clang-devel clang-devel-static libclc-devel lld libglvnd-devel >= 0.2.0
+BuildRequires: libwayland-egl-devel python-module-libxml2 python3-module-mako python-module-argparse wayland-protocols
+BuildRequires: libclc-devel libglvnd-devel >= 0.2.0
+%ifarch %radeon_arches
+BuildRequires: llvm-devel clang-devel
+%ifarch %link_static_llvm_arches
+BuildRequires: llvm-devel-static clang-devel-static
+%endif
+%endif
+%ifarch %use_lld_arches
+BuildRequires: lld
+%endif
 
 %description
 Mesa is an OpenGL compatible 3D graphics library
@@ -125,7 +196,7 @@ DRI driver for Intel i8xx, i9xx
 %package -n xorg-dri-radeon
 Summary: ATI RADEON DRI driver
 Group: System/X11
-%ifarch %ix86 x86_64
+%ifarch %vdpau_arches
 Requires: libvdpau
 %endif
 
@@ -135,7 +206,7 @@ DRI driver for ATI R100, R200, R300, R400, R500
 %package -n xorg-dri-nouveau
 Summary: nVidia DRI driver
 Group: System/X11
-%ifarch %ix86 x86_64
+%ifarch %vdpau_arches
 Requires: libvdpau
 %endif
 
@@ -156,60 +227,71 @@ DRI drivers for various SoCs
 %patch -p1
 
 mkdir -p $(pwd)/bin
-%ifarch x86_64
+%ifarch %use_lld_arches
 ln -s %_bindir/ld.lld $(pwd)/bin/ld
 %endif
 
 %build
+%ifarch %use_lld_arches
 export PATH=$(pwd)/bin:$PATH
-%autoreconf
-%configure \
-	--enable-autotools \
-%ifarch %ix86 x86_64
-	--with-dri-drivers=r200,radeon,i915,i965,nouveau \
-	--with-gallium-drivers=swrast,r300,r600,nouveau,radeonsi,virgl \
+# without this options every lld instance will try to consume all cpus
+%add_optflags -Wl,--no-threads -Wl,--thinlto-jobs=1
 %endif
-%ifarch %arm
-	--with-dri-drivers=no \
-	--with-gallium-drivers=swrast,vc4,etnaviv,freedreno \
+%meson \
+	-Dplatforms=x11,wayland,drm \
+	-Ddri-drivers='%{?dri_drivers}' \
+	-Dgallium-drivers='%{?gallium_drivers}' \
+	-Dvulkan-drivers='%{?vulkan_drivers}' \
+%ifarch %vdpau_arches
+	-Dgallium-vdpau=true \
 %endif
-%ifarch aarch64
-	--with-dri-drivers=r200,radeon,nouveau \
-	--with-gallium-drivers=swrast,r300,r600,nouveau,virgl,vc4,etnaviv,freedreno \
+%ifarch %xvmc_arches
+	-Dgallium-xvmc=true \
 %endif
-	--enable-vdpau \
-	--enable-xvmc \
-	--enable-dri3 \
-%ifarch x86_64
-	--disable-llvm-shared-libs \
-	--enable-opencl \
-	--enable-opencl-icd \
-	--with-vulkan-drivers=intel,radeon \
+	-Ddri3=true \
+%ifarch %opencl_arches
+	-Dgallium-opencl=icd \
 %endif
-	--enable-shared-glapi \
-	%{subst_enable egl} \
-	%{subst_enable gles2} \
-	--disable-gles1 \
-	--enable-glx-tls \
-	--enable-selinux \
-	--enable-libglvnd \
-	--with-platforms=x11,wayland,drm \
-	--with-dri-driverdir=%_libdir/X11/modules/dri \
-	%{subst_enable xa}
+%ifarch %radeon_arches
+	-Dllvm=true \
+%ifarch %link_static_llvm_arches
+	-Dshared-llvm=false \
+%else
+	-Dshared-llvm=true \
+%endif
+%endif
+	-Dshared-glapi=true \
+%if_enabled egl
+	-Degl=true \
+%else
+	-Degl=false \
+%endif
+%if_enabled gles2
+	-Dgles2=true \
+%else
+	-Dgles2=false \
+%endif
+%ifarch %xa_arches
+	-Dgallium-xa=true \
+%else
+	-Dgallium-xa=false \
+%endif
+	-Dgles1=false \
+	-Dselinux=true \
+	-Dglvnd=true \
+	-Ddri-drivers-path=%_libdir/X11/modules/dri \
 #
 
-%make_build V=1
+%meson_build -v
 
 %install
 export PATH=$(pwd)/bin:$PATH
-%make DESTDIR=%buildroot install
+%meson_install
 
 rm -f %buildroot%_libdir/gallium-pipe/*.la
 
-m=%buildroot%_libdir/X11/modules/dri
-%ifarch %ix86 x86_64 aarch64
-	m="$m %buildroot%_libdir/dri"
-%endif
+shopt -s nullglob
+m="%buildroot%_libdir/X11/modules/dri %buildroot%_libdir/dri"
 for d in $m; do
 	for f in $d/*.so; do
 		[ ! -L "$f" ] || continue
@@ -222,7 +304,6 @@ for d in $m; do
 		ln -v -snf "${t##*/}" "$f"
 	done
 done
-%ifarch %ix86 x86_64 aarch64
 d=%buildroot%_libdir/vdpau
 	for f in $d/*.so.1.0.0; do
                 [ ! -L "$f" ] || continue
@@ -234,9 +315,8 @@ d=%buildroot%_libdir/vdpau
                 [ -f "$t" ] || mv "$f" "$t"
                 ln -v -snf "${t##*/}" "$f"
         done
-rm -f %buildroot%_libdir/libXvMCgallium.so.*
 d=%buildroot%_libdir
-	for f in $d/libXvMC*.so.1.0.0; do
+	for f in $d/libXvMC*.so; do
                 [ ! -L "$f" ] || continue
                 n="${f##*/}"
                 s="$(objdump -p "$f" | awk '/SONAME/ {print $2}')"
@@ -246,7 +326,22 @@ d=%buildroot%_libdir
                 [ -f "$t" ] || mv "$f" "$t"
                 ln -v -snf "${t##*/}" "$f"
         done
+
+# remove unpackaged files
+cd %buildroot
+ rm .%_includedir/GL/glcorearb.h
+%ifarch %vulkan_intel_arches
+ rm .%_includedir/vulkan/vulkan_intel.h
 %endif
+ rm .%_libdir/libGLESv2.so
+ rm .%_libdir/libGLESv2.so.2
+ rm .%_libdir/libGLESv2.so.2.0.0
+%ifarch %opencl_arches
+ rm .%_libdir/libMesaOpenCL.so
+%endif
+cd -
+
+%define _unpackaged_files_terminate_build 1
 
 %files -n libGLX-mesa
 %doc docs/relnotes/%version.html
@@ -294,7 +389,7 @@ d=%buildroot%_libdir
 %_libdir/libgbm.so
 %_pkgconfigdir/gbm.pc
 
-%if_enabled xa
+%ifarch %xa_arches
 %files -n libxatracker
 %_libdir/libxatracker.so.*
 
@@ -304,7 +399,7 @@ d=%buildroot%_libdir
 %_pkgconfigdir/xatracker.pc
 %endif
 
-%ifarch x86_64
+%ifarch %opencl_arches
 %files -n libMesaOpenCL
 %dir %_sysconfdir/OpenCL
 %dir %_sysconfdir/OpenCL/vendors
@@ -315,25 +410,29 @@ d=%buildroot%_libdir
 %files -n xorg-dri-swrast
 %_datadir/drirc.d
 %_libdir/X11/modules/dri/*swrast*_dri.so
-%_libdir/X11/modules/dri/gallium_dri.so
-%ifarch %ix86 x86_64 aarch64
-%_libdir/X11/modules/dri/mesa_dri_drivers.so
+%_libdir/X11/modules/dri/libgallium_dri.so
+%ifarch %dri_megadriver_arches
+%_libdir/X11/modules/dri/libmesa_dri_drivers.so
+%endif
+%ifarch %virgl_arches
 %_libdir/X11/modules/dri/virtio_gpu_dri.so
-%ifarch x86_64
+%endif
+%ifarch %gallium_pipe_arches
 %dir %_libdir/gallium-pipe
 %_libdir/gallium-pipe/pipe_swrast.so
 %endif
-%ifarch %ix86 x86_64 aarch64
-%_libdir/libXvMCgallium.so.*
-%_libdir/dri/gallium_drv_video.so
-%_libdir/vdpau/libvdpau_gallium.so.1
+%ifarch %gallium_megadriver_arches
+%_libdir/libXvMCgallium.so
+%_libdir/dri/libgallium_drv_video.so
 %endif
+%ifarch %vdpau_arches
+%_libdir/vdpau/libvdpau_gallium.so.1.0.0
 %endif
 
-%ifarch %ix86 x86_64
+%ifarch %intel_arches
 %files -n xorg-dri-intel
 %_libdir/X11/modules/dri/i9?5_dri.so
-%ifarch x86_64
+%ifarch %vulkan_intel_arches
 %_libdir/libvulkan_intel.so
 %dir %_datadir/vulkan
 %dir %_datadir/vulkan/icd.d
@@ -341,24 +440,28 @@ d=%buildroot%_libdir
 %endif
 %endif
 
-%ifarch %ix86 x86_64 aarch64
+%ifarch %nouveau_arches
 %files -n xorg-dri-nouveau
 %_libdir/X11/modules/dri/nouveau_*dri.so
 %_libdir/dri/nouveau_drv_video.so
 %_libdir/vdpau/libvdpau_nouveau.so*
-%_libdir/libXvMCnouveau.so.*
-%ifarch x86_64
+%_libdir/libXvMCnouveau.so
+%ifarch %gallium_pipe_arches
 %_libdir/gallium-pipe/pipe_nouveau.so
 %endif
+%endif
 
+%ifarch %radeon_arches
 %files -n xorg-dri-radeon
 %_libdir/X11/modules/dri/radeon*_dri.so
 %_libdir/X11/modules/dri/r?00_dri.so
 %_libdir/vdpau/libvdpau_r*.so*
 %_libdir/dri/r*_drv_video.so
-%_libdir/libXvMCr*.so.*
-%ifarch x86_64
+%_libdir/libXvMCr*.so
+%ifarch %gallium_pipe_arches
 %_libdir/gallium-pipe/pipe_r*.so
+%endif
+%ifarch %vulkan_radeon_arches
 %_libdir/libvulkan_radeon.so
 %dir %_datadir/vulkan
 %dir %_datadir/vulkan/icd.d
@@ -366,15 +469,30 @@ d=%buildroot%_libdir
 %endif
 %endif
 
-%ifarch %arm aarch64
+%ifarch %armsoc_arches
 %files -n xorg-dri-armsoc
 %_libdir/X11/modules/dri/etnaviv_dri.so
+%_libdir/X11/modules/dri/hx8357d_dri.so
+%_libdir/X11/modules/dri/imx-drm_dri.so
 %_libdir/X11/modules/dri/kgsl_dri.so
 %_libdir/X11/modules/dri/msm_dri.so
+%_libdir/X11/modules/dri/pl111_dri.so
 %_libdir/X11/modules/dri/vc4_dri.so
 %endif
 
 %changelog
+* Wed May 22 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.0.5-alt1
+- 19.0.5
+
+* Tue May 21 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:19.0.4-alt2
+- spec:
+  - Switched to meson build ifrastructure;
+  - Added support of ppc64le and mipsel architectures;
+  - Fixed build on architectures without any specific support (build only
+    swrast driver).
+- mips*: patched gallium to set set mips{32,64}r2 as llvm target processor.
+- amsoc: enabled kmsro driver.
+
 * Mon May 13 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.0.4-alt1
 - 19.0.4
 
