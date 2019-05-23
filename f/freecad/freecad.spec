@@ -15,7 +15,7 @@
 
 Name:    freecad
 Version: 0.18.2
-Release: alt1
+Release: alt2
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: GPL / LGPL
@@ -25,9 +25,7 @@ Url:     http://free-cad.sourceforge.net/
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source: %name-%version.tar
-Source2: freecad.desktop
-Source4: freecad.1
-Source5: freecad.sharedmimeinfo
+Source1: freecad.1
 
 %if_without bundled_libs
 Patch1: %name-remove-3rdParty.patch
@@ -36,6 +34,7 @@ Patch2: %name-build-with-external-smesh.patch
 
 # branch releases/FreeCAD-0-17
 #Patch3: upstream.patch
+Patch4: %name-desktop-ru.patch
 
 Provides:  free-cad = %version-%release
 Obsoletes: free-cad < %version-%release
@@ -144,6 +143,7 @@ rm -rf src/3rdParty
 %endif
 
 #patch3 -p1
+%patch4 -p1
 
 %build
 export PATH=$PATH:%qtbindir
@@ -161,7 +161,7 @@ export PATH=$PATH:%qtbindir
 	-DSMESH_VERSION_MAJOR=7 \
 %endif
 %if_with glvnd
-        -DOpenGL_GL_PREFERENCE=GLVND \
+    -DOpenGL_GL_PREFERENCE=GLVND \
 %endif
 	-DFREECAD_USE_EXTERNAL_PIVY=ON 
 
@@ -179,10 +179,6 @@ ln -s ../%_lib/%name/bin/FreeCADCmd %buildroot%_bindir/freecadcmd
 ln -s ../%_lib/%name/bin/FreeCAD %buildroot%_bindir/FreeCAD
 ln -s ../%_lib/%name/bin/FreeCADCmd %buildroot%_bindir/FreeCADCmd
 
-# desktop files
-install -Dm0644 %SOURCE2 %buildroot%_desktopdir/%name.desktop
-subst 's/@lib@/%_lib/' %buildroot%_desktopdir/%name.desktop
-
 # icons
 for size in 16 32 48 64
 do
@@ -192,10 +188,7 @@ install -Dm0644 %buildroot%ldir/%name.svg %buildroot%_iconsdir/hicolor/scalable/
 install -Dm0644 %buildroot%ldir/%name.xpm %buildroot%_pixmapsdir/%name.xpm
 
 # manpage
-install -Dm0644 %SOURCE4 %buildroot%_man1dir/%name.1
-
-# mimetype
-install -Dm0644 %SOURCE5 %buildroot%_xdgdatadir/mime/packages/%name.xml
+install -Dm0644 %SOURCE1 %buildroot%_man1dir/%name.1
 
 # stuff
 cp -af %buildroot%_prefix/Mod/* %buildroot%ldir/Mod
@@ -220,7 +213,7 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/*.png
 %ldir/*.svg
 %ldir/*.xpm
-%_desktopdir/*
+%_desktopdir/*.desktop
 %_iconsdir/hicolor/*/apps/%name.*
 %_man1dir/*
 %_xdgdatadir/mime/packages/*
@@ -232,6 +225,10 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.18.2-alt2
+- Use desktop file and mime data from upstream (ALT #36762).
+- Add Russian localization of desktop file as patch.
+
 * Sun May 12 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.18.2-alt1
 - New version.
 
