@@ -2,7 +2,7 @@
 
 Name: alterator-x11
 Version: 1.98.14
-Release: alt2
+Release: alt3
 
 Url: http://www.altlinux.com
 Source:%name-%version.tar
@@ -39,7 +39,7 @@ Summary:  alterator backend for x11 setup and configuration
 Group:    System/Configuration/Other
 Requires: make-initrd
 Requires: xsetup = %version-%release
-%ifarch %ix86 x86_64 aarch64
+%ifarch %ix86 x86_64
 Requires: ddcprobe
 %endif
 
@@ -96,6 +96,9 @@ export GUILE_LOAD_PATH=/usr/share/alterator/lookout/
 %_bindir/xsetup*
 
 %changelog
+* Thu May 23 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.98.14-alt3
+- Fixed previous change (aarch64 is non-x86 too).
+
 * Mon Apr 08 2019 Michael Shigorin <mike@altlinux.org> 1.98.14-alt2
 - Don't require "ddcprobe" on non-x86 arches (manowar@).
 

@@ -1,11 +1,12 @@
 Name: 	ddcprobe
 Version: 3.0
-Release: alt1.qa1
+Release: alt1.qa2
 Summary: Tool for reading EDID from DDC
 Summary(ru_RU.UTF-8): Утилита для чтения EDID из DDC
 License: LGPL
 Group: System/Configuration/Hardware
 
+ExclusiveArch: %ix86 x86_64
 Conflicts: xresprobe
 BuildRequires: libx86-devel
 Requires: libx86
@@ -21,7 +22,7 @@ ddcprobe is a tool for reading and parsing EDID from DDC.
 %define _optlevel s
 
 %build
-%make_build EXTRA_CFLAGS="$RPM_OPT_FLAGS"
+%make_build EXTRA_CFLAGS="%optflags"
 
 %install
 %makeinstall DESTDIR=%buildroot LIBDIR=%_libdir
@@ -30,6 +31,9 @@ ddcprobe is a tool for reading and parsing EDID from DDC.
 %_sbindir/*
 
 %changelog
+* Thu May 23 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.0-alt1.qa2
+- Added ExclusiveArch: %%ix86 x86_64.
+
 * Wed Apr 17 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 3.0-alt1.qa1
 - NMU: rebuilt for debuginfo.
 
