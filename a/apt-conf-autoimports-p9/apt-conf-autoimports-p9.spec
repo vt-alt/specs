@@ -1,13 +1,16 @@
-%define destbranch Sisyphus
-Name: apt-conf-autoimports-sisyphus
+%define destbranch p9
+Name: apt-conf-autoimports-%destbranch
 Summary(ru_RU.UTF-8): Настройки для использования пакетов из репозитория Autoimports/%{destbranch}
 Summary: Autoimports repository for %{destbranch}
 Version: 1.0
-Release: alt5
+Release: alt1
 
-# branches conflicts with Sisyphus
+# branches conflicts with p9
 Conflicts: apt-conf-autoimports-p7
 Conflicts: apt-conf-autoimports-t7
+Conflicts: apt-conf-autoimports-p8
+Conflicts: apt-conf-autoimports-p10
+Conflicts: apt-conf-autoimports-sisyphus
 
 Requires: apt-rsync
 
@@ -80,6 +83,12 @@ echo "APT::Cache-Limit $(( (2*64 + 32) * 1024 * 1024 ));" > %buildroot%_sysconfd
 %config %_sysconfdir/apt/apt.conf.d/50-autoimports-cache-limit.conf
 
 %changelog
+* Thu May 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.0-alt1
+- autoimports/p9
+
+* Thu May 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.0-alt6
+- added conflicts for p9
+
 * Fri Sep 16 2016 Ivan Zakharyaschev <imz@altlinux.org> 1.0-alt5
 - Requires: apt-rsync, because rsync has been made the default protocol
 
