@@ -4,7 +4,7 @@
 Name: rust
 Epoch: 1
 Version: %rust_ver
-Release: alt3
+Release: alt4
 Summary: The Rust Programming Language
 
 Group: Development/Other
@@ -39,6 +39,7 @@ Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.ta
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
 Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnueabihf.tar.gz
+Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux-gnu.tar.gz
 
 %ifarch %ix86
 %define r_src %SOURCE2
@@ -52,6 +53,9 @@ Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnuea
 %ifarch armh
 %define r_src %SOURCE5
 %define abisuff eabihf
+%endif
+%ifarch ppc64le
+%define r_src %SOURCE6
 %endif
 
 %define rustdir %_tmppath/rust
@@ -71,6 +75,9 @@ Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnuea
 %endif
 %ifarch armh
 %define r_arch armv7
+%endif
+%ifarch ppc64le
+%define r_arch powerpc64le
 %endif
 
 # Since 1.12.0: striping debuginfo damages *.so files
@@ -338,6 +345,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:1.31.1-alt4
+- Added ppc64le support.
+
 * Wed Jan 16 2019 Andrey Cherepanov <cas@altlinux.org> 1:1.31.1-alt3
 - 1.31.1
 - build with llvm7.0 (ALT #35874)
