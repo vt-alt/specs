@@ -1,6 +1,6 @@
 Name: x11spice
 Version: 1.1.0
-Release: alt5
+Release: alt6
 Summary: x11spice connects a running X server as a Spice server
 Group: Networking/Remote access
 License: GPLv3
@@ -10,6 +10,7 @@ Source0: %name-%version.tar
 Patch1: %name-alt-show-ip-address.patch
 Patch2: %name-allow-access-in-config.patch
 Patch3: %name-alt-crash.patch
+Patch4: %name-alt-desktop-l10n.patch
 
 BuildRequires(pre): rpm-build-xdg
 BuildRequires: libxcb-devel libxcbutil-devel libgtk+3-devel libspice-server-devel libpixman-devel libaudit-devel
@@ -27,6 +28,7 @@ notably that of scan.c, was inspired by the code in x11vnc.
 %patch1 -p2
 %patch2 -p2
 %patch3 -p2
+%patch4 -p2
 
 %build
 %ifarch %ix86
@@ -48,6 +50,9 @@ export CFLAGS="-Wno-error=address -Wno-pointer-to-int-cast -Wno-int-to-pointer-c
 %_man1dir/*
 
 %changelog
+* Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt6
+- Add Russian localization to desktop file.
+
 * Thu Mar 07 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.0-alt5
 - Fixed crash on shutdown.
 
