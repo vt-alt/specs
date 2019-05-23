@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt1
+Release: alt2
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -149,7 +149,7 @@ rm -rf %buildroot%_sysconfdir/init
 
 mkdir -p %buildroot%_sysconfdir/%name/lightdm.conf.d
 mkdir -p %buildroot%_datadir/%name/lightdm.conf.d
-mkdir -p %buildroot%_datadir/%name/remote-sessions
+mkdir -p %buildroot%_datadir/%name/{sessions,remote-sessions}
 mkdir -p %buildroot%_localstatedir/log/%name
 mkdir -p %buildroot%_localstatedir/cache/%name
 mkdir -p %buildroot%_localstatedir/lib/{lightdm-data,ldm}
@@ -197,6 +197,9 @@ fi
 %_sbindir/%name
 %_unitdir/%name.service
 %exclude %_man1dir/dm-tool.*
+%dir %_datadir/%name/sessions
+%dir %_datadir/%name/remote-sessions
+%dir %_datadir/%name/lightdm.conf.d
 %_man1dir/*
 %_libexecdir/*
 %attr(775,root,_ldm) %dir %_localstatedir/log/%name
@@ -249,6 +252,9 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Thu May 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.30.0-alt2
+- remove wayland session support form lightdm.conf
+
 * Fri May 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.30.0-alt1
 - 1.30.0
 
