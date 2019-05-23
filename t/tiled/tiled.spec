@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: tiled
-Version: 1.2.3
+Version: 1.2.4
 Release: alt1
 Summary: Tiled is a general purpose tile map editor
 License: GPLv2
@@ -46,6 +46,9 @@ allowing each tileset to grow or shrink as necessary later.
 %_datadir/metainfo/*.xml
 
 %changelog
+* Mon May 20 2019 Grigory Ustinov <grenka@altlinux.org> 1.2.4-alt1
+- Build new version.
+
 * Wed Mar 13 2019 Grigory Ustinov <grenka@altlinux.org> 1.2.3-alt1
 - Build new version.
 
