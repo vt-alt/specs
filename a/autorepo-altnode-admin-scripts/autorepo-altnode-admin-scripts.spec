@@ -1,5 +1,5 @@
 Name: autorepo-altnode-admin-scripts
-Version: 0.05
+Version: 0.06
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -32,6 +32,9 @@ install -m 755 autorepo-altnode-admin-delete-*node $RPM_BUILD_ROOT%_sbindir
 %_sbindir/*
 
 %changelog
+* Thu May 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.06-alt1
+- apt config for newer builder
+
 * Mon Jul 16 2018 Igor Vlasenko <viy@altlinux.ru> 0.05-alt1
 - support for new repocop for tasks
 
