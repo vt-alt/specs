@@ -1,6 +1,6 @@
 Name: procps
 Version: 3.3.15
-Release: alt2.git2f79ff3bc6a7ad
+Release: alt3.git2f79ff3bc6a7ad
 
 Summary: System and process monitoring utilities
 License: GPLv2+, LGPLv2+
@@ -112,6 +112,9 @@ make check
 %_includedir/*
 %_pkgconfigdir/*.pc
 %changelog
+* Wed May 22 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt3.git2f79ff3bc6a7ad
+- Don't link with libsystemd directly.
+
 * Mon May 13 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt2.git2f79ff3bc6a7ad
 - Enable systemd support.
 - Drop obsoleted configure option.
