@@ -37,6 +37,15 @@ BuildRequires: chrpath
 %define enable_xdvik            1
 %define enable_dvi2tty          1
 
+# luajit supports only these architectures
+%ifarch %ix86 x86_64 %arm aarch64 %mips
+%define enable_luajittex	1
+%define enable_mfluajit		1
+%else
+%define enable_luajittex	0
+%define enable_mfluajit		0
+%endif
+
 %define with_system_poppler	1
 %define with_system_dialog	1
 %define with_system_icu		1
@@ -65,7 +74,7 @@ BuildRequires: chrpath
 #-----------------------------------------------------------------------
 Name:		texlive
 Version:	%relYear
-Release:	alt2_12
+Release:	alt3_12
 Summary:	The TeX formatting system
 Group:		Publishing
 License:	http://www.tug.org/texlive/LICENSE.TL
@@ -288,8 +297,10 @@ TeXlua library
 %{_libdir}/libtexlua52.so.%{texlua_major}.*
 %{_libdir}/libtexlua53.so.%{texlua_major}
 %{_libdir}/libtexlua53.so.%{texlua_major}.*
+%if %{enable_luajittex}
 %{_libdir}/libtexluajit.so.%{texluajit_major}
 %{_libdir}/libtexluajit.so.%{texluajit_major}.*
+%endif
 
 
 #-----------------------------------------------------------------------
@@ -307,13 +318,15 @@ This package includes the TeXlua development files.
 %files		-n %{texlua_devel}
 %{_includedir}/texlua52
 %{_includedir}/texlua53
-%{_includedir}/texluajit
 %{_libdir}/libtexlua52.so
 %{_libdir}/pkgconfig/texlua52.pc
 %{_libdir}/libtexlua53.so
 %{_libdir}/pkgconfig/texlua53.pc
+%if %{enable_luajittex}
+%{_includedir}/texluajit
 %{_libdir}/libtexluajit.so
 %{_libdir}/pkgconfig/texluajit.pc
+%endif
 
 #-----------------------------------------------------------------------
 %define	texlua_static_devel	libtexlua-devel-static
@@ -330,7 +343,9 @@ This package includes the static TeXlua library.
 %files		-n %{texlua_static_devel}
 %{_libdir}/libtexlua52.a
 %{_libdir}/libtexlua53.a
+%if %{enable_luajittex}
 %{_libdir}/libtexluajit.a
+%endif
 
 #-----------------------------------------------------------------------
 %define        synctex_major           1
@@ -497,6 +512,16 @@ ln -sf ../configure .
 	--disable-linked-scripts				\
 	--with-system-libpaper					\
 	--with-system-zlib					\
+%if %{enable_luajittex}
+	--enable-luajittex					\
+%else
+	--disable-luajittex					\
+%endif
+%if %{enable_mfluajit}
+	--enable-mfluajit					\
+%else
+	--disable-mfluajit					\
+%endif
 %if %{enable_shared}
 	--enable-shared						\
 %else
@@ -703,6 +728,9 @@ rm -f %{texmfdir}/ls-R %{texmfdistdir}/ls-R %{texmfconfdir}/ls-R
 
 #-----------------------------------------------------------------------
 %changelog
+* Fri May 24 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2018-alt3_12
+- Fixed build on architectures not supported by luajit.
+
 * Tue Apr 09 2019 Igor Vlasenko <viy@altlinux.ru> 2018-alt2_12
 - fixed build with poppler 75 (closes: #35567)
 
