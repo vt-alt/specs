@@ -1,6 +1,6 @@
 Name: firewalld
-Version: 0.6.3
-Release: alt2
+Version: 0.6.4
+Release: alt1
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 License: %gpl2plus
@@ -143,6 +143,9 @@ install -pDm755 %SOURCE1 %buildroot%_initdir/%name
 %python3_sitelibdir_noarch/firewall
 
 %changelog
+* Thu May 23 2019 Mikhail Efremov <sem@altlinux.org> 0.6.4-alt1
+- Updated to 0.6.4.
+
 * Fri Apr 05 2019 Mikhail Efremov <sem@altlinux.org> 0.6.3-alt2
 - Use iptables backend by default for now (closes: #36502).
 
