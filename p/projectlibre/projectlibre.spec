@@ -1,5 +1,7 @@
+%define java_version 1.8
+
 Name:    projectlibre
-Version: 1.7.0
+Version: 1.9.1
 Release: alt1
 
 Summary: ProjectLibre - The open source replacement of Microsoft Project
@@ -11,7 +13,6 @@ Url:     https://sourceforge.net/projects/projectlibre/
 
 Source:  %name-%version.tar
 Source1: %name.watch
-Patch0: alt-%version.patch
 Patch1:  %name-1.6.2-mga-l10n-dialogs.patch
 Patch2:  %name-1.6.2-alt-fix-path-in-executable.patch
 
@@ -44,24 +45,25 @@ added key features:
 
 %prep
 %setup
-%patch -p1
 #patch2 -p1
 #patch1 -p1
+# Set Java version
+subst 's/\(source\|target\)="[0-9.]\+"/\1="%java_version"/g' `find . -name build.xml`
 # Replace hard-coded library path by default JRE path
-subst 's|/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/jre/lib/rt.jar|%_libexecdir/jvm/jre/lib/rt.jar|' openproj_contrib/openproj_*.conf
+subst 's|/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/jre/lib/rt.jar|%_libexecdir/jvm/jre/lib/rt.jar|' projectlibre_contrib/projectlibre_*.conf
 
 %build
 #Set the file encoding for source files
 export JAVA_TOOL_OPTIONS=-Dfile.encoding=cp1252
-cd openproj_build/
+cd projectlibre_build/
 ant clean
 ant
 
 %install
 export NO_BRP_CHECK_BYTECODE_VERSION=true
 mkdir -p %buildroot/%projectlibredir/lib
-install -Dm0755  openproj_build/dist/%name.jar %buildroot/%projectlibredir/
-install -Dm0755 openproj_contrib/*.jar %buildroot/%projectlibredir/lib
+install -Dm0755  projectlibre_build/dist/%name.jar %buildroot/%projectlibredir/
+install -Dm0755 projectlibre_contrib/*.jar %buildroot/%projectlibredir/lib
 
 # startscript
 cat > %name << EOF
@@ -77,18 +79,20 @@ EOF
 # Install startscript
 install -Dm0755 %name %buildroot%_bindir/%name
 
-install -Dm0644 openproj_build/resources/%name.desktop %buildroot%_desktopdir/%name.desktop
-install -Dm0644 openproj_build/resources/%name.png %buildroot%_pixmapsdir/%name.png
+install -Dm0644 projectlibre_build/resources/%name.desktop %buildroot%_desktopdir/%name.desktop
+install -Dm0644 projectlibre_build/resources/%name.png %buildroot%_pixmapsdir/%name.png
 
 %files
-%defattr(-,root,root)
+%doc projectlibre_build/license/*
 %_bindir/%name
 %projectlibredir
 %_desktopdir/*
 %_pixmapsdir/*
-%doc openproj_build/license/*
 
 %changelog
+* Fri May 24 2019 Andrey Cherepanov <cas@altlinux.org> 1.9.1-alt1
+- New version.
+
 * Tue Nov 14 2017 Anton Midyukov <antohami@altlinux.org> 1.7.0-alt1
 - new version 1.7.0
 
