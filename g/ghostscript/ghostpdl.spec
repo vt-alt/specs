@@ -1,6 +1,6 @@
 Name: ghostscript
-Version: 9.26
-Release: alt3
+Version: 9.27
+Release: alt1
 
 %define ijsver	0.35
 %global origver %version
@@ -19,10 +19,13 @@ Source: ghostpdl-%version.tar.gz
 Source1: repatch_spec.sh
 Source2: ghostscript.unused
 Source3: README.patches
-Source4: jpegxr-ref.zip
 
 ## FC patches
-Patch1: FC-9.23-100-run-dvipdf-securely.patch
+Patch1: FC-cve-2019-6116.patch
+Patch2: FC-subclassing-devices-fix-put_image-method.patch
+Patch3: FC-cve-2019-3835.patch
+Patch4: FC-cve-2019-3838.patch
+Patch5: FC-9.23-100-run-dvipdf-securely.patch
 
 ## Ubuntu patches
 Patch101: Ubuntu-2001_docdir_fix_for_debian.patch
@@ -37,6 +40,16 @@ Patch109: Ubuntu-2010_add_build_timestamp_setting.patch
 Patch110: Ubuntu-020181126-96c381c-ps2write-move-the-page-level-save-restore-wrapper.patch
 Patch111: Ubuntu-020181205-fae21f16-subclassing-devices-fix-put-image-method.patch
 Patch112: Ubuntu-CVE-2019-6116.patch
+Patch113: Ubuntu-lp1815339.patch
+Patch114: Ubuntu-lp1815339-2.patch
+Patch115: Ubuntu-CVE-2019-3835-pre1.patch
+Patch116: Ubuntu-CVE-2019-3835-pre2.patch
+Patch117: Ubuntu-CVE-2019-3835-1.patch
+Patch118: Ubuntu-CVE-2019-3835-2.patch
+Patch119: Ubuntu-CVE-2019-3838-1.patch
+Patch120: Ubuntu-CVE-2019-3838-2.patch
+Patch121: Ubuntu-CVE-2019-3839-1.patch
+Patch122: Ubuntu-CVE-2019-3839-2.patch
 
 ## ALT patches
 Patch500: ghostscript-alt-ijs-version.patch
@@ -82,14 +95,13 @@ Group: Development/C
 %package classic
 Summary: classic edition of %name
 Group: Publishing
-Requires: %name-common = %version-%release libgs = %version-%release
+Requires: %name-common = %version-%release
 Provides: %esp_name-classic = %version, %gnu_name-classic = %version, %name-minimal = %version
 Obsoletes: %gnu_name-classic, %esp_name-classic, %name-minimal
 
 %package gtk
 Summary: %name with gtk
 Group: Publishing
-Requires: %name-lib = %version, %name-common = %version-%release
 Provides: %esp_name-gtk = %version, %gnu_name-gtk = %version
 Obsoletes: %gnu_name-gtk, %esp_name-gtk
 
@@ -174,14 +186,15 @@ Common files for the %name
 
 %prep
 %setup -n ghostpdl-%version
-##mkdir jpegxr && unzip %SOURCE4 -d jpegxr
 
-# force system library usage
-##rm -rf -- libpng zlib jpeg jasper freetype
 rm -rf expat freetype icclib jasper jpeg lcms lcms2 libpng openjpeg zlib cups/libs
 
 ## FC apply patches
-%patch1 -p1
+#patch1 -p1
+##patch2 -p1
+#patch3 -p1
+#patch4 -p1
+%patch5 -p1
 
 ## Ubuntu apply patches
 %patch101 -p1
@@ -193,9 +206,19 @@ rm -rf expat freetype icclib jasper jpeg lcms lcms2 libpng openjpeg zlib cups/li
 #patch107 -p1
 #patch108 -p1
 %patch109 -p1
-%patch110 -p1
-%patch111 -p1
-%patch112 -p1
+#patch110 -p1
+#patch111 -p1
+#patch112 -p1
+#patch113 -p1
+#patch114 -p1
+#patch115 -p1
+#patch116 -p1
+#patch117 -p1
+#patch118 -p1
+#patch119 -p1
+#patch120 -p1
+#patch121 -p1
+#patch122 -p1
 
 ## ALT apply patches
 %patch500 -p1
@@ -216,11 +239,19 @@ cd ijs; %autoreconf; cd -
 /usr/share/fonts/type1/urw:\
 /usr/share/fonts:\
 %_datadir/ghostscript/conf.d \
-#
 
 cd ijs; %configure --enable-shared --disable-static; cd -
 
-%make_build
+%make_build experimental
+
+# XXX no libgpd.so in 9.27
+%if "%version" == "9.27"
+%make_build so || :
+sed 's#-o ./bin/gpdl#-shared -Wl,-soname=libgpdl.so.9 -o ./sobin/libgpdl.so.%{version}#
+s#./[^/]*obj/realmain.o ##' < obj/gpdlldt.tr > soobj/gpdlldt.tr
+%endif
+sh soobj/gpdlldt.tr
+
 %make_build so
 
 cd ijs; %make_build; cd -
@@ -241,8 +272,12 @@ make install soinstall \
 	CUPSSERVERBIN=$RPM_BUILD_ROOT`cups-config --serverbin` \
 	CUPSDATA=$RPM_BUILD_ROOT`cups-config --datadir`
 
-# replace classic ghostscript with more modern version
-mv -f -- $RPM_BUILD_ROOT%_bindir/gsc $RPM_BUILD_ROOT%_bindir/gs
+# XXX upstream soinstall is incomplete!
+cp -ap sobin/lib* %buildroot%_libdir/
+for N in sobin/g*c; do T="`basename $N`"; T="${T%%c}"; install $N %buildroot%_bindir/$T; done
+
+# XXX upstream soinstall junk
+rm %buildroot%_bindir/gsc
 
 cd ijs
     %makeinstall
@@ -274,6 +309,7 @@ cp -a examples %buildroot%_docdir/%name-%version
 %_bindir/gs
 %_bindir/gxps
 %_bindir/gpcl6
+%_bindir/gpdl
 
 %files gtk
 %_bindir/gsx
@@ -288,6 +324,7 @@ cp -a examples %buildroot%_docdir/%name-%version
 %exclude %_bindir/gsnd
 %exclude %_bindir/gxps
 %exclude %_bindir/gpcl6
+%exclude %_bindir/gpdl
 %_man1dir/*
 
 %files module-X
@@ -295,11 +332,13 @@ cp -a examples %buildroot%_docdir/%name-%version
 /etc/buildreqs/packages/ignore.d/%name-module-X
 
 %files -n libgs
-%_libdir/libgs.so.*
+%_libdir/lib*.so.*
+%exclude %_libdir/libijs*
 
 %files -n libgs-devel
-%_libdir/libgs.so
+%_libdir/lib*.so
 %_includedir/%name
+%exclude %_libdir/libijs*
 
 %files -n libijs
 %_libdir/libijs.so.*
@@ -311,6 +350,11 @@ cp -a examples %buildroot%_docdir/%name-%version
 %_includedir/ijs
 
 %changelog
+* Mon May 06 2019 Fr. Br. George <george@altlinux.ru> 9.27-alt1
+- Autobuild version bump to 9.27
+- Update patchset
+- Manually hack upstream to build libgpdl.so
+
 * Thu Apr  4 2019 Ivan Zakharyaschev <imz@altlinux.org> 9.26-alt3
 - (.spec) make Provides and Requires match (on %%name-lib = %%version)
   (Otherwise, there would be an unmet dep when rebuilt and interpreted
