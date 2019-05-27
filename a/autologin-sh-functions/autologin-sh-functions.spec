@@ -1,5 +1,5 @@
 Name: autologin-sh-functions
-Version: 0.2.4
+Version: 0.2.5
 Release: alt1
 
 Summary: helper functions for autologin setup
@@ -26,6 +26,9 @@ install -pDm644 %name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Mon May 27 2019 Andrey Cherepanov <cas@altlinux.org> 0.2.5-alt1
+- Detect default session for lightdm (ALT #36794).
+
 * Fri Mar 10 2017 Anton Midyukov <antohami@altlinux.org> 0.2.4-alt1
 - Added autologin for lxdm (Closes: 33216)
 
@@ -43,4 +46,3 @@ install -pDm644 %name %buildroot%_bindir/%name
 
 * Wed Oct 07 2015 Michael Shigorin <mike@altlinux.org> 0.1-alt1
 - initial release (based on mkimage-profiles 1.1.75)
-
