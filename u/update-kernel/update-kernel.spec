@@ -1,5 +1,5 @@
 Name: update-kernel
-Version: 0.9.12
+Version: 0.9.13
 Release: alt1
 
 Summary: Update kernel and modules
@@ -39,6 +39,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Tue May 28 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.13-alt1
+- remove-old-kernels: APT invocation (to remove installed pkgs) rewritten in
+  a more portable way. (A preparation for APT with support for disttags.)
+
 * Wed May 15 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.12-alt1
 - APT invocation (to install the modules) rewritten in a more robust way.
   (A preparation for APT with support for disttags.)
