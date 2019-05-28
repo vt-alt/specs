@@ -1,8 +1,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-xkb
-Version: 3.0
-Release: alt3
+Version: 3.1
+Release: alt1
 
 Packager: Stanislav Ievlev <inger@altlinux.org>
 
@@ -40,6 +40,12 @@ alterator module for XKB administration
 %_alterator_backend3dir/*
 
 %changelog
+* Tue May 28 2019 Paul Wolneykien <manowar@altlinux.org> 3.1-alt1
+- Backend update: Filter only the "grp:" options.
+- New static XKB rules parser: whitelist XML path check.
+- Makefile: Fixed error checking.
+- Fix/improve: Unconditionally free the XML parser on exit.
+
 * Mon Feb 18 2019 Paul Wolneykien <manowar@altlinux.org> 3.0-alt3
 - Workaround ALTBUG #35797: replace ';' with ',' in the enumerated
   data (closes: #35797).
