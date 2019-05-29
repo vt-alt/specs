@@ -1,6 +1,6 @@
 
 Name: phpipam
-Version: 1.32.003
+Version: 1.32.004
 Release: alt1
 Summary: PHP-based virtual machine control tool
 Group: Networking/WWW
@@ -26,8 +26,10 @@ BuildRequires(pre): rpm-macros-webserver-common rpm-macros-apache2
 
 
 %description
-phpipam is an open-source web IP address management application. Its goal is to provide light and simple IP address management application.
-It is ajax-based using jQuery libraries, it uses php scripts and javascript and some HTML5/CSS3 features, so some modern browser is preferred
+phpipam is an open-source web IP address management application.
+Its goal is to provide light and simple IP address management application.
+It is ajax-based using jQuery libraries, it uses php scripts and javascript
+and some HTML5/CSS3 features, so some modern browser is preferred
 to be able to display javascript quickly and correctly.
 
 Features and tools:
@@ -104,6 +106,9 @@ rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/test
 %config(noreplace) %apache2_extra_available/%name.conf
 
 %changelog
+* Wed May 29 2019 Alexey Shabalin <shaba@altlinux.org> 1.32.004-alt1
+- 1.32 rev004
+
 * Tue Mar 05 2019 Alexey Shabalin <shaba@altlinux.org> 1.32.003-alt1
 - 1.32 rev003
 - drop php5 and php7 packages
