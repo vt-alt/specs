@@ -5,8 +5,8 @@
 
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
-Version: 5.8.1
-Release: alt2
+Version: 5.8.2
+Release: alt1
 License: Apache
 Group: System/Servers
 Url: https://opennebula.org
@@ -685,6 +685,9 @@ fi
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Mon May 27 2019 Alexey Shabalin <shaba@altlinux.org> 5.8.2-alt1
+- 5.8.2
+
 * Tue Apr 09 2019 Alexey Shabalin <shaba@altlinux.org> 5.8.1-alt2
 - 5.8.1 release
 - fix provides and obsoletes
