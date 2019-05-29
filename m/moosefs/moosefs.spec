@@ -5,7 +5,7 @@
 
 Summary: MooseFS - distributed, fault tolerant file system
 Name: moosefs
-Version: 3.0.104
+Version: 3.0.105
 Release: alt1
 License: GPLv2
 Group: System/Servers
@@ -80,6 +80,7 @@ MooseFS client: mfsmount and mfstools.
 %package cli
 Summary: MooseFS CLI Utility
 Group: File tools
+BuildArch: noarch
 
 %description cli
 MooseFS CLI utilities.
@@ -87,6 +88,7 @@ MooseFS CLI utilities.
 %package cgi
 Summary: MooseFS CGI Monitor
 Group: System/Servers
+BuildArch: noarch
 
 %description cgi
 MooseFS CGI monitor.
@@ -94,6 +96,7 @@ MooseFS CGI monitor.
 %package cgiserv
 Summary: Simple CGI-capable HTTP server to run MooseFS CGI Monitor
 Group: System/Servers
+BuildArch: noarch
 Requires: %name-cgi = %EVR
 Requires: %name-common = %EVR
 
@@ -302,6 +305,9 @@ popd
 %_man8dir/mfsnetdump.8*
 
 %changelog
+* Wed May 29 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.105-alt1
+- 3.0.105
+
 * Wed May 08 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.104-alt1
 - 3.0.104
 
