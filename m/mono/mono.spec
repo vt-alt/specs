@@ -9,7 +9,7 @@
 
 Name: mono
 Version: 5.20.1.19
-Release: alt1
+Release: alt2
 Summary: Cross-platform, Open Source, .NET development framework
 
 Group: Development/Other
@@ -54,6 +54,7 @@ Patch1: %name-alt-linking1.patch
 Patch2: %name-alt-linking2.patch
 Patch3: %name-alt-monodoc-sourcesdir.patch
 Patch4: %name-alt-mcs-no-parallel-build.patch
+Patch5: %name-upstream-crash-Use-safer-invalid-free-test-12864.patch
 
 BuildRequires(pre): rpm-build-mono >= 2.0
 BuildRequires(pre): rpm-build-ubt
@@ -527,6 +528,7 @@ pushd external/xunit-binaries                          ; tar xf %SOURCE26 --stri
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %if_enabled bootstrap
 mkdir -p mcs/class/lib/monolite-linux
@@ -1137,6 +1139,9 @@ cert-sync %_sysconfdir/pki/tls/certs/ca-bundle.crt
 %_pkgconfigdir/mono-2.pc
 
 %changelog
+* Tue May 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.20.1.19-alt2
+- Rebuilt with patch from upstream pull request #12864.
+
 * Mon Apr 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.20.1.19-alt1
 - Updated to upstream version 5.20.1.19.
 
