@@ -2,7 +2,7 @@
 
 Name: octave
 Version: 4.4.1
-Release: alt3
+Release: alt4
 
 %define docdir %_defaultdocdir/%name-%version
 
@@ -184,6 +184,9 @@ mv %buildroot%_datadir/metainfo/*.xml %buildroot%_datadir/appdata
 %doc doc/interpreter/octave.html doc/liboctave/liboctave.html doc/interpreter/octave.pdf doc/liboctave/liboctave.pdf doc/refcard/refcard*.pdf
 
 %changelog
+* Thu May 30 2019 Andrey Cherepanov <cas@altlinux.org> 4.4.1-alt4
+- Add Russian localization for Comment in desktop file (ALT #36812).
+
 * Wed Feb 20 2019 Grigory Ustinov <grenka@altlinux.org> 4.4.1-alt3
 - Fixed FTBFS (Add libXcursor to BR's).
 
