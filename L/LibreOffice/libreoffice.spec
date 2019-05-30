@@ -1,6 +1,6 @@
-# 6.2.2.2
+# 6.2.4.2
 %def_without forky
-%def_with python
+%def_without python
 %def_with parallelism
 %def_without fetch
 %def_without lto
@@ -23,13 +23,13 @@
 
 Name: LibreOffice
 %define hversion 6.2
-%define urelease 2.2
+%define urelease 4.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt1.1
+Release: alt1
 Summary: LibreOffice Productivity Suite
 License: LGPL
 Group: Office
@@ -64,12 +64,14 @@ Source300:	libreoffice.unused
 ## FC patches
 Patch1: FC-0001-don-t-suppress-crashes.patch
 Patch2: FC-0001-Resolves-rhbz-1432468-disable-opencl-by-default.patch
-Patch3: FC-0001-Upgrade-external-boost-to-Boost-1.69.0.patch
-Patch4: FC-0001-menu-of-currency-combobox-in-format-cells-is-too-nar.patch
-Patch5: FC-0001-rhbz-1687589-KDE4-gpoll_wrapper-can-be-called-with-S.patch
-Patch6: FC-0001-rhbz-1690645-null-deref-of-pEntry-when-GetCurEntry-r.patch
-Patch7: FC-0001-rhbz-1690732-basic-font-variation-support.patch
-Patch8: FC-0001-disable-libe-book-support.patch
+Patch3: FC-0001-rhbz-1690732-basic-font-variation-support.patch
+Patch4: FC-0001-rhbz-1699347-__glibcxx_requires_subscript-enabled-in.patch
+Patch5: FC-0001-no-home-as-templates.patch
+Patch6: FC-0001-Resolves-rhbz-1702810-Prepare-for-upcoming-libebook-.patch
+Patch7: FC-0001-Resolves-rhbz-1712823-prefer-help-strings-to-a11y-st.patch
+Patch8: FC-0001-Resolves-tdf-125099-round-duration-results-in-interp.patch
+Patch9: FC-0001-Resolves-rhbz-1713827-protect-against-null-ViewShell.patch
+Patch10: FC-0001-disable-libe-book-support.patch
 
 ## Long-term FC patches
 
@@ -257,12 +259,14 @@ echo Direct build
 ## FC apply patches
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
+#patch3 -p1
+#patch4 -p1
+#patch5 -p1
+#patch6 -p1
 %patch7 -p1
-#patch8 -p1
+%patch8 -p1
+%patch9 -p1
+#patch10 -p1
 
 ## Long-term FC patches applying
 
@@ -459,6 +463,7 @@ unset RPM_PYTHON
 # Install wrappers
 for n in lo*.sh; do install -m755 -D $n %buildroot%_bindir/${n%%.sh}; done
 install -m755 -D libreoffice%hversion.sh %buildroot%_bindir/loffice
+ln -s loffice %buildroot%_bindir/soffice
 install -m755 -D libreoffice%hversion.sh %buildroot%_bindir/libreoffice
 install -m755 libreoffice%hversion.sh %buildroot%_bindir/libreoffice%hversion
 
@@ -561,6 +566,9 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Mon May 27 2019 Fr. Br. George <george@altlinux.ru> 6.2.4.2-alt1
+- Verion up (Closes: #36635, #35896)
+
 * Mon Apr 08 2019 Fr. Br. George <george@altlinux.ru> 6.2.2.2-alt1.1
 - Build with internal python
 
