@@ -30,7 +30,7 @@ Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet
 Name: hplip
 Epoch: 1
 Version: 3.19.5
-Release: alt1
+Release: alt2
 %if_without ernie
 License: GPLv2+ and MIT and BSD
 %else
@@ -136,7 +136,7 @@ Source202: hpijs.1
 Patch1: hplip-3.12.9-alt-urlhandler.patch
 # dead patch 2
 Patch2: hplip-3.9.12-alt-fix-udev-rules-ppdev.patch
-Patch4: hplip-3.9.12-alt-hplip-desktop.patch
+Patch4: hplip-alt-hplip-desktop.patch
 Patch5: hplip-3.17.11-alt-link-libhpipp.patch
 Patch6: hplip-3.15.9-alt-systemd.patch
 Patch7: hplip-3.16.7-alt-link-python2.patch
@@ -483,7 +483,7 @@ find . -name *.ppd.gz -exec gunzip '{}' ';'
 #patch2 -p2
 
 # # Fix desktop file.
-%patch4 -p1 -b .desktop
+%patch4 -p2 -b .desktop
 %patch5 -p1
 %patch6 -p1
 %if_with python3
@@ -886,6 +886,9 @@ mkdir -p %{buildroot}%{_datadir}/hplip/prnt/plugins
 mkdir -p %{buildroot}/lib
 mv %{buildroot}/usr/lib/udev %{buildroot}/lib/
 
+# remove hp-uiscan.desktop
+rm -f %buildroot%_desktopdir/hp-uiscan.desktop
+
 %pre
 # TODO: drop it somewhere after p7 release
 # no more services
@@ -1094,8 +1097,7 @@ fi
 # gui data
 %{_datadir}/appdata/hplip.appdata.xml
 # HPLIP menu files
-%_datadir/applications/%name.desktop
-%_datadir/applications/hp-uiscan.desktop
+%_desktopdir/%name.desktop
 #_niconsdir/hplip.png
 #_liconsdir/hplip.png
 #_miconsdir/hplip.png
@@ -1170,6 +1172,10 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.5-alt2
+- Add Russian localization to desktop file.
+- Remove hp-uiscan.desktop.
+
 * Tue May 14 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.5-alt1
 - New version.
 - Added support for new printers:
