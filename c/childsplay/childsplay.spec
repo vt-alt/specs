@@ -2,7 +2,7 @@
 %define alphabet_dir %_datadir/%name/alphabet-sounds
 
 Name: childsplay
-Version: 3.3
+Version: 3.4
 Release: alt1
 
 License: GPLv3+
@@ -251,8 +251,8 @@ cp -a locale/* %buildroot%_datadir/locale/
 
 mkdir -p %buildroot%_desktopdir/
 install -m644 %SOURCE1 %buildroot%_desktopdir/
-#mkdir -p %buildroot%_datadir/icons/hicolor/64x64/apps/
-#install -m644 lib/SPData/menu/default/logo_cp_64x64.png %buildroot%_datadir/icons/hicolor/64x64/apps/%name.png
+mkdir -p %buildroot%_datadir/icons/hicolor/64x64/apps/
+install -m644 lib/SPData/themes/childsplay/logo_cp_64x64.png %buildroot%_datadir/icons/hicolor/64x64/apps/%name.png
 
 %find_lang %name
 
@@ -265,7 +265,7 @@ install -m644 %SOURCE1 %buildroot%_desktopdir/
 %_datadir/%name/lib/
 %_datadir/%name/SPWidgets/
 %_desktopdir/%name.desktop
-#%_datadir/icons/hicolor/*/apps/%name.png
+%_datadir/icons/hicolor/*/apps/%name.png
 
 %files alphabet_sounds_bg
 %alphabet_dir/bg/
@@ -332,6 +332,9 @@ install -m644 %SOURCE1 %buildroot%_desktopdir/
 
 
 %changelog
+* Thu May 23 2019 Leontiy Volodin <lvol@altlinux.org> 3.4-alt1
+- new version 3.4
+
 * Sat Jul 07 2018 Vitaly Lipatov <lav@altlinux.ru> 3.3-alt1
 - new version 3.3 (with rpmrb script)
 
