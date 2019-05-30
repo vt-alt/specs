@@ -1,36 +1,40 @@
-%def_without instagib
-%define origname teeworlds
-
 %define _unpackaged_files_terminate_build 1 
+
 %define _pseudouser_user     _teeworlds
 %define _pseudouser_group    _teeworlds
 %define _pseudouser_home     %_localstatedir/teeworlds
 
-Name: teeworlds
-Version: 0.7.2
-Release: alt1
+%def_without instagib
 
+Name: teeworlds
+Version: 0.7.3.1
+Release: alt1
 Summary: Cute little buggers with guns
 License: distributable
 Group: Games/Arcade
+Url: https://www.teeworlds.com
 
-Url: http://www.teeworlds.com/
+ExclusiveArch: %ix86 x86_64
 
 # https://github.com/teeworlds/teeworlds.git
 Source: %name-%version.tar
-Source1: altlinux.tar
 
-Patch:%name-alt-build.patch
-Patch1:%name-alt-debuginfo.patch
+# git submodules
+Source1: %name-languages-%version.tar
+Source2: %name-maps-%version.tar
+
+# additional files from ALT
+Source3: altlinux.tar
+
+BuildRequires: gcc-c++ cmake
+BuildRequires: python-modules
+BuildRequires: libGL-devel libGLU-devel libSDL2-devel libX11-devel zlib-devel
+BuildRequires: libalsa-devel libfreetype-devel libwavpack-devel libpnglite-devel libpng-devel
+BuildRequires: libssl-devel
 
 Requires: %name-gamedata = %EVR
 
 Obsoletes: teeworlds-alt < %EVR
-
-ExclusiveArch: %ix86 x86_64
-
-BuildRequires: gcc-c++ libGL-devel libGLU-devel libSDL2-devel libX11-devel python-modules zlib-devel
-BuildRequires: bam libalsa-devel libfreetype-devel libwavpack-devel libpnglite-devel libpng-devel
 
 %description
 A retro multiplayer shooter.
@@ -74,32 +78,37 @@ Requires: %name-server = %EVR
 %endif
 
 %prep
-%setup -a1
+%setup -a3
+
+pushd datasrc/languages ; tar xf %SOURCE1 --strip-components=1 ; popd
+pushd datasrc/maps      ; tar xf %SOURCE2 --strip-components=1 ; popd
+
 rm -rf src/engine/external/{wavpack,zlib,pnglite}
-%patch -p1 
-%patch1 -p1
 
 %build
-bam target=release conf=release builddir=build
+%cmake
+%cmake_build VERBOSE=1
 
 %install
+%cmakeinstall_std
+
+install -Dpm0644 -t %buildroot%_datadir/metainfo other/%{name}.appdata.xml
+install -Dpm0644 -t %buildroot%_desktopdir other/%{name}.desktop
+
 mkdir -p %buildroot%_unitdir/
 install -m 0644 altlinux/teeworlds-server@.service %buildroot%_unitdir/teeworlds-server@.service
 
-install -d %buildroot{%_bindir,%_datadir/teeworlds}
+install -pm755 altlinux/teeworlds_srv_wrapper %buildroot%_bindir
 
-install -pm755 build//teeworlds_srv build/teeworlds altlinux/teeworlds_srv_wrapper %buildroot%_bindir
-cp -a build/data %buildroot%_datadir/teeworlds/
-
-install -pDm644 altlinux/teeworlds.desktop %buildroot%_desktopdir/teeworlds.desktop
 install -pDm644 altlinux/teeworlds.png %buildroot%_liconsdir/teeworlds.png
 install -pDm644 altlinux/teeworlds16.png %buildroot%_miconsdir/teeworlds.png
 install -pDm644 altlinux/teeworlds32.png %buildroot%_niconsdir/teeworlds.png
 
-install -d %buildroot%_var/run/%origname
-install -d %buildroot%_var/log/%origname
+install -d %buildroot%_var/run/%name
+install -d %buildroot%_var/log/%name
+install -d %buildroot%_localstatedir/%name
 
-install -pDm644 altlinux/teeworlds.logrotate %buildroot%_sysconfdir/logrotate.d/%origname
+install -pDm644 altlinux/teeworlds.logrotate %buildroot%_sysconfdir/logrotate.d/%name
 
 install -pDm755 altlinux/teeworlds-dm.init %buildroot%_initdir/teeworlds-dm
 install -pDm755 altlinux/teeworlds-tdm.init %buildroot%_initdir/teeworlds-tdm
@@ -121,14 +130,14 @@ install -pDm644 altlinux/teeworlds-itdm.sysconfig %buildroot%_sysconfdir/sysconf
 install -pDm644 altlinux/teeworlds-ictf.sysconfig %buildroot%_sysconfdir/sysconfig/teeworlds-ictf
 %endif
 
-install -pDm644 altlinux/server-dm.cfg %buildroot%_sysconfdir/%origname/server-dm.cfg
-install -pDm644 altlinux/server-tdm.cfg %buildroot%_sysconfdir/%origname/server-tdm.cfg
-install -pDm644 altlinux/server-ctf.cfg %buildroot%_sysconfdir/%origname/server-ctf.cfg
+install -pDm644 altlinux/server-dm.cfg %buildroot%_sysconfdir/%name/server-dm.cfg
+install -pDm644 altlinux/server-tdm.cfg %buildroot%_sysconfdir/%name/server-tdm.cfg
+install -pDm644 altlinux/server-ctf.cfg %buildroot%_sysconfdir/%name/server-ctf.cfg
 
 %if_with instagib
-install -pDm644 altlinux/server-idm.cfg %buildroot%_sysconfdir/%origname/server-idm.cfg
-install -pDm644 altlinux/server-itdm.cfg %buildroot%_sysconfdir/%origname/server-itdm.cfg
-install -pDm644 altlinux/server-ictf.cfg %buildroot%_sysconfdir/%origname/server-ictf.cfg
+install -pDm644 altlinux/server-idm.cfg %buildroot%_sysconfdir/%name/server-idm.cfg
+install -pDm644 altlinux/server-itdm.cfg %buildroot%_sysconfdir/%name/server-itdm.cfg
+install -pDm644 altlinux/server-ictf.cfg %buildroot%_sysconfdir/%name/server-ictf.cfg
 %endif
 
 %pre server
@@ -166,27 +175,29 @@ install -pDm644 altlinux/server-ictf.cfg %buildroot%_sysconfdir/%origname/server
 %_miconsdir/*
 %_niconsdir/*
 %_liconsdir/*
+%_datadir/metainfo/%{name}.appdata.xml
 
 %files server
 %_unitdir/teeworlds-server@.service
 %_bindir/teeworlds_srv*
-%_initdir/%origname-dm
-%_initdir/%origname-tdm
-%_initdir/%origname-ctf
-%config(noreplace) %_sysconfdir/sysconfig/%origname-dm
-%config(noreplace) %_sysconfdir/sysconfig/%origname-tdm
-%config(noreplace) %_sysconfdir/sysconfig/%origname-ctf
-%config(noreplace) %_sysconfdir/%origname/server-dm.cfg
-%config(noreplace) %_sysconfdir/%origname/server-tdm.cfg
-%config(noreplace) %_sysconfdir/%origname/server-ctf.cfg
-%dir %_sysconfdir/%origname
-%config(noreplace) %_sysconfdir/logrotate.d/%origname
-%dir %attr(0770,root,%_pseudouser_group) %_var/run/%origname
-%dir %attr(0770,root,%_pseudouser_group) %_var/log/%origname
+%_initdir/%name-dm
+%_initdir/%name-tdm
+%_initdir/%name-ctf
+%config(noreplace) %_sysconfdir/sysconfig/%name-dm
+%config(noreplace) %_sysconfdir/sysconfig/%name-tdm
+%config(noreplace) %_sysconfdir/sysconfig/%name-ctf
+%config(noreplace) %_sysconfdir/%name/server-dm.cfg
+%config(noreplace) %_sysconfdir/%name/server-tdm.cfg
+%config(noreplace) %_sysconfdir/%name/server-ctf.cfg
+%dir %_sysconfdir/%name
+%config(noreplace) %_sysconfdir/logrotate.d/%name
+%dir %attr(0770,root,%_pseudouser_group) %_var/run/%name
+%dir %attr(0770,root,%_pseudouser_group) %_var/log/%name
+%dir %attr(0700,%_pseudouser_user,%_pseudouser_group) %_localstatedir/%name
 
 %if_with instagib
 %files server-instagib
-%config(noreplace) %_sysconfdir/%origname/server-i*
+%config(noreplace) %_sysconfdir/%name/server-i*
 %config(noreplace) %_sysconfdir/sysconfig/teeworlds-i*
 %_initdir/teeworlds-i*
 %endif
@@ -195,6 +206,9 @@ install -pDm644 altlinux/server-ictf.cfg %buildroot%_sysconfdir/%origname/server
 %_datadir/teeworlds
 
 %changelog
+* Fri May 24 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.3.1-alt1
+- Updated to upstream version 0.7.3.1.
+
 * Tue Feb 12 2019 Slava Aseev <ptrnine@altlinux.org> 0.7.2-alt1
 - Updated to upstream version 0.7.2
 - Switch on debug info
