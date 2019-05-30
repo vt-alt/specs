@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt1.1
+Release: alt2
 
 Url: http://en.altlinux.org/starterkits
 
@@ -249,6 +249,7 @@ echo $lang > lang
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
+shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
 
 %ifarch %ix86 x86_64
 %preun bootloader
@@ -270,9 +271,6 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 #bootsplash
 %post bootsplash
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
-[ -f /etc/sysconfig/grub2 ] && \
-      subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
-             /etc/sysconfig/grub2 ||:
 
 %files alterator
 %config %_altdir/*.rcc
@@ -306,6 +304,9 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_desktopdir/indexhtml.desktop
 
 %changelog
+* Mon May 27 2019 Anton Midyukov <antohami@altlinux.org> p9-alt2
+- setup GRUB_WALLPAPER when installing bootloader
+
 * Fri May 17 2019 Anton Midyukov <antohami@altlinux.org> p9-alt1.1
 - build bootloader and bootsplash for all ARCH
 
