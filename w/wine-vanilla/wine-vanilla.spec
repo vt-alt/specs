@@ -1,9 +1,9 @@
 %define gecko_version 2.47
-%define mono_version 4.8.1
+%define mono_version 4.8.3
 
 Name: wine-vanilla
-Version: 4.6
-Release: alt2
+Version: 4.9
+Release: alt1
 
 Summary: Wine - environment for running Windows 16/32/64 bit applications
 
@@ -27,6 +27,10 @@ AutoReq: yes, noperl
 	%def_with build64
 %else
     %def_without build64
+    # skip -fPIC checking (-fnoPIC need in new wine to skip DECLSPEC_HOTPATCH)
+    %add_verify_elf_skiplist %_libdir/wine/*.so
+    # TODO: use -fPIC for libwine.so.1
+    %add_verify_elf_skiplist %_libdir/*.so.*
 %endif
 %else
    %def_without build64
@@ -37,6 +41,8 @@ BuildRequires: clang >= 5.0
 %else
 BuildRequires: gcc
 %endif
+
+
 
 # General dependencies
 BuildRequires: rpm-build-intro >= 1.0
@@ -231,6 +237,7 @@ export CC=clang
 	--enable-win64 \
 %endif
 	--disable-tests \
+        --without-mingw \
 	--without-gstreamer
 
 %__make depend
@@ -421,6 +428,13 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %exclude %_libdir/wine/libwinecrt0.a
 
 %changelog
+* Mon May 27 2019 Vitaly Lipatov <lav@altlinux.ru> 4.9-alt1
+- new version 4.9
+- strict require wine-mono-4.8.3
+
+* Mon May 20 2019 Vitaly Lipatov <lav@altlinux.ru> 4.8-alt1
+- new version 4.8
+
 * Fri Apr 19 2019 Vitaly Lipatov <lav@altlinux.ru> 4.6-alt2
 - strict require wine-mono-4.8.1
 

@@ -1,7 +1,7 @@
 %def_enable static
 %define gecko_version 2.47
-%define mono_version 4.8.1
-%define major 4.6
+%define mono_version 4.8.3
+%define major 4.9
 
 Name: wine
 Version: %major.1
@@ -37,6 +37,10 @@ AutoReq: yes, noperl
 	%def_with build64
 %else
     %def_without build64
+    # skip -fPIC checking (-fnoPIC need in new wine to skip DECLSPEC_HOTPATCH)
+    %add_verify_elf_skiplist %_libdir/wine/*.so
+    # TODO: use -fPIC for libwine.so.1
+    %add_verify_elf_skiplist %_libdir/*.so.*
 %endif
 %else
    %def_without build64
@@ -471,6 +475,13 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %endif
 
 %changelog
+* Wed May 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.9.1-alt1
+- new version 4.9.1 (with rpmrb script)
+- strict require wine-mono-4.8.3
+
+* Wed May 22 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.8.1-alt1
+- new version 4.8.1 (with rpmrb script)
+
 * Fri Apr 19 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.6.1-alt1
 - new version 4.6.1 (with rpmrb script)
 - strict require wine-mono-4.8.1
