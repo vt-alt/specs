@@ -17,8 +17,8 @@
 %endif
 
 Name: NetworkManager-applet-gtk
-Version: 1.8.20
-Release: alt2%git_date
+Version: 1.8.22
+Release: alt1%git_date
 License: %gpl2plus
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
@@ -29,7 +29,7 @@ Patch: nm-applet-%version-%release.patch
 
 BuildRequires(pre): rpm-build-licenses
 
-BuildPreReq: libdbus-devel libdbus-glib libgtk+3-devel intltool libtool libpolkit1-devel
+BuildPreReq: libdbus-devel libdbus-glib libgtk+3-devel libtool libpolkit1-devel
 
 BuildRequires: libwireless-devel
 BuildRequires: libnotify-devel
@@ -169,9 +169,12 @@ This package contains development documentation for libnma-devel-doc.
 %prep
 %setup -n nm-applet-%version
 %patch -p1
-
 %build
+
 %autoreconf
+# Use GETTEXT_PACKAGE as PACKAGE:
+# these variables are not the same and gettext doesn't use GETTEXT_PACKAGE at all.
+sed -i 's/^PACKAGE = @PACKAGE@/PACKAGE = @GETTEXT_PACKAGE@/' po/Makefile.in.in
 %configure \
 	--disable-static \
 	--libexecdir=%_libexecdir/NetworkManager \
@@ -250,6 +253,11 @@ make check
 %doc %_datadir/gtk-doc/html/libnma
 
 %changelog
+* Wed May 29 2019 Mikhail Efremov <sem@altlinux.org> 1.8.22-alt1
+- Fix gettext domain.
+- Drop intltool from BR.
+- Updated to 1.8.22.
+
 * Wed Feb 20 2019 Mikhail Efremov <sem@altlinux.org> 1.8.20-alt2
 - Disable silent rules.
 - Patch from upstream:
