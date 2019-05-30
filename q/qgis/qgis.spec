@@ -4,7 +4,7 @@
 
 Name:    qgis
 Version: 2.18.28
-Release: alt1
+Release: alt2
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -330,6 +330,9 @@ echo "%%lang(zh) /usr/share/qgis/i18n/qgis_zh-Hans.qm" >> %name.lang
 %_libexecdir/%name
 
 %changelog
+* Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 2.18.28-alt2
+- Fix Russian localization of desktop files, fix category for qbrowser.desktop.
+
 * Fri Mar 29 2019 Andrey Cherepanov <cas@altlinux.org> 2.18.28-alt1
 - New version.
 - Build with grass 7.6.1.
