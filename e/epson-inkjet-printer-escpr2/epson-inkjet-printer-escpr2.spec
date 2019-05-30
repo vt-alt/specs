@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr2
-%define ver     1.0.33
+%define ver     1.0.34
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -79,6 +79,12 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Thu May 30 2019 Andrey Cherepanov <cas@altlinux.org> 1.0.34-alt1
+- New version.
+- Supported new models:
+  + Epson ST-M1000 Series
+  + Epson ST-M3000 Series
+
 * Tue May 14 2019 Andrey Cherepanov <cas@altlinux.org> 1.0.33-alt1
 - New version.
 - Supported new models:
