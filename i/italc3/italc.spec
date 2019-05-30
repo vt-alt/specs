@@ -33,7 +33,7 @@
 
 Name: italc3
 Version: 3.0.3
-Release: alt1
+Release: alt2
 
 Summary: Didactical software for teachers etc
 Summary(de_DE.UTF-8): Didaktische Software fuer Lehrer usw
@@ -47,11 +47,8 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 Source0: %name-%version.tar
 Source1: po-%version.tar
 Source10: iTALC.conf
-Source11: Italc_logo.png
 Source20: ica-launcher.sh
 Source30: italc-client-autostart.desktop
-Source31: italc-client.desktop
-Source32: italc-management-console.desktop
 Source33: italc-master.desktop
 
 Patch12: italc3-additional-de-support.patch
@@ -163,7 +160,7 @@ Dieses Paket beinhaltet die Software, die auf iTALC-Clients benoetigt wird.
 Weitere Details ueber die Installation und Einrichtung von iTALC in Ihrem
 Netzwerk finden Sie in /usr/share/italc/doc/INSTALL.
 
-%description -l ru_RU.UTF-8
+%description client -l ru_RU.UTF-8
 Этот пакет содержит программное обеспечение, необходимое для организации
 iTALC-клиента.
 
@@ -198,7 +195,7 @@ zuzugreifen.
 Weitere Details ueber die Installation und Einrichtung von iTALC in Ihrem
 Netzwerk finden Sie in /usr/share/italc/doc/INSTALL.
 
-%description -l ru_RU.UTF-8
+%description master -l ru_RU.UTF-8
 Этот пакет содержит программное обеспечение, необходимое для организации
 мастер-доступа к iTALC-клиентам.
 
@@ -254,12 +251,9 @@ mv %buildroot%_datadir/italc/JavaViewer %buildroot%docdir/
 
 # Install desktop file
 install -Dm644 %SOURCE30 %buildroot%_sysconfdir/xdg/autostart/italc-client-autostart.desktop
-install -Dm644 %SOURCE31 %buildroot%_desktopdir/italc-client.desktop
-install -Dm644 %SOURCE32 %buildroot%_desktopdir/italc-management-console.desktop
-install -Dm644 %SOURCE33 %buildroot%_desktopdir/italc-master.desktop
+install -Dm644 %SOURCE33 %buildroot%_desktopdir/italc.desktop
 
 # Install icons
-install -Dm644 %SOURCE11 %buildroot%_iconsdir/hicolor/256x256/apps/italc.png
 for size in 16 22 32 64 128; do
     install -Dm644 lib/resources/icon${size}.png %buildroot%_iconsdir/hicolor/${size}x${size}/apps/italc.png
 done
@@ -326,9 +320,15 @@ cp imc/imc.1 ica/ica.1 ima/italc.1 %buildroot%_man1dir
 %files master
 %_bindir/italc
 %_man1dir/italc.1.*
-%_desktopdir/*.desktop
+%_desktopdir/italc.desktop
 %_iconsdir/hicolor/*x*/apps/italc.png
 
 %changelog
+* Mon May 27 2019 Andrey Cherepanov <cas@altlinux.org> 3.0.3-alt2
+- Complete Russian localization of desktop files.
+- Fix Russian package descriptions.
+- Remove deprecated desktop files.
+- Fix autostart desktop file.
+
 * Tue Sep 25 2018 Andrey Cherepanov <cas@altlinux.org> 3.0.3-alt1
 - Initial build in Sisyphus (based on italc2 spec file).
