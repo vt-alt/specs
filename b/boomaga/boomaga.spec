@@ -1,5 +1,5 @@
 Name: boomaga
-Version: 1.3.0
+Version: 3.0.0
 Release: alt1
 Group: System/Configuration/Printing
 License: GPLv2 and LGPLv2+
@@ -73,10 +73,10 @@ lpadmin -x "Boomaga" || :
 %files -f %name.lang
 %dir %_datadir/%name
 %dir %_datadir/%name/scripts
+%dir %_datadir/%name/translations
 %_bindir/%name
 %attr(700,root,root) %_prefix/lib/cups/backend/%name
 %dir %_cachedir/%name
-%_libdir/%name/
 %_datadir/dbus-1/services/org.%name.service
 %_man1dir/%name.1.xz
 %_datadir/ppd/%name/
@@ -84,8 +84,12 @@ lpadmin -x "Boomaga" || :
 %_desktopdir/boomaga.desktop
 %_iconsdir/hicolor/*/apps/boomaga.png
 %_datadir/mime/packages/boomaga.xml
+%_datadir/%name/translations/*.qm
 
 %changelog
+* Mon May 20 2019 Oleg Solovyov <mcpain@altlinux.org> 3.0.0-alt1
+- version 3.0.0 (Closes ALT#36748)
+
 * Tue May 29 2018 Oleg Solovyov <mcpain@altlinux.org> 1.3.0-alt1
 - Initial build for ALT
 
