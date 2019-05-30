@@ -3,7 +3,7 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.7
+Version: 3.6.8
 Release: alt1
 
 Summary: A TLS protocol implementation
@@ -14,7 +14,6 @@ Url: http://gnutls.org/
 # ftp://ftp.gnutls.org/pub/gnutls/gnutls-%version.tar.bz2
 Source: gnutls-%version.tar
 
-Patch2: Fix-build-cipher-openssl-compat-test.patch
 Patch3: Fix-privkey-verify-broken-test.patch
 Patch4: tests-Use-IPv4-only-in-s_server.patch
 Patch6: gnulib-E2K-fix-for-lcc-1.23.patch
@@ -206,7 +205,6 @@ This package contains the GnuTLS API Reference Manual.
 
 %prep
 %setup -n gnutls-%version
-%patch2 -p2
 %patch3 -p2
 # Make sure the gnulib files we'd like to patch are identical:
 cmp {src/gl,gl}/intprops.h
@@ -314,13 +312,17 @@ make -k check
 
 %if_enabled guile
 %files -n libgnutls-guile
-%_libdir/guile/*/guile*.so*
+%_libdir/guile/*/extensions/guile*.so*
 %_libdir/guile/*/site-ccache/*
 %_datadir/guile/site/*/*
-%exclude %_libdir/guile/*/*.la
+%exclude %_libdir/guile/*/extensions/*.la
 %endif
 
 %changelog
+* Tue May 28 2019 Mikhail Efremov <sem@altlinux.org> 3.6.8-alt1
+- Drop obsoleted patch.
+- Updated to 3.6.8.
+
 * Thu Mar 28 2019 Mikhail Efremov <sem@altlinux.org> 3.6.7-alt1
 - Updated to 3.6.7 (fixes: CVE-2019-3836, CVE-2019-3829).
 - Don't make check in parallel mode.
