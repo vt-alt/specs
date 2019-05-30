@@ -1,6 +1,6 @@
 Name: altlinux-repos
 Version: 0.9
-Release: alt1
+Release: alt2
 
 Summary: A set of ALT repos desktop files
 License: GPL
@@ -27,6 +27,9 @@ cp -a mirrors repositories %buildroot%_sysconfdir/apt/
 %_sysconfdir/apt/repositories
 
 %changelog
+* Mon May 27 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.9-alt2
+- arei@: added armh, mipsel and riscv64 ports information.
+
 * Tue May 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.9-alt1
 - Added p9 branch.
 

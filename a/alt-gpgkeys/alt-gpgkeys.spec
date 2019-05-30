@@ -1,5 +1,5 @@
 Name: alt-gpgkeys
-Version: 0.7.159
+Version: 0.7.160
 Release: alt1
 
 Summary: ALT GnuPG keys
@@ -61,6 +61,11 @@ install -pm755 alt-gpgkey-check alt-gpgkey-strip \
 %_bindir/*
 
 %changelog
+* Mon May 27 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.160-alt1
+- Added keys:
+  + alt-sisyphus-ports@ (CBE14E8F);
+  + alt-p9-ports@ (A8F77FE6).
+
 * Thu May 16 2019 Dmitry V. Levin <ldv@altlinux.org> 0.7.159-alt1
 - Added key: alt-sisyphus@ (DA2773BB).
 
