@@ -4,7 +4,7 @@
 
 Name: %base_name-%distro
 Version: 9.0
-Release: alt2
+Release: alt3
 
 Summary: A set of apt configuration files for %distribution %Distro
 License: GPL-2.0-or-later
@@ -48,6 +48,9 @@ fi
 %config(noreplace) %_sysconfdir/apt
 
 %changelog
+* Mon May 27 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 9.0-alt3
+- Added ports support (thanks to arei@ for help; closes: #36785).
+
 * Thu May 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 9.0-alt2
 - Added [p9] and [sisyphus] keys to vendor.list.
 
