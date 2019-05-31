@@ -2,7 +2,7 @@
 
 Name: libdispatch-objc2
 Version: 1.2
-Release: alt4.git20140226
+Release: alt5.git20140226
 Summary: Linux port of Apple's open-source concurrency library
 License: Apache License v2
 Group: System/Libraries
@@ -76,6 +76,9 @@ mv %buildroot%_libexecdir/*.so* %buildroot%_libdir/
 %_man3dir/*
 
 %changelog
+* Fri May 31 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.2-alt5.git20140226
+- Fixed build on 64-bit ppc architectures.
+
 * Tue Jan 09 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2-alt4.git20140226
 - Removed unsupported compiler flags.
 
