@@ -2,8 +2,8 @@
 %def_with emacs
 
 Name: gnuplot
-Version: %ver_major.6
-Release: alt2
+Version: 5.2.7
+Release: alt1
 Epoch: 1
 
 Summary: A program for plotting mathematical expressions and data
@@ -265,6 +265,9 @@ rm -f demo/html/Makefile*
 %doc demo
 
 %changelog
+* Thu May 30 2019 Grigory Ustinov <grenka@altlinux.org> 1:5.2.7-alt1
+- Build new version.
+
 * Wed May 08 2019 Michael Shigorin <mike@altlinux.org> 1:5.2.6-alt2
 - fixed build with lcc on e2k
 - introduced emacs knob (on by default)
