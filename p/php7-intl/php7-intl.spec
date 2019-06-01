@@ -42,6 +42,10 @@ phpize
 
 BUILD_HAVE=`echo %php7_extension | tr '[:lower:]-' '[:upper:]_'`
 %add_optflags -fPIC -L%_libdir
+%ifarch %e2k
+# lcc-1.23.12: char16_t is undefined otherwise; see also mcst#4060
+%add_optflags -std=gnu++11
+%endif
 export LDFLAGS=-lphp-%_php7_version
 %configure \
 	--with-php-config=%_bindir/php-config \
@@ -67,6 +71,9 @@ install -D -m 644 %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Sun May 12 2019 Michael Shigorin <mike@altlinux.org> 7.1.8-alt1.1
+- Fixed build with lcc 1.23 on e2k
 
 * Tue Jun 13 2017 Nikolay A. Fetisov <naf@altlinux.org> 7.1.6-alt1.S1
 - Initial build for ALT Linux Sisyphus

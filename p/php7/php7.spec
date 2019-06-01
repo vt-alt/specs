@@ -1,9 +1,13 @@
 %define php7_sapi cli
 %add_findreq_skiplist %_usrsrc/php7-devel/*
 
+%ifarch %mips
+%add_optflags -DSLJIT_IS_FPU_AVAILABLE=0
+%endif
+
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.2.18
+Version: 7.2.19
 Release: alt1
 
 %define php7_name      %name
@@ -432,6 +436,10 @@ chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 %doc tests run-tests.php 
 
 %changelog
+* Sat Jun 01 2019 Anton Farygin <rider@altlinux.ru> 7.2.19-alt1
+- 7.2.19 (fixes: CVE-2019-11040)
+- fixed build on mipsel by iv@
+
 * Sat May 11 2019 Anton Farygin <rider@altlinux.ru> 7.2.18-alt1
 - 7.2.18
 
