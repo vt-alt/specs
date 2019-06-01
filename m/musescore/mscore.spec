@@ -1,8 +1,8 @@
 %define rname mscore
-%define mversion 3.0
+%define mversion 3.1
 
 Name: musescore
-Version: 3.0.5
+Version: 3.1
 Release: alt1
 
 Summary: Music notation and composition software
@@ -53,12 +53,12 @@ export PATH=$PATH:%%_qt5dir/bin
 echo $PATH
 mkdir build.debug && cd build.debug
 cmake \
-	-DCMAKE_BUILD_TYPE=RELEASE \
-	-DCMAKE_INSTALL_PREFIX=%_prefix \
-	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-        -DBUILD_SCRIPTGEN=FALSE \
+    -DCMAKE_BUILD_TYPE=RELEASE \
+    -DCMAKE_INSTALL_PREFIX=%_prefix \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DBUILD_SCRIPTGEN=FALSE \
     -DUSE_SYSTEM_FREETYPE=ON \
-	..
+    ..
 
 make lrelease
 make manpages
@@ -85,7 +85,7 @@ chrpath -d %buildroot%_bindir/mscore
 
 %files
 %_bindir/*
-%_datadir/appdata/mscore.appdata.xml
+%_datadir/metainfo/org.musescore.MuseScore.appdata.xml
 %_desktopdir/mscore.desktop
 %_datadir/mscore-%mversion
 %_man1dir/*
@@ -94,6 +94,9 @@ chrpath -d %buildroot%_bindir/mscore
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Thu May 30 2019 Grigory Ustinov <grenka@altlinux.org> 3.1-alt1
+- Build new version.
+
 * Tue Apr 16 2019 Grigory Ustinov <grenka@altlinux.org> 3.0.5-alt1
 - Build new version (Closes: #36475).
 - Build with system libfreetype (Closes: #36386).
