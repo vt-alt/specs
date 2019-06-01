@@ -1,5 +1,5 @@
 Name: 	 tellico
-Version: 3.1.4
+Version: 3.2
 Release: alt1
 
 Summary: A collection manager for KDE
@@ -10,6 +10,8 @@ Url:     http://tellico-project.org/
 
 Source:  %name-%version.tar
 Source2: FindKSane.cmake
+
+ExclusiveArch: %ix86 x86_64
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: gcc-c++
@@ -41,15 +43,13 @@ BuildRequires: kf5-kxmlgui-devel
 BuildRequires: kf5-solid-devel
 BuildRequires: libdiscid-devel
 BuildRequires: libexempi-devel
-BuildRequires: libksane4-devel
-BuildRequires: libpoppler-qt4-devel
 BuildRequires: libpoppler-qt5-devel
-BuildRequires: libqimageblitz-devel
 BuildRequires: libtag-devel
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: libyaz-devel
-BuildRequires: qjson-devel
+BuildRequires: qimageblitz5-devel
+BuildRequires: qjson-qt5-devel
 
 %description
 Tellico is a KDE application for organizing your collections. It
@@ -83,6 +83,11 @@ video games, coins, stamps, trading cards, comic books, and wines.
 %_K5xmlgui/%name
 
 %changelog
+* Sun Jun 02 2019 Andrey Cherepanov <cas@altlinux.org> 3.2-alt1
+- New version.
+- Remove old libraries required Qt4.
+- Build only for Intel.
+
 * Thu Dec 20 2018 Andrey Cherepanov <cas@altlinux.org> 3.1.4-alt1
 - New version.
 
