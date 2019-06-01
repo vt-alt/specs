@@ -1,5 +1,5 @@
 Name: autologin-sh-functions
-Version: 0.2.5
+Version: 0.2.6
 Release: alt1
 
 Summary: helper functions for autologin setup
@@ -26,6 +26,9 @@ install -pDm644 %name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Fri May 31 2019 Andrey Cherepanov <cas@altlinux.org> 0.2.6-alt1
+- Rewrite check of autologin-session in lightdm (ALT #36805).
+
 * Mon May 27 2019 Andrey Cherepanov <cas@altlinux.org> 0.2.5-alt1
 - Detect default session for lightdm (ALT #36794).
 
