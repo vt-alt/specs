@@ -3,7 +3,7 @@ Name: codeblocks
 # will update codeblocks for a new version. In sisyphus branch windows blobs
 # should be cleared.
 Version: 17.12
-Release: alt6
+Release: alt7
 
 Summary: Code::Blocks is open source, cross platform free C++ IDE
 Summary(ru_RU.UTF-8): Code::Blocks это кросс-платформенная свободная среда разработки для C++ с открытым исходным кодом
@@ -30,7 +30,7 @@ Requires: automake >= 1.7 wxGTK gcc gcc-c++ gdb xterm gamin mythes-en
 
 BuildRequires: boost-devel gcc-c++ libICE-devel libgamin-devel libgtk+2-devel
 BuildRequires: libhunspell-devel libwxGTK-contrib-gizmos-devel libwxGTK-devel
-BuildRequires: tinyxml-devel zip
+BuildRequires: tinyxml-devel zip zlib-devel bzlib-devel
 
 %description
 Code::Blocks is a free C++ IDE built specifically to meet the most
@@ -276,6 +276,10 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_libdir/pkgconfig/wxsmith-contrib.pc
 
 %changelog
+* Wed May 29 2019 Grigory Ustinov <grenka@altlinux.org> 17.12-alt7
+- Significant update russian localization (Closes: #36007).
+- Build with system bzlib (Closes: #36434).
+
 * Fri Feb 08 2019 Grigory Ustinov <grenka@altlinux.org> 17.12-alt6
 - Turned on automatical detection of language from user locale.
 - Built with tinyxml.
