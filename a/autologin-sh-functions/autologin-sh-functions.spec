@@ -1,6 +1,6 @@
 Name: autologin-sh-functions
 Version: 0.2.6
-Release: alt1
+Release: alt1.1
 
 Summary: helper functions for autologin setup
 License: GPLv2+
@@ -11,6 +11,9 @@ Source: %name-%version.tar
 Packager: Michael Shigorin <mike@altlinux.org>
 
 BuildArch: noarch
+
+# See-also: https://bugzilla.altlinux.org/show_bug.cgi?id=36805
+AutoReq: noshell
 
 %description
 %summary
@@ -26,6 +29,9 @@ install -pDm644 %name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Sun Jun 02 2019 Anton Midyukov <antohami@altlinux.org> 0.2.6-alt1.1
+- AutoReq: noshell
+
 * Fri May 31 2019 Andrey Cherepanov <cas@altlinux.org> 0.2.6-alt1
 - Rewrite check of autologin-session in lightdm (ALT #36805).
 
