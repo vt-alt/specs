@@ -2,7 +2,7 @@
 
 Name: %base_name-source
 Version: 7.2
-Release: alt2
+Release: alt3
 
 Group: Graphics
 Summary: Graphical boot logo sources
@@ -34,6 +34,9 @@ cp -a * %buildroot/usr/src/%base_name-source
 /usr/src/%base_name-source
 
 %changelog
+* Sun Jun 02 2019 Anton Midyukov <antohami@altlinux.org> 7.2-alt3
+- Fixed russian translation (closes: #36840)
+
 * Mon Apr 24 2017 Oleg Solovyov <mcpain@altlinux.org> 7.2-alt2
 - Fixed exiting message translation
 
