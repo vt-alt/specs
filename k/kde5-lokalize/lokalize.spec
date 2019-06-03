@@ -3,7 +3,7 @@
 %add_findreq_skiplist %_K5data/lokalize/scripts/*.py
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init altplace
 
@@ -62,6 +62,9 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_K5notif/lokalize*
 
 %changelog
+* Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
