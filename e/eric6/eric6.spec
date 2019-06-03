@@ -1,7 +1,7 @@
 Name: eric6
 Summary: Python IDE
 Version: 19.04
-Release: alt1
+Release: alt2
 
 License: GPLv3+
 Group: Development/Python3
@@ -15,13 +15,14 @@ Source2: http://downloads.sourceforge.net/sourceforge/eric-ide/%name-i18n-en-%ve
 Source3: http://downloads.sourceforge.net/sourceforge/eric-ide/%name-i18n-es-%version.tar.gz
 Source4: http://downloads.sourceforge.net/sourceforge/eric-ide/%name-i18n-ru-%version.tar.gz
 
-Source30: eric-32.png
-Source31: eric-48.png
-Source32: eric-64.png
+Source30: eric-16.png
+Source31: eric-32.png
+Source32: eric-48.png
+Source33: eric-64.png
 
 # sane defaults: disable version check, qt4/qt5 configuration
 Patch1: eric6-18.06-defaults.patch
-
+Patch2: eric6-desktop.patch
 BuildRequires(pre): rpm-build-python3
 BuildRequires: desktop-file-utils
 BuildRequires: python3-devel
@@ -41,6 +42,7 @@ eric6 is a full featured Python IDE.
 %setup -a 1 -a 2 -a 3 -a 4 -n eric6-%version
 
 %patch1 -p1
+%patch2 -p2
 
 %build
 # Empty build
@@ -52,9 +54,10 @@ python3 install.py \
   -d %python3_sitelibdir
 
 # icons
-install -m644 -p -D %SOURCE30 %buildroot%_iconsdir/hicolor/32x32/apps/eric.png
-install -m644 -p -D %SOURCE31 %buildroot%_iconsdir/hicolor/48x48/apps/eric.png
-install -m644 -p -D %SOURCE32 %buildroot%_iconsdir/hicolor/64x64/apps/eric.png
+install -m644 -p -D %SOURCE30 %buildroot%_iconsdir/hicolor/16x16/apps/eric.png
+install -m644 -p -D %SOURCE31 %buildroot%_iconsdir/hicolor/32x32/apps/eric.png
+install -m644 -p -D %SOURCE32 %buildroot%_iconsdir/hicolor/48x48/apps/eric.png
+install -m644 -p -D %SOURCE33 %buildroot%_iconsdir/hicolor/64x64/apps/eric.png
 
 %find_lang %name --with-qt --all-name
 
@@ -70,11 +73,12 @@ fi
 rm -rfv %buildroot%_pixmapsdir/eric*
 rm -fv  %buildroot%python3_sitelibdir/eric6/LICENSE.GPL3
 
+# not needed
+rm -fv %buildroot%_desktopdir/eric6_*.desktop
+
 %check
 appstream-util validate-relax --nonet %buildroot%_datadir/appdata/eric6.appdata.xml
 desktop-file-validate %buildroot%_desktopdir/eric6.desktop
-desktop-file-validate %buildroot%_desktopdir/eric6_browser.desktop
-desktop-file-validate %buildroot%_desktopdir/eric6_webbrowser.desktop
 
 %files -f %name.lang
 %doc eric/README* THANKS LICENSE.GPL3
@@ -92,14 +96,17 @@ desktop-file-validate %buildroot%_desktopdir/eric6_webbrowser.desktop
 %python3_sitelibdir/eric6plugins/
 %_datadir/appdata/eric6.appdata.xml
 %_desktopdir/eric6.desktop
-%_desktopdir/eric6_browser.desktop
-%_desktopdir/eric6_webbrowser.desktop
 %_iconsdir/hicolor/*/apps/eric.*
 %_datadir/qt5/qsci/api/python/*
 %_datadir/qt5/qsci/api/qss/*
 %_datadir/qt5/qsci/api/ruby/*
 
 %changelog
+* Mon Jun 03 2019 Anton Midyukov <antohami@altlinux.org> 19.04-alt2
+- add russian translate for desktop file
+- clean not needed desktop files
+- add icon 16x16
+
 * Mon Apr 22 2019 Anton Midyukov <antohami@altlinux.org> 19.04-alt1
 - New version 19.04
 
