@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.04.0
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Education
@@ -19,6 +19,7 @@ Source: %rname-%version.tar
 #BuildRequires: extra-cmake-modules kf5-kcmutils-devel kf5-kcompletion-devel kf5-kdeclarative-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-kitemviews-devel kf5-kpackage-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel libXres-devel python-module-google python3-dev qt5-script-devel qt5-x11extras-devel qt5-xmlpatterns-devel ruby ruby-stdlibs
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-base-devel qt5-script-devel qt5-x11extras-devel qt5-xmlpatterns-devel
+BuildRequires: desktop-file-utils
 BuildRequires: libXres-devel
 BuildRequires: kf5-kcmutils-devel kf5-kcompletion-devel kf5-kdeclarative-devel kf5-kdelibs4support kf5-kdoctools-devel-static
 BuildRequires: kf5-kitemviews-devel kf5-kpackage-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel
@@ -41,6 +42,8 @@ to write. KTouch can also help you to remember what fingers to use.
 %install
 %K5install
 %K5install_move data ktouch
+LC_ALL="ru_RU.UTF-8" desktop-file-edit --set-key='Comment[ru]' --set-value="Программа обучения быстрому и точному набору текста" %buildroot/%_K5xdgapp/org.kde.ktouch.desktop
+chmod 0755 %buildroot/%_K5xdgapp/org.kde.ktouch.desktop
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
@@ -52,6 +55,9 @@ to write. KTouch can also help you to remember what fingers to use.
 %_K5cfg/ktouch.kcfg
 
 %changelog
+* Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt2
+- update desktop-file russian translation
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
