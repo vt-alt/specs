@@ -20,7 +20,7 @@
 
 Name: libwebkitgtk3
 Version: 2.4.11
-Release: alt6
+Release: alt7
 
 Summary: Web browser engine
 Group: System/Libraries
@@ -233,6 +233,9 @@ rm -f Source/autotools/{compile,config.guess,config.sub,depcomp,install-sh,ltmai
 %add_optflags -Wno-expansion-to-defined -Wno-implicit-fallthrough
 # Use linker flags to reduce memory consumption
 %add_optflags -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
+%ifarch ppc ppc64 ppc64le
+%add_optflags -DENABLE_YARR_JIT=0
+%endif
 
 # Build with -g1 on all platforms to avoid running into 4 GB ar format limit
 # https://bugs.webkit.org/show_bug.cgi?id=91154
@@ -242,6 +245,9 @@ echo "GTK_DOC_CHECK([1.10])" >> configure.ac
 gtkdocize --copy
 %autoreconf -I Source/autotools
 %configure \
+%ifarch ppc ppc64 ppc64le
+	--disable-jit \
+%endif
 	--enable-video \
 	--with-acceleration-backend=%acceleration_backend \
 	--enable-webgl \
@@ -345,6 +351,9 @@ chrpath --delete %buildroot%_libexecdir/%_name/MiniBrowser
 
 
 %changelog
+* Fri May 31 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.4.11-alt7
+- Fixed build on ppc architectures.
+
 * Mon Oct 22 2018 Yuri N. Sedunov <aris@altlinux.org> 2.4.11-alt6
 - rebuilt against libicu*.so.63
 
