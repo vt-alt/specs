@@ -1,6 +1,6 @@
 Name: rpminstall-tests
 Version: 1.1.3
-Release: alt2
+Release: alt3
 
 Summary: Tests for rpm: how it interprets packages when installing
 
@@ -62,6 +62,11 @@ install -m0755 makeme.sh -t %buildroot%_datadir/%name/
 %_datadir/%name/makeme.sh %{?opts} minimal_epoch=0
 
 %changelog
+* Fri Apr 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.1.3-alt3
+- To catch more errors (evidenced by file conflicts during rpm -U),
+  now the package template includes a file with a unique value.
+  (This runs more slowly.) (Suggested by Vladimir Seleznev.)
+
 * Wed Mar 27 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.1.3-alt2
 - (.spec) Factored out /usr/sbin/sh-safely (checkinstall-helper-sh-safely pkg)
   from %%pre of the checkinstall subpkg.
