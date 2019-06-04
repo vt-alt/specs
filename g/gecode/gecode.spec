@@ -1,6 +1,6 @@
 Name: gecode
 Version: 4.2.1
-Release: alt1.git20140902
+Release: alt2.git20140902
 Summary: Gecode constraint programming solver
 License: MIT
 Group: Development/Tools
@@ -86,6 +86,9 @@ doxygen doxygen.conf
 %doc examples doc/html
 
 %changelog
+* Tue Jun 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.2.1-alt2.git20140902
+- Fixed build on ppc64le architecture.
+
 * Wed Nov 05 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 4.2.1-alt1.git20140902
 - Initial build for Sisyphus
 
