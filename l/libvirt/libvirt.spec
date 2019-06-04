@@ -183,8 +183,8 @@
 %endif
 
 Name: libvirt
-Version: 5.2.0
-Release: alt1
+Version: 5.4.0
+Release: alt2
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
 Group: System/Libraries
@@ -211,8 +211,8 @@ Requires: %name-libs = %EVR
 
 %{?_with_libxl:BuildRequires: xen-devel}
 %{?_with_hal:BuildRequires: libhal-devel}
-%{?_with_udev:BuildRequires: libudev-devel libpciaccess-devel}
-%{?_with_yajl:BuildRequires: libyajl-devel}
+%{?_with_udev:BuildRequires: udev libudev-devel >= 219 libpciaccess-devel}
+%{?_with_yajl:BuildRequires: libyajl-devel >= 2.0.1}
 %{?_with_sanlock:BuildRequires: sanlock-devel >= 1.8}
 %{?_with_libpcap:BuildRequires: libpcap-devel}
 %{?_with_libnl:BuildRequires: libnl-devel}
@@ -220,7 +220,7 @@ Requires: %name-libs = %EVR
 %{?_with_selinux:BuildRequires: libselinux-devel}
 %{?_with_network:BuildRequires: dnsmasq iptables iptables-ipv6 radvd openvswitch}
 %{?_with_nwfilter:BuildRequires: ebtables}
-%{?_with_sasl:BuildRequires: libsasl2-devel}
+%{?_with_sasl:BuildRequires: libsasl2-devel >= 2.1.6}
 %{?_with_libssh:BuildRequires: pkgconfig(libssh) >= 0.7}
 %{?_with_dbus:BuildRequires: libdbus-devel >= 1.0.0}
 %{?_with_polkit:BuildRequires: polkit}
@@ -261,7 +261,7 @@ BuildRequires: iproute2 perl-Pod-Parser
 BuildRequires: dmidecode
 BuildRequires: libtirpc-devel
 BuildRequires: glibc-utils
-BuildRequires: /sbin/rmmod
+BuildRequires: kmod
 BuildRequires: radvd
 BuildRequires: dnsmasq
 BuildRequires: libxfs-devel
@@ -288,19 +288,6 @@ Requires: iptables
 Requires: dmidecode
 # libvirtd depends on 'messagebus' service
 Requires: dbus
-
-Conflicts: %name-daemon-config-network < %EVR
-Conflicts: %name-daemon-config-nwfilter < %EVR
-Conflicts: %name-daemon-driver-interface < %EVR
-Conflicts: %name-daemon-driver-qemu < %EVR
-Conflicts: %name-daemon-driver-nodedev < %EVR
-Conflicts: %name-daemon-driver-secret < %EVR
-Conflicts: %name-daemon-driver-storage < %EVR
-Conflicts: %name-daemon-driver-vbox < %EVR
-Conflicts: %name-daemon-driver-nwfilter < %EVR
-Conflicts: %name-daemon-driver-lxc < %EVR
-Conflicts: %name-daemon-driver-network < %EVR
-Conflicts: %name-lock-sanlock < %EVR
 
 %description daemon
 Server side daemon required to manage the virtualization capabilities
@@ -336,6 +323,7 @@ Network filter configuration files for cleaning guest traffic
 %package daemon-driver-network
 Summary: Network driver plugin for the libvirtd daemon
 Group: System/Libraries
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-network
 The network driver plugin for the libvirtd daemon, providing
@@ -348,6 +336,7 @@ bridge capabilities.
 Summary: Nwfilter driver plugin for the libvirtd daemon
 Group: System/Libraries
 Requires: ebtables
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-nwfilter
 The nwfilter driver plugin for the libvirtd daemon, providing
@@ -359,6 +348,7 @@ iptables and ip6tables capabilities
 %package daemon-driver-nodedev
 Summary: Nodedev driver plugin for the libvirtd daemon
 Group: System/Libraries
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-nodedev
 The nodedev driver plugin for the libvirtd daemon, providing
@@ -368,6 +358,7 @@ capabilities.
 %package daemon-driver-interface
 Summary: Interface driver plugin for the libvirtd daemon
 Group: System/Libraries
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-interface
 The interface driver plugin for the libvirtd daemon, providing
@@ -378,6 +369,7 @@ netcf library or udev.
 %package daemon-driver-secret
 Summary: Secret driver plugin for the libvirtd daemon
 Group: System/Libraries
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-secret
 The secret driver plugin for the libvirtd daemon, providing
@@ -387,34 +379,34 @@ an implementation of the secret key APIs.
 Summary: Storage driver plugin including all backends for the libvirtd daemon
 Group: System/Libraries
 %if_with storage_fs
-Requires: libvirt-daemon-driver-storage-fs = %EVR
+Requires: %name-daemon-driver-storage-fs = %EVR
 %endif
 %if_with storage_disk
-Requires: libvirt-daemon-driver-storage-disk = %EVR
+Requires: %name-daemon-driver-storage-disk = %EVR
 %endif
 %if_with storage_lvm
-Requires: libvirt-daemon-driver-storage-logical = %EVR
+Requires: %name-daemon-driver-storage-logical = %EVR
 %endif
 %if_with storage_scsi
-Requires: libvirt-daemon-driver-storage-scsi = %EVR
+Requires: %name-daemon-driver-storage-scsi = %EVR
 %endif
 %if_with storage_iscsi
-Requires: libvirt-daemon-driver-storage-iscsi = %EVR
+Requires: %name-daemon-driver-storage-iscsi = %EVR
 %endif
 %if_with storage_iscsi_direct
-Requires: libvirt-daemon-driver-storage-iscsi-direct = %EVR
+Requires: %name-daemon-driver-storage-iscsi-direct = %EVR
 %endif
 %if_with storage_mpath
-Requires: libvirt-daemon-driver-storage-mpath = %EVR
+Requires: %name-daemon-driver-storage-mpath = %EVR
 %endif
 %if_with storage_gluster
-Requires: libvirt-daemon-driver-storage-gluster = %EVR
+Requires: %name-daemon-driver-storage-gluster = %EVR
 %endif
 %if_with storage_rbd
-Requires: libvirt-daemon-driver-storage-rbd = %EVR
+Requires: %name-daemon-driver-storage-rbd = %EVR
 %endif
 %if_with storage_sheepdog
-Requires: libvirt-daemon-driver-storage-sheepdog = %EVR
+Requires: %name-daemon-driver-storage-sheepdog = %EVR
 %endif
 
 %description daemon-driver-storage
@@ -425,7 +417,11 @@ iSCSI, and multipath storage.
 %package daemon-driver-storage-core
 Summary: Storage driver plugin including base backends for the libvirtd daemon
 Group: System/Libraries
-Conflicts: %name-daemon < %EVR
+Requires: %name-daemon = %EVR
+Requires: nfs-utils
+# For mkfs
+Requires: util-linux
+%{?_with qemu:Requires: /usr/bin/qemu-img}
 
 %description daemon-driver-storage-core
 The storage driver plugin for the libvirtd daemon, providing
@@ -562,6 +558,7 @@ QEMU
 Summary: LXC driver plugin for the libvirtd daemon
 Group: System/Libraries
 Requires: %name-daemon-driver-network = %EVR
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-lxc
 The LXC driver plugin for the libvirtd daemon, providing
@@ -574,6 +571,7 @@ the Linux kernel
 Summary: Libxl driver plugin for the libvirtd daemon
 Group: System/Libraries
 Obsoletes: %name-daemon-driver-xen < 4.3.0
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-libxl
 The Libxl driver plugin for the libvirtd daemon, providing
@@ -585,6 +583,7 @@ Libxl
 %package daemon-driver-vbox
 Summary: VirtualBox driver plugin for the libvirtd daemon
 Group: System/Libraries
+Requires: %name-daemon = %EVR
 
 %description daemon-driver-vbox
 The vbox driver plugin for the libvirtd daemon, providing
@@ -766,6 +765,7 @@ Requires: sanlock >= 2.4
 #for virt-sanlock-cleanup require augeas
 Requires: augeas
 Requires: %name-libs = %EVR
+Requires: %name-daemon = %EVR
 
 %description lock-sanlock
 Includes the Sanlock lock manager plugin for the QEMU
@@ -873,13 +873,12 @@ install -pD -m 755 %SOURCE12  %buildroot%_initdir/virtlockd
 install -pD -m 755 %SOURCE13  %buildroot%_initdir/virtlogd
 install -pD -m 755 %SOURCE14  %buildroot%_initdir/libvirt-guests
 
-make -C examples distclean
 install -d -m 0755 %buildroot%_runtimedir/%name
 rm -f %buildroot%_libdir/*.{a,la}
 rm -f %buildroot%_libdir/%name/*/*.{a,la}
 
 # delete docs
-rm -rf %buildroot%_datadir/doc/libvirt-%version
+rm -rf %buildroot%_datadir/doc/libvirt
 
 %if_with network
 # We don't want to install /etc/libvirt/qemu/networks in the main %files list
@@ -971,7 +970,6 @@ done
 %post daemon
 %post_service virtlockd
 %post_service virtlogd
-%post_service libvirtd
 
 %preun daemon
 %preun_service libvirtd
@@ -1012,7 +1010,6 @@ fi
 %files docs
 %doc docs/*.xml
 %doc %_datadir/gtk-doc/html/libvirt
-%doc examples
 
 %doc docs/html docs/devhelp docs/*.gif
 
@@ -1051,7 +1048,7 @@ fi
 %files daemon
 %dir %attr(0700, root, root) %_sysconfdir/libvirt
 %dir %_datadir/libvirt
-%dir %attr(0700, root, root) %_localstatedir/log/libvirt
+%dir %attr(0700, root, root) %_logdir/libvirt
 %dir %_runtimedir/%name
 %dir %attr(0700, root, root) %_sysconfdir/libvirt/nwfilter
 %config(noreplace) %_sysconfdir/sysconfig/libvirtd
@@ -1225,26 +1222,6 @@ fi
 %if_with qemu
 %files daemon-driver-qemu
 %_libdir/%name/connection-driver/libvirt_driver_qemu.so
-%endif
-
-%if_with lxc
-%files daemon-driver-lxc
-%_libdir/%name/connection-driver/libvirt_driver_lxc.so
-%endif
-
-%if_with libxl
-%files daemon-driver-libxl
-%_libdir/%name/connection-driver/libvirt_driver_libxl.so
-%endif
-
-%if_with vbox
-%files daemon-driver-vbox
-%_libdir/%name/connection-driver/libvirt_driver_vbox.so
-%endif
-%endif #driver_modules
-
-%if_with qemu
-%files qemu-common
 %config(noreplace) %_sysconfdir/libvirt/qemu.conf
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd.qemu
 %dir %attr(0750, root, root) %_runtimedir/%name/qemu
@@ -1255,18 +1232,11 @@ fi
 %dir %attr(0700, root, root) %_logdir/swtpm/libvirt/qemu
 %_datadir/augeas/lenses/libvirtd_qemu.aug
 %_datadir/augeas/lenses/tests/test_libvirtd_qemu.aug
-
-%if_with qemu_tcg
-%files qemu
 %endif
-%if_with qemu_kvm
-%files kvm
-%endif
-
-%endif #if_with qemu
 
 %if_with lxc
-%files lxc
+%files daemon-driver-lxc
+%_libdir/%name/connection-driver/libvirt_driver_lxc.so
 %config(noreplace) %_sysconfdir/libvirt/lxc.conf
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd.lxc
 %dir %_runtimedir/%name/lxc
@@ -1278,13 +1248,39 @@ fi
 %endif
 
 %if_with libxl
-%files xen
+%files daemon-driver-libxl
+%_libdir/%name/connection-driver/libvirt_driver_libxl.so
 %dir %attr(0700, root, root) %_localstatedir/log/libvirt/libxl
 %dir %attr(0700, root, root) %_localstatedir/lib/libvirt/libxl
 %config(noreplace) %_sysconfdir/libvirt/libxl*.conf
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd.libxl
 %_datadir/augeas/lenses/libvirtd_libxl.aug
 %_datadir/augeas/lenses/tests/test_libvirtd_libxl.aug
+%endif
+
+%if_with vbox
+%files daemon-driver-vbox
+%_libdir/%name/connection-driver/libvirt_driver_vbox.so
+%endif
+%endif #driver_modules
+
+%if_with qemu
+%files qemu-common
+%if_with qemu_tcg
+%files qemu
+%endif
+%if_with qemu_kvm
+%files kvm
+%endif
+
+%endif #if_with qemu
+
+%if_with lxc
+%files lxc
+%endif
+
+%if_with libxl
+%files xen
 %endif #if_with libxl
 
 %if_with vbox
@@ -1348,6 +1344,12 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Tue Jun 04 2019 Alexey Shabalin <shaba@altlinux.org> 5.4.0-alt2
+- move files of qemu,lxc,xen to daemon drivers
+
+* Tue Jun 04 2019 Alexey Shabalin <shaba@altlinux.org> 5.4.0-alt1
+- 5.4.0 (Fixes: CVE-2018-12126, CVE-2018-12127, CVE-2018-12130, CVE-2019-11091, CVE-2019-10132)
+
 * Fri Apr 05 2019 Alexey Shabalin <shaba@altlinux.org> 5.2.0-alt1
 - 5.2.0
 
