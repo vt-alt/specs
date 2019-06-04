@@ -13,8 +13,8 @@
 %def_enable epoxy
 
 Name: libspice-gtk
-Version: 0.36
-Release: alt2
+Version: 0.37
+Release: alt1
 Summary: A GTK widget for SPICE clients
 
 Group: System/Libraries
@@ -24,7 +24,8 @@ Url: http://spice-space.org/page/Spice-Gtk
 Source: %name-%version.tar
 Source2: spice-common.tar
 Source3: keycodemapdb.tar
-Source4: ru.po
+Source4: spice-common-recorder.tar
+Source5: ru.po
 # Patch: %name-%version-%release.patch
 # Patch2: %name-alt-fix.patch
 Patch: libspice-gtk-add-ru-string-to-linguas.patch
@@ -44,7 +45,7 @@ BuildRequires: libopus-devel >= 0.9.14
 %{?_with_sasl:BuildRequires: libsasl2-devel}
 %{?_enable_vala:BuildRequires: libvala-devel >= %vala_ver vala >= %vala_ver vala-tools}
 %{?_enable_smartcard:BuildRequires: libcacard-devel >= 2.5.1}
-%{?_enable_usbredir:BuildRequires: libgudev-devel libusb-devel >= 1.0.16 libusbredir-devel >= 0.4.2}
+%{?_enable_usbredir:BuildRequires: libgudev-devel libusb-devel >= 1.0.16 libusbredir-devel >= 0.7.1}
 %{?_enable_lz4:BuildRequires: liblz4-devel}
 BuildRequires: libpolkit-devel >= 0.96 libacl-devel
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libgstreamer1.0-gir-devel}
@@ -86,7 +87,7 @@ spice-client-glib-2.0 is a SPICE client library for GLib2.
 Libraries, includes, etc. to compile with the spice-glib-2.0 libraries
 
 %package -n libspice-gtk3
-Summary: A GTK2 widget for SPICE clients
+Summary: A GTK3 widget for SPICE clients
 Group: System/Libraries
 Requires: libspice-glib = %version-%release
 
@@ -155,13 +156,14 @@ screen-shots of a SPICE desktop
 %prep
 %setup
 tar -xf %SOURCE2 -C subprojects/spice-common
-tar -xf %SOURCE3 -C src/keycodemapdb
+tar -xf %SOURCE3 -C subprojects/keycodemapdb
+tar -xf %SOURCE4 -C subprojects/spice-common/common/recorder
 
 %patch -p1
 # %patch -p1
 # %patch2 -p1
 echo "%version" > .tarball-version
-cp -f %SOURCE4 po/
+cp -f %SOURCE5 po/
 
 %build
 %meson \
@@ -174,7 +176,7 @@ cp -f %SOURCE4 po/
         %{?_enable_vala:-Dvapi=enabled} \
         %{?_enable_lz4:-Dlz4=enabled} \
         %{?_with_sasl:-Dsasl=enabled} \
-        %{?_enable_smartcard:-Dsmartcard=enabled -Dspice-common:smartcard=true} \
+        %{?_enable_smartcard:-Dsmartcard=enabled -Dspice-common:smartcard=enabled} \
         %{?_disable_gtk_doc:-Dgtk_doc=disabled} \
         -Dgtk=enabled \
         -Dpolkit=enabled \
@@ -235,6 +237,9 @@ cp -f %SOURCE4 po/
 %endif
 
 %changelog
+* Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 0.37-alt1
+- 0.37
+
 * Tue Apr 23 2019 Pavel Moseev <mars@altlinux.org> 0.36-alt2
 - update translation
 

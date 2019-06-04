@@ -63,6 +63,7 @@
 %def_enable lzo
 %def_enable snappy
 %def_enable bzip2
+%def_disable lzfse
 %def_disable xen
 %def_enable mpath
 %def_enable libxml2
@@ -112,8 +113,8 @@
 # }}}
 
 Name: qemu
-Version: 3.1.0
-Release: alt2
+Version: 4.0.0
+Release: alt1
 
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -146,14 +147,16 @@ Patch: qemu-alt.patch
 Requires: %name-system = %EVR
 Requires: %name-user = %EVR
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
-BuildRequires: glib2-devel >= 2.40
-BuildRequires: texinfo perl-podlators libattr-devel-static libcap-devel libcap-ng-devel
+BuildRequires: glib2-devel >= 2.40 libgio-devel
+BuildRequires: makeinfo perl-podlators python-module-sphinx
+BuildRequires: libattr-devel-static libcap-devel libcap-ng-devel
 BuildRequires: libxfs-devel
 BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
-BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.4.2
+BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.4.6
 BuildRequires: libpixman-devel >= 0.21.8
-BuildRequires: python3
+BuildRequires: python3-devel
 # Upstream disables iasl for big endian and QEMU checks for this.
 %ifnarch s390 s390x ppc ppc64
 BuildRequires: iasl
@@ -170,7 +173,7 @@ BuildRequires: libpcre-devel-static
 %{?_enable_xkbcommon:BuildRequires: libxkbcommon-devel}
 %{?_enable_vde:BuildRequires: libvde-devel}
 %{?_enable_aio:BuildRequires: libaio-devel}
-%{?_enable_spice:BuildRequires: libspice-server-devel >= 0.12.0 spice-protocol >= 0.12.3}
+%{?_enable_spice:BuildRequires: libspice-server-devel >= 0.12.5 spice-protocol >= 0.12.3}
 BuildRequires: libuuid-devel
 %{?_enable_smartcard:BuildRequires: libcacard-devel >= 2.5.1}
 %{?_enable_usb_redir:BuildRequires: libusbredir-devel >= 0.5}
@@ -185,6 +188,7 @@ BuildRequires: libuuid-devel
 %{?_enable_gnutls:BuildRequires: libgnutls-devel >= 3.1.18}
 %{?_enable_nettle:BuildRequires: libnettle-devel >= 2.7.1}
 %{?_enable_gcrypt:BuildRequires: libgcrypt-devel >= 1.5.0}
+BuildRequires: libpam-devel
 BuildRequires: libtasn1-devel
 %{?_enable_virglrenderer:BuildRequires: pkgconfig(virglrenderer)}
 %{?_enable_libssh2:BuildRequires: libssh2-devel >= 1.2.8}
@@ -196,6 +200,7 @@ BuildRequires: libtasn1-devel
 %{?_enable_lzo:BuildRequires: liblzo2-devel}
 %{?_enable_snappy:BuildRequires: libsnappy-devel}
 %{?_enable_bzip2:BuildRequires: bzlib-devel}
+%{?_enable_lzfse:BuildRequires: liblzfse-devel}
 %{?_enable_xen:BuildRequires: libxen-devel}
 %{?_enable_vxhs:BuildRequires: libvxhs-devel}
 %{?_enable_mpath:BuildRequires: libudev-devel libmultipath-devel}
@@ -214,9 +219,11 @@ Requires: %name-block-dmg = %EVR     \
 %{?_enable_oss:Requires: %name-audio-oss = %EVR}     \
 %{?_enable_pulseaudio:Requires: %name-audio-pa = %EVR}      \
 %{?_enable_sdl:Requires: %name-audio-sdl = %EVR}     \
-%{?_enable_curses:Requires: %name-ui-curses = %EVR}     \
-%{?_enable_gtk:Requires: %name-ui-gtk = %EVR}        \
-%{?_enable_sdl:Requires: %name-ui-sdl = %EVR}
+%{?_enable_curses:Requires: %name-ui-curses = %EVR}
+
+
+##%%{?_enable_gtk:Requires: %name-ui-gtk = %EVR}        \
+##%%{?_enable_sdl:Requires: %name-ui-sdl = %EVR}
 
 %description
 QEMU is a fast processor emulator using dynamic translation to achieve
@@ -1054,7 +1061,7 @@ run_configure() {
 	--disable-sparse \
 	--disable-strip \
 	--enable-kvm \
-	--python=/usr/bin/python3 \
+	--python=%{__python3} \
 	 "$@"
 }
 
@@ -1072,6 +1079,7 @@ run_configure \
 	--disable-rdma \
 	--disable-libiscsi \
 	--disable-rbd \
+	--disable-mpath \
 	--disable-libnfs \
 	--disable-glusterfs \
 	--disable-libxml2 \
@@ -1093,7 +1101,8 @@ run_configure \
 	--disable-curses \
 	--disable-spice \
 	--disable-sdl \
-	--disable-gtk
+	--disable-gtk \
+	--disable-vte
 
 # Please do not touch this
 sed -i "/TARGET_ARM/ {
@@ -1124,7 +1133,7 @@ run_configure \
 	--enable-linux-user \
 	--enable-pie \
 	--enable-modules \
-	%{?_enable_sdl:--enable-sdl --with-sdlabi=2.0} \
+	%{?_enable_sdl:--enable-sdl} \
 	%{?_disable_curses:--disable-curses} \
 	%{subst_enable bluez} \
 	%{subst_enable vnc} \
@@ -1141,7 +1150,6 @@ run_configure \
 	--audio-drv-list="%audio_drv_list" \
 	--disable-brlapi \
 	--enable-curl \
-	--enable-fdt \
 	%{subst_enable virglrenderer} \
 	%{subst_enable tpm} \
 	%{subst_enable xen} \
@@ -1173,6 +1181,7 @@ run_configure \
 	%{subst_enable lzo} \
 	%{subst_enable snappy} \
 	%{subst_enable bzip2} \
+	%{subst_enable lzfse} \
 	%{?_disable_guest_agent:--disable-guest-agent} \
 	%{subst_enable tools} \
 	%{subst_enable libpmem} \
@@ -1191,6 +1200,7 @@ install -m644 LICENSE MAINTAINERS %buildroot%docdir/
 for emu in %buildroot%_bindir/qemu-system-*; do
     ln -sf qemu.1.xz %buildroot%_man1dir/$(basename $emu).1.xz
 done
+
 %if_enabled user_static
 find -regex '.*linux-user/qemu.*\.static' -exec install -m755 '{}' %buildroot%_bindir ';'
 %endif
@@ -1307,12 +1317,12 @@ fi
 %files
 %files common
 %dir %_datadir/%name
+%_desktopdir/qemu.desktop
+%_iconsdir/hicolor/*/apps/*
 %_datadir/%name/keymaps
 %_datadir/%name/trace-events-all
 %_datadir/%name/*.rom
 %_datadir/%name/vgabios*.bin
-%_datadir/%name/*.bmp
-%_datadir/%name/*.svg
 %_man1dir/%name.1*
 %_sysconfdir/udev/rules.d/%rulenum-%name-kvm.rules
 %_controldir/*
@@ -1322,6 +1332,7 @@ fi
 %_man7dir/qemu-block-drivers.*
 %_man7dir/qemu-ga-ref.*
 %_man7dir/qemu-qmp-ref.*
+%_man7dir/qemu-cpu-models.*
 
 %files system -f %name.lang
 
@@ -1344,6 +1355,7 @@ fi
 %exclude %_bindir/qemu-io
 %exclude %_bindir/qemu-nbd
 %exclude %_bindir/qemu-ga
+%exclude %_bindir/qemu-edid
 %exclude %_bindir/qemu-keymap
 
 %files user-binfmt
@@ -1373,6 +1385,8 @@ fi
 %_unitdir/qemu-pr-helper.service
 %_unitdir/qemu-pr-helper.socket
 %endif
+%_bindir/elf2dmp
+%_bindir/qemu-edid
 %_bindir/qemu-keymap
 %config(noreplace) %_sysconfdir/%name/bridge.conf
 
@@ -1469,6 +1483,7 @@ fi
 %_datadir/%name/linuxboot_dma.bin
 %_datadir/%name/multiboot.bin
 %_datadir/%name/kvmvapic.bin
+%_datadir/%name/pvh.bin
 
 %files system-alpha
 %files system-alpha-core
@@ -1596,6 +1611,11 @@ fi
 %_man1dir/qemu-system-nios2.1*
 
 %changelog
+* Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.0-alt1
+- 4.0.0
+- define md-clear CPUID bit
+  (fixes: CVE-2018-12126, CVE-2018-12127, CVE-2018-12130, CVE-2019-11091)
+
 * Fri Feb 22 2019 Alexey Shabalin <shaba@altlinux.org> 3.1.0-alt2
 - disable support ceph on 32-bit arch
 

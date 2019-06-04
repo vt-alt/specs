@@ -2,12 +2,12 @@
 %def_disable celt051
 %def_enable opus
 %def_enable lz4
-%def_disable gstreamer
+%def_enable gstreamer
 %def_disable manual
 
 Name: SPICE
-Version: 0.14.1
-Release: alt2
+Version: 0.14.2
+Release: alt1
 Summary: Implements the SPICE protocol
 Group: Graphical desktop/Other
 License: LGPLv2+
@@ -16,19 +16,23 @@ Url: http://www.spice-space.org/
 # VCS: https://gitlab.freedesktop.org/spice/spice.git
 Source: %name-%version.tar
 Source2: spice-common.tar
+Source3: spice-common-recorder.tar
+Patch1: fix-alt.patch
 
 BuildRequires: gcc-c++
+BuildRequires(pre): meson >= 0.48
 BuildRequires: libjpeg-devel libpixman-devel >= 0.17.7 zlib-devel
 BuildRequires: libssl-devel >= 1.1.0 libsasl2-devel openssl
-BuildRequires: libcacard-devel >= 0.1.2
-BuildRequires: python-module-six python-module-pyparsing
-BuildRequires: glib2-devel >= 2.32 libgio-devel >= 2.32
-BuildRequires: spice-protocol >= 0.12.14
+BuildRequires: libcacard-devel >= 2.5.1
+BuildRequires: python3-module-six python3-module-pyparsing
+BuildRequires: glib2-devel >= 2.38 libgio-devel >= 2.38
+BuildRequires: libgdk-pixbuf-devel >= 2.26
+BuildRequires: spice-protocol >= 0.14.0
 %{?_enable_manual:BuildRequires: asciidoc asciidoc-a2x}
 %{?_enable_celt051:BuildRequires: libcelt051-devel >= 0.5.1.1}
 %{?_enable_opus:BuildRequires: libopus-devel >= 0.9.14}
 %{?_enable_lz4:BuildRequires: liblz4-devel}
-%{?_enable_gstreamer:BuildRequires: gstreamer1.0-devel gst-plugins1.0-devel gst-plugins1.0-gir-devel}
+%{?_enable_gstreamer:BuildRequires: gstreamer1.0-devel gst-plugins1.0-devel gst-plugins1.0-gir-devel liborc-devel}
 
 %description
 The Simple Protocol for Independent Computing Environments (SPICE) is
@@ -64,24 +68,20 @@ using spice-server, you will need to install spice-server-devel.
 %prep
 %setup
 mkdir -p subprojects
-pushd subprojects
-tar -xf %SOURCE2
-popd
+tar -xf %SOURCE2 -C subprojects/spice-common
+tar -xf %SOURCE3 -C subprojects/spice-common/common/recorder
 # version in .tarball-version file
 echo "%version" > .tarball-version
+%patch1 -p1
 
 %build
 rm -f GITVERSION
-%autoreconf
-%configure			\
-	%{subst_enable celt051}	\
-	%{subst_enable lz4}	\
-	--enable-smartcard
-
-%make_build
+%meson
+%meson_build \
+    %{?_disable_gstreamer:-Dgstreamer=no}
 
 %install
-%make_install install DESTDIR=%buildroot
+%meson_install
 rm -f %buildroot%_libdir/libspice-server.a
 rm -f %buildroot%_libdir/libspice-server.la
 
@@ -95,11 +95,15 @@ rm -f %buildroot%_libdir/libspice-server.la
 %_pkgconfigdir/spice-server.pc
 
 %changelog
+* Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 0.14.2-alt1
+- 0.14.2 (fixes: CVE-2019-3813)
+- build with gstreamer support
+
 * Thu Sep 06 2018 Pavel Skrylev <majioa@altlinux.org> 0.14.1-alt2
 - Moved forward to opensll 1.1.
 
 * Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 0.14.1-alt1
-- 0.14.1 (Fixes: CVE-2018-10873)
+- 0.14.1 (fixes: CVE-2018-10873)
 
 * Fri Nov 03 2017 Alexey Shabalin <shaba@altlinux.ru> 0.14.0-alt1
 - 0.14.0

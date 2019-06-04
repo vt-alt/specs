@@ -1,6 +1,6 @@
 Name: spice-protocol
-Version: 0.12.15
-Release: alt2
+Version: 0.14.0
+Release: alt1
 Epoch: 1
 Summary: Spice protocol header files
 Group: Development/C
@@ -9,7 +9,7 @@ Url: http://www.spice-space.org/
 
 # VCS-git: https://gitlab.freedesktop.org/spice/spice-protocol.git
 Source: %name-%version.tar
-Patch: %name-%version.patch
+#Patch: %name-%version.patch
 
 BuildArch: noarch
 BuildRequires: meson
@@ -20,7 +20,7 @@ Header files describing the spice protocol and the para-virtual graphics card QX
 
 %prep
 %setup
-%patch -p1
+#%%patch -p1
 
 %build
 %meson
@@ -30,11 +30,14 @@ Header files describing the spice protocol and the para-virtual graphics card QX
 %meson_install
 
 %files
-%doc COPYING NEWS
+%doc COPYING README.md CHANGELOG.md
 %_includedir/*
 %_datadir/pkgconfig/*.pc
 
 %changelog
+* Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 1:0.14.0-alt1
+- 0.14.0
+
 * Tue Apr 23 2019 Alexey Shabalin <shaba@altlinux.org> 1:0.12.15-alt2
 - downgrade to 0.12.15
 
@@ -44,10 +47,10 @@ Header files describing the spice protocol and the para-virtual graphics card QX
 * Wed Jan 16 2019 Alexey Shabalin <shaba@altlinux.org> 0.12.15-alt1
 - 0.12.15
 
-* Mon Jul 09 2018 Alexey Shabalin <shaba@altlinux.ru> 0.12.14-alt1%ubt
+* Mon Jul 09 2018 Alexey Shabalin <shaba@altlinux.ru> 0.12.14-alt1
 - 0.12.4
 
-* Mon Sep 04 2017 Alexey Shabalin <shaba@altlinux.ru> 0.12.13-alt1%ubt
+* Mon Sep 04 2017 Alexey Shabalin <shaba@altlinux.ru> 0.12.13-alt1
 - 0.12.13
 
 * Mon Nov 28 2016 Alexey Shabalin <shaba@altlinux.ru> 0.12.12-alt1

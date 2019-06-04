@@ -1,7 +1,8 @@
 %def_without docs
+%def_without python
 
 Name: dtc
-Version: 1.4.7
+Version: 1.5.0.0.20.2431
 Release: alt1
 
 Summary: Device Tree Compiler for Flat Device Trees
@@ -11,12 +12,10 @@ Url: https://git.kernel.org/cgit/utils/dtc/dtc.git
 
 Source: %name-%version.tar
 
-BuildPreReq: rpm-build-licenses
+BuildRequires(pre): rpm-build-licenses
 BuildRequires: flex bison
-BuildRequires: swig python-devel
-%if_with docs
-BuildRequires: texlive-base texlive-latex-extra
-%endif
+%{?_with_python:BuildRequires: swig python-devel}
+%{?_with_docs:BuildRequires: texlive-base texlive-latex-extra}
 
 %description
 Device Tree Compiler, dtc, takes as input a device-tree in a given
@@ -61,18 +60,18 @@ Trees.
 This package contains documentation for development against libfdt.
 
 %package -n python-module-libfdt
-Summary: Python 2 bindings for device tree library
+Summary: Python bindings for device tree library
 Group: Development/Python
 Requires: libfdt = %EVR
 
 %description -n python-module-libfdt
-This package provides python2 bindings for libfdt
+This package provides python bindings for libfdt
 
 %prep
 %setup
 
 %build
-%make_build
+%make_build %{?_without_python:NO_PYTHON=1}
 %if_with docs
 pushd Documentation
 latex dtc-paper.tex
@@ -83,7 +82,7 @@ popd
 %endif
 
 %install
-%makeinstall_std PREFIX=%_usr LIBDIR=%_libdir SETUP_PREFIX=%buildroot%_usr
+%makeinstall_std PREFIX=%_usr LIBDIR=%_libdir SETUP_PREFIX=%buildroot%_usr %{?_without_python:NO_PYTHON=1}
 rm -f %buildroot%_bindir/ftdump
 
 %files
@@ -94,7 +93,7 @@ rm -f %buildroot%_bindir/ftdump
 
 %files -n libfdt
 %doc README.license
-%_libdir/libfdt-%version.so
+%_libdir/libfdt-*.so
 %_libdir/libfdt.so.*
 
 %files -n libfdt-devel
@@ -105,8 +104,10 @@ rm -f %buildroot%_bindir/ftdump
 %files -n libfdt-devel-static
 %_libdir/libfdt.a
 
+%if_with python
 %files -n python-module-libfdt
 %python_sitelibdir/*
+%endif
 
 %if_with docs
 %files -n libfdt-doc
@@ -117,6 +118,10 @@ rm -f %buildroot%_bindir/ftdump
 %endif
 
 %changelog
+* Sat Jun 01 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.0.0.20.2431-alt1
+- v1.5.0-20-g243176c
+- build without python
+
 * Sat Aug 18 2018 Alexey Shabalin <shaba@altlinux.org> 1.4.7-alt1
 - 1.4.7
 - add python package

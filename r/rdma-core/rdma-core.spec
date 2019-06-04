@@ -2,7 +2,7 @@
 %define _libexecdir  /usr/libexec
 %define _localstatedir %_var
 
-%ifnarch s390 %arm alpha armel armhf hppa m68k mips mips64el mipsel sh4
+%ifnarch s390 %arm alpha armel armhf hppa m68k mips mips64el mipsel sh4 %e2k
 %def_enable dma_coherent
 %else
 %def_disable dma_coherent
@@ -10,8 +10,8 @@
 
 
 Name: rdma-core
-Version: 22
-Release: alt2
+Version: 24.0
+Release: alt1
 Summary: RDMA core userspace libraries and daemons
 Group: System/Base
 
@@ -239,10 +239,8 @@ ln -r -s %buildroot%_unitdir/srp_daemon.service %buildroot%_unitdir/srpd.service
 LD_LIBRARY_PATH="lib" bin/ib_acme -D . -O
 install -D -m0644 ibacm_opts.cfg %buildroot%_sysconfdir/rdma/
 
-# add symlinks to linux kernel headers
-for h_file in ib_user_sa ib_user_verbs ; do
-  ln -sr %buildroot%_includedir/linux-default/include/rdma/${h_file}.h %buildroot%_includedir/rdma/${h_file}.h
-done
+# copy linux kernel headers to /usr/include/rdma
+cp -r kernel-headers/rdma %buildroot%_includedir/
 
 %post -n ibacm
 %post_service ibacm
@@ -286,7 +284,9 @@ done
 %_unitdir/rdma-load-modules@.service
 %_unitdir/rdma.service
 %_initdir/rdma
+%_udevrulesdir/../rdma_rename
 %_udevrulesdir/60-rdma-ndd.rules
+%_udevrulesdir/60-rdma-persistent-naming.rules
 %_udevrulesdir/75-rdma-description.rules
 %_udevrulesdir/90-rdma-hw-modules.rules
 %_udevrulesdir/90-rdma-ulp-modules.rules
@@ -311,11 +311,13 @@ done
 %_includedir/rdma/*
 %_libdir/lib*.so
 %_pkgconfigdir/*.pc
+%_man3dir/efadv*
 %_man3dir/ibv_*
 %_man3dir/rdma*
 %_man3dir/umad*
 %_man3dir/*_to_ibv_rate.*
 %_man7dir/rdma_cm.*
+%_man7dir/efadv*
 %if_enabled dma_coherent
 %_man3dir/mlx5dv*
 %_man7dir/mlx5dv*
@@ -326,6 +328,7 @@ done
 %files -n libibverbs
 %dir %_sysconfdir/libibverbs.d
 %dir %_libdir/libibverbs
+%_libdir/libefa.so.*
 %_libdir/libibverbs*.so.*
 %_libdir/libibverbs/*.so
 %if_enabled dma_coherent
@@ -421,6 +424,12 @@ done
 %docdir/ibsrpdm.md
 
 %changelog
+* Sat Jun 01 2019 Alexey Shabalin <shaba@altlinux.org> 24.0-alt1
+- 24.0
+
+* Mon May 27 2019 Michael Shigorin <mike@altlinux.org> 22-alt2.1
+- fix build on e2k
+
 * Sat Jan 19 2019 Alexey Shabalin <shaba@altlinux.org> 22-alt2
 - add symlinks to linux kernel headers
 - fixed path in pkconfig files
