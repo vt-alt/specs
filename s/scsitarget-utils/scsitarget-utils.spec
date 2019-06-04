@@ -8,7 +8,7 @@
 %endif
 
 Name: scsitarget-utils
-Version: 1.0.74
+Version: 1.0.78
 Release: alt1
 
 Summary: The SCSI target daemon and utility programs
@@ -29,7 +29,6 @@ Source6: tgt.init
 # Patch2: %name-alt-patches.patch
 
 # fedora patches
-Patch0: 0001-redhatify-docs.patch
 Patch1: 0002-remove-check-for-xsltproc.patch
 Patch2: 0003-default-config.patch
 
@@ -49,6 +48,8 @@ Requires: sg3_utils
 Provides: scsi-target-utils = %version-%release
 Provides: tgt = %version-%release
 Obsoletes: tgt < %version-%release
+Provides: iscsitarget = 1.4.20.2-alt2.1
+Obsoletes: iscsitarget < 1.4.20.2-alt2.1
 
 %description
 The SCSI target package contains the daemon and tools to setup a SCSI
@@ -73,7 +74,6 @@ Adds support for the Gluster glfs backstore to scsi-target-utils.
 %prep
 %setup
 # %%patch10 -p1
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 
@@ -149,6 +149,10 @@ pushd usr
 %endif
 
 %changelog
+* Tue Jun 04 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.78-alt1
+- 1.0.78
+- obsoletes for iscsitarget
+
 * Sat Feb 23 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.74-alt1
 - new version 1.0.74
 - disable support ceph on 32-bit arch
