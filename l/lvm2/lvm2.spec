@@ -44,7 +44,7 @@
 Summary: Userland logical volume management tools
 Name: lvm2
 Version: %lvm2version
-Release: alt0.1.9d7afaaa
+Release: alt1
 License: GPL
 
 Group: System/Base
@@ -616,6 +616,11 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %endif
 
 %changelog
+* Mon Jun 03 2019 Alexey Shabalin <shaba@altlinux.org> 2.02.185-alt1
+- 2.02.185
+- filter zvols and PVE VG by default
+- enable issue_discards by default in config
+
 * Tue May 07 2019 Alexey Shabalin <shaba@altlinux.org> 2.02.185-alt0.1.9d7afaaa
 - snapshot of stable-2.02 branch
 - update udev rules for lvm metad
