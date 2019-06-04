@@ -1,6 +1,6 @@
 Name: rpminstall-tests
 Version: 1.1.3
-Release: alt3
+Release: alt4
 
 Summary: Tests for rpm: how it interprets packages when installing
 
@@ -62,6 +62,12 @@ install -m0755 makeme.sh -t %buildroot%_datadir/%name/
 %_datadir/%name/makeme.sh %{?opts} minimal_epoch=0
 
 %changelog
+* Tue Jun  4 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.1.3-alt4
+- To catch more errors:
+  + upgradable.mk strictly_newer_* helpers:
+    a special reason for xfailing just the asymmetry test.
+  (The tests failing for other reasons will just fail rather than xfail.)
+
 * Fri Apr 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.1.3-alt3
 - To catch more errors (evidenced by file conflicts during rpm -U),
   now the package template includes a file with a unique value.
