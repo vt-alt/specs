@@ -1,6 +1,6 @@
 %define _unpackaged_files_terminate_build 1
 Name: sysstat
-Version: 12.0.3
+Version: 12.0.5
 Release: alt1
 
 Summary: The sar and iostat system monitoring commands
@@ -113,6 +113,9 @@ fi
 %_man1dir/isag.*
 
 %changelog
+* Mon Jun 03 2019 Alexey Melyashinsky <bip@altlinux.org> 12.0.5-alt1
+- Update to upstraem version 12.0.5.
+
 * Wed Dec 26 2018 Alexey Melyashinsky <bip@altlinux.org> 12.0.3-alt1
 - Update to upstream version 12.0.3.
 
