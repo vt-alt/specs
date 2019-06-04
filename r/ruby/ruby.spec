@@ -10,7 +10,7 @@
 
 Name:     ruby
 Version:  2.5.5
-Release:  alt2
+Release:  alt3
 Summary:  An Interpreted Object-Oriented Scripting Language
 License:  BSD 2-clause Simplified License/Ruby
 Group:    Development/Ruby
@@ -37,7 +37,7 @@ BuildRequires: libgdbm-devel libncursesw-devel libreadline-devel libssl-devel
 BuildRequires: zlib-devel libyaml-devel gcc-c++
 BuildRequires: valgrind-devel
 %{?!_with_bootstrap:BuildRequires: ruby ruby-stdlibs rpm-build-ruby >= 1:1.0.0}
-%{?_with_bootstrap:BuildRequires: ruby-miniruby-src = %ruby_version}
+%{?_with_bootstrap:BuildRequires: ruby-miniruby-src = %EVR}
 
 %description
 Ruby is an interpreted scripting language for quick and easy object-oriented
@@ -211,7 +211,7 @@ sed -i -e '/doc\/capi/s|"/capi|"/html/capi|' -e '/doc\/capi/s|doc/capi|&/html|' 
 cp -a /usr/share/gnu-config/config.* tool
 
 %build
-%define ruby_arch %_target%([ -z "%_gnueabi" ] || echo "-eabi")
+%define ruby_arch %(echo %_target | sed 's/^ppc/powerpc/')%([ -z "%_gnueabi" ] || echo "-eabi")
 %autoreconf
 %__setup_rb config --gem-version-replace="$RPM_RUBY_GEMVERSION_REPLACE_LIST" --use=rdoc --join=doc:lib
 my_configure() {
@@ -353,6 +353,10 @@ rm -rf %buildroot%_bindir/{ri,rdoc}
 %endif
 
 %changelog
+* Mon Jun 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.5.5-alt3
+- Fixed build on ppc64le architecture.
+- spec: bootstrap: fixed miniruby version.
+
 * Thu May 02 2019 Pavel Skrylev <majioa@altlinux.org> 2.5.5-alt2
 - Fixed ri documentation placement (closes: #36294)
 
