@@ -1,6 +1,6 @@
 Name: liblttng-ust
-Version: 2.10.2
-Release: alt2
+Version: 2.10.4
+Release: alt1
 
 Summary: Linux Trace Toolkit Userspace Tracer library
 
@@ -10,7 +10,10 @@ Url: http://lttng.org/lttng2.0
 
 # Source-url: http://lttng.org/files/lttng-ust/lttng-ust-%version.tar.bz2
 Source: %name-%version.tar
+Patch100: lttng-gen-tp-shebang.patch
+Patch101: 0001-Fix-namespace-our-gettid-wrapper.patch
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: gcc-c++
 BuildRequires: libuserspace-rcu-devel
 BuildRequires: libuuid-devel
@@ -42,6 +45,8 @@ This package includes documentation and examples for developing programs using L
 
 %prep
 %setup
+%patch100 -p1
+%patch101 -p1
 
 %build
 # to fix rpath
@@ -55,10 +60,10 @@ rm -vf %buildroot%_libdir/*.la
 rm -rf %buildroot/tmp/lttng-ust-divert
 
 %files
-%_bindir/lttng-gen-tp
 %_libdir/*.so.*
 
 %files devel
+%_bindir/lttng-gen-tp
 %_includedir/*
 %_libdir/*.so
 %_pkgconfigdir/lttng-ust*.pc
@@ -82,6 +87,10 @@ rm -rf %buildroot/tmp/lttng-ust-divert
 %_man3dir/tracepoint_enabled.3.*
 
 %changelog
+* Wed Jun 05 2019 Alexey Shabalin <shaba@altlinux.org> 2.10.4-alt1
+- 2.10.4
+- switch to use python3
+
 * Mon Dec 10 2018 Vitaly Lipatov <lav@altlinux.ru> 2.10.2-alt2
 - drop ExclusiveArch (ALT bug 35661)
 
