@@ -17,7 +17,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.13.0.1
-Release: alt6
+Release: alt7.1
 Group: System/Configuration/Packaging
 Url: http://www.rpm.org/
 # http://git.altlinux.org/gears/r/rpm.git
@@ -33,6 +33,14 @@ Requires: coreutils
 Requires: popt >= 1.10.2.1
 Requires: librpm%sover
 Conflicts: apt < 0.5.15lorg2-alt54
+
+# Can find pkgs by N-EPOCH:V-R
+# (a feature present in rpm-4.13, but not in all releases of rpm-4.0.4):
+Provides: RPMQ(EPOCH)
+# Can find pkgs by N[-E:V-R]@BUILDTIME
+Provides: RPMQ(BUILDTIME)
+# Can find pkgs by N-E:V-R:DISTTAG[@T]
+Provides: RPMQ(DISTTAG)
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: %bdbname-devel
@@ -248,6 +256,7 @@ Obsoletes: rpmhdrmemcache <= 0.1.2-alt3.1
 %package checkinstall
 Summary: Run tests for %name immediately when this package is installed
 Group: Other
+BuildArch: noarch
 Requires: %name
 Requires: rpminstall-tests-checkinstall
 
@@ -294,9 +303,14 @@ popd
 # We need to build with --enable-python for the self-test suite, but we
 # actually package the bindings built with setup.py (#531543#c26)
 rm -rf %buildroot/%python_sitelibdir
+rm -rf %buildroot/%python3_sitelibdir
 pushd python
 %python_install
+export RPM_LD_PRELOAD_py2_rpmb=%buildroot%python_sitelibdir/rpm/_rpmb.so
+export RPM_FILES_TO_LD_PRELOAD_py2_rpmb=%python_sitelibdir/rpm/_rpms.so
 %python3_install
+export RPM_LD_PRELOAD_py3_rpmb=%buildroot%python3_sitelibdir/rpm/_rpmb%_python3_extension_suffix
+export RPM_FILES_TO_LD_PRELOAD_py3_rpmb=%python3_sitelibdir/rpm/_rpms%_python3_extension_suffix
 popd
 
 mkdir -p %buildroot/usr/lib/tmpfiles.d
@@ -517,11 +531,25 @@ touch /var/lib/rpm/delay-posttrans-filetriggers
 %_includedir/rpm
 
 %changelog
+* Wed Jun 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt7.1
+- Provides: RPMQ(EPOCH) RPMQ(BUILDTIME) RPMQ(DISTTAG)
+  (to be required by APT and other tools such as update-kernel, which need
+  to query the RPM db by specifying Epoch, Buildtime, and Disttag).
+
+* Mon May 27 2019 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt7
+(thx Vladimir D. Seleznev vseleznv@)
+- Added support for dbi matching against DistTag and BuildTime (closes: #36375).
+- Display NEVR with DistTag or BuildTime when label, specified to erase, is
+  matching to multiple packages.
+(thx Gleb F-Malinovskiy glebfm@)
+- Fix non-LFS functions on i586 in rpm-plugins/systemd_inhibit.so,
+  /usr/lib/rpm/sepdebugcrcfix (thx glebfm@).
+
 * Mon Feb 11 2019 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt6
 - rpmRangesOverlap() made asymmetric w.r.t. underspecified release or disttag.
   (Provides: N = V can't anymore satisfy Requires: N = V-R. Look out for unmets!)
   (thx Vladimir D. Seleznev)
-- rpmRangesOverlap() optimized (can run ca. 30% faster).
+- rpmRangesOverlap() optimized (can run ca. 30%% faster).
 - checkinstall subpackage added.
 
 * Tue Jan 15 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.13.0.1-alt5

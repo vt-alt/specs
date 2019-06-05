@@ -1,17 +1,20 @@
 Name: update-kernel
-Version: 0.9.13
+Version: 0.9.14
 Release: alt1
 
 Summary: Update kernel and modules
 License: GPL
 Group: System/Kernel and hardware
 
-Packager: Vladimir V Kamarzin <vvk@altlinux.ru>
 Source: %name-%version.tar
 BuildArch: noarch
 
 Requires: apt
 Requires: /usr/bin/rpmevrcmp
+# May use rpm -q with an Epoch in the pkg argument (as well as Buildtime and
+# Disttag -- but these are dependent on the output from APT, and APT cares
+# about the correct dependencies on such features).
+Requires: RPMQ(EPOCH)
 
 %description
 This package contains a script to conveniently update
@@ -39,6 +42,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Wed Jun 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.14-alt1
+- update-kernel: fixed in the presence of disttags in package IDs
+  printed by APT (apt-cache pkgnames).
+
 * Tue May 28 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.13-alt1
 - remove-old-kernels: APT invocation (to remove installed pkgs) rewritten in
   a more portable way. (A preparation for APT with support for disttags.)
