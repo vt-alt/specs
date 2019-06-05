@@ -2,7 +2,7 @@
 
 Name: blender
 Version: 2.79b
-Release: alt6
+Release: alt7
 
 Summary: 3D modeling, animation, rendering and post-production
 License: GPLv2
@@ -10,9 +10,7 @@ Group: Graphics
 URL: http://www.blender.org/
 
 # Repacked http://download.blender.org/source/blender-%%version.tar.gz
-Source0: %name-%version.tar
-Source1: %name.desktop
-Source2: %name-win.desktop
+Source: %name-%version.tar
 
 Patch11: 0001-blender_thumbnailer.patch
 Patch12: 0002-install_in_usr_share.patch
@@ -29,6 +27,8 @@ Patch22: blender-2.77-alt-enable-localization.patch
 Patch23: blender-2.77-alt-usertempdir.patch
 Patch24: blender-2.79-upstream-gcc8.patch
 Patch25: blender-2.79-alt-gcc8.patch
+Patch26: blender-2.79-slackbuilds-PyRNA-python3.7.patch
+Patch27: blender-2.79-fedora-oiio2.patch
 
 BuildRequires(pre): rpm-build-python3
 
@@ -110,6 +110,8 @@ scripting, rendering, compositing, post-production and game creation
 %patch23 -p1
 %patch24 -p1
 %patch25 -p2
+%patch26 -p1
+%patch27 -p1
 
 %ifnarch %ix86 x86_64
 sed -i 's,-fuse-ld=gold,,' build_files/cmake/platform/platform_unix.cmake
@@ -172,9 +174,6 @@ popd
 %install
 %makeinstall_std -C cmake-make
 
-install -pD -m644 %SOURCE1 %buildroot%_desktopdir/%name.desktop
-install -pD -m644 %SOURCE2 %buildroot%_desktopdir/%name-win.desktop
-
 %find_lang blender
 
 %files -f %name.lang
@@ -186,6 +185,11 @@ install -pD -m644 %SOURCE2 %buildroot%_desktopdir/%name-win.desktop
 %_defaultdocdir/%name/
 
 %changelog
+* Tue May 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.79b-alt7
+- Fixed compatibility with python-3.7.
+- Rebuilt with openimageio-2.0.8.
+- Switched to upstream desktop file.
+
 * Fri Nov 30 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.79b-alt6
 - Fixed build with gcc-8 (Closes: #35699)
 
