@@ -1,7 +1,7 @@
 %define rname ktextwidgets
 
 Name: kf5-%rname
-Version: 5.57.0
+Version: 5.58.0
 Release: alt1
 %K5init altplace
 
@@ -76,6 +76,9 @@ KF5 library
 %_K5srvtyp/*desktop
 
 %changelog
+* Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 5.58.0-alt1
+- new version
+
 * Mon Apr 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.57.0-alt1
 - new version
 

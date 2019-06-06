@@ -1,7 +1,7 @@
 %define rname knewstuff
 
 Name: kf5-%rname
-Version: 5.57.0
+Version: 5.58.0
 Release: alt1
 %K5init altplace
 
@@ -84,7 +84,7 @@ done
 %files common -f %name.lang
 %doc COPYING.LIB README.md
 %config(noreplace) %_K5xdgconf/*
-%_K5data/knewstuff/
+#%_K5data/knewstuff/
 %_K5data/kmoretools/
 
 %files devel
@@ -103,6 +103,9 @@ done
 
 
 %changelog
+* Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 5.58.0-alt1
+- new version
+
 * Mon Apr 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.57.0-alt1
 - new version
 

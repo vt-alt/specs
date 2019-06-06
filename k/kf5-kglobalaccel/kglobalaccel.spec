@@ -1,8 +1,8 @@
 %define rname kglobalaccel
 
 Name: kf5-%rname
-Version: 5.57.0
-Release: alt2
+Version: 5.58.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -98,6 +98,9 @@ KF5 library
 %_K5lib/libKF5GlobalAccelPrivate.so.*
 
 %changelog
+* Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 5.58.0-alt1
+- new version
+
 * Thu Apr 25 2019 Oleg Solovyov <mcpain@altlinux.org> 5.57.0-alt2
 - fix crash
 
