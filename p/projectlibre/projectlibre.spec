@@ -2,7 +2,7 @@
 
 Name:    projectlibre
 Version: 1.9.1
-Release: alt1
+Release: alt2
 
 Summary: ProjectLibre - The open source replacement of Microsoft Project
 
@@ -15,6 +15,7 @@ Source:  %name-%version.tar
 Source1: %name.watch
 Patch1:  %name-1.6.2-mga-l10n-dialogs.patch
 Patch2:  %name-1.6.2-alt-fix-path-in-executable.patch
+Patch3:  %name-alt-fix-help-browser-list.patch
 
 Packager: Danil Mikhailov <danil@altlinux.org>
 
@@ -47,6 +48,7 @@ added key features:
 %setup
 #patch2 -p1
 #patch1 -p1
+%patch3 -p1
 # Set Java version
 subst 's/\(source\|target\)="[0-9.]\+"/\1="%java_version"/g' `find . -name build.xml`
 # Replace hard-coded library path by default JRE path
@@ -90,6 +92,9 @@ install -Dm0644 projectlibre_build/resources/%name.png %buildroot%_pixmapsdir/%n
 %_pixmapsdir/*
 
 %changelog
+* Wed Jun 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.9.1-alt2
+- Fix browser detection for help.
+
 * Fri May 24 2019 Andrey Cherepanov <cas@altlinux.org> 1.9.1-alt1
 - New version.
 
