@@ -1,7 +1,7 @@
 %define rname filelight
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init altplace
 
@@ -75,6 +75,9 @@ KF5 library
 %_K5xmlgui/filelight*/
 
 %changelog
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

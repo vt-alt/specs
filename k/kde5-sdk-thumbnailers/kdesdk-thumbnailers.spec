@@ -1,7 +1,7 @@
 %define rname kdesdk-thumbnailers
 
 Name: kde5-sdk-thumbnailers
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init
 
@@ -43,6 +43,9 @@ BuildRequires: kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel
 %_K5srv/*thumbnail*.desktop
 
 %changelog
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
