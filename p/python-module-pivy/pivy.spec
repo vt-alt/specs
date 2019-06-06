@@ -1,7 +1,7 @@
 %define oname pivy
 Name: python-module-%oname
 Version: 0.5.0
-Release: alt2.hg20100619.3.2
+Release: alt2.hg20100619.3.3
 Serial: 2
 Summary: Pivy is a Coin binding for Python
 License: BSD
@@ -35,7 +35,7 @@ ln -s %_includedir/Inventor/SoDB.h fake_headers/Inventor/
 %install
 %python_install
 
-%ifarch x86_64 || aarch64
+%if "%python_sitelibdir_noarch" != "%python_sitelibdir"
 install -d %buildroot%python_sitelibdir
 mv %buildroot%python_sitelibdir_noarch/%oname \
 	%buildroot%python_sitelibdir_noarch/*.egg-info \
@@ -47,6 +47,9 @@ mv %buildroot%python_sitelibdir_noarch/%oname \
 %python_sitelibdir/*
 
 %changelog
+* Thu Jun 06 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2:0.5.0-alt2.hg20100619.3.3
+- Fixed build on architectures with "%_lib" != lib.
+
 * Mon Jun 11 2018 Anton Midyukov <antohami@altlinux.org> 2:0.5.0-alt2.hg20100619.3.2
 - Rebuilt for aarch64
 
