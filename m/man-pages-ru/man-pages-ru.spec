@@ -1,9 +1,9 @@
 Name: man-pages-ru
-Version: 4.16
+Version: 4.17
 Release: alt1
 
-# man-pages-ru_4.16-2383-2383-20180422.tar.bz2
-%define lversion %version-2383-2383-20180422
+# man-pages-ru_4.17-2385-2385-20181124.tar.bz2
+%define lversion %version-2385-2385-20181124
 
 Summary: Russian translations of OS GNU/*/Linux manpages
 Summary(ru_RU.UTF-8): Русские переводы страниц руководства по ОС GNU/*/Linux
@@ -47,7 +47,7 @@ ascii); and Section 8, system administration.
 %setup -q -n man-pages-ru_%lversion
 #patch0 -p1
 #patch1 -p0
-cp %SOURCE1 %_builddir/man-pages-ru_%lversion/Makefile
+sed "s/@VERSION@/%version/" < %SOURCE1 > %_builddir/man-pages-ru_%lversion/Makefile
 
 #set_compress_method skip
 
@@ -92,6 +92,9 @@ fi
 %_cachedir/man/ru/cat*
 
 %changelog
+* Thu May 30 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.17-alt1
+- 4.17-2385-2385-20181124
+
 * Sat Aug 25 2018 Sergey Y. Afonin <asy@altlinux.ru> 4.16-alt1
 - 4.16-2383-2383-20180422
 
