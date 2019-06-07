@@ -4,7 +4,7 @@
 %define libkpimsmtp libkpimsmtp%sover
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init
 
@@ -77,6 +77,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libKPimSMTP.so.%sover
 
 %changelog
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Tue Apr 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
