@@ -1,7 +1,7 @@
 %define rname spectacle
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init altplace
 
@@ -73,6 +73,9 @@ developing applications that use %name.
 #%_K5dbus_iface/org.kde.Spectacle.xml
 
 %changelog
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Mon May 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

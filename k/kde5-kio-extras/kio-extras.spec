@@ -8,7 +8,7 @@
 %def_enable exiv2
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 %K5init altplace
 
@@ -120,6 +120,7 @@ rm -rf %buildroot/%_K5doc/*/kioslave5/man
 %_K5srvtyp/*.desktop
 %_K5data/solid/actions/*.desktop
 %_K5cfg/*.kcfg
+%_K5dbus_srv/*.service
 
 %files devel
 %_K5inc/*kio*archive*.h
@@ -139,6 +140,9 @@ rm -rf %buildroot/%_K5doc/*/kioslave5/man
 %_K5lib/libkioarchive.so.%kioarchive_sover
 
 %changelog
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Mon May 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
