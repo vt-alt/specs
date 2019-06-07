@@ -2,7 +2,7 @@
 %def_disable openswan
 
 Name: plasma5-nm
-Version: 5.15.4
+Version: 5.15.5
 Release: alt2
 Epoch: 1
 %K5init altplace
@@ -294,6 +294,12 @@ install -m0644 -p -D %SOURCE10 %buildroot/%_K5data/plasma/updates/01-plasma-nm.j
 %_K5srv/plasmanetworkmanagement_wireguardui.desktop
 
 %changelog
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
+- new version
+
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt1
+- new version
+
 * Tue May 07 2019 Oleg Solovyov <mcpain@altlinux.org> 1:5.15.4-alt2
 - password dialog: validate wireless keys
 

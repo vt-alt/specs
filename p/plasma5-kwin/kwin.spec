@@ -16,8 +16,8 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.15.4
-Release: alt1
+Version: 5.15.5
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -201,6 +201,12 @@ KF5 library
 
 
 %changelog
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
+- new version
+
+* Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt1
+- new version
+
 * Wed Apr 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.4-alt1
 - new version
 
