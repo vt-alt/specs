@@ -25,7 +25,7 @@
 
 Name: plasma5-workspace
 Version: 5.15.5
-Release: alt2
+Release: alt3
 Epoch: 1
 %K5init altplace
 
@@ -379,6 +379,9 @@ done
 
 
 %changelog
+* Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt3
+- fix to setup startup environment variables
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 
