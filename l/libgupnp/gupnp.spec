@@ -1,11 +1,14 @@
+%def_enable snapshot
+
 %define _name gupnp
 %define ver_major 1.0
-%def_disable static
 %def_disable gtk_doc
 %def_enable introspection
+%def_enable vala
+%def_enable check
 
 Name: libgupnp
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: A framework for creating UPnP devices and control points
@@ -13,9 +16,14 @@ Group: System/Libraries
 License: LGPLv2+
 Url: http://www.gupnp.org/
 
+%if_disabled snapshot
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%_name/%ver_major/%_name-%version.tar.xz
+%else
+Source: %_name-%version.tar
+%endif
 
-BuildPreReq: gnome-common libgssdp-devel >= 0.14.16 libgio-devel >= 2.40.0
+BuildRequires(pre): meson
+BuildRequires: libgssdp-devel >= 0.14.16 libgio-devel >= 2.40.0
 BuildRequires: libxml2-devel libsoup-devel >= 2.48 libuuid-devel gtk-doc
 BuildRequires: vala-tools rpm-build-vala libvala-devel >= 0.22
 %{?_enable_introspection:BuildPreReq: gobject-introspection-devel libsoup-gir-devel libgssdp-gir-devel}
@@ -72,17 +80,19 @@ GObject introspection devel data for the gUPnP library
 %setup -n %_name-%version
 
 %build
-%configure --disable-static \
-%{?_enable_gtk_doc:--enable-gtk-doc} \
-%{subst_enable introspection}
+%meson \
+%{?_enable_gtk_doc:-Dgtk_doc=true} \
+%{?_disable_introspection:-Dintrospection=false} \
+%{?_disable_vala:-Dvapi=false}
 
-%make_build
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %check
-%make check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
 %files
 %_libdir/*.so.*
@@ -93,11 +103,15 @@ GObject introspection devel data for the gUPnP library
 %_pkgconfigdir/*.pc
 %_libdir/*.so
 %_includedir/*
+%if_enabled vala
 %_vapidir/*.deps
 %_vapidir/*.vapi
+%endif
 
+%if_enabled gtk_doc
 %files devel-doc
 %_datadir/gtk-doc/html/*
+%endif
 
 %if_enabled introspection
 %files gir
@@ -109,6 +123,9 @@ GObject introspection devel data for the gUPnP library
 
 
 %changelog
+* Sun Jun 02 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.4-alt1
+- updated to 1.0.4-1-g17027fd
+
 * Mon Jul 30 2018 Yuri N. Sedunov <aris@altlinux.org> 1.0.3-alt1
 - 1.0.3
 

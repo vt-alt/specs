@@ -13,8 +13,8 @@
 %def_disable jack
 
 Name: pipewire
-Version: %ver_major.5
-Release: alt1.2
+Version: %ver_major.6
+Release: alt1
 
 Summary: Media Sharing Server
 Group: System/Servers
@@ -91,6 +91,8 @@ This package contains command line utilities for the PipeWire media server.
 
 %prep
 %setup
+#find ./ -type f -name "*.[c,h]" -print0 | \
+#xargs -r0 sed -i "s|<asoundlib.h>|<alsa/asoundlib.h>|" --
 
 %build
 %meson \
@@ -154,6 +156,9 @@ This package contains command line utilities for the PipeWire media server.
 %endif
 
 %changelog
+* Mon May 27 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.6-alt1
+- updated to 0.2.6-1-g37613b67
+
 * Mon May 06 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.5-alt1.2
 - fixed build without docs
 

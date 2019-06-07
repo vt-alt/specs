@@ -1,23 +1,26 @@
 %define ver_major 0.4
 %define api_ver %ver_major
 
+%def_enable gtk_doc
+%def_enable check
+
 Name: lasem
-Version: %ver_major.3
-Release: alt1.1
+Version: %ver_major.4
+Release: alt1
 
 Summary: C/Gobject based SVG/Mathml renderer and editor - tools
 License: GPL
 Group: Graphics
 
-Url: https://live.gnome.org/Lasem
+Url: https://gitlab.gnome.org/GNOME/lasem
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.tar.xz
 #Source: %name-%version.tar
 
 BuildRequires: libgio-devel libxml2-devel libcairo-devel libcairo-gobject-devel libgdk-pixbuf-devel libpango-devel
 BuildRequires: libgdk-pixbuf-gir-devel libpango-gir-devel
-BuildRequires: intltool flex gtk-doc
+BuildRequires: intltool bison flex gtk-doc
 
-PreReq: lib%name = %version-%release
+Requires(pre): lib%name = %version-%release
 
 %description
 Lasem aims to be a C/Gobject based SVG/Mathml renderer and editor,
@@ -37,7 +40,7 @@ Requires: fonts-ttf-latex-xft
 %package -n lib%name-devel
 Summary: C/Gobject based SVG/Mathml renderer and editor - development files
 Group: Development/C
-PreReq: lib%name = %version-%release
+Requires(pre): lib%name = %version-%release
 
 %description -n lib%name-devel
 %summary
@@ -77,7 +80,7 @@ applications.
 %build
 %autoreconf
 %configure --disable-static \
-	--enable-gtk-doc
+	%{?_enable_gtk_doc:--enable-gtk-doc}
 
 %make_build
 
@@ -107,10 +110,17 @@ applications.
 %files -n lib%name-gir-devel
 %_girdir/Lasem-%api_ver.gir
 
+%if_enabled gtk_doc
 %files -n lib%name-devel-doc
 %_datadir/gtk-doc/html/%name-%api_ver/
+%endif
+
+%exclude %_prefix/doc/%name-%api_ver/
 
 %changelog
+* Fri May 24 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.4-alt1
+- 0.4.4
+
 * Fri May 04 2018 Grigory Ustinov <grenka@altlinux.org> 0.4.3-alt1.1
 - NMU: Rebuilt for e2k.
 

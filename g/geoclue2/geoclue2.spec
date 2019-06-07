@@ -12,7 +12,7 @@
 %def_enable introspection
 
 Name: %{_name}2
-Version: %ver_major.2
+Version: %ver_major.3
 Release: alt1
 
 Summary: The Geoinformation Service
@@ -135,6 +135,9 @@ rm -f demo/*.desktop.in
 %meson_install
 mkdir -p %buildroot%_localstatedir/%_name
 
+echo 'd %_localstatedir/%_name 0755 %_name %_name' | \
+install -D -m644 /dev/stdin %buildroot%_tmpfilesdir/%_name.conf
+
 %check
 %meson_test
 
@@ -155,8 +158,10 @@ mkdir -p %buildroot%_localstatedir/%_name
 %_datadir/dbus-1/system-services/%__name.service
 %systemd_unitdir/%_name.service
 %config %_sysconfdir/%_name/%_name.conf
-%attr(1770, %_name, %_name) %dir %_localstatedir/%_name
-%doc README NEWS
+%attr(755,%_name,%_name) %dir %_localstatedir/%_name
+%_tmpfilesdir/%_name.conf
+%_man5dir/%_name.5*
+%doc README* NEWS
 
 %files devel
 %_pkgconfigdir/%_name-%api_ver.pc
@@ -193,6 +198,12 @@ mkdir -p %buildroot%_localstatedir/%_name
 %_xdgconfigdir/autostart/%_name-demo-agent.desktop
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.3-alt1
+- 2.5.3
+
+* Fri Mar 15 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.2-alt2
+- added config for systemd-tmpfiles
+
 * Tue Jan 08 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.2-alt1
 - 2.5.2
 

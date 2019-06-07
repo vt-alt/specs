@@ -2,16 +2,16 @@
 %def_disable check
 
 Name: libgit2
-Version: 0.28.1
+Version: 0.28.2
 Release: alt1
 
 Summary: linkable library for Git
 License: GPLv2 with linking exception
 
 Group: System/Libraries
-Url: http://libgit2.github.com
+Url: https://github.com/%name
 
-Source: %name-%version.tar.gz
+Source: %url/%name/archive/v%version/%name-%version.tar.gz
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: cmake python-modules zlib-devel libssl-devel libssh2-devel
@@ -65,6 +65,9 @@ sed -i 's/@CMAKE_INSTALL_PREFIX@\///' %name.pc.in
 %_pkgconfigdir/%name.pc
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 0.28.2-alt1
+- 0.28.2
+
 * Fri Feb 15 2019 Yuri N. Sedunov <aris@altlinux.org> 0.28.1-alt1
 - 0.28.1
 

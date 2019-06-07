@@ -1,5 +1,5 @@
-%def_enable snapshot
-%define ver_major 3.30
+%def_disable snapshot
+%define ver_major 3.32
 %define api_ver 1.0
 %define xdg_name org.gnome.gitg
 
@@ -8,8 +8,8 @@
 %def_enable docs
 
 Name: gitg
-Version: %ver_major.1
-Release: alt2
+Version: %ver_major.0
+Release: alt1
 
 Summary: git repository viewer targeting gtk+/GNOME
 Group: Development/Other
@@ -175,6 +175,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_girdir/GitgExt-%api_ver.gir
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
+- 3.32.0
+
 * Mon Apr 15 2019 Yuri N. Sedunov <aris@altlinux.org> 3.30.1-alt2
 - updated to v3.30.1-111-g83d3802b from master branch
 

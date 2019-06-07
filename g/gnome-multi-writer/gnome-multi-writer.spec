@@ -5,7 +5,7 @@
 %define _name org.gnome.MultiWriter
 
 Name: gnome-multi-writer
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: Write an ISO file to multiple USB devices at once
@@ -62,6 +62,9 @@ USB devices simultaneously.
 
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- 3.32.1
+
 * Fri Mar 08 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

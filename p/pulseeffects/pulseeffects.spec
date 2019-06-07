@@ -2,7 +2,7 @@
 %define xdg_name com.github.wwmm.pulseeffects
 
 Name: pulseeffects
-Version: 4.6.0
+Version: 4.6.3
 Release: alt1
 
 Summary: Audio effects for Pulseaudio applications
@@ -10,7 +10,7 @@ License: GPLv3
 Group: Sound
 Url: https://github.com/wwmm/pulseeffects
 
-Source: %url/archive/%version/%name-%version.tar.gz
+Source: %url/archive/v%version/%name-%version.tar.gz
 
 %define gst_ver 1.12.5
 %define glibmm_ver 2.56
@@ -31,7 +31,7 @@ Requires: lv2-lsp-plugins >= %lsp_ver
 
 BuildRequires(pre): meson
 BuildRequires: yelp-tools desktop-file-utils libappstream-glib-devel
-BuildRequires: gcc-c++ boost-filesystem-devel
+BuildRequires: gcc-c++ boost-filesystem-devel boost-asio-devel
 BuildRequires: libglibmm-devel >= %glibmm_ver libgtkmm3-devel >= %gtk_ver
 BuildRequires: gst-plugins-bad%gst_api_ver-devel
 BuildRequires: libpulseaudio-devel libsndfile-devel libsamplerate-devel libfftw3-devel
@@ -72,6 +72,15 @@ effects for Pulseaudio applications.
 %doc README* CHANGELOG.*
 
 %changelog
+* Mon Jun 03 2019 Yuri N. Sedunov <aris@altlinux.org> 4.6.3-alt1
+- 4.6.3
+
+* Fri May 31 2019 Yuri N. Sedunov <aris@altlinux.org> 4.6.2-alt1
+- 4.6.2
+
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 4.6.1-alt1
+- 4.6.1
+
 * Tue Apr 30 2019 Yuri N. Sedunov <aris@altlinux.org> 4.6.0-alt1
 - 4.6.0
 

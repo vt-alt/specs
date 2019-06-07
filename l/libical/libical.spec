@@ -11,7 +11,7 @@
 %def_with system_tzdata
 
 Name: libical
-Version: 3.0.4
+Version: 3.0.5
 Release: alt1
 
 Summary: An implementation of basic iCAL protocols
@@ -172,10 +172,10 @@ LD_LIBRARY_PATH=%buildroot%_libdir %make test -C BUILD
 
 %if_enabled introspection
 %files gir
-%_typelibdir/%name-%version.typelib
+%_typelibdir/ICal-%api_ver.typelib
 
 %files gir-devel
-%_girdir/%name-%version.gir
+%_girdir/ICal-%api_ver.gir
 
 %files -n %name-glib-gir
 %_typelibdir/ICalGLib-%api_ver.typelib
@@ -191,6 +191,9 @@ LD_LIBRARY_PATH=%buildroot%_libdir %make test -C BUILD
 
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.0.5-alt1
+- 3.0.5
+
 * Wed Aug 15 2018 Yuri N. Sedunov <aris@altlinux.org> 3.0.4-alt1
 - 3.0.4
 

@@ -3,7 +3,7 @@
 %def_with recording
 
 Name: gnome-internet-radio-locator
-Version: %ver_major.1
+Version: %ver_major.4
 Release: alt1
 
 Summary: GNOME Internet Radio Locator
@@ -46,10 +46,8 @@ with the help of a map.
 
 %files -f %name.lang
 %_bindir/%name
-%_datadir/applications/%name.desktop
+%_desktopdir/%name.desktop
 %_datadir/%name/
-#%_datadir/glib-2.0/schemas/org.gnome.gnome-internet-radio-locator.enums.xml
-#%_datadir/glib-2.0/schemas/org.gnome.gnome-internet-radio-locator.gschema.xml
 %_iconsdir/hicolor/*x*/apps/%name.png
 %_datadir/metainfo/%name.appdata.xml
 %_man1dir/%name.1.*
@@ -57,6 +55,9 @@ with the help of a map.
 
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.0.4-alt1
+- 2.0.4
+
 * Fri Apr 05 2019 Yuri N. Sedunov <aris@altlinux.org> 2.0.1-alt1
 - 2.0.1
 

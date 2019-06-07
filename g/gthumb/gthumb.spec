@@ -1,8 +1,8 @@
-%def_enable snapshot
+%def_disable snapshot
 %define _libexecdir %_prefix/libexec
 
 %define ver_base 3.8
-%define ver_major 3.7
+%define ver_major 3.8
 %define gst_api_ver 1.0
 %define xdg_name org.gnome.gThumb
 
@@ -15,7 +15,7 @@
 %def_enable gstreamer
 
 Name: gthumb
-Version: %ver_major.2
+Version: %ver_major.0
 Release: alt1
 
 Summary: An image file viewer and browser for GNOME
@@ -165,6 +165,9 @@ This package contains headers needed to build extensions for gThumb.
 %_pkgconfigdir/*
 
 %changelog
+* Mon May 27 2019 Yuri N. Sedunov <aris@altlinux.org> 3.8.0-alt1
+- 3.8.0
+
 * Sun May 12 2019 Yuri N. Sedunov <aris@altlinux.org> 3.7.2-alt1
 - updated to 3.7.2-2-ga3cf5b19
 

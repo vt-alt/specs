@@ -1,4 +1,4 @@
-%define ver_major 2.5
+%define ver_major 2.7
 %define api_ver 1.0
 %define _libexecdir %_prefix/libexec
 
@@ -83,6 +83,9 @@ Developer documentation for %name.
 
 
 %changelog
+* Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.7-alt1
+- 2.7
+
 * Thu Oct 25 2018 Yuri N. Sedunov <aris@altlinux.org> 2.5-alt1
 - updated to 2.5-6-gbb35319
 
