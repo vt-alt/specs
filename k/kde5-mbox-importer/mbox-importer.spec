@@ -1,7 +1,7 @@
 %define rname mbox-importer
 
 Name: kde5-%rname
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init
 
@@ -22,7 +22,7 @@ BuildRequires: extra-cmake-modules qt5-base-devel
 BuildRequires: boost-devel libassuan-devel libdb4-devel libsasl2-devel
 BuildRequires: kde5-akonadi-contacts-devel kde5-akonadi-devel kde5-akonadi-mime-devel kde5-kcontacts-devel kde5-kidentitymanagement-devel
 BuildRequires: kde5-kimap-devel kde5-kmime-devel kde5-kpimtextedit-devel kde5-mailcommon-devel kde5-mailimporter-devel kde5-messagelib-devel
-BuildRequires: kde5-pimcommon-devel
+BuildRequires: kde5-pimcommon-devel kde5-libkdepim-devel
 BuildRequires: kf5-kcrash-devel kf5-kio-devel kf5-kitemmodels-devel kf5-ktextwidgets-devel kf5-karchive-devel
 
 %description
@@ -77,6 +77,9 @@ KF5 library
 #%_K5lib/libmbox-importer.so.*
 
 %changelog
+* Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 
