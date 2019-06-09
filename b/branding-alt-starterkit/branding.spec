@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt2
+Release: alt3
 
 Url: http://en.altlinux.org/starterkits
 
@@ -176,6 +176,16 @@ Requires(post): indexhtml-common
 %description indexhtml
 ALT Linux index.html welcome page.
 
+%package xfce-settings
+
+Summary: XFCE settings for %Brand %version %Theme
+License: Distributable
+Group: Graphical desktop/XFce
+Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-xfce-settings ";done )
+
+%description xfce-settings
+XFCE settings for %Brand %version %Theme
+
 %prep
 %setup -n branding
 
@@ -230,6 +240,14 @@ popd
 #slideshow
 mkdir -p %buildroot/usr/share/install2/slideshow
 install slideshow/* %buildroot/usr/share/install2/slideshow/
+
+#xfce-settings
+pushd xfce-settings
+mkdir -p %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+mkdir -p %buildroot/etc/skel/.config/xfce4/panel
+cp -r etcskel/.config/xfce4/xfconf/xfce-perchannel-xml/* %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+cp -r etcskel/.config/xfce4/panel/* %buildroot/etc/skel/.config/xfce4/panel
+popd
 
 #bootloader
 %pre bootloader
@@ -303,7 +321,13 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %indexhtmldir/img
 %_desktopdir/indexhtml.desktop
 
+%files xfce-settings
+%_sysconfdir/skel/.config/xfce4
+
 %changelog
+* Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> p9-alt3
+- xfce-settings back in minimal
+
 * Mon May 27 2019 Anton Midyukov <antohami@altlinux.org> p9-alt2
 - setup GRUB_WALLPAPER when installing bootloader
 
