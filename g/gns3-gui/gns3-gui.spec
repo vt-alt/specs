@@ -3,7 +3,7 @@
 
 Name: gns3-gui
 Version: 2.2.0
-Release: alt2.a4
+Release: alt3.b2
 
 Summary: GNS3 Graphical User Interface
 License: GPLv3
@@ -82,6 +82,9 @@ install -Dp -m0644 %SOURCE5 %buildroot%_desktopdir/gns3.desktop
 %files -n gns3
 
 %changelog
+* Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> 2.2.0-alt3.b2
+- New beta release 2.2.0b2
+
 * Sun Apr 21 2019 Anton Midyukov <antohami@altlinux.org> 2.2.0-alt2.a4
 - Add requires python3-module-service_identity
 
