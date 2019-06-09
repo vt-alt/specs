@@ -1,5 +1,8 @@
+# Unpackaged files in buildroot should terminate build
+%define _unpackaged_files_terminate_build 1
+
 Name:     earlyoom
-Version:  1.2
+Version:  1.3
 Release:  alt2
 
 Summary:  Early OOM Daemon for Linux
@@ -12,9 +15,9 @@ Packager: Anton Midyukov <antohami@altlinux.org>
 Source:   %name-%version.tar
 Source1:  %name.init
 
-%ifarch %ix86 x86_64
 BuildRequires: pandoc
-%endif
+BuildRequires: golang
+BuildRequires: /proc
 
 %description
 The oom-killer generally has a bad reputation among Linux users.
@@ -42,6 +45,9 @@ sed -e 's/VERSION ?= \$(shell git describe --tags --dirty 2> \/dev\/null)/VERSIO
 mkdir -p %buildroot%_initdir
 install -pm755 %SOURCE1 %buildroot%_initdir/%name
 
+%check
+%make_build test ||:
+
 %post
 %post_service %name
 
@@ -53,14 +59,16 @@ install -pm755 %SOURCE1 %buildroot%_initdir/%name
 %_bindir/%name
 %_unitdir/%name.service
 %_initdir/%name
-
-%ifarch %ix86 x86_64
 %_man1dir/%name.*
-%endif
-
 %config(noreplace) %_sysconfdir/default/%name
 
 %changelog
+* Fri Jun 07 2019 Anton Midyukov <antohami@altlinux.org> 1.3-alt2
+- add condrestart, condstop in init script
+
+* Wed Jun 05 2019 Anton Midyukov <antohami@altlinux.org> 1.3-alt1
+- new version 1.3
+
 * Sat Jan 26 2019 Anton Midyukov <antohami@altlinux.org> 1.2-alt2
 - Added init script (Thanks Specyfighter)
 
