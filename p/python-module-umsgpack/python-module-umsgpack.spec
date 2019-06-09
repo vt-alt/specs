@@ -4,7 +4,7 @@
 %python_req_hier
 
 Name:    python-module-%modulename
-Version: 2.5.0
+Version: 2.5.1
 Release: alt1
 
 Summary: A portable, lightweight MessagePack serializer and deserializer
@@ -68,5 +68,8 @@ Python 3 version.
 %python3_sitelibdir/*.egg-info
 
 %changelog
+* Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> 2.5.1-alt1
+- new version 2.5.1
+
 * Tue Aug 21 2018 Anton Midyukov <antohami@altlinux.org> 2.5.0-alt1
 - Initial build for Sisyphus
