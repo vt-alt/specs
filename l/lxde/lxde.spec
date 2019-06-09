@@ -1,6 +1,6 @@
 Name: lxde
-Version: 1.0
-Release: alt17
+Version: 1.1
+Release: alt2
 Summary: Virtual package for install all parts of LXDE
 Group: Graphical desktop/Other
 License: GPL
@@ -10,7 +10,17 @@ Requires: lxde-lite = %EVR
 Requires: lxde-lxrandr lxde-lxshortcut lxde-lxinput lxde-lxtask lxde-lxhotkey lxde-lxterminal
 Requires: gpicview leafpad
 Requires: lxde-lxpolkit
-Conflicts: lxde-sysvinit
+Requires: lxde-settings-lxdesktop
+Requires: icon-theme-faenza-blue
+Requires: gnome-themes-extra libgtk2-engine-adwaita
+Requires: fonts-ttf-google-droid-sans-mono fonts-ttf-google-droid-sans fonts-ttf-google-droid-serif
+Requires: qasmixer
+Requires: screengrab
+Requires: xdg-user-dirs-gtk
+
+Provides: lxde-sysvinit = %EVR
+Obsoletes: lxde-sysvinit < 1.1
+
 Packager: LXDE Packaging Team <lxde@packages.altlinux.org>
 
 %description
@@ -23,31 +33,21 @@ License: GPL
 BuildArch: noarch
 Requires: lxde-common lxde-lxpanel lxde-lxsession lxde-freedesktop-menu lxde-lxsession-edit
 Requires: pcmanfm2 menu-cache lxde-lxappearance lxde-lxappearance-obconf
-Requires: openbox
 
 %description lite
 %summary
 
-%package sysvinit
-Summary: Virtual package for install LXDE packages for SysVinit
-Group: Graphical desktop/Other
-License: GPL
-BuildArch: noarch
-Requires: lxde-lite = %EVR
-Requires: lxde-lxrandr lxde-lxshortcut lxde-lxinput lxde-lxtask lxde-lxhotkey lxde-lxterminal
-Requires: gpicview leafpad
-Requires: ConsoleKit2-service ConsoleKit2-x11
-Requires: polkit-sysvinit nm-sysvinit
-Conflicts: lxde lxde-lxpolkit
-
-%description sysvinit
-%summary
-
 %files
 %files lite
-%files sysvinit
 
 %changelog
+* Sat Jun 08 2019 Anton Midyukov <antohami@altlinux.org> 1.1-alt2
+- lxde-lite not requre openbox more
+
+* Fri Jun 07 2019 Anton Midyukov <antohami@altlinux.org> 1.1-alt1
+- drop lxde-sysvinit
+- add requires for lxde-settings-lxdesktop
+
 * Sat Jan 19 2019 Anton Midyukov <antohami@altlinux.org> 1.0-alt17
 - lxde-sysv requires ConsoleKit2-service, ConsoleKit2-x11
 

@@ -1,21 +1,17 @@
 Name: obconf
 Version: 2.0.4
-Release: alt2
+Release: alt3
 
 Summary: Obconf is a configuration tool for the Openbox window manager
 License: GPLv2+
 Group: Graphical desktop/Other
 Url: http://www.icculus.org/openbox/
 
-Packager: Igor Zubkov <icesik@altlinux.org>
-
 Source0: %name-%version.tar
 Source2: %name.pod
 
 Patch0: %name-%version-alt.patch
 Patch1: fix-tab-error.patch
-
-Requires: openbox >= 3.5.1
 
 Requires(post,postun): desktop-file-utils
 BuildPreReq: desktop-file-utils
@@ -62,6 +58,9 @@ install -pD -m 644 obconf.1 %buildroot%_man1dir/obconf.1
 %_datadir/pixmaps/obconf.png
 
 %changelog
+* Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> 2.0.4-alt3
+- Not require openbox more
+
 * Mon Sep 18 2017 Anton Midyukov <antohami@altlinux.org> 2.0.4-alt2
 - Fix --tab error 
 
