@@ -5,8 +5,8 @@
 
 Summary: Convolution engine library
 Name: zita-convolver
-Version: 4.0.0
-Release: alt2
+Version: 4.0.3
+Release: alt1
 License: GPLv3+
 Group: Sound
 Url: http://kokkinizita.linuxaudio.org/
@@ -41,19 +41,19 @@ contains libraries and header files for developing applications that use
 %setup
 
 # No need to call ldconfig during packaging
-%__subst '\|ldconfig|d' libs/Makefile
+%__subst '\|ldconfig|d' source/Makefile
 
 # Preserve timestamps
-%__subst 's|install |install -p |' libs/Makefile
+%__subst 's|install |install -p |' source/Makefile
 
 # Fix optflags
-%__subst 's|-march=native|%optflags|' libs/Makefile
+%__subst 's|-march=native|%optflags|' source/Makefile
 
 %build
-%make_build -C libs PREFIX=%prefix
+%make_build -C source PREFIX=%prefix
 
 %install
-%makeinstall_std -C libs PREFIX=%prefix LIBDIR=%_lib
+%makeinstall_std -C source PREFIX=%prefix LIBDIR=%_libdir
 # create .so.x link
 ln -s lib%name.so.%version %buildroot%_libdir/lib%name.so.%sover
 
@@ -67,6 +67,9 @@ ln -s lib%name.so.%version %buildroot%_libdir/lib%name.so.%sover
 %_libdir/lib%name.so
 
 %changelog
+* Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> 4.0.3-alt1
+- new version (4.0.3) with rpmgs script
+
 * Mon May 13 2019 Anton Midyukov <antohami@altlinux.org> 4.0.0-alt2
 - fix optflags (Closes: 36660)
 
