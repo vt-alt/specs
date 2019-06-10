@@ -1,19 +1,20 @@
+%def_disable snapshot
 %define gimpplugindir %(gimptool-2.0 --gimpplugindir)
 %def_enable zart
 
-%define gmic_git_ver v.2.5.3
+%define gmic_git_ver v.2.6.5
 # https://github.com/c-koi/zart
 # no tags
-%define zart_ver 20190306git51f9d2d
+%define zart_ver 6e98a35
 # https://github.com/c-koi/gmic-qt
-# v.2.5.2-3-g8548172
-%define gmic_qt_ver 20190318gitg8548172
+# v.2.6.2
+%define gmic_qt_ver 2.6.5
 # https://github.com/dtschump/gmic-community.git
-# 1.6.3.2-1048-g99f4c8c
-%define gmic_comm_ver 20190319gitg99f4c8c
+# 1.6.3.2-1245-g44ad9cb
+%define gmic_comm_ver 1.6.3.2-1245-g44ad9cb
 
 Name: gmic
-Version: 2.5.3
+Version: 2.6.5
 Release: alt1
 
 Summary: GREYC's Magic Image Converter
@@ -21,8 +22,12 @@ License: CeCILL v.2.0, GPLv3
 Group: Graphics
 Url: http://gmic.sourceforge.net/
 
-# VCS: https://github.com/dtschump/gmic.git
+%if_disabled snapshot
 Source: http://gmic.eu/files/source/%{name}_%version.tar.gz
+%else
+# VCS: https://github.com/dtschump/gmic.git
+Source: %name-%version.tar
+%endif
 Source1: zart-%zart_ver.tar
 Source2: gmic-qt-%gmic_qt_ver.tar
 Source3: gmic-community-%gmic_comm_ver.tar
@@ -112,7 +117,7 @@ subst 's|-mtune=generic||' src/Makefile
 %build
 %add_optflags -D_FILE_OFFSET_BITS=64
 pushd src
-%make_build NOSTRIP=1 OPT_CFLAGS="%optflags_default" cli lib libc
+%make NOSTRIP=1 OPT_CFLAGS="%optflags_default" cli lib libc
 popd
 
 pushd %name-qt
@@ -179,6 +184,12 @@ popd
 %gimpplugindir/plug-ins/*
 
 %changelog
+* Sat Jun 08 2019 Yuri N. Sedunov <aris@altlinux.org> 2.6.5-alt1
+- 2.6.5
+
+* Tue May 14 2019 Yuri N. Sedunov <aris@altlinux.org> 2.6.2-alt1
+- 2.6.2
+
 * Wed Mar 20 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.3-alt1
 - 2.5.3
 

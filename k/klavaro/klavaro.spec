@@ -1,5 +1,5 @@
 Name: klavaro
-Version: 3.05
+Version: 3.07
 Release: alt1
 
 Summary: Yet another touch typing tutor
@@ -31,7 +31,6 @@ export DATADIRNAME=share
 
 %install
 %makeinstall_std DATADIRNAME=share appdatadir=%_datadir/metainfo
-
 %find_lang %name
 
 %files -f %name.lang
@@ -46,6 +45,9 @@ export DATADIRNAME=share
 %exclude %_libdir/libgtkdataboks.a
 
 %changelog
+* Tue Jun 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.07-alt1
+- 3.07
+
 * Tue Mar 19 2019 Yuri N. Sedunov <aris@altlinux.org> 3.05-alt1
 - 3.05
 
