@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.6.2
+Version: 5.15.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -160,6 +160,35 @@ Requires: qmmp1
 %description -n kde5-audio-player-4-qmmp
 %summary
 
+%package -n kde5-messenger-client-0-dummy
+Group: Graphical desktop/KDE
+Summary: QMMP audio player
+Provides: kde5-messenger-client = %EVR
+Provides: kde5-messenger-client-dummy = %EVR
+Requires: kf5-filesystem
+%description -n kde5-messenger-client-0-dummy
+%summary
+
+%package -n kde5-messenger-client-2-kopete
+Group: Graphical desktop/KDE
+Summary: QMMP audio player
+Provides: kde5-messenger-client = %EVR
+Provides: kde5-messenger-client-kopete = %EVR
+Requires: kf5-filesystem
+Requires: kde5-kopete
+%description -n kde5-messenger-client-2-kopete
+%summary
+
+%package -n kde5-messenger-client-4-telepathy
+Group: Graphical desktop/KDE
+Summary: QMMP audio player
+Provides: kde5-messenger-client = %EVR
+Provides: kde5-messenger-client-telepathy = %EVR
+Requires: kf5-filesystem
+Requires: kde5-telepathy
+%description -n kde5-messenger-client-4-telepathy
+%summary
+
 %files -n kde5-network-manager-0-dummy
 %files -n kde5-network-manager-2-etcnet
 %files -n kde5-network-manager-4-nm
@@ -180,7 +209,14 @@ Requires: qmmp1
 %files -n kde5-audio-player-0-dummy
 %files -n kde5-audio-player-4-qmmp
 
+%files -n kde5-messenger-client-0-dummy
+%files -n kde5-messenger-client-2-kopete
+%files -n kde5-messenger-client-4-telepathy
+
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.0-alt1
+- add kde5-messenger-client
+
 * Thu Apr 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.6.2-alt1
 - remove thunderbird-enigmail requires (http://bugs.altlinux.org/36447)
 
