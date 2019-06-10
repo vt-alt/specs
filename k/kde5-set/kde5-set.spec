@@ -1,7 +1,7 @@
 
 Name: kde5-set
-Version: 18.04.3
-Release: alt2
+Version: 19.04.0
+Release: alt1
 
 Group: Graphical desktop/KDE
 Summary: Set of KDE 5 applications
@@ -33,10 +33,11 @@ Requires: kde5-dolphin kde5-kdialog
 %package -n kde5-small
 Summary: %summary
 Group: Graphical desktop/KDE
-Requires: icon-theme-breeze
 Requires: kde5-mini
 Requires: kde5-volume-control
 Requires: webclient
+#
+Requires: icon-theme-breeze
 Requires: kf5-kwallet kf5-kconfig kf5-kglobalaccel kf5-kimageformats kde5-svgpart
 Requires: plasma5-sddm-kcm plasma5-polkit-kde-agent kf5-kio-extras plasma5-breeze plasma5-oxygen plasma5-powerdevil plasma5-ksysguard
 Requires: plasma5-drkonqi plasma5-milou plasma5-systemsettings plasma5-integration
@@ -50,14 +51,15 @@ Summary: %summary
 Group: Graphical desktop/KDE
 Provides: kde5-normal = %EVR kde5-default = %EVR
 Obsoletes: kde5-normal < %EVR kde5-default < %EVR
-##Requires: pam0_kwallet5
-Requires: gtk3-theme-breeze
-Requires: gtk2-theme-breeze
-Requires: kf5-qqc2-desktop-style
 Requires: kde5-small
 Requires: kde5-video-player
 Requires: kde5-audio-player
 Requires: kde5-network-manager
+#
+##Requires: pam0_kwallet5
+Requires: gtk3-theme-breeze
+Requires: gtk2-theme-breeze
+Requires: kf5-qqc2-desktop-style
 Requires: kde5-plasma-applet-places-widget
 Requires: plasma5-kde-gtk-config kf5-baloo plasma5-bluedevil plasma5-kscreen plasma5-ksshaskpass kde5-krdc kde5-kgpg
 Requires: plasma5-khotkeys plasma5-kinfocenter plasma5-addons
@@ -75,7 +77,9 @@ Summary: %summary
 Group: Graphical desktop/KDE
 Requires: kde5
 Requires: kde5-email-client
-#Requires: kde5-telepathy
+Requires: kde5-messenger-client
+#
+Requires: plasma5-xdg-desktop-portal-kde
 Requires: plasma5-workspace-wallpapers
 Requires: plasma5-kwrited
 Requires: plasma5-user-manager kde5-ksystemlog
@@ -84,7 +88,6 @@ Requires: kde5-pim kde5-pim-addons kde5-kcron kde5-kruler kde5-ffmpegthumbs
 Requires: kde5-krfb
 Requires: kde5-kdf kde5-kfloppy
 Requires: kid3-ui-kde5
-#Requires: ring-client-kde5
 Requires: kde5-kipi-plugins-core
 %description -n kde5-big
 %summary
@@ -93,15 +96,16 @@ Requires: kde5-kipi-plugins-core
 Summary: %summary
 Group: Graphical desktop/KDE
 # webclient
-Requires: kde5-konqueror kde5-keditbookmarks
-Requires: kde5-dragon
-Requires: kde5-kmousetool kde5-kmag
-Requires: kde5-juk kde5-kmouth
 Requires: kde5-big
 Requires: kde5-edu
 Requires: kde5-games
 Requires: kde5-printing
 Requires: kde5-scanning
+#
+Requires: kde5-konqueror kde5-keditbookmarks
+Requires: kde5-dragon
+Requires: kde5-kmousetool kde5-kmag
+Requires: kde5-juk kde5-kmouth
 Requires: kdenlive kde5-connect
 Requires: kde5-k3b kde5-kwave
 Requires: kde5-digikam kde5-kipi-plugins
@@ -190,6 +194,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
+- update requires
+
 * Wed Nov 14 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt2
 - clean requires
 
