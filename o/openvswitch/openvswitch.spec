@@ -3,10 +3,9 @@
 %def_without xenserver
 %def_with debugtools
 %def_with dpdk
-%def_with python3
 
 Name: openvswitch
-Version: 2.11.0
+Version: 2.11.1
 Release: alt1
 
 Summary: An open source, production quality, multilayer virtual switch
@@ -35,17 +34,14 @@ Obsoletes: %name-ovsdbmonitor <= %name-%version
 
 # util-linux-2.32-alt2
 Requires: pam0(runuser)
+%filter_from_requires /lsb-release/d
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: graphviz libssl-devel openssl groff
 BuildRequires: libcap-ng-devel
 BuildRequires: glibc-kernheaders
-BuildRequires: python-modules python-modules-logging python-modules-xml python-module-flake8 python-module-six python-module-sphinx python-devel python-modules-json
-%if_with python3
-BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-devel
-BuildRequires: python3-module-setuptools
-BuildRequires: python3-module-six
-%endif
+BuildRequires: python-devel python-module-setuptools python-module-six python-module-OpenSSL
+BuildRequires: python3-devel python3-module-setuptools python3-module-six python3-module-OpenSSL
 
 %{?_with_dpdk:BuildRequires: dpdk-devel >= 18.08 libpcap-devel libnuma-devel rdma-core-devel libmnl-devel}
 
@@ -61,7 +57,6 @@ and protocols (e.g. NetFlow, sFlow, RSPAN, ERSPAN, CLI, LACP,
 across multiple physical servers similar to VMware's vNetwork
 distributed vswitch or Cisco's Nexus 1000V.
 
-%if_with ksrc
 %package -n kernel-source-%name
 Group: Development/Kernel
 License: GPLv2+
@@ -70,9 +65,7 @@ BuildArch: noarch
 
 %description -n kernel-source-%name
 Source for kernel modules supporting the openvswitch datapath
-%endif
 
-%if_with debugtools
 %package debugtools
 Group: Networking/Other
 License: ASL 2.0
@@ -85,7 +78,6 @@ This package contains ovs-bugtool to generate a debug bundle
 with useful information about Open vSwitch on this system
 and place it in %_logdir/ovs-bugtool, and ovs-test to check
 Linux drivers for performance and vlan problems.
-%endif
 
 %package common
 Group: Networking/Other
@@ -121,7 +113,7 @@ Group: Networking/Other
 Requires: %name = %EVR
 # libreswan
 Requires: python-module-%name = %EVR
-  
+
 %description ipsec
 This package provides IPsec tunneling support for OVS tunnels.
 
@@ -185,7 +177,6 @@ Docker network plugins for OVN.
 Summary: Open vSwitch python bindings
 Group: Development/Python
 License: Python-2.0
-BuildArch: noarch
 %add_python_req_skip pywintypes win32con win32file msvcrt
 
 %description -n python-module-%name
@@ -195,14 +186,13 @@ Python bindings for the Open vSwitch database
 Summary: Open vSwitch python3 bindings
 Group: Development/Python3
 License: Python-2.0
-BuildArch: noarch
 %add_python3_req_skip pywintypes win32con win32file msvcrt
 
 %description -n python3-module-%name
 Python3 bindings for the Open vSwitch database
 
 %package -n bash-completion-%name
-Summary: Bash completion for systemd utils
+Summary: Bash completion for %name utils
 Group: Shells
 BuildArch: noarch
 Requires: bash-completion
@@ -271,10 +261,10 @@ install -pDm0644 rhel/etc_logrotate.d_openvswitch \
 install -pDm0644 rhel/usr_share_openvswitch_scripts_sysconfig.template \
          %buildroot/%_sysconfdir/sysconfig/%name
 install -pDm0644 rhel/etc_openvswitch_default.conf \
-	 %buildroot/%_sysconfdir/openvswitch/default.conf
+        %buildroot/%_sysconfdir/openvswitch/default.conf
 
 for service in openvswitch ovsdb-server ovs-vswitchd ovs-delete-transient-ports \
-                ovn-controller ovn-controller-vtep ovn-northd; do
+                ovn-controller ovn-controller-vtep ovn-northd openvswitch-ipsec; do
     install -pDm0644 \
             rhel/usr_lib_systemd_system_${service}.service \
             %buildroot%_unitdir/${service}.service
@@ -316,9 +306,20 @@ install -pDm644 \
 %endif
 
 install -d -m 0755 %buildroot%python_sitelibdir_noarch
-cp -a %buildroot%_datadir/%name/python/* %buildroot%python_sitelibdir_noarch
-install -d -m 0755 %buildroot%python3_sitelibdir_noarch
-cp -a %buildroot%_datadir/%name/python/ovs %buildroot%python3_sitelibdir_noarch
+cp -a %buildroot%_datadir/%name/python/ovstest %buildroot%python_sitelibdir_noarch
+
+pushd python
+export CPPFLAGS="-I ../include"
+export LDFLAGS="-L %buildroot%_libdir"
+%python_build
+%python_install
+
+export CPPFLAGS="-I ../include"
+export LDFLAGS="-L %buildroot%_libdir"
+%python3_build
+%python3_install
+popd
+
 rm -rf %buildroot%_datadir/%name/python
 
 touch %buildroot%_sysconfdir/%name/conf.db
@@ -346,7 +347,8 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %files
 %doc AUTHORS.rst LICENSE NEWS NOTICE README.rst
 %_bindir/ovs-dpctl
-%_bindir/ovs-dpctl-top
+# exclude python2 script
+%exclude %_bindir/ovs-dpctl-top
 %_bindir/ovs-testcontroller
 %_bindir/ovs-docker
 %_bindir/ovs-vsctl
@@ -367,6 +369,7 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_man7dir/ovs-fields.7*
 %_man7dir/ovsdb-server.7*
 %_man7dir/ovsdb.7*
+%_man7dir/ovs-actions.7*
 %_man8dir/ovs-ctl.8*
 %_man8dir/ovs-dpctl.8*
 %_man8dir/ovs-dpctl-top.8*
@@ -378,7 +381,8 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_datadir/%name/vswitch.ovsschema
 %_datadir/%name/scripts/ovs-lib
 %_datadir/%name/scripts/ovs-ctl
-%_datadir/%name/scripts/ovs-check-dead-ifs
+# exclude python2 script
+%exclude %_datadir/%name/scripts/ovs-check-dead-ifs
 %_datadir/%name/scripts/ovs-kmod-ctl
 %dir %_sysconfdir/openvswitch
 %config(noreplace) %ghost %_sysconfdir/openvswitch/conf.db
@@ -416,7 +420,7 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_runtimedir/%name
 %_libdir/*.so.*
 %_bindir/ovs-appctl
-%_bindir/ovn-detrace
+
 %_bindir/ovs-ofctl
 %_bindir/ovs-pki
 %_bindir/ovsdb-client
@@ -427,10 +431,10 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_man8dir/ovs-pki.8*
 
 # TODO
-#files ipsec
+%files ipsec
 #_initdir/openvswitch-ipsec
-#_datadir/openvswitch/scripts/ovs-monitor-ipsec
-#_unitdir/openvswitch-ipsec.service
+%_datadir/openvswitch/scripts/ovs-monitor-ipsec
+%_unitdir/openvswitch-ipsec.service
 
 %files vtep
 %_bindir/vtep-ctl
@@ -453,6 +457,7 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_bindir/ovn-nbctl
 %_bindir/ovn-sbctl
 %_bindir/ovn-trace
+%_bindir/ovn-detrace
 %_datadir/openvswitch/scripts/ovn-ctl
 %_datadir/openvswitch/scripts/ovndb-servers.ocf
 %_datadir/openvswitch/scripts/ovn-bugtool-nbctl-show
@@ -484,12 +489,10 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_unitdir/ovn-controller-vtep.service
 
 %files -n python-module-openvswitch
-%python_sitelibdir_noarch/ovs
+%python_sitelibdir/*
 
-%if_with python3
 %files -n python3-module-openvswitch
-%python3_sitelibdir_noarch/ovs
-%endif
+%python3_sitelibdir/*
 
 %files -n bash-completion-%name
 %_sysconfdir/bash_completion.d/*
@@ -500,20 +503,23 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %endif
 
 %changelog
+* Wed Jun 05 2019 Alexey Shabalin <shaba@altlinux.org> 2.11.1-alt1
+- 2.11.1
+
 * Tue Mar 12 2019 Alexey Shabalin <shaba@altlinux.org> 2.11.0-alt1
 - 2.11.0
 
 * Tue Oct 30 2018 Alexey Shabalin <shaba@altlinux.org> 2.10.1-alt1
 - 2.10.1
 
-* Thu Sep 13 2018 Anton Farygin <rider@altlinux.ru> 2.10.0-alt1%ubt
+* Thu Sep 13 2018 Anton Farygin <rider@altlinux.ru> 2.10.0-alt1
 - 2.10.0
 
-* Fri Jun 01 2018 Anton Farygin <rider@altlinux.ru> 2.9.2-alt1%ubt
+* Fri Jun 01 2018 Anton Farygin <rider@altlinux.ru> 2.9.2-alt1
 - 2.9.2
 - removed selinux policy subpackage
 
-* Thu Aug 03 2017 Anton Farygin <rider@altlinux.ru> 2.7.2-alt1%ubt
+* Thu Aug 03 2017 Anton Farygin <rider@altlinux.ru> 2.7.2-alt1
 - 2.7.2
 
 * Thu Jul 13 2017 Anton Farygin <rider@altlinux.ru> 2.7.1-alt1

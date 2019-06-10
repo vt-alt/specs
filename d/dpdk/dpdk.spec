@@ -18,7 +18,7 @@
 
 
 Name: dpdk
-Version: 18.11
+Version: 18.11.1
 Release: alt1
 Url: http://dpdk.org
 Packager: Lenar Shakirov <snejok@altlinux.ru>
@@ -30,6 +30,9 @@ Patch1: dpdk-18.02-aarch64-link-fix.patch
 Patch3: dpdk-alt-pci.ids.patch
 Patch4: dpdk-18.11-fix-redefinition.patch
 Patch5: dpdk-18.08-fix-build-on-ppc64le.patch
+
+# fedora patches
+Patch102: dpdk-rte-ether-align.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 Group: System/Libraries
@@ -74,12 +77,11 @@ ExclusiveArch: x86_64 %{ix86} aarch64 ppc64le
 %endif
 
 %define target %machine_arch-%machine_tmpl-linuxapp-gcc
-
-BuildRequires: glibc-kernheaders libpcap-devel doxygen python-module-sphinx zlib-devel
+BuildRequires(pre): rpm-build-python3
+BuildRequires: glibc-kernheaders libpcap-devel zlib-devel
 BuildRequires: libnuma-devel
-%if_with mlnx
-BuildRequires: rdma-core-devel libmnl-devel
-%endif
+%{?_with_doc:BuildRequires: doxygen python-module-sphinx}
+%{?_with_mlnx:BuildRequires: rdma-core-devel libmnl-devel}
 %if_with pdfdoc
 BuildRequires: texlive-dejavu inkscape texlive-latex-bin-bin
 BuildRequires: texlive-kpathsea-bin texlive-metafont-bin texlive-cm
@@ -107,7 +109,6 @@ Provides: %name-static = %EVR
 This package contains the headers and other files needed for developing
 applications with the Data Plane Development Kit.
 
-%if_with doc
 %package doc
 Summary: Data Plane Development Kit API documentation
 Group: System/Libraries
@@ -115,20 +116,17 @@ BuildArch: noarch
 
 %description doc
 API programming documentation for the Data Plane Development Kit.
-%endif
 
-%if_with tools
 %package tools
 Summary: Tools for setting up Data Plane Development Kit environment
 Group: Development/Documentation
 Requires: %name = %EVR
 Requires: kmod pciutils findutils iproute
+AutoReqProv: yes, nopython
 
 %description tools
 %summary
-%endif
 
-%if_with examples
 %package examples
 Summary: Data Plane Development Kit example applications
 Group: Development/Tools
@@ -137,8 +135,6 @@ BuildRequires: libvirt-devel
 %description examples
 Example applications utilizing the Data Plane Development Kit, such
 as L2 and L3 forwarding.
-%endif
-
 
 %prep
 %setup
@@ -147,6 +143,8 @@ as L2 and L3 forwarding.
 %patch3 -p2
 #%patch4 -p2
 %patch5 -p2
+
+%patch102 -p1
 
 %build
 # set up a method for modifying the resulting .config file
@@ -237,6 +235,10 @@ for f in %target/examples/*/%target/app/*; do
 done
 %endif
 
+# Replace /usr/bin/env python with /usr/bin/python3
+find %buildroot%sdkdir/ -name "*.py" -exec \
+  sed -i -e 's|#!\s*/usr/bin/env python|#!/usr/bin/python3|' {} +
+
 # Create a driver directory with symlinks to all pmds
 mkdir -p %buildroot/%pmddir
 for f in %buildroot/%_libdir/*_pmd_*.so; do
@@ -255,7 +257,7 @@ fi
 EOF
 
 cat << EOF > %buildroot/%_sysconfdir/profile.d/dpdk-sdk-%_arch.csh
-if ( ! \$RTE_SDK ) then
+if ( ! \$?RTE_SDK ) then
     setenv RTE_SDK "%sdkdir"
     setenv RTE_TARGET "%target"
     setenv RTE_INCLUDE "%incdir"
@@ -314,6 +316,10 @@ EOF
 %endif
 
 %changelog
+* Wed Jun 05 2019 Alexey Shabalin <shaba@altlinux.org> 18.11.1-alt1
+- Update to latest LTS release 18.11.1
+- switch to use python3
+
 * Tue Mar 12 2019 Alexey Shabalin <shaba@altlinux.org> 18.11-alt1
 - 18.11
 
