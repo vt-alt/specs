@@ -1,9 +1,9 @@
 %define rname kdenlive
-%define req_ver_mlt 0.9.0
+%define req_ver_mlt 6
 %define is_ffmpeg %([ -n "`rpmquery --qf '%%{SOURCERPM}' libavformat-devel 2>/dev/null | grep -e '^libav'`" ] && echo 0 || echo 1)
 
 Name: kdenlive
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init no_altplace man
 
@@ -93,6 +93,9 @@ sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 %_man1dir/kdenlive*
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 
