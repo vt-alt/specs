@@ -4,7 +4,7 @@
 %define libkgetcore libkgetcore%sover
 
 Name: kde5-%rname
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init
 
@@ -109,6 +109,9 @@ sed -i '/^find_package(KF5Torrent/d' CMakeLists.txt
 %_K5lib/libkgetcore.so.%sover
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 

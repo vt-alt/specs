@@ -30,7 +30,7 @@
 %define libqgroupwise libqgroupwise%sover
 
 Name: kde5-kopete
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init
 
@@ -323,6 +323,9 @@ done
 %_K5dbus_iface/*
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 

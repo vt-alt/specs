@@ -1,7 +1,7 @@
 %define rname kmousetool
 
 Name: kde5-%rname
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init
 
@@ -40,6 +40,9 @@ BuildRequires: qt5-phonon-devel
 %_K5data/kmousetool/
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Tue Jun 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 
