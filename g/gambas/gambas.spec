@@ -9,7 +9,7 @@ Obsoletes: gambas3-%{*} < %EVR \
 
 Name:		gambas
 Version:	3.13.0
-Release:	alt1
+Release:	alt2
 
 Summary:	IDE based on a basic interpreter with object extensions
 Group:		Development/Tools
@@ -40,7 +40,7 @@ BuildRequires:	libGL-devel
 BuildRequires:	libGLU-devel
 %endif
 BuildRequires:	libglew-devel
-BuildRequires:	libgmime-devel
+BuildRequires:	libgmime3.0-devel
 BuildRequires:  libgmp-devel
 BuildRequires:	libgnome-keyring-devel
 BuildRequires:	libgsl-devel
@@ -55,7 +55,7 @@ BuildRequires:	libopenal-devel
 BuildRequires:	libpcre-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libpoppler-devel
-BuildRequires:	libqt4-webkit-devel
+#BuildRequires:	libqt4-webkit-devel
 BuildRequires:	librsvg-devel
 BuildRequires:	libSDL-devel
 BuildRequires:	libSDL_image-devel
@@ -79,7 +79,7 @@ BuildRequires:	libXtst-devel
 BuildRequires:	llvm-devel
 BuildRequires:	pkg-config
 BuildRequires:	postgresql-devel
-BuildRequires:	qt4-devel
+#BuildRequires:	qt4-devel
 BuildRequires:  qt5-base-devel
 BuildRequires:  qt5-svg-devel
 BuildRequires:  qt5-webkit-devel
@@ -174,10 +174,10 @@ Requires:      %name-gb-openssl = %version-%release
 Requires:      %name-gb-option = %version-%release
 Requires:      %name-gb-pcre = %version-%release
 Requires:      %name-gb-pdf = %version-%release
-Requires:      %name-gb-qt4 = %version-%release
-Requires:      %name-gb-qt4-ext = %version-%release
-Requires:      %name-gb-qt4-webkit = %version-%release
-Requires:      %name-gb-qt4-opengl = %version-%release
+#Requires:      %name-gb-qt4 = %version-%release
+#Requires:      %name-gb-qt4-ext = %version-%release
+#Requires:      %name-gb-qt4-webkit = %version-%release
+#Requires:      %name-gb-qt4-opengl = %version-%release
 Requires:      %name-gb-report = %version-%release
 Requires:      %name-gb-report2 = %version-%release
 Requires:      %name-gb-scanner = %version-%release
@@ -272,9 +272,8 @@ Requires:	%name-gb-gui = %version-%release
 Requires:	%name-gb-image = %version-%release
 Requires:	%name-gb-image-effect = %version-%release
 Requires:	%name-gb-markdown = %version-%release
-Requires:	%name-gb-qt4 = %version-%release
-Requires:	%name-gb-qt4-ext = %version-%release
-Requires:	%name-gb-qt4-webkit = %version-%release
+Requires:	%name-gb-qt5 = %version-%release
+Requires:	%name-gb-qt5-webkit = %version-%release
 Requires:	%name-gb-settings = %version-%release
 Requires:       %name-gb-util = %version-%release
 Requires:	%name-gb-net = %version-%release
@@ -1140,7 +1139,8 @@ MY_CFLAGS=`echo $RPM_OPT_FLAGS | sed -e 's/-Wp,-D_FORTIFY_SOURCE=2//g'`
 	--datadir="%_datadir" \
 	--enable-intl \
 	--enable-conv \
-	--enable-qt4 \
+	--disable-qt4 \
+	--enable-qt5 \
 	--enable-kde \
 	--enable-net \
 	--enable-curl \
@@ -1509,25 +1509,25 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %appdir/info/gb.pdf.info
 %appdir/info/gb.pdf.list
 
-%files gb-qt4
-%_libdir/gambas3/gb.qt4.component
-%_libdir/gambas3/gb.qt4.so*
-%_libdir/gambas3/gb.qt4.la
-%appdir/info/gb.qt4.info
-%appdir/info/gb.qt4.list
+#files gb-qt4
+#_libdir/gambas3/gb.qt4.component
+#_libdir/gambas3/gb.qt4.so*
+#_libdir/gambas3/gb.qt4.la
+#appdir/info/gb.qt4.info
+#appdir/info/gb.qt4.list
 
-%files gb-qt4-ext
-%_libdir/gambas3/gb.qt4.ext.*
-%appdir/info/gb.qt4.ext.*
+#files gb-qt4-ext
+#_libdir/gambas3/gb.qt4.ext.*
+#appdir/info/gb.qt4.ext.*
 
-%files gb-qt4-opengl
-%_libdir/gambas3/gb.qt4.opengl.*
-%appdir/info/gb.qt4.opengl.*
+#files gb-qt4-opengl
+#_libdir/gambas3/gb.qt4.opengl.*
+#appdir/info/gb.qt4.opengl.*
 
-%files gb-qt4-webkit
-%_libdir/gambas3/gb.qt4.webkit.*
-%appdir/info/gb.qt4.webkit.*
-%appdir/control/gb.qt4.webkit/webview.png
+#files gb-qt4-webkit
+#_libdir/gambas3/gb.qt4.webkit.*
+#appdir/info/gb.qt4.webkit.*
+#appdir/control/gb.qt4.webkit/webview.png
 
 %files gb-report
 %_libdir/gambas3/gb.report.*
@@ -1663,6 +1663,10 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %appdir/info/gb.term.*
 
 %changelog
+* Thu May 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.13.0-alt2
+- Build without Qt4, only with with Qt5 used for IDE by default.
+- Build with libgmime3.0.
+
 * Thu Apr 11 2019 Andrey Cherepanov <cas@altlinux.org> 3.13.0-alt1
 - New version.
 
