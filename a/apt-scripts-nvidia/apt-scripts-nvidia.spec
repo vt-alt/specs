@@ -1,10 +1,12 @@
 Name: apt-scripts-nvidia
-Version: 0.4.9
+Version: 0.5.0
 Release: alt1
 
 Summary: APT Lua scripts for NVIDIA driver
 License: GPL
 Group: System/Configuration/Packaging
+
+Requires: rpmquery-strictdep
 
 Source: scripts-nvidia-%version.tar
 
@@ -42,6 +44,9 @@ ls *.conf |sed 's:^:^/etc/apt/apt.conf.d/:;s:[.]:[.]:g' >%buildroot/etc/buildreq
 %config /etc/buildreqs/files/ignore.d/%name
 
 %changelog
+* Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 0.5.0-alt1
+- using rpmquery-strictdep to detect kernel package
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 0.4.9-alt1
 - add workaround against apt changes (see bug#36872)
 
