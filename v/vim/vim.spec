@@ -52,8 +52,8 @@
 
 Name: vim
 %define branch 8.1
-Version: %branch.26
-Release: alt1.1
+Version: %branch.1517
+Release: alt1
 Epoch: 4
 
 Summary: VIsual editor iMproved
@@ -1065,6 +1065,9 @@ fi
 
 # {{{ changelog
 %changelog
+* Tue Jun 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:8.1.1517-alt1
+- Updated to 8.1.1517 (fixes: CVE-2019-12735) (ALT#36882).
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 4:8.1.26-alt1.1
 - rebuild with new perl 5.28.1
 
