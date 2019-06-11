@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.3.7
+Version: 1.3.9
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,16 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Mon Jun 10 2019 Michael Shigorin <mike@altlinux.org> 1.3.9-alt1
+- uboot feature, bootloader refactoring, etc (antohami@)
+- cleanlog factored out from reports.mk (me)
+
+* Mon Jun 03 2019 Michael Shigorin <mike@altlinux.org> 1.3.8-alt1
+- p9.mk, office feature and other enhancements/fixes (antohami@)
+- education (cas@)
+- simply (sem@)
+- minor tidbits and major merge-up (me)
+
 * Mon May 06 2019 Michael Shigorin <mike@altlinux.org> 1.3.7-alt1
 - docker, vm, browser fixups (obirvalger@)
 - elogind support, refactoring, cleanups (antohami@)
