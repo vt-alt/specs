@@ -85,6 +85,7 @@
 %endif
 %ifarch %power64
 %global kvm_package   system-ppc
+%def_enable qemu_kvm
 %endif
 %ifarch s390x
 %global kvm_package   system-s390x
@@ -114,7 +115,7 @@
 
 Name: qemu
 Version: 4.0.0
-Release: alt1
+Release: alt2
 
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -154,7 +155,7 @@ BuildRequires: makeinfo perl-podlators python-module-sphinx
 BuildRequires: libattr-devel-static libcap-devel libcap-ng-devel
 BuildRequires: libxfs-devel
 BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
-BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.4.6
+BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.5.0.0.20.2431
 BuildRequires: libpixman-devel >= 0.21.8
 BuildRequires: python3-devel
 # Upstream disables iasl for big endian and QEMU checks for this.
@@ -1030,9 +1031,6 @@ tar -xf %SOURCE100 -C ui/keycodemapdb --strip-components 1
 
 %patch -p1
 cp -f %SOURCE2 qemu-kvm.control.in
-%ifarch armh aarch64
-sed -i 's,/usr/bin/qemu-system-x86_64,/usr/bin/qemu-%kvm_package,' %SOURCE5
-%endif
 
 %build
 export CFLAGS="%optflags"
@@ -1570,9 +1568,6 @@ fi
 %_datadir/%name/u-boot-sam460-20100605.bin
 %_datadir/%name/openbios-ppc
 %_datadir/%name/slof.bin
-%ifarch %power64
-%_sysconfdir/security/limits.d/95-kvm-ppc64-memlock.conf
-%endif
 
 %files system-riscv
 %files system-riscv-core
@@ -1611,6 +1606,11 @@ fi
 %_man1dir/qemu-system-nios2.1*
 
 %changelog
+* Mon Jun 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.0.0-alt2
+- qemu-kvm: fixed armh and aarch64 support.
+- Added ppc* architectures support.
+- Updated BR: libfdt-devel minimal version.
+
 * Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.0-alt1
 - 4.0.0
 - define md-clear CPUID bit
