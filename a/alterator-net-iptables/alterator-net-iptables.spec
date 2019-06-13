@@ -1,6 +1,6 @@
 Name: alterator-net-iptables
 Version: 4.19.7
-Release: alt1.1.1
+Release: alt3
 
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
 
@@ -21,13 +21,12 @@ Conflicts: alterator-fbi < 5.23-alt1
 
 BuildPreReq: alterator >= 5.0
 
-
 %ifarch %e2k
 BuildRequires: guile20-devel libguile20-devel
 %else
 BuildRequires: guile22-devel
 %endif
-BuildRequires: rpm-build >= 4.0.4-alt103
+
 BuildRequires: alterator >= 5.0 alterator-fbi >= 5.33-alt1
 
 %description
@@ -70,6 +69,12 @@ touch -- %buildroot%_logdir/%name
 %_logdir/alterator-net-iptables
 
 %changelog
+* Mon Jun 10 2019 Fr. Br. George <george@altlinux.ru> 4.19.7-alt3
+- Add default values to net-iptables.conf (Closes: #34291)
+
+* Thu May 31 2018 Paul Wolneykien <manowar@altlinux.org> 4.19.7-alt2
+- Don't require a particular rpm-build version.
+
 * Fri Apr 13 2018 Grigory Ustinov <grenka@altlinux.org> 4.19.7-alt1.1.1
 - NMU: Replace BuildRequires for guile on e2k arch.
 
