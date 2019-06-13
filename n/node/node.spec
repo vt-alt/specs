@@ -1,10 +1,10 @@
 # check deps/npm/package.json for it
-%define npmver 6.4.1
+%define npmver 6.9.0
 # separate build npm
 %def_without npm
 # in other case, note: we will npm-@npmver-@release package! fix release if npmver is unchanged
 
-%define major 10.15
+%define major 10.16
 
 #we need ABI virtual provides where SONAMEs aren't enough/not present so deps
 #break when binary compatibility is broken
@@ -13,7 +13,7 @@
 # TODO: really we have no configure option to build with shared libv8
 # V8 presently breaks ABI at least every x.y release while never bumping SONAME,
 # so we need to be more explicit until spot fixes that
-%global v8_abi 6.8
+%global v8_abi 6.9
 %def_without systemv8
 
 # supports only openssl >= 1.0.2
@@ -21,10 +21,10 @@
 %define openssl_version 1.0.2n
 %def_with systemssl
 
-%global libuv_abi 1.23.2
+%global libuv_abi 1.28.0
 %def_with systemuv
 
-%global libicu_abi 6.0
+%global libicu_abi 6.4
 %def_with systemicu
 # TODO: node has to use icu:: for ICU names
 #add_optflags -DU_USING_ICU_NAMESPACE=1
@@ -36,7 +36,7 @@
 %define oversion %version
 
 Name: node
-Version: %major.3
+Version: %major.0
 Release: alt1
 
 Summary: Evented I/O for V8 Javascript
@@ -55,6 +55,7 @@ Source7: nodejs_native.req.files
 Patch: node-disable-external-libs.patch
 
 BuildRequires(pre): rpm-macros-nodejs
+BuildRequires(pre): rpm-build-intro >= 2.1.5
 
 BuildRequires: python-devel gcc-c++ zlib-devel
 
@@ -96,6 +97,9 @@ Obsoletes: node.js < %version-%release
 
 Provides: nodejs(abi) = %{nodejs_abi}
 Provides: nodejs(v8-abi) = %{v8_abi}
+
+# use no more than system_memory/3000 build procs (see https://bugzilla.altlinux.org/show_bug.cgi?id=35112)
+%_tune_parallel_build_by_procsize 3000
 
 %add_python_req_skip TestCommon
 %add_findreq_skiplist %{_datadir}/node/sources/*
@@ -314,6 +318,11 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Thu Jun 06 2019 Vitaly Lipatov <lav@altlinux.ru> 10.16.0-alt1
+- new version 10.16.0 (with rpmrb script)
+- 2019-05-28, Version 10.16.0 'Dubnium' (LTS), @BethGriggs
+- use npm 6.9, ICU >= 6.4, libuv >= 1.28.0
+
 * Sat Mar 09 2019 Vitaly Lipatov <lav@altlinux.ru> 10.15.3-alt1
 - new version 10.15.3 (with rpmrb script)
 - 2018-03-05, Version 10.15.3 'Dubnium' (LTS), @BethGriggs
