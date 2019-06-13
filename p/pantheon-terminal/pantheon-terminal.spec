@@ -1,4 +1,4 @@
-%def_enable snapshot
+%def_disable snapshot
 
 %define ver_major 5.3
 %define _name terminal
@@ -6,7 +6,7 @@
 %define rdn_name io.elementary.%_name
 
 Name: pantheon-terminal
-Version: %ver_major.4
+Version: %ver_major.5
 Release: alt1
 
 Summary: Pantheon Terminal
@@ -15,7 +15,7 @@ License: GPLv3
 Url: https://github.com/elementary/terminal
 
 %if_disabled snapshot
-Source: %_name-%version.tar.gz
+Source: %url/archive/%version/%_name-%version.tar.gz
 %else
 #VCS: https://github.com/elementary/terminal.git
 Source: %_name-%version.tar
@@ -75,6 +75,9 @@ This package provides Vala language bindings for the %name.
 %endif
 
 %changelog
+* Mon Jun 10 2019 Yuri N. Sedunov <aris@altlinux.org> 5.3.5-alt1
+- 5.3.5
+
 * Wed Apr 03 2019 Yuri N. Sedunov <aris@altlinux.org> 5.3.4-alt1
 - updated to 5.3.4-8-gb4a611c
 

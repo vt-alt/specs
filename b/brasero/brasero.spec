@@ -18,7 +18,7 @@
 
 Name: brasero
 Version: %ver_major.2
-Release: alt4.1
+Release: alt5
 
 Summary: CD/DVD burning tool for GNOME.
 Group: Archiving/Cd burning
@@ -39,6 +39,8 @@ Requires: lib%name = %version-%release
 %define burn_ver 1.4.9
 %define isofs_ver 1.4.9
 
+Requires: dconf
+%{?_enable_search:Requires: tracker}
 Requires: dvd+rw-tools
 Requires: cdrkit
 Requires: mkisofs
@@ -238,6 +240,10 @@ GObject introspection devel data for the Brasero
 %exclude %_libdir/nautilus/extensions-%nau_api_ver/libnautilus-%name-extension.la
 
 %changelog
+* Mon Jun 10 2019 Yuri N. Sedunov <aris@altlinux.org> 3.12.2-alt5
+- updated to 3.12.2-62-gbd1a4d5b
+- Requires: +dconf, +tracker if "search" enabled (ALT #36887)
+
 * Thu Sep 20 2018 Yuri N. Sedunov <aris@altlinux.org> 3.12.2-alt4.1
 - fixed dependencies
 
