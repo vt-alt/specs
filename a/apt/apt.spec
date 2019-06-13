@@ -1,6 +1,6 @@
 Name: apt
 Version: 0.5.15lorg2
-Release: alt63
+Release: alt68
 
 Summary: Debian's Advanced Packaging Tool with RPM support
 Summary(ru_RU.UTF-8): Debian APT - Усовершенствованное средство управления пакетами с поддержкой RPM
@@ -24,9 +24,22 @@ Patch101: apt-0.5.4cnc9-alt-getsrc-debug.patch
 
 Requires: libapt = %EVR
 Requires: rpm >= 4.13.0.1-alt2, /etc/apt/pkgpriorities, apt-conf
+# We need (lib)rpm which finds pkgs by labels in N-E:V-R@T format:
+Requires: RPMQ(EPOCH)
+Requires: RPMQ(BUILDTIME)
+Requires: RPMQ(DISTTAG)
 # for methods.
 Requires: gzip, bzip2, xz
 Requires: gnupg, alt-gpgkeys
+
+# Older versions of update-kernel misunderstood the @-postfix (with buildtime
+# and disttag), which is now added by APT to verstrs and the names of
+# allow-duplicated pkgs. (Epoch was also treated differently before, but that
+# was not important until we added disttags, which are also separated by :.)
+Conflicts: update-kernel < 0.9.14-alt1
+# Older versions of apt-scripts-nvidia relied on a certain format of the APT ids
+# of allow-duplicated packages, which changed (due to appending buildtime).
+Conflicts: apt-scripts-nvidia < 0.5.0-alt1
 
 # for autopoint.
 BuildPreReq: cvs
@@ -41,6 +54,7 @@ BuildPreReq: setproctitle-devel
 BuildPreReq: liblua5.3-devel
 
 BuildRequires: bzlib-devel cvs docbook-utils gcc-c++ libreadline-devel librpm-devel setproctitle-devel zlib-devel
+BuildRequires: libgnutls-devel
 
 %package -n libapt
 Summary: APT's core libraries
@@ -71,6 +85,12 @@ Summary: rsync method support for APT
 Summary(ru_RU.UTF-8): Поддержка метода rsync для APT
 Group: Development/Other
 Requires: %name = %EVR, rsync >= 2.5.5-alt3
+
+%package https
+Summary: https method support for APT
+Summary(ru_RU.UTF-8): Поддержка метода https для APT
+Group: Other
+Requires: %name = %EVR
 
 # {{{ descriptions 
 %define risk_usage_en This package is still under development.
@@ -128,6 +148,11 @@ This package contains method 'rsync' for APT.
 
 %risk_usage_en
 
+%description https
+This package contains method 'https' for APT.
+
+%risk_usage_en
+
 %description -n libapt -l ru_RU.UTF-8
 В этом пакете находится библиотеки управления пакетами
 из комплекта APT. В отличие от оригинальной версии для Debian, этот
@@ -165,6 +190,11 @@ This package contains method 'rsync' for APT.
 
 %risk_usage
 
+%description https -l ru_RU.UTF-8
+В этом пакете находится метод 'https' для APT
+
+%risk_usage
+
 # }}}
 
 %prep
@@ -198,7 +228,7 @@ sed -i 's, > /dev/null 2>&1,,' buildlib/tools.m4
 printf '%_target_cpu\t%_target_cpu' >> buildlib/archtable
 
 %autoreconf
-%add_optflags -DPKG_NEVRA=\\\"%name-%{?epoch:%epoch:}%version-%release.%_target_cpu\\\"
+%add_optflags -DAPTRPM_ID=\\\"%name-%{?epoch:%epoch:}%version-%release%{?disttag::%disttag}.%_target_cpu\\\"
 %configure --includedir=%_includedir/apt-pkg %{subst_enable static}
 
 # Probably this obsolete now?
@@ -249,6 +279,7 @@ unset RPM_PYTHON
 %_bindir/apt-*
 %_libdir/%name
 %exclude %_libdir/%name/methods/rsync
+%exclude %_libdir/%name/methods/https
 %dir %_sysconfdir/%name
 %config(noreplace) %_sysconfdir/%name/%name.conf
 %dir %_sysconfdir/%name/*.d
@@ -280,7 +311,41 @@ unset RPM_PYTHON
 %_libdir/%name/methods/rsync
 # Probably %%doc with README.rsync?
 
+%files https
+%dir %_libdir/%name
+%dir %_libdir/%name/methods
+%_libdir/%name/methods/https
+
 %changelog
+* Wed Jun 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.5.15lorg2-alt68
+- Add disttag to VerStrs (used by APT to identify package versions).
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.5.15lorg2-alt67
+- Print error and disable 'upgrade' by default.
+  Using 'dist-upgrade' instead of 'upgrade' is advised.
+  Allow enabling 'upgrade' via '--enable-upgrade' option or
+  via 'APT::Get::EnableUpgrade' configuration setting (Closes: #30867).
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.5.15lorg2-alt66
+- Fortified https method (Closes: #33732)
+- Dropped processing Realm name in http/https methods (Closes: #33236)
+
+* Thu May 30 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.5.15lorg2-alt65
+- Add buildtime to VerStrs (used by APT to identify package versions).
+  This data is used in several manners:
+  * by CheckDep() (only when matching a dependency with a real package);
+  * rpm_name_conversion() (only when making up an id for a duplicated package);
+  * and by *CmpVersion().
+  The latter needs buildtime to determine the correct upgrade direction and
+  can be called through the API with some externally supplied versions.
+  In order to honor buildtime without changing the API and its clients, we pass
+  buildtime inside the existing argument. (Also fixes ALT#36528)
+- Increase default APT::Cache-Limit in 1.5 times due to the extension of VerStrs
+  (ALT#36775).
+
+* Fri May 17 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.5.15lorg2-alt64
+- Ported https support from Debian via https method to apt-https package (Closes: #33732).
+
 * Sat May 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.5.15lorg2-alt63
 - archtable:
   + added ppc64le;
