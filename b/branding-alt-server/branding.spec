@@ -5,26 +5,26 @@
 %define codename FalcoRusticolus
 %define status alpha
 %define status_en alpha
-%define distro_name ALT Server 9.0%status_en
 %define flavour %brand-%theme
-
-%define gtk_theme Breeze
-%define kde_theme Breeze
-%define icon_theme Papirus
-%define window_theme Smoothwall
 
 %define design_graphics_abi_epoch 0
 %define design_graphics_abi_major 12
 %define design_graphics_abi_minor 0
 %define design_graphics_abi_bugfix 0
 
+%define data_cur_dir %_datadir/branding-data-current
+
+%define _unpackaged_files_terminate_build 1
+
 Name: branding-%flavour
 Version: 8.90
-Release: alt1
-BuildArch: noarch
-ExclusiveArch: %ix86 x86_64
+Release: alt2
+Url: https://basealt.ru
 
-BuildRequires: cpio gfxboot >= 4 fonts-ttf-dejavu fonts-ttf-google-droid-sans
+%ifarch %ix86 x86_64
+BuildRequires: gfxboot >= 4
+%endif
+BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-sans
 BuildRequires: design-bootloader-source >= 5.0-alt2
 
 BuildRequires(pre): rpm-macros-branding
@@ -39,6 +39,7 @@ Group: Graphics
 Summary: System/Base
 License: GPLv2+
 
+%define distro_name ALT Server 9.0%status_en
 %define distro_name_ru Альт Сервер 9.0%status
 
 %description
@@ -70,7 +71,6 @@ Suitable for both lilo and syslinux.
 для дистрибутива %distro_name_ru.
 
 %package bootsplash
-BuildArch: noarch
 Summary:  Theme for splash animations during bootup
 Summary(ru_RU.UTF-8): Тема для экрана загрузки для дистрибутива %distro_name_ru
 License:  Distributable
@@ -94,6 +94,7 @@ Summary: Design for alterator for %distro_name
 Summary(ru_RU.UTF-8): Тема для "Центра управления системой" и QT для дистрибутива %distro_name_ru
 License: GPL
 Group: System/Configuration/Other
+BuildArch: noarch
 Provides: design-alterator-browser-%theme  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
 Provides: alterator-icons design-alterator design-alterator-%theme
 Obsoletes:  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt 
@@ -114,7 +115,7 @@ Summary: Design for %distro_name
 Summary(ru_RU.UTF-8): Тема для дистрибутива %distro_name_ru
 License: Different licenses
 Group: Graphics
-
+BuildArch: noarch
 Provides: design-graphics-%theme  branding-alt-%theme-graphics
 Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
@@ -133,6 +134,7 @@ This package contains some graphics for %distro_name design.
 %define obsolete_list altlinux-release fedora-release redhat-release
 
 %package release
+BuildArch: noarch
 Summary:  %distro_name release file
 Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
 License:  GPL
@@ -140,7 +142,6 @@ Group:    System/Configuration/Other
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
 Obsoletes: %obsolete_list  branding-alt-%theme-release
 %branding_add_conflicts %flavour release
-Requires: pam-limits-desktop
 
 %description release
 %distro_name release file.
@@ -165,88 +166,13 @@ Distribution license and release notes
 В данном пакете находится лицензия и дополнительные сведения
 для дистрибутива %distro_name_ru.
 
-%package kde-settings
-BuildArch: noarch
-Summary: KDE settings for %distro_name (for KDE4 and KF5)
-License: Distributable
-Group:   Graphical desktop/KDE
-Requires(pre): %name-graphics
-Requires: kde5-konsole-colorscheme-SolarizedPastel
-Requires: plasma5-breeze
-Requires: fonts-ttf-liberation
-Requires: fonts-ttf-google-droid-sans-mono
-Provides: branding-%flavour-kde4-settings = %version-%release
-Obsoletes: branding-%flavour-kde4-settings < %version-%release
-%branding_add_conflicts %flavour kde-settings
-%branding_add_conflicts %flavour kde4-settings
-
-%description kde-settings
-KDE settings for %distro_name (for KDE4 and KF5)
-
-%package xfce-settings
-Summary: Default settings for XFCE for %distro_name
-License: Distributable
-Group: Graphical desktop/XFce
-Requires: etcskel
-Requires: fonts-ttf-liberation
-Requires: fonts-ttf-google-droid-sans-mono
-Requires: fonts-ttf-google-noto-sans
-Requires: gnome-icon-theme
-# Specified themes
-Requires: icon-theme-ePapirus
-Requires: icon-theme-Papirus
-Requires: icon-theme-Papirus-Dark
-Requires: icon-theme-Papirus-Light
-Requires: gtk-theme-breeze
-# XFCE plugins
-Requires: xfce4-whiskermenu-plugin
-Requires: xfce4-pulseaudio-plugin
-Requires: branding-%brand-%theme-graphics
-%branding_add_conflicts %flavour xfce-settings
-
-%description xfce-settings
-XFCE settings for %distro_name
-
-%package fvwm-settings
-BuildArch: noarch
-Summary: FVWM2 settings for %distro_name
-License: Distributable
-Group:   Graphical desktop/FVWM based
-Requires: altlinux-freedesktop-menu-gnomish-menu
-%branding_add_conflicts %flavour fvwm-settings
-
-%description fvwm-settings
-FVWM2 settings for %distro_name
-
-%package mate-settings
-BuildArch: noarch
-Summary: MATE settings for %distro_name
-License: Distributable
-Group:   Graphical desktop/GNOME
-Requires: gksu
-Requires: dconf
-# Specified themes
-Requires: icon-theme-ePapirus
-Requires: icon-theme-Papirus
-Requires: icon-theme-Papirus-Dark
-Requires: icon-theme-Papirus-Light
-Requires: gtk-theme-breeze
-#
-%branding_add_conflicts %flavour mate-settings
-Requires(post): lightdm-gtk-greeter
-Requires(post): libgio
-
-%description mate-settings
-MATE settings for %distro_name
-
 %package slideshow
 Summary: Slideshow for %distro_name installer
 Summary(ru_RU.UTF-8): Изображения для организации "слайдшоу" в установщике дистрибутива %distro_name_ru
 License: Distributable
 Group: System/Configuration/Other 
-%branding_add_conflicts %flavour slideshow
-
 BuildArch: noarch
+%branding_add_conflicts %flavour slideshow
 
 %description slideshow
 Slideshow for %distro_name installer.
@@ -277,28 +203,6 @@ Requires(post): indexhtml-common
 В данном пакете содержится стартовая страница для дистрибутива
 %distro_name_ru.
 
-%package menu
-Summary: Menu for %distro_name
-License: Distributable
-Group: Graphical desktop/Other
-Requires(pre): altlinux-freedesktop-menu-common
-Requires: altlinux-freedesktop-menu-common
-%branding_add_conflicts %flavour menu
-
-%description menu
-Menu for %distro_name
-
-%package system-settings
-Summary: Some system settings for Simply Linux
-License: GPLv2+
-Group: System/Base
-# Really we need lightdm only, but it can pull another greeter.
-Requires: lightdm-gtk-greeter
-%branding_add_conflicts %flavour system-settings
-
-%description system-settings
-Some system settings for Simply Linux.
-
 %prep
 %setup -n branding
 
@@ -310,7 +214,7 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' GTK_THEME='%gtk_theme' KDE_THEME='%kde_theme' ICON_THEME='%icon_theme' WINDOW_THEME='%window_theme' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' ./configure
 make
 
 %install
@@ -318,11 +222,14 @@ make
 find %buildroot -name \*.in -delete
 
 #bootloader
+%ifarch %ix86 x86_64
 %pre bootloader
 [ -s /usr/share/gfxboot/%theme ] && rm -fr  /usr/share/gfxboot/%theme ||:
 [ -s /boot/splash/%theme ] && rm -fr  /boot/splash/%theme ||:
+%endif
 
 %post bootloader
+%ifarch %ix86 x86_64
 %__ln_s -nf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
@@ -334,37 +241,46 @@ shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.
 #shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
+%endif
 
+%ifarch %ix86 x86_64
 %preun bootloader
 [ $1 = 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
     %__rm -f /boot/splash/message
+%endif
 
 %post indexhtml
 %_sbindir/indexhtml-update
 
-%post system-settings
-#chown _ldm:_ldm %_localstatedir/ldm/.pam_environment
-sed -i '/pam_env\.so/ {
-		/user_readenv/ b
-		s/pam_env\.so/pam_env.so user_readenv=1/ }
-' %_sysconfdir/pam.d/lightdm-greeter
-
 %files bootloader
+%ifarch %ix86 x86_64
 %_datadir/gfxboot/%theme
 /boot/splash/%theme
 /boot/grub/themes/%theme
+%endif
 
 #bootsplash
 %post bootsplash
+%ifarch %ix86 x86_64
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 [ -f /etc/sysconfig/grub2 ] && \
       subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
              /etc/sysconfig/grub2 ||:
+%endif
 
-%post mate-settings
-subst 's/#theme-name=/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
-/usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
+#release
+%post release
+if ! [ -e %_sysconfdir/altlinux-release ] && \
+   ! [ -e %_sysconfdir/os-release ]; then
+	cp -a %data_cur_dir/release/*-release %_sysconfdir/
+fi
+
+#notes
+%post notes
+if ! [ -e %_datadir/alt-notes/license.all.html ]; then
+	cp -a %data_cur_dir/alt-notes/license.*.html %_datadir/alt-notes/
+fi
 
 %files alterator
 %config %_altdir/*.rcc
@@ -374,47 +290,25 @@ subst 's/#theme-name=/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.c
 %files graphics
 %config /etc/alternatives/packages.d/%name-graphics
 %_datadir/design
-%if %theme == education
-%_iconsdir/hicolor/*/apps/alt-education.png
-%endif
+#_iconsdir/hicolor/*/apps/alt-%theme.png
 
 %files bootsplash
+%ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
-
-%files release
-%_sysconfdir/*-release
-%_sysconfdir/buildreqs/packages/ignore.d/*
-
-%files notes
-%_datadir/alt-notes/*
-
-%files kde-settings
-/etc/skel/.config/autostart/nm-applet.desktop
-%if %theme == education
-%_datadir/kf5/konsole/Education.profile
-/etc/skel/.config/kdeglobals
-/etc/skel/.config/konsolerc
 %endif
 
-%files fvwm-settings
-%_sysconfdir/skel/.fvwm2rc
+%files release
+%dir %data_cur_dir
+%data_cur_dir/release/
+%_sysconfdir/buildreqs/packages/ignore.d/*
+%ghost %config(noreplace) %_sysconfdir/*-release
 
-%files mate-settings
-%_datadir/glib-2.0/schemas/*.gschema.override
-
-%files xfce-settings
-%_sysconfdir/X11/profile.d/zdg-move-templates.sh
-/etc/skel/XDG-Templates.skel/
-/etc/skel/.wm-select
-/etc/skel/.config
-%exclude /etc/skel/.config/autostart/nm-applet.desktop
-%exclude /etc/skel/.config/konsolerc
-%exclude /etc/skel/.config/kdeglobals
-/etc/skel/.face
-/etc/skel/.gconf
-/etc/skel/.gtkrc-2.0
-/etc/skel/.local
-/etc/skel/.vimrc
+%files notes
+%dir %data_cur_dir
+%data_cur_dir/alt-notes
+%_datadir/alt-notes/livecd-*
+%_datadir/alt-notes/release-notes.*
+%ghost %config(noreplace) %_datadir/alt-notes/license.*.html
 
 %files slideshow
 /etc/alterator/slideshow.conf
@@ -428,18 +322,13 @@ subst 's/#theme-name=/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.c
 %_desktopdir/*
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 %attr(0755,root,root) %_datadir/Desktop/indexhtml.desktop
-%_iconsdir/hicolor/*/apps/alt-education-desktop.png
-
-%files menu
-/usr/share/slinux-style
-/etc/xdg/menus/xfce-applications-merged/50-xfce-applications.menu
-/usr/share/desktop-directories/altlinux-wine.directory
-
-%files system-settings
-%config %_sysconfdir/polkit-1/rules.d/*.rules
-#config %_localstatedir/ldm/.pam_environment
+#_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jun 13 2019 Alexey Shabalin <shaba@altlinux.org> 8.90-alt2
+- Do not requires pam-limits-desktop (fixed ATL#36875)
+- Drop settings for WM
+
 * Wed May 29 2019 Alexey Shabalin <shaba@altlinux.org> 8.90-alt1
 - Alpha version of ALT Server 9.0 (based on Education by cas@).
 
