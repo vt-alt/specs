@@ -1,15 +1,15 @@
 Name: fonts-ttf-unifont
-Version: 10.0.07
+Version: 12.1.01
 Release: alt1
 
 Summary: GNU Unifont, with glyphs for every printable code point in the Unicode 8.0
 License: GPLv2
 Group: System/Fonts/True type
 Url: http://unifoundry.com/unifont.html
-Source: unifont-10.0.07.ttf
+Source: unifont-12.1.01.ttf
 
 BuildArch: noarch
-PreReq: fontconfig
+Requires(pre): fontconfig
 
 BuildRequires: rpm-build-fonts
 
@@ -27,6 +27,9 @@ cp %SOURCE0 .
 
 %files -f unifont.files
 %changelog
+* Tue May 28 2019 Fr. Br. George <george@altlinux.ru> 12.1.01-alt1
+- Autobuild version bump to 12.1.01
+
 * Tue Feb 20 2018 Fr. Br. George <george@altlinux.ru> 10.0.07-alt1
 - Autobuild version bump to 10.0.07
 

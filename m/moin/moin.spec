@@ -1,7 +1,7 @@
 Summary: MoinMoin is a Python clone of WikiWiki
 Name: moin
-Version: 1.9.9
-Release: alt1.qa1
+Version: 1.9.10
+Release: alt1
 License: GPL
 Group: Networking/Other
 Url: http://moinmo.in/
@@ -53,6 +53,12 @@ Obsoletes: python-modules-MoinMoin
 %description -n python-module-MoinMoin
 Pyton module for MoinMoin WikiWikiWeb engine
 
+%package instance-setup
+Summary: Shellscript for deploing moin under Apache2
+Group: Networking/Other
+%description instance-setup
+Shellscript for deploing moin under Apache2
+
 %prep
 %setup
 sed -i 's@^STATIC_FILES_PATH = .*@STATIC_FILES_PATH = "%htdocs"@' MoinMoin/web/static/__init__.py
@@ -68,12 +74,13 @@ mkdir -p %buildroot/%_sbindir/
 install -m755  moin-instance-setup %buildroot/%_sbindir/
 rm -rf %buildroot%htdocs
 cp -a MoinMoin/web/static/htdocs %buildroot%htdocs
+ln -s config/wikiconfig.py %buildroot%_datadir/%name/wikiconfig.py
+install wikiserver.py %buildroot%_datadir/%name/
 
 %files
-%doc README docs/CHANGES* docs/INSTALL.html docs/README.migration
+%doc README* docs/CHANGES* docs/INSTALL.html docs/README.migration
 %doc docs/licenses/
 %_bindir/*
-%_sbindir/*
 %_datadir/%name/
 %exclude %htdocs/*
 
@@ -86,7 +93,14 @@ cp -a MoinMoin/web/static/htdocs %buildroot%htdocs
 %python_sitelibdir/MoinMoin
 %python_sitelibdir/*.egg-info
 
+%files instance-setup
+%_sbindir/*
+
 %changelog
+* Wed May 22 2019 Fr. Br. George <george@altlinux.ru> 1.9.10-alt1
+- Autobuild version bump to 1.9.10
+- Separate Apache2 dependency
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1.9.9-alt1.qa1
 - NMU: applied repocop patch
 
