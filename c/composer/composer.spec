@@ -8,9 +8,11 @@
 # 
 #   cd .gear
 #   ./get_vendor_cache.sh
+#
+# OR JUST run $ rpmrb NEWVERSION instead of all above
 
 Name: composer
-Version: 1.7.2
+Version: 1.8.5
 Release: alt1
 
 Summary: Composer helps you declare, manage and install dependencies of PHP projects, ensuring you have the right stack everywhere
@@ -72,6 +74,10 @@ install -m 0644 .gear/composer.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 %config(noreplace)  %_sysconfdir/sysconfig/%name
 
 %changelog
+* Fri Jun 07 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.5-alt1
+- new version 1.8.5 (with rpmrb script)
+- improve autoupdate with rpmrb NEWVERSION
+
 * Fri Aug 17 2018 Nikolay A. Fetisov <naf@altlinux.org> 1.7.2-alt1
 - new version
 - configurable memory_limit PHP setting (Closes: 33520)

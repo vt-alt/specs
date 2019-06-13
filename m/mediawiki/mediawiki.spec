@@ -2,7 +2,7 @@
 %define major 1.32
 
 Name: mediawiki
-Version: %major.0
+Version: %major.2
 Release: alt1
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
@@ -61,7 +61,7 @@ Summary: Common files for %name
 Group: Networking/WWW
 Requires: webserver-common
 Requires: php7-libs >= 7.0.0
-Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt
+Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader
 Requires: diffutils
 
 AutoProv:no
@@ -321,6 +321,16 @@ exit 0
 
 
 %changelog
+* Thu Jun 06 2019 Vitaly Lipatov <lav@altlinux.ru> 1.32.2-alt1
+- new version 1.32.2 (with rpmrb script)
+- CVE-2019-12468, CVE-2019-12473, CVE-2019-12471
+- CVE-2019-12472, CVE-2019-12474, CVE-2019-12467
+- CVE-2019-12466, CVE-2019-12469, CVE-2019-12470
+- CVE-2019-11358
+
+* Tue May 14 2019 Vitaly Lipatov <lav@altlinux.ru> 1.32.1-alt1
+- new version 1.32.1 (with rpmrb script)
+
 * Sun Mar 03 2019 Vitaly Lipatov <lav@altlinux.ru> 1.32.0-alt1
 - new version 1.32.0 (with rpmrb script)
 
