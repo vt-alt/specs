@@ -2,7 +2,7 @@
 
 Name:          sqlite3-ruby
 Version:       1.4.0
-Release:       alt1
+Release:       alt2
 Summary:       A Ruby interface for the SQLite database engine
 Group:         Development/Ruby
 License:       BSD
@@ -45,7 +45,7 @@ Documentation files for %gemname gem.
 sed 's|1.3.13.20180326210955|1.4.0|' -i *.gemspec
 
 %build
-%gem_build
+%gem_build --use sqlite3 --alias sqlite3-ruby --join=bin:lib
 
 %install
 %gem_install
@@ -66,6 +66,9 @@ sed 's|1.3.13.20180326210955|1.4.0|' -i *.gemspec
 %ruby_gemdocdir
 
 %changelog
+* Tue Jun 11 2019 Pavel Skrylev <majioa@altlinux.org> 1.4.0-alt2
+- Fix specfile
+
 * Mon Mar 18 2019 Pavel Skrylev <majioa@altlinux.org> 1.4.0-alt1
 - Bump to 1.4.0
 - Use Ruby Policy 2.0
