@@ -1,6 +1,6 @@
 Name: syslinux
 Version: 4.04
-Release: alt14
+Release: alt15
 Serial: 2
 
 Summary: Simple kernel loader which boots from a FAT filesystem
@@ -36,8 +36,10 @@ Patch16: syslinux-4.04-mtime.diff
 Patch17: syslinux-4.04-miniacc.diff
 Patch18: syslinux-4.04-align.diff
 Patch19: syslinux-4.04-reproducible.patch
-# Debian
-Patch100: strip-gnu-property.patch
+Patch20: syslinux-4.04-python3.diff
+Patch21: sysmacros.patch
+Patch22: remove-note-gnu-section.patch
+Patch23: syslinux-4.04-lzo.diff
 
 #BuildPrereq: nasm perl-base
 # Automatically added by buildreq on Tue Oct 28 2008 (-bi)
@@ -45,7 +47,7 @@ BuildRequires: nasm perl-Crypt-PasswdMD5 perl-Digest-SHA1 libe2fs-devel
 #linux-libc-headers
 BuildRequires: libuuid-devel
 
-%set_gcc_version 4.7
+#set_gcc_version 4.7
 
 %description
 Syslinux is a simple kernel loader. It normally loads the kernel (and an 
@@ -102,11 +104,14 @@ architectures.
 %patch13 -p0
 %patch14 -p1
 %patch15 -p1
-#patch16 -p1
+#%patch16 -p1
 %patch17 -p0
 %patch18 -p0
 %patch19 -p1
-%patch100 -p1
+#patch20 -p0
+%patch21 -p1
+%patch22 -p1
+%patch23 -p0
 install -m 0644 %SOURCE2 .
 sed -i 's,GCC_VERSION,_&,g' gpxe/src/arch/i386/Makefile
 
@@ -160,6 +165,10 @@ install -m 0755 %SOURCE1 %buildroot/%_bindir
 /boot/extlinux
 
 %changelog
+* Wed Jun 05 2019 Sergey V Turchin <zerg@altlinux.org> 2:4.04-alt15
+- sync patches with SuSE
+- use lastest gcc
+
 * Wed Nov 28 2018 Sergey V Turchin <zerg@altlinux.org> 2:4.04-alt14
 - sync patches with SuSE
 - fix to build with new binutils
