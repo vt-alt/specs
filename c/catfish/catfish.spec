@@ -1,27 +1,23 @@
 Name: catfish
-Version: 1.4.4
+Version: 1.4.7
 Release: alt1
 Summary: A handy file search tool
-%setup_python_module catfish
 
 Group: File tools
 License: GPLv2+
 Url: http://www.twotoasts.de/index.php/catfish/
-Source: %name-%version.tar.bz2
+Source: %name-%version.tar.gz
 BuildArch: noarch
 
-# Automatically added by buildreq on Thu Nov 17 2016
-# optimized out: at-spi2-atk fontconfig gobject-introspection gobject-introspection-x11 libat-spi2-core libatk-gir libcairo-gobject libdbus-glib libgdk-pixbuf libgdk-pixbuf-gir libgpg-error libgtk+3-gir libpango-gir libwayland-client libwayland-cursor libwayland-egl libwayland-server perl-Encode perl-XML-Parser python-base python-devel python-module-dbus python-module-ptyprocess python-module-pygobject3 python-modules python-modules-compiler python-modules-email python-modules-logging python-modules-xml python3 python3-base
-BuildRequires: intltool python-module-PyXML python-module-distutils-extra python-module-pexpect python-module-zeitgeist2.0 python3-dev
+##BuildRequires: intltool python-module-PyXML python-module-distutils-extra python-module-pexpect python-module-zeitgeist2.0 python3-dev
+# Automatically added by buildreq on Mon Jun 10 2019
+# optimized out: at-spi2-atk fontconfig gobject-introspection gobject-introspection-x11 libat-spi2-core libatk-gir libcairo-gobject libgdk-pixbuf libgdk-pixbuf-gir libgpg-error libgtk+3-gir libpango-gir libwayland-client libwayland-cursor libwayland-egl perl perl-Encode perl-XML-Parser perl-parent python-base python-modules python3 python3-base python3-module-dbus python3-module-ptyprocess python3-module-pygobject3 sh4
+BuildRequires: intltool python3-dev python3-module-distutils-extra python3-module-pexpect python3-module-zeitgeist2.0
 
 # search engine
 Requires: %_bindir/locate
 Requires: %_bindir/find
-Requires: %packagename
-# This is dirty icon hack
-##Requires: gnome-icon-theme-symbolic
-
-#define _python_req_method normal
+Requires: python3-module-catfish
 
 %description
 A handy file search tool using different backends which is
@@ -31,40 +27,29 @@ This program acts as a frontend for different file search engines.
 The interface is intentionally lightweight and simple. But it takes
 configuration options from the command line.
 
-%package -n %packagename
-Group: Development/Python
+%package -n python3-module-catfish
+Group: Development/Python3
 License: GPLv2+
 Summary: Supplemental module for catfish
 
-%description -n %packagename
-Supplemental python2 module for catfish
-
-##define symicons %_datadir/%name/data/icons/gnome
+%description -n python3-module-catfish
+Supplemental Python3 module for catfish, a handy file search tool
 
 %prep
 %setup -n %name-%version
-# This is dirty icon hack
-##sed -i.orig '/Gtk.IconTheme.get_default/{
-##p
-##s@ *=.*@.append_search_path("#symicons")@
-##}' catfish/CatfishWindow.py
 
 %build
-# This configure accepts only the option --prefix
-# and does not accept --libdir= option
-##./configure --prefix=%prefix
-%python_build
+%python3_build
 
 %install
-install -D build/share/applications/%name.desktop %buildroot/%_desktopdir/%name.desktop
-%python_install
-#makeinstall DESTDIR=%buildroot
-rm -rf %buildroot%_defaultdocdir/%name
-#mv %buildroot/%_bindir/%name %buildroot/%_bindir/%name.py
-#ln -s %name.py %buildroot/%_bindir/%name
 
-# This is dirty icon hack
-##mkdir -p %buildroot/#symicons && ln -s %_iconsdir/gnome %buildroot/#symicons/hicolor
+# XXX upstream cant' handle this :)
+install -D build/share/applications/*.desktop %buildroot/%_desktopdir/org.xfce.Catfish.desktop
+
+%python3_install
+
+cp -a build/mo %buildroot%_datadir/locale
+rm -rf %buildroot%_defaultdocdir/%name
 
 %find_lang %name
 
@@ -72,17 +57,20 @@ rm -rf %buildroot%_defaultdocdir/%name
 %doc AUTHORS ChangeLog COPYING README
 
 %_bindir/*
-%_desktopdir/%name.desktop
+%_desktopdir/*.desktop
 %_datadir/%name
-%_datadir/metainfo/%name.*
-%_datadir/icons/hicolor/scalable/apps/%name.svg
+%_datadir/metainfo/*
+%_datadir/icons/hicolor/scalable/apps/*.svg
 %_man1dir/*
 
-%files -n %packagename
-%python_sitelibdir_noarch/*
+%files -n python3-module-catfish
+%python3_sitelibdir_noarch/*
 
-#files engines
 %changelog
+* Mon Jun 10 2019 Fr. Br. George <george@altlinux.ru> 1.4.7-alt1
+- Autobuild version bump to 1.4.7 (Closes: #36594)
+- Switch to Python3
+
 * Thu Feb 01 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.4-alt1
 - Updated to upstream version 1.4.4.
 
@@ -161,7 +149,7 @@ rm -rf %buildroot%_defaultdocdir/%name
 * Wed Feb 14 2007 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 0.2stable-1
 - 0.2
 
-* Wed Jan 30 2007 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 0.2d-1
+* Tue Jan 30 2007 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 0.2d-1
 - 0.2d
 
 * Mon Jan 22 2007 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 0.2c-1
