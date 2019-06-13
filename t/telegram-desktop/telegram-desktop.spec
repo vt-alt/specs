@@ -14,7 +14,7 @@ BuildRequires(pre): rpm-build-ubt
 %def_without libcxx
 
 Name: telegram-desktop
-Version: 1.7.0
+Version: 1.7.7
 Release: alt1
 
 Summary: Telegram is a messaging app with a focus on speed and security
@@ -28,6 +28,9 @@ Source: %name-%version.tar
 
 Source2: CMakeLists.txt
 Source3: gen_source_list.sh
+
+# Source4-url: https://github.com/telegramdesktop/qtlottie/archive/tdesktop.zip
+Source4: qtlottie.tar
 
 Patch1: 0001_add-cmake.patch
 Patch3: 0003_qt-plugins.patch
@@ -91,10 +94,14 @@ BuildRequires: libtgvoip-devel >= 2.4.4
 BuildRequires: libcrl-devel >= 0.7
 
 BuildRequires: libxxhash-devel
+# used in qtlottie (no extra include subdir)
+# TODO: wrong package name (I wish -devel suffix)
+BuildRequires: rapidjson
 
 # C++ sugar
 BuildRequires: libmicrosoft-gsl-devel >= 20180615
-BuildRequires: libvariant-devel librange-v3-devel
+BuildRequires: libvariant-devel
+BuildRequires: librange-v3-devel >= 0.5.0
 
 # FIXME: libva need only for linking, extra deps?
 
@@ -104,6 +111,7 @@ Obsoletes: tdesktop
 %if_with ffmpeg_static
 BuildRequires: libffmpeg-devel-static
 %else
+# >= 3.4
 BuildRequires: libavcodec-devel libavformat-devel libavutil-devel libswscale-devel libswresample-devel
 %endif
 
@@ -139,7 +147,7 @@ or business messaging needs.
 
 
 %prep
-%setup
+%setup -a4
 %patch1 -p1
 %patch3 -p1
 #patch5 -p1
@@ -209,6 +217,12 @@ ln -s %name %buildroot%_bindir/telegram
 %doc README.md
 
 %changelog
+* Tue Jun 11 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.7-alt1
+- new version 1.7.7 (with rpmrb script)
+
+* Sun Jun 02 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.3-alt1
+- new version 1.7.3 (with rpmrb script) (ALT bug 36838)
+
 * Sun May 12 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.0-alt1
 - new version 1.7.0 (with rpmrb script)
 
