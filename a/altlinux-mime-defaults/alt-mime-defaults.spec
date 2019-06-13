@@ -1,5 +1,5 @@
 Name: altlinux-mime-defaults
-Version: 0.433
+Version: 0.434
 Release: alt1
 
 Summary: System-wide MIME preferences.
@@ -45,6 +45,10 @@ touch %buildroot/%_desktopdir/defaults.list
 %_datadir/mate/applications/defaults.list
 
 %changelog
+* Thu Jun 13 2019 Igor Vlasenko <viy@altlinux.ru> 0.434-alt1
+- updated mime defaults
+- bumped document viewers priority for tiff (closes: #36894)
+
 * Wed Nov 07 2018 Igor Vlasenko <viy@altlinux.ru> 0.433-alt1
 - updated mime defaults
 
