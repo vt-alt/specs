@@ -3,7 +3,7 @@
 
 Name: geany
 Version: 1.35
-Release: alt1
+Release: alt2
 
 Summary: A fast and lightweight IDE using GTK2
 License: GPLv2
@@ -11,6 +11,7 @@ Group: Development/Tools
 Url: http://geany.org
 
 Source: %name-%version.tar.bz2
+Patch: geany-1.35-defaults.patch
 
 Requires: libvte
 Requires: %name-data = %version
@@ -50,6 +51,7 @@ use Geany.
 
 %prep
 %setup
+%patch -p1
 
 # hack out space in file name
 sed -i '/"untitled"/,/^$/s/\([^a-z]\) \([^a-z]\)/\1_\2/g' po/ru.po
@@ -118,6 +120,9 @@ bzip2 %buildroot%_defaultdocdir/%name-%version/ChangeLog
 %_libdir/*.so
 
 %changelog
+* Mon Jun 10 2019 Fr. Br. George <george@altlinux.ru> 1.35-alt2
+- Chenge terminal/browser defaults (Closes: #36855)
+
 * Wed May 22 2019 Fr. Br. George <george@altlinux.ru> 1.35-alt1
 - Autobuild version bump to 1.35
 
