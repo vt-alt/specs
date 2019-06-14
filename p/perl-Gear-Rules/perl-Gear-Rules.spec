@@ -3,7 +3,7 @@
 %define module Gear-Rules
 
 Name: perl-%module
-Version: 0.197
+Version: 0.198
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -44,6 +44,9 @@ BuildRequires: perl-RPM-Source-Editor
 %endif
 
 %changelog
+* Thu Jun 13 2019 Igor Vlasenko <viy@altlinux.ru> 0.198-alt1
+- new version
+
 * Tue Feb 12 2019 Igor Vlasenko <viy@altlinux.ru> 0.197-alt1
 - added has_external_commits and external_commits to API
 
