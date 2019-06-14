@@ -10,7 +10,7 @@
 %def_disable vala
 
 Name: ModemManager
-Version: 1.10.0
+Version: 1.10.2
 Release: alt1%git_date
 License: %gpl2plus
 Group: System/Configuration/Networking
@@ -25,7 +25,7 @@ BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: libgudev-devel >= %libgudev_version
 BuildRequires: libgio-devel
-%{?_with_qmi:BuildRequires: libqmi-glib-devel >= 1.22.0}
+%{?_with_qmi:BuildRequires: libqmi-glib-devel >= 1.22.4}
 %{?_with_mbim:BuildRequires: libmbim-glib-devel >= 1.18.0}
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel}
 %{?_enable_vala:BuildRequires: vala-tools}
@@ -35,8 +35,8 @@ BuildRequires: libsystemd-devel >= 209
 BuildRequires: gtk-doc
 
 # For tests
-BuildRequires: /dev/pts
-BuildRequires: dbus
+%{?!_without_check:%{?!_disable_check:BuildRequires: /dev/pts}}
+%{?!_without_check:%{?!_disable_check:BuildRequires: dbus}}
 
 # Because of starting from the init script
 Conflicts: NetworkManager < 0.9.8.9
@@ -188,6 +188,7 @@ fi
 %_libdir/ModemManager/*.so
 %_sbindir/*
 %_bindir/mmcli
+%_datadir/%name/
 %_datadir/bash-completion/completions/mmcli
 %_sysconfdir/dbus-1/system.d/*.conf
 %_datadir/dbus-1/interfaces/*.xml
@@ -232,6 +233,10 @@ fi
 %endif
 
 %changelog
+* Thu Jun 13 2019 Mikhail Efremov <sem@altlinux.org> 1.10.2-alt1
+- Make tests conditional.
+- Updated to 1.10.2.
+
 * Thu Jan 17 2019 Mikhail Efremov <sem@altlinux.org> 1.10.0-alt1
 - Updated to 1.10.0.
 
