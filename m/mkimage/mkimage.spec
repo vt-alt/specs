@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.25
+Version: 0.2.26
 Release: alt1
 
 Summary: Simple image creator
@@ -83,6 +83,9 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Thu Jun 13 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.2.26-alt1
+- mki-copy-pkgs: bisection improved
+
 * Tue Mar 19 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.2.25-alt1
 - mki-copy-efiboot: add support for signed shimia32 by default if available
   + clean up code
