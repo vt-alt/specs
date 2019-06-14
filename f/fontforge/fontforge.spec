@@ -2,8 +2,8 @@
 %def_enable python
 
 Name: fontforge
-Version: 20170731
-Release: alt2
+Version: 20190413
+Release: alt1
 
 Summary: FontForge -- font editor
 
@@ -111,7 +111,7 @@ sed -ri 's/^(runpath_var).*$/\1=/' libtool
 %_bindir/*
 %_datadir/%name/
 %_man1dir/*
-%_desktopdir/%name.desktop
+%_desktopdir/*.desktop
 %_iconsdir/*/*/*/*.*
 %_datadir/mime/packages/*
 
@@ -120,7 +120,6 @@ sed -ri 's/^(runpath_var).*$/\1=/' libtool
 %_libdir/libgdraw.so.*
 %_libdir/libfontforge.so.*
 %_libdir/libgutils.so.*
-%_libdir/libgioftp.so.*
 %_libdir/libfontforgeexe.so.*
 
 %files -n lib%name-devel
@@ -144,6 +143,12 @@ sed -ri 's/^(runpath_var).*$/\1=/' libtool
 
 
 %changelog
+* Wed Jun 12 2019 Vitaly Lipatov <lav@altlinux.ru> 20190413-alt1
+- new version 20190413 (with rpmrb script)
+
+* Wed Mar 27 2019 Vitaly Lipatov <lav@altlinux.ru> 20190317-alt1
+- new version 20190317 (with rpmrb script)
+
 * Tue Feb 05 2019 Vitaly Lipatov <lav@altlinux.ru> 20170731-alt2
 - fix build (ALT bug 36059), thanks pv@
 - rebuild with libreadline7
