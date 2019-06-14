@@ -1,5 +1,5 @@
 Name: xfce4-screensaver
-Version: 0.1.4
+Version: 0.1.5
 Release: alt1
 
 Summary: Screen saver and locker for Xfce
@@ -76,6 +76,9 @@ and the Xfconf configuration backend.
 %exclude %_pkgconfigdir/%name.pc
 
 %changelog
+* Thu Jun 13 2019 Mikhail Efremov <sem@altlinux.org> 0.1.5-alt1
+- 0.1.4 -> 0.1.5.
+
 * Fri Mar 22 2019 Mikhail Efremov <sem@altlinux.org> 0.1.4-alt1
 - 0.1.3 -> 0.1.4.
 
