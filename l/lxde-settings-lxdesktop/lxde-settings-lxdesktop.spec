@@ -2,8 +2,8 @@
 %define theme_virt_dir lxde
 %define theme_fullname lxde-settings-%theme_name
 Name: %theme_fullname
-Version: 0.3
-Release: alt7
+Version: 0.3.1
+Release: alt1
 Packager: LXDE Development Team <lxde at packages.altlinux.org>
 BuildArch: noarch
 
@@ -15,12 +15,6 @@ BuildArch: noarch
 
 Source: %name-%version.tar
 Provides: lxde-settings
-Requires: icon-theme-faenza-blue
-Requires: gnome-themes-extra libgtk2-engine-adwaita
-Requires: fonts-ttf-google-droid-sans-mono fonts-ttf-google-droid-sans fonts-ttf-google-droid-serif
-Requires: qasmixer
-Requires: screengrab
-Requires: xdg-user-dirs-gtk
 
 %description
 Theme for LXDE, based on a branding-altlinux-lxdesktop-settings
@@ -53,6 +47,10 @@ cp -r * %buildroot%_datadir/%theme_fullname
 %_sysconfdir/X11/profile.d/*.sh
 
 %changelog
+* Fri Jun 07 2019 Anton Midyukov <antohami@altlinux.org> 0.3.1-alt1
+- set default background (design-current)
+- drop requires
+
 * Sat Mar 23 2019 Anton Midyukov <antohami@altlinux.org> 0.3-alt7
 - Replaced gtk2/3 theme on Adwaita
 
