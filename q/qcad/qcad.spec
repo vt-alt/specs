@@ -1,7 +1,7 @@
 %def_with debug
 
 Name: 	 qcad
-Version: 3.22.1.0
+Version: 3.22.1.2
 Release: alt1
 Summary: A professional CAD system
 Summary(ru_RU.UTF-8): Профессиональная система CAD
@@ -125,6 +125,9 @@ done
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Thu Jun 13 2019 Andrey Cherepanov <cas@altlinux.org> 3.22.1.2-alt1
+- New version.
+
 * Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 3.22.1.0-alt1
 - New version.
 - Set default UI language according to system locale (ALT #36764).
