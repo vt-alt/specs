@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt3
+Release: alt4
 
 Url: http://en.altlinux.org/starterkits
 
@@ -244,9 +244,7 @@ install slideshow/* %buildroot/usr/share/install2/slideshow/
 #xfce-settings
 pushd xfce-settings
 mkdir -p %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
-mkdir -p %buildroot/etc/skel/.config/xfce4/panel
 cp -r etcskel/.config/xfce4/xfconf/xfce-perchannel-xml/* %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
-cp -r etcskel/.config/xfce4/panel/* %buildroot/etc/skel/.config/xfce4/panel
 popd
 
 #bootloader
@@ -325,6 +323,9 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_sysconfdir/skel/.config/xfce4
 
 %changelog
+* Sun Jun 16 2019 Anton Midyukov <antohami@altlinux.org> p9-alt4
+- xfce-settings: xfce panel settings only
+
 * Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> p9-alt3
 - xfce-settings back in minimal
 
