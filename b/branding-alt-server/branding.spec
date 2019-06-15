@@ -18,7 +18,7 @@
 
 Name: branding-%flavour
 Version: 8.90
-Release: alt2
+Release: alt3
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -325,6 +325,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Jun 14 2019 Alexey Shabalin <shaba@altlinux.org> 8.90-alt3
+- update background4x3 with logo
+
 * Thu Jun 13 2019 Alexey Shabalin <shaba@altlinux.org> 8.90-alt2
 - Do not requires pam-limits-desktop (fixed ATL#36875)
 - Drop settings for WM
