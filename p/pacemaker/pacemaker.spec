@@ -1,6 +1,6 @@
 Name:    pacemaker
 Summary: Scalable High-Availability cluster resource manager
-Version: 2.0.1
+Version: 2.0.2
 Release: alt1
 License: GPLv2+ and LGPLv2+
 Url:     http://www.clusterlabs.org
@@ -237,11 +237,8 @@ getent passwd %uname >/dev/null || useradd -r -g %gname -s /sbin/nologin -c "clu
 %_libexecdir/pacemaker/*
 %_sbindir/crm_attribute
 %_sbindir/crm_master
-%_sbindir/crm_verify
 %_sbindir/attrd_updater
 %_sbindir/fence_legacy
-%_sbindir/crm_resource
-%_sbindir/stonith_admin
 %_sbindir/notifyServicelogEvent
 %_sbindir/ipmiservicelogd
 %_man7dir/*.7*
@@ -249,7 +246,6 @@ getent passwd %uname >/dev/null || useradd -r -g %gname -s /sbin/nologin -c "clu
 %_man8dir/crm_attribute.*
 %_man8dir/crm_master.*
 %_man8dir/pacemakerd.*
-%_man8dir/stonith_admin.*
 %dir %attr (750, %uname, %gname) %_var/lib/pacemaker/cib
 %dir %attr (750, %uname, %gname) %_var/lib/pacemaker/pengine
 /usr/lib/ocf/resource.d/pacemaker/controld
@@ -269,21 +265,21 @@ getent passwd %uname >/dev/null || useradd -r -g %gname -s /sbin/nologin -c "clu
 %_sbindir/crm_shadow
 %_sbindir/crm_simulate
 %_sbindir/crm_report
+%_sbindir/crm_resource
+%_sbindir/crm_rule
 %_sbindir/crm_ticket
+%_sbindir/crm_verify
+%_sbindir/stonith_admin
 %_man8dir/*.8*
 %exclude %_man8dir/attrd_updater.*
 %exclude %_man8dir/crm_attribute.*
 %exclude %_man8dir/crm_master.*
 %exclude %_man8dir/pacemakerd.*
 %exclude %_man8dir/pacemaker-remoted.*
-%exclude %_man8dir/stonith_admin.*
 
-%_datadir/pacemaker
+%_datadir/pacemaker/report.collector
+%_datadir/pacemaker/report.common
 %_datadir/snmp/mibs/PCMK-MIB.txt
-%exclude %{_datadir}/pacemaker/*.rng
-%exclude %{_datadir}/pacemaker/*.xsl
-%exclude %_datadir/pacemaker/tests
-%exclude %_datadir/pacemaker/alerts
 
 %dir /usr/lib/ocf
 %dir /usr/lib/ocf/resource.d
@@ -298,16 +294,7 @@ getent passwd %uname >/dev/null || useradd -r -g %gname -s /sbin/nologin -c "clu
 %dir %attr (770, %uname, %gname) %_var/log/pacemaker/bundles
 
 %files -n lib%name
-%_libdir/libcib.so.*
-%_libdir/liblrmd.so.*
-%_libdir/libcrmservice.so.*
-%_libdir/libcrmcommon.so.*
-%_libdir/libpe_status.so.*
-%_libdir/libpe_rules.so.*
-%_libdir/libpengine.so.*
-%_libdir/libstonithd.so.*
-%_libdir/libtransitioner.so.*
-%_libdir/libcrmcluster.so.*
+%_libdir/*.so.*
 
 %files remote
 %config(noreplace) %_sysconfdir/sysconfig/pacemaker_remote
@@ -332,10 +319,15 @@ getent passwd %uname >/dev/null || useradd -r -g %gname -s /sbin/nologin -c "clu
 %_pkgconfigdir/*.pc
 
 %files schemas
+%dir %_datadir/pacemaker
 %_datadir/pacemaker/*.rng
 %_datadir/pacemaker/*.xsl
+%_datadir/pacemaker/api
 
 %changelog
+* Sun Jun 16 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.2-alt1
+- New version.
+
 * Wed Mar 06 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt1
 - New version.
 - build with python3

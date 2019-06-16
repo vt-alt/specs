@@ -1,6 +1,16 @@
+%def_enable watchdog
+%def_enable monitoring
+%def_enable snmp
+%def_enable dbus
+%def_enable systemd
+%def_enable xmlconf
+%def_enable augeas
+%def_enable nozzle
+%def_enable vqsim
+
 Name: corosync
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
-Version: 3.0.1
+Version: 3.0.2
 Release: alt1
 License: BSD
 Group: System/Base
@@ -18,8 +28,15 @@ Provides: corosync2 = %version-%release
 Obsoletes: corosync2 < %version-%release
 Requires: lib%name = %version-%release
 
-BuildRequires: doxygen libqb-devel libstatgrab-devel libnet-snmp-devel libdbus-devel systemd-devel libxslt-devel libaugeas-devel
-BuildRequires: augeas graphviz libsocket-devel zlib-devel libknet-devel
+BuildRequires: doxygen libqb-devel graphviz libsocket-devel zlib-devel libknet-devel
+%{?_enable_monitoring:BuildRequires: libstatgrab-devel}
+%{?_enable_snmp:BuildRequires: libnet-snmp-devel}
+%{?_enable_dbus:BuildRequires: libdbus-devel}
+%{?_enable_nozzle:BuildRequires: libnozzle-devel}
+%{?_enable_systemd:BuildRequires: systemd-devel}
+%{?_enable_xmlconf:BuildRequires: libxslt-devel}
+%{?_enable_augeas:BuildRequires: augeas libaugeas-devel}
+%{?_enable_vqsim:BuildRequires: libreadline-devel}
 
 %define _localstatedir %_var
 
@@ -49,6 +66,17 @@ Obsoletes: libcorosync2-devel < %version-%release
 This package contains include files and man pages used to develop using
 The Corosync Cluster Engine APIs.
 
+%package vqsim
+Summary: The Corosync Cluster Engine - Votequorum Simulator
+Group: System/Base
+
+%description vqsim
+A command-line simulator for the corosync votequorum subsystem.
+It uses the same code as the corosync quorum system but forks
+them into subprocesses to simulate nodes.
+Nodes can be added and removed as well as partitioned (to simulate
+network splits)
+
 %prep
 %setup
 
@@ -62,15 +90,16 @@ mkdir -p m4
 %autoreconf
 
 %configure \
-	--enable-watchdog \
-	--enable-monitoring \
-	--enable-snmp \
-	--enable-dbus \
-	--enable-systemd \
-	--enable-xmlconf \
-	--enable-augeas \
+	%{subst_enable watchdog} \
+	%{subst_enable monitoring} \
+	%{subst_enable snmp} \
+	%{subst_enable dbus} \
+	%{subst_enable systemd} \
+	%{subst_enable xmlconf} \
+	%{subst_enable augeas} \
+	%{subst_enable nozzle} \
+	%{subst_enable vqsim} \
 	--with-systemddir=%_unitdir
-
 
 %make_build
 
@@ -124,7 +153,7 @@ install -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconfig/
 %config(noreplace) %_sysconfdir/corosync/corosync.conf.example
 %config(noreplace) %_sysconfdir/sysconfig/corosync-notifyd
 %config(noreplace) %_sysconfdir/sysconfig/corosync
-%config(noreplace) %_sysconfdir/logrotate.d/corosync
+%config(noreplace) %_logrotatedir/corosync
 %_unitdir/corosync.service
 %_unitdir/corosync-notifyd.service
 %_sysconfdir/dbus-1/system.d/corosync-signals.conf
@@ -134,10 +163,15 @@ install -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconfig/
 %_datadir/snmp/mibs/COROSYNC-MIB.txt
 %_datadir/augeas/lenses/*
 %dir %_localstatedir/lib/corosync
-%attr(700, root, root) %_localstatedir/log/cluster
+%attr(700, root, root) %_logdir/cluster
 %_man5dir/*
 %_man7dir/*
 %_man8dir/*
+
+%if_enabled vqsim
+%exclude %_bindir/corosync-vqsim
+%exclude %_man8dir/corosync-vqsim.8*
+%endif
 
 %files -n lib%name
 %_libdir/*.so.*
@@ -148,7 +182,17 @@ install -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconfig/
 %_pkgconfigdir/*
 %_man3dir/*
 
+%if_enabled vqsim
+%files vqsim
+%doc LICENSE
+%_bindir/corosync-vqsim
+%_man8dir/corosync-vqsim.8*
+%endif
+
 %changelog
+* Sun Jun 16 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.2-alt1
+- 3.0.2
+
 * Tue Mar 05 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.1-alt1
 - 3.0.1
 
