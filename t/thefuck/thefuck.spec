@@ -1,8 +1,9 @@
 Name:    thefuck
-Version: 3.28
+Version: 3.29
 Release: alt1
 
 Summary: Magnificent app which corrects your previous console command
+
 License: MIT
 Group:   Other
 URL:     https://github.com/nvbn/thefuck
@@ -35,6 +36,9 @@ rm -v thefuck/system/win32.py
 %python3_sitelibdir/*.egg-info
 
 %changelog
+* Tue May 28 2019 Grigory Ustinov <grenka@altlinux.org> 3.29-alt1
+- Build new version.
+
 * Mon Dec 03 2018 Grigory Ustinov <grenka@altlinux.org> 3.28-alt1
 - Build new version.
 
