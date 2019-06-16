@@ -1,18 +1,21 @@
 Name: tuxpaint
 Version: 0.9.23
-Release: alt1
+Release: alt2
 
 Summary: A drawing program for young children
 Summary(ru_RU.UTF8): Простая детская программа для рисования
+
 License: GPL
 Group: Graphics
-
 Url: http://www.tuxpaint.org/
+
 Source: %name-%version.tar.gz
 Source1: %name.desktop
 
+Patch: kdelibs4-removal.patch
+
 BuildRequires: libSDL-devel >= 1.2.4 libSDL_image-devel libSDL_mixer-devel libSDL_pango-devel libSDL_ttf-devel
-BuildRequires: libpng-devel zlib-devel gettext librsvg-devel libpaper-devel libfribidi-devel kde4libs
+BuildRequires: libpng-devel zlib-devel gettext librsvg-devel libpaper-devel libfribidi-devel
 BuildPreReq: gperf
 
 %description
@@ -47,9 +50,9 @@ Requires: %name = %version-%release
 Development shared library for %name
 
 %prep
-%setup -n %name-%version
+%setup
+%patch -p1
 
-#subst "s|/share/doc/tuxpaint|/share/doc/tuxpaint-%%version|g" Makefile
 subst "s|\$(PREFIX)/lib|%_libdir|g" Makefile
 subst "s|< \$(PLUGIN_LIBS)|< \$(PLUGIN_LIBS) \$(SDL_LIBS) \$(PNG)|g" Makefile
 sed -i '/^linux_ARCH_LINKS/s/\$(FRIBIDI_LIB)/\$(FRIBIDI_LIB) \$(PNG)/g' Makefile
@@ -60,8 +63,8 @@ sed -i 's|^\(CFLAGS\).*=\(.*\))|\1 = -g \2|' Makefile
 
 %install
 %make install PREFIX=/usr \
-		PKG_ROOT=%buildroot \
-		MAGIC_PREFIX=%buildroot%_libdir/%name/plugins \
+    PKG_ROOT=%buildroot \
+    MAGIC_PREFIX=%buildroot%_libdir/%name/plugins \
     X11_ICON_PREFIX=%buildroot%_datadir/pixmaps/ \
     GNOME_PREFIX=/usr \
     KDE_PREFIX="" \
@@ -104,6 +107,9 @@ rm -f /usr/share/tuxpaint/fonts/Free*.ttf
 %_man1dir/tp-magic-config*
 
 %changelog
+* Wed May 29 2019 Grigory Ustinov <grenka@altlinux.org> 0.9.23-alt2
+- Build without kdelibs.
+
 * Thu Sep 13 2018 Grigory Ustinov <grenka@altlinux.org> 0.9.23-alt1
 - Build new version.
 
