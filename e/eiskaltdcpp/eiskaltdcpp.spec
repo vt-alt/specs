@@ -1,6 +1,6 @@
 Name: eiskaltdcpp
-Version: 2.2.10
-Release: alt3
+Version: 2.2.10.0.614.gitc9c510b8
+Release: alt1
 
 Summary: EiskaltDC++ - Direct Connect client
 
@@ -9,26 +9,27 @@ Group: Networking/File transfer
 Url: http://code.google.com/p/eiskaltdc/
 
 Source: %name-%version.tar
-Patch: openssl-1.1.x.patch
-Patch1: eiskaltdcpp-2.2.10-use_libidn2.patch
+Patch: eiskaltdcpp-use_libidn2.patch
 
-BuildRequires: boost-interprocess-devel bzlib-devel cmake gcc-c++ libaspell-devel libgtk+2-devel
-BuildRequires: libidn2-devel liblua5.1-devel libnotify-devel libpcrecpp-devel qt5-phonon-devel
+BuildRequires: boost-interprocess-devel bzlib-devel cmake gcc-c++
+BuildRequires: libaspell-devel libgtk+2-devel libidn2-devel liblua5.1-devel
+BuildRequires: libnotify-devel libpcrecpp-devel qt5-phonon-devel
 BuildRequires: qt5-tools-devel qt5-multimedia-devel qt5-script-devel
-BuildRequires: libssl-devel perl-JSON-RPC perl-Term-ShellUI
+BuildRequires: libssl-devel perl-JSON-RPC perl-Term-ShellUI libminiupnpc-devel
 
 %add_findreq_skiplist *xmms2_audacious2.ru_RU.UTF-8.php
 %add_findreq_skiplist *commands.ru_RU.UTF-8.php
 
 %description
-EiskaltDC++ is a cross-platform program that uses the Direct Connect and ADC protocol.
-It is compatible with other DC clients, such as the original DC from Neomodus, DC++ and derivatives.
-EiskaltDC++ also interoperates with all common DC hub software.
+EiskaltDC++ is a cross-platform program that uses the Direct Connect and
+ADC protocol. It is compatible with other DC clients, such as the original DC
+from Neomodus, DC++ and derivatives. EiskaltDC++ also interoperates
+with all common DC hub software.
 
 %package common
 Group: Networking/File transfer
 Summary: Common files for %name
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 BuildArch: noarch
 %description common
 Common files for %name
@@ -36,14 +37,14 @@ Common files for %name
 %package gtk
 Group: Networking/File transfer
 Summary: GTK-based graphical interface
-Requires: %name-gtk-data = %version-%release
+Requires: %name-gtk-data = %EVR
 %description gtk
 Gtk interface based on code of FreeDC++ and LinuxDC++
 
 %package gtk-data
 Group: Networking/File transfer
 Summary: noarch files for GTK-based graphical interface
-Requires: %name-common = %version-%release
+Requires: %name-common = %EVR
 BuildArch: noarch
 %description gtk-data
 noarch files for Gtk interface based on code of FreeDC++ and LinuxDC++
@@ -51,16 +52,16 @@ noarch files for Gtk interface based on code of FreeDC++ and LinuxDC++
 %package qt
 Group: Networking/File transfer
 Summary: Qt-based graphical interface
-Provides: %name = %version-%release
+Provides: %name = %EVR
 Obsoletes: %name <= 2.0.3-alt1
-Requires: %name-qt-data = %version-%release
+Requires: %name-qt-data = %EVR
 %description qt
 Qt-based graphical interface
 
 %package qt-data
 Group: Networking/File transfer
 Summary: Qt-based graphical interface
-Requires: %name-common = %version-%release
+Requires: %name-common = %EVR
 BuildArch: noarch
 %description qt-data
 noarch files for Qt-based graphical interface
@@ -75,21 +76,20 @@ eiskaltdcpp libraries
 %package daemon
 Group: Networking/File transfer
 Summary: Daemon interface
-Requires: %name-common = %version-%release
+Requires: %name-common = %EVR
 %description daemon
 Daemon interface
 
 %package cli
 Group: Networking/File transfer
 Summary: cli for Daemon
-Requires: %name-daemon = %version-%release
+Requires: %name-daemon = %EVR
 %description cli
 command line interface for XML-RPC Daemon
 
 %prep
 %setup
 %patch -p1
-%patch1 -p1
 
 %build
 %add_optflags -fno-strict-aliasing $(pkg-config libpcre --cflags)
@@ -120,7 +120,8 @@ command line interface for XML-RPC Daemon
 -DPCRE_INCLUDE_DIR=$(pkg-config libpcre --variable=includedir) \
 -DPERL_REGEX=ON \
 -DUSE_QT=OFF \
--DUSE_QT5=ON
+-DUSE_QT5=ON \
+-DUSE_IDN2=ON
 %make_build
 
 %install
@@ -172,6 +173,14 @@ command line interface for XML-RPC Daemon
 %_datadir/%name/cli
 
 %changelog
+* Mon May 27 2019 Grigory Ustinov <grenka@altlinux.org> 2.2.10.0.614.gitc9c510b8-alt1
+- Build from last commit (Closes: #36783).
+- Change build scheme.
+- Drop openssl patch (applied in 3b9c502).
+- Adapt libIDN2 patch.
+- Add BR on libminiupnpc-devel.
+- Spec refactoring.
+
 * Tue Oct 30 2018 Grigory Ustinov <grenka@altlinux.org> 2.2.10-alt3
 - Build with libidn2.
 
