@@ -3,8 +3,8 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 0.6
-Release: alt3.2
+Version: 3.0.0
+Release: alt1
 
 Summary: Python implementation of RFC6570, URI Template
 License: Apache Software License
@@ -18,7 +18,6 @@ BuildArch: noarch
 BuildRequires(pre): rpm-build-python
 %if_with python3
 BuildRequires(pre): rpm-build-python3
-#BuildPreReq: python3-devel
 %endif
 
 %setup_python_module %oname
@@ -50,7 +49,7 @@ cp -fR . ../python3
 
 %build
 %python_build_debug
-   
+
 %if_with python3
 pushd ../python3
 %python3_build_debug
@@ -77,6 +76,9 @@ popd
 %endif
 
 %changelog
+* Mon May 20 2019 Grigory Ustinov <grenka@altlinux.org> 3.0.0-alt1
+- Build new version.
+
 * Tue Apr 30 2019 Grigory Ustinov <grenka@altlinux.org> 0.6-alt3.2
 - Rebuild with python3.7.
 
