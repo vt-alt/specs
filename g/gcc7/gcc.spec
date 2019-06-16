@@ -2,7 +2,7 @@
 
 Name: gcc%gcc_branch
 Version: 7.3.1
-Release: alt8
+Release: alt9
 
 Summary: GNU Compiler Collection
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
@@ -45,15 +45,15 @@ Url: http://gcc.gnu.org/
 
 %define gnat_arches		%ix86 x86_64
 %define go_arches		%ix86 x86_64
-%define libasan_arches		%ix86 x86_64 %arm aarch64
-%define libatomic_arches	%ix86 x86_64 %arm aarch64 mips mipsel s390x
+%define libasan_arches		%ix86 x86_64 %arm aarch64 ppc64le
+%define libatomic_arches	%ix86 x86_64 %arm aarch64 mips mipsel s390x ppc64le
 %define libcilkrts_arches	%ix86 x86_64
-%define libitm_arches		%ix86 x86_64 %arm aarch64 s390x
+%define libitm_arches		%ix86 x86_64 %arm aarch64 s390x ppc64le
 %define liblsan_arches		x86_64 aarch64
 %define libmpx_arches		%ix86 x86_64
 %define libquadmath_arches	%ix86 x86_64
-%define libtsan_arches		x86_64 aarch64
-%define libubsan_arches		%ix86 x86_64 %arm aarch64
+%define libtsan_arches		x86_64 aarch64 ppc64le
+%define libubsan_arches		%ix86 x86_64 %arm aarch64 ppc64le
 %define libvtv_arches		%ix86 x86_64
 
 %ifarch %go_arches
@@ -183,6 +183,8 @@ Patch724: alt-change-default-rtld-paths.patch
 Patch726: alt-fix-libmpxwrappers-link.patch
 Patch727: alt-testsuite-Wtrampolines.patch
 Patch728: alt-libstdc++-libvtv-rpath-disable.patch
+# lsan seems to be broken on ppc* in this gcc branch
+Patch729: alt-ppc-disable-lsan.patch
 
 Obsoletes: egcs gcc3.0 gcc3.1
 Conflicts: glibc-devel < 2.2.6
@@ -1043,6 +1045,7 @@ version %version.
 %patch726 -p1
 %patch727 -p1
 %patch728 -p1
+%patch729 -p1
 
 echo '%distribution %version-%release' > gcc/DEV-PHASE
 
@@ -1059,7 +1062,7 @@ find -type f -name Makefile\* -print0 |
 	xargs -r0 sed -i 's/-I- //g' --
 
 # Disable unwanted multilib builds.
-%ifarch x86_64
+%ifarch x86_64 mips mipsel mips64 mips64el riscv64 ppc64le
 sed -i 's/\$(CC_FOR_TARGET) --print-multi-lib/echo '"'.;'/" Makefile.*
 sed -i 's/\${CC-gcc} --print-multi-lib/echo '"'.;'/" config-ml.in
 sed -i 's/\[ -z "\$(MULTIDIRS)" \]/true/' config-ml.in
@@ -1185,9 +1188,17 @@ CONFIGURE_OPTS="\
 	--with-arch_32=i586 --with-tune_32=generic \
 	--with-multilib-list=m64,m32,mx32 \
 %endif
-%ifarch ppc ppc64
-	--disable-softfloat --enable-secureplt \
+%ifarch ppc ppc64 ppc64le
+	--enable-secureplt \
 	--with-long-double-128 \
+%endif
+%ifarch ppc ppc64
+	--disable-softfloat \
+%endif
+%ifarch ppc64le
+	--enable-targets=powerpcle-linux \
+	--with-cpu-32=power8 --with-tune-32=power8 \
+	--with-cpu-64=power8 --with-tune-64=power8 \
 %endif
 %ifarch ppc
 	--with-cpu=default32 \
@@ -1600,15 +1611,22 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %gcc_target_libdir/include/mm3dnow.h
 %gcc_target_libdir/include/mm_malloc.h
 %endif
-%ifarch ppc ppc64
+%ifarch ppc ppc64 ppc64le
+%gcc_target_libdir/include/*intrin*.h
 %gcc_target_libdir/include/altivec.h
 %gcc_target_libdir/include/paired.h
 %gcc_target_libdir/include/ppc-asm.h
 %gcc_target_libdir/include/ppu_intrinsics.h
 %gcc_target_libdir/include/si2vmx.h
-%gcc_target_libdir/include/spe.h
 %gcc_target_libdir/include/spu2vmx.h
 %gcc_target_libdir/include/vec_types.h
+%endif
+%ifarch ppc ppc64
+%gcc_target_libdir/include/spe.h
+%endif
+%ifarch ppc64le
+%gcc_target_libdir/ecrt*.o
+%gcc_target_libdir/ncrt*.o
 %endif
 %gcc_target_libdir/crt*.o
 %gcc_target_libdir/libgcc_s.so
@@ -2078,6 +2096,9 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %endif #with_pdf
 
 %changelog
+* Sat Jun 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 7.3.1-alt9
+- Added ppc64le support.
+
 * Thu Apr 11 2019 Dmitry V. Levin <ldv@altlinux.org> 7.3.1-alt8
 - Fixed profiledbootstrap build (by glebfm@).
 - Fixed build with libtool 2.4.6.
