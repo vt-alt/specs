@@ -3,7 +3,7 @@ Name: codeblocks
 # will update codeblocks for a new version. In sisyphus branch windows blobs
 # should be cleared.
 Version: 17.12
-Release: alt7
+Release: alt8
 
 Summary: Code::Blocks is open source, cross platform free C++ IDE
 Summary(ru_RU.UTF-8): Code::Blocks это кросс-платформенная свободная среда разработки для C++ с открытым исходным кодом
@@ -276,6 +276,9 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_libdir/pkgconfig/wxsmith-contrib.pc
 
 %changelog
+* Mon Jun 03 2019 Grigory Ustinov <grenka@altlinux.org> 17.12-alt8
+- Update russian localization of desktop file (thx to cas@).
+
 * Wed May 29 2019 Grigory Ustinov <grenka@altlinux.org> 17.12-alt7
 - Significant update russian localization (Closes: #36007).
 - Build with system bzlib (Closes: #36434).
