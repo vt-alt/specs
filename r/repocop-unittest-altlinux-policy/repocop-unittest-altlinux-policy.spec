@@ -1,5 +1,5 @@
 Name: repocop-unittest-altlinux-policy
-Version: 0.42
+Version: 0.43
 Release: alt1
 BuildArch: noarch
 Packager: Igor Vlasenko <viy@altlinux.ru>
@@ -44,6 +44,9 @@ done
 %_datadir/repocop/fixscripts/*
 
 %changelog
+* Fri Jun 14 2019 Igor Vlasenko <viy@altlinux.ru> 0.43-alt1
+- added specfile-macros-ubt-is-deprecated
+
 * Mon Aug 20 2018 Igor Vlasenko <viy@altlinux.ru> 0.42-alt1
 - added:
   %%__autoreconf fixscript
