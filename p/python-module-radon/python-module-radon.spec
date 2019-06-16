@@ -1,10 +1,11 @@
 %define  oname radon
 
 Name:    python-module-%oname
-Version: 3.0.1
+Version: 3.0.3
 Release: alt1
 
 Summary: Various code metrics for Python code
+
 License: MIT
 Group:   Development/Python
 URL:     https://github.com/rubik/radon
@@ -47,5 +48,8 @@ mv %buildroot%_bindir/radon %buildroot%_bindir/radon
 %python_sitelibdir/*.egg-info/
 
 %changelog
+* Mon May 20 2019 Grigory Ustinov <grenka@altlinux.org> 3.0.3-alt1
+- Build new version.
+
 * Wed Apr 24 2019 Grigory Ustinov <grenka@altlinux.org> 3.0.1-alt1
-- Initial build for Sisyphus
+- Initial build for Sisyphus.
