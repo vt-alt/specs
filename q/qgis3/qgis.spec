@@ -6,7 +6,7 @@
 
 Name:    qgis3
 Version: 3.6.3
-Release: alt1
+Release: alt2
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -85,8 +85,8 @@ BuildRequires: txt2tags
 BuildRequires: libqwt6-qt5-devel
 
 #Requires: libqt4-sql-sqlite
+Requires: qca-qt5-ossl
 Requires: gpsbabel
-Requires: qca2-ossl
 Requires: libqwt6-qt5
 
 # We don't want to provide private Python extension libs
@@ -370,6 +370,9 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 %endif
 
 %changelog
+* Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.6.3-alt2
+- Add qca-qt5-ossl as authentication plugin.
+
 * Tue Jun 11 2019 Andrey Cherepanov <cas@altlinux.org> 3.6.3-alt1
 - New version.
 
