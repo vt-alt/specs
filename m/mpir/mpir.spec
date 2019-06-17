@@ -1,6 +1,6 @@
 Name: mpir
 Version: 3.0.0
-Release: alt2%ubt
+Release: alt4
 Summary: A library for arbitrary precision arithmetic
 
 License: LGPLv3+
@@ -8,9 +8,8 @@ Group: System/Libraries
 Url: http://mpir.org/
 Packager: Anton Midyukov <antohami@altlinux.org>
 
-Source: http://mpir.org/%name-%version.tar.bz2
-# Enable aarch64 support
-Patch: %name-aarch64.patch
+# Repacked http://mpir.org/%name-%version.tar.bz2
+Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++
@@ -32,7 +31,6 @@ developing applications that use %name.
 
 %prep
 %setup
-%patch
 
 # Convert ISO-8859-1 files to UTF-8, preserving timestamps
 for fil in NEWS doc/devel/projects.html doc/devel/tasks.html; do
@@ -46,6 +44,11 @@ done
 cp -p %_datadir/texmf/tex/texinfo/texinfo.tex doc
 
 %build
+%autoreconf
+%ifarch ppc64le
+export ABI=mode64
+export MPN_PATH=generic
+%endif
 %configure --disable-static --enable-cxx --with-yasm=%_bindir/yasm \
   CCAS="gcc -c -Wa,--noexecstack" \
   LIBS="-lrt" \
@@ -85,6 +88,13 @@ mv doc/devel doc/html
 %_infodir/mpir.info*
 
 %changelog
+* Tue Jun 18 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.0.0-alt4
+- Fixed build on ppc64le.
+- Dropped useless aarch64 patch.
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 3.0.0-alt3
+- NMU: remove %ubt from release
+
 * Sat Jun 16 2018 Anton Midyukov <antohami@altlinux.org> 3.0.0-alt2%ubt
 - Rebuilt for aarch64
 
