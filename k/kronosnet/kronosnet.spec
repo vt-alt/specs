@@ -9,14 +9,17 @@
 %def_enable lzo2
 %def_enable lzma
 %def_enable bzip2
+%def_enable zstd
+%def_enable installtests
 
 Name: kronosnet
 Summary: Multipoint-to-Multipoint VPN daemon
-Version: 1.7
-Release: alt2
+Version: 1.10
+Release: alt1
 License: GPLv2+ and LGPLv2+
 Group: Networking/Other
-Url: https://github.com/kronosnet/kronosnet/
+Url: https://kronosnet.org
+# vcs-git: https://github.com/kronosnet/kronosnet
 Source: %name-%version.tar
 Patch: %name-%version.patch
 
@@ -31,6 +34,7 @@ BuildRequires: libqb-devel libxml2-devel doxygen
 %{?_enable_lzo2:BuildRequires: liblzo2-devel}
 %{?_enable_lzma:BuildRequires: liblzma-devel}
 %{?_enable_bzip2:BuildRequires: bzlib-devel}
+%{?_enable_zstd:BuildRequires: libzstd-devel}
 
 %description
 Kronosnet, often referred to as knet, is a network abstraction layer designed
@@ -154,6 +158,14 @@ Requires: libknet1 = %version-%release
 %description -n libknet1-compress-bzip2-plugin
 bzip2 compression support for libknet1.
 
+%package -n libknet1-compress-zstd-plugin
+Group: System/Libraries
+Summary: libknet1 zstd support
+Requires: libknet1 = %version-%release
+
+%description -n libknet1-compress-zstd-plugin
+ zstd compression support for libknet1.
+
 %package -n libknet1-compress-plugins-all
 Summary: libknet1 compress plugins meta package
 Group: System/Libraries
@@ -162,18 +174,27 @@ Group: System/Libraries
 %{?_enable_lzo2:Requires: libknet1-compress-lzo2-plugin}
 %{?_enable_lzma:Requires: libknet1-compress-lzma-plugin}
 %{?_enable_bzip2:Requires: libknet1-compress-bzip2-plugin}
+%{?_enable_zstd:Requires: libknet1-compress-zstd-plugin}
 
 %description -n libknet1-compress-plugins-all
-meta package to install all of libknet1 compress plugins
+Meta package to install all of libknet1 compress plugins
 
 %package -n libknet1-plugins-all
-Summary: libknet1 plugins meta package
+Summary: Provides libknet1 plugins meta package
 Group: System/Libraries
 Requires: libknet1-compress-plugins-all
 Requires: libknet1-crypto-plugins-all
 
 %description -n libknet1-plugins-all
-meta package to install all of libknet1 plugins
+Meta package to install all of libknet1 plugins
+
+%package -n kronosnet-tests
+Group: System/Libraries
+Summary: Provides kronosnet test suite
+Requires: libknet1 = %version-%release
+
+%description -n kronosnet-tests
+This package contains all the libknet and libnozzle test suite
 
 %prep
 %setup
@@ -195,6 +216,8 @@ cp .version .tarball-version
 	%{?_enable_lzo2:--enable-compress-lzo2} \
 	%{?_enable_lzma:--enable-compress-lzma} \
 	%{?_enable_bzip2:--enable-compress-bzip2} \
+	%{?_enable_zstd:--enable-compress-zstd} \
+	%{?_enable_installtests:--enable-install-tests} \
 	%{subst_enable kronosnetd} \
 	%{subst_enable libnozzle} \
 	--with-initdefaultdir=%_sysconfdir/sysconfig \
@@ -299,11 +322,24 @@ rm -rf %buildroot/usr/share/doc/kronosnet
 %_libdir/kronosnet/compress_bzip2.so
 %endif
 
+%if_enabled zstd
+%files -n libknet1-compress-zstd-plugin
+%_libdir/kronosnet/compress_zstd.so
+%endif
+
+%if_enabled installtests
+%files tests
+%_libdir/kronosnet/tests
+%endif
+
 %files -n libknet1-compress-plugins-all
 
 %files -n libknet1-plugins-all
 
 %changelog
+* Mon Jun 17 2019 Alexey Shabalin <shaba@altlinux.org> 1.10-alt1
+- 1.10
+
 * Tue Mar 05 2019 Alexey Shabalin <shaba@altlinux.org> 1.7-alt2
 - fixed show version
 
