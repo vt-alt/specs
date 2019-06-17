@@ -1,7 +1,7 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
-Version: 5.0.33
-Release: alt4
+Version: 5.0.37
+Release: alt1
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -18,7 +18,6 @@ Source2: pve-apiclient.tar.xz
 Patch0: %name.patch
 Patch1: pve-access-control.patch
 Patch2: pve-cluster-install_vzdump_cron_config.patch
-Patch3: pve-cluster-pmxcfs-open.patch
 
 Source3: pve-firsttime
 
@@ -34,7 +33,7 @@ on all nodes.
 
 %package -n pve-access-control
 Summary: PVE access control library
-Version: 5.1.3
+Version: 5.1.10
 Group: Development/Perl
 
 %description -n pve-access-control
@@ -46,7 +45,6 @@ control function used by PVE.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
-%patch3 -p1
 
 grep '/var/run' * -rl | while read f; do
     sed -i 's|/var/run|/run|' $f
@@ -131,6 +129,7 @@ fi
 %dir %perl_vendor_privlib/PVE/Cluster
 %perl_vendor_privlib/PVE/Cluster/IPCConst.pm
 %dir %_localstatedir/%name
+%_datadir/zsh/vendor-completions/_pvecm
 %_man1dir/pvecm.1*
 %_man5dir/datacenter.cfg.5*
 %_man8dir/pmxcfs.8*
@@ -149,9 +148,15 @@ fi
 %perl_vendor_privlib/PVE/API2/*.pm
 %dir %perl_vendor_privlib/PVE/Auth
 %perl_vendor_privlib/PVE/Auth/*.pm
+%_datadir/zsh/vendor-completions/_pveum
 %_man1dir/pveum.1*
 
 %changelog
+* Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.37-alt1
+- pve-cluster 5.0-37
+- pve-access-control 5.1-10
+- pve-apiclient 2.0-5
+
 * Thu Feb 21 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.33-alt4
 - use /run instead of /var/run
 

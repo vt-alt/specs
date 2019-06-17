@@ -54,7 +54,7 @@
 
 Name: pve-%rname
 Version: 2.12.1
-Release: alt1
+Release: alt3
 Epoch: 1
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -121,6 +121,14 @@ Patch54: 0007-rtl8139-fix-possible-out-of-bound-access.patch
 Patch55: 0008-pcnet-fix-possible-buffer-overflow.patch
 Patch56: 0009-net-ignore-packet-size-greater-than-INT_MAX.patch
 Patch57: 0010-e1000-indicate-dropped-packets-in-HW-counters.patch
+Patch58: 0011-i2c-ddc-fix-oob-read.patch
+Patch59: 0012-slirp-check-data-length-while-emulating-ident-functi.patch
+Patch60: 0013-pvrdma-release-device-resources-in-case-of-an-error.patch
+Patch61: 0014-rdma-check-num_sge-does-not-exceed-MAX_SGE.patch
+Patch62: 0015-pvrdma-add-uar_read-routine.patch
+Patch63: 0016-pvrdma-check-number-of-pages-when-creating-rings.patch
+Patch64: 0017-pvrdma-check-return-value-from-pvrdma_idx_ring_has_-.patch
+Patch65: 0018-lsi53c895a-check-message-length-value-is-valid.patch
 
 ExclusiveArch: x86_64
 BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
@@ -295,7 +303,7 @@ This package provides client and server tools for QEMU's ivshmem device.
 
 %prep
 %setup -n %rname-%version
-%patch -p1
+%patch0 -p1
 
 %patch10 -p1
 %patch11 -p1
@@ -345,6 +353,14 @@ This package provides client and server tools for QEMU's ivshmem device.
 %patch55 -p1
 %patch56 -p1
 %patch57 -p1
+%patch58 -p1
+%patch59 -p1
+#patch60 -p1
+#patch61 -p1
+%patch62 -p1
+%patch63 -p1
+%patch64 -p1
+%patch65 -p1
 
 cp -f %SOURCE2 qemu-kvm.control.in
 
@@ -413,7 +429,7 @@ export CFLAGS="%optflags"
 	--enable-xfsctl \
 	--enable-virtfs
 
-%make_build
+%make_build V=1
 
 sed -i 's/@GROUP@/%_group/g' qemu-kvm.control.in
 
@@ -521,6 +537,9 @@ fi
 %docdir/LICENSE
 
 %changelog
+* Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.12.1-alt3
+- 2.12.1-3
+
 * Mon Oct 22 2018 Valery Inozemtsev <shrek@altlinux.ru> 1:2.12.1-alt1
 - 2.12.1-1
 

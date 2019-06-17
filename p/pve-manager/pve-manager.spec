@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
-Version: 5.3.8
-Release: alt11
+Version: 5.4.6
+Release: alt2
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -22,6 +22,7 @@ Source11: pve-http-server.tar.xz
 Source12: extjs.tar.xz
 Source13: pve-widget-toolkit.tar.xz
 Source14: pve-i18n.tar.xz
+Source15: pve-mini-journalreader.tar.xz
 
 Source5: pve-manager-ru.po
 Source6: basealt_logo.png
@@ -65,19 +66,20 @@ Patch31: qemu-server-qemu-3-0-0-alt.patch
 Patch32: pve-manager-alt-rm-pve-version.patch
 Patch33: qemu-server-vga-map.patch
 Patch34: qemu-server-alt-bootsplash.patch
+Patch35: pve-manager-dc-summary.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
 BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLeay perl-File-ReadBackwards
 BuildRequires: perl-IO-Multiplex perl-Locale-PO perl-UUID unzip xmlto pve-lxc libnetfilter_conntrack-devel
 BuildRequires: perl(File/Sync.pm) perl(Net/DNS/Resolver.pm) perl(Pod/Select.pm) perl(Crypt/Eksblowfish/Bcrypt.pm)
-BuildRequires: perl(Template.pm) perl(IPC/Run.pm) perl(Term/ReadLine.pm) libjson-c-devel
+BuildRequires: perl(Template.pm) perl(IPC/Run.pm) perl(Term/ReadLine.pm) libjson-c-devel libsystemd-devel
 
 %description
 This package contains the PVE management tools
 
 %package -n pve-container
 Summary: PVE Container management tool
-Version: 2.0.33
+Version: 2.0.39
 Group: Development/Perl
 PreReq: shadow-submap
 Requires: pve-lxc >= 2.1.0 dtach perl-Crypt-Eksblowfish >= 0.009-alt5_15
@@ -87,7 +89,7 @@ Tool to manage Linux Containers on PVE
 
 %package -n pve-firewall
 Summary: PVE Firewall
-Version: 3.0.17
+Version: 3.0.21
 Group: System/Servers
 Requires: ebtables ipset iptables iptables-ipv6 shorewall shorewall6 iproute2 >= 4.10.0
 
@@ -96,7 +98,7 @@ This package contains the PVE Firewall
 
 %package -n pve-ha-manager
 Summary: PVE HA Manager
-Version: 2.0.6
+Version: 2.0.9
 Group: System/Servers
 
 %description -n pve-ha-manager
@@ -104,7 +106,7 @@ HA Manager PVE
 
 %package -n pve-qemu-server
 Summary: Qemu Server Tools
-Version: 5.0.45
+Version: 5.0.51
 Group: System/Servers
 Requires: socat genisoimage pve-qemu-system >= 2.6.1-alt4
 Provides: qemu-server = %version-%release
@@ -115,7 +117,7 @@ This package contains the Qemu Server tools used by PVE
 
 %package -n pve-guest-common
 Summary: PVE common guest-related modules
-Version: 2.0.19
+Version: 2.0.20
 Group: System/Servers
 
 %description -n pve-guest-common
@@ -123,7 +125,7 @@ This package contains a common code base used by pve-container and qemu-server
 
 %package -n pve-http-server
 Summary: PVE Asynchrounous HTTP Server Implementation
-Version: 2.0.11
+Version: 2.0.13
 Group: System/Servers
 Requires: fonts-font-awesome
 
@@ -133,7 +135,7 @@ This is used to implement the PVE REST API
 %add_findreq_skiplist %perl_vendor_privlib/PVE/HA/Env/PVE2.pm
 
 %prep
-%setup -q -c -n pve -a1 -a2 -a3 -a4 -a10 -a11 -a12 -a13 -a14
+%setup -q -c -n pve -a1 -a2 -a3 -a4 -a10 -a11 -a12 -a13 -a14 -a15
 %patch0 -p0 -b .altwww
 %patch1 -p0 -b .alt
 %patch2 -p0 -b .alt
@@ -168,18 +170,23 @@ This is used to implement the PVE REST API
 %patch32 -p0 -b .rm-version
 %patch33 -p0 -b .vga-map
 %patch34 -p0 -b .bootsplash
+%patch35 -p0 -b .nosubscription
+
+grep '/var/run' * -rl | while read f; do
+    sed -i 's|/var/run|/run|' $f
+done
 
 install -m0644 %SOURCE5 pve-i18n/ru.po
 
 %build
-for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit; do
+for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit pve-mini-journalreader/src; do
     pushd $d
     %make
     popd
 done
 
 %install
-for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit pve-i18n; do
+for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit pve-i18n pve-mini-journalreader/src; do
     pushd $d
     %make DESTDIR=%buildroot install
     popd
@@ -246,17 +253,28 @@ __EOF__
 %files
 %dir %_datadir/doc/pve-manager
 %_datadir/doc/pve-manager/examples
-%_sysconfdir/bash_completion.d/pveam
-%_sysconfdir/bash_completion.d/pvesr
-%_sysconfdir/bash_completion.d/pveceph
-%_sysconfdir/bash_completion.d/pvedaemon
-%_sysconfdir/bash_completion.d/pvenode
-%_sysconfdir/bash_completion.d/pveproxy
-%_sysconfdir/bash_completion.d/pvestatd
-%_sysconfdir/bash_completion.d/pvesubscription
-%_sysconfdir/bash_completion.d/spiceproxy
-%_sysconfdir/bash_completion.d/vzdump
-%_sysconfdir/bash_completion.d/pvesh
+%_datadir/bash-completion/completions/pveam
+%_datadir/bash-completion/completions/pvesr
+%_datadir/bash-completion/completions/pveceph
+%_datadir/bash-completion/completions/pvedaemon
+%_datadir/bash-completion/completions/pvenode
+%_datadir/bash-completion/completions/pveproxy
+%_datadir/bash-completion/completions/pvestatd
+%_datadir/bash-completion/completions/pvesubscription
+%_datadir/bash-completion/completions/spiceproxy
+%_datadir/bash-completion/completions/vzdump
+%_datadir/bash-completion/completions/pvesh
+%_datadir/zsh/vendor-completions/_pveam
+%_datadir/zsh/vendor-completions/_pvesr
+%_datadir/zsh/vendor-completions/_pveceph
+%_datadir/zsh/vendor-completions/_pvedaemon
+%_datadir/zsh/vendor-completions/_pvenode
+%_datadir/zsh/vendor-completions/_pveproxy
+%_datadir/zsh/vendor-completions/_pvestatd
+%_datadir/zsh/vendor-completions/_pvesubscription
+%_datadir/zsh/vendor-completions/_spiceproxy
+%_datadir/zsh/vendor-completions/_vzdump
+%_datadir/zsh/vendor-completions/_pvesh
 %_sysconfdir/logrotate.d/pve
 %config(noreplace) %_sysconfdir/vzdump.conf
 #systemd_unitdir/pvebanner.service
@@ -289,6 +307,7 @@ __EOF__
 %_bindir/pveversion
 %_bindir/spiceproxy
 %_bindir/vzdump
+%_bindir/mini-journalreader
 %_datadir/javascript
 %_datadir/pve-i18n
 %dir %perl_vendor_privlib/PVE
@@ -376,7 +395,8 @@ __EOF__
 %dir %_datadir/doc/%name
 
 %files -n pve-container
-%_sysconfdir/bash_completion.d/pct
+%_datadir/bash-completion/completions/pct
+%_datadir/zsh/vendor-completions/_pct
 %systemd_unitdir/lxc@.service.d
 %systemd_unitdir/pve-container@.service
 %systemd_unitdir/system-pve*container.slice
@@ -397,7 +417,8 @@ __EOF__
 %_man5dir/*ct.conf.5*
 
 %files -n pve-firewall
-%_sysconfdir/bash_completion.d/pve-firewall
+%_datadir/bash-completion/completions/pve-firewall
+%_datadir/zsh/vendor-completions/_pve-firewall
 %_sysconfdir/logrotate.d/pve-firewall
 %config(noreplace) %_sysconfdir/sysctl.d/pve-firewall.conf
 %config(noreplace) %_sysconfdir/modules-load.d/pve-firewall.conf
@@ -417,9 +438,12 @@ __EOF__
 
 %files -n pve-ha-manager
 %config(noreplace) %_sysconfdir/sysconfig/pve-ha-manager
-%_sysconfdir/bash_completion.d/ha-manager
-%_sysconfdir/bash_completion.d/pve-ha-crm
-%_sysconfdir/bash_completion.d/pve-ha-lrm
+%_datadir/bash-completion/completions/ha-manager
+%_datadir/bash-completion/completions/pve-ha-crm
+%_datadir/bash-completion/completions/pve-ha-lrm
+%_datadir/zsh/vendor-completions/_ha-manager
+%_datadir/zsh/vendor-completions/_pve-ha-crm
+%_datadir/zsh/vendor-completions/_pve-ha-lrm
 %systemd_unitdir/pve-ha-crm.service
 %systemd_unitdir/pve-ha-lrm.service
 %systemd_unitdir/watchdog-mux.service
@@ -456,8 +480,10 @@ __EOF__
 %_man8dir/pve-ha-lrm.8*
 
 %files -n pve-qemu-server
-%_sysconfdir/bash_completion.d/qm
-%_sysconfdir/bash_completion.d/qmrestore
+%_datadir/bash-completion/completions/qm
+%_datadir/bash-completion/completions/qmrestore
+%_datadir/zsh/vendor-completions/_qm
+%_datadir/zsh/vendor-completions/_qmrestore
 %config(noreplace) %_sysconfdir/modules-load.d/qemu-server.conf
 %systemd_unitdir/qmeventd.service
 %_prefix/lib/qemu-server
@@ -494,6 +520,7 @@ __EOF__
 %_man8dir/qmeventd.8*
 
 %files -n pve-guest-common
+%dir %perl_vendor_privlib/PVE/VZDump
 %perl_vendor_privlib/PVE/VZDump/Plugin.pm
 %perl_vendor_privlib/PVE/ReplicationState.pm
 %perl_vendor_privlib/PVE/ReplicationConfig.pm
@@ -507,6 +534,20 @@ __EOF__
 %_datadir/libpve-http-server-perl
 
 %changelog
+* Fri May 24 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.4.6-alt2
+- pve-mini-journalreader 1.1-1
+
+* Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.4.6-alt1
+- pve-manager 5.4-6
+- pve-container 2.0-39
+- pve-firewall 3.0-21
+- qemu-server 5.0-51
+- pve-ha-manager 2.0-9
+- pve-guest-common 2.0-20
+- pve-http-server 2.0-13
+- pve-widget-toolkit 1.0-28
+- pve-i18n 1.1-4
+
 * Fri Feb 01 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.3.8-alt11
 - pve-manager 5.3-8
 - pve-container 2.0-33
@@ -614,7 +655,7 @@ __EOF__
 * Fri Aug 04 2017 Valery Inozemtsev <shrek@altlinux.ru> 5.0.24-alt6
 - updates services list
 
-* Tue Aug 03 2017 Valery Inozemtsev <shrek@altlinux.ru> 5.0.24-alt2.M80P.1
+* Thu Aug 03 2017 Valery Inozemtsev <shrek@altlinux.ru> 5.0.24-alt2.M80P.1
 - backport to p8 branch
 
 * Thu Aug 03 2017 Valery Inozemtsev <shrek@altlinux.ru> 5.0.24-alt5

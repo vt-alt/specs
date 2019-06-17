@@ -1,6 +1,6 @@
 Name: pve-storage
 Summary: PVE storage management library
-Version: 5.0.36
+Version: 5.0.43
 Release: alt1
 License: GPLv3
 Group: Development/Perl
@@ -34,13 +34,17 @@ rbd
 __EOF__
 
 %files
-%_sysconfdir/bash_completion.d/*
 %_sysconfdir/modules-load.d/pve-storage.conf
 %_sbindir/pvesm
 %perl_vendor_privlib/PVE
+%_datadir/bash-completion/completions/*
+%_datadir/zsh/vendor-completions/*
 %_man1dir/pvesm.1*
 
 %changelog
+* Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.43-alt1
+- 5.0-43
+
 * Wed Jan 16 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.36-alt1
 - 5.0-36
 
