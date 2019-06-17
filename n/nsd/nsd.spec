@@ -1,5 +1,5 @@
 Name: nsd
-Version: 4.1.27
+Version: 4.2.0
 Release: alt1
 
 Summary: Name Server Daemon
@@ -81,6 +81,9 @@ install -Dpm 644 %SOURCE6 %buildroot%_tmpfilesdir/%name.conf
 %doc doc contrib %name.conf.sample
 
 %changelog
+* Thu Jun 13 2019 Alexei Takaseev <taf@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Tue Mar 26 2019 Alexei Takaseev <taf@altlinux.org> 4.1.27-alt1
 - 4.1.27
 
