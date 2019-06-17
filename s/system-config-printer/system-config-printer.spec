@@ -1,6 +1,6 @@
 Name:    system-config-printer
 Version: 1.5.11
-Release: alt5.qa1
+Release: alt6
 
 Summary: A printer administration tool
 Group:   System/Configuration/Printing
@@ -12,6 +12,7 @@ Source: %name-%version.tar
 Patch:  %name-%version-%release.patch
 Patch1: fix_search_printer.patch
 Patch2: about_logo.patch
+Patch3: fix-translation-in-troubleshoot-menu.patch
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
@@ -68,6 +69,7 @@ sed -i 's/mod.*ins.*_aft.*//' newprinter.py
 %patch -p1
 %patch1 -p0
 %patch2 -p0
+%patch3 -p1
 
 %build
 ./bootstrap
@@ -111,6 +113,9 @@ exit 0
 
 
 %changelog
+* Mon Jun 17 2019 Pavel Moseev <mars@altlinux.org> 1.5.11-alt6
+- fix translation in troubleshoot menu
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1.5.11-alt5.qa1
 - NMU: applied repocop patch
 
