@@ -17,6 +17,7 @@
 %def_enable foursquare
 %def_enable lastfm
 %def_enable todoist
+%def_enable webkit
 
 %def_enable gtk_doc
 %def_enable docs
@@ -24,7 +25,7 @@
 
 Name: gnome-online-accounts
 Version: %ver_major.0
-Release: alt1
+Release: alt1.1
 
 Summary: Provide online accounts information
 Group: Graphical desktop/GNOME
@@ -53,9 +54,9 @@ BuildPreReq: liboauth-devel >= %oauth_ver
 BuildPreReq: librest-devel >= %rest_ver
 BuildPreReq: libsoup-devel >= %soup_ver
 BuildPreReq: libgtk+3-devel >= %gtk_ver
-BuildPreReq: libwebkit2gtk-devel >= %webkit_ver
+%{?_enable_webkit:BuildRequires: libwebkit2gtk-devel >= %webkit_ver}
 BuildRequires: libtelepathy-glib-devel
-BuildRequires: gnome-common intltool gtk-doc
+BuildRequires: gnome-common gtk-doc
 BuildRequires: libjson-glib-devel libgnome-keyring-devel libnotify-devel libsecret-devel
 BuildRequires: libkrb5-devel gcr-libs-devel gobject-introspection-devel
 BuildRequires: vala-tools
@@ -132,6 +133,11 @@ NOCONFIGURE=1 ./autogen.sh
 	%{subst_enable foursquare} \
 	%{subst_enable lastfm} \
 	%{subst_enable todoist} \
+%if_enabled webkit
+	--enable-backend \
+%else
+	--disable-backend \
+%endif
 	%{?_enable_gtk_doc:--enable-gtk-doc} \
 	%{?_enable_docs:--enable-documentation}
 
@@ -143,32 +149,41 @@ NOCONFIGURE=1 ./autogen.sh
 %find_lang --output=%name.lang %name %{?_enable_telepathy:%name-tpaw}
 
 %files -f %name.lang
+%if_enabled webkit
 %_libexecdir/goa-daemon
 %_libexecdir/goa-identity-service
+%_datadir/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 %_datadir/dbus-1/services/org.gnome.Identity.service
 %_datadir/dbus-1/services/org.gnome.OnlineAccounts.service
-%_datadir/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
+%{?_enable_docs:%_man8dir/goa-daemon.*}
+%endif
 %_iconsdir/hicolor/*/*/*.svg
 %{?_enable_telepathy:%_iconsdir/hicolor/scalable/apps/im-*.svg}
-%{?_enable_docs:%_man8dir/goa-daemon.*}
 %doc README NEWS
 
 %files -n lib%name
 %_libdir/libgoa-%api_ver.so.*
-%_libdir/libgoa-backend-%api_ver.so.*
 %dir %_libdir/goa-%api_ver
+
+%if_enabled webkit
+%_libdir/libgoa-backend-%api_ver.so.*
 %dir %_libdir/goa-%api_ver/web-extensions
 %_libdir/goa-%api_ver/web-extensions/libgoawebextension.so
 %exclude %_libdir/goa-%api_ver/web-extensions/*.la
+%endif
 
 %files -n lib%name-devel
 %_includedir/goa-%api_ver/
 %dir %_libdir/goa-%api_ver/include
 %_libdir/goa-%api_ver/include/goaconfig.h
 %_libdir/libgoa-%api_ver.so
+
+%if_enabled webkit
 %_libdir/libgoa-backend-%api_ver.so
-%_pkgconfigdir/goa-%api_ver.pc
 %_pkgconfigdir/goa-backend-%api_ver.pc
+%endif
+
+%_pkgconfigdir/goa-%api_ver.pc
 %_vapidir/goa-%api_ver.deps
 %_vapidir/goa-%api_ver.vapi
 
@@ -178,10 +193,15 @@ NOCONFIGURE=1 ./autogen.sh
 %files -n lib%name-gir-devel
 %_girdir/Goa-%api_ver.gir
 
+%if_enabled webkit
 %files -n lib%name-devel-doc
 %_datadir/gtk-doc/html/goa/
+%endif
 
 %changelog
+* Sat Jun 15 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1.1
+- mike@: webkit knob (on by default)
+
 * Fri Mar 29 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

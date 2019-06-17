@@ -1,7 +1,7 @@
 %def_disable snapshot
 
 %define _name blockdev
-%define ver_major 2.21
+%define ver_major 2.22
 %define rev 1
 
 %ifnarch %ix86 x86_64
@@ -634,6 +634,9 @@ find %buildroot -type f -name "*.la" -print0| xargs -r0 rm -f --
 %endif
 
 %changelog
+* Thu Jun 13 2019 Yuri N. Sedunov <aris@altlinux.org> 2.22-alt1
+- 2.22
+
 * Fri Feb 22 2019 Yuri N. Sedunov <aris@altlinux.org> 2.21-alt1
 - 2.21
 - new tools subpackage

@@ -2,7 +2,7 @@
 
 Name: editorconfig
 Version: 0.12.3
-Release: alt1
+Release: alt1.1
 
 Summary: Parser for EditorConfig files written in C
 Group: Development/Other
@@ -65,8 +65,8 @@ This package contains files needed for development EditorConfig plugins.
 %files
 %_bindir/%name
 %_bindir/%name-%version
-%_man1dir/%name.1.*
-%_man5dir/%{name}*
+%{?_enable_docs:%_man1dir/%name.1.*}
+%{?_enable_docs:%_man5dir/%{name}*}
 %doc CHANGELOG README.md LICENSE
 
 %files -n lib%name
@@ -79,9 +79,12 @@ This package contains files needed for development EditorConfig plugins.
 %_libdir/lib%name.so
 %_libdir/cmake/EditorConfig/
 %_pkgconfigdir/%name.pc
-%_man3dir/%{name}*
+%{?_enable_docs:%_man3dir/%{name}*}
 
 %changelog
+* Thu Jun 13 2019 Yuri N. Sedunov <aris@altlinux.org> 0.12.3-alt1.1
+- fixed build if "docs" disabled
+
 * Thu Jan 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.12.3-alt1
 - first build for Sisyphus
 

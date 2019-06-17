@@ -5,8 +5,8 @@
 %define ver_major 2.10
 
 Name: %{_name}2
-Version: %ver_major.1
-Release: alt1.1
+Version: %ver_major.2
+Release: alt1
 
 Summary: The Typesafe Callback Framework for C++
 License: LGPLv2+
@@ -88,6 +88,9 @@ install -pm644 AUTHORS NEWS README %buildroot%docdir/
 %doc %_datadir/devhelp/books/*
 
 %changelog
+* Wed Jun 12 2019 Yuri N. Sedunov <aris@altlinux.org> 2.10.2-alt1
+- 2.10.2
+
 * Sat Mar 09 2019 Yuri N. Sedunov <aris@altlinux.org> 2.10.1-alt1.1
 - fixed %%url (ALT #36250)
 

@@ -1,13 +1,14 @@
 Name: libfreeimage
 Version: 3.18.0
-Release: alt3
+Release: alt4
 
 Summary: Multi-format image decoder library
-License: GPL and FIPL (see the license-fi.txt)
 Group: System/Libraries
-URL: http://freeimage.sourceforge.net/
+License: GPL and FIPL (see the license-fi.txt)
+Url: http://freeimage.sourceforge.net/
 
 %define srcversion %(echo %version | tr -d .)
+
 Source: http://downloads.sourceforge.net/freeimage/FreeImage%srcversion.zip
 # Unbundle bundled libraries (based on fc patch)
 Patch: FreeImage_unbundle.patch
@@ -22,10 +23,20 @@ BuildPreReq: rpm-macros-make libraw-devel zlib-devel libwebp-devel
 BuildPreReq: libtiff-devel libopenjpeg2.0-devel libjxr-devel
 BuildRequires: dos2unix
 
+%define nameplus %{name}plus
+
 %description
 FreeImage is a library project for developers who would like to support
 popular graphics image formats like PNG, BMP, JPEG, TIFF and others as needed by
 multimedia applications. FreeImage is easy to use, fast, multithreading, safe.
+
+%package -n %nameplus
+Summary: FreeImagePlus is a C++ wrapper for FreeImage
+Group: System/Libraries
+Requires: %name = %version-%release
+
+%description -n %nameplus
+The %nameplus package contains C++ wrapper library for %name.
 
 %package devel
 Summary: Development files for %name
@@ -33,8 +44,17 @@ Group: Development/C
 Requires: %name = %version-%release
 
 %description devel
-The %name-devel package contains libraries and header files for
-developing applications that use %name.
+The %name-devel package contains libraries and header files
+for developing applications that use %name.
+
+%package -n %nameplus-devel
+Summary: Development files for %nameplus
+Group: Development/C++
+Requires: %nameplus = %version-%release
+
+%description -n %nameplus-devel
+The %nameplus-devel package contains libraries and header files
+for developing C++ applications that use %nameplus.
 
 %prep
 %setup -n FreeImage
@@ -49,7 +69,7 @@ find ./ -type f -print0| xargs -r0 dos2unix --
 # remove bundled libraries
 rm -r Source/Lib* Source/ZLib Source/OpenEXR
 # fix Makefile
-subst 's|\-o root -g root ||g' Makefile.*
+sed -i 's|\-o root -g root ||g' Makefile.*
 # we can't built due to dependencies on private headers
 # see syslibs patch
 > Source/FreeImage/PluginG3.cpp
@@ -64,17 +84,30 @@ sh ./genfipsrclist.sh
 
 %install
 %makeinstall_std INSTALLDIR=%buildroot%_libdir
+%makeinstall_std INSTALLDIR=%buildroot%_libdir -f Makefile.fip
 
 %files
-%_libdir/libfreeimage.so.*
-%_libdir/libfreeimage-%version.so
+%_libdir/%name.so.*
+%_libdir/%name-%version.so
 %doc license-fi.txt Whatsnew.txt README.linux
+
+%files -n %nameplus
+%_libdir/%nameplus.so.*
+%_libdir/%nameplus-%version.so
+
+%exclude %_libdir/*.a
 
 %files devel
 %_includedir/*
 %_libdir/libfreeimage.so
 
+%files -n %nameplus-devel
+%_libdir/%nameplus.so
+
 %changelog
+* Fri May 31 2019 Yuri N. Sedunov <aris@altlinux.org> 3.18.0-alt4
+- added libfreeimageplus{,-devel} subpackages (thx Dmitry Pugachev)
+
 * Thu Apr 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.18.0-alt3
 - updated unbundle patch for turbojpeg-2.0.2
 

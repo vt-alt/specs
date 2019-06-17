@@ -6,8 +6,8 @@
 %def_enable check
 
 Name: %{_name}3
-Version: %ver_major.12
-Release: alt1.1
+Version: %ver_major.13
+Release: alt1
 
 Summary: The Typesafe Callback Framework for C++
 License: LGPLv2+
@@ -59,7 +59,7 @@ mm-common-prepare -f
 %install
 %makeinstall_std
 %define docdir %_docdir/libsigc++-%api_ver
-install -pm644 AUTHORS NEWS README %buildroot%docdir/
+install -pm644 AUTHORS NEWS README* %buildroot%docdir/
 
 %check
 %make_build -k check
@@ -81,6 +81,9 @@ install -pm644 AUTHORS NEWS README %buildroot%docdir/
 %doc %_datadir/devhelp/books/*
 
 %changelog
+* Wed Jun 12 2019 Yuri N. Sedunov <aris@altlinux.org> 2.99.13-alt1
+- 2.99.13
+
 * Sat Mar 09 2019 Yuri N. Sedunov <aris@altlinux.org> 2.99.12-alt1.1
 - fixed %%url (ALT #36250)
 
