@@ -1,6 +1,6 @@
 Name: kde5-autofs-shares
-Version: 0.2.1
-Release: alt1%ubt
+Version: 0.2.2
+Release: alt1
 %K5init
 
 Summary: Samba shares plugin for Dolphin
@@ -13,7 +13,7 @@ Requires: kf5-filesystem kde5-kdialog autofs
 
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 
 %description
 This plugin allows mounting samba shares from Dolphin
@@ -43,10 +43,13 @@ done
 %_bindir/kde5-autofs-shares-*
 
 %changelog
-* Mon May 15 2017 Sergey V Turchin <zerg@altlinux.org> 0.2.1-alt1%ubt
+* Wed Mar 20 2019 Sergey V Turchin <zerg@altlinux.org> 0.2.2-alt1
+- check ~/.autofs.shares available on mount
+
+* Mon May 15 2017 Sergey V Turchin <zerg@altlinux.org> 0.2.1-alt1
 - fix autostart
 
-* Fri May 12 2017 Sergey V Turchin <zerg@altlinux.org> 0.2.0-alt1%ubt
+* Fri May 12 2017 Sergey V Turchin <zerg@altlinux.org> 0.2.0-alt1
 - using autofs
 
 * Thu May 04 2017 Oleg Solovyov <mcpain@altlinux.org> 0.1.2-alt1
