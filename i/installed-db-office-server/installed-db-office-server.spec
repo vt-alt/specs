@@ -1,11 +1,14 @@
 Name: installed-db-office-server
-Version: 1.4
-Release: alt13
+Version: 1.4.1
+Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
 Group: System/Configuration/Other
 Source: %name.tar.gz
 BuildArch: noarch
+
+Requires: pwgen
+Requires: MySQL-server-control
 
 %description
 Databases and config files for moodle, mediawiki and rujel (commom part)
@@ -15,6 +18,9 @@ Group: System/Configuration/Other
 Requires: mediawiki mediawiki-apache2 mediawiki-ldap
 Requires: %name = %version-%release
 Summary: Databases and config files for mediawiki
+Requires: mediawiki
+Requires: mediawiki-mysql
+Requires: mediawiki-ldap
 
 %description mediawiki
 Databases and config files for mediawiki
@@ -22,25 +28,33 @@ Databases and config files for mediawiki
 %package moodle
 Group: System/Configuration/Other
 Requires: %name = %version-%release
-Requires: moodle-install-tools moodle2.5
+Requires: moodle-install-tools
+Requires: moodle
+Requires: moodle-apache2
+Requires: moodle-base
+Requires: moodle-local-mysql
 Summary: Databases and config files for moodle
 
 %description moodle
 Databases and config files for moodle
 
-%package owncloud
+%package nextcloud
 Group: System/Configuration/Other
 Requires: %name = %version-%release
-Requires: owncloud
-Summary: Databases and config files for owncloud
+Requires: nextcloud
+Requires: nextcloud-apache2
+Requires: php7-pcntl
+Requires: php7-pdo_mysql
+Summary: Databases and config files for nextcloud
 
-%description owncloud
-Databases and config files for owncloud
+%description nextcloud
+Databases and config files for nextcloud
 
 %package rujel
 Group: System/Configuration/Other
 Requires: %name = %version-%release
 Summary:  Databases and config files for rujel 
+Requires: rujel
 
 %description rujel
 Databases and config files for rujel
@@ -53,16 +67,16 @@ Databases and config files for rujel
 %install
 
 mkdir -p %buildroot/usr/share/%name
-install -Dp -m755 %name/80-office-server %buildroot/usr/share/install2/preinstall.d/80-office-server
+install -Dp -m755 %name/80-office-server %buildroot%_sysconfdir/firsttime.d/80-office-server
 install -Dp -m755 %name/95-office-server-postinstall %buildroot/usr/share/install2/postinstall.d/95-office-server-postinstall
 install -Dp -m755 %name/root.d %buildroot/usr/lib/alterator/hooks/root.d/installed-db
-install -Dp -m755 %name/httpd2-office-server %buildroot%_sysconfdir/firsttime.d/httpd2-office-server
 install -Dp -m755 %name/moodle %buildroot/etc/hooks/hostname.d/94-moodle-ldap
 install -Dp -m755 %name/mediawiki %buildroot/etc/hooks/hostname.d/95-mediawiki-ldap
-install -Dp -m755 %name/owncloud %buildroot/etc/hooks/hostname.d/96-owncloud-ldap
+install -Dp -m755 %name/nextcloud %buildroot/etc/hooks/hostname.d/96-nextcloud-ldap
 install -Dp -m755 %name/rujel %buildroot/etc/hooks/hostname.d/97-rujel-ldap
 
 cp -r %name/data/* %buildroot/usr/share/%name/
+install -Dp -m755 %name/apache-office-server %buildroot/usr/share/%name/
 install -Dp -m755 %name/mysql-office-server %buildroot/usr/share/%name/
 mkdir -p %buildroot/var/www/webapps/mediawiki
 # ln -s /usr/share/doc/alt-docs/indexhtml/img/project-logo.png %buildroot/var/www/webapps/mediawiki/project-logo.png
@@ -70,8 +84,7 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 %files
 # /var/www/webapps/mediawiki/project-logo.png
 /usr/share/%name
-/etc/firsttime.d/*-office-server
-/usr/share/install2/preinstall.d/*
+%_sysconfdir/firsttime.d/80-office-server
 /usr/share/install2/postinstall.d/*
 /usr/lib/alterator/hooks/root.d/*
 
@@ -81,14 +94,20 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 %files moodle
 /etc/hooks/hostname.d/*-moodle-ldap
 
-%files owncloud
-/etc/hooks/hostname.d/*-owncloud-ldap
+%files nextcloud
+/etc/hooks/hostname.d/*-nextcloud-ldap
 
 %files rujel
 /etc/hooks/hostname.d/*-rujel-ldap
 
 
 %changelog
+* Mon Jun 17 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt1
+- Requires all needed packages.
+- Supports nextcloud and moodle 3.6.
+- Move all deploy actions to firsttime.d.
+- Log deploy to /root/.install-log/office-server-deploy.log.
+
 * Mon Jul 25 2016 Andrey Cherepanov <cas@altlinux.org> 1.4-alt13
 - Support moodle2.5 instead of moodle2.2
 - Enable mod_filter

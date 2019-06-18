@@ -6,12 +6,12 @@
 %define build_parallel_jobs 32
 %endif
 
-%define enigmail_version  2.0.10
+%define enigmail_version  2.0.11
 %define gdata_version     2.6
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	60.7.0
+Version:	60.7.1
 Release:	alt1
 License:	MPL/GPL
 Group:		Networking/Mail
@@ -39,8 +39,11 @@ Patch23:        build-aarch64-skia.patch
 Patch24:        rhbz-1354671.patch
 Patch25:        Bug-1238661---fix-mozillaSignalTrampoline-to-work-.patch
 Patch26:        bug1375074-save-restore-x28.patch
+Patch27: 	rust-ignore-not-available-documentation.patch
 
-Patch27:	enigmail-gost.patch
+Patch40:        enigmail-use-juniorModeForceOff.patch
+Patch41:	enigmail-fix-ru-l10n-markup.patch
+Patch42:	enigmail-gost.patch
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
@@ -141,9 +144,8 @@ Url: https://www.enigmail.net/
 Provides:  %name-enigmail = %enigmail_version-%release
 Provides:  %name-esr-enigmail = %version-%release
 Obsoletes: %name-esr-enigmail < %version-%release
-Requires: %name = %version-%release
-
-Obsoletes: thunderbird-enigmail < 0.95.7-alt2
+Requires:  %name = %version-%release
+Requires:  pinentry-x11
 
 %description enigmail
 Enigmail is an extension to the mail client of Mozilla / Netscape 7.x
@@ -200,7 +202,11 @@ thunderbird packages by some Alt Linux Team Policy compatible way.
 
 %if_with enigmail
 tar -xf %SOURCE1
-%patch27 -p1
+%patch40 -p1
+%patch41 -p1
+%patch42 -p1
+# Fix <br> in translations
+subst 's|<html:br/>|<html:br></html:br>|g' enigmail/lang/*/enigmail.dtd
 %endif
 
 tar -xf %SOURCE2
@@ -220,6 +226,7 @@ tar -xf %SOURCE2
 %patch25 -p1
 %endif
 #patch26 -p1
+%patch27 -p1
 
 #echo %version > mail/config/version.txt
 
@@ -473,8 +480,37 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Fri Jun 14 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt1
+- New version (60.7.1).
+- Fixed:
+  + CVE-2019-11703 Heap buffer overflow in icalparser.c
+  + CVE-2019-11704 Heap buffer overflow in icalvalue.c
+  + CVE-2019-11705 Stack buffer overflow in icalrecur.c
+  + CVE-2019-11706 Type confusion in icalproperty.c
+- Enigmail 2.0.11.
+- thunderbird-enigmail now requires pinentry-x11 (ALT #18790).
+- Use juniorModeForceOff by default in Enigmail (ALT #36447).
+- Fix l10n dtd of Enigmail.
+
 * Mon May 20 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.0-alt1
 - New version (60.7.0).
+- Fixed:
+  + CVE-2019-9815 Disable hyperthreading on content JavaScript threads on macOS
+  + CVE-2019-9816 Type confusion with object groups and UnboxedObjects
+  + CVE-2019-9817 Stealing of cross-domain images using canvas
+  + CVE-2019-9818 Use-after-free in crash generation server
+  + CVE-2019-9819 Compartment mismatch with fetch API
+  + CVE-2019-9820 Use-after-free of ChromeEventHandler by DocShell
+  + CVE-2019-11691 Use-after-free in XMLHttpRequest
+  + CVE-2019-11692 Use-after-free removing listeners in the event listener manager
+  + CVE-2019-11693 Buffer overflow in WebGL bufferdata on Linux
+  + CVE-2019-7317 Use-after-free in png_image_free of libpng library
+  + CVE-2019-9797 Cross-origin theft of images with createImageBitmap
+  + CVE-2018-18511 Cross-origin theft of images with ImageBitmapRenderingContext
+  + CVE-2019-11694 Uninitialized memory memory leakage in Windows sandbox
+  + CVE-2019-11698 Theft of user history data through drag and drop of hyperlinks to and from bookmarks
+  + CVE-2019-5798 Out-of-bounds read in Skia
+  + CVE-2019-9800 Memory safety bugs fixed in Firefox 67, Firefox ESR 60.7, and Thunderbird 60.7
 
 * Mon Apr 22 2019 Andrey Cherepanov <cas@altlinux.org> 60.6.1-alt2
 - Fix global serch indexing by link with bundled sqlite3 (ALT #35761).
