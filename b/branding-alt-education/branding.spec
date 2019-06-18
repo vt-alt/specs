@@ -20,7 +20,7 @@
 
 Name: branding-%flavour
 Version: 8.91
-Release: alt1
+Release: alt2
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -459,6 +459,9 @@ subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/light
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Fri Jun 14 2019 Andrey Cherepanov <cas@altlinux.org> 8.91-alt2
+- Make progressbar label brighter
+
 * Tue Jun 11 2019 Andrey Cherepanov <cas@altlinux.org> 8.91-alt1
 - Replace gnome-system-monitor for xfce4-taskmanager for Ctrl+Alt+Delete.
 - Fix Plasma panel: change menu to Kickoff, set distro icon, remove lock and logout icons.
