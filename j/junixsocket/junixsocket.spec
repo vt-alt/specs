@@ -5,7 +5,7 @@ BuildRequires: java-devel-default
 
 Name:           junixsocket
 Version:        1.3
-Release:        alt5
+Release:        alt6
 Summary:        Java/JNI library that allows the use of Unix Domain Sockets
 License:        Apache Software License 2.0
 Group:          Development/Java
@@ -36,15 +36,8 @@ sed -i -e 's!name="jars" depends="test"!name="jars" depends="init,compile,javah,
 %build
 export LANG=en_US.ISO8859-1
 export CLASSPATH=`build-classpath junit hamcrest/core`
-%ifarch %ix86
-ant  -Dant.build.javac.source=1.6 -Dant.build.javac.target=1.6 -Dskip64=true jars javadoc
-%else
-%ifarch x86_64
-ant  -Dant.build.javac.source=1.6 -Dant.build.javac.target=1.6 -Dskip32=true jars javadoc
-%else
-ant  -Dant.build.javac.source=1.6 -Dant.build.javac.target=1.6 jars javadoc
-%endif
-%endif
+
+ant  -Dant.build.javac.source=1.6 -Dant.build.javac.target=1.6 -DgccArch='native' -DgccM='-g' jars javadoc
 
 %install
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}/
@@ -73,6 +66,9 @@ install -m 755 lib-native/libjunixsocket-linux*.so $RPM_BUILD_ROOT%{_libdir}/
 %doc %{_javadocdir}/*
 
 %changelog
+* Tue Jun 18 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.3-alt6
+- Fixed build on ppc64le and aarch64 architectures.
+
 * Sun Feb 14 2016 Igor Vlasenko <viy@altlinux.ru> 1.3-alt5
 - fixed build with java8
 
