@@ -35,7 +35,7 @@ Version: %hversion.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt2
+Release: alt3
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL
 Group: Office
@@ -149,7 +149,9 @@ Obsoletes: LibreOffice4-common
 Conflicts: LibreOffice-common
 AutoReqProv: yes, noshell, nopython
 # Strict requirements
+%if_with java
 Requires: pentaho-reporting-flow-engine
+%endif
 
 %description common
 Common part of %name that does not interfere with other packages
@@ -618,6 +620,10 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 6.1.6.3-alt3
+- Require pentaho-reporting-flow-engine only if build with java
+  support.
+
 * Fri Jun 14 2019 Andrey Cherepanov <cas@altlinux.org> 6.1.6.3-alt2
 - Requires pentaho-reporting-flow-engine for queries in Base.
 
