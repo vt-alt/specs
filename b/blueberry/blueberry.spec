@@ -1,6 +1,6 @@
 Name: blueberry
 Version: 1.2.5
-Release: alt2
+Release: alt5
 Summary: A Bluetooth configuration tool
 License: GPLv3
 Group: System/Configuration/Hardware
@@ -12,8 +12,13 @@ Provides: blueman
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
+BuildRequires(pre): rpm-build-gir rpm-build-python3
+%add_python3_path %_datadir/%name
+%add_typelib_req_skiplist typelib(St)
+
+
 BuildArch: noarch
-Requires: libgtk+3-gir libgnome-bluetooth-gir rfkill wmctrl gnome-bluetooth bluez-tools libnotify-gir
+Requires: rfkill wmctrl gnome-bluetooth bluez-tools
 
 %description
 Utility for Bluetooth devices graphical configuration
@@ -28,14 +33,14 @@ Requires: %name = %version-%release
 Blueberry applet for Cinnamon
 
 %prep
-%setup -q
+%setup
 %patch0 -p1
 
 %build
-%make
+%make_build
 
 %install
-%make DESTDIR=%buildroot install
+%makeinstall_std
 
 %find_lang %name
 
@@ -52,6 +57,16 @@ Blueberry applet for Cinnamon
 %_datadir/cinnamon/applets/blueberry@cinnamon.org
 
 %changelog
+* Mon Jun 17 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.5-alt5
+- added %_datadir/blueberry to _python3_path
+- added typelib(St) provided by gnome-shell to _typelib_req_skiplist
+
+* Mon Jun 17 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.5-alt4
+- fixed {Build,}Requires
+
+* Mon Jun 17 2019 Vladimir Didenko <cow@altlinux.org> 1.2.5-alt3
+- update to the git82682e9f for python3 build (closes: #36908)
+
 * Fri Apr 5 2019 Vladimir Didenko <cow@altlinux.org> 1.2.5-alt2
 - add libnotify-gir to requires and fix Makefile to install
   obex-agent desktop file (fixes: #36451)
