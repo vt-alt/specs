@@ -1,6 +1,6 @@
 Name: nextcloud
 Version: 16.0.0
-Release: alt1
+Release: alt2
 Packager: Korneechev Evgeniy <ekorneechev@altlinux.org>
 
 %define installdir %webserver_webappsdir/%name
@@ -22,6 +22,7 @@ Requires: php7 php7-libs php7-dom php7-gd2 php7-mbstring php7-xmlreader php7-zip
 Requires: php7-curl php7-fileinfo php7-openssl
 # For SQL DBs
 Requires: php7-pdo-driver
+Requires: php7-pcntl
 
 Source0: %name-%version.tar
 
@@ -87,6 +88,8 @@ a2enport https
 a2enmod rewrite
 a2enmod env
 a2enmod headers
+a2enmod dir
+a2enmod mime
 # Generate SSL key
 . cert-sh-functions
 ssl_generate "nextcloud"
@@ -133,6 +136,11 @@ ssl_generate "nextcloud"
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/nginx/sites-available.d/%name.conf
 
 %changelog
+* Wed Jun 05 2019 Andrey Cherepanov <cas@altlinux.org> 16.0.0-alt2
+- Fix Apache2 configuration (ALT #36755) according to
+  https://docs.nextcloud.com/server/16/admin_manual/installation/source_installation.html#apache-web-server-configuration
+- Add requirement to php7-pcntl.
+
 * Tue May 07 2019 Evgeniy Korneechev <ekorneechev@altlinux.org> 16.0.0-alt1
 - version 16.0.0 (Apr 25 2019)
 - fix requires (closes: #36713)
