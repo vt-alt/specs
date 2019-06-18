@@ -1,5 +1,5 @@
 Name:    installer-feature-online-repo
-Version: 0.16
+Version: 0.17
 Release: alt1
 
 Summary: Make online repositories available
@@ -27,6 +27,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Tue Jun 04 2019 Andrey Cherepanov <cas@altlinux.org> 0.17-alt1
+- Change default update source to yandex mirror.
+
 * Mon Apr 18 2016 Michael Shigorin <mike@altlinux.org> 0.16-alt1
 - Adapt for p8/branch (improved repository URI scheme)
 
