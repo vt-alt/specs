@@ -1,7 +1,7 @@
 %define rname ktexteditor
 
 Name: kf5-%rname
-Version: 5.58.0
+Version: 5.59.0
 Release: alt1
 %K5init altplace
 
@@ -24,7 +24,7 @@ BuildRequires: kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-k
 BuildRequires: kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kparts-devel
 BuildRequires: kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel
 BuildRequires: kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel
-BuildRequires: kf5-syntax-highlighting-devel
+BuildRequires: kf5-syntax-highlighting-devel kf5-ki18n-devel
 
 %description
 KTextEditor provides a powerful text editor component that you can embed in your
@@ -74,6 +74,8 @@ mkdir %buildroot/%_datadir/katepart5/syntax/
 %config(noreplace) %_K5xdgconf/*.*categories
 #%config %_K5xdgconf/kate*
 %_datadir/katepart5/
+#%config %_K5conf_dbus_sysd/*ktexteditor*.conf
+%_K5dbus/system.d/*ktexteditor*.conf
 
 %files devel
 %_K5inc/ktexteditor_version.h
@@ -84,7 +86,6 @@ mkdir %buildroot/%_datadir/katepart5/syntax/
 %_K5data/kdevappwizard/templates/*ktexteditor*
 
 %files -n libkf5texteditor
-%config %_K5conf_dbus_sysd/*ktexteditor*.conf
 %_K5dbus_sys_srv/*ktexteditor*.service
 %_K5libexecdir/kauth/*ktexteditor*
 %_datadir/polkit-1/actions/*ktexteditor*.policy
@@ -96,6 +97,9 @@ mkdir %buildroot/%_datadir/katepart5/syntax/
 #%_K5xmlgui/katepart/
 
 %changelog
+* Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
+- new version
+
 * Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 5.58.0-alt1
 - new version
 
