@@ -1,5 +1,5 @@
 Name: unbound
-Version: 1.9.1
+Version: 1.9.2
 Release: alt1
 License: BSD
 Url: http://unbound.net/
@@ -194,6 +194,9 @@ rm %buildroot%python_sitelibdir/*.la
 %endif
 
 %changelog
+* Mon Jun 17 2019 Alexei Takaseev <taf@altlinux.org> 1.9.2-alt1
+- 1.9.2
+
 * Thu Mar 14 2019 Alexei Takaseev <taf@altlinux.org> 1.9.1-alt1
 - 1.9.1
 
