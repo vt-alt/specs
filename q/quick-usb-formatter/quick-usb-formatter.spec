@@ -1,6 +1,6 @@
 Name: quick-usb-formatter
 Version: 0.6
-Release: alt15
+Release: alt16
 %K5init no_altplace
 
 Group: Graphical desktop/KDE
@@ -62,12 +62,16 @@ install -m 0644 %SOURCE10 translations/
 %_K5libexecdir/kauth/qufhelper
 %_K5data/solid/actions/*quickusbformatter*.desktop
 %_K5xdgapp/quickusbformatter.desktop
-%_K5conf_dbus_sysd/org.kde.auth.quf.conf
+#%_K5conf_dbus_sysd/org.kde.auth.quf.conf
+%_K5dbus/system.d/org.kde.auth.quf.conf
 %_K5dbus_sys_srv/org.kde.auth.quf.service
 %_datadir/polkit-1/actions/org.kde.auth.quf.policy
 
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 0.6-alt16
+- fix package
+
 * Fri Dec 21 2018 Sergey V Turchin <zerg@altlinux.org> 0.6-alt15
 - cleanup patches
 
