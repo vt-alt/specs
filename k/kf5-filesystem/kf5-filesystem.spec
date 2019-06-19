@@ -2,11 +2,11 @@
 
 %define major 5
 %define minor 19
-%define bugfix 0
+%define bugfix 2
 
 Name: kf5-filesystem
 Version: %major.%minor.%bugfix
-Release: alt2%ubt
+Release: alt1
 %K5init altplace
 
 Summary: The basic directory layout for KF5
@@ -14,12 +14,13 @@ License: Public Domain
 Group: System/Base
 
 Requires: filesystem qt5-base-common
+Obsoletes: kf5-i18n-ru kf5-i18n-uk
 
 Source1: kde5
 Source2: dbus-session-dir.conf
 Source3: dbus-system-dir.conf
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 
 %description
 The %name package is one of the basic KF5 packages that is installed on
@@ -67,7 +68,7 @@ mkdir -p %buildroot/%_K5cf_bin
 
 mkdir -p %buildroot/%_K5xdgconf/{autostart,colors,menus,ui}
 
-mkdir -p %buildroot/%_K5data/{katepart5,knotifications5,kservices5/ServiceMenus,kservicetypes5,kxmlgui5}
+mkdir -p %buildroot/%_K5data/{katepart5,knotifications5,kservices5/ServiceMenus,kservicetypes5,kxmlgui5,knsrcfiles}
 
 mkdir -p %buildroot/%_K5i18n/
 for l in %lng_list
@@ -109,7 +110,13 @@ install -m 0644 %SOURCE2 %buildroot/%_K5conf_dbus_sessd/kf5.conf
 %dir %_desktopdir/kf5
 
 %changelog
-* Thu Dec 14 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 5.19.0-alt2%ubt
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 5.19.2-alt1
+- add knsrcfiles dir
+
+* Mon Jun 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.19.1-alt1
+- obsolete kf5-i18n-*
+
+* Thu Dec 14 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 5.19.0-alt2
 - Fixed processing arguments containing spaces.
 - Added %%ubt tag to release.
 
