@@ -27,7 +27,7 @@
 %define nv_version 390
 %define nv_release 116
 %define nv_minor %nil
-%define pkg_rel alt194
+%define pkg_rel alt196
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -100,6 +100,8 @@ Source100: nvidia_create_xinf
 
 Patch1: alt-fix-build-kernel.patch
 Patch2: alt-ignore-dma-remap.patch
+Patch3: buildfix_kernel_5.2.patch
+Patch4: buildfix_kernel_5.2_uvm.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -167,6 +169,10 @@ cd %tbname-%tbver%dirsuffix
 pushd kernel
 #%patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%ifarch x86_64
+%patch4 -p1
+%endif
 rm -rf precompiled
 popd
 
@@ -350,6 +356,12 @@ fi
 %endif
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 390.116-alt196
+- fix to build on ix86
+
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 390.116-alt195
+- add fix against 5.2 kernel
+
 * Thu Mar 14 2019 Sergey V Turchin <zerg@altlinux.org> 390.116-alt194
 - new version
 
