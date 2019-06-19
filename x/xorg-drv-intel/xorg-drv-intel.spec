@@ -1,6 +1,6 @@
 Name: xorg-drv-intel
 Version: 2.99.917
-Release: alt9
+Release: alt10
 Epoch: 7
 Summary: Intel integrated graphics chipsets
 License: MIT/X11
@@ -40,9 +40,6 @@ and 24 for the 830M and later
 %configure \
 	--libexecdir=%_prefix/libexec \
 	--with-xorg-module-dir=%_x11modulesdir \
-%ifarch %ix86
-	--disable-sna \
-%endif
 	--disable-static
 
 %make_build
@@ -60,6 +57,10 @@ and 24 for the 830M and later
 %_man4dir/i*.4*
 
 %changelog
+* Tue Jun 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:2.99.917-alt10
+- git snapshot master.6afed33
+- reenabled sna for i586 (closes: #36817)
+
 * Tue Dec 18 2018 Valery Inozemtsev <shrek@altlinux.ru> 7:2.99.917-alt9
 - git snapshot master.e5ff8e1
 - disabled sna for i586
