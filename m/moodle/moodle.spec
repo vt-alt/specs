@@ -1,7 +1,7 @@
 %def_without pam
 
 Name: moodle
-Version: 3.6.3
+Version: 3.7.0
 Release: alt1
 
 Summary: The world's open source learning platform
@@ -147,10 +147,6 @@ Group: Networking/WWW
 Requires: pecl-pam
 Requires: %name-base = %version-%release
 Requires: %moodle_authdir
-#Requires: %moodle_name-version = %version-%release
-#Provides: %moodle_name-appfor = %version
-#Provides: %moodle_name-auth-pam-version = %version
-#Provides: %moodle_name-auth-pam-appfor = 
 
 %description auth-pam
 PAM (Pluggable Authentication Modules) authentication methods for Moodle
@@ -231,6 +227,9 @@ s@%%(\{moodle_datadir\}|moodle_datadir([[:space:]/'\"=]))@%moodle_datadir\2@g
 %endif
 
 %changelog
+* Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 3.7.0-alt1
+- New version.
+
 * Thu Apr 25 2019 Andrey Cherepanov <cas@altlinux.org> 3.6.3-alt1
 - Rename to moodle and build new version.
 - Use PHP7.

@@ -1,5 +1,5 @@
 Name: installed-db-office-server
-Version: 1.4.1
+Version: 1.4.2
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
@@ -102,6 +102,11 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.2-alt1
+- Fix Moodle wwwroot.
+- Fix admin password change.
+- Add hostname to trusted domains for Nextcloud.
+
 * Mon Jun 17 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt1
 - Requires all needed packages.
 - Supports nextcloud and moodle 3.6.
