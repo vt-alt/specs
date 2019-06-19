@@ -1,5 +1,5 @@
 Name: xiccd
-Version: 0.2.4
+Version: 0.3.0
 Release: alt1
 
 Summary: X color profile daemon
@@ -38,8 +38,6 @@ It does the following tasks:
 
 %install
 %makeinstall_std
-mkdir -p %buildroot%_sysconfdir/xdg/autostart/
-mv %buildroot%_desktopdir/xiccd.desktop %buildroot%_sysconfdir/xdg/autostart/
 
 %files
 %config(noreplace) %_sysconfdir/xdg/autostart/*.desktop
@@ -47,6 +45,9 @@ mv %buildroot%_desktopdir/xiccd.desktop %buildroot%_sysconfdir/xdg/autostart/
 %_man8dir/*
 
 %changelog
+* Tue Jun 18 2019 Mikhail Efremov <sem@altlinux.org> 0.3.0-alt1
+- Updated to 0.3.0.
+
 * Mon Jun 19 2017 Mikhail Efremov <sem@altlinux.org> 0.2.4-alt1
 - Use upstream's desktop file.
 - Updated to 0.2.4.
