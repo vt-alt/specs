@@ -1,10 +1,10 @@
 
-%define sover 5
+%define sover 6
 %define libsmb4kcore libsmb4kcore%sover
 
 %define rname smb4k
 Name: kde5-%rname
-Version: 2.1.1
+Version: 3.0.1
 Release: alt1
 %K5init altplace
 
@@ -22,6 +22,7 @@ Source: %name-%version.tar
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdoctools kf5-kdoctools-devel kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-declarative-devel
+BuildRequires: libsmbclient-devel
 BuildRequires: kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-kiconthemes-devel kf5-kio-devel
 BuildRequires: kf5-knotifications-devel kf5-kpackage-devel kf5-kparts-devel kf5-ktextwidgets-devel kf5-kwallet-devel
 BuildRequires: kf5-kwindowsystem-devel kf5-plasma-framework-devel kf5-kcrash-devel
@@ -68,7 +69,8 @@ rm -rf po/*/docs
 %_K5data/plasma/plasmoids/org.kde.smb4kqml/
 %_K5cfg/smb4k.kcfg
 %_K5icon/*/*/apps/*.*
-%_K5conf_dbus_sysd/org.kde.smb4k.mounthelper.conf
+#%_K5conf_dbus_sysd/org.kde.smb4k.mounthelper.conf
+%_K5dbus/system.d/org.kde.smb4k.mounthelper.conf
 %_K5dbus_sys_srv/org.kde.smb4k.mounthelper.service
 %_K5xmlgui/smb4k/
 %_K5notif/smb4k.*
@@ -80,6 +82,9 @@ rm -rf po/*/docs
 %_K5lib/libsmb4kcore.so.%sover.*
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 3.0.1-alt1
+- new version
+
 * Fri Mar 22 2019 Sergey V Turchin <zerg@altlinux.org> 2.1.1-alt1
 - new version
 
