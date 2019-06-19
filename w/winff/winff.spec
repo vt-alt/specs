@@ -1,6 +1,6 @@
 Name: winff
 Version: 1.5.5
-Release: alt2.20171210%ubt
+Release: alt3.20171210
 Summary: A cross platform batch GUI for FFmpeg
 Summary(ru_RU.UTF-8): Кроссплатформенный графический интерфейс для FFmpeg
 License: GPLv3
@@ -9,11 +9,13 @@ Url: http://winff.org
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
 Source1: winff.desktop
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: lazarus desktop-file-utils dos2unix
 Requires: ffmpeg
 Requires: ffplay
 Requires: xterm
+
+# Lazarus not allowed for aarch64
+ExcludeArch: aarch64
 
 %description
 WinFF is a GUI for the command line video converter FFMPEG or fork Libav.
@@ -64,6 +66,10 @@ install -m644 -t %buildroot/%_docdir/%name AUTHORS *.txt docs/*.pdf docs/*.odg d
 %_docdir/%name
 
 %changelog
+* Wed Jun 19 2019 Anton Midyukov <antohami@altlinux.org> 1.5.5-alt3.20171210
+- Cleanup ubt
+- exclude aarch64
+
 * Fri Jan 19 2018 Anton Midyukov <antohami@altlinux.org> 1.5.5-alt2.20171210%ubt
 - New snapshot
 
