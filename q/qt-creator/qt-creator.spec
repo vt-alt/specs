@@ -8,7 +8,7 @@
 
 Name:    qt-creator
 Version: 4.9.1
-Release: alt1
+Release: alt2
 Summary: Cross-platform IDE for Qt
 
 Group:   Development/Tools
@@ -18,6 +18,8 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source:  %name-%version.tar
 # VCS:   git://code.qt.io/qt-creator/qt-creator.git
+Source1: qbs.tar
+Source2: perfparser.tar
 
 Patch:   %name-%version-%release.patch
 Patch1:  qt-creator_ninja-build.patch
@@ -26,6 +28,8 @@ Requires: %name-data = %EVR
 Provides: qtcreator = %EVR
 Obsoletes: qtcreator-clangcodemodel
 Provides: qtcreator-clangcodemodel = %EVR
+Provides: qbs = 1.14.0
+Obsoletes: qbs < 1.14.0
 
 BuildRequires(pre): qt5-base-devel >= 5.9.0
 BuildRequires: gcc-c++
@@ -77,6 +81,9 @@ Data files for %name
 
 %prep
 %setup
+# Unpack submodules content
+tar xf %SOURCE1
+tar xf %SOURCE2
 subst 's,tools\/qdoc3,bin,' doc/doc.pri
 #subst 's,share\/doc\/qtcreator,share\/qtcreator\/doc,' doc/doc.pri src/plugins/help/helpplugin.cpp
 %patch -p1
@@ -133,6 +140,11 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 %_datadir/qtcreator/*
 
 %changelog
+* Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.1-alt2
+- Build qbsprojectmanager plugin with bundled qbs (ALT #36917).
+- Use ALT-specific Qt5 utilities names.
+- Build perfparser from submodule.
+
 * Thu May 30 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.1-alt1
 - New version.
 
