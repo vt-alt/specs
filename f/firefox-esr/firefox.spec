@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        60.7.0
+Version:        60.7.1
 Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
@@ -40,6 +40,7 @@ Patch17:        firefox-mediasource-crash.patch
 Patch18:        firefox-alt-nspr-for-rust.patch
 Patch19:        build-aarch64-skia.patch
 Patch20:        bug1375074-save-restore-x28.patch
+Patch21:        rust-ignore-not-available-documentation.patch
 
 # Upstream
 Patch200:       mozilla-bug-256180.patch
@@ -149,6 +150,7 @@ tar -xf %SOURCE2
 %patch18 -p2
 %patch19 -p2 -b .aarch64-skia
 #patch20 -p1 -b .bug1375074-save-restore-x28
+%patch21 -p1
 
 %patch200 -p1
 #patch201 -p1
@@ -345,8 +347,33 @@ done
 %_iconsdir/hicolor/256x256/apps/firefox.png
 
 %changelog
+* Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt1
+- New ESR version (60.7.1).
+- Fixed:
+  + CVE-2019-11707 Type confusion in Array.pop
+
+* Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.0-alt2
+- Fix build with Rust > 1.33.
+
 * Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.0-alt1
 - New ESR version (60.7.0).
+- Fixed:
+  + CVE-2019-9815 Disable hyperthreading on content JavaScript threads on macOS
+  + CVE-2019-9816 Type confusion with object groups and UnboxedObjects
+  + CVE-2019-9817 Stealing of cross-domain images using canvas
+  + CVE-2019-9818 Use-after-free in crash generation server
+  + CVE-2019-9819 Compartment mismatch with fetch API
+  + CVE-2019-9820 Use-after-free of ChromeEventHandler by DocShell
+  + CVE-2019-11691 Use-after-free in XMLHttpRequest
+  + CVE-2019-11692 Use-after-free removing listeners in the event listener manager
+  + CVE-2019-11693 Buffer overflow in WebGL bufferdata on Linux
+  + CVE-2019-7317 Use-after-free in png_image_free of libpng library
+  + CVE-2019-9797 Cross-origin theft of images with createImageBitmap
+  + CVE-2018-18511 Cross-origin theft of images with ImageBitmapRenderingContext
+  + CVE-2019-11694 Uninitialized memory memory leakage in Windows sandbox
+  + CVE-2019-11698 Theft of user history data through drag and drop of hyperlinks to and from bookmarks
+  + CVE-2019-5798 Out-of-bounds read in Skia
+  + CVE-2019-9800 Memory safety bugs fixed in Firefox 67 and Firefox ESR 60.7
 
 * Sun May 05 2019 Andrey Cherepanov <cas@altlinux.org> 60.6.2-alt1
 - New ESR version (60.6.2).
