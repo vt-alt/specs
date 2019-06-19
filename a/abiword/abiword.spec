@@ -1,3 +1,5 @@
+%def_disable snapshot
+
 %define abi_ver 3.0
 %define ver_major 3.0
 %def_enable spell
@@ -11,26 +13,35 @@
 
 Name: abiword
 Version: %ver_major.2
-Release: alt4
+Release: alt5
 
 Summary: Lean and fast full-featured word processor
 Group: Office
 License: GPL
 Url: http://www.abisource.com/
 
+%if_disabled snapshot
 Source: http://www.abisource.com/downloads/abiword/%version/source/%name-%version.tar.gz
+%else
+# VCS: https://github.com/AbiWord/abiword.git
+Source: %name-%version.tar
+%endif
 
-#fedora patches
+
 Source11: abiword.mime
 Source12: abiword.keys
 Source13: abiword.xml
 
-Patch: abiword-3.0.2-deb-libical-3.0.patch
+# ABI-3-0-0-STABLE branch
+# 6b55f5fd8e1eb03248db3113f123653c93e352f1 (no tags)
+Patch: abiword-3.0.2-up.patch
 
+Patch10: abiword-3.0.2-deb-libical-3.0.patch
+
+#fedora patches
 Patch11: abiword-2.8.3-desktop.patch
 Patch12: abiword-2.6.0-boolean.patch
 Patch13: abiword-3.0.0-librevenge.patch
-Patch14: abiword-3.0.2-fix-black-drawing-regression.patch
 
 Obsoletes: abisuite, abisuite-koi8, abisuite-cp1251, abisuite-iso8859-8
 Obsoletes: %name-%abi_ver
@@ -39,7 +50,7 @@ Conflicts: %name-light
 
 Requires: %name-data = %version-%release
 
-BuildRequires: gcc-c++ boost-devel libreadline-devel flex
+BuildRequires: autoconf-archive gcc-c++ boost-devel libreadline-devel flex
 BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libgsf-gir-devel
 BuildRequires: libgtk+3-devel librsvg-devel libfribidi-devel libredland-devel
 BuildRequires: liblink-grammar-devel libgsf-devel bzlib-devel zlib-devel libjpeg-devel libpng-devel libxslt-devel
@@ -129,13 +140,13 @@ Python bindings for developing with AbiWord library
 
 %prep
 %setup
+%patch -p1 -b .up
 
 # fedora patches
-%patch -p1 -b .libical
+%patch10 -p1 -b .libical
 %patch11 -p1 -b .desktop
 %patch12 -p1 -b .boolean
 %patch13 -p0 -b .librevenge
-%patch14 -p1 -b .black
 
 %build
 %add_optflags -std=c++11 -D_FILE_OFFSET_BITS=64
@@ -194,6 +205,10 @@ install -p -m 0644 -D %SOURCE13 %buildroot%_datadir/mime/packages/abiword.xml
 %python_sitelibdir/gi/overrides/*
 
 %changelog
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 3.0.2-alt5
+- updated to snapshot from ABI-3-0-0-STABLE branch 
+  (in particular fixed flicker and caret problems)
+
 * Sun Aug 19 2018 Yuri N. Sedunov <aris@altlinux.org> 3.0.2-alt4
 - disabled Open Text Summarizer support (ALT #35266)
 
