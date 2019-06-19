@@ -12,7 +12,7 @@
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
 Version:	60.7.1
-Release:	alt1
+Release:	alt2
 License:	MPL/GPL
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -44,6 +44,7 @@ Patch27: 	rust-ignore-not-available-documentation.patch
 Patch40:        enigmail-use-juniorModeForceOff.patch
 Patch41:	enigmail-fix-ru-l10n-markup.patch
 Patch42:	enigmail-gost.patch
+Patch43:        enigmail-disable-pEpAutoDownload.patch
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
@@ -205,6 +206,7 @@ tar -xf %SOURCE1
 %patch40 -p1
 %patch41 -p1
 %patch42 -p1
+%patch43 -p1
 # Fix <br> in translations
 subst 's|<html:br/>|<html:br></html:br>|g' enigmail/lang/*/enigmail.dtd
 %endif
@@ -480,6 +482,9 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt2
+- enigmail: disable pEpAutoDownload.
+
 * Fri Jun 14 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt1
 - New version (60.7.1).
 - Fixed:
