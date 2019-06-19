@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.04.2
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Graphical desktop/KDE
@@ -71,7 +71,7 @@ KF5 library
 %files -f %name.lang
 %doc COPYING*
 %config(noreplace) %_K5xdgconf/*kalarm*
-%config(noreplace) %_K5conf_dbus_sysd/org.kde.kalarm.rtcwake.conf
+#%config(noreplace) %_K5conf_dbus_sysd/org.kde.kalarm.rtcwake.conf
 %_K5bin/kalarm
 %_K5bin/kalarmautostart
 %_K5libexecdir/kauth/kalarm_helper
@@ -84,10 +84,14 @@ KF5 library
 %_K5icon/*/*/apps/kalarm.*
 #%doc %_K5doc/en/kalarm/
 %_K5dbus_sys_srv/org.kde.kalarm.rtcwake.service
+%_K5dbus/system.d/org.kde.kalarm.rtcwake.conf
 %_datadir/polkit-1/actions/org.kde.kalarm.rtcwake.policy
 
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt2
+- fix package
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
