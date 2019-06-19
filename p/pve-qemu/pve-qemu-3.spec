@@ -30,7 +30,7 @@
 %def_enable rbd
 %def_disable libnfs
 %def_enable seccomp
-%def_enable glusterfs
+%def_disable glusterfs
 %def_disable gtk
 %def_disable gtk_gl
 %def_enable gnutls
@@ -53,8 +53,8 @@
 %define _localstatedir /var
 
 Name: pve-%rname
-Version: 2.12.1
-Release: alt3
+Version: 3.0.1
+Release: alt4
 Epoch: 1
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -72,63 +72,47 @@ Source5: qemu-kvm.sh
 Source100: Logo.bmp
 
 Patch0: qemu-alt.patch
+Patch100: qemu-3.0.1-uuid.patch
 
-Patch10: 0001-PVE-Add-dummy-id-command-line-parameter.patch
-Patch11: 0002-block-file-change-locking-default-to-off.patch
-Patch12: 0003-Adjust-network-script-path-to-etc-kvm.patch
-Patch13: 0004-qemu-img-return-success-on-info-without-snapshots.patch
-Patch14: 0005-use-kvm-by-default.patch
-Patch15: 0006-virtio-balloon-fix-query.patch
-Patch16: 0007-set-the-CPU-model-to-kvm64-32-instead-of-qemu64-32.patch
-Patch17: 0008-qapi-modify-query-machines.patch
-Patch18: 0009-qapi-modify-spice-query.patch
-Patch19: 0010-ui-spice-default-to-pve-certs-unless-otherwise-speci.patch
-Patch20: 0011-internal-snapshot-async.patch
-Patch21: 0012-convert-savevm-async-to-threads.patch
-Patch22: 0013-qmp-add-get_link_status.patch
-Patch23: 0014-smm_available-false.patch
-Patch24: 0015-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
-Patch25: 0016-block-snapshot-qmp_snapshot_drive-add-aiocontext.patch
-Patch26: 0017-block-snapshot-qmp_delete_drive_snapshot-add-aiocont.patch
-Patch27: 0018-glusterfs-no-default-logfile-if-daemonized.patch
-Patch28: 0019-glusterfs-allow-partial-reads.patch
-Patch29: 0020-qemu-img-dd-add-osize-and-read-from-to-stdin-stdout.patch
-Patch30: 0021-backup-modify-job-api.patch
-Patch31: 0022-backup-introduce-vma-archive-format.patch
-Patch32: 0023-adding-old-vma-files.patch
-Patch33: 0024-vma-add-throttling-options-to-drive-mapping-fifo-pro.patch
-Patch34: 0025-qemu-img-dd-add-isize-parameter.patch
-Patch35: 0026-qemu-img-dd-add-n-skip_create.patch
-Patch36: 0027-vma-add-cache-option-to-device-map.patch
-Patch37: 0028-vma-remove-forced-NO_FLUSH-option.patch
-Patch38: 0029-Revert-target-i386-disable-LINT0-after-reset.patch
-Patch39: 0030-For-internal-snapshot-async.patch
-Patch40: 0031-savevm-async-fixups-for-AIO-WAIT.patch
-Patch41: 0032-PVE-block-add-the-zeroinit-block-driver-filter.patch
-Patch42: 0033-PVE-fixups-for-2.12.1.patch
-Patch43: 0034-PVE-pre-3.0-uuidinfo-common-include.patch
-Patch44: 0035-vma.c-fixup.patch
-Patch45: 0036-More-2.12-fixups.patch
-Patch46: 0037-And-more-2.12-fixups.patch
-Patch47: 0038-Fix-vma-backup.patch
-Patch48: 0001-seccomp-use-SIGSYS-signal-instead-of-killing-the-thr.patch
-Patch49: 0002-seccomp-prefer-SCMP_ACT_KILL_PROCESS-if-available.patch
-Patch50: 0003-configure-require-libseccomp-2.2.0.patch
-Patch51: 0004-seccomp-set-the-seccomp-filter-to-all-threads.patch
-Patch52: 0005-clean-up-callback-when-del-virtqueue.patch
-Patch53: 0006-ne2000-fix-possible-out-of-bound-access-in-ne2000_re.patch
-Patch54: 0007-rtl8139-fix-possible-out-of-bound-access.patch
-Patch55: 0008-pcnet-fix-possible-buffer-overflow.patch
-Patch56: 0009-net-ignore-packet-size-greater-than-INT_MAX.patch
-Patch57: 0010-e1000-indicate-dropped-packets-in-HW-counters.patch
-Patch58: 0011-i2c-ddc-fix-oob-read.patch
-Patch59: 0012-slirp-check-data-length-while-emulating-ident-functi.patch
-Patch60: 0013-pvrdma-release-device-resources-in-case-of-an-error.patch
-Patch61: 0014-rdma-check-num_sge-does-not-exceed-MAX_SGE.patch
-Patch62: 0015-pvrdma-add-uar_read-routine.patch
-Patch63: 0016-pvrdma-check-number-of-pages-when-creating-rings.patch
-Patch64: 0017-pvrdma-check-return-value-from-pvrdma_idx_ring_has_-.patch
-Patch65: 0018-lsi53c895a-check-message-length-value-is-valid.patch
+Patch10: 0001-PVE-Config-block-file-change-locking-default-to-off.patch
+Patch11: 0002-PVE-Config-Adjust-network-script-path-to-etc-kvm.patch
+Patch12: 0003-PVE-Config-use-kvm-by-default.patch
+Patch13: 0004-PVE-Config-set-the-CPU-model-to-kvm64-32-instead-of-.patch
+Patch14: 0005-PVE-Config-ui-spice-default-to-pve-certificates.patch
+Patch15: 0006-PVE-Config-smm_available-false.patch
+Patch16: 0007-PVE-Config-glusterfs-no-default-logfile-if-daemonize.patch
+Patch17: 0008-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
+Patch18: 0009-PVE-Up-qmp-add-get_link_status.patch
+Patch19: 0010-PVE-Up-glusterfs-allow-partial-reads.patch
+Patch20: 0011-PVE-Up-qemu-img-return-success-on-info-without-snaps.patch
+Patch21: 0012-PVE-Up-qemu-img-dd-add-osize-and-read-from-to-stdin-.patch
+Patch22: 0013-PVE-Up-qemu-img-dd-add-isize-parameter.patch
+Patch23: 0014-PVE-Up-qemu-img-dd-add-n-skip_create.patch
+Patch24: 0015-PVE-virtio-balloon-improve-query-balloon.patch
+Patch25: 0016-PVE-qapi-modify-query-machines.patch
+Patch26: 0017-PVE-qapi-modify-spice-query.patch
+Patch27: 0018-PVE-internal-snapshot-async.patch
+Patch28: 0019-PVE-block-add-the-zeroinit-block-driver-filter.patch
+Patch29: 0020-PVE-backup-modify-job-api.patch
+Patch30: 0021-PVE-backup-introduce-vma-archive-format.patch
+Patch31: 0022-PVE-Deprecated-adding-old-vma-files.patch
+Patch32: 0023-PVE-vma-add-throttling-options-to-drive-mapping-fifo.patch
+Patch33: 0024-PVE-vma-add-cache-option-to-device-map.patch
+Patch34: 0025-PVE-vma-remove-forced-NO_FLUSH-option.patch
+Patch35: 0026-PVE-Add-dummy-id-command-line-parameter.patch
+Patch36: 0027-PVE-Config-Revert-target-i386-disable-LINT0-after-re.patch
+Patch37: 0028-PVE-Up-Config-file-posix-make-locking-optiono-on-cre.patch
+Patch38: 0001-monitor-guard-iothread-access-by-mon-use_io_thread.patch
+Patch39: 0002-monitor-delay-monitor-iothread-creation.patch
+Patch40: 0003-kvm-Add-support-to-KVM_GET_MSR_FEATURE_INDEX_LIST-an.patch
+Patch41: 0004-i386-Add-CPUID-bit-and-feature-words-for-IA32_ARCH_C.patch
+Patch42: 0005-i386-Add-new-MSR-indices-for-IA32_PRED_CMD-and-IA32_.patch
+Patch43: 0006-x86-Data-structure-changes-to-support-MSR-based-feat.patch
+Patch44: 0007-x86-define-a-new-MSR-based-feature-word-FEATURE_WORD.patch
+Patch45: 0008-target-i386-add-MDS-NO-feature.patch
+Patch46: 0009-target-i386-define-md-clear-bit.patch
+Patch47: 0010-docs-add-guidance-on-configuring-CPU-models-for-x86.patch
+Patch48: 0011-docs-recommend-use-of-md-clear-feature-on-all-Intel-.patch
 
 ExclusiveArch: x86_64
 BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
@@ -137,8 +121,8 @@ BuildRequires: libxfs-devel
 BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
 BuildRequires: ipxe-roms-qemu >= 1.0.0-alt4.git93acb5d seavgabios seabios libfdt-devel >= 1.4.0
 BuildRequires: libpixman-devel >= 0.21.8
-BuildRequires: iasl
-%{?_enable_sdl:BuildRequires: libSDL-devel libX11-devel}
+BuildRequires: iasl python-modules
+%{?_enable_sdl:BuildRequires: libSDL2-devel libX11-devel}
 %{?_enable_curses:BuildRequires: libncurses-devel}
 %{?_enable_bluez:BuildRequires: libbluez-devel}
 %{?_enable_alsa:BuildRequires: libalsa-devel}
@@ -153,7 +137,7 @@ BuildRequires: iasl
 %{?_enable_smartcard:BuildRequires: libcacard-devel >= 2.5.0}
 %{?_enable_usb_redir:BuildRequires: libusbredir-devel >= 0.5}
 %{?_enable_opengl:BuildRequires: libX11-devel libepoxy-devel}
-%{?_enable_guest_agent:BuildRequires: glib2-devel >= 2.38 python-base}
+%{?_enable_guest_agent:BuildRequires: glib2-devel >= 2.38}
 %{?_enable_rbd:BuildRequires: ceph-devel}
 %{?_enable_libiscsi:BuildRequires: libiscsi-devel >= 1.9.0}
 %{?_enable_libnfs:BuildRequires: libnfs-devel >= 1.9.3}
@@ -344,23 +328,8 @@ This package provides client and server tools for QEMU's ivshmem device.
 %patch46 -p1
 %patch47 -p1
 %patch48 -p1
-%patch49 -p1
-%patch50 -p1
-%patch51 -p1
-%patch52 -p1
-%patch53 -p1
-%patch54 -p1
-%patch55 -p1
-%patch56 -p1
-%patch57 -p1
-%patch58 -p1
-%patch59 -p1
-#patch60 -p1
-#patch61 -p1
-%patch62 -p1
-%patch63 -p1
-%patch64 -p1
-%patch65 -p1
+
+%patch100 -p1
 
 cp -f %SOURCE2 qemu-kvm.control.in
 
@@ -377,7 +346,7 @@ export CFLAGS="%optflags"
 	--localstatedir=%_localstatedir \
 	--extra-cflags="%optflags" \
 	%{subst_enable werror} \
-	%{?_enable_sdl:--enable-sdl --with-sdlabi=1.2} \
+	%{?_enable_sdl:--enable-sdl --with-sdlabi=2.0} \
 	%{?_disable_curses:--disable-curses} \
 	%{subst_enable bluez} \
 	%{subst_enable vnc} \
@@ -537,6 +506,9 @@ fi
 %docdir/LICENSE
 
 %changelog
+* Mon Jun 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:3.0.1-alt4
+- 3.0.1-4
+
 * Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.12.1-alt3
 - 2.12.1-3
 
