@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.04.2
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -63,7 +63,6 @@ KF5 library
 %files -f %name.lang
 %doc COPYING*
 %config(noreplace) %_K5xdgconf/*.*categories
-%config(noreplace) %_K5conf_dbus_sysd/org.kde.kcontrol.kcmkwallet5.conf
 %_bindir/kwalletmanager5
 %_K5bin/kwalletmanager5
 %_K5icon/*/*/apps/kwalletmanager.*
@@ -72,6 +71,8 @@ KF5 library
 %_K5libexecdir/kauth/kcm_kwallet_helper5
 %_K5plug/kcm_kwallet5.so
 %_K5dbus_sys_srv/org.kde.kcontrol.kcmkwallet5.service
+#%config(noreplace) %_K5conf_dbus_sysd/org.kde.kcontrol.kcmkwallet5.conf
+%_K5dbus/system.d/org.kde.kcontrol.kcmkwallet5.conf
 %_K5xdgapp/*kwallet*.desktop
 %_K5srv/kwallet*.desktop
 %_K5xmlgui/kwalletmanager5/
@@ -79,6 +80,9 @@ KF5 library
 
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt2
+- fix package
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
