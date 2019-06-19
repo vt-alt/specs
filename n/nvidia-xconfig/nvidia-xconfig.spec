@@ -1,5 +1,5 @@
 Name: nvidia-xconfig
-Version: 410.73
+Version: 430.26
 Release: alt1
 
 Group: System/Configuration/Hardware
@@ -9,7 +9,6 @@ License: GPLv2
 
 Source: %name-%version.tar.gz
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: glibc-devel-static
 
 %description
@@ -33,16 +32,19 @@ make install PREFIX=%buildroot/%prefix bindir=%buildroot/%_bindir mandir=%buildr
 
 
 %changelog
+* Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 430.26-alt1
+- new version
+
 * Tue Oct 30 2018 Sergey V Turchin <zerg@altlinux.org> 410.73-alt1
 - new version
 
-* Thu Feb 15 2018 Sergey V Turchin <zerg@altlinux.org> 390.25-alt1%ubt
+* Thu Feb 15 2018 Sergey V Turchin <zerg@altlinux.org> 390.25-alt1
 - new version
 
-* Wed Oct 11 2017 Sergey V Turchin <zerg@altlinux.org> 384.90-alt1%ubt
+* Wed Oct 11 2017 Sergey V Turchin <zerg@altlinux.org> 384.90-alt1
 - new version
 
-* Fri Dec 02 2016 Sergey V Turchin <zerg@altlinux.org> 375.20-alt1%ubt
+* Fri Dec 02 2016 Sergey V Turchin <zerg@altlinux.org> 375.20-alt1
 - new version
 
 * Mon Jul 18 2016 Sergey V Turchin <zerg@altlinux.org> 367.35-alt1
