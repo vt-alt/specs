@@ -1,9 +1,9 @@
 Name: apt-scripts
-Version: 0.1.3
-Release: alt1
+Version: 0.1.4
+Release: alt2
 
 Summary: Lua scripts for APT
-License: GPL
+License: GPL-2.0-or-later
 Group: System/Configuration/Packaging
 
 Source0: %name-%version.tar.gz
@@ -21,6 +21,9 @@ apt-cache list-nodeps
 apt-cache list-unreleased
 	This script will list all installed packages which have
 	version newer than in repository.
+apt-get dedup
+	This script will collect all unallowed duplicated pkgs and remove the
+	eldest, keeping the newest.
 
 %prep
 %setup -q
@@ -45,7 +48,14 @@ ls *.conf |sed 's:^:^/etc/apt/apt.conf.d/:;s:[.]:[.]:g' >%buildroot/etc/buildreq
 %config /etc/apt/apt.conf.d/*
 %config /etc/buildreqs/files/ignore.d/%name
 
-%changelog 
+%changelog
+* Wed Jun 19 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 0.1.4-alt2
+- apt-get dedup implies Apt::Get::Fix-Broken
+
+* Thu Jun 13 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 0.1.4-alt1
+- added 'apt-get dedup'
+- fixed package license
+
 * Thu Jul 13 2017 Mikhail Efremov <sem@altlinux.org> 0.1.3-alt1
 - list-nodeps: Only use "depends" and "depends"-like dependences.
 
