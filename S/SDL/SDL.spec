@@ -1,6 +1,6 @@
 Name: SDL
 Version: 1.2.14
-Release: alt7
+Release: alt8
 
 Summary: Simple DirectMedia Layer
 License: LGPL
@@ -82,7 +82,12 @@ autoconf
 %_datadir/aclocal/*
 %_mandir/man?/*
 
+# TODO: 1.2.15+
+
 %changelog
+* Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 1.2.14-alt8
+- fixed upstream bug #894 with upstream rev#4aa31b9207f2
+
 * Fri Jan 06 2017 Michael Shigorin <mike@altlinux.org> 1.2.14-alt7
 - fixed FTBFS (upstream bug #1111 / hg rev 32f0f603a0c8)
 - minor spec cleanup
