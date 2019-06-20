@@ -1,10 +1,10 @@
 Name: libnss-role
-Version: 0.3.1
+Version: 0.4.0
 Release: alt1
 
 Summary: NSS API library and admin tools for roles and privilegies
 
-License: GPLv3
+License: LGPLv2.1
 URL: https://github.com/Etersoft/libnss-role
 Group: System/Libraries
 
@@ -34,7 +34,7 @@ NSS API library for roles and privilegies.
 %prep
 %setup
 
-%build 
+%build
 scons
 
 %install
@@ -73,6 +73,12 @@ update_chrooted all
 %_includedir/role/
 
 %changelog
+* Wed Jun 19 2019 Vitaly Lipatov <lav@altlinux.ru> 0.4.0-alt1
+- parser.c: fix memory leak
+- major refactoring
+- increase buffer count for getpwuid/getgrgid/getgrnam
+- build with -g, RPM will strip binaries automatically and generate debuginfo
+
 * Fri Apr 26 2019 Vitaly Lipatov <lav@altlinux.ru> 0.3.1-alt1
 - change URL, Packager, add source url
 - rolelst: add -n arg to print gid instead of group names
