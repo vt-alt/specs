@@ -1,8 +1,8 @@
 %define rname plasma-applet-places-widget
 
 Name: kde5-%rname
-Version: 1.2
-Release: alt0.1%ubt
+Version: 1.3
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -17,7 +17,7 @@ Source: %rname-%version.tar
 Source1: ru.po
 Patch1: alt-metadata.patch
 Patch2: alt-auto-width.patch
-Patch3: alt-filter-searches.patch
+Patch3: alt-defaults.patch
 
 # Automatically added by buildreq on Mon Aug 21 2017 (-bi)
 # optimized out: cmake cmake-modules gcc-c++ kf5-kconfig-devel kf5-kcoreaddons-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-qml libqt5-quick libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 python3-base qt5-base-common qt5-base-devel rpm-build-python3
@@ -55,6 +55,9 @@ __EOF__
 %_K5srv/plasma-applet-org.kde.placesWidget.desktop
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 1.3-alt1
+- new version
+
 * Fri Dec 22 2017 Sergey V Turchin <zerg@altlinux.org> 1.2-alt0.1%ubt
 - remove baloo searches
 
