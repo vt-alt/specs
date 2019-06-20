@@ -27,7 +27,7 @@
 %define nv_version 390
 %define nv_release 116
 %define nv_minor %nil
-%define pkg_rel alt196
+%define pkg_rel alt197
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -356,6 +356,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 20 2019 Sergey V Turchin <zerg@altlinux.org> 390.116-alt197
+- fix to build on ix86
+
 * Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 390.116-alt196
 - fix to build on ix86
 
