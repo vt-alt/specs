@@ -1,6 +1,6 @@
 Name: xorg-drv-qxl
-Version: 0.1.4
-Release: alt6
+Version: 0.1.5
+Release: alt2
 Epoch: 2
 Summary: QEMU QXL paravirt video
 License: GPL
@@ -32,6 +32,7 @@ xorg-drv-spiceqxl is both QXL video driver and SPICE server, intended for use wi
 %patch -p1
 
 %build
+export CFLAGS="-Wno-shadow -Wno-declaration-after-statement -Wno-unused-function -Wno-return-type"
 %autoreconf
 %configure \
 	--with-xorg-module-dir=%_x11modulesdir \
@@ -49,14 +50,11 @@ xorg-drv-spiceqxl is both QXL video driver and SPICE server, intended for use wi
 %_x11modulesdir/drivers/spiceqxl_drv.so
 
 %changelog
+* Tue Jun 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 2:0.1.5-alt2
+- 0.1.5
+
 * Thu May 31 2018 Valery Inozemtsev <shrek@altlinux.ru> 2:0.1.4-alt6
 - requires XORG_ABI_VIDEODRV = 24.0
-
-* Fri May 05 2017 Valery Inozemtsev <shrek@altlinux.ru> 2:0.1.4-alt5
-- 0.1.4
-
-* Wed Dec 21 2016 Valery Inozemtsev <shrek@altlinux.ru> 1:0.1.5-alt1
-- 0.1.5
 
 * Wed Nov 30 2016 Valery Inozemtsev <shrek@altlinux.ru> 1:0.1.4-alt4
 - requires XORG_ABI_VIDEODRV = 23.0
