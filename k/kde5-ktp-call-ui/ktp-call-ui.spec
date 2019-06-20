@@ -1,7 +1,7 @@
 %define rname ktp-call-ui
 
 Name: kde5-%rname
-Version: 19.04.1
+Version: 19.04.2
 Release: alt1
 %K5init
 
@@ -48,6 +48,9 @@ GUI VoIP client software which uses the telepathy framework underneath.
 %_K5dbus_srv/org.freedesktop.Telepathy.Client.KTp.CallUi.service
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - new version
 

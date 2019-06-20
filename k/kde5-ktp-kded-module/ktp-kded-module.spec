@@ -1,7 +1,7 @@
 %define rname ktp-kded-module
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.2
 Release: alt1
 %K5init altplace
 
@@ -17,10 +17,10 @@ Patch1: alt-autoconnect.patch
 
 # Automatically added by buildreq on Thu Jun 18 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils kf5-kcmutils-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libtelepathy-logger-qt5 libtelepathy-qt5 libtelepathy-qt5-devel libxcbutil-keysyms python-base python3 python3-base qt5-base-devel ruby ruby-stdlibs telepathy-logger-qt5-devel
-#BuildRequires: dbus-tools extra-cmake-modules gcc-c++ kde5-ktp-common-internals-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-kidletime-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kservice-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel libdb4-devel libtelepathy-qt5-devel-static python-module-google rpm-build-python3 rpm-build-ruby
+#BuildRequires: dbus-tools extra-cmake-modules gcc-c++ kde5-ktp-common-internals-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-kidletime-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kservice-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel libdb4-devel libtelepathy-qt5-devel python-module-google rpm-build-python3 rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
-BuildRequires: dbus-tools kde5-ktp-common-internals-devel telepathy-qt5-devel-static
+BuildRequires: dbus-tools kde5-ktp-common-internals-devel telepathy-qt5-devel
 BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-kidletime-devel kf5-kio-devel kf5-kitemviews-devel
 BuildRequires: kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kservice-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel
@@ -82,6 +82,15 @@ KF5 library
 #%_K5lib/libktp-kded-module.so.*
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt2
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

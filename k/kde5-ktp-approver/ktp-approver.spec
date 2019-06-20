@@ -1,7 +1,7 @@
 %define rname ktp-approver
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.2
 Release: alt1
 %K5init altplace
 
@@ -17,10 +17,10 @@ Source: %rname-%version.tar
 
 # Automatically added by buildreq on Fri Jun 05 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libdbusmenu-qt52 libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libtelepathy-qt5 libtelepathy-qt5-devel libxcbutil-keysyms python-base python3 python3-base ruby ruby-stdlibs
-#BuildRequires: dbus-tools extra-cmake-modules gcc-c++ kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-knotifications-devel kf5-kservice-devel libdb4-devel libtelepathy-qt5-devel-static python-module-google qt5-base-devel rpm-build-python3 rpm-build-ruby
+#BuildRequires: dbus-tools extra-cmake-modules gcc-c++ kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-knotifications-devel kf5-kservice-devel libdb4-devel libtelepathy-qt5-devel python-module-google qt5-base-devel rpm-build-python3 rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
-BuildRequires: dbus-tools telepathy-qt5-devel-static
+BuildRequires: dbus-tools telepathy-qt5-devel
 BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-knotifications-devel kf5-kservice-devel
 
 %description
@@ -45,6 +45,15 @@ BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5
 %_K5srvtyp/*.desktop
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt2
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

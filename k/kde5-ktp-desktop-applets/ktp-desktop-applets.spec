@@ -1,7 +1,7 @@
 %define rname ktp-desktop-applets
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.2
 Release: alt1
 %K5init altplace
 
@@ -76,6 +76,15 @@ KF5 library
 #%_K5lib/libktp-desktop-applets.so.*
 
 %changelog
+* Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt2
+- new version
+
 * Tue May 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
