@@ -8,8 +8,8 @@
 %define libpowerdevilcore libpowerdevilcore%powerdevilcore_sover
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -110,7 +110,8 @@ done
 %doc COPYING*
 
 %files
-%config %_K5conf_dbus_sysd/*.conf
+#%config %_K5conf_dbus_sysd/*.conf
+%_K5dbus/system.d/*.conf
 %_K5libexecdir/kauth/*
 %_K5exec/*powerdevil*
 %_K5plug/kf5/powerdevil/
@@ -141,6 +142,9 @@ done
 %_K5lib/libpowerdevilcore.so.%powerdevilcore_sover
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
 - new version
 

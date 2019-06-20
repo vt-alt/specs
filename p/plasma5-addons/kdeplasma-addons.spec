@@ -8,8 +8,8 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -111,7 +111,7 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data kwin kdevappwizard locale 
+%K5install_move data kwin kdevappwizard locale knsrcfiles
 %K5install_move icon all
 %find_lang %name --all-name
 
@@ -119,7 +119,8 @@ KF5 library
 %doc COPYING*
 
 %files
-%config %_K5xdgconf/*rc
+#%config %_K5xdgconf/*rc
+%_K5data/knsrcfiles/*.knsrc
 %_K5plug/*.so
 %_K5plug/plasma/dataengine/*.so
 %_K5plug/plasma/applets/*.so
@@ -155,6 +156,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 

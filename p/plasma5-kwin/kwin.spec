@@ -16,8 +16,8 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -25,7 +25,7 @@ Summary: KDE Workspace 5 Window Manager
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
-Requires: libqt5-multimedia kf5-kscreenlocker
+Requires: libqt5-multimedia kf5-kirigami kf5-kscreenlocker
 #Requires: xorg-xwayland
 Requires(post): /sbin/setcap
 
@@ -39,7 +39,7 @@ Patch2: alt-def-window-buttons.patch
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel-static qt5-declarative-devel
 BuildRequires: libcap-utils libcap-devel
-BuildRequires: libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-cursor-devel libxcbutil-keysyms-devel
+BuildRequires: libxcbutil-devel libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-cursor-devel libxcbutil-keysyms-devel
 BuildRequires: libxkbcommon-devel libgbm-devel libdrm-devel
 BuildRequires: fontconfig-devel libfreetype-devel
 BuildRequires: libepoxy-devel libinput-devel libwayland-cursor-devel libwayland-egl-devel libwayland-server-devel
@@ -146,29 +146,32 @@ KF5 library
 %files common -f %name.lang
 %doc COPYING*
 %_K5icon/*/*/apps/*.*
+%dir %_K5data/knsrcfiles/
 
 %files
-%config(noreplace) %_K5xdgconf/*.knsrc
+#%config(noreplace) %_K5xdgconf/*.knsrc
 %config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/kwin*
 %_K5exec/*kwin*
 %_K5lib/libkdeinit5_*.so
 %_K5plug/platforms/KWinQpaPlugin.so
-%_K5plug/kf5/org.kde.kidletime.platforms/KF5IdleTimeKWin*.so
+%_K5plug/kf5/org.kde.kidletime.platforms/*.so
+%_K5plug/kf5/org.kde.kwindowsystem.platforms/*.so
 %_K5plug/kpackage/packagestructure/kwin_packagestructure_*.so
 %_K5plug/kwin/
 %_K5plug/kcms/*kwin*.so
 %_K5plug/org.kde.kglobalaccel5.platforms/
 %_K5plug/org.kde.kdecoration2/
-%_K5plug/org.kde.kwin.*/
+%_K5plug/org.kde.*kwin*/
 %_K5plug/*.so
 %_K5cf_bin/kwin5*
 %_K5conf_up/kwin*
 %_K5qml/org/kde/kwin/
 %_K5cfg/*.kcfg
-%_K5data/kpackage/kcms/kcm_kwin_virtualdesktops/
+%_K5data/kpackage/kcms/kcm_kwin*/
 %_K5data/kwin/
-%_K5data/kwincompositing/
+#%_K5data/kwincompositing/
+%_K5data/knsrcfiles/*.knsrc
 %_K5srv/*.desktop
 %_K5srv/kwin/
 %_K5srvtyp/*.desktop
@@ -201,6 +204,9 @@ KF5 library
 
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
 - new version
 

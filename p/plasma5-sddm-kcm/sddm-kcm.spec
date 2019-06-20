@@ -1,8 +1,8 @@
 %define rname sddm-kcm
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -75,13 +75,15 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data sddm-kcm
+%K5install_move data sddm-kcm knsrcfiles
 %find_lang %name --all-name
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.knsrc
-%config %_K5conf_dbus_sysd/*.conf
+#%config(noreplace) %_K5xdgconf/*.knsrc
+%_K5data/knsrcfiles/*.knsrc
+#%config %_K5conf_dbus_sysd/*.conf
+%_K5dbus/system.d/*.conf
 %_K5bin/sddmthemeinstaller
 %_K5plug/*.so
 %_K5libexecdir/kauth/*
@@ -91,6 +93,9 @@ KF5 library
 %_datadir/polkit-1/actions/*
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 

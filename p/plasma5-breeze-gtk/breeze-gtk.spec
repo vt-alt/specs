@@ -1,8 +1,8 @@
 %define rname breeze-gtk
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 %K5init no_altplace
 
 Group: Graphical desktop/KDE
@@ -59,6 +59,9 @@ Provides: gtk3-theme-breeze = %version-%release
 %_datadir/themes/Breeze*
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
 - new version
 

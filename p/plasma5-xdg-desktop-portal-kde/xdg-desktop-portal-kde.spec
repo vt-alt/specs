@@ -1,8 +1,8 @@
 %define rname xdg-desktop-portal-kde
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt4
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -49,6 +49,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}.sh
 %config(noreplace) %_K5xdgconf/plasma-workspace/env/*.sh
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt4
 - don't export $GTK_USE_PORTAL by default
 

@@ -2,8 +2,8 @@
 %def_disable openswan
 
 Name: plasma5-nm
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -16,6 +16,7 @@ Requires: NetworkManager-daemon
 Requires: NetworkManager-adsl NetworkManager-wifi
 Requires: mobile-broadband-provider-info
 Requires: qca-qt5-ossl
+#Requires: wireguard-tools
 
 Provides: kf5-plasma-nm = %EVR
 Obsoletes: kf5-plasma-nm < %EVR
@@ -196,16 +197,6 @@ Obsoletes: kf5-plasma-nm-connect-ssh < %EVR
 %description connect-ssh
 %summary.
 
-%package connect-wireguard
-Group: Graphical desktop/KDE
-Summary: SSH support for %name
-Requires: %name
-#Requires: NetworkManager-wireguard
-Requires: wireguard-tools
-%description connect-wireguard
-%summary.
-
-
 %prep
 %setup -n %rname-%version
 %patch11 -p1
@@ -289,11 +280,10 @@ install -m0644 -p -D %SOURCE10 %buildroot/%_K5data/plasma/updates/01-plasma-nm.j
 %_K5plug/libplasmanetworkmanagement_sshui.so
 %_K5srv/plasmanetworkmanagement_sshui.desktop
 
-%files connect-wireguard
-%_K5plug/libplasmanetworkmanagement_wireguardui.so
-%_K5srv/plasmanetworkmanagement_wireguardui.desktop
-
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 

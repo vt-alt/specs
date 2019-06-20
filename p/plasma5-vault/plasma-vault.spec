@@ -1,8 +1,8 @@
 %define rname plasma-vault
 
 Name: plasma5-vault
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -72,12 +72,16 @@ Requires: %name-common = %version-%release
 
 %files -f %name.lang
 %doc COPYING*
+%_K5plug/kf5/kfileitemaction/*.so
 %_K5plug/kf5/kded/*vault*.so
 %_K5plug/plasma/applets/*vault*.so
 %_K5data/plasma/plasmoids/*vault*/
 %_K5srv/*vault*.desktop
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 

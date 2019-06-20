@@ -5,8 +5,8 @@
 %add_findreq_skiplist %_K5exec/kdeeject
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -89,6 +89,9 @@ KF5 library
 %_K5srv/*.desktop
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
 - new version
 

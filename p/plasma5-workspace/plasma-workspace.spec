@@ -15,6 +15,8 @@
 %define libweather_ion libweather_ion%weather_ion_sover
 %define colorcorrect_sover 5
 %define libcolorcorrect libcolorcorrect%colorcorrect_sover
+%define notificationmanager_sover 1
+%define libnotificationmanager libnotificationmanager%notificationmanager_sover
 
 %def_disable qalculate
 %_K5if_ver_gteq %ubt_id M90
@@ -24,8 +26,8 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.15.5
-Release: alt4
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -191,6 +193,13 @@ Requires: %name-common = %version-%release
 %description -n %libcolorcorrect
 %name library
 
+%package -n %libnotificationmanager
+Group: System/Libraries
+Summary: %name library
+Requires: %name-common = %version-%release
+%description -n %libnotificationmanager
+%name library
+
 
 %prep
 %setup -n %rname-%version
@@ -237,7 +246,7 @@ cat %SOURCE1 >> po/ru/freememorynotifier.po
 %K5install
 
 %K5install_move data ksplash kstyle solid kdevappwizard kpackage
-%K5install_move data desktop-directories doc kconf_update kio_desktop
+%K5install_move data desktop-directories doc kconf_update kio_desktop knsrcfiles
 
 # fix dbus service
 sed -i 's|^Exec=.*|Exec=%_K5bin/krunner|' %buildroot/%_K5dbus_srv/org.kde.krunner.service
@@ -309,7 +318,7 @@ done
 %_K5plug/kpackage/
 %_K5plug/kcms/*.so
 %_K5plug/kf5/kded/*.so
-%_K5plug/kf5/kio/desktop.so
+%_K5plug/kf5/kio/*.so
 %_K5plug/plasmacalendarplugins/
 %_K5qml/org/kde/plasma/private/*
 %_K5qml/org/kde/plasma/wallpapers/*
@@ -318,6 +327,8 @@ done
 %_K5qml/org/kde/taskmanager/
 %_K5qml/org/kde/holidayeventshelperplugin/
 %_K5qml/org/kde/colorcorrect/
+%_K5qml/org/kde/notificationmanager/
+%_K5data/knsrcfiles/*.knsrc
 %_K5data/plasma/
 %_K5data/kio_desktop/
 %_K5data/kpackage/kcms/kcm_translations/
@@ -334,7 +345,7 @@ done
 %_K5srvtyp/*.desktop
 %_K5dbus_srv/*.service
 %_K5conf_up/*.upd
-%_datadir/dbus-1/services/*.service
+#%_datadir/dbus-1/services/*.service
 %_datadir/xsessions/plasma.desktop
 %_K5if_ver_gteq %ubt_id M90
 %_datadir/wayland-sessions/plasmawayland.desktop
@@ -347,19 +358,11 @@ done
 %_datadir/sddm/themes/breeze/
 
 %files devel
-#%_K5inc/KDE/
-%_K5inc/kworkspace5/
-%_K5inc/plasma/
-%_K5inc/taskmanager/
-%_K5inc/colorcorrect/
-#%_K5inc/legacytaskmanager/
+%_K5inc/*
 %_K5link/lib*.so
 %_K5lib/cmake/KRunnerAppDBusInterface/
 %_K5lib/cmake/KSMServerDBusInterface/
-%_K5lib/cmake/LibKWorkspace/
-%_K5lib/cmake/LibTaskManager/
-%_K5lib/cmake/LibColorCorrect/
-#%_K5lib/cmake/LibLegacyTaskManager/
+%_K5lib/cmake/Lib*/
 %_K5dbus_iface/*.xml
 %_K5data/kdevappwizard/templates/*
 
@@ -378,9 +381,15 @@ done
 %files -n %libcolorcorrect
 %_K5lib/libcolorcorrect.so.*
 %_K5lib/libcolorcorrect.so.%colorcorrect_sover
+%files -n %libnotificationmanager
+%_K5lib/libnotificationmanager.so.*
+%_K5lib/libnotificationmanager.so.%notificationmanager_sover
 
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Mon Jun 17 2019 Oleg Solovyov <mcpain@altlinux.org> 1:5.15.5-alt4
 - sddm-breeze-theme: translate keyboard layouts
 

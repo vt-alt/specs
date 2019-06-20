@@ -7,8 +7,8 @@
 %define libprocessui libprocessui%sover
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -134,7 +134,8 @@ KF5 library
 %_K5lib/libprocesscore.so.%sover
 %_K5lib/libprocesscore.so.*
 %_K5libexecdir/kauth/ksysguardprocesslist_helper
-%_K5conf_dbus_sysd/org.kde.ksysguard.processlisthelper.conf
+#%_K5conf_dbus_sysd/org.kde.ksysguard.processlisthelper.conf
+%_K5dbus/system.d/org.kde.ksysguard.processlisthelper.conf
 %_K5dbus_sys_srv/org.kde.ksysguard.processlisthelper.service
 
 %files -n polkit-kde-ksysguard
@@ -156,6 +157,9 @@ KF5 library
 %_K5lib/liblsofui.so.*
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 

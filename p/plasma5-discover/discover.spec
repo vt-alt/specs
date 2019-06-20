@@ -1,8 +1,8 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt3
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: System/Configuration/Packaging
@@ -73,7 +73,7 @@ KF5 library
 %K5install
 mv %buildroot/%_libdir/plasma-discover/lib*.so* %buildroot/%_libdir/
 
-%K5install_move data libdiscover discover locale
+%K5install_move data libdiscover discover locale knsrcfiles
 
 mkdir -p %buildroot/%_K5xdgconf/plasma-workspace/env/
 install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-flatpak.sh
@@ -84,7 +84,8 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_libdir/libDiscover*.so
 #
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.knsrc
+#%config(noreplace) %_K5xdgconf/*.knsrc
+%_K5data/knsrcfiles/*.knsrc
 %config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/*
 %_K5exec/discover/runservice
@@ -120,6 +121,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5xdgconf/plasma-workspace/env/*flatpak*.sh
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt3
 - export environment variable to add flatpak apps to menu
 

@@ -7,8 +7,8 @@
 
 
 Name: plasma5-desktop
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -34,10 +34,8 @@ Patch12: alt-def-layout-indicator.patch
 Patch13: alt-menu-search-results-add-genericname.patch
 Patch14: alt-session-exclude.patch
 Patch15: alt-menu-add-tooltip.patch
-Patch16: alt-locales-preview.patch
+#
 Patch17: alt-disable-kwin-runner.patch
-# https://phabricator.kde.org/D18979
-Patch18: alt-folderview-store-screen.patch
 
 # Automatically added by buildreq on Mon Mar 23 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig fontconfig-devel glib2-devel glibc-devel-static kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcloog-isl4 libdbusmenu-qt52 libfreetype-devel libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-sql libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libusb-compat libxcb-devel libxcbutil-image libxcbutil-keysyms libxkbfile-devel mkfontscale pkg-config python-base qt5-base-devel rpm-build-gir ruby ruby-stdlibs xml-common xml-utils xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-renderproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
@@ -47,7 +45,8 @@ BuildRequires: boost-devel extra-cmake-modules gcc-c++
 BuildRequires: qt5-declarative-devel qt5-phonon-devel qt5-svg-devel qt5-x11extras-devel
 BuildRequires: scim-devel libibus-devel libgio-devel glib2-devel
 BuildRequires: libudev-devel
-BuildRequires: libGLU-devel libcanberra-devel libpulseaudio-devel libusb-compat-devel libxapian-devel libxcbutil-image-devel
+BuildRequires: libGLU-devel libcanberra-devel libpulseaudio-devel libusb-compat-devel libxapian-devel
+BuildRequires: libxcbutil-devel libxcbutil-image-devel
 BuildRequires: xorg-drv-synaptics-devel xorg-sdk xorg-drv-evdev-devel xkeyboard-config-devel xorg-drv-libinput-devel
 BuildRequires: iceauth mkfontdir xset
 BuildRequires: kf5-baloo-devel kf5-kactivities-devel kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcmutils-devel
@@ -128,10 +127,9 @@ KF5 library
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p2
-%patch16 -p2
+#%patch15 -p2
+#
 %patch17 -p1
-%patch18 -p2
 
 #Fix translate in Input Method Panel (kimpanel) widget.
 #If the po-file is called differently than "plasma_applet_org.kde.plasma.kimpanel.po", the kimpanel widget menu will be in English only.
@@ -147,7 +145,7 @@ KF5 library
 %install
 %K5install
 
-%K5install_move data color-schemes doc kcmmouse
+%K5install_move data color-schemes doc kcmmouse knsrcfiles
 %K5install_move data kcm_componentchooser kcminput kcmkeyboard kcmkeys kcm_phonon kcmsolidactions
 %K5install_move data kconf_update kcontrol kdisplay kfontinst konqsidebartng ksmserver solid kpackage
 %K5install_move data plasma/desktoptheme plasma/plasmoids/touchpad
@@ -161,7 +159,8 @@ KF5 library
 
 %files
 %config(noreplace) %_K5xdgconf/*
-%config %_K5conf_dbus_sysd/*.conf
+#%config %_K5conf_dbus_sysd/*.conf
+%_K5dbus/system.d/*.conf
 %_K5bin/*
 %_K5exec/*
 %_K5libexecdir/kauth/*
@@ -177,7 +176,7 @@ KF5 library
 %_K5qml/org/kde/activities/settings/
 %_K5xdgapp/*
 %_K5cfg/*
-%_K5srv//ServiceMenus/*.desktop
+%_K5srv/ServiceMenus/*.desktop
 %_K5srv/kded/*.desktop
 %_K5srv/*.desktop
 %_K5srv/*.protocol
@@ -201,6 +200,7 @@ KF5 library
 %_K5data/kdisplay/
 %_K5data/kfontinst/
 %_K5data/konqsidebartng/
+%_K5data/knsrcfiles/*.knsrc
 #%_K5data/ksmserver/
 %_K5dbus_srv/*.service
 %_K5dbus_sys_srv/*.service
@@ -225,6 +225,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.5-alt2
 - new version
 

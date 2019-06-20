@@ -1,8 +1,8 @@
 %define rname kde-gtk-config
 
 Name: plasma5-%rname
-Version: 5.15.5
-Release: alt2
+Version: 5.16.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -70,12 +70,13 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data kcm-gtk-module
+%K5install_move data kcm-gtk-module knsrcfiles
 %find_lang %name --all-name
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.knsrc
+#%config(noreplace) %_K5xdgconf/*.knsrc
+%_K5data/knsrcfiles/*.knsrc
 %_K5exec/*
 %_K5plug/*.so
 %_K5srv/*.desktop
@@ -83,6 +84,9 @@ KF5 library
 %_K5icon/*/*/apps/kde-gtk-config.*
 
 %changelog
+* Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
+- new version
+
 * Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.15.5-alt2
 - new version
 
