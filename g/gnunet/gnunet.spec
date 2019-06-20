@@ -1,6 +1,7 @@
+%def_without pgsql
 Name: gnunet
-Version: 0.11.0pre666
-Release: alt2
+Version: 0.11.5
+Release: alt1
 
 Summary: Peer-to-peer framework
 
@@ -14,14 +15,16 @@ Source: http://ftpmirror.gnu.org/gnunet/%name-%version.tar
 Source1: gnunetd.init.altlinux
 Source2: gnunetd.service
 
-Patch1: gnunet-libidn2.patch
 Patch2: gnunet-0.11.0-alt-mysql8-transition.patch
 
 BuildRequires: gcc-c++ libmysqlclient21-devel libgnurl-devel libextractor-devel libgcrypt-devel libglade-devel libncursesw-devel libsqlite3-devel zlib-devel
 #BuildRequires: %_bindir/git %_bindir/svnversion libICE-devel libSM-devel 
-BuildRequires: glib2-devel libglpk36-devel libgnutls-devel libltdl7-devel libmicrohttpd-devel libpq-devel libunistring-devel pkgconfig(libgtop-2.0) python-devel
+BuildRequires: glib2-devel libglpk36-devel libgnutls-devel libltdl7-devel libmicrohttpd-devel libunistring-devel pkgconfig(libgtop-2.0) python-devel
 BuildRequires: libpulseaudio-devel libopus-devel libogg-devel
-BuildRequires: libidn2-devel libjansson-devel
+BuildRequires: libidn2-devel libjansson-devel libzbar-devel
+%if_with pgsql
+BuildRequires: libpq-devel
+%endif
 
 %description
 GNUnet is a peer-to-peer framework with focus on providing security. All
@@ -56,22 +59,25 @@ applications which will use %name.
 
 %prep
 %setup
-%patch1 -p1
 %patch2 -p0
 
 # broken --disable-testing
 %__subst "s|ats-tests||" src/Makefile.*
 
 %build
+%autoreconf
 CFLAGS="%optflags -I%_includedir/mysql"
 CXXFLAGS="%optflags -I%_includedir/mysql"
 export CFLAGS CXXFLAGS
-%autoreconf
+
 # disable testing due recursive linking bug
 %configure --disable-rpath --disable-testing --disable-documentation
 %make_build V=1 || %make V=1
 
 %install
+# usr/bin/ld.default: warning: libgnunetblock.so.0, needed by /tmp/.private/lav/gnunet-buildroot/usr/lib64/libgnunetblockgroup.so, not found (try using -rpath or -rpath-link)
+# libtool:   error: error: relink 'libgnunet_plugin_block_test.la' with the above command before installing it
+export LD_LIBRARY_PATH=$(pwd)/src/block/.libs:$(pwd)/src/ats/.libs:$(pwd)/src/statistics/.libs:$(pwd)/src/json/.libs:$(pwd)/src/gnsrecord/.libs
 %makeinstall_std
 %find_lang %name
 mkdir -p %buildroot{%_initdir,%_unitdir}
@@ -88,6 +94,7 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_bindir/gnunet-arm
 %_bindir/gnunet-ats
 %_bindir/gnunet-auto-share
+%_bindir/gnunet-bugreport
 %_bindir/gnunet-cadet
 %_bindir/gnunet-config
 %_bindir/gnunet-core
@@ -96,7 +103,7 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_bindir/gnunet-dht-monitor
 %_bindir/gnunet-dht-put
 %_bindir/gnunet-download
-%_bindir/gnunet-download-manager.scm
+#_bindir/gnunet-download-manager.scm
 #%_bindir/gnunet-ecc
 %_bindir/gnunet-fs
 %_bindir/gnunet-gns
@@ -112,6 +119,7 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 #%_bindir/gnunet-pseudonym
 %_bindir/gnunet-publish
 %_bindir/gnunet-resolver
+%_bindir/gnunet-reclaim
 #%_bindir/gnunet-rsa
 %_bindir/gnunet-search
 %_bindir/gnunet-scalarproduct
@@ -141,6 +149,8 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 #_libexecdir/gnunet/libexec/gnunet-helper-audio-record
 #_libexecdir/gnunet/libexec/gnunet-service-conversation
 
+
+
 %_datadir/gnunet/
 %_initdir/gnunetd
 %_unitdir/gnunetd.service
@@ -158,8 +168,8 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_libdir/libgnunetdatastore.so.*
 %_libdir/libgnunetdht.so.*
 %_libdir/libgnunetdns.so.*
-%_libdir/libgnunetdnsparser.so.*
-%_libdir/libgnunetdnsstub.so.*
+#%_libdir/libgnunetdnsparser.so.*
+#%_libdir/libgnunetdnsstub.so.*
 %_libdir/libgnunetfragmentation.so.*
 %_libdir/libgnunetfs.so.*
 %_libdir/libgnunetgns.so.*
@@ -167,31 +177,42 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_libdir/libgnunethello.so.*
 #%_libdir/libgnunetlockmanager.so.*
 #_libdir/libgnunetmesh.so.*
-%_libdir/libgnunetmy.so.*
-%_libdir/libgnunetmysql.so.*
+#%_libdir/libgnunetmy.so.*
+#%_libdir/libgnunetmysql.so.*
 %_libdir/libgnunetnamestore.so.*
 %_libdir/libgnunetnatauto.so.*
 %_libdir/libgnunetnatnew.so.*
 %_libdir/libgnunetnse.so.*
+%_libdir/libgnunetnt.so.*
 %_libdir/libgnunetpeerinfo.so.*
 %_libdir/libgnunetpeerstore.so.*
+%if_with pgsql
+%_libdir/libgnunetpq.so.*
+%endif
+%_libdir/libgnunetreclaim.so.*
+%_libdir/libgnunetreclaimattribute.so.*
 %_libdir/libgnunetrest.so.*
 %_libdir/libgnunetregex.so.*
 %_libdir/libgnunetregexblock.so.*
 %_libdir/libgnunetstatistics.so.*
+%_libdir/libgnunetatsapplication.so.*
+%_libdir/libgnunetatstransport.so.*
 %_libdir/libgnunetscalarproduct.so.*
 %_libdir/libgnunetsecretsharing.so.*
 %_libdir/libgnunetsq.so.*
 %_libdir/libgnunetcurl.so.*
 %_libdir/libgnunetjson.so.*
-%_libdir/libgnunetjsonapi.so.*
-%_libdir/libgnunetjsonapiutils.so.*
+#%_libdir/libgnunetjsonapi.so.*
+#%_libdir/libgnunetjsonapiutils.so.*
 #%_libdir/libgnunetstream.so.*
 #%_libdir/libgnunettestbed.so.*
 #%_libdir/libgnunettesting.so.*
 %_libdir/libgnunettransport.so.*
-#%_libdir/libgnunettransporttesting.so.*
-%_libdir/libgnunettun.so.*
+%_libdir/libgnunettransportcore.so.*
+%_libdir/libgnunettransportmonitor.so.*
+%_libdir/libgnunettransportapplication.so.*
+%_libdir/libgnunettransportcommunicator.so.*
+#%_libdir/libgnunettun.so.*
 %_libdir/libgnunetutil.so.*
 %_libdir/libgnunetvpn.so.*
 %_libdir/libgnunetconversation.so.*
@@ -216,8 +237,8 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_pkgconfigdir/gnunetdatastore.pc
 %_pkgconfigdir/gnunetdht.pc
 %_pkgconfigdir/gnunetdns.pc
-%_pkgconfigdir/gnunetdnsparser.pc
-%_pkgconfigdir/gnunetdv.pc
+#%_pkgconfigdir/gnunetdnsparser.pc
+#%_pkgconfigdir/gnunetdv.pc
 %_pkgconfigdir/gnunetfragmentation.pc
 %_pkgconfigdir/gnunetfs.pc
 %_pkgconfigdir/gnunetgns.pc
@@ -237,25 +258,29 @@ rm -f %buildroot%_docdir/gnunet/COPYING %buildroot%_docdir/gnunet/README
 %_pkgconfigdir/gnunettestbed.pc
 %_pkgconfigdir/gnunettesting.pc
 %_pkgconfigdir/gnunettransport.pc
-%_pkgconfigdir/gnunettun.pc
+#%_pkgconfigdir/gnunettun.pc
 %_pkgconfigdir/gnunetutil.pc
 %_pkgconfigdir/gnunetvpn.pc
 
 %_libdir/pkgconfig/gnunetconsensus.pc
 %_libdir/pkgconfig/gnunetconversation.pc
-%_libdir/pkgconfig/gnunetdnsstub.pc
+#%_libdir/pkgconfig/gnunetdnsstub.pc
 %_libdir/pkgconfig/gnunetenv.pc
 %_libdir/pkgconfig/gnunetidentity.pc
 %_libdir/pkgconfig/gnunetmicrophone.pc
-%_libdir/pkgconfig/gnunetmulticast.pc
-%_libdir/pkgconfig/gnunetpsyc.pc
-%_libdir/pkgconfig/gnunetpsycstore.pc
+#%_libdir/pkgconfig/gnunetmulticast.pc
+#%_libdir/pkgconfig/gnunetpsyc.pc
+#%_libdir/pkgconfig/gnunetpsycstore.pc
 %_libdir/pkgconfig/gnunetrevocation.pc
 %_libdir/pkgconfig/gnunetscalarproduct.pc
 %_libdir/pkgconfig/gnunetset.pc
 %_libdir/pkgconfig/gnunetspeaker.pc
 
 %changelog
+* Tue Jun 18 2019 Vitaly Lipatov <lav@altlinux.ru> 0.11.5-alt1
+- new version 0.11.5 (with rpmrb script)
+- disable PostgreSQL support
+
 * Fri Mar 01 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.11.0pre666-alt2
 - fix FTBFS against libmysqlclient21
   + spec: add missing include subdir for configure to autodetect libmysqlclient
