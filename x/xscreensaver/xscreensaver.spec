@@ -9,16 +9,15 @@
 #
 
 Name: xscreensaver
-Version: 5.40
+Version: 5.42
 Release: alt2
 
 Summary: A screen saver and locker for the X window system
 License: BSD
 Group: Graphical desktop/Other
 
-Url: http://www.jwz.org/%name
+Url: http://www.jwz.org/xscreensaver
 
-# gear repos: http://packages.altlinux.org/en/Sisyphus/srpms/xscreensaver/gear
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Patch1: xscreensaver-5.40-do-not-claim-on-old-version.patch
@@ -33,12 +32,12 @@ Source5: xscreensaver-hacks-gl
 
 Source6: ru.po
 
-Source7: xscreensaver-config.xsl  
-Source8: xscreensaver-config.sh  
+Source7: xscreensaver-config.xsl
+Source8: xscreensaver-config.sh
 
 Requires: xli urlview appres
 Requires: %name-hack
-Provides: %name-contrib = %version-%release
+Provides: %name-contrib = %EVR
 Obsoletes: %name-contrib
 
 Provides: screen-saver-engine
@@ -59,9 +58,9 @@ can draw on the root window as a display mode.
 %package -n rpm-build-%name
 Summary: A screen saver and locker for the X window system - RPM macros
 Group: Development/Other
-Conflicts: %name > %version-%release
-Conflicts: %name < %version-%release
-Provides: %name-devel = %version-%release
+Conflicts: %name > %EVR
+Conflicts: %name < %EVR
+Provides: %name-devel = %EVR
 Obsoletes: %name-devel <= 5.05-alt1
 BuildArch: noarch
 
@@ -76,9 +75,9 @@ for additional xscreensaver hacks.
 %package hacks
 Summary: A screen saver and locker for the X window system - standard hacks
 Group: Graphical desktop/Other
-Requires: %name = %version-%release
-Requires: %name-modules = %version-%release
-Provides: %name-hack = %version-%release
+Requires: %name = %EVR
+Requires: %name-modules = %EVR
+Provides: %name-hack = %EVR
 # By webcollage...
 Requires: netpbm libjpeg-utils
 # By noseguy and phosphor
@@ -95,10 +94,10 @@ This package contains standard xscreensaver hacks.
 %package hacks-gl
 Summary: A screen saver and locker for the X window system - GL hacks
 Group: Graphical desktop/Other
-Requires: %name = %version-%release
-Requires: %name-modules-gl = %version-%release
-Provides: %name-hack = %version-%release
-Provides: %name-gl = %version-%release
+Requires: %name = %EVR
+Requires: %name-modules-gl = %EVR
+Provides: %name-hack = %EVR
+Provides: %name-gl = %EVR
 Obsoletes: %name-gl
 
 %description hacks-gl
@@ -108,39 +107,41 @@ can draw on the root window as a display mode.
 
 This package contains OpenGL xscreensaver hacks.
 
-%package -n mate-screensaver-modules-xscreensaver
-Summary: A screen saver and locker for the X window system - MATE Screensaver modules
+%package -n desktop-screensaver-modules-xscreensaver
+Summary: A screen saver and locker for the X window system - MATE and XFCE Screensaver modules
 Group: Graphical desktop/Other
-Requires: %name-modules = %version-%release
-Requires: mate-screensaver
+Requires: %name-modules = %EVR
+Provides: mate-screensaver-modules-xscreensaver = %EVR
+Obsoletes: mate-screensaver-modules-xscreensaver < %EVR
 BuildArch: noarch
 
-%description -n mate-screensaver-modules-xscreensaver
+%description -n desktop-screensaver-modules-xscreensaver
 A modular screen saver and locker for the X Window System.
 Highly customizable: allows the use of any program that
 can draw on the root window as a display mode.
 
-This package contains modules for MATE Screensaver.
+This package contains modules for MATE and XFCE screensavers.
 
-%package -n mate-screensaver-modules-xscreensaver-gl
-Summary: A screen saver and locker for the X window system - MATE Screensaver modules
+%package -n desktop-screensaver-modules-xscreensaver-gl
+Summary: A screen saver and locker for the X window system - MATE and XFCE screensavers modules
 Group: Graphical desktop/Other
-Requires: %name-modules-gl = %version-%release
-Requires: mate-screensaver
+Requires: %name-modules-gl = %EVR
+Provides: mate-screensaver-modules-xscreensaver-gl = %EVR
+Obsoletes: mate-screensaver-modules-xscreensaver-gl < %EVR
 BuildArch: noarch
 
-%description -n mate-screensaver-modules-xscreensaver-gl
+%description -n desktop-screensaver-modules-xscreensaver-gl
 A modular screen saver and locker for the X Window System.
 Highly customizable: allows the use of any program that
 can draw on the root window as a display mode.
 
-This package contains OpenGL modules for MATE Screensaver.
+This package contains OpenGL modules for MATE and XFCE screensavers.
 
 %package modules
 Summary: A screen saver and locker for the X window system - standard modules
 Group: Graphical desktop/Other
-Conflicts: %name < %version-%release
-Conflicts: %name > %version-%release
+Conflicts: %name < %EVR
+Conflicts: %name > %EVR
 # By webcollage...
 Requires: netpbm libjpeg-utils
 # By noseguy and phosphor
@@ -156,8 +157,8 @@ This package contains standard standalone modules.
 %package modules-gl
 Summary: A screen saver and locker for the X window system - GL modules
 Group: Graphical desktop/Other
-Conflicts: %name < %version-%release
-Conflicts: %name > %version-%release
+Conflicts: %name < %EVR
+Conflicts: %name > %EVR
 # By starwars
 Requires: fortune-mod
 
@@ -171,8 +172,8 @@ This package contains OpenGL standalone modules.
 %package frontend
 Summary: A screen saver and locker for the X window system - configuration frontend
 Group: Graphical desktop/Other
-Requires: %name = %version-%release
-Provides: %name-gnome = %version-%release
+Requires: %name = %EVR
+Provides: %name-gnome = %EVR
 Provides: screen-saver-frontend
 Obsoletes: %name-gnome
 
@@ -251,7 +252,7 @@ MkModuleFilelists() {
     pushd %buildroot%_datadir/applications/screensavers
     %SOURCE8 %buildroot%xss_conf_dir/$module.xml
     popd
-    echo "%_datadir/applications/screensavers/xscreensaver-$module.desktop" >> "%name-mate-$name"
+    echo "%_datadir/applications/screensavers/xscreensaver-$module.desktop" >> "%name-desktop-$name"
   done < "$list"
 }
 
@@ -314,11 +315,19 @@ MkModuleFilelists %_sourcedir/xscreensaver-hacks-gl gl
 %files modules-gl -f xscreensaver-modules-gl
 %dir %xss_hack_dir
 
-%files -n mate-screensaver-modules-xscreensaver -f xscreensaver-mate-std
+%files -n desktop-screensaver-modules-xscreensaver -f xscreensaver-desktop-std
 
-%files -n mate-screensaver-modules-xscreensaver-gl -f xscreensaver-mate-gl
+%files -n desktop-screensaver-modules-xscreensaver-gl -f xscreensaver-desktop-gl
 
 %changelog
+* Fri Jun 14 2019 Grigory Ustinov <grenka@altlinux.org> 5.42-alt2
+- Rename mate-screensaver-modules-xscreensaver* to
+  desktop-screensaver-modules-xscreensaver*.
+
+* Fri May 17 2019 Grigory Ustinov <grenka@altlinux.org> 5.42-alt1
+- Build new version.
+- Added missed hacks (filmleader, vfeedback, glitchpeg, handsy).
+
 * Mon May 06 2019 Anton Midyukov <antohami@altlinux.org> 5.40-alt2
 - Do not claim on old version
 
