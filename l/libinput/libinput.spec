@@ -6,9 +6,15 @@
 %def_disable documentation
 %def_enable tests
 
+%if_enabled tests
+%ifarch %valgrind_arches
+%def_enable valgrind
+%endif
+%endif
+
 Name: libinput
 Version: 1.13.2
-Release: alt1
+Release: alt2
 
 Summary: Input devices library
 Group: System/Libraries
@@ -28,14 +34,16 @@ Source: %name-%version.tar
 %define evdev_ver 0.4
 
 BuildRequires(pre): meson rpm-build-python3
+BuildRequires(pre): rpm-macros-valgrind
 BuildRequires: gcc-c++
 BuildRequires: libmtdev-devel >= %mtdev_ver libevdev-devel >= %evdev_ver
 BuildRequires: libudev-devel libsystemd-devel
-BuildRequires: libcheck-devel libunwind-devel
+BuildRequires: libcheck-devel
 %{?_enable_libwacom:BuildRequires: libwacom-devel}
 %{?_enable_debug_gui:BuildRequires: libgtk+3-devel}
 %{?_enable_documentation:BuildRequires: doxygen graphviz}
-%{?_enable_tests:BuildRequires: gdb valgrind python3-module-pyparsing}
+%{?_enable_valgrind:BuildRequires: valgrind libunwind-devel}
+%{?_enable_tests:BuildRequires: gdb python3-module-pyparsing}
 
 %description
 libinput is a library that handles input devices for display servers and
@@ -134,6 +142,9 @@ This package contains visual debug helper for %name.
 
 
 %changelog
+* Wed Jun 19 2019 Michael Shigorin <mike@altlinux.org> 1.13.2-alt2
+- move to rpm-macros-valgrind
+
 * Thu May 09 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.2-alt1
 - 1.13.2
 

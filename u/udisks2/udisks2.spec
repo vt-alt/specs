@@ -25,7 +25,7 @@
 %endif
 
 Name: %{_name}2
-Version: 2.8.2
+Version: 2.8.3
 Release: alt1
 
 Summary: Disk Management Service (Second Edition)
@@ -270,6 +270,7 @@ fi
 #%attr(0700,root,root) %dir %_localstatedir/run/%name
 %config %systemd_unitdir/udisks2.service
 %config %systemd_unitdir/clean-mount-point@.service
+%_tmpfilesdir/%name.conf
 %config %_controldir/%name
 %doc README.md AUTHORS NEWS HACKING
 
@@ -338,6 +339,9 @@ fi
 %exclude %_libdir/%name/modules/*.la
 
 %changelog
+* Mon Jun 17 2019 Yuri N. Sedunov <aris@altlinux.org> 2.8.3-alt1
+- 2.8.3
+
 * Tue Mar 05 2019 Yuri N. Sedunov <aris@altlinux.org> 2.8.2-alt1
 - 2.8.2
 

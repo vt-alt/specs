@@ -22,7 +22,7 @@
 %def_disable debug
 
 Name: libgtk+3
-Version: %ver_major.8
+Version: %ver_major.9
 Release: alt1
 
 Summary: The GIMP ToolKit (GTK+)
@@ -39,7 +39,7 @@ Source5: gtk-icon-cache.filetrigger
 
 Patch: gtk+-2.16.5-alt-stop-spam.patch
 # move cloudproviders flags from gdk to gtk
-Patch1: gtk+-3.24.6-alt-build.patch
+Patch1: gtk+-3.24.9-alt-build.patch
 
 %define glib_ver 2.50.2
 %define gi_ver 1.41.0
@@ -51,7 +51,7 @@ Patch1: gtk+-3.24.6-alt-build.patch
 %define fontconfig_ver 2.2.1-alt2
 %define gtk_doc_ver 1.20
 %define colord_ver 0.1.9
-%define cups_ver 1.6
+%define cups_ver 1.7
 %define wayland_ver 1.10.0
 %define wayland_protocols_ver 1.12
 %define epoxy_ver 1.4
@@ -459,6 +459,9 @@ cp examples/*.c examples/Makefile* %buildroot/%_docdir/%name-devel-%version/exam
 %exclude %fulllibpath/*/*.la
 
 %changelog
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.9-alt1
+- 3.24.9
+
 * Thu Apr 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.8-alt1
 - 3.24.8
 

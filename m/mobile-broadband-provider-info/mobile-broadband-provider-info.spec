@@ -1,6 +1,6 @@
 %def_disable snapshot
 Name: mobile-broadband-provider-info
-Version: 20190116
+Version: 20190618
 Release: alt1
 
 Summary: Mobile Broadband Service Provider Database
@@ -17,7 +17,7 @@ Source: %name-%version.tar
 BuildArch: noarch
 
 # for check
-BuildRequires: xmllint
+BuildRequires: xmllint xsltproc
 
 %description
 This package contains listings of mobile broadband (3G) providers and
@@ -42,9 +42,12 @@ associated network and plan information.
 %files
 %_datadir/%name/
 %_datadir/pkgconfig/*
-%doc ChangeLog COPYING NEWS README
+%doc COPYING README
 
 %changelog
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 20190618-alt1
+- 20190618
+
 * Wed Jan 16 2019 Yuri N. Sedunov <aris@altlinux.org> 20190116-alt1
 - 20190116
 

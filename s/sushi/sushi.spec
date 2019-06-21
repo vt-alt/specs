@@ -6,7 +6,7 @@
 %define lo_bin %_bindir/libreoffice
 
 Name: sushi
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: A quick previewer for Nautilus
@@ -98,6 +98,9 @@ sed -i 's|\/usr\/bin\/libreoffice|%lo_bin|' src/libsushi/sushi-pdf-loader.c
 %doc README AUTHORS NEWS TODO
 
 %changelog
+* Wed Jun 19 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- 3.32.1
+
 * Sun Mar 10 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

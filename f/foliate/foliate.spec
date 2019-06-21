@@ -1,8 +1,10 @@
-%define ver_major 1.2
+%def_enable snapshot
+
+%define ver_major 1.3
 %define rdn_name com.github.johnfactotum.Foliate
 
 Name: foliate
-Version: %ver_major.1
+Version: %ver_major.0
 Release: alt1
 
 Summary: A simple and modern GTK eBook(EPUB) reader
@@ -10,7 +12,12 @@ License: GPLv3+
 Group: Office
 Url: https://github.com/johnfactotum/foliate
 
+%if_disabled snapshot
 Source: %url/archive/%version/%name-%version.tar.gz
+%else
+# VCS: https://github.com/johnfactotum/foliate.git
+Source: %name-%version.tar
+%endif
 
 Requires: %_bindir/gjs dconf
 
@@ -64,6 +71,9 @@ Foliate is a simple and modern GTK eBook reader with following features:
 
 
 %changelog
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 1.3.0-alt1
+- updated to 1.3.0-3-g3e30e73
+
 * Fri Jun 07 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.1-alt1
 - 1.2.1
 

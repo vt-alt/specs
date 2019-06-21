@@ -8,7 +8,7 @@
 
 Name: gnome-contacts
 Version: %ver_major.1
-Release: alt1
+Release: alt2
 
 Summary: Contacts manager for GNOME
 License: GPLv2+
@@ -20,6 +20,8 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %else
 Source: %name-%version.tar
 %endif
+
+Patch: %name-3.32.1-up-libhandy.patch
 
 %define glib_ver 2.44
 %define gtk_ver 3.24
@@ -48,6 +50,7 @@ BuildRequires: libfolks-vala
 
 %prep
 %setup
+%patch -p1
 
 %build
 %meson %{?_without_cheese:-Dcheese=false}
@@ -72,6 +75,9 @@ BuildRequires: libfolks-vala
 %doc AUTHORS NEWS README*
 
 %changelog
+* Thu Jun 20 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt2
+- fixed build against libhandy-0.0.10
+
 * Wed Apr 24 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
 - 3.32.1
 

@@ -8,8 +8,8 @@
 
 
 Name: %_name%api_ver
-Version: 2.2.3
-Release: alt2
+Version: 2.2.4
+Release: alt1
 
 Summary: An Enchanting Spell Checking Program
 Group: Text tools
@@ -86,6 +86,9 @@ using libenchant.
 %_pkgconfigdir/%_name-%api_ver.pc
 
 %changelog
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 2.2.4-alt1
+- 2.2.4
+
 * Thu Sep 13 2018 Yuri N. Sedunov <aris@altlinux.org> 2.2.3-alt2
 - rebuilt with hunspell-1.6.2
 
