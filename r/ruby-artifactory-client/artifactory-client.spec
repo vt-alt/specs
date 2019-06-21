@@ -1,50 +1,66 @@
-%define _unpackaged_files_terminate_build 1
-%define  pkgname artifactory-client
+%define        pkgname artifactory-client
+%define        gemname artifactory
 
-Name:    ruby-%pkgname
-Version: 3.0.0
-Release: alt1
+Name:          ruby-%pkgname
+Version:       3.0.1
+Release:       alt1
+Summary:       A simple, lightweight Ruby client for interacting with the Artifactory API.
+License:       Apache-2.0
+Group:         Development/Ruby
+Url:           https://github.com/chef/artifactory-client
+# VCS          https://github.com/chef/artifactory-client.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary:  A simple, lightweight Ruby client for interacting with the Artifactory API.
-License: Apache-2.0
-Group:   Development/Ruby
-Url:     https://github.com/chef/artifactory-client
-
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: libruby-devel
 
 
 %description
-A Ruby client and interface to the Artifactory API. The majority of API endpoints
-are only exposed for Artifactory Pro customers! As such, many of the resources and
-actions exposed by this gem also require Artifactory Pro.
+A Ruby client and interface to the Artifactory API. The majority of API
+endpoints are only exposed for Artifactory Pro customers! As such, many of
+the resources and actions exposed by this gem also require Artifactory Pro.
 
-The Artifactory gem offers a convienent interface for managing various parts of the
-Artifactory API. 
+The Artifactory gem offers a convienent interface for managing various parts of
+the Artifactory API.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
-%ruby_build
+%gem_build
 
 %install
-%ruby_install
+%gem_install
+
+%check
+%gem_test
 
 %files
-%doc README* LICENSE
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         doc
+%ruby_gemdocdir
 
 
 %changelog
+* Thu Jun 13 2019 Pavel Skrylev <majioa@altlinux.org> 3.0.1-alt1
+- Bump to 3.0.1
+- Use Ruby Policy 2.0
+- Fix lost provides (closes #36888)
+
 * Mon Jan 28 2019 Andrey Bychkov <mrdrew@altlinux.org> 3.0.0-alt1
 - version fixed 3.0.0
 

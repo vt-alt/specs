@@ -2,13 +2,13 @@
 %define        gemname %pkgname
 
 Name:          ruby-google-api
-Version:       0.28.4
+Version:       0.30.2
 Release:       alt1
 Summary:       Google API Client for Ruby
 License:       Apache-2.0
 Group:         Development/Ruby
 Url:           https://developers.google.com/api-client-library/ruby/
-# VCS:         https://github.com/google/google-api-ruby-client.git
+# VCS          https://github.com/google/google-api-ruby-client.git
 Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 BuildArch:     noarch
 
@@ -32,11 +32,12 @@ BuildArch:     noarch
 %description   doc
 Documentation files for %gemname gem.
 
+
 %prep
 %setup
 
 %build
-%__setup_rb config # TODO
+%gem_build --use=%gemname --alias=google-api
 
 %install
 %gem_install
@@ -50,9 +51,12 @@ Documentation files for %gemname gem.
 %ruby_gemlibdir
 
 %files         doc
-#%ruby_gemdocdir
+%ruby_gemdocdir
 
 %changelog
+* Thu Jun 13 2019 Pavel Skrylev <majioa@altlinux.org> 0.30.2-alt1
+- Fix lost provides (closes #36888)
+
 * Thu Mar 07 2019 Pavel Skrylev <majioa@altlinux.org> 0.28.4-alt1
 - Use Ruby Policy 2.0;
 - Bump to v0.28.4;
