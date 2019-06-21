@@ -1,5 +1,5 @@
 Name: rpm-utils
-Version: 0.10
+Version: 0.10.1
 Release: alt1
 
 Summary: Utilities every rpm packager must have
@@ -13,6 +13,9 @@ Requires: rpm-build > 0:4.0.4-alt96.8, mktemp >= 1:1.3.1
 # strace version that works
 Requires: strace >= 4.11
 
+# due to rpmEVRDTCompare() in rpmrdups:
+BuildPreReq: librpm-devel >= 4.13.0.1-alt9
+
 # Automatically added by buildreq on Wed Mar 26 2008
 BuildRequires: gcc-c++ pkgconfig librpm-devel
 
@@ -23,7 +26,6 @@ This package contains following utilities:
 + packagereq - generates list of package requires while running the program;
 + buildreq - generates and adds/updates BuildRequires tag in specfiles;
 + rpmdups,rpmrdups - generates list of duplicated packages;
-+ rpmvercmp, rpmevrcmp: package version comparators;
 + paste_changelog - pastes a whole ready piece to the top of a changelog;
 + stamp_spec - generates timestamp for rpm specfile changelog entry;
 + add_changelog - generates and adds changelog entry to rpm specfile;
@@ -73,6 +75,9 @@ fi >&2
 %_datadir/buildreqs
 
 %changelog
+* Wed Jun 19 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.10.1-alt1
+- rpmrdups: honor disttag, buildtime.
+
 * Wed Aug 17 2016 Alexey Gladkov <legion@altlinux.ru> 0.10-alt1
 - port to rpm-4.13.
 
