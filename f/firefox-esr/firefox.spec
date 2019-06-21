@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        60.7.1
+Version:        60.7.2
 Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
@@ -347,6 +347,11 @@ done
 %_iconsdir/hicolor/256x256/apps/firefox.png
 
 %changelog
+* Thu Jun 20 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.2-alt1
+- New ESR version (60.7.2).
+- Fixed:
+  + CVE-2019-11708 sandbox escape using Prompt:Open
+
 * Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt1
 - New ESR version (60.7.1).
 - Fixed:
