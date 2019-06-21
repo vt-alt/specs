@@ -6,7 +6,7 @@
 
 %define prog_name            postgresql
 %define postgresql_major     10
-%define postgresql_minor     8
+%define postgresql_minor     9
 %define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -371,15 +371,6 @@ cat ecpg-%postgresql_major.lang \
     ecpglib%libecpg_major-%postgresql_major.lang > ecpg.lang
 
 cat pg_archivecleanup-%postgresql_major.lang > contrib.lang
-
-# buildreq substitution rules.
-#mkdir -p %buildroot%_sysconfdir/buildreqs/packages/substitute.d
-#echo "%prog_name-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%name-devel"
-#echo "libpq-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel"
-#echo "libpq-devel-static" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel-static"
-#echo "libecpg-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel"
-#echo "libecpg-devel-static" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel-static"
-#chmod 644 %buildroot%_sysconfdir/buildreqs/packages/substitute.d/*
 
 %pre
 # Need to make backups of some executables if an upgrade
@@ -798,9 +789,6 @@ fi
 %_libdir/pkgconfig/libecpg_compat.pc
 %_libdir/pkgconfig/libpq.pc
 %_libdir/pkgconfig/libpgtypes.pc
-#%%_sysconfdir/buildreqs/packages/substitute.d/%name-devel
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel
 %_man1dir/ecpg.*
 %_man1dir/pg_config.*
 %_man3dir/*
@@ -812,11 +800,12 @@ fi
 %_libdir/libpgtypes.a
 %_libdir/libpgport.a
 %_libdir/libpq*.a
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel-static
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel-static
 %endif
 
 %changelog
+* Thu Jun 20 2019 Alexei Takaseev <taf@altlinux.org> 10.9-alt1
+- 10.9 (Fixes CVE-2019-10164)
+
 * Mon May 13 2019 Alexei Takaseev <taf@altlinux.org> 10.8-alt1
 - 10.8
 - Re-applay patches from 1C:

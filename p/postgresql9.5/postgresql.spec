@@ -4,7 +4,7 @@
 %define prog_name            postgresql
 %define postgresql_major     9
 %define postgresql_minor     5
-%define postgresql_subminor  17
+%define postgresql_subminor  18
 %define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -330,15 +330,6 @@ cat ecpg-%postgresql_major.%postgresql_minor.lang \
     ecpglib%libecpg_major-%postgresql_major.%postgresql_minor.lang > ecpg.lang
 
 cat pg_archivecleanup-%postgresql_major.%postgresql_minor.lang > contrib.lang
-
-# buildreq substitution rules.
-#mkdir -p %buildroot%_sysconfdir/buildreqs/packages/substitute.d
-#echo "%prog_name-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%name-devel"
-#echo "libpq-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel"
-#echo "libpq-devel-static" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel-static"
-#echo "libecpg-devel" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel"
-#echo "libecpg-devel-static" > "%buildroot%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel-static"
-#chmod 644 %buildroot%_sysconfdir/buildreqs/packages/substitute.d/*
 
 %pre
 # Need to make backups of some executables if an upgrade
@@ -749,9 +740,6 @@ fi
 %_libdir/pkgconfig/libecpg_compat.pc
 %_libdir/pkgconfig/libpq.pc
 %_libdir/pkgconfig/libpgtypes.pc
-#%%_sysconfdir/buildreqs/packages/substitute.d/%name-devel
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel
 %_man1dir/ecpg.*
 %_man1dir/pg_config.*
 %_man3dir/*
@@ -762,11 +750,12 @@ fi
 %_libdir/libpgtypes.a
 %_libdir/libpgport.a
 %_libdir/libpq*.a
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libpq_name-devel-static
-#%%_sysconfdir/buildreqs/packages/substitute.d/%libecpg_name-devel-static
 %endif
 
 %changelog
+* Thu Jun 20 2019 Alexei Takaseev <taf@altlinux.org> 9.5.18-alt1
+- 9.5.18
+
 * Wed May 08 2019 Alexei Takaseev <taf@altlinux.org> 9.5.17-alt1
 - 9.5.17
 - (Fixes CVE-2019-10130)
