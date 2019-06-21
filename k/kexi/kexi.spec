@@ -2,7 +2,7 @@
 # obsileted koffice version
 %define koffice_ver 4:2.3.70
 
-%define sover 3.1
+%define sover 3.2
 %define libkexiguiutils libkexiguiutils%sover
 %define libkformdesigner libkformdesigner%sover
 %define libkexiundo libkexiundo%sover
@@ -17,8 +17,8 @@
 %define libkexidatatable libkexidatatable%sover
 
 Name: kexi
-Version: 3.1.0
-Release: alt2
+Version: 3.2.0
+Release: alt1
 %K5init no_altplace
 
 Group: Databases
@@ -42,7 +42,7 @@ Patch1: alt-ftbfs.patch
 BuildRequires(pre): rpm-build-ubt rpm-build-kf5
 BuildRequires: icon-theme-breeze
 BuildRequires: extra-cmake-modules qt5-tools-devel-static qt5-wayland-devel
-BuildRequires: qt5-webkit-devel
+#BuildRequires: qt5-webkit-devel
 BuildRequires: glib2-devel
 BuildRequires: kde5-kdb-devel
 BuildRequires: libmysqlclient-devel
@@ -183,6 +183,7 @@ done
 %_K5plug/kexi/
 %_datadir/kexi/
 %_K5xdgapp/*kexi*.desktop
+%_iconsdir/hicolor/*/apps/kexi*.*
 
 #%files devel
 #%_K5link/lib*.so
@@ -227,6 +228,9 @@ done
 %_libdir/libkexidatatable%sover.so.*
 
 %changelog
+* Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt1
+- new version
+
 * Mon Dec 24 2018 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt2
 - fix to build
 

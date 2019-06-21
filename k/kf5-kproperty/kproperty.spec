@@ -7,8 +7,8 @@
 Name:    kf5-kproperty
 Summary: Property editing framework with editor widget
 Group: Development/KDE and QT
-Version: 3.1.0
-Release: alt2%ubt
+Version: 3.2.0
+Release: alt1
 
 License: LGPLv2+
 Url:     https://community.kde.org/KProperty
@@ -67,7 +67,7 @@ Requires: %name-common = %version-%release
 %K5install
 
 %files common
-%_datadir/kpropertywidgets3/
+%_datadir/kproperty3/
 
 %files devel
 %_K5inc/KPropertyCore3/
@@ -86,6 +86,12 @@ Requires: %name-common = %version-%release
 %_K5lib/libKPropertyWidgets3.so.*
 
 %changelog
+* Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt1
+- new version
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 3.1.0-alt3
+- NMU: remove %ubt from release
+
 * Tue Sep 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 3.1.0-alt2%ubt
 - Rebuilt for aarch64.
 
