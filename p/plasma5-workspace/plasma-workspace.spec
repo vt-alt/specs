@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.16.1
-Release: alt1
+Release: alt3
 Epoch: 1
 %K5init altplace
 
@@ -387,6 +387,12 @@ done
 
 
 %changelog
+* Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt3
+- enable free memory notifications by default
+
+* Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt2
+- fix start plasma wayland session
+
 * Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt1
 - new version
 
