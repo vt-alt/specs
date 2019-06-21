@@ -4,7 +4,7 @@
 %define trikrunime_version 3.2.0-aa444d318d338cce56a7bd308ed3b7d728aa6d4e
 Name: trikStudio
 Version: 3.2.0
-Release: alt2
+Release: alt3
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
 License: Apache License 2.0
@@ -121,6 +121,9 @@ rm -rf %buildroot%_includedir/QsLog*
 %endif
 
 %changelog
+* Thu Jun 20 2019 Evgeny Sinelnikov <sin@altlinux.org> 3.2.0-alt3
+- Fix program name in desktop file (Closes: 36823)
+
 * Fri Feb 15 2019 Evgeny Sinelnikov <sin@altlinux.org> 3.2.0-alt2
 - Fix installation on different 64-bit platforms via LIBDIR as qmake option
 
