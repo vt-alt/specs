@@ -18,7 +18,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.13.0.1
-Release: alt9
+Release: alt10
 Group: System/Configuration/Packaging
 Url: http://www.rpm.org/
 # http://git.altlinux.org/gears/r/rpm.git
@@ -541,6 +541,10 @@ touch /var/lib/rpm/delay-posttrans-filetriggers
 %_includedir/rpm
 
 %changelog
+* Thu Jun 20 2019 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt10
+- Packaged the forgtotten new rpmvercmp.h (whose use is discouraged
+  in favor of rpmEVRDTCompare() or rpmRangesOverlap()).
+
 * Tue Jun 11 2019 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt9
 - lib: introduced rpmEVRDTCompare() (useful for APT).
 - Changes in what is considered "newer" by rpm -U  pertaining to disttag
