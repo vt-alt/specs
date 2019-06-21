@@ -1,5 +1,5 @@
 Name: rpm-utils
-Version: 0.10.1
+Version: 0.10.2
 Release: alt1
 
 Summary: Utilities every rpm packager must have
@@ -75,6 +75,9 @@ fi >&2
 %_datadir/buildreqs
 
 %changelog
+* Thu Jun 20 2019 Dmitry V. Levin <ldv@altlinux.org> 0.10.2-alt1
+- filter_spec: fixed regular expressions for modern gawk.
+
 * Wed Jun 19 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.10.1-alt1
 - rpmrdups: honor disttag, buildtime.
 
