@@ -2,7 +2,7 @@
 
 Name: glibc
 Version: 2.27
-Release: alt8
+Release: alt9
 Epoch: 6
 
 Summary: The GNU libc libraries
@@ -751,6 +751,10 @@ fi
 %glibc_sourcedir
 
 %changelog
+* Thu Jun 20 2019 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt9
+- Updated to glibc-2.27-119-gf056ac8363 from 2.27 branch
+  (closes: #36065).
+
 * Sun Jan 06 2019 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt8
 - Updated to glibc-2.27-102-g68c2930a56 from 2.27 branch.
 - riscv: changed slibdir, rtlddir, libdir, and LD_SO_PREFIX
