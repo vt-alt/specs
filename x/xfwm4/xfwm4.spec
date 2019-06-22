@@ -1,6 +1,8 @@
 Name: xfwm4
 Version: 4.13.2
-Release: alt2
+Release: alt3
+
+%def_disable epoxy
 
 Summary: Window manager for Xfce
 Summary (ru_RU.UTF8): Менеджер окон для окружения рабочего стола Xfce
@@ -20,11 +22,12 @@ BuildPreReq: libxfce4ui-gtk3-devel libxfconf-devel
 BuildPreReq: exo-csource
 
 BuildRequires: gnome-doc-utils xml-utils xsltproc
-BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel libepoxy-devel
+BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel
 BuildRequires: libstartup-notification-devel libwnck3-devel xorg-cf-files
 BuildRequires: libXinerama-devel libXpresent-devel
 # For svg support in the glib-compile-resources
 BuildRequires: librsvg
+%{?_enable_epoxy:BuildRequires: libepoxy-devel}
 
 Requires: xfce4-common
 
@@ -55,7 +58,7 @@ Xfce.
 	--enable-xsync \
 	--enable-xpresent \
 	--enable-compositor \
-	--enable-epoxy \
+	%{subst_enable epoxy} \
 	--disable-silent-rules \
 	--enable-debug=minimum
 
@@ -77,6 +80,9 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Sat Jun 22 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt3
+- DIsable libepoxy support (workaround for ALT bug #36915).
+
 * Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt2
 - Build with libXpresent.
 - Build with libepoxy.
