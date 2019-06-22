@@ -1,6 +1,6 @@
 Name:     papirus-icon-theme
-Version:  20190521
-Release:  alt2
+Version:  20190615
+Release:  alt1
 
 Summary:  All Papirus icon themes
 License:  GPLv3
@@ -95,6 +95,9 @@ cp -a Papirus Papirus-Dark Papirus-Light ePapirus %buildroot%_iconsdir
 %_iconsdir/ePapirus
 
 %changelog
+* Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 20190615-alt1
+- New version.
+
 * Tue May 28 2019 Andrey Cherepanov <cas@altlinux.org> 20190521-alt2
 - Make network menu item in ALT looks like upstream Internet menu item.
 
