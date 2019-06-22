@@ -11,8 +11,8 @@
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	60.7.1
-Release:	alt2
+Version:	60.7.2
+Release:	alt1
 License:	MPL/GPL
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -482,6 +482,12 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Sat Jun 22 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.2-alt1
+- New version (60.7.2).
+- Fixed:
+  + CVE-2019-11707 Type confusion in Array.pop
+  + CVE-2019-11708 sandbox escape using Prompt:Open
+
 * Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.1-alt2
 - enigmail: disable pEpAutoDownload.
 
