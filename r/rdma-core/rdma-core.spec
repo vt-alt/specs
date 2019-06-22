@@ -11,7 +11,7 @@
 
 Name: rdma-core
 Version: 24.0
-Release: alt1
+Release: alt2
 Summary: RDMA core userspace libraries and daemons
 Group: System/Base
 
@@ -311,14 +311,14 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %_includedir/rdma/*
 %_libdir/lib*.so
 %_pkgconfigdir/*.pc
-%_man3dir/efadv*
 %_man3dir/ibv_*
 %_man3dir/rdma*
 %_man3dir/umad*
 %_man3dir/*_to_ibv_rate.*
 %_man7dir/rdma_cm.*
-%_man7dir/efadv*
 %if_enabled dma_coherent
+%_man3dir/efadv*
+%_man7dir/efadv*
 %_man3dir/mlx5dv*
 %_man7dir/mlx5dv*
 %_man3dir/mlx4dv*
@@ -328,10 +328,10 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %files -n libibverbs
 %dir %_sysconfdir/libibverbs.d
 %dir %_libdir/libibverbs
-%_libdir/libefa.so.*
 %_libdir/libibverbs*.so.*
 %_libdir/libibverbs/*.so
 %if_enabled dma_coherent
+%_libdir/libefa.so.*
 %_libdir/libmlx5.so.*
 %_libdir/libmlx4.so.*
 %endif
@@ -424,6 +424,9 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %docdir/ibsrpdm.md
 
 %changelog
+* Fri Jun 14 2019 Rustem Bapin <rbapin@altlinux.org> 24.0-alt2
+- move efa* in %files under dma_coherent define for fix build on mipsel
+
 * Sat Jun 01 2019 Alexey Shabalin <shaba@altlinux.org> 24.0-alt1
 - 24.0
 
