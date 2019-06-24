@@ -1,7 +1,7 @@
 %define oname psycopg2
 %def_with python3
 
-Version: 2.8.2
+Version: 2.8.3
 Release: alt1
 %setup_python_module %oname
 
@@ -85,6 +85,9 @@ echo "include_dirs=.:/usr/include/pgsql" >> setup.cfg
 %endif
 
 %changelog
+* Mon Jun 17 2019 Grigory Ustinov <grenka@altlinux.org> 2.8.3-alt1
+- Build new version.
+
 * Wed Apr 24 2019 Grigory Ustinov <grenka@altlinux.org> 2.8.2-alt1
 - Build new version.
 - Clean up changelog.
