@@ -1,6 +1,6 @@
 Name: fritzing
 Version: 0.9.3b.0.31.git701e3a3
-Release: alt3
+Release: alt4
 
 Summary: Intuitive EDA platform featuring from prototype to product
 License: GPLv3, CC-BY-SA-3.0
@@ -44,6 +44,10 @@ This package contains shared data files for Fritzing.
 
 %prep
 %setup -a1
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 qmake-qt5
@@ -65,6 +69,9 @@ cp -r %name-parts %buildroot/%_datadir/%name
 %_datadir/%name
 
 %changelog
+* Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 0.9.3b.0.31.git701e3a3-alt4
+- E2K: strip UTF-8 BOM for lcc < 1.24
+
 * Tue Jul 17 2018 Grigory Ustinov <grenka@altlinux.org> 0.9.3b.0.31.git701e3a3-alt3
 - Fixed FTBFS (removed xdg macro).
 
