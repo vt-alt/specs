@@ -12,7 +12,7 @@ branches, it seems like a good time to make that code into a proper \
 re-usable library.
 
 Name:       python-module-%pypi_name
-Version:    5.2.1
+Version:    5.3.1
 Release:    alt1
 
 Summary:    Python Build Reasonableness
@@ -28,11 +28,13 @@ BuildRequires: python-module-setuptools python-module-unittest2 python-module-d2
 BuildRequires: python-module-pbr
 BuildRequires: python-module-html5lib python-module-mimeparse
 BuildRequires: python-module-alabaster python-module-docutils python-module-subunit-tests python-module-oslosphinx
+BuildRequires: python-module-sphinxcontrib-apidoc
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-setuptools python3-module-unittest2 python3-module-d2to1
 BuildRequires: python3-module-pbr
 BuildRequires: python3-module-html5lib python3-module-mimeparse
+BuildRequires: python3-module-sphinxcontrib-apidoc
 %endif
 
 BuildArch:  noarch
@@ -143,6 +145,12 @@ popd
 %endif
 
 %changelog
+* Fri Jun 21 2019 Grigory Ustinov <grenka@altlinux.org> 5.3.1-alt1
+- Build new version.
+
+* Mon Jun 17 2019 Grigory Ustinov <grenka@altlinux.org> 5.3.0-alt1
+- Build new version.
+
 * Mon Jun 03 2019 Grigory Ustinov <grenka@altlinux.org> 5.2.1-alt1
 - Build new version.
 
