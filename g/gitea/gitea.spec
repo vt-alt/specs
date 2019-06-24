@@ -1,7 +1,7 @@
 %global import_path code.gitea.io/gitea
 
 Name:    gitea
-Version: 1.8.2
+Version: 1.8.3
 Release: alt1
 
 Summary: Git with a cup of tea, painless self-hosted git service
@@ -14,8 +14,9 @@ Url:     https://gitea.io
 Source:  %name-%version.tar
 
 Source1: gitea.service
-Source2: app-%version.ini
-Source3: README.ALT
+Source2: gitea.service.d.conf
+Source3: app-%version.ini
+Source4: README.ALT
 
 Patch1: make-version.patch
 
@@ -48,13 +49,15 @@ mkdir -p %buildroot%_localstatedir/%name
 mkdir -p %buildroot%_logdir/%name
 install -Dm 0755 ".gopath/src/%import_path/%name" %buildroot%_bindir/%name
 install -Dm 0640 %SOURCE1 %buildroot%systemd_unitdir/%name.service
-install -Dm 0660 %SOURCE2 %buildroot%_sysconfdir/%name/app.ini
+mkdir -p %buildroot%_sysconfdir/systemd/system/gitea.service.d
+install -Dm 0640 %SOURCE2 %buildroot%_sysconfdir/systemd/system/gitea.service.d/port.conf
+install -Dm 0660 %SOURCE3 %buildroot%_sysconfdir/%name/app.ini
 
 # install docs
 mkdir -p %buildroot%_docdir/%name
 install -Dm 0644 ".gopath/src/%import_path/custom/conf/app.ini.sample" \
 %buildroot%_docdir/%name/default-app.ini
-install -Dm 0644 %SOURCE3 %buildroot%_docdir/%name/
+install -Dm 0644 %SOURCE4 %buildroot%_docdir/%name/
 
 %pre
 groupadd -rf %name
@@ -67,12 +70,16 @@ useradd -r -g %name -d %_localstatedir/%name %name -s /bin/sh ||:
 %dir %_docdir/%name
 %dir %_sysconfdir/%name
 %config(noreplace) %attr(0660,root,%name) %_sysconfdir/%name/app.ini
+%config(noreplace) %attr(0660,root,%name) %_sysconfdir/systemd/system/gitea.service.d/port.conf
 %systemd_unitdir/%name.service
 %_docdir/%name/default-app.ini
 %_docdir/%name/README.ALT
 %doc *.md
 
 %changelog
+* Tue Jun 18 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.3-alt1
+- new version 1.8.3
+
 * Thu May 30 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.2-alt1
 - new version 1.8.2
 
