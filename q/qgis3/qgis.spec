@@ -5,8 +5,8 @@
 %define rname qgis
 
 Name:    qgis3
-Version: 3.6.3
-Release: alt2
+Version: 3.8.0
+Release: alt1
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -370,6 +370,9 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 %endif
 
 %changelog
+* Sat Jun 22 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.0-alt1
+- New version.
+
 * Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.6.3-alt2
 - Add qca-qt5-ossl as authentication plugin.
 
