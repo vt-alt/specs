@@ -2,29 +2,29 @@
 %define hsc_name ghc
 %define hsc_version %ghc_version
 %define hsc_namever %hsc_name%hsc_version
-%define h_pkg_name random
-%define f_pkg_name random
+%define h_pkg_name asn1-encoding
+%define f_pkg_name asn1-encoding
 %define pkg_libdir %_libdir/%hsc_name-%hsc_version/%h_pkg_name-%version
 
 Name: %hsc_namever-%f_pkg_name
-Version: 1.1
-Release: alt2
+Version: 0.9.5
+Release: alt1
 License: BSD3
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
 Group: Development/Haskell
-Url: http://hackage.haskell.org/package/random
+Url: http://github.com/vincenthz/hs-asn1
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-Summary: random number library
+Summary: ASN1 data reader and writer in RAW, BER and DER forms
 
 BuildPreReq: haskell(abi) = %ghc_version
+BuildPreReq: ghc%ghc_version-asn1-types
+BuildPreReq: ghc%ghc_version-hourglass
 
 
 %description
-This package provides a basic random number generation library, including
-the ability to split random number generators. extra-source-files:
-.travis.yml README.md CHANGELOG.md .gitignore .darcs-boring build-type:
-Simple
+ASN1 data reader and writer in raw form with supports for high level forms
+of ASN1 (BER, and DER).
 
 %prep
 %setup
@@ -41,8 +41,5 @@ Simple
 %files -f %name-files.all
 
 %changelog
-* Fri Jun 14 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt2
-- Fix license in spec file
-
-* Wed Apr 17 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt1
+* Wed Apr 24 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.9.5-alt1
 - Spec created by cabal2rpm 0.20_11

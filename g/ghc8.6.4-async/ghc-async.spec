@@ -7,7 +7,7 @@
 %define pkg_libdir %_libdir/%hsc_name-%hsc_version/%h_pkg_name-%version
 
 Name: %hsc_namever-%f_pkg_name
-Version: 2.2.1
+Version: 2.2.2
 Release: alt1
 License: BSD3
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
@@ -22,7 +22,6 @@ BuildPreReq: ghc%ghc_version-hashable
 
 
 %description
-Run IO operations asynchronously and wait for their results description:
 This package provides a higher-level interface over threads, in which an
 @Async a@ is a concurrent thread that will eventually deliver a value of
 type @a@. The package provides ways to create @Async@ computations, wait
@@ -35,8 +34,7 @@ exception then the caller must either re-throw the exception ('wait') or
 handle it ('waitCatch'); the exception cannot be ignored.
 
 * The API makes it possible to build a tree of threads that are
-automatically killed when their parent dies (see 'withAsync'). license:
-BSD3
+automatically killed when their parent dies (see 'withAsync').
 
 %prep
 %setup
@@ -53,5 +51,8 @@ BSD3
 %files -f %name-files.all
 
 %changelog
+* Sat Jun 15 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.2-alt1
+- updated with the help of cabal2gear.
+
 * Wed Apr 17 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.1-alt1
 - Spec created by cabal2rpm 0.20_11

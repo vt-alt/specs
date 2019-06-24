@@ -2,29 +2,28 @@
 %define hsc_name ghc
 %define hsc_version %ghc_version
 %define hsc_namever %hsc_name%hsc_version
-%define h_pkg_name random
-%define f_pkg_name random
+%define h_pkg_name attoparsec
+%define f_pkg_name attoparsec
 %define pkg_libdir %_libdir/%hsc_name-%hsc_version/%h_pkg_name-%version
 
 Name: %hsc_namever-%f_pkg_name
-Version: 1.1
-Release: alt2
+Version: 0.13.2.2
+Release: alt1
 License: BSD3
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
 Group: Development/Haskell
-Url: http://hackage.haskell.org/package/random
+Url: https://github.com/bos/attoparsec
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-Summary: random number library
+Summary: Fast combinator parsing for bytestrings and text
 
 BuildPreReq: haskell(abi) = %ghc_version
+BuildPreReq: ghc%ghc_version-scientific
 
 
 %description
-This package provides a basic random number generation library, including
-the ability to split random number generators. extra-source-files:
-.travis.yml README.md CHANGELOG.md .gitignore .darcs-boring build-type:
-Simple
+A fast parser combinator library, aimed particularly at dealing efficiently
+with network protocols and complicated text/binary file formats.
 
 %prep
 %setup
@@ -41,8 +40,5 @@ Simple
 %files -f %name-files.all
 
 %changelog
-* Fri Jun 14 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt2
-- Fix license in spec file
-
-* Wed Apr 17 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt1
+* Wed Apr 24 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.13.2.2-alt1
 - Spec created by cabal2rpm 0.20_11

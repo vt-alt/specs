@@ -2,29 +2,27 @@
 %define hsc_name ghc
 %define hsc_version %ghc_version
 %define hsc_namever %hsc_name%hsc_version
-%define h_pkg_name random
-%define f_pkg_name random
+%define h_pkg_name base-compat
+%define f_pkg_name base-compat
 %define pkg_libdir %_libdir/%hsc_name-%hsc_version/%h_pkg_name-%version
 
 Name: %hsc_namever-%f_pkg_name
-Version: 1.1
-Release: alt2
-License: BSD3
+Version: 0.10.5
+Release: alt1
+License: MIT
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
 Group: Development/Haskell
-Url: http://hackage.haskell.org/package/random
+Url: http://hackage.haskell.org/package/base-compat
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-Summary: random number library
+Summary: A compatibility layer for base
 
 BuildPreReq: haskell(abi) = %ghc_version
 
 
 %description
-This package provides a basic random number generation library, including
-the ability to split random number generators. extra-source-files:
-.travis.yml README.md CHANGELOG.md .gitignore .darcs-boring build-type:
-Simple
+Provides functions available in later versions of @base@ to a wider range
+of compilers, without requiring you to use CPP pragmas in your code.
 
 %prep
 %setup
@@ -41,8 +39,5 @@ Simple
 %files -f %name-files.all
 
 %changelog
-* Fri Jun 14 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt2
-- Fix license in spec file
-
-* Wed Apr 17 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.1-alt1
+* Wed Apr 24 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.10.5-alt1
 - Spec created by cabal2rpm 0.20_11
