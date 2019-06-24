@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt4.1
+Release: alt4.2
 
 Url: http://en.altlinux.org/starterkits
 
@@ -245,8 +245,10 @@ install slideshow/* %buildroot/usr/share/install2/slideshow/
 pushd xfce-settings
 mkdir -p %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
 mkdir -p %buildroot/etc/skel/.config/xfce4/panel
+mkdir -p %buildroot/etc/skel/.config/autostart
 cp -r etcskel/.config/xfce4/xfconf/xfce-perchannel-xml/* %buildroot/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
 cp -r etcskel/.config/xfce4/panel/* %buildroot/etc/skel/.config/xfce4/panel
+cp -r etcskel/.config/autostart/* %buildroot/etc/skel/.config/autostart
 popd
 
 #bootloader
@@ -323,8 +325,13 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 
 %files xfce-settings
 %_sysconfdir/skel/.config/xfce4
+%_sysconfdir/skel/.config/autostart/*
 
 %changelog
+* Mon Jun 24 2019 Anton Midyukov <antohami@altlinux.org> p9-alt4.2
+- xfce-settings: replaced clipman and power-manager applets on tray
+applications
+
 * Mon Jun 17 2019 Anton Midyukov <antohami@altlinux.org> p9-alt4.1
 - xfce-settings: revert launchers on panel
 
