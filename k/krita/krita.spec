@@ -1,14 +1,14 @@
 # obsoleted koffice version
 %define koffice_ver 4:2.3.70
 
-%define sover 17
+%define sover 18
 %define libkritacommand libkritacommand%sover
 %define libkritaimpex libkritaimpex%sover
 %define libkritalibkis libkritalibkis%sover
 %define libkritalibkra libkritalibkra%sover
 %define libkritaqml libkritaqml%sover
 %define libkritawidgetutils libkritawidgetutils%sover
-%define libkritavectorimage libkritavectorimage%sover
+%define libkritametadata libkritametadata%sover
 %define libkritaglobal libkritaglobal%sover
 %define libkritaversion libkritaversion%sover
 %define libkritabasicflakes libkritabasicflakes%sover
@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.1.8
+Version: 4.2.1
 Release: alt1
 %K5init no_altplace
 
@@ -65,6 +65,8 @@ BuildRequires: extra-cmake-modules
 BuildRequires: qt5-multimedia-devel qt5-svg-devel qt5-wayland-devel qt5-x11extras-devel
 BuildRequires: python3-devel python3-module-PyQt5-devel python3-module-sip-devel
 BuildRequires: boost-devel eigen3 libfftw3-devel libgomp-devel libgsl-devel
+#BuildRequires: libgif-devel
+BuildRequires: libquazip-qt5-devel
 #BuildRequires: libquadmath-devel
 BuildRequires: libopencolorio-devel
 BuildRequires: libXres-devel libxcbutil-devel
@@ -225,13 +227,6 @@ Requires: %name-common = %EVR
 %description -n %libkritaglobal
 %name library
 
-%package -n %libkritavectorimage
-Summary: %name library
-Group: System/Libraries
-Requires: %name-common = %EVR
-%description -n %libkritavectorimage
-%name library
-
 %package -n %libkritawidgetutils
 Summary: %name library
 Group: System/Libraries
@@ -272,6 +267,13 @@ Summary: %name library
 Group: System/Libraries
 Requires: %name-common = %EVR
 %description -n %libkritaqml
+%name library
+
+%package -n %libkritametadata
+Summary: %name library
+Group: System/Libraries
+Requires: %name-common = %EVR
+%description -n %libkritametadata
 %name library
 
 %prep
@@ -412,15 +414,18 @@ done
 %_libdir/libkritaglobal.so.%sover
 %_libdir/libkritaglobal.so.*
 
-%files -n %libkritavectorimage
-%_libdir/libkritavectorimage.so.%sover
-%_libdir/libkritavectorimage.so.*
-
 %files -n %libkritawidgetutils
 %_libdir/libkritawidgetutils.so.%sover
 %_libdir/libkritawidgetutils.so.*
 
+%files -n %libkritametadata
+%_libdir/libkritametadata.so.%sover
+%_libdir/libkritametadata.so.*
+
 %changelog
+* Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.1-alt1
+- new version (ALT#36818)
+
 * Tue Mar 26 2019 Sergey V Turchin <zerg@altlinux.org> 4.1.8-alt1
 - new version (ALT#36336)
 
