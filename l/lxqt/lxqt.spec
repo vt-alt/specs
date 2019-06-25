@@ -1,6 +1,6 @@
 Name: lxqt
 Version: 0.14
-Release: alt1
+Release: alt2
 Summary: Meta package for install LxQt
 Group: Graphical desktop/Other
 License: GPL
@@ -36,7 +36,7 @@ Requires: obconf-qt >= %version
 # themes
 Requires: icon-theme-oxygen
 # system components
-Requires: openbox
+Requires: openbox-base openbox-autostart
 
 Obsoletes: lxqt < 0.14
 Obsoletes: lxqt-l10n < 0.14
@@ -85,6 +85,9 @@ Requires: lximage-qt
 %files regular
 
 %changelog
+* Mon Jun 24 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt2
+- Requires openbox-base, openbox-autostart instead openbox
+
 * Mon Jan 28 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt1
 - new version 0.14
 - new package lxqt-regular
