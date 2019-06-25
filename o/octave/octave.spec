@@ -1,8 +1,8 @@
 %def_with qt5
 
 Name: octave
-Version: 4.4.1
-Release: alt4
+Version: 5.1.0
+Release: alt2
 
 %define docdir %_defaultdocdir/%name-%version
 
@@ -150,42 +150,42 @@ mv %buildroot%_datadir/metainfo/*.xml %buildroot%_datadir/appdata
 %files
 %doc BUGS COPYING NEWS* README ChangeLog.gz
 %_bindir/%{name}*
-
 %_datadir/%name
 %_libdir/%name/%version/*.so*
 %_libdir/%name/%version/exec
 %_libdir/%name/%version/oct
 %exclude %_libdir/%name/%version/*.la*
-
 %dir %_libdir/%name
 %dir %_libdir/%name/%version
 %dir %_libdir/%name/packages
-
 %_infodir/octave.info*
 %_infodir/liboctave.info*
-
 %_man1dir/*
-
 %_desktopdir/*.desktop
-
-%_rpmlibdir/%name.filetrigger
-
 %_datadir/appdata/*.appdata.xml
 %_datadir/icons/hicolor/*/apps/octave.png
 %_datadir/icons/hicolor/*/apps/octave.svg
+%_rpmlibdir/%name.filetrigger
 
 %files devel
 %_includedir/%name-%version
 %_bindir/mkoctfile
 %_bindir/mkoctfile-%version
 %_rpmmacrosdir/%{name}.env
+%_pkgconfigdir/*.pc
 
 %files doc
 %doc doc/interpreter/octave.html doc/liboctave/liboctave.html doc/interpreter/octave.pdf doc/liboctave/liboctave.pdf doc/refcard/refcard*.pdf
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 5.1.0-alt2
+- to Sisyphus with octave modules rebuild
+
 * Thu May 30 2019 Andrey Cherepanov <cas@altlinux.org> 4.4.1-alt4
 - Add Russian localization for Comment in desktop file (ALT #36812).
+
+* Tue Feb 26 2019 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
+- New version.
 
 * Wed Feb 20 2019 Grigory Ustinov <grenka@altlinux.org> 4.4.1-alt3
 - Fixed FTBFS (Add libXcursor to BR's).

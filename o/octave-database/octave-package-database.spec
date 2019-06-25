@@ -5,7 +5,7 @@ BuildRequires: /usr/bin/octave-config makeinfo texinfo
 %define octpkg database
 Name: octave-%octpkg
 Version: 2.4.3
-Release: alt2
+Release: alt3
 Summary: Database.
 
 Group: Sciences/Mathematics
@@ -13,6 +13,7 @@ License: GPLv3+
 Url: http://octave.sourceforge.net/
 
 Source0: https://downloads.sourceforge.net/project/octave/Octave%%20Forge%%20Packages/Individual%%20Package%%20Releases/%{octpkg}-%{version}.tar.gz
+Patch: database-2.4.3-octave5.patch
 
 BuildRequires(pre): rpm-build-octave
 BuildRequires: octave-devel
@@ -34,6 +35,7 @@ Interface to SQL databases, currently only postgresql using libpq.
 
 %prep
 %setup -q -n %{octpkg}-%{version}
+%patch -p1
 
 %build
 %octave_build
@@ -42,13 +44,16 @@ Interface to SQL databases, currently only postgresql using libpq.
 %octave_install
 
 %files
-%doc COPYING NEWS DESCRIPTION doc
+%doc COPYING DESCRIPTION NEWS doc
 %_datadir/octave/packages/%octpkg-%version
 %if_with _octave_arch
 %_libdir/octave/packages/%octpkg-%version
 %endif
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.4.3-alt3
+- rebuild with octave 5
+
 * Fri Apr 05 2019 Igor Vlasenko <viy@altlinux.ru> 2.4.3-alt2
 - fixed build
 

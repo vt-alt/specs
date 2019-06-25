@@ -6,7 +6,7 @@ BuildRequires: makeinfo
 Epoch: 2
 Name: octave-%octpkg
 Version: 1.4.1
-Release: alt1
+Release: alt2
 Summary: Signal Processing
 
 Group: Sciences/Mathematics
@@ -40,13 +40,16 @@ Signal processing tools, including filtering, windowing and display functions.
 %octave_install
 
 %files
-%doc COPYING DESCRIPTION NEWS
+%doc NEWS DESCRIPTION COPYING
 %_datadir/octave/packages/%octpkg-%version
 %if_with _octave_arch
 %_libdir/octave/packages/%octpkg-%version
 %endif
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2:1.4.1-alt2
+- rebuild with octave 5
+
 * Fri Apr 19 2019 Igor Vlasenko <viy@altlinux.ru> 2:1.4.1-alt1
 - regenerated from template by package builder
 

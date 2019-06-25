@@ -5,7 +5,7 @@ BuildRequires: makeinfo
 %define octave_pkg_name msh
 Name: octave-%octave_pkg_name
 Version: 1.0.10
-Release: alt2
+Release: alt3
 Summary: MeSHing software package for octave
 
 Group: Sciences/Mathematics
@@ -54,6 +54,9 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.0.10-alt3
+- rebuild with octave 5
+
 * Tue May 29 2018 Igor Vlasenko <viy@altlinux.ru> 1.0.10-alt2
 - build for octave 4.4
 
