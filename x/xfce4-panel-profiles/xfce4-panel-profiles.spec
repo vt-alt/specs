@@ -1,6 +1,6 @@
 Name: xfce4-panel-profiles
 Version: 1.0.8
-Release: alt1
+Release: alt2
 
 Summary: A simple application to manage Xfce panel layouts
 License: %gpl3plus
@@ -13,8 +13,9 @@ Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
 BuildArch: noarch
 
-BuildRequires(pre): rpm-build-licenses
+BuildRequires(pre): rpm-build-licenses rpm-build-python3
 BuildRequires: intltool
+%add_python3_path %_datadir/%name
 
 Requires: xfce4-panel
 
@@ -50,5 +51,8 @@ export these panel layouts.
 %_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Mon Jun 24 2019 Mikhail Efremov <sem@altlinux.org> 1.0.8-alt2
+- Fix python3 requires (closes: #36942).
+
 * Mon Aug 27 2018 Mikhail Efremov <sem@altlinux.org> 1.0.8-alt1
 - Initial build.
