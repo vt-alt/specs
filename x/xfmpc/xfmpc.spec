@@ -1,7 +1,7 @@
 Name: xfmpc
 Summary: MPD client written in GTK+ for Xfce
-Version: 0.2.90
-Release: alt2
+Version: 0.3.0
+Release: alt1
 License: %gpl2plus
 Url: https://goodies.xfce.org/projects/applications/%name
 Source: %name-%version.tar
@@ -53,6 +53,9 @@ export NPROCS=1
 %_man1dir/xfmpc.1.*
 
 %changelog
+* Sat Jun 22 2019 Mikhail Efremov <sem@altlinux.org> 0.3.0-alt1
+- Updated to 0.3.0.
+
 * Tue Apr 09 2019 Mikhail Efremov <sem@altlinux.org> 0.2.90-alt2
 - Fix BR: drop libxfcegui4-devel.
 
