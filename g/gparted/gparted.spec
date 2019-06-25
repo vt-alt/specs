@@ -5,8 +5,8 @@
 %def_enable xhost_root
 
 Name: gparted
-Version: 0.33.0
-Release: alt2
+Version: 1.0.0
+Release: alt1
 
 Summary: %Name Partition Editor
 Summary(ru_RU.UTF-8): Редактор разделов %Name
@@ -19,8 +19,6 @@ Url: http://%name.sourceforge.net/
 Source: http://prdownloads.sourceforge.net/%name/%name-%version.tar.gz
 Source1: %name-pam
 Source2: %name-security
-
-Patch1: %name-0.29.0-alt-dmraid.patch
 
 AutoReq: yes, noshell
 
@@ -39,9 +37,9 @@ Requires: udftools >= 2.0
 
 BuildRequires(pre): rpm-build-licenses
 BuildRequires: libparted-devel >= 3.2
-BuildRequires: libgtkmm2-devel >= 2.24.0
-BuildRequires: gcc-c++ libprogsreiserfs-devel libuuid-devel intltool
-BuildRequires: perl-XML-Parser gnome-doc-utils
+BuildRequires: libglibmm-devel >= 2.32 libgtkmm3-devel >= 3.4.0
+BuildRequires: gcc-c++ libprogsreiserfs-devel libuuid-devel
+BuildRequires: intltool yelp-tools
 BuildRequires: polkit >= %polkit_ver
 
 %description
@@ -74,13 +72,13 @@ general approach is to keep the GUI as simple as possible.
 
 %prep
 %setup
-%patch1 -p0
 
 # get polkit version from pkaction in hasher
 subst 's/pkexec --version/pkaction --version/' configure*
 
 %build
 #NOCONFIGURE=1 ./autogen.sh
+%add_optflags -D_FILE_OFFSET_BITS=64
 %configure %{subst_with pic} \
 	%{?_enable_usermode:--bindir=%_sbindir} \
 	%{?_enable_xhost_root:--enable-xhost-root} \
@@ -119,6 +117,10 @@ sed -i 's|%_sbindir|%_bindir|' %buildroot%_desktopdir/%name.desktop
 %endif
 
 %changelog
+* Thu May 30 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.0-alt1
+- 1.0.0 (ported to Gtkmm3)
+- removed obsolete dmraid.patch
+
 * Wed Apr 17 2019 Yuri N. Sedunov <aris@altlinux.org> 0.33.0-alt2
 - rebuilt with --enable-xhost-root (ALT #35409)
 

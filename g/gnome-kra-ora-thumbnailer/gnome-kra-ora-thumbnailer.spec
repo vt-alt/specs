@@ -1,4 +1,4 @@
-%define ver_major 1.3
+%define ver_major 1.4
 %define _libexecdir %_prefix/libexec
 
 Name: gnome-kra-ora-thumbnailer
@@ -37,6 +37,9 @@ This package provides a thumbnailer for Krita and MyPaint images.
 %doc README AUTHORS NEWS
 
 %changelog
+* Thu Jun 20 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4-alt1
+- 1.4
+
 * Thu Dec 19 2013 Yuri N. Sedunov <aris@altlinux.org> 1.3-alt1
 - first build for Sisyphus
 

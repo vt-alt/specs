@@ -4,17 +4,15 @@
 %def_enable libwacom
 %def_enable debug_gui
 %def_disable documentation
+%if 0%{?!_without_check:%{?!_disable_check:1}}
 %def_enable tests
-
-%if_enabled tests
-%ifarch %valgrind_arches
-%def_enable valgrind
-%endif
+%else
+%def_disable tests
 %endif
 
 Name: libinput
-Version: 1.13.2
-Release: alt2
+Version: 1.13.3
+Release: alt1
 
 Summary: Input devices library
 Group: System/Libraries
@@ -34,6 +32,7 @@ Source: %name-%version.tar
 %define evdev_ver 0.4
 
 BuildRequires(pre): meson rpm-build-python3
+# for %%valgrind_arches
 BuildRequires(pre): rpm-macros-valgrind
 BuildRequires: gcc-c++
 BuildRequires: libmtdev-devel >= %mtdev_ver libevdev-devel >= %evdev_ver
@@ -42,8 +41,12 @@ BuildRequires: libcheck-devel
 %{?_enable_libwacom:BuildRequires: libwacom-devel}
 %{?_enable_debug_gui:BuildRequires: libgtk+3-devel}
 %{?_enable_documentation:BuildRequires: doxygen graphviz}
-%{?_enable_valgrind:BuildRequires: valgrind libunwind-devel}
-%{?_enable_tests:BuildRequires: gdb python3-module-pyparsing}
+%if_enabled tests
+BuildRequires: /proc gdb python3-module-pyparsing
+%ifarch %valgrind_arches
+BuildRequires: valgrind
+%endif
+%endif
 
 %description
 libinput is a library that handles input devices for display servers and
@@ -98,7 +101,7 @@ This package contains visual debug helper for %name.
 %meson_install
 
 %check
-%{?_enable_tests:%meson_test}
+%meson_test
 
 %files
 %_libdir/%name.so.*
@@ -142,6 +145,13 @@ This package contains visual debug helper for %name.
 
 
 %changelog
+* Mon Jun 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.3-alt1
+- 1.13.3
+
+* Thu Jun 20 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.2-alt3
+- glebfm@: Fixed testsuite on architectures not supported by valgrind,
+           dropped redundant BR: libvalgrind-devel
+
 * Wed Jun 19 2019 Michael Shigorin <mike@altlinux.org> 1.13.2-alt2
 - move to rpm-macros-valgrind
 
