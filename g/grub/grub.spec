@@ -1,14 +1,17 @@
 %def_with sb_kern_signature_check_relaxed
+%define efi_arches %ix86 x86_64 aarch64
 
 Name: grub
 Version: 2.02
-Release: alt16
+Release: alt17
 
 Summary: GRand Unified Bootloader
 License: GPL
 Group: System/Kernel and hardware
 
 Url: http://www.gnu.org/software/grub
+
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le
 
 Source0: %name-%version.tar
 Source1: grub2-sysconfig
@@ -101,12 +104,18 @@ Requires: gettext
 
 %ifarch %ix86
 %global grubefiarch i386-efi
+%global linux_module_name linux
+%global efi_suff ia32
 %endif
 %ifarch x86_64
 %global grubefiarch x86_64-efi
+%global linux_module_name linuxefi
+%global efi_suff x64
 %endif
 %ifarch aarch64
 %global grubefiarch arm64-efi
+%global linux_module_name linux
+%global efi_suff x64
 %endif
 
 %package common
@@ -125,6 +134,15 @@ Provides: grub = %EVR
 %endif
 Provides: grub2-pc = %EVR
 Obsoletes: grub2-pc < %EVR
+
+%package ieee1275
+Summary: GRand Unified Bootloader (IEEE1275 variant)
+Group: System/Kernel and hardware
+Requires: %name-common = %version-%release
+%ifarch ppc64le
+Provides: grub2 = %EVR
+Provides: grub = %EVR
+%endif
 
 %package efi
 Summary: GRand Unified Bootloader (UEFI variant)
@@ -161,6 +179,11 @@ This package carries the shared code and data.
 %desc_generic
 
 This package provides PC BIOS support.
+
+%description ieee1275
+%desc_generic
+
+This package provides Open Firmware (IEEE 1275) support.
 
 %description efi
 %desc_generic
@@ -212,140 +235,113 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch115 -p1
 %patch116 -p1
 %patch117 -p1
+%patch201 -p0
 
 sed -i "/^AC_INIT(\[GRUB\]/ s/%version[^]]\+/%version-%release/" configure.ac
 
-%ifarch %ix86 x86_64
-cd ..
-rm -rf %name-pc-%version
-cp -a %name-%version %name-pc-%version
-%ifarch x86_64
-rm -rf %name-ia32-%version
-cp -a %name-%version %name-ia32-%version
-cp -a %SOURCE11 %name-ia32-%version
-%endif
-%endif
-
 %build
-%ifarch %ix86 x86_64
-pushd ../%name-pc-%version
 ./autogen.sh
-%configure \
-	TARGET_LDFLAGS=-static \
-	--with-platform=pc \
-	--disable-werror
+build_grub() {
+	local dir="$1"; shift
+	mkdir -p "$dir"
+	pushd "$dir"
+	%define _configure_script ../configure
+	%configure \
+		TARGET_LDFLAGS=-static \
+		--disable-werror \
+		"$@"
+	%make_build
+	popd
+}
 
-%make_build
-popd
+build_efi_image() {
+	local mkimage="$1"; shift
+	local dir="$1"; shift
+	local format="$1"; shift
+	"$mkimage" -O "$format" -o "$dir"/grub.efi -d "$dir"/grub-core -p "" \
+		part_gpt part_apple part_msdos hfsplus fat ext2 btrfs xfs \
+		squash4 normal chain boot configfile diskfilter \
+		minicmd reboot halt search search_fs_uuid search_fs_file \
+		search_label sleep test syslinuxcfg all_video video font \
+		gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat \
+		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
+		"$@"
+}
+
+%ifarch %ix86 x86_64
+build_grub build-pc \
+	--with-platform=pc \
+#
+%endif
+
+%ifarch ppc64le
+build_grub build-ieee1275 \
+	--with-platform=ieee1275 \
+#
+%endif
+
+%ifarch %efi_arches
+build_grub build-efi \
+	--with-platform=efi \
+#
+build_efi_image build-efi/grub-mkimage build-efi %grubefiarch %linux_module_name
 
 #add forced ia32 version build to be bundled with x86_64 EFI
 %ifarch x86_64
-pushd ../%name-ia32-%version
-./autogen.sh
-%configure \
-        TARGET_LDFLAGS=-static \
-        --with-platform=efi \
-        --disable-werror \
-	--target=i386
-
-%make_build
-
-popd
-%endif
-%endif
-
-./autogen.sh
-%configure \
-	TARGET_LDFLAGS=-static \
+build_grub build-efi-ia32 \
 	--with-platform=efi \
-	--disable-werror
-
-%make_build
+	--target=i386 \
+#
+# use 64bit mkimage to build i386-efi image
+build_efi_image build-efi/grub-mkimage build-efi-ia32 i386-efi linuxefi
+%endif
 
 %if_with sb_kern_signature_check_relaxed
-# grubx64sb.efi brings strict checking for kernel sign
-%define EFI_X64_BINARY_NAME grubx64sb.efi
-%else
-%define EFI_X64_BINARY_NAME grubx64.efi
-%endif
-
-./grub-mkimage -O %grubefiarch -o %EFI_X64_BINARY_NAME -d grub-core -p "" \
-	part_gpt part_apple part_msdos hfsplus fat ext2 btrfs xfs squash4 normal chain boot configfile diskfilter \
-%ifarch x86_64
-linuxefi \
-%else
-linux \
-%endif
-	minicmd reboot halt search search_fs_uuid search_fs_file search_label sleep test syslinuxcfg all_video video \
-	font gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat gzio iso9660 loadenv loopback mdraid09 mdraid1x \
-	png jpeg
-
-%if_with sb_kern_signature_check_relaxed
-make clean
-patch -p0 < %PATCH201
-%make_build
-
-./grub-mkimage -O %grubefiarch -o grubx64.efi -d grub-core -p "" \
-        part_gpt part_apple part_msdos hfsplus fat ext2 btrfs xfs squash4 normal chain boot configfile diskfilter \
-%ifarch x86_64
-linuxefi \
-%else
-linux \
-%endif
-	minicmd reboot halt search search_fs_uuid search_fs_file search_label sleep test syslinuxcfg all_video video \
-	font gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat gzio iso9660 loadenv loopback mdraid09 mdraid1x \
-	png jpeg
+# build grub efi binaries with relaxed kernel signature checks
+# (see patch#201).
+%ifarch %efi_arches
+CFLAGS='%optflags -DRELAX_KERNEL_SIGNATURE_CHECK=1' \
+	build_grub build-efi-relaxed \
+	--with-platform=efi \
+#
+build_efi_image build-efi-relaxed/grub-mkimage build-efi-relaxed %grubefiarch %linux_module_name
 %endif
 
 %ifarch x86_64
-pushd ../%name-ia32-%version
-
-%if_with sb_kern_signature_check_relaxed
-# grubia32sb.efi brings strict checking for kernel sign
-%define EFI_IA32_BINARY_NAME grubia32sb.efi
-%else
-%define EFI_IA32_BINARY_NAME grubia32.efi
+CFLAGS='%optflags -DRELAX_KERNEL_SIGNATURE_CHECK=1' \
+	build_grub build-efi-ia32-relaxed \
+	--with-platform=efi \
+	--target=i386 \
+#
+# use 64bit mkimage to build i386-efi image
+build_efi_image build-efi-relaxed/grub-mkimage build-efi-ia32-relaxed i386-efi linuxefi
 %endif
-
-../%name-%version/grub-mkimage -O i386-efi -o %EFI_IA32_BINARY_NAME -d ./grub-core -p "" \
-        -c embedded_grub.cfg \
-        part_gpt part_apple part_msdos hfsplus fat ext2 btrfs xfs squash4 normal chain boot configfile linuxefi diskfilter \
-        minicmd reboot halt search search_fs_uuid search_fs_file search_label sleep test syslinuxcfg all_video video \
-        font gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat gzio iso9660 loadenv loopback mdraid09 mdraid1x \
-        png jpeg
-
-%if_with sb_kern_signature_check_relaxed
-make clean
-patch -p0 < %PATCH201
-%make_build
-
-../%name-%version/grub-mkimage -O i386-efi -o ./grubia32.efi -d ./grub-core -p "" \
-        -c embedded_grub.cfg \
-        part_gpt part_apple part_msdos hfsplus fat ext2 btrfs xfs squash4 normal chain boot configfile linuxefi diskfilter \
-        minicmd reboot halt search search_fs_uuid search_fs_file search_label sleep test syslinuxcfg all_video video \
-        font gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat gzio iso9660 loadenv loopback mdraid09 mdraid1x \
-        png jpeg
 %endif
-popd
 %endif
 
 %install
 %ifarch %ix86 x86_64
-%makeinstall_std -C ../%name-pc-%version
+%makeinstall_std -C build-pc
 %ifarch x86_64
-pushd ../%name-ia32-%version
 #"cherry pick" only i386 executable
-install -pDm644 grubia32.efi %buildroot%_efi_bindir/grubia32.efi
 %if_with sb_kern_signature_check_relaxed
-install -pDm644 grubia32sb.efi %buildroot%_efi_bindir/grubia32sb.efi
+install -pDm644 build-efi-ia32/grub.efi %buildroot%_efi_bindir/grubia32sb.efi
+install -pDm644 build-efi-ia32-relaxed/grub.efi %buildroot%_efi_bindir/grubia32.efi
+%else
+install -pDm644 build-efi-ia32/grub.efi %buildroot%_efi_bindir/grubia32.efi
 %endif
 
 #install ia32 version in parallel with x64 for x86_64 platforms with ia32 EFI
-%makeinstall_std -C ../%name-ia32-%version
-popd
+%makeinstall_std -C build-efi-ia32
 %endif
 %endif
-%makeinstall_std
+
+%makeinstall_std -C \
+%ifarch ppc64le
+	build-ieee1275
+%else
+	build-efi
+%endif
 
 install -pDm644 %SOURCE1 %buildroot%_sysconfdir/sysconfig/grub2
 
@@ -369,7 +365,9 @@ sed -i 's,@LOCALEDIR@,%_datadir/locale,g' %buildroot%_sysconfdir/grub.d/*
 
 install -pDm755 %SOURCE4  %buildroot%_rpmlibdir/grub.filetrigger
 install -pDm755 %SOURCE6  %buildroot%_sbindir/grub-autoupdate
+%ifarch %efi_arches
 install -pDm755 %SOURCE10 %buildroot%_sbindir/grub-efi-autoupdate
+%endif
 install -pDm755 %SOURCE12 %buildroot%_sbindir/grub-entries
 
 # Ghost config file
@@ -381,9 +379,12 @@ ln -s ../boot/grub/grub.cfg %buildroot%_sysconfdir/grub.cfg
 mkdir -p %buildroot%_sysconfdir/default
 ln -s ../sysconfig/grub2 %buildroot%_sysconfdir/default/grub
 
-install -pDm644 grubx64.efi %buildroot%_efi_bindir/grubx64.efi
+%ifarch %efi_arches
 %if_with sb_kern_signature_check_relaxed
-install -pDm644 grubx64sb.efi %buildroot%_efi_bindir/grubx64sb.efi
+install -pDm644 build-efi/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}sb.efi
+install -pDm644 build-efi-relaxed/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}.efi
+%else
+install -pDm644 build-efi/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}.efi
 %endif
 
 # NB: UEFI GRUB2 image gets signed when build environment is set up that way
@@ -398,6 +399,9 @@ install -pDm644 grubx64sb.efi %buildroot%_efi_bindir/grubx64sb.efi
 
 # Remove headers
 rm -f %buildroot%_libdir/grub-efi/*/*.h
+%endif
+rm %buildroot%_sysconfdir/grub.d/README
+rm %buildroot%_sysconfdir/grub.d/41_custom
 
 %files common -f grub.lang
 %dir %_sysconfdir/grub.d
@@ -421,7 +425,7 @@ rm -f %buildroot%_libdir/grub-efi/*/*.h
 %_sysconfdir/bash_completion.d/grub
 %_rpmlibdir/%name.filetrigger
 # these tools are only for efi and x86_64
-%ifarch x86_64
+%ifarch x86_64 ppc64le
 %_bindir/grub-render-label
 %_sbindir/grub-bios-setup
 %_sbindir/grub-macbless
@@ -468,10 +472,17 @@ rm -f %buildroot%_libdir/grub-efi/*/*.h
 %_libdir/grub/*-pc/
 %endif
 
+%ifarch ppc64le
+%files ieee1275
+%_sbindir/grub-autoupdate
+%_libdir/grub/*-ieee1275/
+%endif
+
+%ifarch %efi_arches
 %files efi
-%_efi_bindir/grubx64.efi
+%_efi_bindir/grub%{efi_suff}.efi
 %if_with sb_kern_signature_check_relaxed
-%_efi_bindir/grubx64sb.efi
+%_efi_bindir/grub%{efi_suff}sb.efi
 %endif
 %ifarch x86_64
 %_efi_bindir/grubia32.efi
@@ -482,9 +493,15 @@ rm -f %buildroot%_libdir/grub-efi/*/*.h
 %endif
 %_sbindir/grub-efi-autoupdate
 %_libdir/grub/%grubefiarch
+%endif
 
+%ifarch %ix86 x86_64 ppc64le
 %ifarch %ix86 x86_64
 %post pc
+%endif
+%ifarch ppc64le
+%post ieee1275
+%endif
 grub-autoupdate || {
 	echo "** WARNING: grub-autoupdate failed, NEXT BOOT WILL LIKELY FAIL NOW"
 	echo "** WARNING: please run it by hand, record the output offline,"
@@ -508,6 +525,14 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Fri Jun 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.02-alt17
+- Refactored %%build and %%install sections;
+- Added grub-ieee1275 support for ppc64le architecture;
+- %%ix86: renamed efi image files to grubia32{,sb}.efi ;
+- spec:
+  + removed unpackaged files;
+  + added ExclusiveArch tag to skip build on unsupported architectures.
+
 * Tue Mar 19 2019 Leonid Krivoshein <klark@altlinux.org> 2.02-alt16
 - grub-entries script: variables initialization added
 
