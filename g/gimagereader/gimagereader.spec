@@ -2,7 +2,7 @@
 
 Name: gimagereader
 Version: 3.3.0
-Release: alt1
+Release: alt2
 
 Summary: A graphical GTK frontend to tesseract-ocr
 
@@ -74,6 +74,10 @@ This package contains the Gtk+ front-end.
 Group: Office
 Summary: A Qt 5 front-end to tesseract-ocr
 Requires: %name-common = %version-%release
+%if_without qt4
+Provides: gimagereader-qt4 = %EVR
+Obsoletes: gimagereader-qt4 < %EVR
+%endif
 
 %description qt5
 gImageReader is a simple front-end to tesseract. Features include:
@@ -185,6 +189,9 @@ ln -s %name-gtk %buildroot%_bindir/%name
 %_bindir/%name
 
 %changelog
+* Tue Jun 25 2019 Vitaly Lipatov <lav@altlinux.ru> 3.3.0-alt2
+- gimagereader-qt5 now provides gimagereader-qt4 (ALT bug 36946)
+
 * Sat Oct 06 2018 Vitaly Lipatov <lav@altlinux.ru> 3.3.0-alt1
 - new version 3.3.0 (with rpmrb script)
 
