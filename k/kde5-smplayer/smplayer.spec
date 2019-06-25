@@ -2,13 +2,13 @@
 %def_enable mpv
 
 %define rname smplayer
-%define svn 9113
+%define svn 9214
 %define xde kde5
 %define XDE KDE5
 %define xapp kf5
 Name: %xde-%rname
-Version: 18.9.0.%svn
-Release: alt1%ubt
+Version: 19.5.0.%svn
+Release: alt1
 
 %define qt_bin_dir %_qt5_bindir
 %define configure_qmake %qmake_qt5
@@ -33,7 +33,6 @@ Patch3: alt-ui-defaults.patch
 Patch4: alt-paths.patch
 Patch5: alt-youtube-browser.patch
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ qt5-base-devel qt5-tools-devel qt5-script-devel
 BuildRequires: libXext-devel zlib-devel
 
@@ -171,43 +170,49 @@ done
 
 
 %changelog
-* Thu Sep 20 2018 Sergey V Turchin <zerg@altlinux.org> 18.9.0.9113-alt1%ubt
+* Tue Jun 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.5.0.9214-alt1
 - new version
 
-* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 18.6.0.9075-alt1%ubt
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 18.9.0.9113-alt2
+- NMU: remove ubt from release
+
+* Thu Sep 20 2018 Sergey V Turchin <zerg@altlinux.org> 18.9.0.9113-alt1
 - new version
 
-* Thu Apr 26 2018 Sergey V Turchin <zerg@altlinux.org> 18.4.0.8992-alt1%ubt
+* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 18.6.0.9075-alt1
 - new version
 
-* Tue Feb 06 2018 Sergey V Turchin <zerg@altlinux.org> 18.2.0.8910-alt2%ubt
+* Thu Apr 26 2018 Sergey V Turchin <zerg@altlinux.org> 18.4.0.8992-alt1
+- new version
+
+* Tue Feb 06 2018 Sergey V Turchin <zerg@altlinux.org> 18.2.0.8910-alt2
 - fix noarch packages
 
-* Tue Feb 06 2018 Sergey V Turchin <zerg@altlinux.org> 18.2.0.8910-alt1%ubt
+* Tue Feb 06 2018 Sergey V Turchin <zerg@altlinux.org> 18.2.0.8910-alt1
 - new version
 
-* Tue Oct 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.10.0.8701-alt1%ubt
+* Tue Oct 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.10.0.8701-alt1
 - new version
 
-* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 17.9.0.8645-alt1%ubt
+* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 17.9.0.8645-alt1
 - new version
 
-* Fri Jul 28 2017 Sergey V Turchin <zerg@altlinux.org> 17.7.0.8599-alt2%ubt
+* Fri Jul 28 2017 Sergey V Turchin <zerg@altlinux.org> 17.7.0.8599-alt2
 - add alternate symlink to main binary
 
-* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 17.7.0.8599-alt1%ubt
+* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 17.7.0.8599-alt1
 - new version
 
-* Wed May 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.4.2.8540-alt2%ubt
+* Wed May 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.4.2.8540-alt2
 - fix drop url to player window
 
-* Wed May 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.4.2.8540-alt1%ubt
+* Wed May 03 2017 Sergey V Turchin <zerg@altlinux.org> 17.4.2.8540-alt1
 - new version
 
-* Tue Mar 21 2017 Sergey V Turchin <zerg@altlinux.org> 17.3.0.8467-alt1%ubt
+* Tue Mar 21 2017 Sergey V Turchin <zerg@altlinux.org> 17.3.0.8467-alt1
 - new version
 
-* Fri Jan 27 2017 Sergey V Turchin <zerg@altlinux.org> 17.1.0.8380-alt1%ubt
+* Fri Jan 27 2017 Sergey V Turchin <zerg@altlinux.org> 17.1.0.8380-alt1
 - new version
 
 * Fri Nov 25 2016 Sergey V Turchin <zerg@altlinux.org> 16.11.0.8242-alt0.M80P.1
