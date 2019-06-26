@@ -1,7 +1,9 @@
 
+%def_disable gstreamer
+
 Name: qt4-webkit
 Version: 2.3.4
-Release: alt6
+Release: alt7
 Epoch: 1
 
 Group: System/Libraries
@@ -28,9 +30,10 @@ Patch108: buffer-ranges.patch
 # Automatically added by buildreq on Sat May 16 2015 (-bi)
 # optimized out: elfutils fontconfig fontconfig-devel glib2-devel glibc-devel-static gstreamer1.0-devel kde4libs libGL-devel libX11-devel libXext-devel libXrender-devel libcloog-isl4 libdbusmenu-qt2 libfreetype-devel libgio-devel libgnome-keyring libgpg-error libgst-plugins1.0 libpng-devel libqt4-core libqt4-dbus libqt4-declarative libqt4-devel libqt4-gui libqt4-location libqt4-network libqt4-opengl libqt4-script libqt4-sensors libqt4-sql libqt4-svg libqt4-test libqt4-xml libqt4-xmlpatterns libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-encodings python-modules-xml ruby ruby-stdlibs xorg-renderproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: flex gcc-c++ git-core gperf gst-plugins1.0-devel libdb4-devel libjpeg-devel libsqlite3-devel libsubversion-auth-gnome-keyring libsubversion-auth-kwallet libudev-devel libwebp-devel libxslt-devel perl-Term-ANSIColor phonon-devel python-module-google python-modules-json qt4-mobility-devel rpm-build-ruby subversion zlib-devel-static
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: flex gcc-c++ gperf
+%if_enabled gstreamer
 BuildRequires: pkgconfig(gstreamer-1.0) pkgconfig(gstreamer-app-1.0)
+%endif
 BuildRequires: libjpeg-devel libwebp-devel libpng-devel
 BuildRequires: libpcre-devel libicu-devel libsqlite3-devel libxslt-devel zlib-devel
 BuildRequires: perl-Term-ANSIColor rpm-build-ruby python-modules-json python-modules-xml
@@ -91,7 +94,12 @@ export WEBKITOUTPUTDIR=`pwd`
   --qt \
   --no-webkit2 \
   --release \
-  --qmakearg="CONFIG+=production_build CONFIG+=use_system_icu QMAKE_CFLAGS+=\"%optflags\" QMAKE_CXXFLAGS+=\"%optflags\" DEFINES+=USE_GSTREAMER=1 DEFINES+=HAVE_LIBWEBP=1 $jitopts" \
+  --qmakearg="CONFIG+=production_build CONFIG+=use_system_icu QMAKE_CFLAGS+=\"%optflags\" QMAKE_CXXFLAGS+=\"%optflags\" \
+%if_enabled gstreamer
+  DEFINES+=USE_GSTREAMER=1 \
+%endif
+  DEFINES+=ENABLE_VIDEO=0 DEFINES+=ENABLE_NETSCAPE_PLUGIN_API=0 DEFINES+=ENABLE_WEB_AUDIO=0 DEFINES+=ENABLE_WEBGL=0 \
+  DEFINES+=HAVE_LIBWEBP=1 $jitopts" \
 %ifarch %ix86
   --no-force-sse2 \
 %endif
@@ -122,14 +130,17 @@ done
 %_pkgconfigdir/QtWebKit.pc
 
 %changelog
+* Tue Jun 25 2019 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt7
+- simplify features
+
 * Fri Oct 19 2018 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt6
 - fix build requires
 
-* Tue Oct 02 2018 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt5%ubt
+* Tue Oct 02 2018 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt5
 - build without qtmobility
 - remove -g compile flag for all archs
 
-* Tue Oct 10 2017 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt4%ubt
+* Tue Oct 10 2017 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt4
 - rebuild with new libwebp
 
 * Mon Jan 25 2016 Sergey V Turchin <zerg@altlinux.org> 1:2.3.4-alt3
