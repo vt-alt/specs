@@ -1,7 +1,9 @@
+# should use generic java rpath;
+%def_without java
 %set_verify_elf_method unresolved=strict
 Name: gnustep-sqlclient
 Version: 1.7.0
-Release: alt7.svn20140221.1
+Release: alt8.svn20140221.1
 Summary: Provide a simple interface to SQL databases for GNUstep applications
 License: LGPLv3+
 Group: Graphical desktop/GNUstep
@@ -16,8 +18,11 @@ Source: %name-%version.tar
 BuildRequires(pre): rpm-build-java
 BuildRequires: clang-devel gnustep-make-devel gnustep-base-devel
 BuildRequires: libgnustep-objc2-devel gnustep-performance-devel /proc
-BuildRequires: java-devel-default postgresql-devel libsqlite3-devel
+BuildRequires: postgresql-devel libsqlite3-devel
 BuildRequires: libMySQL-devel
+%if_with java
+BuildRequires: java-devel-default
+%endif
 
 Requires: lib%name = %version-%release
 Requires: gnustep-back
@@ -85,10 +90,12 @@ export LD_LIBRARY_PATH=$(dirname $(find %_jvmdir -name libjvm.so) \
 	--libexecdir=%_libdir \
 	--with-postgres-dir=%prefix \
 	--with-additional-include=-I%_includedir/pgsql \
+%if_with java
 %ifarch x86_64
 	--with-jre-architecture=amd64 \
 %else
 	--with-jre-architecture=i386 \
+%endif
 %endif
 	--with-installation-domain=SYSTEM
 
@@ -104,7 +111,12 @@ buildIt() {
 }
 
 buildIt
-for i in SQLite MySQL JDBC_libs JDBC Postgres ECPG
+for i in SQLite MySQL \
+%if_with java
+	JDBC_libs \
+	JDBC \
+%endif
+	Postgres ECPG
 do
 	rm -f $(find ./ -name $i -type f)
 done
@@ -130,6 +142,11 @@ buildIt $libSQLClient
 %_docdir/GNUstep
 
 %changelog
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.7.0-alt8.svn20140221.1
+- NMU: disabled java support as it links and generates dependencies with
+  JVM's name and release; should use /usr/lib/jvm/jre/lib/<jarch> as RPATH
+  or do not link with JVM at all.
+
 * Mon Jun 25 2018 Igor Vlasenko <viy@altlinux.ru> 1.7.0-alt7.svn20140221.1
 - NMU: rebuild with new openjdk java
 

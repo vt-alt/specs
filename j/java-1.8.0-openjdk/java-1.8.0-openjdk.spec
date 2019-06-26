@@ -9,7 +9,6 @@ BuildRequires: ca-certificates-java
 %set_verify_elf_method textrel=relaxed
 %endif
 %def_enable accessibility
-%def_disable jvmjardir
 %def_disable javaws
 %def_disable moz_plugin
 %def_disable control_panel
@@ -29,8 +28,8 @@ BuildRequires: jpackage-generic-compat
 %define _localstatedir %{_var}
 # %%name and %%version and %%release is ahead of its definition. Predefining for rpm 4.0 compatibility.
 %define name java-1.8.0-openjdk
-%define version 1.8.0.151
-%define release 5.b12
+%define version 1.8.0.171
+%define release 8.b10
 # note, parametrised macros are order-senisitve (unlike not-parametrized) even with normal macros
 # also necessary when passing it as parameter other macros. If not macro, then it is considered as switch
 %global debug_suffix_unquoted -debug
@@ -211,10 +210,10 @@ BuildRequires: jpackage-generic-compat
 # note, following three variables are sedded from update_sources if used correctly. Hardcode them rather there.
 %global project         aarch64-port
 %global repo            jdk8u
-%global revision        aarch64-jdk8u151-b12
+%global revision        aarch64-jdk8u171-b10
 %global shenandoah_project	aarch64-port
 %global shenandoah_repo		jdk8u-shenandoah
-%global shenandoah_revision    	aarch64-shenandoah-jdk8u151-b12
+%global shenandoah_revision    	aarch64-shenandoah-jdk8u171-b10
 
 # eg # jdk8u60-b27 -> jdk8u60 or # aarch64-jdk8u60-b27 -> aarch64-jdk8u60  (dont forget spec escape % by %%)
 %global whole_update    %(VERSION=%{revision}; echo ${VERSION%%-*})
@@ -303,7 +302,7 @@ BuildRequires: jpackage-generic-compat
 
 Name:    java-%{javaver}-%{origin}
 Version: %{javaver}.%{updatever}
-Release: alt2_5.b12jpp8
+Release: alt2_8.b10jpp8
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -318,7 +317,17 @@ Epoch:   0
 Summary: OpenJDK Runtime Environment
 Group:   Development/Other
 
-License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
+# HotSpot code is licensed under GPLv2
+# JDK library code is licensed under GPLv2 with the Classpath exception
+# The Apache license is used in code taken from Apache projects (primarily JAXP & JAXWS)
+# DOM levels 2 & 3 and the XML digital signature schemas are licensed under the W3C Software License
+# The JSR166 concurrency code is in the public domain
+# The BSD and MIT licenses are used for a number of third-party libraries (see THIRD_PARTY_README)
+# The OpenJDK source tree includes the JPEG library (IJG), zlib & libpng (zlib), giflib and LCMS (MIT)
+# The test code includes copies of NSS under the Mozilla Public License v2.0
+# The PCSClite headers are under a BSD with advertising license
+# The elliptic curve cryptography (ECC) source code is licensed under the LGPLv2.1 or any later version
+License:  ASL 1.1 and ASL 2.0 and BSD and BSD with advertising and GPL+ and GPLv2 and GPLv2 with exceptions and IJG and LGPLv2+ and MIT and MPLv2.0 and Public Domain and W3C and zlib
 URL:      http://openjdk.java.net/
 
 # aarch64-port now contains integration forest of both aarch64 and normal jdk
@@ -408,13 +417,16 @@ Patch509: rh1176206-root.patch
 Patch523: pr2974-rh1337583.patch
 # PR3083, RH1346460: Regression in SSL debug output without an ECC provider
 Patch528: pr3083-rh1346460.patch
+Patch529: rh1566890_embargoed20180521.patch
+
+# Upstreamable debugging patches
 # Patches 204 and 205 stop the build adding .gnu_debuglink sections to unstripped files
 Patch204: hotspot-remove-debuglink.patch
 Patch205: dont-add-unnecessary-debug-links.patch
 # Enable debug information for assembly code files
 Patch206: hotspot-assembler-debuginfo.patch
-# 8188030, PR3459, RH1484079: AWT java apps fail to start when some minimal fonts are present
-Patch560: 8188030-pr3459-rh1484079.patch
+# 8200556, PR3566: AArch64 port crashes on slowdebug builds
+Patch207: 8200556-pr3566.patch
 
 # Arch-specific upstreamable patches
 # PR2415: JVM -Xmx requirement is too high on s390
@@ -423,6 +435,8 @@ Patch100: %{name}-s390-java-opts.patch
 Patch102: %{name}-size_t.patch
 # Use "%z" for size_t on s390 as size_t != intptr_t
 Patch103: s390-size_t_format_flags.patch
+# Fix more cases of missing return statements on AArch64
+Patch104: pr3458-rh1540242.patch
 # AArch64: PR3519: Fix further functions with a missing return value (AArch64)
 Patch106: pr3519-fix_further_functions_with_a_missing_return_value.patch
 
@@ -451,49 +465,17 @@ Patch526: 6260348-pr3066.patch
 Patch530: pr3601-fix_additional_Wreturn_type_issues_introduced_by_8061651_for_prims_jvm_cpp.patch
 # 8061305, PR3335, RH1423421: Javadoc crashes when method name ends with "Property"
 Patch538: 8061305-pr3335-rh1423421.patch
-
-# Patches upstream and appearing in 8u151
-# 8075484, PR3473, RH1490713: SocketInputStream.socketRead0 can hang even with soTimeout set
-Patch561: 8075484-pr3473-rh1490713.patch
-
+# 8188030, PR3459, RH1484079: AWT java apps fail to start when some minimal fonts are present
+Patch560: 8188030-pr3459-rh1484079.patch
+# 8197429, PR3456, RH153662{2,3}: 32 bit java app started via JNI crashes with larger stack sizes
+Patch561: 8197429-pr3456-rh1536622.patch
+ 
 # 8197981, PR3548: Missing return statement in __sync_val_compare_and_swap_8
 Patch575: jdk8197981-pr3548-missing_return_statement_in_sync_val_compare_and_swap_8.patch
 # 8064786, PR3599: Fix debug build after 8062808: Turn on the -Wreturn-type warning
 Patch576: jdk8064786-pr3599-fix_debug_build_after_8062808_Turn_on_the_wreturn_type_warning.patch
 # 8062808, PR3548: Turn on the -Wreturn-type warning
 Patch577: jdk8062808-pr3548-turn_on_the_wreturn_type_warning.patch
-
-# Patches upstream and appearing in 8u152
-# 8153711, PR3313, RH1284948: [REDO] JDWP: Memory Leak: GlobalRefs never deleted when processing invokeMethod command
-Patch535: 8153711-pr3313-rh1284948.patch
-# 8162384, PR3122, RH1358661: Performance regression: bimorphic inlining may be bypassed by type speculation
-Patch532: 8162384-pr3122-rh1358661.patch
-# 8173941, PR3326: SA does not work if executable is DSO
-Patch547: 8173941-pr3326.patch
-# 8175813, PR3394, RH1448880: PPC64: "mbind: Invalid argument" when -XX:+UseNUMA is used
-Patch550: 8175813-pr3394-rh1448880.patch
-# 8175887, PR3415: C1 value numbering handling of Unsafe.get*Volatile is incorrect
-Patch554: 8175887-pr3415.patch
-# 8180048, PR3411, RH1449870: Interned string and symbol table leak memory during parallel unlinking
-Patch564: 8180048-pr3411-rh1449870.patch
-
-# Patches upstream and appearing in 8u161
-# 8164293, PR3412, RH1459641: HotSpot leaking memory in long-running requests
-Patch555: 8164293-pr3412-rh1459641.patch
- 
-# Patches upstream and appearing in 8u162
-# 8181055, PR3394, RH1448880: PPC64: "mbind: Invalid argument" still seen after 8175813
-Patch551: 8181055-pr3394-rh1448880.patch
-# 8181419, PR3413, RH1463144: Race in jdwp invoker handling may lead to crashes or invalid results
-Patch553: 8181419-pr3413-rh1463144.patch
-# 8145913, PR3466, RH1498309: PPC64: add Montgomery multiply intrinsic
-Patch556: 8145913-pr3466-rh1498309.patch
-# 8168318, PR3466, RH1498320: PPC64: Use cmpldi instead of li/cmpld
-Patch557: 8168318-pr3466-rh1498320.patch
-# 8170328, PR3466, RH1498321: PPC64: Use andis instead of lis/and
-Patch558: 8170328-pr3466-rh1498321.patch
-# 8181810, PR3466, RH1498319: PPC64: Leverage extrdi for bitfield extract
-Patch559: 8181810-pr3466-rh1498319.patch
 
 #############################################
 #
@@ -519,7 +501,9 @@ Patch534: always_assumemp.patch
 # PR2888: OpenJDK should check for system cacerts database (e.g. /etc/pki/java/cacerts)
 Patch539: pr2888.patch
 
-Patch900: upstream-gcc8-return-type-fixes.patch
+# Shenandoah fixes
+# PR3573: Fix TCK crash with Shenandoah
+Patch700: pr3573.patch
 
 # Non-OpenJDK fixes
 
@@ -549,8 +533,7 @@ BuildRequires: libXtst-devel
 BuildRequires: libnss-devel libnss-devel-static
 BuildRequires: xorg-pmproto-devel xorg-proto-devel xorg-xf86miscproto-devel
 BuildRequires: zip
-# Use OpenJDK 8 to bootstrap on AArch64 until RH1482244 is resolved in buildroot
-%ifarch %{ix86} x86_64
+%ifarch %arm %e2k
 BuildRequires: java-1.8.0-openjdk-devel
 %else
 BuildRequires: java-1.8.0-openjdk-devel
@@ -598,24 +581,19 @@ Source44: import.info
 %define label -%{name}
 %define javaws_ver      %{javaver}
 
-# findprov below did not help at all :(
-%add_findprov_lib_path %{_jvmdir}/%{jredir}/lib/%archinstall
-%add_findprov_lib_path %{_jvmdir}/%{jredir}/lib/%archinstall/jli
-# it is needed for those apps which links with libjvm.so
-%add_findprov_lib_path %{_jvmdir}/%{jredir}/lib/%archinstall/server
-%ifnarch x86_64
-%add_findprov_lib_path %{_jvmdir}/%{jredir}/lib/%archinstall/client
-%endif
-
-%ifarch x86_64
+%ifarch x86_64 aarch64
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/server/libjvm.so()(64bit)
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/server/libjvm.so(SUNWprivate_1.1)(64bit)
+Provides: %{_jvmdir}/%{jredir}/lib/%{archinstall}/server/libjvm.so()(64bit)
+Provides: %{_jvmdir}/%{jredir}/lib/%{archinstall}/server/libjvm.so(SUNWprivate_1.1)(64bit)
 %endif
 %ifarch %ix86
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/server/libjvm.so()
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/server/libjvm.so(SUNWprivate_1.1)
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/client/libjvm.so()
 Provides: /usr/lib/jvm/java/jre/lib/%archinstall/client/libjvm.so(SUNWprivate_1.1)
+Provides: %{_jvmdir}/%{jredir}/lib/%{archinstall}/server/libjvm.so()
+Provides: %{_jvmdir}/%{jredir}/lib/%{archinstall}/server/libjvm.so(SUNWprivate_1.1)
 %endif
 Patch33: java-1.8.0-openjdk-alt-no-Werror.patch
 Patch34: java-1.8.0-openjdk-alt-link.patch
@@ -959,6 +937,7 @@ sh %{SOURCE12}
 %patch204
 %patch205
 %patch206
+%patch207
 
 %patch1
 %patch3
@@ -971,10 +950,12 @@ sh %{SOURCE12}
 %patch103
 
 # AArch64 fixes
+%patch104
+
+# AArch64 fixes
 %patch106
 
 # ppc64le fixes
-
 %patch603
 %patch601
 %patch602
@@ -1001,28 +982,16 @@ sh %{SOURCE12}
 %patch523
 %patch526
 %patch528
-%patch530
-%patch532
-%patch535
+%patch529
 %patch538
-%patch547
-%patch550
-%patch551
-%patch553
-%patch555
 %patch560
 %patch561
-%patch564
+
+%patch530
 %patch575
 %patch576
 %patch577
 %patch588
-
-# PPC64 updates
-%patch556
-%patch557
-%patch558
-%patch559
 
 # RPM-only fixes
 %patch525
@@ -1033,13 +1002,10 @@ sh %{SOURCE12}
 %patch534
 %endif
 
-# 8175887 was added to the Shenandoah HotSpot ahead of time
+# Shenandoah-only patches
 %if %{use_shenandoah_hotspot}
-%else
-%patch554
+%patch700
 %endif
-
-%patch900 -p1
 
 # Extract systemtap tapsets
 %if_enabled systemtap
@@ -1084,8 +1050,6 @@ done
 sed -e s:@NSS_LIBDIR@:%{NSS_LIBDIR}:g %{SOURCE11} > nss.cfg
 sed -i -e 's,DEF_OBJCOPY=/usr/bin/objcopy,DEF_OBJCOPY=/usr/bin/NO-objcopy,' openjdk/hotspot/make/linux/makefiles/defs.make
 sed -i -e 's, -m32, -m32 %optflags_shared -fpic -D_BLA_BLA_BLA1,' openjdk/hotspot/make/linux/makefiles/gcc.make
-sed -i -e 's,DEF_OBJCOPY=/usr/bin/objcopy,DEF_OBJCOPY=/usr/bin/NO-objcopy,' jdk8/hotspot/make/linux/makefiles/defs.make
-sed -i -e /BASIC_REMOVE_SYMBOLIC_LINKS/d jdk8/common/autoconf/toolchain.m4
 %patch33 -p1
 %patch34 -p1
 
@@ -1156,6 +1120,7 @@ bash ../../configure \
     --with-num-cores="$NUM_PROC"
 
 #    --enable-system-nss \
+
 cat spec.gmk
 cat hotspot-spec.gmk
 
@@ -1207,8 +1172,8 @@ for suffix in %{rev_build_loop} ; do
 export JAVA_HOME=$(pwd)/%{buildoutputdir}/images/%{j2sdkimage}
 
 # Check unlimited policy has been used
-#$JAVA_HOME/bin/javac -d . %{SOURCE13}
-#$JAVA_HOME/bin/java TestCryptoLevel
+$JAVA_HOME/bin/javac -d . %{SOURCE13}
+$JAVA_HOME/bin/java TestCryptoLevel
 
 # Check ECC is working
 #$JAVA_HOME/bin/javac -d . %{SOURCE14}
@@ -1502,8 +1467,6 @@ touch -t 201401010000 $RPM_BUILD_ROOT/%{_jvmdir}/%{jredir}/lib/security/java.sec
 
 # end, dual install
 done
-# multiple -f flags in %files: merging -f  into -f %{name}.files
-#cat  >> %{name}.files
 
 # touching all ghosts; hack for rpm 4.0.4
 for rpm404_ghost in %{_jvmdir}/%{jredir}/lib/%{archinstall}/server/classes.jsa %{_jvmdir}/%{jredir}/lib/%{archinstall}/client/classes.jsa
@@ -1519,6 +1482,18 @@ done
 
 sed -i 's,^Categories=.*,Categories=Settings;Java;X-ALTLinux-Java;X-ALTLinux-Java-%javaver-%{origin};,' %buildroot/usr/share/applications/*policytool.desktop
 sed -i 's,^Categories=.*,Categories=Development;Profiling;Java;X-ALTLinux-Java;X-ALTLinux-Java-%javaver-%{origin};,' %buildroot/usr/share/applications/*jconsole.desktop
+desktop-file-edit --set-key=Name --set-value='OpenJDK %javaver Policy Tool' %buildroot/usr/share/applications/*policytool.desktop
+desktop-file-edit --set-key=Comment --set-value='Manage OpenJDK %javaver policy files' %buildroot/usr/share/applications/*policytool.desktop
+#Name=OpenJDK 8 Monitoring & Management Console
+desktop-file-edit --set-key=Name --set-value='OpenJDK %javaver Management Console' %buildroot/usr/share/applications/*jconsole.desktop
+#Comment=Monitor and manage OpenJDK applications
+desktop-file-edit --set-key=Comment --set-value='Monitor and manage OpenJDK %javaver' %buildroot/usr/share/applications/*jconsole.desktop
+
+export LANG=ru_RU.UTF-8
+desktop-file-edit --set-key=Name[ru] --set-value='Настройка политик OpenJDK %javaver' %buildroot/usr/share/applications/*policytool.desktop
+desktop-file-edit --set-key=Comment[ru] --set-value='Управление файлами политик OpenJDK %javaver' %buildroot/usr/share/applications/*policytool.desktop
+desktop-file-edit --set-key=Name[ru] --set-value='Консоль OpenJDK %javaver' %buildroot/usr/share/applications/*jconsole.desktop
+desktop-file-edit --set-key=Comment[ru] --set-value='Мониторинг и управление приложениями OpenJDK %javaver' %buildroot/usr/share/applications/*jconsole.desktop
 
 ##### javadoc Alt specific #####
 echo java-javadoc >java-javadoc-buildreq-substitute
@@ -1538,7 +1513,7 @@ install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/applications
 if [ -e $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/bin/jvisualvm ]; then
   cat >> $RPM_BUILD_ROOT%{_datadir}/applications/%{name}-jvisualvm.desktop << EOF
 [Desktop Entry]
-Name=Java VisualVM (%{name})
+Name=Java VisualVM (OpenJDK %{javaver})
 Comment=Java Virtual Machine Monitoring, Troubleshooting, and Profiling Tool
 Exec=%{_jvmdir}/%{sdkdir}/bin/jvisualvm
 Icon=%{name}
@@ -1552,8 +1527,10 @@ fi
 # ControlPanel freedesktop.org menu entry
 cat >> $RPM_BUILD_ROOT%{_datadir}/applications/%{name}-control-panel.desktop << EOF
 [Desktop Entry]
-Name=Java Plugin Control Panel (%{name})
+Name=Java Control Panel (OpenJDK %{javaver})
+Name[ru]=Настройка Java (OpenJDK %{javaver})
 Comment=Java Control Panel
+Comment[ru]=Панель управления Java
 Exec=%{_jvmdir}/%{jredir}/bin/jcontrol
 Icon=%{name}
 Terminal=false
@@ -1566,7 +1543,7 @@ EOF
 # javaws freedesktop.org menu entry
 cat >> $RPM_BUILD_ROOT%{_datadir}/applications/%{name}-javaws.desktop << EOF
 [Desktop Entry]
-Name=Java Web Start (%{name})
+Name=Java Web Start ((OpenJDK %{javaver}))
 Comment=Java Application Launcher
 MimeType=application/x-java-jnlp-file;
 Exec=%{_jvmdir}/%{jredir}/bin/javaws %%u
@@ -1701,6 +1678,7 @@ fi
 %{_datadir}/icons/hicolor/*x*/apps/java-%{javaver}.png
 %{_datadir}/applications/*policytool.desktop
 %else
+%files
 # placeholder
 %endif
 
@@ -1847,6 +1825,15 @@ fi
 %endif
 
 %changelog
+* Tue Jun 25 2019 Igor Vlasenko <viy@altlinux.ru> 0:1.8.0.171-alt2_8.b10jpp8
+- added provides, cleaned up desktop files
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0:1.8.0.171-alt1_8.b10jpp8
+- new version
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0:1.8.0.161-alt1_0.b14jpp8
+- new version
+
 * Wed Feb 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0:1.8.0.151-alt2_5.b12jpp8
 - NMU: fixed build with gcc-8.
 
