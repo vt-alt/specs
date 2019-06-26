@@ -1,7 +1,7 @@
 %define rname libkscreen
 
 Name: plasma5-%rname
-Version: 5.16.1
+Version: 5.16.2
 Release: alt1
 %K5init altplace
 
@@ -12,7 +12,6 @@ License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 Patch1: alt-pnp-ids-path.patch
-Patch2: alt-fix-multiscreen.patch
 
 # Automatically added by buildreq on Wed Feb 25 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcloog-isl4 libqt5-core libqt5-dbus libqt5-gui libqt5-test libqt5-x11extras libstdc++-devel libxcb-devel libxkbfile-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs xorg-kbproto-devel xorg-randrproto-devel xorg-renderproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
@@ -66,7 +65,6 @@ Obsoletes: kf5-libkscreen-utils < %EVR
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-#%patch2 -p3
 
 %build
 %K5build
@@ -97,6 +95,9 @@ Obsoletes: kf5-libkscreen-utils < %EVR
 %_K5dbus_srv/org.kde.kscreen.service
 
 %changelog
+* Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
+- new version
+
 * Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
 - new version
 

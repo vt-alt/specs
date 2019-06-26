@@ -1,7 +1,7 @@
 %define rname xdg-desktop-portal-kde
 
 Name: plasma5-%rname
-Version: 5.16.1
+Version: 5.16.2
 Release: alt1
 %K5init altplace
 
@@ -9,6 +9,8 @@ Group: Graphical desktop/KDE
 Summary: KDE5 xdg-desktop-portal
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
+
+Provides: xdg-desktop-portal-kde = %version-%release
 
 Requires: xdg-desktop-portal
 
@@ -49,6 +51,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}.sh
 %config(noreplace) %_K5xdgconf/plasma-workspace/env/*.sh
 
 %changelog
+* Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
+- new version
+
 * Tue Jun 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.1-alt1
 - new version
 

@@ -26,8 +26,8 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.16.1
-Release: alt3
+Version: 5.16.2
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -251,6 +251,8 @@ cat %SOURCE1 >> po/ru/freememorynotifier.po
 # fix dbus service
 sed -i 's|^Exec=.*|Exec=%_K5bin/krunner|' %buildroot/%_K5dbus_srv/org.kde.krunner.service
 
+mkdir -p %buildroot/%_K5xdgconf/plasma-workspace/env/
+
 mkdir -p %buildroot/%_bindir
 ln -s `relative %_kf5_bin/startkde %_bindir/startkde5` %buildroot/%_bindir/startkde5
 ln -s startkde %buildroot/%_kf5_bin/startkde5
@@ -294,6 +296,8 @@ done
 
 %files common -f %name.lang
 %doc COPYING*
+%dir %_K5xdgconf/plasma-workspace/
+%dir %_K5xdgconf/plasma-workspace/env/
 %config(noreplace) %_K5xdgconf/*rc
 %config(noreplace) %_K5xdgconf/*.*categories
 %dir %_K5data/desktop-directories/
@@ -387,6 +391,9 @@ done
 
 
 %changelog
+* Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt1
+- new version
+
 * Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.1-alt3
 - enable free memory notifications by default
 
