@@ -8,7 +8,7 @@
 
 Name: calligra
 Version: 3.1.0
-Release: alt6
+Release: alt7
 Epoch: 0
 %K5init no_altplace
 %define libname lib%name
@@ -46,7 +46,7 @@ Patch17: 0017-poppler074.patch
 # ALT
 Patch103: alt-disable-products.patch
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: kf5-attica-devel boost-devel eigen3 gcc-c++ glib2-devel rpm-build-python rpm-build-ruby
 BuildRequires: extra-cmake-modules
 BuildRequires: qt5-base-devel qt5-svg-devel qt5-declarative-devel qt5-script-devel qt5-x11extras-devel
@@ -429,6 +429,9 @@ done
 %exclude %_K5lib/libkookularGenerator_odt.so*
 
 %changelog
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0:3.1.0-alt7
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Feb 18 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt6
 - fix build with poppler-0.72
 

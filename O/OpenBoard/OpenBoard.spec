@@ -4,7 +4,7 @@
 %define dest_dir %_libdir/OpenBoard
 Name: OpenBoard
 Version: 1.5.2
-Release: alt2
+Release: alt3
 Summary: Interactive whiteboard for schools and universities
 License: GPL-3.0+
 Group: Education
@@ -25,7 +25,6 @@ Patch5: openboard-poppler-0.72.patch
 # fix build with Qt5 >= 5.12
 Patch6: openboard-1.4.1-fix-build-with-qt-5.12.patch
 
-Buildrequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ libgomp-devel
 BuildRequires: desktop-file-utils
 BuildRequires: libpaper-devel
@@ -158,6 +157,9 @@ cp -R resources/customizations %buildroot%dest_dir/
 %_bindir/%name
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.5.2-alt3
+- NMU: remove rpm-build-ubt from BR:
+
 * Sun Mar 31 2019 Anton Midyukov <antohami@altlinux.org> 1.5.2-alt2
 - Update patchs (Fix FTBFS) (Thanks Mageia Team)
 
