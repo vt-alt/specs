@@ -2,12 +2,15 @@
 
 Name: qt5-quickcontrols
 Version: 5.12.4
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - module with set of QtQuick controls
 License: LGPLv2 / GPLv3
 Url: http://qt.io/
+
+Provides: qt5-qtquickcontrols = %version-%release
+Provides: libqt5-qtquickcontrols = %version-%release
 
 Source: %qt_module-opensource-src-%version.tar
 
@@ -62,6 +65,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt2
+- provide qt5-qtquickcontrols and libqt5-qtquickcontrols
+
 * Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
 - new version
 
