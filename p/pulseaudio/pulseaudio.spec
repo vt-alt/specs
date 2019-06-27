@@ -1,6 +1,6 @@
 Name: pulseaudio
 Version: 12.2
-Release: alt2
+Release: alt3
 
 Summary: PulseAudio is a networked sound server
 Group: System/Servers
@@ -60,7 +60,7 @@ Features:
 * Flexible, implicit sample type conversion and resampling
 * "Zero-Copy" architecture
 * May be used to combine multiple sound cards to one (with sample rate adjustment)
-* Ability to fully synchronize multiple playback streams 
+* Ability to fully synchronize multiple playback streams
 
 This virtual package contains pulseaudio daemon and utilities.
 
@@ -74,7 +74,7 @@ Conflicts: %name-daemon < 0.9.16-alt0.2
 Summary: PulseAudio equalizer interface
 Group: Sound
 Requires: lib%name = %version-%release
-%py_requires dbus PyQt4
+%py_requires dbus PyQt5
 
 %package daemon
 Summary: PulseAudio daemon
@@ -335,6 +335,9 @@ find %buildroot%_libdir -name \*.la -delete
 %doc doxygen/html
 
 %changelog
+* Thu Jun 27 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 12.2-alt3
+- qpaeq actually uses Qt5, fix python reqs
+
 * Tue May 14 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 12.2-alt2
 - fixed build with libalsa >= 1.1.9
 
