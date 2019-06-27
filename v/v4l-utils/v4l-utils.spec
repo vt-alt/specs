@@ -1,6 +1,6 @@
 Name: v4l-utils
-Version: 1.16.2
-Release: alt2
+Version: 1.16.6
+Release: alt1
 
 Summary: Collection of video4linux support libraries and utilities
 License: GPLv2+
@@ -142,6 +142,9 @@ also serve as a generic video/TV viewer application.
 %endif
 
 %changelog
+* Tue May 21 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 1.16.6-alt1
+- 1.16.6 released
+
 * Tue Jan 29 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 1.16.2-alt2
 - fixed build on arm
 
