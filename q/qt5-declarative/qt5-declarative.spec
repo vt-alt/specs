@@ -4,7 +4,7 @@
 
 Name: qt5-declarative
 Version: 5.12.4
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - QtDeclarative component
@@ -69,6 +69,7 @@ Summary: Qt5 - library
 Requires: %name-common = %EVR
 Obsoletes: libqt5-v8 < %version-%release
 #Conflicts: qt5-quickcontrols < 5.7
+Provides: qt5-qtdeclarative = %version-%release
 %description -n libqt5-qml
 %summary
 
@@ -76,6 +77,7 @@ Obsoletes: libqt5-v8 < %version-%release
 Group: System/Libraries
 Summary: Qt5 - library
 Requires: %name-common = %EVR
+Provides: libQtQuick5 = %version-release
 %description -n libqt5-quick
 %summary
 
@@ -243,6 +245,9 @@ cat %SOURCE2 >> %buildroot%_rpmmacrosdir/qml.env
 %_bindir/rpmbqml-qmlinfo
 
 %changelog
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt2
+- provide qt5-qtdeclarative and libQtQuick5
+
 * Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
 - new version
 
