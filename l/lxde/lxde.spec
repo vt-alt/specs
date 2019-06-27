@@ -1,6 +1,6 @@
 Name: lxde
 Version: 1.1
-Release: alt2
+Release: alt3
 Summary: Virtual package for install all parts of LXDE
 Group: Graphical desktop/Other
 License: GPL
@@ -17,6 +17,7 @@ Requires: fonts-ttf-google-droid-sans-mono fonts-ttf-google-droid-sans fonts-ttf
 Requires: qasmixer
 Requires: screengrab
 Requires: xdg-user-dirs-gtk
+Requires: openbox-themes
 
 Provides: lxde-sysvinit = %EVR
 Obsoletes: lxde-sysvinit < 1.1
@@ -41,6 +42,9 @@ Requires: pcmanfm2 menu-cache lxde-lxappearance lxde-lxappearance-obconf
 %files lite
 
 %changelog
+* Wed Jun 26 2019 Anton Midyukov <antohami@altlinux.org> 1.1-alt3
+- lxde requires openbox-themes
+
 * Sat Jun 08 2019 Anton Midyukov <antohami@altlinux.org> 1.1-alt2
 - lxde-lite not requre openbox more
 
