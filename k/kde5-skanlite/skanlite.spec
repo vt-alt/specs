@@ -1,9 +1,18 @@
+%{expand: %(sed 's,^%%,%%global ,' /usr/lib/rpm/macros.d/ubt)}
+%define ubt_id %__ubt_branch_id
+
 %define rname skanlite
+
+%_K5if_ver_gteq %ubt_id M90
+%def_enable obsolete_kde4
+%else
+%def_disable obsolete_kde4
+%endif
 
 Name: kde5-%rname
 Version: 2.1.0
-Release: alt1%ubt
-%K5init
+Release: alt3
+%K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Graphics
 Summary: Image scanning application
@@ -11,6 +20,10 @@ Url: http://www.kde.org
 License: GPLv2+
 
 #Requires: hplip-sane
+%if_enabled obsolete_kde4
+Provides: skanlite = %version-%release
+Obsoletes: skanlite < %version-%release
+%endif
 
 Source: %rname-%version.tar
 
@@ -48,7 +61,13 @@ with auto-generated names and format.
 %_K5xdgapp/org.kde.skanlite.desktop
 
 %changelog
-* Thu Apr 12 2018 Sergey V Turchin <zerg@altlinux.org> 2.1.0-alt1%ubt
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 2.1.0-alt3
+- obsolete skanlite
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 2.1.0-alt2
+- NMU: remove ubt from release
+
+* Thu Apr 12 2018 Sergey V Turchin <zerg@altlinux.org> 2.1.0-alt1
 - new version
 
 * Mon Oct 31 2016 Sergey V Turchin <zerg@altlinux.org> 2.0.1-alt0.M80P.1
