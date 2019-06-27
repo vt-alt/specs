@@ -11,7 +11,7 @@
 
 Name: gdb
 Version: 8.2.50.20180917
-Release: alt2
+Release: alt4
 
 Summary: A GNU source-level debugger for C, C++ and other languages
 License: GPLv3+
@@ -835,6 +835,14 @@ pushd %buildtarget/gdb
 ./orphanripper make -k -j%__nprocs check ||:
 popd
 
+%pre
+# gdb-8.2.50.20180917-alt1 switched from a symlink (to Python2 site-libdir)
+# to a normal directory (with Python3 code). Give way to the directory:
+l=%_datadir/gdb/python/gdb
+if [ -L "$l" ]; then
+    rm -v "$l"
+fi
+
 %files
 %_bindir/*
 %if_with python
@@ -864,6 +872,13 @@ popd
 %_libdir/lib*.a
 
 %changelog
+* Thu Jun 27 2019 Ivan Zakharyaschev <imz@altlinux.org> 8.2.50.20180917-alt4
+- %%pre: corrected the old symlink path in 8.2.50.20180917-alt3.
+
+* Wed Jun 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 8.2.50.20180917-alt3
+- %%pre: rm symlink to upgrade from gdb < 8.2.50.20180917-alt1. This works
+  for rpm-4.0.4 (when upgrading from p8 to Sisyphus or p9), not for rpm-4.13.
+
 * Wed Nov 21 2018 Nikita Ermakov <arei@altlinux.org> 8.2.50.20180917-alt2
 - Disabled gdbserver for RISC-V (riscv64) architecture (not supported yet).
 
