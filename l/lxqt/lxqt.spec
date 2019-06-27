@@ -1,6 +1,6 @@
 Name: lxqt
 Version: 0.14
-Release: alt2
+Release: alt3
 Summary: Meta package for install LxQt
 Group: Graphical desktop/Other
 License: GPL
@@ -77,6 +77,8 @@ Requires: fonts-ttf-liberation
 Requires: qpdfview
 # image-viewer
 Requires: lximage-qt
+# themes for window manager
+Requires: openbox-themes
 
 %description regular
 %summary
@@ -85,6 +87,9 @@ Requires: lximage-qt
 %files regular
 
 %changelog
+* Wed Jun 26 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt3
+- lxqt requires openbox-themes
+
 * Mon Jun 24 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt2
 - Requires openbox-base, openbox-autostart instead openbox
 
