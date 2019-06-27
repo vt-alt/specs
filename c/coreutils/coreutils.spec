@@ -1,6 +1,6 @@
 Name: coreutils
 Version: 8.31.0.3.6bd78
-Release: alt1
+Release: alt2
 %define srcname %name-%version-%release
 
 Summary: The GNU versions of common management utilities
@@ -130,12 +130,20 @@ sed -i 's/gl_printf_safe=yes/gl_printf_safe=/' m4/gnulib-comp.m4 configure
 %make_build
 
 # Build our version of true and false.
-%__cc %optflags -W -U_FORTIFY_SOURCE -fno-stack-protector \
-	-nostartfiles -static %_sourcedir/exit.c \
-	-DSTATUS=0 -o true
-%__cc %optflags -W -U_FORTIFY_SOURCE -fno-stack-protector \
-	-nostartfiles -static %_sourcedir/exit.c \
-	-DSTATUS=1 -o false
+build_exit() {
+	%__cc %optflags -W %_sourcedir/exit.c \
+		$@ -DSTATUS=0 -o true
+
+	%__cc %optflags -W %_sourcedir/exit.c \
+		$@ -DSTATUS=1 -o false
+}
+
+# Executable may fail on some architectures if it uses libc's syscall wrapper
+# without initialization performed in start files.  Fall back to simple static
+# true/false implementation if it happens.
+build_exit -U_FORTIFY_SOURCE -fno-stack-protector -nostartfiles -static -DNOSTARTFILES=1
+./true ||
+	build_exit -static
 
 # Build additional utilities.
 for n in getuseruid runas runbg usleep; do
@@ -210,6 +218,10 @@ export SHELL VERBOSE
 %doc AUTHORS NEWS.bz2 README THANKS.bz2 TODO
 
 %changelog
+* Tue May 21 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.31.0.3.6bd78-alt2
+- true, false: build a portable implementation if the traditional one fails
+  (fixes these utilities at least on ppc64le architecture).
+
 * Fri Mar 15 2019 Dmitry V. Levin <ldv@altlinux.org> 8.31.0.3.6bd78-alt1
 - coreutils: v8.30-31-g69df9e20e -> v8.31-3-g6bd78f27f.
 - gnulib: v0.1-2305-g95c96b6dd -> v0.1-2433-g3043e43a7.
