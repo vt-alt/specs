@@ -2,8 +2,8 @@
 
 Name: plasma5-%rname
 Version: 5.16.2
-Release: alt1
-%K5init altplace
+Release: alt2
+%K5init no_altplace
 
 Group: System/Configuration/Packaging
 Summary: KDE Software Center
@@ -112,15 +112,18 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 
 
 %files flatpak
+%config(noreplace) %_K5xdgconf/plasma-workspace/env/*flatpak*.sh
 %_K5plug/discover/flatpak-backend.so
 %_datadir/metainfo/org.kde.discover.flatpak.appdata.xml
 %_K5plug/discover-notifier/FlatpakNotifier.so
 %_K5data/libdiscover/categories/flatpak-backend-categories.xml
 %_K5xdgapp/org.kde.discover-flatpak.desktop
 %_K5icon/*/*/apps/*flatpak*.*
-%_K5xdgconf/plasma-workspace/env/*flatpak*.sh
 
 %changelog
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt2
+- move files to more standard place
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
 - new version
 
