@@ -3,7 +3,10 @@ Group: Development/Java
 BuildRequires(pre): rpm-build-python3 rpm-macros-java
 BuildRequires: perl(Config.pm) perl(Exporter.pm) perl(ExtUtils/MakeMaker.pm) perl(Test/More.pm) perl(XSLoader.pm) perl(threads.pm) perl-devel rpm-build-java
 # END SourceDeps(oneline)
-%define fedora 28
+%define _libexecdir %_prefix/libexec
+BuildRequires: /proc
+BuildRequires: jpackage-generic-compat
+%define fedora 30
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
 %global _hardened_build 1
@@ -11,7 +14,7 @@ BuildRequires: perl(Config.pm) perl(Exporter.pm) perl(ExtUtils/MakeMaker.pm) per
 
 Name:          zookeeper
 Version:       3.4.9
-Release:       alt2_12
+Release:       alt4_13jpp8
 Summary:       A high-performance coordination service for distributed applications
 License:       ASL 2.0 and BSD
 URL:           https://zookeeper.apache.org/
@@ -78,7 +81,7 @@ BuildRequires: xml-commons-apis
 BuildRequires: apache-commons-parent
 BuildRequires: jetty-server
 BuildRequires: jetty-servlet
-BuildRequires: libsystemd-devel libudev-devel systemd systemd-analyze systemd-coredump systemd-networkd systemd-services systemd-stateless systemd-sysvinit systemd-utils
+BuildRequires: libsystemd-devel libudev-devel systemd systemd-analyze systemd-coredump systemd-networkd systemd-portable systemd-services systemd-stateless systemd-sysvinit systemd-utils
 
 Requires:      checkstyle
 Requires:      jline1
@@ -107,8 +110,8 @@ Development files for the ZooKeeper C client library.
 
 ##############################################
 %package java
+Group: Development/Other
 Summary:        Java interface for %{name}
-Group:          Development/Other
 Requires:       %{name} = %{version}-%{release}
 
 %description java
@@ -327,6 +330,12 @@ getent passwd zookeeper >/dev/null || \
 %doc LICENSE.txt NOTICE.txt src/contrib/zkpython/README
 
 %changelog
+* Thu Jun 27 2019 Igor Vlasenko <viy@altlinux.ru> 3.4.9-alt4_13jpp8
+- use libexec as libexecdir for bash scripts to work
+
+* Sun May 26 2019 Igor Vlasenko <viy@altlinux.ru> 3.4.9-alt3_13jpp8
+- new version
+
 * Wed Jan 09 2019 Igor Vlasenko <viy@altlinux.ru> 3.4.9-alt2_12
 - fixed build
 
