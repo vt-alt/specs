@@ -6,7 +6,7 @@ Name:         sogo
 # Use the same version as in the "nightly" packages at
 # http://v2.sogo.nu/downloads/backend_v3_nightly.html:
 Version:      4.0.7
-Release:      alt3
+Release:      alt4
 
 License:      GPL
 URL:          https://sogo.nu/
@@ -19,9 +19,6 @@ Source1:      sogo.init
 Source2:      angular-material.tar
 Patch:        %name-%version-alt.patch
 
-# TODO Exclude: aarch64
-ExclusiveArch: %ix86 x86_64
-
 Requires:      stmpclean
 Requires:      tzdata
 Requires:      zip
@@ -32,10 +29,8 @@ Obsoletes:     sogo3 < %EVR
 %filter_from_requires /^\/usr\/%_lib\/samba-dc\/lib/d
 %{!?sogo_major_version: %global sogo_major_version %(/bin/echo %version | /bin/cut -f 1 -d .)}
 
-%ifarch %ix86 x86_64
 BuildRequires: gnustep-make-devel
 BuildRequires: gnustep-base-devel
-%endif
 BuildRequires(pre): rpm-build-apache2
 # To ignore a patched submodule:
 BuildPreReq: patchutils
@@ -426,6 +421,9 @@ fi
 %preun_service sogo
 
 %changelog
+* Tue Jun 25 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.7-alt4
+- Do not restrict architecture.
+
 * Mon Apr 22 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.7-alt3
 - Fix provides.
 

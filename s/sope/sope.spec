@@ -8,7 +8,7 @@
 Summary:      SOPE is an extensive set of frameworks which form a complete Web application server environment
 Name:         sope
 Version:      4.0.7
-Release:      alt1
+Release:      alt2
 License:      GPL
 URL:          http://sogo.nu/
 Group:        Development/Objective-C
@@ -17,14 +17,9 @@ Packager:     Andrey Cherepanov <cas@altlinux.org>
 Source:       SOPE-%version.tar.gz
 Patch:	      %name-%version-%release.patch
 
-# TODO Exclude: aarch64
-ExclusiveArch: %ix86 x86_64
-
-%ifarch %ix86 x86_64
 BuildRequires: gnustep-make-devel 
 BuildRequires: gnustep-base-devel
 BuildRequires: gcc-objc
-%endif
 BuildRequires(pre): rpm-build-apache2
 BuildRequires: postgresql-devel
 BuildRequires: libffi-devel
@@ -163,6 +158,10 @@ OpenGroupware.org application server.
 %prep
 %setup -q -n SOPE
 %patch -p1
+for f in config.guess config.sub;do
+	rm -f sope-core/NGStreams/$f
+	cp -vL /usr/share/automake/$f sope-core/NGStreams
+done
 
 %build
 %ifarch x86_64
@@ -288,6 +287,9 @@ if [ "$1" = "0" ] ; then # last uninstall
 fi
 
 %changelog
+* Tue Jun 25 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.7-alt2
+- Do not restrict architecture.
+
 * Sat Mar 09 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.7-alt1
 - New version.
 
