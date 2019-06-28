@@ -1,5 +1,5 @@
 Name: hasher
-Version: 1.3.35
+Version: 1.3.36
 Release: alt1
 
 Summary: Modern safe package building technology
@@ -58,6 +58,12 @@ network connection or local mirror is highly recommended.
 %doc FAQ QUICKSTART README apt.conf *.sh
 
 %changelog
+* Mon Mar 25 2019 Dmitry V. Levin <ldv@altlinux.org> 1.3.36-alt1
+- Introduced unchecked_initroot_cache control variable.
+  This new config variable controls whether the initroot cache is unchecked.
+  Unchecked initroot cache allows more efficient initroot caching, but
+  its validity is responsibility of the user.
+
 * Wed Jan 16 2019 Dmitry V. Levin <ldv@altlinux.org> 1.3.35-alt1
 - hsh-rebuild --query-repackage:
   relaxed glob pattern when processing $HOME/in/nosrpm/.
