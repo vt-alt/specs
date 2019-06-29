@@ -29,8 +29,8 @@
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
 Name: hplip
 Epoch: 1
-Version: 3.19.5
-Release: alt2
+Version: 3.19.6
+Release: alt1
 %if_without ernie
 License: GPLv2+ and MIT and BSD
 %else
@@ -1172,6 +1172,66 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Sat Jun 29 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.6-alt1
+- New version.
+- Added support for new printers:
+  + HP Smart Tank 500 series
+  + HP Smart Tank 530 series
+  + HP Smart Tank Plus 570 series
+  + HP Smart Tank Plus 650
+  + HP Smart Tank 610
+  + HP Smart Tank Plus 550
+  + HP Smart Tank 510
+  + HP Neverstop Laser MFP 1200a
+  + HP Neverstop Laser MFP 1200w
+  + HP Laser NS MFP 1005
+  + HP Laser NS MFP 1005w
+  + HP Neverstop Laser 1000a
+  + HP Neverstop Laser 1000w
+  + HP Laser NS 1020
+  + HP Laser NS 1020w
+  + HP DesignJet T2600dr Postscript MFP
+  + HP DesignJet XL 3600 PS MFP
+  + HP Color LaserJet Pro M453cdn
+  + HP Color LaserJet Pro M454dn
+  + HP Color LaserJet Pro M454cdn
+  + HP Color LaserJet Pro M453cdw
+  + HP Color LaserJet Pro M454nw
+  + HP Color LaserJet Pro M454dw
+  + HP Color LaserJet Pro M454cdw
+  + HP Color LaserJet Pro MFP M479dw
+  + HP Color LaserJet Pro MFP M478fcdn
+  + HP Color LaserJet Pro MFP M479fdn
+  + HP Color LaserJet Pro MFP M479fcdn
+  + HP Color LaserJet Pro MFP M478fcdw
+  + HP Color LaserJet Pro MFP M479fdw
+  + HP Color LaserJet Pro MFP M479fnw
+  + HP Color LaserJet Pro MFP M479fcdw
+  + HP LaserJet Pro MFP M428dw
+  + HP LaserJet Pro MFP M429dw
+  + HP LaserJet Pro MFP M428fdn
+  + HP LaserJet Pro MFP M428c1
+  + HP LaserJet Pro MFP M428c3
+  + HP LaserJet Pro MFP M428m
+  + HP LaserJet Pro MFP M429fdn
+  + HP LaserJet Pro MFP M428fdw
+  + HP LaserJet Pro MFP M428c2
+  + HP LaserJet Pro MFP M428c4
+  + HP LaserJet Pro MFP M429fdw
+  + HP LaserJet Pro M404d
+  + HP LaserJet Pro M405d
+  + HP LaserJet Pro M404n
+  + HP LaserJet Pro M405n
+  + HP LaserJet Pro M404dn
+  + HP LaserJet Pro M404c1
+  + HP LaserJet Pro M404c3
+  + HP LaserJet Pro M404m
+  + HP LaserJet Pro M405dn
+  + HP LaserJet Pro M404dw
+  + HP LaserJet Pro M404c2
+  + HP LaserJet Pro M404c4
+  + HP LaserJet Pro M405dw
+
 * Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.5-alt2
 - Add Russian localization to desktop file.
 - Remove hp-uiscan.desktop.
