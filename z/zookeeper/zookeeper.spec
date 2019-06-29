@@ -14,7 +14,7 @@ BuildRequires: jpackage-generic-compat
 
 Name:          zookeeper
 Version:       3.4.9
-Release:       alt4_13jpp8
+Release:       alt5_13jpp8
 Summary:       A high-performance coordination service for distributed applications
 License:       ASL 2.0 and BSD
 URL:           https://zookeeper.apache.org/
@@ -330,6 +330,9 @@ getent passwd zookeeper >/dev/null || \
 %doc LICENSE.txt NOTICE.txt src/contrib/zkpython/README
 
 %changelog
+* Fri Jun 28 2019 Igor Vlasenko <viy@altlinux.ru> 3.4.9-alt5_13jpp8
+- zookeeper.service fix thanks to jenya@
+
 * Thu Jun 27 2019 Igor Vlasenko <viy@altlinux.ru> 3.4.9-alt4_13jpp8
 - use libexec as libexecdir for bash scripts to work
 
