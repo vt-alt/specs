@@ -1,6 +1,6 @@
 Name: screen
 Version: 4.6.2
-Release: alt1
+Release: alt2
 
 Summary: A screen manager that supports multiple sessions on one terminal
 License: GPLv2+
@@ -74,8 +74,8 @@ install -pD -m644 alt/screencap %buildroot/etc/screencap
 
 install -pD -m644 alt/screen.pamd %buildroot/etc/pam.d/screen
 
-mkdir -p %buildroot{/var/run/screen,/etc/tmpfiles.d}
-echo 'd /var/run/screen 0775 root screen' > %buildroot/etc/tmpfiles.d/screen.conf
+mkdir -p %buildroot{/var/run/screen,%_tmpfilesdir}
+echo 'd /var/run/screen 0775 root screen' > %buildroot%_tmpfilesdir/screen.conf
 
 mkdir -p %buildroot%_libexecdir/screen
 touch %buildroot%_libexecdir/screen/{tcb_chkpwd,utempter}
@@ -111,12 +111,15 @@ ln -f %_libexecdir/utempter/utempter %_libexecdir/screen/
 %config(noreplace) /etc/screenrc
 %config(noreplace) /etc/screencap
 %config(noreplace) /etc/pam.d/screen
-/etc/tmpfiles.d/screen.conf
+%_tmpfilesdir/screen.conf
 
 %doc src/etc/*screenrc
 %doc src/NEWS src/README src/FAQ src/doc/README.DOTSCREEN src/doc/*.ps.*
 
 %changelog
+* Fri Jun 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.6.2-alt2
+- Moved tmpfiles.d(5) config file to %%_tmpfilesdir.
+
 * Tue Apr 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.6.2-alt1
 - Updated to v.4.6.2 (ALT#36357).
 
