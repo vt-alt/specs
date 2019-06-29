@@ -28,8 +28,8 @@
 %endif
 
 Name: qt5-webengine
-Version: 5.12.3
-Release: alt1
+Version: 5.12.4
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - QtWebEngine components
@@ -41,7 +41,7 @@ Source: %qt_module-opensource-src-%version.tar
 # FC
 Patch1:  qtwebengine-everywhere-src-5.10.0-linux-pri.patch
 Patch2:  qtwebengine-everywhere-src-5.11.0-no-icudtl-dat.patch
-Patch3:  qtwebengine-opensource-src-5.12.1-fix-extractcflag.patch
+Patch3:  qtwebengine-opensource-src-5.12.4-fix-extractcflag.patch
 Patch4:  qtwebengine-everywhere-src-5.10.0-system-nspr-prtime.patch
 Patch5:  qtwebengine-everywhere-src-5.10.0-system-icu-utf.patch
 Patch6:  qtwebengine-everywhere-src-5.10.1-no-sse2.patch
@@ -55,6 +55,8 @@ Patch30: chromium-non-void-return.patch
 # ALT
 Patch101: alt-pepflashplayer.patch
 Patch102: alt-fix-shrank-by-one-character.patch
+Patch103: qtwebengine-everywhere-src-5.12.4-chromium-add-ppc64le-support.patch
+Patch104: qtwebengine-everywhere-src-5.12.4-add-ppc64le-support.patch
 
 # Automatically added by buildreq on Sun Apr 03 2016
 # optimized out: fontconfig fontconfig-devel gcc-c++ glib2-devel kf5-attica-devel kf5-kjs-devel libEGL-devel libGL-devel libX11-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXi-devel libXrandr-devel libXrender-devel libXtst-devel libfreetype-devel libgpg-error libharfbuzz-devel libharfbuzz-icu libicu-devel libnspr-devel libqt5-clucene libqt5-core libqt5-gui libqt5-help libqt5-network libqt5-positioning libqt5-qml libqt5-quick libqt5-sql libqt5-webchannel libqt5-widgets libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-compiler python-modules-email python-modules-encodings python-modules-multiprocessing python-modules-xml python3 python3-base qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-phonon-devel qt5-tools qt5-webchannel-devel qt5-webkit-devel xorg-compositeproto-devel xorg-damageproto-devel xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-randrproto-devel xorg-recordproto-devel xorg-renderproto-devel xorg-scrnsaverproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
@@ -168,6 +170,8 @@ ln -s /usr/include/nspr src/3rdparty/chromium/nspr4
 #
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
+%patch104 -p1
 syncqt.pl-qt5 -version %version
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
@@ -344,6 +348,13 @@ done
 %_qt5_archdatadir/mkspecs/modules/qt_*.pri
 
 %changelog
+* Thu Jun 27 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 5.12.4-alt2
+- Added ppc64le support (tnx for patches to Timothy Pearson and
+  Shawn Anastasio).
+
+* Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
+- new version
+
 * Thu Apr 25 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.3-alt1
 - new version
 

@@ -1,5 +1,5 @@
 Name: rpm-macros-qt5-webengine
-Version: 0.1
+Version: 0.2
 Release: alt1
 BuildArch: noarch
 
@@ -23,5 +23,8 @@ cp %SOURCE0 %buildroot%_rpmmacrosdir/qt5-webengine
 %_rpmmacrosdir/qt5-webengine
 
 %changelog
+* Thu Jun 27 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2-alt1
+- %%qt5_qtwebengine_arches: add ppc64le architecture.
+
 * Tue Feb 12 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.1-alt1
 - Initial build.
