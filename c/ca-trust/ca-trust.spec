@@ -6,8 +6,8 @@
 %define hooks_dir %_prefix/libexec/ca-trust/update.d
 
 Name: ca-trust
-Version: 0.1.1
-Release: alt2
+Version: 0.1.2
+Release: alt1
 
 Summary: CA certificates and associated trust infrastructure
 License: %gpl2plus
@@ -136,6 +136,9 @@ ln -rs %buildroot%catrustdir/extracted/%java_bundle \
 %ghost %catrustdir/extracted/%java_bundle
 
 %changelog
+* Thu Jun 27 2019 Mikhail Efremov <sem@altlinux.org> 0.1.2-alt1
+- filetrigger: Add hooks directory to activation paths.
+
 * Wed Jan 10 2018 Mikhail Efremov <sem@altlinux.org> 0.1.1-alt2
 - Package ca-bundle.crt symlink.
 
