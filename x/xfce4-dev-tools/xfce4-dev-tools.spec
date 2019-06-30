@@ -1,11 +1,11 @@
 Name: xfce4-dev-tools
-Version: 4.12.0
-Release: alt2
+Version: 4.13.0
+Release: alt1
 
 Summary: Development tools for Xfce
 Summary (ru): Инструменты для разработчика Xfce
 License: %gpl2plus
-Url: http://xfce.org/~benny/projects/xfce4-dev-tools/
+Url: https://www.xfce.org/
 Group: Graphical desktop/XFce
 Packager: Xfce Team <xfce@packages.altlinux.org>
 # Upstream: git://git.xfce.org/xfce/xfce4-dev-tools
@@ -50,6 +50,10 @@ sed  -e "s/@REVISION@//g" \
 %_datadir/xfce4/dev-tools
 
 %changelog
+* Fri Jun 28 2019 Mikhail Efremov <sem@altlinux.org> 4.13.0-alt1
+- Updated url.
+- Updated to 4.13.0.
+
 * Wed Jun 13 2018 Mikhail Efremov <sem@altlinux.org> 4.12.0-alt2
 - Use _unpackaged_files_terminate_build.
 - Remove autom4te.cache before running automake.

@@ -1,10 +1,12 @@
 %define _name xfconf
 
 %def_with perl
+%def_disable introspection
+%def_disable vala
 %def_disable gsettings
 
 Name: lib%_name
-Version: 4.13.7
+Version: 4.13.8
 Release: alt1
 
 Summary: Hierarchical configuration system for Xfce
@@ -29,6 +31,8 @@ BuildRequires: libgio-devel libdbus-devel
 %if_with perl
 BuildPreReq: rpm-build-perl perl-devel perl-ExtUtils-Depends perl-ExtUtils-PkgConfig perl-Glib-devel
 %endif
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel}
+%{?_enable_vala:BuildRequires: vala-tools}
 BuildRequires: gtk-doc intltool
 
 %description
@@ -71,6 +75,37 @@ This package includes the perl modules and files you will need to
 interact with xfconf using perl.
 %endif
 
+%if_enabled introspection
+%package gir
+Summary: GObject introspection data for %name
+Group: System/Libraries
+Requires: %name
+
+%description gir
+GObject introspection data for %name.
+
+%package gir-devel
+Summary: GObject introspection devel data for %name
+Group: System/Libraries
+BuildArch: noarch
+Requires: %name-gir = %version-%release
+Requires: %name-devel = %version-%release
+
+%description gir-devel
+GObject introspection devel data for %name.
+%endif
+
+%if_enabled vala
+%package vala
+Summary: Vala bindings for %name
+Group: System/Libraries
+Requires: %name-devel
+BuildArch: noarch
+
+%description vala
+Vala bindings for %name.
+%endif
+
 %prep
 %setup -n %_name-%version
 %patch -p1
@@ -82,7 +117,14 @@ interact with xfconf using perl.
 %configure \
 	--disable-static \
 	--enable-maintainer-mode \
+%if_with perl
 	--with-perl-options=INSTALLDIRS="vendor" \
+	--enable-perl-bindings \
+%else
+	--disable-perl-bindings \
+%endif
+	%{subst_enable introspection} \
+	%{subst_enable vala} \
 %if_enabled gsetings
 	--enable-gsettings-backend \
 %else
@@ -125,7 +167,26 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %perl_vendor_archlib/Xfce4*
 %endif
 
+%if_enabled introspection
+%files gir
+%_libdir/girepository-1.0/Xfconf-0.typelib
+
+%files gir-devel
+%_datadir/gir-1.0/Xfconf-0.gir
+%endif
+
+%if_enabled vala
+%files vala
+%_datadir/vala/vapi/libxfconf*
+%endif
+
 %changelog
+* Fri Jun 28 2019 Mikhail Efremov <sem@altlinux.org> 4.13.8-alt1
+- Explicitly enable perl bindings.
+- Add switch for vala support.
+- Add switch to for GObject introspection support.
+- Updated to 4.13.8.
+
 * Mon May 20 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
 - Don't use deprecated PreReq.
 - Disable gsettings backend.
