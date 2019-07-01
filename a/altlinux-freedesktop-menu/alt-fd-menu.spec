@@ -1,9 +1,10 @@
+%def_with matelike
 %def_without gnome2
 %def_without kde3
 %define gnome3ver 3.90
 
 Name: altlinux-freedesktop-menu
-Version: 0.66
+Version: 0.67
 Release: alt1
 
 Summary: Implementation of the freedesktop.org menu specification
@@ -13,10 +14,14 @@ Group: Graphical desktop/Other
 URL: http://altlinux.org/
 Source: %name-%version.tar
 Packager: Igor Vlasenko <viy@altlinux.org>
+BuildArch: noarch
 
 #BuildPreReq: rpm-build-xdg
 BuildRequires: intltool glib2-devel
-BuildArch: noarch
+
+%if_with matelike
+BuildRequires: mate-menus
+%endif
 
 %description
 altlinux freedesktop.org menu
@@ -52,6 +57,18 @@ Provides: %name-gnomish-menu
 
 %description shallow-menu
 freedesktop.org compliant altlinux menu with shallow layout
+
+%if_with matelike
+%package mate-like-menu
+Summary: altlinux freedesktop menu with  look and feel of Mate DE
+Group: Graphical desktop/Other
+Requires(pre): %name-common
+Requires: %name-common
+Provides: %name-provider
+
+%description mate-like-menu
+freedesktop.org compliant altlinux menu with look and feel of Mate DE
+%endif
 
 %package xfce
 Summary: xfce freedesktop menu
@@ -172,6 +189,11 @@ ALTLinux freedesktop.org menu for a generic freedesktop-compliant DE
 %prep
 %setup
 
+if ! [ -d po ]; then
+	echo "Use ./mkdist.sh instead of gear!!!"
+	exit 1
+fi
+
 %build
 touch AUTHORS ChangeLog NEWS README
 intltoolize
@@ -235,11 +257,20 @@ install -D -m644 layout/kde4-merged.menu %buildroot%_sysconfdir/kde4/xdg/menus/a
 
 install -m0644 altlinux-directories/*.directory %buildroot/%_datadir/desktop-directories/
 
+%if_with matelike
+install -m0644 %_datadir/mate/desktop-directories/*.directory %buildroot/%_datadir/desktop-directories/
+%endif
+
 # alternatives
 mkdir -p %buildroot%_altdir
 cat <<EOF >>%buildroot%_altdir/%name-nested-menu
 %_sysconfdir/xdg/menus/altlinux-applications.menu	%_sysconfdir/xdg/menus/altlinux-applications-nested.menu	1000
 EOF
+%if_with matelike
+cat <<EOF >>%buildroot%_altdir/%name-mate-like-menu
+%_sysconfdir/xdg/menus/altlinux-applications.menu	%_sysconfdir/xdg/menus/altlinux-applications-mate-like.menu	200
+EOF
+%endif
 cat <<EOF >>%buildroot%_altdir/%name-shallow-menu
 %_sysconfdir/xdg/menus/altlinux-applications.menu	%_sysconfdir/xdg/menus/altlinux-applications-shallow.menu	100
 EOF
@@ -266,6 +297,12 @@ touch /etc/xdg/menus/lxde-applications.menu
 
 %files shallow-menu
 %_altdir/%name-shallow-menu
+
+%if_with matelike
+%files mate-like-menu
+%_altdir/%name-mate-like-menu
+%_datadir/desktop-directories/mate-*.directory
+%endif
 
 %files xfce
 #config (noreplace) is too dangerous for unexpirienced user
@@ -297,6 +334,8 @@ touch /etc/xdg/menus/lxde-applications.menu
 %files kde3
 %verify(not mtime) %config %_sysconfdir/xdg/menus/kde3-applications.menu
 %dir %_sysconfdir/xdg/menus/kde3-applications-merged
+%else
+%exclude %_sysconfdir/xdg/menus/kde3-applications.menu
 %endif
 
 %files generic
@@ -315,6 +354,9 @@ touch /etc/xdg/menus/lxde-applications.menu
 %_datadir/kde4/desktop-directories/altlinux-*.directory
 
 %changelog
+* Tue Jun 18 2019 Igor Vlasenko <viy@altlinux.ru> 0.67-alt1
+- added mate-like menu
+
 * Sun Sep 16 2018 Anton Midyukov <antohami@altlinux.org> 0.66-alt1
 - fix menu Settings for Cinnamon
 
