@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.04.0
+Version: 19.04.1
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -141,7 +141,7 @@ Group: Graphical desktop/KDE
 Requires: kde5-runtime
 Requires: kde5-lskat kde5-kmines kde5-kshisen kde5-ktuberling kde5-bovo kde5-knetwalk
 Requires: kde5-katomic kde5-knavalbattle kde5-kpat kde5-kmahjongg
-Requires: kde5-ksudoku kde5-kigo
+Requires: kde5-ksudoku kde5-kigo kde5-knights kde5-kreversi kde5-granatier
 Requires: kde5-kolf kde5-ksirk kde5-palapeli
 %description -n kde5-games
 High quality gaming and entertainment software.
@@ -194,6 +194,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Fri Jun 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- add more games
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - update requires
 
