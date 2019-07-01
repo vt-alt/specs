@@ -7,8 +7,8 @@
 %define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-spworkstation
 
 Name: docs-%variant
-Version: 8.2
-Release: alt5
+Version: 8.90
+Release: alt1
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,9 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Tue Jun 25 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt1
+Alpha version of ALT Education 9.0
+
 * Wed Feb 13 2019 Elena Mishina <lepata@altlinux.org> 8.2-alt5
 - added moodle, mediawiki, owncloud, rujel
 - added install fonts (closes: 35820)
