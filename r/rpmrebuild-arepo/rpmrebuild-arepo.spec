@@ -1,5 +1,5 @@
 Name: rpmrebuild-arepo
-Version: 3.1.9
+Version: 3.1.10
 Release: alt1
 
 Summary: biarch repackager for Sisyphus packages
@@ -44,6 +44,14 @@ install -m755 arepo.sh %buildroot%_libexecdir/rpmrebuild/plugins/
 %_bindir/arepo_pre.py
 
 %changelog
+* Sun Apr 28 2019 Ivan Zakharyaschev <imz@altlinux.org> 3.1.10-alt1
+- Use rpmquery-strictdep for the dependency on the native package,
+  which gives an additional guarantee that the dependency is actually
+  provided by the package. To get a strictdep with a beginning dot
+  (a deprecated format not used in any ALT repo branches anymore except p8),
+  RPM macro %%_allow_deps_with_beginning_dot
+  or env var $allow_deps_with_beginning_dot has to expand to 1.
+
 * Wed Apr 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.1.9-alt1
 - rpmrebuild-arepo.conf (lib_files): added /usr/lib/valgrind .
 
