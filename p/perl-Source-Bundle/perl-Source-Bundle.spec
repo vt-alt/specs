@@ -4,7 +4,7 @@ BuildRequires: perl(Module/Build/Tiny.pm) perl-devel
 %define module Source-Bundle
 
 Name: perl-%module
-Version: 0.010
+Version: 0.010.001
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -32,6 +32,9 @@ Url: http://search.cpan.org/dist/%module
 %perl_vendor_privlib/Source*
 
 %changelog
+* Sun Jun 30 2019 Igor Vlasenko <viy@altlinux.ru> 0.010.001-alt1
+- added datatypes
+
 * Thu Jan 31 2019 Igor Vlasenko <viy@altlinux.ru> 0.010-alt1
 - added gem support
 
