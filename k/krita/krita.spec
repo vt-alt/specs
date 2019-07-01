@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.2.1
+Version: 4.2.2
 Release: alt1
 %K5init no_altplace
 
@@ -423,6 +423,9 @@ done
 %_libdir/libkritametadata.so.*
 
 %changelog
+* Mon Jul 01 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.2-alt1
+- new version
+
 * Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.1-alt1
 - new version (ALT#36818)
 
