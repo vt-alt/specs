@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.16.2
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace
 
@@ -226,7 +226,7 @@ popd
 %patch118 -p1
 %patch119 -p2
 %patch121 -p2
-#%patch122 -p2
+%patch122 -p2
 %patch123 -p1 -b .startplasma
 %patch124 -p1
 %patch125 -p1
@@ -391,6 +391,9 @@ done
 
 
 %changelog
+* Mon Jul 01 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt2
+- rediff alt-systemmonitor-ignoreconfig.patch
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt1
 - new version
 
