@@ -14,7 +14,7 @@ BuildRequires(pre): rpm-build-ubt
 %def_without libcxx
 
 Name: telegram-desktop
-Version: 1.7.7
+Version: 1.7.10
 Release: alt1
 
 Summary: Telegram is a messaging app with a focus on speed and security
@@ -90,10 +90,12 @@ BuildRequires: libopenal-devel >= 1.17.2
 # used by qt imageformats: libwebp-devel
 BuildRequires: libva-devel libdrm-devel
 
+# libs from Telegram project
 BuildRequires: libtgvoip-devel >= 2.4.4
-BuildRequires: libcrl-devel >= 0.7
+BuildRequires: libcrl-devel >= 0.8
 
 BuildRequires: libxxhash-devel
+
 # used in qtlottie (no extra include subdir)
 # TODO: wrong package name (I wish -devel suffix)
 BuildRequires: rapidjson
@@ -217,6 +219,12 @@ ln -s %name %buildroot%_bindir/telegram
 %doc README.md
 
 %changelog
+* Thu Jun 27 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.10-alt1
+- new version 1.7.10 (with rpmrb script)
+
+* Mon Jun 24 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.9-alt1
+- new version 1.7.9 (with rpmrb script)
+
 * Tue Jun 11 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.7-alt1
 - new version 1.7.7 (with rpmrb script)
 
