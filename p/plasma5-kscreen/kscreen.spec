@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.16.2
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace
 
@@ -55,7 +55,7 @@ developing applications that use %name.
 
 %prep
 %setup -n %rname-%version
-#%patch1 -p1
+%patch1 -p1
 
 sed -i 's|^\(add_subdirectory.*tests.*\)|#\1|' CMakeLists.txt
 
@@ -89,6 +89,9 @@ sed -i 's|^\(add_subdirectory.*tests.*\)|#\1|' CMakeLists.txt
 #%_K5archdata/mkspecs/modules/qt_KScreen.pri
 
 %changelog
+* Mon Jul 01 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt2
+- rediff alt-enable-per-screen-scaling.patch
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt1
 - new version
 
