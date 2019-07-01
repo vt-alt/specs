@@ -1,6 +1,6 @@
 %define module_name     vhba
-%define module_version  20170610
-%define module_release alt2
+%define module_version  20190410
+%define module_release alt1.k
 
 %define flavour         std-def
 %define karch %ix86 x86_64
@@ -34,7 +34,8 @@ Provides: kernel-modules-%module_name-%kversion-%flavour-%krelease = %EVR
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %EVR
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %EVR
 
-PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+Requires(pre): kernel-image-%flavour = %kepoch%kversion-%krelease
+
 Requires: vhba-udev-rules
 ExclusiveArch: %karch
 
@@ -62,6 +63,9 @@ cp -a %module_name.ko %buildroot/%module_dir/
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Mon Jun 17 2019 Nazarov Denis <nenderus@altlinux.org> 20190410-alt1
+- Version 20190410
 
 * Mon Jul 31 2017 Nazarov Denis <nenderus@altlinux.org> 20170610-alt1
 - Version 20170610

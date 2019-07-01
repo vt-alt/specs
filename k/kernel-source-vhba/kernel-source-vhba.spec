@@ -1,6 +1,6 @@
 Name: kernel-source-vhba
-Version: 20170610
-Release: alt2
+Version: 20190410
+Release: alt1
 
 Summary: Source for VHBA module
 License: GPLv2
@@ -46,6 +46,9 @@ install -Dp -m0644 %SOURCE1 %buildroot%_udevrulesdir/60-vhba.rules
 %config %_udevrulesdir/60-vhba.rules
 
 %changelog
+* Mon Jun 17 2019 Nazarov Denis <nenderus@altlinux.org> 20190410-alt1
+- Version 20190410
+
 * Sat Jan 26 2019 Nazarov Denis <nenderus@altlinux.org> 20170610-alt2
 - Remove %ubt macro
 

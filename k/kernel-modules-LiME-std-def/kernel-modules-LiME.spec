@@ -1,10 +1,10 @@
 %define module_name	LiME
-%define module_version	1.7.8
+%define module_version	1.8.1
 
-%define module_release alt1.k
+%define module_release alt1
 
 %define flavour		std-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-std-def
 
@@ -12,7 +12,7 @@ BuildRequires(pre): kernel-headers-modules-std-def
 
 %define module_dir /lib/modules/%kversion-%flavour-%krelease/misc
 
-Summary: LiME module for Linux kernel 
+Summary: LiME module for Linux kernel
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
@@ -23,7 +23,7 @@ Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
 
 ExclusiveOS: Linux
-Url: http://www.linuxfoundation.org/collaborate/workgroups/networking/alx 
+Url: https://github.com/504ensicsLabs/LiME.git
 BuildRequires(pre): rpm-build-kernel
 BuildRequires: rpm >= 4.0.2-75
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
