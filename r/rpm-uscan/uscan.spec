@@ -1,7 +1,7 @@
 %define destname rpm-uscan
 %define debian_ver 2.17.11
 Name: %destname
-Version: 0.19.%debian_ver
+Version: 0.20.%debian_ver
 Release: alt1
 
 Summary: Utility to check watch files
@@ -43,6 +43,9 @@ pod2man scripts/uscan.pl > %buildroot%_man1dir/%destname.1
 %_man1dir/*
 
 %changelog
+* Sat Jun 29 2019 Igor Vlasenko <viy@altlinux.ru> 0.20.2.17.11-alt1
+- added --cleanup option (closes: #36960)
+
 * Sat Nov 04 2017 Igor Vlasenko <viy@altlinux.ru> 0.19.2.17.11-alt1
 - new version
 
