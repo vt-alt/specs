@@ -1,5 +1,5 @@
 Name: smstools
-Version: 3.1.14
+Version: 3.1.21
 Release: alt1
 
 Summary: SMS Gateway software which can send and receive short messages through GSM modems and mobile phones
@@ -11,17 +11,19 @@ Source0: http://smstools3.kekekasvi.com/packages/smstools3-%version.tar.gz
 Source1: smsd.init
 Source2: smsd.logrotate
 Source3: smsd.conf
-Patch: %name-%version-%release.patch
+
+BuildRequires: libmm-devel
 
 %description
 %summary
 
 %prep
 %setup -q
-%patch -p1
 
 # build with debug info
-sed -i '/ggdb/ s/^#//' src/Makefile
+subst '/ggdb/ s/^#//' src/Makefile
+# build with statistics
+subst '/^CFLAGS.*NOSTATS/d' src/Makefile 
 # correct mode for html docs
 find doc -type f -exec chmod 644 {} \;
 
@@ -65,5 +67,9 @@ cp src/smsd %buildroot%_sbindir
 %doc README LICENSE examples doc
 
 %changelog
+* Mon Jul 01 2019 Andrey Cherepanov <cas@altlinux.org> 3.1.21-alt1
+- New version (ALT #36961).
+- Enable statistics.
+
 * Tue Oct 02 2012 Vladimir Lettiev <crux@altlinux.ru> 3.1.14-alt1
 - initial build
