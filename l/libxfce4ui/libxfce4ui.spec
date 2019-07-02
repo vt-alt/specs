@@ -1,5 +1,5 @@
 Name: libxfce4ui
-Version: 4.13.5
+Version: 4.13.6
 Release: alt1
 
 Summary: Various GTK+2 widgets for Xfce
@@ -38,7 +38,7 @@ Various GTK+2 widgets for Xfce.
 %package devel
 Summary: Development files for %name (GTK+2)
 Group: Development/C
-PreReq: %name = %version-%release
+Requires: %name = %version-%release
 
 %description devel
 Development files for the %name library (GTK+2 variant).
@@ -71,7 +71,7 @@ Various GTK+3 widgets for Xfce.
 %package gtk3-devel
 Summary: Development files for %name (GTK+3)
 Group: Development/C
-PreReq: %name-gtk3 = %version-%release
+Requires: %name-gtk3 = %version-%release
 
 %description gtk3-devel
 Development files for the %name library (GTK+3 variant).
@@ -145,6 +145,9 @@ This package contains the 'About Xfce' dialog.
 %_desktopdir/xfce4-about.desktop
 
 %changelog
+* Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt1
+- Updated to 4.13.6.
+
 * Sat May 18 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
 - Updated to 4.13.5.
 
