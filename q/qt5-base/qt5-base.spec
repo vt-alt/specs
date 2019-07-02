@@ -31,7 +31,7 @@
 %define gname  qt5
 Name: qt5-base
 %define major  5
-Version: 5.12.3
+Version: 5.12.4
 Release: alt1
 %define libname  lib%gname
 
@@ -533,7 +533,7 @@ translationdir=%_qt5_translationdir
 
 Name: Qt%major
 Description: Qt%major Configuration
-Version: 5.12.3
+Version: 5.12.4
 __EOF__
 
 # rpm macros
@@ -796,6 +796,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
+- new version
+
 * Thu Apr 25 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.3-alt1
 - new version
 

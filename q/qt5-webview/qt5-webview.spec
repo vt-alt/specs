@@ -1,7 +1,7 @@
 %define qt_module qtwebview
 
 Name: qt5-webview
-Version: 5.12.3
+Version: 5.12.4
 Release: alt1
 
 Group: System/Libraries
@@ -83,6 +83,9 @@ syncqt.pl-qt5 -version %version
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
+- new version
+
 * Thu Apr 25 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.3-alt1
 - new version
 

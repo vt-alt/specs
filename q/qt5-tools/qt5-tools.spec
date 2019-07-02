@@ -10,7 +10,7 @@
 %define minor 9
 %define bugfix 2
 Name: qt5-tools
-Version: 5.12.3
+Version: 5.12.4
 Release: alt1
 
 Group: System/Libraries
@@ -329,6 +329,9 @@ done
 %_qt5_libdir/libQt5Help.so.*
 
 %changelog
+* Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
+- new version
+
 * Thu Apr 25 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.3-alt1
 - new version
 
