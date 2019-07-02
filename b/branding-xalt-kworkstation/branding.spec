@@ -11,13 +11,13 @@
 %define Brand ALT
 %define fakebrand xalt
 
-%define major 8
-%define minor 3
+%define major 9
+%define minor 0
 %define bugfix 0
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt4
+Release: alt0.1
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -37,8 +37,8 @@ BuildRequires: ImageMagick fontconfig bc libGConf-devel
 
 %define Theme_ru Рабочая станция К
 %define Brand_ru Альт
-%define status %nil
-%define status_ru %nil
+%define status alpha
+%define status_ru альфа
 %define ProductName %Brand %Theme %altversion
 %define ProductName_ru %Brand_ru %Theme_ru %altversion
 
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Tue Jul 02 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt0.1
+- mark as alpha-version
+
 * Mon Feb 25 2019 Sergey V Turchin <zerg at altlinux dot org> 8.3.0-alt4
 - cleanup plymouth theme
 
