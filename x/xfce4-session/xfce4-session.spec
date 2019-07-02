@@ -1,5 +1,5 @@
 Name: xfce4-session
-Version: 4.13.2
+Version: 4.13.3
 Release: alt1
 
 %def_without devel
@@ -111,6 +111,9 @@ install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
 %endif
 
 %changelog
+* Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.3-alt1
+- Updated to 4.13.3.
+
 * Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt1
 - Don't use deprecated PreReq.
 - Drop devel subpackage.
