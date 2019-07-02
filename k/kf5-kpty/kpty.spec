@@ -1,10 +1,11 @@
 %define rname kpty
 
+%def_enable utempter
 %define helperpath %_libexecdir/utempter/utempter
 
 Name: kf5-%rname
 Version: 5.59.0
-Release: alt1
+Release: alt3
 %K5init altplace
 
 Group: System/Libraries
@@ -18,7 +19,9 @@ Source: %rname-%version.tar
 # optimized out: cmake cmake-modules elfutils libcloog-isl4 libqt5-core libqt5-test libstdc++-devel python-base ruby ruby-stdlibs
 #BuildRequires: extra-cmake-modules gcc-c++ kf5-kcoreaddons-devel kf5-ki18n-devel libutempter-devel python-module-google qt5-base-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+%if_enabled utempter
 BuildRequires: libutempter-devel
+%endif
 BuildRequires: extra-cmake-modules gcc-c++ kf5-kcoreaddons-devel kf5-ki18n-devel qt5-base-devel
 
 %description
@@ -53,9 +56,16 @@ KF5 library
 %prep
 %setup -n %rname-%version
 
+%if_disabled utempter
+# disable to find utempter executable
+sed -i '/find_file.*UTEMPTER_EXECUTABLE/s/UTEMPTER_EXECUTABLE/UTEMPTER_EXECUTABLE_DISABLE/' cmake/FindUTEMPTER.cmake
+%endif
+
 %build
 %K5build \
+%if_enabled utempter
     -DUTEMPTER_EXECUTABLE=%helperpath \
+%endif
     #
 
 %install
@@ -77,6 +87,12 @@ KF5 library
 %_K5lib/libKF5Pty.so.*
 
 %changelog
+* Tue Jul 02 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt3
+- reenable utempter
+
+* Tue Jul 02 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt2
+- disable utempter executable usage
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
 - new version
 

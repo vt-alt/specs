@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.16.2
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -11,6 +11,7 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Patch1: alt-build-as-exec-with-utempter.patch
 
 # Automatically added by buildreq on Tue Apr 07 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libdbusmenu-qt52 libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base
@@ -55,6 +56,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
 
 %build
 %K5build
@@ -65,15 +67,18 @@ KF5 library
 
 %files -f %name.lang
 %doc COPYING*
-%if 1
+%if 0
 %_K5plug/kf5/kded/kwrited.so
 %else
-%_K5bin/kwrited
+%attr(2711,root,utempter) %_K5bin/kwrited
 %_K5start/kwrited-autostart.desktop
 %endif
 %_K5notif/*writed*
 
 %changelog
+* Tue Jul 02 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt2
+- build as executable
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
 - new version
 
