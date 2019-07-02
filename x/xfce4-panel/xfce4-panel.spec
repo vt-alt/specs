@@ -1,7 +1,7 @@
-%define xfce_ver 4.12
+%define xfce_ver 4.13
 
 Name: xfce4-panel
-Version: 4.13.5
+Version: 4.13.6
 Release: alt1
 
 Summary: Panel for Xfce
@@ -53,7 +53,7 @@ This package contains library for Xfce panel plugins
 Summary: Development files to build Xfce panel plugins (GTK+2)
 License: %lgpl2plus
 Group: Development/C
-PreReq: libxfce4panel = %version-%release
+Requires: libxfce4panel = %version-%release
 Provides: %name-devel = %version-%release
 Obsoletes: %name-devel < 4.8.0
 
@@ -64,7 +64,7 @@ This package contains files to develop plugins for Xfce panel
 %package -n libxfce4panel-devel-doc
 Summary: Documentation files to build Xfce panel plugins
 Group: Development/Documentation
-PreReq: libxfce4panel-devel = %version-%release
+Requires: libxfce4panel-devel = %version-%release
 Provides: %name-devel-doc = %version-%release
 Obsoletes: %name-devel-doc < 4.8.0
 BuildArch: noarch
@@ -85,7 +85,7 @@ This package contains library for Xfce panel plugins
 Summary: Development files to build Xfce panel plugins (GTK+3)
 License: %lgpl2plus
 Group: Development/C
-PreReq: libxfce4panel-gtk3 = %version-%release
+Requires: libxfce4panel-gtk3 = %version-%release
 
 %description -n libxfce4panel-gtk3-devel
 This package contains files to develop plugins for Xfce panel
@@ -143,6 +143,10 @@ This package contains files to develop plugins for Xfce panel
 %_includedir/xfce4/%libxfce4panel_name_gtk3/
 
 %changelog
+* Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt1
+- Don't use deprecated PreReq.
+- Updated to 4.13.5.
+
 * Fri May 17 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
 - Updated to 4.13.5.
 - Drop no longer used directories.
