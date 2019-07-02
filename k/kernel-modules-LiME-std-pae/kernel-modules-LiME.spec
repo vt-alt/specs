@@ -3,10 +3,10 @@
 
 %define module_release alt1
 
-%define flavour		un-def
-%define karch %ix86 x86_64
+%define flavour		std-pae
+%define karch i586
 BuildRequires(pre): rpm-build-kernel
-BuildRequires(pre): kernel-headers-modules-un-def
+BuildRequires(pre): kernel-headers-modules-std-pae
 
 %setup_kernel_module %flavour
 
