@@ -1,5 +1,5 @@
 Name: xfdesktop
-Version: 4.13.4
+Version: 4.13.5
 Release: alt1
 
 Summary: Desktop manager for the Xfce Desktop Environment
@@ -65,6 +65,9 @@ Requires: exo-utils
 %_datadir/backgrounds/xfce
 
 %changelog
+* Sun Jun 30 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
+- Updated to 4.13.5.
+
 * Sat May 18 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Updated to 4.13.4.
 
