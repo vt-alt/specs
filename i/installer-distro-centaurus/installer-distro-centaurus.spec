@@ -1,9 +1,9 @@
 %define distro centaurus
 Name: installer-distro-%distro
-Version: 8.2
-Release: alt2
+Version: 9.0
+Release: alt1
 
-Summary: Installer files for Centaurus distro 
+Summary: Installer files for Centaurus distro
 License: GPL
 Group: System/Configuration/Other
 
@@ -69,6 +69,9 @@ cp -a * %buildroot%install2dir/
 %files stage3
 
 %changelog
+* Wed Jun 26 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.0-alt1
+- run getty@tty1 by default
+
 * Mon Aug 13 2018 Michael Shigorin <mike@altlinux.org> 8.2-alt2
 - E2K: avoid R: alterator-grub, installer-feature-powerbutton-stage3
   + thus no more noarch
