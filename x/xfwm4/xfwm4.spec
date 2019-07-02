@@ -1,6 +1,6 @@
 Name: xfwm4
-Version: 4.13.2
-Release: alt3
+Version: 4.13.3
+Release: alt1
 
 %def_disable epoxy
 
@@ -19,7 +19,6 @@ BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4ui-gtk3-devel libxfconf-devel
-BuildPreReq: exo-csource
 
 BuildRequires: gnome-doc-utils xml-utils xsltproc
 BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel
@@ -80,6 +79,10 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Sun Jun 30 2019 Mikhail Efremov <sem@altlinux.org> 4.13.3-alt1
+- Drop exo-csource from BR.
+- Updated to 4.13.3.
+
 * Sat Jun 22 2019 Mikhail Efremov <sem@altlinux.org> 4.13.2-alt3
 - DIsable libepoxy support (workaround for ALT bug #36915).
 
