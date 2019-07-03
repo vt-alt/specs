@@ -1,27 +1,13 @@
 %define _unpackaged_files_terminate_build 1
-%define libwbc_alternatives_version 0.14.0
+%define libwbc_alternatives_version 0.15.0
 %def_with kcm
 %def_without secrets
 %def_disable local_provider
 %def_with check
 
-%define if_branch_le() %if "%(rpmvercmp '%ubt_id' '%1')" <= "0"
-%define if_branch_eq() %if "%(rpmvercmp '%ubt_id' '%1')" == "0"
-%define if_branch_ge() %if "%(rpmvercmp '%ubt_id' '%1')" >= "0"
-
-%define nfsidmapdir %_libdir/libnfsidmap
-%if_branch_le M80P
-%define nfsidmapdir /%_lib/libnfsidmap
-%def_enable local_provider
-%endif
-%if_branch_eq N.M80P
-%define nfsidmapdir /%_lib/libnfsidmap
-%def_enable local_provider
-%endif
-
 Name: sssd
-Version: 2.1.0
-Release: alt1
+Version: 2.2.0
+Release: alt2
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -36,6 +22,8 @@ Patch: %name-%version-alt.patch
 # Determine the location of the LDB modules directory
 %define ldb_modulesdir %(pkg-config --variable=modulesdir ldb)
 %define ldb_modversion %(pkg-config --modversion ldb)
+
+%define nfsidmapdir %_libdir/libnfsidmap
 
 %define _localstatedir /var
 %define _libexecdir /usr/libexec
@@ -57,11 +45,8 @@ Requires: %name-client = %version-%release
 Requires: libsss_idmap = %version-%release
 Requires: libldb = %ldb_modversion
 
-%if_branch_ge M80C
 Requires: libkrb5 >= 1.14.4-alt2
-%endif
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires(pre): rpm-build-python3
 BuildRequires(pre): libldb-devel
 
@@ -100,24 +85,10 @@ BuildRequires: findutils
 BuildRequires: samba-devel
 BuildRequires: samba-winbind
 BuildRequires: libsmbclient-devel
-%if_branch_le M70P
-BuildRequires: systemd-devel libsystemd-daemon-devel libsystemd-journal-devel libsystemd-login-devel
-%else
 BuildRequires: libsystemd-devel
-%endif
-%ifnarch e2k e2kv4 mipsel
-%endif
 BuildRequires: cifs-utils-devel
 BuildRequires: libsasl2-devel
-%if_branch_eq N.M80P
-BuildRequires: libnfsidmap-devel < 1:2.2.1-alt1
-%else
-%if_branch_le M80P
-BuildRequires: libnfsidmap-devel < 1:2.2.1-alt1
-%else
 BuildRequires: libnfsidmap-devel >= 1:2.2.1-alt1
-%endif
-%endif
 BuildRequires: libaugeas-devel
 BuildRequires: nscd
 %if_with kcm
@@ -849,6 +820,17 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Tue Jul 02 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt2
+- Fix sssd-ad System error during access deny to sysvol when it not replicated
+  or not configured with 'samba-tool ntacl sysvolreset' command
+- Clean spec compatibility base on ubt macroses
+
+* Fri Jun 28 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt1
+- Update to 2.2.0
+
+* Fri Jun 28 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.1.0-alt2
+- Update libwbclient-sssd interface to version 0.15 (Closes: 36750)
+
 * Tue Mar 26 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.1.0-alt1
 - Update to 2.1.0 for samba-4.10.0
 
