@@ -15,7 +15,7 @@ Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox
 Version:        66.0.5
-Release:        alt1
+Release:        alt2.p9.1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -47,6 +47,8 @@ Patch010: 0010-MOZILLA-1515641-Addon.patch
 Patch011: 0011-MOZILLA-1353817-skia-build-error-on-aarch64.patch
 Patch012: 0012-FEDORA-build-arm-libopus.patch
 Patch013: 0013-FEDORA-build-arm.patch
+Patch014: 0014-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch015: 0015-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -178,6 +180,8 @@ firefox packages by some Alt Linux Team Policy compatible way.
 %patch011 -p1
 %patch012 -p1
 %patch013 -p1
+%patch014 -p1
+%patch015 -p1
 ### Finish apply patches
 
 cd mozilla
@@ -190,7 +194,7 @@ cp -f %SOURCE4 .mozconfig
 cat >> .mozconfig <<'EOF'
 ac_add_options --prefix="%_prefix"
 ac_add_options --libdir="%_libdir"
-%ifnarch %{ix86}
+%ifnarch %{ix86} ppc64le
 ac_add_options --enable-linker=lld
 %ifnarch x86_64
 ac_add_options --disable-webrtc
@@ -402,6 +406,9 @@ done
 %_rpmmacrosdir/firefox
 
 %changelog
+* Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 66.0.5-alt2.p9.1
+- Added ppc64le support.
+
 * Wed May 08 2019 Alexey Gladkov <legion@altlinux.ru> 66.0.5-alt1
 - New release (66.0.5).
 
