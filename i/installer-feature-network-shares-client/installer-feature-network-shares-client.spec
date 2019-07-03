@@ -1,6 +1,6 @@
 Name: installer-feature-network-shares-client
-Version: 0.9
-Release: alt4
+Version: 0.9.1
+Release: alt1
 
 %define hookdir %_datadir/install2/postinstall.d
 
@@ -38,6 +38,9 @@ install -pm755 *.sh %buildroot/%hookdir/
 %hookdir/*
 
 %changelog
+* Tue Jul 02 2019 Mikhail Efremov <sem@altlinux.org> 0.9.1-alt1
+- 70-nscd.sh: Don't fail if nscd.conf is absent.
+
 * Thu Oct 20 2016 Andrey Cherepanov <cas@altlinux.org> 0.9-alt4
 - Require pam_mount for its own operation
 
