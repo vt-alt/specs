@@ -1,7 +1,7 @@
 %define dist qa-rpmelfsym
 Name: perl-%dist
-Version: 0.12.1
-Release: alt1.2
+Version: 0.12.2
+Release: alt1
 
 Summary: Faster rpmelfsym(1) and bad_elf_symbols implementation
 License: GPLv2+
@@ -37,6 +37,10 @@ rm %buildroot%perl_vendor_archlib/qa/*.pl
 %perl_vendor_autolib/qa*
 
 %changelog
+* Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.12.2-alt1
+- Added 'S' (for mips/mipsel) and 'G' (for riscv64 and ppc64le) symbol types.
+- Changed rpmelfsym.pm to skip files under /boot directory (ldv@).
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 0.12.1-alt1.2
 - rebuild with new perl 5.28.1
 
