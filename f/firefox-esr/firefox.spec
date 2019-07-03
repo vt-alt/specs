@@ -16,7 +16,7 @@ Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
 Version:        60.7.2
-Release:        alt1
+Release:        alt2
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -41,6 +41,10 @@ Patch18:        firefox-alt-nspr-for-rust.patch
 Patch19:        build-aarch64-skia.patch
 Patch20:        bug1375074-save-restore-x28.patch
 Patch21:        rust-ignore-not-available-documentation.patch
+
+Patch22:        firefox-60.7.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch23:        firefox-60.7.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch24:        firefox-60.7.2-alt-libpng-std=gnu89.patch
 
 # Upstream
 Patch200:       mozilla-bug-256180.patch
@@ -151,6 +155,9 @@ tar -xf %SOURCE2
 %patch19 -p2 -b .aarch64-skia
 #patch20 -p1 -b .bug1375074-save-restore-x28
 %patch21 -p1
+%patch22 -p2
+%patch23 -p2
+%patch24 -p2
 
 %patch200 -p1
 #patch201 -p1
@@ -168,7 +175,7 @@ export MOZ_BUILD_APP=browser
 
 MOZ_OPT_FLAGS="-pipe -O2 -g0"
 
-%ifnarch %{ix86}
+%ifnarch %{ix86} ppc64le
 MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -fuse-ld=lld"
 %endif
 
@@ -214,7 +221,7 @@ export BUILD_VERBOSE_LOG=1
 
 cat >> .mozconfig <<'EOF'
 ac_add_options --prefix="%_prefix"
-%ifnarch %{ix86}
+%ifnarch %{ix86} ppc64le
 ac_add_options --enable-linker=lld
 %ifnarch x86_64
 ac_add_options --disable-webrtc
@@ -227,9 +234,9 @@ EOF
 
 export MOZ_MAKE_FLAGS="-j6"
 
-%__autoconf old-configure.in > old-configure
+autoconf old-configure.in > old-configure
 pushd js/src
-%__autoconf old-configure.in > old-configure
+autoconf old-configure.in > old-configure
 popd
 
 ./mach build
@@ -247,7 +254,7 @@ cd mozilla
 
 export SHELL=/bin/sh
 
-%__mkdir_p \
+mkdir -p \
 	%buildroot/%mozilla_arch_extdir/%firefox_cid \
 	%buildroot/%mozilla_noarch_extdir/%firefox_cid \
 	#
@@ -298,7 +305,7 @@ mkdir -p -- ./%firefox_prefix/distribution
 cp -- %SOURCE5 ./%firefox_prefix/distribution/distribution.ini
 
 # install menu file
-%__install -D -m 644 %SOURCE6 ./%_datadir/applications/firefox.desktop
+install -D -m 644 %SOURCE6 ./%_datadir/applications/firefox.desktop
 
 # Add alternatives
 mkdir -p ./%_altdir
@@ -347,6 +354,10 @@ done
 %_iconsdir/hicolor/256x256/apps/firefox.png
 
 %changelog
+* Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 60.7.2-alt2
+- Added ppc64le support.
+- spec: cleaned up rpm-build internal macros.
+
 * Thu Jun 20 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.2-alt1
 - New ESR version (60.7.2).
 - Fixed:
