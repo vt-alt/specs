@@ -12,7 +12,7 @@
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
 Version:	60.7.2
-Release:	alt1
+Release:	alt2
 License:	MPL/GPL
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -40,6 +40,11 @@ Patch24:        rhbz-1354671.patch
 Patch25:        Bug-1238661---fix-mozillaSignalTrampoline-to-work-.patch
 Patch26:        bug1375074-save-restore-x28.patch
 Patch27: 	rust-ignore-not-available-documentation.patch
+
+Patch28:        thunderbird-60.7.2-alt-libpng-std=gnu89.patch
+Patch29:        thunderbird-60.7.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch30:        thunderbird-60.7.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
+
 
 Patch40:        enigmail-use-juniorModeForceOff.patch
 Patch41:	enigmail-fix-ru-l10n-markup.patch
@@ -229,6 +234,9 @@ tar -xf %SOURCE2
 %endif
 #patch26 -p1
 %patch27 -p1
+%patch28 -p2
+%patch29 -p2
+%patch30 -p2
 
 #echo %version > mail/config/version.txt
 
@@ -310,6 +318,7 @@ make -f client.mk \
 %if_with enigmail
 dir="$PWD/objdir"
 pushd enigmail
+	%_configure_update_config
 	./configure
 	make \
 		STRIP="/bin/true" \
@@ -482,6 +491,9 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 60.7.2-alt2
+- Added ppc64le support.
+
 * Sat Jun 22 2019 Andrey Cherepanov <cas@altlinux.org> 60.7.2-alt1
 - New version (60.7.2).
 - Fixed:
