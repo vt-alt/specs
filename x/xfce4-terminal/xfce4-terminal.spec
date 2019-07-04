@@ -1,12 +1,12 @@
 Name: xfce4-terminal
-Version: 0.8.7.4
+Version: 0.8.8
 Release: alt1
 
 Summary: Terminal emulator application for Xfce
 Summary (ru_RU.UTF-8): Эмулятор терминала для Xfce
 License: %gpl2plus
 Group: Terminals
-Url: http://www.xfce.org
+Url: https://www.xfce.org
 Packager: Xfce Team <xfce@packages.altlinux.org>
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
@@ -14,7 +14,7 @@ Patch: %name-%version-%release.patch
 BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
-BuildPreReq: libexo-devel libxfce4ui-gtk3-devel
+BuildPreReq: libxfce4ui-gtk3-devel
 BuildPreReq: gnome-doc-utils xml-utils xsltproc
 
 # Automatically added by buildreq on Fri Aug 07 2009
@@ -65,6 +65,9 @@ xfce4-terminal - легкий и удобный эмулятор термина�
 %_desktopdir/*
 
 %changelog
+* Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 0.8.8-alt1
+- Updated to 0.8.8.
+
 * Tue May 15 2018 Mikhail Efremov <sem@altlinux.org> 0.8.7.4-alt1
 - Updated to 0.8.7.4.
 
