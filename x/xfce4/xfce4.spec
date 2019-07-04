@@ -2,7 +2,7 @@
 
 Name: xfce4
 Version: 4.14
-Release: alt5
+Release: alt6
 Summary: Set of Xfce4 Desktop installers.
 License: %gpl2plus
 Group: Graphical desktop/XFce
@@ -50,7 +50,6 @@ BuildArch: noarch
 Requires: %name-minimal = %version-%release
 Requires: xfce4-power-manager
 Requires: xfce4-appfinder
-Requires: gtk2-themes-xfce4
 Requires: xfce4-notifyd
 Requires: xfce4-taskmanager
 Requires: xfce4-terminal
@@ -118,6 +117,8 @@ BuildArch: noarch
 Requires: %name-default = %version-%release
 Requires: xfce-polkit
 Requires: xfce4-screensaver
+Requires: desktop-screensaver-modules-xscreensaver
+Requires: desktop-screensaver-modules-xscreensaver-gl
 %commonreqs
 Requires: xfce4-pulseaudio-plugin
 # For xfce4-pulseaudio-plugin
@@ -164,6 +165,10 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4
 %endif
 
 %changelog
+* Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt6
+- default: Drop gtk2-themes-xfce4.
+- full: Add xscreensaver modules.
+
 * Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt5
 - full,regular: Drop xfce4-session-engines.
 
