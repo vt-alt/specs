@@ -2,7 +2,7 @@
 
 Name: glibc
 Version: 2.27
-Release: alt9
+Release: alt10
 Epoch: 6
 
 Summary: The GNU libc libraries
@@ -39,6 +39,10 @@ Url: http://www.gnu.org/software/glibc/
 
 %ifarch x32
 %define enablekernel 3.4.0
+%endif
+
+%ifarch ppc64le
+%define enablekernel 3.10.0
 %endif
 
 # http://git.altlinux.org/gears/g/glibc.git
@@ -550,6 +554,9 @@ export test-xfail-tst-mlock2=yes
 export test-xfail-tst-pkey=yes
 export test-xfail-tst-clock2=yes
 %endif
+%ifarch ppc64le
+export test-xfail-tst-pkey=yes
+%endif
 
 include Makefile
 @@@
@@ -559,9 +566,10 @@ make %PARALLELMFLAGS -C %buildtarget -f xfail.mk -k check fast-check=yes LDFLAGS
   rc=$?
   grep '^FAIL:' %buildtarget/tests.sum | cut -d" " -f2- |
     xargs -i tail -v -n 100 %buildtarget/{}.test-result %buildtarget/{}.out ||:
-  if grep -qs '^export test-xfail' %buildtarget/xfail.mk; then
-    exit $rc
-  fi
+# architectures we care for enough to fail here
+%ifarch %ix86 x86_64 aarch64 ppc64le
+  exit $rc
+%endif
 }
 cat %buildtarget/tests.sum
 
@@ -751,6 +759,14 @@ fi
 %glibc_sourcedir
 
 %changelog
+* Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 6:2.27-alt10
+- ppc64le:
+  + glibc-preinstall: set minimal kernel version to 3.10.0 (current
+  arch minimum in libc);
+  + Fixed check-abi lists;
+  + check: xfailed tst-pkey test.
+- check: terminate build only on %%ix86, x86_64, aarch64, and ppc64le.
+
 * Thu Jun 20 2019 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt9
 - Updated to glibc-2.27-119-gf056ac8363 from 2.27 branch
   (closes: #36065).
