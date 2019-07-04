@@ -3,7 +3,7 @@
 %define fullname MidnightCommander
 
 Name: mc
-Version: 4.8.22
+Version: 4.8.23
 Release: alt1
 
 # '-gitYYYYMMDD' or ''
@@ -30,7 +30,6 @@ Patch0: %name-%version-%release.patch
 Patch1: mc-4.8.16-alt-wrapper.patch
 Patch2: mc-4.7.5.1-alt-defaults.patch
 Patch3: mc-4.8.20-alt-menu.patch
-Patch4: mc-4.8.22-syntax.patch
 
 # Misc
 
@@ -97,7 +96,6 @@ needed for working additional components (some vfs for example).
 %patch1 -p1
 %patch2 -p1
 %patch3 -p0
-%patch4 -p1
 
 # Misc
 #patch101 -p1
@@ -208,6 +206,9 @@ install -pD -m644 %SOURCE5 %buildroot%_niconsdir/%fullname.png
 %files full
 
 %changelog
+* Thu Jul 04 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.8.23-alt1
+- 4.8.23
+
 * Sun Jan 13 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.8.22-alt1
 - 4.8.22
 - added mc-4.8.22-syntax.patch (ALT #35799)
