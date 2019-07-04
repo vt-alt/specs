@@ -5,14 +5,14 @@
 
 Name: dhcpcd
 Epoch: 1
-Version: 7.2.2
+Version: 7.2.3
 Release: alt1
 
 Summary: DHCP Client
 License: %bsd
 Group: System/Servers
 
-URL: http://roy.marples.name/projects/%name
+URL: https://roy.marples.name/projects/%name
 Source: %name-%version.tar
 Patch0: %name-%version-%release.patch
 
@@ -91,6 +91,10 @@ fi
 %exclude %_datadir/%name/
 
 %changelog
+* Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 1:7.2.3-alt1
+- Updated url.
+- Updated to 7.2.3.
+
 * Tue May 14 2019 Mikhail Efremov <sem@altlinux.org> 1:7.2.2-alt1
 - Drop obsoleted patch.
 - Updated to 7.2.2.
