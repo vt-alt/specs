@@ -7,9 +7,8 @@
 %define status_en %nil
 %define flavour %brand-%theme
 
-%define gtk_theme Breeze
+%define gtk_theme TraditionalOk
 %define icon_theme Papirus
-%define window_theme Smoothwall
 
 %define design_graphics_abi_epoch 0
 %define design_graphics_abi_major 12
@@ -21,8 +20,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.900
-Release: alt2
+Version: 8.910
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -186,7 +185,7 @@ Requires: icon-theme-ePapirus
 Requires: icon-theme-Papirus
 Requires: icon-theme-Papirus-Dark
 Requires: icon-theme-Papirus-Light
-Requires: gtk-theme-breeze
+Requires: mate-themes
 Requires: x-cursor-theme-jimmac
 #
 %branding_add_conflicts %flavour mate-settings
@@ -247,7 +246,7 @@ Requires(post): indexhtml-common
 
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' WINDOW_THEME='%window_theme' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' ./configure
 make
 
 %install
@@ -368,6 +367,11 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jul 04 2019 Mikhail Efremov <sem@altlinux.org> 8.910-alt1
+- mate-settings: Use TraditionalOk theme.
+- mate-setting: Don't use non-existent window theme.
+- notes: Replace license.all.html.in with English page.
+
 * Tue Jun 18 2019 Mikhail Efremov <sem@altlinux.org> 8.900-alt2
 - mate-settings: Require graphics subpackage.
 - mate-settings: Add conflicts with *-graphics subpackages.
