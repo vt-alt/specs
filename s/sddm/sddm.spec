@@ -7,8 +7,8 @@
 %define sddm_confdir %x11confdir/sddm
 
 Name: sddm
-Version: 0.18.0
-Release: alt2
+Version: 0.18.1
+Release: alt1
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -163,6 +163,9 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Thu Jul 04 2019 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt1
+- new version
+
 * Wed Mar 13 2019 Oleg Solovyov <mcpain@altlinux.org> 0.18.0-alt2
 - allow asking PIN-codes from smart-cards
 
