@@ -1,5 +1,5 @@
 Name:     fusioninventory-agent
-Version:  2.5
+Version:  2.5.1
 Release:  alt1
 
 Summary:  FusionInventory Agent
@@ -44,6 +44,7 @@ BuildRequires: perl-Test-MockObject
 BuildRequires: perl-Test-NoWarnings
 BuildRequires: perl-Text-Template
 BuildRequires: perl-XML-TreePP
+BuildRequires: perl-XML-XPath
 
 %description
 FusionInventory Agent is an application designed to help a network
@@ -117,6 +118,9 @@ find %buildroot -name .packlist -delete
 %dir %_localstatedir/%name
 
 %changelog
+* Thu Jul 04 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.1-alt1
+- New version.
+
 * Sun Apr 14 2019 Andrey Cherepanov <cas@altlinux.org> 2.5-alt1
 - New version.
 
