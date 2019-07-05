@@ -12,7 +12,7 @@
 
 Name: MySQL
 Version: 8.0.15
-Release: alt1
+Release: alt2
 
 Summary: A very fast and reliable SQL database engine
 Summary(ru_RU.UTF-8): Очень быстрый и надежный SQL-сервер
@@ -52,7 +52,7 @@ Source30: mysqlrouter.conf
 Patch0: mysql-%version.patch
 
 # ALTLinux
-Patch1: mysql-8.0.12-alt-chroot.patch
+Patch1: mysql-8.0.15-alt-chroot.patch
 Patch2: mysql-5.0.20-alt-libdir.patch
 Patch4: mysql-8.0.12-alt-client.patch
 Patch5: mysql-8.0.12-alt-load_defaults.patch
@@ -650,6 +650,7 @@ fi
 %_bindir/mysql_config
 %_libdir/libmysqlclient*.so
 %_includedir/*
+%_man1dir/mysql_config.1*
 %_aclocaldir/mysql.m4
 %_pkgconfigdir/*.pc
 %endif
@@ -683,6 +684,7 @@ fi
 %_bindir/perror
 %_bindir/zlib_decompress
 %_mandir/man?/*
+%exclude %_man1dir/mysql_config.1*
 
 %if_with mysql_router
 %files router
@@ -758,6 +760,10 @@ fi
 %attr(3770,root,mysql) %dir %ROOT/tmp
 
 %changelog
+* Wed May 29 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.15-alt2
+- fix chrooted daemonization in SysVinit systems (closes: #36856)
+- move mysql_config manual to devel package
+
 * Tue Feb 05 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.15-alt1
 - new version
 - replace PreReq with Requires(pre)
