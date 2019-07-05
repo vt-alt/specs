@@ -1,9 +1,10 @@
 %define cfg %_builddir/%name-%version/
-%define rev 60436
+# See https://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_2/ for example
+%define rev 61019
 
 Name:       lazarus
-Version:    2.0.1
-Release:    alt1.r%rev
+Version:    2.0.2
+Release:    alt1
 Epoch:      1
 
 Summary:    Lazarus Component Library and IDE
@@ -23,7 +24,7 @@ Source4:    projectoptions.xml
 Patch0:     %name-0.9.22-alt-relax-onwine.patch
 Patch2:     %name-fix-desktop-file.patch
 Patch3:     %name-fix-install-path-in-Makefile.patch
-Patch4:     %name-1.0.8-fix-fpc-search.patch
+Patch4:     %name-2.0.2-fix-fpc-search.patch
 Patch6:	    %name-set-user-TestBuildDirectory.patch
 
 # Patches from Debian
@@ -38,8 +39,10 @@ Patch14: lazarus-r60298.patch
 Patch15: lazarus-r60328.patch
 Patch16: lazarus-r60397.patch
 
+BuildRequires(pre): qt5-base-devel
 BuildRequires: fpc >= 2.6.4 fpc-utils glibc-devel libgtk+2-devel libXi-devel desktop-file-utils 
 BuildRequires: libXext-devel libXtst-devel libGL-devel libGLU-devel libode-devel
+BuildRequires: qt5-x11extras-devel
 
 Requires:   fpc >= 2.6.4 fpc-src fpc-utils gdb libGL-devel libXi-devel libXext-devel libgtk+2-devel
 Requires:   glibc-devel
@@ -64,6 +67,29 @@ Lazarus - свободно-распространяемая, с открытым
 Development tool) на FreePascal, использующая библиотеки компонет LCL
 (Lazarus component library).  LCL входят в состав данного пакета.
 
+# The version is taken from lcl/interfaces/qt5/cbindings/Qt5Pas.pro
+%global qt5pas_version 2.6
+%global qt5pas_release alt1
+%package -n qt5pas
+Version: %qt5pas_version
+Release: %qt5pas_release
+Summary: Qt5 bindings for Pascal
+Group:   Development/Other
+
+%description -n qt5pas
+Qt5 bindings for Pascal from Lazarus.
+
+%package -n qt5pas-devel
+Version: %qt5pas_version
+Release: %qt5pas_release
+Summary: Development files for qt5pas
+Group:   Development/Other
+Requires: qt5pas = %qt5pas_version-%qt5pas_release
+
+%description -n qt5pas-devel
+The qt5pas-devel package contains libraries and header files for
+developing applications that use qt5pas.
+
 %prep
 %setup
 %patch0 -p1
@@ -87,7 +113,8 @@ install -D -p -m 0644 %SOURCE3 tools/install/linux/environmentoptions.xml
 # Replace xterm call with real path
 find . -name *.lpi -print0 -o -name *.kof -print0 | xargs -0 -L 1 subst 's,[\\/]usr[\\/]\(X11R6[\\/]\)\?bin[\\/]\(xterm\|gnome-terminal\),/usr/bin/xterm,'
 
-mkdir docs/chm
+# Install to %%_libdir instead of %%_datadir because lasarus dir contains binaries
+subst 's|share/lazarus|%_lib/lazarus|' Makefile
 
 %build
 MAKEOPTS="-Fl/opt/gnome/lib"
@@ -118,10 +145,17 @@ mkdir -p tools/lazdatadesktop/lib
 ./lazbuild --ws="$LCL_PLATFORM" --pcp=%cfg tools/lazdatadesktop/lazdatadesktop.lpr
 
 # Generate documentation
+export LCL_PLATFORM=nogui
+./lazbuild --ws="$LCL_PLATFORM" --pcp=%cfg docs/html/build_lcl_docs.lpi
 pushd docs/html
-../../lazbuild --ws="$LCL_PLATFORM" --pcp=%cfg build_lcl_docs.lpi
 ./build_lcl_docs
 ./build_html.sh
+popd
+
+# Build Qt5 bindings
+pushd lcl/interfaces/qt5/cbindings/
+    %qmake_qt5
+    %make_build
 popd
 
 export LCL_PLATFORM=
@@ -142,32 +176,18 @@ rm -f environmentoptions.xml
 
 %install
 LAZARUSDIR=%_libdir/%name
-mkdir -p %{buildroot}$LAZARUSDIR
-mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/pixmaps
-mkdir -p %{buildroot}%{_datadir}/applications
-mkdir -p %{buildroot}%{_datadir}/mime/packages
-mkdir -p %{buildroot}%{_sysconfdir}/lazarus
-cp -a * %{buildroot}$LAZARUSDIR/
-install -m 644 images/icons/lazarus128x128.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
-install -m 644 install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
-install -m 644 install/lazarus-mime.xml $LazBuildDir%{buildroot}%{_datadir}/mime/packages/lazarus.xml
-ln -sf $LAZARUSDIR/lazarus %{buildroot}%{_bindir}/lazarus-ide
-ln -sf lazarus-ide %{buildroot}%{_bindir}/lazarus
-ln -sf $LAZARUSDIR/startlazarus %{buildroot}%{_bindir}/startlazarus
-ln -sf $LAZARUSDIR/lazbuild %{buildroot}%{_bindir}/lazbuild
+mkdir -p %buildroot$LAZARUSDIR \
+         %buildroot%_sysconfdir/%name
+%makeinstall_std INSTALL_PREFIX=%buildroot%_prefix _LIB=%_lib
+install -m 644 install/lazarus.desktop %buildroot%_desktopdir/%name.desktop
+
+ln -sf lazarus-ide %buildroot%_bindir/lazarus
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/LRS_Explorer
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/lrsexplorer
 ln -sf $LAZARUSDIR/tools/apiwizz/apiwizz %buildroot%_bindir/apiwizz
-ln -sf $LAZARUSDIR/tools/lazres %buildroot%_bindir/lazres
-ln -sf $LAZARUSDIR/tools/lrstolfm %buildroot%_bindir/lrstolfm
-ln -sf $LAZARUSDIR/tools/svn2revisioninc %buildroot%_bindir/svn2revisioninc
-ln -sf $LAZARUSDIR/tools/updatepofiles %buildroot%_bindir/updatepofiles
 ln -sf $LAZARUSDIR/tools/lazdatadesktop/lazdatadesktop %buildroot%_bindir/lazdatadesktop
-install -Dm 0644 install/man/man1/lazbuild.1 %buildroot%_man1dir/lazbuild.1
-install -Dm 0644 install/man/man1/lazarus-ide.1 %buildroot%_man1dir/lazarus-ide.1
-install -Dm 0644 install/man/man1/startlazarus.1 %buildroot%_man1dir/startlazarus.1
-cat tools/install/linux/environmentoptions.xml | sed -e "s#__LAZARUSDIR__#$LAZARUSDIR/#" -e "s#__FPCSRCDIR__#%{_datadir}/fpcsrc/#" > %{buildroot}%{_sysconfdir}/lazarus/environmentoptions.xml
+
+cat tools/install/linux/environmentoptions.xml | sed -e "s#__LAZARUSDIR__#$LAZARUSDIR/#" -e "s#__FPCSRCDIR__#%{_datadir}/fpcsrc/#" > %buildroot%_sysconfdir/%name/environmentoptions.xml
 
 # fix bug 13256
 mkdir -p %buildroot%_datadir/fpcsrc/packages/fcl-base
@@ -177,24 +197,28 @@ mkdir -p %buildroot%_datadir/fpcsrc/rtl/inc
 install -D -p -m 0644 %SOURCE4 %buildroot%_sysconfdir/lazarus/projectoptions.xml
 subst 's|/usr/lib/|%{_libdir}/|' %buildroot%_sysconfdir/lazarus/projectoptions.xml
 
-#Docs
-mv docs/index.html docs/index.en.html
-#mv docs/index.ru.html docs/index.html
+# Docs
+test -e docs/index.en.html || mv docs/index.html docs/index.en.html
+
+# Install CHM files to doc dir
+cp -a docs/chm/* %buildroot$LAZARUSDIR/docs/html/
 
 # cleanup installation
-rm -rf %buildroot$LAZARUSDIR/debian
 rm -rf %buildroot$LAZARUSDIR/tools/install
 rm -rf %buildroot$LAZARUSDIR/tools/find_merged_revisions.pas
-rm -rf %buildroot$LAZARUSDIR/localize.bat
 
 # generate correct compilertest.pas
 echo -e "begin\nend." > %buildroot$LAZARUSDIR/compilertest.pas
+
+pushd lcl/interfaces/qt5/cbindings/
+    %makeinstall_std INSTALL_ROOT=%buildroot
+popd
+rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 
 %files
 %_libdir/%name
 %_bindir/*
 %_sysconfdir/%name/*
-%_mandir/*/*
 %_pixmapsdir/lazarus.png
 %_desktopdir/lazarus.desktop
 %_datadir/mime/packages/lazarus.xml
@@ -202,8 +226,22 @@ echo -e "begin\nend." > %buildroot$LAZARUSDIR/compilertest.pas
 # fix bug 13256
 %dir %_datadir/fpcsrc/rtl/inc
 %dir %_datadir/fpcsrc/packages/fcl-base
+%exclude %_libdir/libQt5Pas.so*
+%_iconsdir/hicolor/48x48/mimetypes/*.png
+
+%files -n qt5pas
+%doc lcl/interfaces/qt5/cbindings/COPYING.TXT
+%doc lcl/interfaces/qt5/cbindings/README.TXT
+%_libdir/libQt5Pas.so.*
+
+%files -n qt5pas-devel
+%_libdir/libQt5Pas.so
 
 %changelog
+* Thu Jul 04 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.0.2-alt1
+- New version.
+- Add Qt5 bindings for Pascal from Lazarus (qt5pas).
+
 * Mon Feb 18 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.0.1-alt1.r60436
 - New version.
 - Remove requirements only needed for old version.
