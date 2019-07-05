@@ -1,5 +1,5 @@
 Name:     theme-mate-windows
-Version:  1.2
+Version:  1.3
 Release:  alt1
 
 Summary:  Mate theme for Windows-like layout
@@ -16,7 +16,7 @@ BuildArch: noarch
 Requires: gksu
 Requires: dconf
 # Required GTK+ themes
-Requires: materia-gtk-theme
+Requires: mate-themes
 # Required fonts
 Requires: fonts-ttf-google-noto-sans
 Requires: fonts-ttf-google-crosextra-caladea
@@ -47,10 +47,14 @@ install -Dm0644 applications.list \
 %_datadir/linuxmint/mintMenu/applications.list-themed
 
 %changelog
+* Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.3-alt1
+- Replace Materia-light for TraditionalOk.
+
 * Wed Jun 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.2-alt1
 - Replace MintMenu for BriskMenu.
-- Replace GTK theme Clearlooks-Phenix for Materiai-Light.
+- Replace GTK theme Clearlooks-Phenix for Materia-light.
 - Remove side-by-side-tiling parameter unsupported in new version of Marco.
+- Increase bottom panel size to 30px.
 
 * Tue Mar 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.1-alt2
 - Remove conflict with branding-alt-tonk-mate-settings.
