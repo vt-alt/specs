@@ -1,6 +1,6 @@
 Name: rpmrebuild-kmodsign
 Version: 0.2
-Release: alt1
+Release: alt2
 
 Summary: Signer for packages containing linux kernel modules
 License: GPL
@@ -30,6 +30,9 @@ install -pm755 kmodsign-change-files.sh \
 %_libexecdir/rpmrebuild/plugins/kmodsign*
 
 %changelog
+* Fri Jul 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.2-alt2
+- (sources) cleanup backup files
+
 * Thu Sep 13 2018 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.2-alt1
 - compressed modules signing fixed
 
