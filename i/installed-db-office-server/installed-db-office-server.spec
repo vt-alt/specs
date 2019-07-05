@@ -1,5 +1,5 @@
 Name: installed-db-office-server
-Version: 1.4.3
+Version: 1.4.4
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
@@ -45,6 +45,8 @@ Requires: nextcloud
 Requires: nextcloud-apache2
 Requires: php7-pcntl
 Requires: php7-pdo_mysql
+Provides: %name-owncloud = %EVR
+Obsoletes: %name-owncloud < %EVR
 Summary: Databases and config files for nextcloud
 
 %description nextcloud
@@ -102,6 +104,11 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.4-alt1
+- Fix run chkconfig under systemd for httpd2 enable
+- Fix arguments passed for nextcloud deploy
+- Replace installed-db-office-server-owncloud for -nextcloud
+
 * Mon Jun 24 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt1
 - Set shell for su in nextcloud deploy.
 - Fix warning about memory_limit for nextcloud deploy.
