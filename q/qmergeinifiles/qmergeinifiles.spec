@@ -1,7 +1,7 @@
 
 Name: qmergeinifiles
-Version: 2.0.1
-Release: alt1%ubt
+Version: 2.0.2
+Release: alt1
 
 
 Summary: Utility to merge INI-format files
@@ -10,7 +10,6 @@ License: GPL
 
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: qt5-base-devel
 
 %description
@@ -32,7 +31,13 @@ Utility to merge INI-format files
 %_bindir/*
 
 %changelog
-* Wed Dec 20 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.1-alt1%ubt
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 2.0.2-alt1
+- fix to show usage info when debug output disabled
+
+* Mon Jun 17 2019 Sergey V Turchin <zerg@altlinux.org> 2.0.1-alt2
+- dont use ubt macro
+
+* Wed Dec 20 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.1-alt1
 - build with Qt5
 
 * Fri Feb 10 2012 Sergey V Turchin <zerg@altlinux.org> 2.0.0-alt0.M60P.1
