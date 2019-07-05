@@ -1,6 +1,6 @@
 Name: wxMaxima
-Version: 19.02.0
-Release: alt2
+Version: 19.07.0
+Release: alt1
 
 Summary: GUI for the computer algebra system Maxima
 License: GPL
@@ -8,68 +8,73 @@ Group: Sciences/Mathematics
 URL: https://wxmaxima-developers.github.io/wxmaxima
 Packager: Ilya Mashkin <oddity@altlinux.ru>
 
-Source0: wxmaxima-Version-%version.tar.gz
-Source1: %name-16.xpm
-Source2: %name-32.xpm
-Source3: %name-48.xpm
+Source0: %name-%version.tar
 Source5: wxmaxima-ru.po.bz2
+Patch1:  %name-alt-help-path.patch
 
 Requires: maxima
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libwxGTK3.0-devel libpango-devel libxml2-devel zlib-devel makeinfo
 
-%description
-wxMaxima is a wxWidgets GUI for the computer algebra system Maxima. 
+ExclusiveArch: %ix86 x86_64 aarch64
 
-Since it is written with wxWidgets, it runs on multiple platforms 
-in native widget sets.  Most of maxima functions are accessible through 
-menus, some have dialogs.  The input line has command history (up-key, 
-down-key) and completion based on previous input (tab-key). 
+%description
+wxMaxima is a wxWidgets GUI for the computer algebra system Maxima.
+
+Since it is written with wxWidgets, it runs on multiple platforms
+in native widget sets.  Most of maxima functions are accessible through
+menus, some have dialogs.  The input line has command history (up-key,
+down-key) and completion based on previous input (tab-key).
 wxMaxima provides 2d formated display of maxima output.
 
 
 %prep
-%setup -q -n wxmaxima-Version-%version
+%setup -q
 bzcat %SOURCE5 >locales/ru.po
+%patch1 -p1
 
 %build
 %cmake
 %cmake_build
-
 makeinfo info/wxmaxima.texi
 
 %install
 %cmakeinstall_std
 # icons
-install -D -m644 %SOURCE1 %buildroot%_miconsdir/%name.xpm
-install -D -m644 %SOURCE2 %buildroot%_niconsdir/%name.xpm
-install -D -m644 %SOURCE3 %buildroot%_liconsdir/%name.xpm
-
-install -D -m644 wxmaxima.info %buildroot%_infodir/wxmaxima.info
+install -D -m644 data/wxmaxima-16.xpm %buildroot%_miconsdir/%name.xpm
+install -D -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %find_lang %name
 
 %files -f %name.lang
+%doc AUTHORS NEWS.md README.md
 %_bindir/wxmaxima
 %_desktopdir/*%name.desktop
 %_niconsdir/%name.xpm
 %_miconsdir/%name.xpm
-%_liconsdir/%name.xpm
 %dir %_datadir/%name
 %_datadir/%name/*
-
-%{_datadir}/metainfo/*wxMaxima.appdata.xml
-%{_datadir}/bash-completion/completions/wxmaxima
-%{_datadir}/pixmaps/wxmaxima*
-%{_datadir}/pixmaps/*wxma*svg
-%{_datadir}/mime/packages/x-wxmathml.xml
-%{_datadir}/mime/packages/x-wxmaxima-batch.xml
-%{_docdir}/wxmaxima/
-%{_mandir}/man1/wxmaxima.1*
-%{_infodir}/wxmaxima.info*
-%{_pixmapsdir}/*%name.png
+%_datadir/metainfo/*wxMaxima.appdata.xml
+%_datadir/bash-completion/completions/wxmaxima
+%_datadir/pixmaps/wxmaxima*
+%_datadir/pixmaps/*wxma*svg
+%_datadir/mime/packages/x-wxmathml.xml
+%_datadir/mime/packages/x-wxmaxima-batch.xml
+%_docdir/wxmaxima/
+%_mandir/man1/wxmaxima.1*
+%_pixmapsdir/*%name.png
 
 %changelog
+* Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 19.07.0-alt1
+- New version.
+- Build only for x86 and aarch64.
+
+* Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 19.05.7-alt2
+- Fix path to help files.
+
+* Thu Jun 06 2019 Andrey Cherepanov <cas@altlinux.org> 19.05.7-alt1
+- New version.
+
 * Sun Feb 17 2019 Andrey Cherepanov <cas@altlinux.org> 19.02.0-alt2
 - Return some source files ignored by .gitignore.
 
@@ -105,7 +110,7 @@ install -D -m644 wxmaxima.info %buildroot%_infodir/wxmaxima.info
 * Tue Sep 30 2014 Ilya Mashkin <oddity@altlinux.ru> 14.09.0-alt1
 - 14.09.0
 
-* Sat Nov 15 2013 Ilya Mashkin <oddity@altlinux.ru> 13.04.2-alt1
+* Fri Nov 15 2013 Ilya Mashkin <oddity@altlinux.ru> 13.04.2-alt1
 - 13.04.2
 
 * Sat Sep 14 2013 Ilya Mashkin <oddity@altlinux.ru> 13.04.1-alt1
