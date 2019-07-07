@@ -1,5 +1,5 @@
 Name: make-initrd-propagator
-Version: 0.41
+Version: 0.42
 Release: alt1
 
 Summary: Put propagator into make-initrd generated image
@@ -8,10 +8,10 @@ License: GPL
 Group: System/Base
 URL: https://www.altlinux.org/Make-initrd-propagator
 
-Source0: %name-%version.tar 
+Source0: %name-%version.tar
 
 Requires: console-vt-tools fdisk /sbin/addpart grep
-Requires: aufs2-util sysvinit-utils net-tools
+Requires: sysvinit-utils net-tools
 Requires: sed procps psmisc findutils nfs-utils
 Requires: make-initrd
 Requires: e2fsprogs time
@@ -35,10 +35,20 @@ mkdir -p %buildroot%_datadir/make-initrd/features/
 cp -a propagator %buildroot%_datadir/make-initrd/features/
 mkdir -p %buildroot%_datadir/make-initrd/features/propagator/data/image
 
-%files 
+%files
 %_datadir/make-initrd/features/propagator
 
 %changelog
+* Tue Jun 25 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.42-alt1
+- config.mk: removed copy of *-net-name-slot.rules udev rule (copying
+  of absent file is going to be error in upcoming release of make-initrd).
+
+* Thu Jun 20 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.41-alt3
+- mount.aufs removed from config.mk (Closes: 36930)
+
+* Wed Jun 19 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.41-alt2
+- unneede dependence on aufs2-util removed
+
 * Wed Jan 23 2019 Arseny Maslennikov <arseny@altlinux.org> 0.41-alt1
 - Network overlays:
   + Overlays with a name of *.squashfs are now also taken into consideration.
