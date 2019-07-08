@@ -8,7 +8,7 @@
 
 Name: calligra
 Version: 3.1.0
-Release: alt7
+Release: alt8
 Epoch: 0
 %K5init no_altplace
 %define libname lib%name
@@ -51,7 +51,7 @@ BuildRequires: kf5-attica-devel boost-devel eigen3 gcc-c++ glib2-devel rpm-build
 BuildRequires: extra-cmake-modules
 BuildRequires: qt5-base-devel qt5-svg-devel qt5-declarative-devel qt5-script-devel qt5-x11extras-devel
 #BuildRequires: qt5-quick1-devel
-BuildRequires: qt5-webkit-devel
+#BuildRequires: qt5-webkit-devel
 BuildRequires: kf5-attica-devel kde5-kholidays-devel
 BuildRequires: kf5-kactivities-devel kf5-karchive-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdoctools-devel kf5-kguiaddons-devel kf5-khtml-devel kf5-kjs-devel kf5-ki18n-devel
@@ -103,6 +103,7 @@ Header files and libraries needed for %name development
 %package words
 Group: Office
 Summary: An intuitive word processor application with desktop publishing features
+Provides: kword = %version-%release
 Provides: koffice-kword = %koffice_ver
 Obsoletes: koffice-kword < %koffice_ver
 Requires: %name-core
@@ -135,6 +136,7 @@ animation and more.
 %package karbon
 Group: Graphics
 Summary: A vector drawing application
+Provides: karbon = %version-%release
 Provides: koffice-karbon = %koffice_ver
 Obsoletes: koffice-karbon < %koffice_ver
 Requires: %name-core
@@ -429,6 +431,10 @@ done
 %exclude %_K5lib/libkookularGenerator_odt.so*
 
 %changelog
+* Thu Jul 04 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt8
+- set additional provides (ALT#16944)
+- build without qtwebkit
+
 * Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0:3.1.0-alt7
 - NMU: remove rpm-build-ubt from BR:
 
@@ -438,19 +444,19 @@ done
 * Thu Nov 08 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt5
 - fix build with poppler-0.71
 
-* Tue Sep 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0:3.1.0-alt4%ubt
+* Tue Sep 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0:3.1.0-alt4
 - Fixed build with new Qt.
 
-* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt3%ubt
+* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt3
 - rebuild with new okular
 
-* Tue Mar 13 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt2%ubt
+* Tue Mar 13 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt2
 - rebuild with new okular
 
-* Thu Mar 01 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt1%ubt
+* Thu Mar 01 2018 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt1
 - new version
 
-* Tue Oct 31 2017 Sergey V Turchin <zerg@altlinux.org> 0:3.0.1-alt2%ubt
+* Tue Oct 31 2017 Sergey V Turchin <zerg@altlinux.org> 0:3.0.1-alt2
 - move binaries to /usr/bin
 
 * Wed Aug 30 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 0:3.0.1-alt1
