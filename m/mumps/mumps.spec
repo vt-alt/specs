@@ -1,4 +1,5 @@
 %define _unpackaged_files_terminate_build 1
+%def_disable arpack
 
 %define mpiimpl openmpi
 %define mpidir %_libdir/%mpiimpl
@@ -7,13 +8,11 @@
 %define sover %somver.10.0
 Name: mumps
 Version: 4.10.0
-Release: alt9
+Release: alt10
 Summary: MUltifrontal Massively Parallel sparse direct Solver
 License: Free
 Group: Sciences/Mathematics
 Url: http://mumps.enseeiht.fr/
-
-ExclusiveArch: %ix86 x86_64
 
 Source: MUMPS_%version.tar
 Source1: Makefile.inc
@@ -21,7 +20,11 @@ Source2: Makefile.inc.seq
 
 BuildRequires: %mpiimpl-devel libopenblas-devel
 BuildRequires: libscotch-devel libparmetis-devel
-BuildRequires: libscalapack-devel libblacs-devel libarpack-devel
+BuildRequires: libscalapack-devel libblacs-devel
+%if_enabled arpack
+# circular build deps with scalapack
+BuildRequires: libarpack-devel
+%endif
 
 %description
 MUMPS solves a sparse system of linear equations A x = b
@@ -141,9 +144,13 @@ uniprocessor machines only, no parallel.
 install -m644 %SOURCE1 %SOURCE2 .
 sed -i "s|@TOPDIR@|$PWD|" Makefile.inc*
 sed -i 's|\-lmetis|-lparmetis|g' Make.inc/Makefile.*
+%if_disabled arpack
+sed -i '/^SCALAP/s/-larpack_LINUX//' Makefile.inc
+%endif
+
 
 %build
-mpi-selector --set %mpiimpl
+mpi-selector --yes --set %mpiimpl
 source %mpidir/bin/mpivars.sh
 export OMPI_LDFLAGS="-Wl,--as-needed,-rpath,%mpidir/lib -L%mpidir/lib"
 export MPIDIR=%mpidir
@@ -225,8 +232,12 @@ function makeShared() {
 	fi
 	ar x ../$1$2.a
 	mpif77 -shared * -L.. $LIBS \
-		-lscotchmetis -lesmumps -lscalapack -lblacs -larpack_LINUX $FINLIB \
+		-lscotchmetis -lesmumps -lscalapack -lblacs \
+%if_enabled arpack
+		-larpack_LINUX \
+%endif
 		-Wl,-R%mpidir/lib \
+		$FINLIB \
 		-Wl,-soname,$1$2.so.%somver -o ../$1$2.so.%sover
 	ln -s $1$2.so.%sover ../$1$2.so.%somver
 	ln -s $1$2.so.%somver ../$1$2.so
@@ -282,6 +293,9 @@ popd
 %_docdir/lib%name-devel
 
 %changelog
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.0-alt10
+- build without arpack
+
 * Thu Dec 27 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.10.0-alt9
 - Updated interpackage dependencies and build architectures.
 
