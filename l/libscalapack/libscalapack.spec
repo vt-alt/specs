@@ -2,11 +2,13 @@
 %define mpidir %_libdir/%mpiimpl
 %define origname scalapack
 
+%def_enable bootstrap
+
 %define somver 1
 %define sover %somver.8.0
 Name: lib%origname
 Version: 1.8.0
-Release: alt18
+Release: alt19
 Summary: Scalable LAPACK library
 License: LGPL
 Group: Sciences/Mathematics
@@ -18,8 +20,12 @@ Source1: SLmake.inc
 Source2: manpages.tar.gz
 
 BuildPreReq: liblapack-devel gcc-fortran
-BuildPreReq: %mpiimpl-devel libarpack-devel
+BuildPreReq: %mpiimpl-devel
 BuildPreReq: libblacs-devel chrpath
+%if_disabled bootstrap
+# circular build deps with arpack
+BuildRequires: libarpack-devel
+%endif
 
 %description
 The ScaLAPACK (or Scalable LAPACK) library includes a subset of LAPACK routines
@@ -49,7 +55,10 @@ If You need man pages, install libscalapack-manpages.
 %package debug
 Summary: Debug version of ScaLAPACK
 Group: Sciences/Mathematics
-Requires: libarpack-devel libblacs-devel-debug
+%if_disabled bootstrap
+Requires: libarpack-devel
+%endif
+Requires: libblacs-devel-debug
 
 %description debug
 Debug version of ScaLAPACK.
@@ -59,7 +68,10 @@ If You need man pages, install libscalapack-manpages.
 %package devel
 Summary: Development files of ScaLAPACK
 Group: Development/Other
-Requires: libblacs-devel libarpack-devel %mpiimpl-devel
+Requires: libblacs-devel %mpiimpl-devel
+%if_disabled bootstrap
+Requires: libarpack-devel
+%endif
 Requires: %name = %version-%release
 Conflicts: %name < %version-%release
 Obsoletes: %name < %version-%release
@@ -239,19 +251,19 @@ mkdir -pv %buildroot%_datadir/%origname/pblas-timing
 mkdir -pv %buildroot%_datadir/%origname/redist
 mkdir -pv %buildroot%_datadir/%origname/example
 mkdir -pv %buildroot%_mandir
-rm SRC/pblas.h
-mv TESTING/x* %buildroot%_bindir/
-mv libscalapack*.a %buildroot%_libdir/
-mv LIB0/libscalapack*.a %buildroot%_libdir/
-mv PBLAS/SRC/*.h %buildroot%_includedir/
-mv REDIST/SRC/*.h %buildroot%_includedir/
-mv SRC/*.h %buildroot%_includedir/
-mv TESTING0/*.dat %buildroot%_datadir/%origname/tests/
-mv PBLAS/TESTING/*.dat %buildroot%_datadir/%origname/pblas-tests/
-mv PBLAS/TIMING/*.dat %buildroot%_datadir/%origname/pblas-timing/
-mv REDIST/TESTING/*.dat %buildroot%_datadir/%origname/redist/
-mv EXAMPLE/*.dat %buildroot%_datadir/%origname/example/
-mv MANPAGES/man/manl %buildroot%_mandir/
+rm -f SRC/pblas.h
+cp -ar TESTING/x* %buildroot%_bindir/
+cp -ar libscalapack*.a %buildroot%_libdir/
+cp -ar LIB0/libscalapack*.a %buildroot%_libdir/
+cp -ar PBLAS/SRC/*.h %buildroot%_includedir/
+cp -ar REDIST/SRC/*.h %buildroot%_includedir/
+cp -ar SRC/*.h %buildroot%_includedir/
+cp -ar TESTING0/*.dat %buildroot%_datadir/%origname/tests/
+cp -ar PBLAS/TESTING/*.dat %buildroot%_datadir/%origname/pblas-tests/
+cp -ar PBLAS/TIMING/*.dat %buildroot%_datadir/%origname/pblas-timing/
+cp -ar REDIST/TESTING/*.dat %buildroot%_datadir/%origname/redist/
+cp -ar EXAMPLE/*.dat %buildroot%_datadir/%origname/example/
+cp -ar MANPAGES/man/manl %buildroot%_mandir/
 
 # all in one library
 
@@ -294,7 +306,11 @@ LIB=%{name}_LINUX-0
 ar x ../$LIB.a
 mpif77 -shared -o ../%name.so.%sover * \
 	-Wl,-soname,%name.so.%somver \
-	-Wl,-R%mpidir/lib -lblacs -larpack_LINUX -llapack -lopenblas
+	-Wl,-R%mpidir/lib -lblacs \
+%if_disabled bootstrap
+	-larpack_LINUX \
+%endif
+	-llapack -lopenblas
 ln -s %name.so.%sover ../%name.so.%somver
 ln -s %name.so.%somver ../%name.so
 ln -s %name.so ../$LIB.so
@@ -377,6 +393,9 @@ popd
 #_includedir/%origname
 
 %changelog
+* Mon Jul 08 2019 Sergey V Turchin <zerg@altlinux.org> 1.8.0-alt19
+- build without arpack
+
 * Thu Jul 13 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.0-alt18
 - Rebuilt with new mpi and toolchain
 
