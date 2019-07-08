@@ -1,24 +1,13 @@
-%def_without M24
-
-%if_with M24
-%define _release alt2.M24.1
-%else
-%define _release alt3
-%endif
-
 Name: dosemu-freedos
 Version: 050405
-Release: %_release
-Packager: Grigory Batalov <bga@altlinux.ru>
+Release: alt4
 
 Summary: Minimum FreeDOS image for dosemu
-Summary(ru_RU.KOI8-R): Минимальный образ FreeDOS для dosemu
 License: GPL
 Group: Emulators
-Url: http://www.freedos.org
 
-BuildArchitectures: noarch
-Requires: dosemu >= 1.3.4
+Url: http://www.freedos.org
+Packager: Grigory Batalov <bga@altlinux.ru>
 
 Source0: http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/dos/attrib/attrib21.zip
 Source1: http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/dos/choice/choice43a.zip
@@ -78,19 +67,24 @@ Source44: http://fdos.org/kernel/kwc38632.dev.zip
 Source42: dosemu-freedos-031113-alt-autoexec.bat
 Source43: dosemu-freedos-050709-alt-config.sys
 
+BuildArch: noarch
+#Requires: dosemu >= 1.3.4
+
 # Automatically added by buildreq on Thu Nov 13 2003
 BuildRequires: unzip
+
+Summary(ru_RU.UTF-8): п°п╦п╫п╦п╪п╟п╩я▄п╫я▀п╧ п╬п╠я─п╟п╥ FreeDOS п╢п╩я▐ dosemu
 
 %description
 FreeDOS aims to be a complete, free, 100%% MS-DOS compatible operating system.
 This is minimal image of FreeDOS making possible to boot under DOSEmu.
 
-%description -l ru_RU.KOI8-R
-FreeDOS - свободный, 100%% совместимый аналог операционной системы MS-DOS.
-Пакет содержит её минимальный вариант, достаточный для загрузки в DOSEmu.
+%description -l ru_RU.UTF-8
+FreeDOS - я│п╡п╬п╠п╬п╢п╫я▀п╧, 100%% я│п╬п╡п╪п╣я│я┌п╦п╪я▀п╧ п╟п╫п╟п╩п╬пЁ п╬п©п╣я─п╟я├п╦п╬п╫п╫п╬п╧ я│п╦я│я┌п╣п╪я▀ MS-DOS.
+п÷п╟п╨п╣я┌ я│п╬п╢п╣я─п╤п╦я┌ п╣я▒ п╪п╦п╫п╦п╪п╟п╩я▄п╫я▀п╧ п╡п╟я─п╦п╟п╫я┌, п╢п╬я│я┌п╟я┌п╬я┤п╫я▀п╧ п╢п╩я▐ п╥п╟пЁя─я┐п╥п╨п╦ п╡ DOSEmu.
 
 %prep
-%setup -q -c %name-%version -T
+%setup -c %name-%version -T
 # extracting archives
 for i in %SOURCE0 %SOURCE1 %SOURCE3 %SOURCE5 %SOURCE6 %SOURCE7 %SOURCE8 \
          %SOURCE9 %SOURCE10 %SOURCE11 %SOURCE12 %SOURCE13 %SOURCE14 %SOURCE15 \
@@ -99,80 +93,85 @@ for i in %SOURCE0 %SOURCE1 %SOURCE3 %SOURCE5 %SOURCE6 %SOURCE7 %SOURCE8 \
 	 %SOURCE29 %SOURCE30 %SOURCE31 %SOURCE32 %SOURCE33 %SOURCE34 \
 	 %SOURCE36 %SOURCE37 %SOURCE40 %SOURCE44 %SOURCE45 %SOURCE46 %SOURCE47
 do
-   echo $i
-   %__unzip -L -o -q $i
+  echo $i
+  unzip -L -o -q $i
 done
-#%__unzip -L -o -q %%SOURCE35 bin/tee.com help/tee
+#unzip -L -o -q %%SOURCE35 bin/tee.com help/tee
+
 # freedos tree
-%__mkdir_p tmp/dosemu/freedos/{bin,dosemu,gnu,help,nls,tmp}
+mkdir -p tmp/dosemu/freedos/{bin,dosemu,gnu,help,nls,tmp}
 
 FREEDOS=tmp/dosemu/freedos
 # adjusting binaries
-find -type f -iregex ".*\.com" -o -iregex ".*\.exe" | %__grep -v "$FREEDOS/bin" | xargs -r -i{} %__mv {} $FREEDOS/bin
-%__tar -xjf %SOURCE38 -C $FREEDOS
+find -type f -iregex ".*\.com" -o -iregex ".*\.exe" | grep -v "$FREEDOS/bin" | xargs -r -i{} mv {} $FREEDOS/bin
+tar -xjf %SOURCE38 -C $FREEDOS
 (cd $FREEDOS/bin
- %__rm -f _*
+ rm -f _*
  for upper in *; do
-    %__chmod 0644 $upper
+    chmod 644 $upper
     lower=`echo $upper | tr [:upper:] [:lower:]`
     if [ "x$upper" != "x$lower" ]; then
-       %__mv $upper $lower
+       mv $upper $lower
     fi
  done
- %__ln_s swsubst.exe join.exe
- %__ln_s swsubst.exe subst.exe
- %__ln_s fasthelp.exe help.exe
- %__mv command.com ..
- %__ln_s ../command.com command.com
+ ln -s swsubst.exe join.exe
+ ln -s swsubst.exe subst.exe
+ ln -s fasthelp.exe help.exe
+ mv command.com ..
+ ln -s ../command.com command.com
 )
 
-%__mv source/nansi/nansi.sys $FREEDOS/bin
-#%__mv bin/kernel.sys $FREEDOS
-%__mv kwc38632.sys $FREEDOS/kernel.sys
-%__mv country.sys $FREEDOS/bin
-#%__install -m0644 %SOURCE42 $FREEDOS/autoexec.bat
-#%__install -m0644 %SOURCE43 $FREEDOS/config.sys
+mv source/nansi/nansi.sys $FREEDOS/bin
+#mv bin/kernel.sys $FREEDOS
+mv kwc38632.sys $FREEDOS/kernel.sys
+mv country.sys $FREEDOS/bin
+#install -m0644 %%SOURCE42 $FREEDOS/autoexec.bat
+#install -m0644 %%SOURCE43 $FREEDOS/config.sys
 
 # adjusting docs
-%__mv doc/fc/fc.txt $FREEDOS/help/fc
-%__mv doc/diskcopy/diskcopy help/{loadhi,tee,touch,verify} $FREEDOS/help/
-%__mv help/attrib.txt $FREEDOS/help/attrib
-%__mv choice/help/choice.en $FREEDOS/help/choice
-%__mv comp.doc $FREEDOS/help/comp
-%__mv debug.doc $FREEDOS/help/debug
-%__mv edit.hlp $FREEDOS/bin
-%__mv doc/format/help.txt $FREEDOS/help/format
-%__mv doc/Fasthelp/README $FREEDOS/help/fasthelp
-%__mv doc/Whatis/README $FREEDOS/help/whatis
-%__mv doc/mem/readme $FREEDOS/help/mem
-#%__mv mode.txt $FREEDOS/help/mode
-%__mv more40/doc/help $FREEDOS/help/more
-%__mv doc/nansi/nansi.doc $FREEDOS/help/nansi
-%__mv doc/sort/sort.1 $FREEDOS/help/sort
-%__mv doc/xcopy.txt $FREEDOS/help/xcopy
-%__mv deltree.txt $FREEDOS/help/deltree
-%__mv doc/bwbasic/bwbasic.doc $FREEDOS/help/bwbasic
-#%__mv doc/sys.txt $FREEDOS/help/sys
-%__mv shsucdx.txt $FREEDOS/help/shsucdx
+mv doc/fc/fc.txt $FREEDOS/help/fc
+mv doc/diskcopy/diskcopy help/{loadhi,tee,touch,verify} $FREEDOS/help/
+mv help/attrib.txt $FREEDOS/help/attrib
+mv choice/help/choice.en $FREEDOS/help/choice
+mv comp.doc $FREEDOS/help/comp
+mv debug.doc $FREEDOS/help/debug
+mv edit.hlp $FREEDOS/bin
+mv doc/format/help.txt $FREEDOS/help/format
+mv doc/Fasthelp/README $FREEDOS/help/fasthelp
+mv doc/Whatis/README $FREEDOS/help/whatis
+mv doc/mem/readme $FREEDOS/help/mem
+#mv mode.txt $FREEDOS/help/mode
+mv more40/doc/help $FREEDOS/help/more
+mv doc/nansi/nansi.doc $FREEDOS/help/nansi
+mv doc/sort/sort.1 $FREEDOS/help/sort
+mv doc/xcopy.txt $FREEDOS/help/xcopy
+mv deltree.txt $FREEDOS/help/deltree
+mv doc/bwbasic/bwbasic.doc $FREEDOS/help/bwbasic
+#mv doc/sys.txt $FREEDOS/help/sys
+mv shsucdx.txt $FREEDOS/help/shsucdx
 
 # help wants 'name.en' pages
 for i in $FREEDOS/help/*; do
-    %__mv $i $i.en
+  mv $i $i.en
 done
 
 # adjusting translations
-%__mv nls/* $FREEDOS/nls
-%__mv pause/nls/* more40/nls/* NLS/* choice/nls/* trch/nls/* runtime/nls/* source/diskcopy/nls/* $FREEDOS/nls
+mv nls/* $FREEDOS/nls
+mv pause/nls/* more40/nls/* NLS/* choice/nls/* trch/nls/* runtime/nls/* source/diskcopy/nls/* $FREEDOS/nls
 
 %build
 %install
 mkdir -p %buildroot%_datadir
-cp -R tmp/dosemu %buildroot%_datadir/dosemu
+cp -a tmp/dosemu %buildroot%_datadir/dosemu
 
 %files
 %_datadir/dosemu/freedos
 
 %changelog
+* Wed Jun 26 2019 Michael Shigorin <mike@altlinux.org> 050405-alt4
+- Don't require dosemu, there are more use cases
+- Spec cleanup (and UTF-8 conversion)
+
 * Sat Apr 14 2007 Grigory Batalov <bga@altlinux.ru> 050405-alt3
 - Pack FreeDOS in plain directory instead of archive.
 - Quote percent sign in description.
