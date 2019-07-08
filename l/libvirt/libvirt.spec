@@ -24,7 +24,6 @@
 %if_enabled server_drivers
 # First the daemon itself
 %def_with libvirtd
-%def_with avahi
 
 # Then the hypervisor drivers that run on local host
 %def_with qemu
@@ -98,7 +97,6 @@
 
 %else  #server_drivers
 %def_without libvirtd
-%def_without avahi
 %def_without qemu
 %def_without openvz
 %def_without lxc
@@ -183,8 +181,8 @@
 %endif
 
 Name: libvirt
-Version: 5.4.0
-Release: alt2
+Version: 5.5.0
+Release: alt1
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
 Group: System/Libraries
@@ -216,7 +214,6 @@ Requires: %name-libs = %EVR
 %{?_with_sanlock:BuildRequires: sanlock-devel >= 1.8}
 %{?_with_libpcap:BuildRequires: libpcap-devel}
 %{?_with_libnl:BuildRequires: libnl-devel}
-%{?_with_avahi:BuildRequires: libavahi-devel}
 %{?_with_selinux:BuildRequires: libselinux-devel}
 %{?_with_network:BuildRequires: dnsmasq iptables iptables-ipv6 radvd openvswitch}
 %{?_with_nwfilter:BuildRequires: ebtables}
@@ -232,7 +229,7 @@ Requires: %name-libs = %EVR
 %{?_with_storage_iscsi:BuildRequires: open-iscsi}
 %{?_with_storage_iscsi_direct:BuildRequires: libiscsi-devel >= 1.18.0}
 %{?_with_storage_mpath:BuildRequires: libdevmapper-devel}
-%{?_with_storage_gluster:BuildRequires: glusterfs3-devel >= 3.4.1}
+%{?_with_storage_gluster:BuildRequires: libglusterfs6-devel}
 %{?_with_storage_zfs:BuildRequires: zfs-utils}
 %{?_with_storage_vstorage:BuildRequires: /usr/sbin/vstorage}
 %{?_with_numactl:BuildRequires: libnuma-devel}
@@ -500,7 +497,7 @@ multipath storage using device mapper.
 Summary: Storage driver plugin for gluster
 Group: System/Libraries
 Requires: libvirt-daemon-driver-storage-core = %EVR
-Requires: /usr/sbin/gluster
+Requires: glusterfs6
 
 %description daemon-driver-storage-gluster
 The storage driver backend adding implementation of the storage APIs for gluster
@@ -810,7 +807,6 @@ LOADERS="$LOADERS_OLD:$LOADERS_NEW"
 		--with-qemu-group=%qemu_group \
 		--with-sysctl=check \
 		%{subst_with libvirtd} \
-		%{subst_with avahi} \
 		%{subst_with qemu} \
 		%{subst_with openvz} \
 		%{subst_with lxc} \
@@ -868,9 +864,11 @@ gzip -9 ChangeLog
 %makeinstall_std
 
 # Install sysv init scripts
+%if_with libvirtd
 install -pD -m 755 %SOURCE11  %buildroot%_initdir/libvirtd
 install -pD -m 755 %SOURCE12  %buildroot%_initdir/virtlockd
 install -pD -m 755 %SOURCE13  %buildroot%_initdir/virtlogd
+%endif
 install -pD -m 755 %SOURCE14  %buildroot%_initdir/libvirt-guests
 
 install -d -m 0755 %buildroot%_runtimedir/%name
@@ -1344,6 +1342,13 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 5.5.0-alt1
+- 5.5.0 (Fixes: CVE-2019-10161, CVE-2019-10166, CVE-2019-10167, CVE-2019-10168)
+- build with glusterfs6
+
+* Wed Jun 05 2019 Ivan A. Melnikov <iv@altlinux.org> 5.4.0-alt3
+- fix build without server_drivers
+
 * Tue Jun 04 2019 Alexey Shabalin <shaba@altlinux.org> 5.4.0-alt2
 - move files of qemu,lxc,xen to daemon drivers
 
