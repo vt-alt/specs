@@ -3,47 +3,42 @@
 %endif
 %brp_strip_none
 
-Summary: Rutoken PKCS#11 Library
 Name: librtpkcs11ecp
-Version: 1.8.2.0
-Release: alt2
-License: Proprietary
-Url: https://www.rutoken.ru/support/download/pkcs/
-Group: System/Configuration/Hardware
-Source0: %name-%version.tar
-ExclusiveArch: %ix86 x86_64 armh mips64el
+Version: 1.9.12.0
+Release: alt1
 
-Requires: pcsc-lite-ccid
+Summary: Rutoken PKCS#11 Library
+License: Proprietary
+Group: System/Configuration/Hardware
+
+Url: https://www.rutoken.ru/support/download/pkcs/
+Source: %name-%version.tar
+ExclusiveArch: i586 x86_64 armh aarch64 mipsel mips64el e2k e2kv4
 
 BuildRequires: libpcsclite-devel
+
+Requires: pcsc-lite-ccid
 
 Provides: pcsc-lite-rtpkcs11ecp = %version-%release
 Obsoletes: pcsc-lite-rtpkcs11ecp < %version-%release
 Conflicts: pcsc-lite-rtpkcs11ecp < %version-%release
 
+Summary(ru_RU.UTF-8): Библиотека PKCS#11 для Рутокен ЭЦП
+
 %description
 Allow users to work with Rutoken ECP through PKCS#11 standard.
+
+%description -l ru_RU.UTF-8
+Позволяет пользоваться Рутокен ЭЦП посредством стандарта PKCS#11.
 
 %prep
 %setup
 
 %install
-%ifarch %ix86
-install -D -m0644 %name-i586.so %buildroot%_libdir/pkcs11/librtpkcs11ecp.so
-%endif
-%ifarch x86_64
-install -D -m0644 %name-x86_64.so %buildroot%_libdir/pkcs11/librtpkcs11ecp.so
-%endif
-%ifarch armh
-install -D -m0644 %name-armv7hf.so %buildroot%_libdir/pkcs11/librtpkcs11ecp.so
-%endif
-%ifarch mips64el
-install -D -m0644 %name-mips64el.so %buildroot%_libdir/pkcs11/librtpkcs11ecp.so
-%endif
+install -pDm644 %_arch/%name.so %buildroot%_libdir/pkcs11/%name.so
+ln -s pkcs11/%name.so %buildroot%_libdir/%name.so
 
-ln -s pkcs11/librtpkcs11ecp.so %buildroot%_libdir/librtpkcs11ecp.so
-
-install -D -m0644 rutokenecp.module \
+install -pDm644 rutokenecp.module \
         %buildroot%_sysconfdir/pkcs11/modules/rutokenecp.module
 
 %files
@@ -53,6 +48,11 @@ install -D -m0644 rutokenecp.module \
 %config(noreplace) %_sysconfdir/pkcs11/modules/rutokenecp.module
 
 %changelog
+* Wed Jun 26 2019 Michael Shigorin <mike@altlinux.org> 1.9.12.0-alt1
+- Updated to 1.9.12.0; new arches: aarch64, e2k, e2kv4, mipsel.
+- Added update.sh to automate the library extraction next time.
+- Simplified spec, added Russian translation while at that.
+
 * Thu Aug 30 2018 Paul Wolneykien <manowar@altlinux.org> 1.8.2.0-alt2
 - Install files with "install".
 

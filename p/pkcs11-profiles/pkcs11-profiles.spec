@@ -1,10 +1,10 @@
-%ifarch %ix86 x86_64 armh mips64el
+%ifarch %ix86 x86_64 armh aarch64 mipsel mips64el %e2k
 %def_enable rutokenecp
 %else
 %def_disable rutokenecp
 %endif
 
-%ifarch %ix86 x86_64 armh aarch64 e2k
+%ifarch %ix86 x86_64 armh aarch64
 %def_enable isbc
 %else
 %def_disable isbc
@@ -18,7 +18,7 @@
 
 Name: pkcs11-profiles
 Version: 0.1.9
-Release: alt1
+Release: alt2
 
 Summary: Set of scripts and profiles for PAM PKCS11 configuration
 License: GPLv3+
@@ -169,6 +169,12 @@ Contains prompts and other messages of "Zastava" PAM PKCS#11 set
 %config(noreplace) %confdir/message.profiles/zastava
 
 %changelog
+* Mon Jul 01 2019 Michael Shigorin <mike@altlinux.org> 0.1.9-alt2
+- Enable rutokenecp on platforms supported by 1.9.12.0 release.
+- Disable isbc on e2k: the binaries are underlinked and don't pass
+  girar checks (untested by us so far to the best of my knowledge).
+- Fix %%changelog glitches.
+
 * Wed Nov 28 2018 Paul Wolneykien <manowar@altlinux.org> 0.1.9-alt1
 - Fix: Preset the default mapping files in the mapping profiles.
 
@@ -176,19 +182,19 @@ Contains prompts and other messages of "Zastava" PAM PKCS#11 set
 - Translate "prompt_pin_too_short_err" and "prompt_pin_too_long_err"
   for "Zastava".
 - Restrict PIN code length for "Zastava": min is 4, max is 8 chars.
-	  
+
 * Wed Nov 07 2018 Paul Wolneykien <manowar@altlinux.org> 0.1.7-alt1
 - Added JaCarta module.
 
 * Fri Aug 31 2018 Paul Wolneykien <manowar@altlinux.org> 0.1.6-alt2
 - Enable "rutokenecp" for %ix86 x86_64 armh mips64el. Enable "isbc"
   for %ix86 x86_64 armh aarch64 e2k.
-	
+
 * Wed Aug 29 2018 Paul Wolneykien <manowar@altlinux.org> 0.1.6-alt1
 - Fixed "cert" mapping profile: the mapping modules are in
   /lib64/pam_pkcs11/.
 - Just skip the filelist for the disabled packages.
-  
+
 * Wed Aug 22 2018 Ivan A. Melnikov <iv@altlinux.org> 0.1.5-alt4
 - Explicitly enable rutokenecp on %%ix86 and x86_64 only.
 
