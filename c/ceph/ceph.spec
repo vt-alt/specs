@@ -41,7 +41,7 @@
 
 Name: ceph
 Version: 14.2.1
-Release: alt1
+Release: alt2
 Summary: User space components of the Ceph file system
 Group: System/Base
 
@@ -754,7 +754,7 @@ tar -xf %SOURCE25 -C src/spdk
 tar -xf %SOURCE17 -C src/spdk/dpdk
 %endif
 tar -xf %SOURCE26 -C src/xxHash
-tar -xf %SOURCE27 -C src/zstd
+#tar -xf %SOURCE27 -C src/zstd
 tar -xf %SOURCE28 -C src/c-ares
 tar -xf %SOURCE29 -C src/dmclock
 tar -xf %SOURCE30 -C src/seastar
@@ -1618,6 +1618,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.1-alt2
+- compat with zstd >= v1.4.0
+
 * Wed May 08 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.1-alt1
 - 14.2.1
 
