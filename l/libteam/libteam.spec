@@ -6,7 +6,7 @@
 %define _pseudouser_group    _teamd
 
 Name: libteam
-Version: 1.28
+Version: 1.29
 Release: alt1
 
 Summary: Library for controlling team network device
@@ -188,6 +188,9 @@ install -pm 0644 team/capi.py %buildroot%python3_sitelibdir/team/
 %endif
 
 %changelog
+* Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 1.29-alt1
+- 1.28 -> 1.29.
+
 * Mon Dec 10 2018 Mikhail Efremov <sem@altlinux.org> 1.28-alt1
 - Use python3 in shebangs.
 - Build python3 module instead of python2.
