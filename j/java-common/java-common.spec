@@ -3,7 +3,7 @@
 %def_enable desktop
 
 Name: java-common
-Version: 1.5.0
+Version: 1.6.0
 Release: alt1
 
 Summary: Common files for Java runtimes
@@ -42,10 +42,9 @@ cat >%buildroot%{_sysconfdir}/profile.d/javahome.sh <<EOF
 if test -e %{_prefix}/lib/jvm/java; then
     JAVA_HOME=%{_prefix}/lib/jvm/java
     export JAVA_HOME
-else if test -e %{_prefix}/lib/jvm/jre; then
-    JRE_HOME=%{_prefix}/lib/jvm/jre
-    export JRE_HOME
-    fi
+elif test -e %{_prefix}/lib/jvm/jre; then
+    JAVA_HOME=%{_prefix}/lib/jvm/jre
+    export JAVA_HOME
 fi
 EOF
 chmod 755 %buildroot%{_sysconfdir}/profile.d/javahome.sh
@@ -53,7 +52,7 @@ cat >%buildroot%{_sysconfdir}/profile.d/javahome.csh <<EOF
 if ( -e %{_prefix}/lib/jvm/java ) then
 setenv JAVA_HOME %{_prefix}/lib/jvm/java
 else if ( -e %{_prefix}/lib/jvm/jre ) then
-setenv JRE_HOME %{_prefix}/lib/jvm/jre
+setenv JAVA_HOME %{_prefix}/lib/jvm/jre
 endif
 EOF
 chmod 755 %buildroot%{_sysconfdir}/profile.d/javahome.csh
@@ -96,8 +95,8 @@ EOF
 
 %files
 %{_sysconfdir}/profile.d/javahome.*sh
-%dir %{_sysconfdir}/.java/
-%dir %{_sysconfdir}/.java/.systemPrefs
+#%dir %{_sysconfdir}/.java/
+#%dir %{_sysconfdir}/.java/.systemPrefs
 %if_enabled desktop
 %{_datadir}/mime/packages/*.xml
 %_desktopdir/%{origin}-java.desktop
@@ -105,6 +104,10 @@ EOF
 %endif
 
 %changelog
+* Sat Jul 06 2019 Igor Vlasenko <viy@altlinux.ru> 1.6.0-alt1
+- dropped /etc/.java/.systemPrefs
+- fixed javahome.sh (closes: #36987)
+
 * Wed Feb 15 2012 Igor Vlasenko <viy@altlinux.ru> 1.5.0-alt1
 - merged desktop support (mime types and mime handlers).
 
