@@ -60,7 +60,7 @@
 
 Name:    samba
 Version: 4.10.3
-Release: alt3
+Release: alt4
 
 Group:   System/Servers
 Summary: The Samba4 CIFS and AD client and server suite
@@ -95,6 +95,7 @@ Obsoletes: samba-swat < %version-%release
 
 # Need for samba_upgradedns
 Requires: tdb-utils
+
 Requires(pre): %name-common = %version-%release
 Requires: %name-libs = %version-%release
 %if_with winbind
@@ -193,6 +194,7 @@ Requires: %name-dc-libs = %version-%release
 Requires: krb5-kdc
 %endif
 %else
+Requires: tdb-utils
 Requires: %name-winbind-common = %version-%release
 Requires(pre): %name-common = %version-%release
 %endif
@@ -369,7 +371,6 @@ develop programs that link against the SMB client library in the Samba suite.
 %package -n libwbclient
 Summary: The winbind client library
 Group: System/Libraries
-Conflicts: libwbclient-sssd
 Provides: libwbclient-DC = %version-%release
 Obsoletes: libwbclient-DC < 4.10
 
@@ -650,7 +651,7 @@ Samba suite.
 %endif
 
 %package -n task-samba-dc
-Summary: Samba Active Directory Domain Controller
+Summary: Complete Samba Active Directory Domain Controller with Heimdal Kerberos
 Group: System/Servers
 BuildArch: noarch
 Provides: task-samba-ad-dc = %version-%release
@@ -660,6 +661,16 @@ Requires: samba-dc samba-winbind-clients %{?_with_doc:samba-doc} krb5-kinit ldb-
 %description -n task-samba-dc
 Samba server acts as a Domain Controller that is compatible with
 Microsoft Active Directory.
+
+%package -n task-samba-dc-mitkrb5
+Summary: Complete Samba Active Directory Domain Controller with MIT Kerberos
+Group: System/Servers
+BuildArch: noarch
+Requires: samba-dc-mitkrb5 %{?_with_doc:samba-doc} krb5-kinit ldb-tools
+
+%description -n task-samba-dc-mitkrb5
+Samba server acts as a Domain Controller that is compatible with
+Microsoft Active Directory with MIT Kerberos server and libraries.
 
 %package util-private-headers
 Summary: libsamba_util private headers
@@ -1143,6 +1154,8 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_mod_libdir/sbin/samba_dnsupdate
 %_samba_mod_libdir/sbin/samba_spnupdate
 %_samba_mod_libdir/sbin/samba_upgradedns
+
+%files -n task-samba-dc-mitkrb5
 %endif
 
 %files dc-client
@@ -1809,6 +1822,12 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Thu Jul 04 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.3-alt4
+- Remove conflict to libwbclient-sssd due problem that apt install
+  it for with gssntlmssp-debuginfo (Closes: 36750)
+- New metapackage task-samba-dc-mitkrb5 to install complete Domain Controller
+  with MIT Kerberos server and libraries
+
 * Mon Jun 14 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.3-alt3
 - Add requires samba-common-tools for samba-common
 

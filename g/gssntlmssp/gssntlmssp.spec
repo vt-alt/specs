@@ -1,8 +1,8 @@
 %def_with wbclient
 
 Name: gssntlmssp
-Version: 0.7.0
-Release: alt3
+Version: 0.8.0
+Release: alt1
 Summary: GSSAPI NTLMSSP Mechanism
 
 Group: System/Libraries
@@ -72,6 +72,9 @@ make test_gssntlmssp
 %_includedir/gssapi/*
 
 %changelog
+* Thu Jul 04 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.8.0-alt1
+- update to new release
+
 * Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 0.7.0-alt3
 - build with openssl-1.1
 
