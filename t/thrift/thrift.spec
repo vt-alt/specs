@@ -4,9 +4,9 @@
 %filter_from_requires /^python-base/d
 # BEGIN SourceDeps(oneline):
 BuildRequires(pre): rpm-build-perl rpm-build-php7 rpm-build-python3 rpm-macros-fedora-compat rpm-macros-java rpm-build-ruby
-BuildRequires: /usr/bin/mcs /usr/bin/npm /usr/bin/perl /usr/bin/php /usr/bin/php-config /usr/bin/trial boost-devel boost-filesystem-devel boost-program_options-devel perl(Encode.pm) perl(HTTP/Request.pm) perl(IO/Select.pm) perl(IO/Socket/INET.pm) perl(IO/Socket/SSL.pm) perl(IO/Socket/UNIX.pm) perl(IO/String.pm) perl(LWP/UserAgent.pm) perl(Time/HiRes.pm) perl(base.pm) perl(overload.pm) perl-podlators pkgconfig(Qt5Core) pkgconfig(Qt5Network) pkgconfig(mono) python-devel rpm-build-java
+BuildRequires: /usr/bin/npm /usr/bin/perl /usr/bin/php /usr/bin/php-config /usr/bin/trial boost-devel boost-filesystem-devel boost-program_options-devel perl(Encode.pm) perl(HTTP/Request.pm) perl(IO/Select.pm) perl(IO/Socket/INET.pm) perl(IO/Socket/SSL.pm) perl(IO/Socket/UNIX.pm) perl(IO/String.pm) perl(LWP/UserAgent.pm) perl(Time/HiRes.pm) perl(base.pm) perl(overload.pm) perl-podlators pkgconfig(Qt5Core) pkgconfig(Qt5Network) python-devel rpm-build-java
 # END SourceDeps(oneline)
-BuildRequires: mono-web javapackages-local
+BuildRequires: javapackages-local
 BuildRequires: chrpath
 BuildRequires: /proc
 BuildRequires: jpackage-generic-compat
@@ -53,7 +53,7 @@ BuildRequires: jpackage-generic-compat
 
 Name:    thrift
 Version: 0.10.0
-Release: alt5_15jpp8
+Release: alt6_15jpp8
 Summary: Software framework for cross-language services development
 
 # Parts of the source are used under the BSD and zlib licenses, but
@@ -87,6 +87,9 @@ Patch4: THRIFT-4177.patch
 # Update fb303 for python3
 Patch5: python3.patch
 
+# Fix linking with boost_atomic, which must be explicit on some architectures
+Patch10: thrift-0.10-debian-fix_boost_atomic_link.patch
+
 Group: Development/Other
 
 # BuildRequires for language-specific bindings are listed under these
@@ -106,7 +109,7 @@ BuildRequires: libevent-devel
 BuildRequires: libstdc++-devel
 BuildRequires: libtool
 BuildRequires: libssl-devel
-BuildRequires: libqt4-declarative libqt4-devel qt4-designer qt4-doc-html qt5-declarative-devel qt5-designer qt5-tools
+BuildRequires: libqt4-declarative libqt4-devel qt4-designer qt5-declarative-devel qt5-designer qt5-tools
 BuildRequires: texlive-texmf
 BuildRequires: zlib-devel
 
@@ -335,6 +338,7 @@ The fb303-java package contains Java bindings for fb303.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch10 -p1
 
 %{?!el5:sed -i -e 's/^AC_PROG_LIBTOOL/LT_INIT/g' configure.ac}
 
@@ -588,6 +592,14 @@ rm -f %buildroot%{_libdir}/libthriftqt5.so
 %ruby_gemsdocdir/*
 
 %changelog
+* Mon Jul 08 2019 Alexey Shabalin <shaba@altlinux.org> 0.10.0-alt6_15jpp8
+- build to Sisyphus
+
+* Wed Mar 27 2019 Ivan A. Melnikov <iv@altlinux.org> 0.10.0-alt5_15jpp8.0.mips1
+- build on mipsel
+  + drop mono
+  + fix linking with boost_atomic (debian patch)
+
 * Tue Mar 19 2019 Pavel Skrylev <majioa@altlinux.org> 0.10.0-alt5_15jpp8
 - Use Ruby Policy 2.0
 
