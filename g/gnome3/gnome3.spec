@@ -1,7 +1,7 @@
 %define ver_major 3.32
 
 Name: gnome3
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: GNOME 3 Desktop installers
@@ -15,12 +15,12 @@ BuildPreReq: rpm-build-licenses
 # The following are required versions of those packages that
 # do not follow GNOME version numbers.
 ## Core components
-%define session_ver 3.30.1
-%define keyring_ver 3.28.2
+%define session_ver %ver_major
+%define keyring_ver 3.31.91
 
 ## Applications
-%define nautilus_ver 3.31.90
-%define seahorse_ver 3.31.91
+%define nautilus_ver %ver_major
+%define seahorse_ver %ver_major
 %define utils_ver 3.20
 %define games_ver 3.28.0
 %define weather_ver 3.26
@@ -48,7 +48,7 @@ BuildPreReq: rpm-build-licenses
 %define recorder_ver 3.28.0
 %define todo_ver 3.28.1
 %define characters_ver 3.30.0
-%define music_ver 3.31.92
+%define music_ver %ver_major
 %define photos_ver 3.31.91
 ## Engines, themes
 %define engines_ver %ver_major
@@ -57,7 +57,7 @@ BuildPreReq: rpm-build-licenses
 %define gtk_theme_prefix gtk3-theme
 %define gnome_theme_prefix gnome-theme
 ## a11y
-%define orca_ver 3.31.92
+%define orca_ver %ver_major
 
 %description
 A set of virtual packages for GNOME Desktop version 3 installation.
@@ -149,6 +149,7 @@ Requires: libcanberra-gtk3
 Requires: gnome-color-manager
 ## Password keeper
 Requires: gnome-keyring >= %keyring_ver
+Requires: gnome-keyring-ssh >= %keyring_ver
 # Encryption keys management
 Requires: seahorse >= %seahorse_ver
 Requires: pinentry-gnome3
@@ -178,9 +179,9 @@ Requires: mozilla-plugin-evince
 ## and E-Book Reader
 #Requires: fbreader
 ## and videos from a webcam
-Requires: cheese
+Requires: cheese >= %ver_major
 # Note editor
-Requires: bijiben
+Requires: bijiben >= %ver_major
 
 # Utilities
 Requires: gnome-utils >= %utils_ver
@@ -226,7 +227,7 @@ Requires: gnome-epub-thumbnailer
 # Nautilus extension for terminal
 Requires: gnome-terminal-nautilus
 # Menu editor
-Requires: alacarte
+#Requires: alacarte
 # Weather application
 Requires: gnome-weather >= %weather_ver
 # Clock application
@@ -432,6 +433,9 @@ some other useful GNOME and GTK applications.
 %files regular
 
 %changelog
+* Sat Jun 22 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- default: removed alacarte, added gnome-keyring-ssh
+
 * Wed Feb 06 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - default: added gnome-books; removed gnome-nettool (obsolete),
   totem-nautilus (removed by upstream), gnome-todo (not ready for eds-3.32)

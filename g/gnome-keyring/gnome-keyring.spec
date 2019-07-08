@@ -12,7 +12,7 @@
 
 Name: gnome-keyring
 Version: %ver_major.91
-Release: alt1
+Release: alt2
 
 Summary: %name is a password keeper for GNOME
 License: LGPL
@@ -25,6 +25,9 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 Source: %name-%version.tar
 %endif
 Patch: gnome-keyring-3.14.0-alt-lfs.patch
+# https://bugzilla.gnome.org/show_bug.cgi?id=794848
+# https://bug794848.bugzilla-attachments.gnome.org/attachment.cgi?id=370357
+Patch1: gnome-keyring-3.28.2-bgo-ssh-agent_timeout.patch
 
 %define glib_ver 2.44.0
 %define dbus_ver 1.0
@@ -35,8 +38,6 @@ Patch: gnome-keyring-3.14.0-alt-lfs.patch
 
 Requires(post): libcap-utils
 Requires: p11-kit >= %p11kit_ver
-# since 3.27.x gnome-keyring wraps the ssh-agent as a subprocess
-%{?_enable_ssh:Requires: gcr >= %gcr_ver openssh-clients}
 
 # From configure.ac
 BuildPreReq: gnome-common libgio-devel >= %glib_ver
@@ -68,12 +69,23 @@ The pam_gnome-keyring package contains a pam module that can
 automatically unlock the "login" keyring when the user logs in
 and start the keyring daemon.
 
+%package ssh
+Summary: SSH Key Agent for GNOME Keyring
+Group: Networking/Remote access
+Requires: %name = %version-%release
+# since 3.27.x gnome-keyring wraps the ssh-agent as a subprocess
+Requires: gcr >= %gcr_ver openssh-clients
+
+%description ssh
+GNOME Keyring ssh agent is a wrapper for stock ssh-agent from OpenSSH.
+
 %define _gtk_docdir %_datadir/gtk-doc/html
 %define _libexecdir %_prefix/libexec/%name
 
 %prep
 %setup
 %patch -p1 -b .lfs
+%patch1 -p1 -b .ssh-agent
 
 %build
 %autoreconf
@@ -107,10 +119,12 @@ setcap -q cap_ipc_lock=ep %_bindir/gnome-keyring-daemon 2>/dev/null ||:
 %_datadir/dbus-1/services/org.gnome.keyring.service
 %_datadir/dbus-1/services/org.freedesktop.secrets.service
 %_sysconfdir/xdg/autostart/*.desktop
+%{?_enable_ssh:%exclude %_sysconfdir/xdg/autostart/gnome-keyring-ssh.desktop}
 %_datadir/glib-2.0/schemas/org.gnome.crypto.cache.gschema.xml
 %_datadir/GConf/gsettings/org.gnome.crypto.cache.convert
 %_datadir/p11-kit/modules/gnome-keyring.module
 %_libdir/gnome-keyring/
+%{?_enable_ssh:%exclude %_libdir/gnome-keyring/*/gkm-ssh-store-standalone.so}
 %_libdir/pkcs11
 %_man1dir/*
 %doc README AUTHORS NEWS
@@ -118,6 +132,13 @@ setcap -q cap_ipc_lock=ep %_bindir/gnome-keyring-daemon 2>/dev/null ||:
 %exclude %_libdir/pkcs11/*.la
 %exclude %_libdir/gnome-keyring/*/*.la
 %exclude /%_lib/security/*.la
+
+%if_enabled ssh
+%files ssh
+%_libdir/gnome-keyring/*/gkm-ssh-store-standalone.so
+%_sysconfdir/xdg/autostart/gnome-keyring-ssh.desktop
+%endif
+
 
 %if_enabled pam
 %files -n pam_%name
@@ -127,6 +148,13 @@ setcap -q cap_ipc_lock=ep %_bindir/gnome-keyring-daemon 2>/dev/null ||:
 
 
 %changelog
+* Sat Jun 22 2019 Yuri N. Sedunov <aris@altlinux.org> 3.31.91-alt2
+- moved ssh part to separate subpackage
+- fixed busy-loop waiting for the ssh-agent.
+  See:
+  https://bugzilla.gnome.org/show_bug.cgi?id=794848
+  https://gitlab.gnome.org/GNOME/gnome-keyring/issues/25
+
 * Sat Mar 02 2019 Yuri N. Sedunov <aris@altlinux.org> 3.31.91-alt1
 - 3.31.91
 

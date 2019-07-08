@@ -4,14 +4,10 @@
 %def_enable libwacom
 %def_enable debug_gui
 %def_disable documentation
-%if 0%{?!_without_check:%{?!_disable_check:1}}
 %def_enable tests
-%else
-%def_disable tests
-%endif
 
 Name: libinput
-Version: 1.13.3
+Version: 1.13.4
 Release: alt1
 
 Summary: Input devices library
@@ -41,12 +37,12 @@ BuildRequires: libcheck-devel
 %{?_enable_libwacom:BuildRequires: libwacom-devel}
 %{?_enable_debug_gui:BuildRequires: libgtk+3-devel}
 %{?_enable_documentation:BuildRequires: doxygen graphviz}
-%if_enabled tests
+%{?!_without_check:%{?!_disable_check:
 BuildRequires: /proc gdb python3-module-pyparsing
 %ifarch %valgrind_arches
 BuildRequires: valgrind
 %endif
-%endif
+}}
 
 %description
 libinput is a library that handles input devices for display servers and
@@ -135,7 +131,7 @@ This package contains visual debug helper for %name.
 %_man1dir/%name-quirks-validate.1.*
 %_man1dir/%name-record.1.*
 %_man1dir/%name-replay.1.*
-%_man1dir/%name-test-suite.1.*
+%{?_enable_tests:%_man1dir/%name-test-suite.1.*}
 
 %if_enabled debug_gui
 %files tools-gui
@@ -145,6 +141,13 @@ This package contains visual debug helper for %name.
 
 
 %changelog
+* Fri Jun 28 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.4-alt1
+- 1.13.4
+
+* Tue Jun 25 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.13.3-alt2
+- Fixed build with disabled check.
+- Enabled build of testsuite by default.
+
 * Mon Jun 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.3-alt1
 - 1.13.3
 

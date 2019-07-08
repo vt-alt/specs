@@ -4,7 +4,7 @@
 %define dmp_ver 0.18.8
 
 Name: libraw
-Version: 0.19.2
+Version: 0.19.3
 Release: alt1
 
 Summary: library for reading RAW files obtained from digital photo cameras
@@ -13,7 +13,8 @@ License: LGPLv2.1 or CDDL-1.0; GPLv2, GPLv3 - demosaic packs
 Url: http://www.libraw.org
 
 %if_disabled snapshot
-Source: %url/data/%_name-%version.tar.gz
+#Source: %url/data/%_name-%version.tar.gz
+Source: https://github.com/LibRaw/LibRaw/archive/%version/%_name-%version.tar.gz
 %else
 # VCS: https://github.com/LibRaw/LibRaw.git
 Source: %_name-%version.tar
@@ -104,6 +105,9 @@ This package contains static library.
 %_libdir/libraw_r.a
 
 %changelog
+* Wed Jul 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.19.3-alt1
+- 0.19.3
+
 * Mon Dec 24 2018 Yuri N. Sedunov <aris@altlinux.org> 0.19.2-alt1
 - 0.19.2 (fixed CVE-2018-20363, CVE-2018-20364, CVE-2018-20365)
 
