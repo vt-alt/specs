@@ -11,8 +11,8 @@
 %define ROUTER_ROOT %_localstatedir/mysqlrouter
 
 Name: MySQL
-Version: 8.0.15
-Release: alt2
+Version: 8.0.16
+Release: alt1
 
 Summary: A very fast and reliable SQL database engine
 Summary(ru_RU.UTF-8): Очень быстрый и надежный SQL-сервер
@@ -52,7 +52,7 @@ Source30: mysqlrouter.conf
 Patch0: mysql-%version.patch
 
 # ALTLinux
-Patch1: mysql-8.0.15-alt-chroot.patch
+Patch1: mysql-8.0.16-alt-chroot.patch
 Patch2: mysql-5.0.20-alt-libdir.patch
 Patch4: mysql-8.0.12-alt-client.patch
 Patch5: mysql-8.0.12-alt-load_defaults.patch
@@ -324,7 +324,7 @@ recommend upgrading your installation to MySQL Router 8.
 %patch9 -p1
 
 # Patch Boost
-pushd boost/boost_1_68_0
+pushd boost/boost_1_69_0
 %patch115 -p0
 %patch125 -p1
 popd
@@ -384,7 +384,7 @@ sed -i 's/ADD_SUBDIRECTORY(router)/# ADD_SUBDIRECTORY(router)/' CMakeLists.txt
 	-DWITH_SYSTEMD=ON \
 	-DCMAKE_C_FLAGS="%optflags" \
 	-DCMAKE_CXX_FLAGS="%optflags" \
-	-DWITH_BOOST=../boost/boost_1_68_0 \
+	-DWITH_BOOST=../boost/boost_1_69_0 \
 	-DCOMPILATION_COMMENT="(%distribution)" \
 %if_with debug
 	-DWITH_DEBUG=1 \
@@ -543,12 +543,18 @@ fi
 %pre_control mysqld
 %pre_control mysqld-chroot
 
-echo "####################################################################"
-echo "#   You may need database format conversion for correct operation. #"
-echo "#  Please backup your MySQL database before you start conversion.  #"
-echo "#  Consider using:   /usr/bin/mysql_upgrade     according to       #"
-echo "#  https://dev.mysql.com/doc/refman/8.0/en/upgrading.html          #"
-echo "####################################################################"
+echo "########################################################################"
+echo "#              Attention! MySQL upgrade to %version                      #"
+echo "########################################################################"
+echo "#  Please beware: database format upgrade function has been moved      #"
+echo "# from mysql_upgrade utility to mysqld server daemon since 8.0.16      #"
+echo "#  DB upgrade attempt will be performed automatically after server     #"
+echo "# package update. This can take the time, so wait patiently, please... #"
+echo "#  If failure occures please refer to following manuals to recover:    #"
+echo "# https://mysqlserverteam.com/mysql-8-0-16-mysql_upgrade-is-going-away #"
+echo "# https://dev.mysql.com/doc/refman/8.0/en/upgrading.html               #"
+echo "# https://dev.mysql.com/doc/refman/8.0/en/rebuilding-tables.html       #"
+echo "########################################################################"
 
 %post server
 if [ -f /etc/my.cnf.rename -a ! -L /etc/my.cnf.rename -a ! -e /etc/my.cnf ]; then
@@ -597,6 +603,12 @@ if [ -f "%ROOT/mysql/db.frm" -a ! -f "%ROOT$DATADIR/mysql/db.frm" ]; then
 		mv -i "$d" ".$DATADIR/$d"
 	done)
 	echo "Database root have been moved to $DATADIR"
+fi
+
+# refer to https://bugs.mysql.com/bug.php?id=95165
+if [ -f "%ROOT$DATADIR/mysql_upgrade_info" ]; then
+        echo "MySQL-server: %ROOT$DATADIR/mysql_upgrade_info present - changing owner to %mysqld_user:%mysqld_user"
+        chown %mysqld_user:%mysqld_user %ROOT$DATADIR/mysql_upgrade_info
 fi
 
 if [ -n "$NEED_RESTART" ]; then
@@ -760,6 +772,13 @@ fi
 %attr(3770,root,mysql) %dir %ROOT/tmp
 
 %changelog
+* Thu Jun 13 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.16-alt1
+- new version (DB upgrade function was moved from client program to server)
+- chroot patch updated
+- spec: update warning message on new DB upgrade behaviour
+  + change owner of mysql_upgrade_info file to mysqld user
+    to enable flawless upgrade
+
 * Wed May 29 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.15-alt2
 - fix chrooted daemonization in SysVinit systems (closes: #36856)
 - move mysql_config manual to devel package
