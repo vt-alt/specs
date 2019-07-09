@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-pkg
-Version: 2.7
+Version: 2.7.1
 Release: alt1
 
 %add_findreq_skiplist %_libexecdir/alterator/backend3/pkg-init
@@ -61,6 +61,9 @@ additional package installation
 %_alterator_backend3dir/*
 
 %changelog
+* Tue Jul 09 2019 Alexey Shabalin <shaba@altlinux.org> 2.7.1-alt1
+- add symlinks /var/run -> /run, and /var/lock -> /run/lock
+
 * Thu Jun 07 2018 Michael Shigorin <mike@altlinux.org> 2.7-alt1
 - RPM 4.13 support
 
