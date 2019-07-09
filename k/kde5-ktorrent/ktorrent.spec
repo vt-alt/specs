@@ -7,7 +7,7 @@
 
 Name: kde5-%rname
 Version: 5.1.1
-Release: alt1
+Release: alt2
 %K5init
 
 Group:     Networking/File transfer
@@ -19,7 +19,8 @@ Provides: ktorrent = %version-%release
 Requires: kde5-kross-python
 
 Source: %rname-%version.tar
-# updatream
+# upstream
+Patch1: 0002-Fix-memory-corruption-in-ScanFolder-plugin.patch
 # ALT
 Patch10: alt-defaults.patch
 Patch11: alt-short-date.patch
@@ -54,6 +55,7 @@ KTorrent library
 
 %prep
 %setup -q -n %rname-%version
+%patch1 -p1
 %patch10 -p1 -b .defaults
 %patch11 -p1
 %patch12 -p1
@@ -88,6 +90,9 @@ sed -i 's|^add_subdirectory(plasma)||' CMakeLists.txt
 
 
 %changelog
+* Tue Jul 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.1-alt2
+- add upstream fix against memory corruption in ScanFolder plugin
+
 * Fri Oct 19 2018 Sergey V Turchin <zerg@altlinux.org> 5.1.1-alt1
 - new version
 
