@@ -1,6 +1,6 @@
 Name: startup-rescue
 Version: 0.32
-Release: alt1
+Release: alt2
 
 Summary: The system startup scripts for rescue disk
 License: GPL
@@ -40,8 +40,9 @@ mkdir -p -- %buildroot{%_bindir,/sbin,%_initdir}
 
 install -pm755 rescue-shell %buildroot%_bindir/
 %ifarch %ix86 x86_64
-install -pm755 fixmbr find-fstab %buildroot/sbin/
+install -pm755 fixmbr %buildroot/sbin/
 %endif
+install -pm755 find-fstab %buildroot/sbin/
 install -pm755 mount-fstab mount-system %buildroot/sbin/
 install -pm644 inittab.rescue mdadm-ro.conf %buildroot/etc/
 install -pm755 rc.sysinit.rescue %buildroot/etc/rc.d/
@@ -64,6 +65,9 @@ install -pm755 rescue-remote.init %buildroot%_initdir/rescue-remote
 %_initdir/rescue-remote
 
 %changelog
+* Tue Jul 09 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.32-alt2
+- Package find-fstab script regardless of architecture.
+
 * Sun Jan 06 2019 Anton Midyukov <antohami@altlinux.org> 0.32-alt1
 - support tmpfiles.d
 
