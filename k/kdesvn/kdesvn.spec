@@ -1,6 +1,6 @@
 Name:           kdesvn
-Version:        2.0.0
-Release:        alt3
+Version:        2.1.0
+Release:        alt1
 Summary:        A subversion client for KF5 with KIO integration
 
 Group:          Development/Tools
@@ -68,8 +68,12 @@ fixes.
 %_K5xdgapp/*.desktop
 %_K5xmlgui/%name
 %_datadir/%name
+%_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Mon Jul 08 2019 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt1
+- New version.
+
 * Tue Oct 16 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.0-alt3
 - NMU: fixed build with Qt-5.11.
 
