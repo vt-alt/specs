@@ -9,12 +9,12 @@
 
 Name: mono
 Version: 5.20.1.19
-Release: alt2
+Release: alt3
 Summary: Cross-platform, Open Source, .NET development framework
 
 Group: Development/Other
 License: MIT
-Url: http://www.mono-project.com
+Url: https://www.mono-project.com
 
 # https://github.com/mono/mono.git
 Source: %name-%version.tar
@@ -53,8 +53,7 @@ Source26: xunit-binaries-%version.tar
 Patch1: %name-alt-linking1.patch
 Patch2: %name-alt-linking2.patch
 Patch3: %name-alt-monodoc-sourcesdir.patch
-Patch4: %name-alt-mcs-no-parallel-build.patch
-Patch5: %name-upstream-crash-Use-safer-invalid-free-test-12864.patch
+Patch4: %name-upstream-crash-Use-safer-invalid-free-test-12864.patch
 
 BuildRequires(pre): rpm-build-mono >= 2.0
 BuildRequires(pre): rpm-build-ubt
@@ -486,17 +485,27 @@ technologies that have been submitted to the ECMA for standardization.
 
 Development files for libmono.
 
-%define gac_dll(dll)  %_monogacdir/%1 \
+%define gac_dll() \
+%_monogacdir/%1 \
 %_monodir/4.5/%1.dll \
 %nil
-%define mono_bin(bin) %_bindir/%1 \
+
+%define mono_bin() \
+%_bindir/%1 \
 %_monodir/4.5/%1.exe \
-%_monodir/4.5/%1.pdb \
+%_monodir/4.5/%1.exe.mdb \
 %nil
-%define dll_so(dll) \
+
+%ifnarch ppc64le
+%define dll_so() \
 %_monodir/4.5/%1.dll \
 %_monodir/4.5/%1.dll.so \
 %nil
+%else
+%define dll_so() \
+%_monodir/4.5/%1.dll \
+%nil
+%endif
 
 %prep
 %setup
@@ -528,7 +537,6 @@ pushd external/xunit-binaries                          ; tar xf %SOURCE26 --stri
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 %if_enabled bootstrap
 mkdir -p mcs/class/lib/monolite-linux
@@ -562,10 +570,13 @@ export PATH=$PATH:mcs/class/lib/monolite-linux/
 %add_optflags -fno-strict-aliasing
 
 NOCONFIGURE=yes sh ./autogen.sh
-%configure --disable-rpath \
-           --with-moonlight=no \
-           --with-spectre-mitigation=yes \
-           --enable-dynamic-btls
+%configure \
+	--disable-rpath \
+	--with-csc=mcs \
+	--with-moonlight=no \
+	--with-spectre-mitigation=yes \
+	--enable-dynamic-btls \
+	%nil
 
 %make
 
@@ -647,7 +658,7 @@ ln -s mcs %buildroot%_bindir/gmcs
 %_bindir/mono
 %_bindir/mono-test-install
 %_bindir/mono-gdb.py
-%ifarch %ix86 x86_64 armh
+%ifnarch aarch64
 %_bindir/mono-boehm
 %endif
 %_bindir/mono-service2
@@ -687,9 +698,11 @@ ln -s mcs %buildroot%_bindir/gmcs
 %_man1dir/mprof-report.1*
 %_man1dir/cert-sync.1*
 %_libdir/libMonoPosixHelper.so*
-%_libdir/*profiler*.so.*
+%_libdir/*profiler*.so*
 %_libdir/libmono-btls-shared.so*
-%_libdir/libmono-native.so.*
+%_libdir/*profiler*.so*
+%_libdir/libikvm-native.so*
+%_libdir/libmono-native.so*
 %_monodir/4.0/Mono.Posix.dll
 %_monodir/4.0/mscorlib.dll
 
@@ -738,7 +751,7 @@ ln -s mcs %buildroot%_bindir/gmcs
 %dir %_monodir/4.5/Facades
 
 %_monodir/4.5/mscorlib.dll
-%_monodir/4.5/mscorlib.pdb
+%_monodir/4.5/mscorlib.dll.mdb
 %gac_dll Microsoft.CSharp
 %gac_dll System.Dynamic
 %gac_dll System.ComponentModel.Composition
@@ -756,7 +769,7 @@ ln -s mcs %buildroot%_bindir/gmcs
 %gac_dll Mono.Parallel
 %gac_dll System.Json.Microsoft
 %_monodir/4.5/Facades/*.dll
-%_monodir/4.5/Facades/*.pdb
+%_monodir/4.5/Facades/*.dll.mdb
 %gac_dll System.IO.Compression
 %gac_dll System.IO.Compression.FileSystem
 %gac_dll System.Net.Http
@@ -777,9 +790,9 @@ ln -s mcs %buildroot%_bindir/gmcs
 %dll_so System.Collections.Immutable
 %dll_so System.Reflection.Metadata
 
-%_libdir/libmonosgen-2.0.so.*
-%ifarch %ix86 x86_64 armh
-%_libdir/libmonoboehm-2.0.so.*
+%_libdir/libmonosgen-2.0.so*
+%ifnarch aarch64
+%_libdir/libmonoboehm-2.0.so*
 %endif
 %_monodir/4.0-api
 %_monodir/4.5-api
@@ -805,13 +818,13 @@ cert-sync %_sysconfdir/pki/tls/certs/ca-bundle.crt
 %_bindir/sgen-grep-binprot
 %_bindir/csi
 %_monodir/4.5/mono-api-diff.exe
-%_monodir/4.5/mono-api-diff.pdb
+%_monodir/4.5/mono-api-diff.exe.mdb
 %_monodir/4.5/csi.*
 %_bindir/vbc
 %_monodir/4.5/vbc.*
 %_monodir/4.5/VBCSCompiler.*
 %_monodir/4.5/mono-symbolicate.exe
-%_monodir/4.5/mono-symbolicate.pdb
+%_monodir/4.5/mono-symbolicate.exe.mdb
 %_monodir/4.5/Microsoft.CodeAnalysis.CSharp.Scripting.dll
 %_monodir/4.5/Microsoft.CodeAnalysis.Scripting.dll
 %_monodir/4.5/Microsoft.CodeAnalysis.VisualBasic.dll
@@ -910,16 +923,9 @@ cert-sync %_sysconfdir/pki/tls/certs/ca-bundle.crt
 %_monodir/4.5/Microsoft.VisualBasic.targets
 %_monodir/xbuild/
 %_monodir/xbuild-frameworks/
-%_libdir/libikvm-native.so
-%_libdir/libmonosgen-2.0.so
-%ifarch %ix86 x86_64 armh
-%_libdir/libmonoboehm-2.0.so
-%endif
 %_libdir/libMonoPosixHelper.a
-%_libdir/*profiler*.so
 %_libdir/*profiler*.a
 %_libdir/libikvm-native.a
-%_libdir/libmono-native.so
 %_libdir/libmono-native.a
 %_pkgconfigdir/dotnet.pc
 %_pkgconfigdir/mono-cairo.pc
@@ -1114,7 +1120,7 @@ cert-sync %_sysconfdir/pki/tls/certs/ca-bundle.crt
 %_bindir/nunit-console4
 %_monodir/4.5/nunit-console.exe
 %_monodir/4.5/nunit-console.exe.config
-%_monodir/4.5/nunit-console.pdb
+%_monodir/4.5/nunit-console.exe.mdb
 %gac_dll nunit-console-runner
 %gac_dll nunit.core
 %gac_dll nunit.core.extensions
@@ -1130,15 +1136,18 @@ cert-sync %_sysconfdir/pki/tls/certs/ca-bundle.crt
 %config (noreplace) %_sysconfdir/mono/2.0/machine.config
 %config (noreplace) %_sysconfdir/mono/2.0/settings.map
 %config (noreplace) %_sysconfdir/mono/2.0/web.config
-%_libdir/libmono-2.0.so.1*
+%_libdir/libmono-2.0.so*
 
 %files mono2-compat-devel
 %_includedir/mono-2.0
 %_datadir/mono-2.0
-%_libdir/libmono-2.0.so
 %_pkgconfigdir/mono-2.pc
 
 %changelog
+* Fri Jul 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.20.1.19-alt3
+- Moved *.so libraries out of devel subpackages (Closes: #36979)
+- Switched to mcs compiler
+
 * Tue May 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.20.1.19-alt2
 - Rebuilt with patch from upstream pull request #12864.
 
