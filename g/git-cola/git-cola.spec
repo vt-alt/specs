@@ -1,12 +1,12 @@
 Name: git-cola
-Version: 3.3
+Version: 3.4
 Release: alt1
 
 Summary: A highly caffeinated git gui
 License: GPLv2+
 Group: Development/Tools
 
-Url: http://cola.tuxfamily.org
+Url: https://git-cola.github.io
 # https://github.com/git-cola/git-cola.git
 Source: %name-%version.tar
 
@@ -19,6 +19,13 @@ BuildRequires: rpm-macros-sphinx
 BuildRequires: python-module-sphinx python-module-objects.inv
 
 Requires: python-module-pyinotify
+
+# python3 building adds qt4 instead qt5 and removes mercurial support
+#BuildRequires: git-core python3-module-PyQt5 python3-base
+#BuildRequires: python3-module-sphinx-sphinx-build-symlink rpm-macros-sphinx3
+#Requires: python3-module-pyinotify
+# hasher tests:
+#Requires: python3-module-pyinotify python3-module-PySide libqt5-core
 
 %description
 A sweet, carbonated git gui known for its sugary flavour
@@ -49,6 +56,11 @@ and caffeine-inspired features.
 %python_sitelibdir/*
 
 %changelog
+* Tue Jul 09 2019 Leontiy Volodin <lvol@altlinux.org> 3.4-alt1
+- 3.4
+- changed url
+- simplified futures
+
 * Mon Apr 29 2019 Leontiy Volodin <lvol@altlinux.org> 3.3-alt1
 - 3.3
 
