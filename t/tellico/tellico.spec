@@ -1,5 +1,5 @@
 Name: 	 tellico
-Version: 3.2
+Version: 3.2.1
 Release: alt1
 
 Summary: A collection manager for KDE
@@ -83,6 +83,9 @@ video games, coins, stamps, trading cards, comic books, and wines.
 %_K5xmlgui/%name
 
 %changelog
+* Wed Jul 10 2019 Andrey Cherepanov <cas@altlinux.org> 3.2.1-alt1
+- New version.
+
 * Sun Jun 02 2019 Andrey Cherepanov <cas@altlinux.org> 3.2-alt1
 - New version.
 - Remove old libraries required Qt4.
