@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-pkg
-Version: 2.7.1
+Version: 2.7.2
 Release: alt1
 
 %add_findreq_skiplist %_libexecdir/alterator/backend3/pkg-init
@@ -61,6 +61,9 @@ additional package installation
 %_alterator_backend3dir/*
 
 %changelog
+* Wed Jul 10 2019 Alexey Shabalin <shaba@altlinux.org> 2.7.2-alt1
+- mount separate tmpfs for /mnt/destination/run
+
 * Tue Jul 09 2019 Alexey Shabalin <shaba@altlinux.org> 2.7.1-alt1
 - add symlinks /var/run -> /run, and /var/lock -> /run/lock
 
