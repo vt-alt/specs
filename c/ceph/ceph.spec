@@ -41,7 +41,7 @@
 
 Name: ceph
 Version: 14.2.1
-Release: alt2
+Release: alt3
 Summary: User space components of the Ceph file system
 Group: System/Base
 
@@ -51,8 +51,6 @@ Url: http://ceph.com/
 ExcludeArch: %ix86 %arm %mips32 ppc
 
 Source0: %name-%version.tar
-Source1: ceph-radosgw.init
-Source2: rbdmap.init
 %if_without system_boost
 Source10: https://downloads.sourceforge.net/project/boost/boost/1.67.0/boost_1_67_0.tar.bz2
 %endif
@@ -889,7 +887,7 @@ pushd build
 %makeinstall_std
 popd
 
-mkdir -p %buildroot{%_initdir,%_unitdir,%_sbindir}
+mkdir -p %buildroot{%_unitdir,%_sbindir}
 find %buildroot -type f -name "*.la" -exec rm -f {} ';'
 find %buildroot -type f -name "*.a" -exec rm -f {} ';'
 install -m 0644 -D src/etc-rbdmap %buildroot%_sysconfdir/ceph/rbdmap
@@ -901,11 +899,7 @@ install -m 0644 -D systemd/50-ceph.preset %buildroot/lib/systemd/system-preset/5
 mv %buildroot%_libexecdir/systemd/system/* %buildroot/%_unitdir/
 install -m 0644 -D src/logrotate.conf %buildroot%_sysconfdir/logrotate.d/ceph
 
-#install -D src/init-ceph %buildroot%_initdir/ceph
-
-mv -f %buildroot/etc/init.d/ceph %buildroot%_initdir/ceph
-install -D %SOURCE1 %buildroot%_initdir/ceph-radosgw
-install -D %SOURCE2 %buildroot%_initdir/rbdmap
+rm -f %buildroot/etc/init.d/ceph
 
 mkdir -p %buildroot/sbin
 mv %buildroot%_sbindir/mount.ceph %buildroot/sbin/mount.ceph
@@ -974,198 +968,101 @@ systemd-tmpfiles --create %_tmpfilesdir/ceph-common.conf
 %preun_service rbdmap
 
 %post base
-#post_service ceph
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph.target ceph-crash.service ||:
-        else
-                "$SYSTEMCTL" try-restart ceph.target ceph-crash.service ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph.target ceph-crash.service ||:
 else
-        if [ "$1" -eq 1 ]; then
-                chkconfig --add ceph ||:
-        else
-                chkconfig ceph resetpriorities ||:
-                service ceph condrestart ||:
-        fi
+        systemctl try-restart ceph.target ceph-crash.service ||:
 fi
 
 %preun base
-#preun_service ceph
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph.target ceph-crash.service ||:
-                "$SYSTEMCTL" stop ceph.target ceph-crash.service ||:
-        else
-                chkconfig --del ceph ||:
-                service ceph condstop ||:
-        fi
-
+        systemctl --no-reload -q disable ceph.target ceph-crash.service ||:
+        systemctl stop ceph.target ceph-crash.service ||:
 fi
 
 %post mds
-#post_service mds
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-mds@\*.service ceph-mds.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-mds.target ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-mds@\*.service ceph-mds.target ||:
 else
-        %post_service ceph
+        systemctl try-restart ceph-mds.target ||:
 fi
 
 %preun mds
-#preun_service mds
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-mds@\*.service ceph-mds.target ||:
-                "$SYSTEMCTL" stop ceph-mds@\*.service ceph-mds.target ||:
-        else
-                %preun_service ceph
-        fi
-
+        systemctl --no-reload -q disable ceph-mds@\*.service ceph-mds.target ||:
+        systemctl stop ceph-mds@\*.service ceph-mds.target ||:
 fi
 
 %post mon
-#post_service mon
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-mon@\*.service ceph-mon.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-mon.target ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-mon@\*.service ceph-mon.target ||:
 else
-        %post_service ceph
+        systemctl try-restart ceph-mon.target ||:
 fi
 
 %preun mon
-#preun_service mon
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-mon@\*.service ceph-mon.target ||:
-                "$SYSTEMCTL" stop ceph-mon@\*.service ceph-mon.target ||:
-        else
-                %preun_service ceph
-        fi
-
+        systemctl --no-reload -q disable ceph-mon@\*.service ceph-mon.target ||:
+        systemctl stop ceph-mon@\*.service ceph-mon.target ||:
 fi
 
 %post osd
-#post_service osd
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-osd.target ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
 else
-        %post_service ceph
+        systemctl try-restart ceph-osd.target ||:
 fi
 
 %preun osd
-#preun_service osd
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
-                "$SYSTEMCTL" stop ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
-        else
-                %preun_service ceph
-        fi
-
+        systemctl --no-reload -q disable ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
+        systemctl stop ceph-osd@\*.service ceph-volume@\*.service ceph-osd.target ||:
 fi
 
 %post mgr
-#post_service mgr
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-mgr@\*.service ceph-mgr.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-mgr.target ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-mgr@\*.service ceph-mgr.target ||:
 else
-        %post_service ceph
+        systemctl try-restart ceph-mgr.target ||:
 fi
 
 %preun mgr
-#preun_service mgr
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-mgr@\*.service ceph-mgr.target ||:
-                "$SYSTEMCTL" stop ceph-mgr@\*.service ceph-mgr.target ||:
-        else
-                %preun_service ceph
-        fi
-
+        systemctl --no-reload -q disable ceph-mgr@\*.service ceph-mgr.target ||:
+        systemctl stop ceph-mgr@\*.service ceph-mgr.target ||:
 fi
 
 %post -n rbd-mirror
-#post_service rbd-mirror
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-rbd-mirror.target ||:
-        fi
-#else
-#        %post_service ceph-rbd-mirror
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
+else
+        systemctl try-restart ceph-rbd-mirror.target ||:
 fi
 
 %preun -n rbd-mirror
-#preun_service mon
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
-                "$SYSTEMCTL" stop ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
-#        else
-#                %preun_service ceph-rbd-mirror
-        fi
-
+        systemctl --no-reload -q disable ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
+        systemctl stop ceph-rbd-mirror@\*.service ceph-rbd-mirror.target ||:
 fi
 
 %post radosgw
-#post_service radosgw
-SYSTEMCTL=systemctl
-if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-        "$SYSTEMCTL" daemon-reload ||:
-        if [ "$1" -eq 1 ]; then
-                "$SYSTEMCTL" -q preset ceph-radosgw@\*.service ceph-radosgw.target ||:
-        else
-                "$SYSTEMCTL" try-restart ceph-radosgw.target ||:
-        fi
+systemctl daemon-reload ||:
+if [ "$1" -eq 1 ]; then
+        systemctl -q preset ceph-radosgw@\*.service ceph-radosgw.target ||:
 else
-        %post_service ceph-radosgw
+        systemctl try-restart ceph-radosgw.target ||:
 fi
 
 %preun radosgw
-#preun_service radosgw
 if [ "$1" -eq 0 ]; then
-        SYSTEMCTL=systemctl
-        if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
-                "$SYSTEMCTL" --no-reload -q disable ceph-radosgw@\*.service ceph-radosgw.target ||:
-                "$SYSTEMCTL" stop ceph-radosgw@\*.service ceph-radosgw.target ||:
-        else
-                %preun_service ceph-radosgw
-        fi
-
+        systemctl --no-reload -q disable ceph-radosgw@\*.service ceph-radosgw.target ||:
+        systemctl stop ceph-radosgw@\*.service ceph-radosgw.target ||:
 fi
 
 
@@ -1199,7 +1096,6 @@ fi
 %config(noreplace) %_sysconfdir/logrotate.d/ceph
 %config(noreplace) %{_sysconfdir}/sysconfig/ceph
 %_unitdir/ceph.target
-%_initdir/ceph
 %_mandir/man8/ceph-deploy.8*
 %_mandir/man8/ceph-create-keys.8*
 %_mandir/man8/ceph-run.8*
@@ -1266,7 +1162,6 @@ fi
 %config %_sysconfdir/bash_completion.d/rbd
 %config(noreplace) %_sysconfdir/ceph/rbdmap
 %_unitdir/rbdmap.service
-%_initdir/rbdmap
 %_udevrulesdir/50-rbd.rules
 
 %attr(3770,root,ceph) %dir %_logdir/ceph
@@ -1381,7 +1276,6 @@ fi
 %dir %_localstatedir/ceph/radosgw
 %_unitdir/ceph-radosgw@.service
 %_unitdir/ceph-radosgw.target
-%_initdir/ceph-radosgw
 
 %files osd
 %_bindir/ceph-clsinfo
@@ -1618,6 +1512,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 10 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.1-alt3
+- drop SysV support
+
 * Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.1-alt2
 - compat with zstd >= v1.4.0
 
