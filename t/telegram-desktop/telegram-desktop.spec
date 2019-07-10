@@ -1,20 +1,15 @@
 # other variant: Debug
 %define buildmode Release
 
-# TODO: improve detection
-BuildRequires(pre): rpm-build-ubt
-%if %ubt_id == "M80P"
-%def_with ffmpeg_static
-%else
+%define ffmpeg_version 3.4
 %def_without ffmpeg_static
-%endif
 
-# Precompiled supports only for gcc
+# Precompiled supports only for gcc now
 %def_without clang
 %def_without libcxx
 
 Name: telegram-desktop
-Version: 1.7.10
+Version: 1.7.14
 Release: alt1
 
 Summary: Telegram is a messaging app with a focus on speed and security
@@ -29,9 +24,6 @@ Source: %name-%version.tar
 Source2: CMakeLists.txt
 Source3: gen_source_list.sh
 
-# Source4-url: https://github.com/telegramdesktop/qtlottie/archive/tdesktop.zip
-Source4: qtlottie.tar
-
 Patch1: 0001_add-cmake.patch
 Patch3: 0003_qt-plugins.patch
 Patch5: 0005_Downgrade-Qt-version.patch
@@ -42,6 +34,7 @@ Patch15: 0015-disable-resource-fonts.patch
 Patch16: 0016-fix-lzma.patch
 #Patch17: 0017-ligsl-microsoft-fix.patch
 Patch18: 0018-fix-linking.patch
+Patch19: 0019-ffmpeg-fix-convertFromARGB32PM.patch
 
 # ix86 disabled due to memory limits for linker
 #ExclusiveArch: %ix86 x86_64
@@ -92,13 +85,12 @@ BuildRequires: libva-devel libdrm-devel
 
 # libs from Telegram project
 BuildRequires: libtgvoip-devel >= 2.4.4
-BuildRequires: libcrl-devel >= 0.8
+BuildRequires: libcrl-devel >= 0.9
 
 BuildRequires: libxxhash-devel
 
-# used in qtlottie (no extra include subdir)
-# TODO: wrong package name (I wish -devel suffix)
-BuildRequires: rapidjson
+BuildRequires: librlottie-devel >= 0.0.1
+BuildRequires: liblz4-devel
 
 # C++ sugar
 BuildRequires: libmicrosoft-gsl-devel >= 20180615
@@ -111,10 +103,13 @@ Provides: tdesktop = %version-%release
 Obsoletes: tdesktop
 
 %if_with ffmpeg_static
-BuildRequires: libffmpeg-devel-static
+BuildRequires: libffmpeg-devel-static >= %ffmpeg_version
 %else
-# >= 3.4
-BuildRequires: libavcodec-devel libavformat-devel libavutil-devel libswscale-devel libswresample-devel
+BuildRequires: libavcodec-devel >= %ffmpeg_version
+BuildRequires: libavformat-devel >= %ffmpeg_version
+BuildRequires: libavutil-devel >= %ffmpeg_version
+BuildRequires: libswscale-devel >= %ffmpeg_version
+BuildRequires: libswresample-devel >= %ffmpeg_version
 %endif
 
 %if_with clang
@@ -149,7 +144,7 @@ or business messaging needs.
 
 
 %prep
-%setup -a4
+%setup
 %patch1 -p1
 %patch3 -p1
 #patch5 -p1
@@ -159,6 +154,7 @@ or business messaging needs.
 %patch15 -p1
 #patch17 -p2
 %patch18 -p2
+%patch19 -p1
 
 cp %SOURCE2 Telegram/
 cp %SOURCE3 .
@@ -219,6 +215,14 @@ ln -s %name %buildroot%_bindir/telegram
 %doc README.md
 
 %changelog
+* Tue Jul 09 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.14-alt1
+- new version (1.7.14) with rpmgs script
+- fix build with current Qt (thanks, arseerfc@)
+
+* Sun Jul 07 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.13-alt1
+- new version 1.7.13 (with rpmrb script)
+- use external librlottie instead of internal qtlottie
+
 * Thu Jun 27 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.10-alt1
 - new version 1.7.10 (with rpmrb script)
 
