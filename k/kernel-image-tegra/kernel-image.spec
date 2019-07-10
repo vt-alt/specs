@@ -4,7 +4,7 @@
 
 Name: kernel-image-tegra
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt1
+Release: alt2
 
 %define kernel_extra_version_numeric 1.0.0
 
@@ -37,6 +37,19 @@ Url: http://www.kernel.org/
 Source1: kernel-nvidia-4.9.tar
 Patch0: %name-%version.patch
 Patch1: %name-%version-gcc-werror.patch
+Patch2: kernel-image-tegra-config.patch
+
+Patch10: 0001-Bluetooth-hidp-fix-buffer-overflow.patch
+Patch11: 0001-can-gw-ensure-DLC-boundaries-after-CAN-frame-modific.patch
+Patch12: 0001-ext4-zero-out-the-unused-memory-region-in-the-extent.patch
+Patch13: 0001-HID-debug-fix-the-ring-buffer-implementation.patch
+Patch14: 0001-kvm-fix-kvm_ioctl_create_device-reference-counting-C.patch
+Patch15: 0001-KVM-x86-work-around-leak-of-uninitialized-stack-cont.patch
+Patch16: 0001-tcp-enforce-tcp_min_snd_mss-in-tcp_mtu_probing.patch
+Patch17: 0001-tcp-limit-payload-size-of-sacked-skbs.patch
+Patch19: 0002-KVM-nVMX-unconditionally-cancel-preemption-timer-in-.patch
+Patch20: 0002-tcp-tcp_fragment-should-apply-sane-memory-limits.patch
+Patch22: 0003-tcp-add-tcp_min_snd_mss-sysctl.patch
 
 ExclusiveArch: aarch64
 
@@ -109,6 +122,18 @@ tar -xf %kernel_src/kernel-source-%kernel_base_version.tar
 %setup -D -T -n kernel-image-%flavour-%kversion-%krelease/kernel-source-%kernel_base_version
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch19 -p1
+%patch20 -p1
+%patch22 -p1
 
 # this file should be usable both with make and sh (for broken modules
 # which do not use the kernel makefile system)
@@ -230,6 +255,7 @@ make headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
 # remove *.bin files
 rm -f %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
+touch %buildroot%modules_dir/modules.{alias,dep,devname,softdep,symbols}
 
 %set_verify_elf_method none
 
@@ -238,8 +264,14 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 /boot/System.map-%kversion-%flavour-%krelease
 /boot/config-%kversion-%flavour-%krelease
 /lib/devicetree/%kversion-%flavour-%krelease
-%modules_dir
-%exclude %modules_dir/build
+%modules_dir/kernel
+%ghost %modules_dir/modules.alias
+%ghost %modules_dir/modules.dep
+%ghost %modules_dir/modules.devname
+%modules_dir/modules.order
+%ghost %modules_dir/modules.softdep
+%ghost %modules_dir/modules.symbols
+%modules_dir/modules.builtin
 %ghost %modules_dir/modules.alias.bin
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
@@ -255,6 +287,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Tue Jun 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 4.9.140-alt2
+- fixed CVE-2019-11478, CVE-2019-11477, CVE-2019-11833, CVE-2019-3882, CVE-2019-3819, CVE-2019-7222, CVE-2019-3701, CVE-2018-19985
+
 * Mon Jun 03 2019 Valery Inozemtsev <shrek@altlinux.ru> 4.9.140-alt1
 - initial build for Jetson Nano
 
