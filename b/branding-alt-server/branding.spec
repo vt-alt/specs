@@ -17,8 +17,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.90
-Release: alt3
+Version: 8.91
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -325,6 +325,10 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed Jul 10 2019 Alexey Shabalin <shaba@altlinux.org> 8.91-alt1
+- Replace license.all.html.in with English page
+- Put status banner to NorthEast
+
 * Fri Jun 14 2019 Alexey Shabalin <shaba@altlinux.org> 8.90-alt3
 - update background4x3 with logo
 
