@@ -1,28 +1,33 @@
-%set_automake_version 1.11
+
+%define sover 5
+%define libgetfem libgetfem%sover
+%add_python3_req_skip _getfem
 
 %define rname getfem
 Name: getfemxx
-Version: 5.2
+Version: 5.3
 Release: alt1
-%setup_python_module getfem
 
 Group: Development/C++
 Summary: Generic and efficient C++ library for finite element methods
-Url: http://home.gna.org/getfem/
+Url: http://getfem.org/
 License: LGPLv2+
 
-Requires: lib%name = %version-%release
 Provides: %rname = %version-%release
 Obsoletes: %rname < %version-%release
 
-Source0: http://download.gna.org/getfem/stable/getfem-%version.tar.gz
+Source0: getfem-%version.tar
+Patch1: alt-ppc64le.patch
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: boost-devel gcc-c++ gcc-fortran glibc-devel-static libnumpy-devel
-BuildRequires: python-module-scipy-devel python-module-mpi4py-devel
+BuildRequires: python3-module-scipy-devel python3-module-mpi4py-devel
+%ifnarch %{arm} aarch64 ppc64le
 BuildRequires: scilab
+%endif
 
 BuildPreReq: libqhull-devel libmuparser-devel libmumps-devel
-BuildPreReq: liblapack-devel 
+BuildPreReq: liblapack-devel
 #libsuperlu-devel
 
 %description
@@ -33,22 +38,24 @@ mixed finite element methods) on the largest class of methods and
 elements, and for arbitrary dimension (i.e. not only 2D and 3D
 problems).
 
-%package -n lib%name
+%package -n %libgetfem
 Group: System/Libraries
 Summary: %rname library
-%description -n lib%name
+Provides: libgetfemxx = %version-%release
+Obsoletes: libgetfemxx < %version-%release
+%description -n %libgetfem
 %rname library
 
-%package -n python-module-getfem
+%package -n python3-module-getfem
 Summary: Python bindings to %name
 Group: Development/Python
-Requires: lib%name = %version-%release
-%description -n python-module-getfem
+%description -n python3-module-getfem
 Python bindings to %name
 
 
 %prep
 %setup -q -n %rname-%version
+%patch1 -p1
 %autoreconf
 
 %build
@@ -64,17 +71,24 @@ export CFLAGS="%optflags" CXXFLAGS="%optflags"
 	--enable-qhull \
 	--with-blas=openblas \
 	--with-pic \
-	--with-matlab-toolbox-dir=%_datadir/getfem_toolbox
+	--with-matlab-toolbox-dir=%_datadir/getfem_toolbox \
+	--enable-python3 \
+	#
 CUT_CFLAGS=`grep "^CXXFLAGS" Makefile | head -n 1| sed "s|^CXXFLAGS[[:space:]][[:space:]]*=||"`
-%make CFLAGS="$CUT_CFLAGS"
+%make_build CFLAGS="$CUT_CFLAGS"
 
 %install
 %makeinstall_std
 
-%if "%python_sitelibdir_noarch/getfem" != "%python_sitelibdir/getfem"
-mv %buildroot%python_sitelibdir_noarch/getfem/* \
-	%buildroot%python_sitelibdir/getfem/
+%if "%python3_sitelibdir_noarch/getfem" != "%python3_sitelibdir/getfem"
+mv %buildroot/%python3_sitelibdir_noarch/getfem/* \
+	%buildroot/%python3_sitelibdir/getfem/
 %endif
+
+mkdir -p %buildroot/%__python3_dynlibdir
+install -m 0644 \
+    interface/src/python/_getfem.cpython*.so \
+    %buildroot/%python3_sitelibdir/
 
 %files
 %doc NEWS AUTHORS
@@ -85,13 +99,21 @@ mv %buildroot%python_sitelibdir_noarch/getfem/* \
 %_includedir/gmm
 %_libdir/*.so
 
-%files -n lib%name
+%files -n %libgetfem
 %_libdir/*.so.*
 
-%files -n python-module-getfem
-%python_sitelibdir/getfem
+%files -n python3-module-getfem
+%python3_sitelibdir/getfem
+%python3_sitelibdir/*getfem*.so
 
 %changelog
+* Tue Jul 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.3-alt1
+- new version
+
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.2-alt2
+- build with python3
+- build without scilab on arm, ppc64le
+
 * Fri Nov 03 2017 Oleg Solovyov <mcpain@altlinux.org> 5.2-alt1
 - Version 5.2
 
