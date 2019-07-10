@@ -11,9 +11,13 @@
 %def_disable tcl
 %endif
 
+%define gvdatadir %_datadir/%name
+%define gvlibdir %_libdir/%name
+%define gvtcldir %_libexecdir/%name/tcl
+
 Name: graphviz
 Version: 2.40.1
-Release: alt6
+Release: alt7
 
 Summary: Graphs visualization tools
 License: Common Public License 1.0
@@ -50,11 +54,10 @@ BuildRequires: flex gcc-c++ groff-base imake libXaw-devel libXpm-devel libann-de
 %{?!_with_bootstrap:BuildRequires: ghostscript-utils libfreeglut-devel libglade-devel libgs-devel libgtkglext-devel libgts-devel liblasi-devel librsvg-devel}
 %{?_enable_lua:BuildRequires: liblua5-devel}
 %{?_enable_guile:BuildRequires: guile-devel}
-%{?_enable_python:BuildRequires: python-devel}
-
-%define gvdatadir %_datadir/%name
-%define gvlibdir %_libdir/%name
-%define gvtcldir %_libexecdir/%name/tcl
+%if_enabled python
+BuildRequires(pre): rpm-build-python3 python3-devel
+%add_python3_path %gvlibdir/python/
+%endif
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %gvdatadir/demo/*.pl
@@ -132,13 +135,12 @@ Requires: %name = %version-%release
 %description perl
 This package makes %name functionality accessible from Perl
 
-%package python
+%package python3
 Summary: Python bindings to %name
 Group: Development/Python
 Requires: %name = %version-%release
-BuildRequires: rpm-build-python
 
-%description python
+%description python3
 This package makes %name functionality accessible from Python
 
 %package ruby
@@ -169,7 +171,7 @@ This package makes %name functionality accessible from Tcl
 %patch2 -p1
 
 %patch40 -p1 -b .visio
-#patch41 -p1 -b .python3
+%patch41 -p1 -b .python3
 %patch42 -p1 -b .CVE-2018-10196
 %patch43 -p1 -b .dotty-menu-fix
 %patch44 -p1 -b .coverity-scan-fixes
@@ -323,9 +325,9 @@ rm -fv %buildroot%_datadir/graphviz/demo/modgraph.py
 %gvdatadir/demo/modgraph.pl
 
 %if_enabled python
-%files python
+%files python3
 %gvlibdir/python/
-%python_sitelibdir/*
+%python3_sitelibdir/*
 #gvdatadir/demo/modgraph.py
 %endif
 
@@ -364,6 +366,9 @@ rm -fv %buildroot%_datadir/graphviz/demo/modgraph.py
 # - enable/fix/test language bindings
 
 %changelog
+* Wed Jul 10 2019 Sergey V Turchin <zerg@altlinux.org> 2.40.1-alt7
+- build with python3
+
 * Tue Apr 16 2019 Vitaly Lipatov <lav@altlinux.ru> 2.40.1-alt6
 - add desktop file for dot -Txlib (ALT bug 27583)
 - remove obsoleted linking patch

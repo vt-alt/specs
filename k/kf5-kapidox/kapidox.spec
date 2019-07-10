@@ -1,10 +1,14 @@
 %define rname kapidox
 
+%def_enable python3
+
 Name: kf5-%rname
 Version: 5.59.0
-Release: alt1
+Release: alt3
 %K5init altplace
+%if_disabled python3
 %setup_python_module %rname
+%endif
 
 Group: System/Libraries
 Summary: KDE Frameworks 5 doxygen tools
@@ -18,18 +22,31 @@ Source: %rname-%version.tar
 # Automatically added by buildreq on Wed Feb 18 2015 (-bi)
 # optimized out: cmake-modules python-base python-modules python-modules-compiler python-modules-email
 #BuildRequires: cmake graphviz python-devel python-module-google rpm-build-gir ruby ruby-stdlibs
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: cmake graphviz python-devel
+BuildRequires(pre): rpm-build-kf5
+%if_enabled python3
+BuildRequires: rpm-build-python3
+%else
+BuildRequires: rpm-build-python
+%endif
+BuildRequires: cmake graphviz
 
 %description
 This framework contains scripts and data for building API documentation (dox) in
 a standard format and style.
 
+%if_enabled python3
+%package -n python3-module-%rname
+%else
 %package -n python-module-%rname
+%endif
 Group: System/Libraries
 Summary: KF5 doxygen tools bindings
 #Requires: %name-common = %version-%release
+%if_enabled python3
+%description -n python3-module-%rname
+%else
 %description -n python-module-%rname
+%endif
 KF5 doxygen tools bindings
 
 %package common
@@ -52,7 +69,13 @@ developing applications that use %name.
 %setup -n %rname-%version
 
 %build
-%K5build
+%K5build \
+%if_enabled python3
+    -DPYTHON_EXECUTABLE:PATH=%__python3 \
+%else
+    -DPYTHON_EXECUTABLE:PATH=%__python \
+%endif
+    #
 
 %install
 %K5install
@@ -67,9 +90,15 @@ mv %buildroot/usr/lib/python* %buildroot/%_libdir/
 %_K5bin/depdiagram-*
 %_K5bin/kapidox_generate
 
+%if_enabled python3
+%files -n python3-module-%rname
+%python3_sitelibdir/kapidox/
+%python3_sitelibdir/kapidox-*
+%else
 %files -n python-module-%rname
 %python_sitelibdir/kapidox/
 %python_sitelibdir/kapidox-*
+%endif
 
 #%files devel
 #%_K5inc/kapidox_version.h
@@ -79,6 +108,12 @@ mv %buildroot/usr/lib/python* %buildroot/%_libdir/
 #%_K5archdata/mkspecs/modules/qt_kapidox.pri
 
 %changelog
+* Wed Jul 10 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt3
+- build with python3
+
+* Tue Jul 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt2
+- allow to build with python3
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
 - new version
 
@@ -109,67 +144,67 @@ mv %buildroot/usr/lib/python* %buildroot/%_libdir/
 * Wed Oct 17 2018 Sergey V Turchin <zerg@altlinux.org> 5.51.0-alt1
 - new version
 
-* Mon Sep 10 2018 Sergey V Turchin <zerg@altlinux.org> 5.50.0-alt1%ubt
+* Mon Sep 10 2018 Sergey V Turchin <zerg@altlinux.org> 5.50.0-alt1
 - new version
 
-* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 5.49.0-alt1%ubt
+* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 5.49.0-alt1
 - new version
 
-* Thu Jul 19 2018 Sergey V Turchin <zerg@altlinux.org> 5.48.0-alt1%ubt
+* Thu Jul 19 2018 Sergey V Turchin <zerg@altlinux.org> 5.48.0-alt1
 - new version
 
-* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 5.47.0-alt1%ubt
+* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 5.47.0-alt1
 - new version
 
-* Mon May 14 2018 Sergey V Turchin <zerg@altlinux.org> 5.46.0-alt1%ubt
+* Mon May 14 2018 Sergey V Turchin <zerg@altlinux.org> 5.46.0-alt1
 - new version
 
-* Fri May 04 2018 Sergey V Turchin <zerg@altlinux.org> 5.45.0-alt1%ubt
+* Fri May 04 2018 Sergey V Turchin <zerg@altlinux.org> 5.45.0-alt1
 - new version
 
-* Tue Mar 20 2018 Sergey V Turchin <zerg@altlinux.org> 5.44.0-alt1%ubt
+* Tue Mar 20 2018 Sergey V Turchin <zerg@altlinux.org> 5.44.0-alt1
 - new version
 
-* Thu Jan 18 2018 Sergey V Turchin <zerg@altlinux.org> 5.42.0-alt1%ubt
+* Thu Jan 18 2018 Sergey V Turchin <zerg@altlinux.org> 5.42.0-alt1
 - new version
 
-* Tue Dec 12 2017 Sergey V Turchin <zerg@altlinux.org> 5.41.0-alt1%ubt
+* Tue Dec 12 2017 Sergey V Turchin <zerg@altlinux.org> 5.41.0-alt1
 - new version
 
-* Tue Nov 21 2017 Sergey V Turchin <zerg@altlinux.org> 5.40.0-alt1%ubt
+* Tue Nov 21 2017 Sergey V Turchin <zerg@altlinux.org> 5.40.0-alt1
 - new version
 
-* Tue Oct 24 2017 Sergey V Turchin <zerg@altlinux.org> 5.39.0-alt1%ubt
+* Tue Oct 24 2017 Sergey V Turchin <zerg@altlinux.org> 5.39.0-alt1
 - new version
 
-* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 5.38.0-alt1%ubt
+* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 5.38.0-alt1
 - new version
 
-* Wed Aug 16 2017 Sergey V Turchin <zerg@altlinux.org> 5.37.0-alt1%ubt
+* Wed Aug 16 2017 Sergey V Turchin <zerg@altlinux.org> 5.37.0-alt1
 - new version
 
-* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 5.36.0-alt1%ubt
+* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 5.36.0-alt1
 - new version
 
-* Thu Jun 29 2017 Sergey V Turchin <zerg@altlinux.org> 5.35.0-alt1%ubt
+* Thu Jun 29 2017 Sergey V Turchin <zerg@altlinux.org> 5.35.0-alt1
 - new version
 
-* Fri May 19 2017 Sergey V Turchin <zerg@altlinux.org> 5.34.0-alt1%ubt
+* Fri May 19 2017 Sergey V Turchin <zerg@altlinux.org> 5.34.0-alt1
 - new version
 
-* Mon Apr 17 2017 Sergey V Turchin <zerg@altlinux.org> 5.33.0-alt1%ubt
+* Mon Apr 17 2017 Sergey V Turchin <zerg@altlinux.org> 5.33.0-alt1
 - new version
 
-* Wed Mar 29 2017 Sergey V Turchin <zerg@altlinux.org> 5.32.0-alt1%ubt
+* Wed Mar 29 2017 Sergey V Turchin <zerg@altlinux.org> 5.32.0-alt1
 - new version
 
-* Mon Feb 13 2017 Sergey V Turchin <zerg@altlinux.org> 5.31.0-alt1%ubt
+* Mon Feb 13 2017 Sergey V Turchin <zerg@altlinux.org> 5.31.0-alt1
 - new version
 
-* Wed Feb 08 2017 Sergey V Turchin <zerg@altlinux.org> 5.30.0-alt1%ubt
+* Wed Feb 08 2017 Sergey V Turchin <zerg@altlinux.org> 5.30.0-alt1
 - new version
 
-* Tue Dec 13 2016 Sergey V Turchin <zerg@altlinux.org> 5.29.0-alt1%ubt
+* Tue Dec 13 2016 Sergey V Turchin <zerg@altlinux.org> 5.29.0-alt1
 - new version
 
 * Fri Nov 18 2016 Sergey V Turchin <zerg@altlinux.org> 5.28.0-alt0.M80P.1
