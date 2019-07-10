@@ -1,8 +1,8 @@
 %define rname mscore
-%define mversion 3.1
+%define mversion 3.2
 
 Name: musescore
-Version: 3.1
+Version: 3.2.3
 Release: alt1
 
 Summary: Music notation and composition software
@@ -94,6 +94,9 @@ chrpath -d %buildroot%_bindir/mscore
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Mon Jul 08 2019 Grigory Ustinov <grenka@altlinux.org> 3.2.3-alt1
+- Build new version.
+
 * Thu May 30 2019 Grigory Ustinov <grenka@altlinux.org> 3.1-alt1
 - Build new version.
 
