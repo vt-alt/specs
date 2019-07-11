@@ -1,5 +1,5 @@
 Name: installer-feature-kdesktop-services
-Version: 0.8.3
+Version: 0.9.0
 Release: alt1
 
 Summary: Setup services for start/not start on boot
@@ -28,6 +28,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.0-alt1
+- enable user obex service
+
 * Fri Apr 12 2019 Sergey V Turchin <zerg@altlinux.org> 0.8.3-alt1
 - enable rngd service
 
