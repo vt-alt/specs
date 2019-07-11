@@ -23,13 +23,17 @@
 %def_disable rpm
 %def_disable rpm_ostree
 %def_disable external_appstream
+%ifarch %valgrind_arches
 %def_enable valgrind
+%else
+%def_disable valgrind
+%endif
 %def_enable tests
 %def_disable check
 
 Name: gnome-software
 Version: %ver_major.3
-Release: alt1
+Release: alt2
 
 Summary: Software manager for GNOME
 License: GPLv2+
@@ -41,6 +45,8 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %else
 Source: %name-%version.tar
 %endif
+
+Patch: %name-3.32.3-alt-unsupported_mime_types.patch
 
 %define glib_ver 2.46
 %define gtk_ver 3.22.4
@@ -57,7 +63,7 @@ Source: %name-%version.tar
 %{?_enable_fwupd:Requires: fwupd >= %fwupd_ver}
 %{?_enable_packagekit:Requires: appstream-data}
 
-BuildRequires(pre): meson rpm-build-xdg
+BuildRequires(pre): meson rpm-build-xdg rpm-macros-valgrind
 BuildRequires: libgio-devel >= %glib_ver
 BuildRequires: libgtk+3-devel >= %gtk_ver
 BuildRequires: libappstream-glib-devel >= %appstream_glib_ver
@@ -67,7 +73,6 @@ BuildRequires: yelp-tools gtk-doc xsltproc docbook-style-xsl desktop-file-utils
 BuildRequires: libsqlite3-devel libsecret-devel gsettings-desktop-schemas-devel liboauth-devel
 BuildRequires: libgnome-online-accounts-devel
 BuildRequires: libxmlb-devel >= %xmlb_ver
-BuildRequires: valgrind-tool-devel
 %{?_enable_gudev:BuildRequires: libgudev-devel}
 %{?_enable_gspell:BuildRequires: libgspell-devel}
 %{?_enable_gnome_desktop:BuildRequires: libgnome-desktop3-devel >= %gnome_desktop_ver}
@@ -78,6 +83,7 @@ BuildRequires: valgrind-tool-devel
 %{?_enable_valgrind:BuildRequires: valgrind-tool-devel}
 %{?_enable_rpm_ostree:BuildRequires: libostree-devel >= %ostree_ver}
 %{?_enable_rpm:BuildRequires: librpm-devel}
+%{?_enable_check:BuildRequires: gcab}
 
 %description
 GNOME Software is a software center for GNOME.
@@ -104,6 +110,7 @@ GNOME Software.
 
 %prep
 %setup
+%patch
 
 %build
 %meson \
@@ -118,7 +125,7 @@ GNOME Software.
 	%{?_disable_packagekit:-Dpackagekit=false} \
 	%{?_disable_valgrind:-Dvalgrind=false} \
 	%{?_disable_tests:-Dtests=false} \
-	%{?_enable_external_appstream:-Dexternal_appstream=true}
+	%{?_disable_external_appstream:-Dexternal_appstream=false}
 %meson_build
 
 %install
@@ -165,6 +172,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_datadir/gtk-doc/html/%name/
 
 %changelog
+* Thu Jul 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.3-alt2
+- local-file.desktop.in: removed unsupported mime types (ALT #37014)
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.3-alt1
 - 3.32.3
 
