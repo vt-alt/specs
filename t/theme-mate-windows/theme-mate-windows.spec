@@ -1,5 +1,5 @@
 Name:     theme-mate-windows
-Version:  1.3
+Version:  1.4
 Release:  alt1
 
 Summary:  Mate theme for Windows-like layout
@@ -23,7 +23,6 @@ Requires: fonts-ttf-google-crosextra-caladea
 Requires: fonts-ttf-google-crosextra-carlito
 # Other requirements
 Requires: color-prompt-and-man
-Requires: brisk-menu
 
 %description
 Mate theme for Windows-like layout: taskbar at bottom with menu button.
@@ -47,6 +46,10 @@ install -Dm0644 applications.list \
 %_datadir/linuxmint/mintMenu/applications.list-themed
 
 %changelog
+* Thu Jul 11 2019 Andrey Cherepanov <cas@altlinux.org> 1.4-alt1
+- Use standard Mate menu button instead of Brisk menu.
+- Drop deprecated property custom-border-color.
+
 * Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.3-alt1
 - Replace Materia-light for TraditionalOk.
 
