@@ -1,8 +1,8 @@
 %def_disable plasma
 
 Name: qstardict
-Version: 1.2
-Release: alt4
+Version: 1.3
+Release: alt1
 
 Summary: QStarDict Qt clone of StarDict
 License: GPLv2
@@ -18,6 +18,9 @@ Patch1: alt-l10n.patch
 #BuildRequires: kde5-akonadi-calendar-devel kde5-akonadi-contacts-devel kde5-akonadi-devel kde5-akonadi-mime-devel kde5-akonadi-notes-devel kde5-calendarsupport-devel kde5-eventviews-devel kde5-grantleetheme-devel kde5-incidenceeditor-devel kde5-kalarmcal-devel kde5-kcalutils-devel kde5-kdav-devel kde5-kdb-devel kde5-kholidays-devel kde5-kidentitymanagement-devel kde5-kimap-devel kde5-kmailtransport-devel kde5-kmbox-devel kde5-kpimtextedit-devel kde5-ktnef-devel kde5-libgravatar-devel kde5-libkcddb-devel kde5-libkdepim-devel kde5-libksieve-devel kde5-mailcommon-devel kde5-mailimporter-devel kde5-marble-devel kde5-messagelib-devel kde5-pim-apps-libs-devel kde5-pimcommon-devel kde5-syndication-devel kf5-kactivities-devel kf5-kactivities-stats-devel kf5-karchive-devel kf5-kcmutils-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdeclarative-devel kf5-kdesu-devel kf5-kdiagram-devel kf5-kdnssd-devel kf5-kemoticons-devel kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-khtml-devel kf5-kiconthemes-devel kf5-kidletime-devel kf5-kio-devel kf5-kirigami-devel kf5-kitemmodels-devel kf5-kjsembed-devel kf5-knewstuff-devel kf5-knotifications-devel kf5-knotifyconfig-devel kf5-kparts-devel kf5-kplotting-devel kf5-kpty-devel kf5-kreport-devel kf5-kross-devel kf5-krunner-devel kf5-ktexteditor-devel kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwallet-devel kf5-kwayland-devel kf5-kxmlrpcclient-devel kf5-libkgapi-devel kf5-libkscreen-devel kf5-modemmanager-qt-devel kf5-networkmanager-qt-devel kf5-prison-devel kf5-syntax-highlighting-devel kf5-threadweaver-devel python-module-google python3-dev python3-module-zope qt5-connectivity-devel qt5-multimedia-devel qt5-phonon-devel qt5-quickcontrols2-devel qt5-script-devel qt5-sensors-devel qt5-serialport-devel qt5-speech-devel qt5-svg-devel qt5-tools-devel qt5-wayland-devel qt5-webengine-devel qt5-webkit-devel qt5-websockets-devel qt5-x11extras-devel qt5-xmlpatterns-devel rpm-build-ruby zlib-devel
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: kf5-kglobalaccel-devel kf5-kwindowsystem-devel kf5-knotifications-devel
+%if_enabled plasma
+BuildRequires: kf5-plasma-framework-devel kf5-kdelibs4support-devel
+%endif
 BuildRequires: glib2-devel qt5-base-devel qt5-tools zlib-devel
 BuildRequires: desktop-file-utils
 
@@ -40,12 +43,20 @@ cat %SOURCE10 > qstardict/translations/qstardict-ru_RU.ts
 %if_enabled plasma
 sed -i 's|INCLUDE_DIRECTORIES(|INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} |' kdeplasma/dataengine/CMakeLists.txt
 %endif
-%qmake_qt5 PLUGINS_DIR=%_libdir/qstardict/plugins "QMAKE_LFLAGS += -L%_libdir/kf5/devel"
+sed -i -E 's|(^[[:space:]]+ENABLED_PLUGINS=.*)|\1 kdeintegration|' plugins/plugins.pri
+%qmake_qt5 \
+    PLUGINS_DIR=%_libdir/qstardict/plugins \
+    "QMAKE_LFLAGS += -L%_K5link" \
+    "QT.KGlobalAccel.libs = %_K5link" \
+    "QT.KNotifications.libs = %_K5link" \
+    "QT.KWindowSystem.libs = %_K5link" \
+    #
 
 %build
 %make
 %if_enabled plasma
 pushd kdeplasma
+%add_optflags -I%_K5inc/KDELibs4Support/KDE -I%_K5inc/KDELibs4Support
 %K5build
 popd
 %endif
@@ -82,6 +93,9 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_libdir/%name/plugins/libkdeintegration.so
 
 %changelog
+* Wed Jul 10 2019 Sergey V Turchin <zerg@altlinux.org> 1.3-alt1
+- new version
+
 * Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 1.2-alt4
 - update russian translation
 
