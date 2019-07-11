@@ -1,5 +1,5 @@
 Name:     papirus-icon-theme
-Version:  20190615
+Version:  20190708
 Release:  alt1
 
 Summary:  All Papirus icon themes
@@ -10,7 +10,6 @@ Url:      https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source:   %name-%version.tar
-Source1:  trash-grayed.tar
 
 BuildArch: noarch
 
@@ -65,7 +64,6 @@ Requires(pre): icon-theme-Papirus
 
 %prep
 %setup
-tar xf %SOURCE1
 # Make network menu item in ALT looks like upstream Internet menu item
 for i in 16 22 24 32 48 64;do
     ln -s internet-web-browser.svg Papirus/${i}x${i}/apps/applications-network.svg
@@ -95,6 +93,12 @@ cp -a Papirus Papirus-Dark Papirus-Light ePapirus %buildroot%_iconsdir
 %_iconsdir/ePapirus
 
 %changelog
+* Wed Jul 10 2019 Andrey Cherepanov <cas@altlinux.org> 20190708-alt1
+- New version.
+
+* Mon Jul 01 2019 Andrey Cherepanov <cas@altlinux.org> 20190701-alt1
+- New version.
+
 * Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 20190615-alt1
 - New version.
 
