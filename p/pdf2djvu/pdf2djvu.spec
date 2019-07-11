@@ -1,5 +1,5 @@
 Name: pdf2djvu
-Version: 0.9.12
+Version: 0.9.13
 Release: alt1
 
 Summary: PDF to DjVu converter
@@ -37,6 +37,9 @@ pdf2djvu creates DjVu files from PDF files. It's able to extract:
 %_man1dir/*
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.13-alt1
+- new version
+
 * Sat Feb 23 2019 Ivan A. Melnikov <iv@altlinux.org> 0.9.12-alt1
 - 0.9.12
 
