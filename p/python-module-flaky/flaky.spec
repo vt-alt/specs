@@ -3,7 +3,7 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 3.5.3
+Version: 3.6.0
 Release: alt1
 Summary: Plugin for nose or py.test that automatically reruns flaky tests
 License: Apache-2.0
@@ -75,6 +75,9 @@ popd
 %endif
 
 %changelog
+* Mon Jul 08 2019 Grigory Ustinov <grenka@altlinux.org> 3.6.0-alt1
+- Build new version.
+
 * Thu Jan 24 2019 Grigory Ustinov <grenka@altlinux.org> 3.5.3-alt1
 - Build new version.
 
