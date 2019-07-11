@@ -3,12 +3,12 @@
 
 Summary:	PAM bindings for Python
 Name:		python-module-PAM
-Version:	1.8.3
-Release:	alt2
+Version:	1.8.4
+Release:	alt1
 License:	%mit
 Group:		Development/Python
 
-Source0:	python-%{oname}-%{version}.tar
+Source0:	%{name}-%{version}.tar
 Url:		https://github.com/FirefighterBlu3/python-pam
 
 BuildArch: noarch
@@ -38,7 +38,7 @@ PAM (Pluggable Authentication Module) bindings for Python 3.
 
 
 %prep
-%setup -n python-%oname-%version
+%setup
 
 %if_with python3
 rm -rf ../python3
@@ -76,6 +76,9 @@ popd
 %endif
 
 %changelog
+* Thu Jul 11 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.4-alt1
+- Build new version.
+
 * Tue Apr 30 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.3-alt2
 - NMU: Rebuild with python3.7.
 
