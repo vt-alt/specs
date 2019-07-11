@@ -1,6 +1,6 @@
 Name: alterator-net-pptp
-Version: 0.10.4
-Release: alt1.1.1
+Version: 0.10.5
+Release: alt1
 
 Url: http://www.altlinux.org/Alterator
 Source: %name-%version.tar
@@ -53,6 +53,9 @@ Alterator module to configure PPTP connections
 # - cleanup PPTP-over-PPP hasty fix
 
 %changelog
+* Thu Jul 11 2019 Andrey Cherepanov <cas@altlinux.org> 0.10.5-alt1
+- Use hostname-or-ip field type to support IP address (ALT #37010).
+
 * Fri Apr 13 2018 Grigory Ustinov <grenka@altlinux.org> 0.10.4-alt1.1.1
 - NMU: Replace BuildRequires for guile on e2k arch.
 

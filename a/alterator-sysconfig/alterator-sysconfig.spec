@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.2.3
+Version: 1.2.4
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -50,6 +50,9 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Thu Jul 11 2019 Andrey Cherepanov <cas@altlinux.org> 1.2.4-alt1
+- Use hostname-or-ip field type to support IP address (ALT #35613).
+
 * Sat Apr 28 2018 Maxim Voronov <mvoronov@altlinux.org> 1.2.3-alt1
 - set locale for localectl
 
