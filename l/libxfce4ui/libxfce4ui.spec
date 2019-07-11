@@ -1,6 +1,9 @@
+%def_enable introspection
+%def_enable vala
+
 Name: libxfce4ui
 Version: 4.13.6
-Release: alt1
+Release: alt2
 
 Summary: Various GTK+2 widgets for Xfce
 Summary (ru_RU.UTF-8): Набор виджетов GTK+2 для Xfce
@@ -19,6 +22,8 @@ BuildRequires(pre): rpm-build-licenses
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: gtk-doc intltool libSM-devel libgladeui-devel libstartup-notification-devel libxfce4util-devel libxfconf-devel xorg-cf-files
 BuildRequires: libgtk+3-devel
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libxfce4util-gir-devel}
+%{?_enable_vala:BuildRequires: vala-tools}
 
 Requires: %name-common = %version-%release
 
@@ -76,6 +81,37 @@ Requires: %name-gtk3 = %version-%release
 %description gtk3-devel
 Development files for the %name library (GTK+3 variant).
 
+%if_enabled introspection
+%package gtk3-gir
+Summary: GObject introspection data for %name-gtk3
+Group: System/Libraries
+Requires: %name = %EVR
+
+%description gtk3-gir
+GObject introspection data for %name-gtk3.
+
+%package gtk3-gir-devel
+Summary: GObject introspection devel data for %name-gtk3
+Group: System/Libraries
+BuildArch: noarch
+Requires: %name-gtk3-gir = %EVR
+Requires: %name-gtk3-devel = %EVR
+
+%description gtk3-gir-devel
+GObject introspection devel data for %name-gtk3.
+%endif
+
+%if_enabled vala
+%package gtk3-vala
+Summary: Vala bindings for %name-gtk3
+Group: System/Libraries
+Requires: %name-gtk3-devel = %EVR
+BuildArch: noarch
+
+%description gtk3-vala
+Vala bindings for %name-gtk3.
+%endif
+
 %package -n xfce4-about
 Summary: Xfce4 'About' dialog
 Group: Graphical desktop/XFce
@@ -97,6 +133,8 @@ This package contains the 'About Xfce' dialog.
 	--enable-gtk-doc \
 	--enable-startup-notification \
 	--enable-gladeui \
+	%{subst_enable introspection} \
+	%{subst_enable vala} \
 	--enable-debug=minimum
 %make_build
 
@@ -140,11 +178,28 @@ This package contains the 'About Xfce' dialog.
 %_libdir/%libxfce4kbd_name_gtk3.so
 %_libdir/%libxfce4ui_name_gtk3.so
 
+%if_enabled introspection
+%files gtk3-gir
+%_libdir/girepository-1.0/*.typelib
+
+%files gtk3-gir-devel
+%_datadir/gir-1.0/*.gir
+%endif
+
+%if_enabled vala
+%files gtk3-vala
+%_datadir/vala/vapi/%name-*
+%endif
+
 %files -n xfce4-about
 %_bindir/xfce4-about
 %_desktopdir/xfce4-about.desktop
 
 %changelog
+* Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt2
+- Enable vala support.
+- Enable GObject introspection support.
+
 * Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt1
 - Updated to 4.13.6.
 

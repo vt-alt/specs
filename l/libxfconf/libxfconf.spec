@@ -1,13 +1,13 @@
 %define _name xfconf
 
-%def_with perl
-%def_disable introspection
-%def_disable vala
+%def_without perl
+%def_enable introspection
+%def_enable vala
 %def_disable gsettings
 
 Name: lib%_name
 Version: 4.13.8
-Release: alt1
+Release: alt2
 
 Summary: Hierarchical configuration system for Xfce
 Summary (ru_RU.UTF-8): Система конфигурации Xfce
@@ -79,7 +79,7 @@ interact with xfconf using perl.
 %package gir
 Summary: GObject introspection data for %name
 Group: System/Libraries
-Requires: %name
+Requires: %name = %EVR
 
 %description gir
 GObject introspection data for %name.
@@ -88,8 +88,8 @@ GObject introspection data for %name.
 Summary: GObject introspection devel data for %name
 Group: System/Libraries
 BuildArch: noarch
-Requires: %name-gir = %version-%release
-Requires: %name-devel = %version-%release
+Requires: %name-gir = %EVR
+Requires: %name-devel = %EVR
 
 %description gir-devel
 GObject introspection devel data for %name.
@@ -99,7 +99,7 @@ GObject introspection devel data for %name.
 %package vala
 Summary: Vala bindings for %name
 Group: System/Libraries
-Requires: %name-devel
+Requires: %name-devel = %EVR
 BuildArch: noarch
 
 %description vala
@@ -181,6 +181,12 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %endif
 
 %changelog
+* Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.8-alt2
+- Disable perl bindings.
+- Enable vala support.
+- Enable GObject introspection support.
+- Use %%EVR macro.
+
 * Fri Jun 28 2019 Mikhail Efremov <sem@altlinux.org> 4.13.8-alt1
 - Explicitly enable perl bindings.
 - Add switch for vala support.

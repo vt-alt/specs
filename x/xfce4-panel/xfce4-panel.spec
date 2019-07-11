@@ -1,8 +1,10 @@
 %define xfce_ver 4.13
+%def_enable introspection
+%def_enable vala
 
 Name: xfce4-panel
 Version: 4.13.6
-Release: alt1
+Release: alt2
 
 Summary: Panel for Xfce
 Summary(ru_RU.UTF-8): Панель для окружения рабочего стола Xfce
@@ -22,6 +24,8 @@ BuildPreReq: libxfce4ui-gtk3-devel >= %xfce_ver libexo-gtk3-devel >= 0.6.0 libga
 BuildRequires: gtk-doc libwnck3-devel libICE-devel libXext-devel libSM-devel
 BuildRequires: libgtk+3-devel
 BuildRequires: libgtk+2-devel
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libxfce4util-gir-devel}
+%{?_enable_vala:BuildRequires: vala-tools}
 
 Requires: libxfce4panel = %version-%release
 Requires: xfce4-common
@@ -91,6 +95,38 @@ Requires: libxfce4panel-gtk3 = %version-%release
 This package contains files to develop plugins for Xfce panel
 (GTK+3 variant).
 
+%if_enabled introspection
+%package -n libxfce4panel-gtk3-gir
+Summary: GObject introspection data for libxfce4panel-gtk3
+Group: System/Libraries
+Requires: libxfce4panel-gtk3 = %EVR
+
+%description -n libxfce4panel-gtk3-gir
+GObject introspection data for libxfce4panel-gtk3.
+
+%package -n libxfce4panel-gtk3-gir-devel
+Summary: GObject introspection devel data for libxfce4panel-gtk3
+Group: System/Libraries
+BuildArch: noarch
+Requires: libxfce4panel-gtk3-gir = %EVR
+Requires: libxfce4panel-gtk3-devel = %EVR
+
+%description -n libxfce4panel-gtk3-gir-devel
+GObject introspection devel data for libxfce4panel-gtk3.
+%endif
+
+%if_enabled vala
+%package -n libxfce4panel-gtk3-vala
+Summary: Vala bindings for libxfce4panel-gtk3
+Group: System/Libraries
+Requires: libxfce4panel-gtk3-devel = %EVR
+BuildArch: noarch
+
+%description -n libxfce4panel-gtk3-vala
+Vala bindings for libxfce4panel-gtk3.
+%endif
+
+
 %prep
 %setup
 %patch -p1
@@ -102,6 +138,8 @@ This package contains files to develop plugins for Xfce panel
 %configure \
 	--disable-static \
 	--enable-maintainer-mode \
+	%{subst_enable introspection} \
+	%{subst_enable vala} \
 	--enable-gtk-doc \
 	--enable-gtk2 \
 	--enable-debug=minimum
@@ -142,10 +180,28 @@ This package contains files to develop plugins for Xfce panel
 %_libdir/%libxfce4panel_name_gtk3.so
 %_includedir/xfce4/%libxfce4panel_name_gtk3/
 
+%if_enabled introspection
+%files -n libxfce4panel-gtk3-gir
+%_libdir/girepository-1.0/*.typelib
+
+%files -n libxfce4panel-gtk3-gir-devel
+%_datadir/gir-1.0/*.gir
+%endif
+
+%if_enabled vala
+%files -n libxfce4panel-gtk3-vala
+%_datadir/vala/vapi/libxfce4panel-*
+%endif
+
 %changelog
+* Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt2
+- Enable vala support.
+- Enable GObject introspection support.
+- Fix changelog entry.
+
 * Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt1
 - Don't use deprecated PreReq.
-- Updated to 4.13.5.
+- Updated to 4.13.6.
 
 * Fri May 17 2019 Mikhail Efremov <sem@altlinux.org> 4.13.5-alt1
 - Updated to 4.13.5.

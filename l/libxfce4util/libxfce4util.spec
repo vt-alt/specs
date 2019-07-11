@@ -1,6 +1,9 @@
+%def_enable introspection
+%def_enable vala
+
 Name: libxfce4util
 Version: 4.13.4
-Release: alt1
+Release: alt2
 
 Summary: Utility library for the Xfce desktop environment
 Summary(ru_RU.UTF-8): Библиотека утилит для рабочего стола Xfce
@@ -18,6 +21,8 @@ BuildRequires(pre): rpm-build-licenses
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 # Automatically added by buildreq on Wed Jan 13 2010
 BuildRequires: glib2-devel gtk-doc intltool
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel}
+%{?_enable_vala:BuildRequires: vala-tools}
 
 %define _unpackaged_files_terminate_build 1
 
@@ -35,6 +40,37 @@ Requires: %name = %version-%release
 %description devel
 Header files for the %name library.
 
+%if_enabled introspection
+%package gir
+Summary: GObject introspection data for %name
+Group: System/Libraries
+Requires: %name = %EVR
+
+%description gir
+GObject introspection data for %name.
+
+%package gir-devel
+Summary: GObject introspection devel data for %name
+Group: System/Libraries
+BuildArch: noarch
+Requires: %name-gir = %EVR
+Requires: %name-devel = %EVR
+
+%description gir-devel
+GObject introspection devel data for %name.
+%endif
+
+%if_enabled vala
+%package vala
+Summary: Vala bindings for %name
+Group: System/Libraries
+Requires: %name-devel = %EVR
+BuildArch: noarch
+
+%description vala
+Vala bindings for %name.
+%endif
+
 %prep
 %setup
 
@@ -45,6 +81,8 @@ Header files for the %name library.
 %configure \
 	--disable-static \
 	--enable-maintainer-mode \
+	%{subst_enable introspection} \
+	%{subst_enable vala} \
 	--enable-gtk-doc \
 	--enable-debug=minimum
 %make_build
@@ -65,7 +103,24 @@ Header files for the %name library.
 %_pkgconfigdir/*.pc
 %_libdir/*.so
 
+%if_enabled introspection
+%files gir
+%_libdir/girepository-1.0/*.typelib
+
+%files gir-devel
+%_datadir/gir-1.0/*.gir
+%endif
+
+%if_enabled vala
+%files vala
+%_datadir/vala/vapi/%name-*
+%endif
+
 %changelog
+* Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt2
+- Enable vala support.
+- Enable GObject introspection support.
+
 * Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Updated to 4.13.4.
 
