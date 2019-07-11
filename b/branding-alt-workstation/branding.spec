@@ -2,7 +2,7 @@
 %define Brand ALT
 %define theme workstation
 %define Theme Workstation
-%define codename UNKNOWN
+%define codename Laertes
 %define status %nil
 %define status_en %nil
 %define flavour %brand-%theme
@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.910
+Version: 8.920
 Release: alt1
 Url: https://basealt.ru
 
@@ -186,6 +186,7 @@ Requires: icon-theme-Papirus
 Requires: icon-theme-Papirus-Dark
 Requires: icon-theme-Papirus-Light
 Requires: mate-themes
+Requires: theme-mate-windows
 Requires: x-cursor-theme-jimmac
 #
 %branding_add_conflicts %flavour mate-settings
@@ -367,6 +368,10 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jul 11 2019 Mikhail Efremov <sem@altlinux.org> 8.920-alt1
+- Set codename Laertes.
+- mate-settings: Use theme-mate-windows.
+
 * Thu Jul 04 2019 Mikhail Efremov <sem@altlinux.org> 8.910-alt1
 - mate-settings: Use TraditionalOk theme.
 - mate-setting: Don't use non-existent window theme.
