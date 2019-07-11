@@ -2,20 +2,21 @@
 
 %global pypi_name nose-exclude
 
-Name:           python-module-%{pypi_name}
-Version:        0.2.0
-Release:        alt1.2
+Name:           python-module-%pypi_name
+Version:        0.5.0
+Release:        alt1
 Summary:        Exclude specific directories from nosetests runs
 Group:          Development/Python
 
 License:        LGPLv2
-URL:            http://pypi.python.org/pypi/nose-exclude/%{version}
-Source0:        %{name}-%{version}.tar
+URL:            http://pypi.python.org/pypi/nose-exclude/%version
+# https://github.com/kgrandis/nose-exclude
+Source0:        %name-%version.tar
 BuildArch:      noarch
- 
+
 BuildRequires:  python-devel
 BuildRequires:  python-module-setuptools
- 
+
 Requires:       python-module-nose
 
 %if_with python3
@@ -29,13 +30,13 @@ specify directories to be excluded from testing.
 
 
 %if_with python3
-%package -n python3-module-%{pypi_name}
+%package -n python3-module-%pypi_name
 Summary:        Exclude specific directories from nosetests runs
 Group:          Development/Python
 
 Requires:       python3-module-nose
 
-%description -n python3-module-%{pypi_name}
+%description -n python3-module-%pypi_name
 nose-exclude is a `Nose`_ plugin that allows you to easily
 specify directories to be excluded from testing.
 %endif
@@ -69,18 +70,21 @@ popd
 
 %files
 %doc README.rst
-%{python_sitelibdir}/nose_exclude.py*
-%{python_sitelibdir}/nose_exclude-%{version}-py?.?.egg-info
+%python_sitelibdir/nose_exclude.py*
+%python_sitelibdir/nose_exclude-%version-py?.?.egg-info
 
 %if_with python3
-%files -n python3-module-%{pypi_name}
+%files -n python3-module-%pypi_name
 %doc README.rst
-%{python3_sitelibdir}/nose_exclude.py*
-%{python3_sitelibdir}/nose_exclude-%{version}-py?.?.egg-info
-%{python3_sitelibdir}/__pycache__/nose_exclude*
+%python3_sitelibdir/nose_exclude.py*
+%python3_sitelibdir/nose_exclude-%version-py?.?.egg-info
+%python3_sitelibdir/__pycache__/nose_exclude*
 %endif
 
 %changelog
+* Wed Jul 10 2019 Grigory Ustinov <grenka@altlinux.org> 0.5.0-alt1
+- Build new version.
+
 * Tue Apr 30 2019 Grigory Ustinov <grenka@altlinux.org> 0.2.0-alt1.2
 - Rebuild with python3.7.
 
