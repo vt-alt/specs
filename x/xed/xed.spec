@@ -1,10 +1,9 @@
 %define _libexecdir %_prefix/libexec
 
 %define api_ver 3.0
-%def_enable python
 
 Name: xed
-Version: 2.0.2
+Version: 2.2.1
 Release: alt1
 
 Summary: xed is a small and lightweight text editor.
@@ -18,29 +17,24 @@ Source: %name-%version.tar
 %define pkgdatadir %_datadir/%name
 %define pluginsdir %_libdir/%name/plugins
 
-# From configure.ac
-%define glib_ver 2.36.0
-%define gtk_ver 3.10
-%define gtksourceview_ver 3.10
-%define enchant_ver 1.2.0
-
 Requires: %name-data = %version-%release
 Requires: dconf gnome-icon-theme gvfs zenity
 %{?_enable_zeitgeist:Requires: zeitgeist}
 
 Provides: typelib(Xed)
 
-BuildPreReq: rpm-build-gnome >= 0.6
+BuildRequires(pre): rpm-build-gnome
+BuildRequires(pre): rpm-build-python3
 
-BuildPreReq: intltool >= 0.50.1
+BuildPreReq: intltool
 BuildRequires: yelp-tools xmllint itstool
-BuildPreReq: gtk-doc >= 1.0
-BuildPreReq: desktop-file-utils >= 0.22
-BuildPreReq: libenchant-devel >= %enchant_ver
-BuildPreReq: iso-codes-devel >= 0.35
-BuildPreReq: libgio-devel >= %glib_ver
-BuildPreReq: libgtk+3-devel >= %gtk_ver
-BuildPreReq: libgtksourceview3-devel >= %gtksourceview_ver
+BuildPreReq: gtk-doc
+BuildPreReq: desktop-file-utils
+BuildPreReq: libenchant-devel
+BuildPreReq: iso-codes-devel
+BuildPreReq: libgio-devel
+BuildPreReq: libgtk+3-devel
+BuildPreReq: libgtksourceview3-devel
 BuildRequires: meson
 BuildRequires: libattr-devel gnome-common libxml2-devel libsoup-devel gsettings-desktop-schemas-devel
 BuildRequires: libSM-devel
@@ -50,6 +44,8 @@ BuildRequires: libgtk+3-gir-devel
 BuildRequires: libgtksourceview3-gir-devel
 BuildRequires: libgspell-devel
 BuildRequires: libxapps-devel
+
+%add_python3_path %pluginsdir
 
 %description
 xed is a small and lightweight text editor.
@@ -138,11 +134,24 @@ rm -f %buildroot%_libdir/%name/*.la
 %_datadir/dbus-1/services/org.x.editor.*service
 %doc README AUTHORS NEWS
 
+# All xed python modules are intended for internal usage only
+%filter_from_provides /python3/d
+
 %files devel
 %_includedir/*
 %_pkgconfigdir/*
 
 %changelog
+* Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 2.2.1-alt1
+- New version
+- Cleaner fix for Python3 build
+
+* Fri Jul 5 2019 Vladimir Didenko <cow@altlinux.org> 2.2.0-alt2
+- fix build for Python 3
+
+* Mon Jul 1 2019 Vladimir Didenko <cow@altlinux.org> 2.2.0-alt1
+- New version
+
 * Tue Dec 25 2018 Vladimir Didenko <cow@altlinux.org> 2.0.2-alt1
 - New version
 

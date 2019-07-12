@@ -1,7 +1,7 @@
 %define api_ver 3.0
 
 Name: nemo-extensions
-Version: 4.0.2
+Version: 4.2.0
 Release: alt1
 Summary: Extensions for Nemo
 
@@ -242,6 +242,9 @@ popd
 rm -f %buildroot/%_libdir/nemo/extensions-3.0/*.la
 rm -f %buildroot/%_libdir/nemo/extensions-3.0/*.a
 
+%find_lang nemo-preview
+%find_lang nemo-share
+
 %files -n nemo-fileroller
 %doc nemo-fileroller/README
 %doc nemo-fileroller/COPYING
@@ -261,8 +264,9 @@ rm -f %buildroot/%_libdir/nemo/extensions-3.0/*.a
 %doc nemo-share/README
 %_datadir/nemo-share/*
 
-%files -n nemo-share
+%files -n nemo-share -f nemo-share.lang
 %_libdir/nemo/extensions-%api_ver/libnemo-share.so
+%_datadir/polkit-1/actions/org.nemo.share.samba_install.policy
 
 %files -n nemo-terminal
 %doc nemo-terminal/README
@@ -271,7 +275,7 @@ rm -f %buildroot/%_libdir/nemo/extensions-3.0/*.a
 %_datadir/nemo-terminal/
 %_datadir/glib-2.0/schemas/org.nemo.extensions.nemo-terminal.gschema.xml
 
-%files -n nemo-preview
+%files -n nemo-preview -f nemo-preview.lang
 %doc nemo-preview/README
 %doc nemo-preview/COPYING
 %_bindir/nemo-preview
@@ -297,6 +301,9 @@ rm -f %buildroot/%_libdir/nemo/extensions-3.0/*.a
 %_bindir/nemo-compare-preferences
 
 %changelog
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Tue Dec 4 2018 Vladimir Didenko <cow@altlinux.org> 4.0.2-alt1
 - 4.0.2
 

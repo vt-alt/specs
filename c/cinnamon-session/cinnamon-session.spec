@@ -1,9 +1,9 @@
-%define ver_major 4.0
+%define ver_major 4.2
 %define _libexecdir %_prefix/libexec
 %define _name cinnamon
 
 Name: %{_name}-session
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 License: GPLv2+
@@ -27,7 +27,6 @@ Patch: %name-%version-%release.patch
 # From configure.in
 %define glib_ver 2.33.4
 %define gtk_ver 3.0.0
-%define dbus_glib_ver 0.76
 %define polkit_ver 0.91
 %define upower_ver 0.9
 
@@ -48,7 +47,6 @@ BuildPreReq: gnome-common
 BuildPreReq: intltool >= 0.35.0 libGConf-devel
 BuildPreReq: libgio-devel glib2-devel >= %glib_ver
 BuildPreReq: libgtk+3-devel >= %gtk_ver
-BuildPreReq: libdbus-glib-devel >= %dbus_glib_ver
 BuildPreReq: libupower-devel >= %upower_ver
 BuildRequires: meson
 BuildRequires: libpangox-compat-devel librsvg-devel libjson-glib-devel
@@ -121,6 +119,12 @@ rm -f %buildroot%_docdir/%name/dbus/cinnamon-session.html
 %doc AUTHORS NEWS README
 
 %changelog
+* Mon Jul 8 2019 Vladimir Didenko <cow@altlinux.org> 4.2.1-alt1
+- 4.2.1
+
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Wed Oct 31 2018 Vladimir Didenko <cow@altlinux.org> 4.0.0-alt1
 - 4.0.0
 

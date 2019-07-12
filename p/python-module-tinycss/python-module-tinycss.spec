@@ -1,18 +1,16 @@
-%define oname xapp
+%define oname tinycss
 %def_with python3
 
 Name: python-module-%oname
-Version: 1.6.0
+Version: 0.4.0
 Release: alt1
 
-Summary: Python Xapp Library
-
-License: LGPLv2
+Summary: Simple CSS parser for Python
+License: BSD
 Group: Development/Python
-Url: https://github.com/linuxmint/python-xapp
+Url: https://github.com/Kozea/tinycss
 
-Source: python-%oname-%version.tar
-BuildArch: noarch
+Source: %oname-%version.tar
 
 BuildRequires: python-module-setuptools python3-module-setuptools rpm-build-python3
 
@@ -23,20 +21,22 @@ BuildRequires(pre): rpm-build-python3
 %setup_python_module %oname
 
 %description
-Python Xapp Library
+tinycss is a complete yet simple CSS parser for Python. It supports the full
+syntax and error handling for CSS 2.1 as well as some CSS 3 modules.
 
 %if_with python3
 %package -n python3-module-%oname
-Summary: Python Xapp Library
+Summary: Simple CSS parser for Python
 Group: Development/Python3
 
 %description -n python3-module-%oname
-Python Xapp Library
+tinycss is a complete yet simple CSS parser for Python. It supports the full
+syntax and error handling for CSS 2.1 as well as some CSS 3 modules.
 %endif
 
 
 %prep
-%setup -n python-%oname-%version
+%setup -n %oname-%version
 
 %if_with python3
 rm -rf ../python3
@@ -62,7 +62,8 @@ popd
 %endif
 
 %files
-%python_sitelibdir/%oname/
+%doc README.rst
+%python_sitelibdir/*
 %python_sitelibdir/*.egg-info
 
 %if_with python3
@@ -72,11 +73,5 @@ popd
 %endif
 
 %changelog
-* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 1.6.0-alt1
-- New version
-
-* Thu Nov 1 2018 Vladimir Didenko <cow@altlinux.org> 1.4.0-alt1
-- New version
-
-* Thu Jun 29 2017 Vladimir Didenko <cow@altlinux.org> 1.0.1-alt1
-- Initial build for Sisyphus
+* Mon Jul 1 2019 Vladimir Didenko <cow@altlinux.org> 0.4.0-alt1
+- initial build for Sisyphus

@@ -1,6 +1,8 @@
+%def_disable gtk_doc
+
 Name: cinnamon
-Version: 4.0.9
-Release: alt4
+Version: 4.2.1
+Release: alt1
 
 Summary: A Linux desktop which provides advanced innovative features and a traditional user experience.
 License: GPLv2+
@@ -15,29 +17,26 @@ Source3: polkit-%name-authentication-agent-1.desktop
 
 Patch: %name-%version-%release.patch
 
-# use python3
-AutoReqProv: nopython
-%define __python %nil
+%add_python3_path %_datadir/%name
+%set_typelibdir %_libdir/%name
 
-%define gtk_ver 3.0.0
+%define gtk_ver 3.12.0
 %define gi_ver 0.10.1
-%define muffin_ver 4.0.0
-%define eds_ver 2.91.6
+%define muffin_ver 4.0.3
 %define json_glib_ver 0.13.2
 %define cjs_ver 4.0.0
-%define tp_glib_ver 0.15.5
-%define tp_logger_ver 0.2.4
 %define polkit_ver 0.100
 %define folks_ver 0.5.2
 %define bt_ver 3.0.0
 
 Provides: desktop-notification-daemon
 
+Requires: dconf
 Requires: upower
 Requires: polkit >= %polkit_ver
+Requires: polkit-gnome
 # needed for session files
 Requires: cinnamon-session >= 2.6.2
-Requires(post,preun):  GConf
 # needed for on-screen keyboard
 Requires: caribou
 Requires: cinnamon-freedesktop-menu
@@ -46,34 +45,23 @@ Requires: muffin >= %muffin_ver
 Requires: libmuffin-gir >= %muffin_ver
 Requires: %name-translations
 Requires: mintlocale
-Requires: gstreamer1.0
+Requires: gst-plugins-base1.0
 
-# needed for settings (python.req ignores /usr/share/cinnamon-settings/cinnamon-settings.py)
-Requires: python3-module-dbus
-Requires: python3-module-lxml
-Requires: python3-module-pygobject3
-Requires: polkit-gnome
-Requires: typelib(Keybinder) >= 3.0
-Requires: python3-module-PAM
-Requires: python3-module-Pillow
-Requires: python3-module-pexpect
-Requires: python3-module-xapps-overrides
-# required by keyboard applet
-Requires: libxapps-gir
 # needed to install applets
 Requires: gettext-tools
 
-BuildPreReq: rpm-build-gir >= 0.7.1-alt6
+BuildRequires(pre): rpm-build-gir >= 0.7.3 rpm-build-python3
 BuildPreReq: libgtk+3-devel >= %gtk_ver
 BuildPreReq: libcjs-devel >= %cjs_ver
 BuildPreReq: libjson-glib-devel >= %json_glib_ver
-BuildPreReq: evolution-data-server-devel >= %eds_ver
 BuildRequires: gcc-c++
-BuildRequires: libcinnamon-desktop-devel libgnome-keyring-devel libcinnamon-menus-devel libstartup-notification-devel libcinnamon-desktop-gir-devel
+BuildRequires: libcinnamon-desktop-devel libgnome-keyring-devel libcinnamon-menus-devel
+BuildRequires: libstartup-notification-devel libcinnamon-desktop-gir-devel
 BuildRequires: libpolkit-devel libupower-devel libgudev-devel libsoup-devel libnm-devel libnm-gir-devel
-BuildRequires: libcanberra-gtk3-devel libcroco-devel GConf libGConf-devel
-BuildRequires: gobject-introspection >= %gi_ver libupower-gir-devel libgudev-gir-devel libsoup-gir-devel libfolks-gir-devel
-BuildRequires: libtelepathy-glib-gir-devel libtelepathy-logger-gir-devel libcinnamon-menus-gir-devel
+BuildRequires: libcanberra-gtk3-devel libcroco-devel
+BuildRequires: gobject-introspection >= %gi_ver libupower-gir-devel libgudev-gir-devel libsoup-gir-devel
+BuildRequires: libcinnamon-menus-gir-devel
+BuildRequires: gst-plugins1.0-devel
 
 # for barriers
 BuildRequires: libXfixes-devel >= 5.0
@@ -88,7 +76,6 @@ BuildRequires: desktop-file-utils
 BuildRequires: gtk-doc gnome-common intltool
 BuildRequires: at-spi2-atk-devel
 BuildRequires: rpm-build-xdg
-
 
 %description
 Cinnamon is a Linux desktop which provides advanced innovative features
@@ -105,6 +92,9 @@ Group: Graphical desktop/GNOME
 BuildArch: noarch
 Provides: python3(cme)
 Provides: python3(Spices)
+# https://bugzilla.altlinux.org/36995
+Requires: python3-module-PAM
+Requires: python3-module-xapps-overrides
 
 %description data
 This package provides noarch data needed for Cinnamon to work.
@@ -117,42 +107,32 @@ BuildArch: noarch
 %description devel-doc
 Development docs package for Cinnamon.
 
-%add_verify_elf_skiplist %_bindir/%name
-
-# Cinnamon.typelib should be installed in %%_typelibdir for automatic provides,
-# but other typelibs (Gvs, St) conflict with gnome-shell
-# Provides: typelib(Cinnamon)
-# since rpm-build-gir-0.7.1-alt6 we can use
-%set_typelibdir %_libdir/%name
-# for detection and annihilation internal typelib-dependencies
-
 %prep
 %setup -n %name-%version
-%patch0 -p1
+%patch -p1
 
 rm -rf debian
 
 %build
 %autoreconf
-%configure --disable-static \
-           --enable-compile-warnings=yes\
-           --without-ca-certificates\
-           --disable-gtk-doc
-
+%configure \
+	--disable-static \
+	--enable-compile-warnings=yes \
+	--without-ca-certificates \
+	%{?_disable_gtk_doc:--disable-gtk-doc}
 %make_build
 
 %install
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 %makeinstall_std
 
 # Remove .la file
-rm -rf $RPM_BUILD_ROOT/%_libdir/cinnamon/libcinnamon.la
+rm -rf %buildroot/%_libdir/cinnamon/libcinnamon.la
 
-rm -f $RPM_BUILD_ROOT/%_datadir/man/man1/gnome-session-cinnamon.1
-rm -f $RPM_BUILD_ROOT/%_datadir/man/man1/gnome-session-cinnamon2d.1
+rm -f %buildroot/%_man1dir/gnome-session-cinnamon.1
+rm -f %buildroot/%_man1dir/gnome-session-cinnamon2d.1
 
-desktop-file-validate $RPM_BUILD_ROOT%_datadir/applications/cinnamon.desktop
-desktop-file-validate $RPM_BUILD_ROOT%_datadir/applications/cinnamon2d.desktop
+desktop-file-validate %buildroot%_desktopdir/cinnamon.desktop
+desktop-file-validate %buildroot%_desktopdir/cinnamon2d.desktop
 
 desktop-file-install                                 \
  --add-category="Utility"                            \
@@ -160,26 +140,19 @@ desktop-file-install                                 \
  --remove-key="Encoding"                             \
  --add-only-show-in="GNOME"                          \
  --delete-original                                   \
- --dir=$RPM_BUILD_ROOT%_datadir/applications       \
- $RPM_BUILD_ROOT%_datadir/applications/cinnamon-settings.desktop
+ --dir=%buildroot%_datadir/applications       \
+ %buildroot%_desktopdir/cinnamon-settings.desktop
 
 #install polkit files
-install -m 0755 -d $RPM_BUILD_ROOT/%{_datadir}/polkit-1/actions/
-install -D -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_datadir}/polkit-1/actions/
-install -D -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/applications/
+install -m 0755 -d %buildroot/%_datadir/polkit-1/actions/
+install -D -p -m 0644 %SOURCE2 %buildroot/%_datadir/polkit-1/actions/
+install -D -p -m 0644 %SOURCE3 %buildroot/%_datadir/applications/
 
 # Clean-up requires
 
-# Python 2 is not needed anymore
-%filter_from_requires /python-modules/d
-%filter_from_requires /python2.7[(]gi[)]/d
-%filter_from_requires /python2.7[(]xml[)]/d
-
-# Remove dependencies to internal modules provided by cinnamon itself
+# cinnamon/files/usr/share/cinnamon/cinnamon-settings/modules/cs_themes.py
+# from gi.repository.Gtk import SizeGroup, SizeGroupMode
 %filter_from_requires /python3[(]gi.repository.Gtk[)]/d
-%filter_from_requires /typelib[(]CDesktopEnums.MediaKeyType[)]/d
-%filter_from_requires /typelib[(]MediaKeyType[)]/d
-%filter_from_requires /python3[(]JsonSettingsWidgets[)]/d
 
 # There is already registered upstream issue https://github.com/linuxmint/muffin/issues/199
 # But untill it will be fixed by Cinnamon devs we handle it manually.
@@ -203,23 +176,18 @@ install -D -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/applications/
 %files data
 %exclude %_xdgmenusdir/cinnamon-applications-merged
 %exclude %_xdgmenusdir/cinnamon-applications.menu
-%_datadir/glib-2.0/schemas/*.xml
-%_datadir/applications/*.desktop
 %exclude %_datadir/xsessions/*.desktop
-%_datadir/cinnamon/
-%_datadir/polkit-1/actions/org.cinnamon.settings-users.policy
-%_datadir/icons/hicolor/*/actions/*.svg
-%_datadir/icons/hicolor/*/apps/*.svg
-%_datadir/icons/hicolor/*/categories/*.svg
-%_datadir/icons/hicolor/*/emblems/*.svg
-%_datadir/icons/hicolor/*/devices/*.svg
-%_datadir/desktop-directories/*.directory
 %exclude %_datadir/cinnamon-session/sessions/*.session
-
+%_datadir/cinnamon/
 %_datadir/dbus-1/services/org.Cinnamon.HotplugSniffer.service
 %_datadir/dbus-1/services/org.Cinnamon.Melange.service
 %_datadir/dbus-1/services/org.Cinnamon.Slideshow.service
-%_mandir/man1/*.1.*
+%_datadir/desktop-directories/*.directory
+%_datadir/glib-2.0/schemas/*.xml
+%_datadir/polkit-1/actions/org.cinnamon.settings-users.policy
+%_desktopdir/*.desktop
+%_iconsdir/hicolor/*/*/*.svg
+%_man1dir/*.1.*
 
 %if_enabled gtk_doc
 %files devel-doc
@@ -227,6 +195,34 @@ install -D -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/applications/
 %endif
 
 %changelog
+* Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 4.2.1-alt1
+- 4.2.1
+- fix lightdm-settings call
+
+* Tue Jul 09 2019 Yuri N. Sedunov <aris@altlinux.org> 4.2.0-alt4
+- added dconf to requires
+- data: added python3-module-{PAM,xapps-overrides} dependencies (ALT #36995),
+
+* Thu Jul 04 2019 Yuri N. Sedunov <aris@altlinux.org> 4.2.0-alt3
+- spec: dropped a batch of manual python3/typelib dependencies,
+  used rpm-build-{python3,gir} to generate automatic ones.
+  removed obsolete gconf and telepathy stuff.
+  updated other (build)dependencies.
+
+* Mon Jul 1 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt2
+- add python3-module-tinycss to requires
+
+* Mon Jul 1 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0-3-g4d1da807
+
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.0.9-alt6
+- 4.0.9-129-g8cff53c1
+
+* Mon Jun 17 2019 Michael Shigorin <mike@altlinux.org> 4.0.9-alt5
+- dropped BR: eds, libfolks (unneeded)
+- explicitly disabled gtk_doc knob
+- spec cleanup
+
 * Tue Apr 30 2019 Vladimir Didenko <cow@altlinux.org> 4.0.9-alt4
 - add python3-module-xapps-overrides to requires (closes: #36699)
 

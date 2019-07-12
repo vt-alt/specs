@@ -1,6 +1,5 @@
-%define ver_major 4.0
+%define ver_major 4.2
 %define api_ver 3.0
-%def_enable introspection
 
 Name: cinnamon-menus
 Version: %ver_major.0
@@ -19,7 +18,8 @@ BuildPreReq: rpm-build-gnome rpm-build-xdg
 # From configure.in
 BuildPreReq: intltool >= 0.35 gnome-common
 BuildPreReq: libgio-devel >= 2.29.15
-%{?_enable_introspection:BuildRequires: gobject-introspection-devel}
+BuildRequires: gobject-introspection-devel
+BuildRequires: meson
 
 %description
 This package should not be in a repository. If you see this, please file
@@ -78,16 +78,11 @@ GObject introspection devel data for the Cinnamon Desktop Menu Library
 %setup -q
 
 %build
-[ -d m4 ] || mkdir m4
-%autoreconf
-%configure \
-    --disable-static \
-    %{subst_enable introspection}
-
-%make_build
+%meson
+%meson_build
 
 %install
-%make_install DESTDIR=%buildroot install
+%meson_install
 
 %find_lang %name-%api_ver
 
@@ -100,16 +95,17 @@ GObject introspection devel data for the Cinnamon Desktop Menu Library
 %_libdir/*.so
 %_pkgconfigdir/*
 
-%if_enabled introspection
 %files -n lib%name-gir
 %_typelibdir/*
 
 %files -n lib%name-gir-devel
 %_girdir/*
-%endif
 
 
 %changelog
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Wed Oct 31 2018 Vladimir Didenko <cow@altlinux.org> 4.0.0-alt1
 - 4.0.0
 

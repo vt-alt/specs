@@ -2,8 +2,8 @@
 %define _localstatedir %_var/lib
 
 Name: slick-greeter
-Version: 1.2.4
-Release: alt2
+Version: 1.2.6
+Release: alt1
 Summary: A slick-looking LightDM greeter
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -69,7 +69,8 @@ printf '%_datadir/xgreeters/lightdm-default-greeter.desktop\t%_datadir/xgreeters
 %_altdir/%name
 %_sbindir/%name
 %{_bindir}/%name-check-hidpi
-%{_bindir}/%name-set-keyboard-layout
+# We use /etc/X11/xinit/fixkeyboard script instead
+%exclude %{_bindir}/%name-set-keyboard-layout
 %_datadir/%name
 %_datadir/xgreeters/%name.desktop
 %_datadir/lightdm/lightdm.conf.d/90-%name.conf
@@ -79,6 +80,15 @@ printf '%_datadir/xgreeters/lightdm-default-greeter.desktop\t%_datadir/xgreeters
 %{_mandir}/man1/slick-greeter-check-hidpi.1.*
 
 %changelog
+* Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 1.2.6-alt1
+- 1.2.6
+
+* Mon Jul 1 2019 Vladimir Didenko <cow@altlinux.org> 1.2.5-alt1
+- 1.2.5
+
+* Thu Jun 27 2019 Vladimir Didenko <cow@altlinux.org> 1.2.4-alt3
+- call /etc/X11/xinit/fixkeyboard on start (closes: #36932)
+
 * Tue Mar 19 2019 Vladimir Didenko <cow@altlinux.org> 1.2.4-alt2
 - fix build with new gnome libraries (closes: #36312)
 

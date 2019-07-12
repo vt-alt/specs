@@ -1,6 +1,6 @@
 Name: rpm-build-gir
-Version: 0.7.2
-Release: alt4
+Version: 0.7.3
+Release: alt2
 
 Summary: RPM helper macros and dependency utils to build GObject Introspection packages
 License: GPL
@@ -39,6 +39,15 @@ ln -s gir.prov.files %buildroot%_rpmlibdir/gir.req.files
 %_rpmlibdir/typelib*
 
 %changelog
+* Sun Jul 07 2019 Yuri N. Sedunov <aris@altlinux.org> 0.7.3-alt2
+- gir-js.req: fixed for "let X = imports.gi.X"
+
+* Fri Jun 28 2019 Yuri N. Sedunov <aris@altlinux.org> 0.7.3-alt1
+- gir-js.req: modified to support more JS expressions (ALT #36929)
+
+* Sun Jun 02 2019 Yuri N. Sedunov <aris@altlinux.org> 0.7.2-alt5
+- gir-js.req: fixed regexp for syntax without semicolon at end of lines
+
 * Sat Aug 18 2018 Yuri N. Sedunov <aris@altlinux.org> 0.7.2-alt4
 - gir-js.req: support for new "const {X, Y, Z, ... } = imports.gi;" expression
 

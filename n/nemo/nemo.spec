@@ -1,5 +1,5 @@
 %define api_ver 3.0
-%define ver_major 4.0
+%define ver_major 4.2
 
 %def_enable exempi
 %def_enable tracker
@@ -7,8 +7,8 @@
 %def_enable selinux
 
 Name: nemo
-Version: %ver_major.6
-Release: alt2
+Version: %ver_major.1
+Release: alt1
 
 Summary: default file manager for Cinnamon
 License: GPLv2+
@@ -185,6 +185,12 @@ ln -sf %_licensedir/LGPL-2 COPYING
 
 
 %changelog
+* Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 4.2.1-alt1
+- 4.2.1
+
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Thu Jan 24 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0.6-alt2
 - rebuilt against libexempi.so.8
 - updated build dependencies

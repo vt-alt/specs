@@ -1,10 +1,10 @@
-%define ver_major 4.0
+%define ver_major 4.2
 %define _name cjs
 %define api_ver 1.0
 
 Name: lib%_name
 Version: %ver_major.0
-Release: alt2
+Release: alt1
 
 Summary: Javascript Bindings for Cinnamon
 Group: System/Libraries
@@ -83,6 +83,9 @@ cp %SOURCE1 m4/
 %doc examples/*
 
 %changelog
+* Tue Jun 25 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Mon Feb 11 2019 Vladimir Didenko <cow@altlinux.org> 4.0.0-alt2
 - fix build with new autoconf-archive
 
