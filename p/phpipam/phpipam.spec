@@ -1,17 +1,18 @@
 
 Name: phpipam
-Version: 1.32.004
+Version: 1.40.000
 Release: alt1
 Summary: PHP-based virtual machine control tool
 Group: Networking/WWW
 License: GPLv3
 Url: http://phpipam.net
 Source: %name-%version.tar
-Source2: php-saml.tar
-Source3: PHPMailer.tar
-Source4: captcha.tar
+Source21: captcha.tar
+Source22: GoogleAuthenticator.tar
+Source23: PHPMailer.tar
+Source24: php-saml.tar
+Source25: qrcodejs.tar
 Source11: %name-apache.conf
-
 # Patch: %name-%version-%release.patch
 
 Provides: %name-php = %EVR
@@ -64,9 +65,11 @@ Requires: apache2-httpd-prefork-like php-engine
 
 %prep
 %setup
-tar -xf %SOURCE2 -C functions/php-saml
-tar -xf %SOURCE3 -C functions/PHPMailer
-tar -xf %SOURCE4 -C app/login/captcha
+tar -xf %SOURCE21 -C app/login/captcha
+tar -xf %SOURCE22 -C functions/GoogleAuthenticator
+tar -xf %SOURCE23 -C functions/PHPMailer
+tar -xf %SOURCE24 -C functions/php-saml
+tar -xf %SOURCE24 -C functions/qrcodejs
 #%patch -p1
 
 %install
@@ -84,15 +87,23 @@ install -pDm644 %SOURCE11 %buildroot%apache2_extra_available/%name.conf
 
 chmod 644 INSTALL.txt README.md UPDATE misc/CHANGELOG misc/Roadmap
 
-# Cleanup PHPMailer
+# Cleanup
 rm -f %buildroot%webserver_webappsdir/%name/functions/PHPMailer/.gitattributes
 rm -f %buildroot%webserver_webappsdir/%name/functions/PHPMailer/.gitignore
 rm -f %buildroot%webserver_webappsdir/%name/functions/PHPMailer/.scrutinizer.yml
 rm -f %buildroot%webserver_webappsdir/%name/functions/PHPMailer/.travis.yml
 rm -f %buildroot%webserver_webappsdir/%name/functions/PHPMailer/travis.phpunit.xml.dist
-rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/docs
-rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/examples
-rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/test
+rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/{.github,docs,examples,test}
+rm -f %buildroot%webserver_webappsdir/%name/functions/php-saml/.gitattributes
+rm -f %buildroot%webserver_webappsdir/%name/functions/php-saml/.gitignore
+rm -f %buildroot%webserver_webappsdir/%name/functions/php-saml/.travis.yml
+rm -rf %buildroot%webserver_webappsdir/%name/functions/php-saml/{demo-old,demo1,demo2,docs,tests}
+rm -f %buildroot%webserver_webappsdir/%name/functions/qrcodejs/.gitignore
+rm -f %buildroot%webserver_webappsdir/%name/app/login/captcha/.gitattributes
+rm -rf %buildroot%webserver_webappsdir/%name/app/login/captcha/examples
+rm -f %buildroot%webserver_webappsdir/%name/functions/GoogleAuthenticator/.gitignore
+rm -f %buildroot%webserver_webappsdir/%name/functions/GoogleAuthenticator/.travis.yml
+rm -rf %buildroot%webserver_webappsdir/%name/functions/GoogleAuthenticator/tests
 
 %files
 %doc INSTALL.txt README.md UPDATE misc/CHANGELOG misc/Roadmap
@@ -106,6 +117,9 @@ rm -rf %buildroot%webserver_webappsdir/%name/functions/PHPMailer/test
 %config(noreplace) %apache2_extra_available/%name.conf
 
 %changelog
+* Thu Jul 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.40.000-alt1
+- 1.4
+
 * Wed May 29 2019 Alexey Shabalin <shaba@altlinux.org> 1.32.004-alt1
 - 1.32 rev004
 
