@@ -22,7 +22,7 @@
 
 # version-release
 %define nv_version 430
-%define nv_release 26
+%define nv_release 34
 %define nv_minor %nil
 %define pkg_rel alt197
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
@@ -43,7 +43,7 @@
 %else
 %def_enable kernelsource
 %define subd ./
-%def_disable package_egl_wayland
+%def_enable package_egl_wayland
 %endif
 #
 %def_disable package_wfb
@@ -352,8 +352,8 @@ fi
 %endif
 
 %changelog
-* Fri Jul 12 2019 Sergey V Turchin <zerg@altlinux.org> 430.26-alt197
-- don't package libnvidia-egl-wayland
+* Fri Jul 12 2019 Sergey V Turchin <zerg@altlinux.org> 430.34-alt197
+- new version
 
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 430.26-alt196
 - new version
