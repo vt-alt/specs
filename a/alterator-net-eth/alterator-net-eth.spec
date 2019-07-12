@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.0
+Version: 5.1.1
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Thu Jul 11 2019 Mikhail Efremov <sem@altlinux.org> 5.1.1-alt1
+- Fix bridges deleting.
+
 * Tue Nov 21 2017 Mikhail Efremov <sem@altlinux.org> 5.1.0-alt1
 - Check for configured FreeIPA domain.
 - Allow setup fqdn during system installation (closes: #34224).
