@@ -1,6 +1,6 @@
 Name: guile-evms
 Version: 0.5
-Release: alt8
+Release: alt10
 
 Summary: Guile bindings for EVMS
 License: GPL
@@ -31,6 +31,12 @@ make install DESTDIR=%buildroot
 %guile_godir/evms.go
 
 %changelog
+* Thu Jul 11 2019 Alexey Shabalin <shaba@altlinux.org> 0.5-alt10
+- Add /var/lib/docker,/var/lib/lxd,/var/lib/libvirt/images to well-known-mountpoints
+
+* Wed Jun 05 2019 Rustem Bapin <rbapin@altlinux.org> 0.5-alt9
+- Fixed build on mipsel architecture.
+
 * Thu Apr 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.5-alt8
 - Fixed build on ppc64le architecture.
 

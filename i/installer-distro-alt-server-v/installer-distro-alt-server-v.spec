@@ -1,5 +1,5 @@
 Name: installer-distro-alt-server-v
-Version: 7.0.3
+Version: 7.0.4
 Release: alt1
 
 Summary: Installer configuration (Server V)
@@ -75,6 +75,10 @@ sed -i 's,^\(X-Alterator-URI=\).*$,\1/vm/ortodox,' \
 %files stage3
 
 %changelog
+* Thu Jul 11 2019 Alexey Shabalin <shaba@altlinux.org> 7.0.4-alt1
+- /var/lib/libvirt ->  /var/lib/libvirt/images
+- add LXD HN server (large /var/lib/lxd)
+
 * Fri Jun 14 2019 Alexey Shabalin <shaba@altlinux.org> 7.0.3-alt1
 - package as name alt-server-v for Server Virtualization
 - update vm profile for server-v
