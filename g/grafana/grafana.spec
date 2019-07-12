@@ -1,5 +1,5 @@
 %global import_path github.com/grafana/grafana
-%global commit 3f4c2e7957c58dda0471ca1a71c2703153d10976
+%global commit 6082d198252e52205b902798023c56f8ac543772
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -12,7 +12,7 @@
 
 
 Name:		grafana
-Version:	6.0.2
+Version:	6.2.5
 Release:	alt1
 Summary:	Metrics dashboard and graph editor
 
@@ -141,7 +141,7 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %preun_service %name-server
 
 %files
-%doc CHANGELOG.md LICENSE.md README.md
+%doc CHANGELOG.md LICENSE README.md
 %_bindir/%name-cli
 %_bindir/%name-server
 %config(noreplace) %_sysconfdir/sysconfig/%name-server
@@ -162,6 +162,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %_datadir/%name
 
 %changelog
+* Fri Jul 12 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.5-alt1
+- 6.2.5
+
 * Thu Mar 28 2019 Alexey Shabalin <shaba@altlinux.org> 6.0.2-alt1
 - 6.0.2
 
