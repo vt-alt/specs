@@ -1,7 +1,7 @@
-%define utsushi_version 0.55.0
+%define utsushi_version 0.57.0
 
 Name:     imagescan
-Version:  3.55.0
+Version:  3.57.0
 Release:  alt1
 
 Summary:  EPSON Image Scan v3 front-end for scanners and all-in-ones
@@ -96,7 +96,8 @@ install -Dm0644 %SOURCE1 %buildroot%_desktopdir/utsushi.desktop
 
 rm %buildroot%_bindir/utsushi
 ln -s ../lib/utsushi/utsushi-main %buildroot%_bindir/utsushi
-ln -s utsushi %buildroot%_bindir/%name
+echo -e '#!/bin/sh\n%_bindir/utsushi $@' > %buildroot%_bindir/imagescan
+chmod +x %buildroot%_bindir/imagescan
 
 %find_lang utsushi
 
@@ -130,6 +131,10 @@ ln -s utsushi %buildroot%_bindir/%name
 %_datadir/utsushi/drivers
 
 %changelog
+* Fri Jul 12 2019 Andrey Cherepanov <cas@altlinux.org> 3.57.0-alt1
+- New version.
+- Use wrapper script instead of symlink because boost throw exception (ALT #36859).
+
 * Fri Apr 12 2019 Andrey Cherepanov <cas@altlinux.org> 3.55.0-alt1
 - New version
 - Exclude SANE driver in separate package imagescan-sane.
