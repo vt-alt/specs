@@ -2,7 +2,7 @@
 
 Name:      appstream-data
 Summary:   ALT Linux AppStream metadata
-Version:   20181212
+Version:   20190714
 Release:   alt1
 Group:     System/Configuration/Packaging
 BuildArch: noarch
@@ -31,6 +31,18 @@ cp -r manual-%version/* %buildroot%_datadir/app-info/xmls/
 %_datadir/app-info/icons/altlinux
 
 %changelog
+* Sun Jul 14 2019 Andrey Cherepanov <cas@altlinux.org> 20190714-alt1
+- Add missing project_license to packages.
+- appstream-db: add apply command for mass modification.
+
+* Fri Jul 12 2019 Andrey Cherepanov <cas@altlinux.org> 20190712-alt1
+- Mass add applications from its desktop files.
+- Fix update-list script.
+- Remove old statistic files.
+
+* Wed Jul 03 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20190702-alt1
+- Updated appstream-data for Sisyphus.
+
 * Wed Dec 12 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 20181212-alt1
 - Generated appstream-data for Sisyphus.
 
