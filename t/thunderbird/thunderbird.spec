@@ -6,13 +6,13 @@
 %define build_parallel_jobs 32
 %endif
 
-%define enigmail_version  2.0.11
+%define enigmail_version  2.0.12
 %define gdata_version     2.6
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	60.7.2
-Release:	alt2
+Version:	60.8.0
+Release:	alt1
 License:	MPL/GPL
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -491,6 +491,21 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Wed Jul 10 2019 Andrey Cherepanov <cas@altlinux.org> 60.8.0-alt1
+- New version (60.8.0).
+- Fixed:
+  + CVE-2019-9811 Sandbox escape via installation of malicious language pack
+  + CVE-2019-11711 Script injection within domain through inner window reuse
+  + CVE-2019-11712 Cross-origin POST requests can be made with NPAPI plugins by following 308 redirects
+  + CVE-2019-11713 Use-after-free with HTTP/2 cached stream
+  + CVE-2019-11729 Empty or malformed p256-ECDH public keys may trigger a segmentation fault
+  + CVE-2019-11715 HTML parsing error can contribute to content XSS
+  + CVE-2019-11717 Caret character improperly escaped in origins
+  + CVE-2019-11719 Out-of-bounds read when importing curve25519 private key
+  + CVE-2019-11730 Same-origin policy treats all files in a directory as having the same-origin
+  + CVE-2019-11709 Memory safety bugs fixed in Firefox 68, Firefox ESR 60.8, and Thunderbird 60.8
+- Enigmail 2.0.12.
+
 * Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 60.7.2-alt2
 - Added ppc64le support.
 
