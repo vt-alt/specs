@@ -2,7 +2,7 @@
 
 Name:      appstream-data
 Summary:   ALT Linux AppStream metadata
-Version:   20190714
+Version:   20190715
 Release:   alt1
 Group:     System/Configuration/Packaging
 BuildArch: noarch
@@ -31,6 +31,9 @@ cp -r manual-%version/* %buildroot%_datadir/app-info/xmls/
 %_datadir/app-info/icons/altlinux
 
 %changelog
+* Mon Jul 15 2019 Andrey Cherepanov <cas@altlinux.org> 20190715-alt1
+- Add applications and popular fonts.
+
 * Sun Jul 14 2019 Andrey Cherepanov <cas@altlinux.org> 20190714-alt1
 - Add missing project_license to packages.
 - appstream-db: add apply command for mass modification.
