@@ -32,8 +32,8 @@
 %def_disable check
 
 Name: gnome-software
-Version: %ver_major.3
-Release: alt2
+Version: %ver_major.4
+Release: alt1
 
 Summary: Software manager for GNOME
 License: GPLv2+
@@ -172,6 +172,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_datadir/gtk-doc/html/%name/
 
 %changelog
+* Thu Jul 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.4-alt1
+- 3.32.4
+
 * Thu Jul 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.3-alt2
 - local-file.desktop.in: removed unsupported mime types (ALT #37014)
 

@@ -1,7 +1,11 @@
 %def_enable selinux
+%def_enable userns
+
+# "etuid" or "none"
+%define priv_mode setuid
 
 Name: bubblewrap
-Version: 0.3.1
+Version: 0.3.3
 Release: alt1
 
 Summary: Unprivileged sandboxing tool
@@ -16,6 +20,10 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # VCS: https://github.com/projectatomic/bubblewrap.git
 Source: %name-%version.tar
 #Source: https://github.com/projectatomic/%name/releases/download/v%version/%name-%version.tar.xz
+
+%if %priv_mode == "none"
+Requires(pre): libcap-utils
+%endif
 
 BuildRequires: gcc-c++ binutils-devel libelf-devel
 BuildRequires: db2latex-xsl docbook-style-xsl libcap-devel xsltproc
@@ -33,27 +41,41 @@ because it is trivial to turn such access into to a fully privileged root shell 
 
 %build
 %autoreconf
-%configure --with-priv-mode=none \
-	--enable-require-userns=yes \
-	%{subst_enable selinux}
+%configure \
+	%{subst_enable selinux} \
+	%{?_enable_userns:--enable-require-userns=yes}
 
 %make_build
 
 %install
 %makeinstall_std
 
+%if_enabled userns
 mkdir -p %buildroot%_sysctldir
 cat > %buildroot%_sysctldir/90-bwrap.conf << _EOF_
 kernel.userns_restrict = 0
 _EOF_
+%endif
+
+%if %priv_mode == "none"
+%post
+setcap -q "cap_sys_admin,cap_net_admin,cap_sys_chroot,cap_setuid,cap_setgid=ep" %_bindir/bwrap 2>/dev/null ||:
+%endif
 
 %files
+%if %priv_mode == "setuid"
 %attr(4511,root,root) %_bindir/bwrap
-%_sysctldir/90-bwrap.conf
+%else
+%_bindir/bwrap
+%endif
+%{?_enable_userns:%_sysctldir/90-bwrap.conf}
 %_man1dir/bwrap*
 %_datadir/bash-completion/completions/bwrap
 
 %changelog
+* Fri May 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.3-alt1
+- 0.3.3
+
 * Thu Oct 25 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.1-alt1
 - updated to v0.3.1-4-g8fc5a96
 

@@ -1,4 +1,4 @@
-%def_disable snapshot
+%def_enable snapshot
 
 %define ver_major 3.32
 %define domain gcampax.github.com
@@ -8,7 +8,7 @@
 
 Name: gnome-shell-extensions
 Version: %ver_major.1
-Release: alt1
+Release: alt3
 
 Summary: GNOME Shell Extensions
 Group: Graphical desktop/GNOME
@@ -24,6 +24,12 @@ Source: %name-%version.tar
 %endif
 
 Requires: gnome-shell >= %ver_major
+
+# extensions/apps-menu/extension.js
+# const {
+#     Atk, Clutter, Gio, GLib, GMenu, GObject, Gtk, Meta, Shell, St
+# } = imports.gi;
+%{?_enable_classic_mode:Requires: typelib(GMenu)}
 
 BuildRequires(pre): meson rpm-build-gir
 BuildRequires: libgjs-devel libmozjs60-tools sassc
@@ -148,6 +154,12 @@ See %_docdir/%name-%version/README for more information.
 %doc NEWS README.md
 
 %changelog
+* Wed Jul 10 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt3
+- requires typelib(GMenu) if classic_mode enabled (ALT #36997)
+
+* Tue Jul 09 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt2
+- updated to 3.32.1-1-g13372e7 (fixed apps-menu (ALT #36997))
+
 * Wed Apr 17 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
 - 3.32.1
 

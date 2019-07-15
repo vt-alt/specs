@@ -7,7 +7,7 @@
 %define sover 5
 
 Name: libgranite
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: Extension of GTK+3 libraries
@@ -105,9 +105,8 @@ GObject introspection devel data for the granite library.
 %_libdir/*.so.*
 
 %files devel
+%_includedir/%_name/
 %_libdir/*.so
-%dir %_includedir/%_name
-%_includedir/%_name/*.h
 %_pkgconfigdir/%_name.pc
 
 %files -n %_name-demo
@@ -126,6 +125,9 @@ GObject introspection devel data for the granite library.
 %_datadir/vala/vapi/%_name.vapi
 
 %changelog
+* Mon Jul 08 2019 Yuri N. Sedunov <aris@altlinux.org> 5.2.4-alt1
+- 5.2.4
+
 * Fri Feb 15 2019 Yuri N. Sedunov <aris@altlinux.org> 5.2.3-alt1
 - 5.2.3 (ported to Meson build system)
 

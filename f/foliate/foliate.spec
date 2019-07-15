@@ -1,10 +1,10 @@
 %def_disable snapshot
 
-%define ver_major 1.3
+%define ver_major 1.4
 %define rdn_name com.github.johnfactotum.Foliate
 
 Name: foliate
-Version: %ver_major.1
+Version: %ver_major.0
 Release: alt1
 
 Summary: A simple and modern GTK eBook(EPUB) reader
@@ -19,7 +19,9 @@ Source: %url/archive/%version/%name-%version.tar.gz
 Source: %name-%version.tar
 %endif
 
-Requires: %_bindir/gjs dconf
+%define gjs_ver 1.52
+
+Requires: libgjs >= %gjs_ver dconf
 
 # find ./ -name "*.js" |/usr/lib/rpm/gir-js.req |sort|uniq|sed -e 's/^/Requires: /'
 Requires: typelib(Gdk)
@@ -29,7 +31,6 @@ Requires: typelib(GLib)
 Requires: typelib(GObject)
 Requires: typelib(Gtk)
 Requires: typelib(Pango)
-Requires: typelib(Soup)
 Requires: typelib(WebKit2)
 
 BuildRequires(pre): meson rpm-build-gir
@@ -71,6 +72,9 @@ Foliate is a simple and modern GTK eBook reader with following features:
 
 
 %changelog
+* Mon Jul 08 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4.0-alt1
+- 1.4.0
+
 * Sun Jun 30 2019 Yuri N. Sedunov <aris@altlinux.org> 1.3.1-alt1
 - 1.3.1
 

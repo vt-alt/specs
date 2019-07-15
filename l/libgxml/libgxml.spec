@@ -1,13 +1,15 @@
-%def_enable snapshot
+%def_disable snapshot
 
 %define _name gxml
-%define ver_major 0.16
-%define api_ver 0.16
+%define ver_major 0.18
+%define api_ver 0.18
+%def_enable introspection
 %def_enable docs
+%def_enable check
 
 Name: lib%_name
-Version: %ver_major.3
-Release: alt2
+Version: %ver_major.1
+Release: alt1
 
 Summary: GXml provides a GObject API for manipulating XML
 Group: System/Libraries
@@ -25,13 +27,13 @@ Source: %_name-%version.tar
 %define gee_ver 0.10.5
 %define xml2_ver 2.7
 
+BuildRequires(pre): meson
+BuildRequires: libvala-devel >= %vala_ver vala-tools
 BuildRequires: libgio-devel >= %glib_ver
 BuildRequires: libgee0.8-devel >= %gee_ver
 BuildRequires: libxml2-devel >= %xml2_ver
-BuildRequires: libvala-devel >= %vala_ver vala-tools
-BuildRequires: gobject-introspection-devel libgee0.8-gir-devel
-BuildRequires: intltool gtk-doc
-%{?_enable_docs:BuildRequires: valadoc yelp-tools graphviz}
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel libgee0.8-gir-devel}
+%{?_enable_docs:BuildRequires: valadoc yelp-tools graphviz gtk-doc}
 
 %description
 GXml provides a GObject API for manipulating XML. Most functionality
@@ -80,18 +82,18 @@ This package contains development documentation for GXml library.
 find ./ -type f -print0| xargs -r0 subst 's|gxml//xlibxml.h|gxml/xlibxml.h|' --
 
 %build
-%autoreconf
-%configure --disable-static \
-	%{subst_enable docs}
-%make_build
+%meson \
+	%{?_enable_docs:-Ddocs=true} \
+	%{?_enable_introspection:-Dintrospection=true}
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
+%find_lang --output=%_name.lang %_name GXml-%api_ver
 
 %check
-%make check
-
-%find_lang --output=%_name.lang %_name GXml
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
 %files -f %_name.lang
 %_libdir/%name-%api_ver.so.*
@@ -104,11 +106,13 @@ find ./ -type f -print0| xargs -r0 subst 's|gxml//xlibxml.h|gxml/xlibxml.h|' --
 %_vapidir/%_name-%api_ver.deps
 %_vapidir/%_name-%api_ver.vapi
 
+%if_enabled introspection
 %files gir
 %_typelibdir/GXml-%api_ver.typelib
 
 %files gir-devel
 %_girdir/GXml-%api_ver.gir
+%endif
 
 %if_enabled docs
 %files devel-doc
@@ -117,6 +121,12 @@ find ./ -type f -print0| xargs -r0 subst 's|gxml//xlibxml.h|gxml/xlibxml.h|' --
 %endif
 
 %changelog
+* Mon Jul 08 2019 Yuri N. Sedunov <aris@altlinux.org> 0.18.1-alt1
+- 0.18.1 (ported to Meson build system)
+
+* Thu Jul 04 2019 Yuri N. Sedunov <aris@altlinux.org> 0.18.0-alt1
+- 0.18.0
+
 * Sat Jan 05 2019 Yuri N. Sedunov <aris@altlinux.org> 0.16.3-alt2
 - updated to 0.16.3-3-ge51ce7b
 

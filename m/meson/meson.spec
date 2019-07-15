@@ -1,6 +1,6 @@
 %def_disable snapshot
 
-%define ver_major 0.50
+%define ver_major 0.51
 %define libname mesonbuild
 # pkexec may be used to "gain elevated privileges" during install
 %def_without polkit
@@ -8,7 +8,7 @@
 
 Name: meson
 Version: %ver_major.1
-Release: alt2
+Release: alt1
 
 Summary: High productivity build system
 Group: Development/Python3
@@ -22,13 +22,6 @@ Source: %name-%version.tar
 %endif
 Source1: %name.macros
 Source2: %name.env
-# do not duplicate external dependencies in list
-# cfe82db5ab0d35832da474014dff4b6dfe33f8b7
-Patch: meson-0.49.2-up-dedup.patch
-# https://github.com/mesonbuild/meson/pull/5284
-Patch1: meson-0.50.1-mcst-e2k.patch
-#Patch1: meson-0.49.2-alt-e2k-lcc.patch
-#Patch2: meson-0.50.1-alt-e2k-lcc.patch
 
 BuildArch: noarch
 
@@ -71,8 +64,6 @@ reports, Valgrind, CCache and the like.
 
 %prep
 %setup
-%patch -p1 -b .dedup
-%patch1 -p1
 
 %build
 %python3_build
@@ -98,6 +89,10 @@ MESON_PRINT_TEST_OUTPUT=1 ./run_tests.py
 
 
 %changelog
+* Wed Jul 10 2019 Yuri N. Sedunov <aris@altlinux.org> 0.51.1-alt1
+- 0.51.1
+- removed obsolete patches
+
 * Fri Apr 19 2019 Yuri N. Sedunov <aris@altlinux.org> 0.50.1-alt2
 - applied again dedup.patch to fix gnome-builder build
 - updated e2k support by mcst (https://github.com/mesonbuild/meson/pull/5284)
