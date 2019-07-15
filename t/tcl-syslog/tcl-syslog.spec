@@ -1,6 +1,6 @@
 Name: tcl-syslog
 Version: 2.0
-Release: alt5.1.qa1.1
+Release: alt5.1.qa2
 
 Summary: Syslog tcl lib
 Group: Development/Tcl
@@ -39,7 +39,7 @@ package ifneeded Syslog 2.0 [list load [file join \$dir .. libsyslog.so.2.0] Sys
 EOF
 
 mkdir -p %buildroot%_libdir/tcl/
-%ifarch x86_64
+%if "%_libdir" != "/usr/lib"
 mv %buildroot/usr/lib/tcl/*.so.* %buildroot%_libdir/tcl/
 %endif
 
@@ -49,6 +49,9 @@ mv %buildroot/usr/lib/tcl/*.so.* %buildroot%_libdir/tcl/
 %_libdir/tcl/syslog
 
 %changelog
+* Mon Jul 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.0-alt5.1.qa2
+- Fixed build on architectuires where %%_libdir != /usr/lib .
+
 * Tue Feb 27 2018 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.0-alt5.1.qa1.1
 - NMU:
   + fixed FTBFS: built against Tcl 8.6
