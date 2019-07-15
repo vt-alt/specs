@@ -9,7 +9,7 @@ Name: hashrat
 Summary: Hashing tool supporting several hashes and recursivity
 Version: 1.10.2
 License: GPLv3
-Release: alt1_2.1
+Release: alt2_2.1
 Group: File tools
 URL: http://www.cjpaget.co.uk/Code/Hashrat
 Source0: https://codeload.github.com/ColumPaget/%{_name}/tar.gz/%{version}/%{_name}-%{version}.tar.gz
@@ -32,7 +32,7 @@ and network security.
 %setup -q -n %{_name}-%{version}
 
 %build
-%configure
+%configure --enable-xattr
 %make_build
 
 %install
@@ -44,6 +44,9 @@ make install DESTDIR=%{buildroot}
 %{_mandir}/man1/%{name}.1*
 
 %changelog
+* Sun Jul 14 2019 Igor Vlasenko <viy@altlinux.ru> 1.10.2-alt2_2.1
+- added xattr support
+
 * Wed Jun 05 2019 Igor Vlasenko <viy@altlinux.ru> 1.10.2-alt1_2.1
 - new version
 
