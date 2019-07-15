@@ -3,7 +3,7 @@
 
 Name: qt5-serialbus
 Version: 5.12.4
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - SerialBus component
@@ -12,6 +12,7 @@ License: LGPLv2 / GPLv3
 
 Source: %qt_module-opensource-src-%version.tar
 Patch1: alt-segfault.patch
+Patch2: alt-siocgstamp.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: qt5-base-devel qt5-serialport-devel qt5-tools
@@ -60,7 +61,8 @@ Requires: %name-common = %EVR
 %prep
 %setup -n %qt_module-opensource-src-%version
 %patch1 -p1
-syncqt.pl-qt5 -version %version 
+%patch2 -p1
+syncqt.pl-qt5 -version %version
 
 %build
 %qmake_qt5
@@ -97,6 +99,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt2
+- fix to compile
+
 * Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
 - new version
 
