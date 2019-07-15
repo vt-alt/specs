@@ -8,7 +8,7 @@
 %def_with gnutls
 
 Name: squid
-Version: 4.6
+Version: 4.8
 Release: alt1
 %define langpack_ver 20170901 
 Summary: The Squid proxy caching server
@@ -177,7 +177,13 @@ sed -i -e "s|squid_curtime|$RELEASE_TIME|" include/version.h
 	--with-default-user="%name"
 
 
-%make_build
+%make_build \
+%ifarch mipsel
+    LIBS=-latomic \
+%endif
+    %nil
+
+
 sed -r 's/dyn/html/g;s/CALL(|ER_GRAPH)/#/' squid3.dox | doxygen -
 
 
@@ -289,6 +295,18 @@ chown -R %name:%name %_spooldir/%name >/dev/null 2>&1 ||:
 %exclude %_man8dir/cachemgr.cgi.*
 
 %changelog
+* Mon Jul 15 2019 Alexey Shabalin <shaba@altlinux.org> 4.8-alt1
+- Updated to 4.8
+- Fixes:
+  + CVE-2019-12854 Denial of Service issue in cachemgr.cgi
+  + CVE-2019-12529 Denial of Service in HTTP Basic Authentication
+  + CVE-2019-12525 Denial of Service in HTTP Digest Authentication
+  + CVE-2019-12527 Heap Overflow issue in HTTP Basic Authentication
+  + CVE-2019-13345 Multiple Cross-Site Scripting issues in cachemgr.cgi
+
+* Wed Apr 03 2019 Ivan A. Melnikov <iv@altlinux.org> 4.6-alt1.0.mips1
+- Link with -latomic on mipsel
+
 * Tue Apr 02 2019 Alexey Shabalin <shaba@altlinux.org> 4.6-alt1
 - Updated to 4.6
 
