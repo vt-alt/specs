@@ -16,7 +16,7 @@ Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
 Version:        60.8.0
-Release:        alt1
+Release:        alt2
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -134,7 +134,7 @@ The Mozilla Firefox project is a redesign of Mozilla's browser
 component, written using the XUL user interface language and designed to
 be cross-platform.
 
-%description -l ru_RU.UTF8
+%description -l ru_RU.UTF-8
 Интернет-браузер Mozilla Firefox - кроссплатформенная модификация
 браузера Mozilla, созданная с использованием языка XUL для описания
 интерфейса пользователя.
@@ -354,6 +354,9 @@ done
 %_iconsdir/hicolor/256x256/apps/firefox.png
 
 %changelog
+* Mon Jul 15 2019 Andrey Cherepanov <cas@altlinux.org> 60.8.0-alt2
+- Fix Russian description encoding.
+
 * Tue Jul 09 2019 Andrey Cherepanov <cas@altlinux.org> 60.8.0-alt1
 - New ESR version (60.8.0).
 - Fixed:
