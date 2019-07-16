@@ -1,6 +1,6 @@
 Name: fritzing
 Version: 0.9.3b.0.31.git701e3a3
-Release: alt4
+Release: alt5
 
 Summary: Intuitive EDA platform featuring from prototype to product
 License: GPLv3, CC-BY-SA-3.0
@@ -12,13 +12,17 @@ Source0: %name-%version.tar
 # https://github.com/fritzing/fritzing-parts
 Source1: %name-parts.tar
 
+Patch: fritzing-desktop-file-translation.patch
+
 Packager: Grigory Ustinov <grenka@altlinux.org>
 
-BuildRequires: boost-devel-headers desktop-file-utils gcc-c++ glibc-devel-static phonon-devel rpm-build-python3 rpmbuild-helper-desktop rpmbuild-helper-sugar-activity ruby ruby-stdlibs
+BuildRequires: boost-devel-headers desktop-file-utils gcc-c++ glibc-devel-static
+BuildRequires: phonon-devel rpm-build-python3 rpmbuild-helper-desktop
+BuildRequires: rpmbuild-helper-sugar-activity ruby ruby-stdlibs
 BuildRequires: libgit2-devel qt5-base-devel qt5-svg-devel qt5-serialport-devel
 
 # large chunk of arch-independent data is better not duplicated
-Requires: %name-data = %version-%release
+Requires: %name-data = %EVR
 
 %description
 Fritzing is an open-source initiative to support designers, artists,
@@ -44,6 +48,7 @@ This package contains shared data files for Fritzing.
 
 %prep
 %setup -a1
+%patch -p1
 %ifarch %e2k
 # strip UTF-8 BOM for lcc < 1.24
 find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
@@ -69,6 +74,9 @@ cp -r %name-parts %buildroot/%_datadir/%name
 %_datadir/%name
 
 %changelog
+* Tue Jul 16 2019 Grigory Ustinov <grenka@altlinux.org> 0.9.3b.0.31.git701e3a3-alt5
+- Add russian translation to desktop file (Closes: #36850).
+
 * Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 0.9.3b.0.31.git701e3a3-alt4
 - E2K: strip UTF-8 BOM for lcc < 1.24
 
