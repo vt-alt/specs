@@ -9,8 +9,8 @@
 #
 
 Name: xscreensaver
-Version: 5.42
-Release: alt2
+Version: 5.43
+Release: alt1
 
 Summary: A screen saver and locker for the X window system
 License: BSD
@@ -320,6 +320,9 @@ MkModuleFilelists %_sourcedir/xscreensaver-hacks-gl gl
 %files -n desktop-screensaver-modules-xscreensaver-gl -f xscreensaver-desktop-gl
 
 %changelog
+* Fri Jul 12 2019 Grigory Ustinov <grenka@altlinux.org> 5.43-alt1
+- Build new version (new hacks gravitywell, deepstars).
+
 * Fri Jun 14 2019 Grigory Ustinov <grenka@altlinux.org> 5.42-alt2
 - Rename mate-screensaver-modules-xscreensaver* to
   desktop-screensaver-modules-xscreensaver*.
