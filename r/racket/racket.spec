@@ -3,7 +3,7 @@
 %define sover 6.12
 Name: racket
 Version: 6.12
-Release: alt1
+Release: alt2
 
 Summary: Racket programming language
 
@@ -117,6 +117,8 @@ This package contains development files of Racket.
 %patch1 -p2
 
 %build
+# FIXME: %%autoreconf?
+# But the configure.ac is not in src/. (It's in src/racket.)
 pushd src
 %ifarch %ix86
 %add_optflags -march=i686 -mtune=i686
@@ -135,11 +137,28 @@ pushd src
 popd
 
 %install
-NP=%__nprocs
-if [ "$NP" = "1" ]; then
-	NP=2
-fi
-%makeinstall_std -C src -j$NP docdir=%_docdir/%name-%version
+# make -j1 avoids a nasty race in Makefile, which made it hang on ppc64le,mipsel
+# (and perhaps sometimes on aarch64), and basically doesn't affect the time,
+# because "raco setup" should decide on parallelism based on "(processor-count)"
+# and limit the number of parallel jobs to 8 on 64bit and 4 on 32bit platforms
+# (see racket/collects/setup/option.rkt line 56). However, in practice, we see
+# this parallelism on i586,x86_64, but not on ppc64le,aarch64 (it takes 8 hrs).
+#
+# FIXME: on ppc64le, racket doesn't detect the number of processors:
+#
+# $ hsh-run --mount=/proc,/dev/pts -- racket -e '(processor-count)'
+# 1
+# [imz@ppc imz]$ hsh-run --mount=/proc,/dev/pts -- nproc
+# 128
+#
+# Let's set the parameter by force to speedup our builds:
+%if "%_pointer_size" == "32"
+# don't eat too much memory on 32bit platforms
+export PLT_SETUP_OPTIONS="-j $(( %__nprocs > 8 ? 8 : %__nprocs ))"
+%else
+export PLT_SETUP_OPTIONS='-j %__nprocs'
+%endif
+%makeinstall_std -j1 -C src docdir=%_docdir/%name-%version
 
 install -p -m644 README %buildroot%_docdir/%name-%version/
 sed -i 's|%buildroot||g' %buildroot%_desktopdir/*.desktop
@@ -173,6 +192,11 @@ rm -f %buildroot%_libdir/*.a
 %_includedir/*
 
 %changelog
+* Tue Jul 16 2019 Ivan Zakharyaschev <imz@altlinux.org> 6.12-alt2
+- (.spec):
+  + Avoided a nasty race in Makefile.
+  + Sped up the build by force on non-intel.
+
 * Mon Dec 10 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 6.12-alt1
 - Updated to upstream version 6.12 (Closes: #35721)
 
