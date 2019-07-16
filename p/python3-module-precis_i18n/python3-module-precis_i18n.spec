@@ -1,7 +1,7 @@
 %define  oname precis_i18n
 
 Name:    python3-module-%oname
-Version: 1.0
+Version: 1.0.1
 Release: alt1
 
 Summary: Python3 implementation of PRECIS framework (RFC 8264, RFC 8265, RFC 8266)
@@ -51,5 +51,8 @@ Representing Nicknames (RFC 8266)
 %doc *.rst
 
 %changelog
+* Tue Jul 16 2019 Grigory Ustinov <grenka@altlinux.org> 1.0.1-alt1
+- Build new version.
+
 * Thu Jun 20 2019 Grigory Ustinov <grenka@altlinux.org> 1.0-alt1
 - Initial build for Sisyphus (Closes: #36707).
