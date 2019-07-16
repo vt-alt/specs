@@ -1,7 +1,7 @@
 %define binname XyGrib
 
 Name: xygrib
-Version: 1.2.4
+Version: 1.2.6
 Release: alt1
 
 Summary: Visualisation of meteo data from files in GRIB formats
@@ -11,6 +11,9 @@ Group: Networking/Other
 Url: https://opengribs.org
 Source0: %binname-%version.tar.gz
 Source1: %binname.desktop
+
+Patch1: XyGrib-1.2.6-71e6ce91da79.diff
+Patch2: XyGrib-1.2.6-c3fd4c5b0a41.diff
 
 Requires: fonts-ttf-liberation
 Requires: %name-data = %version-%release
@@ -42,6 +45,9 @@ home page: http://www.geonames.org/
 
 %setup -q -n %binname-%version
 
+%patch1 -p1
+%patch2 -p1
+
 %build
 # -DNO_UPDATE=1 deactivates XyGrib internal SW update
 %cmake \
@@ -63,6 +69,8 @@ cp %buildroot/%_datadir/openGribs/XyGrib/data/img/xyGrib_32.xpm %buildroot/%_dat
 mkdir -p -m 755 %buildroot/%_datadir/applications
 install -m 644 %SOURCE1 %buildroot/%_datadir/applications
 
+find %buildroot \( -name 'Thumbs.db' -o -name 'Thumbs.db.gz' \) -print -delete
+
 %files
 %doc README.md LICENSE
 %_bindir/%binname
@@ -73,5 +81,8 @@ install -m 644 %SOURCE1 %buildroot/%_datadir/applications
 %_datadir/openGribs
 
 %changelog
+* Tue Jul 16 2019 Sergey Y. Afonin <asy@altlinux.org> 1.2.6-alt1
+- New version
+
 * Fri Jun 28 2019 Sergey Y. Afonin <asy@altlinux.ru> 1.2.4-alt1
 - Initial build for AltLinux
