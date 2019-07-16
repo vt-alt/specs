@@ -1,8 +1,8 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.16.2
-Release: alt2
+Version: 5.16.3
+Release: alt1
 %K5init no_altplace
 
 Group: System/Configuration/Packaging
@@ -121,6 +121,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5icon/*/*/apps/*flatpak*.*
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt1
+- new version
+
 * Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt2
 - move files to more standard place
 

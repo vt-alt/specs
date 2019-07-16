@@ -1,8 +1,8 @@
 %define rname kwrited
 
 Name: plasma5-%rname
-Version: 5.16.2
-Release: alt2
+Version: 5.16.3
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -76,6 +76,9 @@ KF5 library
 %_K5notif/*writed*
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt1
+- new version
+
 * Tue Jul 02 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt2
 - build as executable
 

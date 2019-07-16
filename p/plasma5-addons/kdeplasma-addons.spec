@@ -8,8 +8,8 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.16.2
-Release: alt2
+Version: 5.16.3
+Release: alt1
 Epoch: 1
 %K5init altplace
 
@@ -156,6 +156,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.3-alt1
+- new version
+
 * Tue Jul 02 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.2-alt2
 - rediff alt-weather-usability.patch
 

@@ -16,8 +16,8 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.16.2
-Release: alt1
+Version: 5.16.3
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -25,7 +25,7 @@ Summary: KDE Workspace 5 Window Manager
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
-Requires: libqt5-multimedia kf5-kirigami kf5-kscreenlocker
+Requires: xorg-xwayland qt5-multimedia qt5-virtualkeyboard kf5-kirigami plasma5-kscreenlocker
 #Requires: xorg-xwayland
 Requires(post): /sbin/setcap
 
@@ -204,6 +204,12 @@ KF5 library
 
 
 %changelog
+* Fri Jul 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt2
+- fix requires
+
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt1
+- new version
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
 - new version
 

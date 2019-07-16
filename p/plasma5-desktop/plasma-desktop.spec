@@ -7,8 +7,8 @@
 
 
 Name: plasma5-desktop
-Version: 5.16.2
-Release: alt2
+Version: 5.16.3
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -225,6 +225,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt1
+- new version
+
 * Tue Jul 02 2019 Ivan Razzhivin <underwit@altlinux.org> 5.16.2-alt2
 - fix patch alt-menu-add-tooltip.patch
 

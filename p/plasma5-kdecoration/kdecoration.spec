@@ -5,7 +5,7 @@
 %define libkdecorationsprivate libkdecorations2private%sover_private
 
 Name: plasma5-%rname
-Version: 5.16.2
+Version: 5.16.3
 Release: alt1
 %K5init altplace
 
@@ -15,7 +15,6 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
-Patch: alt-%rname-tooltips.patch
 
 # Automatically added by buildreq on Thu Mar 05 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libqt5-core libqt5-gui libqt5-test libstdc++-devel python-base ruby ruby-stdlibs
@@ -68,7 +67,6 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-#%patch -p1
 
 %build
 %K5build
@@ -95,6 +93,9 @@ KF5 library
 %_K5lib/libkdecorations2private.so.*
 
 %changelog
+* Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt1
+- new version
+
 * Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.2-alt1
 - new version
 
