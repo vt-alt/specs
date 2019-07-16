@@ -1,6 +1,6 @@
 Name:     imagination
 Version:  3.4
-Release:  alt2
+Release:  alt3
 
 Summary:  Imagination is a lightweight and simple DVD slide show maker
 License:  GPLv2
@@ -26,8 +26,8 @@ and FreeBSD written in C language and built with the GTK+2 toolkit.
 
 %prep
 %setup
-%patch1 -p2
 cp %SOURCE2 po/ru.po
+%patch1 -p2
 
 %build
 %configure
@@ -49,6 +49,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %_datadir/doc/%name
 
 %changelog
+* Tue Jul 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.4-alt3
+- Fix desktop file localization.
+
 * Tue Jul 09 2019 Andrey Cherepanov <cas@altlinux.org> 3.4-alt2
 - Update Russian translation (thanks Olesya Gerasimenko).
 
