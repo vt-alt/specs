@@ -23,7 +23,7 @@ BuildRequires: gcc-c++
 %global vcs_rel %{download_date}svn%{svn_rev}
 
 Name:           python-module-pycxx
-Version:        7.1.2
+Version:        7.1.3
 Release:        alt1
 Summary:        Write Python extensions in C++
 
@@ -157,6 +157,9 @@ test "$(pkg-config --modversion PyCXX)" = "%{version}"
 
 
 %changelog
+* Wed Jul 10 2019 Grigory Ustinov <grenka@altlinux.org> 7.1.3-alt1
+- Build new version.
+
 * Wed Apr 17 2019 Grigory Ustinov <grenka@altlinux.org> 7.1.2-alt1
 - Initial build for Sisyphus.
 
