@@ -1,5 +1,5 @@
 Name: installed-db-office-server
-Version: 1.4.4
+Version: 1.4.5
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
@@ -104,6 +104,10 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Mon Jul 15 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.5-alt1
+- Open pages after deploy to pass cache errors
+- Fix write all output include stderr to log
+
 * Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.4-alt1
 - Fix run chkconfig under systemd for httpd2 enable
 - Fix arguments passed for nextcloud deploy
