@@ -58,7 +58,7 @@
 Name: systemd
 Epoch: 1
 Version: 242
-Release: alt8
+Release: alt9
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -1842,6 +1842,11 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Tue Jul 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:242-alt9
+- udev: sysvinit-script:
+  + do not use /dev mount options for /run;
+  + add default for $tmpfs_options variable.
+
 * Wed May 22 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt8
 - silent execute egrep in rpm filetrigger
 
