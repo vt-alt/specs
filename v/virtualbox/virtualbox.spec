@@ -59,8 +59,8 @@
 %add_findprov_lib_path %vboxdir
 
 Name: virtualbox
-Version: 5.2.26
-Release: alt3
+Version: 5.2.30
+Release: alt1
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPL
@@ -797,6 +797,9 @@ mountpoint -q /dev || {
 %vboxdir/sdk/bindings/xpcom/include/VBox/com
 
 %changelog
+* Tue Jul 09 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.30-alt1
+- Update to latest of 5.2 release with Linux 5.0 and 5.1 support
+
 * Tue Mar 26 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.26-alt3
 - Rebuild without obsolete qt5-gstreamer1 (Closes: 36428)
 

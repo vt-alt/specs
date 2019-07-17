@@ -1,6 +1,6 @@
 %define module_name	virtualbox-addition
-%define module_version  5.2.26
-%define module_release	alt5
+%define module_version  5.2.30
+%define module_release	alt1
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -26,7 +26,6 @@ Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
 ExclusiveOS: Linux
 Url: http://www.virtualbox.org/
-Patch: virtualbox-addition-kernel5.0.patch
 
 BuildPreReq: gcc-c++
 BuildRequires: perl
@@ -57,7 +56,6 @@ ExclusiveArch: %karch
 This package contains VirtualBox addition modules (vboxguest, vboxsf)
 that are needed for additonal guests support for VirtualBox.
 
-%update_kernel_modules_checkinstall %name
 
 %if "%kversion" < "5.0.0"
 %package -n kernel-modules-%module_name-video-%flavour
@@ -73,14 +71,12 @@ that are needed for additonal guests support for VirtualBox.
 You can also use vboxvideo module from staging subpackage of
 your kernel.
 
-%update_kernel_modules_checkinstall kernel-modules-%module_name-video-%flavour
 %endif
 
 %prep
 %setup -T -c -n kernel-source-%module_name-%module_version
 tar jxvf %kernel_src/kernel-source-%guest_module_name-%module_version.tar.bz2
 tar jxvf %kernel_src/kernel-source-%vfs_module_name-%module_version.tar.bz2
-%patch
 %if "%kversion" < "5.0.0"
 tar jxvf %kernel_src/kernel-source-%video_module_name-%module_version.tar.bz2
 %endif
@@ -124,6 +120,9 @@ install -pD -m644 kernel-source-%video_module_name-%module_version/vboxvideo.ko 
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Tue Jun 09 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.30-alt1
+- Updated template for virtualbox 5.2.30
 
 * Thu Apr 04 2019 Ivan Zakharyaschev <imz@altlinux.org> 5.2.26-alt5
 - (.spec) %%requires_kimage used
