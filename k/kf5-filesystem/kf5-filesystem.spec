@@ -1,8 +1,8 @@
-%define lng_list af ar as ast be be@latin bg bn bn_IN br bs ca ca@valencia crh cs csb cy da de el en en_GB en_US eo es et eu fa fi fr fy ga gd gl gu ha he hi hne hr hsb hu hy ia id is it ja ka kk km kn ko ku lb lt lv mai mk ml mr ms nb nds ne nl nn oc or pa pl ps pt pt_BR ro ru se si sk sl sq sr sr@ijekavian sr@ijekavianlatin sr@latin sv ta te tg th tr tt ug uk uz uz@cyrillic vi wa xh zh_CN zh_HK zh_TW
+%define lng_list af ar as ast be be@latin bg bn bn_IN br bs ca ca@valencia crh cs csb cy da de el en en_GB en_US eo es es_AR et eu fa fi fr fy ga gd gl gu ha he hi hne hr hsb hu hy ia id is it ja ka kk km kn ko ku lb lt lv mai mk ml mr ms nb nds ne nl nn oc or pa pl ps pt pt_BR ro ru se si sk sl sq sr sr@ijekavian sr@ijekavianlatin sr@latin sv ta te tg th tr tt ug uk uz uz@cyrillic vi wa xh zh_CN zh_HK zh_TW
 
 %define major 5
-%define minor 19
-%define bugfix 2
+%define minor 60
+%define bugfix 0
 
 Name: kf5-filesystem
 Version: %major.%minor.%bugfix
@@ -68,6 +68,8 @@ mkdir -p %buildroot/%_K5cf_bin
 
 mkdir -p %buildroot/%_K5xdgconf/{autostart,colors,menus,ui}
 
+mkdir -p %buildroot/%_datadir/{qlogging-categories5,}
+
 mkdir -p %buildroot/%_K5data/{katepart5,knotifications5,kservices5/ServiceMenus,kservicetypes5,kxmlgui5,knsrcfiles}
 
 mkdir -p %buildroot/%_K5i18n/
@@ -98,7 +100,7 @@ install -m 0644 %SOURCE2 %buildroot/%_K5conf_dbus_sessd/kf5.conf
 %config %_K5conf_dbus_sessd/kf5.conf
 #%config %_K5conf_dbus_sysd/kf5.conf
 %_bindir/kde5
-%_datadir/k*5/
+%_datadir/*5/
 %_K5plug/kf5
 %_sysconfdir/kf5
 %dir %_kf5_bin
@@ -110,6 +112,9 @@ install -m 0644 %SOURCE2 %buildroot/%_K5conf_dbus_sessd/kf5.conf
 %dir %_desktopdir/kf5
 
 %changelog
+* Wed Jul 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
+- add qlogging-categories5 dir
+
 * Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 5.19.2-alt1
 - add knsrcfiles dir
 
