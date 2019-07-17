@@ -5,7 +5,7 @@
 
 %define module_name	rtl8723de
 %define module_version	5.1.1.8
-%define module_release alt11
+%define module_release alt13
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -39,6 +39,9 @@ Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%
 BuildRequires(pre): rpm-build-kernel
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 %define k_mod_src_suffix %nil
+%IF_ver_lt %kversion 5.0
+%define k_mod_src_suffix -4.15up
+%endif
 %IF_ver_lt %kversion 4.15
 %define k_mod_src_suffix -4.11up
 %endif
@@ -74,6 +77,9 @@ install -D -m 644 8723de.ko %buildroot/%module_dir/rtl8723de.ko
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Wed Jul 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt13
+- add separate sources for kernnels 4.15 up to 5.0
 
 * Thu Nov 15 2018 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt11
 - add workaround for 4.19 kernel
