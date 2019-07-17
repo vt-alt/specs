@@ -5,7 +5,7 @@
 %define gtkver 2
 Name: lxde-%upstreamname
 Version: 0.5.3
-Release: alt7.20180522
+Release: alt8.20180522
 
 Summary: Lightweight X11 Display Manager
 License: GPL
@@ -27,8 +27,7 @@ Source3: alt.Xsession
 
 Buildrequires: imake intltool libXmu-devel libgtk+%gtkver-devel libpam-devel xinitrc xorg-cf-files
 Buildrequires: iso-codes-devel
-Buildrequires: pkgconfig(systemd)
-Buildrequires: libConsoleKit2-devel
+Buildrequires: systemd-devel
 Requires: gtk3-theme-clearlooks-phenix
 %add_findreq_skiplist %_sbindir/%upstreamname
 
@@ -49,9 +48,7 @@ KDM in LXDE distros. It's still in very early stage of development.
 
 %build
 %autoreconf
-%configure \
-        --enable-gtk%gtkver \
-        --enable-consolekit
+%configure --enable-gtk%gtkver
 
 %make_build
 
@@ -98,6 +95,9 @@ sed 's/xserverrc vt1/xserverrc vt7/g' -i %buildroot%_sysconfdir/lxdm/lxdm.conf
 %_unitdir/lxdm.service
 
 %changelog
+* Wed Jul 17 2019 Anton Midyukov <antohami@altlinux.org> 0.5.3-alt8.20180522
+- rebuild without ConsoleKit2
+
 * Tue Jan 15 2019 Anton Midyukov <antohami@altlinux.org> 0.5.3-alt7.20180522
 - Added provides lxdm
 

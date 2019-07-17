@@ -1,6 +1,6 @@
 Name: autologin
 Version: 1.0.0
-Release: alt8
+Release: alt9
 Serial: 1
 
 Summary: Automatically log in
@@ -50,6 +50,9 @@ CONFIG="/etc/sysconfig/autologin"
 %doc README AUTHORS
 
 %changelog
+* Wed Jul 17 2019 Anton Midyukov <antohami@altlinux.org> 1:1.0.0-alt9
+- Not require pam_ck_connector
+
 * Thu Apr 18 2019 Anton Midyukov <antohami@altlinux.org> 1:1.0.0-alt8
 - Add support session logind (elogind)
 
