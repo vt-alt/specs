@@ -1,8 +1,8 @@
 %define rname baloo
 
 Name: kf5-%rname
-Version: 5.59.0
-Release: alt2
+Version: 5.60.0
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -86,7 +86,7 @@ KF5 library
 
 %files common -f %name.lang
 %doc COPYING* README.md
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/baloo*
@@ -118,6 +118,9 @@ KF5 library
 %_K5lib/libKF5BalooEngine.so.*
 
 %changelog
+* Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
+- new version
+
 * Tue Jun 25 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt2
 - set only basic indexing by default
 

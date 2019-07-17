@@ -4,9 +4,10 @@
 %define sipver2 %(rpm -q --qf '%%{VERSION}' python-module-sip)
 %define sipver3 %(rpm -q --qf '%%{VERSION}' python3-module-sip)
 %endif
+%add_python3_path %_libdir/cmake
 
 Name: kf5-%rname
-Version: 5.59.0
+Version: 5.60.0
 Release: alt1
 %K5init altplace
 
@@ -23,6 +24,7 @@ Patch1: alt-fallback.patch
 #BuildRequires: extra-cmake-modules gcc-c++ python-module-google python-modules-encodings qt5-script-devel rpm-build-gir rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt python-module-sip-devel
 BuildRequires(pre): python3-module-sip-devel
+BuildRequires(pre): rpm-build-python3
 BuildRequires: extra-cmake-modules gcc-c++ qt5-script-devel qt5-declarative-devel python-modules-encodings
 BuildRequires: python-module-PyQt5-devel
 
@@ -138,6 +140,12 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 %endif
 
 %changelog
+* Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
+- new version
+
+* Wed Jul 10 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt2
+- build with python3
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
 - new version
 

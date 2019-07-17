@@ -6,7 +6,7 @@
 %endif
 
 Name: kf5-%rname
-Version: 5.59.0
+Version: 5.60.0
 Release: alt1
 %K5init altplace
 
@@ -127,7 +127,7 @@ Sip files for python3-module-%rname
 
 %files common -f %name.lang
 %doc COPYING.LIB README.md
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 %_xdgmimedir/packages/kde5.xml
 %_K5data/licenses/
 
@@ -163,6 +163,9 @@ Sip files for python3-module-%rname
 %endif
 
 %changelog
+* Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
+- new version
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
 - new version
 

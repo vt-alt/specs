@@ -1,7 +1,7 @@
 %define rname kxmlgui
 
 Name: kf5-%rname
-Version: 5.59.0
+Version: 5.60.0
 Release: alt1
 %K5init altplace
 
@@ -69,7 +69,7 @@ KF5 library
 %doc COPYING.LIB README.md
 %dir %_K5xdgconf/ui/
 %config %_K5xdgconf/ui/*
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 %_K5inc/kxmlgui_version.h
@@ -84,6 +84,9 @@ KF5 library
 %_K5lib/libKF5XmlGui.so.*
 
 %changelog
+* Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
+- new version
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.59.0-alt1
 - new version
 
