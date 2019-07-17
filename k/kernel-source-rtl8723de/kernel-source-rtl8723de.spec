@@ -5,7 +5,7 @@
 
 Name: kernel-source-%module_name
 Version: %module_version
-Release: alt6
+Release: alt7
 
 Group: Development/Kernel
 Summary: Linux %module_name modules sources
@@ -41,6 +41,9 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Wed Jul 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt7
+- update from 5.0-up branch
+
 * Wed Mar 13 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt6
 - update from 4.15-up branch to apply fix for 5.0 kernel
 - remove compile warnings
