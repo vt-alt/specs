@@ -58,7 +58,7 @@
 Name: systemd
 Epoch: 1
 Version: 242
-Release: alt9
+Release: alt10
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -1842,6 +1842,12 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt10
+- merge with v242-stable 572385e13566f9ca442ee3b46742159b905b4712:
+  + networkd: fix link_up()
+  + conf-parser: fix continuation handling
+- random-util: eat up bad RDRAND values seen on AMD CPUs
+
 * Tue Jul 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:242-alt9
 - udev: sysvinit-script:
   + do not use /dev mount options for /run;
