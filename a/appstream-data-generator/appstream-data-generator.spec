@@ -3,8 +3,8 @@
 # Use current date as version
 
 Name:    appstream-data-generator
-Version: 20190712
-Release: alt2
+Version: 20190716
+Release: alt1
 Summary: Collection of tools for generation of appstream-data
 Group:   System/Configuration/Packaging
 License: GPLv3+
@@ -38,6 +38,9 @@ Collection of tools for generation of appstream-data
 %_bindir/*
 
 %changelog
+* Tue Jul 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20190716-alt1
+- Fixed processing symlinks when looking for icons.
+
 * Fri Jul 12 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20190712-alt2
 - Improved processing of options "additionaldesktopnames", "additionalpackages"
   and "skiplanguageslist."
