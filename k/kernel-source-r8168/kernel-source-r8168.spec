@@ -1,5 +1,5 @@
 Name: kernel-source-r8168
-Version: 8.045.08
+Version: 8.047.01
 Release: alt1
 
 Summary: Source for RTL8168 driver
@@ -50,6 +50,9 @@ tar -cjf %kernel_srcdir/%name-%version.tar.bz2 %name-%version
 %config %_sysconfdir/modprobe.d/blacklist-r8168.conf
 
 %changelog
+* Fri Jun 14 2019 Nazarov Denis <nenderus@altlinux.org> 8.047.01-alt1
+- Version 8.047.01
+
 * Sun Nov 12 2017 Nazarov Denis <nenderus@altlinux.org> 8.045.08-alt1
 - Version 8.045.08
 
