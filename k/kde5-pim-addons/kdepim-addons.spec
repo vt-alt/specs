@@ -11,7 +11,7 @@
 %define libkmaillanguagetool libkmaillanguagetool%sover
     
 Name: kde5-pim-addons
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -225,6 +225,9 @@ Requires: %name-common
 %_K5lib/libkmaillanguagetool.so.*
 
 %changelog
+* Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

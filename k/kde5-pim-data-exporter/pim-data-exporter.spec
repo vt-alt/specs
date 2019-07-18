@@ -4,7 +4,7 @@
 %define libpimsettingexporterprivate libpimsettingexporterprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -22,10 +22,10 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-base-devel
 BuildRequires: boost-devel libassuan-devel libsasl2-devel
 BuildRequires: kde5-akonadi-calendar-devel kde5-akonadi-contacts-devel kde5-akonadi-devel kde5-akonadi-mime-devel kde5-calendarsupport-devel
-BuildRequires: kde5-kalarmcal-devel kde5-kcalcore-devel kde5-kcontacts-devel kf5-kholidays-devel kde5-kidentitymanagement-devel
+BuildRequires: kde5-kalarmcal-devel kde5-kcalcore-devel kde5-kcontacts-devel kde5-kidentitymanagement-devel
 BuildRequires: kde5-kimap-devel kde5-kmailtransport-devel kde5-kmime-devel kde5-kpimtextedit-devel kde5-libkdepim-devel
-BuildRequires: kde5-mailcommon-devel kde5-messagelib-devel kde5-pimcommon-devel kf5-kdelibs4support-devel kf5-kdoctools-devel-static
-BuildRequires: kf5-kio-devel kf5-kwallet-devel
+BuildRequires: kde5-mailcommon-devel kde5-messagelib-devel kde5-pimcommon-devel kde5-akonadi-notes-devel
+BuildRequires: kf5-kdelibs4support-devel kf5-kdoctools-devel-static kf5-kio-devel kf5-kwallet-devel kf5-kholidays-devel
 
 %description
 PIM Setting Exporter allows to export and import PIM settings and local mail.
@@ -87,6 +87,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libpimsettingexporterprivate.so.*
 
 %changelog
+* Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

@@ -4,7 +4,7 @@
 %define libkf5eventviews libkf5eventviews%sover
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -84,6 +84,9 @@ KF5 library
 %_K5lib/libKF5EventViews.so.*
 
 %changelog
+* Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Fri Jun 07 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
