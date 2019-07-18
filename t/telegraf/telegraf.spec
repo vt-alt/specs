@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/telegraf
-%global commit 72270ef19e491dcf10e2f57e04d9aa6da81b6187
+%global commit a80d173f6c8648255649d8e63ef152b6a128aa2c
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		telegraf
-Version:	1.10.1
+Version:	1.11.2
 Release:	alt1
 Summary:	The plugin-driven server agent for collecting and reporting metrics
 
@@ -127,6 +127,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.11.2-alt1
+- 1.11.2
+
 * Thu Mar 28 2019 Alexey Shabalin <shaba@altlinux.org> 1.10.1-alt1
 - 1.10.1
 - add user telegraf to proc group (fixed ALT#35130)
