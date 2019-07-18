@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/influxdb
-%global commit 01c8dd416270f424ab0c40f9291e269ac6921964
+%global commit f8fdf652f348fc9980997fe1c972e2b79ddd13b0
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		influxdb
-Version:	1.7.6
+Version:	1.7.7
 Release:	alt1
 Summary:	Distributed time-series database
 
@@ -25,6 +25,8 @@ Source102: influxdb.init
 Source103: influxdb.service
 Source104: influxdb.tmpfiles
 
+Patch1: influxdb-opentsdb-fix.patch
+
 ExclusiveArch:  %go_arches
 BuildRequires(pre): rpm-build-golang
 BuildRequires: xmlto asciidoc
@@ -36,6 +38,7 @@ events, and performing analytics.
 
 %prep
 %setup -q
+%patch1 -p1
 
 %build
 # Important!!!
@@ -126,6 +129,12 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0755, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.7-alt1
+- 1.7.7
+
+* Thu Jun 20 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.6-alt2
+- NMU: fix writing millisecond timestamps through opentsdb (ALT bug 36873)
+
 * Sat Apr 20 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.6-alt1
 - 1.7.6
 - update sysv  init script for logging to logfile
