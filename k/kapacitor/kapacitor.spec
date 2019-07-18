@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/kapacitor
-%global commit 3b5512f7276483326577907803167e4bb213c613
+%global commit e6bc51b8447de450c3f6fc0f6e47b6a0987ce5b6
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,8 +9,8 @@
 %brp_strip_none %_bindir/*
 
 Name:		kapacitor
-Version:	1.3.3
-Release:	alt1%ubt
+Version:	1.5.3
+Release:	alt1
 Summary:	Open source framework for processing, monitoring, and alerting on time series data
 
 Group:		Development/Other
@@ -25,7 +25,7 @@ Source103: %name.service
 Source104: %name.tmpfiles
 
 ExclusiveArch:  %go_arches
-BuildRequires(pre): rpm-build-golang rpm-build-ubt
+BuildRequires(pre): rpm-build-golang
 
 %description
 Open source framework for processing, monitoring, and alerting on time series data.
@@ -99,6 +99,15 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0755, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.3-alt1
+- 1.5.3
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.3.3-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.3.3-alt2
+- NMU: remove %ubt from release
+
 * Mon Aug 28 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.3-alt1%ubt
 - 1.3.3
 
