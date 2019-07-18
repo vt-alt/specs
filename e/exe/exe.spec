@@ -1,7 +1,7 @@
 # TODO: drop fonts like /usr/share/exe/tools/fMath/fonts/dejavu
 
 Name:       exe
-Version:    2.3.1
+Version:    2.4.1
 Release:    alt2
 
 Summary:    Tool to create and publish open educational resources.
@@ -11,7 +11,7 @@ Group:      Education
 Url:        http://exelearning.net
 
 Source:     %name-%version.tar
-Patch:      exe-use-BeautifulSoup4.patch
+Patch1:     %name-fix-process-wait.patch
 
 BuildArch:  noarch
 
@@ -60,7 +60,7 @@ Package contains python modules for eXeLearning.
 
 %prep
 %setup -n %name
-%patch -p1
+%patch1 -p2
 
 %build
 %python_build
@@ -107,6 +107,12 @@ rm -f %buildroot%_datadir/pixmaps/exe.xpm
 
 
 %changelog
+* Mon Jul 15 2019 Andrey Bychkov <mrdrew@altlinux.org> 2.4.1-alt2
+- waiting for the process when the browser starts fixed
+
+* Mon Jul 15 2019 Andrey Bychkov <mrdrew@altlinux.org> 2.4.1-alt1
+- Version updated to 2.4.1
+
 * Thu Apr 25 2019 Vitaly Lipatov <lav@altlinux.ru> 2.3.1-alt2
 - fix packing
 - apply patch to use BeautifulSoup version 4
