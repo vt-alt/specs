@@ -1,5 +1,5 @@
 Name: guestfs-data
-Version: 0.5
+Version: 0.6
 Release: alt1
 
 Summary: Virtual machine needed for libguestfs
@@ -20,11 +20,20 @@ mkdir -p %buildroot%_libdir/guestfs
 cp -a %_libdir/guestfs/* %buildroot%_libdir/guestfs/
 chmod 644 %buildroot%_libdir/guestfs/*
 
+# On some architectures (at least ppc64le) kernel image is ELF and
+# eu-findtextrel will fail if it is not a DSO or PIE.
+%add_verify_elf_skiplist %_libdir/guestfs/vmlinuz*
+# ... debuginfo.req will fail if it has no .interp .
+%brp_strip_none %_libdir/guestfs/vmlinuz*
+
 %files
 %dir %_libdir/guestfs/
 %_libdir/guestfs/*
 
 %changelog
+* Fri Jul 19 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.6-alt1
+- Fixed build on ppc64le.
+
 * Wed Apr 03 2019 Alexey Shabalin <shaba@altlinux.org> 0.5-alt1
 - rebuild with libguestfs-1.40.2-alt1
 

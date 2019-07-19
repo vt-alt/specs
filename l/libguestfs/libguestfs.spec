@@ -17,7 +17,7 @@
 Summary: Tools for accessing and modifying virtual machine disk images
 Name: libguestfs
 Version: 1.40.2
-Release: alt1
+Release: alt2
 License: LGPLv2+
 Group: System/Libraries
 Url: http://libguestfs.org/
@@ -167,8 +167,7 @@ Requires: %name = %version-%release
 Provides: %name-tools = %version-%release
 Obsoletes: %name-tools < %version-%release
 
-# TODO - build guestfs-data for aarch64
-%ifarch %ix86 x86_64
+%ifarch %ix86 x86_64 aarch64
 Requires: guestfs-data
 %endif
 
@@ -387,6 +386,7 @@ popd
 	%{subst_enable goolang} \\\
 	%{subst_enable static} \\\
 	--with-default-backend=libvirt \\\
+	--with-distro=ALT \\\
 	--with-extra="ALTLinux,release=%version-%release,libvirt" \\\
 	--with-qemu="qemu-kvm qemu-system-%_build_arch qemu" \\\
 	--disable-silent-rules \\\
@@ -691,6 +691,11 @@ rm -f %buildroot%_bindir/virt-p2v-make-kiwi
 %endif
 
 %changelog
+* Thu Jul 18 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.40.2-alt2
+- %%build: changed to always pass distro name to configure script in case
+  /etc/os-release file is missing.
+- %name: added R: guestfs-data on aarch64.
+
 * Wed Apr 03 2019 Alexey Shabalin <shaba@altlinux.org> 1.40.2-alt1
 - 1.40.2
 
