@@ -1,6 +1,6 @@
 Name: x2gobroker
-Version: 0.0.3.4
-Release: alt3
+Version: 0.0.4.1
+Release: alt1
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -10,13 +10,9 @@ Packager: Oleg Solovyov <mcpain@altlinux.org>
 
 Source: http://code.x2go.org/releases/source/%name/%name-%version.tar.gz
 
-# Automatically added by buildreq on Tue Dec 04 2018 (-bi)
-# optimized out: bash3 bashrc elfutils perl python-base python-module-pkg_resources python-modules python-modules-compiler python-modules-ctypes python-modules-distutils python-modules-email python-modules-encodings sh3 xz
-BuildRequires: perl-File-Which python-module-setuptools
-
-BuildRequires: python-module-setuptools
+BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
-Requires(pre):  python-module-x2gobroker = %version-%release
+Requires(pre):  python3-module-x2gobroker = %version-%release
 Requires(pre):  shadow-utils
 
 %description
@@ -37,12 +33,13 @@ A session broker is most useful in load balanced X2Go server farms.
 
 This package contains the x2gobroker executable.
 
-%package -n python-module-x2gobroker
+%package -n python3-module-x2gobroker
 Summary: X2Go Session Broker (Python modules)
 Group: Communications
 BuildArch: noarch
+Conflicts: python-module-x2gobroker
 
-%description -n python-module-x2gobroker
+%description -n python3-module-x2gobroker
 X2Go is a server based computing environment with
     - session resuming
     - low bandwidth support
@@ -64,7 +61,7 @@ This package contains the broker's Python library.
 Summary: X2Go Session Broker (PAM authentication service)
 Group: Communications
 BuildArch: noarch
-Requires(pre): python-module-x2gobroker = %version-%release
+Requires(pre): python3-module-x2gobroker = %version-%release
 
 %description authservice
 X2Go is a server based computing environment with
@@ -88,7 +85,7 @@ This package contains the authentication service against the PAM system.
 Summary: X2Go Session Broker (load checker service)
 Group: Communications
 BuildArch: noarch
-Requires(pre): python-module-x2gobroker = %version-%release
+Requires(pre): python3-module-x2gobroker = %version-%release
 
 %description loadchecker
 X2Go is a server based computing environment with
@@ -115,7 +112,7 @@ Group: Communications
 BuildArch: noarch
 Requires: x2gobroker = %version-%release
 Requires: x2gobroker-authservice = %version-%release
-Requires: python-module-daemon python-module-setproctitle
+Requires: python3-module-daemon python3-module-setproctitle
 
 %description daemon
 X2Go is a server based computing environment with
@@ -268,7 +265,7 @@ install -pm0644 x2gobroker-daemon.service %buildroot%_unitdir
 install -pm0644 x2gobroker-authservice.service %buildroot%_unitdir
 install -pm0644 x2gobroker-loadchecker.service %buildroot%_unitdir
 
-%pre -n python-module-x2gobroker
+%pre -n python3-module-x2gobroker
 if ! %_bindir/getent group x2gobroker 1>/dev/null 2>/dev/null && %_sbindir/groupadd -r x2gobroker; then
 	if ! %_bindir/getent passwd x2gobroker 1>/dev/null 2>/dev/null; then
 		%_sbindir/useradd -c "X2Go Broker System User" \
@@ -322,13 +319,13 @@ fi
 %attr(02750,x2gobroker,x2gobroker) %_logdir/x2gobroker
 %attr(00750,x2gobroker,x2gobroker) %_sharedstatedir/x2gobroker
 
-%files -n python-module-x2gobroker
+%files -n python3-module-x2gobroker
 %config(noreplace) %_sysconfdir/x2go
 %exclude %_sysconfdir/x2go/x2gobroker-wsgi.apache.conf
 %exclude %_sysconfdir/x2go/x2gobroker-wsgi.apache.vhost
 %config %_sysconfdir/pam.d/*
 %config %_sysconfdir/default/python-x2gobroker
-%python_sitelibdir_noarch/x2gobroker*
+%python3_sitelibdir_noarch/x2gobroker*
 
 %files authservice
 %_unitdir/x2gobroker-authservice.service
@@ -365,12 +362,15 @@ fi
 %config %_logrotatedir/x2gobroker-wsgi
 
 %files agent
-%attr(04710,root,x2gobroker) %_libdir/x2go/x2gobroker-agent
-%_libdir/x2go/x2gobroker-agent.pl
+%attr(04710,root,x2gobroker) %_libdir/x2go/x2go/x2gobroker-agent
+%_libdir/x2go/x2go/x2gobroker-agent.pl
 %_sbindir/x2gobroker-pubkeyauthorizer
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Thu Jul 18 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.0.4.1-alt1
+- version updated to 0.0.4.1
+
 * Wed Jan 09 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.3.4-alt3
 - fix requires
 

@@ -2,7 +2,7 @@
 %define nx_version 3.5.2.31
 
 Name:    x2goserver
-Version: 4.1.0.2
+Version: 4.1.0.3
 Release: alt1
 Summary: X2Go Server
 
@@ -17,6 +17,7 @@ Source1: x2goserver.init
 Patch1:  %name-fix-autoreq.patch
 Patch2:  %name-alt-Xsession.patch
 Patch3:  alt-startkde.patch
+Patch4:  %name-fix-tmpfiles.patch
 
 BuildRequires(pre): rpm-build-perl
 BuildRequires: desktop-file-utils
@@ -216,6 +217,7 @@ X2Go session login automagically.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Set path
 find -type f | xargs sed -i -r -e '/^LIBDIR=/s,/lib/,/%{_lib}/,'
@@ -298,7 +300,7 @@ exit 0
 %config(noreplace) %_sysconfdir/x2go/x2go_logout.d/
 %config(noreplace) %_sysconfdir/x2go/x2goserver.conf
 %config(noreplace) %_sysconfdir/x2go/x2gosql/sql
-%config(noreplace) %_libexecdir/tmpfiles.d/x2goserver.conf
+%config(noreplace) %_tmpfilesdir/x2goserver.conf
 %_bindir/x2go*
 %exclude %_bindir/x2gofm
 %exclude %_bindir/x2goprint
@@ -407,6 +409,12 @@ exit 0
 %_datadir/x2go/versions/VERSION.x2goserver-xsession
 
 %changelog
+* Thu Jul 18 2019 Andrey Bychkov <mrdrew@altlinux.org> 4.1.0.3-alt1
+- version updated to 4.1.0.3
+
+* Mon Jun 01 2019 Oleg Solovyov <mcpain@altlinux.org> 4.1.0.2-alt2
+- fix tmpfiles
+
 * Mon Oct 15 2018 Oleg Solovyov <mcpain@altlinux.org> 4.1.0.2-alt1
 - New version
 
