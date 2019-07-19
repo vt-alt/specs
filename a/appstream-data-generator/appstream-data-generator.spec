@@ -3,7 +3,7 @@
 # Use current date as version
 
 Name:    appstream-data-generator
-Version: 20190716
+Version: 20190718
 Release: alt1
 Summary: Collection of tools for generation of appstream-data
 Group:   System/Configuration/Packaging
@@ -38,6 +38,11 @@ Collection of tools for generation of appstream-data
 %_bindir/*
 
 %changelog
+* Thu Jul 18 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20190718-alt1
+- Improved icons processing.
+- Converted icons now should keep transparency.
+- Added option to keep processing appdata even if icons weren't found.
+
 * Tue Jul 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 20190716-alt1
 - Fixed processing symlinks when looking for icons.
 
