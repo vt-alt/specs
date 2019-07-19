@@ -7,7 +7,7 @@
 
 Name: kde5-%rname
 Version: 19.04.3
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Graphical desktop/KDE
@@ -22,7 +22,7 @@ Source: %rname-%version.tar
 #BuildRequires: extra-cmake-modules kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-ki18n-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel python-module-google python3-dev rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules
-#BuildRequires: libmusicbrainz5-devel
+BuildRequires: libmusicbrainz5-devel
 BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-ki18n-devel kf5-kio-devel kf5-kitemviews-devel
 BuildRequires: kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel
@@ -91,6 +91,9 @@ KF5 library
 %_K5lib/libKF5CddbWidgets.so.*
 
 %changelog
+* Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt2
+- build with libmusicbrainz5
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 
