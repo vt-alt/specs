@@ -4,8 +4,8 @@
 %def_enable tls
 
 Name: memcached
-Version: 1.5.14
-Release: alt2
+Version: 1.5.16
+Release: alt1
 
 Summary: memcached - memory caching daemon
 License: BSD
@@ -13,7 +13,7 @@ Group: System/Servers
 Url: http://www.memcached.org/
 #https://github.com/memcached/memcached.git
 Source: %name-%version.tar
-Patch: memcached-1.5.14-alt-include-termios.h.patch
+Patch: %name-%version.patch
 
 %define pkg_user memcached
 %define pkg_group memcached
@@ -109,6 +109,9 @@ fi
 %_man1dir/%name-tool.*
 
 %changelog
+* Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.16-alt1
+- 1.5.16
+
 * Thu May 23 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.5.14-alt2
 - Fixed build on ppc64le.
 
