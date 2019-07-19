@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.6
+Version: 0.4.7
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,12 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Wed Jul 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.4.7-alt1
+- Fixed parentheses in default vm-profile.scm;
+- Added support of PowerPC PReP partition on GPT;
+- Changed profile to automatically create PReP partition on virtualized
+  ppc64le systems.
+
 * Tue Aug 28 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.4.6-alt1
 - added lvm autoinstall support
 

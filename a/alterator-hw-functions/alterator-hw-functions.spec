@@ -1,5 +1,5 @@
 Name: alterator-hw-functions
-Version: 0.7.6
+Version: 0.7.7
 Release: alt1
 
 Url: http://www.altlinux.org/Alterator
@@ -22,6 +22,9 @@ install -pDm644 %SOURCE0 %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Wed Jul 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.7-alt1
+- Added partition_num() and partition_is_PReP().
+
 * Fri Jun 10 2016 Michael Shigorin <mike@altlinux.org> 0.7.6-alt1
 - added disk_is_isofs()
 

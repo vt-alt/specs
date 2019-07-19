@@ -1,8 +1,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-grub
-Version: 0.12
-Release: alt2
+Version: 0.13
+Release: alt1
 
 Summary: alterator module to setup grub bootloader
 License: GPL
@@ -14,18 +14,22 @@ Source: %name-%version.tar
 Requires: alterator >= 4.7-alt5
 Requires: alterator-l10n >= 2.9-alt10
 Requires: alterator-sh-functions >= 0.6-alt1
-Requires: alterator-hw-functions >= 0.7.6-alt1
-%ifarch %ix86 x86_64
-Requires: grub-pc > 2.00-alt20
-%endif
+Requires: alterator-hw-functions >= 0.7.7-alt1
 Conflicts: guile-evms < 0.4-alt13
 
 BuildPreReq: alterator >= 4.7-alt5
 BuildRequires: grub >= 2.00-alt7
 BuildRequires: libdevmapper-devel
 
+%ifarch %ix86 x86_64
+Requires: grub-pc > 2.00-alt20
+%endif
 %ifarch aarch64 x86_64
 Requires: grub-efi >= 2.00-alt12
+%endif
+%ifarch ppc64le
+Requires: grub-ieee1275
+Requires: powerpc-utils
 %endif
 
 %description
@@ -49,6 +53,16 @@ alterator module to setup grub bootloader
 %_bindir/*
 
 %changelog
+* Tue Jul 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.13-alt1
+- Added ppc64le support.
+
+* Sat Jun 08 2019 Leonid Krivoshein <klark@altlinux.org> 0.12-alt4
+- backend: add workarounds to avoid UEFI/NVRAM hardware problems
+- bin/grub-disk and backend: more friendly for l10n translations
+
+* Thu Jun 06 2019 Leonid Krivoshein <klark@altlinux.org> 0.12-alt3
+- list devices and set/reset password in web-ui fixed (closes: #34208)
+
 * Mon May 21 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.12-alt2
 - do not require grub-pc on non-pc
 
