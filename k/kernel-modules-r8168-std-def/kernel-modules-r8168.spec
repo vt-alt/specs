@@ -1,6 +1,6 @@
 %define module_name	r8168
-%define module_release	alt2.k
-%define module_version	8.045.08
+%define module_release	alt1.k
+%define module_version	8.047.01
 
 %define flavour		std-def
 %define karch %ix86 x86_64
@@ -19,7 +19,6 @@ Group: System/Kernel and hardware
 
 URL: http://www.realtek.com/
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
-Patch: r8168-kernel-4.15.patch
 
 ExclusiveOS: Linux
 ExclusiveArch: %karch
@@ -31,7 +30,7 @@ BuildRequires: module-init-tools
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name = %module_version
 
-PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+Requires(pre): kernel-image-%flavour = %kepoch%kversion-%krelease
 
 Requires: r8168-blacklist
  
@@ -48,7 +47,6 @@ Gigabit Ethernet controllers with PCI-Express interface.
 rm -rf kernel-source-%module_name-%module_version
 tar -jxvf %kernel_src/kernel-source-%module_name-%module_version.tar.bz2
 %setup -D -T -n kernel-source-%module_name-%module_version
-%patch -p1
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
@@ -63,6 +61,9 @@ install -Dp -m600 src/%module_name.ko %buildroot/%module_dir/%module_name.ko
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Fri Jun 14 2019 Nazarov Denis <nenderus@altlinux.org> 8.047.01-alt1
+- Version 8.047.01
 
 * Sun Nov 12 2017 Nazarov Denis <nenderus@altlinux.org> 8.045.08-alt1
 - Version 8.045.08
