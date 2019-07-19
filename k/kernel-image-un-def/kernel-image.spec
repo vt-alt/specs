@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.1
-%define kernel_sublevel .12
+%define kernel_sublevel .18
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -23,9 +23,15 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 
 # Enable/disable SGML docs formatting
 %if "%sub_flavour" == "def" && %kgcc_version > 5
-%def_enable docs
+%def_disable docs
 %else
 %def_disable docs
+%endif
+
+%ifarch %ix86 x86_64
+%def_enable domU
+%else
+%def_disable domU
 %endif
 
 #Remove oss
@@ -52,13 +58,31 @@ Patch0: %name-%version-%release.patch
 %if "%sub_flavour" == "pae"
 ExclusiveArch: i586
 %else
-ExclusiveArch: i586 x86_64
+ExclusiveArch: i586 x86_64 ppc64le
+%endif
+
+%define make_target bzImage
+%ifarch ppc64le
+%define make_target vmlinux
+%endif
+
+%define image_path arch/%base_arch/boot/%make_target
+%ifarch ppc64le
+%define image_path %make_target
+%endif
+
+%define kvm_modules_dir arch/x86/kvm
+%ifarch ppc64le
+%define kvm_modules_dir arch/powerpc/kvm
 %endif
 
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
-BuildRequires: dev86 flex
+%ifarch %ix86 x86_64
+BuildRequires: dev86
+%endif
+BuildRequires: flex
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version gcc%kgcc_version-c++
 BuildRequires: gcc%kgcc_version-plugin-devel libgmp-devel libmpc-devel
@@ -69,7 +93,7 @@ BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: openssl-devel 
 # for check
-BuildRequires: qemu-system glibc-devel-static
+%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
@@ -111,7 +135,7 @@ There are some kernel variants in ALT systems:
 * std-def: standard longterm kernel
 * std-pae: legacy i686 kernel with 64G memory support
 * std-debug: kernel with some DEBUG options enabled
-* un-def: more modern then std-def and with forced preemption enabled
+* un-def: more modern then std-def and with forced preemption enabled on x86
 
 %package -n kernel-image-domU-%flavour
 Summary: Uncompressed linux kernel for XEN domU boot 
@@ -381,7 +405,7 @@ scripts/kconfig/merge_config.sh -m $CONFIGS
 
 %make_build oldconfig
 #%make_build include/linux/version.h
-%make_build bzImage
+%make_build %make_target
 %make_build modules
 
 echo "Kernel built $KernelVer"
@@ -396,9 +420,11 @@ export ARCH=%base_arch
 KernelVer=%kversion-%flavour-%krelease
 
 install -Dp -m644 System.map %buildroot/boot/System.map-$KernelVer
-install -Dp -m644 arch/%base_arch/boot/bzImage \
+install -Dp -m644 %image_path \
 	%buildroot/boot/vmlinuz-$KernelVer
+%if_enabled domU
 install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
+%endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 make modules_install INSTALL_MOD_PATH=%buildroot
@@ -437,11 +463,14 @@ cp -a net/mac80211/sta_info.h \
 KbuildFiles="
 	Makefile
 	Module.symvers
+	arch/%base_arch/Makefile
+%ifarch %ix86 x86_64
 	arch/x86/Makefile
 	arch/x86/Makefile_32
 	arch/x86/Makefile_32.cpu
 %ifarch x86_64
 	arch/x86/Makefile_64
+%endif
 %endif
 
 	scripts/pnmtologo
@@ -518,6 +547,10 @@ install -d %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 cp -a Documentation/* %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 %endif # if_enabled docs
 
+# On some architectures (at least ppc64le) kernel image is ELF and
+# eu-findtextrel will fail if it is not a DSO or PIE.
+%add_verify_elf_skiplist /boot/vmlinuz-*
+
 
 %check
 KernelVer=%kversion-%flavour-%krelease
@@ -536,14 +569,22 @@ int main()
 }
 __EOF__
 echo init | cpio -H newc -o | gzip -9n > initrd.img
-timeout --foreground 600 qemu -no-kvm -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console=ttyS0 -initrd initrd.img > boot.log &&
+qemu_arch=%_arch
+console=ttyS0
+%ifarch %ix86
+qemu_arch=i386
+%endif
+%ifarch ppc64le
+qemu_arch=ppc64
+console=hvc0
+%endif
+timeout --foreground 600 qemu-system-"$qemu_arch" -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
 	echo >&2 'Marker not found'
 	exit 1
 }
-
 
 %files
 /boot/vmlinuz-%kversion-%flavour-%krelease
@@ -557,14 +598,16 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/kernel/drivers/staging/
 %exclude %modules_dir/kernel/drivers/gpu/drm
 %exclude %modules_dir/kernel/drivers/ide/
-%exclude %modules_dir/kernel/arch/x86/kvm
+%exclude %modules_dir/kernel/%kvm_modules_dir
 %ghost %modules_dir/modules.alias.bin
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
 %ghost %modules_dir/modules.builtin.bin
 
+%if_enabled domU
 %files -n kernel-image-domU-%flavour
 /boot/vmlinux-%kversion-%flavour-%krelease
+%endif
 
 %files -n kernel-headers-%flavour
 %kheaders_dir
@@ -611,7 +654,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/ide/
 
 %files -n kernel-modules-kvm-%flavour
-%modules_dir/kernel/arch/x86/kvm
+%modules_dir/kernel/%kvm_modules_dir
 
 %files -n kernel-modules-v4l-%flavour
 %modules_dir/kernel/drivers/media/
@@ -621,6 +664,24 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.18-alt1
+- v5.1.18  (Fixes: CVE-2019-3846)
+
+* Fri Jul 12 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.17-alt1
+- v5.1.17
+
+* Thu Jul 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:5.1.16-alt2
+- Added ppc64le support.
+
+* Wed Jul 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.16-alt1
+- v5.1.16
+
+* Tue Jun 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.15-alt1
+- v5.1.15
+
+* Mon Jun 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.14-alt1
+- v5.1.14
+
 * Thu Jun 20 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.12-alt1
 - v5.1.12 (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
 
