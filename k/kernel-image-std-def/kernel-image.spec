@@ -1,5 +1,5 @@
 Name: kernel-image-std-def
-Release: alt1
+Release: alt2
 epoch:1 
 %define kernel_base_version	4.19
 %define kernel_sublevel .59
@@ -23,7 +23,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 
 # Enable/disable SGML docs formatting
 %if "%sub_flavour" == "def" && %kgcc_version > 5
-%def_disable docs
+%def_enable docs
 %else
 %def_disable docs
 %endif
@@ -657,6 +657,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Jul 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt2
+- re-enabled docs subpackage
+
 * Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt1
 - v4.19.59  (Fixes: CVE-2019-3846)
 
