@@ -6,7 +6,7 @@
 
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -41,7 +41,6 @@ Requires: kf5-filesystem
 %package devel
 Group: Development/KDE and QT
 Summary: Development files for %name
-#Conflicts: libkcddb4-devel
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
@@ -92,6 +91,9 @@ KF5 library
 %_K5lib/libKF5CddbWidgets.so.*
 
 %changelog
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

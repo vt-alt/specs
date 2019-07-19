@@ -14,8 +14,8 @@
 %define libokularcore libokular5core%sover
 
 Name: kde5-%rname
-Version: 19.04.2
-Release: alt4
+Version: 19.04.3
+Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Office
@@ -180,6 +180,12 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
+* Wed Jul 17 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
 * Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt4
 - obsolete kde4graphics-okular
 

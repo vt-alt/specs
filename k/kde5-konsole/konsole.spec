@@ -4,7 +4,7 @@
 %define libkonsoleprivate libkonsoleprivate%sover
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -99,8 +99,8 @@ __EOF__
 %files
 %config %_sysconfdir/alternatives/packages.d/kde5-konsole
 %config %_K5xdgconf/*rc
-# adding to utmp don't work because dbus checking for saved guid
-#attr(2711,root,utempter) %_K5bin/konsole
+# konsole may problems for some reasons because sgid
+#%attr(2711,root,utempter) %_K5bin/konsole
 %_K5bin/konsole
 %_K5bin/konsoleprofile
 %_K5lib/libkdeinit5_konsole.so
@@ -119,6 +119,18 @@ __EOF__
 %_K5lib/libkonsoleprivate.so.%sover
 
 %changelog
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
+* Wed Jul 17 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
+- new version
+
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt3
+- don't use utempter
+
+* Thu Jul 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt2
+- using utempter
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
