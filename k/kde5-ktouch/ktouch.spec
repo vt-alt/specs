@@ -1,8 +1,8 @@
 %define rname ktouch
 
 Name: kde5-%rname
-Version: 19.04.0
-Release: alt2
+Version: 19.04.3
+Release: alt1
 %K5init
 
 Group: Education
@@ -55,6 +55,12 @@ chmod 0755 %buildroot/%_K5xdgapp/org.kde.ktouch.desktop
 %_K5cfg/ktouch.kcfg
 
 %changelog
+* Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Mon Jun 03 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt2
 - update desktop-file russian translation
 

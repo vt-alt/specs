@@ -12,7 +12,7 @@
 %define libcantor_config libcantor_config%cantor_config_sover
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.04.3
 Release: alt1
 %K5init
 
@@ -32,7 +32,7 @@ Patch2: alt-find-luajit.patch
 #BuildRequires: extra-cmake-modules kde5-analitza-devel kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-ki18n-devel kf5-kiconthemes-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knewstuff-devel kf5-kparts-devel kf5-kpty-devel kf5-kservice-devel kf5-ktexteditor-devel kf5-ktextwidgets-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libcln-devel liblua5-devel libluajit-devel libspectre-devel python-module-google python3-dev qt5-svg-devel qt5-xmlpatterns-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-svg-devel qt5-xmlpatterns-devel
-BuildRequires: libcln-devel libspectre-devel
+BuildRequires: libcln-devel libspectre-devel libdiscount-devel
 %{?_enable_python2:BuildRequires: python-devel}
 %{?_enable_python3:BuildRequires: python3-devel}
 %{?_enable_luajit:BuildRequires: liblua5-devel libluajit-devel}
@@ -141,6 +141,12 @@ KF5 library
 %_K5lib/libcantor_config.so.*
 
 %changelog
+* Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
+* Thu Jun 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 
