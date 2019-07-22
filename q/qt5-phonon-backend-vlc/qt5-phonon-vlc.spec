@@ -1,6 +1,6 @@
 
 Name: qt5-phonon-backend-vlc
-Version: 0.10.2
+Version: 0.10.3
 Release: alt1
 
 Group: Sound
@@ -11,9 +11,10 @@ License: LGPLv2+
 Source: %name-%version.tar
 
 BuildRequires(pre): qt5-base-devel qt5-phonon-devel
+BuildRequires: qt5-tools-devel
 BuildRequires: cmake extra-cmake-modules automoc libEGL-devel
 BuildRequires: libvlc-devel >= 1.1
-BuildRequires: kde-common-devel
+BuildRequires: rpm-build-kf5
 
 
 
@@ -56,22 +57,27 @@ Phonon-VLC is a backend for KDE4 Multimedia Framework
 
 %build
 %add_optflags %optflags_shared -UPIE -U__PIE__
-%Kbuild \
+%K5build \
     -DPHONON_BUILD_PHONON4QT5=ON \
-    -DCMAKE_INSTALL_PREFIX=%_prefix \
+    -DLOCALE_INSTALL_DIR=%_K5i18n \
+    -DINCLUDE_INSTALL_DIR=%_K5inc \
+    -DICON_INSTALL_DIR=%_K5icon \
     -DPLUGIN_INSTALL_DIR=%_qt5_archdatadir \
-    -DINCLUDE_INSTALL_DIR=%_includedir/kde5 \
-    -DICON_INSTALL_DIR=%_datadir/kde5/share/icons \
     #
 
 %install
-%Kinstall
+%K5install
 
-%files -n qt5-phonon-backend-3-vlc
+%K5find_qtlang phonon_vlc_qt
+
+%files -n qt5-phonon-backend-3-vlc -f phonon_vlc_qt.lang
 %_qt5_plugindir/phonon4qt5_backend/phonon_vlc.so
-#%_K5srv/phononbackends/vlc.desktop
+#_K5srv/phononbackends/vlc.desktop
 
 %changelog
+* Mon Jul 22 2019 Sergey V Turchin <zerg@altlinux.org> 0.10.3-alt1
+- new version
+
 * Mon Jun 17 2019 Sergey V Turchin <zerg@altlinux.org> 0.10.2-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %def_disable zeitgeist
 
 Name: qt5-phonon
-Version: 4.10.2
+Version: 4.10.3
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -23,7 +23,7 @@ BuildRequires: qt5-tools-devel qt5-declarative-devel
 BuildRequires: libEGL-devel libGL-devel
 BuildRequires: automoc cmake extra-cmake-modules
 BuildRequires: libalsa-devel libpulseaudio-devel
-BuildRequires: kde-common-devel
+BuildRequires: rpm-build-kf5
 %if_enabled zeitgeist
 BuildRequires: libqzeitgeist-devel
 %endif
@@ -31,21 +31,31 @@ BuildRequires: libqzeitgeist-devel
 %description
 Phonon is the KDE5 Multimedia Framework
 
+%package common
+Summary: %name common package
+Group: System/Configuration/Other
+BuildArch: noarch
+%description common
+%name common package
+
 %package -n libphonon4qt5experimental
 Group: System/Libraries
 Summary: Phonon library
+Requires: %name-common
 %description -n libphonon4qt5experimental
 Phonon library.
 
 %package -n libphonon4qt5
 Group: System/Libraries
 Summary: Phonon library
+Requires: %name-common
 %description -n libphonon4qt5
 Phonon library.
 
 %package devel
 Group: Development/KDE and QT
 Summary: Header files and documentation for compiling Phonon applications
+Requires: %name-common
 %description devel
 This package includes the header files you will need to compile applications
 with Phonon.
@@ -61,21 +71,37 @@ with Phonon.
 %build
 %add_optflags %optflags_shared -UPIE -U__PIE__
 #%add_optflags %optflags_shared
-%Kcmake \
+%K5cmake \
     -DPHONON_BUILD_PHONON4QT5:BOOL=ON \
     -DSHARE_INSTALL_PREFIX:PATH=%_datadir \
+    -DLOCALE_INSTALL_DIR:PATH=%_K5i18n \
     -DPLUGIN_INSTALL_DIR:PATH=%_qt5_archdatadir \
     -DINCLUDE_INSTALL_DIR:PATH=%_includedir/phonon4qt5 \
     -DPHONON_INSTALL_QT_COMPAT_HEADERS:BOOL=ON \
     -DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT:BOOL=ON \
     #
-%Kmake
+%K5make
 
 %install
-%Kinstall
+%K5install
+
+ls -1 %buildroot/%_K5link/lib*.so 2>/dev/null |
+while read p
+do
+    [ -L "$p" ] || continue
+    f=`basename $(readlink "$p")`
+    l=`basename "$p"`
+    ln -sf "$f" "%buildroot/%_libdir/$l"
+    rm -f "$p"
+done
+mkdir -p %buildroot/%_datadir/dbus-1/interfaces/
+mv %buildroot/%_K5dbus_iface/* %buildroot/%_datadir/dbus-1/interfaces/
 
 mkdir -p %buildroot/%_qt5_plugindir/phonon4qt5_backend
 
+%K5find_qtlang libphonon_qt
+
+%files common -f libphonon_qt.lang
 
 %files -n libphonon4qt5experimental
 %_libdir/libphonon4qt5experimental.so.*
@@ -98,6 +124,9 @@ mkdir -p %buildroot/%_qt5_plugindir/phonon4qt5_backend
 %_datadir/dbus-1/interfaces/org.kde.Phonon4Qt5.AudioOutput.xml
 
 %changelog
+* Mon Jul 22 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.3-alt1
+- new version
+
 * Mon Jun 17 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.2-alt1
 - new version
 
