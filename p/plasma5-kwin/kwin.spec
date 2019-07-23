@@ -1,7 +1,5 @@
 %define rname kwin
 
-%def_enable compositing
-
 %define kwin4_effect_builtins_sover 1
 %define libkwin4_effect_builtins libkwin4_effect_builtins%kwin4_effect_builtins_sover
 %define kwineffects_sover 12
@@ -17,7 +15,7 @@
 
 Name: plasma5-%rname
 Version: 5.16.3
-Release: alt2
+Release: alt3
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -30,8 +28,9 @@ Requires: xorg-xwayland qt5-multimedia qt5-virtualkeyboard kf5-kirigami plasma5-
 Requires(post): /sbin/setcap
 
 Source: %rname-%version.tar
-Patch1: alt-def-compositing.patch
-Patch2: alt-def-window-buttons.patch
+Patch1: alt-def-window-buttons.patch
+Patch2: alt-def-nocompositing.patch
+Patch3: alt-def-xcompositing.patch
 
 # Automatically added by buildreq on Thu Mar 05 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils glibc-devel-static kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcloog-isl4 libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-multimedia libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-script libqt5-sql libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libudev-devel libwayland-client libwayland-client-devel libwayland-cursor libwayland-egl libxcb-devel libxcbutil-icccm libxcbutil-image libxcbutil-keysyms libxcbutil-keysyms-devel libxkbfile-devel pkg-config python-base qt5-base-devel qt5-declarative-devel qt5-tools-devel ruby ruby-stdlibs wayland-devel xml-common xml-utils xorg-kbproto-devel xorg-xextproto-devel xorg-xf86miscproto-devel xorg-xf86vidmodeproto-devel xorg-xproto-devel
@@ -123,10 +122,9 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-%if_disabled compositing
-%patch1 -p1 -b .compositing
-%endif
-%patch2 -p1
+%patch1 -p1
+#%patch2 -p1 -b .nocompositing
+%patch3 -p1 -b .xcompositing
 
 %build
 %K5build \
@@ -204,6 +202,9 @@ KF5 library
 
 
 %changelog
+* Tue Jul 23 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt3
+- use XRender compositing by default
+
 * Fri Jul 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt2
 - fix requires
 
