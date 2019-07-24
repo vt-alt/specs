@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.45
+Version: 2.9.46
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Sat Jun 08 2019 Leonid Krivoshein <klark@altlinux.org> 2.9.46-alt1
+- New translations for alterator-grub v0.12-alt4.
+
 * Fri Apr 12 2019 Paul Wolneykien <manowar@altlinux.org> 2.9.45-alt1
 - New translations for alterator-fbi v5.41-alt1.
 
