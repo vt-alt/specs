@@ -14,7 +14,7 @@
 
 Name: glusterfs6
 Version: %major
-Release: alt4
+Release: alt5
 
 Summary: Cluster File System
 
@@ -38,10 +38,6 @@ Patch0001: 0001-Increase-soname-version-of-libs-to-major-version-6.patch
 # Said all is ok: https://bugzilla.redhat.com/show_bug.cgi?id=1473968
 #ExcludeArch: %ix86
 
-#add_verify_elf_skiplist %_libdir/libgfdb.so.0.0.1
-%add_verify_elf_skiplist %_libdir/libgfrpc.so.0.0.1
-%add_verify_elf_skiplist %_libdir/glusterfs/xlator/mount/fuse.so
-
 %add_python3_path %_libexecdir/glusterfs/python
 
 # fixme:
@@ -51,13 +47,14 @@ Patch0001: 0001-Increase-soname-version-of-libs-to-major-version-6.patch
 # add_python3_req_skip gsyncdstatus argsupgrade gsyncdconfig rconf repce subcmds syncdutils
 # glusterfs5-gfevents
 # add_python3_req_skip eventsapiconf eventtypes gfevents.eventsapiconf gfevents.eventtypes gfevents.utils handlers
-
-%add_python3_lib_path %_libexecdir/glusterfs/gfevents
-%add_python3_lib_path %_libexecdir/glusterfs/python/syncdaemon
-%add_python3_lib_path %_libexecdir/glusterfs/glusterfind
+%add_python3_path %_libexecdir/glusterfs/gfevents
+%add_python3_path %_libexecdir/glusterfs/python/syncdaemon
+%add_python3_path %_libexecdir/glusterfs/glusterfind
+%add_python3_path %_libexecdir/glusterfs/gfind_missing_files
 %allow_python3_import_path %_libexecdir/glusterfs/gfevents
 %allow_python3_import_path %_libexecdir/glusterfs/python/syncdaemon
 %allow_python3_import_path %_libexecdir/glusterfs/glusterfind
+%allow_python3_import_path %_libexecdir/glusterfs/gfind_missing_files
 
 # TODO: remove
 %define _init_install() install -D -p -m 0755 %1 %buildroot%_initdir/%2 ;
@@ -139,7 +136,7 @@ Group: System/Base
 Requires: %name = %EVR
 Requires: rsync >= 3.0.0
 Provides: glusterfs-georeplication = %EVR
-Conflicts: glusterfs3-georeplication
+Conflicts: glusterfs3-geo-replication
 
 %description georeplication
 GlusterFS is a clustered file-system capable of scaling to several
@@ -190,7 +187,6 @@ This package provides support to FUSE based clients.
 %package -n lib%name-api
 Summary: GlusterFS api library
 Group: System/Libraries
-Requires: %name = %EVR
 
 %description -n lib%name-api
 GlusterFS is a distributed file-system capable of scaling to several
@@ -208,6 +204,7 @@ Summary: Development libraries for GlusterFS api library
 Group: Development/Other
 Requires: lib%name-api = %EVR
 Requires: lib%name-devel = %EVR
+Provides: libglusterfs-api-devel = %EVR
 Conflicts: libglusterfs3-api-devel
 
 %description -n lib%name-api-devel
@@ -277,6 +274,7 @@ Summary: Development Libraries
 Group: Development/Other
 Requires: lib%name = %EVR
 Requires: lib%name-api-devel = %EVR
+Provides: libglusterfs-devel = %EVR
 Conflicts: libglusterfs3-devel
 
 %description -n lib%name-devel
@@ -650,6 +648,12 @@ rm -fv %buildroot%glusterlibdir/cloudsync-plugins/cloudsyncs3.so
 %endif
 
 %changelog
+* Fri Jul 12 2019 Andrew A. Vasilyev <andy@altlinux.org> 6.3-alt5
+- clear python2 dependence
+- spec cleanup
+- remove Requires: from lib-api
+- add Provides: to devel libs
+
 * Wed Jun 19 2019 Andrew A. Vasilyev <andy@altlinux.org> 6.3-alt4
 - add Provides: glusterfs
 - Increase soname version of libs to major version 6
