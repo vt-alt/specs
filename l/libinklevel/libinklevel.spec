@@ -1,19 +1,16 @@
-
 Name: libinklevel
 Version: 0.8.0
-Release: alt1.qa2
+Release: alt2
 
 Summary: Library for retrieving the ink level of a printer.
 License: GPL
 Group: System/Libraries
-Url: http://libinklevel.sf.net
-Packager: Ilya Mashkin <oddity@altlinux.ru>
+
+Url: http://libinklevel.sourceforge.net
 Source0: %url/%name-%version.tar.gz
 Source1: %name-index.html
 Source2: %name.watch
-
-Patch1: %name-0.7.2-alt-makefile-fix.patch
-Patch2: %name-0.7.2-alt-makefile-optflags.patch
+Packager: Ilya Mashkin <oddity@altlinux.ru>
 
 BuildPreReq: libieee1284-devel
 
@@ -31,24 +28,16 @@ Headers for building software that uses libinklevel
 
 %prep
 %setup
-#patch1 -p1
-#patch2 -p1
-%__cp %SOURCE1 index.html
-./configure
-#sed -i 's@PREFIX = /usr/local@PREFIX = %prefix@g' Makefile
-#sed -i 's@/\$(PREFIX)/lib@%_libdir@g' Makefile
+cp -a %SOURCE1 index.html
+cp -at . -- /usr/share/gnu-config/config.sub /usr/share/gnu-config/config.guess
 
 %build
+%configure
 %make_build OPTFLAGS="%optflags"
 
 %install
-%make_install install DESTDIR=%buildroot
-mkdir %buildroot%_libdir/
-mkdir %buildroot%_includedir/
-cp -a .libs/*.so.* %buildroot%_libdir
-cp -a .libs/*.so %buildroot%_libdir
-mv %buildroot/usr/local/include/*.h %buildroot%_includedir
-%__ln_s -f /usr/share/license/GPL-2 COPYING
+%makeinstall_std
+ln -sf /usr/share/license/GPL-2 COPYING
 
 %files
 %_libdir/*.so.*
@@ -60,6 +49,10 @@ mv %buildroot/usr/local/include/*.h %buildroot%_includedir
 %_includedir/*.h
 
 %changelog
+* Thu May 23 2019 Michael Shigorin <mike@altlinux.org> 0.8.0-alt2
+- E2K: fix build by updating config.*
+- spec fixup/cleanup
+
 * Mon Jun 09 2014 Igor Vlasenko <viy@altlinux.ru> 0.8.0-alt1.qa2
 - NMU: fixed bugs in watch file
 

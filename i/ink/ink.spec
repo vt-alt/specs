@@ -1,15 +1,15 @@
 Name: ink
-Version: 0.5.1
-Release: alt1.qa2
+Version: 0.5.3
+Release: alt1
 
 Summary: A command line tool which displays the ink level of your printer.
 License: GPL
 Group: Monitoring
+
 Url: http://ink.sf.net/
 Packager: Ilya Mashkin <oddity@altlinux.ru>
 Source: %name-%version.tar.gz
 Source1: %name.watch
-Patch: ink-0.4.1-alt-makefile.patch
 
 BuildPreReq: libinklevel-devel >= 0.6
 
@@ -18,20 +18,23 @@ Command line tool for displaying ink level of your printer using libinklevel.
 
 %prep
 %setup 
-#patch -p1
 
 %build
-./configure --prefix=/usr
+%configure
 %make_build OPTFLAGS="%optflags"
 
 %install
-%make_install install DESTDIR=%buildroot
+%makeinstall_std
 
 %files
 %_bindir/*
 %_man1dir/*
 
 %changelog
+* Fri May 24 2019 Michael Shigorin <mike@altlinux.org> 0.5.3-alt1
+- 0.5.3
+- minor spec cleanup/fixup
+
 * Mon Jun 09 2014 Igor Vlasenko <viy@altlinux.ru> 0.5.1-alt1.qa2
 - NMU: fixed bugs in watch file
 
