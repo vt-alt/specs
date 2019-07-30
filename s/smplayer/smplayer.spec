@@ -1,4 +1,4 @@
-%define		svn 9113
+%define		svn 9225
 
 %define		rel alt1
 
@@ -9,7 +9,7 @@ Summary(uk_UA.UTF8): Потужний інтерфейс для MPlayer/MPV (QT4
 License:	GPLv2
 Group:		Video
 Url:		http://smplayer.sourceforge.net
-Version:	18.9.0
+Version:	19.5.0
 Release:	%rel.%svn
 Packager:	Motsyo Gennadi <drool@altlinux.ru>
 Source0:	http://downloads.sourceforge.net/smplayer/%name-%version.tar.bz2
@@ -80,6 +80,26 @@ BuildArch: noarch
 Virtual package for SMPlayer, requires a MPlayer
 %endif
 
+%if "%rel" == "alt0.M90P"
+%package -n %name-mpv
+Summary: A great MPV front-end (QT4)
+Group: Video
+Requires: %name mpv
+BuildArch: noarch
+
+%description -n %name-mpv
+Virtual package for SMPlayer, requires a MPV
+
+%package -n %name-mplayer
+Summary: A great MPlayer front-end (QT4)
+Group: Video
+Requires: %name mplayer
+BuildArch: noarch
+
+%description -n %name-mplayer
+Virtual package for SMPlayer, requires a MPlayer
+%endif
+
 %if "%rel" == "alt0.M80P"
 %package -n %name-mpv
 Summary: A great MPV front-end (QT4)
@@ -129,12 +149,19 @@ export OPTFLAGS="%optflags"
 %files -n %name-mpv
 %files -n %name-mplayer
 %endif
+%if "%rel" == "alt0.M90P"
+%files -n %name-mpv
+%files -n %name-mplayer
+%endif
 %if "%rel" == "alt0.M80P"
 %files -n %name-mpv
 %files -n %name-mplayer
 %endif
 
 %changelog
+* Sat Jul 13 2019 Motsyo Gennadi <drool@altlinux.ru> 19.5.0-alt1.9225
+- 19.5.0 (svn9225)
+
 * Mon Sep 17 2018 Motsyo Gennadi <drool@altlinux.ru> 18.9.0-alt1.9113
 - 18.9.0 (svn9113)
 
