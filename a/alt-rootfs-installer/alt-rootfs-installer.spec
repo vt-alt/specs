@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.2.3
+Version: 0.2.4
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPLv2+
@@ -40,6 +40,11 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Mon Jul 22 2019 Anton Midyukov <antohami@altlinux.org> 0.2.4-alt1
+- 0.2.4
+- Add support Nvidia Jetson Nano
+- Add support u-boot-sunxi-201907
+
 * Wed Jun 26 2019 Anton Midyukov <antohami@altlinux.org> 0.2.3-alt1
 - 0.2.3
 - Simplified code, improved portability (thanks sem@ and arei@)
