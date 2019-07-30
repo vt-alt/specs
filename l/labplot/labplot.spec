@@ -2,14 +2,13 @@
 
 Name: labplot
 Version: 2.5.0
-Release: alt2
+Release: alt3
 
 Summary: Function and Data Plotter
+License: GPL
+Group: Sciences/Other
 
 Url: https://labplot.kde.org/
-Group: Sciences/Other
-License: GPL
-
 # git://anongit.kde.org/labplot
 Source: %name-%version.tar
 
@@ -34,15 +33,18 @@ Requires: ImageMagick-tools gsl pstoedit
 %description
 This is a program for plotting of functions and data manipulation.
 
-A versatile spreadsheet for data import and editing was added. Also a better
-3 dimensional plot with rotation and colormaps is available.
-Newly supported are data set operations and image manipulations. One can now 
+A versatile spreadsheet for data import and editing was added.
+Also a better 3 dimensional plot with rotation and colormaps is available.
+Newly supported are data set operations and image manipulations. One can now
 import over 80 different images formats and export directly to ps, eps or pdf.
-The plots now use double buffering and LabPlot supports scripting using
-QSA.
+The plots now use double buffering and LabPlot supports scripting using QSA.
 
 %prep
 %setup
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 %K5build \
@@ -52,7 +54,6 @@ QSA.
 
 %install
 %K5install
-
 %find_lang %name --with-kde
 
 %files -f %name.lang
@@ -68,6 +69,10 @@ QSA.
 %_datadir/metainfo/*.xml
 
 %changelog
+* Thu May 23 2019 Michael Shigorin <mike@altlinux.org> 2.5.0-alt3
+- E2K: strip UTF-8 BOM for lcc < 1.24
+- minor spec cleanup
+
 * Mon Oct 01 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.5.0-alt2
 - Updated runtime dependencies.
 
