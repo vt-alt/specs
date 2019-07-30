@@ -1,6 +1,6 @@
 Name: picolisp
-Version: 18.12
-Release: alt2
+Version: 19.6
+Release: alt1
 
 Summary: Interpreted Lisp
 License: MIT
@@ -53,6 +53,9 @@ ln -s ../lib/%name %buildroot%_datadir/%name
 %_datadir/%name/
 
 %changelog
+* Mon Jul 01 2019 Michael Shigorin <mike@altlinux.org> 19.6-alt1
+- new version (watch file uupdate)
+
 * Sat Jan 19 2019 Michael Shigorin <mike@altlinux.org> 18.12-alt2
 - fix 64-bitness test
 

@@ -1,12 +1,11 @@
 %define osg_version %(pkg-config --modversion openscenegraph)
 
 Name: osgEarth
-Version: 2.10.1
-Release: alt1
+Version: 2.10.2
+Release: alt2
 
 Summary: Dynamic map generation toolkit for OpenSceneGraph
 License: LGPL
-#Group: System/Libraries
 Group: Graphics
 
 Url: http://osgearth.org
@@ -29,7 +28,6 @@ easily.
 %package -n lib%name
 Summary: Runtime libraries for osgEarth
 Group: System/Libraries
-#Requires: %_libdir/osgPlugins-%osg_version
 
 %description -n lib%name
 osgEarth is a scalable terrain rendering toolkit for
@@ -90,9 +88,17 @@ This package contains sample data files for osgEarth.
 %setup -n osgearth-%version
 
 %build
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.12
+%add_optflags -std=c++11
+%endif
 mkdir BUILD
 pushd BUILD
-cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_INSTALL_PREFIX:PATH=%_usr ..
+cmake \
+	-DCMAKE_BUILD_TYPE="Release" \
+	-DCMAKE_INSTALL_PREFIX:PATH=%_usr \
+	-DCMAKE_CXX_FLAGS="%optflags" \
+	..
 %make_build VERBOSE=1
 popd
 
@@ -120,6 +126,13 @@ popd
 %_datadir/osgEarth
 
 %changelog
+* Sat Jul 13 2019 Michael Shigorin <mike@altlinux.org> 2.10.2-alt2
+- ensure our CXXFLAGS instead of hardwired -O2
+- E2K: explicit -std=c++11
+
+* Fri Jul 12 2019 Andrey Cherepanov <cas@altlinux.org> 2.10.2-alt1
+- New version.
+
 * Mon Apr 22 2019 Andrey Cherepanov <cas@altlinux.org> 2.10.1-alt1
 - New version.
 
