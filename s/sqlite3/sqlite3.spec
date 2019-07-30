@@ -1,7 +1,7 @@
 %def_disable static
 
 Name: sqlite3
-Version: 3.27.2
+Version: 3.28.0
 Release: alt1
 Summary: An Embeddable SQL Database Engine
 License: Public Domain
@@ -207,6 +207,9 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 %_datadir/lemon
 
 %changelog
+* Sun Jun 02 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.28.0-alt1
+- 3.28.0 (Fixes: CVE-2019-9936, CVE-2019-9937)
+
 * Fri Mar 22 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.27.2-alt1
 - 3.27.2 (closes: #36341)
 - enabled API armor and deserialize interface
