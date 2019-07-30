@@ -1,11 +1,12 @@
 Name: keepassxc
-Version:  2.4.1
+Version:  2.4.3
 Release:  alt1
-Summary: KeePassXC Password Safe - light-weight cross-platform password manager
-Group: File tools
-License: GPLv2+
-URL: http://www.keepassxc.org/
 
+Summary: KeePassXC Password Safe - light-weight cross-platform password manager
+License: GPLv2+
+Group: File tools
+
+Url: http://www.keepassxc.org/
 #Source: https://github.com/keepassxreboot/keepassxc/releases/download/%version/%name-%version-src.tar.xz
 Source: %name-%version.tar
 
@@ -35,7 +36,11 @@ and bugfixes to provide a feature-rich, fully cross-platform and modern
 open-source password manager.
 
 %prep
-%setup -n %name-%version
+%setup
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 %cmake \
@@ -67,6 +72,16 @@ open-source password manager.
 %_mandir/man?/*
 
 %changelog
+* Wed Jun 12 2019 Pavel Nakonechnyi <zorg@altlinux.org> 2.4.3-alt1
+- Updated to v2.4.3.
+
+* Mon Jun 03 2019 Michael Shigorin <mike@altlinux.org> 2.4.2-alt2
+- E2K: strip UTF-8 BOM for lcc < 1.24
+- minor spec cleanup
+
+* Sat Jun 01 2019 Pavel Nakonechnyi <zorg@altlinux.org> 2.4.2-alt1
+- Updated to v2.4.2.
+
 * Sun Apr 14 2019 Pavel Nakonechnyi <zorg@altlinux.org> 2.4.1-alt1
 - Updated to v2.4.1.
 - Check for updates disabled.
