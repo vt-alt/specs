@@ -1,24 +1,22 @@
 %define _unpackaged_files_terminate_build 1
+%define soname 3
 
 Name: wxsvg
-Version: 1.5.15
-Release: alt1
+Version: 1.5.18
+Release: alt2
 Epoch: 1
 
 Summary: wxSVG is viewer SVG files
 License: GPL
 Group: Graphics
+
 Url: http://wxsvg.sourceforge.net
 Source: %name-%version.tar
-
-Patch1: %name-1.5.14-alt.patch
+Patch: %name-1.5.14-alt.patch
 
 BuildRequires: gcc-c++ libart_lgpl-devel libpango-devel
 BuildRequires: compat-libwxGTK3.0-gtk2-devel libavformat-devel libswscale-devel
 BuildRequires: libexpat-devel libexif-devel
-
-# for older branches support
-%define qIF_ver_lt() %if "%(rpmvercmp '%2' '%1')" > "0"
 
 %description
 wxSVG is viewer SVG files
@@ -51,13 +49,10 @@ Development shared library for wxSVG
 
 %prep
 %setup
-%patch1 -p2
+%patch -p2
 
 %build
-%qIF_ver_lt _id S1
 %add_optflags -std=c++11
-%endif
-
 %autoreconf
 %configure
 %make_build
@@ -70,7 +65,8 @@ Development shared library for wxSVG
 %_bindir/*
 
 %files -n lib%name
-%_libdir/*.so.*
+%_libdir/*.so.%soname
+%_libdir/*.so.%soname.*
 %exclude %_libdir/*.a
 
 %files -n lib%name-devel-static
@@ -82,6 +78,16 @@ Development shared library for wxSVG
 %_pkgconfigdir/*
 
 %changelog
+* Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 1:1.5.18-alt2
+- explicit -std=c++11
+- minor spec cleanup/fixup
+
+* Wed Jun 05 2019 Anton Farygin <rider@altlinux.ru> 1:1.5.18-alt1
+- 1.5.18
+
+* Thu Jan 31 2019 Anton Farygin <rider@altlinux.ru> 1:1.5.16-alt1
+- 1.5.16
+
 * Tue Jan 22 2019 Anton Farygin <rider@altlinux.ru> 1:1.5.15-alt1
 - 1.5.15
 
@@ -98,7 +104,7 @@ Development shared library for wxSVG
 - 1.5.14
 
 * Tue Jun 26 2018 Anton Farygin <rider@altlinux.ru> 1:1.5.13-alt2
-- add %
+- add %%
 
 * Wed Jun 13 2018 Anton Farygin <rider@altlinux.ru> 1:1.5.13-alt2
 - rebuilt for ffmpeg-4
