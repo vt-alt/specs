@@ -1,13 +1,13 @@
 %def_disable snapshot
 
-%define ver_major 1.4
+%define ver_major 1.5
 %define rdn_name com.github.johnfactotum.Foliate
 
 Name: foliate
-Version: %ver_major.0
+Version: %ver_major.2
 Release: alt1
 
-Summary: A simple and modern GTK eBook(EPUB) reader
+Summary: A simple and modern GTK eBook reader
 License: GPLv3+
 Group: Office
 Url: https://github.com/johnfactotum/foliate
@@ -18,10 +18,12 @@ Source: %url/archive/%version/%name-%version.tar.gz
 # VCS: https://github.com/johnfactotum/foliate.git
 Source: %name-%version.tar
 %endif
+Patch: %name-1.5.0-alt-python3_syntax.patch
 
 %define gjs_ver 1.52
 
 Requires: libgjs >= %gjs_ver dconf
+#Recommends: espeak, espeak-ng or festival
 
 # find ./ -name "*.js" |/usr/lib/rpm/gir-js.req |sort|uniq|sed -e 's/^/Requires: /'
 Requires: typelib(Gdk)
@@ -33,13 +35,15 @@ Requires: typelib(Gtk)
 Requires: typelib(Pango)
 Requires: typelib(WebKit2)
 
-BuildRequires(pre): meson rpm-build-gir
+%add_python3_path %_datadir/%rdn_name
+
+BuildRequires(pre): meson rpm-build-gir rpm-build-python3
 BuildRequires: desktop-file-utils libappstream-glib-devel
 BuildRequires: libgjs-devel
 
 %description
 Foliate is a simple and modern GTK eBook reader with following features:
-- View EPUB files
+- View EPUB and Kindle files
 - Two-page view and scrolled view
 - Customize font and line-spacing
 - Light, sepia, dark, and invert mode
@@ -50,6 +54,7 @@ Foliate is a simple and modern GTK eBook reader with following features:
 
 %prep
 %setup
+%patch -b .py3
 
 %build
 %meson
@@ -72,6 +77,15 @@ Foliate is a simple and modern GTK eBook reader with following features:
 
 
 %changelog
+* Fri Jul 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.2-alt1
+- 1.5.2
+
+* Thu Jul 18 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.1-alt1
+- 1.5.1
+
+* Mon Jul 15 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.0-alt1
+- 1.5.0
+
 * Mon Jul 08 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4.0-alt1
 - 1.4.0
 

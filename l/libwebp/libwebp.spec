@@ -5,7 +5,7 @@
 %define soversion 7
 
 Name: libwebp
-Version: 1.0.2
+Version: 1.0.3
 Release: alt1
 
 Summary: Library and tools for the WebP graphics format
@@ -123,6 +123,9 @@ images more efficiently.
 %{?_enable_libwebpdemux:%_man1dir/vwebp.1.*}
 
 %changelog
+* Sun Jul 14 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.3-alt1
+- 1.0.3
+
 * Sat Jan 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.2-alt1
 - 1.0.2
 

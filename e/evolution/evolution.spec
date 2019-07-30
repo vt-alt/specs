@@ -21,7 +21,7 @@
 %define plugins all
 
 Name: evolution
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: Integrated GNOME mail client, calendar and address book
@@ -45,7 +45,7 @@ Provides: camel
 %define glib_ver 2.40.0
 %define gtk_ver 3.10
 %define clutter_gtk_ver 0.91.8
-%define eds_ver 3.32.3
+%define eds_ver 3.32.4
 %define gnome_icon_ver 3.0.0
 %define gnome_desktop_ver 2.91.6
 %define libsoup_ver 2.42.0
@@ -90,7 +90,7 @@ BuildRequires: libkrb5-devel
 
 BuildRequires: docbook-utils intltool yelp-tools itstool gtk-doc
 BuildRequires: libSM-devel libcom_err-devel gstreamer%gst_api_ver-devel
-BuildRequires: python-modules-compiler python-modules-encodings libnspr-devel libnss-devel libX11-devel libcanberra-gtk3-devel
+BuildRequires: libnspr-devel libnss-devel libX11-devel libcanberra-gtk3-devel
 BuildRequires: zlib-devel libxml2-devel libgtkspell3-devel
 
 %description
@@ -267,6 +267,9 @@ find %buildroot -type f -name "*.la" -print0 | xargs -r0 rm --
 
 
 %changelog
+* Mon Jul 15 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.4-alt1
+- 3.32.4
+
 * Mon Jun 17 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.3-alt1
 - 3.32.3
 

@@ -6,7 +6,7 @@
 %def_enable lua_factory
 
 Name: grilo-plugins
-Version: %ver_major.8
+Version: %ver_major.9
 Release: alt1
 
 Summary: Plugins for the Grilo framework
@@ -27,7 +27,7 @@ BuildRequires(pre): meson
 BuildRequires: gperf
 BuildRequires: gtk-doc yelp-tools
 BuildRequires: libgio-devel >= 2.44
-BuildRequires: libgrilo-devel >= %ver_major.6
+BuildRequires: libgrilo-devel >= %ver_major.8
 BuildRequires: libxml2-devel
 BuildRequires: libgupnp-devel >= 0.13
 BuildRequires: libgupnp-av-devel >= 0.5
@@ -129,6 +129,9 @@ This package contains the pkg-config file for Grilo plugins package.
 
 
 %changelog
+* Mon Jul 15 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.9-alt1
+- 0.3.9
+
 * Mon Sep 24 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.8-alt1
 - 0.3.8
 

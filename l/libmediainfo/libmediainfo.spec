@@ -1,5 +1,5 @@
 Name: libmediainfo
-Version: 19.04
+Version: 19.07
 Release: alt1
 
 Group: System/Libraries
@@ -84,6 +84,9 @@ popd
 %_libdir/%name.so
 
 %changelog
+* Wed Jul 17 2019 Yuri N. Sedunov <aris@altlinux.org> 19.07-alt1
+- 19.07
+
 * Wed Apr 24 2019 Yuri N. Sedunov <aris@altlinux.org> 19.04-alt1
 - 19.04
 

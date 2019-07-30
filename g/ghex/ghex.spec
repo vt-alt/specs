@@ -3,9 +3,12 @@
 %define ver_major 3.18
 %define api_ver 3.0
 %define libname gtkhex-3
+%define xdg_name org.gnome.GHex
+
+%def_disable check
 
 Name: ghex
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: Binary editor for GNOME
@@ -13,16 +16,19 @@ Group: Development/Tools
 License: GPLv2+
 Url: https://wiki.gnome.org/Apps/Ghex
 
+#VCS: https://gitlab.gnome.org/GNOME/ghex.git
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.tar.xz
-Patch: ghex-3.7.90-alt-lfs.patch
 
 %define glib_ver 2.31.10
 %define gtk_ver 3.3.8
 
 Requires: libgtkhex = %version-%release
+Requires: dconf
 
-BuildRequires: gnome-common glib2-devel >= %glib_ver libgtk+3-devel >= %gtk_ver
-BuildRequires: libgail3-devel intltool yelp-tools
+BuildRequires(pre): meson
+BuildRequires: glib2-devel >= %glib_ver libgtk+3-devel >= %gtk_ver
+BuildRequires: libgail3-devel yelp-tools
+%{?_enable_check:BuildRequires: desktop-file-utils libappstream-glib-devel}
 
 %description
 GHex is a hex editor for the GNOME desktop.
@@ -50,27 +56,24 @@ developing applications that use GtkGHex library.
 
 %prep
 %setup
-%patch -p1 -b .lfs
 
 %build
-%autoreconf
-%configure \
-	--disable-schemas-compile
-
-%make_build
+%meson
+%meson_build
 
 %install
-%makeinstall_std
-
+%meson_install
 %find_lang --with-gnome --output=%name.lang %name %name-%api_ver
+
+%check
+%meson_test
 
 %files -f %name.lang
 %_bindir/%name
-%_datadir/applications/%name.desktop
-%_datadir/GConf/gsettings/%name.convert
-%_datadir/glib-2.0/schemas/org.gnome.GHex.gschema.xml
+%_desktopdir/%xdg_name.desktop
+%_datadir/glib-2.0/schemas/%xdg_name.gschema.xml
 %_iconsdir/hicolor/*/apps/*
-%_datadir/appdata/%name.appdata.xml
+%_datadir/metainfo/%xdg_name.appdata.xml
 %doc AUTHORS NEWS README
 
 %files -n libgtkhex
@@ -82,6 +85,9 @@ developing applications that use GtkGHex library.
 %_pkgconfigdir/%libname.pc
 
 %changelog
+* Sat Jul 13 2019 Yuri N. Sedunov <aris@altlinux.org> 3.18.4-alt1
+- 3.18.4 (ported to Meson build system)
+
 * Wed Oct 12 2016 Yuri N. Sedunov <aris@altlinux.org> 3.18.3-alt1
 - 3.18.3
 

@@ -1,8 +1,8 @@
 %def_disable kde4
 
 Name: mediainfo
-Version: 19.04
-Release: alt1.1
+Version: 19.07
+Release: alt1
 
 Group: File tools
 Summary: MediaInfo supplies information about a video or audio file
@@ -150,6 +150,9 @@ rm -f %buildroot%_datadir/kde4/services/ServiceMenus/mediainfo-gui.desktop
 %_K5srv/ServiceMenus/%name-gui.desktop
 
 %changelog
+* Wed Jul 17 2019 Yuri N. Sedunov <aris@altlinux.org> 19.07-alt1
+- 19.07
+
 * Thu Apr 25 2019 Yuri N. Sedunov <aris@altlinux.org> 19.04-alt1.1
 - enabled SMP build
 - disabled gui-KDE4 subpackage by default

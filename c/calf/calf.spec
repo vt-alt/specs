@@ -2,7 +2,7 @@
 %def_enable gui
 
 Name: calf
-Version: 0.90.2
+Version: 0.90.3
 Release: alt1
 
 Summary: Audio plugins pack
@@ -109,6 +109,9 @@ extensions.
 
 
 %changelog
+* Wed Jul 17 2019 Yuri N. Sedunov <aris@altlinux.org> 0.90.3-alt1
+- 0.90.3
+
 * Wed Apr 17 2019 Yuri N. Sedunov <aris@altlinux.org> 0.90.2-alt1
 - 0.90.2
 

@@ -6,11 +6,11 @@
 %def_enable gtk_doc
 %def_enable introspection
 %def_enable libgcrypt
-%def_enable quvi
+%def_disable quvi
 
 Name: lib%_name
 Version: %ver_major.3
-Release: alt1
+Release: alt2
 
 Summary: Shared libraries of the Totem media player play list parser
 Group: System/Libraries
@@ -117,6 +117,9 @@ GObject introspection devel data for the Totem playlist parser library
 %endif
 
 %changelog
+* Mon Jul 15 2019 Yuri N. Sedunov <aris@altlinux.org> 3.26.3-alt2
+- disabled obsolete quvi support
+
 * Tue Mar 05 2019 Yuri N. Sedunov <aris@altlinux.org> 3.26.3-alt1
 - 3.26.3
 

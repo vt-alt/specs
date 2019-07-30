@@ -4,7 +4,7 @@
 %def_disable check
 
 Name: grilo
-Version: %ver_major.7
+Version: %ver_major.9
 Release: alt1
 
 Summary: Content discovery framework
@@ -151,6 +151,12 @@ mkdir -p %buildroot%_libdir/grilo-%ver_major %buildroot%_datadir/grilo-%ver_majo
 %endif
 
 %changelog
+* Wed Jul 17 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.9-alt1
+- 0.3.9
+
+* Mon Jul 15 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.8-alt1
+- 0.3.8
+
 * Mon Nov 19 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.7-alt1
 - 0.3.7
 

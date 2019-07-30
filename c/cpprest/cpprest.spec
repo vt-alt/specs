@@ -3,12 +3,17 @@
 %define _name cpprestsdk
 %define ver_major 2.10
 
+%if_enabled snapshot
 #can't build on %ix86, see bottom of /usr/share/cmake/websocketpp-configVersion.cmake
 %def_without system_websocketpp
+%else
+# tarball doesn't contain websocketpp headers
+%def_with system_websocketpp
+%endif
 %def_disable check
 
 Name: cpprest
-Version: %ver_major.13
+Version: %ver_major.14
 Release: alt1
 
 Summary: C++ REST library
@@ -17,7 +22,7 @@ License: MIT
 Url: https://github.com/Microsoft/%_name
 
 %if_disabled snapshot
-Source: https://github.com/Microsoft/%_name/archive/v%version.tar.gz#/%_name-%version.tar.gz
+Source: %url/archive/v%version/%_name-%version.tar.gz
 %else
 Source: %_name-%version.tar
 %endif
@@ -99,6 +104,9 @@ LD_LIBRARY_PATH=%buildroot/%_libdir %make -C BUILD test
 %doc README.md
 
 %changelog
+* Wed Jul 17 2019 Yuri N. Sedunov <aris@altlinux.org> 2.10.14-alt1
+- 2.10.14
+
 * Thu Apr 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.10.13-alt1
 - 2.10.13
 
