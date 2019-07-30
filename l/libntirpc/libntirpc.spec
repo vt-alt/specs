@@ -1,5 +1,5 @@
 Name: libntirpc
-Version: 1.7.2
+Version: 1.7.3
 Release: alt1
 
 Summary: New Transport Independent RPC Library
@@ -68,6 +68,9 @@ ln -s %name.so.%version %buildroot%_libdir/%name.so.1
 %_pkgconfigdir/libntirpc.pc
 
 %changelog
+* Fri May 17 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.3-alt1
+- new version 1.7.3 (with rpmrb script)
+
 * Wed Mar 27 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.2-alt1
 - new version 1.7.2 (with rpmrb script)
 

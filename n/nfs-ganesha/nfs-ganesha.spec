@@ -70,7 +70,7 @@
 %global use_system_ntirpc %{on_off_switch system_ntirpc}
 
 Name: nfs-ganesha
-Version: 2.7.2
+Version: 2.7.3
 Release: alt1
 
 Summary: NFS-Ganesha is a NFS Server running in user space
@@ -550,6 +550,9 @@ rm -f %buildroot%_bindir/ganesha-rados-grace
 %endif
 
 %changelog
+* Thu May 30 2019 Vitaly Lipatov <lav@altlinux.ru> 2.7.3-alt1
+- new version 2.7.3 (with rpmrb script)
+
 * Wed Mar 27 2019 Vitaly Lipatov <lav@altlinux.ru> 2.7.2-alt1
 - new version 2.7.2 (with rpmrb script)
 
