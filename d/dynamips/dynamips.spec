@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: dynamips
-Version: 0.2.20
+Version: 0.2.21
 Release: alt1
 
 Summary: Cisco 7200 Simulator
@@ -58,6 +58,9 @@ rm -fR %buildroot%_docdir/%name
 %dir %_localstatedir/%name/labs
 
 %changelog
+* Wed Jul 31 2019 Anton Midyukov <antohami@altlinux.org> 0.2.21-alt1
+- new version 0.2.21
+
 * Sun Jun 09 2019 Anton Midyukov <antohami@altlinux.org> 0.2.20-alt1
 - new version 0.2.20
 
