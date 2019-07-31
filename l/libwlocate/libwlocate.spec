@@ -8,11 +8,11 @@ BuildRequires: gcc-c++
 %define libwlocate	libwlocate%{major}
 %define libwlocate_d	libwlocate-devel
 %define git		git20130127
-%define rel		9
+%define rel		10
 
 Name:		libwlocate
 Version:	1.1
-Release:	alt1_0.%git%rel
+Release:	alt1_%rel.%git
 Summary:	Open WLAN Map interface library
 
 Group:		Development/C
@@ -65,12 +65,14 @@ Devel files needed to build apps based on %name.
 
 %files -n %{libwlocate_d}
 %_includedir/libwlocate.h
+%_libdir/*.so
 
 #-----------------------------------------------------------------------------
 
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+
 
 %build
 
@@ -89,6 +91,9 @@ chmod 0644 COPYING CREDITS README
 
 
 %changelog
+* Mon Jul 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.1-alt1_10.git20130127
+- fixed devel (closes: #37049)
+
 * Tue Apr 03 2018 Igor Vlasenko <viy@altlinux.ru> 1.1-alt1_0.git201301279
 - new version
 
