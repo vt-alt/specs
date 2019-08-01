@@ -2,10 +2,10 @@
 %define openssl_ver 1.1.0j
 
 # More subpackages to come once licensing issues are fixed
-Name: edk2
+Name: edk2-aarch64
 Version: 20190501
 Release: alt2
-Summary: EFI Development Kit II
+Summary: AARCH64 Virtual Machine Firmware
 
 #Vcs-Git: https://github.com/tianocore/edk2.git
 Source: %name-%version.tar
@@ -19,8 +19,10 @@ Patch1: %name-%version.patch
 License: BSD
 Group: Emulators
 Url: http://www.tianocore.org
+ExclusiveArch: aarch64
+BuildArch: noarch
 
-ExclusiveArch: x86_64
+Provides: edk2-ovmf-aarch64 = %EVR
 
 BuildRequires: iasl nasm gcc-c++
 BuildRequires: python3-devel python3-modules-sqlite3
@@ -28,40 +30,8 @@ BuildRequires: libuuid-devel
 BuildRequires: bc
 
 %description
-This package provides tools that are needed to build EFI executables
-and ROMs using the GNU tools.
-
-%package ovmf
-Summary: Open Virtual Machine Firmware
-Group: Emulators
-License: BSD License (no advertising) with restrictions on use and redistribution
-BuildArch: noarch
-Provides: edk2-ovmf-x86_64 = %EVR
-Requires: ipxe-roms-qemu
-Requires: seavgabios
-
-%description ovmf
 EFI Development Kit II
-Open Virtual Machine Firmware
-
-%package ovmf-ia32
-Summary: Open Virtual Machine Firmware
-Group: Emulators
-License: BSD and OpenSSL
-BuildArch: noarch
-
-%description ovmf-ia32
-EFI Development Kit II
-Open Virtual Machine Firmware (ia32)
-
-%package efi-shell
-Summary: EFI Development Kit II
-Group: System/Kernel and hardware
-Provides: efi-shell = 2.2
-Obsoletes: efi-shell
-
-%description efi-shell
-EFI Development Kit II implementation of UEFI Shell 2.0+
+AARCH64 UEFI Firmware
 
 %prep
 %setup -q
@@ -146,58 +116,27 @@ unset MAKEFLAGS
 #mkdir -p FatBinPkg/EnhancedFatDxe/{X64,Ia32}
 #source ./edksetup.sh
 
-# build ovmf (x64)
-mkdir -p OVMF
-build ${OVMF_FLAGS} -a X64 -p OvmfPkg/OvmfPkgX64.dsc
-cp Build/OvmfX64/*/FV/OVMF_*.fd OVMF
-rm -rf Build/OvmfX64
-# build ovmf with secure boot
-build ${OVMF_SB_FLAGS} -a IA32 -a X64 -p OvmfPkg/OvmfPkgIa32X64.dsc
-cp Build/Ovmf3264/*/FV/OVMF_CODE.fd OVMF/OVMF_CODE.secboot.fd
 
-# build shell
-build ${OVMF_FLAGS} -a X64 -p ShellPkg/ShellPkg.dsc
-
-# build ovmf-ia32
-mkdir -p ovmf-ia32
-build ${OVMF_FLAGS} -a IA32 -p OvmfPkg/OvmfPkgIa32.dsc
-cp Build/OvmfIa32/*/FV/OVMF_CODE.fd ovmf-ia32/
-rm -rf Build/OvmfIa32
-# build ovmf-ia32 with secure boot
-build ${OVMF_SB_FLAGS} -a IA32 -p OvmfPkg/OvmfPkgIa32.dsc
-cp Build/OvmfIa32/*/FV/OVMF_CODE.fd ovmf-ia32/OVMF_CODE.secboot.fd
+# build aarch64 firmware
+mkdir -p AAVMF
+build ${ARM_FLAGS} -a AARCH64 -p ArmVirtPkg/ArmVirtQemu.dsc
+cp Build/ArmVirtQemu-AARCH64/*/FV/*.fd AAVMF
+dd of="AAVMF/QEMU_EFI-pflash.raw" if="/dev/zero" bs=1M count=64
+dd of="AAVMF/QEMU_EFI-pflash.raw" if="AAVMF/QEMU_EFI.fd" conv=notrunc
+dd of="AAVMF/vars-template-pflash.raw" if="/dev/zero" bs=1M count=64
 
 %install
-
-# shell
-install -pm0644 -D Build/Shell/RELEASE_%TOOL_CHAIN_TAG/X64/Shell.efi \
-	%buildroot%_libdir/efi/shell.efi
-
-#install OVMF
 mkdir -p %buildroot%_datadir/edk2
-cp -a OVMF %buildroot%_datadir/
-ln -r -s %buildroot%_datadir/OVMF %buildroot%_datadir/edk2/ovmf
+cp -a AAVMF %buildroot%_datadir/
+ln -r -s %buildroot%_datadir/AAVMF %buildroot%_datadir/edk2/aarch64
 
-cp -a ovmf-ia32 %buildroot%_datadir/edk2
-
-
-%files ovmf
-#%doc FatBinPkg/License.txt
-%doc OvmfPkg/License.txt
-%_datadir/OVMF
-%dir %_datadir/edk2
-%_datadir/edk2/ovmf
-
-%files ovmf-ia32
-%doc OvmfPkg/License.txt
-%_datadir/edk2/ovmf-ia32
-
-%files efi-shell
-%_libdir/efi/shell.efi
+%files
+%_datadir/AAVMF
+%_datadir/edk2/aarch64
 
 %changelog
 * Wed Jul 31 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt2
-- build ovmf and efi-shell only
+- build as edk2-aarch64 package
 
 * Wed Jun 19 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt1
 - edk2-stable201905 (Fixes: CVE-2018-12182)

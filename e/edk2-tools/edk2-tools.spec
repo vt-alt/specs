@@ -2,10 +2,10 @@
 %define openssl_ver 1.1.0j
 
 # More subpackages to come once licensing issues are fixed
-Name: edk2
+Name: edk2-tools
 Version: 20190501
 Release: alt2
-Summary: EFI Development Kit II
+Summary: EFI Development Kit II Tools
 
 #Vcs-Git: https://github.com/tianocore/edk2.git
 Source: %name-%version.tar
@@ -20,7 +20,7 @@ License: BSD
 Group: Emulators
 Url: http://www.tianocore.org
 
-ExclusiveArch: x86_64
+ExclusiveArch:  %ix86 x86_64 %arm aarch64
 
 BuildRequires: iasl nasm gcc-c++
 BuildRequires: python3-devel python3-modules-sqlite3
@@ -28,40 +28,27 @@ BuildRequires: libuuid-devel
 BuildRequires: bc
 
 %description
+This package provides tools that are needed to
+build EFI executables and ROMs using the GNU tools.
+
+%package python
+Summary: EFI Development Kit II Tools
+Group: Development/Python3
+BuildArch: noarch
+
+%description python
 This package provides tools that are needed to build EFI executables
-and ROMs using the GNU tools.
+and ROMs using the GNU tools.  You do not need to install this package;
+you probably want to install edk2-tools only.
 
-%package ovmf
-Summary: Open Virtual Machine Firmware
-Group: Emulators
-License: BSD License (no advertising) with restrictions on use and redistribution
-BuildArch: noarch
-Provides: edk2-ovmf-x86_64 = %EVR
-Requires: ipxe-roms-qemu
-Requires: seavgabios
-
-%description ovmf
-EFI Development Kit II
-Open Virtual Machine Firmware
-
-%package ovmf-ia32
-Summary: Open Virtual Machine Firmware
-Group: Emulators
-License: BSD and OpenSSL
+%package doc
+Summary: Documentation for EFI Development Kit II Tools
+Group: Development/Documentation
 BuildArch: noarch
 
-%description ovmf-ia32
-EFI Development Kit II
-Open Virtual Machine Firmware (ia32)
-
-%package efi-shell
-Summary: EFI Development Kit II
-Group: System/Kernel and hardware
-Provides: efi-shell = 2.2
-Obsoletes: efi-shell
-
-%description efi-shell
-EFI Development Kit II implementation of UEFI Shell 2.0+
+%description doc
+This package documents the tools that are needed to
+build EFI executables and ROMs using the GNU tools.
 
 %prep
 %setup -q
@@ -140,64 +127,83 @@ unset MAKEFLAGS
 %make_build \
 	 -C BaseTools
 
-
-#(cd UefiCpuPkg/ResetVector/Vtf0; python Build.py)
-
-#mkdir -p FatBinPkg/EnhancedFatDxe/{X64,Ia32}
-#source ./edksetup.sh
-
-# build ovmf (x64)
-mkdir -p OVMF
-build ${OVMF_FLAGS} -a X64 -p OvmfPkg/OvmfPkgX64.dsc
-cp Build/OvmfX64/*/FV/OVMF_*.fd OVMF
-rm -rf Build/OvmfX64
-# build ovmf with secure boot
-build ${OVMF_SB_FLAGS} -a IA32 -a X64 -p OvmfPkg/OvmfPkgIa32X64.dsc
-cp Build/Ovmf3264/*/FV/OVMF_CODE.fd OVMF/OVMF_CODE.secboot.fd
-
-# build shell
-build ${OVMF_FLAGS} -a X64 -p ShellPkg/ShellPkg.dsc
-
-# build ovmf-ia32
-mkdir -p ovmf-ia32
-build ${OVMF_FLAGS} -a IA32 -p OvmfPkg/OvmfPkgIa32.dsc
-cp Build/OvmfIa32/*/FV/OVMF_CODE.fd ovmf-ia32/
-rm -rf Build/OvmfIa32
-# build ovmf-ia32 with secure boot
-build ${OVMF_SB_FLAGS} -a IA32 -p OvmfPkg/OvmfPkgIa32.dsc
-cp Build/OvmfIa32/*/FV/OVMF_CODE.fd ovmf-ia32/OVMF_CODE.secboot.fd
-
 %install
+# install BaseTools
+mkdir -p %buildroot%_bindir \
+         %buildroot%_datadir/edk2/Conf \
+         %buildroot%_datadir/edk2/Scripts
 
-# shell
-install -pm0644 -D Build/Shell/RELEASE_%TOOL_CHAIN_TAG/X64/Shell.efi \
-	%buildroot%_libdir/efi/shell.efi
+pushd BaseTools
+install --strip \
+	Source/C/bin/* \
+	%buildroot%_bindir
 
-#install OVMF
-mkdir -p %buildroot%_datadir/edk2
-cp -a OVMF %buildroot%_datadir/
-ln -r -s %buildroot%_datadir/OVMF %buildroot%_datadir/edk2/ovmf
+install \
+	BinWrappers/PosixLike/LzmaF86Compress \
+	%buildroot%_bindir
 
-cp -a ovmf-ia32 %buildroot%_datadir/edk2
+install \
+	BuildEnv \
+	%buildroot%_datadir/edk2
 
+install \
+	Conf/*.template \
+	%buildroot%_datadir/edk2/Conf
 
-%files ovmf
-#%doc FatBinPkg/License.txt
-%doc OvmfPkg/License.txt
-%_datadir/OVMF
-%dir %_datadir/edk2
-%_datadir/edk2/ovmf
+install \
+	Scripts/GccBase.lds \
+	%buildroot%_datadir/edk2/Scripts
 
-%files ovmf-ia32
-%doc OvmfPkg/License.txt
-%_datadir/edk2/ovmf-ia32
+cp -R Source/Python %buildroot%_datadir/edk2/Python
 
-%files efi-shell
-%_libdir/efi/shell.efi
+find %buildroot%_datadir/edk2/Python -name "*.pyd" | xargs rm -f
+
+for i in BPDG Ecc GenDepex GenFds GenPatchPcdTable PatchPcdValue TargetTool Trim UPT; do
+  echo '#!/bin/sh
+export PYTHONPATH=%_datadir/edk2/Python
+exec python3 '%_datadir/edk2/Python/$i/$i.py' "$@"' > %buildroot%_bindir/$i
+  chmod +x %buildroot%_bindir/$i
+done
+
+popd
+
+%files
+%_bindir/Brotli
+%_bindir/DevicePath
+%_bindir/EfiRom
+%_bindir/GenCrc32
+%_bindir/GenFfs
+%_bindir/GenFv
+%_bindir/GenFw
+%_bindir/GenSec
+%_bindir/LzmaCompress
+%_bindir/LzmaF86Compress
+%_bindir/Split
+%_bindir/TianoCompress
+%_bindir/VfrCompile
+%_bindir/VolInfo
+%_datadir/edk2/BuildEnv
+%_datadir/edk2/Conf
+%_datadir/edk2/Scripts
+
+#%files tools-python
+#%_bindir/BPDG
+#%_bindir/Ecc
+#%_bindir/GenDepex
+#%_bindir/GenFds
+#%_bindir/GenPatchPcdTable
+#%_bindir/PatchPcdValue
+#%_bindir/TargetTool
+#%_bindir/Trim
+#%_bindir/UPT
+#%_datadir/edk2/Python/
+
+%files doc
+%doc BaseTools/UserManuals/*.rtf
 
 %changelog
 * Wed Jul 31 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt2
-- build ovmf and efi-shell only
+- build as edk2-tools package
 
 * Wed Jun 19 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt1
 - edk2-stable201905 (Fixes: CVE-2018-12182)
