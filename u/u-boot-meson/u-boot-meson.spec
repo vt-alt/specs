@@ -1,5 +1,5 @@
 Name: u-boot-meson
-Version: 2019.04
+Version: 2019.07
 Release: alt1
 
 Summary: Das U-Boot
@@ -37,12 +37,15 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 
 %files
 %doc README
-%doc board/amlogic/odroid-c2/README.*
+%doc board/amlogic/p200/README.*
 %doc board/amlogic/p212/README.*
 %doc board/amlogic/q200/README.*
 %_datadir/u-boot/*
 
 %changelog
+* Fri Jul 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
+- 2019.07 released
+
 * Mon Apr 15 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.04-alt1
 - 2019.04 released
 

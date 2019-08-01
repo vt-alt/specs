@@ -1,79 +1,85 @@
-Name: u-boot-rockchip
+Name: u-boot-sunxi
 Version: 2019.07
 Release: alt1
 
 Summary: Das U-Boot
 License: GPL
 Group: System/Kernel and hardware
+Url: http://linux-sunxi.org/U-Boot
 
-ExclusiveArch: aarch64
+ExclusiveArch: armh aarch64
 
 Source: %name-%version-%release.tar
 
+Provides: u-boot-sunxi64 = %version-%release
+Obsoletes: u-boot-sunxi64
+
+%ifarch aarch64
+%define ATF atf-sunxi >= 2.0
+%else
+%define ATF %nil
+%endif
+
 BuildRequires: bc ccache dtc >= 1.4 flex
 BuildRequires: python-devel swig
-BuildRequires: python2.7(multiprocessing)
-BuildRequires: python2.7(elftools.elf.elffile)
-BuildRequires: atf-rockchip >= 2.0
+BuildRequires: python2.7(multiprocessing) %ATF
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
 other processors, which can be installed in a boot ROM and used to
 initialize and test the hardware or to download and run application code.
-This package supports various Rockchip RK3399 based boards.
+This package supports boards based on Allwinner SoCs.
+
+See http://linux-sunxi.org/Bootable_SD_card#Bootloader for details.
 
 %prep
 %setup
-fgrep -lr CONFIG_ROCKCHIP_RK3399 configs |xargs sed -i \
-	-e '/^CONFIG_DEFAULT_FDT_FILE/ s,rockchip/,,' \
-	-e '/^CONFIG_BAUDRATE/ s,1500000,115200,'
-sed -E '/^CONFIG_DEFAULT_FDT_FILE=/ s,=.+$,="rk3399-sapphire-excavator.dtb",' \
-	< configs/evb-rk3399_defconfig > configs/rk3399-sapphire-excavator_defconfig
 
 %build
-export BL31=%_datadir/atf/rk3399/bl31.elf
-
-buildit()
-{
-  mkdir build
-  %make_build O=build ${board}_defconfig all
-  install -pm0644 -D build/u-boot.itb out/${board}/u-boot.itb
-  grep -q ^CONFIG_TPL= build/.config && {
-    build/tools/mkimage -n rk3399 -T rksd -d build/tpl/u-boot-tpl-dtb.bin out/${board}/idbspl.img
-    cat build/spl/u-boot-spl-dtb.bin >> out/${board}/idbspl.img
-  } || {
-    build/tools/mkimage -n rk3399 -T rksd -d build/spl/u-boot-spl.bin out/${board}/idbspl.img
-  }
-  rm -rf build
-}
-
-boards=$(fgrep -lr CONFIG_ROCKCHIP_RK3399 configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
-for board in $boards; do buildit; done
+%ifarch aarch64
+export BL31=%_datadir/atf/sun50i_a64/bl31.bin
+boards=$(grep -lr MACH_SUN50I configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
+%else
+boards=$(grep -lr 'MACH_SUN[4-9]I' configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
+%endif
+for board in $boards; do
+	mkdir build
+	%make_build HOSTCC='ccache gcc' CC='ccache gcc' O=build ${board}_defconfig all
+	grep -q '^CONFIG_SPL=y' build/.config && \
+	install -pm0644 -D build/u-boot-sunxi-with-spl.bin out/${board}/u-boot-sunxi-with-spl.bin
+	rm -rf build
+done
 
 %install
 mkdir -p %buildroot%_datadir/u-boot
-cd out 
+cd out
 find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 
 %files
-%doc README doc/README.rockchip
+%doc README README.sunxi board/sunxi/README.sunxi64
 %_datadir/u-boot/*
 
 %changelog
 * Wed Jul 17 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
 - 2019.07 released
 
-* Mon Apr 15 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.04-alt1
+* Tue Apr 16 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.04-alt1
 - 2019.04 released
 
-* Wed Mar 06 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.01-alt1
+* Tue Jan 22 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.01-alt1
 - 2019.01 released
+
+* Mon Dec 03 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2018.11-alt1
+- 2018.11 released
 
 * Tue Sep 04 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2018.07-alt1
 - 2018.07 released
 
-* Thu Apr 19 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2018.03-alt1
-- 2018.03 released
+* Fri Jul 06 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2018.05-alt1
+- 2018.05 released
+
+* Mon Jan 15 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2018.01-alt1
+- 2018.01 released
 
 * Sun Sep 24 2017 Sergey Bolshakov <sbolshakov@altlinux.ru> 2017.09-alt1
 - 2017.09 released

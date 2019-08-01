@@ -1,10 +1,12 @@
 Name: u-boot-tools
-Version: 2019.04
+Version: 2019.07
 Release: alt1
 
 Summary: Das U-Boot
 License: GPL
 Group: System/Kernel and hardware
+
+ExclusiveArch: armh aarch64 %ix86 x86_64
 
 Provides: uboot-tools = %version-%release
 Obsoletes: uboot-tools
@@ -37,6 +39,9 @@ install -pm0755 tools/{dumpimage,fdtgrep,gen_eth_addr,mkimage,mkenvimage} %{?_wi
 %_bindir/*
 
 %changelog
+* Fri Jul 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
+- 2019.07 released
+
 * Fri Apr 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.04-alt1
 - 2019.04 released
 
