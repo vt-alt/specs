@@ -1,5 +1,5 @@
 %define kernel_base_version	4.19
-%define kernel_sublevel        .56
+%define kernel_sublevel        .60
 %define kernel_extra_version	%nil
 
 Name: kernel-image-lts
@@ -45,7 +45,6 @@ BuildRequires: bc flex lzma-utils
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version
 BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
-BuildRequires: module-init-tools >= 3.16
 BuildRequires: libssl-devel
 
 %if_enabled ccache
@@ -56,10 +55,7 @@ BuildRequires: ccache
 BuildRequires: ccache
 %endif
 
-Requires: bootloader-utils >= 0.4.24-alt1
-Requires: module-init-tools >= 3.16-alt2
-Requires: startup >= 0.9.8.30-alt1
-
+Requires: bootloader-utils >= 0.5.2-alt3
 Provides: kernel = %kversion
 
 %ifarch %arm
@@ -260,6 +256,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Jul 22 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.19.60-alt1
+- 4.19.60
+
 * Tue Jun 25 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.19.56-alt1
 - 4.19.56
 
