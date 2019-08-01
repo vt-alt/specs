@@ -1,6 +1,6 @@
 Name:           x2goclient
 Version:        4.1.2.1
-Release:        alt1.1
+Release:        alt2
 Summary:        X2Go Client application (Qt)
 
 Group:          Communications
@@ -18,6 +18,7 @@ Patch3:  	x2goclient-alt-startkde.patch
 Patch4:		x2goclient-encoding.patch
 Patch5:		x2goclient-alt-no-pam.patch
 Patch6:		alt-qt5.11.patch
+Patch7:		x2goclient-alt-select-broker-sessions.patch
 
 BuildRequires(pre): libssh-devel
 BuildRequires(pre): rpm-build-apache2
@@ -64,6 +65,7 @@ You can use it to connect to running sessions and start new sessions.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 # update russian translations
 cat %SOURCE1 >res/i18n/x2goclient_ru.ts
 # Fix up install issues
@@ -103,6 +105,9 @@ ln -s ../../x2go/x2goplugin-apache.conf %buildroot%_sysconfdir/httpd/conf.d/x2go
 %_man1dir/%name.1*
 
 %changelog
+* Thu Aug 01 2019 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.1-alt2
+- Allow session selection in broker mode
+
 * Tue Oct 16 2018 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.1-alt1.1
 - Check for libssh >= 0.8
 
