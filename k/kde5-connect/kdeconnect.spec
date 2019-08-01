@@ -6,7 +6,7 @@
 %define libkdeconnectinterfaces libkdeconnectinterfaces%sover
 
 Name: kde5-connect
-Version: 1.3.4
+Version: 1.3.5
 Release: alt1
 %K5init
 
@@ -96,7 +96,7 @@ KF5 library
 %files
 %_K5bin/kdeconnect-*
 %_K5exec/kdeconnectd
-%_K5start/kdeconnectd.desktop
+%_K5start/org.kde.kdeconnect.*.desktop
 %_K5xdgapp/org.kde.kdeconnect.*.desktop
 %_K5plug/kf5/kio/kdeconnect.so
 %_K5plug/*kdeconnect*.so
@@ -109,6 +109,7 @@ KF5 library
 %_K5srv/*kdeconnect*.*
 %_K5srvtyp/*kdeconnect*.*
 %_K5data/plasma/plasmoids/org.kde.kdeconnect/
+%_datadir/metainfo/*kdeconnect*.xml
 
 
 %files -n %libkdeconnectcore
@@ -122,6 +123,9 @@ KF5 library
 %_K5lib/libkdeconnectinterfaces.so.*
 
 %changelog
+* Thu Aug 01 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.5-alt1
+- new version
+
 * Tue Mar 26 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.4-alt1
 - new version
 
