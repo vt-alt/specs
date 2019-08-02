@@ -1,6 +1,6 @@
 Name: ubridge
-Version: 0.9.14
-Release: alt1.1
+Version: 0.9.16
+Release: alt1
 
 Summary: Bridge for UDP tunnels, Ethernet, TAP and VMnet interfaces
 License: GPLv3
@@ -29,13 +29,16 @@ mkdir -p %buildroot%_bindir
 cp %name %buildroot%_bindir
 
 %post
-chmod 4755 %_bindir/%name
+setcap cap_net_admin,cap_net_raw=ep %_bindir/%name
 
 %files
 %doc LICENSE README.rst
 %_bindir/%name
 
 %changelog
+* Wed Jul 31 2019 Anton Midyukov <antohami@altlinux.org> 0.9.16-alt1
+- new version 0.9.16
+
 * Fri Jun 29 2018 Anton Midyukov <antohami@altlinux.org> 0.9.14-alt1.1
 - Rebuilt for aarch64
 
