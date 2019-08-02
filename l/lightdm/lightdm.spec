@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt2
+Release: alt3
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -215,6 +215,7 @@ fi
 %exclude %_datadir/bash-completion/completions/dm-tool
 %_datadir/bash-completion/completions/*
 %_controldir/*
+%_sysconfdir/X11/*
 
 %files -n liblightdm-gobject
 %_libdir/liblightdm-gobject-?.so.*
@@ -252,6 +253,10 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Wed Jul 31 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt3
+- Use a greeter startup wrapper script with keyboard setup (closes:
+  #36933).
+
 * Thu May 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.30.0-alt2
 - remove wayland session support form lightdm.conf
 
