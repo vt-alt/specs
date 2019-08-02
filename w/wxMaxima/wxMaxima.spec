@@ -1,6 +1,6 @@
 Name: wxMaxima
 Version: 19.07.0
-Release: alt1
+Release: alt2
 
 Summary: GUI for the computer algebra system Maxima
 License: GPL
@@ -65,6 +65,9 @@ install -D -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %_pixmapsdir/*%name.png
 
 %changelog
+* Thu Jul 25 2019 Andrey Cherepanov <cas@altlinux.org> 19.07.0-alt2
+- Complete Russian localization (thanks Olesya Gerasimenko).
+
 * Fri Jul 05 2019 Andrey Cherepanov <cas@altlinux.org> 19.07.0-alt1
 - New version.
 - Build only for x86 and aarch64.

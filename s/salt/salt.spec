@@ -1,6 +1,6 @@
 Summary: Tool to manage your infrastructure
 Name: salt
-Version: 2019.2.0
+Version: 2019.8
 Release: alt1
 Url: http://saltstack.org
 #VCS: https://github.com/saltstack/salt
@@ -52,20 +52,6 @@ Group: Development/Python
 Requires: python-module-yaml python-module-msgpack python-module-json
 
 %description  -n python-module-salt
-Salt is a distributed remote execution system used to execute commands
-and query data. It was developed in order to bring the best solutions
-found in the world of remote execution together and make them better,
-faster and more malleable. Salt accomplishes this via its ability to
-handle larger loads of information, and not just dozens, but hundreds,
-or even thousands of individual servers. It handles them quickly and
-through a simple yet manageable interface.
-
-%package -n python-module-salt-tests
-Summary: Test files for management component for salt, a parallel remote execution system
-Group: Development/Python
-Requires: python-module-yaml python-module-msgpack python-module-json
-
-%description  -n python-module-salt-tests
 Salt is a distributed remote execution system used to execute commands
 and query data. It was developed in order to bring the best solutions
 found in the world of remote execution together and make them better,
@@ -186,12 +172,8 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %doc AUTHORS README* LICENSE HACKING.rst
 %config(noreplace) %dir %_sysconfdir/salt
 %config(noreplace) %dir %_sysconfdir/salt/pki
-%exclude %python_sitelibdir/salt/daemons/test
 %python_sitelibdir/*
 %_man7dir/salt.7.*
-
-%files -n python-module-salt-tests
-%python_sitelibdir/salt/daemons/test
 
 %files master
 %config(noreplace) %_sysconfdir/salt/master
@@ -268,6 +250,10 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %_man1dir/salt-proxy.1.*
 
 %changelog
+* Thu Jul 18 2019 Andrey Cherepanov <cas@altlinux.org> 2019.8-alt1
+- New version.
+- Drop python-module-salt-tests missing in upstream.
+
 * Mon Feb 25 2019 Andrey Cherepanov <cas@altlinux.org> 2019.2.0-alt1
 - New version.
 

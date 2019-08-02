@@ -1,9 +1,9 @@
 Name: vmware-view-userinstall
-Version: 4.10.0
-Release: alt4
+Version: 5.1.0
+Release: alt1
 
 Summary: VMware Horizon Client pre-installation scripts
-License: public domain
+License: Public domain
 Group: System/Configuration/Other
 
 Url: http://altlinux.org/vmware-view
@@ -45,6 +45,9 @@ cp -a checksums %buildroot%uinstdir/goodsums
 %uinstdir/goodsums/*
 
 %changelog
+* Wed Jul 24 2019 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
+- New version (VMware-Horizon-Client-5.1.0-13956721).
+
 * Mon Mar 18 2019 Andrey Cherepanov <cas@altlinux.org> 4.10.0-alt4
 - Make package noarch.
 
