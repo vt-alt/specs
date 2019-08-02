@@ -2,7 +2,7 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20190213
+Version: 20190716
 Release: alt1
 Url: https://github.com/raspberrypi/firmware
 License: distributable
@@ -20,6 +20,14 @@ Source6: https://github.com/raspberrypi/firmware/raw/next/boot/start_cd.elf
 Source7: https://github.com/raspberrypi/firmware/raw/next/boot/start_db.elf
 Source8: https://github.com/raspberrypi/firmware/raw/next/boot/start_x.elf
 Source9: https://github.com/raspberrypi/firmware/raw/next/boot/LICENCE.broadcom
+Source10: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4.dat
+Source11: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4cd.dat
+Source12: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4db.dat
+Source13: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4x.dat
+Source14: https://github.com/raspberrypi/firmware/raw/next/boot/start4.elf
+Source15: https://github.com/raspberrypi/firmware/raw/next/boot/start4cd.elf
+Source16: https://github.com/raspberrypi/firmware/raw/next/boot/start4db.elf
+Source17: https://github.com/raspberrypi/firmware/raw/next/boot/start4x.elf
 
 Requires: u-boot-rpi3
 
@@ -47,6 +55,14 @@ Requires: u-boot-rpi3
 %__install -m644 %SOURCE8 %buildroot/%target
 %__install -d %buildroot/%_docdir/%name
 %__install -m644 %SOURCE9 %buildroot/%_docdir/%name
+%__install -m644 %SOURCE10 %buildroot/%target
+%__install -m644 %SOURCE11 %buildroot/%target
+%__install -m644 %SOURCE12 %buildroot/%target
+%__install -m644 %SOURCE13 %buildroot/%target
+%__install -m644 %SOURCE14 %buildroot/%target
+%__install -m644 %SOURCE15 %buildroot/%target
+%__install -m644 %SOURCE16 %buildroot/%target
+%__install -m644 %SOURCE17 %buildroot/%target
 
 echo 'enable_uart=1' > %buildroot/%target/config.txt
 
@@ -55,5 +71,8 @@ echo 'enable_uart=1' > %buildroot/%target/config.txt
 %doc %_docdir/%name
 
 %changelog
+* Sat Jul 20 2019 Anton Midyukov <antohami@altlinux.org> 20190716-alt1
+- new snapshot
+
 * Sat Feb 16 2019 Anton Midyukov <antohami@altlinux.org> 20190213-alt1
 - Initial build
