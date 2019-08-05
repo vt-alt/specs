@@ -3,8 +3,8 @@
 %define theme server
 %define Theme Server
 %define codename FalcoRusticolus
-%define status alpha
-%define status_en alpha
+%define status beta
+%define status_en beta
 %define flavour %brand-%theme
 
 %define design_graphics_abi_epoch 0
@@ -17,7 +17,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.91
+Version: 8.95
 Release: alt1
 Url: https://basealt.ru
 
@@ -325,6 +325,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Tue Jul 23 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.95-alt1
+- set status to beta
+
 * Wed Jul 10 2019 Alexey Shabalin <shaba@altlinux.org> 8.91-alt1
 - Replace license.all.html.in with English page
 - Put status banner to NorthEast
