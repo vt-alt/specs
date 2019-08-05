@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 8.90
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,10 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Mon Jul 29 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt2
+- update to beta verson of ALT Workstation 9.0
+- fix pam_mount options (ALT #37031)
+
 * Mon Jul 01 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt1
 - update to alpha verson of ALT Workstation 9.0
 

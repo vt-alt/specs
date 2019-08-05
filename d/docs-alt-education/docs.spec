@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 8.90
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,9 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Wed Jul 31 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt2
+Beta version of ALT Education 9.0
+
 * Tue Jun 25 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt1
 Alpha version of ALT Education 9.0
 

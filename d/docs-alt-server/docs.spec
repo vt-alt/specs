@@ -4,11 +4,11 @@
 %define _documentationdir %_defaultdocdir/documentation
 %define _docsinstalldir %_defaultdocdir/%variant
 
-%define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-kworkstation
+%define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-kworkstation docs-alt-spworkstation
 
 Name: docs-%variant
-Version: 8.2
-Release: alt4
+Version: 8.90
+Release: alt1
 
 Summary: %Variant documentation
 License: %fdl
@@ -44,6 +44,9 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Mon Jul 29 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt1
+- update to beta verson of ALT Server 9.0
+
 * Wed Oct 17 2018 Elena Mishina <lepata@altlinux.org> 8.2-alt4
 - fix typo
 - update documentation
