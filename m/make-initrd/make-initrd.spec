@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.2.10
+Version: 2.2.12
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -210,6 +210,44 @@ fi
 %endif
 
 %changelog
+* Thu Jul 25 2019 Alexey Gladkov <legion@altlinux.ru> 2.2.12-alt1
+- Runtime changes:
+  + Add /etc/sysconfig/init
+  + Change activation of emergency console
+  + rc.sysexec: Fix verbosity
+  + simplify killall code
+  + Do not print non-error messages if the 'quiet' parameter is
+    specified
+- Feature changes:
+  + plymouth: Handle ImageDir
+  + kbd: Rework feature
+  + kbd: Add gzip/bzip2/xz if files are compressed
+
+* Fri Jul 19 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.2.11-alt1
+- Runtime changes:
+  + Fix optional check for preloaded modules (thx Alexey Gladkov)
+  + Run depmod if rd.depmod=y specified (thx Alexey Gladkov)
+  + To generate fstab also read /etc/fstab.d/*.conf (thx Alexey Gladkov)
+  + Fix panic=0 parameter (thx Alexey Gladkov)
+  + Convert number parameter to number (thx Alexey Gladkov)
+  + Do not stop process cmdline parameters on error (thx Alexey Gladkov)
+  + Create /.initrd if necessary (thx Alexey Gladkov)
+  + Do not umount /proc (thx Alexey Gladkov)
+  + init waits for childs (thx Alexey Gladkov)
+  + init do not use grep (thx Alexey Gladkov)
+  + boolean variable with no value means it is set (thx Alexey Gladkov)
+- Utilities:
+  + initrd-cp: Ignore source file if file is already present in
+    destination (thx Alexey Gladkov)
+  + initrd-cp: parse ldd output more tolerant to the format (thx Alexey Gladkov)
+- Feature changes:
+  + multipath: Use patterns to add scsi_dh* modules (thx Alexey Gladkov)
+  + plymouth: make drivers/char/agp module pattern optional
+  + add-module: ignore missing module patterns too when --optional
+    is passed
+  + qemu: mark all added modules as optional
+  + add-modules: add MODULES_TRY_ADD parameter for optional modules
+
 * Sat Feb 16 2019 Alexey Gladkov <legion@altlinux.ru> 2.2.10-alt1
 - New:
   + Add wrapper for udevd --version
