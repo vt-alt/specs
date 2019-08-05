@@ -1,7 +1,7 @@
 %define _localstatedir /var
 
 Name: sanlock
-Version: 3.7.1
+Version: 3.8.0
 Release: alt1
 Summary: A shared storage lock manager
 
@@ -14,7 +14,8 @@ Patch1: %name-%version-%release.patch
 
 Requires: lib%name = %version-%release
 
-BuildRequires: libblkid-devel libuuid-devel libaio-devel python-devel
+BuildRequires(pre): rpm-build-python3
+BuildRequires: libblkid-devel libuuid-devel libaio-devel python3-devel
 
 %description
 The sanlock daemon manages leases for applications running on a cluster
@@ -39,11 +40,11 @@ Requires: lib%name = %version-%release
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Summary: Python bindings for the sanlock library
-Group: Development/Python
+Group: Development/Python3
 
-%description -n python-module-%name
+%description -n python3-module-%name
 The %name-python package contains a module that permits applications
 written in the Python programming language to use the interface
 supplied by the sanlock library.
@@ -77,7 +78,7 @@ common sanlock lockspace.
 # upstream does not support _smp_mflags
 CFLAGS=$RPM_OPT_FLAGS make -C wdmd
 CFLAGS=$RPM_OPT_FLAGS make -C src
-CFLAGS=$RPM_OPT_FLAGS make -C python
+CFLAGS=$RPM_OPT_FLAGS make -C python PY_VERSION=3
 CFLAGS=$RPM_OPT_FLAGS make -C fence_sanlock
 CFLAGS=$RPM_OPT_FLAGS make -C reset
 
@@ -90,7 +91,7 @@ make -C wdmd \
         DESTDIR=%buildroot
 make -C python \
         install LIBDIR=%_libdir \
-        DESTDIR=%buildroot
+        DESTDIR=%buildroot PY_VERSION=3
 make -C fence_sanlock \
         install LIBDIR=%_libdir \
         DESTDIR=%buildroot
@@ -121,14 +122,14 @@ install -D -m 0644 init.d/wdmd.sysconfig \
         %buildroot/etc/sysconfig/wdmd
 
 install -Dd -m 0755 %buildroot/etc/wdmd.d
-install -Dd -m 0775 %buildroot%_localstatedir/run/sanlock
-install -Dd -m 0775 %buildroot%_localstatedir/run/wdmd
-install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlock
-install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlockd
+install -Dd -m 0775 %buildroot/run/sanlock
+install -Dd -m 0775 %buildroot/run/wdmd
+install -Dd -m 0775 %buildroot/run/fence_sanlock
+install -Dd -m 0775 %buildroot/run/fence_sanlockd
 
 %pre
 %_sbindir/groupadd -r -f %name
-%_sbindir/useradd -r -d %_localstatedir/run/%name -s /bin/false -c "sanlock user" -g %name -G disk %name >/dev/null 2>&1 || :
+%_sbindir/useradd -r -d /run/%name -s /bin/false -c "sanlock user" -g %name -G disk %name >/dev/null 2>&1 || :
 
 %post
 %post_service wdmd
@@ -161,8 +162,8 @@ install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlockd
 %_sbindir/sanlock
 %_sbindir/wdmd
 %dir /etc/wdmd.d
-%dir %attr(0775,sanlock,sanlock) %_localstatedir/run/sanlock
-%dir %attr(0775,root,sanlock) %_localstatedir/run/wdmd
+%dir %attr(0775,sanlock,sanlock) /run/sanlock
+%dir %attr(0775,root,sanlock) /run/wdmd
 %_man8dir/wdmd*
 %_man8dir/sanlock*
 %config(noreplace) %_sysconfdir/logrotate.d/sanlock
@@ -179,8 +180,8 @@ install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlockd
 %_includedir/*
 %_pkgconfigdir/*
 
-%files -n python-module-%name
-%python_sitelibdir/*
+%files -n python3-module-%name
+%python3_sitelibdir/*
 
 %files -n fence-sanlock
 %_unitdir/fence_sanlockd.service
@@ -188,8 +189,8 @@ install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlockd
 %_initddir/fence_sanlockd
 %_sbindir/fence_sanlock
 %_sbindir/fence_sanlockd
-%dir %attr(0775,root,root) %_localstatedir/run/fence_sanlock
-%dir %attr(0775,root,root) %_localstatedir/run/fence_sanlockd
+%dir %attr(0775,root,root) /run/fence_sanlock
+%dir %attr(0775,root,root) /run/fence_sanlockd
 %_man8dir/fence_sanlock*
 
 %files -n sanlk-reset
@@ -200,6 +201,10 @@ install -Dd -m 0775 %buildroot%_localstatedir/run/fence_sanlockd
 %_man8dir/sanlk-reset*
 
 %changelog
+* Thu Jul 11 2019 Alexey Shabalin <shaba@altlinux.org> 3.8.0-alt1
+- 3.8.0
+- switch to python3
+
 * Fri Apr 26 2019 Alexey Shabalin <shaba@altlinux.org> 3.7.1-alt1
 - 3.7.1
 
