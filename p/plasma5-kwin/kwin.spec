@@ -14,8 +14,8 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.16.3
-Release: alt3
+Version: 5.16.4
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -202,6 +202,9 @@ KF5 library
 
 
 %changelog
+* Thu Aug 01 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.4-alt1
+- new version
+
 * Tue Jul 23 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.3-alt3
 - use XRender compositing by default
 

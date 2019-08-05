@@ -8,7 +8,7 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.16.3
+Version: 5.16.4
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -24,7 +24,7 @@ Requires: quota
 
 Source: %rname-%version.tar
 Patch1: alt-sover.patch
-Patch2: alt-dictionary-runner.patch
+#
 Patch3: alt-weather-usability.patch
 Patch4: alt-color-picker.patch
 Patch5: alt-fixed-comic-widget-crash.patch
@@ -98,7 +98,7 @@ KF5 library
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-%patch2 -p2
+#
 %patch3 -p1
 %patch4 -p2
 %patch5 -p2
@@ -156,6 +156,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Thu Aug 01 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.4-alt1
+- new version
+
 * Thu Jul 11 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.3-alt1
 - new version
 
