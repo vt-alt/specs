@@ -3,8 +3,8 @@
 
 
 Name: accountsservice
-Version: 0.6.54
-Release: alt2
+Version: 0.6.55
+Release: alt1
 Summary: D-Bus interfaces for querying and manipulating user account information
 
 Group: System/Base
@@ -114,22 +114,25 @@ GObject introspection devel data for the accountsservice library
 %_girdir/*.gir
 
 %changelog
+* Sat Jul 20 2019 Alexey Shabalin <shaba@altlinux.org> 0.6.55-alt1
+- 0.6.55
+
 * Fri Mar 22 2019 Alexey Shabalin <shaba@altlinux.org> 0.6.54-alt2
 - upstream snapshot 3179baffbb6b521c97b470156d7deb364890bad6
 
 * Mon Oct 01 2018 Alexey Shabalin <shaba@altlinux.org> 0.6.54-alt1
 - 0.6.54
 
-* Tue Aug 14 2018 Fr. Br. George <george@altlinux.ru> 0.6.50-alt2%ubt
+* Tue Aug 14 2018 Fr. Br. George <george@altlinux.ru> 0.6.50-alt2
 - Ignore ALT-specific empty /etc/shadow (closes: #35210)
 
-* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 0.6.50-alt1%ubt
+* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 0.6.50-alt1
 - 0.6.50
 
-* Fri May 18 2018 Alexey Shabalin <shaba@altlinux.ru> 0.6.49-alt1%ubt
+* Fri May 18 2018 Alexey Shabalin <shaba@altlinux.ru> 0.6.49-alt1
 - 0.6.49
 
-* Sat Aug 05 2017 Alexey Shabalin <shaba@altlinux.ru> 0.6.45-alt1%ubt
+* Sat Aug 05 2017 Alexey Shabalin <shaba@altlinux.ru> 0.6.45-alt1
 - 0.6.45
 
 * Mon Dec 26 2016 Alexey Shabalin <shaba@altlinux.ru> 0.6.43-alt1
