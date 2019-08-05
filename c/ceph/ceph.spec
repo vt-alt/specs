@@ -1,4 +1,4 @@
-%define git_version d555a9489eb35f84f2e1ef49b77e19da9d113972
+%define git_version 4f8fa0a0024755aae7d95567c63f11d6862d55be
 
 %def_with ocf
 %def_without tcmalloc
@@ -40,8 +40,8 @@
 %endif
 
 Name: ceph
-Version: 14.2.1
-Release: alt3
+Version: 14.2.2
+Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
 
@@ -1512,6 +1512,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.2-alt1
+- 14.2.2
+
 * Wed Jul 10 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.1-alt3
 - drop SysV support
 
