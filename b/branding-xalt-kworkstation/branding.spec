@@ -17,7 +17,7 @@
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt0.1
+Release: alt0.2
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -37,8 +37,8 @@ BuildRequires: ImageMagick fontconfig bc libGConf-devel
 
 %define Theme_ru Рабочая станция К
 %define Brand_ru Альт
-%define status alpha
-%define status_ru альфа
+%define status BETA
+%define status_ru БЕТА
 %define ProductName %Brand %Theme %altversion
 %define ProductName_ru %Brand_ru %Theme_ru %altversion
 
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Mon Aug 05 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt0.2
+- mark as beta-version
+
 * Tue Jul 02 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt0.1
 - mark as alpha-version
 
