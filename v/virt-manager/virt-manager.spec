@@ -2,7 +2,7 @@
 %define _libexecdir /usr/libexec
 
 Name: virt-manager
-Version: 2.1.0
+Version: 2.2.1
 Release: alt1
 Summary: Virtual Machine Manager
 
@@ -19,7 +19,7 @@ Source: %name-%version.tar
 Requires: virt-manager-common = %EVR
 Requires: libvirt-client
 Requires: virt-install = %EVR
-Requires: python3-module-pygobject3 >= 3.14
+Requires: python3-module-pygobject3 >= 3.22
 Requires: python3-module-libxml2
 Requires: vte3
 Requires: dconf
@@ -37,6 +37,7 @@ Requires: typelib(Pango)
 Requires: typelib(GLib)
 Requires: typelib(Gio)
 Requires: typelib(GtkVnc) = 2.0
+Requires: typelib(GtkSource) = 4
 Requires: typelib(SpiceClientGtk) = 3.0
 Requires: typelib(SpiceClientGLib)
 Requires: typelib(Vte) = 2.91
@@ -125,7 +126,6 @@ done
 
 %files common -f %name.lang
 %dir %_datadir/%name
-%_datadir/%name/virtcli
 %_datadir/%name/virtconv
 %_datadir/%name/virtinst
 
@@ -148,6 +148,9 @@ done
 %_man1dir/virt-xml.1*
 
 %changelog
+* Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.1-alt1
+- 2.2.1 (Fixes: CVE-2019-10183)
+
 * Mon Feb 04 2019 Alexey Shabalin <shaba@altlinux.org> 2.1.0-alt1
 - new version 2.1.0
 - add bash completions
