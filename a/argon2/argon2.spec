@@ -1,8 +1,8 @@
 %define soname 0
 
 Name: argon2
-Version: 20171227
-Release: alt3
+Version: 20190702
+Release: alt1
 
 Summary: The password-hashing tools
 License: Public Domain or ASL 2.0
@@ -58,12 +58,8 @@ developing applications that use lib%name.
 %prep
 %setup
 
-# Fix pkgconfig file
-sed -e 's:lib/@HOST_MULTIARCH@:%_lib:;s/@UPSTREAM_VER@/%version/' -i lib%name.pc
-
 # Honour default RPM build options and library path, do not use -march=native
 sed -e 's:-O3 -Wall:%optflags:' \
-    -e '/^LIBRARY_REL/s:lib:%_lib:' \
     -e 's:-march=\$(OPTTARGET) :${CFLAGS} :' \
     -e 's:CFLAGS += -march=\$(OPTTARGET)::' \
     -i Makefile
@@ -75,10 +71,10 @@ sed -i 's,"O0",0,' src/core.c
 
 %build
 # parallel build is not supported
-%make
+%make ARGON2_VERSION=%version LIBRARY_REL=%_lib 
 
 %install
-%makeinstall_std
+%makeinstall_std ARGON2_VERSION=%version LIBRARY_REL=%_lib
 
 # Drop static library
 rm %buildroot%_libdir/lib%name.a
@@ -90,9 +86,6 @@ for f in %buildroot%_libdir/*.so; do
        ln -fnrs %buildroot/%_lib/"$t" "$f"
 done
 mv %buildroot%_libdir/*.so.* %buildroot/%_lib/
-
-# pkgconfig file
-install -Dpm 644 lib%name.pc %buildroot%_pkgconfigdir/lib%name.pc
 
 %check
 %make test
@@ -110,6 +103,9 @@ install -Dpm 644 lib%name.pc %buildroot%_pkgconfigdir/lib%name.pc
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed Jul 31 2019 Alexey Shabalin <shaba@altlinux.org> 20190702-alt1
+- 20190702
+
 * Sat May 11 2019 Michael Shigorin <mike@altlinux.org> 20171227-alt3
 - fixed build with lcc on e2k
 - minor spec cleanup
