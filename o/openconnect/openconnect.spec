@@ -5,7 +5,7 @@
 %def_with gnutls
 
 Name: openconnect
-Version: 8.02
+Version: 8.03
 Release: alt1
 Summary: Open client for Cisco AnyConnect VPN
 
@@ -26,7 +26,7 @@ BuildRequires: pkgconfig(zlib)
 BuildRequires: pkgconfig(libpcsclite)
 BuildRequires: vpnc-script
 BuildRequires: libkrb5-devel
-BuildRequires: python-modules python-modules-xml groff-extra
+BuildRequires: python3 groff-extra
 Requires: vpnc-script
 %{?_with_openssl:Requires: openssl >= 1.0.1e}
 
@@ -83,6 +83,9 @@ make DESTDIR=%buildroot install
 %_pkgconfigdir/*
 
 %changelog
+* Sat Jul 20 2019 Alexey Shabalin <shaba@altlinux.org> 8.03-alt1
+- new version 8.03
+
 * Sat Feb 02 2019 Alexey Shabalin <shaba@altlinux.org> 8.02-alt1
 - new version 8.02
 
