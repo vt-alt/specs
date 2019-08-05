@@ -1,6 +1,6 @@
 
 Name: acpica
-Version: 20181213
+Version: 20190509
 Release: alt1
 Summary: ACPICA tools for the development and debug of ACPI tables
 
@@ -18,9 +18,11 @@ Source7: acpihelp.1
 Source8: acpinames.1
 Source9: acpisrc.1
 Source10: acpixtract.1
-Source11: badcode.asl.result
-Source12: grammar.asl.result
-Source13: run-misc-tests.sh
+Source11: acpiexamples.1
+Source12: badcode.asl.result
+Source13: grammar.asl.result
+Source14: converterSample.asl.result
+Source15: run-misc-tests.sh
 
 Patch0: big-endian.patch
 Patch1: unaligned.patch
@@ -28,19 +30,18 @@ Patch2: OPT_LDFLAGS.patch
 Patch3: int-format.patch
 Patch4: f23-harden.patch
 Patch5: template.patch
-Patch6: free.patch
-Patch7: ppc64le.patch
-Patch8: arm7hl.patch
-Patch9: big-endian-v2.patch
-Patch10: simple-64bit.patch
-Patch11: mips-be-fix.patch
-Patch12: cve-2017-13693.patch
-Patch13: cve-2017-13694.patch
-Patch14: cve-2017-13695.patch
-Patch15: str-trunc-warn.patch
-Patch16: ptr-cast.patch
-Patch17: aslcodegen.patch
-Patch18: facp.patch
+Patch6: ppc64le.patch
+Patch7: arm7hl.patch
+Patch8: big-endian-v2.patch
+Patch9: simple-64bit.patch
+Patch10: mips-be-fix.patch
+Patch11: cve-2017-13693.patch
+Patch12: cve-2017-13694.patch
+Patch13: cve-2017-13695.patch
+Patch14: str-trunc-warn.patch
+Patch15: ptr-cast.patch
+Patch16: aslcodegen.patch
+Patch17: facp.patch
 
 BuildRequires: bison flex
 
@@ -50,6 +51,7 @@ Provides: %name-tools = %version-%release
 # and it produced only the iasl package listed below; further, the pmtools
 # package -- which provides acpidump -- also provides a /usr/sbin/acpixtract
 # that we don't really want to collide with
+Provides: acpixtract = %version-%release
 Provides: iasl = %version-%release
 Obsoletes: iasl < %version-%release
 
@@ -57,7 +59,7 @@ Obsoletes: iasl < %version-%release
 # acpidump command from lesswatts.org which has now been taken off-line.
 # ACPICA, however, is providing a new version and we again do not want to
 # conflict with the command name.
-
+Provides: acpidump = %version-%release
 Provides: pmtools = %version-%release
 Obsoletes: pmtools < %version-%release
 
@@ -95,20 +97,21 @@ This version of the tools is being released under GPLv2 license.
 %patch2 -p1 -b .OPT_LDFLAGS
 %patch3 -p1 -b .int-format
 %patch4 -p1 -b .f23-harden
-%patch5 -p1 -b .template
-%patch6 -p1 -b .free
-%patch7 -p1 -b .ppc64le
-%patch8 -p1 -b .arm7hl
-%patch9 -p1 -b .big-endian-v2
-%patch10 -p1 -b .simple-64bit
-%patch11 -p1 -b .mips-be-fix
-%patch12 -p1 -b .cve-2017-13693
-%patch13 -p1 -b .cve-2017-13694
-%patch14 -p1 -b .cve-2017-13695
-%patch15 -p1 -b .str-trunc-warn
-%patch16 -p1 -b .ptr-cast
-%patch17 -p1 -b .aslcodegen
-%patch18 -p1 -b .facp
+# do not preserve a backup for this patch; it alters the results
+# of the template test case and forces it to fail
+%patch5 -p1
+%patch6 -p1 -b .ppc64le
+%patch7 -p1 -b .arm7hl
+%patch8 -p1 -b .big-endian-v2
+%patch9 -p1 -b .simple-64bit
+%patch10 -p1 -b .mips-be-fix
+%patch11 -p1 -b .cve-2017-13693
+%patch12 -p1 -b .cve-2017-13694
+%patch13 -p1 -b .cve-2017-13695
+%patch14 -p1 -b .str-trunc-warn
+%patch15 -p1 -b .ptr-cast
+%patch16 -p1 -b .aslcodegen
+%patch17 -p1 -b .facp
 
 cp -p %SOURCE3 iasl.1
 cp -p %SOURCE4 acpibin.1
@@ -118,9 +121,11 @@ cp -p %SOURCE7 acpihelp.1
 cp -p %SOURCE8 acpinames.1
 cp -p %SOURCE9 acpisrc.1
 cp -p %SOURCE10 acpixtract.1
-cp -p %SOURCE11 badcode.asl.result
-cp -p %SOURCE12 grammar.asl.result
-cp -p %SOURCE13 tests/run-misc-tests.sh
+cp -p %SOURCE11 acpiexamples.1
+cp -p %SOURCE12 badcode.asl.result
+cp -p %SOURCE13 grammar.asl.result
+cp -p %SOURCE14 converterSample.asl.result
+cp -p %SOURCE15 tests/run-misc-tests.sh
 chmod a+x tests/run-misc-tests.sh
 
 %build
@@ -198,36 +203,39 @@ cd ..
 %_man1dir/*
 
 %changelog
+* Thu Aug 01 2019 Alexey Shabalin <shaba@altlinux.org> 20190509-alt1
+- 20190509
+
 * Wed Jan 16 2019 Alexey Shabalin <shaba@altlinux.org> 20181213-alt1
 - 20181213
 
-* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 20180810-alt1%ubt
+* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 20180810-alt1
 - 20180810
 
-* Wed May 23 2018 Alexey Shabalin <shaba@altlinux.ru> 20180508-alt1%ubt
+* Wed May 23 2018 Alexey Shabalin <shaba@altlinux.ru> 20180508-alt1
 - 20180508
 
-* Mon Apr 02 2018 Alexey Shabalin <shaba@altlinux.ru> 20180209-alt1%ubt
+* Mon Apr 02 2018 Alexey Shabalin <shaba@altlinux.ru> 20180209-alt1
 - 20180209
 - Fixes:
   + CVE-2017-13693
   + CVE-2017-13694
   + CVE-2017-13695
 
-* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 20180105-alt1%ubt
+* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 20180105-alt1
 - 20180105
 - Pulled in a mips32/BE patch from Debian, for completeness sake
 
-* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 20171110-alt1%ubt
+* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 20171110-alt1
 - 20171110
 - Add patch for mips64el build, should it ever be needed; it also cleans
   up all 64-bit arches, so nice to have regardless
 - Add new patch for a TPM2 big-endian issue.
 
-* Fri Nov 10 2017 Alexey Shabalin <shaba@altlinux.ru> 20170929-alt1%ubt
+* Fri Nov 10 2017 Alexey Shabalin <shaba@altlinux.ru> 20170929-alt1
 - 20170929
 
-* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 20170728-alt1%ubt
+* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 20170728-alt1
 - 20170728
 
 * Mon Dec 26 2016 Alexey Shabalin <shaba@altlinux.ru> 20161222-alt1
