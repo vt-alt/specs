@@ -1,5 +1,5 @@
 Name: usbutils
-Version: 010
+Version: 012
 Release: alt1
 
 Summary: Linux USB utilities
@@ -11,7 +11,7 @@ Url: http://sourceforge.net/projects/linux-usb/
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
-BuildRequires: pkgconfig(libusb-1.0) >= 1.0.0
+BuildRequires: pkgconfig(libusb-1.0) >= 1.0.14
 BuildRequires: pkgconfig(libudev) >= 196
 
 %description
@@ -38,6 +38,9 @@ rm -f %buildroot%_bindir/lsusb.py
 %doc NEWS README.md
 
 %changelog
+* Thu Aug 01 2019 Alexey Shabalin <shaba@altlinux.org> 012-alt1
+- new version 012
+
 * Tue Oct 16 2018 Alexey Shabalin <shaba@altlinux.org> 010-alt1
 - new version 010
 
@@ -114,26 +117,3 @@ rm -f %buildroot%_bindir/lsusb.py
 - 0.9
 - Updated usb.ids file
 
-* Wed Nov 08 2001 Konstantin Volckov <goldhead@altlinux.ru> 0.8-alt1
-- First build for Sisyphus
-
-* Thu Oct 11 2001 Pixel <pixel@mandrakesoft.com> 0.8-3mdk
-- s/Copyright/License/
-
-* Mon Sep 10 2001 Pixel <pixel@mandrakesoft.com> 0.8-2mdk
-- the latest usb.ids contain entries that usbutils doesn't handle (PHY lines),
-  remove them
-
-* Mon Aug 13 2001 Pixel <pixel@mandrakesoft.com> 0.8-1mdk
-- new version
-- get the latest usb.ids from http://www.linux-usb.org/usb.ids
-- remove the hotplug patch which is included by default
-
-* Mon Jul  2 2001 Pixel <pixel@mandrakesoft.com> 0.7-3mdk
-- fix description
-
-* Tue Jun 12 2001 Chmouel Boudjnah <chmouel@mandrakesoft.com> 0.7-2mdk
-- Add hotplug patch.
-
-* Sat Dec 16 2000 Pixel <pixel@mandrakesoft.com> 0.7-1mdk
-- initial spec
