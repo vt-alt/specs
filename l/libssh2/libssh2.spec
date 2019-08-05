@@ -1,5 +1,5 @@
 Name: libssh2
-Version: 1.8.2
+Version: 1.9.0
 Release: alt1
 
 Summary: A library implementing the SSH2 protocol
@@ -67,6 +67,9 @@ developing applications that use %name.
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 1.9.0-alt1
+- 1.9.0
+
 * Wed Apr 03 2019 Alexey Shabalin <shaba@altlinux.org> 1.8.2-alt1
 - 1.8.2
 
