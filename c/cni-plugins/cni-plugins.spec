@@ -12,9 +12,10 @@
 
 %define _libexecdir /usr/libexec
 %define cni_dir %_libexecdir/cni
+%define cni_etc_dir %_sysconfdir/cni
 
 Name: cni-plugins
-Version: 0.7.5
+Version: 0.8.1
 Release: alt1
 Summary: Container Network Interface plugins
 Group: Development/Other
@@ -27,8 +28,6 @@ Provides: containernetworking-plugins = %EVR
 
 BuildRequires(pre): rpm-build-golang
 BuildRequires: /proc
-
-Requires: cni
 
 %description
 The CNI (Container Network Interface) project consists of a
@@ -46,17 +45,23 @@ the containernetworking team.
 %setup -q
 
 %build
-./build.sh
+./build_linux.sh
 
 %install
-mkdir -p %buildroot%cni_dir
+mkdir -p %buildroot{%cni_dir,%cni_etc_dir/net.d}
 install -m0755 bin/* %buildroot%cni_dir/
 
 %files
 %doc LICENSE README.md
+%dir %cni_etc_dir
+%dir %cni_etc_dir/net.d
+%dir %cni_dir
 %cni_dir/*
 
 %changelog
+* Fri Jul 19 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.1-alt1
+- updated to v0.8.1-35-gb6f1a69
+
 * Wed Apr 24 2019 Alexey Shabalin <shaba@altlinux.org> 0.7.5-alt1
 - 0.7.5
 
