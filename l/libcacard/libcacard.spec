@@ -2,15 +2,14 @@
 %def_disable static
 
 Name: libcacard
-Version: 2.6.1
-Release: alt2
+Version: 2.7.0
+Release: alt1
 Summary: Common Access Card (CAC) Emulation
 Group: System/Libraries
 License: LGPLv2.1+
 Url: http://www.spice-space.org/download
 # https://gitlab.freedesktop.org/spice/libcacard.git
 Source: %name-%version.tar
-Patch: %name-%version.patch
 
 BuildRequires: autoconf-archive
 BuildRequires: pkgconfig(glib-2.0) >= 2.22 pkgconfig(gthread-2.0)
@@ -30,7 +29,6 @@ CAC emulation development files.
 
 %prep
 %setup
-%patch -p1
 echo "%version" > .tarball-version
 
 %build
@@ -54,6 +52,9 @@ echo "%version" > .tarball-version
 %_libdir/libcacard.so
 
 %changelog
+* Fri Aug 02 2019 Alexey Shabalin <shaba@altlinux.org> 2.7.0-alt1
+- new version 2.7.0
+
 * Fri Feb 15 2019 Alexey Shabalin <shaba@altlinux.org> 2.6.1-alt2
 - really build 2.6.1
 - fixed build with autoconf-archive-2019.01.06
