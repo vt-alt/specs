@@ -2,8 +2,8 @@
 
 Summary: OpenFabrics InfiniBand Diagnostic Tools
 Name: infiniband-diags
-Version: 2.1.0
-Release: alt2
+Version: 2.2.0
+Release: alt1
 License: GPLv2 or BSD
 Group: System/Base
 Url: https://github.com/linux-rdma/infiniband-diags
@@ -14,9 +14,8 @@ Packager: Timur Aitov <timonbl4@altlinux.org>
 
 BuildRequires: rdma-core-devel
 BuildRequires: libopensm-devel
-BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: /usr/bin/rst2man
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 # old names
 Provides: openib-diags = %version
 Obsoletes: openib-diags
@@ -29,8 +28,8 @@ diagnose an IB subnet.
 %package -n lib%name
 Summary: Shared libraries for IB diagnostic programs
 Group: System/Libraries
-Provides: libibmad = %version-%release
-Obsoletes: libibmad < %version-%release
+Provides: libibmad = %EVR
+Obsoletes: libibmad < %EVR
 
 %description -n lib%name
 This package contains shared libraries for IB diagnostic programs.
@@ -38,9 +37,9 @@ This package contains shared libraries for IB diagnostic programs.
 %package -n lib%name-devel
 Summary: Development files for IB diagnostic programs
 Group: Development/C
-Requires: lib%name = %version-%release
-Provides: libibmad-devel = %version-%release
-Obsoletes: libibmad-devel < %version-%release
+Requires: lib%name = %EVR
+Provides: libibmad-devel = %EVR
+Obsoletes: libibmad-devel < %EVR
 
 %description -n lib%name-devel
 This package contains development files for IB diagnostic programs.
@@ -48,9 +47,9 @@ This package contains development files for IB diagnostic programs.
 %package -n lib%name-devel-static
 Summary: Static library for IB diagnostic programs
 Group: Development/C
-Requires: lib%name-devel = %version-%release
-Provides: libibmad-static = %version-%release
-Obsoletes: libibmad-static < %version-%release
+Requires: lib%name-devel = %EVR
+Provides: libibmad-static = %EVR
+Obsoletes: libibmad-static < %EVR
 
 %description -n lib%name-devel-static
 This package contains static library for IB diagnostic programs.
@@ -208,6 +207,9 @@ chmod 644 %buildroot%_sysconfdir/infiniband-diags/ibdiag.conf
 %_sbindir/set_nodedesc.sh
 
 %changelog
+* Mon Jul 22 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.0-alt1
+- 2.2.0
+
 * Fri Aug 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.1.0-alt2
 - NMU: rebuilt with new python-module-docutils.
 

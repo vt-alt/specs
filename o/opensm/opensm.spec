@@ -1,3 +1,4 @@
+%global _unpackaged_files_terminate_build 1
 %def_disable static
 %define Name OpenSM
 %define _libexecdir /usr/libexec
@@ -5,7 +6,7 @@
 Name: opensm
 %define lname lib%name
 Summary: InfiniBand subnet manager and administration
-Version: 3.3.21
+Version: 3.3.22
 Release: alt1
 License: %gpl2only
 Group: Networking/Other
@@ -75,11 +76,6 @@ Static %Name libraries.
 
 %make_build
 
-rm -f $(find ./ -name 'libosmvendor.la*')
-%make_build ADD_OPENSM="-L$PWD/opensm -lopensm -L$PWD/opensm/.libs"
-rm -f $(find ./ -name 'libopensm.la*')
-%make_build ADD_VENDOR="-L$PWD/libvendor -losmvendor -L$PWD/libvendor/.libs"
-
 cd opensm
 ./opensm -c ../opensm-%version.conf
 
@@ -96,6 +92,7 @@ OSM_ARGS=
 OSM_HOSTS=
 __CONF__
 
+rm -f %buildroot/etc/init.d/opensmd
 
 %post 
 %post_service %name
@@ -114,6 +111,7 @@ __CONF__
 %_unitdir/%name.service
 %_libexecdir/%name-launch
 %_sbindir/*
+%_man5dir/*
 %_man8dir/*
 %dir %_cachedir/%name
 
@@ -130,6 +128,9 @@ __CONF__
 %endif
 
 %changelog
+* Sat Jul 20 2019 Alexey Shabalin <shaba@altlinux.org> 3.3.22-alt1
+- 3.3.22
+
 * Thu Jan 17 2019 Alexey Shabalin <shaba@altlinux.org> 3.3.21-alt1
 - 3.3.21
 
