@@ -7,7 +7,7 @@
 %add_verify_elf_skiplist /%_lib/libmultipath.so.*
 
 Name: multipath-tools
-Version: 0.8.1
+Version: 0.8.2
 Release: alt1
 
 Summary: Tools to manage multipath devices with device-mapper
@@ -114,7 +114,7 @@ mkdir -p %buildroot{/sbin,%_libdir,%_man8dir,%_initdir,%_unitdir,%_udevrulesdir,
 
 #install -pm644 %SOURCE2 %buildroot%_udevrulesdir/56-multipath.rules
 install -pm755 %SOURCE3 %buildroot%_initdir/multipathd
-install -pm644 %SOURCE4 %buildroot%_modulesloaddir/multipath.conf
+#install -pm644 %SOURCE4 %buildroot%_modulesloaddir/multipath.conf
 install -pm644 %SOURCE5 %buildroot%_sysconfdir/multipath.conf
 
 %post
@@ -131,7 +131,7 @@ install -pm644 %SOURCE5 %buildroot%_sysconfdir/multipath.conf
 /sbin/mpathpersist
 %_udevrulesdir/*
 %exclude %_udevrulesdir/*kpartx.rules
-%_modulesloaddir/*
+#%_modulesloaddir/*
 %dir %_sysconfdir/multipath
 %config(noreplace) %attr(644,root,root) %_sysconfdir/multipath.conf
 %_initdir/*
@@ -173,6 +173,11 @@ install -pm644 %SOURCE5 %buildroot%_sysconfdir/multipath.conf
 %_pkgconfigdir/libdmmp.pc
 
 %changelog
+* Mon Jul 08 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.2-alt1
+- 0.8.2
+- do not package %%_modulesloaddir/multipath.conf,
+  because ExecPre loaded kernel modules
+
 * Tue May 07 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.1-alt1
 - 0.8.1
 - fixed udev rules
