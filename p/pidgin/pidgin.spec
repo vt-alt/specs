@@ -9,7 +9,7 @@
 %def_disable gevolution
 %def_enable meanwhile
 %def_disable cap
-%def_disable nm
+%def_enable nm
 %def_disable mono
 %def_enable consoleui
 %def_enable dbus
@@ -33,7 +33,7 @@
 
 Name: pidgin
 Version: 2.13.0
-Release: alt5
+Release: alt6
 
 Summary: A GTK+ based multiprotocol instant messaging client
 License: GPL
@@ -48,53 +48,52 @@ Obsoletes: gaim
 Conflicts: pidgin-mini
 
 Requires: libpurple = %version-%release
-Requires(post,postun): desktop-file-utils
-PreReq: GConf
+Requires(pre): GConf
 
 Source0: %name-%version.tar
 Source2: purple-altlinux-prefs.xml
 Patch0: %name-%version-%release.patch
 
 # From configure.ac
-BuildPreReq: glib2-devel libgtk+2-devel
-BuildPreReq: libpango-devel >= 1.4.0
-BuildPreReq: libXext-devel libX11-devel
-%{?_enable_gtkspell:BuildPreReq: libgtkspell-devel >= 2.0.2}
-%{?_enable_nss:BuildPreReq: libnss-devel libnspr-devel}
-%{?_enable_cyrus_sasl:BuildPreReq: libsasl2-devel}
-%{?_enable_gnutls:BuildPreReq: libgnutls-devel}
-%{?_enable_consoleui:BuildPreReq: libncurses-devel libncursesw-devel}
-%{?_enable_nm:BuildPreReq: NetworkManager-devel}
-%{?_enable_meanwhile:BuildPreReq: libmeanwhile-devel}
-%{?_enable_perl:BuildPreReq: perl-devel}
-%{?_enable_tcl:BuildPreReq: tcl-devel}
-%{?_enable_tk:BuildPreReq: tk-devel}
+BuildRequires: glib2-devel libgtk+2-devel
+BuildRequires: libpango-devel >= 1.4.0
+BuildRequires: libXext-devel libX11-devel
+%{?_enable_gtkspell:BuildRequires: libgtkspell-devel >= 2.0.2}
+%{?_enable_nss:BuildRequires: libnss-devel libnspr-devel}
+%{?_enable_cyrus_sasl:BuildRequires: libsasl2-devel}
+%{?_enable_gnutls:BuildRequires: libgnutls-devel}
+%{?_enable_consoleui:BuildRequires: libncurses-devel libncursesw-devel}
+%{?_enable_nm:BuildRequires: libnm-devel}
+%{?_enable_meanwhile:BuildRequires: libmeanwhile-devel}
+%{?_enable_perl:BuildRequires: perl-devel}
+%{?_enable_tcl:BuildRequires: tcl-devel}
+%{?_enable_tk:BuildRequires: tk-devel}
 %{?_enable_mono:BuildRequires: mono-devel mono-mcs rpm-build-mono mono-nunit-devel /proc}
-%{?_enable_gevolution:BuildPreReq: evolution-data-server-devel}
-%{?_enable_dbus:BuildPreReq: libdbus-devel >= 0.35 libdbus-glib-devel >= 0.35}
-%{?_enable_avahi:BuildPreReq: libavahi-devel libavahi-glib-devel}
-%{?_enable_dot:BuildPreReq: graphviz}
-%{?_enable_doxygen:BuildPreReq: doxygen}
-%{?_enable_idn:BuildPreReq: libidn-devel}
-%{?_enable_farstream:BuildPreReq: libfarstream0.2-devel >= 0.2.7}
-%{?_enable_vv:BuildPreReq: gst-plugins1.0-devel}
-%{?_enable_gstreamer:BuildPreReq: gstreamer1.0-devel}
-%{?_enable_sm:BuildPreReq: libSM-devel}
-%{?_enable_screensaver:BuildPreReq: libXScrnSaver-devel xorg-scrnsaverproto-devel}
-BuildPreReq: libsqlite3-devel >= 3.3
-BuildPreReq: libxml2-devel >= 2.6.0
-BuildPreReq: GConf libGConf-devel
+%{?_enable_gevolution:BuildRequires: evolution-data-server-devel}
+%{?_enable_dbus:BuildRequires: libdbus-devel >= 0.35 libdbus-glib-devel >= 0.35}
+%{?_enable_avahi:BuildRequires: libavahi-devel libavahi-glib-devel}
+%{?_enable_dot:BuildRequires: graphviz}
+%{?_enable_doxygen:BuildRequires: doxygen}
+%{?_enable_idn:BuildRequires: libidn-devel}
+%{?_enable_farstream:BuildRequires: libfarstream0.2-devel >= 0.2.7}
+%{?_enable_vv:BuildRequires: gst-plugins1.0-devel}
+%{?_enable_gstreamer:BuildRequires: gstreamer1.0-devel}
+%{?_enable_sm:BuildRequires: libSM-devel}
+%{?_enable_screensaver:BuildRequires: libXScrnSaver-devel xorg-scrnsaverproto-devel}
+BuildRequires: libsqlite3-devel >= 3.3
+BuildRequires: libxml2-devel >= 2.6.0
+BuildRequires(pre): GConf libGConf-devel
 
 BuildRequires: gcc-c++ libgpg-error
-BuildRequires: python-modules-encodings python-module-future
+BuildRequires: python3-devel
 # for shared gadu plugin
 BuildRequires: libgadu-devel >= 1.11.0
 BuildRequires: intltool
 # now intltool wants that
 BuildRequires: perl-XML-Parser
 
-BuildPreReq: desktop-file-utils
-BuildPreReq: ca-certificates
+BuildRequires: desktop-file-utils
+BuildRequires: ca-certificates
 
 %description
 Pidgin allows you to talk to anyone using a variety of messaging
@@ -262,6 +261,13 @@ This package provides client library for purple-based IM like Pidgin and Finch
 
 cp %SOURCE2 prefs.xml
 
+# Bug #528796: Get rid of #!/usr/bin/env python
+# Upstream refuses to use ./configure --python-path= in these scripts.
+for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/dbus-buddyicons-example.py \
+            libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
+    sed -i 's/env python/python3/' $file
+done
+
 %build
 %autoreconf
 %configure \
@@ -313,6 +319,7 @@ cp %SOURCE2 prefs.xml
 %if_enabled perl
 	--with-perl-lib=vendor \
 %endif
+	--with-python=%__python3 \
 	--with-system-ssl-certs=%_datadir/ca-certificates \
 	--with-extraversion=%release
 
@@ -455,6 +462,12 @@ fi
 %endif
 
 %changelog
+* Tue Jul 16 2019 Alexey Shabalin <shaba@altlinux.org> 2.13.0-alt6
+- Build against with NM
+- Drop aim support
+- Build with python3
+- fix generate russian comment in desktop file (ALT bug 36824)
+
 * Wed Dec 19 2018 Grigory Ustinov <grenka@altlinux.org> 2.13.0-alt5
 - Rebuild without NM support.
 
