@@ -1,7 +1,7 @@
 %define _name exo
 
 Name: lib%_name
-Version: 0.12.6
+Version: 0.12.7
 Release: alt1
 
 Summary: Extension library to Xfce
@@ -172,6 +172,9 @@ make check
 %_datadir/gtk-doc/html/%{_name}*
 
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 0.12.7-alt1
+- Updated to 0.12.7.
+
 * Fri Jun 14 2019 Mikhail Efremov <sem@altlinux.org> 0.12.6-alt1
 - Updated to 0.12.6.
 
