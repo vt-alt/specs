@@ -1,8 +1,6 @@
 Name: xfce4-session
-Version: 4.13.3
+Version: 4.13.4
 Release: alt1
-
-%def_without devel
 
 Summary: Session manager for Xfce desktop environment
 Summary (ru): Менеджер сессий для окружения рабочего стола Xfce
@@ -32,6 +30,7 @@ Requires: wm-common-freedesktop
 Requires: xfce4-about
 
 Obsoletes: xfce-utils < %version
+Obsoletes: libxfsm < %version-%release
 
 %define _unpackaged_files_terminate_build 1
 
@@ -41,25 +40,6 @@ Obsoletes: xfce-utils < %version
 %description -l ru
 Данный пакет содержит в себе менеджер сессий, используемый в окружении
 рабочего стола Xfce.
-
-%package -n libxfsm
-Summary: Library for Xfce session manager plugins
-Group: Development/C
-License: GPL
-
-%description -n libxfsm
-This package contains library for Xfce session manager.
-
-%if_with devel
-%package devel
-Summary: Development files to build Xfce session manager plugins
-Group: Development/C
-License: GPL
-Requires: libxfsm = %version-%release
-
-%description devel
-This package contains files to develop plugins for Xfce session manager.
-%endif
 
 %prep
 %setup
@@ -97,20 +77,11 @@ install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
 %_datadir/xsessions/*.desktop
 %_datadir/polkit-1/actions/*.policy
 
-%files -n libxfsm
-%_libdir/lib*.so.*
-
-%if_with devel
-%files devel
-#_includedir/xfce4/*
-%_libdir/lib*.so
-%_pkgconfigdir/*.pc
-%else
-%exclude %_libdir/lib*.so
-%exclude %_pkgconfigdir/*.pc
-%endif
-
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
+- Drop libxfsm subpackage.
+- Updated to 4.13.4.
+
 * Mon Jul 01 2019 Mikhail Efremov <sem@altlinux.org> 4.13.3-alt1
 - Updated to 4.13.3.
 
