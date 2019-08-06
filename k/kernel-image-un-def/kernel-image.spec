@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.1
-%define kernel_sublevel .18
+%define kernel_sublevel .21
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -23,7 +23,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 
 # Enable/disable SGML docs formatting
 %if "%sub_flavour" == "def" && %kgcc_version > 5
-%def_disable docs
+%def_enable docs
 %else
 %def_disable docs
 %endif
@@ -76,6 +76,14 @@ ExclusiveArch: i586 x86_64 ppc64le
 %define kvm_modules_dir arch/powerpc/kvm
 %endif
 
+%define qemu_pkg %_arch
+%ifarch %ix86 x86_64
+%define qemu_pkg x86
+%endif
+%ifarch ppc64le
+%define qemu_pkg ppc
+%endif
+
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
@@ -93,7 +101,7 @@ BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: openssl-devel 
 # for check
-%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system glibc-devel-static}}
+%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
@@ -132,10 +140,11 @@ these drivers are built separately from the kernel; they are available
 in separate packages (kernel-modules-*-%flavour).
 
 There are some kernel variants in ALT systems:
-* std-def: standard longterm kernel
-* std-pae: legacy i686 kernel with 64G memory support
-* std-debug: kernel with some DEBUG options enabled
-* un-def: more modern then std-def and with forced preemption enabled on x86
+* std-def: standard longterm kernel without preemption;
+* std-pae: variant of std-def kernel for i686 with 64G memory support;
+* std-debug: variant of std-def kernel kernel with some DEBUG options enabled;
+* un-def: more modern then std-def and with voluntary (on ppc64le) and
+  forced (on x86) preemption enabled.
 
 %package -n kernel-image-domU-%flavour
 Summary: Uncompressed linux kernel for XEN domU boot 
@@ -659,11 +668,18 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %files -n kernel-modules-v4l-%flavour
 %modules_dir/kernel/drivers/media/
 %dir %modules_dir/kernel/drivers/staging/media
+%dir %modules_dir/kernel/drivers/staging
 
 %files -n kernel-modules-staging-%flavour
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.21-alt1
+- v5.1.21  (Fixes: CVE-2019-11478)
+
+* Sun Jul 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.19-alt1
+- v5.1.19
+
 * Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.18-alt1
 - v5.1.18  (Fixes: CVE-2019-3846)
 
