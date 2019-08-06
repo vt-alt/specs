@@ -1,5 +1,5 @@
 Name: xfwm4
-Version: 4.13.3
+Version: 4.13.4
 Release: alt1
 
 %def_disable epoxy
@@ -79,6 +79,9 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
+- Updated to 4.13.4.
+
 * Sun Jun 30 2019 Mikhail Efremov <sem@altlinux.org> 4.13.3-alt1
 - Drop exo-csource from BR.
 - Updated to 4.13.3.
