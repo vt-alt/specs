@@ -2,8 +2,8 @@
 %def_enable vala
 
 Name: libxfce4ui
-Version: 4.13.6
-Release: alt2
+Version: 4.13.7
+Release: alt1
 
 Summary: Various GTK+2 widgets for Xfce
 Summary (ru_RU.UTF-8): Набор виджетов GTK+2 для Xfce
@@ -196,6 +196,9 @@ This package contains the 'About Xfce' dialog.
 %_desktopdir/xfce4-about.desktop
 
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
+- Updated to 4.13.7.
+
 * Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt2
 - Enable vala support.
 - Enable GObject introspection support.
