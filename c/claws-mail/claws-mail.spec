@@ -20,6 +20,7 @@
 %def_disable 	fancy
 %endif
 %def_enable 	gdata
+%def_enable 	litehtmlviewer
 %ifnarch %e2k
 %def_enable 	python
 %else
@@ -30,8 +31,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name:   	claws-mail
-Version:	3.17.3
-Release: 	alt3
+Version:	3.17.4
+Release: 	alt1
 
 Summary:	Claws Mail is a GTK+ based, user-friendly, lightweight, and fast email client.
 License: 	%gpl3plus
@@ -62,7 +63,7 @@ BuildRequires: libgtk+2-devel
 BuildRequires: libarchive-devel
 %endif
 
-# For plugin-fancy, plugin-rssyl, plugin-spamreport, plugin-vcalendar, plugin-libravatar
+# For plugin-fancy, plugin-libravatar, plugin-litehtmlviewer, plugin-rssyl, plugin-spamreport, plugin-vcalendar
 BuildRequires: libcurl-devel
 
 # For plugin-fancy
@@ -74,6 +75,14 @@ BuildRequires: libsoup-gnome-devel
 # For plugin-gdata
 %if_enabled gdata
 BuildRequires: libgdata-devel >= 0.17.1
+%endif
+
+# For plugin-litehtmlviewer
+%if_enabled litehtmlviewer
+BuildRequires: gcc-c++
+BuildRequires: libcairo-devel
+BuildRequires: fontconfig-devel
+BuildRequires: libgumbo-devel
 %endif
 
 # For plugin-rssyl
@@ -176,6 +185,9 @@ Requires:	%name-plugin-fetchinfo = %version-%release
 Requires:	%name-plugin-gdata = %version-%release
 %endif
 Requires:	%name-plugin-libravatar = %version-%release
+%if_enabled litehtmlviewer
+Requires:	%name-plugin-litehtmlviewer = %version-%release
+%endif
 Requires:	%name-plugin-mailmbox = %version-%release
 Requires:	%name-plugin-managesieve = %version-%release
 Requires:	%name-plugin-newmail = %version-%release
@@ -343,6 +355,16 @@ more about what is this at http://wiki.libravatar.org/description/.
 By default missing profiles in the libravatar site are also searched
 in http://gravatar.com, so it will also show pictures from gravatar
 profiles.
+
+%package	plugin-litehtmlviewer
+Summary:	Viewer plugin for HTML emails, using the litehtml library
+Group:		Networking/Mail
+License:	%gpl3plus,%bsdstyle
+Requires:	%name = %version-%release
+
+%description	plugin-litehtmlviewer
+Viewer plugin for HTML emails, using the litehtml library
+(http://www.litehtml.com/).
 
 %package	plugin-mailmbox
 Summary:	This plugin handles mailboxes in mbox format
@@ -614,6 +636,9 @@ export LDFLAGS=-pie
 		%if_disabled gdata
 		--disable-gdata-plugin \
 		%endif
+		%if_disabled litehtmlviewer
+		--disable-litehtml_viewer-plugin \
+		%endif
 		%if_disabled python
 		--disable-python-plugin \
 		%endif
@@ -642,6 +667,12 @@ install -p -m644 %name.png %buildroot%_pixmapsdir/
 
 # XXX: Make sure the path below is the same as the path above.
 %define _claws_plugins_path %_libdir/%name/plugins
+
+%if_enabled litehtmlviewer
+# Install litehtml BSD 3-clause license
+mkdir -p %buildroot%_defaultdocdir/%name-plugin-litehtmlviewer-%version/litehtml/
+install -p -m644 src/plugins/litehtml_viewer/litehtml/LICENSE %buildroot%_defaultdocdir/%name-plugin-litehtmlviewer-%version/litehtml/
+%endif
 
 %find_lang %name
 
@@ -788,6 +819,12 @@ install -p -m644 %name.png %buildroot%_pixmapsdir/
 %_datadir/appdata/claws-mail-libravatar.metainfo.xml
 %endif
 
+%if_enabled litehtmlviewer
+%files plugin-litehtmlviewer
+%doc %_defaultdocdir/%name-plugin-litehtmlviewer-%version/
+%_claws_plugins_path/litehtml_viewer.so
+%endif
+
 %files plugin-mailmbox
 %_claws_plugins_path/mailmbox.so
 %if_enabled appdata
@@ -869,6 +906,10 @@ install -p -m644 %name.png %buildroot%_pixmapsdir/
 %exclude %_datadir/doc/%name/RELEASE_NOTES
 
 %changelog
+* Wed Jul 31 2019 Mikhail Efremov <sem@altlinux.org> 3.17.4-alt1
+- Package litehtml_viewer plugin.
+- Updated to 3.17.4.
+
 * Tue Mar 12 2019 Mikhail Efremov <sem@altlinux.org> 3.17.3-alt3
 - Patches from upstream:
   + Fix buf #4166: corrupted double-linked list.
