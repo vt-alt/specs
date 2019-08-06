@@ -3,8 +3,8 @@
 %def_enable vala
 
 Name: xfce4-panel
-Version: 4.13.6
-Release: alt2
+Version: 4.13.7
+Release: alt1
 
 Summary: Panel for Xfce
 Summary(ru_RU.UTF-8): Панель для окружения рабочего стола Xfce
@@ -194,6 +194,9 @@ Vala bindings for libxfce4panel-gtk3.
 %endif
 
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
+- Updated to 4.13.7.
+
 * Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.6-alt2
 - Enable vala support.
 - Enable GObject introspection support.
