@@ -1,5 +1,5 @@
 Name: parole
-Version: 1.0.2
+Version: 1.0.3
 Release: alt1
 
 %def_enable clutter
@@ -71,7 +71,7 @@ mkdir m4
 %_libdir/%name-*/
 %exclude %_libdir/%name-*/*.la
 %_desktopdir/*.desktop
-%_datadir/appdata/%name.appdata.xml
+%_datadir/metainfo/%name.appdata.xml
 %_iconsdir/hicolor/*/apps/*
 %_datadir/%name/
 
@@ -80,6 +80,9 @@ mkdir m4
 %doc %_datadir/gtk-doc/html/*
 
 %changelog
+* Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 1.0.3-alt1
+- Updated to 1.0.3.
+
 * Thu Apr 04 2019 Mikhail Efremov <sem@altlinux.org> 1.0.2-alt1
 - Updated to 1.0.2.
 
