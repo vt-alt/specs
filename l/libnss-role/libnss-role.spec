@@ -1,5 +1,5 @@
 Name: libnss-role
-Version: 0.4.0
+Version: 0.4.1
 Release: alt1
 
 Summary: NSS API library and admin tools for roles and privilegies
@@ -73,6 +73,9 @@ update_chrooted all
 %_includedir/role/
 
 %changelog
+* Tue Aug 06 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.4.1-alt1
+- Fix double memory free with crash before writing (Closes: 37077)
+
 * Wed Jun 19 2019 Vitaly Lipatov <lav@altlinux.ru> 0.4.0-alt1
 - parser.c: fix memory leak
 - major refactoring
