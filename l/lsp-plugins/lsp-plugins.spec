@@ -1,5 +1,5 @@
 Name: lsp-plugins
-Version: 1.1.9
+Version: 1.1.10
 Release: alt1
 
 Summary: Linux Studio Plugins
@@ -10,7 +10,7 @@ Url: https://lsp-plug.in/
 #Source: https://sourceforge.net/projects/%name/files/%name/%version/%name-src-%version.tar.gz
 #VCS: https://github.com/sadko4u/lsp-plugins
 Source: https://github.com/sadko4u/%name/archive/%name-%version.tar.gz
-Patch: %name-1.1.9-alt-rpath.patch
+Patch: %name-1.1.10-alt-rpath.patch
 
 ExclusiveArch: %ix86 x86_64
 
@@ -80,7 +80,10 @@ export PLATFORM=Linux SYSTEM=Linux
 
 %files -n jack-%name
 %_bindir/*
-%_libdir/%name-jack-core-%version.so
+%dir %_libdir/%name
+%_libdir/%name/%name-jack-core-%version.so
+%_libdir/%name/%name-r3d-glx.so
+
 %doc CHANGELOG.txt README.txt
 
 %files -n ladspa-%name
@@ -100,6 +103,9 @@ export PLATFORM=Linux SYSTEM=Linux
 
 
 %changelog
+* Wed Jul 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1.10-alt1
+- 1.1.10
+
 * Thu Apr 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1.9-alt1
 - 1.1.9
 

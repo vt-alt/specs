@@ -8,7 +8,7 @@
 %def_enable docs
 
 Name: gitg
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: git repository viewer targeting gtk+/GNOME
@@ -175,6 +175,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_girdir/GitgExt-%api_ver.gir
 
 %changelog
+* Thu Jul 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- 3.32.1
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

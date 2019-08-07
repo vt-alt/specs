@@ -25,7 +25,7 @@
 %endif
 
 Name: %{_name}2
-Version: 2.8.3
+Version: 2.8.4
 Release: alt1
 
 Summary: Disk Management Service (Second Edition)
@@ -339,6 +339,9 @@ fi
 %exclude %_libdir/%name/modules/*.la
 
 %changelog
+* Tue Jul 23 2019 Yuri N. Sedunov <aris@altlinux.org> 2.8.4-alt1
+- 2.8.4
+
 * Mon Jun 17 2019 Yuri N. Sedunov <aris@altlinux.org> 2.8.3-alt1
 - 2.8.3
 

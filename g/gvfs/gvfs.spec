@@ -1,4 +1,4 @@
-%def_disable snapshot
+%def_enable snapshot
 
 %define ver_major 1.40
 
@@ -32,8 +32,8 @@
 %def_disable check
 
 Name: gvfs
-Version: %ver_major.1
-Release: alt1.1
+Version: %ver_major.2
+Release: alt1
 
 Summary: The GNOME virtual filesystem libraries
 License: %lgpl2plus
@@ -528,6 +528,10 @@ setcap -q cap_net_bind_service=ep %_libexecdir/gvfsd-nfs ||:
 
 
 %changelog
+* Sun Aug 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.40.2-alt1
+- updated to 1.40.2-2-g4fd68eb2 (fixed CVE-2019-12447,
+  CVE-2019-12448, CVE-2019-12449, CVE-2019-12795)
+
 * Sat Apr 20 2019 Yuri N. Sedunov <aris@altlinux.org> 1.40.1-alt1.1
 - fix man knob (unbuilt manpages can't be packaged)
 

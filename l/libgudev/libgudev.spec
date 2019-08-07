@@ -1,7 +1,7 @@
-%def_enable snapshot
+%def_disable snapshot
 
 %define _name gudev
-%define ver_major 232
+%define ver_major 233
 %define api_ver 1.0
 
 %def_disable static
@@ -12,7 +12,7 @@
 
 Name: lib%_name
 Version: %ver_major
-Release: alt3
+Release: alt1
 Epoch: 1
 
 Summary: UDev GObject bindings
@@ -27,7 +27,7 @@ Source: %name-%version.tar
 %endif
 
 %define udev_ver 199
-%define glib_ver 2.30
+%define glib_ver 2.38
 # https://github.com/martinpitt/umockdev/issues/69
 %define umockdev_ver 0.11.2
 
@@ -126,6 +126,9 @@ GObject introspection devel data for %name.
 
 
 %changelog
+* Sat Aug 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1:233-alt1
+- 233
+
 * Sat Apr 14 2018 Yuri N. Sedunov <aris@altlinux.org> 1:232-alt3
 - required umockdev >= 0.11.2 for check
 

@@ -4,7 +4,7 @@
 %define xdg_name org.midori_browser.Midori
 
 Name: midori
-Version: 8.0
+Version: 9.0
 Release: alt1
 
 Summary: Midori is a lightweight web browser
@@ -50,14 +50,17 @@ And it looks good doing that, too. Oh, and of course it's free software.
 %_libdir/libmidori-core.so*
 %_typelibdir/Midori-%api_ver.typelib
 %_desktopdir/%xdg_name.desktop
-%_datadir/metainfo/%name.appdata.xml
+%_datadir/metainfo/%xdg_name.appdata.xml
 %_iconsdir/hicolor/*/*/*.*
-%doc README* ChangeLog
+%doc README* CHANGELOG*
 
 %exclude %_girdir/Midori-%api_ver.gir
 %exclude %_docdir/%name
 
 %changelog
+* Fri Aug 02 2019 Yuri N. Sedunov <aris@altlinux.org> 9.0-alt1
+- 9.0
+
 * Sat Mar 02 2019 Yuri N. Sedunov <aris@altlinux.org> 8.0-alt1
 - 8.0
 

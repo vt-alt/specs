@@ -4,7 +4,7 @@
 %def_disable static
 
 Name: %_name%api_ver
-Version: %ver_major.1
+Version: %ver_major.2
 Release: alt1
 
 Summary: a collection library providing GObject-based interfaces
@@ -111,6 +111,9 @@ applications with %name.
 %endif
 
 %changelog
+* Mon Aug 05 2019 Yuri N. Sedunov <aris@altlinux.org> 0.20.2-alt1
+- 0.20.2
+
 * Mon Feb 12 2018 Yuri N. Sedunov <aris@altlinux.org> 0.20.1-alt1
 - 0.20.1
 

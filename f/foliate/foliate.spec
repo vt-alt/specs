@@ -4,7 +4,7 @@
 %define rdn_name com.github.johnfactotum.Foliate
 
 Name: foliate
-Version: %ver_major.2
+Version: %ver_major.3
 Release: alt1
 
 Summary: A simple and modern GTK eBook reader
@@ -77,6 +77,9 @@ Foliate is a simple and modern GTK eBook reader with following features:
 
 
 %changelog
+* Thu Jul 25 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.3-alt1
+- 1.5.3
+
 * Fri Jul 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.2-alt1
 - 1.5.2
 

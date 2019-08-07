@@ -3,16 +3,16 @@
 %def_disable palettes
 
 Name: elementary-icon-theme
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: simple and appealing Tango-styled icon theme
 Group: Graphical desktop/Other
 License: GPLv3+
-Url: https://launchpad.net/elementaryicons
+Url: https://github.com/elementary/icons
 
 # VCS:https://github.com/elementary/icons.git
-Source: https://github.com/elementary/icons/archive/icons-%version.tar.gz
+Source: %url/archive/%version/icons-%version.tar.gz
 
 BuildArch: noarch
 
@@ -45,6 +45,9 @@ theme.
 %doc AUTHORS README*
 
 %changelog
+* Mon Jul 22 2019 Yuri N. Sedunov <aris@altlinux.org> 5.0.4-alt1
+- 5.0.4
+
 * Fri Feb 15 2019 Yuri N. Sedunov <aris@altlinux.org> 5.0.3-alt1
 - 5.0.3
 

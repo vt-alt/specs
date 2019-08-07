@@ -5,7 +5,7 @@
 %def_enable ffmpegthumbnailer
 
 Name: geeqie
-Version: 1.4
+Version: 1.5
 Release: alt1
 
 Summary: Graphics file browser utility
@@ -20,8 +20,10 @@ Source: %url/%name-%version.tar.xz
 Source: %name-%version.tar
 %endif
 
-Patch: %name-1.3-alt-lfs.patch
-Patch1: %name-1.3-libdir-fix.patch
+Patch: %name-1.5-libdir-fix.patch
+
+Provides: gqview = %version-%release
+Obsoletes: gqview < %version
 
 BuildRequires: gcc-c++ gnome-doc-utils intltool libgtk+2-devel libjpeg-devel
 BuildRequires: liblcms2-devel liblirc-devel libtiff-devel libexiv2-devel
@@ -37,19 +39,20 @@ ExifTool.
 
 %prep
 %setup
-%patch -p1
-%patch1 -p1 -b .libdir
+%patch -b .libdir
+sed -i 's/\-Werror//' configure.ac
 
-subst 's/ChangeLog//
-       s/ChangeLog\.html//' Makefile.am
+#subst 's/ChangeLog//
+#       s/ChangeLog\.html//' Makefile.am
 
 %build
-%add_optflags -Wno-error=unused-but-set-variable
+#%%add_optflags -Wno-error=unused-variable -Wno-parentheses -Wunused-variable
 %{?_enable_ffmpegthumbnailer:%add_optflags -Wno-error=unused-function}
 %autoreconf
 %configure --enable-lirc \
 	--enable-largefile \
 	--with-readmedir=%_datadir/%name \
+	--disable-lua \
 	%{subst_enable ffmpegthumbnailer}
 %make_build
 
@@ -70,6 +73,9 @@ install -pD -m644 %name.png %buildroot%_liconsdir/%name.png
 %doc NEWS README.*
 
 %changelog
+* Fri Aug 02 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5-alt1
+- 1.5
+
 * Thu Jan 04 2018 Yuri N. Sedunov <aris@altlinux.org> 1.4-alt1
 - 1.4
 

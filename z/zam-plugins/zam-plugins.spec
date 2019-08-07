@@ -1,8 +1,8 @@
 %def_enable snapshot
 
 Name: zam-plugins
-Version: 3.10
-Release: alt2
+Version: 3.11
+Release: alt1
 
 Summary: A collection of LV2/LADSPA/JACK audio plugins
 Group: Sound
@@ -14,11 +14,6 @@ Source: https://github.com/zamaudio/%name/archive/%version/%name-%version.tar.gz
 %else
 Source: %name-%version.tar
 %endif
-
-# https://github.com/zamaudio/zam-plugins/pull/62
-Patch: %name-unbundle-zita-convolver.patch
-Patch1: dpf-generate-ttl.sh.patch
-Patch10: %name-3.10-up+alt-zc_4.0.0.patch
 
 BuildRequires: gcc-c++
 BuildRequires: libjack-devel liblo-devel
@@ -54,26 +49,27 @@ This is the LADSPA version.
 
 %prep
 %setup
-%patch -p1 -b .unbundle-zita
-%patch1 -b "~"
-%patch10 -p1
 
 %build
-%add_optflags %optflags_fastmath
+# dpf/Makefile.base.mk
+# BASE_OPTS  = -O3 -ffast-math -mtune=generic -msse -msse2 -fdata-sections -ffunction-sections
+
+base_opts=" -ffast-math -fdata-sections -ffunction-sections"
 
 %ifarch %ix86
-%add_optflags -msse -mfpmath=sse -D_FILE_OFFSET_BITS=64
+base_opts+=" -msse -mfpmath=sse"
 %endif
 
 %ifarch x86_64
-%add_optflags -msse2 -mfpmath=sse
+base_opts+=" -msse2 -mfpmath=sse"
 %endif
 
-%define opts PREFIX=%prefix LIBDIR=%_lib USE_SYSTEM_LIBS=1
-
-%make_build %opts BASE_OPTS="%optflags"
+export HAVE_ZITA_CONVOLVER=true 
+%define opts PREFIX=%_prefix LIBDIR=%_lib SKIP_STRIPPING=true
+%make_build BASE_OPTS="$base_opts" %opts
 
 %install
+export HAVE_ZITA_CONVOLVER=true
 %makeinstall_std %opts
 
 # remove VST and DSSI plugins
@@ -92,6 +88,9 @@ rm -rf %buildroot%_libdir/vst %buildroot/*-dssi*
 %doc README.md
 
 %changelog
+* Wed Jul 24 2019 Yuri N. Sedunov <aris@altlinux.org> 3.11-alt1
+- updated to 3.11-7-gd211bff
+
 * Sun Nov 25 2018 Yuri N. Sedunov <aris@altlinux.org> 3.10-alt2
 - rebuilt against libzita-convolver.so.4
 
