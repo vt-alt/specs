@@ -1,52 +1,4 @@
 %define rname qemu
-
-%def_disable binfmt_misc
-
-%def_disable werror
-%def_enable sdl
-%def_enable curses
-%def_enable bluez
-%def_enable vnc
-%def_enable vnc_sasl
-%def_enable vnc_jpeg
-%def_enable vnc_png
-%def_disable vde
-%def_enable alsa
-%def_disable pulseaudio
-%def_disable oss
-%def_enable aio
-%def_enable blobs
-%def_enable uuid
-%def_disable smartcard
-%def_enable libusb
-%def_enable usb_redir
-%def_enable vhost_net
-%def_enable vhost_scsi
-%def_disable opengl
-%def_disable guest_agent
-%def_enable tools
-%def_enable spice
-%def_enable libiscsi
-%def_enable rbd
-%def_disable libnfs
-%def_enable seccomp
-%def_disable glusterfs
-%def_disable gtk
-%def_disable gtk_gl
-%def_enable gnutls
-%def_enable nettle
-%def_disable gcrypt
-%def_enable virglrenderer
-%def_enable tpm
-%def_enable libssh2
-%def_enable numa
-%def_enable jemalloc
-%def_enable rdma
-%def_enable lzo
-%def_enable snappy
-%def_enable bzip2
-%def_disable xen
-
 %define _group vmusers
 %define rulenum 90
 %define _libexecdir /usr/libexec
@@ -54,7 +6,7 @@
 
 Name: pve-%rname
 Version: 3.0.1
-Release: alt4
+Release: alt5
 Epoch: 1
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -111,53 +63,15 @@ Patch43: 0006-x86-Data-structure-changes-to-support-MSR-based-feat.patch
 Patch44: 0007-x86-define-a-new-MSR-based-feature-word-FEATURE_WORD.patch
 Patch45: 0008-target-i386-add-MDS-NO-feature.patch
 Patch46: 0009-target-i386-define-md-clear-bit.patch
-Patch47: 0010-docs-add-guidance-on-configuring-CPU-models-for-x86.patch
-Patch48: 0011-docs-recommend-use-of-md-clear-feature-on-all-Intel-.patch
 
 ExclusiveArch: x86_64
-BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
-BuildRequires: texinfo perl-podlators libattr-devel libcap-devel libcap-ng-devel
-BuildRequires: libxfs-devel
-BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
-BuildRequires: ipxe-roms-qemu >= 1.0.0-alt4.git93acb5d seavgabios seabios libfdt-devel >= 1.4.0
-BuildRequires: libpixman-devel >= 0.21.8
-BuildRequires: iasl python-modules
-%{?_enable_sdl:BuildRequires: libSDL2-devel libX11-devel}
-%{?_enable_curses:BuildRequires: libncurses-devel}
-%{?_enable_bluez:BuildRequires: libbluez-devel}
-%{?_enable_alsa:BuildRequires: libalsa-devel}
-%{?_enable_pulseaudio:BuildRequires: libpulseaudio-devel}
-%{?_enable_vnc_sasl:BuildRequires: libsasl2-devel}
-%{?_enable_vnc_jpeg:BuildRequires: libjpeg-devel}
-%{?_enable_vnc_png:BuildRequires: libpng-devel}
-%{?_enable_vde:BuildRequires: libvde-devel}
-%{?_enable_aio:BuildRequires: libaio-devel}
-%{?_enable_spice:BuildRequires: libspice-server-devel >= 0.12.0 spice-protocol >= 0.12.3}
-%{?_enable_uuid:BuildRequires: libuuid-devel-static}
-%{?_enable_smartcard:BuildRequires: libcacard-devel >= 2.5.0}
-%{?_enable_usb_redir:BuildRequires: libusbredir-devel >= 0.5}
-%{?_enable_opengl:BuildRequires: libX11-devel libepoxy-devel}
-%{?_enable_guest_agent:BuildRequires: glib2-devel >= 2.38}
-%{?_enable_rbd:BuildRequires: ceph-devel}
-%{?_enable_libiscsi:BuildRequires: libiscsi-devel >= 1.9.0}
-%{?_enable_libnfs:BuildRequires: libnfs-devel >= 1.9.3}
-%{?_enable_seccomp:BuildRequires: libseccomp-devel >= 2.2.3}
-%{?_enable_glusterfs:BuildRequires: pkgconfig(glusterfs-api)}
-%{?_enable_gtk:BuildRequires: libgtk+3-devel >= 3.0.0 pkgconfig(vte-2.90) >= 0.32.0}
-%{?_enable_gnutls:BuildRequires: libgnutls-devel >= 2.9.10}
-%{?_enable_nettle:BuildRequires: libnettle-devel}
-%{?_enable_gcrypt:BuildRequires: libgcrypt-devel}
-BuildRequires: libtasn1-devel
-%{?_enable_virglrenderer:BuildRequires: pkgconfig(virglrenderer)}
-%{?_enable_libssh2:BuildRequires: libssh2-devel >= 1.2.8}
-%{?_enable_libusb:BuildRequires: libusb-devel >= 1.0.13}
-%{?_enable_rdma:BuildRequires: librdmacm-devel libibverbs-devel libibumad-devel}
-%{?_enable_numa:BuildRequires: libnuma-devel}
-%{?_enable_jemalloc:BuildRequires: libjemalloc-devel}
-%{?_enable_lzo:BuildRequires: liblzo2-devel}
-%{?_enable_snappy:BuildRequires: libsnappy-devel}
-%{?_enable_bzip2:BuildRequires: bzlib-devel}
-%{?_enable_xen:BuildRequires: xen-devel}
+BuildRequires: acpica bzlib-devel glib2-devel flex libaio-devel libalsa-devel libbluez-devel libcap-devel
+BuildRequires: libcap-ng-devel libcurl-devel libfdt-devel libgnutls-devel libiscsi-devel libjemalloc-devel libjpeg-devel
+BuildRequires: liblzo2-devel libncurses-devel libnettle-devel libnuma-devel libpixman-devel libpng-devel ceph-devel
+BuildRequires: libsasl2-devel libseccomp-devel libspice-server-devel libssh2-devel libusbredir-devel libxfs-devel
+BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler
+# librdmacm-devel libibverbs-devel libibumad-devel
+BuildRequires: ipxe-roms-qemu seavgabios seabios
 
 %description
 QEMU is a fast processor emulator using dynamic translation to achieve
@@ -185,7 +99,7 @@ Requires: seavgabios
 Requires: seabios
 Requires: ipxe-roms-qemu >= 1.0.0-alt4.git93acb5d
 Requires: %name-img = %version-%release
-Requires: edk2-ovmf
+Requires: edk2-ovmf edk2-aarch64
 Conflicts: %rname-common
 
 %description common
@@ -205,32 +119,6 @@ Full system emulation.  In this mode, QEMU emulates a full system
 It can be used to launch different Operating Systems without rebooting
 the PC or to debug system code.
 
-%package user
-Summary: QEMU CPU Emulator - user mode emulation
-Group: Emulators
-Requires: %name-common = %version-%release
-Conflicts: %rname-user
-
-%description user
-User mode emulation.  In this mode, QEMU can launch Linux processes
-compiled for one CPU on another CPU.  It can be used to launch the
-Wine Windows API emulator or to ease cross-compilation and
-cross-debugging.
-
-%package user-binfmt_misc
-Summary: QEMU CPU Emulator - user mode emulation, binfmt_misc version
-Group: Emulators
-Requires: %name-aux = %version-%release
-Conflicts: %rname-user-binfmt_misc
-
-%description user-binfmt_misc
-User mode emulation.  In this mode, QEMU can launch Linux processes
-compiled for one CPU on another CPU.  It can be used to launch the
-Wine Windows API emulator or to ease cross-compilation and
-cross-debugging.
-This package contains static version with enabled binfmt_misc support.
-Suitable for hasher.
-
 %package img
 Summary: QEMU command line tool for manipulating disk images
 Group: Emulators
@@ -239,30 +127,6 @@ Conflicts: %rname-img
 
 %description img
 This package provides a command line tool for manipulating disk images
-
-%package guest-agent
-Summary: QEMU guest agent
-Group: Emulators
-Requires: %name-aux = %version-%release
-Conflicts: %rname-guest-agent
-
-%description guest-agent
-QEMU is a generic and open source processor emulator which achieves a good
-emulation speed by using dynamic translation.
-
-This package provides an agent to run inside guests, which communicates
-with the host over a virtio-serial channel named "org.qemu.guest_agent.0"
-
-This package does not need to be installed on the host OS.
-
-%package doc
-Summary: User documentation for %name
-Group: Documentation
-BuildArch: noarch
-Requires: %name-aux = %version-%release
-
-%description doc
-User documentation for %name
 
 %package aux
 Summary: QEMU auxiliary package
@@ -275,13 +139,6 @@ QEMU is a generic and open source processor emulator which achieves
 good emulation speed by using dynamic translation.
 
 This is an auxiliary package.
-
-%package -n ivshmem-tools
-Summary: Client and server for QEMU ivshmem device
-Group: Emulators
-
-%description -n ivshmem-tools
-This package provides client and server tools for QEMU's ivshmem device.
 
 %set_verify_elf_method fhs=relaxed
 
@@ -326,8 +183,6 @@ This package provides client and server tools for QEMU's ivshmem device.
 %patch44 -p1
 %patch45 -p1
 %patch46 -p1
-%patch47 -p1
-%patch48 -p1
 
 %patch100 -p1
 
@@ -345,58 +200,38 @@ export CFLAGS="%optflags"
 	--libexecdir=%_libexecdir \
 	--localstatedir=%_localstatedir \
 	--extra-cflags="%optflags" \
-	%{subst_enable werror} \
-	%{?_enable_sdl:--enable-sdl --with-sdlabi=2.0} \
-	%{?_disable_curses:--disable-curses} \
-	%{subst_enable bluez} \
-	%{subst_enable vnc} \
-	%{?_enable_gtk:--enable-gtk --with-gtkabi=3.0 --enable-vte} \
-	%{?_disable_vnc_tls:--disable-vnc-tls} \
-	%{?_disable_vnc_sasl:--disable-vnc-sasl} \
-	%{?_disable_vnc_jpeg:--disable-vnc-jpeg} \
-	%{?_disable_vnc_png:--disable-vnc-png} \
-	%{?_disable_vde:--disable-vde} \
-	%{?_disable_aio:--disable-linux-aio} \
-	%{?_disable_blobs: --disable-blobs} \
-	%{subst_enable spice} \
-	%{?_disable_uuid:--disable-uuid} \
-	--disable-debug-tcg \
-	--disable-sparse \
-	--disable-strip \
-	--audio-drv-list="alsa" \
-	--disable-xen \
-	--disable-brlapi \
-	--enable-curl \
-	--enable-kvm \
-	%{subst_enable virglrenderer} \
-	%{subst_enable tpm} \
-	%{subst_enable xen} \
-	%{?_enable_vhost_net:--enable-vhost-net} \
-	%{?_enable_vhost_scsi:--enable-vhost-scsi } \
-	%{subst_enable smartcard} \
-	%{subst_enable libusb} \
-	%{?_enable_usb_redir:--enable-usb-redir} \
-	%{subst_enable opengl} \
-	%{subst_enable seccomp} \
-	%{subst_enable libiscsi} \
-	%{subst_enable rbd} \
-	%{subst_enable libnfs} \
-	%{subst_enable glusterfs} \
-	%{subst_enable libssh2} \
-	%{subst_enable rdma} \
-	%{subst_enable gnutls} \
-	%{subst_enable nettle} \
-	%{subst_enable gcrypt} \
-	%{subst_enable numa} \
-	%{subst_enable jemalloc} \
-	%{subst_enable lzo} \
-	%{subst_enable snappy} \
-	%{subst_enable bzip2} \
-	%{?_disable_guest_agent:--disable-guest-agent} \
-	%{subst_enable tools} \
-	--enable-pie \
-	--enable-xfsctl \
-	--enable-virtfs
+	--disable-werror \
+        --disable-sdl \
+        --audio-drv-list="alsa" \
+        --enable-bluez  \
+        --enable-vnc  \
+        --enable-spice  \
+        --enable-curl \
+        --enable-kvm \
+        --enable-tpm  \
+        --enable-vhost-net \
+        --enable-vhost-scsi  \
+        --enable-linux-aio \
+        --enable-libusb  \
+        --enable-usb-redir \
+        --enable-seccomp  \
+        --enable-libiscsi  \
+        --enable-rbd  \
+        --enable-gnutls  \
+        --enable-numa  \
+        --enable-jemalloc  \
+        --enable-pie \
+        --enable-xfsctl \
+        --enable-virtfs \
+        --disable-strip \
+        --disable-xen \
+        --disable-smartcard \
+        --disable-libnfs \
+        --disable-glusterfs \
+        --disable-libxml2 \
+        --disable-guest-agent \
+        --disable-guest-agent-msi \
+	--disable-rdma
 
 %make_build V=1
 
@@ -406,7 +241,8 @@ sed -i 's/@GROUP@/%_group/g' qemu-kvm.control.in
 %makeinstall_std
 
 %define docdir %_docdir/%name-%version
-mv %buildroot%_docdir/qemu %buildroot%docdir
+#mv %buildroot%_docdir/qemu 
+mkdir -p %buildroot%docdir
 install -m644 LICENSE MAINTAINERS %buildroot%docdir/
 
 install -m 0755 %SOURCE5 %buildroot%_bindir/qemu-kvm
@@ -447,16 +283,16 @@ done
 
 ln -r -s %buildroot%_datadir/seabios/{bios,bios-256k}.bin %buildroot%_datadir/%rname/
 
-mkdir -p %buildroot%_datadir/kvm/
-ln -sf ../OVMF/OVMF_CODE.fd %buildroot%_datadir/kvm/OVMF_CODE-pure-efi.fd
-ln -sf ../OVMF/OVMF_VARS.fd %buildroot%_datadir/kvm/OVMF_VARS-pure-efi.fd
 mkdir -p %buildroot%_datadir/pve-edk2-firmware
 ln -sf ../OVMF/OVMF_CODE.fd %buildroot%_datadir/pve-edk2-firmware/OVMF_CODE.fd
 ln -sf ../OVMF/OVMF_VARS.fd %buildroot%_datadir/pve-edk2-firmware/OVMF_VARS.fd
+ln -sf ../AAVMF/QEMU_EFI-pflash.raw %buildroot%_datadir/pve-edk2-firmware/AAVMF_CODE.fd
+ln -sf ../AAVMF/vars-template-pflash.raw %buildroot%_datadir/pve-edk2-firmware/AAVMF_VARS.fd
+
 
 %check
 # Disabled on aarch64 where it fails with several errors.  Will
-# investigate and fix when we have access to real hardware 
+# investigate and fix when we have access to real hardware
 #ifnarch aarch64
 #make V=1 check
 #endif
@@ -475,10 +311,7 @@ fi
 
 %files common
 %_datadir/qemu
-%_datadir/kvm
 %_datadir/pve-edk2-firmware
-%_man1dir/qemu*
-%_man8dir/qemu*
 %_sysconfdir/udev/rules.d/%rulenum-%rname-kvm.rules
 %_controldir/*
 %if_enabled vnc_sasl
@@ -499,13 +332,15 @@ fi
 %_bindir/qemu-io
 %_bindir/qemu-nbd
 %_bindir/virtfs-proxy-helper
-%_man1dir/virtfs-proxy-helper.*
 
 %files aux
 %dir %docdir/
 %docdir/LICENSE
 
 %changelog
+* Tue Jun 25 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:3.0.1-alt5
+- 3.0.1-62
+
 * Mon Jun 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:3.0.1-alt4
 - 3.0.1-4
 
