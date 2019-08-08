@@ -1,5 +1,5 @@
 Name: ethtool
-Version: 4.11
+Version: 5.2
 Release: alt1
 Epoch: 1
 
@@ -57,6 +57,9 @@ install -pDm644 ethtool.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 %doc AUTHORS NEWS README.ALT
 
 %changelog
+* Wed Aug 07 2019 Anton Farygin <rider@altlinux.ru> 1:5.2-alt1
+- 5.2
+
 * Tue Oct 10 2017 Anton Farygin <rider@altlinux.ru> 1:4.11-alt1
 - 4.11
 
