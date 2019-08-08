@@ -7,7 +7,7 @@
 %def_enable lua
 
 Name: haproxy
-Version: 1.9.7
+Version: 2.0.4
 Release: alt1
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -44,13 +44,16 @@ risking the system's stability.
 
 %build
 # Recommended optimization option for x86 builds
-regparm_opts=
 %ifarch %ix86 x86_64
 regparm_opts="USE_REGPARM=1"
 %endif
 
-%make_build CPU="generic" TARGET="linux2628" USE_OPENSSL=1 USE_PCRE2=1 USE_ZLIB=1 USE_NS=1 USE_SYSTEMD=1 %{?_enable_lua:USE_LUA=1} \
-	${regparm_opts} PREFIX="%_prefix" ADDINC="$(pcre2-config --cflags)" CFLAGS="%optflags"
+%ifarch mipsel
+addlib_opts=ADDLIB=-latomic
+%endif
+
+%make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_ZLIB=1 USE_SYSTEMD=1 %{?_enable_lua:USE_LUA=1} \
+	${regparm_opts:-} ${addlib_opts:-} PREFIX="%_prefix" ADDINC="$(pcre2-config --cflags)" CFLAGS="%optflags"
 
 pushd contrib/halog
 %make halog OPTIMIZE="%optflags"
@@ -65,7 +68,7 @@ pushd contrib/systemd
 popd
 
 %install
-%make_install install-bin DESTDIR=%buildroot PREFIX="%_prefix" TARGET="linux2628"
+%make_install install-bin DESTDIR=%buildroot PREFIX="%_prefix" TARGET="linux-glibc"
 %make_install install-man DESTDIR=%buildroot PREFIX="%_prefix"
 
 install -p -D -m 0644 %SOURCE1 %buildroot%haproxy_confdir/%name.cfg
@@ -106,6 +109,15 @@ cp -p examples/errorfiles/* %buildroot%haproxy_datadir/
 %attr(-,%haproxy_user,%haproxy_group) %dir %haproxy_home
 
 %changelog
+* Fri Aug 09 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.4-alt1
+- 2.0.4 (Fixes: CVE-2019-14241)
+
+* Tue Jul 23 2019 Ivan A. Melnikov <iv@altlinux.org> 2.0.1-alt2
+- fix build on mipsel
+
+* Sat Jun 29 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt1
+- 2.0.1
+
 * Tue May 07 2019 Alexey Shabalin <shaba@altlinux.org> 1.9.7-alt1
 - 1.9.7
 
@@ -119,29 +131,29 @@ cp -p examples/errorfiles/* %buildroot%haproxy_datadir/
 * Mon Oct 15 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.14-alt1
 - 1.8.14
 
-* Tue Sep 04 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.13-alt2%ubt
+* Tue Sep 04 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.13-alt2
 - rebuild with openssl-1.1
 
-* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.13-alt1%ubt
+* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.13-alt1
 - 1.8.13
 
-* Thu Jun 28 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.12-alt1%ubt
+* Thu Jun 28 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.12-alt1
 - 1.8.12
 
-* Tue Jun 26 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.11-alt1%ubt
+* Tue Jun 26 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.11-alt1
 - 1.8.11
 
-* Thu Feb 08 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.4-alt1%ubt
+* Thu Feb 08 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.4-alt1
 - 1.8.4
 
-* Mon Jan 29 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.3-alt1%ubt
+* Mon Jan 29 2018 Alexey Shabalin <shaba@altlinux.ru> 1.8.3-alt1
 - 1.8.3
 - build with pcre2
 
-* Wed Sep 27 2017 Alexey Shabalin <shaba@altlinux.ru> 1.7.9-alt1%ubt
+* Wed Sep 27 2017 Alexey Shabalin <shaba@altlinux.ru> 1.7.9-alt1
 - 1.7.9
 
-* Sun Aug 06 2017 Alexey Shabalin <shaba@altlinux.ru> 1.7.8-alt1%ubt
+* Sun Aug 06 2017 Alexey Shabalin <shaba@altlinux.ru> 1.7.8-alt1
 - 1.7.8
 
 * Fri Apr 28 2017 Alexey Shabalin <shaba@altlinux.ru> 1.7.5-alt1
