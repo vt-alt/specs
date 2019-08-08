@@ -2,12 +2,14 @@
 
 Name: python-module-%oname
 Version: 1.11.1
-Release: alt1
+Release: alt2
 Summary: OpenStackClient (aka OSC) is a command-line client for OpenStack
 Group: Development/Python
 License: ASL 2.0
 Url: http://docs.openstack.org/developer/%oname
 Source: https://tarballs.openstack.org/%oname/%oname-%version.tar.gz
+
+Patch1: fix-error-with-3.7-python.patch
 
 BuildArch: noarch
 
@@ -88,6 +90,7 @@ This package contains tests for %oname.
 
 %prep
 %setup -n %oname-%version
+%patch1 -p1
 # Let RPM handle the dependencies
 rm -f test-requirements.txt requirements.txt
 
@@ -130,6 +133,9 @@ popd
 %python3_sitelibdir/*/tests
 
 %changelog
+* Mon Aug 05 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.11.1-alt2
+- Fix work with python 3.7
+
 * Mon Dec 10 2018 Alexey Shabalin <shaba@altlinux.org> 1.11.1-alt1
 - 1.11.1
 
