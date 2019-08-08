@@ -18,7 +18,7 @@
 %define rname kdelibs
 Name: kde4libs
 Version: %major.%minor.%bugfix
-Release: alt3
+Release: alt5
 
 %define conflictver %major.%minor-alt0.0.1
 %define conflictver_kdevelop 3.4.1-alt0.0.1
@@ -127,7 +127,6 @@ Patch3000: kdelibs-4.4.92-alt-alternate-kconf_update_bin-path.patch
 
 # security
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires(pre): kde-common-devel libqt4-devel libstrigi-devel attica-devel
 #BuildRequires: soprano-backend-redland soprano-backend-virtuoso soprano libsoprano-devel >= 2.1
 BuildRequires: bzlib-devel cmake libalsa-devel libselinux-devel
@@ -363,22 +362,28 @@ done
 %_K4includedir/*
 
 %changelog
+* Thu Aug 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt5
+- security fixes: CVE-2019-14744
+
+* Sat Jul 06 2019 Igor Vlasenko <viy@altlinux.ru> 4.14.38-alt4
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Nov 20 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt3
 - load dolphin translations to file dialogs
 
-* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt2%ubt
+* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt2
 - build with openssl-1.1
 
-* Wed Apr 25 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt1%ubt
+* Wed Apr 25 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt1
 - new version
 
-* Tue Oct 03 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 4.14.34-alt2%ubt
+* Tue Oct 03 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 4.14.34-alt2
 - Fixed build with new cmake.
 
-* Wed Jul 19 2017 Sergey V Turchin <zerg@altlinux.org> 4.14.34-alt1%ubt
+* Wed Jul 19 2017 Sergey V Turchin <zerg@altlinux.org> 4.14.34-alt1
 - new version
 
-* Fri Feb 03 2017 Sergey V Turchin <zerg@altlinux.org> 4.14.28-alt1%ubt
+* Fri Feb 03 2017 Sergey V Turchin <zerg@altlinux.org> 4.14.28-alt1
 - new version
 
 * Wed Oct 26 2016 Sergey V Turchin <zerg@altlinux.org> 4.14.25-alt0.M80P.1
