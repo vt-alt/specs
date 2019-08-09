@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.920
+Version: 8.940
 Release: alt1
 Url: https://basealt.ru
 
@@ -227,6 +227,7 @@ Obsoletes: indexhtml-desktop indexhtml-Desktop
 Requires: xdg-utils
 Requires: docs-alt-%theme
 Requires: shared-desktop-icons
+Requires: menu-icons-default
 Requires(post): indexhtml-common
 
 %description indexhtml
@@ -368,6 +369,14 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Aug 09 2019 Mikhail Efremov <sem@altlinux.org> 8.940-alt1
+- Bump version.
+
+* Fri Jul 26 2019 Andrey Cherepanov <cas@altlinux.org> 8.920-alt2
+- Set for installer widescreen background.
+- Use common icon with BaseALT logo for indexhtml.
+- Make progressbar label brighter.
+
 * Thu Jul 11 2019 Mikhail Efremov <sem@altlinux.org> 8.920-alt1
 - Set codename Laertes.
 - mate-settings: Use theme-mate-windows.
