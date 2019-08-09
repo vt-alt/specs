@@ -4,7 +4,7 @@
 %define prog_name            postgresql
 %define postgresql_major     9
 %define postgresql_minor     4
-%define postgresql_subminor  23
+%define postgresql_subminor  24
 %define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -741,6 +741,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 07 2019 Alexei Takaseev <taf@altlinux.org> 9.4.24-alt1
+- 9.4.24 (Fixes CVE-2019-10208)
+
 * Thu Jun 20 2019 Alexei Takaseev <taf@altlinux.org> 9.4.23-alt1
 - 9.4.23
 

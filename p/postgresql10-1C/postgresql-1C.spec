@@ -6,7 +6,7 @@
 
 %define prog_name            postgresql
 %define postgresql_major     10
-%define postgresql_minor     9
+%define postgresql_minor     10
 %define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -48,7 +48,7 @@ Patch9: 0008-ALT-SeLinux-user-name.patch
 Patch10: 0009-postgresql-10-logging.patch
 
 # 1C
-Patch100: 00001-1c_FULL_100_EXT.patch
+Patch101: 00001-1c_FULL_100_EXT.patch
 Patch102: 00002-online_analyze.patch
 Patch103: 00003-plantuner.patch
 Patch104: 00004-postgresql-1c-10.patch
@@ -60,6 +60,9 @@ Patch109: 00009-opt_group_by_and_cost_sort.patch
 Patch110: 00010-joinsel.patch
 Patch111: 00011-max_files_per_process.patch
 Patch112: 00012-index_getattr_optimization.patch
+Patch113: 00013-notransvalue.patch
+Patch114: 00014-optimizer_utils.patch
+Patch115: 00015-lessmem.patch
 
 Provides: %prog_name = %EVR
 Conflicts: %prog_name < %EVR
@@ -219,7 +222,7 @@ database.
 #%%patch10 -p0
 
 # 1C
-%patch100 -p1
+%patch101 -p1
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
@@ -231,6 +234,9 @@ database.
 %patch110 -p1
 %patch111 -p1
 %patch112 -p1
+%patch113 -p1
+%patch114 -p1
+%patch115 -p1
 
 %build
 %autoreconf
@@ -803,6 +809,26 @@ fi
 %endif
 
 %changelog
+* Wed Aug 07 2019 Alexei Takaseev <taf@altlinux.org> 10.10-alt1
+- 10.10 (Fixes CVE-2019-10208)
+
+* Fri Aug 02 2019 Alexei Takaseev <taf@altlinux.org> 10.9-alt2
+- Re-applay patches from 1C:
+    * 00001-1c_FULL_100_EXT.patch
+    * 00002-online_analyze.patch
+    * 00003-plantuner.patch
+    * 00004-postgresql-1c-10.patch
+    * 00005-coalesce_cost.patch
+    * 00007-remove_selfjoin.patch
+    * 00009-opt_group_by_and_cost_sort.patch
+    * 00010-joinsel.patch
+    * 00011-max_files_per_process.patch
+    * 00012-index_getattr_optimization.patch
+- Add patch from 1C:
+    * 00013-notransvalue.patch
+    * 00014-optimizer_utils.patch
+    * 00015-lessmem.patch
+
 * Thu Jun 20 2019 Alexei Takaseev <taf@altlinux.org> 10.9-alt1
 - 10.9 (Fixes CVE-2019-10164)
 
@@ -820,7 +846,7 @@ fi
     * 00007-remove_selfjoin.patch
     * 00009-opt_group_by_and_cost_sort.patch
     * 00010-joinsel.patch
-- Add patch rom 1C:
+- Add patch from 1C:
     * 00012-index_getattr_optimization.patch
 
 * Thu Apr 04 2019 Alexei Takaseev <taf@altlinux.org> 10.7-alt2
