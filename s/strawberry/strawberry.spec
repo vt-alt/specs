@@ -1,5 +1,5 @@
 Name: strawberry
-Version: 0.5.5
+Version: 0.6.3
 Release: alt1
 Summary: Audio player and music collection organizer
 
@@ -21,12 +21,12 @@ Source: https://github.com/jonaski/strawberry/archive/%version/%name-%version.ta
 Patch: strawberry-udisks-headers.patch
 
 BuildRequires: boost-program_options-devel ccache gcc-c++ gettext-tools glib2-devel gst-plugins1.0-devel gstreamer1.0-devel libalsa-devel libcdio-devel libchromaprint-devel libdbus-devel libfftw3-devel libgio-devel libgnutls-devel libgpod-devel libimobiledevice-devel libmtp-devel libplist-devel libprotobuf-devel libpulseaudio-devel libsqlite3-devel libtag-devel libusbmuxd-devel libvlc-devel libxine2-devel qt5-phonon-devel qt5-x11extras-devel
-BuildRequires: extra-cmake-modules desktop-file-utils libappstream-glib qt5-tools-devel protobuf-compiler
+BuildRequires: cmake rpm-macros-cmake extra-cmake-modules desktop-file-utils libappstream-glib qt5-tools-devel protobuf-compiler
 %ifnarch s390 s390x
 BuildRequires: libgpod-devel
 %endif
 
-Requires: gst-plugins-good1.0
+Requires: gst-plugins-good1.0 vlc-mini
 
 Provides: bundled(qocoa)
 Provides: bundled(utf8-cpp)
@@ -59,7 +59,7 @@ Features:
 
 %prep
 %setup
-%patch -p1
+#patch -p1
 
 # Remove most 3rdparty libraries
 # Unbundle taglib next release:
@@ -67,7 +67,6 @@ Features:
 
 mv 3rdparty/SPMediaKeyTap/LICENSE 3rdparty/SPMediaKeyTap/LICENCE-SPMediaKeyTap
 mv 3rdparty/singleapplication/LICENSE 3rdparty/singleapplication/LICENSE-singleapplication
-mv 3rdparty/qocoa/LICENSE.txt 3rdparty/qocoa/LICENCE-qcocoa.txt
 mv 3rdparty/taglib/COPYING 3rdparty/taglib/COPYING-taglib
 
 %build
@@ -85,7 +84,7 @@ desktop-file-validate %buildroot%_desktopdir/org.strawbs.strawberry.desktop
 appstream-util validate-relax --nonet %buildroot%_datadir/metainfo/org.strawbs.strawberry.appdata.xml
 
 %files
-%doc COPYING 3rdparty/SPMediaKeyTap/LICENCE-SPMediaKeyTap 3rdparty/qocoa/LICENCE-qcocoa.txt 3rdparty/taglib/COPYING-taglib 3rdparty/singleapplication/LICENSE-singleapplication
+%doc COPYING 3rdparty/SPMediaKeyTap/LICENCE-SPMediaKeyTap 3rdparty/taglib/COPYING-taglib 3rdparty/singleapplication/LICENSE-singleapplication
 %doc Changelog
 %_bindir/strawberry
 %_bindir/strawberry-tagreader
@@ -96,5 +95,15 @@ appstream-util validate-relax --nonet %buildroot%_datadir/metainfo/org.strawbs.s
 %_man1dir/strawberry-tagreader.1.*
 
 %changelog
+* Tue Aug 06 2019 Leontiy Volodin <lvol@altlinux.org> 0.6.3-alt1
+- 0.6.3
+- Fixed crash with vlc backend
+
+* Mon Aug 05 2019 Leontiy Volodin <lvol@altlinux.org> 0.6.2-alt1
+- 0.6.2
+
+* Mon Jul 15 2019 Leontiy Volodin <lvol@altlinux.org> 0.5.5-alt2
+- Added BR.
+
 * Thu Jul 11 2019 Leontiy Volodin <lvol@altlinux.org> 0.5.5-alt1
 - Initial build for ALT Sisyphus (thanks fedora for this spec)
