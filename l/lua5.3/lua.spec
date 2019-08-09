@@ -1,9 +1,11 @@
 %define oname lua
 %global major_version 5.3
+# no tests for 5.3.5
+%global test_version 5.3.4
 
 Name: lua%major_version
-Version: %major_version.4
-Release: alt3
+Version: %major_version.5
+Release: alt1
 
 Summary: Powerful light-weight programming language
 License: MIT
@@ -12,8 +14,8 @@ Group: Development/Other
 Url: http://www.lua.org/
 # repackaged tarball http://www.lua.org/ftp/lua-%version.tar.gz
 Source0: lua-%version.tar
-# repackaged tarball http://www.lua.org/tests/lua-%version-tests.tar.gz
-Source1: lua-%version-tests.tar
+# repackaged tarball http://www.lua.org/tests/lua-%test_version-tests.tar.gz
+Source1: lua-%test_version-tests.tar
 Source2: lua.source0.watch
 Source3: lua.source1.watch
 # multilib
@@ -26,12 +28,14 @@ Patch1: %oname-5.3.0-idsize.patch
 #Patch2:         %%{oname}-5.3.0-luac-shared-link-fix.patch
 Patch3: %oname-5.2.2-configure-linux.patch
 Patch4: %oname-5.3.0-configure-compat-module.patch
+Patch5: CVE-2019-6706-use-after-free-lua_upvaluejoin.patch
 
 BuildRequires: automake-common autoconf-common libtool-common readline-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel
 Provides: lua(abi) = %major_version
 Requires: liblua = %version
 Provides: lua = %EVR
 Provides: lua5 = %EVR
+Conflicts: lua5 <= 5.1.5-alt2
 
 %define common_descr \
 Lua is a powerful light-weight programming language designed for\
@@ -110,6 +114,7 @@ mv src/luaconf.h src/luaconf.h.template.in
 #%% patch2 -p1 -z .luac-shared
 %patch3 -p1 -z .configure-linux
 %patch4 -p1 -z .configure-compat-all
+%patch5 -p1
 
 %build
 %autoreconf
@@ -125,7 +130,7 @@ sed -i 's|@pkgdatadir@|%_datadir|g' src/luaconf.h.template
 # only /usr/bin/lua links with readline now #luac_LDADD="liblua.la -lm -ldl"
 
 %check
-cd lua-%version-tests
+cd lua-%test_version-tests
 
 # Removing tests that fail under mock/koji
 sed -i.orig -e '
@@ -204,6 +209,11 @@ echo lua-devel-static >%buildroot%_sysconfdir/buildreqs/packages/substitute.d/li
 %config %_sysconfdir/buildreqs/packages/substitute.d/lib%name-devel-static
 
 %changelog
+* Thu Aug 08 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 5.3.5-alt1
+- 5.3.5.
+- Applied CVE-2019-6706-use-after-free-lua_upvaluejoin.patch.
+- Added conflict with lua5 <= 5.1.5-alt2.
+
 * Tue Oct 30 2018 Michael Shigorin <mike@altlinux.org> 5.3.4-alt3
 - fix e2kv4 support (imz@'s suggestion didn't work,
   go kludge it alike to x86 then)
