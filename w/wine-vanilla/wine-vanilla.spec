@@ -1,8 +1,8 @@
 %define gecko_version 2.47
-%define mono_version 4.8.3
+%define mono_version 4.9.0
 
 Name: wine-vanilla
-Version: 4.9
+Version: 4.13
 Release: alt1
 
 Summary: Wine - environment for running Windows 16/32/64 bit applications
@@ -20,6 +20,8 @@ Source2: %name-%version-desktop.tar
 Source3: %name-%version-icons.tar
 
 AutoReq: yes, noperl
+
+ExclusiveArch: %ix86 x86_64 aarch64
 
 # try build wine64 only on ALT
 %if %_vendor == "alt"
@@ -74,9 +76,6 @@ BuildRequires: libXvMC-devel libXcursor-devel libXevie-devel libXv-devel
 
 BuildRequires: perl-XML-Simple
 
-# with prelink not found, base address of core dlls won't be set correctly
-BuildRequires: prelink
-
 # Actually for x86_32
 Requires: glibc-pthread glibc-nss
 
@@ -126,7 +125,8 @@ Warning: it may kill your X server suddenly.
 Summary: Wine meta package
 Summary(ru_RU.UTF-8): Мета пакет Wine
 Group: Emulators
-BuildArch: noarch
+# due ExclusiveArch
+#BuildArch: noarch
 Requires: %name = %version-%release
 Requires: %name-programs = %version-%release
 Requires: lib%name-gl = %version-%release
@@ -141,7 +141,8 @@ Wine meta package. Use it for install all wine subpackages.
 %package programs
 Summary: Wine programs
 Group: Emulators
-BuildArch: noarch
+# due ExclusiveArch
+#BuildArch: noarch
 Requires: %name = %version-%release
 
 %description programs
@@ -351,6 +352,7 @@ rm -f %buildroot%_desktopdir/wine.desktop
 
 %dir %_datadir/wine/
 %_datadir/wine/wine.inf
+%_datadir/wine/winehid.inf
 %_datadir/wine/l_intl.nls
 %_datadir/wine/fonts/
 
@@ -428,6 +430,23 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %exclude %_libdir/wine/libwinecrt0.a
 
 %changelog
+* Sun Aug 04 2019 Vitaly Lipatov <lav@altlinux.ru> 4.13-alt1
+- new version 4.13
+
+* Sun Jul 07 2019 Vitaly Lipatov <lav@altlinux.ru> 4.12.1-alt1
+- new version 4.12.1
+
+* Sat Jul 06 2019 Vitaly Lipatov <lav@altlinux.ru> 4.12-alt1
+- new version 4.12, enable ExclusiveArch for x86 and aarch64
+- remove BR: prelink
+
+* Sat Jun 22 2019 Vitaly Lipatov <lav@altlinux.ru> 4.11-alt1
+- new version 4.11
+- strict require wine-mono-4.9.0
+
+* Mon Jun 10 2019 Vitaly Lipatov <lav@altlinux.ru> 4.10-alt1
+- new version 4.10
+
 * Mon May 27 2019 Vitaly Lipatov <lav@altlinux.ru> 4.9-alt1
 - new version 4.9
 - strict require wine-mono-4.8.3

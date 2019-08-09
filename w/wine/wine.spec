@@ -1,7 +1,7 @@
 %def_enable static
 %define gecko_version 2.47
-%define mono_version 4.8.3
-%define major 4.9
+%define mono_version 4.9.0
+%define major 4.13
 
 Name: wine
 Version: %major.1
@@ -30,6 +30,8 @@ Source4: %name-%version-icons.tar
 Source5: %name-patches-%version.tar
 
 AutoReq: yes, noperl
+
+ExclusiveArch: %ix86 x86_64 aarch64
 
 # try build wine64 only on ALT
 %if %_vendor == "alt"
@@ -91,9 +93,6 @@ BuildRequires: libXvMC-devel libXcursor-devel libXevie-devel libXv-devel
 
 BuildRequires: perl-XML-Simple
 
-# with prelink not found, base address of core dlls won't be set correctly
-BuildRequires: prelink
-
 # Actually for x86_32
 Requires: glibc-pthread glibc-nss
 
@@ -111,7 +110,7 @@ BuildRequires: desktop-file-utils
 # For menu/MIME subsystem
 Requires: desktop-file-utils
 
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 Conflicts: wine-vanilla wine-etersoft
 
@@ -142,7 +141,7 @@ and ALT in progress patches.
 Summary: WinAPI test for Wine
 Summary(ru_RU.UTF-8): Тест WinAPI для Wine
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 Conflicts: wine-vanilla-test
 
 %description test
@@ -153,10 +152,11 @@ Warning: it may kill your X server suddenly.
 Summary: Wine meta package
 Summary(ru_RU.UTF-8): Мета пакет Wine
 Group: Emulators
-BuildArch: noarch
-Requires: %name = %version-%release
-Requires: %name-programs = %version-%release
-Requires: lib%name-gl = %version-%release
+# due ExclusiveArch
+#BuildArch: noarch
+Requires: %name = %EVR
+Requires: %name-programs = %EVR
+Requires: lib%name-gl = %EVR
 
 Requires: wine-mono = %mono_version
 Requires: wine-gecko = %gecko_version
@@ -171,8 +171,9 @@ Wine meta package. Use it for install all wine subpackages.
 %package programs
 Summary: Wine programs
 Group: Emulators
-Requires: %name = %version-%release
-BuildArch: noarch
+Requires: %name = %EVR
+# due ExclusiveArch
+#BuildArch: noarch
 
 Conflicts: wine-vanilla-programs
 
@@ -208,7 +209,7 @@ linked with Wine.
 %package -n lib%name-gl
 Summary: DirectX/OpenGL support libraries for Wine
 Group: System/Libraries
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Conflicts: libwine-vanilla-gl
 
 Requires: libGL
@@ -221,7 +222,7 @@ This package contains the libraries for DirectX/OpenGL support in Wine.
 %package -n lib%name-twain
 Summary: Twain support library for Wine
 Group: System/Libraries
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Conflicts: libwine-vanilla-twain
 
 %description -n lib%name-twain
@@ -231,7 +232,7 @@ This package contains the library for Twain support.
 %package -n lib%name-devel
 Summary: Headers for lib%name-devel
 Group: Development/C
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Obsoletes: wine-devel
 Provides: wine-devel
 Conflicts: libwine-vanilla-devel
@@ -248,7 +249,7 @@ lib%name-devel содержит файлы для разработки прог�
 %package -n lib%name-devel-static
 Summary: Static libraries for lib%name
 Group: Development/C
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Conflicts: libwine-vanilla-devel-static
 
 %description -n lib%name-devel-static
@@ -396,6 +397,8 @@ rm -f %buildroot%_desktopdir/wine.desktop
 
 %dir %_datadir/wine/
 %_datadir/wine/wine.inf
+%_datadir/wine/winebus.inf
+%_datadir/wine/winehid.inf
 %_datadir/wine/l_intl.nls
 %_datadir/wine/fonts/
 
@@ -475,6 +478,29 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %endif
 
 %changelog
+* Sun Aug 04 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.13.1-alt1
+- new version 4.13.1 (with rpmrb script)
+- use EVR instead of version-release
+
+* Wed Jul 17 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.12.1.2-alt1
+- add patch with cryptext: Implement CryptExtOpenCER
+
+* Sun Jul 07 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.12.1.1-alt1
+- new version (4.12.1.1) with rpmgs script
+- fixe 64 bit build
+
+* Sun Jul 07 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.12.1-alt1
+- new version 4.12.1 (with rpmrb script)
+- enable ExclusiveArch for x86 and aarch64
+- remove BR: prelink
+
+* Sat Jun 22 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.11.1-alt1
+- new version 4.11.1 (with rpmrb script)
+- strict require wine-mono-4.9.0
+
+* Tue Jun 11 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.10.1-alt1
+- new version 4.10.1 (with rpmrb script)
+
 * Wed May 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.9.1-alt1
 - new version 4.9.1 (with rpmrb script)
 - strict require wine-mono-4.8.3
