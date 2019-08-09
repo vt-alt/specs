@@ -2,7 +2,7 @@
 
 Name:       exe
 Version:    2.4.1
-Release:    alt2
+Release:    alt3
 
 Summary:    Tool to create and publish open educational resources.
 
@@ -48,6 +48,7 @@ Requires: mimetex
 Requires: python-module-lxml
 Requires: python-module-Pillow
 Requires: python-module-zope.interface
+Requires: python-module-twisted-core-test
 
 %description -n python-module-%name
 This authoring environment enables teachers and students to create and publish
@@ -107,6 +108,9 @@ rm -f %buildroot%_datadir/pixmaps/exe.xpm
 
 
 %changelog
+* Thu Aug 08 2019 Andrey Bychkov <mrdrew@altlinux.org> 2.4.1-alt3
+- requires fixed (Closes #36989)
+
 * Mon Jul 15 2019 Andrey Bychkov <mrdrew@altlinux.org> 2.4.1-alt2
 - waiting for the process when the browser starts fixed
 
