@@ -1,6 +1,6 @@
 Name: libtasn1
-Version: 4.13
-Release: alt2
+Version: 4.14
+Release: alt1
 
 Summary: The ASN.1 library used in GNUTLS
 Group: System/Libraries
@@ -81,7 +81,7 @@ touch doc/stamp_docs
 
 %define docdir %_docdir/%name
 mkdir -p %buildroot%docdir
-install -pm644 AUTHORS NEWS README THANKS %buildroot%docdir/
+install -pm644 AUTHORS NEWS README.md THANKS %buildroot%docdir/
 ln -s %_licensedir/LGPL-2.1 %buildroot%docdir/COPYING.LIB
 install -pm644 doc/*.html doc/*.pdf %buildroot%docdir/
 mkdir -p %buildroot%docdir/reference/html
@@ -116,6 +116,11 @@ install -pm644 doc/reference/html/* %buildroot%docdir/reference/html/
 %docdir/reference/
 
 %changelog
+* Thu Aug 08 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt1
+- Enabled LFS support.
+- Updated fix-for-werror.patch.
+- Updated to 4.14.
+
 * Thu Mar 15 2018 Mikhail Efremov <sem@altlinux.org> 4.13-alt2
 - Fix build with gcc-7.
 
