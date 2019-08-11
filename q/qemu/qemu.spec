@@ -115,7 +115,7 @@
 
 Name: qemu
 Version: 4.0.0
-Release: alt2
+Release: alt4
 
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -1121,7 +1121,8 @@ sed -i '/cpu_model =/ s,cortex-a53,any,' linux-user/main.c
 %make_build V=1 $buildldflags
 %endif
 
-find -regex '.*linux-user/qemu.*' -perm 755 -exec mv '{}' '{}'.static ';'
+find -regex '.*linux-user/qemu.*' -perm 755 -exec mv '{}' '{}'-static ';'
+
 %make_build clean
 %endif
 
@@ -1200,7 +1201,7 @@ for emu in %buildroot%_bindir/qemu-system-*; do
 done
 
 %if_enabled user_static
-find -regex '.*linux-user/qemu.*\.static' -exec install -m755 '{}' %buildroot%_bindir ';'
+find -regex '.*linux-user/qemu.*-static' -exec install -m755 '{}' %buildroot%_bindir ';'
 %endif
 
 %if_enabled qemu_kvm
@@ -1272,16 +1273,16 @@ ln -r -s %buildroot%_datadir/seabios/{bios,bios-256k}.bin %buildroot%_datadir/%n
 
 mkdir -p %buildroot%_binfmtdir
 ./scripts/qemu-binfmt-conf.sh --systemd ALL --exportdir %buildroot%_binfmtdir --qemu-path %_bindir
-for i in %buildroot%_binfmtdir/*; do
-    mv $i $(echo $i | sed 's/.conf/-dynamic.conf/')
-done
 
+for f in %buildroot%_binfmtdir/*.conf; do
+    [ -f "$f" ]
+    dynamic="${f%.conf}-dynamic.conf"
+    mv "$f" "$dynamic"
 %if user_static
-for regularfmt in %buildroot%_binfmtdir/*; do
-    staticfmt="$(echo $regularfmt | sed 's/-dynamic/-static/g')"
-    cat $regularfmt | tr -d '\n' | sed "s/:$/-static:F/" > $staticfmt
-done
+    static="${f%.conf}-static.conf"
+    sed 's/:$/-static:/' < "$dynamic" > "$static"
 %endif
+done
 
 %check
 # Disabled on aarch64 where it fails with several errors.  Will
@@ -1347,7 +1348,7 @@ fi
 %exclude %_bindir/qemu-pr-helper
 %endif
 %if_enabled user_static
-%exclude %_bindir/qemu-*.static
+%exclude %_bindir/qemu-*-static
 %endif
 %exclude %_bindir/qemu-img
 %exclude %_bindir/qemu-io
@@ -1361,7 +1362,7 @@ fi
 
 %if_enabled user_static
 %files user-static
-%_bindir/qemu-*.static
+%_bindir/qemu-*-static
 
 %files user-static-binfmt
 %_binfmtdir/qemu-*-static.conf
@@ -1606,6 +1607,12 @@ fi
 %_man1dir/qemu-system-nios2.1*
 
 %changelog
+* Sun Aug 11 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.0-alt4
+- change suffix from .static to -static for binaries in user-static package (ALT #37083)
+
+* Fri Aug 09 2019 Nikita Ermakov <arei@altlinux.org> 4.0.0-alt3
+- fix to handle variably sized SIOCGSTAMP with new kernels.
+
 * Mon Jun 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.0.0-alt2
 - qemu-kvm: fixed armh and aarch64 support.
 - Added ppc* architectures support.
