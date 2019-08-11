@@ -25,11 +25,9 @@
 %def_with systemd
 %def_without libarchive
 
-%ifarch x86_64
+%ifarch x86_64 aarch64 ppc64le
 %def_without tokudb
-#%def_with tokudb
 %def_without mroonga
-#def_with mroonga
 %def_with rocksdb
 %else
 %def_without tokudb
@@ -37,9 +35,14 @@
 %def_without rocksdb
 %endif
 
-%def_with galera
 %def_without cassandra
+%ifnarch armh
+%def_with galera
 %def_with oqgraph
+%else
+%def_without galera
+%def_without oqgraph
+%endif
 %def_with sphinx
 %def_with connect
 %def_with gssapi
@@ -47,7 +50,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.3.15
+Version: 10.4.7
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -95,6 +98,8 @@ Source74: mariadbcheck.xinetd
 # git submodules
 Source101: libmariadb.tar
 Source102: rocksdb.tar
+Source103: wsrep-lib.tar
+Source104: wsrep-API.tar
 
 Patch0: %name-%version.patch
 
@@ -111,10 +116,9 @@ Patch30: mariadb-errno.patch
 Patch32: mariadb-basedir.patch
 Patch33: mariadb-covscan-signexpr.patch
 #Patch34: mariadb-covscan-stroverflow.patch
-Patch35: mariadb-10.3.12-alt-fix-build-on-ppc64.patch
 
 Patch101: rocksdb-5.4.13-alt-add-libatomic-if-needed.patch
-Patch102: mariadb-10.3.10-alt-link-with-latomic-if-needed.patch
+Patch102: mariadb-10.4.7-alt-link-with-latomic-if-needed.patch
 
 Requires: %name-server = %EVR
 Requires: %name-client = %EVR
@@ -401,6 +405,8 @@ version.
 %setup
 tar -xf %SOURCE101 -C libmariadb
 tar -xf %SOURCE102 -C storage/rocksdb/rocksdb
+tar -xf %SOURCE103 -C wsrep-lib
+tar -xf %SOURCE104 -C wsrep-lib/wsrep-API/v26 
 
 %patch0 -p1
 %patch1 -p1
@@ -413,7 +419,6 @@ tar -xf %SOURCE102 -C storage/rocksdb/rocksdb
 %patch32 -p1
 #%patch33 -p1
 #%patch34 -p1
-%patch35 -p1
 
 %patch101 -p1 -d ./storage/rocksdb/rocksdb
 %patch102 -p1
@@ -507,7 +512,7 @@ export LDFLAGS
 
 %install
 mkdir -p %buildroot{%_bindir,%_sbindir,%_includedir,%_mandir,%_infodir,%_datadir/sql-bench,%_logdir/mysql}
-mkdir -p %buildroot%ROOT/{etc,/%_lib,%_libdir,%prefix/%plugindir,%_libdir/galera,dev,log,tmp,run/systemd,/var/{nis,yp/binding},db/mysql,usr/share/mysql/charsets}
+mkdir -p %buildroot%ROOT/{etc,/%_lib,%_libdir,%prefix/%plugindir/auth_pam_tool_dir,%_libdir/galera,dev,log,tmp,run/systemd,/var/{nis,yp/binding},db/mysql,usr/share/mysql/charsets}
 touch %buildroot%ROOT{%_sysconfdir/{hosts,services,{host,nsswitch,resolv}.conf},/dev/urandom,/var/nis/NIS_COLD_START,/run/systemd/notify}
 
 # don't fiddle with the initscript!
@@ -606,18 +611,6 @@ mv %buildroot%_datadir/pkgconfig/mariadb.pc %buildroot%_pkgconfigdir/
     fi
 %endif
 
-# Fix libmysqlclient_r symlinks
-(
-        cd %buildroot%_libdir
-        N="libmysqlclient_r.so"
-        for l in $N.*; do
-                if [ -h $l ]; then
-                        t=${l#$N}
-                        ln -sf libmysqlclient.so$t $N$t
-                fi
-        done
-)
-
 
 # Populate chroot with data to some extent.
 install -pD -m644 %buildroot%_datadir/mysql/charsets/* \
@@ -657,7 +650,9 @@ DATADIR=`/usr/bin/my_print_defaults mysqld |sed -ne 's/^--datadir=\\(.*\\)/\\1/p
 # this command enables plugins, but needs ini file + configuration in my.cnf before executing
 # and oh yeah, mysql must be stopped... => useless
 rm -f %buildroot%_bindir/mysql_plugin
+rm -f %buildroot%_bindir/mariadb-plugin
 rm -f %buildroot%_mandir/man1/mysql_plugin.1*
+rm -f %buildroot%_mandir/man1/mariadb-plugin.1*
 rm -f %buildroot%prefix/%plugindir/daemon_example.ini
 
 # remove more useless plugins
@@ -667,6 +662,7 @@ rm -f %buildroot%prefix/%plugindir/daemon_example.ini
 
 # house cleaning
 rm -f %buildroot%_bindir/mysql_embedded
+rm -f %buildroot%_bindir/mariadb-embedded
 rm -rf %buildroot%_datadir/info
 rm -f %buildroot%_datadir/mysql/binary-configure
 rm -f %buildroot%_datadir/mysql/my-huge.cnf
@@ -685,6 +681,7 @@ rm -f %buildroot/etc/my.cnf.d/enable_encryption.preset
 rm -f %buildroot%_bindir/galera_recovery
 rm -f %buildroot%_bindir/mariadb-service-convert
 rm -f %buildroot%_bindir/mysqld_safe_helper
+rm -f %buildroot%_bindir/mariadbd-safe-helper
 rm -f %buildroot%_bindir/test-connect-t
 rm -f %buildroot/lib/sysusers.d/sysusers.conf
 rm -f %buildroot/lib/tmpfiles.d/tmpfiles.conf
@@ -743,14 +740,19 @@ fi
 %_bindir/aria*
 %_bindir/*isam*
 %_bindir/mysql_fix_extensions
+%_bindir/mariadb-fix-extensions
 %_bindir/mysql_secure_installation
+%_bindir/mariadb-secure-installation
 %_bindir/mysql_tzinfo_to_sql
+%_bindir/mariadb-tzinfo-to-sql
 %_bindir/mysql_upgrade
+%_bindir/mariadb-upgrade
 %_bindir/mysqld_multi
+%_bindir/mariadbd-multi
 %_bindir/mysqld_safe
-
+%_bindir/mariadbd-safe
 %_bindir/mysql_install_db
-
+%_bindir/mariadb-install-db
 %if_with mroonga
 %_datadir/mysql/mroonga
 %endif
@@ -780,6 +782,7 @@ fi
 %attr(710,root,mysql) %dir %ROOT/%_libdir
 %attr(710,root,mysql) %dir %ROOT/%_libdir/%name
 %attr(750,root,mysql) %dir %ROOT/%prefix/%plugindir
+%attr(750,root,mysql) %dir %ROOT/%prefix/%plugindir/auth_pam_tool_dir
 %if_with galera
 %attr(750,root,mysql) %dir %ROOT/%_libdir/galera
 %endif
@@ -815,6 +818,7 @@ fi
 %_unitdir/mariadbcheck@.service
 %config(noreplace) %_sysconfdir/xinetd.d/mariadbcheck
 %config(noreplace) %_sysconfdir/my.cnf.d/galera.cnf
+%_datadir/mysql/wsrep_notify
 %endif
 
 %if_with cracklib
@@ -828,6 +832,7 @@ fi
 %config(noreplace) %_sysconfdir/my.cnf.d/rocksdb.cnf
 %_bindir/myrocks_hotbackup
 %_bindir/mysql_ldb
+%_bindir/mariadb-ldb
 %_bindir/sst_dump
 %prefix/%plugindir/ha_rocksdb.so
 %_man1dir/mysql_ldb.1*
@@ -878,6 +883,9 @@ fi
 %if_with mroonga
 %exclude %_datadir/mysql/mroonga
 %endif
+%if_with galera
+%exclude %_datadir/mysql/wsrep_notify
+%endif
 %endif
 
 %files server-control
@@ -885,11 +893,17 @@ fi
 
 %files server-perl
 %_bindir/mysql_convert_table_format
+%_bindir/mariadb-convert-table-format
 %_bindir/mysql_find_rows
+%_bindir/mariadb-find-rows
 %_bindir/mysql_setpermission
+%_bindir/mariadb-setpermission
 %_bindir/mysqlhotcopy
+%_bindir/mariadb-hotcopy
 %_bindir/mysqlaccess
+%_bindir/mariadb-access
 %_bindir/mysqldumpslow
+%_bindir/mariadb-dumpslow
 %_bindir/mytop
 %endif
 
@@ -902,19 +916,30 @@ fi
 %_bindir/msql2mysql
 %_bindir/my_print_defaults
 %_bindir/mysql
+%_bindir/mariadb
 %_bindir/mysql_client_test
+%_bindir/mariadb-client-test
 %_bindir/mysqladmin
+%_bindir/mariadb-admin
 %_bindir/mysqlanalyze
 %_bindir/mysqlbinlog
+%_bindir/mariadb-binlog
 %_bindir/mysqlcheck
+%_bindir/mariadb-check
 %_bindir/mysqldump
+%_bindir/mariadb-dump
 %_bindir/mysqlimport
+%_bindir/mariadb-import
 %_bindir/mysqloptimize
 %_bindir/mysqlrepair
 %_bindir/mysqlshow
+%_bindir/mariadb-show
 %_bindir/mysqlslap
+%_bindir/mariadb-slap
 %_bindir/mysqltest
+%_bindir/mariadb-test
 %_bindir/mysql_waitpid
+%_bindir/mariadb-waitpid
 %_bindir/perror
 %_bindir/replace
 %_bindir/resolve*
@@ -922,8 +947,11 @@ fi
 %_mandir/man?/*
 %exclude %_man1dir/mysql_config.1*
 %exclude %_man1dir/mysql_client_test_embedded.1*
+%exclude %_man1dir/mariadb-client-test-embedded.1*
 %exclude %_man1dir/mysqltest_embedded.1*
-%{?_with_rocksdb:%exclude %_man1dir/mysql_ldb.1*}
+%exclude %_man1dir/mariadb-test-embedded.1*
+%exclude %_man1dir/mysql_ldb.1*
+%exclude %_man1dir/mariadb-ldb.1*
 %endif
 
 %if_with bench
@@ -934,6 +962,7 @@ fi
 %if_with mariabackup
 %files backup
 %_bindir/mariabackup
+%_bindir/mariadb-backup
 %_bindir/mbstream
 %endif
 
@@ -975,7 +1004,9 @@ fi
 %_libdir/lib%{name}d.so
 %_libdir/libmysqld.so
 %_bindir/mysql_client_test_embedded
+%_bindir/mariadb-client-test-embedded
 %_bindir/mysqltest_embedded
+%_bindir/mariadb-test-embedded
 %_man1dir/mysql_client_test_embedded.1*
 %_man1dir/mysqltest_embedded.1*
 %endif
@@ -983,6 +1014,27 @@ fi
 %endif
 
 %changelog
+* Fri Aug 09 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.7-alt1
+- 10.4.7
+- Fixes for the following security vulnerabilities:
+  + CVE-2019-2805
+  + CVE-2019-2740
+  + CVE-2019-2739
+  + CVE-2019-2737
+  + CVE-2019-2758
+
+* Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.6-alt4
+- fix execute prestart chroot build
+
+* Tue Jul 16 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 10.4.6-alt3
+- built without galera/oqgraph on armh
+
+* Tue Jul 16 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.6-alt2
+- add dir /usr/lib/mariadb/plugin/auth_pam_tool_dir to chroot
+
+* Fri Jul 12 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.6-alt1
+- 10.4.6
+
 * Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 10.3.15-alt1
 - 10.3.15
 - Fixes for the following security vulnerabilities:

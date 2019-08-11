@@ -1,5 +1,9 @@
+%def_enable boost
+%def_disable boost_pool
+%def_enable system_asio
+
 Name: galera
-Version: 25.3.26
+Version: 26.4.2
 Release: alt1
 Summary: Synchronous multi-master wsrep provider (replication engine)
 Group: System/Servers
@@ -17,7 +21,9 @@ Source4: garbd.conf
 Source100: wsrep.tar
 
 BuildRequires: gcc-c++ scons
-BuildRequires: boost-devel boost-program_options-devel asio-devel
+%{?_enable_boost:BuildRequires: boost-devel boost-program_options-devel}
+%{?_enable_system_asio:BuildRequires: asio-devel}
+
 BuildRequires: libcheck-devel libssl-devel zlib-devel
 
 %description
@@ -53,8 +59,15 @@ replication engine see http://www.codership.com.
 tar -xf %SOURCE100 -C wsrep/src
 
 %build
+export CFLAGS="%optflags"
+export CXXFLAGS="%optflags"
 export CPPFLAGS="%optflags"
-scons %{?_smp_mflags} strict_build_flags=0 boost=1 system_asio=1 boost_pool=1 
+scons %{?_smp_mflags} \
+    revno=%release \
+    %{?_disable_boost:boost=0} \
+    %{?_enable_boost_pool:boost_pool=1} \
+    %{?_disable_system_asio:system_asio=0} \
+    strict_build_flags=0
 
 %install
 install -D -m 755 %SOURCE1 %buildroot%_initdir/garbd
@@ -98,6 +111,9 @@ install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README
 %doc %_docdir/galera/README-MySQL
 
 %changelog
+* Fri Aug 09 2019 Alexey Shabalin <shaba@altlinux.org> 26.4.2-alt1
+- 26.4.2
+
 * Wed Apr 17 2019 Alexey Shabalin <shaba@altlinux.org> 25.3.26-alt1
 - 25.3.26
 
