@@ -1,17 +1,27 @@
+# Unpackaged files in buildroot should terminate build
+%define _unpackaged_files_terminate_build 1
+
+%define goipath github.com/syncthing/syncthing
+%define gopath %_libdir/golang
+
 Name: syncthing
-Version: 1.0.1
-Release: alt1
 Summary: FOSS Continuous File Synchronisation
 Summary(ru_RU.UTF-8): Свободная программа непрерывной синхронизации файлов
+Version: 1.2.1
+Release: alt1
 License: MPL-2.0
 Group: Networking/Other
 Url:https://github.com/syncthing/syncthing
 
 Packager: Anton Midyukov <antohami@altlinux.org>
 
+#Source-url: https://github.com/syncthing/syncthing/releases/download/v%version/syncthing-source-v%version.tar.gz
 Source: %name-%version.tar
+BuildRequires(pre): rpm-macros-golang rpm-build-golang
 BuildRequires: go >= 1.3
 BuildRequires: udev-rules
+
+Obsoletes: syncthing-inotify
 
 %description
 Syncthing replaces proprietary sync and cloud services with
@@ -27,43 +37,187 @@ Syncthing призван заменить собой проприетарные 
 совместно с какой-то третьей стороной или нет, и как им передаваться через
 Интернет.
 
+%package tools
+Summary: Continuous File Synchronization (server tools)
+Group: Networking/Other
+
+%description tools
+Syncthing replaces other file synchronization services with something
+open, trustworthy and decentralized. Your data is your data alone and
+you deserve to choose where it is stored, if it is shared with some
+third party and how it's transmitted over the Internet. Using syncthing,
+that control is returned to you.
+
+This package contains the main syncthing server tools:
+
+* strelaysrv / strelaypoolsrv, the syncthing relay server for indirect
+  file transfers between client nodes, and
+* stdiscosrv, the syncthing discovery server for discovering nodes
+  to connect to indirectly over the internet.
+
+%package cli
+Summary: Continuous File Synchronization (CLI)
+Group: Networking/Other
+
+%description cli
+Syncthing replaces other file synchronization services with something
+open, trustworthy and decentralized. Your data is your data alone and
+you deserve to choose where it is stored, if it is shared with some
+third party and how it's transmitted over the Internet. Using syncthing,
+that control is returned to you.
+
+This package contains the CLI program.
+
 %prep
 %setup
 
 %build
-mkdir -p build/src/ build/vendor/
-export GOPATH="$PWD/build:$PWD/build/vendor"
+export GO111MODULE=off
 
-mkdir -p build/src/github.com/%name/%name
-ls | sed '/^build$/d' | xargs cp -at build/src/github.com/%name/%name
-cp -a vendor build/vendor/src
+# prepare build environment
+mkdir -p ./_build/src/github.com/syncthing
 
-pushd build/src/github.com/%name/%name/
-go run build.go -version v%version -no-upgrade
+TOP=$(pwd)
+pushd _build/src/github.com/syncthing
+ln -s $TOP syncthing
 popd
 
+export GOPATH=$(pwd)/_build:%gopath
+export BUILDDIR=$(pwd)/_build/src/%goipath
+
+# compile assets used by the build process
+pushd _build/src/%goipath
+go run build.go assets
+rm build.go
+popd
+
+# set variables expected by syncthing binaries as additional LDFLAGS
+export BUILD_HOST=fedora-koji
+export LDFLAGS="-X %goipath/lib/build.Version=v%version -X %goipath/lib/build.Stamp=$(date +%s) -X %goipath/lib/build.User=$USER -X %goipath/lib/build.Host=$BUILD_HOST"
+export BUILDTAGS="noupgrade"
+
+%gobuild -o _bin/syncthing %goipath/cmd/syncthing
+%gobuild -o _bin/stdiscosrv %goipath/cmd/stdiscosrv
+%gobuild -o _bin/strelaysrv %goipath/cmd/strelaysrv
+%gobuild -o _bin/strelaypoolsrv %goipath/cmd/strelaypoolsrv
+%gobuild -o _bin/stcli %goipath/cmd/stcli
+
 %install
-install -Dm 0755 build/src/github.com/%name/%name/bin/%name \
-  %buildroot%_bindir/%name
-install -Dm 0644 etc/linux-systemd/system/%name@.service        \
-  %buildroot%_unitdir/%name@.service
-install -Dm 0644 etc/linux-systemd/system/%name-resume.service  \
-  %buildroot%_unitdir/%name-resume.service
-install -Dm 0644 etc/linux-systemd/user/%name.service           \
-  %buildroot%_libexecdir/systemd/user/%name.service
+export GO111MODULE=off
+
+# install binaries
+mkdir -p %buildroot/%_bindir
+
+cp -pav _bin/syncthing %buildroot/%_bindir/
+cp -pav _bin/stdiscosrv %buildroot/%_bindir/
+cp -pav _bin/strelaysrv %buildroot/%_bindir/
+cp -pav _bin/strelaypoolsrv %buildroot/%_bindir/
+cp -pav _bin/stcli %buildroot/%_bindir/
+
+# install man pages
+mkdir -p %buildroot/%_man1dir
+mkdir -p %buildroot/%_man5dir
+mkdir -p %buildroot/%_man7dir
+
+cp -pav ./man/syncthing.1 %buildroot/%_man1dir/
+cp -pav ./man/*.5 %buildroot/%_man5dir/
+cp -pav ./man/*.7 %buildroot/%_man7dir/
+cp -pav ./man/stdiscosrv.1 %buildroot/%_man1dir/
+cp -pav ./man/strelaysrv.1 %buildroot/%_man1dir/
+
+# install systemd units
+mkdir -p %buildroot/%_unitdir
+mkdir -p %buildroot/%_libexecdir/systemd/user
+
+cp -pav etc/linux-systemd/system/syncthing@.service %buildroot/%_unitdir/
+cp -pav etc/linux-systemd/system/syncthing-resume.service %buildroot/%_unitdir/
+cp -pav etc/linux-systemd/user/syncthing.service %buildroot/%_libexecdir/systemd/user/
+
+# install systemd preset disabling the service per default
+mkdir -p %buildroot/%_libexecdir/systemd/user-preset
+echo "disable syncthing*" > %buildroot/%_libexecdir/systemd/user-preset/90-syncthing.preset
+
+# Unmark source files as executable
+for i in $(find -name "*.go" -executable -print); do
+    chmod a-x $i;
+done
+
+%check
+export LANG=C.utf8
+export GOPATH=$(pwd)/_build:%gopath
+export GO111MODULE=off
+
+%gotest %goipath/cmd/stdiscosrv || :
+%gotest %goipath/cmd/strelaypoolsrv || :
+%gotest %goipath/cmd/syncthing || :
+
+%gotest %goipath/lib/api || :
+%gotest %goipath/lib/auto || :
+%gotest %goipath/lib/beacon || :
+%gotest %goipath/lib/config || :
+%gotest %goipath/lib/connections || :
+%gotest %goipath/lib/db || :
+%gotest %goipath/lib/dialer || :
+%gotest %goipath/lib/discover || :
+%gotest %goipath/lib/events || :
+%gotest %goipath/lib/fs || :
+%gotest %goipath/lib/ignore || :
+%gotest %goipath/lib/logger || :
+
+# This test sometimes fails dependent on load on some architectures:
+# https://github.com/syncthing/syncthing/issues/4370
+%gotest %goipath/lib/model || :
+
+%gotest %goipath/lib/nat || :
+%gotest %goipath/lib/osutil || :
+%gotest %goipath/lib/pmp || :
+%gotest %goipath/lib/protocol || :
+%gotest %goipath/lib/rand || :
+%gotest %goipath/lib/relay/client || :
+%gotest %goipath/lib/relay/protocol || :
+%gotest %goipath/lib/scanner || :
+%gotest %goipath/lib/signature || :
+%gotest %goipath/lib/stats || :
+%gotest %goipath/lib/sync || :
+%gotest %goipath/lib/tlsutil || :
+%gotest %goipath/lib/upgrade || :
+%gotest %goipath/lib/upnp || :
+%gotest %goipath/lib/util || :
+
+# This test sometimes fails dependent on load on some architectures:
+# https://github.com/syncthing/syncthing/issues/4351
+%gotest %goipath/lib/versioner || :
+
+%gotest %goipath/lib/watchaggregator || :
+%gotest %goipath/lib/weakhash || :
 
 %files
 %doc AUTHORS CONDUCT.md CONTRIBUTING.md LICENSE README.md
 %_bindir/%name
-%dir /lib/systemd
-%dir %_unitdir/
 %_unitdir/%name@.service
 %_unitdir/%name-resume.service
-%dir %_libexecdir/systemd
-%dir %_libexecdir/systemd/user
-%_libexecdir/systemd/user/%name.service
+%_libexecdir/systemd/user/*.service
+%_libexecdir/systemd/user-preset/*.preset
+%_mandir/man?/%{name}*
+
+%files tools
+%doc LICENSE
+%doc README.md AUTHORS
+%_bindir/stdiscosrv
+%_bindir/strelaysrv
+%_bindir/strelaypoolsrv
+%_man1dir/stdiscosrv*
+%_man1dir/strelaysrv*
+
+%files cli
+%doc LICENSE
+%doc README.md AUTHORS
+%_bindir/stcli
 
 %changelog
+* Tue Aug 06 2019 Anton Midyukov <antohami@altlinux.org> 1.2.1-alt1
+- new version 1.2.1
+
 * Wed Feb 06 2019 Cronbuild Service <cronbuild@altlinux.org> 1.0.1-alt1
 - new version 1.0.1
 
