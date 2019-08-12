@@ -1,4 +1,5 @@
-%def_without ffmpeg
+%def_with ffmpeg
+# X264 backend not implemented, please review your configuration!
 %def_without x264
 %def_without directfb
 # see https://github.com/FreeRDP/FreeRDP/issues/4348
@@ -6,7 +7,7 @@
 
 Name: freerdp
 Version: 2.0.0
-Release: alt1.git20181120
+Release: alt3.git20190806
 
 Group: Networking/Remote access
 Summary: Remote Desktop Protocol functionality
@@ -20,14 +21,15 @@ Requires: xfreerdp = %EVR
 Requires: wlfreerdp = %EVR
 Requires: %name-plugins-standard = %EVR
 
-BuildRequires(pre): rpm-build-ubt
-BuildRequires: cmake gcc-c++
+BuildRequires(pre): cmake
+BuildRequires: gcc-c++
 BuildRequires: docbook-style-xsl git-core xmlto libpcre-devel
 BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(libpcsclite)
 BuildRequires: pkgconfig(libsystemd)
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(wayland-client)
+BuildRequires: pkgconfig(wayland-cursor)
 BuildRequires: pkgconfig(wayland-scanner)
 BuildRequires: pkgconfig(x11)
 BuildRequires: pkgconfig(xcursor)
@@ -45,9 +47,18 @@ BuildRequires: pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires: pkgconfig(libpulse)
 %{?_with_directfb:BuildRequires: pkgconfig(directfb)}
 BuildRequires: libcups-devel libjpeg-devel zlib-devel
-%{?_with_ffmpeg:BuildRequires: libavcodec-devel libavutil-devel}
+%{?_with_ffmpeg:BuildRequires: libavcodec-devel libavutil-devel libavresample-devel libswresample-devel}
 %{?_with_x264:BuildRequires: libx264-devel}
 BuildRequires: libkrb5-devel
+BuildRequires: wayland-devel
+BuildRequires: libmbedtls-devel
+BuildRequires: libgsm-devel
+BuildRequires: liblame-devel
+BuildRequires: libfaad-devel
+BuildRequires: libfaac-devel
+BuildRequires: libsoxr-devel
+BuildRequires: libffi-devel
+BuildRequires: liborc-devel
 
 %description
 freerdp implements Remote Desktop Protocol (RDP), used in a number of Microsoft
@@ -59,7 +70,6 @@ This is metapackage.
 %package -n xfreerdp
 Summary: Remote Desktop Protocol client
 Group: Networking/Remote access
-#Requires: %name-plugins-standard
 Requires: lib%name = %EVR
 
 %description -n xfreerdp
@@ -83,7 +93,6 @@ This package contains DirectFB UI.
 %package -n wlfreerdp
 Summary: Remote Desktop Protocol client
 Group: Networking/Remote access
-#Requires: %name-plugins-standard
 Requires: lib%name = %EVR
 
 %description -n wlfreerdp
@@ -186,25 +195,35 @@ the RDP protocol.
     -DWITH_CLIENT=ON \
     %{?_without_directfb:-DWITH_DIRECTFB=OFF} \
     %{?_without_ffmpeg:-DWITH_FFMPEG=OFF} \
-    %{?_without_x264:-DWITH_X264=OFF} \
-    -DWITH_GSM=OFF \
+%if_with x264
+    -DWITH_X264=ON \
+%else
+    -DWITH_X264=OFF \
+%endif
+    -DWITH_GSM=ON \
     %{?_without_gss:-DWITH_GSSAPI=OFF} \
+    -DWITH_FAAC=ON \
+    -DWITH_FAAD2=ON \
     -DWITH_GSTREAMER_1_0=ON \
     -DWITH_IPP=OFF \
     -DWITH_JPEG=ON \
+    -DWITH_LAME=ON \
     -DWITH_LIBRARY_VERSIONING=ON \
     -DWITH_MANPAGES=ON \
+    -DWITH_MBEDTLS=ON \
+    -DWITH_OPENH264=OFF \
     -DWITH_OPENSSL=ON \
     -DWITH_PCSC=ON \
     -DWITH_PULSE=ON \
     -DWITH_SERVER=ON \
+    -DWITH_SOXR=ON \
     -DWITH_WAYLAND=ON \
     -DWITH_X11=ON \
     -DWITH_XCURSOR=ON \
     -DWITH_XEXT=ON \
-    -DWITH_XKBFILE=ON \
     -DWITH_XI=ON \
     -DWITH_XINERAMA=ON \
+    -DWITH_XKBFILE=ON \
     -DWITH_XRENDER=ON \
     -DWITH_XV=ON \
     -DWITH_ZLIB=ON \
@@ -234,6 +253,7 @@ ln -s freerdp2.pc %buildroot%_pkgconfigdir/freerdp.pc
 
 %files -n xfreerdp
 %_bindir/xfreerdp
+%_bindir/freerdp-proxy
 %_man1dir/xfreerdp*
 %_bindir/winpr-*
 %_man1dir/winpr-*
@@ -252,7 +272,7 @@ ln -s freerdp2.pc %buildroot%_pkgconfigdir/freerdp.pc
 %_man1dir/freerdp-shadow-cli.*
 
 %files -n lib%name
-%doc LICENSE README ChangeLog
+%doc LICENSE README.md ChangeLog
 %_libdir/lib%{name}2.so.*
 %_libdir/lib%{name}-client2.so.*
 %dir %_libdir/freerdp*
@@ -293,6 +313,14 @@ ln -s freerdp2.pc %buildroot%_pkgconfigdir/freerdp.pc
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Mon Aug 12 2019 Andrey Cherepanov <cas@altlinux.org> 2.0.0-alt3.git20190806
+- New snapshot from upstream git repository.
+- Build from upstream git.
+- Enable support of ffmpeg, wayland, mbedtls, gsm, lame, faad, faac, soxr.
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 2.0.0-alt2.git20181120
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed Nov 21 2018 Pavel Nakonechnyi <zorg@altlinux.org> 2.0.0-alt1.git20181120
 - Fifth release candidate for 2.0.0:
 - multiple CVE fixes
@@ -301,14 +329,14 @@ ln -s freerdp2.pc %buildroot%_pkgconfigdir/freerdp.pc
 * Thu Aug 30 2018 Grigory Ustinov <grenka@altlinux.org> 2.0.0-alt1.git20180801.S1.1
 - NMU: Rebuild with new openssl 1.1.0.
 
-* Thu Aug 02 2018 Pavel Nakonechnyi <zorg@altlinux.org> 2.0.0-alt1.git20180801%ubt
+* Thu Aug 02 2018 Pavel Nakonechnyi <zorg@altlinux.org> 2.0.0-alt1.git20180801.S1
 - Fourth release candidate for 2.0.0
 
-* Tue Apr 17 2018 Pavel Nakonechnyi <zorg@altlinux.org> 2.0.0-alt1.git20180411%ubt
+* Tue Apr 17 2018 Pavel Nakonechnyi <zorg@altlinux.org> 2.0.0-alt1.git20180411.S1
 - Third release candidate for 2.0.0
 - Fix gstreamer-1.0 detection is not needed now
 
-* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 2.0.0-alt1.git20170724%ubt
+* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 2.0.0-alt1.git20170724.S1
 - Fix gstreamer-1.0 detection
 - increase release number for allow backport to p8
 
