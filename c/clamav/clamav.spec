@@ -13,8 +13,8 @@
 %define rctag %nil
 
 Name: clamav
-Version: 0.101.2
-Release: alt2
+Version: 0.101.3
+Release: alt1
 %define abiversion 9
 
 Summary: Clam Antivirus scanner
@@ -353,6 +353,10 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %endif
 
 %changelog
+* Mon Aug 12 2019 Sergey Y. Afonin <asy@altlinux.org> 0.101.3-alt1
+- 0.101.3
+  a patch release to address a vulnerability to non-recursive zip bombs
+
 * Sat Apr 13 2019 Sergey Y. Afonin <asy@altlinux.ru> 0.101.2-alt2
 - added clamav-automake-1.16.patch: fixed FTBFS.
 
