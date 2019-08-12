@@ -1,5 +1,5 @@
 Name: fotoxx
-Version: 19.13
+Version: 19.14
 Release: alt1
 
 Summary: Software for digital image editing, HDR composites, and panoramas
@@ -82,6 +82,9 @@ install -pD %_sourcedir/fotoxx16.png %buildroot%_miconsdir/fotoxx.png
 %exclude %_datadir/doc/%name
 
 %changelog
+* Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 19.14-alt1
+- 19.14
+
 * Mon Aug 05 2019 Yuri N. Sedunov <aris@altlinux.org> 19.13-alt1
 - 19.13
 

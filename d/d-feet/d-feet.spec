@@ -1,9 +1,10 @@
 %define ver_major 0.3
 %define xdg_name org.gnome.dfeet
+%def_enable tests
 %def_disable check
 
 Name: d-feet
-Version: %ver_major.14
+Version: %ver_major.15
 Release: alt1
 
 Summary: A powerful D-Bus Debugger
@@ -12,16 +13,17 @@ License: GPLv2+
 Url: https://wiki.gnome.org/DFeet/
 
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.tar.xz
+Patch: %name-0.3.15-alt-python_path.patch
 
 BuildArch: noarch
 
 Requires: dbus-tools-gui
 
-BuildRequires(pre): rpm-build-gir rpm-build-python3
+BuildRequires(pre): meson rpm-build-gir rpm-build-python3
 BuildRequires: python3-module-pygobject3-devel python3-module-setuptools
-BuildRequires: intltool yelp-tools libgtk+3-devel libgtk+3-gir-devel >= 3.9.4
+BuildRequires: yelp-tools libgtk+3-devel libgtk+3-gir-devel >= 3.9.4
 BuildRequires: dbus-tools-gui
-%{?_enable_check:BuildRequires: python3-tools-pep8 python3-module-pycodestyle}
+%{?_enable_tests:BuildRequires: python3-tools-pep8 python3-module-pycodestyle}
 
 %description
 D-Feet is an easy to use D-Bus debugger.
@@ -32,19 +34,19 @@ objects.
 
 %prep
 %setup
+%patch
+sed -i 's/\(pycodestyle\)-3/\1.py3/' src/tests/meson.build
 
 %build
-%autoreconf
-%configure PYTHON=%__python3
-%make_build
+%meson %{?_disable_tests:-Dtests=false}
+%meson_build
 
 %install
-%makeinstall_std
-
+%meson_install
 %find_lang --with-gnome --output=%name.lang %name dfeet
 
 %check
-%make check
+%meson_test
 
 %files -f %name.lang
 %_bindir/%name
@@ -54,11 +56,13 @@ objects.
 %_datadir/glib-2.0/schemas/%xdg_name.gschema.xml
 %_iconsdir/hicolor/*x*/apps/*.png
 %_iconsdir/hicolor/*/apps/*.svg
-%_iconsdir/HighContrast/scalable/apps/%xdg_name.svg
 %_datadir/metainfo/%xdg_name.appdata.xml
 %doc AUTHORS README NEWS
 
 %changelog
+* Thu Aug 08 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.15-alt1
+- 0.3.15
+
 * Wed Oct 24 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.14-alt1
 - 0.3.14 with Python3
 

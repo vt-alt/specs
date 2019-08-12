@@ -1,8 +1,8 @@
-%define ver_major 0.4
+%define ver_major 0.5
 %define gst_api_ver 1.0
 
 Name: gnome-video-effects
-Version: %ver_major.3
+Version: %ver_major.0
 Release: alt1
 
 Summary: A collection of GStreamer video effects
@@ -19,10 +19,10 @@ Requires: gst-plugins-good%gst_api_ver
 Requires: gst-plugins-bad%gst_api_ver
 Requires: frei0r-plugins
 
-BuildPreReq: intltool >= 0.40.0
+BuildRequires(pre): meson
 
 %description
-A collection of GStreamer video effects to be used in different GNOME Modules
+A collection of GStreamer video effects to be used in different GNOME Modules.
 
 %package devel
 Summary: Development files for %name
@@ -30,18 +30,17 @@ Group: Development/GNOME and GTK+
 Requires: %name = %version-%release
 
 %description devel
-This package provides .pc file needed to build apllications using %name
+This package provides .pc file needed to build apllications using %name.
 
 %prep
 %setup
 
 %build
-%configure
-%make_build
+%meson
+%meson_build
 
 %install
-%makeinstall_std
-
+%meson_install
 %find_lang %name
 
 %files -f %name.lang
@@ -53,6 +52,9 @@ This package provides .pc file needed to build apllications using %name
 %_datadir/pkgconfig/%name.pc
 
 %changelog
+* Tue Aug 06 2019 Yuri N. Sedunov <aris@altlinux.org> 0.5.0-alt1
+- 0.5.0
+
 * Thu Feb 09 2017 Yuri N. Sedunov <aris@altlinux.org> 0.4.3-alt1
 - 0.4.3
 

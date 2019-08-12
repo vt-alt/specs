@@ -5,9 +5,10 @@
 %def_enable debug_gui
 %def_disable documentation
 %def_enable tests
+%def_enable install_tests
 
 Name: libinput
-Version: 1.13.4
+Version: 1.14.0
 Release: alt1
 
 Summary: Input devices library
@@ -90,6 +91,7 @@ This package contains visual debug helper for %name.
        %{?_enable_debug_gui:-Ddebug-gui=true} \
        %{?_disable_documentation:-Ddocumentation=false} \
        %{?_disable_tests:-Dtests=false} \
+       %{?_enable_install_tests:-Dinstall-tests=true} \
        -Dudev-dir=/lib/udev
 %meson_build
 
@@ -102,10 +104,10 @@ This package contains visual debug helper for %name.
 %files
 %_libdir/%name.so.*
 /lib/udev/%name-device-group
-/lib/udev/%name-model-quirks
+/lib/udev/%name-fuzz-override
 %_datadir/%name/
 %_udevrulesdir/80-%name-device-groups.rules
-%_udevrulesdir/90-%name-model-quirks.rules
+%_udevrulesdir/90-%name-fuzz-override.rules
 %doc COPYING README*
 
 %files devel
@@ -141,6 +143,9 @@ This package contains visual debug helper for %name.
 
 
 %changelog
+* Thu Aug 08 2019 Yuri N. Sedunov <aris@altlinux.org> 1.14.0-alt1
+- 1.14.0
+
 * Fri Jun 28 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.4-alt1
 - 1.13.4
 

@@ -5,7 +5,7 @@
 %define _name exempi
 
 Name: lib%_name
-Version: 2.5.0
+Version: 2.5.1
 Release: alt1
 
 Summary: Library for easy parsing of XMP metadata
@@ -79,6 +79,9 @@ sed -i~ 's|\^\(boost-lib-version\)|\1|' m4/boost.m4
 
 
 %changelog
+* Tue Aug 06 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.1-alt1
+- 2.5.1
+
 * Tue Jan 08 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.0-alt1
 - 2.5.0
 

@@ -1,15 +1,9 @@
-%define ver_major 0.9
+%define ver_major 1.0
 %define api_ver 1.0
 
-%def_disable static
-# removed in 0.8.0 in favour of GObject introspection
-%def_without python
-%def_with gtk
-%def_with gtk3
-%def_without libview
 %def_enable introspection
 %def_enable vala
-%def_disable vapi
+%def_enable check
 
 Name: gtk-vnc
 Version: %ver_major.0
@@ -27,12 +21,9 @@ Requires: libgtk3vnc = %version-%release
 %define gnutls_ver 3.1.18
 %define gcrypt_ver 1.5.0
 %define glib_ver 2.42
-%define view_ver 0.6.0
 
-%{?_with_gtk:BuildRequires: libgtk+2-devel}
-%{?_with_gtk3:BuildRequires: libgtk+3-devel}
-%{?_with_libview:BuildRequires: libview-devel >= %view_ver}
-BuildRequires: intltool gnome-common
+BuildRequires(pre): meson
+BuildRequires: libgtk+3-devel
 # pod2man
 BuildRequires: perl-podlators
 BuildRequires: libgnutls-devel >= %gnutls_ver libgcrypt-devel >= %gcrypt_ver
@@ -40,8 +31,7 @@ BuildRequires: glib2-devel >= %glib_ver libcairo-gobject-devel libsasl2-devel
 BuildRequires: libpulseaudio-devel zlib-devel perl-Text-CSV
 %{?_enable_vala:BuildRequires: vala-tools}
 %{?_with_python:BuildRequires: python-module-pygobject-devel}
-%{?_with_gtk:%{?_with_python:BuildRequires: python-module-pygtk-devel}}
-%{?_enable_introspection:BuildRequires: %{?_with_gtk:libgtk+2-gir-devel} %{?_with_gtk3:libgtk+3-gir-devel}}
+%{?_enable_introspection:BuildRequires: libgtk+3-gir-devel}
 
 %description
 gtk-vnc is a project providing client side APIs for the RFB protocol/VNC
@@ -76,30 +66,6 @@ remote desktop technology.
 
 This package provides development files for the GVnc library.
 
-%package -n libgtkvnc
-Summary: VNC viewer widget library
-Group: System/Libraries
-Requires: libgvnc = %version-%release
-
-%description -n libgtkvnc
-gtk-vnc is a project providing client side APIs for the RFB protocol/VNC
-remote desktop technology.
-
-This package provides GtkVnc widget library.
-
-%package -n libgtkvnc-devel
-Summary: Development package for VNC viewer widget library
-Group: Development/C
-Requires: libgtkvnc = %version-%release
-Requires: libgvnc-devel = %version-%release
-
-%description -n libgtkvnc-devel
-gtk-vnc is a VNC viewer widget for GTK. It is built using
-coroutines allowing it to be completely asynchronous while
-remaining single threaded.
-
-This package provides development files for the GtkVnc widget library.
-
 %package -n libgtk3vnc
 Summary: VNC viewer widget library
 Group: System/Libraries
@@ -124,19 +90,6 @@ coroutines allowing it to be completely asynchronous while
 remaining single threaded.
 
 This package provides development files for the GtkVnc widget library.
-
-%package -n python-module-gtkvnc
-Summary: Python module for %name
-Group: Development/Python
-Requires: libgtkvnc = %version-%release
-
-%description -n python-module-gtkvnc
-gtk-vnc is a VNC viewer widget for GTK. It is built using
-coroutines allowing it to be completely asynchronous while
-remaining single threaded.
-
-This package provides Python language bindings for for the GtkVnc
-library.
 
 %package -n libgvnc-gir
 Summary: GObject introspection data for the CVnc library
@@ -163,25 +116,6 @@ Requires: libgvnc = %version-%release
 
 %description -n libgvnc-vala
 This package provides Vala language bindings for for the GVnc library.
-
-%package -n libgtkvnc-gir
-Summary: GObject introspection data for the GtkVnc library
-Group: System/Libraries
-Requires: libgtkvnc = %version-%release
-Requires: libgvnc-gir = %version-%release
-
-%description -n libgtkvnc-gir
-GObject introspection data for the GtkVnc widget library
-
-%package -n libgtkvnc-gir-devel
-Summary: GObject introspection devel data for the GtkVnc library
-Group: System/Libraries
-BuildArch: noarch
-Requires: libgtkvnc-gir = %version-%release
-Requires: libgvnc-gir-devel = %version-%release
-
-%description -n libgtkvnc-gir-devel
-GObject introspection devel data for the GtkVnc widget library
 
 %package -n libgtk3vnc-gir
 Summary: GObject introspection data for the GtkVnc library
@@ -212,54 +146,24 @@ This package provides Vala language bindings for for the GtkVnc widget
 library.
 
 %prep
-%setup -q -c %name
-sed -i 's/GOBJECT_/GLIB_/' ./*/gvnc*.pc.in
-mkdir gtk3-build
-cp -R %name-%version/* gtk3-build/
+%setup
 
 %build
-pushd %name-%version
-%autoreconf
-%configure \
-	%{subst_enable static} \
-	--with-examples \
-	%{subst_with python} \
-	%{subst_with libview} \
-	%{subst_enable introspection} \
-	--with-gtk=2.0 \
-	--disable-vala \
-	--program-suffix=-2
-
-%make_build
-popd
-
-pushd gtk3-build
-%autoreconf
-%configure \
-	%{subst_enable static} \
-	--with-examples \
-	%{subst_with python} \
-	%{subst_with libview} \
-	%{subst_enable introspection} \
-	%{subst_enable vala}
-%make_build
-popd
+%meson \
+%{?_enable_vala:-Dwith-vala=true}
+%meson_build
 
 %install
-pushd %name-%version
-%makeinstall_std
-%find_lang %name --output %_builddir/%name.lang
-popd
+%meson_install
+%find_lang %name
 
-pushd gtk3-build
-%makeinstall_std
-popd
+%check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
-%files -f %_builddir/%name.lang
+%files -f %name.lang
 %_bindir/*
 %_man1dir/*
-%exclude %_bindir/*-2
-%exclude %_man1dir/*-2.*
 
 %files -n libgvnc
 %_libdir/libgvnc-%api_ver.so.*
@@ -281,17 +185,6 @@ popd
 %_vapidir/gvncpulse-%api_ver.deps
 %endif
 
-%if_with gtk
-%files -n libgtkvnc
-%_libdir/libgtk-vnc-%api_ver.so.*
-
-%files -n libgtkvnc-devel
-%_libdir/libgtk-vnc-%api_ver.so
-%_includedir/gtk-vnc-%api_ver
-%_pkgconfigdir/gtk-vnc-%api_ver.pc
-%endif
-
-%if_with gtk3
 %files -n libgtk3vnc
 %_libdir/libgtk-vnc-2.0.so.*
 
@@ -305,12 +198,6 @@ popd
 %_vapidir/gtk-vnc-2.0.deps
 %_vapidir/gtk-vnc-2.0.vapi
 %endif
-%endif
-
-%if_with python
-%files -n python-module-gtkvnc
-%python_sitelibdir/*
-%endif
 
 %if_enabled introspection
 %files -n libgvnc-gir
@@ -321,24 +208,18 @@ popd
 %_girdir/GVnc-%api_ver.gir
 %_girdir/GVncPulse-%api_ver.gir
 
-%if_with gtk
-%files -n libgtkvnc-gir
-%_typelibdir/GtkVnc-%api_ver.typelib
-
-%files -n libgtkvnc-gir-devel
-%_girdir/GtkVnc-%api_ver.gir
-%endif
-
-%if_with gtk3
 %files -n libgtk3vnc-gir
 %_typelibdir/GtkVnc-2.0.typelib
 
 %files -n libgtk3vnc-gir-devel
 %_girdir/GtkVnc-2.0.gir
 %endif
-%endif
+
 
 %changelog
+* Wed Aug 07 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.0-alt1
+- 1.0.0 (removed gtk2 support, ported to Meson build system)
+
 * Fri Aug 17 2018 Yuri N. Sedunov <aris@altlinux.org> 0.9.0-alt1
 - 0.9.0
 
