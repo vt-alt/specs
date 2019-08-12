@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.2.2
+Version: 4.2.5
 Release: alt1
 %K5init no_altplace
 
@@ -281,6 +281,9 @@ Requires: %name-common = %EVR
 %patch1 -p1
 %patch2 -p1
 
+sed -i 's|sip_bin:.*|sip_bin:%_bindir/sip3")|' cmake/modules/FindSIP.py
+sed -i 's|default_sip_dir:.*|default_sip_dir:%_datadir\/sip3")|' cmake/modules/FindSIP.py
+
 %build
 %K5build \
     -DRELEASE_BUILD=ON \
@@ -423,6 +426,9 @@ done
 %_libdir/libkritametadata.so.*
 
 %changelog
+* Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.5-alt1
+- new version
+
 * Mon Jul 01 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.2-alt1
 - new version
 
