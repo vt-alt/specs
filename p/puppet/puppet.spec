@@ -1,6 +1,6 @@
 %define        pkgname        puppet
 %define        confdir        ext/redhat
-%define        core_version   6.6.0
+%define        core_version   6.7.2
 %define        dm_version     1.0.1
 
 Name:          %pkgname
@@ -185,6 +185,12 @@ END.
 
 
 %changelog
+* Sat Jul 27 2019 Andrey Cherepanov <cas@altlinux.org> 6.7.2-alt1
+- New version.
+
+* Mon Jul 22 2019 Andrey Cherepanov <cas@altlinux.org> 6.7.0-alt1
+- New version.
+
 * Thu Jun 27 2019 Andrey Cherepanov <cas@altlinux.org> 6.6.0-alt1
 - New version.
 
