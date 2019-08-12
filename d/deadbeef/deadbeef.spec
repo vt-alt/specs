@@ -3,7 +3,7 @@
 
 %set_verify_elf_method textrel=relaxed 
 Name: deadbeef
-Version: 1.8.0
+Version: 1.8.2
 Release: alt1
 Summary: DeaDBeeF is an audio player
 Url: https://github.com/Alexey-Yakovenko/deadbeef
@@ -15,6 +15,7 @@ Patch6: deadbeef-0.5.4-alt-categories-desktop-file.patch
 Patch8: deadbeef-0.7.1-arm.patch
 
 BuildRequires: /usr/bin/yasm gcc-c++ intltool glib2-devel libX11-devel libatk-devel libcairo-devel libcddb-devel libcdio-devel libcdparanoia-devel libcurl-devel libfaad-devel libflac-devel libgdk-pixbuf-devel libgtk+2-devel libjpeg-devel libmad-devel libmpg123-devel libogg-devel libpango-devel libpng-devel libsndfile-devel libvorbis-devel libwavpack-devel perl(Exporter.pm) perl(FindBin.pm) perl(IO/Handle.pm) perl(IPC/Open2.pm) perl(IPC/Open3.pm) perl(Locale/Country.pm) perl(Locale/Language.pm) perl(base.pm) pkgconfig(alsa) pkgconfig(dbus-1) pkgconfig(gio-2.0) pkgconfig(gtk+-3.0) pkgconfig(imlib2) pkgconfig(jansson) pkgconfig(libavcodec) pkgconfig(libavformat) pkgconfig(libavutil) pkgconfig(libpulse-simple) pkgconfig(libzip) pkgconfig(samplerate) swig zlib-devel
+BuildRequires: libopusfile-devel
 
 Requires: %name-out-alsa %name-gtk3
 
@@ -60,6 +61,7 @@ Requires: %name-out-null = %EVR
 Requires: %name-in-wavpack = %EVR
 Requires: %name-in-vtx = %EVR
 Requires: %name-in-oggvorbis = %EVR
+Requires: %name-in-opus = %EVR
 Requires: %name-in-sndfile = %EVR
 Requires: %name-in-sid = %EVR
 Requires: %name-in-gme = %EVR
@@ -193,6 +195,14 @@ Requires: %name = %EVR
 DeaDBeeF OggVorbis Input Plugin
 OggVorbis decoder using standard xiph.org libraries
 
+%package -n %name-in-opus
+Summary: DeaDBeeF Opus Input Plugin
+Group: Sound
+Requires: %name = %EVR
+
+%description -n %name-in-opus
+DeaDBeeF Opus Input Plugin
+Opus decoder
 
 %package -n %name-in-shn
 Summary: DeaDBeeF Shorten player Input Plugin
@@ -562,6 +572,9 @@ rm -rf %buildroot/%_libdir/%name/*.la
 %files -n %name-in-oggvorbis
 %_libdir/%name/vorbis.*
 
+%files -n %name-in-opus
+%_libdir/%name/opus.*
+
 %files -n %name-in-shn
 %_libdir/%name/ddb_shn.*
 
@@ -678,6 +691,10 @@ rm -rf %buildroot/%_libdir/%name/*.la
 %files -n %name-incomplete
 
 %changelog
+* Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 1.8.2-alt1
+- new version 1.8.2
+- added plugin opus
+
 * Tue Apr 09 2019 Anton Midyukov <antohami@altlinux.org> 1.8.0-alt1
 - New version 1.8.0
 
