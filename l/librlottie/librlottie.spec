@@ -2,7 +2,7 @@
 # see soname version in CMakeLists.txt
 %define soname 0.0.1
 Name: librlottie
-Version: 0.0.2git40ccf08
+Version: 0.0.3gitd08a03b
 Release: alt1
 
 Summary: A platform independent standalone library that plays Lottie Animation
@@ -67,6 +67,9 @@ developing applications that use %name.
 %_pkgconfigdir/rlottie.pc
 
 %changelog
+* Fri Aug 09 2019 Vitaly Lipatov <lav@altlinux.ru> 0.0.3gitd08a03b-alt1
+- build d08a03b6508b390af20491f2dbeee3453594afc8
+
 * Mon Jul 08 2019 Vitaly Lipatov <lav@altlinux.ru> 0.0.2git40ccf08-alt1
 - build 40ccf08 (fix Crash when the resource is not a valid lottie resource)
 

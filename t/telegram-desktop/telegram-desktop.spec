@@ -9,7 +9,7 @@
 %def_without libcxx
 
 Name: telegram-desktop
-Version: 1.7.14
+Version: 1.8.0
 Release: alt1
 
 Summary: Telegram is a messaging app with a focus on speed and security
@@ -29,12 +29,10 @@ Patch3: 0003_qt-plugins.patch
 Patch5: 0005_Downgrade-Qt-version.patch
 Patch6: 0006_fix-static-qt-functions.patch
 #Patch9: 0001-use-correct-executable-path.patch
-Patch14: 0014-get-language-name-and-country-name-from-QLocale.patch
 Patch15: 0015-disable-resource-fonts.patch
 Patch16: 0016-fix-lzma.patch
 #Patch17: 0017-ligsl-microsoft-fix.patch
 Patch18: 0018-fix-linking.patch
-Patch19: 0019-ffmpeg-fix-convertFromARGB32PM.patch
 
 # ix86 disabled due to memory limits for linker
 #ExclusiveArch: %ix86 x86_64
@@ -150,11 +148,9 @@ or business messaging needs.
 #patch5 -p1
 %patch6 -p1
 #patch9 -p1
-%patch14 -p1
 %patch15 -p1
 #patch17 -p2
 %patch18 -p2
-%patch19 -p1
 
 cp %SOURCE2 Telegram/
 cp %SOURCE3 .
@@ -215,6 +211,17 @@ ln -s %name %buildroot%_bindir/telegram
 %doc README.md
 
 %changelog
+* Fri Aug 09 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.0-alt1
+- new version 1.8.0 (with rpmrb script)
+
+* Sat Jul 13 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.14-alt3
+- use official fix: Use private Qt color API only in official build
+
+* Thu Jul 11 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.14-alt2
+- reenable GTK file chooser possibility:
+  - drop TDESKTOP_DISABLE_GTK_INTEGRATION
+  - add  TDESKTOP_FORCE_GTK_FILE_DIALOG
+
 * Tue Jul 09 2019 Vitaly Lipatov <lav@altlinux.ru> 1.7.14-alt1
 - new version (1.7.14) with rpmgs script
 - fix build with current Qt (thanks, arseerfc@)
