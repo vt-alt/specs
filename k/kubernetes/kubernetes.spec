@@ -10,7 +10,7 @@
 %brp_strip_none %_bindir/*
 
 Name: kubernetes
-Version: 1.14.1
+Version: 1.15.2
 Release: alt1
 Summary: Container cluster management
 
@@ -118,7 +118,7 @@ Kubernetes kubelet service.
 Summary:  Kubernetes tool for standing up clusters
 Group: System/Configuration/Other
 Requires: %name-node = %EVR
-Requires: cni-plugins
+Requires: cni-plugins >= 0.7.5
 Requires: ebtables
 Requires: iptables
 Requires: ethtool
@@ -305,6 +305,9 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.2-alt1
+- 1.15.2
+
 * Wed Apr 24 2019 Alexey Shabalin <shaba@altlinux.org> 1.14.1-alt1
 - 1.14.1
 
