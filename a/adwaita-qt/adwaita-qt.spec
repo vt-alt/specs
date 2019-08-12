@@ -1,14 +1,12 @@
 Name: adwaita-qt
-Version: 1.0.90
+Version: 1.1.0
 Release: alt1
 Summary: Adwaita theme for Qt-based applications
 License: LGPLv2+
 Group: Graphical desktop/GNOME
 Url: https://github.com/MartinBriza/adwaita-qt
 Source0: adwaita-qt-%version.tar
-
-Patch: adwaita-qt-fix-build-with-qt4.patch
-Patch1: adwaita-qt-fix-qt4-style-option.patch
+Patch0: adwaita-qt-upstream-fixes.patch
 
 BuildRequires: cmake
 BuildRequires: qt4-devel
@@ -20,21 +18,10 @@ Requires: adwaita-qt5
 %description
 Theme to let Qt applications fit nicely into Fedora Workstation
 
-%package common
-Summary: Adwaita Qt theme shared files
-Group: Graphical desktop/GNOME
-BuildArch: noarch
-#Requires: icon-theme-oxygen
-#Requires: gnome-themes-standard-data
-
-%description common
-Common files (assets, etc.) for the Adwaita Qt theme
-
 %package -n adwaita-qt4
 Summary: Adwaita Qt4 theme
 Group: Graphical desktop/GNOME
 Requires: qt4
-#Requires: adwaita-qt-common
 
 %description -n adwaita-qt4
 Adwaita theme variant for applications utilizing Qt4
@@ -43,7 +30,6 @@ Adwaita theme variant for applications utilizing Qt4
 Summary: Adwaita Qt5 theme
 Group: Graphical desktop/GNOME
 Requires: qt5-qtbase
-#Requires: adwaita-qt-common
 
 %description -n adwaita-qt5
 Adwaita theme variant for applications utilizing Qt5
@@ -51,30 +37,27 @@ Adwaita theme variant for applications utilizing Qt5
 %prep
 %setup
 %patch -p1
-%patch1 -p1
 
 %build
 mkdir -p "%_target_platform-qt4"
 pushd "%_target_platform-qt4"
 %cmake -DUSE_QT4=true ../..
-%make_build -C BUILD
+%cmake_build
 popd
 
 mkdir -p "%_target_platform-qt5"
 pushd "%_target_platform-qt5"
 %cmake ../..
-%make_build -C BUILD
+%cmake_build
 popd
 
 %install
 pushd "%_target_platform-qt4"
-%makeinstall_std -C BUILD
+%cmakeinstall_std
 popd
 pushd "%_target_platform-qt5"
-%makeinstall_std -C BUILD
+%cmakeinstall_std
 popd
-
-#files common
 
 %files -n adwaita-qt4
 %doc LICENSE.LGPL2 README.md
@@ -87,6 +70,9 @@ popd
 %files
 
 %changelog
+* Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 1.1.0-alt1
+- new version 1.1.0
+
 * Wed Jul 10 2019 Anton Midyukov <antohami@altlinux.org> 1.0.90-alt1
 - new version 1.0.90
 
