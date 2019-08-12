@@ -1,31 +1,31 @@
 %define cfg %_builddir/%name-%version/
 # See https://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_2/ for example
-%define rev 61019
+%define rev 61675
 
-Name:       lazarus
-Version:    2.0.2
-Release:    alt1
-Epoch:      1
+Name:    lazarus
+Version: 2.0.4
+Release: alt1
+Epoch:   1
 
-Summary:    Lazarus Component Library and IDE
-License:    GPL and modified LGPL
-Group:      Development/Other
-Url:        http://www.lazarus-ide.org/
+Summary: Lazarus Component Library and IDE
+License: GPL and modified LGPL
+Group:   Development/Other
+Url:     http://www.lazarus-ide.org/
 
-Packager:   Andrey Cherepanov <cas@altlinux.org>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 ExclusiveArch: %ix86 x86_64
 
-Source:     %name-%version.tar
-Source2:    extra.tar
-Source3:    environmentoptions.xml
-Source4:    projectoptions.xml
+Source:  %name-%version.tar
+Source2: extra.tar
+Source3: environmentoptions.xml
+Source4: projectoptions.xml
 
-Patch0:     %name-0.9.22-alt-relax-onwine.patch
-Patch2:     %name-fix-desktop-file.patch
-Patch3:     %name-fix-install-path-in-Makefile.patch
-Patch4:     %name-2.0.2-fix-fpc-search.patch
-Patch6:	    %name-set-user-TestBuildDirectory.patch
+Patch0: %name-0.9.22-alt-relax-onwine.patch
+Patch2: %name-fix-desktop-file.patch
+Patch3: %name-fix-install-path-in-Makefile.patch
+Patch4: %name-2.0.2-fix-fpc-search.patch
+Patch6:	%name-set-user-TestBuildDirectory.patch
 
 # Patches from Debian
 Patch11: lazarus-default-config.patch
@@ -35,9 +35,6 @@ Patch12: lazarus-lcl-with-multple-widget-sets.patch
 Patch13: lazarus-customform-sigsegv-fix.patch
 
 # Upstream fixes
-Patch14: lazarus-r60298.patch
-Patch15: lazarus-r60328.patch
-Patch16: lazarus-r60397.patch
 
 BuildRequires(pre): qt5-base-devel
 BuildRequires: fpc >= 2.6.4 fpc-utils glibc-devel libgtk+2-devel libXi-devel desktop-file-utils 
@@ -103,9 +100,6 @@ subst 's|/usr/lib/|%{_libdir}/|' %PATCH4
 %patch11 -p1
 %patch12 -p1
 %patch13 -p2
-%patch14 -p0
-%patch15 -p0
-%patch16 -p0
 
 install -D -p -m 0644 %SOURCE3 tools/install/linux/environmentoptions.xml
 #sed -i -e 's,@version@,%version,g' tools/install/linux/helpoptions.xml docs/index.ru.html
@@ -218,7 +212,9 @@ rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 %files
 %_libdir/%name
 %_bindir/*
-%_sysconfdir/%name/*
+%dir %_sysconfdir/%name
+%config(noreplace) %_sysconfdir/%name/environmentoptions.xml
+%config(noreplace) %_sysconfdir/%name/projectoptions.xml
 %_pixmapsdir/lazarus.png
 %_desktopdir/lazarus.desktop
 %_datadir/mime/packages/lazarus.xml
@@ -238,6 +234,9 @@ rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 %_libdir/libQt5Pas.so
 
 %changelog
+* Fri Aug 09 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.0.4-alt1
+- New version.
+
 * Thu Jul 04 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.0.2-alt1
 - New version.
 - Add Qt5 bindings for Pascal from Lazarus (qt5pas).
