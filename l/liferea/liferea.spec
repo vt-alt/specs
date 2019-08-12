@@ -1,6 +1,6 @@
 
 Name: liferea
-Version: 1.12.6
+Version: 1.12.7
 Release: alt1
 Summary: A RSS News Reader for GNOME
 License: GPLv2
@@ -25,8 +25,8 @@ BuildRequires(pre): gobject-introspection-devel
 BuildRequires(pre): rpm-build-python3 python3-devel
 BuildRequires: python3-module-pygobject3-devel
 BuildRequires: gcc-c++ intltool
-BuildRequires: pkgconfig(gtk+-3.0) >= 3.14.0
-BuildRequires: pkgconfig(glib-2.0) >= 2.40.0 pkgconfig(gio-2.0) >= 2.26.0 pkgconfig(gmodule-2.0) >= 2.0.0 pkgconfig(gthread-2.0)
+BuildRequires: pkgconfig(gtk+-3.0) >= 3.22.0
+BuildRequires: pkgconfig(glib-2.0) >= 2.50.0 pkgconfig(gio-2.0) >= 2.50.0 pkgconfig(gmodule-2.0) >= 2.0.0 pkgconfig(gthread-2.0)
 BuildRequires: pkgconfig(pango) >= 1.4.0
 BuildRequires: pkgconfig(libxml-2.0) >= 2.6.27 pkgconfig(libxslt) >= 1.1.19
 BuildRequires: pkgconfig(sqlite3) >= 3.7.0
@@ -97,8 +97,12 @@ Play music and videos directly from Liferea
 # plugins. may be separated packages?
 %_libdir/%name/plugins/bold-unread.*
 %_libdir/%name/plugins/__pycache__/bold-unread.*
+%_libdir/%name/plugins/headerbar.*
+%_libdir/%name/plugins/__pycache__/headerbar.*
 %_libdir/%name/plugins/libnotify.*
 %_libdir/%name/plugins/__pycache__/libnotify.*
+%_libdir/%name/plugins/plugin-installer.*
+%_libdir/%name/plugins/__pycache__/plugin-installer.*
 %_libdir/%name/plugins/trayicon.*
 %_libdir/%name/plugins/__pycache__/trayicon.*
 
@@ -111,6 +115,9 @@ Play music and videos directly from Liferea
 %_libdir/%name/plugins/__pycache__/media-player.*
 
 %changelog
+* Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.7-alt1
+- 1.12.7
+
 * Thu Jan 03 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.6-alt1
 - 1.12.6
 
