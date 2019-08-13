@@ -1,6 +1,6 @@
 Name:     librecad
-Version:  2.1.3
-Release:  alt2
+Version:  2.2.0
+Release:  alt0.1.rc1
 
 Summary:  Computer-aided design (CAD) system
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -10,7 +10,7 @@ License:  GPLv2
 Group:    Graphics
 
 Source:   librecad-%version.tar
-Patch:    0001-Adding-DXF-.desktop-file.patch
+Patch0:    0001-Adding-DXF-.desktop-file.patch
 Patch1:   librecad-fix-desktop.patch
 Patch2:   librecad-fix-build-with-qt5.11.patch
 
@@ -21,7 +21,7 @@ BuildRequires: libmuparser-devel
 BuildRequires: libfreetype-devel
 BuildRequires: qt5-base-devel
 BuildRequires: qt5-svg-devel
-BuildRequires: qt5-sql-interbase qt5-sql-mysql qt5-sql-odbc qt5-sql-postgresql qt5-sql-sqlite3
+BuildRequires: qt5-sql-mysql qt5-sql-odbc qt5-sql-postgresql
 BuildRequires: qt5-tools
 
 %description
@@ -94,7 +94,6 @@ cp -r unix/resources/library/* %buildroot%_datadir/%name/library/
 cp unix/resources/patterns/*.dxf %buildroot%_datadir/%name/patterns/
 cp unix/resources/qm/*.qm %buildroot%_datadir/%name/qm/
 cp unix/resources/plugins/* %buildroot%_libdir/%name/plugins/
-cp -f gpl-2.0.txt LICENSE
 find %buildroot%_datadir/%name -type f -exec chmod 644 {} \;
 
 install -Dm 755 unix/%name %buildroot%_bindir/%name
@@ -123,6 +122,9 @@ install -Dm 644 desktop/graphics_icons_and_splash/Icon\ LibreCAD/Icon_Librecad.s
 %_libdir/%name/plugins/
 
 %changelog
+* Mon Aug 12 2019 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt0.1.rc1
+- New version (2.2.0-rc1).
+
 * Wed Sep 26 2018 Andrey Cherepanov <cas@altlinux.org> 2.1.3-alt2
 - Fix build with Qt 5.11.
 
