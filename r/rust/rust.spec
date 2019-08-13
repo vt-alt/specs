@@ -1,10 +1,12 @@
-%define rust_ver 1.31.1
-%define cargo_ver 1.31.1
+%define rust_ver 1.32.0
+%define rust_rel alt1
+%define cargo_ver 1.32.0
+%define cargo_rel alt1
 
 Name: rust
 Epoch: 1
 Version: %rust_ver
-Release: alt4
+Release: %rust_rel
 Summary: The Rust Programming Language
 
 Group: Development/Other
@@ -34,7 +36,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.29.0
+%define r_ver 1.31.1
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -90,7 +92,7 @@ segfaults, and guarantees thread safety.
 %package gdb
 Group: Development/Other
 Summary: run rust compiler under gdb
-Requires: %name = %rust_ver-%release
+Requires: %name = %rust_ver-%rust_rel
 Requires: gdb
 AutoReq: nopython
 
@@ -108,6 +110,7 @@ its standard library.
 %package cargo
 Summary: The Rust package manager
 Version: %cargo_ver
+Release: %cargo_rel
 Group: Development/Tools
 Requires: rust
 BuildRequires: libssh2-devel libgit2-devel openssl-devel zlib-devel
@@ -123,26 +126,28 @@ and ensure that you'll always get a repeatable build.
 Summary: Documentation for Cargo
 Version: %cargo_ver
 Group: Development/Documentation
-Requires: rust-doc = %rust_ver-%release
+Requires: rust-doc = %rust_ver-%rust_rel
 
 %description cargo-doc
 This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 0.99.1
+Version: 1.0.0
+Release: alt1
 Group: Development/Tools
-Requires: rust-cargo = %cargo_ver-%release
+Requires: rust-cargo = %cargo_ver-%cargo_rel
 
 %description -n rustfmt
 A tool for formatting Rust code according to style guidelines.
 
 %package -n rls
 Summary: Rust Language Server for IDE integration
-Version: 0.130.0
+Version: 1.31.6
+Release: alt1
 Group: Development/Tools
 Requires: rust-analysis
-Requires: %name = %rust_ver-%release
+Requires: %name = %rust_ver-%rust_rel
 
 %description -n rls
 The Rust Language Server provides a server that runs in the background,
@@ -153,10 +158,11 @@ reformatting, and code completion, and enables renaming and refactorings.
 %package -n clippy
 Summary: Lints to catch common mistakes and improve your Rust code
 Version: 0.0.212
+Release: alt5
 Group: Development/Tools
 License: MPLv2.0
 Requires: rust-cargo
-Requires: %name = %rust_ver-%release
+Requires: %name = %rust_ver-%rust_rel
 
 %description -n clippy
 A collection of lints to catch common mistakes and improve your Rust code.
@@ -175,7 +181,7 @@ useful as a reference for code completion tools in various editors.
 %package analysis
 Summary: Compiler analysis data for the Rust standard library
 Group: Development/Tools
-Requires: %name = %rust_ver-%release
+Requires: %name = %rust_ver-%rust_rel
 
 %description analysis
 This package contains analysis data files produced with rustc's -Zsave-analysis
@@ -345,6 +351,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Fri May 24 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.32.0-alt1
+- 1.32.0
+
 * Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:1.31.1-alt4
 - Added ppc64le support.
 
