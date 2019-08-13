@@ -1,6 +1,6 @@
 %define module_name zfs
 %define module_version 0.7.13
-%define module_release alt1
+%define module_release alt2
 
 %define flavour std-def
 %define karch x86_64 i586
@@ -77,7 +77,7 @@ Install()
 
 Install spl %splmod_dir
 Install %ksname %module_dir
-mv %buildroot%splmod_dir/{spl*/*.ko,}
+mv %buildroot%splmod_dir/{spl*/*.ko*,}
 find %buildroot%splmod_dir -type d -empty -delete
 
 
