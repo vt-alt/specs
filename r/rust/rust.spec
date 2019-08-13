@@ -1,6 +1,6 @@
-%define rust_ver 1.32.0
+%define rust_ver 1.33.0
 %define rust_rel alt1
-%define cargo_ver 1.32.0
+%define cargo_ver 1.33.0
 %define cargo_rel alt1
 
 Name: rust
@@ -36,7 +36,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.31.1
+%define r_ver 1.32.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -133,7 +133,7 @@ This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 1.0.0
+Version: 1.0.1
 Release: alt1
 Group: Development/Tools
 Requires: rust-cargo = %cargo_ver-%cargo_rel
@@ -143,7 +143,7 @@ A tool for formatting Rust code according to style guidelines.
 
 %package -n rls
 Summary: Rust Language Server for IDE integration
-Version: 1.31.6
+Version: 1.33.0
 Release: alt1
 Group: Development/Tools
 Requires: rust-analysis
@@ -158,7 +158,7 @@ reformatting, and code completion, and enables renaming and refactorings.
 %package -n clippy
 Summary: Lints to catch common mistakes and improve your Rust code
 Version: 0.0.212
-Release: alt5
+Release: alt6
 Group: Development/Tools
 License: MPLv2.0
 Requires: rust-cargo
@@ -300,6 +300,7 @@ rm -rf %rustdir
 %dir %_libdir/rustlib/etc
 %dir %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/*
+%exclude %_bindir/*miri
 %exclude %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 %exclude %_libdir/rustlib/etc/*
 %exclude %_libdir/rustlib/install.log
@@ -351,6 +352,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Mon May 27 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.33.0-alt1
+- 1.33.0
+
 * Fri May 24 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.32.0-alt1
 - 1.32.0
 
