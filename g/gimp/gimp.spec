@@ -3,7 +3,7 @@
 %define _libexecdir %_prefix/libexec
 
 Name: gimp
-Version: %ver_major.10
+Version: %ver_major.12
 Release: alt1
 
 Summary: The GNU Image Manipulation Program
@@ -112,6 +112,9 @@ find %buildroot%_libdir/%name -name \*.la -delete
 %_datadir/aclocal/*
 
 %changelog
+* Thu Jun 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.12-alt1
+- 2.10.12
+
 * Mon Apr 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.10-alt1
 - 2.10.10
 

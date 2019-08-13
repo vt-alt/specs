@@ -2,7 +2,7 @@
 %define api_ver 0.4
 
 Name: lib%rname
-Version: %api_ver.14
+Version: %api_ver.16
 Release: alt1
 Summary: A graph based image processing framework
 License: LGPLv3+/GPLv3+
@@ -69,6 +69,9 @@ GObject introspection devel data for the GEGL library.
 %install
 %make DESTDIR=%buildroot install
 
+rm -f %buildroot%_libdir/%rname-%api_ver/*.la
+rm -fr %buildroot%_datadir/%rname-%api_ver
+
 %find_lang %rname-%api_ver
 
 %files -f %rname-%api_ver.lang
@@ -97,6 +100,9 @@ GObject introspection devel data for the GEGL library.
 %_girdir/Gegl-%api_ver.gir
 
 %changelog
+* Thu Jun 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.4.16-alt1
+- 0.4.16
+
 * Mon Apr 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.4.14-alt1
 - 0.4.14
 
