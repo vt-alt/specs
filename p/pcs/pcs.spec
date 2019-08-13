@@ -1,7 +1,7 @@
-%define pyagentx_version 0.4.pcs.1
+%define pyagentx_version 0.4.pcs.2
 
 Name: 	  pcs
-Version:  0.9.166
+Version:  0.10.2
 Release:  alt1
 Epoch:    1
 
@@ -10,17 +10,19 @@ License:  GPLv2
 Group:    Other
 Url: 	  https://github.com/ClusterLabs/pcs
 
-Packager: Denis Medvedev <nbr@altlinux.org>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source:   %name-%version.tar
 Source1:  pyagentx-v%pyagentx_version.tar.gz
 Patch:    %name-%version-%release.patch
 BuildArch: noarch
 
-%add_python_req_skip pyagentx
+%add_python3_req_skip pyagentx
 
-BuildRequires: rpm-build-python rpm-build-ruby ruby python-devel corosync python-module-setuptools fontconfig fonts-ttf-liberation
-#BuildRequires: python3-devel python3-module-setuptools
+BuildRequires(pre): rpm-build-python3
+BuildRequires(pre): rpm-build-ruby
+BuildRequires: corosync fontconfig fonts-ttf-liberation
+BuildRequires: python3-devel python3-module-setuptools
 Requires: pacemaker
 
 %description
@@ -64,29 +66,29 @@ agent (snmpd).
 %patch -p1
 mkdir -p pcs/bundled/tmp
 tar xf %SOURCE1 -C pcs/bundled/tmp
-make -C pcs/snmp PYAGENTX_DIR=../bundled/tmp/pyagentx-%pyagentx_version build_bundled_libs
+make BUNDLE_PYAGENTX_SRC_DIR=pcs/bundled/tmp/pyagentx-%pyagentx_version \
+     PYAGENTX_LIB_DIR=%buildroot%_libexecdir/pcs/bundled
 
 %install
 mkdir -p %buildroot%_libexecdir/pcs
+mkdir -p %buildroot%_localstatedir/pcsd
 mkdir -p %buildroot%_logdir/pcsd
-%makeinstall_std PYAGENTX_INSTALLED=true
-mkdir -p %buildroot%_libexecdir/pcs/bundled/packages
-cp -a pcs/bundled/packages/* %buildroot%_libexecdir/pcs/bundled/packages
-make install_pcsd DESTDIR=%buildroot BUILD_GEMS=false PCSD_PARENT_DIR=%ruby_sitelibdir
-mkdir -p %buildroot/%_initdir
-mv %buildroot/%_sysconfdir/init.d/pcsd %buildroot/%_initdir
-install -Dm 0644 pcsd/pcsd.logrotate %buildroot%_logrotatedir/pcsd.logrotate
-mkdir -p %buildroot/var/lib/pcsd
-mkdir -p %buildroot/lib/systemd/system
-install -Dm 0644 pcsd/pcsd.service %buildroot/lib/systemd/system/pcsd.service
-install -Dm 0644 pcs/snmp/pcs_snmp_agent.service %buildroot/lib/systemd/system/pcs_snmp_agent.service
+%makeinstall_std \
+     BUNDLE_PYAGENTX_SRC_DIR=pcs/bundled/tmp/pyagentx-%pyagentx_version \
+     PYAGENTX_LIB_DIR=%buildroot%_libexecdir/pcs/bundled \
+     BUILD_GEMS=false \
+     DEST_LIB=%buildroot%ruby_sitelibdir \
+     SYSTEMCTL_OVERRIDE=true \
+     DEST_SYSTEMD_SYSTEM=%buildroot%systemd_unitdir \
 
-mkdir -p %buildroot/usr/sbin/
-install -Dm 0755 pcsd/pcsd.service-runner %buildroot%_sbindir/pcsd
-chmod 750 %buildroot/usr/sbin/pcsd
+mv %buildroot%ruby_sitelibdir/pcs %buildroot%_libexecdir/
+
+#install -Dm 0755 pcsd/pcsd %buildroot%_initdir/pcsd
+install -Dm 0644 pcsd/pcsd.logrotate %buildroot%_logrotatedir/pcsd.logrotate
 
 # Remove unnecessary stuff
-rm -rf %buildroot/%ruby_sitelibdir/pcsd/*{.service,.logrotate,debian,orig}*
+cd %buildroot/%ruby_sitelibdir/pcsd
+rm -rf *.service pcsd *.logrotate debian *~ *.orig Makefile
 
 %post pcsd
 %post_service pcsd
@@ -103,23 +105,24 @@ rm -rf %buildroot/%ruby_sitelibdir/pcsd/*{.service,.logrotate,debian,orig}*
 %files
 %doc CHANGELOG.md COPYING README.md
 %_sbindir/pcs
-%python_sitelibdir_noarch/*
+%python3_sitelibdir_noarch/*
 %_man8dir/*.*
 %exclude %_man8dir/pcs_snmp_agent.*
 %_sysconfdir/bash_completion.d/pcs
+%_libexecdir/pcs/pcs_internal
 
 %files pcsd
-%exclude %ruby_sitelibdir/pcsd/test/*
+%_sbindir/pcsd
 %ruby_sitelibdir/pcsd/*
-%_initdir/pcsd
+%exclude %ruby_sitelibdir/pcsd/test/*
+#_initdir/pcsd
 %_sysconfdir/logrotate.d/pcsd
 %_sysconfdir/pam.d/pcsd
 %_sysconfdir/sysconfig/pcsd
 %dir %_logdir/pcsd
-%dir /var/lib/pcsd
+%dir %_localstatedir/pcsd
 %_logrotatedir/pcsd.logrotate
-/lib/systemd/system/pcsd.service
-/usr/sbin/pcsd
+%systemd_unitdir/pcsd.service
 
 %files pcsd-tests
 %ruby_sitelibdir/pcsd/test/*
@@ -128,11 +131,15 @@ rm -rf %buildroot/%ruby_sitelibdir/pcsd/*{.service,.logrotate,debian,orig}*
 %config(noreplace) %_sysconfdir/sysconfig/pcs_snmp_agent
 %_libexecdir/pcs/pcs_snmp_agent
 %_libexecdir/pcs/bundled/packages/pyagentx*
-/lib/systemd/system/pcs_snmp_agent.service
+%systemd_unitdir/pcs_snmp_agent.service
 %_datadir/snmp/mibs/PCMK-PCS*-MIB.txt
 %_man8dir/pcs_snmp_agent.*
 
 %changelog
+* Mon Aug 12 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.10.2-alt1
+- New version.
+- Remove obsolete initscript.
+
 * Fri Oct 05 2018 Andrey Cherepanov <cas@altlinux.org> 1:0.9.166-alt1
 - New version.
 
