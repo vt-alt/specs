@@ -1,5 +1,5 @@
 Name: vifm
-Version: 0.10
+Version: 0.10.1
 Release: alt1
 
 Summary: Two pane file manager with vi-like keybindings
@@ -44,6 +44,9 @@ to learn a new set of commands.
 %_desktopdir/%name.desktop
 
 %changelog
+* Tue Jul 30 2019 Grigory Ustinov <grenka@altlinux.org> 0.10.1-alt1
+- Build new version.
+
 * Tue Nov 20 2018 Grigory Ustinov <grenka@altlinux.org> 0.10-alt1
 - Build new version.
 
