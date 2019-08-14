@@ -7,8 +7,8 @@ merges some pull requests.
 %def_enable check
 
 Name: %fname
-Version: 1.4.2.post1
-Release: alt3
+Version: 1.4.4
+Release: alt1
 
 %if ""==""
 Summary: Python interface to MySQL
@@ -99,6 +99,9 @@ python setup.py test
 %endif
 
 %changelog
+* Mon Aug 12 2019 Grigory Ustinov <grenka@altlinux.org> 1.4.4-alt1
+- Build new version.
+
 * Thu Apr 11 2019 Grigory Ustinov <grenka@altlinux.org> 1.4.2.post1-alt3
 - Rebuild for python3.7.
 
