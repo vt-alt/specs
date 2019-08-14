@@ -1,7 +1,5 @@
-#%%def_enable Werror
-
 Name:     nudoku
-Version:  1.0.0
+Version:  2.0.0
 Release:  alt1
 
 Summary:  ncurses based sudoku game
@@ -13,7 +11,6 @@ Url:      https://github.com/jubalh/nudoku
 Packager: Grigory Ustinov <grenka@altlinux.org>
 
 Source:   %name-%version.tar
-Patch0:   nudoku-0.2.5-use_libncursesw.patch
 
 BuildRequires: libncursesw-devel
 
@@ -22,7 +19,6 @@ BuildRequires: libncursesw-devel
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %autoreconf
@@ -31,13 +27,17 @@ BuildRequires: libncursesw-devel
 
 %install
 %makeinstall_std
+%find_lang %name
 
-%files
+%files -f %name.lang
 %_bindir/*
 %_man6dir/*
 %doc AUTHORS LICENSE README.md
 
 %changelog
+* Tue Jul 30 2019 Grigory Ustinov <grenka@altlinux.org> 2.0.0-alt1
+- Build new version.
+
 * Tue May 15 2018 Grigory Ustinov <grenka@altlinux.org> 1.0.0-alt1
 - Build new version.
 
