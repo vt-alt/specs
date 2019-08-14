@@ -1,5 +1,5 @@
 Name: tutka
-Version: 1.1.2
+Version: 1.1.3
 Release: alt1
 
 Summary: tracker style MIDI sequencer
@@ -37,13 +37,16 @@ qmake-qt5
 %find_lang %name
 
 %files -f %name.lang
-%doc AUTHORS NEWS README TODO 
+%doc AUTHORS NEWS README TODO
 %_bindir/*
 %_desktopdir/*
 %_liconsdir/*
 %_iconsdir/hicolor/512x512/apps/%name.png
 
 %changelog
+* Thu Aug 08 2019 Grigory Ustinov <grenka@altlinux.org> 1.1.3-alt1
+- Build new version.
+
 * Mon Jun 18 2018 Grigory Ustinov <grenka@altlinux.org> 1.1.2-alt1
 - Build new version.
 
