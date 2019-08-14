@@ -17,8 +17,8 @@
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.0.8
-Release: alt3.1
+Version: 3.0.11
+Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
 License: CMU License
@@ -214,7 +214,6 @@ autoreconf -v -i
   --with-perl=perl \
   --with-ldap \
   --with-cyrus-user=%_cyrususer \
-  --with-cyrus-group=%_cyrusgroup \
   --with-bdb-incdir=%_includedir/db4 \
   %{?_without_sphinx: --with-sphinx-build=no} \
   #
@@ -482,6 +481,10 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Tue Aug 13 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.11-alt1
+- 3.0.11 (CVE-2019-11356 fixed in 3.0.10)
+- updated README.ALT.rus
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 3.0.8-alt3.1
 - rebuild with new perl 5.28.1
 
