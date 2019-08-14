@@ -1,6 +1,6 @@
-%define rust_ver 1.33.0
+%define rust_ver 1.34.2
 %define rust_rel alt1
-%define cargo_ver 1.33.0
+%define cargo_ver 1.34.2
 %define cargo_rel alt1
 
 Name: rust
@@ -14,6 +14,10 @@ License: Apache 2.0, MIT
 URL: http://www.rust-lang.org/
 
 Source: https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
+
+Patch1: rust-gdb.patch
+# revert of https://github.com/rust-lang/rust/commit/bb23b175
+Patch2: rustdoc-libdir.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
@@ -36,7 +40,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.32.0
+%define r_ver 1.33.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -133,7 +137,7 @@ This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 1.0.1
+Version: 1.0.3
 Release: alt1
 Group: Development/Tools
 Requires: rust-cargo = %cargo_ver-%cargo_rel
@@ -143,7 +147,7 @@ A tool for formatting Rust code according to style guidelines.
 
 %package -n rls
 Summary: Rust Language Server for IDE integration
-Version: 1.33.0
+Version: 1.34.0
 Release: alt1
 Group: Development/Tools
 Requires: rust-analysis
@@ -158,7 +162,7 @@ reformatting, and code completion, and enables renaming and refactorings.
 %package -n clippy
 Summary: Lints to catch common mistakes and improve your Rust code
 Version: 0.0.212
-Release: alt6
+Release: alt7
 Group: Development/Tools
 License: MPLv2.0
 Requires: rust-cargo
@@ -191,6 +195,9 @@ data to provide information about the Rust standard library.
 %prep
 %setup -n %{name}c-%rust_ver-src
 
+%patch1 -p2
+%patch2 -p1
+
 %if_with bootstrap
 tar xf %r_src
 mkdir -p %rustdir
@@ -207,37 +214,6 @@ patchelf --set-interpreter /lib64/ld-linux-aarch64.so.1 %rustdir/bin/rustc
 # Fix libdir path for bootstrap
 sed -i 's/Path::new("lib")/Path::new("%_lib")/' src/bootstrap/builder.rs
 %endif
-
-patch -p2 <<'EOF'
-diff --git a/rustc-1.30.0-src/src/etc/rust-gdb b/rustc-1.30.0-src/src/etc/rust-gdb
-index 743952a5bef..a495ddb12f0 100755
---- a/rustc-1.30.0-src/src/etc/rust-gdb
-+++ b/rustc-1.30.0-src/src/etc/rust-gdb
-@@ -13,8 +13,7 @@
- set -e
- 
- # Find out where the pretty printer Python module is
--RUSTC_SYSROOT=`rustc --print=sysroot`
--GDB_PYTHON_MODULE_DIRECTORY="$RUSTC_SYSROOT/lib/rustlib/etc"
-+GDB_PYTHON_MODULE_DIRECTORY=%_libdir/rustlib/etc
- 
- # Run GDB with the additional arguments that load the pretty printers
- # Set the environment variable `RUST_GDB` to overwrite the call to a
-diff --git a/rustc-1.30.0-src/src/etc/rust-gdbgui b/rustc-1.30.0-src/src/etc/rust-gdbgui
-index 7e179ba927d..a7c224668d7 100755
---- a/rustc-1.30.0-src/src/etc/rust-gdbgui
-+++ b/rustc-1.30.0-src/src/etc/rust-gdbgui
-@@ -41,8 +41,7 @@ icon to start your program running.
- fi
- 
- # Find out where the pretty printer Python module is
--RUSTC_SYSROOT=`rustc --print=sysroot`
--GDB_PYTHON_MODULE_DIRECTORY="$RUSTC_SYSROOT/lib/rustlib/etc"
-+GDB_PYTHON_MODULE_DIRECTORY=%_libdir/rustlib/etc
- 
- # Set the environment variable `RUST_GDB` to overwrite the call to a
- # different/specific command (defaults to `gdb`).
-EOF
 
 %build
 cat > config.toml <<EOF
@@ -313,6 +289,7 @@ rm -rf %rustdir
 
 %files gdb
 %_bindir/rust-gdb
+%_bindir/rust-gdbgui
 %exclude %_bindir/rust-lldb
 %_libdir/rustlib/etc/*
 %exclude %_libdir/rustlib/etc/lldb_*
@@ -352,6 +329,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Wed May 29 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.34.2-alt1
+- 1.34.2
+
 * Mon May 27 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.33.0-alt1
 - 1.33.0
 
