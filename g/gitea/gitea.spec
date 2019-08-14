@@ -1,7 +1,9 @@
 %global import_path code.gitea.io/gitea
 
+%def_without crutch
+
 Name:    gitea
-Version: 1.8.3
+Version: 1.9.0
 Release: alt1
 
 Summary: Git with a cup of tea, painless self-hosted git service
@@ -40,7 +42,10 @@ export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
 
+%if_with crutch
 %golang_prepare
+%endif
+
 cd "$BUILDDIR"/src/%import_path
 TAGS="bindata sqlite pam" make VERSION=%version generate all
 
@@ -77,6 +82,11 @@ useradd -r -g %name -d %_localstatedir/%name %name -s /bin/sh ||:
 %doc *.md
 
 %changelog
+* Wed Jul 31 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.0-alt1
+- new version 1.9.0
+- Changed config file.
+- Changed building scheme (thx to obirvalger@).
+
 * Tue Jun 18 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.3-alt1
 - new version 1.8.3
 
