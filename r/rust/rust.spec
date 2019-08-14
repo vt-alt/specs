@@ -1,7 +1,7 @@
-%define rust_ver 1.34.2
+%define rust_ver 1.35.0
 %define rust_rel alt1
-%define cargo_ver 1.34.2
-%define cargo_rel alt1
+%define cargo_ver %rust_ver
+%define cargo_rel %rust_rel
 
 Name: rust
 Epoch: 1
@@ -16,8 +16,11 @@ URL: http://www.rust-lang.org/
 Source: https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
 
 Patch1: rust-gdb.patch
-# revert of https://github.com/rust-lang/rust/commit/bb23b175
-Patch2: rustdoc-libdir.patch
+# Rust issue #61206
+# Patch from FreeBSD https://svnweb.freebsd.org/ports/head/lang/rust/files/patch-src_bootstrap_native.rs?view=markup&pathrev=502416
+Patch2: rust-llvm-build.patch
+# Rust issue #60184
+Patch3:rust-llvm-build-i686.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
@@ -40,7 +43,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.33.0
+%define r_ver 1.34.2
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -137,7 +140,7 @@ This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 1.0.3
+Version: 1.2.0
 Release: alt1
 Group: Development/Tools
 Requires: rust-cargo = %cargo_ver-%cargo_rel
@@ -147,8 +150,6 @@ A tool for formatting Rust code according to style guidelines.
 
 %package -n rls
 Summary: Rust Language Server for IDE integration
-Version: 1.34.0
-Release: alt1
 Group: Development/Tools
 Requires: rust-analysis
 Requires: %name = %rust_ver-%rust_rel
@@ -162,7 +163,7 @@ reformatting, and code completion, and enables renaming and refactorings.
 %package -n clippy
 Summary: Lints to catch common mistakes and improve your Rust code
 Version: 0.0.212
-Release: alt7
+Release: alt8
 Group: Development/Tools
 License: MPLv2.0
 Requires: rust-cargo
@@ -196,7 +197,8 @@ data to provide information about the Rust standard library.
 %setup -n %{name}c-%rust_ver-src
 
 %patch1 -p2
-%patch2 -p1
+%patch2
+%patch3 -p1
 
 %if_with bootstrap
 tar xf %r_src
@@ -230,6 +232,7 @@ prefix = "%prefix"
 libdir = "%_lib"
 [rust]
 channel = "stable"
+codegen-units = 1
 codegen-tests = false
 rpath = false
 debuginfo = false
@@ -329,6 +332,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Fri May 31 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.35.0-alt1
+- 1.35.0
+
 * Wed May 29 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.34.2-alt1
 - 1.34.2
 
