@@ -1,7 +1,7 @@
 %define rname ktp-approver
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init altplace
 
@@ -45,6 +45,9 @@ BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5
 %_K5srvtyp/*.desktop
 
 %changelog
+* Tue Aug 13 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

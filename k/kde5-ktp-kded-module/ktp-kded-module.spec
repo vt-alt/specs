@@ -1,7 +1,7 @@
 %define rname ktp-kded-module
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.04.3
 Release: alt1
 %K5init altplace
 
@@ -82,6 +82,9 @@ KF5 library
 #%_K5lib/libktp-kded-module.so.*
 
 %changelog
+* Tue Aug 13 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Wed Jun 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
