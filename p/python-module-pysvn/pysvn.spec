@@ -3,7 +3,7 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 1.9.9
+Version: 1.9.10
 Release: alt1
 Summary: Subversion support for python
 License: Apache License
@@ -86,6 +86,9 @@ popd
 %endif
 
 %changelog
+* Thu Aug 01 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.10-alt1
+- Build new version.
+
 * Wed Apr 17 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.9-alt1
 - Build new version for python3.7.
 
