@@ -1,7 +1,7 @@
 Summary:	Netscape Portable Runtime (NSPR)
 Name:		nspr
 Version:	4.21
-Release:	alt1
+Release:	alt2
 Epoch:		1
 License:	MPL/GPL/LGPL
 Group:		System/Libraries
@@ -58,10 +58,8 @@ cd nspr
 %configure \
 	--includedir=%_includedir/%name \
 	--with-mozilla \
-%ifarch x86_64
-	--enable-64bit \
-%endif
-	--enable-optimize="$RPM_OPT_FLAGS" \
+	%{?_is_lp64:--enable-64bit} \
+	--enable-optimize="%optflags" \
 	--enable-mdupdate \
 	--with-pthreads \
 	--disable-cplus \
@@ -107,6 +105,9 @@ sed -e "s,@libdir@,%_libdir,g" \
 %_libdir/*.a
 
 %changelog
+* Tue May 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:4.21-alt2
+- Use %%_is_lp64 to determine if arch is 64-bit.
+
 * Sun Mar 31 2019 Alexey Gladkov <legion@altlinux.ru> 1:4.21-alt1
 - New stable release 4.21.
 

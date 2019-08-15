@@ -6,16 +6,16 @@
 
 %define gst_version 1.0
 %define nspr_version 4.21
-%define nss_version 3.43.0
-%define rust_version  1.31.1
-%define cargo_version 1.31.1
+%define nss_version 3.45.0
+%define rust_version  1.35.0
+%define cargo_version 1.35.0
 
 Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox
-Version:        66.0.5
-Release:        alt2.p9.1
+Version:        68.0.1
+Release:        alt0.p9.1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -37,18 +37,13 @@ Source9:        firefox-prefs.js
 Patch001: 0001-ALT-fix-werror-return-type.patch
 Patch002: 0002-SUSE-NonGnome-KDE-integration.patch
 Patch003: 0003-ALT-Use-system-nspr-headers.patch
-Patch004: 0004-MOZILLA-1423598-wayland-popup-tooltip-windows-can-be.patch
-Patch005: 0005-MOZILLA-1532643-wayland-CreateWidgetForPopup-needs-w.patch
-Patch006: 0006-MOZILLA-1535567-wayland-Fails-to-render-popup-window.patch
-Patch007: 0007-MOZILLA-1431399-wayland-with-WebRTC-playback-device-.patch
-Patch008: 0008-MOZILLA-1468911-wayland-Visible-artifacts-during-win.patch
-Patch009: 0009-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
-Patch010: 0010-MOZILLA-1515641-Addon.patch
-Patch011: 0011-MOZILLA-1353817-skia-build-error-on-aarch64.patch
-Patch012: 0012-FEDORA-build-arm-libopus.patch
-Patch013: 0013-FEDORA-build-arm.patch
-Patch014: 0014-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
-Patch015: 0015-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch004: 0004-FEDORA-build-arm-libopus.patch
+Patch005: 0005-FEDORA-build-arm.patch
+Patch006: 0006-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
+Patch007: 0007-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch008: 0008-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch009: 0009-ALT-Include-linux-sockios.h-header.patch
+Patch010: 0010-ALT-Fix-aarch64-build.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -137,7 +132,7 @@ The Mozilla Firefox project is a redesign of Mozilla's browser component,
 written using the XUL user interface language and designed to be
 cross-platform.
 
-%description -l ru_RU.UTF8
+%description -l ru_RU.UTF-8
 Интернет-браузер Mozilla Firefox - кроссплатформенная модификация браузера Mozilla,
 созданная с использованием языка XUL для описания интерфейса пользователя.
 
@@ -177,11 +172,6 @@ firefox packages by some Alt Linux Team Policy compatible way.
 %patch008 -p1
 %patch009 -p1
 %patch010 -p1
-%patch011 -p1
-%patch012 -p1
-%patch013 -p1
-%patch014 -p1
-%patch015 -p1
 ### Finish apply patches
 
 cd mozilla
@@ -217,16 +207,15 @@ replace-with = "vendored-sources"
 directory = "$PWD/my_rust_vendor"
 EOF
 
-env CARGO_HOME="$PWD/.cargo" cargo install cbindgen
-
-rm -f -- .cargo/config
-
 
 %build
 cd mozilla
 
 %add_optflags %optflags_shared
 %add_findprov_lib_path %firefox_prefix
+
+env CARGO_HOME="$PWD/.cargo" \
+	cargo install cbindgen
 
 export MOZ_BUILD_APP=browser
 
@@ -263,9 +252,9 @@ export BUILD_VERBOSE_LOG=1
 export MOZ_MAKE_FLAGS="-j6"
 export PATH="$PWD/.cargo/bin:$PATH"
 
-%__autoconf old-configure.in > old-configure
+autoconf old-configure.in > old-configure
 pushd js/src
-%__autoconf old-configure.in > old-configure
+autoconf old-configure.in > old-configure
 popd
 
 ./mach build
@@ -283,7 +272,7 @@ cd mozilla
 
 export SHELL=/bin/sh
 
-%__mkdir_p \
+mkdir -p \
 	%buildroot/%mozilla_arch_extdir/%firefox_cid \
 	%buildroot/%mozilla_noarch_extdir/%firefox_cid \
 	#
@@ -349,8 +338,8 @@ mkdir -p -- ./%firefox_prefix/distribution
 cp -- %SOURCE5 ./%firefox_prefix/distribution/distribution.ini
 
 # install menu file
-%__install -D -m 644 %SOURCE6 ./%_datadir/applications/firefox.desktop
-%__install -D -m 644 %SOURCE7 ./%_datadir/applications/firefox-wayland.desktop
+install -D -m 644 %SOURCE6 ./%_datadir/applications/firefox.desktop
+install -D -m 644 %SOURCE7 ./%_datadir/applications/firefox-wayland.desktop
 
 # Add alternatives
 mkdir -p ./%_altdir
@@ -406,8 +395,86 @@ done
 %_rpmmacrosdir/firefox
 
 %changelog
+* Thu Aug 15 2019 Andrey Cherepanov <cas@altlinux.org> 68.0.1-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Thu Aug 01 2019 Alexey Gladkov <legion@altlinux.ru> 68.0.1-alt1
+- New release (68.0.1).
+
+* Thu Jul 11 2019 Alexey Gladkov <legion@altlinux.ru> 68.0-alt1
+- New release (68.0).
+- Fixed:
+  + CVE-2019-9811: Sandbox escape via installation of malicious language pack
+  + CVE-2019-11711: Script injection within domain through inner window reuse
+  + CVE-2019-11712: Cross-origin POST requests can be made with NPAPI plugins by following 308 redirects
+  + CVE-2019-11713: Use-after-free with HTTP/2 cached stream
+  + CVE-2019-11714: NeckoChild can trigger crash when accessed off of main thread
+  + CVE-2019-11729: Empty or malformed p256-ECDH public keys may trigger a segmentation fault
+  + CVE-2019-11715: HTML parsing error can contribute to content XSS
+  + CVE-2019-11716: globalThis not enumerable until accessed
+  + CVE-2019-11717: Caret character improperly escaped in origins
+  + CVE-2019-11718: Activity Stream writes unsanitized content to innerHTML
+  + CVE-2019-11719: Out-of-bounds read when importing curve25519 private key
+  + CVE-2019-11720: Character encoding XSS vulnerability
+  + CVE-2019-11721: Domain spoofing through unicode latin 'kra' character
+  + CVE-2019-11730: Same-origin policy treats all files in a directory as having the same-origin
+  + CVE-2019-11723: Cookie leakage during add-on fetching across private browsing boundaries
+  + CVE-2019-11724: Retired site input.mozilla.org has remote troubleshooting permissions
+  + CVE-2019-11725: Websocket resources bypass safebrowsing protections
+  + CVE-2019-11727: PKCS#1 v1.5 signatures can be used for TLS 1.3
+  + CVE-2019-11728: Port scanning through Alt-Svc header
+  + CVE-2019-11710: Memory safety bugs fixed in Firefox 68
+  + CVE-2019-11709: Memory safety bugs fixed in Firefox 68 and Firefox ESR 60.8
+
 * Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 66.0.5-alt2.p9.1
 - Added ppc64le support.
+
+* Mon Jul 01 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 67.0.4-alt2
+- Added ppc64le support.
+- spec: cleaned up rpm-build internal macros.
+
+* Fri Jun 21 2019 Alexey Gladkov <legion@altlinux.ru> 67.0.4-alt1
+- New release (67.0.4).
+- Fixed:
+ + CVE-2019-11708: sandbox escape using Prompt:Open
+
+* Wed Jun 19 2019 Alexey Gladkov <legion@altlinux.ru> 67.0.3-alt1
+- New release (67.0.3).
+- Fixed:
+  + CVE-2019-11707: Type confusion in Array.pop
+
+* Tue Jun 18 2019 Alexey Gladkov <legion@altlinux.ru> 67.0.2-alt1
+- New release (67.0.2).
+- Fixed:
+  + CVE-2019-11702: IE protocols can be used to open known local files
+
+* Wed Jun 05 2019 Alexey Gladkov <legion@altlinux.ru> 67.0.1-alt1
+- New release (67.0.1).
+
+* Wed May 22 2019 Alexey Gladkov <legion@altlinux.ru> 67.0-alt1
+- New release (67.0).
+- Fixed:
+  + CVE-2019-9815: Disable hyperthreading on content JavaScript threads on macOS
+  + CVE-2019-9816: Type confusion with object groups and UnboxedObjects
+  + CVE-2019-9817: Stealing of cross-domain images using canvas
+  + CVE-2019-9818: Use-after-free in crash generation server
+  + CVE-2019-9819: Compartment mismatch with fetch API
+  + CVE-2019-9820: Use-after-free of ChromeEventHandler by DocShell
+  + CVE-2019-9821: Use-after-free in AssertWorkerThread
+  + CVE-2019-11691: Use-after-free in XMLHttpRequest
+  + CVE-2019-11692: Use-after-free removing listeners in the event listener manager
+  + CVE-2019-11693: Buffer overflow in WebGL bufferdata on Linux
+  + CVE-2019-7317: Use-after-free in png_image_free of libpng library
+  + CVE-2019-11694: Uninitialized memory memory leakage in Windows sandbox
+  + CVE-2019-11695: Custom cursor can render over user interface outside of web content
+  + CVE-2019-11696: Java web start .JNLP files are not recognized as executable files for download prompts
+  + CVE-2019-11697: Pressing key combinations can bypass installation prompt delays and install extensions
+  + CVE-2019-11698: Theft of user history data through drag and drop of hyperlinks to and from bookmarks
+  + CVE-2019-11700: res: protocol can be used to open known local files
+  + CVE-2019-11699: Incorrect domain name highlighting during page navigation
+  + CVE-2019-11701: webcal: protocol default handler loads vulnerable web page
+  + CVE-2019-9814: Memory safety bugs fixed in Firefox 67
+  + CVE-2019-9800: Memory safety bugs fixed in Firefox 67 and Firefox ESR 60.7
 
 * Wed May 08 2019 Alexey Gladkov <legion@altlinux.ru> 66.0.5-alt1
 - New release (66.0.5).

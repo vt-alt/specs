@@ -2,7 +2,7 @@
 
 Summary:	Netscape Network Security Services(NSS)
 Name:		nss
-Version:	3.43.0
+Version:	3.45.0
 Release:	alt1
 License:	MPL/GPL/LGPL
 Group:		System/Libraries
@@ -148,9 +148,7 @@ export NSPR_LIB_DIR=%_libdir
 # Generate symbolic info for debuggers
 export XCFLAGS=$RPM_OPT_FLAGS
 
-%ifarch x86_64 aarch64
-export USE_64=1
-%endif
+%{?_is_lp64:export USE_64=1}
 
 make -C nss/coreconf
 make -C nss/coreconf platform 2>/dev/null |grep '^Linux' >destdir
@@ -273,6 +271,15 @@ EOF
 
 # https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_{version}_release_notes
 %changelog
+* Thu Jul 11 2019 Alexey Gladkov <legion@altlinux.ru> 3.45.0-alt1
+- New version (3.45).
+
+* Wed May 22 2019 Alexey Gladkov <legion@altlinux.ru> 3.44.0-alt1
+- New version (3.44).
+
+* Tue May 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.43.0-alt2
+- Use %%_is_lp64 macro to determine if arch is 64-bit.
+
 * Sun Mar 31 2019 Alexey Gladkov <legion@altlinux.ru> 3.43.0-alt1
 - New version (3.43).
 
