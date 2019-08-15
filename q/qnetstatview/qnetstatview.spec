@@ -1,5 +1,5 @@
 Name:		qnetstatview
-Version:	1.5.2
+Version:	1.5.3
 Release:	alt1
 Summary:	Shows detailed listings of all TCP and UDP endpoints
 Group:		Networking/Other
@@ -35,5 +35,8 @@ Shows detailed listings of all TCP and UDP endpoints.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Thu Aug 15 2019 Alexander Danilov  <admsasha@altlinux.org> 1.5.3-alt1
+- release 1.5.3
+
 * Fri Aug  2 2019 Alexander Danilov  <admsasha@altlinux.org> 1.5.2-alt1
 - release 1.5.2
