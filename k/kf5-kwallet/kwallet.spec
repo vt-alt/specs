@@ -1,7 +1,7 @@
 %define rname kwallet
 
 Name: kf5-%rname
-Version: 5.60.0
+Version: 5.61.0
 Release: alt1
 %K5init altplace
 
@@ -12,7 +12,6 @@ License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 Source1: kwalletd5.po
-Patch1: alt-kwalletd4.patch
 Patch2: alt-def-blowfish.patch
 Patch3: alt-create-wallet.patch
 
@@ -66,7 +65,6 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 
@@ -90,7 +88,6 @@ cat %SOURCE1 >> po/ru/kwalletd5.po
 %_K5bin/kwallet-query
 %_K5notif/*.notifyrc
 %_K5srv/*.desktop
-%_K5dbus_srv/*.service
 %_datadir/dbus-1/services/*.service
 
 %files devel
@@ -107,6 +104,9 @@ cat %SOURCE1 >> po/ru/kwalletd5.po
 %_K5lib/libkwalletbackend5.so.*
 
 %changelog
+* Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
+- new version
+
 * Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
 - new version
 

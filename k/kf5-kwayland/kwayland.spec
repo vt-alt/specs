@@ -1,7 +1,7 @@
 %define rname kwayland
 
 Name: kf5-%rname
-Version: 5.60.0
+Version: 5.61.0
 Release: alt1
 %K5init altplace
 
@@ -18,7 +18,7 @@ Patch1: alt-return-statement.patch
 #BuildRequires: extra-cmake-modules gcc-c++ libwayland-client-devel libwayland-server-devel python-module-google qt5-base-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
-BuildRequires: libwayland-client-devel libwayland-server-devel
+BuildRequires: libwayland-client-devel libwayland-server-devel wayland-protocols
 
 %description
 KWayland provides a Qt-style Client and Server library wrapper for the Wayland libraries.
@@ -90,6 +90,9 @@ KF5 library
 %_K5lib/libKF5WaylandServer.so.*
 
 %changelog
+* Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
+- new version
+
 * Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
 - new version
 

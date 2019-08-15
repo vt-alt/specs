@@ -11,7 +11,7 @@
 
 
 Name: kf5-%rname
-Version: 5.60.0
+Version: 5.61.0
 Release: alt1
 %K5init altplace
 
@@ -103,6 +103,9 @@ mkdir -p %buildroot/%_K5exec/kpackagehandlers/
 %_K5notif/*.notifyrc
 
 %changelog
+* Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
+- new version
+
 * Mon Jul 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt1
 - new version
 

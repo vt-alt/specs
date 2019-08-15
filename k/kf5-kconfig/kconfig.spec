@@ -6,8 +6,8 @@
 %endif
 
 Name: kf5-%rname
-Version: 5.60.0
-Release: alt2
+Version: 5.61.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -17,7 +17,6 @@ License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 Patch1: alt-update-scripts-path.patch
-Patch2: alt-dont-execute-desktopfile-entries.patch
 
 # Automatically added by buildreq on Wed Dec 24 2014 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libqt5-core libqt5-gui libqt5-test libqt5-widgets libqt5-xml libstdc++-devel python-base qt5-base-devel qt5-tools ruby ruby-stdlibs
@@ -100,7 +99,6 @@ Sip files for python3-module-%rname
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-%patch2 -p1
 
 %build
 NPROCS=1 %K5build
@@ -151,6 +149,9 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 %endif
 
 %changelog
+* Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
+- new version
+
 * Wed Aug 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.60.0-alt2
 - don't execute desktopfile entries
 
