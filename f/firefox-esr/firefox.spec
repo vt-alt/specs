@@ -6,17 +6,17 @@
 %define firefox_datadir %_datadir/firefox
 
 %define gst_version 1.0
-%define nspr_version 4.17
-%define nss_version 3.36.4
-%define rust_version 1.24.1
-%define cargo_version 0.25.0
+%define nspr_version 4.21
+%define nss_version 3.45.0
+%define rust_version  1.35.0
+%define cargo_version 1.35.0
 
 Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        60.8.0
-Release:        alt2
+Version:        68.0.2
+Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -26,30 +26,25 @@ Packager:	Andrey Cherepanov <cas@altlinux.ru>
 Source0:        firefox-source.tar
 Source1:        rpm-build.tar
 Source2:        searchplugins.tar
+Source3:        cbindgen-vendor.tar
 Source4:        firefox-mozconfig
 Source5:        distribution.ini
 Source6:        firefox.desktop
-Source7:        firefox.c
-Source8:        firefox-prefs.js
+Source7:        firefox-wayland.desktop
+Source8:        firefox.c
+Source9:        firefox-prefs.js
 
-Patch6:         firefox-alt-disable-werror.patch
-Patch7:         firefox-alt-fix-expandlibs.patch
-Patch14:        firefox-fix-install.patch
-Patch16:        firefox-cross-desktop.patch
-Patch17:        firefox-mediasource-crash.patch
-Patch18:        firefox-alt-nspr-for-rust.patch
-Patch19:        build-aarch64-skia.patch
-Patch20:        bug1375074-save-restore-x28.patch
-Patch21:        rust-ignore-not-available-documentation.patch
-
-Patch22:        firefox-60.7.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
-Patch23:        firefox-60.7.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
-Patch24:        firefox-60.7.2-alt-libpng-std=gnu89.patch
-
-# Upstream
-Patch200:       mozilla-bug-256180.patch
-Patch201:       mozilla-bug-1196777.patch
-Patch202:       mozilla-bug-1430274.patch
+### Start Patches
+Patch001: 0001-ALT-fix-werror-return-type.patch
+Patch002: 0002-SUSE-NonGnome-KDE-integration.patch
+Patch003: 0003-ALT-Use-system-nspr-headers.patch
+Patch004: 0004-FEDORA-build-arm-libopus.patch
+Patch005: 0005-FEDORA-build-arm.patch
+Patch006: 0006-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
+Patch007: 0007-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch008: 0008-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch010: 0010-ALT-Fix-aarch64-build.patch
+### End Patches
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
@@ -94,15 +89,20 @@ BuildRequires: libopus-devel
 BuildRequires: libpulseaudio-devel
 #BuildRequires: libicu-devel
 BuildRequires: libdbus-devel libdbus-glib-devel
+BuildRequires: node
+BuildRequires: nasm
+BuildRequires: libxkbcommon-devel
 
 # Python requires
 BuildRequires: /dev/shm
+BuildRequires: python3-base
 BuildRequires: python-module-distribute
 BuildRequires: python-module-pip
 BuildRequires: python-modules-compiler
 BuildRequires: python-modules-logging
 BuildRequires: python-modules-sqlite3
 BuildRequires: python-modules-json
+
 
 # Rust requires
 BuildRequires: /proc
@@ -126,44 +126,75 @@ Requires:	mozilla-common
 # ALT#30732
 Requires:	gst-plugins-ugly%gst_version
 
-# Require fresh nss for correct https open
+Requires: libnspr >= %nspr_version
 Requires: libnss >= %nss_version
 
 %description
-The Mozilla Firefox project is a redesign of Mozilla's browser
-component, written using the XUL user interface language and designed to
-be cross-platform.
+The Mozilla Firefox project is a redesign of Mozilla's browser component,
+written using the XUL user interface language and designed to be
+cross-platform.
 
 %description -l ru_RU.UTF-8
-Интернет-браузер Mozilla Firefox - кроссплатформенная модификация
-браузера Mozilla, созданная с использованием языка XUL для описания
-интерфейса пользователя.
+Интернет-браузер Mozilla Firefox - кроссплатформенная модификация браузера Mozilla,
+созданная с использованием языка XUL для описания интерфейса пользователя.
+
+%package wayland
+Summary:    Firefox Wayland launcher.
+Group:      Networking/WWW
+BuildArch:  noarch
+Requires:   %name
+
+%description wayland
+The firefox-wayland package contains launcher and desktop file
+to run Firefox natively on Wayland.
 
 %prep
 %setup -q -n firefox-%version -c
+
+### Begin to apply patches
+%patch001 -p1
+%patch002 -p1
+%patch003 -p1
+%patch004 -p1
+%patch005 -p1
+%patch006 -p1
+%patch007 -p1
+%patch008 -p1
+%patch010 -p1
+### Finish apply patches
+
 cd mozilla
 
 tar -xf %SOURCE1
 tar -xf %SOURCE2
 
-#patch6  -p1
-%patch7  -p2
-#patch14 -p1
-%patch16 -p2
-%patch17 -p2
-%patch18 -p2
-%patch19 -p2 -b .aarch64-skia
-#patch20 -p1 -b .bug1375074-save-restore-x28
-%patch21 -p1
-%patch22 -p2
-%patch23 -p2
-%patch24 -p2
-
-%patch200 -p1
-#patch201 -p1
-#patch202 -p1
-
 cp -f %SOURCE4 .mozconfig
+
+cat >> .mozconfig <<'EOF'
+ac_add_options --prefix="%_prefix"
+ac_add_options --libdir="%_libdir"
+%ifnarch %{ix86} ppc64le
+ac_add_options --enable-linker=lld
+%ifnarch x86_64
+ac_add_options --disable-webrtc
+%endif
+%endif
+%ifarch %{ix86} x86_64
+ac_add_options --disable-elf-hack
+%endif
+EOF
+
+mkdir -p -- my_rust_vendor
+tar --strip-components=1 -C my_rust_vendor --overwrite -xf %SOURCE3
+
+mkdir -p -- .cargo
+cat > .cargo/config <<EOF
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "$PWD/my_rust_vendor"
+EOF
 
 %build
 cd mozilla
@@ -171,17 +202,12 @@ cd mozilla
 %add_optflags %optflags_shared
 %add_findprov_lib_path %firefox_prefix
 
+env CARGO_HOME="$PWD/.cargo" \
+	cargo install cbindgen
+
 export MOZ_BUILD_APP=browser
 
 MOZ_OPT_FLAGS="-pipe -O2 -g0"
-
-%ifnarch %{ix86} ppc64le
-MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -fuse-ld=lld"
-%endif
-
-#MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS \
-# -fuse-ld=lld -flto=thin \
-# -Wl,--thinlto-jobs=4 -Wl,--thinlto-cache-dir=thinlto-cache -Wl,--thinlto-cache-policy,cache_size=10%% -Wl,--lto-O0"
 
 # PIE, full relro
 MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -DPIC -fPIC -Wl,-z,relro -Wl,-z,now"
@@ -204,13 +230,13 @@ export LDFLAGS="$LDFLAGS -Wl,-rpath,$rpath"
 export RPATH="-Wl,-rpath,$rpath"
 %endif
 
-%ifnarch %{ix86}
+#ifnarch %{ix86}
 export CC="clang"
 export CXX="clang++"
-%else
-export CC="gcc"
-export CXX="g++"
-%endif
+#else
+#export CC="gcc"
+#export CXX="g++"
+#endif
 
 export LIBIDL_CONFIG=/usr/bin/libIDL-config-2
 export srcdir="$PWD"
@@ -218,21 +244,8 @@ export SHELL=/bin/sh
 export RUST_BACKTRACE=1
 export RUSTFLAGS="-Cdebuginfo=0"
 export BUILD_VERBOSE_LOG=1
-
-cat >> .mozconfig <<'EOF'
-ac_add_options --prefix="%_prefix"
-%ifnarch %{ix86} ppc64le
-ac_add_options --enable-linker=lld
-%ifnarch x86_64
-ac_add_options --disable-webrtc
-%endif
-%endif
-%ifarch %{ix86} x86_64
-ac_add_options --disable-elf-hack
-%endif
-EOF
-
 export MOZ_MAKE_FLAGS="-j6"
+export PATH="$PWD/.cargo/bin:$PATH"
 
 autoconf old-configure.in > old-configure
 pushd js/src
@@ -246,7 +259,7 @@ $CC $CFLAGS \
 	-DMOZ_PLUGIN_PATH=\"%browser_plugins_path\" \
 	-DMOZ_PROGRAM=\"%firefox_prefix/firefox\" \
 	-DMOZ_DIST_BIN=\"%firefox_prefix\"\
-	%SOURCE7 -o firefox
+	%SOURCE8 -o firefox
 
 
 %install
@@ -267,7 +280,7 @@ make -C objdir \
 	install
 
 # install altlinux-specific configuration
-install -D -m 644 %SOURCE8 %buildroot/%firefox_prefix/browser/defaults/preferences/all-altlinux.js
+install -D -m 644 %SOURCE9 %buildroot/%firefox_prefix/browser/defaults/preferences/all-altlinux.js
 
 cat > %buildroot/%firefox_prefix/browser/defaults/preferences/firefox-l10n.js <<EOF
 pref("intl.locale.matchOS", true);
@@ -300,12 +313,28 @@ install -m755 firefox %buildroot/%_bindir/firefox
 
 cd %buildroot
 
+# Wrapper for wayland
+cat > ./%_bindir/firefox-wayland <<'EOF'
+#!/bin/sh
+export GDK_BACKEND=wayland
+export MOZ_ENABLE_WAYLAND=1
+export MOZ_GTK_TITLEBAR_DECORATION=client
+export XDG_SESSION_TYPE=wayland
+
+unset DISPLAY
+
+exec %_bindir/firefox "$@"
+EOF
+
+chmod +x ./%_bindir/firefox-wayland
+
 # Add distribution.ini
 mkdir -p -- ./%firefox_prefix/distribution
 cp -- %SOURCE5 ./%firefox_prefix/distribution/distribution.ini
 
 # install menu file
 install -D -m 644 %SOURCE6 ./%_datadir/applications/firefox.desktop
+install -D -m 644 %SOURCE7 ./%_datadir/applications/firefox-wayland.desktop
 
 # Add alternatives
 mkdir -p ./%_altdir
@@ -353,7 +382,30 @@ done
 %_iconsdir/hicolor/48x48/apps/firefox.png
 %_iconsdir/hicolor/256x256/apps/firefox.png
 
+%files wayland
+%_bindir/firefox-wayland
+%_datadir/applications/firefox-wayland.desktop
+
 %changelog
+* Thu Aug 15 2019 Andrey Cherepanov <cas@altlinux.org> 68.0.2-alt1
+- New ESR version (68.0.2).
+- Fixed:
+  + CVE-2019-11733 Stored passwords in 'Saved Logins' can be copied without master password entry
+
+* Fri Jul 19 2019 Andrey Cherepanov <cas@altlinux.org> 68.0.1-alt1
+- New ESR version (68.0.1).
+- Fixed:
+  + CVE-2019-9811 Sandbox escape via installation of malicious language pack
+  + CVE-2019-11711 Script injection within domain through inner window reuse
+  + CVE-2019-11712 Cross-origin POST requests can be made with NPAPI plugins by following 308 redirects
+  + CVE-2019-11713 Use-after-free with HTTP/2 cached stream
+  + CVE-2019-11729 Empty or malformed p256-ECDH public keys may trigger a segmentation fault
+  + CVE-2019-11715 HTML parsing error can contribute to content XSS
+  + CVE-2019-11717 Caret character improperly escaped in origins
+  + CVE-2019-11719 Out-of-bounds read when importing curve25519 private key
+  + CVE-2019-11730 Same-origin policy treats all files in a directory as having the same-origin
+  + CVE-2019-11709 Memory safety bugs fixed in Firefox 68 and Firefox ESR 60.8
+
 * Mon Jul 15 2019 Andrey Cherepanov <cas@altlinux.org> 60.8.0-alt2
 - Fix Russian description encoding.
 
