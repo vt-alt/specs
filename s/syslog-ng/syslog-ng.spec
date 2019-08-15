@@ -11,13 +11,14 @@
 %def_enable	mongodb
 %def_enable	curl
 %def_enable	systemd
+%def_enable	snmp
 
 # https://lists.altlinux.org/pipermail/devel/2019-March/207208.html
 %def_disable	unit_tests
 
 Name: syslog-ng
-Version: 3.20.1
-Release: alt4
+Version: 3.22.1
+Release: alt1
 
 Summary: syslog-ng daemon
 Group: System/Kernel and hardware
@@ -57,6 +58,7 @@ BuildRequires: xsltproc docbook-style-xsl python-devel
 %{?_enable_mongodb:BuildRequires: libmongoc-devel}
 %{?_enable_curl:BuildRequires: libcurl-devel}
 %{?_enable_systemd:BuildRequires: libsystemd-devel}
+%{?_enable_snmp:BuildRequires: libnet-snmp-devel}
 
 %if_enabled unit_tests
 BuildRequires: libcriterion-devel
@@ -154,7 +156,14 @@ Summary: Systemd journal support for %{name}
 Group: System/Libraries
 
 %description journal
-This module provides JSON parsing & formatting support for %{name}.
+This module provides systemd journal support for %{name}.
+
+%package snmp
+Summary: SNMP support for %{name}
+Group: System/Libraries
+
+%description snmp
+This module provides SNMP support for %{name}.
 
 %package python
 Summary: Python destination support for syslog-ng
@@ -168,7 +177,8 @@ This package provides python destination support for syslog-ng
 Summary: Debug bundle generator script
 Requires: %name-python = %version-%release
 Group: System/Libraries
-BuildArch: noarch
+# https://lists.balabit.hu/pipermail/syslog-ng/2019-August/025404.html
+#BuildArch: noarch
 
 %description -n python-module-%name-debuggercli
 This package provides debug bundle generator script for
@@ -225,7 +235,9 @@ skip_submodules=1 ./autogen.sh
  --with-ivykis=system \
  --with-pidfile-dir=/var/run \
  --with-module-dir=%_libdir/%name \
+%if_enabled systemd
  --with-systemdsystemunitdir=%_unitdir \
+%endif
  --enable-ipv6 \
  --enable-dynamic-linking \
  --enable-spoof-source \
@@ -278,7 +290,9 @@ sed "s/@ver@/$VER/" -i altlinux/conf.d.example/*.conf
 sed '/scl\/\*\/\*.conf/{s||%_datadir/%name/include/scl/*/*.conf|;h};${x;/./{x;q0};x;q1}' -i %buildroot%_sysconfdir/%name/scl.conf
 
 install -m640 -D -p altlinux/%name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
+%if_enabled systemd
 install -m644 -D -p altlinux/%name.service %buildroot%_unitdir/%name.service
+%endif
 rm -f %buildroot%_unitdir/%{name}@.service
 
 install -m644 -p config.h %buildroot%_includedir/%name
@@ -324,7 +338,9 @@ fi
 %config(noreplace) %_sysconfdir/%name/%name.conf
 %config(noreplace) %_sysconfdir/sysconfig/%name
 %_initdir/%name
+%if_enabled systemd
 %_unitdir/%name.service
+%endif
 
 /sbin/%name
 /sbin/%name-ctl
@@ -438,16 +454,24 @@ fi
 %_libdir/%name/libsdjournal.so
 %endif
 
+%if_enabled snmp
+%files snmp
+%_libdir/%name/libsnmpdest.so
+%endif
+
 %files python
 %_libdir/%name/libmod-python.so
 
 %files -n python-module-%name-debuggercli
-%dir %python_sitelibdir_noarch/syslogng/
-%python_sitelibdir_noarch/syslogng/*.py*
-%python_sitelibdir_noarch/syslogng-1.0-py2.7.egg-info
+#%dir %python_sitelibdir_noarch/syslogng/
+#%python_sitelibdir_noarch/syslogng/*.py*
+#%python_sitelibdir_noarch/syslogng-1.0-py2.7.egg-info
 
-%dir %python_sitelibdir_noarch/syslogng/debuggercli
-%python_sitelibdir_noarch/syslogng/debuggercli/*.py*
+#%dir %python_sitelibdir_noarch/syslogng/debuggercli
+#%python_sitelibdir_noarch/syslogng/debuggercli/*.py*
+
+%dir %_libdir/%name/python
+%_libdir/%name/python/*
 
 %files devel
 %dir %_includedir/%name
@@ -468,6 +492,9 @@ fi
 %_libdir/libsyslog-ng-native-connector.a
 
 %changelog
+* Wed Aug 14 2019 Sergey Y. Afonin <asy@altlinux.org> 3.22.1-alt1
+- 3.22.1
+
 * Wed Mar 20 2019 Sergey Y. Afonin <asy@altlinux.ru> 3.20.1-alt4
 - 00-redefine-consoleall.conf: use file("/dev/null") by default
 - packaged syslog-ng-debun (as separated package)
