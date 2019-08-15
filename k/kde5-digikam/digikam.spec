@@ -25,8 +25,8 @@
 
 Name: kde5-%rname
 %define lname lib%name
-Version: 6.1.0
-Release: alt2
+Version: 6.2.0
+Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Summary: digiKam is an advanced digital photo management application for linux
@@ -199,6 +199,9 @@ done
 
 %build
 %K5build \
+%ifarch ppc64le
+    -DENABLE_FACESENGINE_DNN=OFF \
+%endif
     -DENABLE_QWEBENGINE=ON \
     -DENABLE_INTERNALMYSQL=%{?_enable_mysql:ON}%{!_enable_mysql:OFF} \
     -DENABLE_MYSQLSUPPORT=%{?_enable_mysql:ON}%{!_enable_mysql:OFF} \
@@ -291,6 +294,12 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %_K5lib/libdigikamgui.so.*
 
 %changelog
+* Thu Aug 15 2019 Sergey V Turchin <zerg@altlinux.org> 6.2.0-alt1
+- new version
+
+* Wed Jul 03 2019 Sergey V Turchin <zerg@altlinux.org> 6.1.0-alt3
+- fix to build on ppc64le
+
 * Tue Jun 04 2019 Pavel Moseev <mars@altlinux.org>  6.1.0-alt2
 - update translation
 
