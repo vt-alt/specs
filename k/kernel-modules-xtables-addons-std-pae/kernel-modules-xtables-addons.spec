@@ -1,9 +1,9 @@
 %define module_name	xtables-addons
 %define module_version	2.14
-%define module_release	alt2
+%define module_release	alt3
 
 %define flavour		std-pae
-%define karch i586
+%define karch %ix86
 BuildRequires(pre): kernel-headers-modules-std-pae
 BuildRequires(pre): rpm-build-kernel
 %setup_kernel_module %flavour
