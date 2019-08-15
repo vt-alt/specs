@@ -1,7 +1,9 @@
 %define module_name     kvdo
-%define module_version  6.2.0.293
+%define module_version  6.2.1.138
 %define module_release  alt2
 %define flavour         std-def
+# Note: This project can only be built on x86_64, ppc, and aarch64.
+%define karch           x86_64 aarch64 ppc64le
 
 %setup_kernel_module %flavour
 
@@ -25,7 +27,8 @@ Provides:  kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%release
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
-ExclusiveArch: x86_64
+ExcludeArch: i586
+ExclusiveArch: %karch
 
 %description
 Virtual Data Optimizer (VDO) is a device mapper target that delivers
