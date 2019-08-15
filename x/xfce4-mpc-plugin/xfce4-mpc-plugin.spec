@@ -1,5 +1,5 @@
 Name: xfce4-mpc-plugin
-Version: 0.5.1
+Version: 0.5.2
 Release: alt1
 
 Summary: MPD Client Plugin
@@ -47,6 +47,9 @@ Xfce panel.
 %_datadir/xfce4/panel/plugins/*.desktop
 
 %changelog
+* Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 0.5.2-alt1
+- Updated to 0.5.2.
+
 * Mon Dec 10 2018 Mikhail Efremov <sem@altlinux.org> 0.5.1-alt1
 - Updated to 0.5.1.
 

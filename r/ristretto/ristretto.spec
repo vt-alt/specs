@@ -1,6 +1,6 @@
 Summary: Ristretto is an image-viewer for the Xfce Desktop Environment
 Name: ristretto
-Version: 0.8.5
+Version: 0.10.0
 Release: alt1
 License: %gpl2plus
 Url: https://goodies.xfce.org/projects/applications/ristretto/
@@ -15,9 +15,9 @@ Packager: Xfce Team <xfce@packages.altlinux.org>
 BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
-BuildPreReq: libxfce4ui-devel libxfce4util-devel libThunar-devel libxfconf-devel
+BuildRequires: libxfce4ui-gtk3-devel libxfce4util-devel libxfconf-devel
 # For exo-csource (needed in maintainer mode)
-BuildPreReq: libexo-devel
+BuildRequires: exo-csource
 BuildRequires: intltool libexif-devel libcairo-devel libmagic-devel
 
 %define _unpackaged_files_terminate_build 1
@@ -49,6 +49,10 @@ environment.
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Wed Aug 14 2019 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt1
+- Updated to 0.10.0.
+- Workaround for segfault.
+
 * Sun Jul 21 2019 Mikhail Efremov <sem@altlinux.org> 0.8.5-alt1
 - Updated to 0.8.5.
 

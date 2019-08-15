@@ -1,5 +1,5 @@
 Name: xfce4-genmon-plugin
-Version: 4.0.1
+Version: 4.0.2
 Release: alt1
 
 Summary: Generic monitor plugin for the Xfce panel
@@ -48,6 +48,9 @@ captures its output and displays it as a string into the panel.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.0.2-alt1
+- Updated to 4.0.2.
+
 * Wed Aug 22 2018 Mikhail Efremov <sem@altlinux.org> 4.0.1-alt1
 - Update url.
 - Enable debug (minimum level).

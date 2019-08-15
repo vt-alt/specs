@@ -1,5 +1,5 @@
 Name: thunar
-Version: 1.8.8
+Version: 1.8.9
 Release: alt1
 
 Summary: Thunar File Manager for the Xfce Desktop Environment
@@ -122,6 +122,9 @@ make check
 %exclude %_libdir/thunarx-*/*.la
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 1.8.9-alt1
+- Updated to 1.8.9.
+
 * Sun Jul 21 2019 Mikhail Efremov <sem@altlinux.org> 1.8.8-alt1
 - Updated to 1.8.8 (closes: #37025).
 

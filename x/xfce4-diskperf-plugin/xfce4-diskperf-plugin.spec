@@ -1,5 +1,5 @@
 Name: xfce4-diskperf-plugin
-Version: 2.6.1
+Version: 2.6.2
 Release: alt1
 
 Summary: Disk performance plugin for the Xfce panel
@@ -47,6 +47,9 @@ Requires: xfce4-panel >= 4.9
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 2.6.2-alt1
+- Updated for 2.6.2.
+
 * Wed Aug 22 2018 Mikhail Efremov <sem@altlinux.org> 2.6.1-alt1
 - Update url.
 - Enable debug (minimum level).

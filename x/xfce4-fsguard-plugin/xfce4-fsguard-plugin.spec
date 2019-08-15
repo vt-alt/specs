@@ -1,5 +1,5 @@
 Name: xfce4-fsguard-plugin
-Version: 1.1.0
+Version: 1.1.1
 Release: alt1
 
 Summary: Plugin checks the chosen mountpoint for free disk space
@@ -52,6 +52,9 @@ directory in the file manager.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed Aug 14 2019 Mikhail Efremov <sem@altlinux.org> 1.1.1-alt1
+- Updated to 1.1.1.
+
 * Wed Aug 22 2018 Mikhail Efremov <sem@altlinux.org> 1.1.0-alt1
 - Update url.
 - Enable debug (minimum level).

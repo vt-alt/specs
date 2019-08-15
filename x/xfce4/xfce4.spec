@@ -2,7 +2,7 @@
 
 Name: xfce4
 Version: 4.14
-Release: alt6
+Release: alt7
 Summary: Set of Xfce4 Desktop installers.
 License: %gpl2plus
 Group: Graphical desktop/XFce
@@ -102,6 +102,7 @@ Requires: xfce4-notes-plugin \
 Requires: xfce4-places-plugin \
 Requires: xfce4-sensors-plugin \
 Requires: xfce4-smartbookmark-plugin \
+Requires: xfce4-stopwatch-plugin \
 Requires: xfce4-systemload-plugin \
 Requires: xfce4-time-out-plugin \
 Requires: xfce4-timer-plugin \
@@ -165,6 +166,9 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4
 %endif
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt7
+- full,regular: Add xfce4-stopwatch-plugin.
+
 * Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 4.14-alt6
 - default: Drop gtk2-themes-xfce4.
 - full: Add xscreensaver modules.

@@ -3,7 +3,7 @@
 %def_enable vala
 
 Name: xfce4-panel
-Version: 4.13.7
+Version: 4.14.0
 Release: alt1
 
 Summary: Panel for Xfce
@@ -194,6 +194,9 @@ Vala bindings for libxfce4panel-gtk3.
 %endif
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
+- Updated to 4.14.0.
+
 * Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
 - Updated to 4.13.7.
 

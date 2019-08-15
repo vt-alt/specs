@@ -1,6 +1,6 @@
 Name: xfce4-pulseaudio-plugin
-Version: 0.4.1
-Release: alt2
+Version: 0.4.2
+Release: alt1
 
 Summary: A pulseaudio plugin for the Xfce panel
 License: %gpl2plus
@@ -59,6 +59,9 @@ A panel plugin for controlling PulseAudio mixer.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 0.4.2-alt1
+- Updated to 0.4.2.
+
 * Thu Aug 16 2018 Mikhail Efremov <sem@altlinux.org> 0.4.1-alt2
 - Update url.
 - Use dbus-glib CFLAGS.

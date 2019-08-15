@@ -1,8 +1,8 @@
 Name: xfwm4
-Version: 4.13.4
+Version: 4.14.0
 Release: alt1
 
-%def_disable epoxy
+%def_enable epoxy
 
 Summary: Window manager for Xfce
 Summary (ru_RU.UTF8): Менеджер окон для окружения рабочего стола Xfce
@@ -79,6 +79,10 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
+- Enabled libepoxy support.
+- Updated to 4.14.0.
+
 * Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Updated to 4.13.4.
 

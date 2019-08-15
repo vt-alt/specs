@@ -6,8 +6,8 @@
 %def_disable gsettings
 
 Name: lib%_name
-Version: 4.13.8
-Release: alt2
+Version: 4.14.1
+Release: alt1
 
 Summary: Hierarchical configuration system for Xfce
 Summary (ru_RU.UTF-8): Система конфигурации Xfce
@@ -181,6 +181,9 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %endif
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
+- Updated to 4.14.1.
+
 * Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 4.13.8-alt2
 - Disable perl bindings.
 - Enable vala support.

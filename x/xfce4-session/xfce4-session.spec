@@ -1,5 +1,5 @@
 Name: xfce4-session
-Version: 4.13.4
+Version: 4.14.0
 Release: alt1
 
 Summary: Session manager for Xfce desktop environment
@@ -78,6 +78,10 @@ install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
 %_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
+- Avoid dependency on systemd-utils.
+- Updated to 4.14.0.
+
 * Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.4-alt1
 - Drop libxfsm subpackage.
 - Updated to 4.13.4.

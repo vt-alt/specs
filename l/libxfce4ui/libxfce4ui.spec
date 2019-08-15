@@ -2,7 +2,7 @@
 %def_enable vala
 
 Name: libxfce4ui
-Version: 4.13.7
+Version: 4.14.1
 Release: alt1
 
 Summary: Various GTK+2 widgets for Xfce
@@ -196,6 +196,9 @@ This package contains the 'About Xfce' dialog.
 %_desktopdir/xfce4-about.desktop
 
 %changelog
+* Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
+- Updated to 4.14.1.
+
 * Mon Jul 29 2019 Mikhail Efremov <sem@altlinux.org> 4.13.7-alt1
 - Updated to 4.13.7.
 

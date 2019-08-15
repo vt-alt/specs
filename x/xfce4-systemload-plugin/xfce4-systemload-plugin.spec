@@ -1,5 +1,5 @@
 Name: xfce4-systemload-plugin
-Version: 1.2.2
+Version: 1.2.3
 Release: alt1
 
 Summary: System load plugin for the Xfce panel
@@ -55,6 +55,9 @@ Requires: xfce4-panel >= 4.9
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 1.2.3-alt1
+- Updated to 1.2.3.
+
 * Thu Nov 29 2018 Mikhail Efremov <sem@altlinux.org> 1.2.2-alt1
 - Updated to 1.2.2.
 

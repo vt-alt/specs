@@ -1,5 +1,5 @@
 Name: xfce4-battery-plugin
-Version: 1.1.2
+Version: 1.1.3
 Release: alt1
 
 Summary: Battery monitor plugin for the Xfce panel
@@ -50,6 +50,9 @@ BuildRequires: perl-XML-Parser intltool
 %exclude %_datadir/locale/uz@Latn/LC_MESSAGES/xfce4-battery-plugin.mo
 
 %changelog
+* Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 1.1.3-alt1
+- Updated to 1.1.3.
+
 * Mon Jan 14 2019 Mikhail Efremov <sem@altlinux.org> 1.1.2-alt1
 - Updated to 1.1.2.
 

@@ -1,5 +1,5 @@
 Name: xfce4-smartbookmark-plugin
-Version: 0.5.0
+Version: 0.5.1
 Release: alt1
 
 Summary: Smart bookmarks for the Xfce panel
@@ -49,6 +49,9 @@ directly to your browser and perform custom searches.
 %_datadir/xfce4/panel/plugins/*.desktop
 
 %changelog
+* Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 0.5.1-alt1
+- Updated to 0.5.1.
+
 * Wed Aug 22 2018 Mikhail Efremov <sem@altlinux.org> 0.5.0-alt1
 - Update url.
 - Enable debug (minimum level).
