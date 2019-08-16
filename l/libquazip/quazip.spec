@@ -3,7 +3,7 @@
 
 %define oname quazip
 Name: libquazip
-Version: 0.7.6
+Version: 0.8.1
 Release: alt1
 Summary: Qt/C++ wrapper for the minizip library
 License: GPLv2+ or LGPLv2+
@@ -113,6 +113,9 @@ rm -f %buildroot%_libdir/*.a
 %_datadir/cmake/Modules/FindQuaZip5.cmake
 
 %changelog
+* Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 0.8.1-alt1
+- Version 0.8.1
+
 * Sat Nov 17 2018 Anton Midyukov <antohami@altlinux.org> 0.7.6-alt1
 - Version 0.7.6
 

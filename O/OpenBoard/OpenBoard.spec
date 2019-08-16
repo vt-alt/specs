@@ -3,8 +3,8 @@
 
 %define dest_dir %_libdir/OpenBoard
 Name: OpenBoard
-Version: 1.5.2
-Release: alt3
+Version: 1.5.3
+Release: alt1
 Summary: Interactive whiteboard for schools and universities
 License: GPL-3.0+
 Group: Education
@@ -13,11 +13,9 @@ Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
 # use system libs as dependencies
-Patch0: openboard-1.5.2-no_Third-Party.patch
+Patch0: openboard-1.5.3-no_Third-Party.patch
 # use poppler instead of xpdf to handle pdf
 Patch1: openboard-1.3.4-XPDFRenderer_with_poppler.patch
-# add compatibility with OpenSSL 1.1 (https://github.com/OpenBoard-org/OpenBoard/pull/113)
-Patch2: openboard-1.3.6-add-compatibility-with-OpenSSL-1.1.patch
 # fix build with poppler >= 0.70.1 and gcc8
 Patch3: openboard-gcc8.patch
 Patch4: openboard-poppler-0.71.patch
@@ -66,7 +64,6 @@ Interactive whiteboard for schools and universities.
 %setup
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
@@ -157,6 +154,9 @@ cp -R resources/customizations %buildroot%dest_dir/
 %_bindir/%name
 
 %changelog
+* Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 1.5.3-alt1
+- new version 1.5.3
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.5.2-alt3
 - NMU: remove rpm-build-ubt from BR:
 
