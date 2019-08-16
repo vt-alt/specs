@@ -1,7 +1,7 @@
 %def_disable translation
 
 Name: nvidia-settings
-Version: 430.26
+Version: 430.40
 Release: alt1
 
 Group: System/Configuration/Hardware
@@ -126,6 +126,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Thu Aug 15 2019 Sergey V Turchin <zerg@altlinux.org> 430.40-alt1
+- new version
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 430.26-alt1
 - new version
 

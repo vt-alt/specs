@@ -7,10 +7,10 @@
 %define modesetmodule_name	nvidia-modeset
 %define uvmmodule_name		nvidia-uvm
 %define drmmodule_name		nvidia-drm
-%define package_version	430.34
+%define package_version	430.40
 %define module_version	%package_version
 %ifarch %ix86
-%define module_version	390.116
+%define module_version	390.129
 %endif
 %define module_release	alt1
 %define flavour		un-def
@@ -53,7 +53,7 @@
 %endif
 %define legacy5_src %(echo %legacy5 | tr -d .)
 %nvIF_ver_lt %xorg_ver 1.21
-%define legacy6 390.116
+%define legacy6 390.129
 %else
 %define legacy6 %nil
 %endif
@@ -169,7 +169,7 @@ do
 	INTO_KERNEL_SRCDIR="-C %_usrsrc/linux-%kversion-%flavour"
     %make_build modules \
 	$INTO_KERNEL_SRCDIR \
-	SUBDIRS=$PWD \
+	M=$PWD \
 	TEMP_DIR=$PWD/ \
 	ARCH=%base_arch \
 	SYSSRC=%_usrsrc/linux-%kversion-%flavour
@@ -178,7 +178,7 @@ do
 	    cp -a ../Module.symvers .
 	    %make_build modules \
 		$INTO_KERNEL_SRCDIR \
-		SUBDIRS=$PWD \
+		M=$PWD \
 		TEMP_DIR=$PWD/ \
 		ARCH=%base_arch \
 		SYSSRC=%_usrsrc/linux-%kversion-%flavour
@@ -271,6 +271,9 @@ fi
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Aug 15 2019 Sergey V Turchin <zerg at altlinux dot org> 430.40-alt1
+- new releases (430.40, 390.129)
 
 * Fri Jul 12 2019 Sergey V Turchin <zerg at altlinux dot org> 430.34-alt1
 - new release (430.34)
