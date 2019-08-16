@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
 Release: alt1
 epoch:1 
-%define kernel_base_version	5.1
-%define kernel_sublevel .21
+%define kernel_base_version	5.2
+%define kernel_sublevel .9
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -515,8 +515,8 @@ KbuildFiles="
 	scripts/subarch.include
 	scripts/depmod.sh
 	scripts/gcc-plugins/*.so
+	scripts/ld-version.sh
 	tools/objtool/objtool
-
 
 	.config
 	.kernelrelease
@@ -668,17 +668,28 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %files -n kernel-modules-v4l-%flavour
 %modules_dir/kernel/drivers/media/
 %dir %modules_dir/kernel/drivers/staging/media
-%dir %modules_dir/kernel/drivers/staging
 
 %files -n kernel-modules-staging-%flavour
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Fri Aug 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.9-alt1
+- v5.2.9
+
+* Sun Aug 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.8-alt1
+- v5.2.8
+
 * Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.21-alt1
 - v5.1.21  (Fixes: CVE-2019-11478)
 
-* Sun Jul 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.19-alt1
-- v5.1.19
+* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.7-alt1
+- v5.2.7
+
+* Mon Aug 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.6-alt1
+- v5.2.6  (Fixes: CVE-2019-10207, CVE-2019-11478, CVE-2019-13648)
+
+* Thu Jul 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.1-alt1
+- v5.2.1
 
 * Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.18-alt1
 - v5.1.18  (Fixes: CVE-2019-3846)
