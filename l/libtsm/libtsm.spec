@@ -1,11 +1,12 @@
 Name: libtsm
-Version: 3
+Version: 4.0.1
 Release: alt1
 Summary: Terminal-emulator State Machine
 Group: System/Libraries
 License: MIT
-Url: http://www.freedesktop.org/wiki/Software/libtsm/
+Url: https://github.com/Aetf/libtsm
 Source: %name-%version.tar
+BuildRequires: cmake
 BuildRequires: pkgconfig(xkbcommon)
 BuildRequires: pkgconfig(check)
 
@@ -40,16 +41,12 @@ developing applications that use %name.
 %setup
 
 %build
-%autoreconf
-%configure --disable-silent-rules --disable-static
-%make_build
+%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+%cmake_build
 
 %install
-%makeinstall_std
-
-
-%check
-%make check
+%cmakeinstall_std
 
 %files
 %doc COPYING README
@@ -61,5 +58,8 @@ developing applications that use %name.
 %_pkgconfigdir/*.pc
 
 %changelog
+* Thu Aug 01 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.1-alt1
+- 4.0.1
+
 * Tue Jun 17 2014 Alexey Shabalin <shaba@altlinux.ru> 3-alt1
 - Initial Package.

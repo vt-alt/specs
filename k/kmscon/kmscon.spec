@@ -1,19 +1,19 @@
 Name: kmscon
 Version: 8
-Release: alt2
+Release: alt4.40.g01dd0a2
 Summary: KMS/DRM based System Console
 Group: Terminals
 
 License: MIT and LGPLv2+
 Url: http://www.freedesktop.org/wiki/Software/kmscon/
 Source: %name-%version.tar
-Patch1: %name-%version-alt.patch
+Patch1: %name-%version.patch
 
 BuildRequires: pkgconfig(xkbcommon)
-BuildRequires: pkgconfig(libtsm)
+BuildRequires: pkgconfig(libtsm) >= 4.0.0
 BuildRequires: pkgconfig(libudev) >= 172
 BuildRequires: pkgconfig(libdrm)
-BuildRequires: libsystemd-devel
+BuildRequires: libsystemd-devel pkgconfig(libsystemd)
 BuildRequires: pkgconfig(gbm)
 BuildRequires: pkgconfig(egl)
 BuildRequires: pkgconfig(glesv2)
@@ -36,7 +36,6 @@ mkdir -p m4
 %configure \
 	--disable-static \
 	--disable-silent-rules \
-	--with-renderers="bbulk,gltex,pixman"
 
 %make_build
 
@@ -52,23 +51,23 @@ install -pm 0644 docs/kmsconvt@.service %buildroot%_unitdir
 %check
 %make check
 
-%post
-%post_service kmscon.service
-#%%systemd_post kmsconvt@.service
-
-%preun
-%preun_service kmscon.service
-# %%systemd_preun kmsconvt@.service
-
 %files
 %doc COPYING NEWS README
 %_bindir/%name
 %_unitdir/*.service
 %dir %_libdir/%name
 %_libdir/%name/mod-*.so
+%dir %_libexecdir/kmscon
+%_libexecdir/kmscon/kmscon
 %_man1dir/%name.1*
 
 %changelog
+* Thu Aug 15 2019 Alexey Shabalin <shaba@altlinux.org> 8-alt4.40.g01dd0a2
+- disable post/preun scripts
+
+* Thu Aug 01 2019 Alexey Shabalin <shaba@altlinux.org> 8-alt3.40.g01dd0a2
+- Update to git snapshot 01dd0a2
+
 * Tue Jan 23 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 8-alt2
 - Fixed build with new systemd and glibc.
 
