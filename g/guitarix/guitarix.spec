@@ -5,15 +5,15 @@
 %global altname2 guitarix2
 
 Name: guitarix
-Version: 0.37.3
-Release: alt2
+Version: 0.38.1
+Release: alt1
 Summary: Mono amplifier to JACK
 Group: Sound
 License: GPLv2+
 Url: https://sourceforge.net/projects/guitarix
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
-# Source-url: http://sourceforge.net/projects/%name/files/%name/%altname2-%version.tar.xz
+# Source-url: https://sourceforge.net/projects/%name/files/%name/%altname2-%version.tar.xz
 Source1: ru.po
 
 BuildRequires: gcc-c++
@@ -215,6 +215,9 @@ ln -s %_libdir/libgxw.so.0.1 %buildroot%_libdir/libgxw.so
 %_libdir/lv2/*
 
 %changelog
+* Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 0.38.1-alt1
+- new version 0.38.1
+
 * Tue Apr 23 2019 Anton Midyukov <antohami@altlinux.org> 0.37.3-alt2
 - Add russian translations (Thanks Valeriy Shtobbe, Olesya Gerasimenko)
 

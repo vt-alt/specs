@@ -5,7 +5,7 @@
 Summary: Real-time Convolution Engine
 Name: jconvolver
 Version: 1.0.3
-Release: alt1
+Release: alt2
 License: GPLv2+
 Group: Sound
 Url: https://kokkinizita.linuxaudio.org
@@ -38,6 +38,9 @@ find config-files/ -name \*.conf \
   -exec sed -i -e "s|/audio/reverbs|%_datadir/%name/reverbs|g" {} \; \
   -exec sed -i -e "s|^#/cd |/cd |g" {} \;
 
+# Fix optflags
+%__subst 's|-march=native|%optflags|' source/Makefile
+
 %build
 %make_build -C source
 
@@ -54,6 +57,9 @@ cp -a config-files/* %buildroot%_datadir/%name
 %_datadir/%name/
 
 %changelog
+* Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 1.0.3-alt2
+- fix optflags
+
 * Mon Feb 04 2019 Anton Midyukov <antohami@altlinux.org> 1.0.3-alt1
 - new version 1.0.3
 
