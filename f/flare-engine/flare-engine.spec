@@ -1,7 +1,7 @@
 %define _name flare
 
 Name: %_name-engine
-Version: 1.10
+Version: 1.11
 Release: alt1
 
 Summary: A simple game engine for single-player 2D action RPGs
@@ -34,7 +34,7 @@ the common, reusable code.
 %build
 %cmake -DBINDIR=bin -DDATADIR=share/%_name
 cd BUILD
-%make_build
+%make_build VERBOSE=1
 cd -
 
 %install
@@ -50,6 +50,11 @@ cd -
 %_man6dir/*
 
 %changelog
+* Fri Aug 16 2019 Mikhail Efremov <sem@altlinux.org> 1.11-alt1
+- Use gnu++11 flag.
+- Use verbose output for make.
+- Updated to 1.11.
+
 * Tue May 21 2019 Mikhail Efremov <sem@altlinux.org> 1.10-alt1
 - Updated to 1.10.
 
