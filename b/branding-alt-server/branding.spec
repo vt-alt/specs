@@ -3,8 +3,8 @@
 %define theme server
 %define Theme Server
 %define codename FalcoRusticolus
-%define status beta
-%define status_en beta
+%define status %nil
+%define status_en %nil
 %define flavour %brand-%theme
 
 %define design_graphics_abi_epoch 0
@@ -17,7 +17,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.95
+Version: 8.98
 Release: alt1
 Url: https://basealt.ru
 
@@ -325,6 +325,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Aug 16 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.98-alt1
+- unset "beta" status
+
 * Tue Jul 23 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.95-alt1
 - set status to beta
 
