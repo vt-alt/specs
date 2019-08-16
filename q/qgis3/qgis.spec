@@ -6,7 +6,7 @@
 
 Name:    qgis3
 Version: 3.8.1
-Release: alt1
+Release: alt2
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -166,7 +166,6 @@ gzip ChangeLog
 %build
 CFLAGS="${CFLAGS:-%optflags}"; export CFLAGS;
 CXXFLAGS="${CXXFLAGS:-%optflags}"; export CXXFLAGS;
-LDFLAGS="-Wl,-rpath,%_libdir/libqwt6-qt5"; export LDFLAGS; 
 export LD_LIBRARY_PATH=`pwd`/output/%_lib
 cmake \
 	-DCMAKE_C_FLAGS_RELEASE:STRING="-DNDEBUG" \
@@ -203,8 +202,8 @@ cmake \
 	-DGDAL_INCLUDE_DIR:PATH=%_includedir/gdal \
 	-DGDAL_LIBRARY:PATH=%_libdir/libgdal.so \
 	-DGEOS_LIBRARY:PATH=%_libdir/libgeos_c.so \
-        -DQWT_INCLUDE_DIR=%_includedir/qwt-qt5 \
-        -DQWT_LIBRARY=%_libdir/libqwt6-qt5/libqwt.so \
+        -DQWT_INCLUDE_DIR=%_includedir/qt5/qwt \
+        -DQWT_LIBRARY=%_libdir/libqwt-qt5.so \
 	-DENABLE_TESTS:BOOL=FALSE \
 	-DWITH_INTERNAL_DATEUTIL:BOOL=FALSE \
 	-DWITH_INTERNAL_HTTPLIB2:BOOL=FALSE \
@@ -370,6 +369,9 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 %endif
 
 %changelog
+* Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 3.8.1-alt2
+- fix PATHs for libqwt6-qt5
+
 * Mon Jul 22 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.1-alt1
 - New version.
 
