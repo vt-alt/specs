@@ -1,9 +1,9 @@
 %define module_name zfs
 %define module_version 0.7.13
-%define module_release alt3
+%define module_release alt4
 
 %define flavour std-def
-%define karch i586 x86_64 ppc64el aarch64
+%define karch x86_64 aarch64 ppc64le
 BuildRequires(pre): kernel-headers-modules-std-def
 
 %setup_kernel_module %flavour
