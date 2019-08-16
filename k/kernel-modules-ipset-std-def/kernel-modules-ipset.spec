@@ -1,9 +1,9 @@
 %define module_name	ipset
-%define module_version	7.1
-%define module_release	alt2
+%define module_version	7.3
+%define module_release	alt3
 
 %define flavour		std-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64 aarch64 ppc64le
 BuildRequires(pre): kernel-headers-modules-std-def
 %setup_kernel_module %flavour
 
@@ -15,6 +15,7 @@ Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
 License: GPL
 Group: System/Kernel and hardware
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le
 
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
@@ -31,7 +32,6 @@ Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%
 
 PreReq: coreutils
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
-ExclusiveArch: %karch
 
 %description
 ipset kernel modules.
@@ -59,6 +59,9 @@ install -p -m644 kernel/net/netfilter/*.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Aug  8 2019 Anton Farygin <rider@altlinux.ru> 7.3-alt1
+- 7.1 -> 7.3
 
 * Tue Jan 22 2019 Anton Farygin <rider@altlinux.ru> 7.1-alt1
 - 7.0 -> 7.1
