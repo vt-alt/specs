@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name:     deadbeef-mpris2-plugin
-Version:  1.12
+Version:  1.13
 Release:  alt1
 
 Summary:  A rewrite of the seemingly orphaned deadbeef-mpris-plugin originally written by HuangCongyu
@@ -39,5 +39,8 @@ rm -f %buildroot%_libdir/deadbeef/*.la
 %_libdir/deadbeef/mpris.so
 
 %changelog
+* Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 1.13-alt1
+- new version 1.13
+
 * Wed May 08 2019 Anton Midyukov <antohami@altlinux.org> 1.12-alt1
 - Initial build for Sisyphus
