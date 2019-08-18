@@ -2,7 +2,7 @@
 %define abiversion 0
 
 Name: iperf3
-Version: 3.6
+Version: 3.7
 Release: alt1
 
 Summary: A TCP, UDP, and SCTP network bandwidth measurement tool
@@ -58,7 +58,7 @@ This package contains development files of iperf3
 %prep
 %setup -q -n %native-%version
 
-%patch0 -p2
+#patch0 -p2
 
 %build
 
@@ -69,7 +69,7 @@ autoheader
 automake --foreign --add-missing --copy
 autoconf
 
-%configure
+%configure --disable-profiling
 %make_build
 
 %install
@@ -94,7 +94,7 @@ install -pDm0644 %SOURCE3 %buildroot/%_unitdir/%name.service
 %_initdir/%name
 %_unitdir/%name.service
 %config(noreplace) %_sysconfdir/sysconfig/%name
-%doc LICENSE README.md RELEASE_NOTES
+%doc LICENSE README.md RELNOTES.md
 
 %files -n lib%name-%abiversion
 /%_libdir/lib%native.so.*
@@ -105,6 +105,11 @@ install -pDm0644 %SOURCE3 %buildroot/%_unitdir/%name.service
 
 
 %changelog
+* Thu Aug 15 2019 Sergey Y. Afonin <asy@altlinux.org> 3.7-alt1
+- New version
+- disabled no-iperf3_profile.patch (--disable-profiling can be
+  used since 3.7)
+
 * Fri Aug 17 2018 Sergey Y. Afonin <asy@altlinux.ru> 3.6-alt1
 - New version
 - disabled iperf3_profile building by external patch
