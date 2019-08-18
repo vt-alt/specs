@@ -1,5 +1,5 @@
 Name: fping
-Version: 4.0
+Version: 4.2
 Release: alt1
 
 Summary: %name - A tool to quickly ping N number of hosts to determine their reachability
@@ -56,6 +56,9 @@ chmod +x %buildroot%_controldir/fping*
 %doc INSTALL CHANGELOG.md COPYING doc/CHANGELOG.pre-v4 doc/README.1992
 
 %changelog
+* Sat Aug 17 2019 Sergey Y. Afonin <asy@altlinux.org> 4.2-alt1
+- 4.2
+
 * Thu May 17 2018 Sergey Y. Afonin <asy@altlinux.ru> 4.0-alt1
 - 4.0
 - removed fping6: fping and fping6 are now unified into one binary
