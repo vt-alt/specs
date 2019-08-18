@@ -1,6 +1,6 @@
 Name: converseen
 Version: 0.9.7.2
-Release: alt1
+Release: alt2
 Summary: Converseen is a free cross-platform batch image processor.
 Summary(ru_RU.UTF-8): Converseen — свободная программа пакетного конвертирования изображений.
 License: GPLv3
@@ -10,6 +10,8 @@ BuildRequires: desktop-file-utils
 BuildRequires: ImageMagick-tools cmake gcc-c++ libImageMagick-devel qt5-base-devel qt5-phonon-devel qt5-designer qt5-tools-devel
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
+
+Requires: ImageMagick-tools
 
 %description
 Converseen is a free cross-platform batch image processor for Windows and Linux
@@ -55,6 +57,9 @@ done
 %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Sun Aug 18 2019 Anton Midyukov <antohami@altlinux.org> 0.9.7.2-alt2
+- Add missing Requires: ImageMagick-tools
+
 * Mon Nov 26 2018 Anton Midyukov <antohami@altlinux.org> 0.9.7.2-alt1
 - new version 0.9.7.2
 
