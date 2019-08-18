@@ -7,7 +7,7 @@
 
 Name: sssd
 Version: 2.2.0
-Release: alt2
+Release: alt3
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -820,6 +820,9 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Mon Aug 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt3
+- Rebuild with latest version libldb-1.5.5
+
 * Tue Jul 02 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt2
 - Fix sssd-ad System error during access deny to sysvol when it not replicated
   or not configured with 'samba-tool ntacl sysvolreset' command

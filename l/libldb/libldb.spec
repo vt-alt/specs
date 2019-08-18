@@ -8,7 +8,7 @@
 %endif
 
 Name: libldb
-Version: 1.5.4
+Version: 1.5.5
 Release: alt1
 Summary: A schema-less, ldap like, API and database
 License: LGPLv3+
@@ -204,6 +204,9 @@ make test
 %_pkgconfigdir/pyldb-util.cpython-*.pc
 
 %changelog
+* Thu Aug 01 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.5.5-alt1
+- Update to the 1.5.5 for newest samba-4.10 releases
+
 * Tue Mar 24 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.5.4-alt1
 - Update to the 1.5.4 release for samba-4.10
 - Adjust lmdb disable tests patch for 32-bit platforms
