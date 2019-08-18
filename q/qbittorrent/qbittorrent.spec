@@ -2,9 +2,11 @@
 %define rel alt1
 
 Name: qbittorrent
-Version: 4.1.6
+Version: 4.1.7
 Epoch: 1
-Release: %rel
+Release: %rel.1
+
+ExcludeArch: ppc64le
 
 Summary: qBittorrent is a bittorrent client written in C++ / Qt5 using the good libtorrent library
 Summary(ru_RU.UTF-8): qBittorrent - bittorrent клиент написанный на C++ / Qt5, использующий библиотеку libtorrent.
@@ -101,6 +103,12 @@ make clean
 %_datadir/metainfo/*.xml
 
 %changelog
+* Thu Aug 15 2019 Motsyo Gennadi <drool@altlinux.ru> 1:4.1.7-alt1.1
+- add ExcludeArch for ppc64le
+
+* Tue Aug 13 2019 Motsyo Gennadi <drool@altlinux.ru> 1:4.1.7-alt1
+- 4.1.7
+
 * Tue May 07 2019 Motsyo Gennadi <drool@altlinux.ru> 1:4.1.6-alt1
 - 4.1.6
 
