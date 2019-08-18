@@ -1,7 +1,7 @@
 %def_disable gtk_doc
 
 Name: cinnamon
-Version: 4.2.1
+Version: 4.2.3
 Release: alt1
 
 Summary: A Linux desktop which provides advanced innovative features and a traditional user experience.
@@ -195,6 +195,9 @@ install -D -p -m 0644 %SOURCE3 %buildroot/%_datadir/applications/
 %endif
 
 %changelog
+* Wed Jul 31 2019 Vladimir Didenko <cow@altlinux.org> 4.2.3-alt1
+- 4.2.3-1-g8f1480e7
+
 * Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 4.2.1-alt1
 - 4.2.1
 - fix lightdm-settings call

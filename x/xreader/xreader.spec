@@ -6,7 +6,7 @@
 %def_enable introspection
 
 Name: xreader
-Version: 2.2.2
+Version: 2.2.3
 Release: alt1
 
 Summary: A document viewer
@@ -144,6 +144,9 @@ subst '/NoDisplay/d' %buildroot%_desktopdir/%name.desktop
 %endif
 
 %changelog
+* Wed Jul 31 2019 Vladimir Didenko <cow@altlinux.org> 2.2.3-alt1
+- New version
+
 * Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 2.2.2-alt1
 - New version
 - Remove workaround for broken parallel build (fixed by upstream)

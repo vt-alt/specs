@@ -2,7 +2,7 @@
 
 Name: cinnamon-meta
 Version: %ver_major.0
-Release: alt2
+Release: alt3
 
 Summary: Cinnamon desktop meta package
 License: %gpl2plus
@@ -120,8 +120,6 @@ Requires: gnome-music
 Requires: xplayer gst-libav
 # Default image viewer
 Requires: xviewer
-# Default CD/DVD burning interface
-Requires: brasero
 
 Requires: gnome-power-manager
 Requires: NetworkManager-gnome >= 0.8.995
@@ -139,6 +137,9 @@ of default applications.
 %files -n cinnamon-regular
 
 %changelog
+* Fri Aug 16 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt3
+- remove brasero
+
 * Tue Jul 16 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt2
 - add dependency on xapps-icons (closes: #36996)
 
