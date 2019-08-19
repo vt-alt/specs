@@ -27,7 +27,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        74.0.3729.131
+Version:        76.0.3809.87
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -49,6 +49,9 @@ Provides:       chromium-browser = %version
 Obsoletes:      chromium-browser < %version
 Obsoletes:      chromium-stable <= %version
 
+# Unsupported target_cpu
+ExcludeArch: ppc64le
+
 ### Start Patches
 Patch001: 0001-OPENSUSE-enables-reading-of-the-master-preference.patch
 Patch002: 0002-OPENSUSE-Compile-the-sandbox-with-fPIE-settings.patch
@@ -62,17 +65,16 @@ Patch009: 0009-ALT-fix-shrank-by-one-character.patch
 Patch010: 0010-DEBIAN-10-seconds-may-not-be-enough-so-do-not-kill-t.patch
 Patch011: 0011-FEDORA-path-max.patch
 Patch012: 0012-FEDORA-Ignore-broken-nacl-open-fd-counter.patch
-Patch013: 0013-FEDORA-Use-libusb_interrupt_event_handler-from-curre.patch
-Patch014: 0014-ALT-Fix-last-commit-position-issue.patch
-Patch015: 0015-FEDORA-Fix-issue-where-timespec-is-not-defined-when-.patch
-Patch016: 0016-ALT-Use-rpath-link-and-absolute-rpath.patch
-Patch017: 0017-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
-Patch018: 0018-FEDORA-Fix-gcc-round.patch
-Patch019: 0019-FEDORA-Fix-memcpy.patch
-Patch020: 0020-ALT-openh264-always-pic-on-x86.patch
-Patch021: 0021-ALT-allow-to-override-clang-through-env-variables.patch
-Patch022: 0022-ALT-Hack-to-avoid-build-error-with-clang7.patch
-Patch023: 0023-ALT-Add-missing-header-on-aarch64.patch
+Patch013: 0013-ALT-Fix-last-commit-position-issue.patch
+Patch014: 0014-FEDORA-Fix-issue-where-timespec-is-not-defined-when-.patch
+Patch015: 0015-ALT-Use-rpath-link-and-absolute-rpath.patch
+Patch016: 0016-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
+Patch017: 0017-FEDORA-Fix-gcc-round.patch
+Patch018: 0018-FEDORA-Fix-memcpy.patch
+Patch019: 0019-ALT-openh264-always-pic-on-x86.patch
+Patch020: 0020-ALT-allow-to-override-clang-through-env-variables.patch
+Patch021: 0021-ALT-Hack-to-avoid-build-error-with-clang7.patch
+Patch022: 0022-ALT-Add-missing-header-on-aarch64.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -218,7 +220,6 @@ tar -xf %SOURCE1
 %patch020 -p1
 %patch021 -p1
 %patch022 -p1
-%patch023 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -484,6 +485,26 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Fri Aug 02 2019 Alexey Gladkov <legion@altlinux.ru> 76.0.3809.87-alt1
+- New version (76.0.3809.87).
+- Security fixes:
+  - CVE-2019-5850: Use-after-free in offline page fetcher.
+  - CVE-2019-5851: Use-after-poison in offline audio context.
+  - CVE-2019-5852: Object leak of utility functions.
+  - CVE-2019-5853: Memory corruption in regexp length check.
+  - CVE-2019-5854: Integer overflow in PDFium text rendering.
+  - CVE-2019-5855: Integer overflow in PDFium.
+  - CVE-2019-5856: Insufficient checks on filesystem: URI permissions.
+  - CVE-2019-5857: Comparison of -0 and null yields crash.
+  - CVE-2019-5858: Insufficient filtering of Open URL service parameters.
+  - CVE-2019-5859: res: URIs can load alternative browsers.
+  - CVE-2019-5860: Use-after-free in PDFium.
+  - CVE-2019-5861: Click location incorrectly checked.
+  - CVE-2019-5862: AppCache not robust to compromised renderers.
+  - CVE-2019-5863: Use-after-free in WebUSB on Windows.
+  - CVE-2019-5864: Insufficient port filtering in CORS for extensions.
+  - CVE-2019-5865: Site isolation bypass from compromised renderer.
+
 * Fri May 03 2019 Alexey Gladkov <legion@altlinux.ru> 74.0.3729.131-alt1
 - New version (74.0.3729.131).
 - Security fixes:
