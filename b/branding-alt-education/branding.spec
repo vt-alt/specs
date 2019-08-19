@@ -3,14 +3,14 @@
 %define theme education
 %define Theme Education
 %define codename FalcoRusticolus
-%define status beta
-%define status_en beta
+%define status beta2
+%define status_en beta2
 %define distro_name ALT Education 9.0%status_en
 %define flavour %brand-%theme
 
 %define gtk_theme Breeze
 %define kde_theme Breeze
-%define icon_theme Papirus
+%define icon_theme Papirus-Light
 %define window_theme Smoothwall
 
 %define design_graphics_abi_epoch 0
@@ -19,7 +19,7 @@
 %define design_graphics_abi_bugfix 0
 
 Name: branding-%flavour
-Version: 8.92
+Version: 8.93
 Release: alt1
 
 %ifarch %ix86 x86_64
@@ -459,6 +459,10 @@ subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/light
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 8.93-alt1
+- Beta2.
+- Use icon theme Papirus-Light instead of Papirus for more contrast symbol icons.
+
 * Fri Jul 19 2019 Andrey Cherepanov <cas@altlinux.org> 8.92-alt1
 - Beta version of ALT Education 9.0.
 - xfce-settings: use random screensaver by default.
