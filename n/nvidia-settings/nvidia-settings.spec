@@ -2,7 +2,7 @@
 
 Name: nvidia-settings
 Version: 430.40
-Release: alt1
+Release: alt2
 
 Group: System/Configuration/Hardware
 Summary: Tool for configuring the NVIDIA driver
@@ -72,12 +72,9 @@ sed -i 's|@GUI_LIB_PREFIX@|%_libdir/nvidia-settings|' src/nvidia-settings.c
 sed -i -E 's|LIBDIR[[:space:]]+=[[:space:]].*|LIBDIR = $(DESTDIR)$(PREFIX)/%_lib|' utils.mk
 
 %build
-#pushd src/libXNVCtrl
-#rm -f libXNVCtrl.a
-#gcc %optflags -I/usr/include/X11/extensions -c NVCtrl.c
-#ar rcs libXNVCtrl.a NVCtrl.o
-#popd
-%make_build PREFIX=%prefix LOCAL_CFLAGS="%optflags"
+%add_optflags %optflags_shared
+%make_build PREFIX=%prefix CFLAGS="%optflags" NV_VERBOSE=1 -C src/libXNVCtrl
+%make_build PREFIX=%prefix LOCAL_CFLAGS="%optflags" NV_VERBOSE=1
 
 
 %install
@@ -126,6 +123,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Mon Aug 19 2019 Sergey V Turchin <zerg@altlinux.org> 430.40-alt2
+- compile libXNVCtrl with -DPIC (ALT#37118)
+
 * Thu Aug 15 2019 Sergey V Turchin <zerg@altlinux.org> 430.40-alt1
 - new version
 
