@@ -8,7 +8,7 @@
 %def_without fetch
 %def_without lto
 
-# enable gtk3/kde5 UI
+# enable kde5 UI
 %def_enable kde5
 
 %ifarch mipsel
@@ -18,8 +18,7 @@
 %else
 %def_with java
 %if_enabled kde5
-%def_disable kde4
-%def_disable qt5
+%def_enable qt5
 %else
 %def_enable kde4
 %def_disable qt5
@@ -28,14 +27,14 @@
 %def_disable mergelibs
 
 Name: LibreOffice-still
-%define hversion 6.1
-%define urelease 6.3
+%define hversion 6.2
+%define urelease 6.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt3
+Release: alt1
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL
 Group: Office
@@ -73,16 +72,15 @@ Source401:      libreoffice6.1-scalable-desktop-icons.tar
 ## FC patches
 Patch1: FC-0001-don-t-suppress-crashes.patch
 Patch2: FC-0001-Resolves-rhbz-1432468-disable-opencl-by-default.patch
-Patch3: FC-0001-gtk3-only-for-3.20.patch
-Patch4: FC-0001-Update-mdds-to-1.4.1.patch
-Patch5: FC-0001-Update-orcus-to-0.14.0.patch
-Patch6: FC-0001-disable-libe-book-support.patch
 
 ## Long-term FC patches
 
 ## ALT patches
 Patch401: alt-001-MOZILLA_CERTIFICATE_FOLDER.patch
-Patch403: alt-002-tmpdir.patch
+Patch402: alt-002-tmpdir.patch
+Patch403: alt-003-poppler-compat.patch
+Patch404: alt-004-shortint.patch
+Patch405: alt-005-mysql8-transition.patch
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %lodir/share/config/webcast/*
@@ -122,10 +120,11 @@ BuildRequires: libnumbertext-devel
 # 6.1.1
 BuildRequires: python3-module-setuptools
 
-# 6.1.3.1 gtk3/kde5 UI
+# 6.1.3.1 kde5 UI
 %if_enabled kde5
 BuildRequires: qt5-base-devel qt5-x11extras-devel
-BuildRequires: kde4libs-devel kf5-kconfig-devel kf5-kcoreaddons-devel kf5-ki18n-devel kf5-kio-devel kf5-kwindowsystem-devel
+BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel
+BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-kwindowsystem-devel
 %endif
 
 # 6.1.5.2
@@ -317,16 +316,15 @@ echo Direct build
 ## FC apply patches
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 ## Long-term FC patches applying
 
 ## ALT apply patches
 %patch401 -p0
-%patch403 -p1
+#patch402 -p1
+#patch403 -p1
+%patch404 -p1
+%patch405 -p2
 
 tar xf %SOURCE401
 
@@ -386,7 +384,6 @@ export CXX=%_target_platform-g++
         --enable-evolution2 \
         --enable-gio \
         %{subst_with java} \
-        --with-alloc=system \
         --without-fonts \
         --without-myspell-dicts \
         --without-doxygen \
@@ -402,18 +399,17 @@ export CXX=%_target_platform-g++
 	--enable-ext-wiki-publisher \
 	--enable-ext-ct2n \
 	--enable-ext-languagetool \
-	--enable-ext-mariadb-connector \
   \
 	--enable-release-build \
 	--with-help \
   \
         %{subst_enable kde4} \
         %{subst_enable qt5} \
-        --enable-gtk \
-        --enable-gtk3 \
+	--enable-gtk \
+	--enable-gtk3 \
+	--enable-cipher-openssl-backend \
 %if_enabled kde5
-        --enable-gtk3-kde5 \
-        --disable-kde5 \
+        --enable-kde5 \
 %endif
 	--disable-gstreamer-0-10 \
   \
@@ -504,7 +500,7 @@ find %buildroot%lodir -name "*kde4*" | sed 's@^%buildroot@@' > files.kde4
 find %buildroot%lodir -name "*qt5*"   | sed 's@^%buildroot@@' > files.qt5
 
 # Create kde5 plugin list
-find %buildroot%lodir -name "*_kde5*" | sed 's@^%buildroot@@' > files.kde5
+find %buildroot%lodir -name "*_kde5*" -o -name "libkde5*" | sed 's@^%buildroot@@' > files.kde5
 
 # Generate base filelist by removing files from  separated packages
 { cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk2 files.gtk3 files.kde4 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
@@ -620,6 +616,9 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Tue Aug 13 2019 Andrey Cherepanov <cas@altlinux.org> 6.2.6.2-alt1
+- New version 6.2.6.2 (Still).
+
 * Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 6.1.6.3-alt3
 - Require pentaho-reporting-flow-engine only if build with java
   support.
