@@ -1,23 +1,24 @@
 Name: wxMaxima
-Version: 19.07.0
-Release: alt2
+Version: 19.08.1
+Release: alt1
 
 Summary: GUI for the computer algebra system Maxima
 License: GPL
 Group: Sciences/Mathematics
-URL: https://wxmaxima-developers.github.io/wxmaxima
+
+Url: https://wxmaxima-developers.github.io/wxmaxima
 Packager: Ilya Mashkin <oddity@altlinux.ru>
 
 Source0: %name-%version.tar
 Source5: wxmaxima-ru.po.bz2
-Patch1:  %name-alt-help-path.patch
+Patch:  %name-alt-help-path.patch
 
 Requires: maxima
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libwxGTK3.0-devel libpango-devel libxml2-devel zlib-devel makeinfo
 
-ExclusiveArch: %ix86 x86_64 aarch64
+ExclusiveArch: %ix86 x86_64 aarch64 %e2k
 
 %description
 wxMaxima is a wxWidgets GUI for the computer algebra system Maxima.
@@ -30,11 +31,19 @@ wxMaxima provides 2d formated display of maxima output.
 
 
 %prep
-%setup -q
+%setup
 bzcat %SOURCE5 >locales/ru.po
-%patch1 -p1
+%patch -p1
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -type f -name '*.cpp' -o -name '*.h' | xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.12
+%add_optflags -std=c++11
+%endif
 %cmake
 %cmake_build
 makeinfo info/wxmaxima.texi
@@ -42,8 +51,8 @@ makeinfo info/wxmaxima.texi
 %install
 %cmakeinstall_std
 # icons
-install -D -m644 data/wxmaxima-16.xpm %buildroot%_miconsdir/%name.xpm
-install -D -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
+install -pD -m644 data/wxmaxima-16.xpm %buildroot%_miconsdir/%name.xpm
+install -pD -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %find_lang %name
 
 %files -f %name.lang
@@ -65,6 +74,15 @@ install -D -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %_pixmapsdir/*%name.png
 
 %changelog
+* Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.1-alt1
+- New version.
+
+* Fri Aug 16 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.0-alt1
+- New version.
+
+* Wed Jul 31 2019 Michael Shigorin <mike@altlinux.org> 19.07.0-alt3
+- E2K: strip UTF-8 BOM for lcc < 1.24; explicit -std=c++11
+
 * Thu Jul 25 2019 Andrey Cherepanov <cas@altlinux.org> 19.07.0-alt2
 - Complete Russian localization (thanks Olesya Gerasimenko).
 
