@@ -1,6 +1,6 @@
 
 Name: http-parser
-Version: 2.9.0
+Version: 2.9.2
 Release: alt1
 Summary: HTTP request/response parser for C
 
@@ -55,6 +55,9 @@ Development headers and libraries for http-parser.
 %_libdir/*.so
 
 %changelog
+* Mon Aug 19 2019 Alexey Shabalin <shaba@altlinux.org> 2.9.2-alt1
+- new version 2.9.2
+
 * Wed Jan 16 2019 Alexey Shabalin <shaba@altlinux.org> 2.9.0-alt1
 - 2.9.0
 
