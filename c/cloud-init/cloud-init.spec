@@ -1,6 +1,8 @@
+%def_disable check
+
 Name:    cloud-init
-Version: 18.4
-Release: alt2
+Version: 19.2
+Release: alt1
 
 Summary: Cloud instance init scripts
 Group:   System/Configuration/Boot and Init
@@ -25,12 +27,13 @@ BuildArch: noarch
 # /proc for tests
 BuildRequires: /proc
 
-BuildRequires: python-devel python-module-distribute python-module-nose python-module-mocker
-BuildRequires: python-module-yaml python-module-oauth
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-dev python3-module-distribute python3-module-nose python3-module-mocker
+BuildRequires: python3-module-yaml python3-module-oauthlib
 BuildRequires: systemd-devel
 # For tests
-BuildRequires: python-modules-json python-module-requests python-module-jsonpatch python-module-configobj python-module-mock python-module-oauthlib
-BuildRequires: python-module-httpretty python-module-serial iproute2 util-linux net-tools python-module-jinja2 python-module-contextlib2 python-module-prettytable
+BuildRequires: python3-module-requests python3-module-jsonpatch python3-module-configobj python3-module-mock python3-module-oauthlib
+BuildRequires: python3-module-httpretty python3-module-serial iproute2 util-linux net-tools python3-module-jinja2 python3-module-contextlib2 python3-module-prettytable
 
 Requires: sudo
 Requires: e2fsprogs
@@ -39,9 +42,16 @@ Requires: procps
 Requires: iproute net-tools
 Requires: shadow-utils
 Requires: /bin/run-parts
+Requires: netplan
+Requires: dhcp-client
 # add not autoreq'ed
-%py_requires Cheetah
-%py_requires jinja2
+%py3_requires Cheetah
+%py3_requires jinja2
+
+# use urllib3 for requests.packages.urllib3
+%py3_requires urllib3
+%filter_from_requires /python3(requests.packages.urllib3.connection)/d
+%filter_from_requires /python3(requests.packages.urllib3.poolmanager)/d
 
 %description
 Cloud-init is a set of init scripts for cloud instances.  Cloud instances
@@ -53,10 +63,10 @@ ssh keys and to let the user run various scripts.
 %patch1 -p1
 
 %build
-%python_build
+%python3_build_debug
 
 %install
-%python_install --init-system=systemd
+%python3_install --init-system=systemd
 
 install -pD -m644 %SOURCE1 %buildroot%_sysconfdir/cloud/cloud.cfg
 install -pD -m644 %SOURCE3 %buildroot%_tmpfilesdir/cloud-init.conf
@@ -77,7 +87,7 @@ rm -f %buildroot%_sysconfdir/cloud/templates/*.suse.*
 rm -f %buildroot%_sysconfdir/cloud/templates/*.ubuntu.*
 
 %check
-make unittest noseopts=" -v -e test_dhclient_run_with_tmpdir"
+make unittest3
 
 %post
 %post_service cloud-config
@@ -100,19 +110,24 @@ make unittest noseopts=" -v -e test_dhclient_run_with_tmpdir"
 %dir               %_sysconfdir/cloud/templates
 %config(noreplace) %_sysconfdir/cloud/templates/*
 %_sysconfdir/NetworkManager/dispatcher.d/hook-network-manager
-%_sysconfdir/bash_completion.d/%name
+%_datadir/bash-completion/completions/%name
 /lib/udev/rules.d/66-azure-ephemeral.rules
 %_initdir/*
 %_unitdir/*
 %_tmpfilesdir/*
 /lib/systemd/system-generators/cloud-init-generator
-%python_sitelibdir/*
+%python3_sitelibdir/*
 %_libexecdir/%name
 %_bindir/cloud-init*
+%_bindir/cloud-id
 %doc %_datadir/doc/%name
 %dir %_sharedstatedir/cloud
 
 %changelog
+* Thu Jul 25 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.2-alt1
+- Update to 19.2
+- Use netplan to render network
+
 * Sun Dec 16 2018 Mikhail Gordeev <obirvalger@altlinux.org> 18.4-alt2
 - Allow services works only in virtualization
 
