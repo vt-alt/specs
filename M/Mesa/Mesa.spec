@@ -55,6 +55,8 @@
 %gallium_drivers_add etnaviv
 %gallium_drivers_add freedreno
 %gallium_drivers_add kmsro
+%gallium_drivers_add panfrost
+%gallium_drivers_add lima
 %endif
 %ifarch %vulkan_intel_arches
 %vulkan_drivers_add intel
@@ -64,7 +66,7 @@
 %endif
 
 Name: Mesa
-Version: 19.0.5
+Version: 19.1.3
 Release: alt1
 Epoch: 4
 License: MIT
@@ -277,6 +279,7 @@ export PATH=$(pwd)/bin:$PATH
 	-Dgallium-xa=false \
 %endif
 	-Dgles1=false \
+	-Dopengl=true \
 	-Dselinux=true \
 	-Dglvnd=true \
 	-Ddri-drivers-path=%_libdir/X11/modules/dri \
@@ -327,17 +330,35 @@ d=%buildroot%_libdir
                 ln -v -snf "${t##*/}" "$f"
         done
 
+%ifarch %armsoc_arches
+find %buildroot%_libdir/X11/modules/dri/ -type l | sed -ne "s|^%buildroot||p" > xorg-dri-armsoc.list
+sed -i '/.*swrast.*/d' xorg-dri-armsoc.list
+sed -i '/.*virtio.*/d' xorg-dri-armsoc.list
+sed -i '/.*nouveau.*/d' xorg-dri-armsoc.list
+sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
+%endif
+
+cat << __EOF__ > %buildroot%_pkgconfigdir/glesv2.pc
+prefix=/usr
+libdir=\${prefix}/lib64
+includedir=\${prefix}/include
+
+Name: glesv2
+Description: Mesa OpenGL ES 2.0 library
+Version: %version
+Libs: -L\${libdir} -lGLESv2
+Libs.private: -lpthread -pthread -lm -ldl
+Cflags: -I\${includedir}
+__EOF__
+
 # remove unpackaged files
 cd %buildroot
- rm .%_includedir/GL/glcorearb.h
+ rm -f .%_includedir/GL/glcorearb.h
 %ifarch %vulkan_intel_arches
- rm .%_includedir/vulkan/vulkan_intel.h
+ rm -f .%_includedir/vulkan/vulkan_intel.h
 %endif
- rm .%_libdir/libGLESv2.so
- rm .%_libdir/libGLESv2.so.2
- rm .%_libdir/libGLESv2.so.2.0.0
 %ifarch %opencl_arches
- rm .%_libdir/libMesaOpenCL.so
+ rm -f .%_libdir/libMesaOpenCL.so
 %endif
 cd -
 
@@ -470,17 +491,25 @@ cd -
 %endif
 
 %ifarch %armsoc_arches
-%files -n xorg-dri-armsoc
-%_libdir/X11/modules/dri/etnaviv_dri.so
-%_libdir/X11/modules/dri/hx8357d_dri.so
-%_libdir/X11/modules/dri/imx-drm_dri.so
-%_libdir/X11/modules/dri/kgsl_dri.so
-%_libdir/X11/modules/dri/msm_dri.so
-%_libdir/X11/modules/dri/pl111_dri.so
-%_libdir/X11/modules/dri/vc4_dri.so
+%files -n xorg-dri-armsoc -f xorg-dri-armsoc.list
 %endif
 
 %changelog
+* Wed Jul 24 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.3-alt1
+- 19.1.3
+
+* Tue Jul 09 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.2-alt1
+- 19.1.2
+
+* Wed Jun 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.1-alt1
+- 19.1.1
+
+* Wed Jun 19 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.0-alt1
+- 19.1.0
+
+* Thu Jun 06 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.0.6-alt1
+- 19.0.6
+
 * Wed May 22 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.0.5-alt1
 - 19.0.5
 
