@@ -1,9 +1,9 @@
 %define _unpackaged_files_terminate_build 1
 
-%define sover 6.12
+%define sover 7.3
 Name: racket
-Version: 6.12
-Release: alt2
+Version: 7.3
+Release: alt1
 
 Summary: Racket programming language
 
@@ -186,12 +186,15 @@ rm -f %buildroot%_libdir/*.a
 %_libdir/*-%sover.so
 
 %files -n lib%name-devel
-%doc src/README
+%doc src/README.txt
 %_libdir/*.so
 %exclude %_libdir/*-%sover.so
 %_includedir/*
 
 %changelog
+* Tue Jul 16 2019 Mikhail Gordeev <obirvalger@altlinux.org> 7.3-alt1
+- Updated to upstream version 7.3
+
 * Tue Jul 16 2019 Ivan Zakharyaschev <imz@altlinux.org> 6.12-alt2
 - (.spec):
   + Avoided a nasty race in Makefile.
