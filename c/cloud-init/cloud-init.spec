@@ -2,7 +2,7 @@
 
 Name:    cloud-init
 Version: 19.2
-Release: alt1
+Release: alt2
 
 Summary: Cloud instance init scripts
 Group:   System/Configuration/Boot and Init
@@ -103,6 +103,7 @@ make unittest3
 
 %files
 %doc ChangeLog TODO.rst
+%dir               %_sysconfdir/cloud
 %config(noreplace) %_sysconfdir/cloud/cloud.cfg
 %dir               %_sysconfdir/cloud/cloud.cfg.d
 %config(noreplace) %_sysconfdir/cloud/cloud.cfg.d/*.cfg
@@ -124,6 +125,9 @@ make unittest3
 %dir %_sharedstatedir/cloud
 
 %changelog
+* Tue Aug 20 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.2-alt2
+- Pack /etc/cloud
+
 * Thu Jul 25 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.2-alt1
 - Update to 19.2
 - Use netplan to render network
