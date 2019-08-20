@@ -5,8 +5,8 @@
 %define rname qgis
 
 Name:    qgis3
-Version: 3.8.1
-Release: alt2
+Version: 3.8.2
+Release: alt1
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -369,6 +369,9 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 %endif
 
 %changelog
+* Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.2-alt1
+- New version.
+
 * Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 3.8.1-alt2
 - fix PATHs for libqwt6-qt5
 
@@ -643,7 +646,7 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 - added BuildRequires: cmake
 - updated build to use cmake macro and make verbose
 
-* Mon Jun 19 2007 Douglas E. Warner <silfreed@silfreed.net> 0.8.1-1
+* Tue Jun 19 2007 Douglas E. Warner <silfreed@silfreed.net> 0.8.1-1
 - updating version
 - removed BuildRequires: python-devel due to lack of PyQt4 bindings
 - updated build for use of cmake instead of autotools
