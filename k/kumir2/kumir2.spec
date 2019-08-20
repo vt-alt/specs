@@ -1,6 +1,6 @@
 Name: kumir2
 Version: 2.1.0
-Release: alt5
+Release: alt6
 
 Summary: New version of Kumir - simple programming language and IDE for teaching programming
 Summary(ru_RU.UTF-8): Новая версия системы Кумир - простого учебного языка программирования и среды разработки
@@ -10,11 +10,13 @@ Group: Education
 Url: https://github.com/victor-yacovlev/kumir2
 Packager: Denis Kirienko <dk@altlinux.ru>
 
-BuildPreReq: libqt4-devel gcc-c++ cmake python-modules python-modules-json boost-devel
+BuildRequires(pre): cmake
+BuildPreReq: libqt4-devel gcc-c++ python-modules python-modules-json boost-devel
 Requires: libqt4-core
 
 Source: %name-%version.tar
 Patch1: kumir2-2.1.0-actor_umki.patch
+Patch2: kumir2-alt-fix-LIB_BASENAME.patch
 
 %description
 Implementation of Kumir programming language, designed by academician
@@ -41,21 +43,17 @@ ALT Linux включает также поддержку исполнителя,
 %prep
 %setup
 sed -i "s/^Categories=.*$/Categories=Education;Qt;ComputerScience;/" *.desktop
-sed -i '/CMAKE_SYSTEM_PROCESSOR.\+MATCHES.\+/ s,x86_64,(aarch64|x86_64),' CMakeLists.txt
-
-%patch1 -p1
+#patch1 -p1
+%patch2 -p2
 
 %build
 rm -rf src/3rdparty/boost-1.54.0
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make
+%cmake \
+       -DLIB_BASENAME=%_lib
+%cmake_build
 
 %install
-cd build
-# make install
-%make_install DESTDIR=%buildroot install
+%cmakeinstall_std
 
 %files
 %_bindir/*
@@ -66,6 +64,10 @@ cd build
 %_iconsdir/*/*/*/*
 
 %changelog
+* Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt6
+- Remove Umki support (ALT #32162).
+- Fix build on ppc64le.
+
 * Wed Apr 11 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.1.0-alt5
 - fixed packaging on aarch64
 
