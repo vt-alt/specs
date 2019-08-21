@@ -1,5 +1,7 @@
-Name: installer-distro-alt-server-v
-Version: 7.0.5
+%define distro alt-server-v
+
+Name: installer-distro-%distro
+Version: 7.0.6
 Release: alt1
 
 Summary: Installer configuration (Server V)
@@ -20,6 +22,7 @@ It is derived from installer-distro-altlinux-generic.
 Summary: Installer configuration and scripts (stage2 part)
 License: GPL
 Group: System/Configuration/Other
+Provides: installer-%distro-stage2 = %version
 Requires: installer-stage2
 # modules
 Requires: alterator-sysconfig
@@ -38,13 +41,19 @@ The stage2 part is included into live installer system.
 Summary: Installer configuration and scripts (stage3 part)
 License: GPL
 Group: System/Configuration/Other
-Provides: installer-altlinux-generic-stage3 = %name-%version
+Provides: installer-%distro-stage3 = %version
 # modules
 Requires: alterator-users
 Requires: alterator-root
+Requires: alterator-grub
 Requires: alterator-luks
 Requires: alterator-net-eth dhcpcd
+Requires: alterator-net-bond alterator-net-bridge
 Requires: alterator-net-general
+Requires: installer-stage3
+Requires: installer-feature-sudo-enable-by-default-stage3
+Requires: installer-feature-online-repo
+Requires: installer-feature-nfs-server-stage3
 Requires: installer-feature-powerbutton-stage3
 
 %description stage3
@@ -62,11 +71,6 @@ and executed off there during installation process.
 mkdir -p %buildroot%install2dir
 cp -a * %buildroot%install2dir/
 
-# FIXME: /vm behaviour should be controllable in some sane manner
-%post stage2
-sed -i 's,^\(X-Alterator-URI=\).*$,\1/vm/ortodox,' \
-	%_datadir/install2/steps/vm.desktop
-
 %files stage2
 %install2dir/*.d/*
 %install2dir/alterator-menu
@@ -75,6 +79,11 @@ sed -i 's,^\(X-Alterator-URI=\).*$,\1/vm/ortodox,' \
 %files stage3
 
 %changelog
+* Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 7.0.6-alt1
+- vm -> vm-ortodox
+- add preinstall and postinstall scripts
+- update Requires and Provides
+
 * Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 7.0.5-alt1
 - update title in vm-profile
 
