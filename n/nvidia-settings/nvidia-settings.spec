@@ -2,7 +2,7 @@
 
 Name: nvidia-settings
 Version: 430.40
-Release: alt2
+Release: alt3
 
 Group: System/Configuration/Hardware
 Summary: Tool for configuring the NVIDIA driver
@@ -21,6 +21,7 @@ Source101: ru.po
 Patch1: xlibs.patch
 Patch2: cflags.patch
 Patch3: alt-ui-modules-dir.patch
+Patch4: add-error-popup.patch
 Patch100: nvidia-settings-410.73-alt-integrate-translation.patch
 
 # Automatically added by buildreq on Mon May 13 2013 (-bi)
@@ -60,6 +61,7 @@ Development files for %name
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p2
 %if_enabled translation
 mkdir -p po/msg
 %patch100 -p2
@@ -123,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Tue Aug 20 2019 Slava Aseev <ptrnine@altlinux.org> 430.40-alt3
+- add popup for "Unable to load info" error
+
 * Mon Aug 19 2019 Sergey V Turchin <zerg@altlinux.org> 430.40-alt2
 - compile libXNVCtrl with -DPIC (ALT#37118)
 
