@@ -1,6 +1,6 @@
 Name: x11vnc
-Version: 0.9.15
-Release: alt1.1
+Version: 0.9.16
+Release: alt1
 
 %def_with avahi
 
@@ -63,6 +63,9 @@ install tkx11vnc %buildroot%_bindir/
 %exclude  %_bindir/Xdummy
 
 %changelog
+* Wed Aug 21 2019 Fr. Br. George <george@altlinux.ru> 0.9.16-alt1
+- Autobuild version bump to 0.9.16
+
 * Wed Aug 29 2018 Grigory Ustinov <grenka@altlinux.org> 0.9.15-alt1.1
 - NMU: Rebuild with new openssl 1.1.0.
 
