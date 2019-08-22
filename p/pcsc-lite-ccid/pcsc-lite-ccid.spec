@@ -1,18 +1,17 @@
 Name: pcsc-lite-ccid
-Version: 1.4.29
+Version: 1.4.31
 Release: alt1
 
 Summary: USB CCID IFD Handler
 Group: System/Libraries
 License: LGPL
-Url: https://alioth.debian.org/projects/pcsclite/
+URL: https://pcsclite.apdu.fr/
 
 Requires: pcsc-lite
 
 Source: %name-%version.tar
 Source1: PCSC.tar
 Patch1: ccid-disable-examples-build.patch
-Patch3: pcsc-lite-alt-fix-realloc-usage.patch
 
 BuildRequires: flex libpcsclite-devel libusb-devel
 
@@ -29,11 +28,9 @@ Devices) driver for PC/SC Lite.
 %setup
 # Do not build examples requires contrib from external repository
 %patch1 -p1
+cp README.md README
 # Copy pcsc-lite
 tar xf %SOURCE1
-cd PCSC
-%patch3 -p1
-cd -
 
 %build
 %autoreconf
@@ -47,13 +44,16 @@ cp -a src/92_pcscd_ccid.rules %buildroot/lib/udev/rules.d/
 
 %files
 %doc contrib/Kobil_mIDentity_switch/README_Kobil_mIDentity_switch.txt
-%doc AUTHORS README NEWS SCARDGETATTRIB.txt
+%doc AUTHORS README.md NEWS SCARDGETATTRIB.txt SCARDCONTOL.txt
 %config(noreplace) %_sysconfdir/reader.conf.d/libccidtwin
 %ifddir/ifd-ccid.bundle
 %_libdir/pcsc/drivers/serial/libccidtwin.so
 /lib/udev/rules.d/92_pcscd_ccid.rules
 
 %changelog
+* Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.31-alt1
+- New version.
+
 * Thu Feb 22 2018 Andrey Cherepanov <cas@altlinux.org> 1.4.29-alt1
 - New version.
 

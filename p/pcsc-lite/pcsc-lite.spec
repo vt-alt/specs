@@ -5,17 +5,16 @@
 %def_enable systemd
 
 Name: pcsc-lite
-Version: 1.8.23
+Version: 1.8.25
 Release: alt1
 
 Summary: PC/SC Lite smart card framework and applications
 License: %bsd
 Group: System/Servers
 
-Url: http://pcsclite.alioth.debian.org/
+URL: https://pcsclite.apdu.fr/
 
 Source: %name-%version.tar
-Patch: %name-%version-%release.patch
 
 Source1: pcscd.init
 Source2: pcsc-lite-pcscd.sysconfig
@@ -75,8 +74,6 @@ Static libraries for libpcsclite
 
 %prep
 %setup
-%patch -p1
-
 subst 's|AC_PREREQ(\[2.69\])|AC_PREREQ(\[2.68\])|' configure.ac
 
 %build
@@ -117,7 +114,7 @@ install -pDm644 %SOURCE3 %buildroot/lib/tmpfiles.d/pcsc-lite.conf
 %post_service pcscd
 
 %files
-%doc AUTHORS COPYING DRIVERS HELP NEWS README SECURITY TODO doc/README.DAEMON doc/README.polkit
+%doc AUTHORS COPYING HELP NEWS README* SECURITY TODO doc/README.DAEMON doc/README.polkit
 %dir %_sysconfdir/reader.conf.d
 %config(noreplace) %_sysconfdir/sysconfig/pcscd
 %_initdir/pcscd
@@ -154,6 +151,9 @@ install -pDm644 %SOURCE3 %buildroot/lib/tmpfiles.d/pcsc-lite.conf
 %endif
 
 %changelog
+* Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.8.25-alt1
+- New version.
+
 * Thu Dec 21 2017 Andrey Cherepanov <cas@altlinux.org> 1.8.23-alt1
 - New version.
 
