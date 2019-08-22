@@ -2,7 +2,7 @@
 %define engines_dir $(pkg-config --variable=enginesdir --silence-errors libcrypto)
 
 Name: libp11
-Version: 0.4.8
+Version: 0.4.10
 Release: alt1
 
 Summary: Library for using PKCS#11 modules
@@ -93,6 +93,9 @@ rm -rf %buildroot%_docdir/%name
 %_includedir/*
 
 %changelog
+* Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 0.4.10-alt1
+- new version 0.4.10
+
 * Wed Aug 29 2018 Alexey Shabalin <shaba@altlinux.org> 0.4.8-alt1
 - 0.4.8
 - build with openssl-1.1

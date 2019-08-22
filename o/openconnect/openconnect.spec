@@ -5,7 +5,7 @@
 %def_with gnutls
 
 Name: openconnect
-Version: 8.03
+Version: 8.04
 Release: alt1
 Summary: Open client for Cisco AnyConnect VPN
 
@@ -20,7 +20,7 @@ BuildRequires: pkgconfig(liblz4)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(zlib)
 %{?_with_gnutls:BuildRequires: pkgconfig(gnutls) > 3.2.10 pkgconfig(p11-kit-1) libtrousers-devel pkgconfig(libtasn1)}
-%{?_with_openssl:BuildRequires: pkgconfig(openssl) pkgconfig(p11-kit-1) pkgconfig(libp11)}
+%{?_with_openssl:BuildRequires: pkgconfig(openssl) pkgconfig(p11-kit-1) pkgconfig(libp11) >= 0.4.7}
 %{?_with_libproxy:BuildRequires: pkgconfig(libproxy-1.0)}
 %{?_with_stoken:BuildRequires: pkgconfig(stoken)}
 BuildRequires: pkgconfig(libpcsclite)
@@ -83,6 +83,9 @@ make DESTDIR=%buildroot install
 %_pkgconfigdir/*
 
 %changelog
+* Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 8.04-alt1
+- new version 8.04
+
 * Sat Jul 20 2019 Alexey Shabalin <shaba@altlinux.org> 8.03-alt1
 - new version 8.03
 
