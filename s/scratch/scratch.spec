@@ -7,7 +7,7 @@ Summary(ru.UTF-8): Программирование для детей на ос�
 
 Group: Education
 Version: 1.4.0.7
-Release: alt5
+Release: alt6
 
 License: Artistic License
 Url: http://scratch.mit.edu/
@@ -16,7 +16,7 @@ Source: %name.tar.gz
 Source1: %name.png
 Source2: ru.po
 
-Patch: scratch-1.4.0.7-use-fedora-squeak.patch
+Patch0: scratch-1.4.0.7-use-fedora-squeak.patch
 # Patch1: 002-locale-fix.patch
 Patch2: scratch-1.4.0.7-open-from-commandline.patch
 Patch4: 005-fix-desktop-file.patch
@@ -110,7 +110,7 @@ Projects files for %name
 %setup -q -n %name
 
 %patch0 -p1
-#%%patch1 -p1
+#patch1 -p1
 %patch2 -p2
 %patch4 -p2
 %patch5 -p1
@@ -184,6 +184,9 @@ mv Projects %buildroot%installdir/
 %installdir/Projects
 
 %changelog
+* Thu Aug 22 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.0.7-alt6
+- Use Fixed font (doubled size, not bold)' for Russian UI.
+
 * Fri Apr 05 2019 Ivan Razzhivin <underwit@altlinux.org> 1.4.0.7-alt5
 - Update Russian translation
 - Add Russian Comment in desktop file
