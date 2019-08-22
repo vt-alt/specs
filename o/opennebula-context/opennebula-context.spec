@@ -1,8 +1,8 @@
 
 Name: opennebula-context
 Summary: OpenNebula Contextualization Package
-Version: 5.6.0
-Release: alt4
+Version: 5.8.0
+Release: alt1
 License: Apache
 Group: System/Servers
 Url: http://opennebula.org
@@ -17,6 +17,8 @@ Requires: util-linux bind-utils cloud-utils-growpart parted
 Requires: ruby ruby-json-pure
 Requires: qemu-guest-agent
 Requires: sudo
+
+%filter_from_requires \,/etc/rc\.d/growfs,d
 
 BuildRequires(pre): rpm-build-ruby
 
@@ -64,8 +66,6 @@ install -p -D -m 755 src/etc/one-context.d/loc-20-set-username-password \
 			%buildroot%_sysconfdir/one-context.d/loc-20-set-username-password
 install -p -D -m 755 src/etc/one-context.d/loc-22-ssh_public_key \
 			%buildroot%_sysconfdir/one-context.d/loc-22-ssh_public_key
-install -p -D -m 755 src/etc/one-context.d/net-11-fix-loopback##one \
-			%buildroot%_sysconfdir/one-context.d/net-11-fix-loopback
 install -p -D -m 755 src/etc/one-context.d/net-15-hostname \
 			%buildroot%_sysconfdir/one-context.d/net-15-hostname
 install -p -D -m 755 src/etc/one-context.d/net-97-start-script \
@@ -113,6 +113,9 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 %_unitdir/*
 
 %changelog
+* Mon Aug 19 2019 Mikhail Gordeev <obirvalger@altlinux.org> 5.8.0-alt1
+- 5.8.0
+
 * Tue Nov 27 2018 Alexey Shabalin <shaba@altlinux.org> 5.6.0-alt4
 - fixed generate network config for systemd-networkd
 
@@ -125,12 +128,12 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 * Mon Oct 01 2018 Alexey Shabalin <shaba@altlinux.org> 5.6.0-alt1
 - 5.6.0
 
-* Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 5.4.2.1-alt1%ubt.1
+* Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 5.4.2.1-alt1
 - Rebuild with new Ruby autorequirements.
 - Do not require open-vm-tools for aarch64.
 
-* Tue Apr 10 2018 Alexey Shabalin <shaba@altlinux.ru> 5.4.2.1-alt1%ubt
+* Tue Apr 10 2018 Alexey Shabalin <shaba@altlinux.ru> 5.4.2.1-alt1
 - 5.4.2.1
 
-* Thu Sep 28 2017 Alexey Shabalin <shaba@altlinux.ru> 5.4.1-alt1%ubt
+* Thu Sep 28 2017 Alexey Shabalin <shaba@altlinux.ru> 5.4.1-alt1
 - Initial build
