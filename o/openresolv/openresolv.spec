@@ -1,8 +1,8 @@
 %define subscribers_dir /lib/resolvconf
 
 Name: openresolv
-Version: 3.9.0
-Release: alt3
+Version: 3.9.1
+Release: alt1
 
 Summary: A framework for managing DNS information 
 License: %bsdstyle
@@ -19,6 +19,8 @@ BuildRequires(pre): rpm-build-licenses
 Requires: filesystem >= 2.3.5
 
 %def_with pdnsd
+
+%define _unpackaged_files_terminate_build 1
 
 %description
 resolvconf is the middleman between the network
@@ -120,6 +122,9 @@ touch %buildroot%_localstatedir/bind/etc/resolvconf-options.conf
 %endif
 
 %changelog
+* Tue Aug 20 2019 Mikhail Efremov <sem@altlinux.org> 3.9.1-alt1
+- Updated to 3.9.1.
+
 * Mon Feb 18 2019 Mikhail Efremov <sem@altlinux.org> 3.9.0-alt3
 - dnsmasq: Fix first start.
 
