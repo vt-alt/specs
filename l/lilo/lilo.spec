@@ -1,25 +1,26 @@
 Name: lilo
-Version: 24.0
-Release: alt1
+Version: 24.2
+Release: alt2
 Summary: The boot loader for Linux and other operating systems
 License: MIT
 Group: System/Kernel and hardware
-Url: http://%name.alioth.debian.org
-Source0: %url/ftp/archiv/%name-%version.tar
+Url: https://www.joonet.de/%name
+Source0: %url/ftp/sources/%name-%version.tar
+#Vcs-Git: https://salsa.debian.org/joowie-guest/upstream_lilo.git
 Source1: keytab-lilo.c
 Patch1: lilo-23.2-owl-makefile.patch
 Patch2: lilo-23.2-alt-owl-fixes.patch
-Patch3: lilo-24.0-alt-Makefile.patch
+Patch3: lilo-24.2-alt-Makefile.patch
 Patch11: lilo-23.0-mdk-part.patch
-Patch12: lilo-23.0-alt-constants.patch
+Patch12: lilo-24.2-alt-constants.patch
 Patch13: lilo-23.1-alt-defaults.patch
 Patch14: lilo-23.0-alt-lba32_linear.patch
 Patch15: lilo-24.0-alt-mkrescue.patch
-Patch17: lilo-23.0-alt-blkid.patch
+Patch17: lilo-24.2-alt-blkid.patch
 Patch18: lilo-23.0-alt-raid_index.patch
 Patch19: lilo-22.8-alt-devmapper.patch
 Patch20: lilo-22.8-alt-md-devmapper.patch
-Patch21: lilo-23.0-suse-gfx.patch
+Patch21: lilo-24.2-suse-gfx.patch
 Patch22: lilo-24.0-alt-format.patch
 ExclusiveArch: %ix86 x86_64
 
@@ -36,7 +37,6 @@ boot other operating systems.
 Summary: More documentation for %name
 Group: System/Kernel and hardware
 BuildArch: noarch
-Requires: %name = %version-%release
 
 %description doc
 LILO (LInux LOader) is a basic system program which boots your Linux
@@ -113,6 +113,13 @@ fi
 
 
 %changelog
+* Mon Aug 12 2019 Alexey Shabalin <shaba@altlinux.org> 24.2-alt2
+- update homapage url
+- drop requires lilo from lilo-doc package
+
+* Thu Sep 21 2017 Dmitry V. Levin <ldv@altlinux.org> 24.2-alt1
+- 24.0 -> 24.2.
+
 * Mon Mar 03 2014 Led <led@altlinux.ru> 24.0-alt1
 - 24.0
 - removed:

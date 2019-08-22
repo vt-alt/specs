@@ -1,6 +1,6 @@
 Name: cryptmount
 Version: 5.3.1
-Release: alt1
+Release: alt2
 Group: File tools
 Packager: Pavel Isopenko <pauli@altlinux.org>
 License: GPL
@@ -10,7 +10,7 @@ Url: http://cryptmount.sourceforge.net
 Source: %name-%version.tar
 
 BuildRequires: libdevmapper-devel libgcrypt-devel libuuid-devel
-BuildRequires: doxygen libudev-devel libcryptsetup
+BuildRequires: doxygen libudev-devel libcryptsetup-devel
 
 Requires(post): %post_service
 Requires(preun): %preun_service
@@ -40,31 +40,35 @@ s|%_sysconfdir/init.d|%_initdir|g;
 %make_build
 
 %install
-install -d -m0755 %buildroot%_initdir
-install -d -m0755 %buildroot%_sbindir
-install -d -m0755 %buildroot%_libdir/cryptmount/
-install -d -m0755 %buildroot%_sysconfdir/default/cryptmount/
+mkdir -p %buildroot{%_initdir,%_unitdir,%_modulesloaddir}
 
 %makeinstall_std
-%find_lang %name
+install -m0644 sysinit/cryptmount.service %buildroot%_unitdir/
+mv %buildroot%_sysconfdir/modules-load.d/cryptmount.conf %buildroot%_modulesloaddir/
+
+%find_lang --with-man %name
+%find_lang --with-man --append --output=%name.lang cmtab
 
 %files -f %name.lang
 %doc AUTHORS ChangeLog COPYING NEWS README* RELNOTES ToDo
 %_mandir/man5/cmtab.5*
 %_mandir/man8/cryptmount*.8*
-%_mandir/*/man5/cmtab.5*
-%_mandir/*/man8/cryptmount*.8*
 
 %config(noreplace) %_sysconfdir/cryptmount/
-%_sysconfdir/default/cryptmount/
-%_sysconfdir/modules-load.d/cryptmount.conf
-%_initdir/cryptmount/
+%_modulesloaddir/cryptmount.conf
+%_initdir/cryptmount
+%_unitdir/cryptmount.service
 %_sbindir/cryptmount-setup
-%_libdir/cryptmount/
 
 %attr(4711, root, root) %_bindir/cryptmount
 
 %changelog
+* Tue Aug 20 2019 Alexey Shabalin <shaba@altlinux.org> 5.3.1-alt2
+- fixed BR:
+- move config from /etc/modules-load.d to /lib/modules-load.d
+- add systemd unit
+- drop /etc/default/cryptmount dir
+
 * Sun Mar 03 2019 Pavel Isopenko <pauli@altlinux.org> 5.3.1-alt1
 - new version 5.3.1
 

@@ -1,44 +1,27 @@
-%define lvm2version 2.02.185
-%define dmversion 1.02.158
+%define lvm2version 2.03.5
+%define dmversion 1.02.163
 
 %define _sbindir /sbin
+%define usrsbindir %_prefix/sbin
 %define _runtimedir /run
 %define _lockdir /run/lock
 %def_enable static
 
-%def_enable cluster
 %def_enable selinux
-%def_enable lvmetad
-%def_enable use_lvmetad
-%def_enable udev_systemd_background_jobs
 %def_enable lvmpolld
 %def_enable lvmlockd
 %def_enable blkid_wiping
 %def_disable lvmdbusd
 %def_enable dmfilemapd
-%def_enable systemd
 %def_enable thin
-
-# liblvm2app is deprecated. Use D-Bus API
-%def_enable applib
-%def_disable python2_bindings
-%def_disable python3_bindings
-
+%def_enable vdo
+%def_enable writecache
+%def_enable cmirrord
 %def_enable cmdlib
-
-%if_enabled python2_bindings
- %def_enable applib
-%endif
-
-%if_enabled python3_bindings
- %def_enable applib
-%endif
 
 %if_enabled lvmlockd
  %def_enable lvmlockd_sanlock
-  %if_enabled cluster
-   %def_enable lvmlockd_dlm
-  %endif
+ %def_enable lvmlockd_dlm
 %endif
 
 Summary: Userland logical volume management tools
@@ -51,12 +34,9 @@ Group: System/Base
 Url: http://sources.redhat.com/lvm2
 Source: %name-%version.tar
 
-Source1: dmcontrol_update
 Source3: lvm2-monitor.init
-Source4: lvm2-lvmetad.init
 Source5: blk-availability.init
 Source6: lvm2-lvmpolld.init
-Source7: clvmd.sysconfig
 
 Patch: %name-%version-%release.patch
 
@@ -69,31 +49,22 @@ Requires: liblvm2  = %{lvm2version}-%{release}
 BuildRequires: gcc-c++
 BuildRequires: libreadline-devel libtinfo-devel libudev-devel CUnit-devel
 BuildRequires: libaio-devel
-%if_enabled systemd
 # libudev-devel >= 205 required for udev-systemd-background-jobs
 BuildRequires: libudev-devel >= 205
 BuildRequires: systemd-devel
 %if_enabled thin
 BuildRequires: thin-provisioning-tools >= 0.7.0
 %endif
-%else
-BuildRequires: libudev-devel
-%endif
-%if_enabled python2_bindings
-BuildRequires: python-devel python-module-setuptools
-%endif
-%if_enabled python3_bindings
-BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-devel python3-module-setuptools
-%endif
 BuildRequires: autoconf-archive
 %{?_enable_thin:BuildRequires: thin-provisioning-tools >= 0.5.4}
-%{?_enable_lvmdbusd:BuildRequires: python-module-dbus python-module-pyudev python3-module-dbus python3-module-pyudev}
+BuildRequires(pre): rpm-build-python3
+%{?_enable_lvmdbusd:BuildRequires: python3-devel python3-module-setuptools python3-module-dbus python3-module-pyudev}
 %{?_enable_static:BuildRequires: libreadline-devel-static libtinfo-devel-static libaio-devel-static}
-%{?_enable_cluster:BuildRequires: libcorosync2-devel libdlm-devel}
 %{?_enable_selinux:BuildRequires: libselinux-devel libsepol-devel}
 %{?_enable_blkid_wiping:BuildRequires: libblkid-devel >= 2.23}
 %{?_enable_lvmlockd_sanlock:BuildRequires: sanlock-devel >= 3.3.0}
+%{?_enable_lvmlockd_dlm:BuildRequires: libdlm-devel >= 4.0.9}
+%{?_enable_cmirrord:BuildRequires: libcorosync-devel}
 
 %description
 LVM2 includes all of the support for handling read/write operations
@@ -110,14 +81,6 @@ Requires: %name = %lvm2version-%release
 
 %description static
 This package contains statically linked LVM2 tool.
-
-%package -n clvm
-Summary: Cluster extensions for userland logical volume management tools
-Group: System/Base
-Requires: %name = %lvm2version-%release dlm
-
-%description -n clvm
-Extensions to LVM2 to support clusters.
 
 ### liblvm* subpackages go here.
 
@@ -150,17 +113,26 @@ Version: %dmversion
 Summary: Library of routines for device-mapper management
 Group: System/Libraries
 
+%description -n libdevmapper
+Library of routines for device-mapper management.
+
 %package -n libdevmapper-devel
 Version: %dmversion
 Summary: Header file for libdevmapper
 Group: System/Libraries
 Requires: libdevmapper = %dmversion-%release
 
+%description -n libdevmapper-devel
+Header files for libdevmapper.
+
 %package -n libdevmapper-devel-static
 Version: %dmversion
 Summary: Static version of libdevmapper
 Group: System/Libraries
 Requires: libdevmapper-devel = %dmversion-%release
+
+%description -n libdevmapper-devel-static
+Static version of libdevmapper.
 
 %package -n dmsetup
 Version: %dmversion
@@ -169,12 +141,19 @@ Group: System/Kernel and hardware
 Requires: libdevmapper = %dmversion-%release
 Requires: lsblk udev >= 150-alt4
 
+%description -n dmsetup
+Utilities for low level logical volume management.
+
 %package -n dmeventd
 Version: %dmversion
 Summary: Device-mapper event daemon
 Group: System/Base
 Requires: dmsetup = %dmversion-%release
 Requires: libdevmapper-event = %dmversion-%release
+
+%description -n dmeventd
+This package contains the dmeventd daemon for monitoring the state
+of device-mapper devices.
 
 %package -n libdevmapper-event
 Summary: Device-mapper event daemon shared library
@@ -184,6 +163,10 @@ Group: System/Libraries
 Requires: liblvm2  = %lvm2version-%release
 Requires: libdevmapper = %dmversion-%release
 
+%description -n libdevmapper-event
+This package contains the device-mapper event daemon shared library,
+libdevmapper-event.
+
 %package -n libdevmapper-event-devel
 Summary: Development libraries and headers for the device-mapper event daemon
 Version: %dmversion
@@ -192,12 +175,31 @@ Group: System/Libraries
 Requires: libdevmapper-event = %dmversion-%release
 Requires: libdevmapper-devel = %dmversion-%release
 
+%description -n libdevmapper-event-devel
+This package contains files needed to develop applications that use
+the device-mapper event library.
+
 %package lockd
 Summary: LVM locking daemon
 Group: System/Base
 Requires: %name = %lvm2version-%release
-Requires: sanlock
-Requires: dlm
+%{?_enable_lvmlockd_sanlock:Requires: sanlock}
+%{?_enable_lvmlockd_dlm:Requires: dlm}
+
+%description lockd
+LVM commands use lvmlockd to coordinate access to shared storage.
+
+%package cmirrord
+Summary: Daemon for device-mapper-based clustered mirrors
+Group: System/Base
+Provides: cmirror = %lvm2version-%release
+Provides: %name-cmirror = %lvm2version-%release
+Requires: corosync >= 1.99.9
+Requires: dmsetup = %dmversion-%release
+Requires: resource-agents >= 3.9.5
+ 
+%description cmirrord
+Daemon providing device-mapper-based mirrors in a shared-storage cluster.
 
 %package dbusd
 Summary: LVM2 D-Bus daemon
@@ -206,56 +208,8 @@ Group: System/Base
 Requires: %name = %lvm2version-%release
 Requires: dbus
 
-%package -n python-module-lvm
-Summary: Python module to access LVM
-License: LGPLv2
-Group: Development/Python
-Requires: liblvm2 = %lvm2version-%release
-
-%package -n python3-module-lvm
-Summary: Python3 module to access LVM
-License: LGPLv2
-Group: Development/Python3
-Requires: liblvm2 = %lvm2version-%release
-
-%description -n libdevmapper
-Library of routines for device-mapper management.
-
-%description -n libdevmapper-devel
-Header files for libdevmapper.
-
-%description -n libdevmapper-devel-static
-Static version of libdevmapper.
-
-%description -n dmsetup
-Utilities for low level logical volume management.
-
-%description -n dmeventd
-This package contains the dmeventd daemon for monitoring the state
-of device-mapper devices.
-
-%description -n libdevmapper-event
-This package contains the device-mapper event daemon shared library,
-libdevmapper-event.
-
-%description -n libdevmapper-event-devel
-This package contains files needed to develop applications that use
-the device-mapper event library.
-
-%description lockd
-LVM commands use lvmlockd to coordinate access to shared storage.
-
 %description dbusd
 Daemon for access to LVM2 functionality through a D-Bus interface.
-
-%description -n python-module-lvm
-Python module to allow the creation and use of LVM
-logical volumes, physical volumes, and volume groups.
-
-%description -n python3-module-lvm
-Python3 module to allow the creation and use of LVM
-logical volumes, physical volumes, and volume groups.
-
 
 %prep
 %setup
@@ -314,36 +268,28 @@ mv libdm/ioctl/libdevmapper.a .
 	--with-device-gid=6 \
 	--with-device-mode=0660 \
 	--enable-write_install \
-%if_enabled cluster
-	--with-clvmd=corosync \
-%endif
-	%{subst_enable applib} \
 	%{subst_enable cmdlib} \
 	--with-usrlibdir=%_libdir \
+	--with-usrsbindir=%usrsbindir \
 	--enable-dmeventd \
 	--with-udevdir=%_udevrulesdir \
-%if_enabled lvmetad
-	%{subst_enable lvmetad} \
-	%{?_disable_udev_systemd_background_jobs:--disable-udev-systemd-background-jobs} \
-    %{?_disable_use_lvmetad:--disable-use-lvmetad} \
-%endif
 	%{subst_enable lvmpolld} \
 	%{subst_enable dmfilemapd} \
+	%{subst_enable cmirrord} \
 	--enable-udev_sync \
 	%{subst_enable blkid_wiping} \
-	%{?_enable_lvmlockd_dlm:--enable-lvmlockd-dlm} \
+	%{?_enable_lvmlockd_dlm:--enable-lvmlockd-dlm --enable-lvmlockd-dlmcontrol} \
 	%{?_enable_lvmlockd_sanlock:--enable-lvmlockd-sanlock} \
 	%{?_enable_lvmdbusd:--enable-dbus-service} \
-	%{subst_enable python2-bindings} \
-	%{subst_enable python3-bindings} \
+	%{?_enable_vdo:--with-vdo=internal --with-vdo-format=%_bindir/vdoformat} \
+	%{?_enable_writecache:--with-writecache=internal} \
 	--with-dmeventd-path="%_sbindir/dmeventd" \
-	%{?_enable_systemd:--with-systemdsystemunitdir=%_unitdir} \
+	--with-systemdsystemunitdir=%_unitdir \
 	--with-tmpfilesdir=%_tmpfilesdir \
 	--with-default-pid-dir=%_runtimedir \
 	--with-default-dm-run-dir=%_runtimedir \
 	--with-default-run-dir=%_runtimedir/lvm \
 	--with-default-locking-dir=%_lockdir/lvm \
-	--with-cluster=internal \
 	--disable-silent-rules
 
 %make_build
@@ -351,20 +297,14 @@ mv libdm/ioctl/libdevmapper.a .
 %install
 %makeinstall_std
 %makeinstall_std install_system_dirs
-%if_enabled systemd
 %makeinstall_std install_systemd_units
-%if_enabled applib
 %makeinstall_std install_systemd_generators
-%endif
-%endif
 %makeinstall_std install_tmpfiles_configuration
 
 chmod -R u+rwX %buildroot
 %{?_enable_static:install -pm755 lvm.static %buildroot%_sbindir}
 
 ### device-mapper part
-
-install -pm755 %_sourcedir/dmcontrol_update %buildroot%_sbindir/
 
 %{?_enable_static:install -pm755 libdevmapper.a %buildroot%_libdir/}
 
@@ -377,18 +317,12 @@ for f in `ls %buildroot%_libdir/libdevmapper.so`; do
 	ln -sf ../../%_lib/"$t" "$f"
 done
 
-mv %buildroot%_libdir/libdevmapper.so.1.00 %buildroot/%_lib/
-mv %buildroot%_libdir/libdevmapper-event.so.1.00 %buildroot/%_lib/
-%if_enabled applib
-mv %buildroot%_libdir/liblvm2app.so.2.2 %buildroot/%_lib/
-%endif
+mv %buildroot%_libdir/libdevmapper.so.1.02 %buildroot/%_lib/
+mv %buildroot%_libdir/libdevmapper-event.so.1.02 %buildroot/%_lib/
 
 pushd %buildroot%_libdir
-rm -f libdevmapper-event.so liblvm2app.so
-ln -sf ../../%_lib/libdevmapper-event.so.1.00 ./libdevmapper-event.so
-%if_enabled applib
-ln -sf ../../%_lib/liblvm2app.so.2.2 ./liblvm2app.so
-%endif
+rm -f libdevmapper-event.so
+ln -sf ../../%_lib/libdevmapper-event.so.1.02 ./libdevmapper-event.so
 popd
 
 # Fix pkgconfig file.
@@ -397,27 +331,14 @@ subst '/^Version:/ s/"\([^[:space:]]\+\)[^"]*"/\1/' %buildroot%_pkgconfigdir/*
 # provide a symlink for devmapper.pc
 ln -sf devmapper.pc %buildroot%_pkgconfigdir/libdevmapper.pc
 
-install -pm755 scripts/lvmconf.sh %buildroot%_sbindir/lvmconf
-
 ### lvm2-monitor init script
 
 mkdir -p %buildroot%_initdir
 install -m 0755 %SOURCE3 %buildroot%_initdir/lvm2-monitor
-install -m 0755 %SOURCE4 %buildroot%_initdir/lvm2-lvmetad
 install -m 0755 %SOURCE5 %buildroot%_initdir/blk-availability
 install -m 0755 %SOURCE6 %buildroot%_initdir/lvm2-lvmpolld
 
-%if_enabled cluster
-mv %buildroot%_prefix/sbin/clvmd %buildroot%_sbindir/clvmd
-ln -r -s %buildroot%_sbindir/clvmd %buildroot%_prefix/sbin/clvmd
-mkdir -p %buildroot%_sysconfdir/sysconfig
-install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
-%endif
-
 %post
-%if_enabled lvmetad
-%post_service lvm2-lvmetad
-%endif
 %if_enabled lvmpolld
 %post_service lvm2-lvmpolld
 %endif
@@ -426,19 +347,16 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 
 %preun
 %preun_service lvm2-monitor
-%if_enabled lvmetad
-%preun_service lvm2-lvmetad
-%endif
 %if_enabled lvmpolld
 %preun_service lvm2-lvmpolld
 %endif
 %preun_service blk-availability
 
 %post lockd
-%post_service lvm2-lvmlockd
+%post_service lvmlockd
 
 %preun lockd
-%preun_service lvm2-lvmlockd
+%preun_service lvmlockd
 
 %post dbusd
 %post_service lvm2-lvmdbusd
@@ -451,7 +369,6 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %doc doc/*.txt
 %_sbindir/*
 %exclude %_sbindir/dmsetup
-%exclude %_sbindir/dmcontrol_update
 %exclude %_sbindir/dmstats
 %exclude %_sbindir/blkdeactivate
 %exclude %_sbindir/dmeventd
@@ -460,43 +377,26 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %exclude %_man8dir/dmsetup*
 %exclude %_man8dir/dmstats*
 %exclude %_man8dir/blkdeactivate*
-%if_enabled cluster
-%exclude %_sbindir/clvmd
-%exclude %_man8dir/clvm*
-%endif
+%exclude %_man8dir/cmirrord*
 %config(noreplace) %_sysconfdir/lvm/lvm.conf
 %config(noreplace) %_sysconfdir/lvm/lvmlocal.conf
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/lvm/profile/*.profile
 %_initdir/lvm2-monitor
-%if_enabled systemd
 %_unitdir/lvm2-monitor.service
 %_unitdir/blk-availability.service
-%endif
 %_initdir/blk-availability
-%if_enabled lvmetad
-%_initdir/lvm2-lvmetad
-%if_enabled systemd
-%_unitdir/lvm2-lvmetad*
 %_unitdir/lvm2-pvscan@.service
-%endif
 %_udevrulesdir/69-dm-lvm-metad.rules
-%endif
 %if_enabled lvmpolld
 %_initdir/lvm2-lvmpolld
-%if_enabled systemd
 %_unitdir/lvm2-lvmpolld*
-%endif
 %endif
 %if_enabled lvmlockd
 %exclude %_sbindir/lvmlockd
 %exclude %_sbindir/lvmlockctl
 %exclude %_man8dir/lvmlockd*
 %endif
-%if_enabled systemd
-%if_enabled applib
 /lib/systemd/system-generators/lvm2-activation-generator
-%endif
-%endif
 %_tmpfilesdir/%name.conf
 %dir %_sysconfdir/lvm
 %dir %_sysconfdir/lvm/profile
@@ -512,30 +412,10 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %_sbindir/*.static
 %endif # static
 
-%if_enabled cluster
-%files -n clvm
-%config(noreplace) %_sysconfdir/sysconfig/clvmd
-%if_enabled systemd
-%_unitdir/lvm2-c*.service
-/lib/systemd/lvm2-cluster-activation
-%endif
-%_sbindir/clvmd
-%_prefix/sbin/clvmd
-%_man8dir/clvmd*
-%endif
-
 %files -n liblvm2
-%if_enabled applib
-/%_lib/liblvm2app.so.*
-%endif
 %_libdir/liblvm2cmd.so.*
 
 %files -n liblvm2-devel
-%if_enabled applib
-%_libdir/liblvm2app.so
-%_includedir/lvm2app.h
-%_pkgconfigdir/lvm2app.pc
-%endif
 %_libdir/liblvm2cmd.so
 %_includedir/lvm2cmd.h
 
@@ -553,23 +433,18 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %files -n dmsetup
 %doc WHATS_NEW_DM
 %_sbindir/dmsetup
-%_sbindir/dmcontrol_update
 %_man8dir/dmsetup*
 %_sbindir/blkdeactivate
 %_man8dir/blkdeactivate*
 %_sbindir/dmstats
 %_man8dir/dmstats*
 %_udevrulesdir/*
-%if_enabled lvmetad
 %exclude %_udevrulesdir/69-dm-lvm-metad.rules
-%endif
 
 %files -n dmeventd
 %_sbindir/dmeventd
-%if_enabled systemd
 %_unitdir/dm-event.service
 %_unitdir/dm-event.socket
-%endif
 
 %files -n libdevmapper-event
 /%_lib/libdevmapper-event.so.*
@@ -587,10 +462,15 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %_sbindir/lvmlockd
 %_sbindir/lvmlockctl
 %_man8dir/lvmlockd*
-%if_enabled systemd
-%_unitdir/lvm2-lvmlock*
+%_unitdir/lvmlock*
+#%_initdir/lvmlock*
 %endif
-#%_initdir/lvm2-lvmlock*
+
+%if_enabled cmirrord
+%files cmirrord
+%usrsbindir/cmirrord
+%_man8dir/cmirrord*
+%_unitdir/lvm2-cmirrord.service
 %endif
 
 %if_enabled lvmdbusd
@@ -599,23 +479,21 @@ install -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/clvmd
 %_sysconfdir/dbus-1/system.d/com.redhat.lvmdbus1.conf
 %_datadir/dbus-1/system-services/com.redhat.lvmdbus1.service
 %_man8dir/lvmdbusd.*
-%if_enabled systemd
 %_unitdir/lvm2-lvmdbusd.service
-%endif
-%python3_sitelibdir/lvmdbusd/*
-%endif
-
-%if_enabled python2_bindings
-%files -n python-module-lvm
-%python_sitelibdir/*
-%endif
-
-%if_enabled python3_bindings
-%files -n python3-module-lvm
-%python3_sitelibdir/*
+%python3_sitelibdir/lvmdbusd
 %endif
 
 %changelog
+* Sat Aug 10 2019 Alexey Shabalin <shaba@altlinux.org> 2.03.5-alt1
+- 2.03.5
+- drop applib support
+- drop python2 and python3 bindings
+- drop cluster support
+- drop lvmetad support
+- add cmirrord support
+- add writecache support
+- add vdo support
+
 * Mon Jun 03 2019 Alexey Shabalin <shaba@altlinux.org> 2.02.185-alt1
 - 2.02.185
 - filter zvols and PVE VG by default

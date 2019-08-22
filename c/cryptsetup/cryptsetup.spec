@@ -1,3 +1,5 @@
+%define _unpackaged_files_terminate_build 1
+
 # SPEC file for cryptsetup utility: setup crypto disks using
 # /dev/mapper interface in 2.6.x kernels
 
@@ -10,7 +12,7 @@
 %define default_luks_format LUKS2
 
 Name: cryptsetup
-Version: 2.1.0
+Version: 2.2.0
 Release: alt1
 
 Summary: utility to setup a encrypted disks with LUKS support
@@ -218,6 +220,9 @@ install -Dpm 755 debian/askpass %buildroot/lib/%name/askpass
 %_pkgconfigdir/*
 
 %changelog
+* Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.0-alt1
+- 2.2.0
+
 * Sat Feb 23 2019 Alexey Shabalin <shaba@altlinux.org> 2.1.0-alt1
 - 2.1.0
 - Switch default cryptographic backend to OpenSSL.

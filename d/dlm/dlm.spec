@@ -1,18 +1,18 @@
+
 Name: dlm
-Version: 4.0.6
+Version: 4.0.9
 Release: alt1
 Summary: dlm control daemon and tool
 License: GPLv2 and GPLv2+ and LGPLv2+
 Group: System/Servers
-URL: https://fedorahosted.org/cluster
+URL: https://pagure.io/dlm
 
-Requires: corosync2
+Requires: corosync >= 1.99.9
 
-Source0: %name-%version.tar.gz
-Patch0: 0001-dlm_controld-libsystemd-broke-itself.patch
-Patch1: dlm-4.0.5-alt.patch
+Source0: %name-%version.tar
+Patch0: %name-%version.patch
 
-BuildRequires: libpacemaker-devel libsystemd-devel
+BuildRequires: libpacemaker-devel libsystemd-devel libcorosync-devel libuuid-devel
 
 %description
 The kernel dlm requires a user daemon to control membership.
@@ -37,7 +37,6 @@ developing applications that use %name.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %make
@@ -76,6 +75,9 @@ touch %buildroot%_sysconfdir/dlm/dlm.conf
 %_pkgconfigdir/*.pc
 
 %changelog
+* Sun Aug 11 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.9-alt1
+- 4.0.9
+
 * Wed Aug 02 2017 Valery Inozemtsev <shrek@altlinux.ru> 4.0.6-alt1
 - 4.0.6
 

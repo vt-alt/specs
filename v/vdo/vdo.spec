@@ -1,7 +1,7 @@
 
 Summary: Management tools for Virtual Data Optimizer
 Name: vdo
-Version: 6.2.0.293
+Version: 6.2.1.134
 Release: alt1
 Group: System/Base
 License: GPLv2
@@ -36,7 +36,7 @@ This package provides the user-space management tools for VDO.
 %make install DESTDIR=%buildroot INSTALLOWNER= bindir=%_bindir \
   defaultdocdir=%_defaultdocdir name=%name \
   python3_sitelib=/%python3_sitelibdir mandir=%_mandir \
-  unitdir=%_unitdir presetdir=%_presetdir
+  unitdir=%_unitdir presetdir=%_presetdir sysconfdir=%_sysconfdir
 
 %post
 %post_service vdo
@@ -54,7 +54,11 @@ This package provides the user-space management tools for VDO.
 %doc %_defaultdocdir/%name/COPYING
 %_defaultdocdir/%name/examples
 %_man8dir/*
+%_sysconfdir/bash_completion.d/vdo*
 
 %changelog
+* Sun Aug 11 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.1.134-alt1
+- 6.2.1.134
+
 * Thu Feb 21 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.0.293-alt1
 - initial build for ALT
