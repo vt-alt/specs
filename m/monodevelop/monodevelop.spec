@@ -4,12 +4,12 @@
 
 Name: monodevelop
 Version: 7.6.9.22
-Release: alt2
+Release: alt3
 
 Summary: MonoDevelop is a project to port SharpDevelop to Gtk#
 License: LGPLv2.1
 Group: Development/Other
-Url: http://www.monodevelop.com/
+Url: https://www.monodevelop.com
 
 ExclusiveArch: %ix86 x86_64
 
@@ -50,6 +50,8 @@ Patch3: %name-update-rpm-autoreq.patch
 
 # https://github.com/mono/monodevelop/issues/6221
 Patch4: %name-alt-fix-export-solution-issue.patch
+
+Patch5: %name-alt-desktop-translation.patch
 
 # monodis fails to process following files
 %add_findprov_skiplist %_libexecdir/%name/AddIns/MonoDevelop.Refactoring/System.Text.Encoding.CodePages.dll
@@ -124,6 +126,7 @@ pushd external/xwt                            ; tar xf %SOURCE27 --strip-compone
 %patch2 -p2
 %patch3 -p2
 %patch4 -p2
+%patch5 -p2
 
 cp %SOURCE2 ./
 
@@ -258,6 +261,9 @@ rm -f %buildroot%_libexecdir/%name/bin/libe_sqlite3.so
 %_man1dir/*
 
 %changelog
+* Tue Jun 04 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 7.6.9.22-alt3
+- Added Russian translation to desktop file (Closes: #36849)
+
 * Tue Oct 23 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 7.6.9.22-alt2
 - Fixed work of solution format conversion.
 
