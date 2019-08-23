@@ -181,7 +181,7 @@
 %endif
 
 Name: libvirt
-Version: 5.5.0
+Version: 5.6.0
 Release: alt1
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
@@ -244,6 +244,7 @@ Requires: %name-libs = %EVR
 %{?_with_wireshark:BuildRequires: glib2-devel wireshark tshark wireshark-devel >= 2.1.0}
 %{?_with_bash_completion:BuildRequires: pkgconfig(bash-completion) >= 2.0}
 
+BuildRequires: /proc
 BuildRequires: bridge-utils libblkid-devel
 BuildRequires: libgcrypt-devel libgnutls-devel >= 3.2.0 libp11-kit-devel
 BuildRequires: libreadline-devel
@@ -1051,7 +1052,8 @@ fi
 %dir %attr(0700, root, root) %_sysconfdir/libvirt/nwfilter
 %config(noreplace) %_sysconfdir/sysconfig/libvirtd
 %config /lib/tmpfiles.d/libvirtd.conf
-%_unitdir/libvirtd.service
+%_unitdir/libvirtd*
+
 %_unitdir/virt-guest-shutdown.target
 %_initdir/libvirtd
 %config(noreplace) %_sysconfdir/libvirt/libvirtd.conf
@@ -1342,6 +1344,9 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Mon Aug 19 2019 Alexey Shabalin <shaba@altlinux.org> 5.6.0-alt1
+- 5.6.0
+
 * Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 5.5.0-alt1
 - 5.5.0 (Fixes: CVE-2019-10161, CVE-2019-10166, CVE-2019-10167, CVE-2019-10168)
 - build with glusterfs6
