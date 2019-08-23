@@ -2,7 +2,7 @@
 %define dovecot_version 2.3
 
 Name: dovecot-pigeonhole
-Version: 0.5.5
+Version: 0.5.7.1
 Epoch: 1
 Release: alt1
 Summary: Sieve language and the ManageSieve protocol for the Dovecot Secure IMAP Server
@@ -93,6 +93,9 @@ install -pD -m 644 %buildroot/%_defaultdocdir/dovecot-%dovecot_version/example-c
 %_aclocaldir/dovecot-pigeonhole.m4
 
 %changelog
+* Fri Aug 23 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:0.5.7.1-alt1
+- Updated to 0.5.7.1.
+
 * Mon Mar 25 2019 Fr. Br. George <george@altlinux.ru> 1:0.5.5-alt1
 - Autobuild version bump to 0.5.5
 
