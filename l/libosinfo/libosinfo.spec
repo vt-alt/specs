@@ -1,7 +1,7 @@
 
 Summary: A library for managing OS information for virtualization
 Name: libosinfo
-Version: 1.5.0
+Version: 1.6.0
 Release: alt1
 
 License: LGPLv2+
@@ -13,9 +13,10 @@ Source: %name-%version.tar
 Url: https://libosinfo.org
 BuildRequires: gettext >= 0.19.8
 BuildRequires: gtk-doc
-BuildRequires: pkgconfig(glib-2.0) >= 2.38 pkgconfig(gobject-2.0) pkgconfig(gio-2.0)
+BuildRequires: pkgconfig(glib-2.0) >= 2.44 pkgconfig(gobject-2.0) pkgconfig(gio-2.0)
 BuildRequires: pkgconfig(libxml-2.0) >= 2.6.0
 BuildRequires: pkgconfig(libxslt) >= 1.0.0
+BuildRequires: pkgconfig(libsoup-2.4)
 BuildRequires: gobject-introspection-devel >= 0.9.7
 BuildRequires: perl-podlators
 BuildRequires: vala
@@ -123,6 +124,9 @@ rm -f %buildroot%_libdir/*.{a,la}
 %_datadir/gtk-doc/html/*
 
 %changelog
+* Fri Aug 23 2019 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt1
+- new version 1.6.0
+
 * Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.0-alt1
 - new version 1.5.0
 

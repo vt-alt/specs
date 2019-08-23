@@ -1,7 +1,7 @@
 
 Summary: Tools for managing the osinfo database
 Name: osinfo-db-tools
-Version: 1.5.0
+Version: 1.6.0
 Release: alt1
 License: GPLv2+
 Group: Development/Tools
@@ -10,11 +10,12 @@ Url: http://libosinfo.org/
 
 BuildRequires: gettext >= 0.19.8
 BuildRequires: gtk-doc
-BuildRequires: pkgconfig(glib-2.0) >= 2.36 pkgconfig(gobject-2.0) pkgconfig(gio-2.0)
+BuildRequires: pkgconfig(glib-2.0) >= 2.44 pkgconfig(gobject-2.0) pkgconfig(gio-2.0)
 BuildRequires: pkgconfig(libxml-2.0) >= 2.6.0
 BuildRequires: pkgconfig(libxslt) >= 1.0.0
 BuildRequires: pkgconfig(libarchive) >= 3.0.0
 BuildRequires: pkgconfig(json-glib-1.0)
+BuildRequires: pkgconfig(libsoup-2.4)
 
 BuildRequires: perl-podlators
 BuildRequires: python3
@@ -49,6 +50,9 @@ information about operating systems for use with virtualization
 %_man1dir/*
 
 %changelog
+* Fri Aug 23 2019 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt1
+- new version 1.6.0
+
 * Wed May 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.0-alt1
 - new version 1.5.0
 
