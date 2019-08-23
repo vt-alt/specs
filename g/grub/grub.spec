@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt17
+Release: alt18
 
 Summary: GRand Unified Bootloader
 License: GPL
@@ -265,6 +265,7 @@ build_efi_image() {
 		search_label sleep test syslinuxcfg all_video video font \
 		gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat \
 		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
+		extcmd keystatus \
 		"$@"
 }
 
@@ -525,6 +526,9 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Tue Aug 13 2019 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt18
+- add extcmd and keystatus modules to EFI images (closes: #36722)
+
 * Fri Jun 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.02-alt17
 - Refactored %%build and %%install sections;
 - Added grub-ieee1275 support for ppc64le architecture;
