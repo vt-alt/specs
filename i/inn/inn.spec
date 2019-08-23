@@ -1,11 +1,11 @@
 %define _libexecdir %_prefix/libexec
 
 Name: inn
-Version: 2.6.2
-Release: alt3
+Version: 2.6.3
+Release: alt1
 
 Summary: The InterNetNews (INN) system, an Usenet news server
-License: GPL
+License: %gpl2plus
 Group: System/Servers
 
 Url: http://ftp.isc.org/isc/inn/
@@ -33,6 +33,8 @@ Patch4: big-alt-patch.patch
 Patch5: inn-redhat_build.patch
 Patch6: inn-2.5.2-pconf.patch
 Patch7: inn-2.6.2-linelimit-1098.patch
+
+BuildRequires(pre): rpm-build-licenses
 
 Requires: lib%name = %version-%release
 
@@ -460,6 +462,9 @@ fi
 %_bindir/inews
 
 %changelog
+* Mon Aug 19 2019 Sergey Y. Afonin <asy@altlinux.org> 2.6.3-alt1
+- 2.6.3-alt1
+
 * Mon Mar 04 2019 Igor Vlasenko <viy@altlinux.ru> 2.6.2-alt3
 - NMU: fixed /inn/inn/ in includedir
 
