@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr2
-%define ver     1.0.34
+%define ver     1.1.1
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -44,6 +44,8 @@ Summary: Epson Inkjet Printer Driver 2 (ESC/P-R) for Linux
 Source0: %name-%version.tar
 
 BuildRequires: libcups-devel
+
+ExclusiveArch: %ix86 x86_64 aarch64
 
 %description
 This software is a filter program used with Common UNIX Printing
@@ -79,6 +81,15 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Fri Aug 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.1.1-alt1
+- New version.
+- Supported new models:
+  + Epson EP-882A Series
+  + Epson EP-982A3 Series
+  + Epson XP-8600 Series
+  + Epson XP-970 Series
+- Build only for i586, x86_64 and aarch64.
+
 * Thu May 30 2019 Andrey Cherepanov <cas@altlinux.org> 1.0.34-alt1
 - New version.
 - Supported new models:

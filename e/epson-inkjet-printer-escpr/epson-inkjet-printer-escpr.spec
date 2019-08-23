@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.6.41
+%define ver     1.7.2
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -85,6 +85,15 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Fri Aug 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.2-alt1
+- New version.
+- Supported new models:
+  + Epson EP-712A Series
+  + Epson EP-812A Series
+  + Epson EW-052A Series
+  + Epson WF-110 Series
+  + Epson XP-3100 Series
+
 * Tue May 14 2019 Andrey Cherepanov <cas@altlinux.org> 1.6.41-alt1
 - New version.
 - Supported new models:
