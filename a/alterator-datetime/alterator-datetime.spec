@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.3.0
+Version: 4.3.1
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -51,6 +51,9 @@ alterator module for date/time setup
 %build
 %make_build
 
+%check
+%make_build check
+
 %install
 %makeinstall
 
@@ -66,6 +69,13 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Thu Aug 22 2019 Paul Wolneykien <manowar@altlinux.org> 4.3.1-alt1
+- Run tests when building.
+- Fix/improve: Protect the installer UI from runtime errors on
+  country change.
+- Added unit-test to check the "timezone" type.
+- Fixed (type timezone): allow [_-] symbols and more than one "/".
+
 * Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 4.3.0-alt1
 - installer: Fix ntp status detection.
 - installer: Don't use control directly.
