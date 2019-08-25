@@ -2,7 +2,7 @@
 
 Name: cinnamon-meta
 Version: %ver_major.0
-Release: alt3
+Release: alt4
 
 Summary: Cinnamon desktop meta package
 License: %gpl2plus
@@ -96,13 +96,6 @@ Requires: nemo-share
 # Integration with fileroller (see #34711)
 Requires: nemo-fileroller
 
-# Default web-browser
-Requires: firefox
-# Default mailer
-Requires: thunderbird
-# Default messenger
-Requires: pidgin
-
 # Default Document viewer
 Requires: xreader
 # Default text editor
@@ -110,12 +103,9 @@ Requires: xed
 
 # Utilities
 Requires: gnome-utils
-Requires: gconf-editor >= 3.0
 Requires: dconf-editor >= 0.10
 Requires: gcalctool
 
-# Default music player
-Requires: gnome-music
 # Default video player
 Requires: xplayer gst-libav
 # Default image viewer
@@ -137,6 +127,11 @@ of default applications.
 %files -n cinnamon-regular
 
 %changelog
+* Tue Aug 20 2019 Anton Midyukov <antohami@altlinux.org> 4.2.0-alt4
+- remove firefox, thunderbird, pidgin
+- remove gconf-editor
+- remove gnome-music
+
 * Fri Aug 16 2019 Vladimir Didenko <cow@altlinux.org> 4.2.0-alt3
 - remove brasero
 

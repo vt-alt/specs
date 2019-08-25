@@ -2,7 +2,7 @@
 
 Name: cinnamon
 Version: 4.2.3
-Release: alt1
+Release: alt2
 
 Summary: A Linux desktop which provides advanced innovative features and a traditional user experience.
 License: GPLv2+
@@ -46,6 +46,8 @@ Requires: libmuffin-gir >= %muffin_ver
 Requires: %name-translations
 Requires: mintlocale
 Requires: gst-plugins-base1.0
+
+Requires: typelib(Soup)
 
 # needed to install applets
 Requires: gettext-tools
@@ -195,6 +197,9 @@ install -D -p -m 0644 %SOURCE3 %buildroot/%_datadir/applications/
 %endif
 
 %changelog
+* Wed Aug 21 2019 Anton Midyukov <antohami@altlinux.org> 4.2.3-alt2
+- Add missing Requires: typelib(Soup)
+
 * Wed Jul 31 2019 Vladimir Didenko <cow@altlinux.org> 4.2.3-alt1
 - 4.2.3-1-g8f1480e7
 
