@@ -14,7 +14,7 @@
 %def_enable check
 
 Name: fluidsynth
-Version: 2.0.5
+Version: 2.0.6
 Release: alt1
 
 Summary: Software real-time synthesizer
@@ -24,7 +24,7 @@ URL: http://www.fluidsynth.org
 License: LGPL2.1+
 
 %if_disabled snapshot
-Source: http://savannah.nongnu.org/download/fluid/%name-%version.tar.gz
+Source: https://github.com/FluidSynth/%name/archive/v%version/%name-%version.tar.gz
 %else
 # VCS: https://github.com/FluidSynth/fluidsynth.git
 Source: %name-%version.tar
@@ -197,6 +197,9 @@ cp -r BUILD/doc/api/html ./
 %endif
 
 %changelog
+* Tue Aug 20 2019 Yuri N. Sedunov <aris@altlinux.org> 2.0.6-alt1
+- 2.0.6
+
 * Fri Apr 19 2019 Yuri N. Sedunov <aris@altlinux.org> 2.0.5-alt1
 - 2.0.5
 

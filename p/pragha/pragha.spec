@@ -8,7 +8,7 @@
 %def_disable rygel
 
 Name: pragha
-Version: 1.3.99
+Version: 1.3.99.1
 Release: alt1
 
 Summary: Pragha is a "Fork" of consonance Music manager
@@ -17,7 +17,7 @@ Group: Sound
 Url: http://pragha-music-player.github.io/
 
 %if_disabled snapshot
-Source: https://github.com/%name-music-player/%name/releases/download/%version/%name-%version.tar.bz2
+Source: https://github.com/%name-music-player/%name/releases/download/v%version/%name-%version.tar.bz2
 %else
 # VCS: https://github.com/pragha-music-player/pragha.git
 Source: %name-%version.tar
@@ -35,7 +35,7 @@ BuildRequires: libexo-devel libglyr-devel
 BuildRequires: libkeybinder-devel libnotify-devel libtag-devel
 BuildRequires: gstreamer1.0-devel gst-plugins1.0-devel libgtk+3-devel >= %gtk_ver
 BuildRequires: libpeas-devel libtotem-pl-parser-devel
-BuildPreReq: libgudev-devel libsoup-devel libmtp-devel
+BuildPreReq: libgudev-devel libsoup-devel libjson-glib-devel libmtp-devel
 %{?_enable_rygel:BuildRequires: rygel-devel}
 %{?_enable_grilo:BuildRequires: libgrilo-devel}
 %{?_enable_libxfce4ui:BuildRequires: libxfce4ui-devel}
@@ -53,10 +53,11 @@ light, and simultaneously complete without obstructing the daily work.
 subst 's/%name.appdata/%rdn_name.metainfo/' data/Makefile.am
 
 %build
-%add_optflags -D_FILE_OFFSET_BITS=64
+%add_optflags -D_FILE_OFFSET_BITS=64 
 NOCONFIGURE=1 xdt-autogen
 %configure \
-	%{subst_enable libxfce4ui}
+	%{subst_enable libxfce4ui} \
+	LIBS="%(pkg-config taglib_c --libs) %(pkg-config gio-2.0 --libs)"
 %make_build V=1
 
 %install
@@ -67,6 +68,7 @@ NOCONFIGURE=1 xdt-autogen
 
 %_bindir/*
 %_libdir/%name/
+%_datadir/%name/
 %_desktopdir/%name.desktop
 %_iconsdir/hicolor/*/*/pragha*
 %_man1dir/%name.1.*
@@ -74,8 +76,14 @@ NOCONFIGURE=1 xdt-autogen
 %_datadir/metainfo/*
 %doc ChangeLog FAQ NEWS README
 
+#devel
+%exclude %_includedir/lib%name
+%exclude %_pkgconfigdir/lib%name.pc
 
 %changelog
+* Fri Aug 16 2019 Yuri N. Sedunov <aris@altlinux.org> 1.3.99.1-alt1
+- 1.3.99.1
+
 * Sat Oct 06 2018 Yuri N. Sedunov <aris@altlinux.org> 1.3.99-alt1
 - 1.3.99
 

@@ -2,19 +2,19 @@
 %define gimpplugindir %(gimptool-2.0 --gimpplugindir)
 %def_enable zart
 
-%define gmic_git_ver v.2.6.7
+%define gmic_git_ver v.2.7.0
 # https://github.com/c-koi/zart
 # no tags
-%define zart_ver 6e98a35
+%define zart_ver 9d67c0d
 # https://github.com/c-koi/gmic-qt
 # v.2.6.2
 %define gmic_qt_ver 2.6.7
 # https://github.com/dtschump/gmic-community.git
 # 1.6.3.2-1245-g44ad9cb
-%define gmic_comm_ver 1.6.3.2-1261-g6ce0f34
+%define gmic_comm_ver 1.6.3.2-1278-g91e4cf7
 
 Name: gmic
-Version: 2.6.7
+Version: 2.7.0
 Release: alt1
 
 Summary: GREYC's Magic Image Converter
@@ -184,6 +184,9 @@ popd
 %gimpplugindir/plug-ins/*
 
 %changelog
+* Thu Aug 15 2019 Yuri N. Sedunov <aris@altlinux.org> 2.7.0-alt1
+- 2.7.0
+
 * Tue Jul 02 2019 Yuri N. Sedunov <aris@altlinux.org> 2.6.7-alt1
 - 2.6.7
 

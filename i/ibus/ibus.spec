@@ -4,17 +4,17 @@
 %define _localstatedir %_var
 
 %def_enable python
-%def_enable python2
+%def_disable python2
 %def_enable dconf
 %def_disable gconf
 %def_enable wayland
 %def_enable appindicator
-%def_disable emoji_dict
+%def_enable emoji_dict
 %def_enable unicode_dict
 
 Name: ibus
 Version: 1.5.20
-Release: alt2
+Release: alt3
 
 Summary: Intelligent Input Bus for Linux OS
 License: LGPLv2+
@@ -69,7 +69,7 @@ BuildRequires: libGConf-devel
 # gsettings-schema-convert
 BuildRequires: GConf
 # since 1.5.14
-%{?_enable_emoji_dict:BuildRequires: cldr-emoji-annotation unicode-emoji}
+%{?_enable_emoji_dict:BuildRequires: cldr-emoji-annotation-devel unicode-emoji unicode-ucd gir(Gtk) = 3.0}
 %{?_enable_appindicator:BuildRequires: qt5-base-devel}
 
 %define _xinputconf %_sysconfdir/X11/xinit/xinput.d/ibus.conf
@@ -192,7 +192,7 @@ override some functions in GObject-Introspection.
     %{?_disable_emoji_dict:--disable-emoji-dict} \
     %{?_disable_unicode_dict:--disable-unicode-dict} \
     %{subst_enable appindicator}
-    
+
 %make_build
 
 %install
@@ -231,6 +231,12 @@ fi
 %_libexecdir/%name-x11
 %_libexecdir/%name-engine-simple
 %{?_enable_wayland:%_libexecdir/%name-wayland}
+
+%if_enabled emoji_dict
+%_libexecdir/%name-extension-gtk3
+%_libexecdir/%name-ui-emojier
+%_man7dir/%name-emoji.7*
+%endif
 
 %if_enabled gconf
 %_libexecdir/%name-gconf
@@ -300,6 +306,10 @@ fi
 %endif
 
 %changelog
+* Thu Aug 22 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.20-alt3
+- rebuilt with Emoji dict
+- disabled python2 support
+
 * Sat Apr 06 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.20-alt2
 - rebuilt with python3 as default python
 

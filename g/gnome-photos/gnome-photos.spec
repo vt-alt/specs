@@ -10,7 +10,7 @@
 %def_disable check
 
 Name: gnome-photos
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: Photos - access, organize and share your photos on GNOME
@@ -91,6 +91,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %doc ARTISTS AUTHORS NEWS README
 
 %changelog
+* Tue Aug 20 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- 3.32.1
+
 * Mon Mar 18 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

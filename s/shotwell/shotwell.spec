@@ -1,5 +1,5 @@
 %set_verify_elf_method unresolved=relaxed
-%def_enable snapshot
+%def_disable snapshot
 %define _libexecdir %_prefix/libexec
 
 %def_enable face_detection
@@ -9,8 +9,8 @@
 %define gst_api_ver 1.0
 
 Name: shotwell
-Version: %ver_major.4
-Release: alt2
+Version: %ver_major.7
+Release: alt1
 
 Summary: digital photo organizer designed for the GNOME desktop environment
 Group: Graphics
@@ -95,6 +95,15 @@ mode, and export them to share with others.
 
 
 %changelog
+* Tue Aug 20 2019 Yuri N. Sedunov <aris@altlinux.org> 0.30.7-alt1
+- 0.30.7
+
+* Tue Aug 20 2019 Yuri N. Sedunov <aris@altlinux.org> 0.30.6-alt1
+- 0.30.6
+
+* Wed Aug 14 2019 Yuri N. Sedunov <aris@altlinux.org> 0.30.5-alt1
+- 0.30.5
+
 * Wed Jul 24 2019 Yuri N. Sedunov <aris@altlinux.org> 0.30.4-alt2
 - updated to 0.30.4-5-gdc6ca6a9 with fresh russian translation (ALT #36853)
 

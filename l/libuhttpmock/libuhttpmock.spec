@@ -3,7 +3,7 @@
 
 Name: lib%_name
 Version: 0.6.0
-Release: alt0.2
+Release: alt0.3
 
 Summary: HTTP web service mocking library
 Group: System/Libraries
@@ -15,7 +15,7 @@ Source: %_name-%version.tar
 %define glib_ver 2.36
 %define soup_ver 2.38
 
-BuildRequires: intltool gtk-doc
+BuildRequires: autoconf-archive intltool gtk-doc
 BuildRequires: libgio-devel >= %glib_ver
 BuildRequires: libsoup-devel >= %soup_ver
 BuildRequires: gobject-introspection-devel libsoup-gir-devel
@@ -100,6 +100,9 @@ GObject introspection devel data for the %_name library.
 %_datadir/gir-1.0/Uhm-%api_ver.gir
 
 %changelog
+* Wed Jun 26 2019 Yuri N. Sedunov <aris@altlinux.org> 0.6.0-alt0.3
+- updated to 0.5.1-13-gcda4b63
+
 * Fri May 04 2018 Grigory Ustinov <grenka@altlinux.org> 0.6.0-alt0.2
 - NMU: Rebuilt for e2k.
 

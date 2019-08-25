@@ -1,16 +1,21 @@
 %def_disable snapshot
+%define _libexecdir %_prefix/libexec
+
 %define _name gdata
 %define ver_major 0.17
 %define api_ver 0.0
 
 %def_enable gnome
 %def_enable goa
+%def_enable introspection
 %def_enable vala
 %def_enable gtk_doc
+%def_enable installed_tests
+%def_disable check
 
 Name: lib%_name
-Version: %ver_major.9
-Release: alt2
+Version: %ver_major.11
+Release: alt1
 
 Summary: Library for the GData protocol
 Group: System/Libraries
@@ -22,18 +27,17 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %else
 Source: %name-%version.tar
 %endif
-# serial 25
-Source1: ax_code_coverage.m4
 
 %define glib_ver 2.44
 %define soup_ver 2.42
 %define goa_ver 3.8
 %define uhttpmock_ver 0.5.0
 
-BuildRequires: autoconf-archive gtk-doc intltool
+BuildRequires(pre): meson
+BuildRequires: gtk-doc
 BuildRequires: glib2-devel >= %glib_ver libgdk-pixbuf-devel libgtk+3-devel liboauth-devel
 BuildRequires: libjson-glib-devel libuhttpmock-devel >= %uhttpmock_ver
-BuildRequires: gobject-introspection-devel libjson-glib-gir-devel libuhttpmock-gir-devel
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel libjson-glib-gir-devel libuhttpmock-gir-devel}
 %{?_enable_vala:BuildRequires: vala-tools}
 %{?_enable_gnome:BuildRequires: gcr-libs-devel libxml2-devel libsoup-gnome-devel >= %soup_ver libsoup-gnome-gir-devel}
 %{?_enable_goa:BuildRequires: libgnome-online-accounts-devel >= %goa_ver libgnome-online-accounts-gir-devel}
@@ -82,34 +86,37 @@ Requires: %name-gir = %version-%release %name-devel = %version-%release
 %description gir-devel
 GObject introspection devel data for the GData library.
 
+%package tests
+Summary: Tests for %name
+Group: Development/Other
+
+%description tests
+This package provides tests programs that can be used to verify
+the functionality of the installed %name.
+
 %prep
 %setup
-[ ! -d m4 ] && mkdir m4
-# save last (good) version of AX_CODE_COVERAGE
-rm -f m4/ax_code_coverage.m4
-cp %SOURCE1 m4/code_coverage.m4
-subst 's/AX_\(CODE_COVERAGE\)/LIBGDATA_\1/' m4/code_coverage.m4 configure.ac
 
 %build
-%autoreconf
-%configure \
-	--disable-static \
-	%{subst_enable gnome} \
-	%{subst_enable goa} \
-	--enable-introspection \
-	%{?_enable_gtk_doc:--enable-gtk-doc}
-%make_build
+%meson \
+	%{?_disable_gnome:-Dgnome=false} \
+	%{?_disable_goa-Dgoa=false} \
+	%{?_disable_gtk_doc:-Dgtk_doc=false} \
+	%{?_disable_vala:-Dvapi=false} \
+	%{?_disable_installed_tests:-Dinstalled_tests=false}
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 %find_lang %_name
 
 %check
-#%make check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
 %files -f %_name.lang
-%doc NEWS README AUTHORS
 %_libdir/*.so.*
+%doc NEWS README AUTHORS
 
 %files devel
 %_includedir/*
@@ -117,18 +124,31 @@ subst 's/AX_\(CODE_COVERAGE\)/LIBGDATA_\1/' m4/code_coverage.m4 configure.ac
 %_pkgconfigdir/%name.pc
 %{?_enable_vala:%_vapidir/%name.*}
 
-%if_enabled gtk_doc
-%files devel-doc
-%_datadir/gtk-doc/html/%_name/
-%endif
-
+%if_enabled introspection
 %files gir
 %_typelibdir/GData-%api_ver.typelib
 
 %files gir-devel
 %_girdir/GData-%api_ver.gir
+%endif
+
+%if_enabled gtk_doc
+%files devel-doc
+%_datadir/gtk-doc/html/%_name/
+%endif
+
+%if_enabled installed_tests
+%files tests
+%_libexecdir/installed-tests/%name/
+%_datadir/installed-tests/%name/
+%endif
+
 
 %changelog
+* Wed Aug 21 2019 Yuri N. Sedunov <aris@altlinux.org> 0.17.11-alt1
+- 0.17.11
+- new -tests subpackage
+
 * Sat Feb 09 2019 Yuri N. Sedunov <aris@altlinux.org> 0.17.9-alt2
 - fixed build with new autoconf-archive-2019.01.06
 
