@@ -1,6 +1,6 @@
 Name: nextcloud
 Version: 16.0.0
-Release: alt2
+Release: alt3
 Packager: Korneechev Evgeniy <ekorneechev@altlinux.org>
 
 %define installdir %webserver_webappsdir/%name
@@ -136,6 +136,9 @@ ssl_generate "nextcloud"
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/nginx/sites-available.d/%name.conf
 
 %changelog
+* Sun Aug 25 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 16.0.0-alt3
+- avoid gdb requirement
+
 * Wed Jun 05 2019 Andrey Cherepanov <cas@altlinux.org> 16.0.0-alt2
 - Fix Apache2 configuration (ALT #36755) according to
   https://docs.nextcloud.com/server/16/admin_manual/installation/source_installation.html#apache-web-server-configuration
