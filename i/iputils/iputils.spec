@@ -1,5 +1,5 @@
 Name: iputils
-%define timestamp 20190515
+%define timestamp 20190709
 Version: %timestamp
 Release: alt1
 
@@ -153,6 +153,9 @@ fi
 %_man8dir/ninfod.*
 
 %changelog
+* Thu Aug 22 2019 Mikhail Efremov <sem@altlinux.org> 20190709-alt1
+- 20190515 -> 20190709.
+
 * Fri May 17 2019 Mikhail Efremov <sem@altlinux.org> 20190515-alt1
 - Fix docs build.
 - 20190324 -> 20190515.
