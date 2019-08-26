@@ -1,5 +1,5 @@
 Name: libdrm
-Version: 2.4.98
+Version: 2.4.99
 Release: alt1
 Epoch: 1
 Summary: Userspace interface to kernel DRM service
@@ -39,7 +39,7 @@ develop programs which make use of %name
 	--enable-udev \
 %ifarch armh aarch64
 	--enable-etnaviv-experimental-api \
-	-enable-exynos-experimental-api \
+	--enable-exynos-experimental-api \
 	--enable-omap-experimental-api \
 %endif
 	--disable-static
@@ -60,6 +60,9 @@ develop programs which make use of %name
 %_man7dir/*.7*
 
 %changelog
+* Mon Jul 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.99-alt1
+- 2.4.99
+
 * Thu Apr 25 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.98-alt1
 - 2.4.98
 
