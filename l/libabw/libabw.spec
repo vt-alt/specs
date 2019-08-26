@@ -1,5 +1,5 @@
 Name: libabw
-Version: 0.1.2
+Version: 0.1.3
 Release: alt1
 Summary: A library for import of AbiWord files
 
@@ -93,6 +93,9 @@ install -m 0644 abw2*.1 %buildroot%_man1dir
 %_man1dir/abw2*
 
 %changelog
+* Mon Aug 26 2019 Alexey Shabalin <shaba@altlinux.org> 0.1.3-alt1
+- new version 0.1.3
+
 * Mon Feb 12 2018 Alexey Shabalin <shaba@altlinux.ru> 0.1.2-alt1
 - new version 0.1.2
 
