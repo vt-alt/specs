@@ -1,6 +1,6 @@
 Name: libvisio
-Version: 0.1.6
-Release: alt2
+Version: 0.1.7
+Release: alt1
 Summary: A library providing ability to interpret and import visio diagrams
 
 Group: System/Libraries
@@ -79,6 +79,9 @@ mkdir -p m4
 %_bindir/*
 
 %changelog
+* Mon Aug 26 2019 Alexey Shabalin <shaba@altlinux.org> 0.1.7-alt1
+- 0.1.7
+
 * Tue Oct 02 2018 Alexey Shabalin <shaba@altlinux.org> 0.1.6-alt2
 - rebuild with new icu
 
