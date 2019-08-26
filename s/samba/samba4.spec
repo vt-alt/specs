@@ -59,8 +59,8 @@
 %endif
 
 Name:    samba
-Version: 4.10.6
-Release: alt2
+Version: 4.10.7
+Release: alt1
 
 Group:   System/Servers
 Summary: The Samba4 CIFS and AD client and server suite
@@ -805,7 +805,7 @@ cp -a ../%rname-%version ../%rname-%version-separate-heimdal-server
 	--libdir=%_samba_libdir \
 	--with-modulesdir=%_samba_mod_libdir \
 	--with-privatelibdir=%_samba_mod_libdir \
-	--with-pammodulesdir=%_lib/security \
+	--with-pammodulesdir=/%_lib/security \
 	--with-pam \
 %endif
 
@@ -1822,6 +1822,10 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Thu Aug 22 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.7-alt1
+- Update to final summer release with fixed joining a Windows pre-2008R2 DC
+- Fix lookup requests from AD DCs over LSA RPC to FreeIPA domain controller
+
 * Wed Aug 14 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.6-alt2
 - Change lstat to stat check in directory_create_or_exist for compatibility
   with oldstyle /var/run due it symlink in modern linux installations
