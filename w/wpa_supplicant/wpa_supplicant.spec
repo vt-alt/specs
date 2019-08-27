@@ -1,5 +1,5 @@
 Name: wpa_supplicant
-Version: 2.7
+Version: 2.9
 Release: alt1
 
 Summary: wpa_supplicant is an implementation of the WPA Supplicant component
@@ -87,7 +87,6 @@ tar c -C %name/wpa_gui-qt4/icons hicolor |tar x -C %buildroot%_iconsdir
 %systemd_unitdir/wpa_supplicant-nl80211@.service
 %systemd_unitdir/wpa_supplicant-wired@.service
 
-%_datadir/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
 %_datadir/dbus-1/system-services/fi.w1.wpa_supplicant1.service
 
 %_sbindir/wpa_supplicant
@@ -107,6 +106,9 @@ tar c -C %name/wpa_gui-qt4/icons hicolor |tar x -C %buildroot%_iconsdir
 %_iconsdir/hicolor/*/*/*.png
 
 %changelog
+* Mon Aug 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.9-alt1
+- 2.9 released
+
 * Tue Dec 18 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.7-alt1
 - 2.7 released
 
