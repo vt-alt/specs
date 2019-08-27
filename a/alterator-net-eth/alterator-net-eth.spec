@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.1
+Version: 5.1.2
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Mon Aug 26 2019 Mikhail Efremov <sem@altlinux.org> 5.1.2-alt1
+- Refresh UI after commit changes (closes: #37103).
+
 * Thu Jul 11 2019 Mikhail Efremov <sem@altlinux.org> 5.1.1-alt1
 - Fix bridges deleting.
 
