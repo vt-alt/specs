@@ -1,6 +1,6 @@
 Name:    cuneiform-qt
 Version: 0.1.4
-Release: alt1
+Release: alt2
 Summary: GUI frontend for Cuneiform OCR
 
 License: GPLv3+
@@ -51,6 +51,9 @@ convert -resize 16x16 icons/%name.png %buildroot%_miconsdir/%name.png
 %_pixmapsdir/%name.png
 
 %changelog
+* Mon Aug 26 2019 Andrey Cherepanov <cas@altlinux.org> 0.1.4-alt2
+- Do not strip debugging information.
+
 * Tue Feb 05 2019 Andrey Cherepanov <cas@altlinux.org> 0.1.4-alt1
 - Fix saving of file, fix status bar message during saving.
 
