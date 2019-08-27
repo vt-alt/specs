@@ -7,8 +7,8 @@
 %add_findprov_skiplist %_datadir/qtcreator/*
 
 Name:    qt-creator
-Version: 4.9.1
-Release: alt2
+Version: 4.9.2
+Release: alt1
 Summary: Cross-platform IDE for Qt
 
 Group:   Development/Tools
@@ -140,6 +140,9 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 %_datadir/qtcreator/*
 
 %changelog
+* Mon Jul 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.2-alt1
+- New version.
+
 * Tue Jun 18 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.1-alt2
 - Build qbsprojectmanager plugin with bundled qbs (ALT #36917).
 - Use ALT-specific Qt5 utilities names.
