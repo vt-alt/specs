@@ -1,24 +1,25 @@
 Name: pwgen
-Version: 2.06
-Release: alt2
+Version: 2.08
+Release: alt1
 
 Summary: Password generation utility
 License: GPLv2+
 Group: System/Base
-Url: http://sourceforge.net/projects/pwgen/
+Url: https://sourceforge.net/projects/pwgen/
 
-# http://download.sourceforge.net/%name/%name-%version.tar.gz
-Source: %name-%version.tar
+# git://git.altlinux.org/gears/p/pwgen.git
+Source: %name-%version-%release.tar
 
 %description
 The pwgen utility generates random, meaningless but pronounceable
 passwords.
 
 %prep
-%setup
-sed -i 's/^AC_PROG_CC/&\nAC_SYS_LARGEFILE/' configure.in
+%setup -n %name-%version-%release
+sed -i 's/^AC_PROG_CC/&\nAC_SYS_LARGEFILE/' configure.ac
 
 %build
+%autoreconf
 %configure
 %make_build
 
@@ -28,9 +29,11 @@ sed -i 's/^AC_PROG_CC/&\nAC_SYS_LARGEFILE/' configure.in
 %files
 %_bindir/*
 %_man1dir/*
-%doc ChangeLog
 
 %changelog
+* Sat Aug 03 2019 Dmitry V. Levin <ldv@altlinux.org> 2.08-alt1
+- 2.06 -> 2.08.
+
 * Fri Apr 19 2013 Dmitry V. Levin <ldv@altlinux.org> 2.06-alt2
 - Built with LFS support enabled.
 

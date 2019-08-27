@@ -1,5 +1,5 @@
 Name: libcap
-Version: 2.26
+Version: 2.27.0.2.ac1e
 Release: alt1
 Epoch: 1
 
@@ -94,6 +94,9 @@ ln -rsnf %buildroot/%_lib/"$soname" "%buildroot%_libdir/libcap.so.1"
 %_pam_modules_dir/*
 
 %changelog
+* Sun Apr 21 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.27.0.2.ac1e-alt1
+- libcap-2.26 -> libcap-2.27-2-gac1ef31.
+
 * Wed Jan 02 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.26-alt1
 - libcap-2.25-8-gbe92eaa -> libcap-2.26.
 

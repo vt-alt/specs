@@ -1,5 +1,5 @@
 Name: tzdata
-Version: 2018i
+Version: 2019b
 Release: alt1
 
 Summary: Timezone data
@@ -73,6 +73,9 @@ make -k check_tables
 %srcdir/
 
 %changelog
+* Mon Jul 01 2019 Dmitry V. Levin <ldv@altlinux.org> 2019b-alt1
+- 2018i -> 2019b.
+
 * Mon Dec 31 2018 Dmitry V. Levin <ldv@altlinux.org> 2018i-alt1
 - 2018g -> 2018i.
 
