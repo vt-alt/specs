@@ -10,7 +10,7 @@
 Name: libvncserver
 %define libname %name
 Version: 0.9.11
-Release: alt1%ubt
+Release: alt4
 
 Group: System/Libraries
 Summary: An easy API to write one's own VNC server
@@ -31,11 +31,12 @@ Patch15: libvncserver-0.9.11-soname.patch
 Patch20: redef-keysym.patch
 Patch21: libvncserver-byteswap.patch
 Patch22: libvncserver-0.9.10-ossl.patch
+# Debian
+Patch31: CVE-2018-7225.patch
 
 # Automatically added by buildreq on Thu Apr 21 2011 (-bi)
 # optimized out: elfutils libX11-devel libgfortran-devel libstdc++-devel xorg-xproto-devel
 #BuildRequires: gcc-c++ gcc-fortran glibc-devel-static imake libICE-devel libSDL-devel libjpeg-devel xorg-cf-files zlib-devel
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ libICE-devel libSDL-devel libjpeg-devel zlib-devel
 BuildRequires: libssl-devel liblzo2-devel libgcrypt-devel libgnutls-devel libpng-devel
 %if_enabled vaapi
@@ -111,6 +112,7 @@ Conflicts: libvncserver < %EVR
 %patch20 -p1
 %patch21 -p0
 %patch22 -p0
+%patch31 -p1
 
 mkdir -p x11vnc
 %autoreconf
@@ -160,7 +162,16 @@ mkdir -p x11vnc
 
 
 %changelog
-* Wed Sep 20 2017 Sergey V Turchin <zerg@altlinux.org> 0.9.11-alt1%ubt
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.11-alt4
+- security fixes: CVE-2018-7225
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.9.11-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.9.11-alt2
+- NMU: remove ubt macro from release
+
+* Wed Sep 20 2017 Sergey V Turchin <zerg@altlinux.org> 0.9.11-alt1
 - new version
 
 * Mon Jan 11 2016 Sergey V Turchin <zerg@altlinux.org> 0.9.10-alt3
