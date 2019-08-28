@@ -1,5 +1,5 @@
 Name: rpm-macros-luajit
-Version: 0.1
+Version: 0.2
 Release: alt1
 BuildArch: noarch
 
@@ -23,5 +23,8 @@ cp %SOURCE0 %buildroot%_rpmmacrosdir/luajit
 %_rpmmacrosdir/luajit
 
 %changelog
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 0.2-alt1
+- add ppc64le to list of supported arches
+
 * Fri Apr 12 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.1-alt1
 - Initial build.

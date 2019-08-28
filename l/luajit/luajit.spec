@@ -1,6 +1,6 @@
 Name: luajit
 Version: 2.1
-Release: alt7
+Release: alt9
 
 Summary: a Just-In-Time Compiler for Lua
 License: MIT
@@ -9,6 +9,11 @@ Url: http://luajit.org
 
 Source: %name-%version.tar
 Requires: lib%name = %EVR
+BuildRequires(pre): rpm-macros-luajit
+
+ExclusiveArch: %luajit_arches
+
+Patch1: luajit-2.1.0-fedora-ppc64le-support.patch
 
 %description
 LuaJIT is a Just-In-Time Compiler (JIT) for the Lua programming language.
@@ -46,6 +51,7 @@ It may be embedded or used as a general-purpose, stand-alone language.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %make_build amalg \
@@ -84,6 +90,12 @@ mv %buildroot%_bindir/luajit-2.1.0-beta3 %buildroot%_bindir/luajit
 %_libdir/*.a
 
 %changelog
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 2.1-alt9
+- specify build arches
+
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 2.1-alt8
+- patch for ppc64le support
+
 * Thu Mar 21 2019 Vladimir Didenko <cow@altlinux.org> 2.1-alt7
 - git20190110
 
