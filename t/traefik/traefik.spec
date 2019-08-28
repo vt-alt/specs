@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name: traefik
-Version: 1.7.11
+Version: 1.7.14
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -129,6 +129,10 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Fri Aug 23 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.14-alt1
+- 1.7.14
+- build with golang-1.12.9 (Fixes: CVE-2019-9512, CVE-2019-9514)
+
 * Tue May 07 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.11-alt1
 - 1.7.11
 
