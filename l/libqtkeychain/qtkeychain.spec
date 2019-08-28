@@ -1,10 +1,9 @@
 Name: libqtkeychain
 Version: 0.9.1
-Release: alt2
+Release: alt3
 
 %define sover 1
 %define libqtkeychain libqtkeychain%sover
-%define libqt5keychain libqt5keychain%sover
 
 Group: Development/KDE and QT
 Summary: QtKeychain is a Qt API to store passwords and other secret data securely
@@ -13,7 +12,7 @@ Url: https://github.com/frankosterfeld/qtkeychain
 
 Source0: %name-%version.tar
 Patch1: alt-build-qt4.patch
-BuildRequires: cmake gcc-c++ libqt4-devel qt5-tools-devel pkgconfig(QtDBus) pkgconfig(Qt5DBus) libsecret-devel
+BuildRequires: cmake gcc-c++ libqt4-devel pkgconfig(QtDBus) libsecret-devel
 
 %description
 QtKeychain is a Qt API to store passwords and other secret data securely.
@@ -29,15 +28,6 @@ Conflicts: libqtkeychain < 0.7
 %description -n qtkeychain-common
 %name common package
 
-%package -n qt5keychain-common
-Summary: %name common package
-Group: System/Configuration/Other
-BuildArch: noarch
-Requires: qt5-base-common
-Conflicts: libqtkeychain-qt5 < 0.7
-%description -n qt5keychain-common
-%name common package
-
 %package -n %libqtkeychain
 Group: Development/KDE and QT
 Summary: A password store library
@@ -46,14 +36,6 @@ Requires: qtkeychain-common
 %description -n %libqtkeychain
 The qtkeychain library allows you to store passwords easy and secure.
 
-%package -n %libqt5keychain
-Group: Development/KDE and QT
-Summary: A password store library
-Provides: qtkeychain-qt5 = %version
-Requires: qt5keychain-common
-%description -n %libqt5keychain
-The qt5keychain library allows you to store passwords easy and secure.
-
 %package devel
 Group: Development/KDE and QT
 Summary: QtKeychain devel files
@@ -61,14 +43,6 @@ Provides: qtkeychain-devel = %version
 Requires: libsecret-devel
 %description devel
 QtKeychain devel files.
-
-%package qt5-devel
-Group: Development/KDE and QT
-Summary: Development files for %name-qt5
-Provides: qtkeychain-qt5-devel = %version
-Requires: libsecret-devel
-%description qt5-devel
-This package contains development files for qt5keychain.
 
 %prep
 %setup
@@ -82,35 +56,14 @@ QTDIR="%_qt4dir" \
     -DECM_MKSPECS_INSTALL_DIR=%_datadir/qt4/mkspecs \
     -DCMAKE_BUILD_TYPE=Release
 %cmake_build
-mv BUILD build-qt4
-
-QTDIR="%_qt5_prefix" \
-%cmake .. \
-    -DBUILD_WITH_QT4:BOOL=OFF \
-    -DQTKEYCHAIN_STATIC=OFF \
-    -DECM_MKSPECS_INSTALL_DIR=%_qt5_archdatadir/mkspecs \
-    -DCMAKE_BUILD_TYPE=Release
-%cmake_build
-mv BUILD build-qt5
 
 %install
-rm -rf BUILD; ln -sf build-qt4 BUILD
 PATH=$PATH:%_qt4dir/bin \
-make install DESTDIR=%buildroot -C build-qt4
-rm -rf BUILD; ln -sf build-qt5 BUILD
-PATH=$PATH:%_qt5_bindir \
-make install DESTDIR=%buildroot -C build-qt5
+make install DESTDIR=%buildroot -C BUILD
 
 %find_lang --with-qt qtkeychain
 
-grep %_datadir/qt4/translations qtkeychain.lang > %name-qt4.lang
-grep %_qt5_translationdir qtkeychain.lang > %name-qt5.lang
-
-%files -n qtkeychain-common -f %name-qt4.lang
-%doc ReadMe.txt
-%doc COPYING
-
-%files -n qt5keychain-common -f %name-qt5.lang
+%files -n qtkeychain-common -f qtkeychain.lang
 %doc ReadMe.txt
 %doc COPYING
 
@@ -118,23 +71,16 @@ grep %_qt5_translationdir qtkeychain.lang > %name-qt5.lang
 %_libdir/libqtkeychain.so.%sover
 %_libdir/libqtkeychain.so.*
 
-%files -n %libqt5keychain
-%_libdir/libqt5keychain.so.%sover
-%_libdir/libqt5keychain.so.*
-
 %files devel
 %_includedir/qtkeychain/
 %_libdir/cmake/QtKeychain/
 %_libdir/libqtkeychain.so
 %_datadir/qt4/mkspecs/qt_QtKeychain.pri
 
-%files qt5-devel
-%_includedir/qt5keychain/
-%_libdir/cmake/Qt5Keychain/
-%_libdir/libqt5keychain.so
-%_qt5_archdatadir/mkspecs/qt_Qt5Keychain.pri
-
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.1-alt3
+- remove libqtkeychain-qt5
+
 * Mon Feb 04 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9.1-alt2
 - NMU: fix requires
 
