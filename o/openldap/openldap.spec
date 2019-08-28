@@ -11,13 +11,13 @@
 %def_disable slapi
 %def_enable slp
 %def_enable overlay
-%def_enable aci 
+%def_enable aci
 %def_enable yielding
 %def_enable ntlm
 
 Name: openldap
-Version: %_sover.47
-Release: alt2
+Version: %_sover.48
+Release: alt1
 
 Provides: openldap2.4 = %version-%release
 Obsoletes: openldap2.4 < %version-%release
@@ -93,7 +93,6 @@ Patch23: %_bname-2.4.31-rh-nss-default-cipher-suite-always-selected.patch
 Patch24: %_bname-2.4.31-rh-nss-multiple-tls-contexts.patch
 Patch25: openldap-2.4.32-alt-gcc5.1.patch
 Patch27: openldap-2.4.42-CVE-2015-3276.patch
-Patch28: openldap-2.4.47-ITS-7585-fix-ldapi-with-SASL_NOCANON.patch
 
 ### REQUIRE Section
 
@@ -264,7 +263,6 @@ HTML and TXT versions
 %patch14 -p1
 
 %patch27 -p1
-%patch28 -p1
 
 # Add some more schema for the sake of migration scripts and others
 pushd servers/slapd
@@ -692,6 +690,9 @@ rm -f /var/lib/ldap/%_lib/*.so*
 #[FR] Create chroot-scripts dynamic while build package 
 
 %changelog
+* Wed Aug 28 2019 Alexey Shabalin <shaba@altlinux.org> 2.4.48-alt1
+- 2.4.48 (Fixes: CVE-2019-13057, CVE-2019-13565)
+
 * Fri Jun 14 2019 Stanislav Levin <slev@altlinux.org> 2.4.47-alt2
 - Fixed LDAPI with SASL_NOCANON (RH BZ: #960222).
 
