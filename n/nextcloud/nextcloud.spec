@@ -1,6 +1,6 @@
 Name: nextcloud
 Version: 16.0.0
-Release: alt3
+Release: alt4
 Packager: Korneechev Evgeniy <ekorneechev@altlinux.org>
 
 %define installdir %webserver_webappsdir/%name
@@ -136,6 +136,9 @@ ssl_generate "nextcloud"
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/nginx/sites-available.d/%name.conf
 
 %changelog
+* Wed Aug 28 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 16.0.0-alt4
+- fixed nginx configuration to use php7
+
 * Sun Aug 25 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 16.0.0-alt3
 - avoid gdb requirement
 
