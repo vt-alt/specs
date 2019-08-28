@@ -1,6 +1,6 @@
 Name: nmap
-Version: 7.70
-Release: alt2
+Version: 7.80
+Release: alt1
 Epoch: 20020501
 
 Summary: Network exploration tool and security scanner
@@ -129,12 +129,15 @@ rm %buildroot%_datadir/zenmap/su-to-zenmap.sh
 %endif
 
 %changelog
+* Fri Aug 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 20020501:7.80-alt1
+- Updated to 7.80.
+
 * Wed Apr 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 20020501:7.70-alt2
 - Rebuilt with system libssh2-devel and zlib-devel (found with help
   of findsym-remote).
 
 * Tue Mar 19 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 20020501:7.70-alt1
-- Updated to v7.70.
+- Updated to 7.70.
 - Built with internal libdnet.
 - Rebuilt with openssl 1.1.
 
