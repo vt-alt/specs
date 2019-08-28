@@ -4,7 +4,7 @@
 %define libgrantleethemeeditor libgrantleethemeeditor%pim_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -69,12 +69,12 @@ Requires: %name-common = %version-%release
 %doc COPYING*
 
 %files
-%config(noreplace) %_K5xdgconf/*editor*
 %_K5bin/*editor*
 #%_K5conf_up/*editor*
 %_K5xdgapp/*editor*.desktop
 %_K5cfg/*editor*
 #%_K5notif/*editor*
+%_datadir/qlogging-categories5/*.*categories
 
 #%files devel
 #%_K5inc/grantlee-editor_version.h
@@ -88,6 +88,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libgrantleethemeeditor.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

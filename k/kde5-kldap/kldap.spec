@@ -1,7 +1,7 @@
 %define rname kldap
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -59,7 +59,8 @@ KF5 library
 
 %files common -f %name.lang
 #%doc COPYING*
-%config(noreplace) %_K5xdgconf/kldap.*categories
+#%config(noreplace) %_K5xdgconf/kldap.*categories
+%_datadir/qlogging-categories5/*.*categories
 %_K5srv/ldap*.protocol
 
 %files devel
@@ -74,6 +75,9 @@ KF5 library
 %_K5plug/kf5/kio/ldap.so
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

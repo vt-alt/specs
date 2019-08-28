@@ -6,7 +6,7 @@
 %define libkleopatraclientgui libkleopatraclientgui%kleopatraclientgui_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -80,7 +80,7 @@ Requires: %name-common = %version-%release
 %find_lang %name --with-kde --all-name
 
 %files common -f %name.lang
-%config(noreplace) %_K5xdgconf/*kleopatra*.*
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/kleopatra
@@ -103,6 +103,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkleopatraclientgui.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

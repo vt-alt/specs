@@ -9,9 +9,10 @@
 %define libgrammarcommon libgrammarcommon%sover
 %define libkmailgrammalecte libkmailgrammalecte%sover
 %define libkmaillanguagetool libkmaillanguagetool%sover
-    
+%define libkmailmarkdown libkmailmarkdown%sover
+
 Name: kde5-pim-addons
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -43,7 +44,7 @@ BuildRequires: kde5-calendarsupport-devel kde5-eventviews-devel kde5-grantleethe
 BuildRequires: kde5-kcalcore-devel kde5-kcalutils-devel kde5-kcontacts-devel kde5-kidentitymanagement-devel
 BuildRequires: kde5-kimap-devel kde5-kmailtransport-devel kde5-kmime-devel kde5-kpimtextedit-devel kde5-ktnef-devel kde5-libgravatar-devel
 BuildRequires: kde5-libkdepim-devel kde5-mailcommon-devel kde5-messagelib-devel kde5-pim-apps-libs-devel kde5-pimcommon-devel
-BuildRequires: kde5-mailimporter-devel kde5-akonadi-import-wizard-devel
+BuildRequires: kde5-mailimporter-devel kde5-akonadi-import-wizard-devel kde5-kontactinterface-devel
 BuildRequires: kde5-kpkpass-devel kde5-kitinerary-devel
 BuildRequires: kf5-kdeclarative-devel kf5-kdelibs4support-devel kf5-kdoctools-devel-static kf5-kio-devel kf5-kpackage-devel
 BuildRequires: kf5-kwallet-devel kf5-syntax-highlighting-devel kf5-prison-devel kf5-kholidays-devel
@@ -115,6 +116,13 @@ Requires: %name-common = %version-%release
 %description -n %libkmaillanguagetool
 KF5 library
 
+%package -n %libkmailmarkdown
+Group: System/Libraries
+Summary: KF5 library
+Requires: %name-common = %version-%release
+%description -n %libkmailmarkdown
+KF5 library
+
 %package kaddressbook
 Summary: addon
 Group: Graphical desktop/KDE
@@ -163,7 +171,7 @@ Requires: %name-common
 %files common -f %name.lang
 #%doc COPYING*
 %config(noreplace) %_K5xdgconf/kmail.*
-%config(noreplace) %_K5xdgconf/kdepim*.*
+%_datadir/qlogging-categories5/*.*categories
 %_K5conf_up/*.upd
 
 %files kaddressbook
@@ -223,8 +231,14 @@ Requires: %name-common
 %files -n %libkmaillanguagetool
 %_K5lib/libkmaillanguagetool.so.%sover
 %_K5lib/libkmaillanguagetool.so.*
+%files -n %libkmailmarkdown
+%_K5lib/libkmailmarkdown.so.%sover
+%_K5lib/libkmailmarkdown.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

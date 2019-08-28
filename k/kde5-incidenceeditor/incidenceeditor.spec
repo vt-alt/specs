@@ -4,7 +4,7 @@
 %define libkf5incidenceeditor libkf5incidenceeditor%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -70,7 +70,8 @@ KF5 library
 
 %files common -f %name.lang
 #%doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+#%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 %_K5inc/incidenceeditor_version.h
@@ -84,6 +85,9 @@ KF5 library
 %_K5lib/libKF5IncidenceEditor.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

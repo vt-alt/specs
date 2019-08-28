@@ -1,7 +1,7 @@
 %define rname kaddressbook
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -70,7 +70,7 @@ Requires: %name-common = %version-%release
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*kaddressbook*
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/kaddressbook
@@ -108,6 +108,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkaddressbookprivate.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

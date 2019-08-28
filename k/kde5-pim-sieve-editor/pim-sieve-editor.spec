@@ -4,7 +4,7 @@
 %define libsieveeditor libsieveeditor%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -68,17 +68,20 @@ Requires: %name-common = %version-%release
 
 %files
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*sieveeditor*
 %_K5bin/*sieveeditor*
 %_K5conf_up/*sieveeditor*
 %_K5xdgapp/*sieveeditor*.desktop
 %_K5cfg/*sieveeditor*
+%_datadir/qlogging-categories5/*.*categories
 
 %files -n %libsieveeditor
 %_K5lib/libsieveeditor.so.%sover
 %_K5lib/libsieveeditor.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

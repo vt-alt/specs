@@ -6,7 +6,7 @@
 %define libkorganizerprivate libkorganizerprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -79,7 +79,9 @@ Requires: %name-common = %version-%release
 %setup -n %rname-%version
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
@@ -88,9 +90,9 @@ Requires: %name-common = %version-%release
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*korganizer*
 %_K5srvtyp/*.desktop
 %_K5icon/*/*/actions/*
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/korgac
@@ -109,6 +111,7 @@ Requires: %name-common = %version-%release
 %_K5data/korgac/
 %_K5data/korganizer/
 %_K5data/kontact/ksettingsdialog/*
+%_K5data/knsrcfiles/*korganizer*
 %_K5cfg/*korganizer*
 %_K5cf_upd/*korganizer*
 #%_K5xmlgui/korganizer/
@@ -145,6 +148,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkorganizerprivate.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

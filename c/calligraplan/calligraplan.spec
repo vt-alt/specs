@@ -18,7 +18,7 @@
 
 Name: calligraplan
 Version: 3.1.0
-Release: alt4.qa1
+Release: alt7
 Epoch: 0
 %K5init
 
@@ -34,8 +34,10 @@ Requires: kf5-kreport
 Source: http://download.kde.org/stable/calligra/%version/calligraplan-%version.tar
 # Upstream patches
 Patch1: 0001-Fix-build-with-Qt-5.11-missing-headers.patch
+Patch2: 0002-Fix-compile-on-CI.patch
+Patch3: 0003-Port-to-KCalCore-API-changes.patch
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
 BuildRequires: kf5-karchive-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel
 BuildRequires: kf5-kdbusaddons-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel
@@ -166,6 +168,8 @@ Requires: %oname-common = %EVR
 %prep
 %setup
 %patch1 -p2
+%patch2 -p1
+%patch3 -p1
 
 %build
 %K5build \
@@ -262,6 +266,15 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5lib/libplanworkfactory.so.*
 
 %changelog
+* Fri Aug 23 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt7
+- fix build with new kcalcore
+
+* Thu Aug 15 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.1.0-alt6
+- Fixed build
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0:3.1.0-alt5.qa1
+- NMU: remove rpm-build-ubt from BR:
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 0:3.1.0-alt4.qa1
 - NMU: applied repocop patch
 

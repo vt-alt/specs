@@ -4,7 +4,7 @@
 %define libkpimkdav libkpimkdav%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -62,7 +62,8 @@ Requires: %name-common = %version-%release
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+#%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 %_K5inc/KPim/kpimkdav_version.h
@@ -77,6 +78,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libKPimKDAV.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

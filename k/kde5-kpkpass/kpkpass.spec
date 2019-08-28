@@ -4,7 +4,7 @@
 %define libkpimpkpass libkpimpkpass%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -64,7 +64,8 @@ mv %buildroot/%_K5xdgmime/application-vnd-apple-pkpass.xml \
 
 %files common -f %name.lang
 %doc COPYING.LIB README.md
-%config(noreplace) %_K5xdgconf/*.*categories
+#%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 %_K5xdgmime/*.xml
 
 %files devel
@@ -79,6 +80,9 @@ mv %buildroot/%_K5xdgmime/application-vnd-apple-pkpass.xml \
 %_K5lib/libKPimPkPass.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

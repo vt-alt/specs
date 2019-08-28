@@ -1,7 +1,7 @@
 %define rname kmail-account-wizard
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -34,7 +34,9 @@ Launch the account wizard to configure PIM accounts.
 %patch1 -p1
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
@@ -42,15 +44,18 @@ Launch the account wizard to configure PIM accounts.
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
-%config(noreplace) %_K5xdgconf/*rc
+%_datadir/qlogging-categories5/*.*categories
 %_K5bin/*
 %_K5plug/*.so
 %_K5xdgapp/*.desktop
 %_K5xdgmime/*.xml
 %_datadir/akonadi5/accountwizard/*/
+%_K5data/knsrcfiles/*accountwizard*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

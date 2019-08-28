@@ -1,10 +1,10 @@
 %define rname pim-data-exporter
 
 %define pim_sover 5
-%define libpimsettingexporterprivate libpimsettingexporterprivate%pim_sover
+%define libpimdataexporterprivate libpimdataexporterprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -47,11 +47,11 @@ Summary: Development files for %name
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package -n %libpimsettingexporterprivate
+%package -n %libpimdataexporterprivate
 Group: System/Libraries
 Summary: %name library
 Requires: %name-common = %version-%release
-%description -n %libpimsettingexporterprivate
+%description -n %libpimdataexporterprivate
 %name library
 
 %prep
@@ -69,11 +69,11 @@ Requires: %name-common = %version-%release
 %doc COPYING*
 
 %files
-%config(noreplace) %_K5xdgconf/*pimsettingexporter*
-%_K5bin/*pimsettingexporter*
+%_K5bin/*pimdataexporter*
 %_K5conf_up/*pimsettingexporter*
-%_K5xdgapp/*pimsettingexporter*.desktop
-%_K5cfg/*pimsettingexporter*
+%_K5xdgapp/*pimdataexporter*.desktop
+%_K5cfg/*pimdataexporter*
+%_datadir/qlogging-categories5/*.*categories
 
 #%files devel
 #%_K5inc/pim-data-exporter_version.h
@@ -82,11 +82,14 @@ Requires: %name-common = %version-%release
 #%_K5lib/cmake/pim-data-exporter
 #%_K5archdata/mkspecs/modules/qt_pim-data-exporter.pri
 
-%files -n %libpimsettingexporterprivate
-%_K5lib/libpimsettingexporterprivate.so.%pim_sover
-%_K5lib/libpimsettingexporterprivate.so.*
+%files -n %libpimdataexporterprivate
+%_K5lib/libpimdataexporterprivate.so.%pim_sover
+%_K5lib/libpimdataexporterprivate.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

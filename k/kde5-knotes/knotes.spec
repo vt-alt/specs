@@ -5,7 +5,7 @@
 %define libnotesharedprivate libnotesharedprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -28,7 +28,7 @@ BuildRequires: extra-cmake-modules qt5-base-devel qt5-x11extras-devel
 BuildRequires: boost-devel grantlee5-devel libXres-devel libsasl2-devel xsltproc
 BuildRequires: kde5-akonadi-contacts-devel kde5-akonadi-devel kde5-akonadi-mime-devel kde5-akonadi-notes-devel kde5-akonadi-search-devel
 BuildRequires: kde5-kcalcore-devel kde5-kcalutils-devel kde5-kcontacts-devel kde5-kimap-devel kde5-kmime-devel kde5-kontactinterface-devel
-BuildRequires: kde5-kpimtextedit-devel kde5-libkdepim-devel kde5-pimcommon-devel
+BuildRequires: kde5-kpimtextedit-devel kde5-libkdepim-devel kde5-pimcommon-devel kde5-grantleetheme-devel
 BuildRequires: kf5-kcmutils-devel kf5-kdelibs4support-devel kf5-kdnssd-devel kf5-kdoctools-devel-static kf5-kglobalaccel-devel
 BuildRequires: kf5-kio-devel kf5-knewstuff-devel kf5-knotifyconfig-devel
 
@@ -69,7 +69,9 @@ Requires: %name-common = %version-%release
 %setup -n %rname-%version
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
@@ -78,7 +80,7 @@ Requires: %name-common = %version-%release
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*notes*
+%_datadir/qlogging-categories5/*.*categories
 %_K5cfg/*note*
 
 %files
@@ -87,9 +89,9 @@ Requires: %name-common = %version-%release
 %_K5xdgapp/org.kde.*note*.desktop
 %_K5data/*note*/
 %_K5data/kontact/ksettingsdialog/*note*
+%_K5data/knsrcfiles/*note*
 %_K5cf_upd/*note*
 %_K5xmlgui/*note*/
-%_K5srv/*note*.desktop
 %_K5srv/kontact/*note*.desktop
 %_K5srv/*note*.desktop
 %_K5icon/*/*/apps/*note*.*
@@ -114,6 +116,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libnotesharedprivate.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

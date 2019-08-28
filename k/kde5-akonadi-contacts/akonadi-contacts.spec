@@ -1,7 +1,7 @@
 %define rname akonadi-contacts
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -69,7 +69,8 @@ KF5 library
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*contact*.*categories
+#%config(noreplace) %_K5xdgconf/*contact*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 #%_K5inc/akonadi-contact_version.h
@@ -82,14 +83,14 @@ KF5 library
 %files -n libkf5akonadicontact
 %_K5lib/libKF5AkonadiContact.so.*
 %_K5plug/*akonadicontact*.so
-%_K5srv/akonadi/contact/
+#%_K5srv/akonadi/contact/
 %_K5srv/*akonadicontact*.desktop
 #
 %_K5plug/akonadi_serializer_addressee.so
 %_datadir/akonadi5/plugins/serializer/akonadi_serializer_addressee.desktop
 #
 %_datadir/akonadi5/contact/
-%_K5srvtyp/*.desktop
+#%_K5srvtyp/*.desktop
 
 %files -n libkf5contacteditor
 %_K5lib/libKF5ContactEditor.so.*
@@ -101,6 +102,9 @@ KF5 library
 %_datadir/akonadi5/plugins/serializer/akonadi_serializer_contactgroup.desktop
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

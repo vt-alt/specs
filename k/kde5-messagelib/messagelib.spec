@@ -10,7 +10,7 @@
 %define libkf5webengineviewer libkf5webengineviewer%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -40,7 +40,7 @@ BuildRequires: kf5-kdesignerplugin-devel kf5-kdoctools-devel-static kf5-kemotico
 BuildRequires: kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel
 BuildRequires: kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kparts-devel kf5-kservice-devel kf5-ktextwidgets-devel
 BuildRequires: kf5-kunitconversion-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel
-BuildRequires: kf5-solid-devel kf5-sonnet-devel kf5-syntax-highlighting-devel
+BuildRequires: kf5-solid-devel kf5-sonnet-devel kf5-syntax-highlighting-devel kf5-knewstuff-devel
 
 %description
 %summary.
@@ -115,6 +115,7 @@ KF5 library
 
 %build
 %K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
     -DQGpgme_DIR=%_libdir/cmake/Gpgmepp/ \
     #
 
@@ -125,10 +126,12 @@ KF5 library
 
 %files common -f %name.lang
 #%doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
-%config(noreplace) %_K5xdgconf/*.knsrc
+#%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
+#%config(noreplace) %_K5xdgconf/*.knsrc
 %_K5data/*message*/
 %_K5data/org.kde.syntax-highlighting/
+%_K5data/knsrcfiles/*message*.knsrc
 %_K5cfg/*.kcfg
 %_K5conf_up/*message*.upd
 %_K5notif/*message*.notifyrc
@@ -171,6 +174,9 @@ KF5 library
 %_K5lib/libKF5WebEngineViewer.so.*
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

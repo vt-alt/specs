@@ -3,7 +3,7 @@
 %def_enable tools
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -229,7 +229,8 @@ done
 %dir %_datadir/akonadi5/agents/
 %dir %_datadir/akonadi5/contact/
 %dir %_datadir/akonadi5/plugins/
-%config(noreplace) %_K5xdgconf/akonadi.*categories
+#%config(noreplace) %_K5xdgconf/akonadi.*categories
+%_datadir/qlogging-categories5/*.*categories
 %_K5cfg/resourcebase.kcfg
 %_K5xdgmime/akonadi5-mime.xml
 %_K5icon/*/*/apps/*akonadi*.*
@@ -269,6 +270,9 @@ done
 %endif
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

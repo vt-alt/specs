@@ -6,7 +6,7 @@
 %define libkf5ksieve libkf5ksieve%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -76,7 +76,9 @@ KF5 library
 %setup -n %rname-%version
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
@@ -85,8 +87,9 @@ KF5 library
 
 %files common -f %name.lang
 #%doc COPYING*
-%config(noreplace) %_K5xdgconf/*ksieve*.*
+%_datadir/qlogging-categories5/*.*categories
 %_K5data/sieve/
+%_K5data/knsrcfiles/*sieve*
 
 %files devel
 %_K5inc/libksieve_version.h
@@ -109,6 +112,9 @@ KF5 library
 
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

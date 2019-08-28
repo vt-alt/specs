@@ -7,7 +7,7 @@
 
 Name: kde5-%rname
 Version: 1.2.5
-Release: alt1
+Release: alt2
 %K5init
 
 Group:     Networking/File transfer
@@ -17,6 +17,10 @@ URL:       https://cgit.kde.org/kio-gdrive.git/
 
 Source: %rname-%version.tar
 Source10: kio5_gdrive_ru.po
+# upstream
+Patch1: 0001-Adapt-to-LibKGAPI-setFields-changes.patch
+Patch2: 0002-Port-away-from-deprecated-insert.patch
+Patch3: 0003-Remove-useless-FileFetchJob.patch
 
 BuildRequires(pre): rpm-build-kf5
 
@@ -39,6 +43,9 @@ in the application launcher (which will open Dolphin with the `gdrive:/` URL) or
 
 %prep
 %setup -q -n %rname-%version
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 cat %SOURCE10 >po/ru/kio5_gdrive.po
 
 %build
@@ -60,6 +67,9 @@ cat %SOURCE10 >po/ru/kio5_gdrive.po
 %endif
 
 %changelog
+* Wed Aug 21 2019 Sergey V Turchin <zerg@altlinux.org> 1.2.5-alt2
+- fix compile with new libkgapi
+
 * Tue Dec 04 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.5-alt1
 - new version
 
