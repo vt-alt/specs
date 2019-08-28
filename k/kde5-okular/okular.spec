@@ -14,7 +14,7 @@
 %define libokularcore libokular5core%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
@@ -126,9 +126,9 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 
 %files common -f %name.lang
 %doc COPYING*
-%_K5xdgconf/okular.categories
 %_K5srvtyp/*.desktop
 %_K5icon/hicolor/*/apps/okular.*
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/okular
@@ -180,6 +180,9 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

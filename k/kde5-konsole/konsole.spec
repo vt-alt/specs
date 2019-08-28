@@ -4,7 +4,7 @@
 %define libkonsoleprivate libkonsoleprivate%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -13,7 +13,7 @@ Summary: Terminal emulator for KDE
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
-PreReq(post,preun): alternatives >= 0.2
+Requires(post,preun): alternatives >= 0.2
 Provides: xvt, %_x11bindir/xvt
 #Requires: fonts-bitmap-misc
 
@@ -78,7 +78,9 @@ KF5 library
 %patch12 -p1
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
@@ -94,11 +96,10 @@ __EOF__
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %config %_sysconfdir/alternatives/packages.d/kde5-konsole
-%config %_K5xdgconf/*rc
 # konsole may problems for some reasons because sgid
 #%attr(2711,root,utempter) %_K5bin/konsole
 %_K5bin/konsole
@@ -112,13 +113,16 @@ __EOF__
 %_K5srv/ServiceMenus/konsole*.desktop
 %_K5srvtyp/*.desktop
 %_K5notif/*
-#%_K5xmlgui/*
+%_K5data/knsrcfiles/*konsole*
 
 %files -n %libkonsoleprivate
 %_K5lib/libkonsoleprivate.so.*
 %_K5lib/libkonsoleprivate.so.%sover
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

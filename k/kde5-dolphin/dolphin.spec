@@ -5,7 +5,7 @@
 %define libdolphinvcs libdolphinvcs%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -80,10 +80,12 @@ KF5 library
 %build
 %K5build \
     -DKDE_INSTALL_INCLUDEDIR=%_K5inc \
+    -DDATA_INSTALL_DIR=%_K5data \
     #
 
 %install
 %K5install
+%K5install_move data kglobalaccel
 %find_lang %name --with-kde --all-name
 
 desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
@@ -101,6 +103,7 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %files common -f %name.lang
 %doc COPYING*
 %_datadir/locale/*/LC_SCRIPTS/dolphin/
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %config(noreplace) %_K5xdgconf/*
@@ -111,7 +114,7 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_K5cfg/dolphin*
 %_K5srv/*.desktop
 %_K5srvtyp/*.desktop
-#%_K5xmlgui/dolphin*
+%_K5data/kglobalaccel/*dolphin*
 %_K5dbus_srv/org.kde.dolphin.FileManager1.service
 
 %files devel
@@ -128,6 +131,9 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_K5lib/libdolphinvcs.so.%sover
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

@@ -4,7 +4,7 @@
 %define libkrfbprivate libkrfbprivate%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -24,7 +24,7 @@ BuildRequires: libvncserver-devel libxcbutil-image-devel
 BuildRequires: kf5-kauth-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdnssd-devel
 BuildRequires: kf5-kdoctools kf5-kdoctools-devel-static kf5-ki18n-devel kf5-knotifications-devel kf5-kwallet-devel
-BuildRequires: kf5-kwidgetsaddons-devel kf5-kxmlgui-devel
+BuildRequires: kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-kwindowsystem-devel
 
 %description
 KDE Desktop Sharing (krfb) is a small server for the RFB protocol, better known as VNC.
@@ -73,7 +73,7 @@ KF5 library
 %_K5plug/krfb/
 %_K5xdgapp/org.kde.krfb.desktop
 %_K5data/krfb/
-%_K5srvtyp/krfb-framebuffer.desktop
+%_K5srvtyp/krfb-*.desktop
 %_K5icon/*/*/apps/krfb.*
 
 #%files devel
@@ -88,6 +88,9 @@ KF5 library
 %_K5lib/libkrfbprivate.so.*
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

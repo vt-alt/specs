@@ -4,7 +4,7 @@
 %define libkerfuffle libkerfuffle%sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -74,9 +74,9 @@ mv %buildroot/%_K5xdgmime/kerfuffle{,5}.xml
 %doc COPYING*
 %dir %_K5plug/kf5/kfileitemaction/
 %_K5xdgmime/kerfuffle5.xml
+%_datadir/qlogging-categories5/*.*categories
 
 %files
-%config(noreplace) %_K5xdgconf/ark.*
 %_K5bin/ark
 %_K5plug/arkpart.so
 %_K5plug/kf5/kio_dnd/extracthere.so
@@ -103,6 +103,9 @@ mv %buildroot/%_K5xdgmime/kerfuffle{,5}.xml
 %_K5lib/libkerfuffle.so.*
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

@@ -6,8 +6,8 @@
 
 
 Name: kde5-%rname
-Version: 19.04.3
-Release: alt2
+Version: 19.08.0
+Release: alt1
 %K5init
 
 Group: Graphical desktop/KDE
@@ -91,6 +91,9 @@ KF5 library
 %_K5lib/libKF5CddbWidgets.so.*
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt2
 - build with libmusicbrainz5
 

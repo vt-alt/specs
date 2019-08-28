@@ -1,7 +1,7 @@
 %define rname spectacle
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -25,7 +25,7 @@ BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompl
 BuildRequires: kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdeclarative-devel kf5-kdelibs4support kf5-kdoctools-devel-static
 BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kpackage-devel
 BuildRequires: kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel
-BuildRequires: kf5-solid-devel kf5-knewstuff-devel
+BuildRequires: kf5-solid-devel kf5-knewstuff-devel kf5-kglobalaccel-devel
 #BuildRequires: kf5-purpose-devel
 
 %description
@@ -52,27 +52,34 @@ developing applications that use %name.
 %patch1 -p1
 
 %build
-%K5build
+%K5build \
+    -DDATA_INSTALL_DIR=%_K5data \
+    #
 
 %install
 %K5install
-%K5install_move data khotkeys
+%K5install_move data kglobalaccel kconf_update locale
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/spectacle
+%_K5conf_bin/*spectacle*
 %_K5xdgapp/org.kde.spectacle.desktop
 %_K5icon/hicolor/*/apps/spectacle.*
 %_K5notif/spectacle.notifyrc
-%_K5data/khotkeys/spectacle.khotkeys
+%_K5data/kglobalaccel/*spectacle*.desktop
 %_K5dbus_srv/org.kde.Spectacle.service
+%_K5conf_up/spectacle_shortcuts.upd
+%_datadir/qlogging-categories5/*.*categories
 
 #%files devel
 #%_K5dbus_iface/org.kde.Spectacle.xml
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

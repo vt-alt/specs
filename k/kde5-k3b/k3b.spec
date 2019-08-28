@@ -1,7 +1,6 @@
 %{expand: %(sed 's,^%%,%%global ,' /usr/lib/rpm/macros.d/ubt)}
 %define ubt_id %__ubt_branch_id
 
-%def_disable permhelper
 %_K5if_ver_gteq %ubt_id M90
 %def_enable obsolete_kde4
 %else
@@ -12,11 +11,8 @@
 %define libk3blib libk3blib%sover
 %define libk3bdevice libk3bdevice%sover
 
-%if_enabled permhelper
-%define req_permhelper alterator-control
-%else
-%define req_permhelper %nil
-%endif
+#define req_permhelper alterator-control
+%define req_permhelper /usr/bin/gpasswd
 
 %define req_std_burning cdrkit cdrdao dvd+rw-tools cdrskin
 %define req_std_common kf5-filesystem %req_permhelper
@@ -27,7 +23,7 @@
 
 %define rname k3b
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
@@ -48,6 +44,7 @@ Obsoletes: kde4-k3b < %version-%release
 Source0: %rname-%version.tar
 Patch1: alt-permhelper.patch
 Patch2: alt-return-wodim.patch
+Patch3: alt-permhelper-install.patch
 
 # Automatically added by buildreq on Mon May 23 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ glibc-devel-static gtk-update-icon-cache kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libavcodec-devel libavutil-devel libdbusmenu-qt52 libflac-devel libgpg-error libgst-plugins1.0 libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-positioning libqt5-printsupport libqt5-qml libqt5-quick libqt5-sensors libqt5-sql libqt5-svg libqt5-test libqt5-webchannel libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs shared-mime-info xml-common xml-utils
@@ -56,7 +53,7 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-multimedia-devel qt5-declarative-devel
 BuildRequires: libavdevice-devel libavformat-devel libpostproc-devel libswscale-devel
 BuildRequires: libdvdread-devel libflac++-devel liblame-devel libmad-devel libmpcdec-devel
-#BuildRequires: libmusicbrainz-devel
+BuildRequires: libmusicbrainz5-devel
 BuildRequires: libsamplerate-devel libsndfile-devel libtag-devel libvorbis-devel
 BuildRequires: kde5-libkcddb-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcmutils-devel kf5-kcodecs-devel kf5-kcompletion-devel
@@ -130,12 +127,11 @@ KDE 4 library.
 %setup -q -n %rname-%version
 #%patch1 -p1
 #%patch2 -p1
+%patch3 -p1
 
 %build
 %K5build \
     -DKDE_INSTALL_INCLUDEDIR=%_K5inc \
-    -DENABLE_PERMISSION_HELPER:BOOL=%{?_enable_permhalper:ON}%{!?_enable_permhalper:OFF} \
-    -DK3B_ENABLE_HAL_SUPPORT=OFF \
     #
 
 %install
@@ -172,6 +168,11 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5plug/kf5/kio/videodvd.so
 %_K5data/konqsidebartng/virtual_folders/services/videodvd.desktop
 %_K5srv/videodvd.protocol
+# permhelper
+%_K5libexecdir/kauth/k3bhelper
+%_K5dbus_sys_srv/org.kde.k3b.service
+%_K5dbus/system.d/org.kde.k3b.conf
+%_datadir/polkit-1/actions/org.kde.k3b.policy
 
 %files -n %libk3blib
 %_K5lib/libk3blib.so.%sover
@@ -186,6 +187,9 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

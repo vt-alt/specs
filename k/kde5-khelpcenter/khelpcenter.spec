@@ -1,7 +1,7 @@
 %define rname khelpcenter
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -49,7 +49,6 @@ KDE help center.
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/khelpcenter.categories
 %_K5bin/*
 %_K5exec/*
 %_K5lib/libkdeinit5_*.so
@@ -58,8 +57,12 @@ KDE help center.
 %_K5data/khelpcenter/
 %_K5srv/*
 %_K5xmlgui/*
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

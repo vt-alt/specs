@@ -1,7 +1,7 @@
 %define rname kgpg
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -39,7 +39,6 @@ Graphical GPG frontend.
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/kgpg
 %_K5xdgapp/org.kde.kgpg.desktop
 %_K5data/kgpg/
@@ -50,8 +49,12 @@ Graphical GPG frontend.
 %_K5icon/*/*/apps/kgpg.*
 %_K5icon/*/*/actions/*key*.*
 %_K5icon/*/*/status/*key*.*
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 
