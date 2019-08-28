@@ -2,7 +2,7 @@
 
 Name: qt5-phonon
 Version: 4.10.3
-Release: alt1
+Release: alt2
 
 Group: Graphical desktop/KDE
 Summary: KDE5 Multimedia Framework
@@ -21,7 +21,7 @@ Patch102: alt-fix-qt-visibility-test.patch
 BuildRequires(pre): qt5-base-devel
 BuildRequires: qt5-tools-devel qt5-declarative-devel
 BuildRequires: libEGL-devel libGL-devel
-BuildRequires: automoc cmake extra-cmake-modules
+BuildRequires: cmake extra-cmake-modules
 BuildRequires: libalsa-devel libpulseaudio-devel
 BuildRequires: rpm-build-kf5
 %if_enabled zeitgeist
@@ -124,6 +124,9 @@ mkdir -p %buildroot/%_qt5_plugindir/phonon4qt5_backend
 %_datadir/dbus-1/interfaces/org.kde.Phonon4Qt5.AudioOutput.xml
 
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.3-alt2
+- fix build requires
+
 * Mon Jul 22 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.3-alt1
 - new version
 
