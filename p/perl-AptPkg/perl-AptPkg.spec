@@ -1,6 +1,9 @@
+# if debug isn't enabled, %%perl_vendor_build ignores %%optflags
+%def_enable debug
+
 Name: perl-AptPkg
 Version: 0.1.26
-Release: alt4.qa1.2
+Release: alt5
 
 Summary: Perl interface to libapt-pkg
 License: GPLv2+
@@ -24,6 +27,9 @@ inspection of the binary package cache and source package details.
 cp -a /etc/apt/* t/cache/etc/
 
 %build
+%ifarch %e2k
+%add_optflags -std=c++14
+%endif
 %perl_vendor_build INC=-I%_includedir/rpm ||:
 
 %install
@@ -39,6 +45,9 @@ cp -a /etc/apt/* t/cache/etc/
 	%perl_vendor_autolib/AptPkg/AptPkg.so
 
 %changelog
+* Thu Jul 11 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.1.26-alt5
+- Rebuilt with new Apt
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 0.1.26-alt4.qa1.2
 - rebuild with new perl 5.28.1
 

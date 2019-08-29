@@ -2,7 +2,7 @@
 
 Name: aptitude
 Version: 0.4.5
-Release: alt11
+Release: alt12
 
 Summary: Terminal-based apt frontend
 Group: System/Configuration/Packaging
@@ -50,6 +50,7 @@ find -type f -name '*.cc' -print0 |
 	xargs -r0 sed -i '1,1 s/^/#include "config.h"\n/' --
 
 %build
+%add_optflags -std=c++14
 %add_optflags -fno-strict-aliasing
 # gettext uses mkinstalldirs...
 touch mkinstalldirs
@@ -85,6 +86,9 @@ rm -f %buildroot%_datadir/%name/function_*
 %doc doc/en/output-html/*
 
 %changelog
+* Thu Jun 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.4.5-alt12
+- Rebuilt with new Apt
+
 * Fri Apr 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.4.5-alt11
 - (no user visible changes) Removed "interesting" dead code (related
   to Recommends, not present in ALT rpm), which didn't compile after

@@ -1,6 +1,6 @@
 Name: apt-indicator
 Version: 0.3.12
-Release: alt3
+Release: alt4
 
 Summary: Applet for indication that newer packages are available
 License: GPL
@@ -31,6 +31,9 @@ made notifications for users that newer packages are available.
 %qmake_qt5 "CONFIG += release debug_info"
 
 %build
+%ifarch %e2k
+%add_optflags -std=c++14
+%endif
 %make
 %make -C doc
 lrelease-qt5 checker/checker.pro
@@ -74,6 +77,9 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Thu Jun 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.12-alt4
+- Rebuilt with new apt
+
 * Wed Feb 20 2019 Ivan A. Melnikov <iv@altlinux.org> 0.3.12-alt3
 - build with debuginfo
 

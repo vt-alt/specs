@@ -1,56 +1,37 @@
-# hey Emacs, its -*- mode: rpm-spec; coding: cyrillic-cp1251; -*-
-# $Id: synaptic,v 1.1 2003/04/28 11:30:54 svd Exp $
+%define _unpackaged_files_terminate_build 1
 
-# '--with ru_po' if we have updated ru.po (Source1)
-%def_with ru_po
-# '--with ru_man' if we have updated russian manpage (Source2)
-%def_without ru_man
 %def_enable autotools
 
 Name: synaptic
 Version: 0.58
-Release: alt21
+Release: alt23
 
 Summary: Graphical front-end for APT
 Summary(ru_RU.UTF-8): Графическая оболочка для APT
 Group: System/Configuration/Packaging
 License: GPL
 Url: http://www.nongnu.org/synaptic/
-Packager: Sviatoslav Sviridov <svd@altlinux.ru>
 
-Source: http://people.debian.org/~mvo/synaptic/%name-%version.tar
-Source1: %name-ru.po
-Source2: %name.ru.8
-Source3: package-supported.png
-Source4: %name.conf
-Source5: %name-uk.po
 
-Patch1: synaptic-0.58-alt-fixes.patch
-Patch2: synaptic-0.58-alt-build-fix.patch
-Patch3: synaptic-0.58-rgiconlegend-supported.patch
-Patch4: synaptic-0.58-rsources-extraspaces.patch
-Patch5: synaptic-0.58-rsources-vendorparts.patch
-Patch6: synaptic-0.58-cdrom-to-media.patch
-Patch7: synaptic-0.58-alt-fix-null-history.patch
-Patch8: synaptic-0.58-alt-fix-makepair.patch
-Patch9: synaptic-0.58-fix-generate-script-action.patch
-Patch10: synaptic-0.58-alt-reset-scroll-position.patch
-Patch11: synaptic-0.58-alt-gcc8-crash-fix.patch
-Patch12: synaptic-0.58-alt-improve-translation.patch
-Patch13: synaptic-0.58-alt-support-auto.patch
+# http://people.debian.org/~mvo/synaptic/%name-%version.tar
+Source: %name-%version.tar
+Source1: package-supported.png
+Source2: %name.conf
 
-BuildPreReq: libapt-devel >= 0.5.15lorg2-alt59
+Patch1: %name-%version-alt.patch
+
+BuildRequires: libapt-devel >= 0.5.15lorg2-alt59
 %if_enabled autotools
-BuildPreReq: intltool
+BuildRequires: intltool
 %endif
 
 # From configure.in
-BuildPreReq: gcc-c++ xmlto librpm-devel libpopt-devel libapt-devel
-BuildPreReq: libgtk+2-devel >= 2.4.0
-BuildPreReq: libglade2-devel >= 2.0.0
-BuildPreReq: libvte-devel >= 0.10.11
+BuildRequires: gcc-c++ xmlto librpm-devel libpopt-devel
+BuildRequires: libgtk+2-devel >= 2.4.0
+BuildRequires: libglade2-devel >= 2.0.0
+BuildRequires: libvte-devel >= 0.10.11
 
-BuildPreReq: libtinfo-devel scrollkeeper
+BuildRequires: libtinfo-devel scrollkeeper
 
 %description
 Synaptic is a graphical front-end for APT (Advanced Package Tool).
@@ -72,43 +53,24 @@ Synaptic - это графическая оболочка для APT (Advanced P
 
 %prep
 %setup
-
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p2
-%patch7 -p2
-%patch8 -p1
-%patch9 -p2
-%patch10 -p2
-%patch11 -p2
-%patch12 -p2
-%patch13 -p2
 
-%if_with ru_po
-# installing own translation
-install -p -m644 %SOURCE1 po/ru.po
 # remove gmo file to tell autotools recreate it
 rm -fv -- po/ru.gmo
-%endif
-install -p -m644 %SOURCE5 po/uk.po
 rm -fv -- po/uk.gmo
-sed 's/ ru / ru uk /' -i configure.in
 
-install -p -m644 %SOURCE3 pixmaps/hicolor/16x16/package-supported.png
+install -p -m644 %SOURCE1 pixmaps/hicolor/16x16/package-supported.png
 
 %build
 intltoolize --force
 %if_enabled autotools
-aclocal
-autoheader
-automake -a -c
-autoconf
+%autoreconf
 %endif
 
 %add_optflags -fno-exceptions
+%ifarch %e2k
+%add_optflags -std=c++14
+%endif
 %configure --with-vte --with-pkg-hold --enable-scripts
 %make_build
 
@@ -116,14 +78,10 @@ autoconf
 %makeinstall_std
 
 mkdir -p %buildroot%_mandir/ru/man8/
-%if_with ru_man
-install -p -m644 %SOURCE2 %buildroot%_mandir/ru/man8/%name.8
-%else
 install -p -m644 man/%name.ru.8 %buildroot%_mandir/ru/man8/%name.8
-%endif
 
 mkdir -p %buildroot%_sysconfdir/apt/apt.conf.d
-install -p -m644 %SOURCE4 %buildroot%_sysconfdir/apt/apt.conf.d/%name.conf
+install -p -m644 %SOURCE2 %buildroot%_sysconfdir/apt/apt.conf.d/%name.conf
 
 %find_lang --with-gnome %name
 
@@ -138,8 +96,16 @@ install -p -m644 %SOURCE4 %buildroot%_sysconfdir/apt/apt.conf.d/%name.conf
 
 %exclude %_desktopdir/%{name}*.desktop
 %exclude %_datadir/pixmaps/%name.png
+# find_lang misses this locale
+%exclude %_datadir/locale/sr@Latn
 
 %changelog
+* Tue Jul 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.58-alt23
+- Rebuilt with new Apt.
+
+* Mon Jul 22 2019 Andrew Savchenko <bircoph@altlinux.org> 0.58-alt22
+- Fix build on e2k (-std=gnu++11 is required for the latest apt).
+
 * Thu Feb 07 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.58-alt21
 - NMU: fixed -Wreturn-type warnings.
 

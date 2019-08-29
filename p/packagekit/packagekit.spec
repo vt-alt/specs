@@ -3,7 +3,7 @@
 Summary:   Package management service
 Name:      packagekit
 Version:   1.1.12
-Release:   alt5
+Release:   alt6
 License:   GPLv2+ and LGPLv2+
 Group:     Other
 URL:       http://www.freedesktop.org/software/PackageKit/
@@ -103,6 +103,7 @@ Python3 backend for PackageKit.
 %patch1 -p1
 
 %build
+%add_optflags -std=c++14
 %add_optflags -D_FILE_OFFSET_BITS=64
 %define _configure_script ./autogen.sh
 %configure \
@@ -245,6 +246,9 @@ rm -f %_localstatedir/PackageKit/upgrade_lock ||:
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Thu Jun 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt6
+- Rebuilt with new Apt.
+
 * Wed Feb 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt5
 - Fixed crash during showing errors.
 - Enabled verbose logging for packagekit service.
