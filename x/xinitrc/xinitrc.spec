@@ -1,6 +1,6 @@
 Name: xinitrc
 Version: 2.4.47
-Release: alt1
+Release: alt2
 
 Summary: The default startup scripts for the X Window System
 License: GPL
@@ -72,6 +72,10 @@ fi
 %config(noreplace) %_sysconfdir/X11/xdm/*
 
 %changelog
+* Thu Aug 15 2019 Paul Wolneykien <manowar@altlinux.org> 2.4.47-alt2
+- Allow to run WM by a command name not by an abstract name (closes:
+  #36913).
+
 * Tue Feb 14 2017 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.4.47-alt1
 - allow to choose selinux level (zerg@)
 
