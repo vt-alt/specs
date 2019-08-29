@@ -1,7 +1,7 @@
 %define rname kfloppy
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -36,12 +36,18 @@ Format a floppy disks.
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
-%config(noreplace) %_K5xdgconf/kfloppy.*categories
 %_K5bin/kfloppy
 %_K5xdgapp/org.kde.kfloppy.desktop
 %_K5icon/*/*/apps/kfloppy.*
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

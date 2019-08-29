@@ -1,7 +1,7 @@
 %define rname filelight
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init altplace
 
@@ -66,15 +66,18 @@ KF5 library
 %files -f %name.lang
 %doc COPYING*
 %config(noreplace) %_K5xdgconf/filelightrc
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/filelight
 #%_K5plug/filelightpart.so
 %_K5xdgapp/org.kde.filelight.desktop
 %_K5icon/*/*/*/*filelight.*
 #%_K5srv/filelightpart.desktop
 %_K5xmlgui/filelight*/
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

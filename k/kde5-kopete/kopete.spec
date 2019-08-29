@@ -30,7 +30,7 @@
 %define libqgroupwise libqgroupwise%sover
 
 Name: kde5-kopete
-Version: 19.04.2
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -238,8 +238,8 @@ done
 %doc AUTHORS IDENTITY_REFACTORY README TODO
 %dir %_K5srv/kconfiguredialog/
 %_K5icon/*/*/*/*.*
-%config(noreplace) %_K5xdgconf/*.*categories
 %config(noreplace) %_K5xdgconf/*rc
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %if_enabled mediastreamer
@@ -323,6 +323,12 @@ done
 %_K5dbus_iface/*
 
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 

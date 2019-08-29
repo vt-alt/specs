@@ -4,7 +4,7 @@
 %define libkdfprivate libkdfprivate%kdfprivate_sover
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -64,7 +64,7 @@ KF5 library
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_K5bin/kdf
@@ -83,6 +83,12 @@ KF5 library
 %_K5lib/libkdfprivate.so.*
 
 %changelog
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
+* Thu Jul 18 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
+- new version
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - new version
 
