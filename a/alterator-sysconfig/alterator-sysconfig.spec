@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.2.4
+Version: 1.2.5
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -50,6 +50,9 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 1.2.5-alt1
+- Use install instead of cp -af to prevent loose permission from tmpfs by un-def kernel.
+
 * Thu Jul 11 2019 Andrey Cherepanov <cas@altlinux.org> 1.2.4-alt1
 - Use hostname-or-ip field type to support IP address (ALT #35613).
 
