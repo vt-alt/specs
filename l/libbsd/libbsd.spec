@@ -1,16 +1,15 @@
 Name: libbsd
 Version: 0.9.1
-Release: alt1
+Release: alt2
 
 Summary: Library providing BSD-compatible functions for portability
-
 License: BSD and ISC and Copyright only and Public Domain
 Group: System/Libraries
+
 Url: http://libbsd.freedesktop.org/
-
-Packager: Vitaly Lipatov <lav@altlinux.ru>
-
 Source: http://libbsd.freedesktop.org/releases/%name-%version.tar
+Patch: libbsd-0.9.1-alt-e2k.patch
+Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 %description
 libbsd provides useful functions commonly found on BSD systems, and
@@ -29,6 +28,9 @@ Development files for the libbsd library.
 
 %prep
 %setup
+%ifarch %e2k
+%patch -p1
+%endif
 
 %build
 %configure --disable-static
@@ -59,6 +61,10 @@ rm %buildroot/%_man3dir/setproctitle*
 %_pkgconfigdir/%name-overlay.pc
 
 %changelog
+* Sat Jul 13 2019 Michael Shigorin <mike@altlinux.org> 0.9.1-alt2
+- E2K: initial architecture support (patch proposed upstream)
+- minor spec cleanup
+
 * Sat Feb 23 2019 Vitaly Lipatov <lav@altlinux.ru> 0.9.1-alt1
 - new version 0.9.1 (with rpmrb script)
 
