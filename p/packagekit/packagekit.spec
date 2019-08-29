@@ -3,7 +3,7 @@
 Summary:   Package management service
 Name:      packagekit
 Version:   1.1.12
-Release:   alt6
+Release:   alt7
 License:   GPLv2+ and LGPLv2+
 Group:     Other
 URL:       http://www.freedesktop.org/software/PackageKit/
@@ -246,6 +246,9 @@ rm -f %_localstatedir/PackageKit/upgrade_lock ||:
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Wed Jun 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.1.12-alt7
+- Fixed support for refreshCache action. (Thx Aleksei Nikiforov darktemplar@)
+
 * Thu Jun 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt6
 - Rebuilt with new Apt.
 
