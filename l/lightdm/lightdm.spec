@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt3
+Release: alt6
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -132,7 +132,6 @@ export CXXFLAGS="%optflags -std=gnu++11"
 	--enable-gtk-doc \
 	%{?_enable_qt:--enable-liblightdm-qt} \
 	%{?_enable_qt5:--enable-liblightdm-qt5} \
-	--with-user-session=default \
 	--libexecdir=%_libexecdir \
 	--with-greeter-user=_ldm \
 	--with-greeter-session=%name-default-greeter
@@ -215,7 +214,7 @@ fi
 %exclude %_datadir/bash-completion/completions/dm-tool
 %_datadir/bash-completion/completions/*
 %_controldir/*
-%_sysconfdir/X11/*
+%_sysconfdir/X11/*.lightdm
 
 %files -n liblightdm-gobject
 %_libdir/liblightdm-gobject-?.so.*
@@ -253,6 +252,16 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Mon Aug 12 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt6
+- Use the first available session config as default.
+
+* Tue Aug 06 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt5
+- Don't configure "default" user session explicitly.
+
+* Fri Aug 02 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt4
+- Fix: Don't try to own extra files in /etc/X11.
+- Fix: get rid of the extra xinitrc dependency.
+
 * Wed Jul 31 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt3
 - Use a greeter startup wrapper script with keyboard setup (closes:
   #36933).
