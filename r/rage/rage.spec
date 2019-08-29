@@ -1,6 +1,6 @@
 Name: rage
-Version: 0.3.0
-Release: alt2
+Version: 0.3.1
+Release: alt1
 
 Summary: EFL Video Player
 License: BSD
@@ -19,8 +19,8 @@ Requires: gst-plugins-ugly1.0
 Requires: gst-libav
 
 BuildRequires(pre): meson
-BuildRequires: efl-libs-devel >= 1.18.0
-BuildRequires: libelementary-devel >= 1.18.0
+BuildRequires: efl-libs-devel >= 1.22.3
+BuildRequires: libelementary-devel >= 1.22.3
 
 %description
 Rage is a video and audio player written with Enlightenment
@@ -80,6 +80,12 @@ Here is a list of all the things it can do:
 %_iconsdir/hicolor/*x*/apps/%name.png
 
 %changelog
+* Sat Aug 24 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.1-alt1
+- 0.3.1
+
+* Fri Jun 21 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.0-alt3
+- build current snapshot
+
 * Fri Dec 07 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.0-alt2
 - build current snapshot
 

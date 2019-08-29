@@ -1,26 +1,25 @@
 %def_disable snapshot
 
-%define ver_major 0.22
+%define ver_major 0.23
 %define beta %nil
-%define efl_ver_major 1.20
-%define efl_ver %efl_ver_major.5
+%define efl_ver_major 1.22
+%define efl_ver %efl_ver_major.3
 
-%def_disable static
-# only bluez4 supported
-%def_disable bluetooth
+%def_enable bluetooth
 %def_enable wayland
 %def_enable xwayland
 %def_enable wl_drm
 %def_enable wl_x11
 %def_enable systemd
+%def_enable connman
+%def_enable packagekit
 %def_enable install_sysactions
-%def_without pam_helper
 %def_with suid_binaries
 # for silly lightdm
-%def_enable wmsession
+%def_disable wmsession
 
 Name: enlightenment
-Version: %ver_major.4
+Version: %ver_major.0
 Release: alt1
 Epoch: 1
 
@@ -71,20 +70,26 @@ Requires: altlinux-freedesktop-menu-%name >= 0.55
 Requires: udisks2
 Requires: pulseaudio-daemon
 Requires: geoclue2
+Requires: connman
+# for the evrything module calculator mode
+Requires: bc
 %{?_enable_xwayland:Requires: xorg-xwayland xorg-drv-libinput}
-%{?_with_pam_helper:Requires: chkpwd-pam}
+%{?_enable_bluetooth:Requires: bluez %_sbindir/rfkill}
+%{?_enable_connman:Requires: connman}
+%{?_enable_packagekit:Requires: packagekit}
 
-BuildRequires: rpm-build-xdg
+BuildRequires(pre): meson rpm-build-xdg
 BuildRequires: efl-libs-devel >= %efl_ver libelementary-devel >= %efl_ver
 BuildRequires: libpam-devel libalsa-devel libudev-devel libxcbutil-keysyms-devel
 BuildRequires: libdbus-devel libp11-kit-devel xorg-xproto-devel libxcbutil-keysyms-devel
 BuildRequires: libuuid-devel libpulseaudio-devel
-BuildRequires: libxkbcommon-devel libdrm-devel libgbm-devel
+BuildRequires: xkeyboard-config-devel libxkbcommon-devel libdrm-devel libgbm-devel
 BuildRequires: doxygen
 # for sysv
 BuildRequires: pm-utils
-%{?_enable_bluetooth:BuildRequires: libbluez-devel}
+%{?_enable_bluetooth:BuildRequires: libbluez-devel %_bindir/l2ping %_sbindir/rfkill}
 %{?_enable_wayland:BuildRequires: libwayland-server-devel >= 1.3.0 libpixman-devel libEGL-devel libwayland-egl-devel wayland-protocols}
+%{?_enable_xwayland:BuildRequires: xorg-xwayland}
 %{?_enable_systemd:BuildRequires: systemd-devel}
 
 %description
@@ -103,36 +108,32 @@ Provides: e18-devel = %EVR
 Development headers for Enlightenment.
 
 %prep
-%setup -n %name-%version%beta
+%setup -n %name-%version
 #%patch -p1 -R -b .auth
 %patch1 -p1 -b .gsd
 %{?_without_suid_binaries:%patch2 -p1 -b .nosuid}
 %patch3 -p2 -b .ptrace
-%{?_with_pam_helper:%patch4 -p1 -b .pam_helper}
+
+# fix logic
+sed -i "s/\(if config_h\.has('HAVE_WAYLAND') == \)false/\1true/" data/session/meson.build
 
 %build
-%autoreconf
-export CFLAGS="$CFLAGS `pkg-config --cflags dbus-1` `pkg-config --cflags uuid` -g -ggdb3"
-%configure \
-	--with-profile=FAST_PC \
-	--enable-files \
-	%{subst_enable static} \
-	--enable-shared \
-	--enable-pam \
-	%{subst_enable wayland} \
-	%{?_enable_xwayland:--enable-xwayland --with-Xwayland=%_bindir/Xwayland} \
-	%{?_enable_wl_drm:--enable-wl-drm} \
-	%{?_enable_wl_x11:--enable-wl-x11} \
-	%{?_disable_install_sysactions:--disable-install-sysactions} \
-%if_with pam_helper
-	--with-pam-helper=%prefix/libexec/chkpwd-pam/chkpwd-pam \
-%endif
-
-%make_build
-%make doc
+%{?_enable_wayland:%add_optflags $(pkg-config --cflags uuid)}
+%meson \
+	-Dfiles=true \
+	-Dpam=true \
+	%{?_enable_wayland:-Dwl=true} \
+	%{?_enable_xwayland:-Dxwayland=true -Dxwayland-bin=%_bindir/Xwayland} \
+	%{?_disable_wl_drm:-Dwl-drm=false} \
+	%{?_disable_wl_x11:-Dwl-x11=false} \
+	%{?_disable_install_sysactions:-Dinstall-sysactions=flase} \
+	%{?_disable_connman:-Dconnman=false} \
+	%{?_disable_packagekit:-Dpackagekit=false} \
+	%nil
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 mkdir -p %buildroot%_rpmmacrosdir
 cat > %buildroot%_rpmmacrosdir/%name <<_EOF_
@@ -161,7 +162,6 @@ ln -sf %name.menu %buildroot/%_xdgmenusdir/e-applications.menu
 
 %if_enabled wmsession
 mkdir -p %buildroot%_bindir/
-install -p -m755 %SOURCE2 %buildroot%_bindir/
 mkdir -p %buildroot%_sysconfdir/X11/wmsession.d
 install -D -pm 644 %SOURCE3 %buildroot%_sysconfdir/X11/wmsession.d/05Enlightenment
 # replace original desktop file
@@ -169,8 +169,14 @@ install -pD -m 644 %SOURCE8 %buildroot%_desktopdir/%name.desktop
 %endif
 
 # fix Name in session desktop files
-sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Xorg/' %buildroot%_datadir/xsessions/%name.desktop
-sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/wayland-sessions/%name.desktop
+sed -i 's/^\(Name.*=Enlightenment\)$/\1 on Xorg/' %buildroot%_datadir/xsessions/%name.desktop
+sed -i 's/^\(Name.*=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/wayland-sessions/%name.desktop
+# rename xsession file
+mv %buildroot%_datadir/xsessions/%name.desktop %buildroot%_datadir/xsessions/%name-xorg.desktop
+
+# use start_enlighttenment instead of enlightenment_start for lightdm
+install -p -m755 %SOURCE2 %buildroot%_bindir/
+sed -i 's/\(enlightenment\)_start/start_\1/' %buildroot%_datadir/xsessions/%name-xorg.desktop
 
 %find_lang %name
 
@@ -181,6 +187,7 @@ sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/way
 %config(noreplace) %_sysconfdir/pam.d/%name
 %dir %_libdir/%name/
 %_libdir/%name/modules/
+%{?_enable_wayland:%_libdir/%name/gadgets/}
 %dir %_libdir/%name/utils
 %_libdir/%name/utils/%{name}_alert
 %_libdir/%name/utils/%{name}_elm_cfgtool
@@ -191,11 +198,7 @@ sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/way
 # suid bit apps
 %_libdir/%name/utils/%{name}_backlight
 %_libdir/%name/utils/%{name}_sys
-%if_without pam_helper
 %_libdir/%name/utils/%{name}_ckpasswd
-%else
-%exclude %_libdir/%name/utils/%{name}_ckpasswd
-%endif
 %_liconsdir/*.png
 %_bindir/emixer
 %_bindir/%name
@@ -205,9 +208,9 @@ sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/way
 %_bindir/%{name}_open
 %_bindir/%{name}_remote
 %_bindir/%{name}_start
-%{?_enable_wmsession:%_bindir/start_%name}
+%_bindir/start_%name
 %_datadir/%name/
-%{?_enable_wmsession:%exclude %_datadir/xsessions/%name.desktop}
+%_datadir/xsessions/%name-xorg.desktop
 %{?_enable_wayland:%_datadir/wayland-sessions/%name.desktop}
 %_datadir/pixmaps/emixer.png
 %_pixmapsdir/%name-askpass.png
@@ -216,8 +219,6 @@ sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/way
 %_xdgmenusdir/e-applications.menu
 %doc AUTHORS COPYING README
 
-%exclude %_libdir/%name/modules/*/*/*.la
-
 %files devel
 %_includedir/%name/
 %_pkgconfigdir/%name.pc
@@ -225,6 +226,20 @@ sed -i 's/^\(Name\[.*\]=Enlightenment\)$/\1 on Wayland/' %buildroot%_datadir/way
 %_rpmmacrosdir/%name
 
 %changelog
+* Sat Aug 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.23.0-alt1
+- 0.23.0
+- enabled wayland support
+
+* Thu Jun 20 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.23.0-alt0.1
+- 0.23.0-alpha (v0.22.0-394-g4d6a47374) with disabled wayland support
+
+* Wed Jun 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.22.4-alt2.1
+- renamed /usr/share/xsessions/enlightenment.desktop to enlightenment-xorg.desktop
+
+* Tue Jun 18 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.22.4-alt2
+- disabled  %%wmsession, replaced enlighttenment_start by
+  start_enlightenment in xsession file (ALT #36913)
+
 * Thu Sep 06 2018 Yuri N. Sedunov <aris@altlinux.org> 1:0.22.4-alt1
 - 0.22.4
 - used own pam-helper

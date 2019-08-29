@@ -1,7 +1,7 @@
 %def_disable snapshot
 
 %define _libexecdir %_prefix/libexec
-%define ver_major 1.21
+%define ver_major 1.22
 %define beta %nil
 %define gst_api_ver 1.0
 %define wayland_ver 1.11.0
@@ -14,6 +14,7 @@
 %def_enable ibus
 %def_enable gstreamer1
 %def_enable emotion
+%def_enable elogind
 
 %def_enable wayland
 # wayland requires elput and drm
@@ -36,8 +37,8 @@
 %endif
 
 Name: efl
-Version: %ver_major.1
-Release: alt3
+Version: %ver_major.3
+Release: alt1
 
 Summary: Enlightenment Foundation Libraries
 License: BSD/LGPLv2.1+
@@ -51,8 +52,6 @@ Source: %name-%version.tar
 %endif
 Patch: efl-1.15.0-alt-ecore_fb.patch
 Patch1: efl-1.19.1-luajitfix.patch
-#fc
-Patch2: efl-1.21.1-fc-khrplatform.patch
 
 # to skip libreoffice dependency for evas_generic_loaders
 %add_findreq_skiplist %_libdir/evas/utils/evas_generic_pdf_loader.libreoffice
@@ -100,6 +99,7 @@ BuildRequires: librsvg-devel
 BuildRequires: gst-plugins1.0-devel
 BuildRequires: zlib-devel
 BuildRequires: libraw-devel libgomp-devel
+%{?_enable_elogind:BuildRequires: libelogind-devel}
 
 %description
 EFL is a collection of libraries for handling many common tasks a
@@ -231,17 +231,18 @@ developing applications that use Elementary libraries.
 %setup -n %name-%version%beta
 %patch -p1
 %patch1 -p1
-%patch2 -p1 -b .khrplatform
 
 # fix path to soffice.bin
 subst 's/libreoffice/LibreOffice/' src/generic/evas/pdf/evas_generic_pdf_loader.libreoffice
 
 %build
+%add_optflags -D_FILE_OFFSET_BITS=64
 %autoreconf
 %configure \
 	--disable-static \
 	--enable-xinput22 \
 	--enable-systemd \
+	%{subst_enable elogind} \
 	--enable-image-loader-webp \
 	--enable-harfbuzz \
 	--enable-liblz4 \
@@ -294,14 +295,11 @@ find %buildroot%_libdir -name "*.la" -delete
 %_bindir/efl_wl_test_stack
 
 %_bindir/efreetd
-%_bindir/eina-bench-cmp
 %_bindir/eina_modinfo
 %{?_enable_elua:%_bindir/elua}
 %_bindir/ethumb
 %_bindir/ethumbd
 %_bindir/ethumbd_client
-%_bindir/evas_cserve2_client
-%_bindir/evas_cserve2_usage
 %_bindir/vieet
 %_libdir/*.so.*
 %exclude %_libdir/libelementary.so.*
@@ -326,9 +324,6 @@ find %buildroot%_libdir -name "*.la" -delete
 %_datadir/efreet/
 %_datadir/embryo/
 %{?_enable_emotion:%_datadir/emotion/}
-%_datadir/eo/
-%exclude %_datadir/eo/gdb/eo_gdb.py
-%exclude %_datadir/eo/gdb/eo_gdb.py
 %_datadir/ethumb/
 %_datadir/ethumb_client/
 %_datadir/evas/
@@ -343,8 +338,6 @@ find %buildroot%_libdir -name "*.la" -delete
 %_bindir/ecore_evas_convert
 %_bindir/eldbus-codegen
 %_bindir/edje_codegen
-%_bindir/evas_cserve2_debug
-%_bindir/evas_cserve2_shm_debug
 %_bindir/embryo_cc
 %_bindir/eolian_cxx
 %_bindir/eolian_gen
@@ -416,14 +409,10 @@ find %buildroot%_libdir -name "*.la" -delete
 %_pkgconfigdir/evas-software-x11.pc
 %{?_enable_wayland:%_pkgconfigdir/evas-wayland-shm.pc}
 %_pkgconfigdir/evas.pc
-%dir %_datadir/eolian/
-%dir %_datadir/eolian/include
-%_datadir/eolian/include/*
 
-%exclude %_datadir/eolian/include/elementary*
-
-%_datadir/gdb/
+%exclude %_datadir/gdb
 %exclude %_datadir/gdb/auto-load/*/*/libeo.so.*-gdb.py
+%exclude %_datadir/eo/
 %exclude %_datadir/eo/gdb/eo_gdb.py
 
 %files -n libelementary
@@ -449,7 +438,6 @@ find %buildroot%_libdir -name "*.la" -delete
 %_libdir/libelementary*.so
 %_libdir/cmake/Elementary/
 %_pkgconfigdir/elementary*.pc
-%_datadir/eolian/include/elementary*/
 
 %files -n elementary-data
 %_datadir/elementary/
@@ -459,6 +447,13 @@ find %buildroot%_libdir -name "*.la" -delete
 %_iconsdir/Enlightenment-X/
 
 %changelog
+* Sat Aug 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.22.3-alt1
+- 1.22.3
+
+* Thu May 02 2019 Yuri N. Sedunov <aris@altlinux.org> 1.22.2-alt1
+- 1.22.2
+- enabled elogind support
+
 * Tue Mar 05 2019 Yuri N. Sedunov <aris@altlinux.org> 1.21.1-alt3
 - fixed FTBFS on 32-bit architectures (ALT #36233)
 
