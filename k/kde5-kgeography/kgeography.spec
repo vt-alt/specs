@@ -1,7 +1,7 @@
 %define rname kgeography
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -47,6 +47,9 @@ BuildRequires: kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5
 
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

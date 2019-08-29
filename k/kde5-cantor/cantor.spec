@@ -4,7 +4,7 @@
 %def_enable python3
 %def_disable luajit
 
-%define cantor_sover 20
+%define cantor_sover 23
 %define libcantorlibs libcantorlibs%cantor_sover
 %define cantor_pythonbackend_sover 0
 %define libcantor_pythonbackend libcantor_pythonbackend%cantor_pythonbackend_sover
@@ -12,7 +12,7 @@
 %define libcantor_config libcantor_config%cantor_config_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -141,6 +141,9 @@ KF5 library
 %_K5lib/libcantor_config.so.*
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

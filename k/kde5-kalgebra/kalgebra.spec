@@ -1,7 +1,7 @@
 %define rname kalgebra
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -55,6 +55,9 @@ however, one does not need to know MathML to use KAlgebra.
 %_K5icon/*/*/apps/*algebra.*
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 

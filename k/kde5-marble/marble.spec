@@ -4,7 +4,7 @@
 %define libmarblewidget libmarblewidget-qt5%marblewidget_sover
 
 Name: kde5-%rname
-Version: 19.04.3
+Version: 19.08.0
 Release: alt1
 %K5init
 
@@ -130,6 +130,9 @@ rm -rf %buildroot/%_K5i18n/*/LC_MESSAGES/*_qt.qm
 %_K5lib/libmarblewidget-qt5.so.*
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Fri Jul 19 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 
