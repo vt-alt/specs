@@ -1,12 +1,13 @@
 %define mibsdir %_datadir/mibs
 %define pibsdir %_datadir/pibs
+%define yangdir %_datadir/yang
 
 %def_disable static
 %def_disable mibs_internal
 
 Name: libsmi
-Version: 0.4.8
-Release: alt2.2
+Version: 0.5.0
+Release: alt1.svn1841
 
 Summary: A library to access SMI MIB information
 License: BSD
@@ -15,15 +16,16 @@ URL: http://www.ibr.cs.tu-bs.de/projects/libsmi/index.html
 
 Packager: Alexey Shabalin <shaba@altlinux.ru>
 
-Source0: ftp://ftp.ibr.cs.tu-bs.de/pub/local/libsmi/%name-%version.tar
+# SVN http://svn.ibr.cs.tu-bs.de/software-ibr-1999-libsmi
+Source0: %name-%version.tar
 Source1: smi.conf
-Patch1: %name-backports.patch
-Patch2: %name-man.patch
-Patch3: %name-smistrip.patch
-Patch4: %name-fix-parallel-build.patch
-Patch5: %name-0.4.8-alt-yyleng.patch
-Patch6: %name-%version-debian-bison-follow-parameter-handling-changes.patch
-Patch7: %name-%version-alt-bison.patch
+
+Patch2: libsmi-0.4.8-alt-man.patch
+Patch3: libsmi-deb-smistrip.patch
+Patch4: libsmi-alt-fix-build.patch
+Patch5: libsmi-0.5.0-alt-yyleng.patch
+Patch7: libsmi-0.4.8-alt-bison.patch
+
 
 Requires: snmp-mibs
 BuildRequires: flex gcc-c++ wget
@@ -88,12 +90,10 @@ This package contains the LibSMI tools.
 %prep
 %setup -q
 
-%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p0
-%patch6 -p1
+%patch5 -p1
 %patch7 -p1
 
 %build
@@ -101,21 +101,18 @@ This package contains the LibSMI tools.
 %configure \
 	%{subst_enable static} \
 	--enable-shared \
-	--with-mibdir=%mibsdir \
-	--with-pibdir=%pibsdir \
-	--with-smipath=%mibsdir/site:%mibsdir/ietf:%mibsdir/iana \
 	--sysconfdir=%_sysconfdir \
 	--enable-smi \
 	--enable-sming
-%make_build
+LIBTOOL=/usr/bin/libtool %make_build
 
 %install
 %make_install install DESTDIR=%buildroot
 mkdir -p %buildroot%_sysconfdir
 install -p -m 644 %SOURCE1 %buildroot%_sysconfdir/smi.conf
 
-#%%check
-#%%make_build check
+%check
+%make_build check ||:
 
 %files
 %doc ChangeLog ANNOUNCE README COPYING THANKS smi.conf-example
@@ -139,9 +136,11 @@ install -p -m 644 %SOURCE1 %buildroot%_sysconfdir/smi.conf
 %files mibs
 %mibsdir
 %pibsdir
+%yangdir
 %else
 %exclude %mibsdir
 %exclude %pibsdir
+%exclude %yangdir
 %endif
 
 %files -n smi-tools
@@ -149,6 +148,9 @@ install -p -m 644 %SOURCE1 %buildroot%_sysconfdir/smi.conf
 %_man1dir/*
 
 %changelog
+* Wed Aug 28 2019 Alexey Shabalin <shaba@altlinux.org> 0.5.0-alt1.svn1841
+- 0.5.0 svn rev 1841
+
 * Mon Jul 31 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 0.4.8-alt2.2
 - Fixed build.
 
