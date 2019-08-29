@@ -5,7 +5,7 @@
 %def_disable debug
 
 Name: dovecot
-Version: 2.3.7.1
+Version: 2.3.7.2
 Release: alt1
 Summary: Dovecot secure IMAP/POP3 server
 License: MIT
@@ -15,7 +15,8 @@ Url: http://www.dovecot.org/
 Obsoletes: dovecot1.0
 Obsoletes: dovecot1.2
 
-Source0: %name-%version.tar.gz
+# Repacked https://dovecot.org/releases/2.3/dovecot-%version.tar.gz
+Source0: %name-%version.tar
 Source1: dovecot.pam
 Source2: dovecot.init
 # XXX doesn't work for now
@@ -194,6 +195,9 @@ useradd -r -n -g dovenull -c 'Dovecot untrusted login processes' \
 %_libdir/dovecot/dovecot-config
 
 %changelog
+* Wed Aug 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.3.7.2-alt1
+- Updated to 2.3.7.2 (fixes CVE-2019-11500).
+
 * Fri Aug 23 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.3.7.1-alt1
 - Updated to 2.3.7.1 (ALT#36351, #37111).
 
