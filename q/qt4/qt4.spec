@@ -8,7 +8,7 @@
 
 %define my_gcc_ver 5
 %qIF_ver_gteq %ubt_id M90
-%define my_gcc_ver 6
+%define my_gcc_ver 0
 %endif
 
 %define binutils_ver %{get_version binutils}
@@ -42,7 +42,7 @@
 %define minor	8
 %define bugfix	7
 %define beta	%nil
-%define rlz alt16
+%define rlz alt18
 
 Name: %rname%major
 Version: %major.%minor.%bugfix
@@ -108,7 +108,13 @@ Patch216: qt-everywhere-opensource-src-4.8.6-QTBUG-34614.patch
 Patch217: qt-everywhere-opensource-src-4.8.5-QTBUG-35459.patch
 Patch218: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
 Patch219: qt-everywhere-opensource-src-4.8.7-gcc6.patch
-# MDV
+# Debian
+Patch301: CVE-2018-15518.patch
+Patch302: CVE-2018-19869.patch
+Patch303: CVE-2018-19870.patch
+Patch304: CVE-2018-19871.patch
+Patch305: CVE-2018-19872.patch
+Patch306: CVE-2018-19873.patch
 # ALT
 Patch501: qt-4.8.5-alt-honor-SUSv3-locales.patch
 Patch502: qt-4.7.2-alt-ca-certificates-path.patch
@@ -155,8 +161,12 @@ Patch9106: 9107-qt-webkit-fix_graphicscontextqt.patch
 # Automatically added by buildreq on Thu Apr 07 2011 (-bi)
 # optimized out: alternatives elfutils fontconfig fontconfig-devel glib2-devel gstreamer-devel libGL-devel libGLU-devel libICE-devel libSM-devel libX11-devel libXcursor-devel libXext-devel libXfixes-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXv-devel libatk-devel libcairo-devel libcom_err-devel libdbus-devel libfreetype-devel libgdk-pixbuf-devel libgio-devel libgst-plugins libkrb5-devel libpango-devel libpng-devel libpq-devel libqt4-devel libqt4-sql-sqlite libssl-devel libstdc++-devel libtiff-devel libunixODBC-devel libxml2-devel pkg-config python-base ruby xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-randrproto-devel xorg-renderproto-devel xorg-videoproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: firebird-devel gcc-c++ glibc-devel-static gst-plugins-devel libalsa-devel libcups-devel libfreetds-devel libgtk+2-devel libjpeg-devel libmng-devel libmysqlclient-devel libpulseaudio-devel libqt4-sql-interbase libqt4-sql-mysql libqt4-sql-odbc libqt4-sql-postgresql libqt4-sql-sqlite2 libsqlite-devel libsqlite3-devel makedepend phonon-devel postgresql-devel rpm-build-ruby
+%if "%my_gcc_ver" == "0"
+BuildRequires: gcc-c++
+%else
 %set_gcc_version %my_gcc_ver
 BuildRequires: gcc%{my_gcc_ver}-c++
+%endif
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: libfreetype-devel pkg-config rpm-utils rpm-macros-alternatives browser-plugins-npapi-devel
 BuildRequires: libcups-devel libalsa-devel
@@ -713,7 +723,13 @@ Install this package if you want to create RPM packages that use %name
 %patch217 -p1
 %patch218 -p1
 %patch219 -p1
-# MDV
+# Debian
+%patch301 -p1
+%patch302 -p1
+%patch303 -p1
+%patch304 -p1
+%patch305 -p1
+%patch306 -p1
 # ALT
 %patch501 -p1
 %patch502 -p1
@@ -890,9 +906,6 @@ rm -f ./translations/*_untranslated.qm
 %if_enabled debug
 %set_strip_method none
 %endif
-# uninstall %%optflags
-subst "s|^\s*QMAKE_CFLAGS\s*=.*$|QMAKE_CFLAGS	= -pipe|" mkspecs/*/qmake.conf
-subst "s|^\s*QMAKE_CFLAGS\s*=.*$|QMAKE_CFLAGS	= -pipe|" mkspecs/common/g++.conf
 
 export QTDIR=%qtdir
 export QT_DIR="$PWD"
@@ -1012,6 +1025,9 @@ ln -s ../../../%_includedir/%name %buildroot/%qtdir/include
 
 # Ship qmake stuff
 ln -s ../../../%_datadir/%name/mkspecs %buildroot/%qtdir/mkspecs
+# uninstall optflags
+subst "s|^\s*QMAKE_CFLAGS\s*=.*$|QMAKE_CFLAGS	= -pipe|" %buildroot/%qtdir/mkspecs/*/qmake.conf
+subst "s|^\s*QMAKE_CFLAGS\s*=.*$|QMAKE_CFLAGS	= -pipe|" %buildroot/%qtdir/mkspecs/common/g++.conf
 # fix lib*.so placement
 subst "s|^\s*QMAKE_LIBDIR_QT\s*=.*$|QMAKE_LIBDIR_QT		= %qtdir/lib|" %buildroot/%qtdir/mkspecs/*/qmake.conf
 subst "s|^\s*QMAKE_LIBDIR_QT\s*=.*$|QMAKE_LIBDIR_QT		= %qtdir/lib|" %buildroot/%qtdir/mkspecs/common/g++.conf
@@ -1460,6 +1476,14 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt18
+- build with modern compiler
+
+* Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt17
+- Security fixes:
+  CVE-2018-15518, CVE-2018-19869, CVE-2018-19870, CVE-2018-19871,
+  CVE-2018-19872, CVE-2018-19873
+
 * Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt16
 - fix requires
 
