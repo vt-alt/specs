@@ -1,7 +1,8 @@
+%def_disable qt4
 %define oname eigen
 Name: %{oname}3
 Version: 3.3.7
-Release: alt3
+Release: alt4
 Summary: C++ template library for linear algebra
 License: LGPLv3+ or GPLv2+
 Group: Development/C++
@@ -23,7 +24,10 @@ Patch3:		eigen3-3.3.7-alt-e2k.patch
 %ifnarch %e2k
 BuildRequires: libsuitesparse-devel libscotch-devel libgoogle-sparsehash
 %endif
-BuildRequires: gcc-c++ cmake doxygen libqt4-devel
+BuildRequires: gcc-c++ cmake doxygen
+%if_enabled qt4
+BuildRequires: libqt4-devel
+%endif
 BuildRequires: libsuperlu-devel libmpfr-devel libgmp-devel
 BuildRequires: libfftw3-devel libGLU-devel libgsl-devel gcc-fortran
 BuildRequires: liblapack-devel libglew-devel libGLUT-devel libXi-devel
@@ -91,6 +95,9 @@ cmake \
 	-DCHOLMOD_INCLUDES:PATH=%_includedir/suitesparse \
 	-DUMFPACK_INCLUDES:PATH=%_includedir/suitesparse \
 %endif
+%if_disabled qt4
+	-DEIGEN_TEST_NOQT=ON \
+%endif
 	-DSUPERLU_LIBRARIES:STRING=-lsuperlu_4.0 \
 	-DCMAKE_STRIP:FILEPATH="/bin/echo" \
 	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
@@ -132,6 +139,9 @@ install -m755 BUILD/doc/examples/* %buildroot%_bindir
 %endif
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 3.3.7-alt4
+- build without Qt4
+
 * Sat Feb 02 2019 Michael Shigorin <mike@altlinux.org> 3.3.7-alt3
 - E2K: avoid SSE4.2/AVX in installed headers too.
 
