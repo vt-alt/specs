@@ -1,6 +1,6 @@
 Name: sqlite3-icu
 Version: 1.7
-Release: alt1
+Release: alt2
 
 Summary: SQLite 'ICU' extension integration of the 'International Components for Unicode' library
 License: Public Domain
@@ -10,7 +10,7 @@ URL: https://sqlite.org/src/tree?name=ext/icu
 Patch0: icu.patch
 Source: %name-%version.tar
 
-BuildRequires: libicu-devel libsqlite3-devel sqlite3
+BuildRequires: libicu-devel libsqlite3-devel
 
 %description
 SQLite's built-in implementations of these two functions only provide 
@@ -34,5 +34,8 @@ install -pD -m755 libSqliteIcu.so %buildroot%_libdir/sqlite3/libSqliteIcu.so
 %doc README.txt
 
 %changelog
+* Thu Aug 29 2019 Anton Shevtsov <x09@altlinux.ru> 1.7-alt2
+- Fix BuildRequires
+
 * Thu Aug 20 2019 Anton Shevtsov <x09@altlinux.ru> 1.7-alt1
 - initial revision
