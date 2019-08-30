@@ -3,7 +3,7 @@
 %define sover 1
 
 Name: libvdpau
-Version: 1.2
+Version: 1.3
 Release: alt1
 Epoch: 1
 Group: System/Libraries
@@ -21,7 +21,7 @@ Obsoletes: libvdpau1 < %EVR
 # optimized out: elfutils fontconfig fonts-type1-urw ghostscript-common libX11-devel libstdc++-devel libwayland-client libwayland-server pkg-config python-base ruby ruby-stdlibs tex-common texlive-base texlive-base-bin texlive-common texlive-latex-base xorg-xproto-devel
 #BuildRequires: doxygen fonts-ttf-google-droid-kufi fonts-ttf-google-droid-sans fonts-ttf-google-droid-serif gcc-c++ ghostscript-classic glibc-devel-static graphviz libXext-devel rpm-build-ruby xorg-dri2proto-devel
 BuildRequires: doxygen gcc-c++ ghostscript-classic glibc-devel graphviz libXext-devel xorg-dri2proto-devel
-BuildRequires: /usr/bin/pdftex
+BuildRequires: /usr/bin/pdftex meson
 
 %description
 This package contains the libvdpau wrapper library and the
@@ -56,12 +56,11 @@ Documentation for VDPAU library
 %patch1 -p1
 
 %build
-%autoreconf
-%configure
-%make_build
+%meson
+%meson_build
 
 %install
-%make DESTDIR=%buildroot install
+%meson_install
 
 %files
 %doc AUTHORS COPYING
@@ -82,6 +81,9 @@ Documentation for VDPAU library
 %docdir/html
 
 %changelog
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 1:1.3-alt1
+- new version
+
 * Tue Mar 12 2019 Sergey V Turchin <zerg@altlinux.org> 1:1.2-alt1
 - new version
 
