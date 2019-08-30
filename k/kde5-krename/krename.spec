@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 5.0.0
-Release: alt5%ubt
+Release: alt6
 %K5init
 
 Summary: A powerful batch renamer for KDE5
@@ -13,7 +13,7 @@ Url: https://userbase.kde.org/KRename
 Source: %rname-%version.tar
 Patch1: alt-startupinfo-labels-color.patch
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
 BuildRequires: kf5-kcompletion-devel kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kcrash-devel
 BuildRequires: kf5-ki18n-devel kf5-kiconthemes-devel kf5-kitemviews-devel kf5-kjobwidgets-devel
@@ -50,17 +50,20 @@ It can also change access and modification dates, permissions, and file ownershi
 %_K5srv/ServiceMenus/*.desktop
 
 %changelog
-* Tue Sep 04 2018 Vitaly Lipatov <lav@altlinux.ru> 5.0.0-alt5%ubt
+* Fri Jun 14 2019 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt6
+- dont use ubt macro
+
+* Tue Sep 04 2018 Vitaly Lipatov <lav@altlinux.ru> 5.0.0-alt5
 - NMU: rebuild with podofo 0.9.6
 
-* Wed Apr 25 2018 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt4%ubt
+* Wed Apr 25 2018 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt4
 - fix conflict with kde4-krename
 
-* Tue Apr 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt3%ubt
+* Tue Apr 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt3
 - add fix against KDEBUG-391291
 - fix startup info page labels color
 
-* Wed Apr 18 2018 Oleg Solovyov <mcpain@altlinux.org> 5.0.0-alt2%ubt
+* Wed Apr 18 2018 Oleg Solovyov <mcpain@altlinux.org> 5.0.0-alt2
 - add %%ubt tag for backporting
 
 * Mon Apr 16 2018 Oleg Solovyov <mcpain@altlinux.org> 5.0.0-alt1

@@ -3,7 +3,7 @@
 
 Name: darktable
 Version: %ver_major.2
-Release: alt1
+Release: alt2
 
 Summary: Darktable is a virtual lighttable and darkroom for photographer
 License: GPLv3
@@ -13,6 +13,7 @@ Url: http://%name.org/
 #VCS: https://github.com/darktable-org/darktable.git
 #Source: %name-%version.tar
 Source: https://github.com/darktable-org/darktable/releases/download/release-%version/%name-%version.tar.xz
+Patch: darktable-2.6.2-up-exiv2-0.27.2.patch
 
 %define cmake_ver 3.4
 %define glib_ver 2.40
@@ -53,12 +54,17 @@ light table. It also enables you to develop raw images and enhance them.
 
 %prep
 %setup -n %name-%version
+%patch -p1
 
 %build
 %add_optflags -D_FILE_OFFSET_BITS=64
 %cmake -DCMAKE_SKIP_RPATH:BOOL=OFF \
 -DCMAKE_BUILD_TYPE=Release \
--DBINARY_PACKAGE_BUILD:BOOL=ON
+-DBINARY_PACKAGE_BUILD:BOOL=ON \
+%ifarch ppc64le
+-DUSE_OPENCL=OFF
+%endif
+
 %cmake_build VERBOSE=1
 %install
 %cmakeinstall_std
@@ -83,6 +89,10 @@ install -pD -m644 data/pixmaps/48x48/darktable.png %buildroot%_liconsdir/darktab
 %exclude /usr/share/doc/%name/
 
 %changelog
+* Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 2.6.2-alt2
+- fixed build against libexiv2-0.27.2
+- ppc64le: disabled OpenCL
+
 * Wed Mar 20 2019 Yuri N. Sedunov <aris@altlinux.org> 2.6.2-alt1
 - 2.6.2
 

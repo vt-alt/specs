@@ -3,7 +3,7 @@
 
 Name: gimp-plugin-lensfun
 Version: 0.2.5
-Release: alt0.1
+Release: alt0.2
 
 Summary: lens distortion correction plugin for Gimp
 License: GPLv3
@@ -39,6 +39,10 @@ install -pD gimp-lensfun %buildroot%gimpplugindir/plug-ins/gimp-lensfun
 %doc README.txt CHANGES.txt
 
 %changelog
+* Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.5-alt0.2
+- updated to 0.2.4-9-gc5eaf97
+- built against libexiv2.so.27
+
 * Tue Jun 06 2017 Yuri N. Sedunov <aris@altlinux.org> 0.2.5-alt0.1
 - updated to 0.2.4-3-g1d43d6b
 - built against libexiv2.so.26

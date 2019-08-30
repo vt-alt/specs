@@ -1,6 +1,6 @@
 Name: dbblast
 Version: 0.1.8
-Release: alt12
+Release: alt13
 
 Summary: Dust bunny blaster
 License: GPLv2+
@@ -10,6 +10,7 @@ URL: http://dbblast.sourceforge.net/
 Source: http://download.sourceforge.net/dbblast/dbblast-qt4-v%{version}.tar.gz
 Patch1: dbblast-0.1.7-build.patch
 Patch2: dbblast-0.1.8-gcc43.patch
+Patch3: dbblast-0.1.8-alt-exiv2-0.27.2.patch
 
 # Automatically added by buildreq on Mon Jul 20 2009
 BuildRequires: gcc-c++ libexiv2-devel libqt4-devel
@@ -24,6 +25,7 @@ mode from either a GUI or from the command line.
 find . -type f -print0  | xargs -r0 %__subst "s,\r,,"
 %patch1 -p1
 %patch2 -p1
+%patch3 -b .exiv2
 
 # fix path to exiv2
 subst 's@/usr/local/@/usr/@' dbblast.pro
@@ -44,6 +46,9 @@ cp helpdocs/* %buildroot/usr/share/dbblast
 %_datadir/*
 
 %changelog
+* Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 0.1.8-alt13
+- rebuilt against libexiv2.so.27
+
 * Tue Jun 06 2017 Yuri N. Sedunov <aris@altlinux.org> 0.1.8-alt12
 - rebuilt against libexiv2.so.26
 

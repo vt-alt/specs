@@ -1,47 +1,36 @@
+%def_disable snapshot
+
 %def_enable video
 %def_enable webready
+%def_enable tests
+%def_disable ssh
 %def_disable check
 
 Name: exiv2
-Version: 0.26
-Release: alt3
+Version: 0.27.2
+Release: alt1
 
 Summary: Command line tool to access EXIF data in image files
 License: GPLv2+
 Group: Graphics
 Url: http://www.exiv2.org
 
+%if_disabled snapshot
+#Source: %url/builds/%name-%version-Source.tar.gz
+Source: https://github.com/Exiv2/%name/archive/v%version/%name-%version.tar.gz
+%else
 #VCS: https://github.com/Exiv2/exiv2.git
-Source: https://github.com/Exiv2/%name/archive/%name-%version.tar.gz
-Patch: %name-0.23-alt-lfs.patch
-
-# fc
-## upstream patches (lookaside cache)
-Patch6:  0006-1296-Fix-submitted.patch
-
-# Security fixes
-Patch10: exiv2-CVE-2017-17723.patch
-Patch11: exiv2-wrong-brackets.patch
-Patch12: exiv2-CVE-2017-11683.patch
-Patch13: exiv2-CVE-2017-14860.patch
-Patch14: exiv2-CVE-2017-14864-CVE-2017-14862-CVE-2017-14859.patch
-Patch15: exiv2-CVE-2017-17725.patch
-Patch16: exiv2-CVE-2017-17669.patch
-Patch17: exiv2-additional-security-fixes.patch
-Patch18: exiv2-CVE-2018-10958.patch
-Patch19: exiv2-CVE-2018-10998.patch
-Patch20: exiv2-CVE-2018-11531.patch
-Patch21: exiv2-CVE-2018-12264-CVE-2018-12265.patch
-Patch22: exiv2-CVE-2018-14046.patch
-Patch23: exiv2-CVE-2018-5772.patch
-Patch24: exiv2-CVE-2018-8976.patch
-Patch25: exiv2-CVE-2018-8977.patch
+Source: %name-%version.tar
+%endif
 
 Requires: lib%name = %version-%release
 
+BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libexpat-devel zlib-devel
 BuildRequires: doxygen xsltproc graphviz
+%{?_enable_tests:BuildRequires: libgtest-devel}
 %{?_enable_webready:BuildRequires: libcurl-devel libssh-devel libgcrypt-devel}
+%{?_enable_check:BuildRequires: ctest}
 
 %description
 Exiv2 comprises of a C++ library and a command line utility to access
@@ -67,61 +56,51 @@ exiv2 library.
 
 %prep
 %setup -n %name-%version
-%patch -b .lfs
-%patch6 -p1
-
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
 
 %build
-%make -C config -f config.make
-# exiv2: embedded copy of exempi should be compiled with BanAllEntityUsage
+# xmpsdk: embedded copy of exempi should be compiled with BanAllEntityUsage
 # https://bugzilla.redhat.com/show_bug.cgi?id=888769
 export CPPFLAGS="$CPPFLAGS -DBanAllEntityUsage=1"
-%configure \
-	--disable-static \
-	--disable-rpath \
-	%{subst_enable video} \
-	%{subst_enable webready}
-sed -ri 's/^(hardcode_libdir_flag_spec|runpath_var)=.*/\1=/' libtool
-%make_build
+export MAKEFILES_TYPE='Unix Makefiles'
+%add_optflags -D_FILE_OFFSET_BITS=64
+%cmake -G "$MAKEFILES_TYPE" \
+	-DCMAKE_BUILD_TYPE="Release" \
+	-DBUILD_STATIC_LIBS=OFF \
+	-DEXIV2_BUILD_SAMPLES=OFF \
+	%{?_enable_video:-DEXIV2_ENABLE_VIDEO=ON} \
+	%{?_enable_webready:-DEXIV2_ENABLE_WEBREADY=ON} \
+	%{?_enable_ssh:-DEXIV2_ENABLE_SSH=ON} \
+	%{?_enable_tests:-DEXIV2_BUILD_UNIT_TESTS=ON}
+%cmake_build
 
 %install
-%makeinstall_std
+%cmakeinstall_std
 %find_lang exiv2
 
 %check
-%make check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%make -C BUILD tests
 
 %files
 %_bindir/%name
 %_man1dir/*
-%doc README doc/ChangeLog
+%doc README* doc/ChangeLog
 
 %files -n libexiv2 -f exiv2.lang
 %_libdir/lib%name.so.*
 
 %files -n libexiv2-devel
 %_libdir/lib%name.so
+%_libdir/libexiv2-xmp.a
 %_includedir/%name/
 %_pkgconfigdir/%name.pc
+%_libdir/cmake/%name/
 
 
 %changelog
+* Sat Aug 10 2019 Yuri N. Sedunov <aris@altlinux.org> 0.27.2-alt1
+- 0.27.2
+
 * Mon Apr 01 2019 Michael Shigorin <mike@altlinux.org> 0.26-alt3
 - E2K: tweaked CVE-2017-17725 patch to fix ftbfs with lcc-1.23
 

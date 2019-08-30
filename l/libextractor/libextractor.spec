@@ -1,10 +1,11 @@
+%def_disable snapshot
 %def_enable ffmpeg
 # test_rpm failed
 %def_disable check
 
 Name: libextractor
 Version: 1.9
-Release: alt1
+Release: alt2
 
 Summary: libextractor is a simple library for keyword extraction
 
@@ -12,7 +13,12 @@ Group: System/Libraries
 License: GPLv2+
 Url: http://www.gnu.org/software/%name/
 
+%if_disabled snapshot
 Source: ftp://ftp.gnu.org/gnu/%name/%name-%version.tar.gz
+%else
+Source: %name-%version.tar
+%endif
+Patch: %name-1.9-up-exiv2-0.27.patch
 
 %define flac_ver 1.3
 
@@ -57,6 +63,7 @@ This package contains the files needed to build packages that depend on %name.
 
 %prep
 %setup
+%patch -p1
 
 %build
 %autoreconf
@@ -96,6 +103,9 @@ export LIBEXTRACTOR_PREFIX=%buildroot%_libdir
 %_man3dir/*
 
 %changelog
+* Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 1.9-alt2
+- rebuilt against libexiv2.so.27
+
 * Tue Feb 12 2019 Yuri N. Sedunov <aris@altlinux.org> 1.9-alt1
 - 1.9
 

@@ -5,7 +5,7 @@
 %def_enable ffmpegthumbnailer
 
 Name: geeqie
-Version: 1.5
+Version: 1.5.1
 Release: alt1
 
 Summary: Graphics file browser utility
@@ -42,9 +42,6 @@ ExifTool.
 %patch -b .libdir
 sed -i 's/\-Werror//' configure.ac
 
-#subst 's/ChangeLog//
-#       s/ChangeLog\.html//' Makefile.am
-
 %build
 #%%add_optflags -Wno-error=unused-variable -Wno-parentheses -Wunused-variable
 %{?_enable_ffmpegthumbnailer:%add_optflags -Wno-error=unused-function}
@@ -73,6 +70,9 @@ install -pD -m644 %name.png %buildroot%_liconsdir/%name.png
 %doc NEWS README.*
 
 %changelog
+* Thu Aug 22 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.1-alt1
+- 1.5.1
+
 * Fri Aug 02 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5-alt1
 - 1.5
 
