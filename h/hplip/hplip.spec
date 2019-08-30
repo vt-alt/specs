@@ -29,7 +29,7 @@
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
 Name: hplip
 Epoch: 1
-Version: 3.19.6
+Version: 3.19.8
 Release: alt1
 %if_without ernie
 License: GPLv2+ and MIT and BSD
@@ -1172,6 +1172,22 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.8-alt1
+- New version.
+- Added support for new printers:
+  + HP DesignJet T1530 Postscript
+  + HP DesignJet T2530 Postscript
+  + HP DesignJet T930 Postscript
+  + HP DesignJet T1600 Postscript Printer
+  + HP DesignJet T1600dr Postscript Printer
+  + HP DesignJet T2600 Postscript MFP
+  + HP LaserJet Pro MFP M329dn
+  + HP LaserJet Pro MFP M329dw
+  + HP LaserJet Pro M305d
+  + HP LaserJet Pro M304a
+  + HP LaserJet Pro M305dn
+  + HP LaserJet Pro M305dw
+
 * Sat Jun 29 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.6-alt1
 - New version.
 - Added support for new printers:
