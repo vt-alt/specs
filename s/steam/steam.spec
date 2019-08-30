@@ -1,6 +1,6 @@
 Name: steam
 Version: 1.0.0.61
-Release: alt4
+Release: alt5
 
 Summary: Launcher for the Steam software distribution service
 License: Proprietary
@@ -44,10 +44,6 @@ savegame and screenshot functionality, and many social features.
 %__install -Dp -m0644 lib/udev/rules.d/60-%name-input.rules %buildroot%_udevrulesdir/60-%name-input.rules
 %__install -Dp -m0644 lib/udev/rules.d/60-%name-vr.rules %buildroot%_udevrulesdir/60-%name-vr.rules
 
-# Fix connection via SSL
-%__mkdir_p %buildroot%_sysconfdir/ssl/certs
-%__ln_s %_sysconfdir/pki/tls/certs/ca-bundle.crt %buildroot%_sysconfdir/ssl/certs/ca-certificates.crt
-
 %files
 %_bindir/%name
 %dir %_libdir/%name
@@ -67,11 +63,11 @@ savegame and screenshot functionality, and many social features.
 %_pixmapsdir/*
 %config %_udevrulesdir/60-%name-input.rules
 %config %_udevrulesdir/60-%name-vr.rules
-%dir %_sysconfdir/ssl
-%dir %_sysconfdir/ssl/certs
-%_sysconfdir/ssl/certs/ca-certificates.crt
 
 %changelog 
+* Thu Aug 29 2019 Nazarov Denis <nenderus@altlinux.org> 1.0.0.61-alt5
+- Remove symlink on CA certificates
+
 * Fri May 03 2019 Nazarov Denis <nenderus@altlinux.org> 1.0.0.61-alt4
 - Fix system tray icon
 
