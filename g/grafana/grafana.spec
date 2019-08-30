@@ -1,5 +1,5 @@
 %global import_path github.com/grafana/grafana
-%global commit 6082d198252e52205b902798023c56f8ac543772
+%global commit a557646484a101c557919910301cfbbc3c12b0db
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -12,7 +12,7 @@
 
 
 Name:		grafana
-Version:	6.3.2
+Version:	6.3.4
 Release:	alt1
 Summary:	Metrics dashboard and graph editor
 
@@ -165,6 +165,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %_datadir/%name
 
 %changelog
+* Fri Aug 30 2019 Alexey Shabalin <shaba@altlinux.org> 6.3.4-alt1
+- 6.3.4 (Fixes: CVE-2019-15043)
+
 * Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 6.3.2-alt1
 - 6.3.2
 
