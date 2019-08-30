@@ -42,7 +42,7 @@
 %define minor	8
 %define bugfix	7
 %define beta	%nil
-%define rlz alt18
+%define rlz alt19
 
 Name: %rname%major
 Version: %major.%minor.%bugfix
@@ -1476,13 +1476,16 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 
 
 %changelog
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt19
+- fix changelog
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt18
 - build with modern compiler
 
 * Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt17
-- Security fixes:
-  CVE-2018-15518, CVE-2018-19869, CVE-2018-19870, CVE-2018-19871,
-  CVE-2018-19872, CVE-2018-19873
+- security fix
+  (Fixes: CVE-2018-15518, CVE-2018-19869, CVE-2018-19870,
+  CVE-2018-19871, CVE-2018-19872, CVE-2018-19873)
 
 * Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt16
 - fix requires
