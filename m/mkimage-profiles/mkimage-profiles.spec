@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.3.9
+Version: 1.3.12
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,24 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Mon Aug 19 2019 Michael Shigorin <mike@altlinux.org> 1.3.12-alt1
+- ppc64le support (glebfm@)
+- build-vm hacked to build tarballs too (iv@ et al)
+- p8.mk: dropped; along with other cleanups/fixups (antohami)
+
+* Tue Jul 09 2019 Michael Shigorin <mike@altlinux.org> 1.3.11.1-alt1
+- x11: reverted vulkan changes (need more testing)
+
+* Mon Jul 08 2019 Michael Shigorin <mike@altlinux.org> 1.3.11-alt1
+- pkg.in/profiles subdirs support (shaba@)
+- repo fixup regarding target arch (obirvalger@)
+- switch back to yandex mirror by default,
+  portability fixes, refactoring, cleanups (antohami@)
+- x11 amdgpu/radeon and dm fixups, vmguest refactoring (me)
+
+* Mon Jun 17 2019 Michael Shigorin <mike@altlinux.org> 1.3.10-alt1
+- add server-v profile, drop groups/openstack (shaba@)
+
 * Mon Jun 10 2019 Michael Shigorin <mike@altlinux.org> 1.3.9-alt1
 - uboot feature, bootloader refactoring, etc (antohami@)
 - cleanlog factored out from reports.mk (me)
