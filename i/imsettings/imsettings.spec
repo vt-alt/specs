@@ -10,7 +10,7 @@ BuildRequires: libdbus-devel
 %define _localstatedir %{_var}
 Name:		imsettings
 Version:	1.8.1
-Release:	alt1_1
+Release:	alt2_1
 License:	LGPLv2+
 URL:		https://tagoh.bitbucket.org/%{name}/
 BuildRequires:	desktop-file-utils
@@ -330,17 +330,17 @@ fi
 %{_libdir}/imsettings/libimsettings-mate-gsettings.so
 
 # note: done by robot; when cinnamon is supported, not just unifdef me, notify viy@ too
-# because cinnamon isn't supported on e2k yet
-%ifnarch e2k
 %files cinnamon
 %doc --no-dereference COPYING
 %doc AUTHORS ChangeLog NEWS README
 %{_libdir}/imsettings/libimsettings-cinnamon-gsettings.so
-%endif
 
 
 %endif
 %changelog
+* Thu Aug 29 2019 Michael Shigorin <mike@altlinux.org> 1.8.1-alt2_1
+- reenable cinnamon subpackage for %%e2k
+
 * Fri Mar 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.8.1-alt1_1
 - update to new release by fcimport
 
