@@ -2,9 +2,11 @@
 %define _libexecdir %_prefix/libexec
 %define _name cinnamon
 
+%def_disable wmsession
+
 Name: %{_name}-session
 Version: %ver_major.1
-Release: alt1
+Release: alt2
 
 License: GPLv2+
 Summary: The cinnamon session programs for the Cinnamon GUI desktop environment
@@ -30,7 +32,8 @@ Patch: %name-%version-%release.patch
 %define polkit_ver 0.91
 %define upower_ver 0.9
 
-PreReq: xinitrc libcanberra-gnome libcanberra-gtk3
+%{?_enable_wmsession:Requires(pre): xinitrc}
+Requires: dconf libcanberra-gnome libcanberra-gtk3
 Requires: altlinux-freedesktop-menu-cinnamon
 Requires: gstreamer1.0 dbus-tools-gui
 Requires: gnome-filesystem
@@ -40,23 +43,20 @@ Requires: upower polkit-gnome gcr
 Requires: %name-translations
 Requires: cinnamon-screensaver
 
-BuildPreReq: rpm-build-gnome >= 0.5
-BuildPreReq: gnome-common
-
 # From configure.in
-BuildPreReq: intltool >= 0.35.0 libGConf-devel
+BuildRequires(pre): meson
+BuildPreReq: intltool >= 0.35.0
 BuildPreReq: libgio-devel glib2-devel >= %glib_ver
 BuildPreReq: libgtk+3-devel >= %gtk_ver
 BuildPreReq: libupower-devel >= %upower_ver
-BuildRequires: meson
 BuildRequires: libpangox-compat-devel librsvg-devel libjson-glib-devel
 BuildRequires: libX11-devel libXau-devel libXrandr-devel libXrender-devel libXt-devel
 BuildRequires: libSM-devel libXext-devel libXtst-devel libXi-devel libXcomposite-devel libGL-devel
-BuildRequires: GConf browser-plugins-npapi-devel perl-XML-Parser xorg-xtrans-devel
+BuildRequires: xorg-xtrans-devel
 BuildRequires: libcanberra-devel
 BuildRequires: libcinnamon-desktop-devel
 BuildRequires: xmlto
-BuildRequires: systemd-devel libsystemd-login-devel libsystemd-daemon-devel libpolkit-devel
+BuildRequires: libsystemd-devel libpolkit-devel
 BuildRequires: libxapps-devel
 
 %description
@@ -72,12 +72,9 @@ This package provides the Cinnamon session manager.
 %setup -q
 %patch0 -p1
 
-[ ! -d m4 ] && mkdir m4
-
 %build
 %meson -Dwith-gconf=false --libexecdir=%_libexecdir
 %meson_build
-
 
 %install
 %meson_install
@@ -88,9 +85,11 @@ install -pD -m755 %SOURCE3 %buildroot%_datadir/%name/start%{_name}-common
 install -pD -m755 %SOURCE4 %buildroot%_bindir/start%{_name}
 install -pD -m755 %SOURCE5 %buildroot%_bindir/start%{_name}2d
 
+%if_enabled wmsession
 mkdir -p %buildroot%_x11sysconfdir/wmsession.d
 install -pD -m655 %SOURCE6 %buildroot%_x11sysconfdir/wmsession.d
 install -pD -m655 %SOURCE7 %buildroot%_x11sysconfdir/wmsession.d
+%endif
 
 mkdir -p %buildroot%_datadir/xsessions
 install -pD -m655 %SOURCE8 %buildroot%_datadir/xsessions
@@ -114,11 +113,16 @@ rm -f %buildroot%_docdir/%name/dbus/cinnamon-session.html
 %_iconsdir/hicolor/*/apps/cinnamon-session-properties.*
 %config %_datadir/glib-2.0/schemas/org.cinnamon.SessionManager.gschema.xml
 %_mandir/man?/*
-%_x11sysconfdir/wmsession.d/*
+%{?_enable_wmsession:%_x11sysconfdir/wmsession.d/*}
 %_datadir/xsessions/*.desktop
 %doc AUTHORS NEWS README
 
 %changelog
+* Fri Jul 19 2019 Yuri N. Sedunov <aris@altlinux.org> 4.2.1-alt2
+- spec: made wmsession support optional (disabled by default),
+  removed gconf stuff,
+  updated (build)dependencies
+
 * Mon Jul 8 2019 Vladimir Didenko <cow@altlinux.org> 4.2.1-alt1
 - 4.2.1
 
