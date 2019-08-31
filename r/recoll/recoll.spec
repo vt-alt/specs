@@ -6,7 +6,7 @@
 %define pre %nil
 
 Name: recoll
-Version: 1.25.19
+Version: 1.25.22
 Release: alt1
 
 Summary: A personal full text search package
@@ -74,8 +74,8 @@ Group: File tools
 BuildArch: noarch
 Requires: %name-extras = %version
 Requires: perl-Image-ExifTool
-Requires: antiword catdoc unrtf
-Requires: python-module-pychm
+Requires: antiword unrtf wv
+Requires: python-module-pychm python3-module-lxml
 Requires: aspell aspell-ru-rk
 Requires: xpdf-utils ghostscript-utils
 
@@ -155,6 +155,18 @@ rm -f %buildroot%_datadir/%name/filters/xdg-open
 %python3_sitelibdir/recollchm/
 
 %changelog
+* Thu Aug 29 2019 Michael Shigorin <mike@altlinux.org> 1.25.22-alt1
+- new version (watch file uupdate)
+
+* Thu Aug 29 2019 Michael Shigorin <mike@altlinux.org> 1.25.21-alt2
+- updated -full subpackage dependencies (closes: #37146)
+
+* Mon Aug 26 2019 Michael Shigorin <mike@altlinux.org> 1.25.21-alt1
+- new version (watch file uupdate)
+
+* Mon Aug 05 2019 Michael Shigorin <mike@altlinux.org> 1.25.20-alt1
+- new version (watch file uupdate)
+
 * Thu Jun 13 2019 Michael Shigorin <mike@altlinux.org> 1.25.19-alt1
 - new version (watch file uupdate)
 
