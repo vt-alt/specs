@@ -2,7 +2,7 @@
 
 Name: muffin
 Version: 4.2.2
-Release: alt1
+Release: alt2
 
 Summary: Window and compositing manager based on Clutter
 License: GPLv2+
@@ -44,12 +44,11 @@ Patch: %name-%version-%release.patch
 %filter_from_provides /gir(Meta)/d
 
 Requires: lib%name = %version-%release
-Requires(post,preun): GConf
 Requires: zenity
 
 BuildPreReq: rpm-build-gir >= 0.7.1-alt6
 BuildPreReq: libgtk+3-devel >= 3.3.3
-BuildRequires: GConf libGConf-devel libcanberra-gtk3-devel libstartup-notification-devel
+BuildRequires: libcanberra-gtk3-devel libstartup-notification-devel
 BuildRequires: libXrandr-devel libXcursor-devel libXcomposite-devel
 BuildRequires: libXinerama-devel libXext-devel libSM-devel
 BuildRequires: gtk-doc gnome-common intltool gnome-doc-utils
@@ -198,6 +197,9 @@ sed -i 's,-Werror=pointer-arith,,' */configure.ac
 
 
 %changelog
+* Mon Aug 19 2019 Anton Midyukov <antohami@altlinux.org> 4.2.2-alt2
+- Not requires GConf
+
 * Wed Jul 31 2019 Vladimir Didenko <cow@altlinux.org> 4.2.2-alt1
 - 4.2.2-1-g3c9fdcf
 
