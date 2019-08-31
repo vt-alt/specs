@@ -1,10 +1,10 @@
 # -*- mode: rpm-spec; coding: utf-8 -*-
 %define realname icewm
-%define gitrev .git569bbe7
+#define gitrev .git569bbe7
 
 Name: %realname
-Version: 1.4.2
-Release: alt4%gitrev
+Version: 1.6.1
+Release: alt1
 Epoch:3
 
 Summary: X11 Window Manager
@@ -34,10 +34,11 @@ Source12: icewm-old-changelog.bz2
 Patch0: %name-%version-%release.patch
 
 BuildRequires(pre): rpm-macros-cmake
-# Automatically added by buildreq on Tue Oct 02 2018
-BuildRequires: asciidoc cmake gcc-c++ libSM-devel libXft-devel libXinerama-devel
-BuildRequires: libXrandr-devel libalsa-devel librsvg-devel libsndfile-devel
-BuildRequires: perl-Pod-Usage python-modules-compiler python-modules-encodings time
+# Automatically added by buildreq on Thu Aug 29 2019
+BuildRequires: asciidoc cmake gcc-c++ libSM-devel libXcomposite-devel
+BuildRequires: libXdamage-devel libXft-devel libXinerama-devel libXrandr-devel
+BuildRequires: libalsa-devel librsvg-devel libsndfile-devel perl-Pod-Usage
+BuildRequires: python-modules-compiler python-modules-encodings time
 
 %description
  Window Manager for X Window System. Can emulate the look of Windows'95, OS/2
@@ -121,6 +122,10 @@ rm -f %buildroot/%_datadir/xsessions/%realname.desktop
 %doc AUTHORS NEWS README.ALT README.md BUILD/*.html icewm-old-changelog.bz2
 
 %changelog
+* Thu Aug 29 2019 Dmitriy Khanzhin <jinn@altlinux.org> 3:1.6.1-alt1
+- 1.6.1 (ALT #37127)
+- buildreq
+
 * Thu Jan 03 2019 Dmitriy Khanzhin <jinn@altlinux.org> 3:1.4.2-alt4.git569bbe7
 - git snapshot 569bbe7
 
