@@ -2,20 +2,35 @@
 # $Id: avrdude,v 1.2 2005/02/02 09:35:55 grigory Exp $
 
 %def_enable doc
+%def_enable parport
 
+%define udev_rules_file 70-avrdude_usbprog.rules
 %set_verify_elf_method unresolved=relaxed
 
 Summary: AVRDUDE is software for programming Atmel AVR Microcontrollers.
 Name: avrdude
 Version: 6.3
-Release: alt3.1
+Release: alt5
 License: GPL
 Group: Development/Other
 URL: http://www.nongnu.org/avrdude/
 Source0: http://download.savannah.gnu.org/releases/avrdude/%name-%version.tar.gz
+Source3: modprobe.avrdude_parport
+##############################
+## use to convert avrdude-udev-rules(fedora), debian.avrdude.udev
+Source2: udevrules2table.pl
+# SuSE 6.3-3.4
+Source4: avrdude-usbdevices
+# fedora 6.3-17
+Source5: avrdude-udev-rules
+# debian ???
+Source6: debian.avrdude.udev
+## merge avrdude-usbdevices(suse), converted avrdude-udev-rules & debian.avrdude.udev
+## into avrdude-usbdevices.altmerged
+Source7: avrdude-usbdevices.altmerged
+##############################
 Patch: avrdude-install-header.patch
 
-BuildRequires(pre): rpm-build-ubt
 
 BuildRequires: gnu-config libtinfo-devel libusb-devel libusb-compat-devel makeinfo
 BuildRequires: flex libelf-devel libftdi1-devel libncurses-devel libreadline-devel
@@ -47,10 +62,15 @@ AVRDUDE static library provides API integration for programming Atmel AVR Microc
 %prep
 %setup -q
 %patch -p2
+# useful cleanups based on fedora spec
+chmod -x safemode.c doc/TODO
+sed -i 's|/usr/local/etc/avrdude.conf|/etc/avrdude.conf|g' doc/avrdude.texi avrdude.1
+iconv -f ISO88591 -t UTF8 -o ChangeLog-2003 < ChangeLog-2003
+iconv -f ISO88591 -t UTF8 -o NEWS < NEWS
 
 %build
 %autoreconf
-%configure %{subst_enable doc} --enable-parport --enable-linuxgpio
+%configure %{subst_enable doc} %{subst_enable parport} --enable-linuxgpio
 %make
 
 %install
@@ -58,6 +78,21 @@ AVRDUDE static library provides API integration for programming Atmel AVR Microc
 sed -i 's/^#include "ac_cfg\.h"$/#include <libavrdude_cfg.h>/' %buildroot%_includedir/libavrdude.h
 install -T ac_cfg.h %buildroot%_includedir/libavrdude_cfg.h
 rm -f %buildroot%_libdir/*.so*
+
+%global udevdir %{_prefix}/lib/udev
+%global tag uaccess
+RULESFILE=%buildroot%_udevrulesdir/%udev_rules_file
+mkdir -p ${RULESFILE%/*}
+while IFS=" " read major minor comment;do
+    echo "# $comment"
+    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="'$major'", ATTRS{idProduct}=="'$minor'", TAG+="%{tag}"'
+done <%{SOURCE7} >> $RULESFILE
+chmod 644 $RULESFILE
+
+
+%if_enabled parport
+install -D -m 644 %{SOURCE3} %buildroot%_sysconfdir/modprobe.d/50-avrdude_parport.conf
+%endif
 
 %if_enabled doc
 %post
@@ -70,6 +105,11 @@ rm -f %buildroot%_libdir/*.so*
 %config %_sysconfdir/%name.conf
 %_bindir/*
 %_man1dir/*
+%_udevrulesdir/%udev_rules_file
+%if_enabled parport
+%dir %{_sysconfdir}/modprobe.d
+%config %{_sysconfdir}/modprobe.d/50-avrdude_parport.conf
+%endif
 
 %if_enabled doc
 %_infodir/*
@@ -83,6 +123,14 @@ rm -f %buildroot%_libdir/*.so*
 %_libdir/*.a
 
 %changelog
+* Thu Aug 29 2019 Igor Vlasenko <viy@altlinux.ru> 6.3-alt5
+- added doc fixes from fedora
+- added 70-avrdude_usbprog.rules - usb id list merged from SuSE, fedora, debian
+- added modprobe ppdev hook on paraport install (from SuSE)
+
+* Sat Jul 06 2019 Igor Vlasenko <viy@altlinux.ru> 6.3-alt4.1
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed Feb 06 2019 Grigory Ustinov <grenka@altlinux.org> 6.3-alt3.1
 - Rebuild with libreadline7.
 
