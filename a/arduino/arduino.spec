@@ -1,16 +1,16 @@
+Group: Development/Java
 # BEGIN SourceDeps(oneline):
 BuildRequires: /usr/bin/desktop-file-install /usr/bin/desktop-file-validate gcc-c++ unzip
 # END SourceDeps(oneline)
-BuildRequires: /proc
-BuildRequires: jpackage-generic-compat
+BuildRequires: /proc rpm-build-java
+BuildRequires: jpackage-1.8-compat
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
 Name:		arduino
 Epoch:		1
 Version:	1.8.5
-Release:	alt2_4jpp8
+Release:	alt2_8jpp8
 Summary:	An IDE for Arduino-compatible electronics prototyping platforms
-Group:		Development/Java
 License:	GPLv2+ and LGPLv2+ and CC-BY-SA
 URL:		http://www.arduino.cc/
 
@@ -41,7 +41,6 @@ Source18:   https://github.com/arduino-libraries/WiFi101-FirmwareUpdater-Plugin/
 
 BuildArch:	noarch
 
-BuildRequires:	java-devel >= 1.8.0
 BuildRequires:	jpackage-utils ant ant-apache-regexp desktop-file-utils ecj jna
 BuildRequires:	jmdns jsemver apache-commons-net apache-commons-codec git
 BuildRequires:	apache-commons-compress apache-commons-exec apache-commons-lang3
@@ -50,7 +49,7 @@ BuildRequires:	bouncycastle-pg jackson-databind jackson-module-mrbean
 BuildRequires:	apache-commons-httpclient objectweb-asm
 BuildRequires:	rsyntaxtextarea batik xml-commons-apis xmlgraphics-commons
 BuildRequires:  libappstream-glib
-Requires:	java >= 1.8.0
+Requires:	java = 1.8.0
 Requires:	fonts-type1-xorg ecj jna zenity polkit ecj jna
 Requires:	jmdns jsemver apache-commons-net apache-commons-codec git
 Requires:	apache-commons-compress apache-commons-exec apache-commons-lang3
@@ -90,9 +89,9 @@ This package contains an IDE that can be used to develop and upload code
 to the micro-controller.
 
 %package -n %{name}-core
+Group: Development/Java
 Summary:	Files required for compiling code for Arduino-compatible micro-controllers
-Group:		Development/Java
-Requires:	avr-gcc avr-gcc-c++ avr-libc-doc avrdude
+Requires:	avr-gcc avr-gcc-c++ avr-libc avrdude
 
 
 %description -n %{name}-core
@@ -106,9 +105,9 @@ Arduino code.
 
 
 %package -n %{name}-doc
+Group: Development/Java
 Summary:	Documentation for the Arduino micro-controller platform
-Group:		Development/Java
-Requires:	avr-gcc avr-gcc-c++ avr-libc-doc avrdude
+Requires:	avr-gcc avr-gcc-c++ avr-libc avrdude
 BuildArch: noarch
 
 
@@ -307,6 +306,12 @@ appstream-util validate-relax --nonet $RPM_BUILD_ROOT/%{_datadir}/metainfo/*.app
 %{_datadir}/%{name}/arduino-builder
 
 %changelog
+* Thu Aug 29 2019 Igor Vlasenko <viy@altlinux.ru> 1:1.8.5-alt2_8jpp8
+- fixed avrdude path (closes: #37154)
+
+* Fri Jul 19 2019 Igor Vlasenko <viy@altlinux.ru> 1:1.8.5-alt2_7jpp8
+- fc update & java 8 build
+
 * Thu May 31 2018 Igor Vlasenko <viy@altlinux.ru> 1:1.8.5-alt2_4jpp8
 - java update
 
