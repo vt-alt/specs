@@ -2,7 +2,7 @@
 %def_disable check
 
 Name: python-module-%modname
-Version: 1.0.2
+Version: 1.1.1
 Release: alt1
 
 Summary: A micro-framework for Python based on Werkzeug, Jinja 2 and good intentions
@@ -87,6 +87,9 @@ popd
 %_bindir/%modname
 
 %changelog
+* Fri Aug 30 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.1.1-alt1
+- Version updated to 1.1.1
+
 * Wed Dec 12 2018 Alexey Shabalin <shaba@altlinux.org> 1.0.2-alt1
 - 1.0.2
 

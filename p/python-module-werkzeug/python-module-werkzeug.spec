@@ -5,7 +5,7 @@
 
 Summary: Werkzeug is one of the most advanced WSGI utility modules
 Name: python-module-%oname
-Version: 0.14.1
+Version: 0.15.5
 Release: alt1
 License: BSD
 Group: Development/Python
@@ -86,16 +86,19 @@ popd
 %endif
 
 %files
-%doc AUTHORS CHANGES.rst LICENSE
+%doc *.rst
 %python_sitelibdir/*
 
 %if_with python3
 %files -n python3-module-%oname
-%doc AUTHORS CHANGES.rst LICENSE
+%doc *.rst
 %python3_sitelibdir/*
 %endif
 
 %changelog
+* Fri Aug 30 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.15.5-alt1
+- Version updated to 0.15.5
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.14.1-alt1
 - Updated to upstream version 0.14.1.
 
