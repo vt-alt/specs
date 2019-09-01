@@ -2,8 +2,8 @@
 
 Name:      appstream-data
 Summary:   ALT Linux AppStream metadata
-Version:   20190718
-Release:   alt2
+Version:   20190901
+Release:   alt1
 Group:     System/Configuration/Packaging
 BuildArch: noarch
 License:   CC0 and CC-BY and CC-BY-SA and GFDL
@@ -31,6 +31,13 @@ cp -r manual-%version/* %buildroot%_datadir/app-info/xmls/
 %_datadir/app-info/icons/altlinux
 
 %changelog
+* Sun Sep 01 2019 Andrey Cherepanov <cas@altlinux.org> 20190901-alt1
+- Fix for manual id of conflicted packages (firefox/firefox-esr, LibreOffice/LibreOffice-still) by <launchable> tag
+- Add missing project_license tags
+- Add apply plugin for screenshot fix
+- Move screenshot text to <image> subtag (ALT #37143)
+- Fix project license information (ALT #37038)
+
 * Thu Jul 18 2019 Andrey Cherepanov <cas@altlinux.org> 20190718-alt2
 - Remove MIME type desktop files.
 - appstream-db: add -i parameter for use id instead of pkgname to search.
