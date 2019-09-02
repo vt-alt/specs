@@ -1,7 +1,7 @@
 %global appid org.gajim.Gajim
 Name: gajim
-Version: 1.0.3
-Release: alt1
+Version: 1.1.3
+Release: alt2
 
 Summary: a Jabber client written in PyGTK
 License: GPLv3
@@ -9,21 +9,23 @@ Group: Networking/Instant messaging
 Url: http://gajim.org
 Packager: Ilya Mashkin <oddity@altlinux.ru>
 
-AutoReqProv: yes, noshell
-
 Source: %url/downloads/%name-%version.tar.bz2
+Patch0001: 0001-Prefer-X11-to-Wayland-GDK-backend.patch
+Patch0002: 0002-setup.cfg-bump-nbxmpp-version.patch
 
-##Requires: libgtk+2-gir-devel
-#Requires: python2.7(pyasn)
-##Requires: python2.7(gst1.0)
+Requires: libgtk+3-gir
+%py3_requires cssutils
+%py3_requires keyring
+%py3_requires precis_i18n
+%py3_requires nbxmpp
+%py3_requires precis_i18n
+%py3_requires OpenSSL
+%py3_requires cairo
 
-BuildRequires: rpm-build-gir libgtk+3-devel python3-devel python3-module-setuptools
-BuildRequires: intltool libgtk+2-devel python-module-pygtk-devel python-modules-encodings xorg-cf-files
-BuildRequires: libfarstream0.2-devel gst-plugins-bad1.0-devel libnice-devel libgupnp-igd-devel python-module-pyasn
-
+BuildRequires(pre): rpm-build-python3 rpm-build-gir
+BuildRequires: libgtk+3-devel python3-devel python3-module-setuptools
+BuildRequires: python3-module-nbxmpp >= 0.6.10
 BuildArch: noarch
-
-%add_python_req_skip farstream gst
 
 %description
 Gajim is a Jabber client written in PyGTK. The goal of Gajim's developers
@@ -33,12 +35,8 @@ it nicely.
 
 %prep
 %setup -n %name-%version
-
-#build
-#configure --enable-remote
-
-#install
-#makeinstall_std
+%patch0001 -p1
+%patch0002 -p1
 
 %build
 %python3_build
@@ -70,6 +68,12 @@ it nicely.
 #_iconsdir/hicolor/128x128/apps/%name.png
 
 %changelog
+* Sat Aug 31 2019 Alexey Shabalin <shaba@altlinux.org> 1.1.3-alt2
+- update Requires
+
+* Sun Aug 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.1.3-alt1
+- 1.1.3
+
 * Fri Oct 19 2018 Ilya Mashkin <oddity@altlinux.ru> 1.0.3-alt1
 - 1.0.3
 
