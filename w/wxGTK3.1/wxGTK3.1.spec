@@ -8,8 +8,8 @@
 %define wxbranch 3.1
 
 Name: wxGTK3.1
-Version: %wxbranch.1
-Release: alt4
+Version: 3.1.2
+Release: alt1
 
 Summary: The GTK+ port of the wxWidgets library
 License: wxWidgets License
@@ -437,6 +437,9 @@ ln -s ../..%_libexecdir/%name/wx-config %buildroot%_bindir/wx-config
 %_datadir/wx-%wxbranch/examples
 
 %changelog
+* Thu Jun 06 2019 Anton Midyukov <antohami@altlinux.org> 3.1.2-alt1
+- new version 3.1.2
+
 * Fri Apr 26 2019 Anton Midyukov <antohami@altlinux.org> 3.1.1-alt4
 - switches for build with webkitgtk, SDL
 - add compat with wxGTK3.0

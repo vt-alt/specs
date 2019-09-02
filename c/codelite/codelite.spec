@@ -1,6 +1,6 @@
 Name:    codelite
 Version: 13.0
-Release: alt1
+Release: alt2
 
 Summary: CodeLite is a powerful open-source, cross platform code editor for C/C++
 
@@ -34,9 +34,11 @@ users to easily create, build and debug complex projects.
 %setup
 
 %build
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+%add_optflags %(pkg-config --cflags pango)
+cmake . -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_CXX_FLAGS:STRING='%optflags'
 
-%make %{?_smp_mflags}
+%make_build
 
 %install
 %makeinstall_std
@@ -57,5 +59,8 @@ cp -p %name.xml %buildroot%_datadir/mime/packages/
 %_mandir/man1/%{name}*
 
 %changelog
+* Tue Aug 20 2019 Anton Midyukov <antohami@altlinux.org> 13.0-alt2
+- add_optflags (pkg-config --cflags pango) (Fix FTBFS)
+
 * Wed Jun 19 2019 Grigory Ustinov <grenka@altlinux.org> 13.0-alt1
 - Initial build for Sisyphus.

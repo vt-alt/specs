@@ -1,6 +1,6 @@
 Name: dolphin-emu
 Version: 5.0
-Release: alt11
+Release: alt12
 
 Summary: The Gamecube / Wii Emulator
 License: GPLv2
@@ -68,6 +68,7 @@ you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 %__mkdir_p %_target_platform
 pushd %_target_platform
 
+%add_optflags %(pkg-config --cflags pango)
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX:PATH=%prefix \
 	-DCMAKE_C_FLAGS:STRING='%optflags' \
@@ -95,6 +96,9 @@ popd
 %_man6dir/%{name}*
 
 %changelog
+* Mon Aug 19 2019 Anton Midyukov <antohami@altlinux.org> 5.0-alt12
+- add_optflags (pkg-config --cflags pango) (Fix FTBFS)
+
 * Sun Feb 24 2019 Nazarov Denis <nenderus@altlinux.org> 5.0-alt11
 - Rebuilt with new SFML
 

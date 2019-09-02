@@ -2,7 +2,7 @@
 
 Name: opencpn
 Version: 5.0.0
-Release: alt1
+Release: alt2
 Summary: A free and open source software for marine navigation
 
 Group: Other
@@ -10,6 +10,8 @@ License: %gpl2only
 Url: http://opencpn.org
 Source0: OpenCPN-%version.tar.gz
 Source1: %name.desktop
+
+ExcludeArch: ppc64le
 
 Patch1: opencpn-4.4.0-fix_library_path.patch
 
@@ -62,6 +64,7 @@ Architecture independent files for OpenCPN.
 sed -i 's/\(SET .LIB_INSTALL_DIR "lib64".\)/# \1/' CMakeLists.txt
 
 %build
+%add_optflags %(pkg-config --cflags pango)
 %cmake -DBUNDLE_DOCS=1 -DBUNDLE_TCDATA=1 -DBUNDLE_GSHHS=1
 cd BUILD
 make
@@ -135,6 +138,10 @@ rm -rf %buildroot/%_datadir/doc
 %_datadir/%name/license.html
 
 %changelog
+* Tue Aug 20 2019 Anton Midyukov <antohami@altlinux.org> 5.0.0-alt2
+- add_optflags (pkg-config --cflags pango) (Fix FTBFS)
+- ExcludeArch: ppc64le
+
 * Thu Mar 28 2019 Sergey Y. Afonin <asy@altlinux.ru> 5.0.0-alt1
 - New version (thanx to TEAM)
 - Built with wxGTK3.1
