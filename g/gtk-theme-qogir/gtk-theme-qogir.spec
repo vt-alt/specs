@@ -1,5 +1,5 @@
 Name: gtk-theme-qogir
-Version: 20190503
+Version: 20190831
 Release: alt1
 Summary: Qogir GTK theme
 
@@ -11,7 +11,7 @@ Source: %name-%version.tar.gz
 
 BuildArch: noarch
 Packager: Leontiy Volodin <lvol@altlinux.org>
-BuildRequires: libgtk+3-devel libgtk+2-devel
+BuildRequires: libgtk+3-devel libgtk+2-devel sassc
 #Requires: libgtk-engine-murrine
 
 %description
@@ -25,13 +25,17 @@ Based on Arc gtk theme
 
 %install
 mkdir -p %buildroot%_datadir/themes/Qogir
-./Install -d %buildroot%_datadir/themes
+./install.sh -i -d %buildroot%_datadir/themes
 
 %files
 %doc AUTHORS COPYING HACKING README.md
 %_datadir/themes/Qogir*
 
 %changelog
+* Tue Sep 03 2019 Leontiy Volodin <lvol@altlinux.org> 20190831-alt1
+- New version.
+- Added sassc in BR for generate css styles.
+
 * Mon May 06 2019 Leontiy Volodin <lvol@altlinux.org> 20190503-alt1
 - New version
 
