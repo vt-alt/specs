@@ -1,5 +1,8 @@
+# https://bugzilla.altlinux.org/36391
+%def_without	devel
+
 Name: nfdump
-Version: 1.6.17
+Version: 1.6.18
 Release: alt1
 Summary: collect and process netflow data
 
@@ -53,12 +56,14 @@ Group: System/Libraries
 %description -n libnfdump
 nfdump shared library
 
+%if_with devel
 %package -n libnfdump-devel
 Summary: nfdump development files
 Group: Development/C
 
 %description -n libnfdump-devel
 nfdump development files
+%endif
 
 %prep
 %setup -q
@@ -72,8 +77,7 @@ nfdump development files
 	--enable-sflow \
 	--enable-readpcap \
 	--enable-nfpcapd \
-	--enable-nsel \
-	--enable-compat15
+	--enable-nsel
 
 %make_build
 
@@ -88,6 +92,10 @@ install -m0644 %SOURCE5 %buildroot%_tmpfilesdir/%name.conf
 install -m0755 %SOURCE6 %buildroot%_initdir/sfcapd
 install -m0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/sfcapd
 install -m0644 %SOURCE8 %buildroot%_unitdir/sfcapd.service
+
+%if_without devel
+rm %buildroot%_libdir/libnfdump.so
+%endif
 
 %pre
 %_sbindir/groupadd -r -f nfcapd
@@ -130,10 +138,17 @@ install -m0644 %SOURCE8 %buildroot%_unitdir/sfcapd.service
 %files -n libnfdump
 %_libdir/libnfdump-%version.so
 
+%if_with devel
 %files -n libnfdump-devel
 %_libdir/libnfdump.so
+%endif
 
 %changelog
+* Sun Sep 01 2019 Sergey Y. Afonin <asy@altlinux.org> 1.6.18-alt1
+- 1.6.18 (removed 1.5 compat code)
+- built without --enable-compat15
+- don't packed devel subpackage (ALT #36391)
+
 * Fri Jun 22 2018 Sergey Y. Afonin <asy@altlinux.ru> 1.6.17-alt1
 - 1.6.17
 - changed Url
