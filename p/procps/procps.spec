@@ -1,6 +1,6 @@
 Name: procps
 Version: 3.3.15
-Release: alt3.git2f79ff3bc6a7ad
+Release: alt4.git4c4d8b24640612
 
 Summary: System and process monitoring utilities
 License: GPLv2+, LGPLv2+
@@ -112,6 +112,11 @@ make check
 %_includedir/*
 %_pkgconfigdir/*.pc
 %changelog
+* Wed Aug 28 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt4.git4c4d8b24640612
+- ps: Initialize variable.
+- procio: Make bit field unsigned.
+- Updated to v3.3.15-76-g4c4d8b2.
+
 * Wed May 22 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt3.git2f79ff3bc6a7ad
 - Don't link with libsystemd directly.
 
