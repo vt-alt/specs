@@ -13,7 +13,7 @@
 %define rctag %nil
 
 Name: clamav
-Version: 0.101.3
+Version: 0.101.4
 Release: alt1
 %define abiversion 9
 
@@ -353,6 +353,10 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %endif
 
 %changelog
+* Mon Sep 02 2019 Sergey Y. Afonin <asy@altlinux.org> 0.101.4-alt1
+- 0.101.4 (CVE-2019-12900, additional handling CVE-2019-12625 which
+  has been mitigated in 0.101.3)
+
 * Mon Aug 12 2019 Sergey Y. Afonin <asy@altlinux.org> 0.101.3-alt1
 - 0.101.3
   a patch release to address a vulnerability to non-recursive zip bombs
