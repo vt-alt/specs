@@ -5,8 +5,8 @@
 %define _localstatedir /var
 
 Name: pve-%rname
-Version: 3.0.1
-Release: alt5
+Version: 4.0.0
+Release: alt1
 Epoch: 1
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -26,50 +26,48 @@ Source100: Logo.bmp
 Patch0: qemu-alt.patch
 Patch100: qemu-3.0.1-uuid.patch
 
-Patch10: 0001-PVE-Config-block-file-change-locking-default-to-off.patch
-Patch11: 0002-PVE-Config-Adjust-network-script-path-to-etc-kvm.patch
-Patch12: 0003-PVE-Config-use-kvm-by-default.patch
-Patch13: 0004-PVE-Config-set-the-CPU-model-to-kvm64-32-instead-of-.patch
-Patch14: 0005-PVE-Config-ui-spice-default-to-pve-certificates.patch
-Patch15: 0006-PVE-Config-smm_available-false.patch
-Patch16: 0007-PVE-Config-glusterfs-no-default-logfile-if-daemonize.patch
-Patch17: 0008-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
-Patch18: 0009-PVE-Up-qmp-add-get_link_status.patch
-Patch19: 0010-PVE-Up-glusterfs-allow-partial-reads.patch
-Patch20: 0011-PVE-Up-qemu-img-return-success-on-info-without-snaps.patch
-Patch21: 0012-PVE-Up-qemu-img-dd-add-osize-and-read-from-to-stdin-.patch
-Patch22: 0013-PVE-Up-qemu-img-dd-add-isize-parameter.patch
-Patch23: 0014-PVE-Up-qemu-img-dd-add-n-skip_create.patch
-Patch24: 0015-PVE-virtio-balloon-improve-query-balloon.patch
-Patch25: 0016-PVE-qapi-modify-query-machines.patch
-Patch26: 0017-PVE-qapi-modify-spice-query.patch
-Patch27: 0018-PVE-internal-snapshot-async.patch
-Patch28: 0019-PVE-block-add-the-zeroinit-block-driver-filter.patch
-Patch29: 0020-PVE-backup-modify-job-api.patch
-Patch30: 0021-PVE-backup-introduce-vma-archive-format.patch
-Patch31: 0022-PVE-Deprecated-adding-old-vma-files.patch
-Patch32: 0023-PVE-vma-add-throttling-options-to-drive-mapping-fifo.patch
-Patch33: 0024-PVE-vma-add-cache-option-to-device-map.patch
-Patch34: 0025-PVE-vma-remove-forced-NO_FLUSH-option.patch
-Patch35: 0026-PVE-Add-dummy-id-command-line-parameter.patch
-Patch36: 0027-PVE-Config-Revert-target-i386-disable-LINT0-after-re.patch
-Patch37: 0028-PVE-Up-Config-file-posix-make-locking-optiono-on-cre.patch
-Patch38: 0001-monitor-guard-iothread-access-by-mon-use_io_thread.patch
-Patch39: 0002-monitor-delay-monitor-iothread-creation.patch
-Patch40: 0003-kvm-Add-support-to-KVM_GET_MSR_FEATURE_INDEX_LIST-an.patch
-Patch41: 0004-i386-Add-CPUID-bit-and-feature-words-for-IA32_ARCH_C.patch
-Patch42: 0005-i386-Add-new-MSR-indices-for-IA32_PRED_CMD-and-IA32_.patch
-Patch43: 0006-x86-Data-structure-changes-to-support-MSR-based-feat.patch
-Patch44: 0007-x86-define-a-new-MSR-based-feature-word-FEATURE_WORD.patch
-Patch45: 0008-target-i386-add-MDS-NO-feature.patch
-Patch46: 0009-target-i386-define-md-clear-bit.patch
+Patch10: 0001-target-i386-add-MDS-NO-feature.patch
+Patch11: 0002-target-i386-define-md-clear-bit.patch
+Patch12: 0003-virtio-balloon-fix-QEMU-4.0-config-size-migration-in.patch
+Patch13: 0004-Fix-heap-overflow-in-ip_reass-on-big-packet-input.patch
+Patch14: 0001-PVE-Config-block-file-change-locking-default-to-off.patch
+Patch15: 0002-PVE-Config-Adjust-network-script-path-to-etc-kvm.patch
+Patch16: 0003-PVE-Config-set-the-CPU-model-to-kvm64-32-instead-of-.patch
+Patch17: 0004-PVE-Config-ui-spice-default-to-pve-certificates.patch
+Patch18: 0005-PVE-Config-smm_available-false.patch
+Patch19: 0006-PVE-Config-glusterfs-no-default-logfile-if-daemonize.patch
+Patch20: 0007-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
+Patch21: 0008-PVE-Up-qmp-add-get_link_status.patch
+Patch22: 0009-PVE-Up-glusterfs-allow-partial-reads.patch
+Patch23: 0010-PVE-Up-qemu-img-return-success-on-info-without-snaps.patch
+Patch24: 0011-PVE-Up-qemu-img-dd-add-osize-and-read-from-to-stdin-.patch
+Patch25: 0012-PVE-Up-qemu-img-dd-add-isize-parameter.patch
+Patch26: 0013-PVE-Up-qemu-img-dd-add-n-skip_create.patch
+Patch27: 0014-PVE-virtio-balloon-improve-query-balloon.patch
+Patch28: 0015-PVE-qapi-modify-query-machines.patch
+Patch29: 0016-PVE-qapi-modify-spice-query.patch
+Patch30: 0017-PVE-internal-snapshot-async.patch
+Patch31: 0018-PVE-block-add-the-zeroinit-block-driver-filter.patch
+Patch32: 0019-PVE-backup-modify-job-api.patch
+Patch33: 0020-PVE-backup-introduce-vma-archive-format.patch
+Patch34: 0021-PVE-Deprecated-adding-old-vma-files.patch
+Patch35: 0022-PVE-vma-add-throttling-options-to-drive-mapping-fifo.patch
+Patch36: 0023-PVE-vma-add-cache-option-to-device-map.patch
+Patch37: 0024-PVE-vma-remove-forced-NO_FLUSH-option.patch
+Patch38: 0025-PVE-Add-dummy-id-command-line-parameter.patch
+Patch39: 0026-PVE-Config-Revert-target-i386-disable-LINT0-after-re.patch
+Patch40: 0027-PVE-Up-Config-file-posix-make-locking-optiono-on-cre.patch
+Patch41: 0028-docs-recommend-use-of-md-clear-feature-on-all-Intel-.patch
+Patch42: 0029-PVE-savevm-async-kick-AIO-wait-on-block-state-write.patch
+Patch43: 0030-PVE-move-snapshot-cleanup-into-bottom-half.patch
+Patch44: 0031-PVE-monitor-disable-oob-capability.patch
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 BuildRequires: acpica bzlib-devel glib2-devel flex libaio-devel libalsa-devel libbluez-devel libcap-devel
 BuildRequires: libcap-ng-devel libcurl-devel libfdt-devel libgnutls-devel libiscsi-devel libjemalloc-devel libjpeg-devel
 BuildRequires: liblzo2-devel libncurses-devel libnettle-devel libnuma-devel libpixman-devel libpng-devel ceph-devel
 BuildRequires: libsasl2-devel libseccomp-devel libspice-server-devel libssh2-devel libusbredir-devel libxfs-devel
-BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler
+BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler pkgconfig(glusterfs-api)
 # librdmacm-devel libibverbs-devel libibumad-devel
 BuildRequires: ipxe-roms-qemu seavgabios seabios
 
@@ -128,6 +126,13 @@ Conflicts: %rname-img
 %description img
 This package provides a command line tool for manipulating disk images
 
+%package -n ivshmem-tools
+Summary: Client and server for QEMU ivshmem device
+Group: Emulators
+
+%description -n ivshmem-tools
+This package provides client and server tools for QEMU's ivshmem device
+
 %package aux
 Summary: QEMU auxiliary package
 Group: Emulators
@@ -181,8 +186,6 @@ This is an auxiliary package.
 %patch42 -p1
 %patch43 -p1
 %patch44 -p1
-%patch45 -p1
-%patch46 -p1
 
 %patch100 -p1
 
@@ -217,6 +220,7 @@ export CFLAGS="%optflags"
         --enable-seccomp  \
         --enable-libiscsi  \
         --enable-rbd  \
+        --enable-glusterfs \
         --enable-gnutls  \
         --enable-numa  \
         --enable-jemalloc  \
@@ -227,7 +231,6 @@ export CFLAGS="%optflags"
         --disable-xen \
         --disable-smartcard \
         --disable-libnfs \
-        --disable-glusterfs \
         --disable-libxml2 \
         --disable-guest-agent \
         --disable-guest-agent-msi \
@@ -319,12 +322,14 @@ fi
 %endif
 
 %files system -f %rname.lang
+%_bindir/elf2dmp
 %_bindir/qemu
 %_bindir/qemu-kvm
 %_bindir/kvm
 %_bindir/qemu*system*
 %_bindir/vma
 %_bindir/qemu-pr-helper
+%_bindir/qemu-edid
 %_libexecdir/qemu-bridge-helper
 
 %files img
@@ -333,11 +338,18 @@ fi
 %_bindir/qemu-nbd
 %_bindir/virtfs-proxy-helper
 
+#%files -n ivshmem-tools
+#%_bindir/ivshmem-client
+#%_bindir/ivshmem-server
+
 %files aux
 %dir %docdir/
 %docdir/LICENSE
 
 %changelog
+* Tue Aug 06 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.0.0-alt1
+- 4.0.0-5
+
 * Tue Jun 25 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:3.0.1-alt5
 - 3.0.1-62
 

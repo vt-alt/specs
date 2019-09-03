@@ -1,17 +1,16 @@
 Name: librados2-perl
 Summary: Perl bindings for librados
-Version: 1.0.5
-Release: alt3
+Version: 1.1.2
+Release: alt1
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 
-Source: librados2-perl-1.0-4.tar
+Source: librados2-perl.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: pve-common librados2-devel perl-devel perl(PVE/RPCEnvironment.pm) perl(JSON.pm)
 
 %description
@@ -28,6 +27,12 @@ This package contains librados perl binding used by PVE
 %perl_vendor_autolib/PVE
 
 %changelog
+* Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.1.2-alt1
+- 1.1-2
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.0.5-alt4
+- NMU: remove rpm-build-ubt from BR:
+
 * Thu Jan 31 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.0.5-alt3
 - rebuild with perl 5.28.1
 

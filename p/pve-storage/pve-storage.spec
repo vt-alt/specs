@@ -1,13 +1,13 @@
 Name: pve-storage
 Summary: PVE storage management library
-Version: 5.0.43
+Version: 6.0.7
 Release: alt1
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 
 Requires: open-iscsi smartmontools gdisk parted hdparm
 Requires: multipath-tools ceph >= 12.2.1 zfs-utils
@@ -42,6 +42,12 @@ __EOF__
 %_man1dir/pvesm.1*
 
 %changelog
+* Mon Aug 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt1
+- 6.0-7
+
+* Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt1
+- 6.0-6
+
 * Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.43-alt1
 - 5.0-43
 

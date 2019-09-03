@@ -1,6 +1,6 @@
 Name: pve-docs
 Summary: PVE Documentation
-Version: 5.4.2
+Version: 6.0.4
 Release: alt1
 License: GPLv3
 Group: Documentation
@@ -9,7 +9,7 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
 Source: %name-%version.tar
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 BuildArch: noarch
 BuildRequires: asciidoc-a2x source-highlight xmlto librsvg-utils mailcap pve-common
 BuildRequires: perl(MediaWiki/API.pm) perl(JSON.pm)
@@ -33,7 +33,7 @@ grep 'proxmox.com' * -rl | while read f; do
 	sed -i 's|proxmox.com|basealt.ru|' $f
 done
 
-rm -f getting-help.adoc howto-improve-pve-docs.adoc pve-package-repos.adoc pve-faq.adoc pve-installation.adoc
+rm -f getting-help.adoc howto-improve-pve-docs.adoc pve-package-repos.adoc pve-faq.adoc pve-installation.adoc pve-system-requirements.adoc translation.adoc
 
 %build
 %make
@@ -59,6 +59,9 @@ install -m644 images/screenshot/*.png %buildroot%_datadir/%name/images/screensho
 %_datadir/pve-doc-generator
 
 %changelog
+* Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.4-alt1
+- 6.0-4
+
 * Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.4.2-alt1
 - 5.4-2
 

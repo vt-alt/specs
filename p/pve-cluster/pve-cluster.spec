@@ -1,13 +1,13 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
-Version: 5.0.37
+Version: 6.0.6
 Release: alt1
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 Requires: bridge-utils chrony ntpdate corosync2 fuse rrd-cached ksmtuned openvswitch
 Requires: sqlite3 vixie-cron faketime tzdata openssh-server openssh-clients
 
@@ -33,7 +33,7 @@ on all nodes.
 
 %package -n pve-access-control
 Summary: PVE access control library
-Version: 5.1.10
+Version: 6.0.2
 Group: Development/Perl
 
 %description -n pve-access-control
@@ -152,6 +152,11 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt1
+- pve-cluster 6.0-6
+- pve-access-control 6.0-2
+- pve-apiclient 3.0-2
+
 * Mon May 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 5.0.37-alt1
 - pve-cluster 5.0-37
 - pve-access-control 5.1-10

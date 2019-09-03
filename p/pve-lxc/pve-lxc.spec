@@ -2,14 +2,14 @@
 
 Name: pve-%rname
 Version: 3.1.0
-Release: alt2
+Release: alt3
 Summary: Linux containers usersapce tools
 Group: System/Configuration/Other
 License: LGPL
 URL: https://linuxcontainers.org/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 Requires: lxcfs
 Conflicts: %rname %rname-libs
 
@@ -24,13 +24,17 @@ Patch5: 0005-PVE-Up-start-initutils-make-cgroupns-separation-leve.patch
 Patch6: 0006-PVE-Config-namespace-separation.patch
 Patch7: 0007-PVE-Up-possibility-to-run-lxc-monitord-as-a-regular-.patch
 Patch8: 0008-PVE-Config-Disable-lxc.monitor-cgroup.patch
-Patch9: 0001-conf-use-SYSERROR-on-lxc_write_to_file-errors.patch
-Patch10: 0002-Revert-conf-remove-extra-MS_BIND-with-sysfs-mixed.patch
-Patch11: 0003-CVE-2019-5736-runC-rexec-callers-as-memfd.patch
+Patch9: 0009-init-add-ExecReload-to-lxc.service-to-only-reload-pr.patch
+Patch10: 0010-PVE-Config-attach-always-use-getent.patch
+Patch11: 0001-conf-use-SYSERROR-on-lxc_write_to_file-errors.patch
+Patch12: 0002-Revert-conf-remove-extra-MS_BIND-with-sysfs-mixed.patch
+Patch13: 0003-CVE-2019-5736-runC-rexec-callers-as-memfd.patch
+Patch14: 0004-apparmor-generate-ro-bind-remount-rule-list.patch
+Patch15: 0005-attach-don-t-close-stdout-of-getent.patch
 
 Patch20: lxc-alt.patch
 Patch21: lxc-altlinux-lxc.patch
-Patch22: lxc-unused-but-set-variable.patch
+Patch22: lxc-unused-variable.patch
 
 BuildRequires: docbook2X libcap-devel libdbus-devel libgnutls-devel libseccomp-devel libselinux-devel
 
@@ -57,6 +61,10 @@ an applications or a system.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 
 %patch20 -p1
 %patch21 -p1
@@ -106,6 +114,9 @@ rm -fr %buildroot/usr/lib/%rname/%rname-apparmor-load
 %_man7dir/*.7*
 
 %changelog
+* Wed Aug 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 3.1.0-alt3
+- 3.1.0-64
+
 * Tue Feb 12 2019 Valery Inozemtsev <shrek@altlinux.ru> 3.1.0-alt2
 - merge fix for CVE-2019-5736
 

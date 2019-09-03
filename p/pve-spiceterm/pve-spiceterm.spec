@@ -3,59 +3,43 @@
 
 Name: pve-%sname
 Summary: SPICE Terminal Emulator
-Version: 3.0.5
-Release: alt1
+Version: 3.1.1
+Release: alt2
 License: GPLv2
 Group: Networking/WWW
 Url: https://git.proxmox.com/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 
 Source0: %sname.tar.xz
-Source1: spice-0.14.1.tar.bz2
-Patch0: allow-to-set-sasl-callbacks.patch
 
-Patch10: spiceterm-alt.patch
-
-BuildRequires: libgio-devel libjpeg-devel liblz4-devel libogg-devel libopus-devel libpixman-devel
-BuildRequires: libsasl2-devel libssl-devel perl-Pod-Usage spice-protocol zlib-devel libgdk-pixbuf-devel
+BuildRequires: glib2-devel libspice-server-devel perl-podlators
 
 %description
 With spiceterm you can start commands and export its standard input and
 output to any SPICE client (simulating a xterm Terminal).
 
 %prep
-%setup -q -n %sname -a1
-ln -s spice-* spice
-
-pushd spice
-%patch0 -p1
-popd
-%patch10 -p1
+%setup -q -n %sname
 
 %build
-pushd spice
-%autoreconf
-%configure \
-	--disable-smartcard \
-	--disable-celt051 \
-	--enable-lz4 \
-	--enable-static \
-	--with-sasl
-%make_build
-popd
-
-%make
+%make -C src
 
 %install
-%make DESTDIR=%buildroot install
+%make -C src VERSION=%version DESTDIR=%buildroot install
 
 %files
 %_bindir/%sname
 %_man1dir/%sname.1*
 
 %changelog
+* Wed Aug 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 3.1.1-alt2
+- rebuild with system library
+
+* Mon Aug 05 2019 Valery Inozemtsev <shrek@altlinux.ru> 3.1.1-alt1
+- 3.1-1
+
 * Wed Nov 28 2018 Valery Inozemtsev <shrek@altlinux.ru> 3.0.5-alt1
 - 3.0-5
 
