@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt1
+Release: alt2
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -9,6 +9,8 @@ Url: http://www.x2go.org/
 Packager: Oleg Solovyov <mcpain@altlinux.org>
 
 Source: http://code.x2go.org/releases/source/%name/%name-%version.tar.gz
+Patch1: alt-start-from-uid-500.patch
+Patch2: alt-get-rid-of-sudo.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
@@ -228,6 +230,8 @@ installed on your to-be-managed X2Go servers.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
 
 %build
 echo "Files where we will be patching libexecedir:"
@@ -248,10 +252,10 @@ sed -i logrotate/x2gobroker-daemon \
     -e 's/adm/root/'
 sed -i logrotate/x2gobroker-wsgi \
     -e 's/adm/root/'
-%make_build PREFIX="%prefix" LIBDIR="%_libdir/x2go"
+%make_build PREFIX="%prefix"
 
 %install
-%make_install install PREFIX="%prefix" LIBDIR="%_libdir/x2go" DESTDIR="%buildroot"
+%make_install install PREFIX="%prefix" DESTDIR="%buildroot"
 
 mkdir -p "%buildroot/%_sysconfdir/apache2"/{conf.d,vhosts.d}
 ln -s "%_sysconfdir/x2go/x2gobroker-wsgi.apache.conf" \
@@ -362,12 +366,16 @@ fi
 %config %_logrotatedir/x2gobroker-wsgi
 
 %files agent
-%attr(04710,root,x2gobroker) %_libdir/x2go/x2go/x2gobroker-agent
-%_libdir/x2go/x2go/x2gobroker-agent.pl
+%attr(04710,root,x2gobroker) %_libexecdir/x2go/x2gobroker-agent
+%_libexecdir/x2go/x2gobroker-agent.pl
 %_sbindir/x2gobroker-pubkeyauthorizer
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Tue Sep 03 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt2
+- fix %files
+- fix connection with agent
+
 * Thu Jul 18 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.0.4.1-alt1
 - version updated to 0.0.4.1
 
