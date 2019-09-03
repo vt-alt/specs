@@ -4,7 +4,7 @@
 %def_disable python2_tests
 
 Name: python-module-%modname
-Version: 0.14.5
+Version: 0.14.6
 Release: alt1
 Summary: Better dates & times for Python
 License: ASLv2.0
@@ -23,12 +23,14 @@ BuildPreReq: python3-module-dateutil python3-module-nose
 BuildPreReq: python3-module-nose-cov python3-module-chai
 BuildPreReq: python3-module-sphinx
 BuildPreReq: python3-module-simplejson
+BuildRequires: python3-module-mock
 
 %if_with python2
 BuildPreReq: python-devel python-module-setuptools
 BuildPreReq: python-module-dateutil python-module-nose
 BuildPreReq: python-module-nose-cov python-module-chai
 BuildPreReq: python-module-sphinx
+BuildRequires: python-module-mock
 %py_provides %modname
 %endif
 
@@ -102,6 +104,9 @@ popd
 %python3_sitelibdir/*
 
 %changelog
+* Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.14.6-alt1
+- 0.14.6
+
 * Wed Aug 21 2019 Yuri N. Sedunov <aris@altlinux.org> 0.14.5-alt1
 - 0.14.5
 - made python2 build optional

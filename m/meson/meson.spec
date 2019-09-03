@@ -7,8 +7,8 @@
 %def_disable check
 
 Name: meson
-Version: %ver_major.1
-Release: alt1
+Version: %ver_major.2
+Release: alt1.1
 
 Summary: High productivity build system
 Group: Development/Python3
@@ -89,6 +89,13 @@ MESON_PRINT_TEST_OUTPUT=1 ./run_tests.py
 
 
 %changelog
+* Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.51.2-alt1.1
+- meson.macros: fixed %%meson_test to allow run tests via wrapper
+  like xvfb-run or dbus-run-session
+
+* Tue Aug 27 2019 Yuri N. Sedunov <aris@altlinux.org> 0.51.2-alt1
+- 0.51.2
+
 * Wed Jul 10 2019 Yuri N. Sedunov <aris@altlinux.org> 0.51.1-alt1
 - 0.51.1
 - removed obsolete patches

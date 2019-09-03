@@ -1,4 +1,4 @@
-%define ver_major 0.33
+%define ver_major 1.0
 %def_disable static
 
 Name: libwacom
@@ -14,6 +14,7 @@ Source: %url/releases/download/%name-%version/%name-%version.tar.bz2
 
 Requires: %name-data = %version-%release
 
+BuildRequires(pre): meson
 BuildRequires: glib2-devel libgudev-devel libxml2-devel doxygen
 # for check
 BuildRequires: /proc
@@ -57,21 +58,19 @@ developing applications that use %name.
 %setup
 
 %build
-%autoreconf
-%configure \
-    %{subst_enable static}
-
-%make_build
+%meson -Dudev-dir=/lib/udev
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %check
-%make check
+%meson_test
 
 %files
 %_bindir/%name-list-local-devices
 %_libdir/*.so.*
+%_udevrulesdir/65-libwacom.rules
 %_man1dir/libwacom-list-local-devices.1*
 %doc NEWS README COPYING
 
@@ -90,6 +89,9 @@ developing applications that use %name.
 #%_datadir/gtk-doc/html/*
 
 %changelog
+* Tue Aug 27 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0-alt1
+- 1.0 (ported to Meson build system)
+
 * Fri Apr 12 2019 Yuri N. Sedunov <aris@altlinux.org> 0.33-alt1
 - 0.33
 

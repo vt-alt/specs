@@ -1,5 +1,5 @@
 Name: asunder
-Version: 2.9.3
+Version: 2.9.4
 Release: alt1
 
 Summary: Audio CD ripper and encoder for Linux
@@ -61,6 +61,9 @@ cp %buildroot%_pixmapsdir/%name.png %buildroot%_liconsdir/
 %_liconsdir/%name.png
 
 %changelog
+* Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 2.9.4-alt1
+- 2.9.4
+
 * Fri Apr 06 2018 Yuri N. Sedunov <aris@altlinux.org> 2.9.3-alt1
 - 2.9.3
 

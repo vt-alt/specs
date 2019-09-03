@@ -1,7 +1,9 @@
 %define api_ver 0.0
 
+%def_disable check
+
 Name: libhandy
-Version: 0.0.10
+Version: 0.0.11
 Release: alt1
 
 Summary: Library with GTK+3 widgets for mobile devices
@@ -24,6 +26,7 @@ BuildRequires: pkgconfig(gobject-introspection-1.0)
 BuildRequires: pkgconfig(gtk+-3.0) >= %gtk_ver
 BuildRequires: gir(Gtk) = 3.0
 BuildRequires: vala-tools
+%{?_enable_check:BuildRequires: xvfb-run}
 
 %description
 libhandy provides GTK+3 widgets and GObjects to ease developing
@@ -77,6 +80,10 @@ This package contains development documentation for handy library.
 %install
 %meson_install
 
+%check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+xvfb-run -s -noreset %meson_test
+
 %files
 %_libdir/%name-%api_ver.so.*
 %doc README.md
@@ -99,6 +106,9 @@ This package contains development documentation for handy library.
 %_datadir/gtk-doc/html/%name/
 
 %changelog
+* Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.0.11-alt1
+- 0.0.11
+
 * Wed Jun 19 2019 Yuri N. Sedunov <aris@altlinux.org> 0.0.10-alt1
 - 0.0.10
 

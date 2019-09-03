@@ -11,10 +11,16 @@
 %def_enable appindicator
 %def_enable emoji_dict
 %def_enable unicode_dict
+# ibus-engine-switch timed out in hasher
+%def_disable check
+#src/tests/ibus-desktop-testing-runner.in:
+#172     if test $HAVE_GRAPHICS -eq 1 ; then
+#173         /usr/libexec/Xorg.wrap -noreset ...
+%def_disable installed_tests
 
 Name: ibus
-Version: 1.5.20
-Release: alt3
+Version: 1.5.21
+Release: alt1
 
 Summary: Intelligent Input Bus for Linux OS
 License: LGPLv2+
@@ -27,8 +33,6 @@ Source: https://github.com/%name/%name/releases/download/%version/%name-%version
 Source: %name-%version.tar
 %endif
 Source1: ibus-xinput
-
-#Patch: ibus-%version-up.patch
 
 %define gtk2_binary_version %(pkg-config --variable=gtk_binary_version gtk+-2.0)
 %define gtk3_binary_version %(pkg-config --variable=gtk_binary_version gtk+-3.0)
@@ -52,7 +56,6 @@ BuildRequires: libgtk+3-devel
 BuildRequires: libdbus-devel
 BuildRequires: desktop-file-utils
 BuildRequires: gtk-doc
-BuildRequires: intltool
 BuildRequires: iso-codes-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: gnome-icon-theme-symbolic
@@ -71,6 +74,7 @@ BuildRequires: GConf
 # since 1.5.14
 %{?_enable_emoji_dict:BuildRequires: cldr-emoji-annotation-devel unicode-emoji unicode-ucd gir(Gtk) = 3.0}
 %{?_enable_appindicator:BuildRequires: qt5-base-devel}
+%{?_enable_check:BuildRequires: xvfb-run gnome-desktop-testing}
 
 %define _xinputconf %_sysconfdir/X11/xinit/xinput.d/ibus.conf
 
@@ -164,9 +168,17 @@ This package provides Python override library for IBus. The Python files
 override some functions in GObject-Introspection.
 %endif
 
+%package tests
+Summary: Tests for IBus
+Group: Development/Other
+Requires: %name = %version-%release
+
+%description tests
+This package provides tests programs that can be used to verify
+the functionality of the installed Intelligent Input Bus.
+
 %prep
 %setup
-#%%patch -p1
 %{?_enable_snapshot:touch ChangeLog}
 
 %build
@@ -191,8 +203,9 @@ override some functions in GObject-Introspection.
     --enable-introspection \
     %{?_disable_emoji_dict:--disable-emoji-dict} \
     %{?_disable_unicode_dict:--disable-unicode-dict} \
-    %{subst_enable appindicator}
-
+    %{subst_enable appindicator} \
+    %{?_enable_installed_tests:--enable-install-tests}
+    %nil
 %make_build
 
 %install
@@ -205,8 +218,7 @@ install -pm 644 -D %SOURCE1 %buildroot%_xinputconf
 %find_lang %{name}10
 
 %check
-#FAIL: ibus-compose (x-server or xvfb-run required)
-##%make check
+xvfb-run %make check
 
 %if_enabled gconf
 %post
@@ -281,6 +293,7 @@ fi
 %_libdir/lib*.so
 %_pkgconfigdir/*
 %_includedir/*
+%_datadir/gettext/its/ibus.*
 %_vapidir/%name-%api_ver.vapi
 %_vapidir/%name-%api_ver.deps
 
@@ -305,7 +318,18 @@ fi
 %python_sitelibdir/gi/overrides/IBus.py*
 %endif
 
+%if_enabled installed_tests
+%files tests
+%_bindir/ibus-desktop-testing-runner
+%_libexecdir/installed-tests/%name/
+%_datadir/installed-tests/%name/
+%endif
+
 %changelog
+* Fri Aug 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.21-alt1
+- 1.5.21
+- new -tests subpackage
+
 * Thu Aug 22 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.20-alt3
 - rebuilt with Emoji dict
 - disabled python2 support
