@@ -6,7 +6,7 @@
 
 Name: gns3-server
 Version: 2.2.0
-Release: alt3.b4
+Release: alt4.rc4
 
 Summary: GNS3 server manages emulators such as Dynamips, VirtualBox or Qemu/KVM
 License: GPLv3
@@ -60,6 +60,9 @@ echo '' > requirements.txt
 %exclude %python3_sitelibdir/tests/controller
 
 %changelog
+* Tue Sep 03 2019 Anton Midyukov <antohami@altlinux.org> 2.2.0-alt4.rc4
+- New release candidate 2.2.0rc4
+
 * Wed Jul 31 2019 Anton Midyukov <antohami@altlinux.org> 2.2.0-alt3.b4
 - New beta release 2.2.0b4
 
