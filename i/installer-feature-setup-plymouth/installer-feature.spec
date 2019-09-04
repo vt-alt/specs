@@ -1,5 +1,5 @@
 Name: installer-feature-setup-plymouth
-Version: 0.5.2
+Version: 0.5.4
 Release: alt1
 
 Summary: Set up plymouth
@@ -24,6 +24,12 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Wed Sep 04 2019 Mikhail Efremov <sem@altlinux.org> 0.5.4-alt1
+- Handle empty uuid (closes: #37191).
+
+* Mon Aug 05 2019 Michael Shigorin <mike@altlinux.org> 0.5.3-alt1
+- do not fail without grub
+
 * Sat Nov 16 2013 Michael Shigorin <mike@altlinux.org> 0.5.2-alt1
 - do use plymouth with sysvinit at least for m-p
   (partially reverts 0.5-alt1)
