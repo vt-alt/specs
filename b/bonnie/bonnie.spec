@@ -1,6 +1,6 @@
 Name: bonnie
 Version: 1.5
-Release: alt2%ubt
+Release: alt4
 
 Summary: Unix filesystem performance benchmark
 License: Artistic
@@ -8,7 +8,6 @@ Group: System/Kernel and hardware
 
 URL: https://fossies.org/linux/privat/old/
 Source: %url/bonnie-%version.tar.gz
-BuildRequires(pre):rpm-build-ubt
 
 %description
 bonnie is a classic file system and storage device benchmark. It tests
@@ -34,6 +33,12 @@ install -pD -m644 bonnie.1 %buildroot%_man1dir/bonnie.1
 %doc bonnie.doc README
 
 %changelog
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.5-alt4
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.5-alt3
+- NMU: remove %ubt from release
+
 * Thu May 31 2018 Anton Farygin <rider@altlinux.ru> 1.5-alt2%ubt
 - fixed typo in manpage
 
