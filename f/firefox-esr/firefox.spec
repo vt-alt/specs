@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.0.2
+Version:        68.1.0
 Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
@@ -244,7 +244,7 @@ export SHELL=/bin/sh
 export RUST_BACKTRACE=1
 export RUSTFLAGS="-Cdebuginfo=0"
 export BUILD_VERBOSE_LOG=1
-export MOZ_MAKE_FLAGS="-j6"
+export MOZ_MAKE_FLAGS="-j8"
 export PATH="$PWD/.cargo/bin:$PATH"
 
 autoconf old-configure.in > old-configure
@@ -387,6 +387,27 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Wed Sep 04 2019 Andrey Cherepanov <cas@altlinux.org> 68.1.0-alt1
+- New ESR version (68.1.0).
+- Fixed:
+  + CVE-2019-11751 Malicious code execution through command line parameters
+  + CVE-2019-11746 Use-after-free while manipulating video
+  + CVE-2019-11744 XSS by breaking out of title and textarea elements using innerHTML
+  + CVE-2019-11742 Same-origin policy violation with SVG filters and canvas to steal cross-origin images
+  + CVE-2019-11736 File manipulation and privilege escalation in Mozilla Maintenance Service
+  + CVE-2019-11753 Privilege escalation with Mozilla Maintenance Service in custom Firefox installation location
+  + CVE-2019-11752 Use-after-free while extracting a key value in IndexedDB
+  + CVE-2019-9812 Sandbox escape through Firefox Sync
+  + CVE-2019-11743 Cross-origin access to unload event attributes
+  + CVE-2019-11748 Persistence of WebRTC permissions in a third party context
+  + CVE-2019-11749 Camera information available without prompting using getUserMedia
+  + CVE-2019-11750 Type confusion in Spidermonkey
+  + CVE-2019-11738 Content security policy bypass through hash-based sources in directives
+  + CVE-2019-11747 'Forget about this site' removes sites from pre-loaded HSTS list
+  + CVE-2019-11735 Memory safety bugs fixed in Firefox 69 and Firefox ESR 68.1
+  + CVE-2019-11740 Memory safety bugs fixed in Firefox 69, Firefox ESR 68.1, and Firefox ESR 60.9
+- Build in 8 jobs.
+
 * Thu Aug 15 2019 Andrey Cherepanov <cas@altlinux.org> 68.0.2-alt1
 - New ESR version (68.0.2).
 - Fixed:
