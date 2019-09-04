@@ -1,11 +1,11 @@
 Name:    mugshot
-Version: 0.4.1
+Version: 0.4.2
 Release: alt1
 
 Summary: Mugshot is a lightweight user configuration utility that allows you to easily update personal user details
 License: GPLv3+
 Group:   Other
-URL:     https://launchpad.net/mugshot
+URL:     https://github.com/bluesabre/mugshot
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -48,7 +48,7 @@ cp -av build/mo/* %buildroot%_datadir/locale
 %find_lang %name
 
 %files -f %name.lang
-%doc AUTHORS NEWS README
+%doc AUTHORS NEWS README.md
 %_bindir/%name
 %python3_sitelibdir/%{name}*/
 %python3_sitelibdir/*.egg-info
@@ -60,5 +60,8 @@ cp -av build/mo/* %buildroot%_datadir/locale
 %_man1dir/%name.1*
 
 %changelog
+* Sun Sep 01 2019 Andrey Cherepanov <cas@altlinux.org> 0.4.2-alt1
+- New version.
+
 * Fri Dec 28 2018 Andrey Cherepanov <cas@altlinux.org> 0.4.1-alt1
 - Initial build for Sisyphus
