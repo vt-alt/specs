@@ -1,6 +1,6 @@
 Name: apt-indicator
 Version: 0.3.12
-Release: alt4
+Release: alt5
 
 Summary: Applet for indication that newer packages are available
 License: GPL
@@ -31,9 +31,6 @@ made notifications for users that newer packages are available.
 %qmake_qt5 "CONFIG += release debug_info"
 
 %build
-%ifarch %e2k
-%add_optflags -std=c++14
-%endif
 %make
 %make -C doc
 lrelease-qt5 checker/checker.pro
@@ -77,6 +74,10 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Wed Sep 04 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.3.12-alt5
+- really adapt c flags for C++14 (used in the last source changes
+  here & in APT in 0.3.12-alt4), so that they really have effect on e2k
+
 * Thu Jun 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.12-alt4
 - Rebuilt with new apt
 
