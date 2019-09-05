@@ -1,5 +1,5 @@
 Name: freeswitch
-Version: 1.8.5
+Version: 1.8.7
 Release: alt1
 Epoch: 1
 
@@ -16,7 +16,6 @@ Source3: %name.sysconfig
 Source4: modules.conf
 Source5: fs_cli.conf
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ gsmlib-devel libalsa-devel
 BuildRequires: libgnutls-devel libncurses-devel libssl-devel libunixODBC-devel
 BuildRequires: gdbm-devel db4-devel libldap-devel libcurl-devel libjpeg-devel
@@ -601,6 +600,13 @@ fi
 %_datadir/%name/htdocs/portal
 
 %changelog
+* Thu Aug 29 2019 Anton Farygin <rider@altlinux.ru> 1:1.8.7-alt1
+- 1.8.7
+- fixed build on ppc64 (thanks to glebfm@)
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1:1.8.5-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Mar 12 2019 Anton Farygin <rider@altlinux.ru> 1:1.8.5-alt1
 - 1.8.5
 

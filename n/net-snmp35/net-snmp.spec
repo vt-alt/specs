@@ -1,4 +1,4 @@
-%define abiversion 30
+%define abiversion 35
 %define _name net-snmp
 %def_disable mibs
 %def_with mysql
@@ -7,8 +7,8 @@
 %def_without test
 
 Name: %_name%abiversion
-Version: 5.7.3
-Release: alt6.1
+Version: 5.8
+Release: alt1
 
 Summary: Tools and servers for the SNMP protocol
 License: BSD-like
@@ -26,19 +26,21 @@ Source10: snmpd.service
 Source11: snmptrapd.service
 
 Patch: %name-%version-%release.patch
-Patch6: net-snmp-5.7.3-systemd.patch
 Patch7: net-snmp-5.7.3-snmptrapd-gid.patch
 Patch8: net-snmp-5.7.3-alt-mysql8-transition.patch
+Patch10: net-snmp-5.8-libnetsnmptrapd-against-MYSQL_LIBS.patch
+Patch14: net-snmp-5.8-python-ld-flags.patch
+Patch102: net-snmp-5.8-python3.patch
 
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
-%define _localstatedir %{_var}
+%define _localstatedir %_var
 %define persistentdir %_var/lib/%_name
 
 %def_enable static
-BuildPreReq: librpm-devel >= 4.0.4 libssl-devel
+BuildRequires: librpm-devel >= 4.0.4 libssl-devel
 # Automatically added by buildreq on Wed Oct 13 2010
-BuildRequires: libnl-devel librpm-devel libsensors3-devel pdksh perl-devel python-module-setuptools perl-Tk perl-Term-ReadLine-Gnu perl-libnet perl-XML-Simple
-%{?_enable_static:BuildPreReq: glibc-devel-static}
+BuildRequires: libnl-devel librpm-devel libsensors3-devel pdksh perl-devel python3-module-setuptools perl-Tk perl-Term-ReadLine-Gnu perl-libnet perl-XML-Simple perl-JSON perl-Mail-Sender
+%{?_enable_static:BuildRequires: glibc-devel-static}
 %{?_with_mysql:BuildRequires: libmysqlclient-devel}
 %{?_with_systemd:BuildRequires: systemd-devel}
 BuildRequires: perl-podlators chrpath
@@ -66,14 +68,12 @@ Requires: %_name-snmpd %_name-snmptrapd %_name-clients
 %package -n %_name-snmpd
 Summary: Snmpd server for the SNMP protocol
 Group: System/Servers
-PreReq: chkconfig
 Requires: lib%_name = %version-%release %_name-common
 Obsoletes: cmu-snmp ucd-snmp
 
 %package -n %_name-snmptrapd
 Summary: Snmptrapd and server for the SNMP protocol
 Group: System/Servers
-PreReq: chkconfig
 Requires: lib%_name = %version-%release %_name-common
 Obsoletes: cmu-snmp ucd-snmp
 
@@ -151,9 +151,9 @@ Summary: Perl SNMP Extension Module
 Group: Development/Perl
 Requires: lib%_name = %version-%release %_name-common
 
-%package -n python-module-netsnmp
+%package -n python3-module-netsnmp
 Summary: Python SNMP Extension Module
-Group: Development/Python
+Group: Development/Python3
 Requires: lib%_name = %version-%release
 
 %description
@@ -293,7 +293,7 @@ a full featured, tri-lingual SNMP (SNMPv3, SNMPv2c, SNMPv1) API.
 The SNMP module also provides an interface to the SMI MIB parse-tree
 for run-time access to parsed MIB data.
 
-%description -n python-module-netsnmp
+%description -n python3-module-netsnmp
 This is the Python 'SNMP' extension module. The SNMP module provides
 a full featured, tri-lingual SNMP (SNMPv3, SNMPv2c, SNMPv1) API.
 The SNMP module also provides an interface to the SMI MIB parse-tree
@@ -302,20 +302,13 @@ for run-time access to parsed MIB data.
 %prep
 %setup
 %patch -p1
-%patch6 -p1
 %patch7 -p1
 %patch8 -p0
+%patch10 -p1
+%patch14 -p1 -b .python-ld-flags
+%patch102 -p1
 
 sed -i "s|LIB_LD_LIBS)|LIB_LD_LIBS) \$\{ADD_HELPER\}|g" agent/Makefile.in
-#Fix for compile with lmsensors_v3
-sed -i "s|lmsensors_v2|lmsensors_v3|g" agent/mibgroup/hardware/sensors.h
-#Fix flnk with mysql
-sed -i '/LLIBTRAPD_OBJS/s/USELIBS)/USELIBS) \$(MYSQL_LIBS)/' apps/Makefile.in
-#Fix install python
-sed -i '/(PYMAKE) install/s/\$dir/\$dir --root \$(DESTDIR)/' Makefile.in
-#Fix https://sourceforge.net/tracker/?func=detail&aid=3295407&group_id=12694&atid=112694
-sed -i 's/PyInt_AsVoidPtr/PyLong_AsVoidPtr/' python/netsnmp/client_intf.c
-
 
 %build
 %autoreconf
@@ -483,6 +476,9 @@ echo "===== start test ====="
 %_bindir/snmpusm
 %_bindir/snmpvacm
 %_bindir/snmpwalk
+%_bindir/snmpping
+%_bindir/snmpps
+%_bindir/snmptop
 
 %_man1dir/agentxtrap.*
 %_man1dir/encode_keychange*
@@ -505,6 +501,8 @@ echo "===== start test ====="
 %_man1dir/snmpusm.*
 %_man1dir/snmpvacm.*
 %_man1dir/snmpwalk.*
+%_man1dir/snmpps.*
+%_man1dir/snmptop.*
 %_man5dir/snmp.conf.*
 
 %files -n %_name-utils
@@ -514,6 +512,7 @@ echo "===== start test ====="
 %_datadir/snmp/mib2c.conf
 %_datadir/snmp/snmpconf-data
 
+%_bindir/checkbandwidth
 %_bindir/fixproc
 #%_bindir/ipf-mod.pl
 %_bindir/mib2c
@@ -555,6 +554,8 @@ echo "===== start test ====="
 %_libdir/libnetsnmptrapd.so
 %_includedir/%_name
 %_man3dir/*
+%_pkgconfigdir/netsnmp-agent.pc
+%_pkgconfigdir/netsnmp.pc
 
 %if_enabled static
 %files -n lib%_name-devel-static
@@ -590,12 +591,17 @@ echo "===== start test ====="
 %perl_vendor_autolib/SNMP*
 %perl_vendor_archlib/NetSNMP*
 %perl_vendor_autolib/NetSNMP*
+%perl_vendor_archlib/Bundle/MakefileSubs.pm
 
-%files -n python-module-netsnmp
-%python_sitelibdir/netsnmp*
+%files -n python3-module-netsnmp
+%python3_sitelibdir/*
 %doc python/README
 
 %changelog
+* Wed Aug 28 2019 Alexey Shabalin <shaba@altlinux.org> 5.8-alt1
+- 5.8
+
+
 * Sun Apr 07 2019 L.A. Kostis <lakostis@altlinux.ru> 5.7.3-alt6.1
 - Rebuild w/ new lm_sensors.
 
@@ -955,108 +961,4 @@ echo "===== start test ====="
 - Libification.
 - RE adaptions.
 
-* Wed Nov 22 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.2-5mdk
-- Move include in correct dir
-
-* Mon Aug 07 2000 Frederic Lepied <flepied@mandrakesoft.com> 4.1.2-4mdk
-- automatically added BuildRequires
-
-* Wed Aug  2 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.2-3mdk
-- Corrected a dependencie
-
-* Fri Jul 28 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.2-2mdk
-- Macro, BM
-
-* Mon Jun 12 2000 Stefan van der Eijk <s.vandereijk@chello.nl> 4.1.2-1mdk
-- updated to 4.1.2
-- removed ucd-snmp-man.patch, has been fixed with 4.1.2
-
-* Tue Jun  6 2000 Chmouel Boudjnah <chmouel@mandrakesoft.com> 4.1.1-6mdk
-- Remove crappy perl-PDL dependences.
-
-* Thu May 25 2000 Chmouel Boudjnah <chmouel@mandrakesoft.com> 4.1.1-5mdk
-- libtoolizifications.
-
-* Wed Apr 12 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.1-4mdk
-- Correct ldconfig in postun
-
-* Sat Mar 25 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.1-3mdk
-- many change in config snmpd file
-
-* Thu Mar 23 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.1-2mdk
-- Remove tkmib
-- Patch for broken link in man page
-
-* Thu Mar 21 2000 Vincent Saugey <vince@mandrakesoft.com> 4.1.1-1mdk
-- Update to 4.1.1
-- Modification in spec file
-- corrected group
-
-* Mon Jan 24 2000 Francis Galiegue <francis@mandrakesoft.com>
-- Fixed spec file (%install tried to mkdir /var/ucd-snmp)
-
-* Tue Nov 30 1999 Axalon Bloodstone <axalon@linux-mandrake.com>
-- --with-libwrap, not --with-libwrap="-lwrap -lnsl" (rh on crack)
-- bump spec to 3mdk to get above Chmouel
-
-* Sun Oct 31 1999 Axalon Bloodstone <axalon@linux-mandrake.com>
-- SMP check/build
-- 4.0.1 + redhat patches
-
-* Sat Jul 17 1999 Axalon Bloodstone <axalon@linux-mandrake.com>
-- 3.6.2
-
-* Wed May 05 1999 Bernhard Rosenkraenzer <bero@mandrakesoft.com>
-- Mandrake adaptions
-
-* Thu Apr  8 1999 Wes Hardaker <wjhardaker@ucdavis.edu>
-- fix Source0 location.
-- fix the snmpd.conf file to use real community names.
-
-* Sun Mar 21 1999 Cristian Gafton <gafton@redhat.com>
-- auto rebuild in the new build environment (release 3)
-
-* Fri Mar 19 1999 Preston Brown <pbrown@redhat.com>
-- upgrade to 3.6.1, fix configuration file stuff.
-
-* Wed Feb 24 1999 Preston Brown <pbrown@redhat.com>
-- Injected new description and group.
-
-* Tue Feb  2 1999 Jeff Johnson <jbj@redhat.com>
-- restore host resources mib
-- simplified config file
-- rebuild for 6.0.
-
-* Tue Dec 22 1998 Bill Nottingham <notting@redhat.com>
-- remove backup file to fix perl dependencies
-
-* Tue Dec  8 1998 Jeff Johnson <jbj@redhat.com>
-- add all relevant rpm scalars to host resources mib.
-
-* Sun Dec  6 1998 Jeff Johnson <jbj@redhat.com>
-- enable libwrap (#253)
-- enable host module (rpm queries over SNMP!).
-
-* Mon Oct 12 1998 Cristian Gafton <gafton@redhat.com>
-- strip binaries
-
-* Fri Oct  2 1998 Jeff Johnson <jbj@redhat.com>
-- update to 3.5.3.
-- don't include snmpcheck until perl-SNMP is packaged.
-
-* Thu Aug 13 1998 Jeff Johnson <jbj@redhat.com>
-- ucd-snmpd.init: start daemon w/o -f.
-
-* Tue Aug  4 1998 Jeff Johnson <jbj@redhat.com>
-- don't start snmpd unless requested
-- start snmpd after pcmcia.
-
-* Sun Jun 21 1998 Jeff Johnson <jbj@redhat.com>
-- all but config (especially SNMPv2p) ready for prime time
-
-* Sat Jun 20 1998 Jeff Johnson <jbj@redhat.com>
-- update to 3.5.
-
-* Tue Dec 30 1997 Otto Hammersmith <otto@redhat.com>
-- created the package... possibly replace cmu-snmp with this.
 

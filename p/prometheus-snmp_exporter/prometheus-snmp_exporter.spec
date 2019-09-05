@@ -12,7 +12,7 @@
 
 Name: prometheus-%oname
 Version: 0.15.0
-Release: alt1
+Release: alt2
 Summary: Prometheus snmp exporter
 
 Group: Development/Other
@@ -25,7 +25,7 @@ Source3: %name.init
 Source4: %name.service
 
 ExclusiveArch:  %go_arches
-BuildRequires(pre): rpm-build-golang rpm-build-ubt
+BuildRequires(pre): rpm-build-golang
 BuildRequires: promu
 BuildRequires: /proc
 # for build generator
@@ -83,6 +83,9 @@ install -m0755 .gopath/src/%import_path/generator/generator %buildroot%_bindir/%
 %config(noreplace) %_sysconfdir/prometheus/snmp.yml
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.15.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed Mar 06 2019 Alexey Shabalin <shaba@altlinux.org> 0.15.0-alt1
 - 0.15.0
 

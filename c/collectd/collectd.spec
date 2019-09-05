@@ -1,4 +1,4 @@
-%ifarch aarch64 %ix86 x86_64
+%ifarch x86_64 %ix86 aarch64 ppc64le
 %def_with libdpdk
 %else
 %def_without libdpdk
@@ -32,8 +32,8 @@
 %def_disable static
 
 Name: collectd
-Version: 5.8.1
-Release: alt4
+Version: 5.9.1
+Release: alt1
 
 Summary: (Multi-)System statistics collection
 License: GPL
@@ -48,7 +48,6 @@ Patch0: %name-%version-alt.patch
 #BuildRequires: flex gcc-c++ iptables-devel libMySQL-devel libcurl-devel libdbi-devel libesmtp-devel libgcrypt-devel libnet-snmp-devel libnetlink-devel libnotify-devel liboping-devel libpcap-devel librrd-devel libsensors-devel libvirt-devel libxfs-devel libxml2-devel libxmms-devel nut-devel perl-devel perl-threads perl-Regexp-Common postgresql-devel
 BuildRequires: flex gcc-c++ iptables-devel libgcrypt-devel libpcap-devel libxfs-devel
 BuildRequires: libstatgrab-devel
-BuildRequires(pre):rpm-build-ubt
 
 %if_enabled perl
 BuildRequires: perl-devel perl-threads perl-Regexp-Common perl-Pod-Parser perl-RRD
@@ -117,7 +116,6 @@ This package pulls in plugins which might be useful at a cluster
 Summary: Meta package for %name plugins
 Group: Monitoring
 BuildArch: noarch
-%{?_with_libdpdk:Requires: %name-dpdk}
 %{?_with_libgps:Requires: %name-gps}
 %{?_enable_apache:Requires: %name-apache}
 %{?_enable_bind:Requires: %name-bind}
@@ -488,7 +486,7 @@ mkdir libltdl
 
 %build
 #libtoolize --ltdl --copy --force
-#%autoreconf
+#%%autoreconf
 ./build.sh
 
 # fixed warnings:
@@ -497,7 +495,8 @@ mkdir libltdl
 # rrdcached.so: underlinked libraries: /lib64/libpthread.so.0
 # rrdtool.so: underlinked libraries: /lib64/libpthread.so.0
 # notify_desktop.so: underlinked libraries: /usr/lib64/libgobject-2.0.so.0
-%add_optflags -lpthread -lgobject-2.0 -Wno-error=format-truncation
+#%%add_optflags -lpthread -lgobject-2.0 -Wno-error=format-truncation
+%add_optflags -Wno-error=format-truncation
 
 # seems like mainstream uses /var for localstatedir, ALT uses /var/lib
 %configure \
@@ -537,7 +536,8 @@ mkdir libltdl
 	%{subst_enable tokyotyrant} \
 	%{subst_enable xmms} \
 	%{subst_enable static} \
-	--localstatedir=%_var \
+    --localstatedir=%_var
+
 # </configure>
 %make_build INSTALLMAN1DIR=%_man1dir
 
@@ -816,6 +816,13 @@ service %name condrestart ||:
 # - macroize repetitive sections
 
 %changelog
+* Fri Aug 30 2019 Alexey Shabalin <shaba@altlinux.org> 5.9.1-alt1
+- 5.9.1
+- delete arch depended dpdk package from noarch full package
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 5.8.1-alt5
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Mar 05 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.8.1-alt4
 - rebuilt without x11amp plugin
 
@@ -1275,33 +1282,3 @@ service %name condrestart ||:
 - built for ALT Linux Master 2.4
 - spec cleanup
 
-* Fri Sep 30 2005 Florian octo Forster <octo@verplant.org> 3.0.0-1
-- New upstream version
-- Split the package into `collectd' and `collectd-sensors'
-
-* Fri Sep 16 2005 Florian octo Forster <octo@verplant.org> 2.1.0-1
-- New upstream version
-
-* Mon Sep 10 2005 Florian octo Forster <octo@verplant.org> 2.0.0-1
-- New upstream version
-
-* Mon Aug 29 2005 Florian octo Forster <octo@verplant.org> 1.8.0-1
-- New upstream version
-
-* Sun Aug 25 2005 Florian octo Forster <octo@verplant.org> 1.7.0-1
-- New upstream version
-
-* Sun Aug 21 2005 Florian octo Forster <octo@verplant.org> 1.6.0-1
-- New upstream version
-
-* Sun Jul 17 2005 Florian octo Forster <octo@verplant.org> 1.5.1-1
-- New upstream version
-
-* Sun Jul 17 2005 Florian octo Forster <octo@verplant.org> 1.5-1
-- New upstream version
-
-* Mon Jul 11 2005 Florian octo Forster <octo@verplant.org> 1.4.2-1
-- New upstream version
-
-* Sat Jul 09 2005 Florian octo Forster <octo@verplant.org> 1.4-1
-- Built on RedHat 7.3

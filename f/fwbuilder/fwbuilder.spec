@@ -1,29 +1,40 @@
 Name: fwbuilder
-Version: 5.1.0.3599
-Release: alt1.1
+Version: 6.0.0
+Release: alt1.beta.68.a880
 
 Summary: Firewall Builder
 License: GPLv2+
 Group: Security/Networking
 
 Url: http://www.fwbuilder.org/
-Source0: http://downloads.sourceforge.net/fwbuilder/fwbuilder-%version.tar.gz
-Source1: fwbuilder.desktop
-Patch: fwbuilder-5.1.0.3599-alt-glibc-2.16.patch
+# Vcs-Git: https://github.com/fwbuilder/fwbuilder.git
+Source: %name-%version.tar
 
-Obsoletes: fwbuilder-doc fwbuilder-devel
-# libfwbuilder merged into fwbuilder package
-Obsoletes: libfwbuilder
+Obsoletes: %name-doc < %EVR
+Obsoletes: %name-devel < %EVR
+Obsoletes: lib%name < %EVR
 
-# Historically ipt is a separate subpackage but required by main package.
-# This makes little sense, probably we should just merge it to main package
-# (so fwbuilder will contain iptables compiler by default).
-# This is only matter of package size, separated compilers contains no
-# additional runtime deps.
-Requires: fwbuilder-ipt = %version-%release
+Provides: %name-pf = %EVR
+Provides: %name-ipf = %EVR
+Provides: %name-ipfw = %EVR
+Provides: %name-ipt = %EVR
+Provides: %name-cisco = %EVR
+Provides: %name-procurve = %EVR
 
-# Automatically added by buildreq on Thu Mar 18 2010
-BuildRequires: cppunit-devel gcc-c++ libnet-snmp-devel libqt4-devel libxslt-devel
+Obsoletes: %name-pf < %EVR
+Obsoletes: %name-ipf < %EVR
+Obsoletes: %name-ipfw < %EVR
+Obsoletes: %name-ipt < %EVR
+Obsoletes: %name-cisco < %EVR
+Obsoletes: %name-procurve < %EVR
+
+BuildRequires: cmake rpm-macros-cmake
+BuildRequires: gcc-c++
+BuildRequires: qt5-base-devel qt5-networkauth-devel
+BuildRequires: libxml2-devel libxslt-devel zlib-devel
+BuildRequires: libnet-snmp-devel
+BuildRequires: libssl-devel
+BuildRequires: cppunit-devel
 
 %description
 Firewall Builder consists of a GUI and set of policy compilers for various
@@ -35,118 +46,30 @@ objects discovery and bulk import of data. The GUI and policy compilers are
 completely independent, this provides for a consistent abstract model and the
 same GUI for different firewall platforms.
 
-%package pf
-Summary: Policy compiler for OpenBSD pf
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description pf
-Policy compiler for OpenBSD PF.
-
-%package ipf
-Summary: Policy compiler for ipfilter
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description ipf
-Policy compiler for ipfilter.
-
-%package ipfw
-Summary: Policy compiler for ipfw
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description ipfw
-Policy compiler for ipfw.
-
-%package ipt
-Summary: Policy compiler for iptables
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description ipt
-Policy compiler for iptables.
-
-%package cisco
-Summary: Policy compiler for Cisco routers/firewalls
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description cisco
-Policy compiler for Cisco routers/firewalls.
-
-%package procurve
-Summary: Policy compiler for HP ProCurve ACL
-Group: Security/Networking
-Requires: %name = %version-%release
-
-%description procurve
-Policy compiler for HP ProCurve ACL.
-
 %prep
 %setup
-%patch -p2
 
 %build
-libtoolize --force --copy --install
-aclocal
-autoconf
-%configure --with-templatedir=%_datadir/%name
-%make_build
+%cmake
+%cmake_build
 
 %install
-%make INSTALL_ROOT=%buildroot install
-# freedesktop menu entry
-install -pD -m644 %SOURCE1 %buildroot%_desktopdir/%name.desktop
-
+%cmakeinstall_std
 install -pm644 doc/transfer_secuwall.1 %buildroot%_man1dir/
 
-# No, thanks...
-rm -rf %buildroot%_defaultdocdir
-
 %files
-%_bindir/fwbuilder
-%_bindir/fwbedit
+%doc %_defaultdocdir/%name
+%_bindir/*
 %_datadir/%name
 %_desktopdir/*.desktop
-%_miconsdir/fwbuilder.png
-%_niconsdir/fwbuilder.png
-%_liconsdir/fwbuilder.png
-%_iconsdir/hicolor/128x128/apps/fwbuilder.png
-%_iconsdir/hicolor/24x24/apps/fwbuilder.png
-%_iconsdir/hicolor/72x72/apps/fwbuilder.png
-%_iconsdir/hicolor/256x256/apps/fwbuilder.png
-%_iconsdir/hicolor/512x512/apps/fwbuilder.png
-%_man1dir/fwbuilder.1*
-%_man1dir/fwbedit.1*
-%_man1dir/transfer_secuwall.1*
-
-%files pf
-%_bindir/fwb_pf
-%_man1dir/fwb_pf.1*
-
-%files ipf
-%_bindir/fwb_ipf
-%_man1dir/fwb_ipf.1*
-
-%files ipfw
-%_bindir/fwb_ipfw
-%_man1dir/fwb_ipfw.1*
-
-%files ipt
-%_bindir/fwb_ipt
-%_man1dir/fwb_ipt.1*
-
-%files cisco
-%_bindir/fwb_pix
-%_bindir/fwb_iosacl
-%_man1dir/fwb_pix*
-%_man1dir/fwb_iosacl*
-
-%files procurve
-%_bindir/fwb_procurve_acl
+%_iconsdir/hicolor/*/apps/*.png
+%_man1dir/*
 
 %changelog
+* Sat Aug 31 2019 Alexey Shabalin <shaba@altlinux.org> 6.0.0-alt1.beta.68.a880
+- master snapshot a8802a3bc96d7f9228e670c29d7d87127afcacce
+- merge all subpackages to main package
+
 * Tue Dec 04 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 5.1.0.3599-alt1.1
 - Fixed build with glibc 2.16
 

@@ -1,7 +1,7 @@
 %def_with doc
 
 Name: jansson
-Version: 2.10
+Version: 2.12
 Release: alt1
 
 Summary: C library for encoding, decoding and manipulating JSON data
@@ -82,6 +82,9 @@ It features:
 %endif
 
 %changelog
+* Thu Jun 27 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.12-alt1
+- 2.12
+
 * Tue Nov 20 2018 Oleg Solovyov <mcpain@altlinux.org> 2.10-alt1
 - 2.10
 

@@ -1,6 +1,6 @@
 Name: accel-ppp
-Version: 1.11.2
-Release: alt12
+Version: 1.12.0
+Release: alt1
 Summary: High performance PPTP/L2TP/PPPoE server
 Group: System/Servers
 
@@ -73,6 +73,7 @@ install -d %buildroot%_sysconfdir/{rc.d/init.d,sysconfig,logrotate.d}
 install -pDm0644 alt-linux/%name.sysconfig	%buildroot%_sysconfdir/sysconfig/%name
 install -pDm0755 alt-linux/%name.init		%buildroot%_initdir/%name
 install -pDm0644 alt-linux/%name.logrotate	%buildroot%_sysconfdir/logrotate.d/%name
+mkdir -p %buildroot%_runtimedir/accel-ppp
 
 mkdir -p %kernel_srcdir
 install -pDm0644 ../%name-%version.tar.bz2 %kernel_srcdir/%name-%version.tar.bz2
@@ -103,6 +104,9 @@ install -pDm0644 ../%name-%version.tar.bz2 %kernel_srcdir/%name-%version.tar.bz2
 %attr(0644,root,root) %kernel_src/%name-%version.tar.bz2
 
 %changelog
+* Tue Aug 06 2019 Alexei Takaseev <taf@altlinux.org> 1.12.0-alt1
+- 1.12.0
+
 * Tue Apr 23 2019 Alexei Takaseev <taf@altlinux.org> 1.11.2-alt12
 - Rebuild with lua 5.3
 

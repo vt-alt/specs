@@ -11,8 +11,8 @@
 %def_with cockpit
 
 Name: 389-ds-base
-Version: 1.4.1.1
-Release: alt1
+Version: 1.4.1.2
+Release: alt2
 
 Summary: 389 Directory Server (base)
 License: GPLv3+
@@ -206,6 +206,10 @@ sed -i 's|\(saslpath = "/usr/\)lib\(/aarch64-linux-gnu"\)|\1lib64\2|g' \
 ldap/servers/slapd/ldaputil.c
 
 %build
+%ifarch mipsel
+export LDFLAGS='-latomic'
+%endif
+
 %autoreconf
 
 %configure  \
@@ -223,10 +227,11 @@ ldap/servers/slapd/ldaputil.c
         --enable-asan \
         --enable-debug \
 %endif
-        %{subst_enable perl} \
+        %{?_with_perl:--enable-perl } \
 	--with-nss-lib=%_libdir \
 	--with-nss-inc=%_includedir/nss \
         %{?_with_check:--enable-cmocka } \
+        %nil
 
 %make
 
@@ -371,8 +376,6 @@ fi
 %config(noreplace)%_sysconfdir/%pkgname/config/certmap.conf
 %config(noreplace)%_sysconfdir/%pkgname/config/ldap-agent.conf
 %config(noreplace)%_sysconfdir/%pkgname/config/template-initconfig
-%config(noreplace)%_sysconfdir/sysconfig/%pkgname
-%config(noreplace)%_sysconfdir/sysconfig/%pkgname.systemd
 %dir %_datadir/%pkgname
 %_datadir/%pkgname/data/
 %_datadir/%pkgname/inf/
@@ -564,6 +567,7 @@ fi
 
 %files -n python3-module-lib389
 %_sbindir/dsconf
+%_sbindir/dscontainer
 %_sbindir/dscreate
 %_sbindir/dsctl
 %_sbindir/dsidm
@@ -590,6 +594,12 @@ fi
 %endif
 
 %changelog
+* Wed Jul 10 2019 Ivan A. Melnikov <iv@altlinux.org> 1.4.1.2-alt2
+- Link with libatomic on mipsel.
+
+* Tue May 21 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.2-alt1
+- 1.4.1.1 -> 1.4.1.2.
+
 * Tue Jan 22 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.1-alt1
 - 1.3.9.0 -> 1.4.1.1.
 - Stopped build for i586 arch.

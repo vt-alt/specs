@@ -3,7 +3,7 @@
 Name: openipmi
 Summary: %name - Library interface to IPMI
 Version: 2.0.25
-Release: alt2
+Release: alt3
 License: LGPL
 Url: http://openipmi.sourceforge.net
 Group: System/Configuration/Hardware
@@ -13,7 +13,6 @@ Patch0: %name-%version-alt.patch
 BuildRequires: libpopt-devel python-devel libnet-snmp-devel
 BuildRequires: libncurses-devel libssl-devel tkinter swig
 BuildRequires: glib2-devel tcl-devel
-BuildRequires(pre): rpm-build-ubt
 
 %description
 This package contains basic tools used with OpenIPMI.
@@ -161,6 +160,9 @@ rm -f %buildroot%_libdir/libOpenIPMIglib12.*
 
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.0.25-alt3
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Sep 03 2018 Anton Farygin <rider@altlinux.ru> 2.0.25-alt2
 - rebuilt with libopenssl1.1
 

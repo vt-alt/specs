@@ -1,6 +1,6 @@
 Name: mbrowse
 Version: 0.4.3
-Release: alt2
+Release: alt3
 
 Summary: SNMP MIB browser
 License: GPL
@@ -66,6 +66,9 @@ install -pm 0644 %SOURCE2 %buildroot%_man1dir
 %_man1dir/%name.1.*
 
 %changelog
+* Fri Aug 30 2019 Alexey Shabalin <shaba@altlinux.org> 0.4.3-alt3
+- rebuild
+
 * Tue Mar 10 2015 Ilya Mashkin <oddity@altlinux.ru> 0.4.3-alt2
 - fix url
 
