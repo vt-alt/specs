@@ -17,7 +17,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.98
+Version: 8.99
 Release: alt1
 Url: https://basealt.ru
 
@@ -191,9 +191,7 @@ Provides: indexhtml indexhtml-%theme = %version indexhtml-Desktop = 1:5.0
 Obsoletes: indexhtml-desktop indexhtml-Desktop
 %branding_add_conflicts %flavour indexhtml
 
-Requires: xdg-utils
 Requires: docs-alt-%theme
-Requires: shared-desktop-icons
 Requires(post): indexhtml-common
 
 %description indexhtml
@@ -325,6 +323,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Sep  5 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.99-alt1
+- dependence on xdg-utils in indexhtml removed
+
 * Fri Aug 16 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.98-alt1
 - unset "beta" status
 
