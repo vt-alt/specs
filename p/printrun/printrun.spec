@@ -3,29 +3,27 @@
 
 Name:           printrun
 Version:        1.6.0
-Release:        alt1.qa1
-Epoch:		1
+Release:        alt2
+Epoch:          1
 Summary:        RepRap printer interface and tools
 
 License:        GPLv3+
 Group:          Engineering
 URL:            https://github.com/kliment/Printrun
-Packager:	Andrey Cherepanov <cas@altlinux.org>
+Packager:       Andrey Cherepanov <cas@altlinux.org>
 
-# Source
 Source0:        %name-%version.tar
 
-#BuildRequires:  Cython
-BuildRequires(pre): rpm-build-python
+BuildRequires:  rpm-build-python
 BuildRequires:  python-devel
 BuildRequires:  python-module-Cython
 BuildRequires:  python-module-Polygon
 BuildRequires:  python-module-serial
 BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
-Requires:       pronterface = %{EVR}
-Requires:       pronsole = %{EVR}
-Requires:       plater = %{EVR}
+Requires:       pronterface = %EVR
+Requires:       pronsole = %EVR
+Requires:       plater = %EVR
 
 %description
 Printrun is a set of G-code sending applications for RepRap.
@@ -47,7 +45,7 @@ Summary:        CLI interface for RepRap
 Group:          Engineering
 Requires:       python-module-serial
 Requires:       skeinforge
-Requires:       %{name}-common = %{EVR}
+Requires:       %name-common = %EVR
 BuildArch:      noarch
 
 %description -n pronsole
@@ -60,7 +58,7 @@ It is a part of Printrun.
 Summary:        Web interface for RepRap
 Group:          Engineering
 Requires:       python-module-tornado
-Requires:       pronsole = %{EVR}
+Requires:       pronsole = %EVR
 BuildArch:      noarch
 
 %description -n prontserve
@@ -76,7 +74,7 @@ Requires:       wxPython
 Requires:       python-module-cairosvg
 Requires:       python-module-pyglet
 Requires:       simarrange
-Requires:       pronsole = %{EVR}
+Requires:       pronsole = %EVR
 BuildArch:      noarch
 
 %description -n pronterface
@@ -88,7 +86,7 @@ It is a part of Printrun.
 Summary:        RepRap STL plater
 Group:          Engineering
 Requires:       wxPython
-Requires:       %{name}-common = %{EVR}
+Requires:       %name-common = %EVR
 Requires:       python-module-pyglet
 Requires:       simarrange
 BuildArch:      noarch
@@ -104,8 +102,8 @@ It is a part of Printrun.
 rm -f printrun/power/osx.py
 
 # use launchers for skeinforge
-sed -i 's|python skeinforge/skeinforge_application/skeinforge.py|skeinforge|' %{name}/pronsole.py
-sed -i 's|python skeinforge/skeinforge_application/skeinforge_utilities/skeinforge_craft.py|skeinforge-craft|' %{name}/pronsole.py
+sed -i 's|python skeinforge/skeinforge_application/skeinforge.py|skeinforge|' %name/pronsole.py
+sed -i 's|python skeinforge/skeinforge_application/skeinforge_utilities/skeinforge_craft.py|skeinforge-craft|' %name/pronsole.py
 
 %build
 %python_build
@@ -121,18 +119,23 @@ cd ..
 %install
 %python_install
 
-# Remove .py extension fron executable files
+# Remove .py extension from executable files
 cd %buildroot%_bindir
 for FILE in *.py; do
   mv -f "$FILE" "${FILE%.py}"
 done
 cd -
 
+# Remove .py extension in desktop files (ALT #36763)
+cd %buildroot%_desktopdir
+for file in $(ls) ; do sed -i "s/\(.*\).py/\1/" $file; done
+cd -
+
 # locales
-mkdir -p %{buildroot}%{_datadir}/locale
-cp -ar %{buildroot}%{_datadir}/pronterface/locale/* %{buildroot}%{_datadir}/locale
-rm -rf %{buildroot}%{_datadir}/pronterface/locale
-ln -s -f %{_datadir}/locale/ %{buildroot}%{_datadir}/pronterface/ # the app expects the locale folder in here
+mkdir -p %buildroot%_datadir/locale
+cp -ar %buildroot%_datadir/pronterface/locale/* %buildroot%_datadir/locale
+rm -rf %buildroot%_datadir/pronterface/locale
+ln -s -f %_datadir/locale/ %buildroot%_datadir/pronterface/ # the app expects the locale folder in here
 
 %if_without prontserve
 rm -f %buildroot%_bindir/prontserve
@@ -182,6 +185,9 @@ mv %buildroot%_datadir/{metainfo,appdata}
 %_datadir/appdata/plater.appdata.xml
 
 %changelog
+* Thu Jun 06 2019 Grigory Ustinov <grenka@altlinux.org> 1:1.6.0-alt2
+- Fix desktop files (Closes: #36763).
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1:1.6.0-alt1.qa1
 - NMU: applied repocop patch
 
