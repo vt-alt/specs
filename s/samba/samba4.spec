@@ -59,7 +59,7 @@
 %endif
 
 Name:    samba
-Version: 4.10.7
+Version: 4.10.8
 Release: alt1
 
 Group:   System/Servers
@@ -1822,6 +1822,12 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Tue Sep 03 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.8-alt1
+- Update to first security autumn release
+- Fix samba-gpupdate check sysvol path with ignore case for compatibility
+- Security fixes:
+  + CVE-2019-10197 Permissions check deny can allow user to escape from the share
+
 * Thu Aug 22 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.7-alt1
 - Update to final summer release with fixed joining a Windows pre-2008R2 DC
 - Fix lookup requests from AD DCs over LSA RPC to FreeIPA domain controller
