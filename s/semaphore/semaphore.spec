@@ -1,14 +1,14 @@
 %global import_path github.com/ansible-semaphore/semaphore
 Name:     semaphore
 Version:  2.5.1
-Release:  alt1
+Release:  alt2
 
 Summary:  Open Source alternative to Ansible Tower
 License:  MIT
 Group:    Other
 Url:      https://github.com/ansible-semaphore/semaphore
 
-Packager: Mikhail Gordeev <obirvalger@altlinux.org>
+ExclusiveArch: %go_arches
 
 Source:   %name-%version.tar
 
@@ -53,6 +53,9 @@ mv %buildroot%_bindir/{cli,%name}
 %doc *.md
 
 %changelog
+* Tue Sep 03 2019 Mikhail Gordeev <obirvalger@altlinux.org> 2.5.1-alt2
+- Set ExclusiveArch to %%go_arches
+
 * Sat Mar 16 2019 Mikhail Gordeev <obirvalger@altlinux.org> 2.5.1-alt1
 - Update to 2.5.1
 
