@@ -1,8 +1,8 @@
-%define ver 1.3.5
+%define ver 1.3.6
 
 Name: proftpd
 Version: %ver
-Release: alt6.rel.e
+Release: alt0.1.ga73dbfe3b
 
 %define _libexecdir %{expand:%_libdir}
 %def_disable tests
@@ -65,9 +65,9 @@ Patch2: %name-1.3.3rc1-alt-pkgconfig-prefix.patch
 Patch4: %name-ldap-config.patch
 Patch5: %name-1.2.10-iconv.patch
 Patch6: %name-1.3.2rc1-mod_sql_mysql.patch
-Patch7: %name-1.3.2rc1-mod_sql_postgres.patch
+Patch7: %name-1.3.6-mod_sql_postgres.patch
 Patch9: %name-1.3.0-alt-ltdl.patch
-Patch10: %name-1.3.5-inc-pcre.patch
+Patch10: %name-1.3.6-inc-pcre.patch
 Patch11: %name-1.3.5-alt-mysql8-transition.patch
 
 # Debian patches
@@ -372,7 +372,7 @@ See control(8) for details.
 %patch4 -p1
 #patch5 -p1
 %patch6 -p1
-%patch7 -p1
+%patch7 -p2
 #%%patch9 -p1
 %patch10 -p2
 %patch11 -p0
@@ -386,7 +386,7 @@ See control(8) for details.
 %__autoconf
 %configure \
         %{?_enable_debug:--enable-devel} \
-        %{subst_enable tests} \
+        %{?_enable_tests:--enable-tests} \
         --libexecdir=%_libexecdir/%name \
         --with-pkgconfig=%_pkgconfigdir \
         --localstatedir=/var/run/proftpd \
@@ -664,6 +664,13 @@ fi
 %_controldir/%name
 
 %changelog
+* Tue Jul 23 2019 L.A. Kostis <lakostis@altlinux.ru> 1.3.6-alt0.1.ga73dbfe3b
+- Updated to 1.3.6-ga73dbfe3b.
+- Fix mod_copy bug #4372 (Ensure that mod_copy checks for <Limits> for its SITE
+  CPFR) (CVE-2019-12815) (closes #37056).
+- Updated mod_sql_postgres patch.
+- Updated -pcre patch.
+
 * Wed Mar 06 2019 Nikolai Kostrigin <nickel@altlinux.org> 1.3.5-alt6.rel.e
 - Fix FTBFS against libmysqlclient21
 
