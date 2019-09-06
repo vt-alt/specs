@@ -1,5 +1,5 @@
 Name: volumes-profile-lite
-Version: 0.4
+Version: 0.4.1
 Release: alt1
 
 Summary: Volumes description for School Lite distribution
@@ -25,6 +25,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Mon Aug 05 2019 Michael Shigorin <mike@altlinux.org> 0.4.1-alt1
+- e2k support (/boot)
+
 * Fri Jul 15 2016 Andrey Cherepanov <cas@altlinux.org> 0.4-alt1
 - Increase size of / to 15G
 
