@@ -18,7 +18,7 @@
 
 Name: NetworkManager-applet-gtk
 Version: 1.8.22
-Release: alt1%git_date
+Release: alt2%git_date
 License: %gpl2plus
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
@@ -253,6 +253,12 @@ make check
 %doc %_datadir/gtk-doc/html/libnma
 
 %changelog
+* Wed Sep 04 2019 Mikhail Efremov <sem@altlinux.org> 1.8.22-alt2
+- Patches from upstream:
+  + editor: register to the connection-removed signal only once.
+  + editor: avoid crash when checking for visible children.
+- Update Russian translation (by Olesya Gerasimenko).
+
 * Wed May 29 2019 Mikhail Efremov <sem@altlinux.org> 1.8.22-alt1
 - Fix gettext domain.
 - Drop intltool from BR.
