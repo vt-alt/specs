@@ -1,5 +1,5 @@
 %global import_path github.com/grafana/grafana
-%global commit a557646484a101c557919910301cfbbc3c12b0db
+%global commit 67bad726f12efb21893c75c141f2330a4a3cbe2a
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -12,8 +12,8 @@
 
 
 Name:		grafana
-Version:	6.3.4
-Release:	alt1
+Version:	6.3.5
+Release:	alt2
 Summary:	Metrics dashboard and graph editor
 
 Group:		Development/Other
@@ -80,7 +80,7 @@ npm rebuild
 npm run build
 
 #%%golang_build pkg/cmd/*
-CGO_ENABLED=1 go install -ldflags " -s -w  \
+GO111MODULE=off CGO_ENABLED=1 go install -ldflags " -s -w  \
     -X main.version=$VERSION \
     -X main.commit=$COMMIT \
     -X main.branch=$BRANCH \
@@ -160,11 +160,17 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %config(noreplace) %attr(0640, root, %name) %_sysconfdir/%name/provisioning/*/*.yaml
 #%config(noreplace) %_logrotatedir/%name
 %dir %attr(0770, root, %name) %_logdir/%name
-%dir %attr(0775, root, %name) %_runtimedir/%name
 %dir %attr(0755, %name, %name) %_sharedstatedir/%name
 %_datadir/%name
 
 %changelog
+* Sat Sep 07 2019 Alexey Shabalin <shaba@altlinux.org> 6.3.5-alt2
+- fixed perm of /run/grafana in tmpfiles config
+- not package /run/grafana
+
+* Thu Sep 05 2019 Alexey Shabalin <shaba@altlinux.org> 6.3.5-alt1
+- 6.3.5
+
 * Fri Aug 30 2019 Alexey Shabalin <shaba@altlinux.org> 6.3.4-alt1
 - 6.3.4 (Fixes: CVE-2019-15043)
 
