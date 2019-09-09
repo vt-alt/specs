@@ -3,14 +3,13 @@
 %def_disable vaapi
 
 %define tname     LibVNCServer
-%define vncserver_sover 0
-%define libvncserver libvncserver%vncserver_sover
-%define vncclient_sover 0
-%define libvncclient libvncclient%vncclient_sover
+%define sover 0
+%define libvncserver libvncserver%sover
+%define libvncclient libvncclient%sover
 Name: libvncserver
 %define libname %name
-Version: 0.9.11
-Release: alt4
+Version: 0.9.12
+Release: alt2
 
 Group: System/Libraries
 Summary: An easy API to write one's own VNC server
@@ -21,24 +20,18 @@ Packager: Sergey V Turchin <zerg@altlinux.org>
 Requires: %libvncserver %libvncclient
 
 Source: http://downloads.sourceforge.net/libvncserver/%tname-%version.tar.gz
-# FC
-Patch11: LibVNCServer-0.9.10-no_x11vnc.patch
-Patch12: libvncserver-0.9.1-multilib.patch
-Patch13: LibVNCServer-0.9.9-pkgconfig.patch
-Patch14: LibVNCServer-0.9.10-system_minilzo.patch
-Patch15: libvncserver-0.9.11-soname.patch
 # SuSE
 Patch20: redef-keysym.patch
-Patch21: libvncserver-byteswap.patch
-Patch22: libvncserver-0.9.10-ossl.patch
-# Debian
-Patch31: CVE-2018-7225.patch
+Patch21: cmake-libdir.patch
 
 # Automatically added by buildreq on Thu Apr 21 2011 (-bi)
 # optimized out: elfutils libX11-devel libgfortran-devel libstdc++-devel xorg-xproto-devel
 #BuildRequires: gcc-c++ gcc-fortran glibc-devel-static imake libICE-devel libSDL-devel libjpeg-devel xorg-cf-files zlib-devel
-BuildRequires: gcc-c++ libICE-devel libSDL-devel libjpeg-devel zlib-devel
-BuildRequires: libssl-devel liblzo2-devel libgcrypt-devel libgnutls-devel libpng-devel
+BuildRequires: cmake gcc-c++
+BuildRequires:  libICE-devel libSDL2-devel
+BuildRequires:  libsystemd-devel
+BuildRequires:  libjpeg-devel libpng-devel zlib-devel liblzo2-devel
+BuildRequires:  libssl-devel libgcrypt-devel libgnutls-devel
 %if_enabled vaapi
 BuildRequires: libva-devel
 %endif
@@ -87,7 +80,7 @@ into a versatile and performant while still easy to use program.
 %package -n %libvncserver
 Summary: %name server library
 Group: System/Libraries
-%if "%vncserver_sover" == "0"
+%if "%sover" == "0"
 Conflicts: libvncserver < %EVR
 %endif
 %description -n %libvncserver
@@ -96,64 +89,45 @@ Conflicts: libvncserver < %EVR
 %package -n %libvncclient
 Summary: %name client library
 Group: System/Libraries
-%if "%vncserver_sover" == "0"
+%if "%sover" == "0"
 Conflicts: libvncserver < %EVR
 %endif
 %description -n %libvncclient
 %name client library
 
 %prep
-%setup -q -n %tname-%version
-#%patch11 -p1
-%patch12 -p1
-#%patch13 -p1
-#%patch14 -p1
-%patch15 -p1
+%setup -n %tname-%version
 %patch20 -p1
-%patch21 -p0
-%patch22 -p0
-%patch31 -p1
+%patch21 -p1
 
-mkdir -p x11vnc
-%autoreconf
-
+# set so version
+sed -i 's|^set.*VERSION_SO[[:space:]].*|set(VERSION_SO "%sover")|' CMakeLists.txt
+# fix .pc
+sed -i 's|@CMAKE_INSTALL_PREFIX@/lib$|@LIB_INSTALL_DIR@|' *.pc.cmakein
 
 %build
-%configure \
-    --disable-static \
-    --enable-shared \
-    --with-pic \
-    --with-gnu-ld \
-    --without-tightvnc-filetransfer \
-    --with-gcrypt \
-    --with-png \
-    --without-x11vnc \
-    %{?_enable_vaapi:--with-libva}%{!?_enable_vaapi:--without-libva} \
-    #
-#sed -ri 's/^(hardcode_libdir_flag_spec|runpath_var)=.*/\1=/' libtool
-%make_build
-
+%cmake
+%cmake_build VERBOSE=1
 
 %install
-%make DESTDIR=%buildroot install
+%make DESTDIR=%buildroot install -C BUILD
 
 %files
 
 %files -n %libvncserver
-%doc AUTHORS ChangeLog INSTALL NEWS README TODO
-%_libdir/libvncserver.so.%vncserver_sover
-%_libdir/libvncserver.so.%vncserver_sover.*
+%doc AUTHORS ChangeLog NEWS README* TODO
+%_libdir/libvncserver.so.%sover
+%_libdir/libvncserver.so.%sover.*
 
 %files -n %libvncclient
-%doc AUTHORS ChangeLog INSTALL NEWS README TODO
-%_libdir/libvncclient.so.%vncclient_sover
-%_libdir/libvncclient.so.%vncclient_sover.*
+%doc AUTHORS ChangeLog NEWS README* TODO
+%_libdir/libvncclient.so.%sover
+%_libdir/libvncclient.so.%sover.*
 
 %files devel
 %_pkgconfigdir/libvnc*.pc
 %_includedir/rfb
-%_libdir/*.so
-%_bindir/libvncserver-config
+%_libdir/lib*.so
 
 #%files -n linuxvnc
 #%doc AUTHORS ChangeLog INSTALL NEWS README TODO
@@ -162,8 +136,14 @@ mkdir -p x11vnc
 
 
 %changelog
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.12-alt2
+- fix changelog
+
+* Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.12-alt1
+- new version
+
 * Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.11-alt4
-- security fixes: CVE-2018-7225
+- security (Fixes: CVE-2018-7225)
 
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.9.11-alt3
 - NMU: remove rpm-build-ubt from BR:
