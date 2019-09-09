@@ -26,13 +26,15 @@
 %else
 %define opengl_type desktop
 %endif
+%define harfbuzz_req 2.0
+%define harfbuzz_ver %{get_version libharfbuzz-devel}
 
 %define rname  qtbase
 %define gname  qt5
 Name: qt5-base
 %define major  5
 Version: 5.12.4
-Release: alt1
+Release: alt4
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -59,9 +61,10 @@ Patch1002: alt-dont-require-plugin-file.patch
 Patch1003: alt-ca-certificates-path.patch
 Patch1004: alt-timezone.patch
 Patch1005: alt-hidpi_scale_at_192.patch
-Patch1006: e2k-qt-5.12.2.patch
+Patch1006: e2k-qt-5.12.4.patch
 Patch1007: alt-decrease-iconloader-fallback-depth.patch
 Patch1008: alt-mkspecs-features.patch
+Patch1009: alt-false-detect-groupswitchmodifier.patch
 
 # macros
 %define _qt5 %gname
@@ -74,7 +77,8 @@ Patch1008: alt-mkspecs-features.patch
 # optimized out: elfutils fontconfig fontconfig-devel glib2-devel glibc-devel-static gstreamer-devel libEGL-devel libGL-devel libX11-devel libXext-devel libXfixes-devel libXrender-devel libatk-devel libcairo-devel libcom_err-devel libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libgst-plugins libkrb5-devel libpango-devel libpng-devel libpq-devel libssl-devel libstdc++-devel libwayland-client libwayland-server libxcb-devel libxcb-render-util libxcbutil-icccm libxcbutil-image libxcbutil-keysyms libxml2-devel pkg-config python-base python3 python3-base ruby ruby-stdlibs xorg-fixesproto-devel xorg-inputproto-devel xorg-renderproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: firebird-devel gcc-c++ gst-plugins-devel libXi-devel libalsa-devel libcups-devel libdbus-devel libfreetds-devel libgtk+2-devel libicu-devel libjpeg-devel libmysqlclient-devel libpcre-devel libpulseaudio-devel libsqlite3-devel libudev-devel libunixODBC-devel libxcb-render-util-devel libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-keysyms-devel postgresql-devel python-module-distribute rpm-build-python3 rpm-build-ruby zlib-devel-static
 BuildRequires(pre): rpm-build-ubt
-BuildRequires: gcc-c++ libcups-devel libdbus-devel libicu-devel libjpeg-devel libpng-devel libharfbuzz-devel
+BuildRequires(pre): libharfbuzz-devel
+BuildRequires: gcc-c++ libcups-devel libdbus-devel libicu-devel libjpeg-devel libpng-devel
 BuildRequires: libproxy-devel libssl-devel
 BuildRequires: libpcre2-devel libudev-devel libEGL-devel libdrm-devel libgbm-devel zlib-devel libgtk+3-devel
 BuildRequires: libmtdev-devel libinput-devel libts-devel
@@ -384,6 +388,7 @@ EGL integration library for the Qt%major toolkit
 %endif
 %patch1007 -p1
 %patch1008 -p1
+%patch1009 -p1
 bin/syncqt.pl -version %version
 [ -e include/QtCore/QtCoreDepends ] || >include/QtCore/QtCoreDepends
 
@@ -473,14 +478,18 @@ export QT_PLUGIN_PATH=$QT_DIR/plugins
     -system-libpng \
     -system-pcre \
     -system-zlib \
+%IF_ver_gteq %harfbuzz_ver %harfbuzz_req
     -system-harfbuzz \
+%else
+    -qt-harfbuzz \
+%endif
     -sm -xcb -xcb-xinput -system-xcb \
     -xkb -xkbcommon \
     #
 
 %make_build
 %if_disabled bootstrap
-[ -d doc/qtcore ] || %make docs
+[ -d doc/qtcore ] || %make docs ||:
 %endif
 
 %install
@@ -796,6 +805,15 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt4
+- add fix against QTBUG-49771 (thanks darktemplar@alt)
+
+* Mon Aug 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt3
+- fix to build with old libharfbuzz
+
+* Mon Aug 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt2
+- don't fail whan compile docs
+
 * Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.4-alt1
 - new version
 
