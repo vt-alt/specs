@@ -1,5 +1,5 @@
 Name: installer
-Version: 1.9.0
+Version: 1.10.0
 Release: alt1
 
 Summary: Installer common parts
@@ -110,6 +110,10 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Fri Sep 06 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.10.0-alt1
+- remove alterator-postinstall if not used
+- run apt-get autoremove after removing installer
+
 * Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 1.9.0-alt1
 - preinstall: Drop options for mkinitrd.
 - postinstall: Generate host key files.
