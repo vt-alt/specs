@@ -1,7 +1,7 @@
 %define rname kcalcore
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init altplace
 
@@ -63,7 +63,6 @@ KF5 library
 %install
 %K5install
 #%find_lang %name --with-kde --all-name
-ln -s kcalendarcore_version.h %buildroot/%_K5inc/kcalcore_version.h
 
 #files common -f %name.lang
 %files common
@@ -83,6 +82,9 @@ ln -s kcalendarcore_version.h %buildroot/%_K5inc/kcalcore_version.h
 %_K5lib/libKF5CalendarCore.so.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %define rname kmime
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init altplace
 
@@ -70,6 +70,9 @@ KF5 library
 %_K5lib/libKF5Mime.so.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

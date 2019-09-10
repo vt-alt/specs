@@ -6,7 +6,7 @@
 %define libkorganizerprivate libkorganizerprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init
 
@@ -128,7 +128,7 @@ Requires: %name-common = %version-%release
 %_K5icon/*/*/apps/korganizer.*
 %_K5icon/*/*/apps/korg-*.*
 %_K5icon/*/*/apps/quickview.*
-#%doc %_K5doc/en/korganizer
+%_K5dbus_srv/*korganizer*.service
 
 #%files devel
 #%_K5inc/korganizer_version.h
@@ -148,6 +148,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkorganizerprivate.so.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

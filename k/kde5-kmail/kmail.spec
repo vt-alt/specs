@@ -4,7 +4,7 @@
 %define libkmailprivate libkmailprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init
 
@@ -101,6 +101,7 @@ Requires: %name-common = %version-%release
 #%doc %_K5doc/en/kmail/
 %_datadir/akonadi5/agents/*.desktop
 %_K5data/kontact/ksettingsdialog/*
+%_K5dbus_srv/*kmail*.service
 #
 %_K5bin/ktnef
 %_K5xdgapp/org.kde.ktnef.desktop
@@ -128,6 +129,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkmailprivate.so.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

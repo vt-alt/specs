@@ -4,7 +4,7 @@
 %define libkontactprivate libkontactprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init
 
@@ -83,8 +83,7 @@ Requires: %name-common = %version-%release
 #%_K5xmlgui/*kontact*/
 %_K5srv/*kontact*.desktop
 %_K5icon/*/*/apps/*kontact*.*
-#%doc %_K5doc/en/kontact
-#%doc %_K5doc/en/kontact-admin
+%_K5dbus_srv/*kontact*.service
 
 #%files devel
 #%_K5inc/kontact_version.h
@@ -98,6 +97,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkontactprivate.so.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
