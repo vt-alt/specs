@@ -1,7 +1,7 @@
 %define rname kstars
 
 Name: kde5-%rname
-Version: 3.0.0
+Version: 3.3.6
 Release: alt1
 Epoch: 1
 %K5init
@@ -67,6 +67,9 @@ planets, the Sun and Moon, and thousands of comets and asteroids.
 %_K5cfg/kstars.kcfg
 
 %changelog
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 1:3.3.6-alt1
+- new version
+
 * Thu Dec 27 2018 Sergey V Turchin <zerg@altlinux.org> 1:3.0.0-alt1
 - new version
 
