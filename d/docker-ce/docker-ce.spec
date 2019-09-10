@@ -11,12 +11,12 @@
 %global build_dir ./_build
 %global build_dir_cli %build_dir/src/%import_path_cli
 %global build_dir_engine %build_dir/src/%import_path_engine
-%global commit      774a1f4eee66e29a71ca12e88ac2220670990f7e
+%global commit      2d0083d657f82c47044c8d3948ba434b622fe2fd
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:       docker-ce
-Version:    18.09.6
-Release: alt1
+Version:    19.03.1
+Release: alt2
 Summary: Automates deployment of containerized applications
 License: ASL 2.0
 Group: System/Configuration/Other
@@ -34,8 +34,6 @@ Source2: %repo_engine.init
 Source3: %repo_engine.sysconf
 Source4: %repo_engine-storage.sysconf
 Source5: daemon.json
-
-Patch1: %name-18.09.1-bash-completion.patch
 
 BuildRequires(pre): rpm-build-golang
 BuildRequires: /proc gcc golang >= 1.3 systemd-devel libdevmapper-devel libbtrfs-devel libseccomp-devel
@@ -68,7 +66,6 @@ servers, OpenStack clusters, public instances, or combinations of the above.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 
@@ -124,7 +121,7 @@ install -p -m 644 %{build_dir_engine}/contrib/syntax/vim/syntax/dockerfile.vim %
 
 # install udev rules
 install -d %{buildroot}%{_sysconfdir}/udev/rules.d
-install -p %{build_dir_engine}/contrib/udev/80-docker.rules %{buildroot}%{_sysconfdir}/udev/rules.d
+install -m 644 -p %{build_dir_engine}/contrib/udev/80-docker.rules %{buildroot}%{_sysconfdir}/udev/rules.d
 
 # install storage dir
 install -d %{buildroot}%{_sharedstatedir}/%{repo_engine}
@@ -177,6 +174,24 @@ exit 0
 %{_datadir}/vim/vimfiles/syntax/dockerfile.vim
 
 %changelog
+* Thu Sep 05 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.03.1-alt2
+- Make udev rules not executable
+
+* Wed Aug 7 2019 Vladimir Didenko <cow@altlinux.org> 19.03.1-alt1
+- 19.03.1 (fixes CVE-2019-14271)
+
+* Thu Jul 25 2019 Vladimir Didenko <cow@altlinux.org> 19.03.0-alt1
+- 19.03.0
+
+* Wed Jul 24 2019 Mikhail Gordeev <obirvalger@altlinux.org> 18.09.8-alt1
+- 18.09.8
+
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 18.09.7-alt2
+- fix spec file
+
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 18.09.7-alt1
+- 18.09.7
+
 * Wed May 8 2019 Vladimir Didenko <cow@altlinux.org> 18.09.6-alt1
 - 18.09.6
 
