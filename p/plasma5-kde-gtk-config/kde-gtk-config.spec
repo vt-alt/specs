@@ -1,7 +1,7 @@
 %define rname kde-gtk-config
 
 Name: plasma5-%rname
-Version: 5.16.4
+Version: 5.16.5
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -25,6 +25,8 @@ BuildRequires: kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel 
 BuildRequires: kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel
 BuildRequires: kf5-knewstuff-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel
 BuildRequires: kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel
+# workaround against pango includes
+BuildRequires: libharfbuzz-devel
 
 Provides: kf5-kde-gtk-config = %EVR
 Obsoletes: kf5-kde-gtk-config < %EVR
@@ -64,6 +66,8 @@ KF5 library
 %patch1 -p1
 
 %build
+ADD_OPTFLAGS=`pkg-config --cflags harfbuzz`
+%add_optflags $ADD_OPTFLAGS
 %K5build \
     -DLIBEXEC_INSTALL_DIR=%_K5exec \
     #
@@ -84,6 +88,12 @@ KF5 library
 %_K5icon/*/*/apps/kde-gtk-config.*
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
+- new version
+
+* Tue Aug 20 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.4-alt2
+- add workaround against new pango
+
 * Thu Aug 01 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.4-alt1
 - new version
 

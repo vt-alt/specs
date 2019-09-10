@@ -7,7 +7,7 @@
 
 
 Name: plasma5-desktop
-Version: 5.16.4
+Version: 5.16.5
 Release: alt1
 %K5init altplace
 
@@ -225,6 +225,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
+- new version
+
 * Thu Aug 01 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.4-alt1
 - new version
 
