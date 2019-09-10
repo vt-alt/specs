@@ -1,13 +1,12 @@
 Name: blackbox
-Version: 0.70.1
-Release: alt3
+Version: 0.74
+Release: alt1
 
 Summary: A Window Manager for the X Window System
 License: BSD-style
-Group: Graphical desktop/Other
-Url: http://blackboxwm.sourceforge.net/
-
-Source0: http://prdownloads.sf.net/blackboxwm/%name-%version.tar.bz2
+Group:   Graphical desktop/Other
+URL:     https://github.com/bbidulock/blackboxwm
+Source0: https://github.com/bbidulock/blackboxwm/releases/download/%version/%name-%version.tar.xz
 Source1: %name.menu-method
 Source2: %name.menu
 Source3: %name-16.png
@@ -17,11 +16,11 @@ Source6: %name-64.png
 Source7: %name.wmsession
 Source8: %name.alternatives
 Source9: %name-gencat-wrapper
+Source10: blackbox.desktop
+Source11: ru.po.fixed
 
-Patch0: blackbox-0.70.1-gcc43.patch
-Patch1: blackbox-0.70.1-Xutil.patch
+Patch0: blackbox-0.74-alt-link.patch
 Patch10: blackbox-0.70.1-alt-style.patch
-Patch11: blackbox-0.70.1-alt-nls.patch
 
 # Automatically added by buildreq on Tue Mar 12 2013
 # optimized out: alternatives fontconfig fontconfig-devel gnu-config libX11-devel libXrender-devel libfreetype-devel libstdc++-devel pkg-config xorg-renderproto-devel xorg-xextproto-devel xorg-xproto-devel
@@ -52,30 +51,21 @@ of the utility class library for writing small applications.
 
 %prep
 %setup -q
-%patch10 -p0
-%patch11 -p0
+%patch0 -p1
+#patch10 -p0
 
-%patch0 -p1 -b .gcc43
-%patch1 -p1 -b .Xutil
+# %%{__global_ldflags} wrongly passed to pkgconfig file
+sed -i 's|@LDFLAGS@||g' lib/libbt.pc.in
 
-pushd nls
-  for enc in KOI8-R CP1251 UTF-8; do
-    mkdir ru_RU.$enc
-    pushd ru_RU
-    for f in *; do
-      iconv -f KOI8-R -t $enc <"$f" >../ru_RU.$enc/"$f"
-    done
-    popd
-    sed -i -e "s/ru_RU/ru_RU.$enc/" ru_RU.$enc/*
-  done
-  sed -i -e 's/ru_RU/ru_RU.KOI8-R ru_RU.CP1251 ru_RU.UTF-8/' Makefile*
-popd
+#iconv -f utf-8 -t koi8-r ./po/ru.po | iconv -t iso-8859-5 -f koi8-r | iconv -f koi8-r -t utf-8 > ./po/ru.po.fixed && edit manually
+install -p %SOURCE11 ./po/ru.po
+rm -f ./po/ru.gmo
 
 install -p %SOURCE9 ./gencat-wrapper
 
 %build
 export gencat_cmd="`pwd`/gencat-wrapper"
-autoreconf -i -f
+autoreconf -fisv
 %configure \
     --enable-shared \
     --disable-static \
@@ -103,8 +93,13 @@ install -pD -m644 %SOURCE8 %buildroot%_altdir/%name
 
 install -pD -m644 /dev/null %buildroot%_sysconfdir/X11/%name/%name-menu
 
-%files
-%doc AUTHORS COMPLIANCE ChangeLog* LICENSE README* RELNOTES TODO
+# Install the desktop entry
+install -pD -m644 %SOURCE10 %buildroot%_datadir/xsessions/blackbox.desktop
+
+%find_lang %{name}
+
+%files -f %{name}.lang
+%doc AUTHORS COMPLIANCE ChangeLog* COPYING README* TODO
 %_bindir/blackbox
 %_bindir/bsetbg*
 %_bindir/bsetroot*
@@ -113,6 +108,11 @@ install -pD -m644 /dev/null %buildroot%_sysconfdir/X11/%name/%name-menu
 %dir %_datadir/%name
 %_datadir/%name/
 %_libdir/libbt.so.*
+%_datadir/xsessions/blackbox.desktop
+%lang(fr) %_mandir/fr/man?/*
+%lang(ja) %_mandir/ja/man?/*
+%lang(nl) %_mandir/nl/man?/*
+%lang(sl) %_mandir/sl/man?/*
 # alt specific
 %_menudir/*
 %config(noreplace) %_sysconfdir/menu-methods/*
@@ -129,6 +129,12 @@ install -pD -m644 /dev/null %buildroot%_sysconfdir/X11/%name/%name-menu
 %_pkgconfigdir/libbt.pc
 
 %changelog
+* Wed Sep 04 2019 Igor Vlasenko <viy@altlinux.ru> 0.74-alt1
+- new version
+
+* Wed Sep 04 2019 Igor Vlasenko <viy@altlinux.ru> 0.70.1-alt4
+- fixed man alternatives
+
 * Tue Mar 12 2013 Igor Zubkov <icesik@altlinux.org> 0.70.1-alt3
 - buildreq
 
