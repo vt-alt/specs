@@ -1,4 +1,4 @@
-%define mesaversion 18.0
+%define mesaversion 19.0
 %define xorgversion 7.7.0
 
 %define _libexecdir /usr/libexec
@@ -21,7 +21,7 @@
 %endif
 
 Name: xorg-server
-Version: 1.20.4
+Version: 1.20.5
 Release: alt2
 Epoch: 2
 License: MIT/X11
@@ -40,7 +40,7 @@ Provides: xorg-glamor = %epoch:%version-%release
 Obsoletes: xorg-glamor < %epoch:%version-%release
 %endif
 PreReq: xorg-server-control >= 1.3-alt1 %name-common = %epoch:%version-%release xorg-dri-swrast >= %mesaversion
-Requires: xset iceauth xdpyinfo glxinfo xdriinfo xorg-drv-fbdev xorg-drv-evdev
+Requires: xset iceauth xdpyinfo xorg-drv-fbdev xorg-drv-evdev
 %ifarch %ix86 x86_64
 Requires: xorg-drv-vesa
 %endif
@@ -308,6 +308,12 @@ install -pD -m644 xorg-sdk.rpmmacros %buildroot%_rpmmacrosdir/xorg-sdk
 %_rpmmacrosdir/xorg-sdk
 
 %changelog
+* Mon Sep 09 2019 Valery Inozemtsev <shrek@altlinux.ru> 2:1.20.5-alt2
+- use intel ddx only on pre-gen4 hw, newer ones will fall back to modesetting
+
+* Mon Jun 03 2019 Valery Inozemtsev <shrek@altlinux.ru> 2:1.20.5-alt1
+- 1.20.5
+
 * Fri Apr 12 2019 Sergey V Turchin <zerg@altlinux.org> 2:1.20.4-alt2
 - use smallest monitor size to compute DPI
 
@@ -642,7 +648,7 @@ install -pD -m644 xorg-sdk.rpmmacros %buildroot%_rpmmacrosdir/xorg-sdk
 * Sun Jan 09 2011 Valery Inozemtsev <shrek@altlinux.ru> 2:1.9.3.901-alt1
 - 1.9.4 RC1
 
-* Tue Dec 29 2010 Valery Inozemtsev <shrek@altlinux.ru> 2:1.9.3-alt2
+* Wed Dec 29 2010 Valery Inozemtsev <shrek@altlinux.ru> 2:1.9.3-alt2
 - updated to server-1.9-branch git.295a893
 
 * Tue Dec 14 2010 Valery Inozemtsev <shrek@altlinux.ru> 2:1.9.3-alt1
@@ -959,7 +965,7 @@ sdk: readded xorg-util-macros requires
 - AutoConfig: disable vga
 - AutoConfig: add geode
 
-* Tue Apr 10 2008 Valery Inozemtsev <shrek@altlinux.ru> 2:1.4.0.90-alt17
+* Thu Apr 10 2008 Valery Inozemtsev <shrek@altlinux.ru> 2:1.4.0.90-alt17
 - Xext: fixed memory corruption in ProcXResQueryClients()
 - X86EMU: fixing X for GeodeLX (close #15300)
 
@@ -1066,7 +1072,7 @@ sdk: readded xorg-util-macros requires
 - drop XKB patches (close #13298, reopen #13024)
 - added Mesa-7.0.1-git-memleak-in-SSE.patch
 
-* Wed Oct 30 2007 Valery Inozemtsev <shrek@altlinux.ru> 2:1.4-alt6
+* Tue Oct 30 2007 Valery Inozemtsev <shrek@altlinux.ru> 2:1.4-alt6
 - fixed keyboard leds reflect modifier state (close #5712, #13024)
 
 * Thu Oct 25 2007 Valery Inozemtsev <shrek@altlinux.ru> 2:1.4-alt5
