@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.2.4.1
+Version: 0.3.0
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPLv2+
@@ -40,6 +40,13 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Wed Sep 11 2019 Anton Midyukov <antohami@altlinux.org> 0.3.0-alt1
+- 0.3.0
+- Add the ability create images from tarball
+- Add the ability write image to media
+- Add support u-boot-*-201907
+- bug fixes and typos
+
 * Fri Aug 02 2019 Anton Midyukov <antohami@altlinux.org> 0.2.4.1-alt1
 - hot fix release
 - change interpreter on /bin/bash
