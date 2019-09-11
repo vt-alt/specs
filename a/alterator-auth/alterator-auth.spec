@@ -1,7 +1,7 @@
 %define _hooksdir %_sysconfdir/hooks/hostname.d
 
 Name: alterator-auth
-Version: 0.40
+Version: 0.41
 Release: alt1
 
 %filter_from_requires /^samba-common$/d;/systemd-services/d
@@ -131,6 +131,9 @@ install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
 %files -n task-auth-freeipa
 
 %changelog
+* Wed Sep 11 2019 Andrey Cherepanov <cas@altlinux.org> 0.41-alt1
+- Suppress error message during LDAP server check.
+
 * Thu Apr 18 2019 Andrey Cherepanov <cas@altlinux.org> 0.40-alt1
 - Do not require nss-ldap by default.
 - Disable nscd if sssd is used.
