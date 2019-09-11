@@ -23,7 +23,7 @@
 
 %define rname k3b
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
@@ -187,6 +187,9 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Tue Aug 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
