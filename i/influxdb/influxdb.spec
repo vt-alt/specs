@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/influxdb
-%global commit f8fdf652f348fc9980997fe1c972e2b79ddd13b0
+%global commit ff383cdc0420217e3460dabe17db54f8557d95b6
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		influxdb
-Version:	1.7.7
+Version:	1.7.8
 Release:	alt1
 Summary:	Distributed time-series database
 
@@ -61,6 +61,7 @@ events, and performing analytics.
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
+export GO111MODULE=off
 
 %golang_prepare
 
@@ -129,6 +130,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0755, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Wed Sep 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.8-alt1
+- 1.7.8
+
 * Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.7-alt1
 - 1.7.7
 

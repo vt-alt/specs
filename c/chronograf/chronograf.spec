@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/chronograf
-%global commit de18060ef3b625466233484149505c35719f7642
+%global commit 038fb2a1d4f22adaecd1cd23d01a28159e0d248f
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		chronograf
-Version:	1.7.7
+Version:	1.7.14
 Release:	alt1
 Summary:	Open source framework for processing, monitoring, and alerting on time series data
 
@@ -25,11 +25,13 @@ Source102: %name.init
 Source103: %name.service
 Source104: %name.tmpfiles
 
-#ExclusiveArch:  %go_arches
-ExclusiveArch: x86_64
+ExclusiveArch:  %go_arches
 BuildRequires(pre): rpm-build-golang
-BuildRequires: npm yarn
 BuildRequires: go-bindata
+BuildRequires: npm yarn
+BuildRequires: node node-devel
+BuildRequires: fontconfig libfreetype
+
 BuildRequires: /proc
 
 %description
@@ -38,32 +40,44 @@ Open source framework for processing, monitoring, and alerting on time series da
 %prep
 %setup -q
 
+# add symlink to node headers
+node_ver=$(node -v | sed -e "s/v//")
+mkdir -p ui/node_modules/.node-gyp/$node_ver/include
+ln -s %_includedir/node ui/node_modules/.node-gyp/$node_ver/include/node
+echo "9" > ui/node_modules/.node-gyp/$node_ver/installVersion
+
 %build
 # Important!!!
 # The %%builddir/.gopath created by the hands. It contains the dependencies required for your project.
 # This is necessary because the gdm cannot work with the vendor directory and always tries to update
 # all dependencies from the external servers. So, we can't use Makefile to compile.
 #
-# $ export GOPATH="$PWD/.gopath"
-# $ git rm -rf -- "$GOPATH"
-# $ make
-# $ find $GOPATH -type d -name .git |xargs rm -rf --
-# $ git add "$GOPATH"
+# $ go mod vendor
+# $ git add -f vendor
+# $ git commit -m "add go modules"
 #
-##cd ui && yarn --no-progress --no-emoji --verbose
+# $ cd ui && yarn --no-progress --no-emoji --verbose
+# $ rm -rf node_modules/node-sass/vendor
+# $ git add -f node_modules
+# $ git commit -m "add node js modules"
 
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path:$PWD"
-export PATH="$PATH:$BUILDDIR/bin"
+# export PATH="$PATH:$BUILDDIR/bin"
+export npm_config_devdir="$PWD/ui/node_modules/.node-gyp"
+export GO111MODULE=off
 
 export VERSION=%version
-export COMMIT=%commit
+export COMMIT=%shortcommit
 export BRANCH=altlinux
 
 %golang_prepare
 
 pushd .gopath/src/%import_path
+pushd ui
+npm rebuild
+popd
 make
 popd
 
@@ -74,13 +88,14 @@ popd
 export BUILDDIR="$PWD/.gopath"
 #export GOPATH="%go_path"
 export IMPORT_PATH="%import_path"
-export GOPATH="$BUILDDIR:%go_path:$PWD"
+#export GOPATH="$BUILDDIR:%go_path:$PWD"
+export GO111MODULE=off
 
 pushd .gopath/src/%import_path
-go install github.com/influxdata/chronograf/cmd/chronograf
+install -p -D -m 755 chronograf %buildroot%_bindir/%name
+install -p -D -m 755 chronoctl %buildroot%_bindir/chronoctl
 popd
 
-install -p -D -m 755 $BUILDDIR/bin/chronograf %buildroot%_bindir/%name
 install -d -m 755 %buildroot%_datadir/%name
 cp -pr canned %buildroot%_datadir/%name
 #%golang_install
@@ -90,8 +105,6 @@ cp -pr canned %buildroot%_datadir/%name
 # Setup directories
 install -d -m 755 %buildroot%_logdir/%name
 install -d -m 755 %buildroot%_sharedstatedir/%name
-# Install pid directory
-install -d -m 775 %buildroot%_runtimedir/%name
 # Install sysconfig
 install -p -D -m 640 %SOURCE100 %buildroot%_sysconfdir/sysconfig/%name
 # Install logrotate
@@ -115,17 +128,20 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 
 %files
 %_bindir/%name
+%_bindir/chronoctl
 %_initdir/%name
 %_unitdir/%name.service
 %_tmpfilesdir/%name.conf
 %config(noreplace) %_logrotatedir/%name
 %config(noreplace) %attr(0640, root, %name) %_sysconfdir/sysconfig/%name
 %dir %attr(0770, root, %name) %_logdir/%name
-%dir %attr(0775, root, %name) %_runtimedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 %_datadir/%name
 
 %changelog
+* Wed Sep 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.14-alt1
+- 1.7.14
+
 * Mon Jan 21 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.7-alt1
 - 1.7.7
 
