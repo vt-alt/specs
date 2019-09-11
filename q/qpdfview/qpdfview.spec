@@ -1,6 +1,6 @@
 Name: qpdfview
 Version: 0.4.18
-Release: alt1.beta1
+Release: alt2
 Summary: Tabbed PDF viewer using the poppler library
 License: GPLv2
 Group: Office
@@ -60,6 +60,9 @@ ln -s %_iconsdir/hicolor/scalable/apps/%name.svg \
 %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Tue Sep 10 2019 Anton Midyukov <antohami@altlinux.org> 0.4.18-alt2
+- Version 0.4.18
+
 * Wed Mar 06 2019 Anton Midyukov <antohami@altlinux.org> 0.4.18-alt1.beta1
 - Version 0.4.18beta1
 
