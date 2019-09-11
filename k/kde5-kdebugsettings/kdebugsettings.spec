@@ -1,7 +1,7 @@
 %define rname kdebugsettings
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.1
 Release: alt1
 %K5init altplace
 
@@ -63,6 +63,9 @@ KF5 library
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
