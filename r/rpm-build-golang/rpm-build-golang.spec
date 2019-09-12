@@ -1,5 +1,5 @@
 Name:      rpm-build-golang
-Version:   1.0.4
+Version:   1.0.5
 Release:   alt1
 Summary:   RPM build enviroment to build GO packages
 Group:     Development/Other
@@ -60,6 +60,9 @@ cp %SOURCE7 %buildroot%_rpmlibdir/golang.req.files
 %_rpmmacrosdir/golang
 
 %changelog
+* Mon Sep 09 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.0.5-alt1
+- golang-build: use GO111MODULE to disable go use internet at build stage.
+
 * Sun Feb 10 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.0.4-alt1
 - Added ppc64le to %%go_arches.
 
