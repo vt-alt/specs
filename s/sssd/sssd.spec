@@ -6,8 +6,8 @@
 %def_with check
 
 Name: sssd
-Version: 2.2.0
-Release: alt3
+Version: 2.2.1
+Release: alt1
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -820,6 +820,9 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Fri Aug 30 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.1-alt1
+- Update to 2.2.1
+
 * Mon Aug 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt3
 - Rebuild with latest version libldb-1.5.5
 

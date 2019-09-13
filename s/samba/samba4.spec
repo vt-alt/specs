@@ -60,7 +60,7 @@
 
 Name:    samba
 Version: 4.10.8
-Release: alt1
+Release: alt2
 
 Group:   System/Servers
 Summary: The Samba4 CIFS and AD client and server suite
@@ -207,6 +207,7 @@ build with Heimdal Kerberos server and libraries.
 %package dc-mitkrb5
 Summary: Samba Active Directory Domain Controller with MIT Kerberos
 Group: Networking/Other
+Requires: %name = %version-%release
 Requires: %name-dc-libs = %version-%release
 Requires: %name-dc-client = %version-%release
 Requires: %name-dc-common = %version-%release
@@ -1822,6 +1823,10 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Tue Sep 11 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.8-alt2
+- Add requires samba-dc-mitkrb5 for samba
+- Use krb5.conf from the Samba private directory in MIT KDC service
+
 * Tue Sep 03 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.8-alt1
 - Update to first security autumn release
 - Fix samba-gpupdate check sysvol path with ignore case for compatibility
