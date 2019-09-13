@@ -1,16 +1,19 @@
+%def_disable snapshot
+%define _libexecdir %_prefix/libexec
+
 %define _name pango
-%define ver_major 1.42
+%define ver_major 1.44
 %define api_ver 1.0
 %define module_ver 1.8.0
 %def_disable static
-%def_enable gtk_doc
+%def_enable docs
 %def_enable introspection
 %def_enable installed_tests
-%def_enable libthai
-%def_enable check
+%def_enable fontconfig
+%def_disable check
 
 Name: lib%_name
-Version: %ver_major.4
+Version: %ver_major.6
 Release: alt1
 
 Summary: System for layout and rendering of internationalized text
@@ -18,7 +21,11 @@ License: %lgpl2plus
 Group: System/Libraries
 Url: http://www.pango.org/
 
+%if_disabled snapshot
 Source: %gnome_ftp/%_name/%ver_major/%_name-%version.tar.xz
+%else
+Source: %_name-%version.tar
+%endif
 
 Source10: pango-compat.map
 Source11: pango-compat.lds
@@ -27,37 +34,38 @@ Source13: pangoft2-compat.lds
 Source14: pangocairo-compat.map
 Source15: pangocairo-compat.lds
 
-Patch: pango-1.40.2-alt-compat-version-script.patch
+Patch: pango-1.44.3-alt-compat-version-script.patch
 
 Provides: %_name = %version
 Obsoletes: %_name < %version
 Obsoletes: gscript
 
-# From configure.in
-%define glib_ver 2.33.12
-%define cairo_ver 1.7.6
+# From meson.build
+%define glib_ver 2.60
+%define cairo_ver 1.12.10
 %define gtk_doc_ver 1.0
 %define xft_ver 2.0.0
-%define fontconfig_ver 2.10.91
+%define fontconfig_ver 2.11.91
 %define freetype_ver 2.1.4
 %define gi_ver 0.9.5
-%define hb_ver 1.4.2
+%define hb_ver 2.0.0
 %define thai_ver 0.1.9
-%define fribidi_ver 1.0.1
+%define fribidi_ver 0.19.7
 
-BuildRequires: gcc-c++ help2man
-BuildPreReq: rpm-build-gnome rpm-build-licenses gnome-common gtk-doc
-BuildPreReq: fontconfig-devel >= %fontconfig_ver
+BuildRequires(pre): meson rpm-build-gnome rpm-build-licenses gtk-doc
+BuildRequires: gcc-c++ 
 BuildPreReq: libfreetype-devel >= %freetype_ver
 BuildPreReq: libXft-devel >= %xft_ver
 BuildPreReq: libcairo-devel >= %cairo_ver libcairo-gobject-devel
 BuildPreReq: glib2-devel >= %glib_ver libgio-devel
 BuildPreReq: libharfbuzz-devel >= %hb_ver
 BuildPreReq: libfribidi-devel >= %fribidi_ver
-BuildPreReq: gtk-doc >= %gtk_doc_ver
+BuildPreReq: libthai-devel >= %thai_ver}
+BuildRequires: help2man /proc
+%{?_enable_fontconfig:BuildPreReq: fontconfig-devel >= %fontconfig_ver}
+%{?_enable_docs:BuildRequires: gtk-doc >= %gtk_doc_ver}
 %{?_enable_introspection:BuildPreReq: gobject-introspection-devel >= %gi_ver}
-%{?_enable_libthai:BuildPreReq: libthai-devel >= %thai_ver}
-%{?_enable_check:BuildRequires: fonts-otf-abattis-cantarell}
+%{?_enable_check:BuildRequires: fonts-otf-abattis-cantarell fonts-ttf-thai-scalable-waree}
 
 %description
 A library to handle unicode strings as well as complex bidirectional
@@ -124,23 +132,22 @@ the functionality of the installed Pango library.
 
 %prep
 %setup -n %_name-%version
-%patch -p1
+%patch -b .vs
 install -p -m644 %_sourcedir/pango{,ft2,cairo}-compat.{map,lds} pango/
 
 %build
-%autoreconf
-%configure \
-    %{subst_enable static} \
-    %{subst_enable introspection} \
-    %{?_enable_gtk_doc:--enable-gtk-doc} \
-    %{?_enable_installed_tests:--enable-installed-tests}
-%make_build
+%meson \
+    %{?_enable_fontconfig:-Duse_fontconfig=true} \
+    %{?_enable_introspection:-Dintrospection=true} \
+    %{?_enable_docs:-Dgtk_doc=true} \
+    %{?_enable_installed_tests:-Dinstall-tests=true}
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %check
-%make check
+%meson_test
 
 %files
 %_bindir/%_name-list
@@ -150,7 +157,7 @@ install -p -m644 %_sourcedir/pango{,ft2,cairo}-compat.{map,lds} pango/
 %_libdir/%{name}ft2-%api_ver.so.*
 %_libdir/%{name}xft-%api_ver.so.*
 %_man1dir/%_name-view.*
-%doc AUTHORS NEWS README
+%doc NEWS README*
 
 %files devel
 %_includedir/*
@@ -161,15 +168,19 @@ install -p -m644 %_sourcedir/pango{,ft2,cairo}-compat.{map,lds} pango/
 %files gir
 %_typelibdir/Pango-%api_ver.typelib
 %_typelibdir/PangoCairo-%api_ver.typelib
+%_typelibdir/PangoFc-%api_ver.typelib
 %_typelibdir/PangoFT2-%api_ver.typelib
+%_typelibdir/PangoOT-%api_ver.typelib
 %_typelibdir/PangoXft-%api_ver.typelib
 
 %files gir-devel
 %_girdir/*
 %endif
 
+%if_enabled docs
 %files devel-doc
 %_datadir/gtk-doc/html/*
+%endif
 
 %if_enabled static
 %files devel-static
@@ -185,6 +196,12 @@ install -p -m644 %_sourcedir/pango{,ft2,cairo}-compat.{map,lds} pango/
 
 
 %changelog
+* Tue Sep 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1.44.6-alt1
+- 1.44.6
+
+* Wed Aug 14 2019 Yuri N. Sedunov <aris@altlinux.org> 1.44.5-alt1
+- 1.44.5 (ported to Meson build system)
+
 * Mon Aug 20 2018 Yuri N. Sedunov <aris@altlinux.org> 1.42.4-alt1
 - 1.42.4
 

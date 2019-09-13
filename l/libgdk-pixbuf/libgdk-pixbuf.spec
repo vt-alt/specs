@@ -15,8 +15,8 @@
 %def_enable check
 
 Name: lib%_name
-Version: %ver_major.1
-Release: alt1.1
+Version: %ver_major.2
+Release: alt1
 
 Summary: An image loading and rendering library for Gdk
 Group: System/Libraries
@@ -249,6 +249,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 
 
 %changelog
+* Mon Sep 09 2019 Yuri N. Sedunov <aris@altlinux.org> 2.38.2-alt1
+- 2.38.2
+
 * Fri Apr 05 2019 Yuri N. Sedunov <aris@altlinux.org> 2.38.1-alt1.1
 - tests/meson.build: x10 timeouts for overloaded girar
 

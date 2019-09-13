@@ -10,7 +10,7 @@
 %def_disable check
 
 Name: lib%_name
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: Actions, Menus and Toolbars Kit for GTK+ applications
@@ -23,7 +23,7 @@ Source: %gnome_ftp/%_name/%ver_major/%_name-%version.tar.xz
 %define gtk_ver 3.22
 %define gi_ver 1.42
 
-BuildRequires(pre): rpm-build-gnome rpm-build-licenses
+BuildRequires(pre): rpm-build-gnome rpm-build-licenses rpm-build-gir
 BuildRequires: gtk-doc
 BuildRequires: libgtk+3-devel >= %gtk_ver
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel >= %gi_ver libgtk+3-gir-devel}
@@ -127,6 +127,9 @@ GObject introspection devel data for the Amtk library.
 %endif
 
 %changelog
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 5.0.1-alt1
+- 5.0.1
+
 * Mon Jul 16 2018 Yuri N. Sedunov <aris@altlinux.org> 5.0.0-alt1
 - first build for Sisyphus
 

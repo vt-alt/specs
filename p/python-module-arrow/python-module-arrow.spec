@@ -4,7 +4,7 @@
 %def_disable python2_tests
 
 Name: python-module-%modname
-Version: 0.14.6
+Version: 0.14.7
 Release: alt1
 Summary: Better dates & times for Python
 License: ASLv2.0
@@ -104,6 +104,9 @@ popd
 %python3_sitelibdir/*
 
 %changelog
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 0.14.7-alt1
+- 0.14.7
+
 * Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.14.6-alt1
 - 0.14.6
 

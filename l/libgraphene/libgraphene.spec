@@ -2,7 +2,7 @@
 %define _libexecdir %_prefix/libexec
 
 %define _name graphene
-%define ver_major 1.9
+%define ver_major 1.10
 %define api_ver 1.0
 
 %def_disable static
@@ -18,7 +18,7 @@
 %endif
 
 Name: lib%_name
-Version: %ver_major.6
+Version: %ver_major.0
 Release: alt1
 
 Summary: Graphene is a library of data types commonly used to implement 2D-in-3D or full 3D canvases
@@ -141,6 +141,9 @@ the functionality of the installed Graphene library.
 
 
 %changelog
+* Sun Sep 08 2019 Yuri N. Sedunov <aris@altlinux.org> 1.10.0-alt1
+- 1.10.0
+
 * Thu Aug 08 2019 Yuri N. Sedunov <aris@altlinux.org> 1.9.6-alt1
 - 1.9.6
 

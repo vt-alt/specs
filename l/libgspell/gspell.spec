@@ -8,7 +8,7 @@
 %define api_ver 1
 
 Name: lib%_name
-Version: %ver_major.1
+Version: %ver_major.2
 Release: alt1
 
 Summary: A spell-checking library for GTK+ applications
@@ -21,8 +21,6 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%_name/%ver_major/%_name-%version.
 %else
 Source: %_name-%version.tar
 %endif
-# pkg-config >= 0.27 required
-Source1: pkg.m4
 
 %define gtk_ver 3.20.0
 %define enchant_ver 1.6.0
@@ -87,10 +85,8 @@ the functionality of the installed Gspell library.
 
 %prep
 %setup -n %_name-%version
-%{?_enable_snapshot:cp %SOURCE1 m4/}
 
 %build
-%{?_enable_snapshot%autoreconf -I m4}
 %configure \
     %{?_enable_gtk_doc:--enable-gtk-doc} \
     %{?_enable_installed_tests:--enable-installed-tests}
@@ -130,6 +126,9 @@ xvfb-run %make check
 
 
 %changelog
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 1.8.2-alt1
+- 1.8.2
+
 * Sat Jun 16 2018 Yuri N. Sedunov <aris@altlinux.org> 1.8.1-alt1
 - 1.8.1
 

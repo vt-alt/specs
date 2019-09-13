@@ -1,9 +1,10 @@
-%define ver_major 2.7
+%define ver_major 2.8
 %define api_ver 1.0
 %define _libexecdir %_prefix/libexec
 
 %def_enable gtk_doc
 %def_disable gtk_tests
+%def_enable check
 
 Name: iio-sensor-proxy
 Version: %ver_major
@@ -23,8 +24,7 @@ BuildRequires: gnome-common gtk-doc
 BuildRequires: libgio-devel systemd-devel
 BuildRequires: libudev-devel libgudev-devel >= %gudev_ver
 %{?_enable_gtk_tests:BuildRequires: libgtk+3-devel}
-# for check
-BuildRequires: /proc dbus-tools-gui
+%{?_enable_check:BuildRequires: /proc dbus-tools-gui}
 
 %description
 %name is a framework for accessing the various environmental sensors
@@ -83,6 +83,9 @@ Developer documentation for %name.
 
 
 %changelog
+* Sun Sep 08 2019 Yuri N. Sedunov <aris@altlinux.org> 2.8-alt1
+- 2.8
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.7-alt1
 - 2.7
 

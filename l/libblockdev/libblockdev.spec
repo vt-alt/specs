@@ -1,7 +1,7 @@
 %def_disable snapshot
 
 %define _name blockdev
-%define ver_major 2.22
+%define ver_major 2.23
 %define rev 1
 
 %ifnarch %ix86 x86_64
@@ -10,8 +10,10 @@
 %def_without vdo
 %endif
 
+%def_without python2
 %def_without dmraid
 %def_with tools
+%def_enable check
 
 Name: lib%_name
 Version: %ver_major
@@ -29,14 +31,14 @@ Source: %url/releases/download/%ver_major-%rev/%name-%version.tar.gz
 Source: %name-%version.tar
 %endif
 
-BuildRequires(pre): rpm-build-python rpm-build-python3
-BuildRequires: python-devel python3-devel
-
+BuildRequires(pre): rpm-build-python3
+%{?_with_python2:BuildRequires(pre): rpm-build-python}
+BuildRequires: python3-devel
+%{?_with_python2:BuildRequires: python-devel}
 BuildRequires: gtk-doc
 BuildRequires: libgio-devel gobject-introspection-devel
 BuildRequires: libcryptsetup-devel libdevmapper-devel
 BuildRequires: systemd-devel libudev-devel libmount-devel
-%{?_with_dmraid:BuildRequires: dmraid-devel}
 BuildRequires: libvolume_key-devel >= 0.3.9
 BuildRequires: libnss-devel
 BuildRequires: libkmod-devel
@@ -45,7 +47,9 @@ BuildRequires: libblkid-devel
 BuildRequires: libbytesize-devel
 BuildRequires: libuuid-devel
 BuildRequires: libndctl-devel
+%{?_with_dmraid:BuildRequires: dmraid-devel}
 %{?_with_vdo:BuildRequires: libyaml-devel}
+%{?_enable_check:BuildRequires: python3-module-pylint python3-module-pygobject3}
 
 %ifarch s390 s390x
 BuildRequires: s390utils-devel
@@ -442,22 +446,27 @@ vm-cache-stats -- for displaying stats for LVM cache devices.
 
 %prep
 %setup -n %name-%version
-subst 's/mkfs\.vfat/mkfs.fat/g
+sed -i 's/mkfs\.vfat/mkfs.fat/g
 	s/fsck\.vfat/fsck.fat/g' src/plugins/fs.c src/lib/plugin_apis/fs.api tests/fs_test.py
 
+sed -i 's/\(pylint\)-3/\1.py3/' Makefile.*
+
 %build
-%add_optflags -D_FILE_OFFSET_BITS=64 -lm
+%add_optflags -D_FILE_OFFSET_BITS=64
 %autoreconf
 %configure \
 	%{subst_with vdo} \
 	%{subst_with dmraid} \
-	%{subst_with tools}
+	%{subst_with tools} \
+	%{subst_with python2}
 %make_build
 
 %install
 %makeinstall_std
-
 find %buildroot -type f -name "*.la" -print0| xargs -r0 rm -f --
+
+%check
+%make check
 
 %files
 %_libdir/libblockdev.so.*
@@ -477,8 +486,10 @@ find %buildroot -type f -name "*.la" -print0| xargs -r0 rm -f --
 %_girdir/BlockDev*.gir
 %doc features.rst specs.rst
 
+%if_with python2
 %files -n python-module-blockdev
 %python_sitelibdir/gi/overrides/*
+%endif
 
 %files -n python3-module-blockdev
 %python3_sitelibdir/gi/overrides/BlockDev*
@@ -634,6 +645,9 @@ find %buildroot -type f -name "*.la" -print0| xargs -r0 rm -f --
 %endif
 
 %changelog
+* Tue Sep 10 2019 Yuri N. Sedunov <aris@altlinux.org> 2.23-alt1
+- 2.23
+
 * Thu Jun 13 2019 Yuri N. Sedunov <aris@altlinux.org> 2.22-alt1
 - 2.22
 

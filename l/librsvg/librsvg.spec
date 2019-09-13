@@ -5,14 +5,14 @@
 %define gtk3_api_ver 3.0
 
 %def_disable static
-%def_enable gtk_doc
+%def_disable gtk_doc
 %def_enable pixbuf_loader
 %def_enable introspection
 %def_enable vala
 %def_disable check
 
 Name: %bname
-Version: %ver_major.14
+Version: %ver_major.15
 Release: alt1
 Epoch: 1
 
@@ -188,6 +188,9 @@ GObject introspection devel data for the %name library
 %{?_enable_pixbuf_loader:%exclude %_libdir/gdk-pixbuf-%gtk_api_ver/*/loaders/*.la}
 
 %changelog
+* Tue Sep 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1:2.44.15-alt1
+- 2.44.15
+
 * Tue May 14 2019 Yuri N. Sedunov <aris@altlinux.org> 1:2.44.14-alt1
 - 2.44.14
 

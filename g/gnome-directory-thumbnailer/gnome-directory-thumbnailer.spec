@@ -2,8 +2,8 @@
 %define _libexecdir %_prefix/libexec
 
 Name: gnome-directory-thumbnailer
-Version: %ver_major.10
-Release: alt2
+Version: %ver_major.11
+Release: alt1
 
 Summary: GNOME thumbnailer to generate thumbnails for directories
 License: LGPLv2.1+
@@ -38,6 +38,9 @@ can be called manually as well.
 %doc README AUTHORS NEWS
 
 %changelog
+* Tue Sep 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.1.11-alt1
+- 0.1.11
+
 * Sun Feb 25 2018 Yuri N. Sedunov <aris@altlinux.org> 0.1.10-alt2
 - rebuilt against libgnome-desktop-3.so.17
 

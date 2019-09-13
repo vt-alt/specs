@@ -22,7 +22,7 @@
 %def_disable debug
 
 Name: libgtk+3
-Version: %ver_major.10
+Version: %ver_major.11
 Release: alt1
 
 Summary: The GIMP ToolKit (GTK+)
@@ -41,7 +41,7 @@ Patch: gtk+-2.16.5-alt-stop-spam.patch
 # move cloudproviders flags from gdk to gtk
 Patch1: gtk+-3.24.9-alt-build.patch
 
-%define glib_ver 2.50.2
+%define glib_ver 2.58
 %define gi_ver 1.41.0
 %define cairo_ver 1.14.0
 %define pango_ver 1.42.0
@@ -53,7 +53,7 @@ Patch1: gtk+-3.24.9-alt-build.patch
 %define colord_ver 0.1.9
 %define cups_ver 1.7
 %define wayland_ver 1.10.0
-%define wayland_protocols_ver 1.12
+%define wayland_protocols_ver 1.14
 %define epoxy_ver 1.4
 %define cloudproviders_ver 0.2.5
 %define fribidi_ver 0.19.7
@@ -459,6 +459,9 @@ cp examples/*.c examples/Makefile* %buildroot/%_docdir/%name-devel-%version/exam
 %exclude %fulllibpath/*/*.la
 
 %changelog
+* Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.11-alt1
+- 3.24.11
+
 * Thu Jul 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.10-alt1
 - 3.24.10
 

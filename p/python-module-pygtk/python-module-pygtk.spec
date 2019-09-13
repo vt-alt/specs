@@ -5,7 +5,7 @@
 %define major 2.24
 Name: python-module-pygtk
 Version: %major.0
-Release: alt6
+Release: alt7
 
 Summary: Python bindings for the GTK+ widget set
 
@@ -20,6 +20,7 @@ Source: pygtk-%version.tar
 Source: http://ftp.gnome.org/pub/GNOME/sources/pygtk/%major/pygtk-%version.tar.bz2
 %endif
 Patch: pygtk-2.14.0-alt-configure.patch
+Patch1: pygtk-2.24.0-alt-pango-1.44.patch
 
 %setup_python_module pygtk
 %add_python_req_skip gdk
@@ -102,6 +103,7 @@ This package contains PyGTK doc
 %prep
 %setup -q -n %modulename-%version
 %patch
+%patch1
 
 %__subst "s|@PYTHON@|%_bindir/env python|g" pygtk-codegen-2.0.in examples/pygtk-demo/pygtk-demo.in
 
@@ -112,7 +114,7 @@ This package contains PyGTK doc
 	%{subst_enable numpy} \
 	%{subst_enable docs} \
 	%{?_enable_snapshot:--enable-docs}
-
+%nil
 %make_build
 
 %install
@@ -149,6 +151,9 @@ test -f %buildroot%python_sitelibdir/gtk-2.0/gobject.so && exit 1
 %_datadir/gtk-doc/html/pygtk/
 
 %changelog
+* Sun Sep 08 2019 Yuri N. Sedunov <aris@altlinux.org> 2.24.0-alt7
+- rebuilt with pango-1.44.6
+
 * Mon Sep 30 2013 Yuri N. Sedunov <aris@altlinux.org> 2.24.0-alt6
 - update to c524124 (fixed BGO #660216)
 - fixed build

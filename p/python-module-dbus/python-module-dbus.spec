@@ -1,13 +1,15 @@
 %define _libexecdir %_prefix/libexec
-%define _name dbus-python
+%define modname dbus-python
+
+%def_enable python2
 %def_enable check
 # required dbus_py_test.so for both pythons
-%def_disable installed_tests
-%add_findreq_skiplist %_libexecdir/installed-tests/%_name/test/*.py
+%{?_enable_python2:%def_disable installed_tests}
+%add_findreq_skiplist %_libexecdir/installed-tests/%modname/test/*.py
 %def_enable documentation
 
 Name: python-module-dbus
-Version: 1.2.8
+Version: 1.2.10
 Release: alt1
 
 Summary: Python bindings for D-BUS library
@@ -18,22 +20,26 @@ Url: http://www.freedesktop.org/wiki/Software/DBusBindings
 ##Source: dbus-python-%version.tar
 Source: http://dbus.freedesktop.org/releases/dbus-python/dbus-python-%version.tar.gz
 
-%setup_python_module dbus
+%define dbus_ver 1.8
+%define python3_ver 3.5
 
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel python3-module-pygobject3
+%{?_enable_check:BuildRequires: /proc dbus-tools dbus-tools-gui glibc-i18ndata python3-module-tappy}
+%{?_enable_documentation:BuildRequires: python3-module-sphinx python3-module-sphinx_rtd_theme}
+
+%if_enabled python2
+%setup_python_module dbus
 Requires: dbus
-Provides: %_name = %version-%release
+Provides: %modname = %version-%release
 Provides: %name-data = %version-%release
 Obsoletes: %name-data < %version-%release
 
-BuildRequires: autoconf-archive libdbus-devel >= 1.8 libgio-devel >= 2.40
-BuildRequires: python-devel >= 2.7 python3-devel >= 3.4 python-modules-unittest
+BuildRequires: autoconf-archive libdbus-devel >= %dbus_ver libgio-devel >= 2.40
+BuildRequires: python-devel >= 2.7 python3-devel >= %python3_ver python-modules-unittest
 BuildRequires: python-module-pygobject3 python-module-tappy
 %{?_enable_documentation:BuildRequires: python-module-sphinx python-module-sphinx_rtd_theme}
-
-# for python3
-BuildRequires: rpm-build-python3 python3-devel python3-module-pygobject3
-%{?_enable_check:BuildRequires: /proc dbus-tools dbus-tools-gui glibc-i18ndata python3-module-tappy}
-%{?_enable_documentation:BuildRequires: python3-module-sphinx python3-module-sphinx_rtd_theme}
+%endif
 
 %description
 D-Bus python bindings for use with python programs.
@@ -42,7 +48,7 @@ D-Bus python bindings for use with python programs.
 Summary: Python3 bindings for D-BUS library
 License: AFL/GPL
 Group: Development/Python3
-Requires: dbus
+Requires: dbus >= %dbus_ver
 
 %description -n python3-module-dbus
 D-Bus python bindings for use with python programs.
@@ -51,7 +57,7 @@ D-Bus python bindings for use with python programs.
 Summary: Python bindings for D-BUS library (devel package)
 Group: Development/Python
 Requires: %name = %version-%release
-%py_package_provides %modulename-devel = %version-%release
+%py_package_provides %modname-devel = %version-%release
 Provides: python3-module-dbus-devel = %version-%release
 
 %description devel
@@ -59,13 +65,13 @@ D-Bus python bindings for use with python programs.
 Development package.
 
 %package devel-doc
-Summary: Development documentation for %_name
+Summary: Development documentation for %modname
 Group: Development/Documentation
 BuildArch: noarch
 Conflicts: %name-devel < %version-%release
 
 %description devel-doc
-Development documentation for %_name.
+Development documentation for %modname.
 
 %package tests
 Summary: Tests for the %name package
@@ -79,12 +85,22 @@ the functionality of the installed python-dbus package.
 
 
 %prep
-%setup -n %_name-%version -a0
-mv %_name-%version py3build
+%setup -n %modname-%version %{?_enable_python2:-a0
+mv %modname-%version py2build}
 
 %build
 %define options %{?_enable_installed_tests:--enable-installed-tests} %{subst_enable documentation}
 
+export am_cv_python_pythondir=%python3_sitelibdir
+export am_cv_python_pyexecdir=%python3_sitelibdir
+%autoreconf
+%configure %options \
+	PYTHON=/usr/bin/python3 \
+	PYTHON_LIBS="$(python3-config --libs)"
+%make_build
+
+%if_enabled python2
+pushd py2build
 # Install python code into arch-specific dir for PyQt4 (ALT#23134)
 export am_cv_python_pythondir=%python_sitelibdir
 export am_cv_python_pyexecdir=%python_sitelibdir
@@ -94,41 +110,33 @@ export am_cv_python_pyexecdir=%python_sitelibdir
 	PYTHON=%__python \
 	PYTHON_LIBS="$(python-config --libs)"
 %make_build
-
-pushd py3build
-export am_cv_python_pythondir=%python3_sitelibdir
-export am_cv_python_pyexecdir=%python3_sitelibdir
-%autoreconf
-%configure %options \
-	PYTHON=/usr/bin/python3 \
-	PYTHON_LIBS="$(python3-config --libs)"
-%make_build
 popd
+%endif
 
 %install
-for d in {.,py3build}; do
+for d in {.,%{?_enable_python2:py2build}}; do
 pushd $d
 %makeinstall_std
 popd
 done
 
-%if_enabled check
 %check
 %make check
-%make check -C py3build
-%endif
+%{?_enable_python2:%make check -C py2build}
 
+%if_enabled python2
 %files
 %python_sitelibdir/*.so
 %python_sitelibdir/dbus/
 %doc AUTHORS COPYING NEWS
 
+%exclude %python_sitelibdir/*.la
+%endif
+
 %files devel
 %_includedir/dbus-1.0/dbus/dbus-python.h
 %_pkgconfigdir/dbus-python.pc
 %doc doc/*.txt
-
-%exclude %python_sitelibdir/*.la
 
 %files -n python3-module-dbus
 %python3_sitelibdir/*.so
@@ -138,18 +146,23 @@ done
 
 %if_enabled installed_tests
 %files tests
-%_libexecdir/installed-tests/%_name/
-%exclude %_libexecdir/installed-tests/%_name/test/__pycache__
-%_datadir/installed-tests/%_name/
+%_libexecdir/installed-tests/%modname/
+%exclude %_libexecdir/installed-tests/%modname/test/__pycache__
+%_datadir/installed-tests/%modname/
 %endif
 
 %if_enabled documentation
 %files devel-doc
-%_docdir/%_name/
+%_docdir/%modname/
 %endif
 
 
 %changelog
+* Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.10-alt1
+- 1.2.10
+- updated {build,}reqs
+- made python2 build optional
+
 * Sat May 26 2018 Yuri N. Sedunov <aris@altlinux.org> 1.2.8-alt1
 - 1.2.8
 - new devel-doc subpackage

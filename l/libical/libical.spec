@@ -5,6 +5,7 @@
 %def_with bdb
 %def_enable ical_glib
 %def_enable introspection
+%def_enable vala
 %def_enable check
 %def_enable docs
 %def_with cxx
@@ -12,7 +13,7 @@
 
 Name: libical
 Version: 3.0.5
-Release: alt1
+Release: alt2
 
 Summary: An implementation of basic iCAL protocols
 Group: System/Libraries
@@ -34,6 +35,7 @@ BuildRequires: cmake gcc-c++ ctest gtk-doc libicu-devel icu-utils
 %{?_with_bdb:BuildRequires: libdb4-devel}
 %{?_enable_ical_glib:BuildRequires: libgio-devel libxml2-devel}
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel}
+%{?_enable_vala:BuildRequires: vala-tools}
 %{?_enable_check:BuildRequires: python3-module-pygobject3}
 
 %description
@@ -128,9 +130,10 @@ library.
 	%{?_with_cxx:-DWITH_CXX_BINDINGS:BOOL=ON} \
 	%{?_enable_ical_glib:-DICAL_GLIB:BOOL=ON} \
 	%{?_enable_introspection:-DGOBJECT_INTROSPECTION:BOOL=ON} \
+	%{?_enable_vala:-DICAL_GLIB_VAPI=ON} \
 	%{?_disable_docs:-DICAL_BUILD_DOCS:BOOL=OFF} \
 	%{?_with_system_tzdata:-DUSE_BUILTIN_TZDATA:BOOL=OFF}
-
+%nil
 %cmake_build
 
 %install
@@ -169,6 +172,7 @@ LD_LIBRARY_PATH=%buildroot%_libdir %make test -C BUILD
 %_includedir/%name-glib/
 %_libdir/%name-glib.so
 %_pkgconfigdir/%name-glib.pc
+%{?_enable_vala:%_vapidir/*}
 
 %if_enabled introspection
 %files gir
@@ -191,6 +195,9 @@ LD_LIBRARY_PATH=%buildroot%_libdir %make test -C BUILD
 
 
 %changelog
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 3.0.5-alt2
+- added ical-glib Vala bindings
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.0.5-alt1
 - 3.0.5
 

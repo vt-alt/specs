@@ -8,7 +8,7 @@
 
 
 Name: %_name%api_ver
-Version: 2.2.5
+Version: 2.2.6
 Release: alt1
 
 Summary: An Enchanting Spell Checking Program
@@ -86,6 +86,9 @@ using libenchant.
 %_pkgconfigdir/%_name-%api_ver.pc
 
 %changelog
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 2.2.6-alt1
+- 2.2.6
+
 * Tue Jul 02 2019 Yuri N. Sedunov <aris@altlinux.org> 2.2.5-alt1
 - 2.2.5
 

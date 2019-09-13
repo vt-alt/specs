@@ -2,12 +2,13 @@
 %def_disable docs
 
 %define _name granite
+%define rdn_name io.elementary.%_name
 %define ver_major 5.2
 %define api_ver 1.0
 %define sover 5
 
 Name: libgranite
-Version: %ver_major.4
+Version: %ver_major.5
 Release: alt1
 
 Summary: Extension of GTK+3 libraries
@@ -111,7 +112,7 @@ GObject introspection devel data for the granite library.
 
 %files -n %_name-demo
 %_bindir/*
-%_desktopdir/%_name-demo.desktop
+%_desktopdir/%rdn_name.demo.desktop
 %_datadir/icons/hicolor/*/*/*.svg
 
 %files gir
@@ -125,6 +126,9 @@ GObject introspection devel data for the granite library.
 %_datadir/vala/vapi/%_name.vapi
 
 %changelog
+* Sun Sep 08 2019 Yuri N. Sedunov <aris@altlinux.org> 5.2.5-alt1
+- 5.2.5
+
 * Mon Jul 08 2019 Yuri N. Sedunov <aris@altlinux.org> 5.2.4-alt1
 - 5.2.4
 

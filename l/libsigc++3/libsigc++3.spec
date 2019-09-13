@@ -1,12 +1,12 @@
 %def_disable snapshot
 
 %define _name libsigc++
-%define ver_major 2.99
+%define ver_major 3.0
 %define api_ver 3.0
 %def_enable check
 
 Name: %{_name}3
-Version: %ver_major.13
+Version: %ver_major.0
 Release: alt1
 
 Summary: The Typesafe Callback Framework for C++
@@ -81,6 +81,9 @@ install -pm644 AUTHORS NEWS README* %buildroot%docdir/
 %doc %_datadir/devhelp/books/*
 
 %changelog
+* Thu Sep 05 2019 Yuri N. Sedunov <aris@altlinux.org> 3.0.0-alt1
+- 3.0.0
+
 * Wed Jun 12 2019 Yuri N. Sedunov <aris@altlinux.org> 2.99.13-alt1
 - 2.99.13
 
