@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.2.5
+Version: 1.3.0
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -50,6 +50,15 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Thu Sep 12 2019 Mikhail Efremov <sem@altlinux.org> 1.3.0-alt1
+- installer: Setup localized slideshow for selected language.
+
+* Wed Sep 11 2019 Lenar Shakirov <snejok@altlinux.ru> 1.2.7-alt1
+- Add NO_PROXY edit box (ALT #27753)
+
+* Tue Sep 10 2019 Andrey Cherepanov <cas@altlinux.org> 1.2.6-alt1
+- Remove unsupported tt_RU locale.
+
 * Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 1.2.5-alt1
 - Use install instead of cp -af to prevent loose permission from tmpfs by un-def kernel.
 
