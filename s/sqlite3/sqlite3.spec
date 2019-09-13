@@ -1,7 +1,7 @@
 %def_disable static
 
 Name: sqlite3
-Version: 3.28.0
+Version: 3.29.0
 Release: alt1
 Summary: An Embeddable SQL Database Engine
 License: Public Domain
@@ -12,21 +12,12 @@ Requires: lib%name = %version-%release
 
 Source0: sqlite-%version.tar
 
-Patch2: sqlite3-alt-tcl.patch
-# See https://bugzilla.redhat.com/show_bug.cgi?id=801981
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=665363
-Patch3: sqlite3-fedora-no-malloc-usable-size.patch
-# On i686 arch the removed test fails with result 2749999.50004681 instead of expected
-# 2749999.5. This patch is temporary workaround and should be dropped as soon as a valid
-# fix is found.
-Patch4: sqlite3-fedora-percentile-test.patch
-# Patch from Fedora: Disable test date-2.2c on i586
-# The test always failing and seems no one cares.
-Patch5: sqlite3-fedora-datetest-2.2c.patch
-
-Patch6: sqlite3-alt-build-dependencies.patch
-
-Patch10: sqlite-3.7.7.1-fedora-stupid-openfiles-test.patch
+Patch1: 0001-FEDORA-no-malloc-usable-size.patch
+Patch2: 0002-FEDORA-percentile-test.patch
+Patch3: 0003-FEDORA-ALT-datetest-2.2c.patch
+Patch4: 0004-DEBIAN-fix-division-by-zero-in-the-query-planner.patch
+Patch5: 0005-ALT-tcl.patch
+Patch6: 0006-ALT-build-dependencies.patch
 
 BuildRequires(Pre): tcl-devel
 BuildRequires: libreadline-devel
@@ -110,17 +101,12 @@ embedded controllers.
 
 %prep
 %setup -q -n sqlite-%version
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-
-%ifarch %ix86
-%patch5 -p1
-%endif
-
-%patch6 -p1
-
-%patch10 -p1
+%patch1 -p2
+%patch2 -p2
+%patch3 -p2
+%patch4 -p2
+%patch5 -p2
+%patch6 -p2
 
 %build
 export TCLLIBDIR=%_tcllibdir
@@ -194,8 +180,7 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 
 %files tcl
 %_tcllibdir/libtcl%name.so*
-%dir %_tcldatadir/sqlite3
-%_tcldatadir/sqlite3/pkgIndex.tcl
+%_tcllibdir/sqlite3
 
 %files doc
 %pkgdocdir
@@ -207,6 +192,13 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 %_datadir/lemon
 
 %changelog
+* Tue Sep 03 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.29.0-alt1
+- 3.29.0.
+- Fixed loading of sqlite3 Tcl extension (pointed nbr@).
+- Applied patch 40-fix-division-by-zero-in-the-query-planner.patch from Debian.
+- Made more proper patch to disable date test 2.2c on ix86.
+- Rediffed patches.
+
 * Sun Jun 02 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.28.0-alt1
 - 3.28.0 (Fixes: CVE-2019-9936, CVE-2019-9937)
 
