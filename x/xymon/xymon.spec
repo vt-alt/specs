@@ -61,8 +61,8 @@ License:	%gpl2only
 URL:		http://xymon.sourceforge.net/
 
 %if_disabled trunk
-Version:	4.3.28
-Release:	alt2.2
+Version:	4.3.29
+Release:	alt1
 Source0:	http://prdownloads.sourceforge.net/xymon/Xymon/%{version}/%{name}-%{version}.tar.gz
 %else
 %define		trunkVersion	%(svn info ~/svn/xymon/trunk/ | grep ^Revision | awk '{print $2}')
@@ -119,6 +119,9 @@ Requires:	selinux-policy >= %{selinux_policyver}
 Requires(post):		/usr/sbin/semodule /usr/sbin/semanage /sbin/restorecon
 Requires(postun):	/usr/sbin/semodule /usr/sbin/semanage
 %endif # selinux
+
+# since 4.3.29
+BuildRequires: libcares-devel libtirpc-devel
 
 #%{?_disable_trunk:Requires:	ntpdate ntp-utils}
 %{?_enable_altshell:Requires:	%shell}
@@ -264,9 +267,6 @@ Patch503: xymonclient-linux.sh-various-procps.patch
 
 # rollback of changes for cgiwrap introduced in 4.3.20
 Patch504: xymon-4.3.21-FollowSymLinks.patch
-
-# intmax_t declared in #include <stdint.h>
-Patch505: xymon-4.3.28-fix_undeclared_intmax_t.patch
 
 ##########################################################################
 ##########################################################################
@@ -426,9 +426,9 @@ the Xymon server in NCV format.
 
 
 %patch1 -b .installstaticwww
-%patch2 -b .helpdir
-%patch45 -b .mkdir
-%patch46 -b .varlibwww
+%patch2 -p1
+%patch45 -p1
+%patch46 -p1
 %patch4 -b .sections
 %patch5 -b .breakout
 %patch6 -b .initdvars
@@ -444,7 +444,7 @@ the Xymon server in NCV format.
 
 %patch41 -b .xymonmsg
 %patch44 -b .trendsloop
-%patch48 -b .sigbetter
+%patch48 -p1
 # confreport_back.patch
 %patch49
 
@@ -459,7 +459,7 @@ the Xymon server in NCV format.
 %patch203 -b .usrlibs
 
 %if_disabled trunk
-%patch3 -b .rundir
+%patch3 -p1
 %else # trunk
 %patch326 -b .httpheaders
 %patch303 -b .rundir
@@ -476,7 +476,6 @@ the Xymon server in NCV format.
 %patch502 -p2
 %patch503 -p1
 %patch504 -p1
-%patch505 -p2
 
 sed "s/define MAXCHECK   102400/define MAXCHECK   4194303/" -i client/logfetch.c
 
@@ -1258,6 +1257,12 @@ done
 ################ end extra clients ################
 
 %changelog
+* Thu Sep 12 2019 Sergey Y. Afonin <asy@altlinux.org> 4.3.29-alt1
+- new version  (fixes: CVE-2019-13451, CVE-2019-13452, CVE-2019-13455,
+  CVE-2019-13473, CVE-2019-13474, CVE-2019-13484, CVE-2019-13485,
+  CVE-2019-13486)
+- fixed handling /var/run on tmpfs
+
 * Wed Aug 29 2018 Grigory Ustinov <grenka@altlinux.org> 4.3.28-alt2.2
 - NMU: Rebuild with new openssl 1.1.0.
 
