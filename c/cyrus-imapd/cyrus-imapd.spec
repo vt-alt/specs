@@ -18,7 +18,7 @@
 
 Name: cyrus-imapd
 Version: 3.0.11
-Release: alt1
+Release: alt2
 
 Summary: A high-performance email, contacts and calendar server
 License: CMU License
@@ -50,6 +50,7 @@ Source21: %name.init
 Source22: %name.cyrus-conf
 
 #Patch7: http://servercc.oakton.edu/~jwade/cyrus/cyrus-imapd-2.1.3/cyrus-imapd-2.1.3-flock.patch
+Patch1: cyrus-imapd-3.0.11-setproctitle.c.patch
 
 PreReq: e2fsprogs /sbin/chkconfig /sbin/service cert-sh-functions
 Requires: su, tzdata
@@ -170,6 +171,8 @@ for IMAP server and SASL library
 %setup
 echo %version > VERSION
 
+%patch1 -p1
+
 # hack for really enable pcre
 sed "s|pcreposix\.h|pcre/pcreposix.h|g" -i configure.ac
 sed 's|if test "$ac_cv_header_pcreposix_h" = "yes"|ac_cv_header_pcreposix_h="yes"; if test "$ac_cv_header_pcreposix_h" = "yes"|' -i configure.ac
@@ -188,7 +191,7 @@ sed "s|/usr/bin/touch|/bin/touch|" -i cunit/command.testc
 
 autoreconf -v -i
 
-%add_optflags -lcrypto -lsasl2 -lssl
+%add_optflags -lcrypto -lsasl2 -lssl -DUSE_SETPROCTITLE
 
 %configure \
   --with-extraident="%release" \
@@ -252,7 +255,6 @@ make check
 make install DESTDIR=%buildroot PREFIX=%prefix mandir=%_mandir \
 	INSTALLDIRS=vendor
 
-install -m 755 imtest/imtest		%buildroot%_cyrexecdir/
 install -m 755 perl/imap/cyradm		%buildroot%_cyrexecdir/
 
 # Install tools
@@ -312,7 +314,7 @@ mv -f %buildroot%_man8dir/httpd.8 %buildroot%_man8dir/cyrus-httpd.8
 
 # Move utilites from /usr/libexec/cyrus to /usr/bin
 # mupdate-loadgen.pl convert-sieve.pl
-for i in arbitronsort.pl cyradm imtest  \
+for i in arbitronsort.pl cyradm \
 	 mknewsgroups config2header config2man masssievec
 do
     mv %buildroot%_cyrexecdir/$i %buildroot/%_bindir/
@@ -481,6 +483,12 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Tue Sep 10 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.11-alt2
+- built with USE_SETPROCTITLE (some solutions of the
+  https://github.com/cyrusimap/cyrus-imapd/issues/2850
+  was used, look to cyrus-imapd-3.0.11-setproctitle.c.patch)
+- fixed packaging the imtest utility
+
 * Tue Aug 13 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.11-alt1
 - 3.0.11 (CVE-2019-11356 fixed in 3.0.10)
 - updated README.ALT.rus
