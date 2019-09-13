@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.940
+Version: 8.990
 Release: alt1
 Url: https://basealt.ru
 
@@ -369,6 +369,10 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Sep 13 2019 Mikhail Efremov <sem@altlinux.org> 8.990-alt1
+- Add English slides for ALT Workstation 9.
+- Add Russian slides for ALT Workstation 9.
+
 * Fri Aug 09 2019 Mikhail Efremov <sem@altlinux.org> 8.940-alt1
 - Bump version.
 
