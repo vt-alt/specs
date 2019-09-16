@@ -3,7 +3,7 @@
 %def_with splash
 
 Name: propagator
-Version: 20190418
+Version: 20190829
 Release: alt1
 
 Summary: 'Early userspace' set of binaries
@@ -39,6 +39,11 @@ including init and various helpers for hw probing and bootstrapping.
 %_sbindir/propagator
 
 %changelog
+* Thu Aug 29 2019 Evgeny Sinelnikov <sin@altlinux.org> 20190829-alt1
+- fix hangs until http socket not closed on server side (closes: #37150)
+- tools.c: break reading cycle if we actually loaded program into memory
+- url.c, network.c: disable keep-alive and close http socket after downloading
+
 * Thu Apr 18 2019 Sergey V Turchin <zerg@altlinux.org> 20190418-alt1
 - compile with _FILE_OFFSET_BITS=64
 
