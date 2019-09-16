@@ -21,7 +21,7 @@
 
 Name: branding-%flavour
 Version: 8.990
-Release: alt1
+Release: alt2
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -369,6 +369,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Mon Sep 16 2019 Mikhail Efremov <sem@altlinux.org> 8.990-alt2
+- Rename slides/ -> Slides/.
+
 * Fri Sep 13 2019 Mikhail Efremov <sem@altlinux.org> 8.990-alt1
 - Add English slides for ALT Workstation 9.
 - Add Russian slides for ALT Workstation 9.
