@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt5
+Release: alt6
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -17,6 +17,7 @@ BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
 Requires(pre):  python3-module-x2gobroker = %version-%release
 Requires(pre):  shadow-utils
+Requires: x2gobroker-common
 
 %description
 X2Go is a server based computing environment with
@@ -36,11 +37,21 @@ A session broker is most useful in load balanced X2Go server farms.
 
 This package contains the x2gobroker executable.
 
+%package common
+Summary: x2gobroker common package
+Group: Communications
+Conflicts: python-module-x2gobroker < %EVR
+BuildArch: noarch
+
+%description common
+x2gobroker common package
+
 %package -n python3-module-x2gobroker
 Summary: X2Go Session Broker (Python modules)
 Group: Communications
 BuildArch: noarch
-Conflicts: python-module-x2gobroker
+Obsoletes: python-module-x2gobroker < %EVR
+Requires: x2gobroker-common
 
 %description -n python3-module-x2gobroker
 X2Go is a server based computing environment with
@@ -65,6 +76,7 @@ Summary: X2Go Session Broker (PAM authentication service)
 Group: Communications
 BuildArch: noarch
 Requires(pre): python3-module-x2gobroker = %version-%release
+Requires: x2gobroker-common
 
 %description authservice
 X2Go is a server based computing environment with
@@ -89,6 +101,7 @@ Summary: X2Go Session Broker (load checker service)
 Group: Communications
 BuildArch: noarch
 Requires(pre): python3-module-x2gobroker = %version-%release
+Requires: x2gobroker-common
 
 %description loadchecker
 X2Go is a server based computing environment with
@@ -116,6 +129,7 @@ BuildArch: noarch
 Requires: x2gobroker = %version-%release
 Requires: x2gobroker-authservice = %version-%release
 Requires: python3-module-daemon python3-module-setproctitle
+Requires: x2gobroker-common
 
 %description daemon
 X2Go is a server based computing environment with
@@ -140,6 +154,7 @@ as standalone daemon.
 Summary: X2Go Session Broker (SSH broker)
 Group: Communications
 Requires: x2gobroker = %version-%release
+Requires: x2gobroker-common
 
 %description ssh
 X2Go is a server based computing environment with
@@ -166,6 +181,7 @@ Group: Communications
 BuildArch: noarch
 Requires: x2gobroker = %version-%release
 Requires: x2gobroker-authservice = %version-%release
+Requires: x2gobroker-common
 
 %description wsgi
 X2Go is a server based computing environment with
@@ -189,6 +205,7 @@ Broker as a WSGI application into a running Apache2 httpd.
 %package agent
 Summary: X2Go Session Broker (remote agent)
 Group: Communications
+Requires: x2gobroker-common
 
 %description agent
 X2Go is a server based computing environment with
@@ -325,27 +342,32 @@ fi
 %attr(02750,x2gobroker,x2gobroker) %_logdir/x2gobroker
 %attr(00750,x2gobroker,x2gobroker) %_sharedstatedir/x2gobroker
 
-%files -n python3-module-x2gobroker
-%config(noreplace) %_sysconfdir/x2go
-%exclude %_sysconfdir/x2go/x2gobroker-wsgi.apache.conf
-%exclude %_sysconfdir/x2go/x2gobroker-wsgi.apache.vhost
-%config %_sysconfdir/pam.d/*
+%files common
+%dir %_sysconfdir/x2go/broker/
+%config(noreplace) %_sysconfdir/x2go/broker/*.conf
+%config(noreplace) %_sysconfdir/x2go/x2gobroker.conf
+%config %_sysconfdir/pam.d/x2gobroker
 %config %_sysconfdir/default/python-x2gobroker
+%config %_sysconfdir/x2go/x2gobroker-wsgi.apache.conf
+%config %_sysconfdir/x2go/x2gobroker-wsgi.apache.vhost
+%config %_sysconfdir/default/x2gobroker-authservice
+%config %_sysconfdir/default/x2gobroker-loadchecker
+%config %_sysconfdir/default/x2gobroker-daemon
+
+%files -n python3-module-x2gobroker
 %python3_sitelibdir_noarch/x2gobroker*
 
 %files authservice
 %_unitdir/x2gobroker-authservice.service
-%config %_logrotatedir/x2gobroker-authservice
-%config %_sysconfdir/default/x2gobroker-authservice
 %_sbindir/x2gobroker-authservice
 %_man8dir/x2gobroker-authservice.8*
+%config %_logrotatedir/x2gobroker-authservice
 
 %files loadchecker
 %_unitdir/x2gobroker-loadchecker.service
-%config %_sysconfdir/default/x2gobroker-loadchecker
-%config %_logrotatedir/x2gobroker-loadchecker
 %_sbindir/x2gobroker-loadchecker
 %_man8dir/x2gobroker-loadchecker.8*
+%config %_logrotatedir/x2gobroker-loadchecker
 
 %files daemon
 %_bindir/x2gobroker-daemon
@@ -354,7 +376,6 @@ fi
 %_man1dir/x2gobroker-daemon.1*
 %_man8dir/x2gobroker-daemon-debug.8*
 %config %_logrotatedir/x2gobroker-daemon
-%config %_sysconfdir/default/x2gobroker-daemon
 
 %files ssh
 %attr(04510,x2gobroker,x2gobroker-users) %_bindir/x2gobroker-ssh
@@ -363,8 +384,6 @@ fi
 
 %files wsgi
 %_sysconfdir/apache2
-%config %_sysconfdir/x2go/x2gobroker-wsgi.apache.conf
-%config %_sysconfdir/x2go/x2gobroker-wsgi.apache.vhost
 %config %_logrotatedir/x2gobroker-wsgi
 
 %files agent
@@ -374,6 +393,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Mon Sep 16 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt6
+- separate configs to common package
+
 * Mon Sep 16 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt5
 - x2gobroker-x2goagent changes:
   + default: accept unknown keys from unknown hosts
