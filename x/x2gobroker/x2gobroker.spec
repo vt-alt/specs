@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt4
+Release: alt5
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -11,6 +11,7 @@ Packager: Oleg Solovyov <mcpain@altlinux.org>
 Source: http://code.x2go.org/releases/source/%name/%name-%version.tar.gz
 Patch1: alt-start-from-uid-500.patch
 Patch2: alt-get-rid-of-sudo.patch
+Patch3: alt-def.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
@@ -232,6 +233,7 @@ installed on your to-be-managed X2Go servers.
 %setup
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 echo "Files where we will be patching libexecedir:"
@@ -372,6 +374,11 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Mon Sep 16 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt5
+- x2gobroker-x2goagent changes:
+  + default: accept unknown keys from unknown hosts
+  + default: query agents by ssh if not specified explicitly
+
 * Tue Sep 03 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt4
 - revert previous change
 
