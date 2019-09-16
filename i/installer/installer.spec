@@ -1,5 +1,5 @@
 Name: installer
-Version: 1.10.0
+Version: 1.10.1
 Release: alt1
 
 Summary: Installer common parts
@@ -110,6 +110,9 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Mon Sep 16 2019 Mikhail Efremov <sem@altlinux.org> 1.10.1-alt1
+- postinstall: Remove branding-*-slideshow.
+
 * Fri Sep 06 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.10.0-alt1
 - remove alterator-postinstall if not used
 - run apt-get autoremove after removing installer
