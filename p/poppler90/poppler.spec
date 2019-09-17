@@ -4,7 +4,7 @@
 %define popIF_ver_lteq() %if "%(rpmvercmp '%2' '%1')" >= "0"
 
 %def_disable static
-%def_enable compat
+%def_disable compat
 
 %if_disabled compat
 %def_enable cpp
@@ -19,26 +19,26 @@
 %def_disable cpp
 %def_disable glib
 %def_disable qt5
-%def_enable qt4
-%def_enable devel
+%def_disable qt4
+%def_disable devel
 %def_disable utils
 %def_disable xpdfheaders
 %def_disable gir
 %endif
 
 %define rname poppler
-%define somajor 72
+%define somajor 90
 %define somajor_cpp 0
 %define somajor_qt 3
 %define somajor_qt4 4
 %define somajor_qt5 1
 %define somajor_glib 8
 %define major 0
-%define minor 61
-%define bugfix 1
+%define minor 80
+%define bugfix 0
 Name: %rname%somajor
 Version: %major.%minor.%bugfix
-Release: alt3%ubt
+Release: alt1
 
 %if_disabled compat
 %define poppler_devel_name lib%rname-devel
@@ -52,7 +52,7 @@ Release: alt3%ubt
 %define poppler_cpp_devel_name lib%rname%somajor-cpp-devel
 %define poppler_glib_devel_name lib%rname%somajor-glib-devel
 %define poppler_qt_devel_name lib%rname%somajor-qt-devel
-%define poppler_qt4_devel_name lib%rname-qt4-devel
+%define poppler_qt4_devel_name lib%rname%somajor-qt4-devel
 %define poppler_qt5_devel_name lib%rname%somajor-qt5-devel
 %endif
 
@@ -63,6 +63,10 @@ Url: http://poppler.freedesktop.org/
 Packager: Sergey V Turchin <zerg at altlinux dot org>
 
 Source: %rname-%version.tar
+Source1: MacroPushRequiredVars.cmake
+Patch1: 0001-Revert-Remove-the-Qt4-frontend.patch
+Patch10: alt-e2k.patch
+Patch11: alt-poppler-0.80-qt4.patch
 
 # Automatically added by buildreq on Fri Apr 01 2011 (-bi)
 #BuildRequires: gcc-c++ glib-networking glibc-devel-static gtk-doc gvfs imake libXt-devel libcurl-devel libgtk+2-devel libgtk+2-gir-devel libjpeg-devel liblcms-devel libopenjpeg-devel libqt3-devel libqt4-devel libqt4-gui libqt4-xml libxml2-devel python-modules-compiler python-modules-encodings time xorg-cf-files
@@ -79,7 +83,8 @@ BuildRequires: libqt4-devel
 BuildRequires: glib2-devel
 %endif
 BuildRequires: gcc-c++ glibc-devel libcurl-devel libgtk+2-devel zlib-devel libnss-devel
-BuildRequires: libgtk+2-gir-devel libjpeg-devel liblcms2-devel libopenjpeg2.0-devel libtiff-devel libpng-devel
+BuildRequires: libgtk+2-gir-devel libjpeg-devel liblcms2-devel libtiff-devel libpng-devel
+BuildRequires: libopenjpeg2.0-devel openjpeg-tools2.0
 BuildRequires: libxml2-devel gtk-doc libcairo-gobject-devel
 BuildRequires: libXt-devel poppler-data
 
@@ -239,6 +244,9 @@ Requires: lib%rname%somajor_qt4-qt4 = %version-%release
 %if_enabled xpdfheaders
 Requires: %poppler_devel_name = %version-%release
 %endif
+%if_enabled compat
+Conflicts: lib%rname-qt4-devel
+%endif
 %description -n %poppler_qt4_devel_name
 Libraries, include files, etc you can use to develop
 poppler applications with Qt4
@@ -271,7 +279,11 @@ statically linked libpoppler-based software
 
 %prep
 %setup -q -n %rname-%version
+%patch1 -p1
+%patch10 -p2
+%patch11 -p1
 
+install -m 0644 %SOURCE1 cmake/modules/
 
 %build
 %if_enabled qt4
@@ -286,6 +298,7 @@ export QT4DIR=%_qt4dir
     -DENABLE_DCTDECODER=libjpeg \
     -DENABLE_LIBOPENJPEG=openjpeg2 \
     -DENABLE_XPDF_HEADERS=%{?_enable_xpdfheaders:ON}%{!?_enable_xpdfheaders:OFF} \
+    -DENABLE_UNSTABLE_API_ABI_HEADERS=%{?_enable_xpdfheaders:ON}%{!?_enable_xpdfheaders:OFF} \
     -DENABLE_UTILS=%{?_enable_utils:ON}%{!?_enable_utils:OFF} \
     -DENABLE_CPP=%{?_enable_cpp:ON}%{!?_enable_cpp:OFF} \
     -DENABLE_GLIB=%{?_enable_glib:ON}%{!?_enable_glib:OFF} \
@@ -393,11 +406,31 @@ make install DESTDIR=%buildroot -C BUILD
 %endif
 
 %changelog
-* Mon Jul 23 2018 Sergey V Turchin <zerg@altlinux.org> 0.61.1-alt3%ubt
-- rename qt4 devel package
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 0.80.0-alt1
+- new version
+- restore Qt4 backend
 
-* Mon Jul 23 2018 Sergey V Turchin <zerg@altlinux.org> 0.61.1-alt2%ubt
-- build only compat library and Qt4-plugin
+* Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 0.78.0-alt1
+- new version
+
+* Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 0.77.0-alt1
+- new version
+
+* Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 0.75.0-alt1
+- new version
+- fix build on E2K (thanks mike@alt) (ALT#36538)
+
+* Fri Feb 08 2019 Sergey V Turchin <zerg@altlinux.org> 0.74.0-alt1
+- new version
+
+* Wed Nov 07 2018 Sergey V Turchin <zerg@altlinux.org>  0.71.0-alt2
+- new version
+
+* Wed Nov 07 2018 Sergey V Turchin <zerg@altlinux.org>  0.71.0-alt1
+- new version
+
+* Mon Jul 23 2018 Sergey V Turchin <zerg@altlinux.org> 0.67.0-alt1%ubt
+- new version
 
 * Mon Apr 23 2018 Sergey V Turchin <zerg@altlinux.org> 0.61.1-alt1%ubt
 - new version

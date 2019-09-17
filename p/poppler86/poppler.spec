@@ -4,7 +4,7 @@
 %define popIF_ver_lteq() %if "%(rpmvercmp '%2' '%1')" >= "0"
 
 %def_disable static
-%def_disable compat
+%def_enable compat
 
 %if_disabled compat
 %def_enable cpp
@@ -38,7 +38,7 @@
 %define bugfix 0
 Name: %rname%somajor
 Version: %major.%minor.%bugfix
-Release: alt1
+Release: alt2
 
 %if_disabled compat
 %define poppler_devel_name lib%rname-devel
@@ -399,6 +399,9 @@ make install DESTDIR=%buildroot -C BUILD
 %endif
 
 %changelog
+* Wed Jun 26 2019 Sergey V Turchin <zerg@altlinux.org> 0.75.0-alt2
+- build only compat library
+
 * Mon Apr 08 2019 Sergey V Turchin <zerg@altlinux.org> 0.75.0-alt1
 - new version
 - fix build on E2K (thanks mike@alt) (ALT#36538)
