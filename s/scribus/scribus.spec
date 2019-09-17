@@ -1,6 +1,6 @@
 Name: scribus
 Version: 1.5.5
-Release: alt5
+Release: alt6
 Epoch: 1
 
 Summary: DeskTop Publishing application written in Qt
@@ -15,7 +15,7 @@ Packager: Paul Wolneykien <manowar@altlinux.ru>
 Source: %name-%version.tar
 #Source: http://downloads.sourceforge.net/%name/%name-%version.tar
 
-#Patch2: scribus-1.5.5-poppler-0.75.patch
+Patch2: scribus-1.5.5-poppler-0.76.patch
 
 BuildRequires: cmake zlib-devel libssl-devel
 BuildRequires: libpoppler-devel libpoppler-cpp-devel
@@ -104,7 +104,7 @@ BuildArch: noarch
 
 %prep
 %setup
-#patch1 -p1
+%patch2 -p1
 
 %ifarch %e2k
 # until lcc-1.24: strip UTF-8 BOM
@@ -171,6 +171,9 @@ popd
 %exclude %_docdir/%name/it
 
 %changelog
+* Mon Jul 01 2019 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt6
+- fix build with poppler 0.76
+
 * Thu Apr 18 2019 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt5
 - update to fa2519c93ed0d04bde0e41146849cc808f880ef6
 - drop old patches
