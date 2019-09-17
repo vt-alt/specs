@@ -1,13 +1,13 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: zathura
-Version: 0.4.3
+Version: 0.4.4
 Release: alt1
 
 Summary: A lightweight document viewer
 License: %bsdstyle
 Group: Office
-Url: https://zathura.pwmt.org/
+Url: https://pwmt.org/projects/%name/
 # git://pwmt.org/zathura.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
@@ -63,12 +63,17 @@ mkdir -p %buildroot%_libdir/zathura
 %_datadir/dbus-1/interfaces/org.pwmt.*
 %_datadir/bash-completion/completions/*
 %_datadir/zsh/site-functions/*
+%_datadir/fish/completions/*
 
 %files devel
 %_includedir/*
 %_libdir/pkgconfig/*.pc
 
 %changelog
+* Mon Sep 16 2019 Mikhail Efremov <sem@altlinux.org> 0.4.4-alt1
+- Fix URL.
+- Updated to 0.4.4.
+
 * Mon Dec 24 2018 Mikhail Efremov <sem@altlinux.org> 0.4.3-alt1
 - Updated to 0.4.3.
 
