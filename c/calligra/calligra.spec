@@ -8,7 +8,7 @@
 
 Name: calligra
 Version: 3.1.0
-Release: alt8
+Release: alt9
 Epoch: 0
 %K5init no_altplace
 %define libname lib%name
@@ -35,6 +35,8 @@ Source: http://download.kde.org/stable/calligra/%version/calligra-%version.tar
 # Upstream patches
 Patch1: 0001-Fix-build-with-Qt-5.11-missing-headers.patch
 Patch2: 0001-Missing-include-for-QFrame.patch
+Patch3: 0001-Fix-compilation-with-Qt-5.13.patch
+#
 Patch10: 0010-poppler071.patch
 Patch11: 0011-poppler071.patch
 Patch12: 0012-poppler071.patch
@@ -63,7 +65,7 @@ BuildRequires: kde5-kcalcore-devel kde5-kcontacts-devel kde5-akonadi-devel kde5-
 BuildRequires: kde5-okular-devel
 BuildRequires: kf5-kdiagram-devel kf5-kreport-devel kf5-kproperty-devel
 BuildRequires: qt5-phonon-devel libqca-qt5-devel libpoppler-qt5-devel
-BuildRequires: libexiv2-devel libfftw3-devel libfreetds-devel libGLEW-devel libgsl-devel libicu-devel libjpeg-devel libopenjpeg-devel libtiff-devel pstoedit
+BuildRequires: libexiv2-devel libfftw3-devel libfreetds-devel libGLEW-devel libgsl-devel libicu-devel libjpeg-devel libopenjpeg2.0-devel libtiff-devel pstoedit
 BuildRequires: liblcms2-devel libmysqlclient-devel
 BuildRequires: libsqlite3-devel sqlite3 libxbase-devel openexr-devel postgresql-devel
 BuildRequires: libvisio-devel libwpg-devel libwpd10-devel libwps-devel libodfgen-devel libetonyek-devel libxml2-devel
@@ -194,6 +196,7 @@ Requires: %name-common = %EVR
 %setup
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
@@ -431,6 +434,9 @@ done
 %exclude %_K5lib/libkookularGenerator_odt.so*
 
 %changelog
+* Wed Sep 18 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt9
+- fix compile with new Qt
+
 * Thu Jul 04 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt8
 - set additional provides (ALT#16944)
 - build without qtwebkit
