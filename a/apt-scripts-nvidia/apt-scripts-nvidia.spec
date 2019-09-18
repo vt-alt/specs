@@ -1,5 +1,5 @@
 Name: apt-scripts-nvidia
-Version: 0.5.0
+Version: 0.6.0
 Release: alt1
 
 Summary: APT Lua scripts for NVIDIA driver
@@ -10,7 +10,6 @@ Requires: rpmquery-strictdep
 
 Source: scripts-nvidia-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: apt
 
 %description
@@ -44,6 +43,9 @@ ls *.conf |sed 's:^:^/etc/apt/apt.conf.d/:;s:[.]:[.]:g' >%buildroot/etc/buildreq
 %config /etc/buildreqs/files/ignore.d/%name
 
 %changelog
+* Wed Sep 18 2019 Sergey V Turchin <zerg@altlinux.org> 0.6.0-alt1
+- add PackageKit support
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 0.5.0-alt1
 - using rpmquery-strictdep to detect kernel package
 
@@ -56,10 +58,10 @@ ls *.conf |sed 's:^:^/etc/apt/apt.conf.d/:;s:[.]:[.]:g' >%buildroot/etc/buildreq
 * Fri Mar 01 2019 Sergey V Turchin <zerg@altlinux.org> 0.4.7-alt1
 - add workaround against alt disttags
 
-* Thu Nov 09 2017 Sergey V Turchin <zerg@altlinux.org> 0.4.6-alt1%ubt
+* Thu Nov 09 2017 Sergey V Turchin <zerg@altlinux.org> 0.4.6-alt1
 - notify about update-kernel if driver not found
 
-* Mon Oct 02 2017 Sergey V Turchin <zerg@altlinux.org> 0.4.5-alt1%ubt
+* Mon Oct 02 2017 Sergey V Turchin <zerg@altlinux.org> 0.4.5-alt1
 - fix detect installer environment
 
 * Wed Aug 03 2016 Sergey V Turchin <zerg@altlinux.org> 0.4.4-alt1
