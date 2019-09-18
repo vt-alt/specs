@@ -1,7 +1,7 @@
 %define rname kxmlgui
 
 Name: kf5-%rname
-Version: 5.61.0
+Version: 5.62.0
 Release: alt1
 %K5init altplace
 
@@ -16,7 +16,7 @@ Source: %rname-%version.tar
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libX11-devel libcloog-isl4 libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcb-devel libxcbutil-keysyms python-base ruby ruby-stdlibs xorg-xproto-devel
 #BuildRequires: extra-cmake-modules gcc-c++ kf5-kauth-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kitemviews-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-sonnet-devel python-module-google qt5-base-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
+BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel qt5-tools-devel
 BuildRequires: kf5-kauth-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel
 BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel
 BuildRequires: kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel
@@ -84,6 +84,9 @@ KF5 library
 %_K5lib/libKF5XmlGui.so.*
 
 %changelog
+* Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
 - new version
 

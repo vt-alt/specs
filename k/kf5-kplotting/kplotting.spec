@@ -1,7 +1,7 @@
 %define rname kplotting
 
 Name: kf5-%rname
-Version: 5.61.0
+Version: 5.62.0
 Release: alt1
 %K5init altplace
 
@@ -16,7 +16,7 @@ Source: %rname-%version.tar
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libqt5-core libqt5-gui libqt5-test libqt5-widgets libstdc++-devel python-base ruby ruby-stdlibs
 #BuildRequires: extra-cmake-modules gcc-c++ python-module-google qt5-base-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
+BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel qt5-tools-devel
 
 %description
 Lightweight plotting framework.
@@ -68,6 +68,9 @@ KF5 library
 %_K5lib/libKF5Plotting.so.*
 
 %changelog
+* Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
 - new version
 

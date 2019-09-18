@@ -1,7 +1,7 @@
 %define rname kio
 
 Name: kf5-%rname
-Version: 5.61.0
+Version: 5.62.0
 Release: alt1
 %K5init altplace
 
@@ -20,7 +20,7 @@ Patch3: alt-places-add-dirs.patch
 # optimized out: cmake cmake-modules docbook-dtds elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libXt-devel libcloog-isl4 libcom_err-devel libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms libxml2-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs xml-common xml-utils xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: docbook-style-xsl extra-cmake-modules gcc-c++ kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdoctools kf5-kdoctools-devel-static kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXft-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libacl-devel libattr-devel libkrb5-devel libxkbfile-devel libxslt-devel python-module-google qt5-script-devel qt5-x11extras-devel rpm-build-ruby xsltproc zlib-devel-static
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: docbook-style-xsl extra-cmake-modules gcc-c++ qt5-script-devel qt5-x11extras-devel
+BuildRequires: docbook-style-xsl extra-cmake-modules gcc-c++ qt5-script-devel qt5-x11extras-devel qt5-tools-devel
 BuildRequires: libxslt-devel xsltproc zlib-devel
 BuildRequires: libacl-devel libattr-devel libkrb5-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel
@@ -95,7 +95,9 @@ KF5 library
 %patch2 -p1
 %patch3 -p1
 
-#cat %SOURCE10 >po/ru/kio5.po
+#msgcat --use-first po/ru/kio5.po %SOURCE10 > po/ru/kio5.po.tmp
+#cat po/ru/kio5.po.tmp >po/ru/kio5.po
+#rm -f po/ru/kio5.po.tmp
 
 %build
 %K5build
@@ -131,6 +133,7 @@ KF5 library
 #%_datadir/polkit-1/actions/*.policy
 
 %files devel
+%_K5plug/designer/*.so
 %_K5inc/kio_version.h
 %_K5inc/KIO*/
 %_K5inc/kio/
@@ -152,6 +155,9 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
 - new version
 

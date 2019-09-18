@@ -1,7 +1,7 @@
 %define rname sonnet
 
 Name: kf5-%rname
-Version: 5.61.0
+Version: 5.62.0
 Release: alt1
 %K5init altplace
 
@@ -80,12 +80,16 @@ KF5 library
 %_K5archdata/mkspecs/modules/qt_Sonnet*.pri
 
 %files -n libkf5sonnetcore
+%_K5plug/designer/*.so
 %_K5lib/libKF5SonnetCore.so.*
 %_K5plug/kf5/sonnet/sonnet_hunspell.so
 %files -n libkf5sonnetui
 %_K5lib/libKF5SonnetUi.so.*
 
 %changelog
+* Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
 - new version
 

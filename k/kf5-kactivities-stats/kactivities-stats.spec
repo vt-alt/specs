@@ -4,7 +4,7 @@
 %define libkf5activitiesstats libkf5activitiesstats%sover
 
 Name: kf5-%rname
-Version: 5.61.0
+Version: 5.62.0
 Release: alt1
 %K5init altplace
 
@@ -67,6 +67,7 @@ KF5 library
 
 %files common -f %name.lang
 %doc README.md
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 %_K5inc/kactivitiesstats_version.h
@@ -81,6 +82,9 @@ KF5 library
 %_K5lib/libKF5ActivitiesStats.so.*
 
 %changelog
+* Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 5.61.0-alt1
 - new version
 
