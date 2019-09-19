@@ -1,5 +1,5 @@
-#define git_hash .git542e340f01b2
-%define git_hash %nil
+%define git_hash .gitade986436672
+#define git_hash %nil
 
 %define dbus_version 1.2.12-alt2
 %define libdbus_glib_version 0.76
@@ -65,8 +65,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager
-Version: 1.18.0
-Release: alt2%git_hash
+Version: 1.18.3
+Release: alt1%git_hash
 License: %gpl2plus
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
@@ -779,6 +779,16 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Wed Sep 18 2019 Mikhail Efremov <sem@altlinux.org> 1.18.3-alt1.gitade986436672
+- sysconfig: Wait for network online on SysVinit by default.
+- Backported from NM-1.20:
+  + build: use regexp in gtkdoc --ignore-decorators option.
+  + build: fix errors when building with gtk-doc 1.32.
+  + data: fix the ID_NET_DRIVER udev rule.
+- libnm-core: Set windows-1251 as prefered encoding for Cyrillic
+  langs.
+- Upstream git snapshot (nm-1-18 branch).
+
 * Tue Apr 30 2019 Mikhail Efremov <sem@altlinux.org> 1.18.0-alt2
 - etcnet-alt: Fix memory leak.
 - etcnet-alt: Fix connections removal (closes: #35185).
