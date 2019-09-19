@@ -1,6 +1,6 @@
 Name: pulsejoin
 Summary: PulseJoin
-Version: 2.3
+Version: 2.4
 Release: alt1
 License: GPLv3
 Group: Sound
@@ -35,6 +35,12 @@ sed -i ./pulsejoin.sh -e 's,#!/usr/bin/env bash,#!/bin/bash,g'
 %_datadir/applications/*
 
 %changelog
+* Wed Sep 18 2019 Mikhail Novosyolov <mikhailnov@altlinux.org> 2.4-alt1
+- Version 2.4:
+  + Report error if PulseAudio default source and/or sink have not been found
+  + LANG=c was not a valid value, set LANG=POSIX instead (LANG=C would also be valid)
+  + In addition to LANG=POSIX, set LC_ALL=POSIX to ensure that English output of pactl
+    is being grepped (RB#10163)
 * Fri Apr 12 2019 Mikhail Novosyolov <mikhailnov@altlinux.org> 2.3-alt1
 - Version 2.3:
   + Added Spanish translation
