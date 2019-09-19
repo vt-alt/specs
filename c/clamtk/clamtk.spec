@@ -1,36 +1,41 @@
 Name: clamtk
-Version: 5.27
+Version: 6.01
 Release: alt1
 
 Summary: Easy to use front-end for ClamAV
+Summary(ru_RU.UTF-8): Простой в использовании интерфейс для антивируса ClamAV
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 License: Perl
 Group: File tools
-Url: https://dave-theunsub.github.io/clamtk/
+Url: https://gitlab.com/dave_m/clamtk/wikis/Home
 
 BuildArch: noarch
 
-Source: https://bitbucket.org/davem_/clamtk/downloads/clamtk-%version.tar
+Source: https://bitbucket.org/davem_/clamtk-gtk3/downloads/clamtk-%version.tar
 Patch: %name-gtk.patch
 
-Requires: clamav >= 0.83
+Requires: clamav >= 0.83 gnome-icon-theme gnome-icon-theme-extras libcanberra-gtk3
 Requires(post,postun): desktop-file-utils
 
 # manually removed: rpm-build-python3 ruby ruby-stdlibs vixie-cron
 
 # Automatically added by buildreq on Tue Sep 02 2014 (-bi)
 # optimized out: fontconfig libX11-locales libgdk-pixbuf libwayland-client libwayland-server perl-Cairo perl-Encode perl-Glib perl-HTTP-Date perl-HTTP-Message perl-IO-Socket-IP perl-IO-Socket-SSL perl-JSON-XS perl-Net-HTTP perl-Net-HTTPS perl-Net-SSLeay perl-Pango perl-Time-Piece perl-Types-Serialiser perl-URI perl-common-sense perl-libwww python-base python3 python3-base
-BuildRequires: perl-Digest-SHA perl-Gtk2 perl-JSON perl-LWP-Protocol-https perl-Locale-gettext perl-Text-CSV perl-Text-CSV_XS perl-JSON
+#BuildRequires: perl-Digest-SHA perl-Gtk2 perl-Gtk3 perl-JSON perl-LWP-Protocol-https perl-Locale-gettext perl-Text-CSV perl-Text-CSV_XS perl-JSON
+BuildRequires: perl-Glib perl-Gtk3 perl-libwww perl-LWP-Protocol-https perl-base perl-Digest-SHA perl-Text-CSV perl-Text-CSV_XS perl-JSON perl-Encode perl-Locale-gettext perl-Time-Piece
 
 %description
 ClamTk is a front-end, point and click gui for ClamAV on Linux systems.
 It supports easy signature-updates. It is meant to be lightweight and easy to use.
 
+%description -l ru_RU.UTF-8
+ClamTk - графический интерфейс для ClamAV, разработанный для простоты использования антивирусного сканера и обновления баз сигнатур на системах Linux.
+
 %prep
 %setup
-#%patch
+%patch -p2
 # we place it in standard place
 %__subst "s|.*/usr/lib.*||g" %name
 
@@ -58,6 +63,13 @@ done
 %_man1dir/*
 
 %changelog
+* Tue Sep 17 2019 Leontiy Volodin <lvol@altlinux.org> 6.01-alt1
+- new version (6.01) with rpmgs script
+- update buildreqs and reqs
+- update patch
+- update url and source links
+- add Russian translate
+
 * Tue Feb 19 2019 Leontiy Volodin <lvol@altlinux.org> 5.27-alt1
 - new version 5.27 (with rpmgs script)
 
