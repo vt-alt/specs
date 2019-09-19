@@ -10,7 +10,7 @@
 
 Name: hadfs
 Version: 0.1.0.0
-Release: alt4
+Release: alt5
 License: BSD3
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
 Group: Development/Haskell
@@ -24,6 +24,7 @@ BuildPreReq: %hsc_namever-adldap
 BuildPreReq: %hsc_namever-hfuse
 BuildPreReq: %hsc_namever-network
 BuildPreReq: %hsc_namever-unix-compat
+BuildPreReq: %hsc_namever-optparse-applicative
 BuildPreReq: libldap-devel libfuse-devel
 
 Requires: libsasl2-plugin-gssapi
@@ -42,13 +43,19 @@ for LDAP objects via POSIX interface.
 
 %install
 %hs_install
-mv %buildroot/%_bindir/hadfs-exe %buildroot/%_bindir/hadfs
 rm -rf %buildroot/%_libdir/%hsc_name-%hsc_version/
 %hs_gen_filelist
+mkdir -p %buildroot/%_man1dir
+install -m 0644 doc/hadfs.1 %buildroot/%_man1dir/
 
 %files -f %name-files.all
+%_man1dir/hadfs*
 
 %changelog
+* Wed Jun 26 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.1.0.0-alt5
+- Add manpage for hadfs
+- Update hadfs with options parser
+
 * Fri Jun 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.1.0.0-alt4
 - Add requires to GSSAPI SASL2 plugin
 
