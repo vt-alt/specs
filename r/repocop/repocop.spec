@@ -1,5 +1,5 @@
 Name: repocop
-Version: 0.80
+Version: 0.81
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -160,6 +160,9 @@ done
 %_man1dir/repocop-report-html.*
 
 %changelog
+* Wed Sep 11 2019 Igor Vlasenko <viy@altlinux.ru> 0.81-alt1
+- new version
+
 * Fri Jul 20 2018 Igor Vlasenko <viy@altlinux.ru> 0.80-alt1
 - new version
 
