@@ -9,7 +9,7 @@ Obsoletes: gambas3-%{*} < %EVR \
 
 Name:		gambas
 Version:	3.13.0
-Release:	alt2
+Release:	alt2.1
 
 Summary:	IDE based on a basic interpreter with object extensions
 Group:		Development/Tools
@@ -49,7 +49,7 @@ BuildRequires:	libgtk+3-devel
 BuildRequires:	libgtkglext-devel
 BuildRequires:	libICE-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libltdl3-devel
+BuildRequires:	libltdl-devel
 BuildRequires:	libmysqlclient-devel
 BuildRequires:	libopenal-devel
 BuildRequires:	libpcre-devel
@@ -100,6 +100,8 @@ Patch4:		%name-3.12.0-use-libv4l1.patch
 Patch5:		%name-3.11.4-alt-libpoppler-bool-type-fix.patch
 Patch6:		%name-3.11.4-alt-postgre-bool-type-fix.patch
 Patch7:		%name-alt-mysql8-bool-type-fix.patch
+Patch8:		alt-poppler-0.80.patch
+Patch9:		alt-termios.patch
 
 Provides:       gambas3 = %EVR
 Obsoletes:      gambas3 < %EVR
@@ -1110,6 +1112,8 @@ terminal applications.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 # We used to patch these out, but this is simpler.
 for i in `find . |grep acinclude.m4`; do
@@ -1663,6 +1667,10 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %appdir/info/gb.term.*
 
 %changelog
+* Thu Sep 19 2019 Sergey V Turchin <zerg@altlinux.org> 3.13.0-alt2.1
+- NMU: fix compile with new poopler
+- NMU: fix compile on ppc64 (thanks glebfm@alt)
+
 * Thu May 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.13.0-alt2
 - Build without Qt4, only with with Qt5 used for IDE by default.
 - Build with libgmime3.0.
