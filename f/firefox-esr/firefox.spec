@@ -16,7 +16,7 @@ Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
 Version:        68.1.0
-Release:        alt1
+Release:        alt2
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -387,6 +387,9 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Thu Sep 19 2019 Andrey Cherepanov <cas@altlinux.org> 68.1.0-alt2
+- Fix open context menu (thanks george@).
+
 * Wed Sep 04 2019 Andrey Cherepanov <cas@altlinux.org> 68.1.0-alt1
 - New ESR version (68.1.0).
 - Fixed:
