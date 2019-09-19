@@ -5,7 +5,7 @@
 
 Name: lua%major_version
 Version: %major_version.5
-Release: alt1
+Release: alt2
 
 Summary: Powerful light-weight programming language
 License: MIT
@@ -209,6 +209,9 @@ echo lua-devel-static >%buildroot%_sysconfdir/buildreqs/packages/substitute.d/li
 %config %_sysconfdir/buildreqs/packages/substitute.d/lib%name-devel-static
 
 %changelog
+* Fri Aug 16 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 5.3.5-alt2
+- Fixed luaconf wrapper for armh arch (thnx Sergey Bolshakov).
+
 * Thu Aug 08 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 5.3.5-alt1
 - 5.3.5.
 - Applied CVE-2019-6706-use-after-free-lua_upvaluejoin.patch.
