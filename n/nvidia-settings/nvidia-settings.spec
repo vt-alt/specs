@@ -1,8 +1,8 @@
 %def_disable translation
 
 Name: nvidia-settings
-Version: 430.40
-Release: alt3
+Version: 430.50
+Release: alt1
 
 Group: System/Configuration/Hardware
 Summary: Tool for configuring the NVIDIA driver
@@ -125,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 430.50-alt1
+- new version
+
 * Tue Aug 20 2019 Slava Aseev <ptrnine@altlinux.org> 430.40-alt3
 - add popup for "Unable to load info" error
 
