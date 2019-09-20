@@ -3,7 +3,7 @@
 Name: pve-common
 Summary: PVE base library
 Version: 6.0.4
-Release: alt1
+Release: alt2
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
@@ -64,6 +64,9 @@ make -C test check
 %perl_vendor_privlib/PVE
 
 %changelog
+* Thu Sep 19 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.4-alt2
+- removed read_etc_timezone/write_etc_timezone
+
 * Mon Aug 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.4-alt1
 - 6.0-4
 

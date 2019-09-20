@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
-Version: 6.0.6
-Release: alt1
+Version: 6.0.7
+Release: alt2
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -72,6 +72,7 @@ Patch36: qemu-server-vmgenid-aarch64.patch
 Patch37: pve-mini-journalreader-alt.patch
 Patch38: pve-http-server-glyphicons.patch
 Patch39: qemu-server-aarch64-spice.patch
+Patch40: qemu-server-virtio-rng.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
 BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLeay perl-File-ReadBackwards
@@ -84,7 +85,7 @@ This package contains the PVE management tools
 
 %package -n pve-container
 Summary: PVE Container management tool
-Version: 3.0.5
+Version: 3.0.7
 Group: Development/Perl
 PreReq: shadow-submap
 Requires: pve-lxc >= 2.1.0 dtach perl-Crypt-Eksblowfish >= 0.009-alt5_15
@@ -179,6 +180,7 @@ This is used to implement the PVE REST API
 %patch37 -p0 -b .type-limits
 %patch38 -p0 -b .glyphicons
 %patch39 -p0 -b .aarch64-spice
+%patch40 -p0 -b .virtio-rng
 
 find -name Makefile | while read m; do
 	sed -i '/^.*\/usr\/share\/dpkg.*/d' $m;
@@ -558,6 +560,10 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Wed Sep 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt2
+- pve-manager 6.0-7
+- pve-container 3.0-7
+
 * Mon Aug 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt1
 - pve-manager 6.0-6
 - pve-widget-toolkit 2.0-7
