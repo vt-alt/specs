@@ -25,7 +25,7 @@
 
 Name: kde5-%rname
 %define lname lib%name
-Version: 6.2.0
+Version: 6.3.0
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
@@ -247,6 +247,9 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %_K5xmlgui/showfoto/
 %_K5notif/%rname.notifyrc
 %_K5data/solid/actions/%rname-*.desktop
+%if_enabled obsolete_kde4
+%_datadir/metainfo/*.xml
+%endif
 
 %files data -f %rname.lang
 #%doc AUTHORS ChangeLog HACKING NEWS README* TODO
@@ -281,7 +284,7 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %files devel
 %_K5link/*.so
 %_includedir/digikam/
-%_libdir/cmake/digikam/
+%_libdir/cmake/Digikam*/
 
 %files -n %libdigikamdatabase
 %_K5lib/libdigikamdatabase.so.%sover
@@ -294,6 +297,9 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %_K5lib/libdigikamgui.so.*
 
 %changelog
+* Thu Sep 19 2019 Sergey V Turchin <zerg@altlinux.org> 6.3.0-alt1
+- new version
+
 * Thu Aug 15 2019 Sergey V Turchin <zerg@altlinux.org> 6.2.0-alt1
 - new version
 
@@ -309,31 +315,31 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 * Mon Mar 04 2019 Sergey V Turchin <zerg@altlinux.org> 6.0.0-alt1
 - new version
 
-* Thu May 31 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.0-alt2%ubt
+* Thu May 31 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.0-alt2
 - build with mysql
 
-* Fri Mar 30 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.0-alt1%ubt
+* Fri Mar 30 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.0-alt1
 - new version
 
-* Fri Mar 02 2018 Sergey V Turchin <zerg@altlinux.org> 5.8.0-alt2%ubt
+* Fri Mar 02 2018 Sergey V Turchin <zerg@altlinux.org> 5.8.0-alt2
 - rebuild with new libKF5CalendarCore
 
-* Mon Feb 05 2018 Sergey V Turchin <zerg@altlinux.org> 5.8.0-alt1%ubt
+* Mon Feb 05 2018 Sergey V Turchin <zerg@altlinux.org> 5.8.0-alt1
 - new version
 
-* Thu Sep 28 2017 Sergey V Turchin <zerg@altlinux.org> 5.7.0-alt2%ubt
+* Thu Sep 28 2017 Sergey V Turchin <zerg@altlinux.org> 5.7.0-alt2
 - decrease exiv2 requirement
 
-* Tue Sep 26 2017 Sergey V Turchin <zerg@altlinux.org> 5.7.0-alt1%ubt
+* Tue Sep 26 2017 Sergey V Turchin <zerg@altlinux.org> 5.7.0-alt1
 - new version
 
-* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 5.6.0-alt1%ubt
+* Mon Jul 10 2017 Sergey V Turchin <zerg@altlinux.org> 5.6.0-alt1
 - new version
 
-* Thu Apr 06 2017 Sergey V Turchin <zerg@altlinux.org> 5.5.0-alt1%ubt
+* Thu Apr 06 2017 Sergey V Turchin <zerg@altlinux.org> 5.5.0-alt1
 - new version
 
-* Wed Jan 18 2017 Sergey V Turchin <zerg@altlinux.org> 5.4.0-alt1%ubt
+* Wed Jan 18 2017 Sergey V Turchin <zerg@altlinux.org> 5.4.0-alt1
 - new version
 
 * Mon Nov 28 2016 Sergey V Turchin <zerg@altlinux.org> 5.3.0-alt0.M80P.1
