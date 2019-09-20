@@ -1,11 +1,11 @@
-%define libsover 24
+%define libsover 12
 %define rname IlmBase
 
-Name: ilmbase
-Version: 2.3.0
-Release: alt1
+Name: ilmbase12
+Version: 2.2.0
+Release: alt2
 
-%define common %name%libsover-common
+%define common %name-common
 %define libhalf libhalf%libsover
 %define libiex libiex%libsover
 %define libilmthread libilmthread%libsover
@@ -25,17 +25,17 @@ Requires: %libiexmath
 Provides: %rname = %version-%release
 Obsoletes: %rname < %version-%release
 
-Source: %name-%version.tar
-# FC
-Patch1: ilmbase-2.2.0-glibc_iszero.patch
-Patch2: ilmbase-2.2.0-no_undefined.patch
+Source: ilmbase-%version.tar
 # ALT
-Patch10: ilmbase-2.1.0-alt-pkgconfig.patch
+Patch10: ilmbase-2.1.0-alt-linking.patch
+Patch11: ilmbase-2.1.0-alt-cmakefiles.patch
+Patch12: ilmbase-2.1.0-alt-pkgconfig.patch
 
 # Automatically added by buildreq on Wed Apr 20 2011 (-bi)
 # optimized out: elfutils libGL-devel libstdc++-devel pkg-config
 #BuildRequires: gcc-c++ glibc-devel libGLU-devel libstdc++-devel
 BuildRequires: gcc-c++ glibc-devel libGLU-devel zlib-devel
+BuildRequires: cmake kde-common-devel
 
 %description
 Half is a class that encapsulates our 16-bit floating-point format.
@@ -103,31 +103,25 @@ Summary: Headers for developing programs that will use %name
 Group: Development/Other
 Requires: %common = %version-%release
 Conflicts: openexr-devel < 1.6
+Conflicts: ilmbase-devel
 %description devel
 This package contains the static libraries and header files needed for
 developing applications with %name
 
 
 %prep
-%setup -q -n %name-%version
-%patch1 -p1
-%patch2 -p1
+%setup -q -n ilmbase-%version
 %patch10 -p1
+%patch11 -p1
+%patch12 -p1
 
-sed -i -E 's|[[:space:]]+DESTINATION[[:space:]]+lib$| DESTINATION %_lib|' */CMakeLists.txt
 
 %build
-%configure \
-     --disable-static \
-     #
-%make_build \
-    PTHREAD_LIBS="-pthread -lpthread" \
-    LIBS="-pthread -lpthread" \
-    #
+%Kcmake
+%Kmake
 
 %install
-%makeinstall_std
-# DESTDIR=%buildroot
+%Kinstall
 
 # create compatibility symlinks
 for f in %buildroot/%_libdir/lib*.so ; do
@@ -140,7 +134,7 @@ done
 %files -n %common
 
 %files
-%doc AUTHORS ChangeLog LICENSE NEWS README*
+%doc AUTHORS ChangeLog COPYING LICENSE NEWS README
 
 %files -n %libhalf
 %_libdir/libHalf.so.%libsover
@@ -163,15 +157,15 @@ done
 %_libdir/libIexMath-*.so.%libsover.*
 
 %files devel
-%doc AUTHORS ChangeLog LICENSE NEWS README*
+%doc AUTHORS ChangeLog COPYING LICENSE NEWS README
 %_includedir/OpenEXR
 %_libdir/*.so
 %_libdir/pkgconfig/*
 
 
 %changelog
-* Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.3.0-alt1
-- new version
+* Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt2
+- create compatibility package
 
 * Mon Jun 15 2015 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.2.0-alt1.1
 - Rebuilt for gcc5 C++11 ABI.

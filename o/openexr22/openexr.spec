@@ -1,11 +1,11 @@
-%define libsover 24
+%define libsover 22
 
 %define rname OpenEXR
-Name: openexr
-Version: 2.3.0
-Release: alt1
+Name: openexr22
+Version: 2.2.0
+Release: alt4
 
-%define common %name%libsover-common
+%define common %name-common
 %define libilmimf libilmimf%libsover
 %define libilmimfutil libilmimfutil%libsover
 
@@ -17,13 +17,15 @@ URL: http://www.openexr.org/
 Requires: %libilmimf = %version-%release
 Provides: %rname = %version-%release
 Obsoletes: %rname < %version-%release
-Provides: %name-utils = %version-%release
-Obsoletes: %name-utils < %version-%release
 
-Source: %name-%version.tar
+Source: openexr-%version.tar
 # FC
-Patch1: openexr-2.3.0-bigendian.patch
-Patch2: openexr-2.3.0-tests.patch
+Patch1: openexr-2.1.0-bigendian.patch
+# ALT
+Patch10: openexr-2.2.0-alt-build.patch
+Patch11: openexr-2.1.0-alt-libdir.patch
+Patch12: openexr-2.1.0-alt-pkgconfig.patch
+Patch13: alt-gcc8.patch
 
 # Automatically added by buildreq on Thu Apr 21 2011 (-bi)
 # optimized out: elfutils libstdc++-devel pkg-config
@@ -64,43 +66,53 @@ libIlmImfUtil %rname library
 Summary: Headers for developing programs that will use %rname
 Group: Development/Other
 Requires: %common = %version-%release
-Requires: ilmbase-devel
+Conflicts: openexr-devel
 #
 %description devel
 This package contains the static libraries and header files needed for
 developing applications with %rname
 
 %prep
-%setup -q -n %name-%version
-%patch1 -p2
-%patch2 -p2
+%setup -q -n openexr-%version
+%patch1 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
 
 %build
-%configure \
-    --disable-static \
-    #
-%make_build
+%Kcmake
+%Kmake
 
 %install
-%makeinstall_std
+%Kinstall
 
+# create compatibility symlinks
+for f in %buildroot/%_libdir/lib*.so ; do
+    fname=`basename $f`
+    newname=`echo $fname | sed 's|-.*|.so|'`
+    [ "$fname" == "$newname" ] \
+	|| ln -s $fname %buildroot/%_libdir/$newname
+done
+
+mv %buildroot/%_docdir/%rname-%version %buildroot/%_docdir/%name-%version
+install -m 0644 AUTHORS %buildroot/%_docdir/%name-%version/
+install -m 0644 ChangeLog %buildroot/%_docdir/%name-%version/
+install -m 0644 COPYING %buildroot/%_docdir/%name-%version/
+install -m 0644 NEWS %buildroot/%_docdir/%name-%version/
+install -m 0644 README %buildroot/%_docdir/%name-%version/
 
 %files -n %common
 
-%files
-%_bindir/*
-
 %files -n %libilmimf
-%doc AUTHORS ChangeLog PATENTS LICENSE README*
 %_libdir/libIlmImf-*.so.%libsover
 %_libdir/libIlmImf-*.so.%libsover.*
 %files -n %libilmimfutil
-%doc AUTHORS ChangeLog PATENTS LICENSE README*
 %_libdir/libIlmImfUtil-*.so.%libsover
 %_libdir/libIlmImfUtil-*.so.%libsover.*
 
 %files devel
-%doc doc/*.pdf
+%doc %_docdir/%name-%version/
 %_includedir/%rname
 %_libdir/lib*.so
 %_libdir/pkgconfig/*
@@ -108,8 +120,8 @@ developing applications with %rname
 
 
 %changelog
-* Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.3.0-alt1
-- new version
+* Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt4
+- create compatibility package
 
 * Mon Feb 11 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt3
 - fix to build with gcc8
