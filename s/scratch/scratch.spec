@@ -7,7 +7,7 @@ Summary(ru.UTF-8): Программирование для детей на ос�
 
 Group: Education
 Version: 1.4.0.7
-Release: alt6
+Release: alt7
 
 License: Artistic License
 Url: http://scratch.mit.edu/
@@ -184,6 +184,9 @@ mv Projects %buildroot%installdir/
 %installdir/Projects
 
 %changelog
+* Thu Sep 19 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.0.7-alt7
+- Use default system font for Russian, but 1.5x scaled.
+
 * Thu Aug 22 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.0.7-alt6
 - Use Fixed font (doubled size, not bold)' for Russian UI.
 
