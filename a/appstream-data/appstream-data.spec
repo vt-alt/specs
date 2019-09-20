@@ -2,7 +2,7 @@
 
 Name:      appstream-data
 Summary:   ALT Linux AppStream metadata
-Version:   20190901
+Version:   20190919
 Release:   alt1
 Group:     System/Configuration/Packaging
 BuildArch: noarch
@@ -31,6 +31,9 @@ cp -r manual-%version/* %buildroot%_datadir/app-info/xmls/
 %_datadir/app-info/icons/altlinux
 
 %changelog
+* Thu Sep 19 2019 Andrey Cherepanov <cas@altlinux.org> 20190919-alt1
+- Append package with Russian localization for LibreOffice and Firefox.
+
 * Sun Sep 01 2019 Andrey Cherepanov <cas@altlinux.org> 20190901-alt1
 - Fix for manual id of conflicted packages (firefox/firefox-esr, LibreOffice/LibreOffice-still) by <launchable> tag
 - Add missing project_license tags
