@@ -28,7 +28,7 @@
 
 Name: LibreOffice-still
 %define hversion 6.2
-%define urelease 6.2
+%define urelease 7.1
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
@@ -616,8 +616,20 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Thu Sep 19 2019 Andrey Cherepanov <cas@altlinux.org> 6.2.7.1-alt1
+- New version 6.2.7.1 (Still).
+- Fixed:
+  + CVE-2019-9849 Disabled fetching remote bullet graphics in 'stealth mode'
+  + CVE-2019-9850 Fixed insufficient URL validation that allowed LibreLogo script execution
+  + CVE-2019-9851 Fixed LibreLogo global-event script execution issue
+  + CVE-2019-9852 Fixed insufficient URL encoding flaw in allowed script location check
+  + CVE-2019-9854 Fixed unsafe URL assembly flaw
+  + CVE-2019-9855 Fixed path equivalence handling flaw
+
 * Tue Aug 13 2019 Andrey Cherepanov <cas@altlinux.org> 6.2.6.2-alt1
 - New version 6.2.6.2 (Still).
+- Fixed:
+  + CVE-2019-9848 Fixed an arbitrary script execution via LibreLogo
 
 * Sun Jun 16 2019 Andrey Cherepanov <cas@altlinux.org> 6.1.6.3-alt3
 - Require pentaho-reporting-flow-engine only if build with java
