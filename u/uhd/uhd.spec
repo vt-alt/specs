@@ -17,7 +17,7 @@
 Name: uhd
 Url: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
 Version: 3.13.0.2
-Release: alt4
+Release: alt5
 License: GPLv3+
 Group: Engineering
 Summary: Universal Hardware Driver for Ettus Research products
@@ -33,6 +33,7 @@ Patch: uhd-3.13.0.2-alt-boost-compat.patch
 BuildRequires: ctest cmake
 BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
 BuildRequires: rpm-build-python
+BuildRequires: python-module-setuptools
 BuildRequires: python-module-Cheetah
 BuildRequires: python-module-docutils doxygen libpcap-devel
 BuildRequires: python-module-mako
@@ -180,6 +181,9 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %buildroot%_bindir/chdr_log
 %python_sitelibdir/%name/
 
 %changelog
+* Sat Sep 21 2019 Anton Midyukov <antohami@altlinux.org> 3.13.0.2-alt5
+- add BuildRequires: python-module-setuptools (Fix FTBFS)
+
 * Tue Apr 09 2019 Anton Midyukov <antohami@altlinux.org> 3.13.0.2-alt4
 - update buildrequires
 
