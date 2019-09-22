@@ -2,11 +2,12 @@
 
 %def_disable check
 
-%def_with python3
+%def_with python2
+%def_with docs
 
 Name: python-module-%oname
 Version: 18.5.2
-Release: alt2.1
+Release: alt3
 
 Summary: WebSocket & WAMP for Python/Twisted
 License: Apache License 2.0
@@ -19,27 +20,26 @@ Source: %name-%version.tar
 # https://github.com/crossbario/autobahn-python/commit/9b6fb57e5c87a5e29cd880f752a30b9409d480c6
 Patch0: ensure-python37-compat.patch
 
-BuildRequires: inkscape
-BuildRequires: python-module-alabaster python-module-boto python-module-html5lib python-module-msgpack python-module-objects.inv
-BuildRequires: python-module-scour python-module-setuptools python-module-snappy python-module-sphinx-bootstrap-theme
-BuildRequires: python-module-sphinxcontrib-spelling python-module-taschenmesser python-module-trollius python-module-twisted-logger
-BuildRequires: python-module-twisted-web python-module-ujson python-module-wsaccel
-BuildRequires: python-module-txaio-tests python-module-unittest2 python-module-mock python-module-trollius-tests
-BuildRequires(pre): rpm-macros-sphinx
-%if_with python3
-BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-module-cryptography python3-module-pygobject3 python3-module-serial python3-module-setuptools python3-module-snappy python3-module-zope
-BuildRequires: python3-module-txaio-tests python3-module-unittest2 python3-module-mock
-BuildRequires: python3-module-pytest
-%endif
+%if_with python2
+
+BuildRequires(pre): rpm-build-python
+BuildRequires: python-devel python-module-setuptools
+
+%{?_enable_check:
+BuildRequires: python-module-six python-module-flake8
+BuildRequires: python-module-unittest2 python-module-txaio-tests python-module-trollius-tests
+}
 
 %py_requires twisted.internet twisted.web twisted.words
+
+%endif
 
 %description
 Autobahn WebSockets for Python provides an implementation of the
 WebSockets protocol which can be used to build WebSockets clients and
 servers.
 
+%if_with python2
 %package tests
 Summary: Tests for Autobahn
 Group: Development/Python
@@ -52,22 +52,16 @@ WebSockets protocol which can be used to build WebSockets clients and
 servers.
 
 This package contains tests for Autobahn.
+%endif
 
-%package pickles
-Summary: Pickles for Autobahn
-Group: Development/Python
-
-%description pickles
-Autobahn WebSockets for Python provides an implementation of the
-WebSockets protocol which can be used to build WebSockets clients and
-servers.
-
-This package contains pickles for Autobahn.
-
+%if_with docs
 %package docs
 Summary: Documentation and examples for Autobahn
 Group: Development/Documentation
 BuildArch: noarch
+
+BuildRequires(pre): rpm-macros-sphinx
+BuildRequires: python-module-sphinxcontrib-spelling python-module-txaio python-module-service-identity
 
 %description docs
 Autobahn WebSockets for Python provides an implementation of the
@@ -75,11 +69,20 @@ WebSockets protocol which can be used to build WebSockets clients and
 servers.
 
 This package contains documentation and examples for Autobahn.
+%endif
 
-%if_with python3
 %package -n python3-module-%oname
 Summary: WebSocket & WAMP for Python3/Twisted
 Group: Development/Python3
+
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel python3-module-setuptools
+
+%{?_enable_check:
+BuildRequires: python-module-six python-module-flake8
+BuildRequires: python3-module-txaio-tests python3-module-unittest2 python3-module-mock
+}
+
 %py3_requires twisted.internet twisted.web twisted.words
 
 %description -n python3-module-%oname
@@ -99,40 +102,43 @@ WebSockets protocol which can be used to build WebSockets clients and
 servers.
 
 This package contains tests for Autobahn.
-%endif
 
 %prep
 %setup
 %patch -p1
 
-%if_with python3
-rm -rf ../python3
-cp -a . ../python3
+%if_with python2
+rm -rf ../python2
+cp -a . ../python2
 %endif
 
+%if_with docs
 %prepare_sphinx .
 ln -s ../objects.inv docs/
+%endif
 
 %build
-%python_build_debug
-
-%if_with python3
-pushd ../python3
 %python3_build_debug
+
+%if_with python2
+pushd ../python2
+%python_build_debug
 popd
 %endif
 
+%if_with docs
 export PYTHONPATH=$PWD
 pushd docs
-make html pickle
+make html
 popd
+%endif
 
 %install
-%python_install
-
-%if_with python3
-pushd ../python3
 %python3_install
+
+%if_with python2
+pushd ../python2
+%python_install
 popd
 %endif
 
@@ -140,46 +146,44 @@ popd
 mv %buildroot%_libexecdir %buildroot%_libdir
 %endif
 
-cp -fR docs/build/pickle \
-	%buildroot%python_sitelibdir/%oname/
-
 %check
-PYTHONPATH=$(pwd) py.test --pyargs autobahn
-
-%if_with python3
-pushd ../python3
 PYTHONPATH=$(pwd) py.test3 --pyargs autobahn
+
+%if_with python2
+pushd ../python2
+PYTHONPATH=$(pwd) py.test --pyargs autobahn
 popd
 %endif
 
+%if_with python2
 %files
 %doc *.md *.rst
 %python_sitelibdir/*
-%exclude %python_sitelibdir/*/pickle
 %exclude %python_sitelibdir/*/*/test
-#exclude %python_sitelibdir/twisted/plugins/__init__.py*
 
 %files tests
 %python_sitelibdir/*/*/test
+%endif
 
-%files pickles
-%python_sitelibdir/*/pickle
-
+%if_with docs
 %files docs
 %doc docs/build/html examples
+%endif
 
-%if_with python3
 %files -n python3-module-%oname
 %doc *.md *.rst
 %python3_sitelibdir/*
 %exclude %python3_sitelibdir/*/*/test
-#exclude %python3_sitelibdir/twisted/plugins/__init__.py
 
 %files -n python3-module-%oname-tests
 %python3_sitelibdir/*/*/test
-%endif
 
 %changelog
+* Sat Sep 21 2019 Anton Midyukov <antohami@altlinux.org> 18.5.2-alt3
+- Update BuldRequires
+- Drop build pickles
+- Add swith disable docs and python2 module build
+
 * Fri May 10 2019 Vitaly Lipatov <lav@altlinux.ru> 18.5.2-alt2.1
 - NMU: drop python3 trollius
 
