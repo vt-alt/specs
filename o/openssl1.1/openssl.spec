@@ -1,11 +1,11 @@
 %def_enable tsget
 
 Name: openssl1.1
-Version: 1.1.1b
-Release: alt2
+Version: 1.1.1d
+Release: alt1.1
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
-License: Apache-2.0
+License: OpenSSL
 Group: System/Base
 Url: http://www.openssl.org
 
@@ -19,6 +19,7 @@ Source4: cc.sh
 Patch03: openssl-alt-config.patch
 Patch04: openssl-alt-engines-path.patch
 Patch05: openssl-alt-e2k-makecontext.patch
+Patch06: openssl-upstream-properly-handle-BIO_CTRL_PENDING-and-BIO_CTRL_WPENDING.patch
 
 # Patches from Fedora
 # Build changes
@@ -51,7 +52,7 @@ Patch145: openssl-rh-weak-ciphers.patch
 %define openssldir /var/lib/ssl
 %define old_openssldir %_libdir/ssl
 
-BuildRequires: /usr/bin/pod2man bc zlib-devel
+BuildRequires: /usr/bin/pod2man bc zlib-devel perl-PathTools
 %if_enabled tsget
 BuildRequires: perl-WWW-Curl
 %endif
@@ -220,6 +221,7 @@ on the command line.
 %patch03 -p1
 %patch04 -p1
 %patch05 -p2
+%patch06 -p1
 
 %patch101 -p1
 #%%patch102 -p1 (different config)
@@ -462,6 +464,14 @@ LD_LIBRARY_PATH=%buildroot/%_lib \
 %endif
 
 %changelog
+* Sat Sep 21 2019 Michael Shigorin <mike@altlinux.org> 1.1.1d-alt1.1
+- Fixed build --without check.
+
+* Thu Sep 19 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1d-alt1
+- Updated to 1.1.1d (fixes CVE-2019-1543, CVE-2019-1549, CVE-2019-1563,
+  CVE-2019-1547, CVE-2019-1552).
+- Changed License: tag to SPDX identifier of actual openssl license.
+
 * Tue Apr 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1b-alt2
 - Readded %%_bindir/openssl-config to openssl subpackage (removed in
   1.1.1b-alt1 release by mistake).
