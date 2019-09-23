@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt7
+Release: alt8
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -12,7 +12,7 @@ Source: http://code.x2go.org/releases/source/%name/%name-%version.tar.gz
 Patch1: alt-start-from-uid-500.patch
 Patch2: alt-get-rid-of-sudo.patch
 Patch3: alt-def.patch
-Patch4: alt-use-get-profile-for-user.patch
+Patch4: alt-iterate-listsessions.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
@@ -395,6 +395,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Fri Sep 20 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt8
+- iterate through agent to get all sessions from all servers
+
 * Thu Sep 19 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt7
 - use self.get_profile_for_user: it filters hosts by running/suspended sessions
 
