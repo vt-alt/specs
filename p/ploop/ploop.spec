@@ -2,8 +2,8 @@
 %define _scriptdir %_libexecdir/%name
 
 Name: ploop
-Version: 7.0.132
-Release: alt1
+Version: 7.0.162
+Release: alt2
 Group: System/Base
 License: GPLv2
 Summary: Ploop tools
@@ -78,6 +78,7 @@ make \
 %_man8dir/*
 %_logrotatedir/%name
 %_modulesloaddir/%name.conf
+%_sysconfdir/bash_completion.d/ploop
 
 %files -n lib%name
 %_libdir/lib%name.so.*
@@ -98,6 +99,18 @@ make \
 %python_sitelibdir/*
 
 %changelog
+* Fri Sep 20 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.162-alt2
+- fix e4defrag command line arguments
+
+* Fri Sep 20 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.162-alt1
+- 7.0.162
+
+* Wed Sep 18 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.161-alt1
+- 7.0.161
+
+* Fri Aug 16 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.160-alt1
+- 7.0.160
+
 * Sun Nov 04 2018 Alexey Shabalin <shaba@altlinux.org> 7.0.132-alt1
 - 7.0.132
 

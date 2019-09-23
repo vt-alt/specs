@@ -1,7 +1,8 @@
 
 %define _libexecdir /usr/libexec
 %define confdir /etc/vztt
-%define vzconfdir /var/lib/vz/template/conf/vztt
+%define vztempldir /var/lib/vz/template
+%define vzconfdir %vztempldir/conf/%name
 %define vztt_conf %confdir/vztt.conf
 %define nojquota_conf %confdir/nojquota.conf
 %define url_map %vzconfdir/url.map
@@ -11,13 +12,15 @@
 %define tmp_vztt_conf %vztmp/tmp_vztt_conf
 
 Name: vztt
-Version: 7.0.60
-Release: alt1
+Version: 7.0.65
+Release: alt4
 Summary: OpenVZ EZ template management tools
 Source: %name-%version.tar
 Patch: %name-%version.patch
 License: GPLv2
 Group: System/Configuration/Other
+# git-vsc https://src.openvz.org/scm/ovzl/vztt.git
+Url: https://openvz.org/
 
 ExclusiveArch: x86_64
 
@@ -55,7 +58,7 @@ License: GPLv2 or LGPLv2.1
 Requires: lib%name = %version-%release
 
 %description -n lib%name-devel
-OpenVZ EZ template management static library and include files
+OpenVZ EZ template management library and include files
 
 %prep
 %setup
@@ -73,12 +76,17 @@ echo "/var/log/vztt.log {
         compress
         missingok
 }" > %buildroot%_logrotatedir/vztt
+rm -f %buildroot%_libdir/lib%name.a
 
 %files
 %_sbindir/vzpkg
 %dir %_libdir/%name
 %_libdir/%name/myinit
 %_man8dir/vzpkg.8.*
+%dir %confdir
+%dir %vztempldir
+%dir %vztempldir/conf
+%dir %vzconfdir
 %config(noreplace) %vztt_conf
 %config(noreplace) %nojquota_conf
 %config(noreplace) %url_map
@@ -94,6 +102,19 @@ echo "/var/log/vztt.log {
 %_libdir/lib%name.so
 
 %changelog
+* Thu Sep 12 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.65-alt4
+- spec cleanup
+
+* Thu Sep 12 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.65-alt3
+- add distribution name to config in template converter
+
+* Fri Aug 23 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.65-alt2
+- remove static lib
+- package_manager file should not be empty
+
+* Mon Aug 19 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.65-alt1
+- 7.0.65
+
 * Sun Nov 04 2018 Alexey Shabalin <shaba@altlinux.org> 7.0.60-alt1
 - 7.0.60
 

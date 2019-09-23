@@ -1,6 +1,6 @@
 
 Name: vzstat
-Version: 7.0.19
+Version: 7.0.20
 Release: alt1
 Summary: vzstat utility for node monitoring
 
@@ -36,6 +36,9 @@ This package contains statistic monitoring utility for OpenVZ HW node.
 %doc README.md COPYING
 
 %changelog
+* Mon Sep 16 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.20-alt1
+- 7.0.20
+
 * Sun Nov 04 2018 Alexey Shabalin <shaba@altlinux.org> 7.0.19-alt1
 - initial packaging
 

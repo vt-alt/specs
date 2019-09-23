@@ -1,7 +1,7 @@
 
 Name: vzctl
-Version: 7.0.191
-Release: alt1
+Version: 7.0.207
+Release: alt5
 
 Summary: OpenVZ Virtual Environments control utility
 License: GPL
@@ -15,14 +15,14 @@ Patch: %name-%version.patch
 ExclusiveArch: x86_64
 
 # these reqs are for vz helper scripts
-Requires: ploop >= 7.0.1
+Requires: ploop >= 7.0.160
 Requires: network-config-subsystem
 Requires: libvzctl
 
 BuildRequires: glibc-devel libuuid-devel
 BuildRequires: systemd-devel libudev-devel
-BuildRequires: libvzctl-devel >= 7.0.411
-BuildRequires: libploop-devel >= 7.0.1
+BuildRequires: libvzctl-devel >= 7.0.535
+BuildRequires: libploop-devel >= 7.0.160
 BuildRequires: kernel-headers-ovz-el7 >= 3.10.0
 
 %define _libexecdir /usr/libexec
@@ -70,16 +70,13 @@ make install \
 	BASHCOMPLDIR=%bashcompldir \
 	LOGRDIR=%_logrotatedir
 
+ln -s -r %buildroot%_unitdir/vzevent.service %buildroot%_unitdir/vzeventd.service
+
 %post
-rm -f /dev/vzctl
-mknod -m 600 /dev/vzctl c 126 0
-rm -rf %vzdir/dev/vzlink
-mknod -m 600 %vzdir/dev/vzlink c 125 0
-
-
-if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add vz ||:
-fi
+# rm -f /dev/vzctl
+# mknod -m 600 /dev/vzctl c 126 0
+# rm -rf %vzdir/dev/vzlink
+# mknod -m 600 %vzdir/dev/vzlink c 125 0
 
 %post_service vzeventd
 
@@ -106,11 +103,12 @@ exit 0
 %dir %vzdir
 %dir %confdir
 %dir %namesdir
-%vzdir/dev
+%dir %vzdir/dev
 %vzdir/vzevent.d
 %attr(700,root,root) %lockdir
 %spooldir
 %bashcompldir/*
+%_target_libdir_noarch/dracut/modules.d/*
 %_sbindir/*
 %_unitdir/*.service
 #%_initdir/*
@@ -127,6 +125,21 @@ exit 0
 %config %_sysconfdir/modules-load.d/*.conf
 
 %changelog
+* Tue Aug 27 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt5
+- spec cleanup
+
+* Tue Aug 27 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt4
+- network and service changes for ALT
+
+* Mon Aug 26 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt3
+- change prlctl to vzlist/vzctl
+
+* Thu Aug 22 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt2
+- drop sysv rc scripts
+
+* Mon Aug 19 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt1
+- Update to 7.0.207
+
 * Sun Nov 04 2018 Alexey Shabalin <shaba@altlinux.org> 7.0.191-alt1
 - Update to 7.0.191
 

@@ -5,8 +5,8 @@
 %define sub_flavour el7
 %define flavour %base_flavour-%sub_flavour
 
-#     rh7-3.10.0-957.5.1.vz7.84.2
-%define orelease 957.5.1.vz7.84.2
+#     rh7-3.10.0-957.27.2.vz7.107.7
+%define orelease 957.27.2.vz7.107.7
 
 Name: kernel-image-%flavour
 Version: 3.10.0
@@ -56,11 +56,12 @@ License: GPL
 Group: System/Kernel and hardware
 Url: http://www.kernel.org/
 
-Source0: rh7-%version-%orelease.tar
+Source0: rh7-%version.tar
 Source1: %flavour.x86_64.config
 
 ExclusiveOS: Linux
 ExclusiveArch: x86_64
+# ExclusiveArch: x86_64 aarch64 ppc64le
 
 %ifarch x86_64 %ix86
 %define kernel_arch x86
@@ -105,7 +106,7 @@ BuildRequires: patch >= 2.6.1-alt1
 %{?_enable_htmldocs:BuildRequires: xmlto transfig ghostscript}
 %{?_enable_man:BuildRequires: xmlto}
 %{?_with_perf:BuildRequires: binutils-devel libelf-devel asciidoc elfutils-devel >= 0.138 libnewt-devel perl-devel python-dev libunwind-devel libaudit-devel libnuma-devel}
-BuildRequires: qemu-system glibc-devel-static
+%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-x86-core glibc-devel-static}}
 
 Requires: bootloader-utils >= 0.4.21
 Requires: module-init-tools >= 3.1
@@ -268,7 +269,7 @@ kernel-image-%flavour-%kversion-%krelease
 
 %prep
 %setup -c -n kernel-image-%flavour-%kversion-%krelease
-cd rh7-%version-%orelease
+cd rh7-%version
 
 # get rid of unwanted files resulting from patch fuzz
 #find . -name "*.orig" -delete -or -name "*~" -delete
@@ -285,7 +286,7 @@ echo "%kgcc_version" \
 
 %if_with src
 cd ..
-find rh7-%kversion-%orelease -type f -or -type l -not -name '*.orig' -not -name '*~' -not -name '.git*' > kernel-src-%flavour.list
+find rh7-%kversion -type f -or -type l -not -name '*.orig' -not -name '*~' -not -name '.git*' > kernel-src-%flavour.list
 cd -
 %endif
 
@@ -294,7 +295,7 @@ install -m644 %SOURCE1 .
 
 %build
 [ "%__nprocs" -gt "%nprocs" ] || export NPROCS=%nprocs
-cd rh7-%version-%orelease
+cd rh7-%version
 export ARCH=%base_arch
 
 cp -vf \
@@ -351,7 +352,7 @@ echo "Kernel docs built %kversion-%flavour-%krelease"
 
 %install
 export ARCH=%base_arch
-cd rh7-%version-%orelease
+cd rh7-%version
 
 install -Dp -m644 System.map %buildroot/boot/System.map-%kversion-%flavour-%krelease
 install -Dp -m644 arch/%base_arch/boot/bzImage %buildroot/boot/vmlinuz-%kversion-%flavour-%krelease
@@ -469,7 +470,7 @@ cd -
 install -d -m 0755 %kernel_srcdir
 t="%__nprocs"
 [ $t -gt 1 ] && XZ="pxz -T$t" || XZ="xz"
-tar	--transform='s/^\(linux-%kversion\)-%orelease/\1-%flavour-%krelease/' \
+tar	--transform='s/^\(linux-%kversion\)/\1-%flavour-%krelease/' \
 	--owner=root --group=root --mode=u+w,go-w,go+rX \
 	-T kernel-src-%flavour.list \
 	-cf - | \
@@ -491,19 +492,39 @@ mkdir test
 cd test
 gcc -static -xc -o init - <<EOF
 #include <unistd.h>
+#include <stdio.h>
+#include <err.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/reboot.h>
-int main()
+void main()
 {
-	write(2, "Boot successful!\n", 17);
+	if (mkdir("/proc", 0666))
+		warn("mkdir /proc");
+	else if (mount("proc", "/proc", "proc", 0, NULL))
+		warn("mount /proc");
+	else if (access("/proc/user_beancounters", R_OK))
+		warn("access /proc/user_beancounters");
+	else
+		puts("Boot successful!");
 	reboot(RB_POWER_OFF);
-	sleep(10);
 }
 EOF
 echo "init" | cpio -H newc -o | gzip > initrd.img
-timeout 600 qemu -no-kvm -kernel %buildroot/boot/vmlinuz-%kversion-%flavour-%krelease \
-	-nographic -append "console=ttyS0 panic=1" -initrd initrd.img > boot.log
-fgrep -q ' Power down.' boot.log || ( cat boot.log && false )
-
+time -p \
+timeout 600 qemu-system-x86_64 -bios bios.bin \
+	-nographic -no-reboot -m 256M \
+	-kernel %buildroot/boot/vmlinuz-%kversion-%flavour-%krelease \
+	-initrd initrd.img \
+	-append "console=ttyS0 panic=-1" > boot.log &&
+grep -q "^Boot successful" boot.log &&
+grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?(reboot: )?Power down' boot.log || {
+	cat >&2 boot.log
+	echo >&2 'Marker not found'
+	exit 1
+}
+grep beancounter boot.log
 
 %files
 /boot/*
@@ -574,6 +595,26 @@ fgrep -q ' Power down.' boot.log || ( cat boot.log && false )
 
 
 %changelog
+* Wed Sep 18 2019 Andrew A. Vasilyev <andy@altlinux.org> 1:3.10.0-alt1.957.27.2.vz7.107.7
+- Build 3.10.0-alt1.957.27.2.vz7.107.7
+
+* Fri Sep 13 2019 Andrew A. Vasilyev <andy@altlinux.org> 1:3.10.0-alt1.957.27.2.vz7.107.6
+- Build 3.10.0-alt1.957.27.2.vz7.107.6
+
+* Wed Sep 11 2019 Andrew A. Vasilyev <andy@altlinux.org> 1:3.10.0-alt1.957.27.2.vz7.107.5
+- Build 3.10.0-alt1.957.27.2.vz7.107.5
+
+* Tue Sep 10 2019 Vitaly Chikunov <vt@altlinux.org> 1:3.10.0-alt1.957.27.2.vz7.107.4
+- Build 3.10.0-alt1.957.27.2.vz7.107.4
+
+* Sat Aug 24 2019 Vitaly Chikunov <vt@altlinux.org> 1:3.10.0-alt1.957.21.3.vz7.106.7
+- Import rh7-3.10.0-957.21.3.vz7.106.7
+- Fix qemu run after qemu package update.
+- Update boot test.
+
+* Thu Aug 01 2019 Vitaly Chikunov <vt@altlinux.org> 1:3.10.0-alt1.957.21.3.vz7.106.6
+- Build 3.10.0-957.21.3.vz7.106.6
+
 * Mon Mar 25 2019 Vitaly Chikunov <vt@altlinux.org> 1:3.10.0-alt1.957.5.1.vz7.84.2
 - Build 3.10.0-alt1.957.5.1.vz7.84.2
 
