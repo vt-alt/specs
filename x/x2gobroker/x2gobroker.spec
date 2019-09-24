@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt8
+Release: alt9
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -395,6 +395,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Mon Sep 23 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt9
+- use random agent when there are no sessions suspended/active
+
 * Fri Sep 20 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt8
 - iterate through agent to get all sessions from all servers
 
