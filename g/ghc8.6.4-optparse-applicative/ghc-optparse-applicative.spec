@@ -7,7 +7,7 @@
 %define pkg_libdir %_libdir/%hsc_name-%hsc_version/%h_pkg_name-%version
 
 Name: %hsc_namever-%f_pkg_name
-Version: 0.14.3.0
+Version: 0.15.1.0
 Release: alt1
 License: BSD3
 Packager: Evgeny Sinelnikov <sin@altlinux.org>
@@ -51,6 +51,9 @@ also available on github
 %files -f %name-files.all
 
 %changelog
+* Wed Sep 18 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.15.1.0-alt1
+- updated with the help of cabal2gear.
+
 * Mon Jul 01 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.14.3.0-alt1
 - Spec created by cabal2rpm 0.20_11
 - Add build dependency to ansi-wl-pprint and transformers-compat
