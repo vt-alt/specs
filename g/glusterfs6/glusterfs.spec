@@ -1,6 +1,6 @@
 # TODO: --enable-bd-xlator
 
-%define major 6.3
+%define major 6.5
 #define _localstatedir /var
 %def_enable epoll
 %def_enable fusermount
@@ -14,7 +14,7 @@
 
 Name: glusterfs6
 Version: %major
-Release: alt5
+Release: alt1
 
 Summary: Cluster File System
 
@@ -26,7 +26,6 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # Source-url: https://github.com/gluster/glusterfs/archive/v%version.tar.gz
 Source: %name-%version.tar
-Source1: glusterd.sysconfig
 Source2: glusterfs.watch
 Source3: umount.glusterfs
 Source4: glusterfs.logrotate
@@ -423,7 +422,7 @@ install -D -m644 extras/systemd/glusterfssharedstorage.service %buildroot/%_unit
 # Install init script and sysconfig file
 %_init_install %SOURCE7 glusterd
 %_init_install %SOURCE8 glustereventsd
-install -D -p -m 0644 %SOURCE1 %buildroot%_sysconfdir/sysconfig/glusterd
+install -D -p -m 0644 extras/glusterd-sysconfig %buildroot%_sysconfdir/sysconfig/glusterd
 # Install wrapper umount script
 install -D -p -m 0755 %SOURCE3 %buildroot/sbin/umount.glusterfs
 
@@ -648,6 +647,12 @@ rm -fv %buildroot%glusterlibdir/cloudsync-plugins/cloudsyncs3.so
 %endif
 
 %changelog
+* Tue Sep 17 2019 Vitaly Lipatov <lav@altlinux.ru> 6.5-alt1
+- new version 6.5
+
+* Tue Sep 17 2019 Vitaly Lipatov <lav@altlinux.ru> 6.3-alt6
+- update sysv init-script and sysconfig config
+
 * Fri Jul 12 2019 Andrew A. Vasilyev <andy@altlinux.org> 6.3-alt5
 - clear python2 dependence
 - spec cleanup
