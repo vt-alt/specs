@@ -25,26 +25,37 @@
 # Spec file adapted for ALT Linux.
 
 %def_with systemd
-%define init_script systemd,sysvinit
 
 Name: lxc
-Version: 3.0.3
+Version: 3.0.4
 Release: alt3
-Packager: Denis Pynkin <dans@altlinux.org>
 
-URL: https://linuxcontainers.org/
-Source: %name-%version.tar
+Url: https://linuxcontainers.org/
+
+# https://github.com/lxc/lxc.git
+Source0: %name-%version.tar
 Source1: lxc-net.sysconfig
-Patch: %name-%version-%release.patch
 
-Summary: %name : Linux Container
+Patch1 : 0001-DEBIAN-Starts-after-remote-fs.target.patch
+Patch2 : 0002-DEBIAN-cgroups-hande-cpuset-initialization-race.patch
+Patch3 : 0003-DEBIAN-cgroups-initialize-cpuset-properly.patch
+Patch4 : 0004-DEBIAN-lxc-attach-make-sure-exit-status-of-command-i.patch
+Patch5 : 0005-FEDORA-lxc-net.service-wants-network-online.target.patch
+Patch6 : 0006-ALT-Fixed-_have-macro-in-bash-completion.patch
+Patch7 : 0007-ALT-tune-SysVinit-scripts.patch
+Patch8 : 0008-ALT-make-lxc-and-lxc-net-init-scripts-disabled-by-de.patch
+Patch9 : 0009-ALT-sysvinit-don-t-start-services-at-boot-by-default.patch
+Patch10 : 0010-pidf_send_signal-fix-return-value.patch
+
+Summary: Linux Containers
 Group: System/Configuration/Other
-License: LGPL
+License: LGPL-2.1-or-later
 Requires: libcap gzip-utils
 %ifarch x86_64 %arm
 Requires: criu
 %endif
 Requires: iproute2 bridge-utils dnsmasq wget
+Obsoletes: lxc-sysvinit
 BuildRequires: libcap-devel docbook-utils glibc-kernheaders
 BuildRequires: docbook2X xsltproc
 BuildRequires: rpm-macros-alternatives
@@ -54,12 +65,15 @@ BuildRequires: libgnutls-devel
 BuildRequires: libseccomp-devel
 BuildRequires: libselinux-devel
 
+# Skip automatic dependency to optional lsb scripts
+%add_findreq_skiplist %_initdir/*
+
 # Needed to disable auto requirements from distro templates
-%add_findreq_skiplist %_datadir/%name/*
+%add_findreq_skiplist %_datadir/lxc/*
 
 # Do not need to check
-%add_findreq_skiplist %_libexecdir/%name/lxc-apparmor-load
-%add_findreq_skiplist %_libexecdir/%name/lxc-net
+%add_findreq_skiplist %_libexecdir/lxc/lxc-apparmor-load
+%add_findreq_skiplist %_libexecdir/lxc/lxc-net
 
 Requires: openssl rsync
 BuildRequires: libcap libcap-devel docbook2X graphviz
@@ -76,22 +90,11 @@ This package provides the lxc-* tools, which can be used to start a single
 daemon in a container, or to boot an entire "containerized" system, and to
 manage and debug your containers.
 
-%package	sysvinit
-Summary:	%{name} init scripts for SysVinit
-Group:		System/Configuration/Other
-Requires:	%{name}
-Requires:	/sbin/chkconfig
-BuildArch:	noarch
-%description	sysvinit
-The %{name}-sysvinit package contains init scripts for SysVinit
-# Skip automatic dependency to optional lsb scripts
-%add_findreq_skiplist %{_initdir}/*
-
-%package	libs
-Summary:	Shared library files for %{name}
-Group:		System/Configuration/Other
-%description	libs
-The %{name}-libs package contains libraries for running %{name} applications.
+%package libs
+Summary: Shared library files for %name
+Group: System/Configuration/Other
+%description libs
+The %name-libs package contains libraries for running %name applications.
 
 %package devel
 Summary: development library for %name
@@ -116,92 +119,122 @@ management using cgroup process tracking.
 
 %prep
 %setup
-%patch -p1
-%ifarch %e2k
-# redefined typedef unsigned int __u32;
-sed -i 's,-Werror,,' configure.ac
-%endif
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
 
 %build
 %autoreconf
-%configure -disable-rpath \
-    --disable-cgmanager \
-    --localstatedir=%_var \
-    --with-config-path=%_var/lib/lxc \
-    --with-distro=altlinux \
-    --enable-capabilities \
-    --enable-pam \
-    --enable-seccomp \
-    --enable-selinux \
-    --with-init-script=%{init_script}
+%configure \
+	--disable-static \
+	%ifarch %e2k
+	--disable-werror \
+	%endif
+	--disable-rpath \
+	--disable-cgmanager \
+	--localstatedir=%_var \
+	--with-config-path=%_var/lib/lxc \
+	--with-distro=altlinux \
+	--enable-capabilities \
+	--enable-pam \
+	--enable-seccomp \
+	--enable-selinux \
+	--with-init-script=%{?_with_systemd:systemd,}sysvinit
 
 %make_build
 
 %install
 %makeinstall_std
-mkdir -p %buildroot%_localstatedir/%name
-mkdir -p %buildroot%_cachedir/%name
+mkdir -p %buildroot%_localstatedir/lxc
+mkdir -p %buildroot%_cachedir/lxc
 install -pm644 %SOURCE1 %buildroot/%_sysconfdir/sysconfig/lxc-net
 
-%post sysvinit
+%post
 if [ $1 -eq 1 ]; then
 	/sbin/chkconfig --add lxc
 	/sbin/chkconfig --add lxc-net
 fi
 
-%preun sysvinit
+%preun
 if [ $1 -eq 0 ]; then
 	/sbin/chkconfig --del lxc
 	/sbin/chkconfig --del lxc-net
 fi
 
 %files
-%defattr(-,root,root)
-%{_bindir}/*
-%{_mandir}/man1/lxc*
-%{_mandir}/man5/lxc*
-%{_mandir}/man7/lxc*
-%{_mandir}/ja/man1/lxc*
-%{_mandir}/ja/man5/lxc*
-%{_mandir}/ja/man7/lxc*
-%{_mandir}/ko/man1/lxc*
-%{_mandir}/ko/man5/lxc*
-%{_mandir}/ko/man7/lxc*
-%{_datadir}/doc/*
-%{_datadir}/lxc/*
-%{_sysconfdir}/bash_completion.d/*
-%config(noreplace) %{_sysconfdir}/lxc/*
-%config(noreplace) %{_sysconfdir}/sysconfig/lxc*
-%{_unitdir}/lxc.service
-%{_unitdir}/lxc@.service
-%{_unitdir}/lxc-net.service
+%doc COPYING doc/FAQ.txt
+%_bindir/*
 
-%files sysvinit
-%{_initdir}/*
+%_man1dir/lxc*
+%_man5dir/lxc*
+%_man7dir/lxc*
+
+%_mandir/ja/*
+%_mandir/ko/*
+
+%_defaultdocdir/lxc
+%_datadir/lxc
+
+%_sysconfdir/bash_completion.d/lxc
+
+%config(noreplace) %_sysconfdir/lxc/*
+%config(noreplace) %_sysconfdir/sysconfig/lxc*
+
+%_initdir/lxc
+%_initdir/lxc-net
+%if_with systemd
+%_unitdir/lxc.service
+%_unitdir/lxc@.service
+%_unitdir/lxc-net.service
+%endif
 
 %files libs
-%defattr(-,root,root)
-%{_sbindir}/*
-%{_libdir}/*.so.*
-%{_libdir}/%{name}
-%{_localstatedir}/*
-%{_libexecdir}/%{name}/lxc-apparmor-load
-%{_libexecdir}/%{name}/lxc-monitord
-%attr(555,root,root) %{_libexecdir}/%{name}/lxc-containers
-%attr(555,root,root) %{_libexecdir}/%{name}/lxc-net
-%attr(4111,root,root) %{_libexecdir}/%{name}/lxc-user-nic
-%{_libexecdir}/%{name}/hooks/*
+%doc COPYING
+%_sbindir/init.lxc
+%_libdir/*.so.1*
+%_libdir/lxc
+%_localstatedir/lxc
+%_libexecdir/lxc/lxc-apparmor-load
+%_libexecdir/lxc/lxc-monitord
+%attr(555,root,root) %_libexecdir/lxc/lxc-containers
+%attr(555,root,root) %_libexecdir/lxc/lxc-net
+%attr(4111,root,root) %_libexecdir/lxc/lxc-user-nic
+%_libexecdir/lxc/hooks
 
 %files devel
-%defattr(-,root,root)
-%{_includedir}/%{name}/*
-%{_libdir}/*.so
-%{_libdir}/pkgconfig/*
+%_includedir/lxc
+%_libdir/*.so
+%_pkgconfigdir/lxc.pc
 
 %files -n %pam_name
 %_pam_modules_dir/*
 
 %changelog
+* Fri Sep 20 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.0.4-alt3
+- Applied patches:
+  + Start lxc service after remote-fs.target (Debian);
+  + Hande cpuset initialization race in cgroups (Debian);
+  + Initialize cpuset properly in cgroups (Debian);
+  + Fix regression: return exit status of command in lxc-attach (Debian);
+  + lxc-net.service wants network-online.target (Fedora).
+- Obsoleted lxc-sysvinit.
+- Packaged COPYING and FAQ.txt.
+- Clean up specfile.
+
+* Fri Jul 12 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.0.4-alt2
+- Fixed working on kernel 5.1.
+- spec: fixed license LGPL to LGPL-2.1-or-later.
+
+* Thu Jul 04 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.0.4-alt1
+- 3.0.4.
+
 * Wed Feb 13 2019 Denis Pynkin <dans@altlinux.org> 3.0.3-alt3
 - Apply patch fixing the startup of LXD containers (after CVE-2019-5736)
 
@@ -341,7 +374,6 @@ fi
 - Now used default list of packages in case
   if /etc/lxc/profiles/default is absent
 
-
 * Sat Jun 14 2014 Denis Pynkin <dans@altlinux.org> 1.0.4-alt1
 - New version
 
@@ -356,7 +388,7 @@ fi
 - New version
 
 * Fri May 11 2012 Denis Pynkin <dans@altlinux.org> 0.7.5-alt3
-- Merged bc31b303c48c615c2cd15dd54831e55196b983f0 to fix 
+- Merged bc31b303c48c615c2cd15dd54831e55196b983f0 to fix
   build with new autotools
 
 * Mon Jan 02 2012 Denis Pynkin <dans@altlinux.org> 0.7.5-alt2
