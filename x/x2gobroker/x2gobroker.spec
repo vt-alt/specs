@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt9
+Release: alt10
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -13,6 +13,7 @@ Patch1: alt-start-from-uid-500.patch
 Patch2: alt-get-rid-of-sudo.patch
 Patch3: alt-def.patch
 Patch4: alt-iterate-listsessions.patch
+Patch5: alt-include-loadfactors.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
@@ -253,6 +254,7 @@ installed on your to-be-managed X2Go servers.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 echo "Files where we will be patching libexecedir:"
@@ -395,6 +397,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Tue Sep 24 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt10
+- include loadfactors
+
 * Mon Sep 23 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt9
 - use random agent when there are no sessions suspended/active
 
