@@ -3,15 +3,19 @@
 
 Name: lib%origname
 Version: 2.2.1
-Release: alt2
+Release: alt3
+
 Summary: AdLib sound player library
-Url: http://adplug.sourceforge.net/
 License: LGPL
 Group: Sound
+
+Url: http://adplug.sourceforge.net/
 Source: http://sourceforge.net/projects/adplug/files/AdPlug%%20core%%20library/2.2.1/%origname-%version.tar
 #.bz2
 Source1: http://sourceforge.net/projects/adplug/files/Database/2006-07-06/adplugdb-%dbver.tar
 #.gz
+Patch0: adplug-2.2.1-cve-2018-17825.patch
+Patch1: adplug-2.2.1-inline.patch
 
 # Automatically added by buildreq on Sun Sep 09 2012 (-bi)
 # optimized out: elfutils gnu-config libstdc++-devel pkg-config python-base
@@ -68,6 +72,8 @@ linking applications based on AdPlug.
 
 %prep
 %setup -n %origname-%version
+%patch0 -p1
+%patch1 -p1
 
 %build
 %add_optflags -fsigned-char
@@ -101,6 +107,13 @@ cp -a %dbver %buildroot%_datadir/%origname
 %endif
 
 %changelog
+* Sun Sep 22 2019 Michael Shigorin <mike@altlinux.org> 2.2.1-alt3
+- added fedora patches:
+  + inline (fixes e2k ftbfs)
+  + cve-2018-17825 (fixes: CVE-2018-17825)
+  + (signed-char unneeded, worked around in previous build)
+- NB: there's 2.3.1 release over at guthub
+
 * Wed Apr 11 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.2.1-alt2
 - fixed build on arm arches
 
