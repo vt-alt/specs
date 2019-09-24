@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.18
-Release:	alt3
+Release:	alt4
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -140,6 +140,9 @@ fi
 %files full
 
 %changelog
+* Tue Sep 24 2019 Alexey Shabalin <shaba@altlinux.org> 0.9.18-alt4
+- drop syslog from Should-Start in LSB header sysvinit script (Closes: #37237)
+
 * Wed Mar 13 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.9.18-alt3
 - some errs fixed
 
