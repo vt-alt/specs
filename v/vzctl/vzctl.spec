@@ -1,7 +1,7 @@
 
 Name: vzctl
-Version: 7.0.207
-Release: alt5
+Version: 7.0.208
+Release: alt1
 
 Summary: OpenVZ Virtual Environments control utility
 License: GPL
@@ -125,6 +125,9 @@ exit 0
 %config %_sysconfdir/modules-load.d/*.conf
 
 %changelog
+* Wed Sep 25 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.208-alt1
+- Update to 7.0.208
+
 * Tue Aug 27 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.207-alt5
 - spec cleanup
 
