@@ -1,8 +1,8 @@
 %def_without doc
 
 Name: keepass
-Version: 2.42.1
-Release: alt2
+Version: 2.43
+Release: alt1
 
 Summary: Password manager
 
@@ -125,6 +125,9 @@ cp -pr Docs/Chm %buildroot/%_docdir/%name/
 %endif
 
 %changelog
+* Mon Sep 16 2019 Oleg Solovyov <mcpain@altlinux.org> 2.43-alt1
+- new version: 2.43
+
 * Tue May 14 2019 Oleg Solovyov <mcpain@altlinux.org> 2.42.1-alt2
 - require xsel
 
