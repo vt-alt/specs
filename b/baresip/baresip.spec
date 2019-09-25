@@ -1,12 +1,12 @@
 Name: baresip
-Version: 0.6.0
-Release: alt1
+Version: 0.6.1
+Release: alt2
 
 Summary: Baresip is a portable and modular SIP User-Agent with audio and video support
 License: BSD
 Group: Communications
-Url: http://www.creytiv.com/baresip.html
 
+Url: http://www.creytiv.com/baresip.html
 Source: http://www.creytiv.com/pub/baresip-%version.tar
 
 BuildRequires: libSDL-devel libXext-devel libalsa-devel
@@ -31,10 +31,9 @@ and srtp media encoding.
 
 %prep
 %setup
-sed -i 's,lib/baresip/modules,%_lib/baresip/modules,' src/config.c
 
 %build
-%make_build RELEASE=1 MOD_AUTODETECT=1 PREFIX=%_prefix
+%make_build RELEASE=1 MOD_AUTODETECT=1 PREFIX=%_prefix MOD_PATH=%_libdir/baresip/modules
 
 %install
 %makeinstall_std RELEASE=1 MOD_AUTODETECT=1 LIBDIR=%_libdir
@@ -46,6 +45,12 @@ sed -i 's,lib/baresip/modules,%_lib/baresip/modules,' src/config.c
 %_datadir/%name
 
 %changelog
+* Fri Jul 12 2019 Michael Shigorin <mike@altlinux.org> 0.6.1-alt2
+- fix modpath properly
+
+* Tue May 14 2019 Vitaly Lipatov <lav@altlinux.ru> 0.6.1-alt1
+- new version 0.6.1 (with rpmrb script)
+
 * Fri Dec 14 2018 Vitaly Lipatov <lav@altlinux.ru> 0.6.0-alt1
 - new version 0.6.0 (with rpmrb script)
 
