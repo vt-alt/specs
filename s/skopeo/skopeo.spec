@@ -1,6 +1,6 @@
 %global import_path github.com/containers/skopeo
 Name: skopeo
-Version: 0.1.34
+Version: 0.1.39
 Release: alt1
 
 Summary: skopeo is a command line utility that performs various operations on container images and image repositories
@@ -19,6 +19,13 @@ Source4: registries.conf.5.md
 Source5: registries.conf
 Source6: policy.json.5.md
 Source7: seccomp.json
+Source8: containers-transports.5.md
+Source9: containers-signature.5.md
+Source10: containers-registries.d.5.md
+Source11: containers-registries.conf.5.md
+Source12: containers-policy.json.5.md
+Source13: containers-mounts.conf.5.md
+Source14: containers-certs.d.5.md
 
 BuildRequires(pre): rpm-build-golang
 BuildRequires: golang go-md2man
@@ -80,6 +87,13 @@ go-md2man -in %SOURCE2 -out %buildroot%_man5dir/containers-storage.conf.5
 go-md2man -in %SOURCE4 -out %buildroot%_man5dir/registries.conf.5
 install -p -m 644 %SOURCE5 %buildroot%_sysconfdir/containers/
 go-md2man -in %SOURCE6 -out %buildroot%_man5dir/policy.json.5
+go-md2man -in %SOURCE8 -out %buildroot%_man5dir/containers-transports.5
+go-md2man -in %SOURCE9 -out %buildroot%_man5dir/containers-signature.5
+go-md2man -in %SOURCE10 -out %buildroot%_man5dir/containers-registries.d.5
+go-md2man -in %SOURCE11 -out %buildroot%_man5dir/containers-registries.conf.5
+go-md2man -in %SOURCE12 -out %buildroot%_man5dir/containers-policy.json.5
+go-md2man -in %SOURCE13 -out %buildroot%_man5dir/containers-mounts.conf.5
+go-md2man -in %SOURCE14 -out %buildroot%_man5dir/containers-certs.d.5
 
 mkdir -p %buildroot%_datadir/containers
 install -m0644 %SOURCE3 %buildroot%_datadir/containers/mounts.conf
@@ -97,5 +111,8 @@ install -m0644 %SOURCE7 %buildroot%_datadir/containers/seccomp.json
 %doc *.md
 
 %changelog
+* Fri Sep 20 2019 Mikhail Gordeev <obirvalger@altlinux.org> 0.1.39-alt1
+- new version 0.1.39
+
 * Tue Jan 08 2019 Mikhail Gordeev <obirvalger@altlinux.org> 0.1.34-alt1
 - Initial build for Sisyphus
