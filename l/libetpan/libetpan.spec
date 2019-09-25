@@ -1,6 +1,6 @@
 Name: libetpan
 Version: 1.9.3
-Release: alt2
+Release: alt3
 
 Summary: This mail library  provide a portable, efficient middleware for different kinds of mail access
 License: %bsdstyle
@@ -16,6 +16,7 @@ Patch: %name-%version-%release.patch
 Patch1: Fixed-return-code-of-mailimap_logout-327.patch
 Patch2: Fix-mailmime_write-add-handler-for-MAILMIME_FIELD_LO.patch
 Patch3: Fix-TLS-timeouts-with-recent-versions-of-GnuTLS-330.patch
+Patch4: mailimap_quota_getquotaroot-Fix-SIGSEGV-334.patch
 
 %def_with gnutls
 %def_without openssl
@@ -59,6 +60,7 @@ program which use lib%name.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 ln -s README.md README
 
 %build
@@ -86,6 +88,10 @@ ln -s README.md README
 %_libdir/%name.so
 
 %changelog
+* Mon Sep 23 2019 Mikhail Efremov <sem@altlinux.org> 1.9.3-alt3
+- Patch from upstream:
+    + mailimap_quota_getquotaroot: Fix SIGSEGV (#334).
+
 * Thu May 16 2019 Mikhail Efremov <sem@altlinux.org> 1.9.3-alt2
 - Patches from upstream:
     + Fixed return code of mailimap_logout (#327).
