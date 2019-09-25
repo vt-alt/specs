@@ -1,7 +1,7 @@
 %define distro alt-server-v
 
 Name: installer-distro-%distro
-Version: 7.0.6
+Version: 9.0.0
 Release: alt1
 
 Summary: Installer configuration (Server V)
@@ -79,6 +79,11 @@ cp -a * %buildroot%install2dir/
 %files stage3
 
 %changelog
+* Wed Sep 25 2019 Alexey Shabalin <shaba@altlinux.org> 9.0.0-alt1
+- add OpenVZ server (large /var/lib/vz)
+- add Podman server (large /var/lib/containers)
+- update alterator-menu lists
+
 * Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 7.0.6-alt1
 - vm -> vm-ortodox
 - add preinstall and postinstall scripts
