@@ -10,8 +10,8 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.0.5
-Release: alt1%ubt
+Version: 3.1.0
+Release: alt1
 
 Source:%name-%version.tar
 
@@ -37,7 +37,6 @@ Provides: alterator-browser-qt4 = %version-%release
 Obsoletes: alterator-browser-qt4 < %version-%release
 Obsoletes: alterator-look-qt
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: libalternatives-devel
 BuildRequires: libudev-devel
 BuildRequires: qt5-base-devel qt5-x11extras-devel qt5-tools
@@ -83,58 +82,64 @@ __EOF__
 
 
 %changelog
-* Thu Sep 20 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.5-alt1%ubt
+* Wed Sep 25 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.0-alt1
+- allow to disable virtual keyboard via env or kernel cmdline
+
+* Fri Jun 14 2019 Sergey V Turchin <zerg at altlinux dot org> 3.0.5-alt2
+- don't use ubt macro
+
+* Thu Sep 20 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.5-alt1
 - hide cursor on startup animation
 
-* Mon Jun 18 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.4-alt1%ubt
+* Mon Jun 18 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.4-alt1
 - fix busy cursor on long alterator request
 
-* Thu Jun 14 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.3-alt1%ubt
+* Thu Jun 14 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.3-alt1
 - set window icon
 
-* Fri Apr 20 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.2-alt2%ubt
+* Fri Apr 20 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.2-alt2
 - require virtualkeyboard module
 
-* Thu Mar 29 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.2-alt1%ubt
+* Thu Mar 29 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.2-alt1
 - startup animation small improvement
 
-* Mon Mar 26 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.1-alt1%ubt
+* Mon Mar 26 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.1-alt1
 - set startup animation color according current color scheme
 
-* Tue Mar 06 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.0-alt2%ubt
+* Tue Mar 06 2018 Sergey V Turchin <zerg at altlinux dot org> 3.0.0-alt2
 - obsolete alterator-browser-qt4
 
-* Thu Dec 14 2017 Sergey V Turchin <zerg at altlinux dot org> 3.0.0-alt1%ubt
+* Thu Dec 14 2017 Sergey V Turchin <zerg at altlinux dot org> 3.0.0-alt1
 - enable High-DPI pixmaps by default
 
-* Fri Jun 16 2017 Sergey V Turchin <zerg at altlinux dot org> 2.92.1-alt1%ubt
+* Fri Jun 16 2017 Sergey V Turchin <zerg at altlinux dot org> 2.92.1-alt1
 - fix to quit without confirmation
 
-* Tue Jun 13 2017 Sergey V Turchin <zerg at altlinux dot org> 2.92.0-alt1%ubt
+* Tue Jun 13 2017 Sergey V Turchin <zerg at altlinux dot org> 2.92.0-alt1
 - handle closing main window
 
-* Tue May 30 2017 Sergey V Turchin <zerg at altlinux dot org> 2.91.1-alt1%ubt
+* Tue May 30 2017 Sergey V Turchin <zerg at altlinux dot org> 2.91.1-alt1
 - enable high-DPI scaling by default
 
-* Thu Apr 20 2017 Sergey V Turchin <zerg at altlinux dot org> 2.91.0-alt1%ubt
+* Thu Apr 20 2017 Sergey V Turchin <zerg at altlinux dot org> 2.91.0-alt1
 - add virtual keyboard support
 
-* Mon Apr 17 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.4-alt1%ubt
+* Mon Apr 17 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.4-alt1
 - simplify timer usage
 
-* Mon Apr 17 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.3-alt1%ubt
+* Mon Apr 17 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.3-alt1
 - fix i18n
 
-* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.2-alt1%ubt
+* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.2-alt1
 - fix color scheme
 
-* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.1-alt1%ubt
+* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.1-alt1
 - fix detect window manager
 
-* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.0-alt1%ubt
+* Fri Apr 14 2017 Sergey V Turchin <zerg at altlinux dot org> 2.90.0-alt1
 - port to Qt5
 
-* Thu Apr 13 2017 Sergey V Turchin <zerg at altlinux dot org> 2.19.4-alt2%ubt
+* Thu Apr 13 2017 Sergey V Turchin <zerg at altlinux dot org> 2.19.4-alt2
 - rename package
 
 * Tue Feb 18 2014 Sergey V Turchin <zerg at altlinux dot org> 2.19.4-alt1
