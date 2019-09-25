@@ -1,7 +1,7 @@
 %define subscribers_dir /lib/resolvconf
 
 Name: openresolv
-Version: 3.9.1
+Version: 3.9.2
 Release: alt1
 
 Summary: A framework for managing DNS information 
@@ -18,7 +18,10 @@ BuildRequires(pre): rpm-build-licenses
 
 Requires: filesystem >= 2.3.5
 
+# pdnsd support
 %def_with pdnsd
+# PowerDNS support
+%def_with pdns
 
 %define _unpackaged_files_terminate_build 1
 
@@ -68,6 +71,17 @@ Requires: pdnsd
 
 %description pdnsd
 pdnsd subscriber for openresolv
+%endif
+
+%if_with pdns
+%package pdns
+Summary: PowerDNS subscriber for openresolv
+Group: System/Configuration/Networking
+Requires: %name = %version-%release
+Requires: pdns
+
+%description pdns
+PowerDNS subscriber for openresolv
 %endif
 
 %prep
@@ -121,7 +135,19 @@ touch %buildroot%_localstatedir/bind/etc/resolvconf-options.conf
 %exclude %subscribers_dir/pdnsd
 %endif
 
+%if_with pdns
+%files pdns
+%subscribers_dir/pdns_recursor
+%else
+%exclude %subscribers_dir/pdns_recursor
+%endif
+
 %changelog
+* Mon Sep 23 2019 Mikhail Efremov <sem@altlinux.org> 3.9.2-alt1
+- Package PowerDNS subscriber.
+- pdns_recursor: Fix service name.
+- Updated to 3.9.2.
+
 * Tue Aug 20 2019 Mikhail Efremov <sem@altlinux.org> 3.9.1-alt1
 - Updated to 3.9.1.
 
