@@ -1,5 +1,5 @@
 Name: rpm-utils
-Version: 0.10.2
+Version: 0.10.3
 Release: alt1
 
 Summary: Utilities every rpm packager must have
@@ -10,14 +10,14 @@ Source: %name-%version.tar
 
 Requires: getopt, time
 Requires: rpm-build > 0:4.0.4-alt96.8, mktemp >= 1:1.3.1
-# strace version that works
-Requires: strace >= 4.11
+# due to strace --seccomp-bpf
+Requires: strace >= 5.3
 
 # due to rpmEVRDTCompare() in rpmrdups:
 BuildPreReq: librpm-devel >= 4.13.0.1-alt9
 
-# Automatically added by buildreq on Wed Mar 26 2008
-BuildRequires: gcc-c++ pkgconfig librpm-devel
+# Automatically added by buildreq on Wed Sep 25 2019
+BuildRequires: gcc-c++ librpm-devel
 
 %description
 This package contains following utilities:
@@ -75,6 +75,9 @@ fi >&2
 %_datadir/buildreqs
 
 %changelog
+* Wed Sep 25 2019 Dmitry V. Levin <ldv@altlinux.org> 0.10.3-alt1
+- strace_files: speedup by enabling latest strace features.
+
 * Thu Jun 20 2019 Dmitry V. Levin <ldv@altlinux.org> 0.10.2-alt1
 - filter_spec: fixed regular expressions for modern gawk.
 

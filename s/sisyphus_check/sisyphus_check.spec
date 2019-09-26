@@ -1,5 +1,5 @@
 Name: sisyphus_check
-Version: 0.8.50
+Version: 0.8.52
 Release: alt1
 
 Summary: package checker for Sisyphus
@@ -32,6 +32,13 @@ cp -a -- sisyphus_check.d %buildroot%_sysconfdir/%name/check.d
 %_bindir/*
 
 %changelog
+* Wed Sep 25 2019 Dmitry V. Levin <ldv@altlinux.org> 0.8.52-alt1
+- 130-check-fhs: allow hasher-provides-dev-kvm package to provide /dev/kvm.
+
+* Thu Jun 27 2019 Dmitry V. Levin <ldv@altlinux.org> 0.8.51-alt1
+- 130-check-fhs (check_fhs): disallow invalid path names
+  starting with /usr/lib/tmpfiles.d/.
+
 * Fri Apr 26 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.8.50-alt1
 - 210-check-kernel: more info in a message
   (about multiple kernel-image Requires).

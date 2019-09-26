@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.2
+Version: 5.3
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -17,7 +17,7 @@ Conflicts: rpm-utils <= 0:0.9.11-alt1
 # for -k option
 BuildRequires: libdw-devel binutils-devel
 # for test suite
-%{?!_without_check:%{?!_disable_check:BuildRequires: /proc}}
+%{?!_without_check:%{?!_disable_check:BuildRequires: /proc /dev/kvm}}
 
 # The default is --enable-mpers=yes, but
 # some architectures may need --enable-mpers=check instead.
@@ -81,7 +81,7 @@ export SLEEP_A_BIT='sleep 0.5' VERBOSE=1
 %make_build -k check -C build VERBOSE=1
 
 echo 'BEGIN OF TEST SUITE INFORMATION'
-tail -n 99999 -- build/tests*/test-suite*.log build/tests*/ksysent.log
+tail -n 99999 -- build/tests*/test-suite*.log build/tests*/ksysent.gen.log
 find build/tests* -type f -name '*.log' -print0 |
 	xargs -r0 grep -H '^KERNEL BUG:' -- ||:
 echo 'END OF TEST SUITE INFORMATION'
@@ -96,6 +96,9 @@ echo 'END OF TEST SUITE INFORMATION'
 %_bindir/strace-graph
 
 %changelog
+* Wed Sep 25 2019 Dmitry V. Levin <ldv@altlinux.org> 5.3-alt1
+- v5.2 -> v5.3.
+
 * Fri Jul 12 2019 Dmitry V. Levin <ldv@altlinux.org> 5.2-alt1
 - v5.1 -> v5.2.
 
