@@ -2,7 +2,7 @@
 
 Name: zathura
 Version: 0.4.4
-Release: alt1
+Release: alt2
 
 Summary: A lightweight document viewer
 License: %bsdstyle
@@ -15,8 +15,12 @@ Patch: %name-%version-%release.patch
 BuildRequires(pre): rpm-build-licenses meson
 BuildRequires: libgirara-devel >= 0.3.2-alt1
 BuildRequires: intltool libgtk+3-devel libsqlite3-devel python3-module-docutils libmagic-devel zlib-devel
+BuildRequires: libsynctex-devel
+BuildRequires: libseccomp-devel
 # For man pages
 BuildRequires: python3-module-sphinx python3-module-sphinx-sphinx-build-symlink
+# To create icons
+BuildRequires: librsvg-utils
 
 Conflicts: zatura-pdf-poppler < 0.2.5-alt1
 Conflicts: zatura-djvu < 0.2.3-alt2
@@ -56,7 +60,8 @@ mkdir -p %buildroot%_libdir/zathura
 %_bindir/%name
 %dir %_libdir/%name
 %_desktopdir/*
-%_iconsdir/*/*/*
+%_iconsdir/scalable/*/*
+%_iconsdir/hicolor/*/*/*
 %_datadir/metainfo/*.xml
 %_man1dir/*
 %_man5dir/*
@@ -70,6 +75,11 @@ mkdir -p %buildroot%_libdir/zathura
 %_libdir/pkgconfig/*.pc
 
 %changelog
+* Tue Sep 24 2019 Mikhail Efremov <sem@altlinux.org> 0.4.4-alt2
+- Enable libseccomp support.
+- Generate and package icons.
+- Enable libsynctex support.
+
 * Mon Sep 16 2019 Mikhail Efremov <sem@altlinux.org> 0.4.4-alt1
 - Fix URL.
 - Updated to 0.4.4.
