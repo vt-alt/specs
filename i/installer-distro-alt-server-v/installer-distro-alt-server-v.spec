@@ -2,7 +2,7 @@
 
 Name: installer-distro-%distro
 Version: 9.0.0
-Release: alt1
+Release: alt2
 
 Summary: Installer configuration (Server V)
 License: GPL
@@ -79,6 +79,10 @@ cp -a * %buildroot%install2dir/
 %files stage3
 
 %changelog
+* Thu Sep 26 2019 Alexey Shabalin <shaba@altlinux.org> 9.0.0-alt2
+- add support vd* disks in vm profile
+- rename /var/lib/libvirt/images -> /var/lib/libvirt
+
 * Wed Sep 25 2019 Alexey Shabalin <shaba@altlinux.org> 9.0.0-alt1
 - add OpenVZ server (large /var/lib/vz)
 - add Podman server (large /var/lib/containers)
