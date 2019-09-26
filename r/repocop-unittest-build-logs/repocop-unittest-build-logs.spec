@@ -4,7 +4,7 @@ BuildRequires: perl(Test/Repocop/ExternalTest.pm)
 %define testname build-logs
 
 Name: repocop-unittest-%testname
-Version: 0.10
+Version: 0.11
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -13,7 +13,7 @@ Summary: %testname unit tests for repocop test platform
 Group: Development/Other
 License: GPL or Artistic
 Url: http://repocop.altlinux.org
-Requires: repocop >= 0.74
+Requires: repocop >= 0.80
 
 Source0: %name-%version.tar
 
@@ -51,6 +51,9 @@ done
 %_datadir/repocop/srccollectors/*
 
 %changelog
+* Wed Sep 11 2019 Igor Vlasenko <viy@altlinux.ru> 0.11-alt1
+- ported to repocop > 0.80
+
 * Fri Jul 20 2018 Igor Vlasenko <viy@altlinux.ru> 0.10-alt1
 - support for zst/gz/xz compressed logs
 
