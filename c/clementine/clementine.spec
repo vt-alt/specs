@@ -2,8 +2,7 @@
 
 Name: clementine
 Version: 1.3.1
-Release: alt7.1
-
+Release: alt8.git88131ec5
 Summary: A music player and library organiser
 
 Group: Sound
@@ -11,67 +10,60 @@ License: %lgpl3only
 Url: https://www.clementine-player.org/
 
 Source0: %name-%version.tar.gz
-Patch1: %name-1.3.0-alt-sqlite-fts3.patch
-Patch2: %name-1.3.1-alt-disable-vk.patch
-Patch3: %name-1.3.1-alt-gcc-compat.patch
-Patch4: %name-1.3.1-chromaprint1.4.patch
-Patch5: %name-1.3.1-alt-gcc7-header-deps.patch
-Patch6: %name-1.3.1-libcryptopp-6.patch
 
 BuildRequires(pre): rpm-build-licenses
-BuildRequires: boost-devel-headers cmake gcc-c++ libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdmcp-devel libXft-devel libXinerama-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libgio-devel libglew-devel libgpod-devel liblastfm-devel libmtp-devel libqt4-opengl libqt4-sql libqt4-webkit libqt4-xmlpatterns libtag-devel libxkbfile-devel python-module-sip qt4-designer subversion
+BuildRequires(pre): rpm-macros-cmake cmake
+BuildRequires: boost-devel-headers gcc-c++
+BuildRequires: libgio-devel libglew-devel libgpod-devel liblastfm-devel libmtp-devel
+BuildRequires: libqt5-opengl libqt5-sql libqt5-webkit libqt5-xmlpatterns qt5-x11extras-devel
+BuildRequires: libtag-devel
 BuildRequires: gstreamer%{gst_api_ver}-devel gst-plugins%gst_api_ver-devel gstreamer%gst_api_ver-utils
 BuildRequires: libchromaprint-devel
 BuildRequires: libcryptopp-devel >= 6
 # SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER is available since 3.12
 BuildRequires: libsqlite3-devel >= 3.12
 BuildRequires: libpulseaudio-devel
-BuildRequires: libechonest-devel
 
-BuildRequires: kde-common-devel libqt4-sql-sqlite libqca2-devel protobuf-compiler
+BuildRequires: qt5-sql-sqlite3 protobuf-compiler
 # Enable Google Drive support
 BuildRequires: libgoogle-sparsehash
-BuildPreReq: libfftw3-devel libavcodec-devel libavformat-devel libpcre-devel
-BuildPreReq: libprotobuf-devel qjson-devel libcdio-devel
+BuildPreReq: libavcodec-devel libavformat-devel libpcre-devel
+BuildPreReq: libprotobuf-devel qjson-qt5-devel libcdio-devel
 
 # Clementine crashes without it
 Requires: gst-plugins-base%{gst_api_ver}
 
 %description
-Clementine is a modern music player and library organiser.
-It is largely a port of Amarok 1.4, with some features rewritten to take
-advantage of Qt4.
+Clementine is a modern music player and library organizer
 
 %add_python_req_skip clementine
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p2
-%patch3 -p2
-%patch4 -p1
-%patch5 -p2
-%patch6 -p1
 
 %build
-%K4build -DSTATIC_SQLITE=on -DBUILD_WERROR=off
+%cmake
+%cmake_build
 
 %install
-%K4install
+%cmakeinstall_std
 
 %files
 %doc Changelog
 %_bindir/clementine
 %_bindir/clementine-tagreader
 %_desktopdir/clementine.desktop
-%_datadir/kde4/services/*
+%_datadir/kservices5/*.protocol
 %_datadir/clementine
-%_datadir/appdata/clementine.appdata.xml
+%_datadir/metainfo/clementine.appdata.xml
 %_datadir/icons/hicolor/*/apps/*.png
 %_datadir/icons/hicolor/*/apps/*.svg
 
 
 %changelog
+* Wed Sep 25 2019 Vladimir Didenko <cow@altlinux.org> 1.3.1-alt8.git88131ec5
+- Update to the lastest qt5 snapshot (closes: #37261)
+
 * Sun Nov 04 2018 Vitaly Lipatov <lav@altlinux.ru> 1.3.1-alt7.1
 - NMU: autorebuild with libcryptopp.so.7
 

@@ -3,7 +3,7 @@
 
 Name: %_name-qt5
 Version: 0.9.0
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Lightweight data-interchange format
@@ -50,6 +50,10 @@ Development files for %name
 %setup -n %_name-%version
 
 %build
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.12
+%add_optflags -std=c++11
+%endif
 %cmake \
     -DCMAKE_MODULES_INSTALL_DIR=%_datadir/CMake/Modules
 %cmake_build
@@ -69,6 +73,9 @@ Development files for %name
 %_pkgconfigdir/QJson-qt5.pc
 
 %changelog
+* Tue Sep 03 2019 Michael Shigorin <mike@altlinux.org> 0.9.0-alt2
+- E2K: explicit -std=c++11
+
 * Thu Jan 19 2017 Yuri N. Sedunov <aris@altlinux.org> 0.9.0-alt1
 - 0.9.0
 
