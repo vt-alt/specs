@@ -1,6 +1,6 @@
 
 %global import_path github.com/kubernetes/kubernetes
-%global commit 641856db18352033a0d96dbc99153fa3b27298e5
+%global commit 67d2fcf276fcd9cf743ad4be9a9ef5828adc082f
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -10,7 +10,7 @@
 %brp_strip_none %_bindir/*
 
 Name: kubernetes
-Version: 1.15.2
+Version: 1.15.4
 Release: alt1
 Summary: Container cluster management
 
@@ -138,6 +138,7 @@ Kubernetes client tools like kubectl
 
 %prep
 %setup -q
+rm -f go.{mod,sum}
 
 %build
 export BUILDDIR="$PWD/.gopath"
@@ -305,6 +306,15 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Thu Sep 26 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.4-alt1
+- 1.15.4
+
+* Thu Sep 26 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.3-alt1
+- 1.15.3 (Fixes: CVE-2019-9512, CVE-2019-9514)
+
+* Tue Sep 24 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.15.2-alt2
+- Remove deprecated and removed flags from kubeadm.conf
+
 * Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.2-alt1
 - 1.15.2
 
