@@ -2,7 +2,7 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20190716
+Version: 20190926
 Release: alt1
 Url: https://github.com/raspberrypi/firmware
 License: distributable
@@ -10,24 +10,24 @@ Group: System/Kernel and hardware
 
 ExclusiveArch: %arm aarch64
 
-Source0: https://github.com/raspberrypi/firmware/raw/next/boot/bootcode.bin
-Source1: https://github.com/raspberrypi/firmware/raw/next/boot/fixup.dat
-Source2: https://github.com/raspberrypi/firmware/raw/next/boot/fixup_cd.dat
-Source3: https://github.com/raspberrypi/firmware/raw/next/boot/fixup_db.dat
-Source4: https://github.com/raspberrypi/firmware/raw/next/boot/fixup_x.dat
-Source5: https://github.com/raspberrypi/firmware/raw/next/boot/start.elf
-Source6: https://github.com/raspberrypi/firmware/raw/next/boot/start_cd.elf
-Source7: https://github.com/raspberrypi/firmware/raw/next/boot/start_db.elf
-Source8: https://github.com/raspberrypi/firmware/raw/next/boot/start_x.elf
-Source9: https://github.com/raspberrypi/firmware/raw/next/boot/LICENCE.broadcom
-Source10: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4.dat
-Source11: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4cd.dat
-Source12: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4db.dat
-Source13: https://github.com/raspberrypi/firmware/raw/next/boot/fixup4x.dat
-Source14: https://github.com/raspberrypi/firmware/raw/next/boot/start4.elf
-Source15: https://github.com/raspberrypi/firmware/raw/next/boot/start4cd.elf
-Source16: https://github.com/raspberrypi/firmware/raw/next/boot/start4db.elf
-Source17: https://github.com/raspberrypi/firmware/raw/next/boot/start4x.elf
+Source0: bootcode.bin
+Source1: fixup.dat
+Source2: fixup_cd.dat
+Source3: fixup_db.dat
+Source4: fixup_x.dat
+Source5: start.elf
+Source6: start_cd.elf
+Source7: start_db.elf
+Source8: start_x.elf
+Source9: LICENCE.broadcom
+Source10: fixup4.dat
+Source11: fixup4cd.dat
+Source12: fixup4db.dat
+Source13: fixup4x.dat
+Source14: start4.elf
+Source15: start4cd.elf
+Source16: start4db.elf
+Source17: start4x.elf
 
 Requires: u-boot-rpi3
 
@@ -71,6 +71,9 @@ echo 'enable_uart=1' > %buildroot/%target/config.txt
 %doc %_docdir/%name
 
 %changelog
+* Thu Sep 26 2019 Dmitry Terekhin <jqt4@altlinux.org> 20190926-alt1
+- new snapshot
+
 * Sat Jul 20 2019 Anton Midyukov <antohami@altlinux.org> 20190716-alt1
 - new snapshot
 
