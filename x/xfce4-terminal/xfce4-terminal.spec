@@ -1,6 +1,6 @@
 Name: xfce4-terminal
 Version: 0.8.8
-Release: alt1
+Release: alt2
 
 Summary: Terminal emulator application for Xfce
 Summary (ru_RU.UTF-8): Эмулятор терминала для Xfce
@@ -16,6 +16,7 @@ BuildRequires(pre): rpm-build-licenses
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4ui-gtk3-devel
 BuildPreReq: gnome-doc-utils xml-utils xsltproc
+BuildRequires: libpcre2-devel
 
 # Automatically added by buildreq on Fri Aug 07 2009
 BuildRequires: docbook-dtds docbook-style-xsl intltool libSM-devel libdbus-glib-devel libvte3-devel time xorg-cf-files
@@ -65,6 +66,9 @@ xfce4-terminal - легкий и удобный эмулятор термина�
 %_desktopdir/*
 
 %changelog
+* Sat Sep 28 2019 Mikhail Efremov <sem@altlinux.org> 0.8.8-alt2
+- Fix BR: Add libpcre2-devel.
+
 * Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 0.8.8-alt1
 - Updated to 0.8.8.
 
