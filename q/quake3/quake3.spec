@@ -4,15 +4,14 @@
 
 %define revision 2349
 
-%if %_arch == x86_64
-%define __arch x86_64
-%else
+%define __arch %_arch
+%ifarch %ix86
 %define __arch i386
 %endif
 
 Name: quake3
 Version: 1.36
-Release: alt2.svn%revision
+Release: alt3.svn%revision
 
 Summary: Quake 3: Arena by ID Software
 License: GPL
@@ -29,7 +28,7 @@ Source11: quake3.sysconfig
 Source12: quake3-ctf.init
 Source13: quake3-ctf.sysconfig
 
-Patch0: quake3-alt-bug14027.patch
+Patch0: quake3-alt-aarch64.patch
 
 Packager: Igor Zubkov <icesik@altlinux.org>
 
@@ -83,6 +82,7 @@ Quake 3: Arena by ID Software.
 
 %prep
 %setup -q -n ioquake3
+%patch -p2
 
 #rm -rf code/zlib code/libspeex
 
@@ -184,6 +184,9 @@ echo "In order to actually play the game, you'll need pak-files from original ga
 %dir %attr(1770,root,%_group) %_home
 
 %changelog
+* Sat Sep 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.36-alt3.svn2349
+- Fixed build on ppc64le and aarch64 architectures.
+
 * Mon Nov 30 2015 Igor Vlasenko <viy@altlinux.ru> 1.36-alt2.svn2349
 - NMU: added BR: libspeexdsp-devel
 
