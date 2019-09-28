@@ -3,8 +3,8 @@
 %def_enable vala
 
 Name: xfce4-panel
-Version: 4.14.0
-Release: alt2
+Version: 4.14.1
+Release: alt1
 
 Summary: Panel for Xfce
 Summary(ru_RU.UTF-8): Панель для окружения рабочего стола Xfce
@@ -194,6 +194,9 @@ Vala bindings for libxfce4panel-gtk3.
 %endif
 
 %changelog
+* Thu Sep 26 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
+- Updated to 4.14.1.
+
 * Mon Sep 23 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt2
 - Fix systray icons drawing w/o compositing (by Ivan A. Melnikov).
 
