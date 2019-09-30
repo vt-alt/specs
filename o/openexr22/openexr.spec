@@ -3,7 +3,7 @@
 %define rname OpenEXR
 Name: openexr22
 Version: 2.2.0
-Release: alt4
+Release: alt5
 
 %define common %name-common
 %define libilmimf libilmimf%libsover
@@ -30,7 +30,7 @@ Patch13: alt-gcc8.patch
 # Automatically added by buildreq on Thu Apr 21 2011 (-bi)
 # optimized out: elfutils libstdc++-devel pkg-config
 #BuildRequires: gcc-c++ glibc-devel-static ilmbase-devel zlib-devel
-BuildRequires: gcc-c++ glibc-devel ilmbase-devel zlib-devel
+BuildRequires: gcc-c++ glibc-devel ilmbase12-devel zlib-devel
 BuildRequires: cmake kde-common-devel
 
 %description
@@ -120,6 +120,9 @@ install -m 0644 README %buildroot/%_docdir/%name-%version/
 
 
 %changelog
+* Mon Sep 30 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt5
+- fix build requires
+
 * Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt4
 - create compatibility package
 
