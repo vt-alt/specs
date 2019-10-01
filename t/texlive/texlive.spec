@@ -2,10 +2,6 @@
 BuildRequires: gcc-c++ gobject-introspection-devel imake libXt-devel perl(BibTeX/Parser.pm) perl(BibTeX/Parser/Author.pm) perl(Date/Format.pm) perl(Date/Parse.pm) perl(Digest/SHA1.pm) perl(Encode.pm) perl(ExtUtils/MakeMaker.pm) perl(Fatal.pm) perl(File/Copy/Recursive.pm) perl(File/Which.pm) perl(HTML/FormatText.pm) perl(HTML/TreeBuilder.pm) perl(HTTP/Request/Common.pm) perl(IPC/System/Simple.pm) perl(JSON.pm) perl(LWP/Protocol/https.pm) perl(LWP/Simple.pm) perl(LWP/UserAgent.pm) perl(LaTeX/ToUnicode.pm) perl(Locale/Maketext/Simple.pm) perl(Math/Trig.pm) perl(Output.pm) perl(Pod/Man.pm) perl(Pod/Text.pm) perl(Pod/Usage.pm) perl(Spreadsheet/ParseExcel.pm) perl(Statistics/Descriptive.pm) perl(Statistics/Distributions.pm) perl(Term/ANSIColor.pm) perl(Term/ReadKey.pm) perl(Test.pm) perl(Tk.pm) perl(Tk/Dialog.pm)
 BuildRequires: perl(Tk/NoteBook.pm) perl(URI/Escape.pm) perl(WWW/Mechanize.pm) perl(autodie.pm) perl-devel texinfo xorg-cf-files zlib-devel
 # END SourceDeps(oneline)
-%def_without backport_p8
-%if_with backport_p8
-BuildRequires: libpng-devel
-%endif
 # findreq artefacts
 # let's drop the dep for now
 %filter_from_requires /^gambit$/d
@@ -66,15 +62,15 @@ BuildRequires: chrpath
 %define texmfprojectdir		%{_datadir}/texmf-project
 %define texmfvardir		%{_localstatedir}/lib/texmf
 %define texmfconfdir		%{_sysconfdir}/texmf
-%define relYear	2018
+%define relYear	2019
 %global tl_version %relYear
-%global mga_tl_timestamp 20180414
+%global mga_tl_timestamp 20190410
 
 
 #-----------------------------------------------------------------------
 Name:		texlive
 Version:	%relYear
-Release:	alt3_12
+Release:	alt1_2
 Summary:	The TeX formatting system
 Group:		Publishing
 License:	http://www.tug.org/texlive/LICENSE.TL
@@ -83,6 +79,7 @@ Source0:	ftp://tug.org/historic/systems/texlive/%{relYear}/%{name}-%{mga_tl_time
 Source1:	ftp://tug.org/historic/systems/texlive/%{relYear}/%{name}-%{mga_tl_timestamp}-source.tar.xz.sha512
 
 %if %{enable_xdvik}
+Requires:	ghostscript-module-X
 %endif
 
 
@@ -109,7 +106,7 @@ Requires:	libteckit-utils
 Requires:	tex4ht
 %else
 %endif
-Requires:	texlive-collection-basic 
+Requires:	texlive-collection-basic
 
 # Fix upgrade for luatex (mga#12303)
 
@@ -131,7 +128,7 @@ BuildRequires:	libgc-devel
 BuildRequires:	libsigsegv-devel
 BuildRequires:	ghostscript-utils
 BuildRequires:	libgsl-devel
-BuildRequires:	libGL-devel libglvnd-devel
+BuildRequires:	libGL-devel
 %endif
 BuildRequires:	pkgconfig(gdlib)
 %if %{with_system_poppler}
@@ -160,22 +157,18 @@ BuildRequires:	makeinfo
 BuildRequires:	pkgconfig(zziplib)
 BuildRequires:	pkgconfig(cairo)
 BuildRequires:	libpaper-devel
+BuildRequires:	mercurial mercurial-hgext
 
 #-----------------------------------------------------------------------
 Patch1: texlive-20160523-mageia-format.patch
+%if %{enable_asymptote}
 Patch2: texlive-20160523-mageia-asymptote.patch
+%endif
 Patch4: texlive-20160523-texmf-mageia-kpfix.patch
 Patch5: includePatch.patch
-Patch6: CVE-2018-17407.patch
-Patch7: texlive-20180414-synctex-version.patch
-Patch107: 0001-try-to-adapt-to-poppler-0.58.patch
-Patch108: poppler-compat-fixes-up-to-0.70.patch
-Patch109: luatex-poppler-0.70-const-fixes.patch
-Patch110: texlive-poppler-0.71.patch
-Patch111: luatex-poppler-0.71.patch
-Patch112: texlive-poppler-0.72.patch
-Patch113: luatex-poppler-0.72.patch
-Patch114: luatex-poppler-0.73.patch
+# Poppler patches
+Patch101: 0001-try-to-adapt-to-poppler-0.58.patch
+Patch102: pdftex-poppler0.76.patch
 Source44: import.info
 Provides: dvipng = %{tl_version}
 Provides: lcdf-typetools = %{tl_version}
@@ -207,11 +200,9 @@ Conflicts: texlive-xetex < 2009
 Patch33: texlive-2017-alt-texmf-first.patch
 Patch34: texlive-2018-alt-gcc8.patch
 Provides: texlive-collection-binextra = %{tl_version}
-Patch35: luatex-poppler-0.75.patch
-Patch36: texlive-poppler-0.75.patch
-
-#mga22386, fix from https://bugs.gentoo.org/621252
-#Patch200: texlive-luatex-gcc7align.patch
+Patch35: texlive-2018-e2k-graphite2.patch
+Patch36: texlive-2018-e2k-luatex.patch
+Patch37: texlive-2018-e2k-variant.patch
 
 #-----------------------------------------------------------------------
 %description
@@ -293,8 +284,6 @@ Group:		System/Libraries
 TeXlua library
 
 %files		-n %{texlua}
-%{_libdir}/libtexlua52.so.%{texlua_major}
-%{_libdir}/libtexlua52.so.%{texlua_major}.*
 %{_libdir}/libtexlua53.so.%{texlua_major}
 %{_libdir}/libtexlua53.so.%{texlua_major}.*
 %if %{enable_luajittex}
@@ -316,10 +305,7 @@ TeXlua library
 This package includes the TeXlua development files.
 
 %files		-n %{texlua_devel}
-%{_includedir}/texlua52
 %{_includedir}/texlua53
-%{_libdir}/libtexlua52.so
-%{_libdir}/pkgconfig/texlua52.pc
 %{_libdir}/libtexlua53.so
 %{_libdir}/pkgconfig/texlua53.pc
 %if %{enable_luajittex}
@@ -341,14 +327,13 @@ TeXlua library
 This package includes the static TeXlua library.
 
 %files		-n %{texlua_static_devel}
-%{_libdir}/libtexlua52.a
 %{_libdir}/libtexlua53.a
 %if %{enable_luajittex}
 %{_libdir}/libtexluajit.a
 %endif
 
 #-----------------------------------------------------------------------
-%define        synctex_major           1
+%define        synctex_major           2
 %define        synctex                 libsynctex%{synctex_major}
 
 %package	-n %{synctex}
@@ -454,32 +439,19 @@ This package includes the static ptexenc library.
 #-----------------------------------------------------------------------
 %prep
 %setup -q -n %{name}-%{mga_tl_timestamp}-source
-
 %patch1 -p1
 %if %{enable_asymptote}
 %patch2 -p1
 %endif
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
-%patch7 -p2
-%if_without backport_p8
-%patch107 -p2
-%endif
-%patch108 -p1
-%patch109 -p1
-%patch110 -p0
-%patch111 -p1
-%patch112 -p0
-%patch113 -p1
-%patch114 -p1
-%patch35 -p0
-%patch36 -p0
+%patch101 -p1
+%patch102 -p1
 
-#%%patch200 -p1 -b .gcc7align
 
-cp -pv texk/web2c/pdftexdir/pdftoepdf{-poppler0.75.0,}.cc
-cp -pv texk/web2c/pdftexdir/pdftosrc{-poppler0.72.0,}.cc
+# poppler
+cp -pv texk/web2c/pdftexdir/pdftoepdf{-poppler0.76.0,}.cc
+cp -pv texk/web2c/pdftexdir/pdftosrc{-poppler0.76.0,}.cc
 
 # setup default builtin values, added to paths.h from texmf.cnf
 perl -pi -e 's%%^(TEXMFMAIN\s+= ).*%%$1%{texmfdistdir}%%;'			  \
@@ -494,6 +466,9 @@ perl -pi -e 's%%^(TEXMFMAIN\s+= ).*%%$1%{texmfdistdir}%%;'			  \
 	texk/kpathsea/texmf.cnf
 %patch33 -p0
 %patch34 -p1
+%patch35 -p2
+%patch36 -p2
+#patch37 -p2
 
 #-----------------------------------------------------------------------
 %build
@@ -709,8 +684,6 @@ rm -fr %{buildroot}%{_includedir}
 %endif
 
 rm -f %{buildroot}%{_datadir}/applications/xdvi.desktop
-
-# touching all ghosts; hack for rpm 4.0.4
 for rpm404_ghost in %{texmfconfdir}/web2c/updmap.cfg
 do
     mkdir -p %buildroot`dirname "$rpm404_ghost"`
@@ -728,6 +701,9 @@ rm -f %{texmfdir}/ls-R %{texmfdistdir}/ls-R %{texmfconfdir}/ls-R
 
 #-----------------------------------------------------------------------
 %changelog
+* Sat Jul 20 2019 Igor Vlasenko <viy@altlinux.ru> 2019-alt1_2
+- new version
+
 * Fri May 24 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2018-alt3_12
 - Fixed build on architectures not supported by luajit.
 
