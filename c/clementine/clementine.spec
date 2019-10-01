@@ -2,7 +2,7 @@
 
 Name: clementine
 Version: 1.3.1
-Release: alt8.git88131ec5
+Release: alt9.git88131ec5
 Summary: A music player and library organiser
 
 Group: Sound
@@ -23,6 +23,9 @@ BuildRequires: libcryptopp-devel >= 6
 # SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER is available since 3.12
 BuildRequires: libsqlite3-devel >= 3.12
 BuildRequires: libpulseaudio-devel
+BuildRequires: qt5-tools-devel
+BuildRequires: libalsa-devel
+BuildRequires: libfftw3-devel
 
 BuildRequires: qt5-sql-sqlite3 protobuf-compiler
 # Enable Google Drive support
@@ -47,8 +50,9 @@ Clementine is a modern music player and library organizer
 
 %install
 %cmakeinstall_std
+%find_lang --with-kde %name
 
-%files
+%files -f %name.lang
 %doc Changelog
 %_bindir/clementine
 %_bindir/clementine-tagreader
@@ -61,6 +65,9 @@ Clementine is a modern music player and library organizer
 
 
 %changelog
+* Tue Oct 01 2019 Anton Midyukov <antohami@altlinux.org> 1.3.1-alt9.git88131ec5
+- Add mising buildrequires
+
 * Wed Sep 25 2019 Vladimir Didenko <cow@altlinux.org> 1.3.1-alt8.git88131ec5
 - Update to the lastest qt5 snapshot (closes: #37261)
 
