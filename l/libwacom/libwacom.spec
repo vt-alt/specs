@@ -1,8 +1,8 @@
-%define ver_major 1.0
+%define ver_major 1
 %def_disable static
 
 Name: libwacom
-Version: %ver_major
+Version: %ver_major.1
 Release: alt1
 
 Summary: A Wacom tablets library
@@ -14,7 +14,6 @@ Source: %url/releases/download/%name-%version/%name-%version.tar.bz2
 
 Requires: %name-data = %version-%release
 
-BuildRequires(pre): meson
 BuildRequires: glib2-devel libgudev-devel libxml2-devel doxygen
 # for check
 BuildRequires: /proc
@@ -58,21 +57,25 @@ developing applications that use %name.
 %setup
 
 %build
-%meson -Dudev-dir=/lib/udev
-%meson_build
+%autoreconf
+%configure \
+    %{subst_enable static} \
+    --with-udev-dir=/lib/udev
+
+%make_build
 
 %install
-%meson_install
+%makeinstall_std
 
 %check
-%meson_test
+%make check
 
 %files
 %_bindir/%name-list-local-devices
 %_libdir/*.so.*
 %_udevrulesdir/65-libwacom.rules
 %_man1dir/libwacom-list-local-devices.1*
-%doc NEWS README COPYING
+%doc NEWS README* COPYING
 
 %files devel
 %_includedir/*
@@ -89,8 +92,11 @@ developing applications that use %name.
 #%_datadir/gtk-doc/html/*
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1-alt1
+- 1.1
+
 * Tue Aug 27 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0-alt1
-- 1.0 (ported to Meson build system)
+- 1.0
 
 * Fri Apr 12 2019 Yuri N. Sedunov <aris@altlinux.org> 0.33-alt1
 - 0.33

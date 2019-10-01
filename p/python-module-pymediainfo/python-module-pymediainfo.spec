@@ -1,7 +1,8 @@
 %define modname pymediainfo
+%def_without python2
 
 Name: python-module-%modname
-Version: 4.0
+Version: 4.1
 Release: alt1
 
 Summary: A Python wrapper for the mediainfo library
@@ -14,8 +15,9 @@ BuildArch: noarch
 
 Requires: libmediainfo
 
+%{?_with_python2:
 BuildRequires: python-devel
-BuildRequires: python-module-setuptools_scm
+BuildRequires: python-module-setuptools_scm}
 
 BuildRequires: python3-devel rpm-build-python3
 BuildRequires: python3-module-setuptools_scm
@@ -33,26 +35,32 @@ This Python3 module provides a wrapper around the MediaInfo library.
 
 %prep
 %setup -n %modname-%version -a0
-cp -a %modname-%version py3build
+%{?_with_python2:cp -a %modname-%version py2build}
 
 %build
-%python_build
-
-pushd py3build
 %python3_build
+
+%if_with python2
+pushd py2bbuild
+%python_build
 popd
+%endif
 
 %install
-%python_install
-
-pushd py3build
 %python3_install
-popd
 
+%if_with python2
+pushd py2build
+%python_install
+popd
+%endif
+
+%if_with python2
 %files
 %python_sitelibdir_noarch/%modname/
 %doc README.rst
 %python_sitelibdir_noarch/*.egg-info
+%endif
 
 %files -n python3-module-%modname
 %python3_sitelibdir_noarch/%modname/
@@ -60,6 +68,10 @@ popd
 %python3_sitelibdir_noarch/*.egg-info
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 4.1-alt1
+- 4.1
+- disabled python2 module
+
 * Sat Apr 06 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0-alt1
 - 4.0
 

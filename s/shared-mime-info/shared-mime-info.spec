@@ -3,7 +3,7 @@
 %def_enable updatedb
 
 Name: shared-mime-info
-Version: 1.12
+Version: 1.13.1
 Release: alt1
 
 Summary: Shared MIME-Info Specification
@@ -20,11 +20,11 @@ Source: %name-%version.tar
 
 Source1: %name.filetrigger
 Patch: %name-0.19-alt-cachedir-param.patch
-Patch1: %name-1.5-alt-swf.patch
+Patch1: %name-1.13.1-alt-swf.patch
 Patch2: %name-1.10-alt-q_option.patch
 
 BuildRequires(pre): rpm-build-licenses rpm-build-xdg
-BuildPreReq: intltool xml-utils
+BuildPreReq: intltool itstool xml-utils
 # for build test programs
 BuildPreReq: libgio-devel
 
@@ -94,6 +94,9 @@ subst 's,%buildroot,,' db.files
 rm -rf %_xdgmimedir/{application,audio,globs,image,inode,magic,message,model,\
 multipart,text,video,XMLnamespaces}
 
+%check
+%make check
+
 %files -f db.files
 %_bindir/update-mime-database
 %_xdgmimedir/packages/freedesktop.org.xml
@@ -109,6 +112,10 @@ multipart,text,video,XMLnamespaces}
 %exclude %_datadir/locale
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.13.1-alt1
+- 1.13.1 snapshot (Release-1-13-1-6-g88ee228)
+- new %%check section
+
 * Fri Jan 18 2019 Yuri N. Sedunov <aris@altlinux.org> 1.12-alt1
 - 1.12
 

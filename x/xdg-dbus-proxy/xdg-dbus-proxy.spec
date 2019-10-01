@@ -5,7 +5,7 @@
 %def_enable check
 
 Name: xdg-dbus-proxy
-Version: %ver_major.1
+Version: %ver_major.2
 Release: alt1
 
 Summary: D-Bus connections proxy
@@ -15,11 +15,6 @@ Url: https://github.com/flatpak/%name
 
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-# https://salsa.debian.org/debian/xdg-dbus-proxy/tree/debian/master/debian/patches
-Patch10: build-Adapt-to-AX_CODE_COVERAGE-API-change.patch
-Patch11: build-Forbid-AX_-prefixed-patterns-more-selectively.patch
-Patch12: build-Use-CODE_COVERAGE_CPPFLAGS.patch
 
 BuildRequires: autoconf-archive libgio-devel > 2.40
 %{?_enable_man:BuildRequires: xsltproc docbook-style-xsl}
@@ -33,9 +28,6 @@ to facilitate using it in other contexts.
 %prep
 %setup
 %patch -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
 
 %build
 %autoreconf
@@ -55,6 +47,10 @@ to facilitate using it in other contexts.
 
 
 %changelog
+* Tue Sep 24 2019 Yuri N. Sedunov <aris@altlinux.org> 0.1.2-alt1
+- 0.1.2
+- removed obsolete patches
+
 * Wed May 29 2019 Yuri N. Sedunov <aris@altlinux.org> 0.1.1-alt1
 - first build for Sisyphus
 

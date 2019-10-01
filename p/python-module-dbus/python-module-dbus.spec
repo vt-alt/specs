@@ -9,7 +9,7 @@
 %def_enable documentation
 
 Name: python-module-dbus
-Version: 1.2.10
+Version: 1.2.12
 Release: alt1
 
 Summary: Python bindings for D-BUS library
@@ -158,6 +158,9 @@ done
 
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.12-alt1
+- 1.2.12
+
 * Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.2.10-alt1
 - 1.2.10
 - updated {build,}reqs

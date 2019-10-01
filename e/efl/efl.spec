@@ -37,7 +37,7 @@
 %endif
 
 Name: efl
-Version: %ver_major.4
+Version: %ver_major.5
 Release: alt1
 
 Summary: Enlightenment Foundation Libraries
@@ -447,6 +447,9 @@ find %buildroot%_libdir -name "*.la" -delete
 %_iconsdir/Enlightenment-X/
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.22.5-alt1
+- 1.22.5
+
 * Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.22.4-alt1
 - 1.22.4
 

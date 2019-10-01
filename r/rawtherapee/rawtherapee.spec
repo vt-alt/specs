@@ -8,7 +8,7 @@
 %define xdg_name com.rawtherapee.RawTherapee
 
 Name: rawtherapee
-Version: 5.6%{?_enable_snapshot:.%git_distance}
+Version: 5.7%{?_enable_snapshot:.%git_distance}
 Release: alt1
 
 Summary: THe Experimental RAw Photo Editor
@@ -83,6 +83,9 @@ rm -f %buildroot/%_datadir/doc/rawtherapee/*.txt
 %_datadir/metainfo/%xdg_name.appdata.xml
 
 %changelog
+* Wed Sep 11 2019 Yuri N. Sedunov <aris@altlinux.org> 5.7-alt1
+- 5.7
+
 * Sun Apr 21 2019 Yuri N. Sedunov <aris@altlinux.org> 5.6-alt1
 - 5.6
 

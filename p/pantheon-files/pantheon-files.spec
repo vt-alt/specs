@@ -1,12 +1,12 @@
 %def_disable snapshot
 
-%define ver_major 4.1
+%define ver_major 4.2
 %define _name files
 %define xdg_name org.pantheon.%_name
 %define rdn_name io.elementary.%_name
 
 Name: pantheon-files
-Version: %ver_major.9
+Version: %ver_major.0
 Release: alt1
 
 Summary: The file manager of the Pantheon desktop
@@ -37,6 +37,7 @@ BuildRequires: libxkbcommon-devel libgranite-vala
 BuildRequires: libzeitgeist2.0-devel libplank-devel libplank-vala
 BuildRequires: libpolkit-devel
 BuildRequires: libcanberra-devel libcanberra-vala
+BuildRequires: libcloudproviders-devel
 
 %description
 The simple, powerful, and sexy file manager from elementary.
@@ -99,6 +100,9 @@ This package provides Vala language bindings for the pantheon-files.
 %endif
 
 %changelog
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Fri Aug 09 2019 Yuri N. Sedunov <aris@altlinux.org> 4.1.9-alt1
 - 4.1.9
 
