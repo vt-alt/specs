@@ -1,4 +1,4 @@
-%define git_hash .gitade986436672
+%define git_hash .git173782d7331e
 #define git_hash %nil
 
 %define dbus_version 1.2.12-alt2
@@ -66,7 +66,7 @@
 
 Name: NetworkManager
 Version: 1.18.3
-Release: alt1%git_hash
+Release: alt2%git_hash
 License: %gpl2plus
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
@@ -779,6 +779,10 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Sat Sep 28 2019 Mikhail Efremov <sem@altlinux.org> 1.18.3-alt2.git173782d7331e
+- Fix build with glib-2.62.0.
+- Upstream git snapshot (nm-1-18 branch).
+
 * Wed Sep 18 2019 Mikhail Efremov <sem@altlinux.org> 1.18.3-alt1.gitade986436672
 - sysconfig: Wait for network online on SysVinit by default.
 - Backported from NM-1.20:
