@@ -5,7 +5,7 @@
 %def_enable check
 
 Name: fribidi
-Version: 1.0.5
+Version: 1.0.7
 Release: alt1
 
 Summary: Bi-directional scripts support
@@ -22,7 +22,7 @@ Source: %name-%version.tar
 
 Requires: lib%name = %version-%release
 
-BuildRequires(pre): rpm-build-licenses
+BuildRequires(pre): meson rpm-build-licenses
 %{?_enable_docs:BuildRequires: c2man}
 %{?_enabled_static:BuildRequires: glibc-devel-static}
 
@@ -69,16 +69,19 @@ programs which will use fribidi.
 %setup
 
 %build
-%add_optflags -D_FILE_OFFSET_BITS=64
-%autoreconf
-%configure
-%make_build
+%meson \
+%{?_enable_static:--default-library=both} \
+%{?_disable_deprecated:-Ddeprecated=false} \
+%{?_disable_docs:-Ddocs=false} 
+%nil
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %check
-%make check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
 %files
 %_bindir/*
@@ -100,6 +103,9 @@ programs which will use fribidi.
 %endif
 
 %changelog
+* Sat Sep 28 2019 Yuri N. Sedunov <aris@altlinux.org> 1.0.7-alt1
+- 1.0.7 (ported to Meson build system)
+
 * Tue Jul 24 2018 Yuri N. Sedunov <aris@altlinux.org> 1.0.5-alt1
 - 1.0.5
 

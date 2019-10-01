@@ -2,7 +2,7 @@
 %def_enable check
 
 Name: gpodder
-Version: 3.10.8
+Version: 3.10.10
 Release: alt1
 
 Summary: podcast receiver/catcher in PyGTK
@@ -11,7 +11,7 @@ Group: Sound
 Url: http://gpodder.org
 
 %if_disabled snapshot
-Source: %name-%version.tar.gz
+Source: https://github.com/gpodder/gpodder/archive/%version/%name-%version.tar.gz
 %else
 # VCS: https://github.com/gpodder/gpodder.git
 Source: %name-%version.tar
@@ -83,6 +83,12 @@ PYTHON=python3 %make unittest
 
 
 %changelog
+* Fri Sep 27 2019 Yuri N. Sedunov <aris@altlinux.org> 3.10.10-alt1
+- 3.10.10
+
+* Mon Jun 10 2019 Yuri N. Sedunov <aris@altlinux.org> 3.10.9-alt1
+- 3.10.9
+
 * Sat Apr 06 2019 Yuri N. Sedunov <aris@altlinux.org> 3.10.8-alt1
 - 3.10.8
 

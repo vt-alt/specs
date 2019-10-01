@@ -1,6 +1,6 @@
-%def_disable snapshot
+%def_enable snapshot
 
-%define ver_major 0.18
+%define ver_major 0.19
 %define api_ver 1
 
 %def_disable static
@@ -10,8 +10,8 @@
 %def_disable check
 
 Name: libsecret
-Version: %ver_major.8
-Release: alt1
+Version: %ver_major.1
+Release: alt2
 
 Summary: A client library for the Secret Service DBus API
 Group: System/Libraries
@@ -29,12 +29,20 @@ Source: %name-%version.tar
 %define vala_ver 0.17.2.12
 %define gcrypt_ver 1.4.5
 
+BuildRequires(pre): meson >= 0.50
+BuildRequires(pre): rpm-macros-valgrind
 BuildRequires: libgio-devel >= %glib_ver
 BuildRequires: libgcrypt-devel >= %gcrypt_ver
 BuildRequires: gtk-doc xsltproc
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel}
 %{?_enable_vala:BuildRequires: vala-tools >= %vala_ver}
-%{?_enable_check:BuildRequires: /proc dbus-tools-gui python3-module-dbus python3-module-pygobject libgjs}
+%{?_enable_check:
+BuildRequires: /proc dbus-tools-gui python3-module-dbus
+BuildRequires: python3-module-pygobject python3-module-mock libgjs}
+
+%ifarch %valgrind_arches
+BuildRequires: valgrind-devel
+%endif
 
 %description
 libsecrets is a client for the Secret Service DBus API. The Secret
@@ -86,27 +94,26 @@ GObject introspection devel data for %name.
 
 %prep
 %setup
+find . -name "*.py" -print0 | xargs -r0 sed -i 's|\(#\!/usr/bin/env python\)|\13|' --
 
-%build
-%autoreconf
-%configure --disable-static \
-%{?_enable_gtk_doc:--enable-gtk-doc} \
-%{subst_enable introspection}
-%make_build
+%meson \
+%{?_disable_gtk_doc:-Dgtk_doc=false} \
+%{?_disable_vala:-Dvapi=false}
+%meson_build
 
 %install
-%makeinstall_std
-
+%meson_install
 %find_lang %name
 
 %check
-dbus-run-session %make check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+dbus-run-session %meson_test
 
 %files -f %name.lang
 %_bindir/secret-tool
 %_libdir/%name-%api_ver.so.*
 %_man1dir/secret-tool.1.*
-%doc AUTHORS README NEWS
+%doc AUTHORS README* NEWS
 
 %files devel
 %_includedir/%name-%api_ver
@@ -118,8 +125,10 @@ dbus-run-session %make check
 %_vapidir/%name-%api_ver.deps
 %endif
 
+%if_enabled gtk_doc
 %files devel-doc
 %_datadir/gtk-doc/html/*
+%endif
 
 %if_enabled introspection
 %files gir
@@ -131,6 +140,12 @@ dbus-run-session %make check
 
 
 %changelog
+* Sat Sep 28 2019 Yuri N. Sedunov <aris@altlinux.org> 0.19.1-alt2
+- updated to 0.19.1-2-g67680a6 (fixed build w/o valgrind)
+
+* Fri Sep 06 2019 Yuri N. Sedunov <aris@altlinux.org> 0.19.1-alt1
+- 0.19.1 (ported to Meson build system)
+
 * Sat Mar 02 2019 Yuri N. Sedunov <aris@altlinux.org> 0.18.8-alt1
 - 0.18.8
 

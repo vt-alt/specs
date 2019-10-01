@@ -19,7 +19,7 @@
 %def_disable wmsession
 
 Name: enlightenment
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 Epoch: 1
 
@@ -118,7 +118,6 @@ Development headers for Enlightenment.
 sed -i "s/\(if config_h\.has('HAVE_WAYLAND') == \)false/\1true/" data/session/meson.build
 
 %build
-%{?_enable_wayland:%add_optflags $(pkg-config --cflags uuid)}
 %meson \
 	-Dfiles=true \
 	-Dpam=true \
@@ -226,6 +225,9 @@ sed -i 's/\(enlightenment\)_start/start_\1/' %buildroot%_datadir/xsessions/%name
 %_rpmmacrosdir/%name
 
 %changelog
+* Fri Sep 27 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.23.1-alt1
+- 0.23.1
+
 * Sat Aug 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1:0.23.0-alt1
 - 0.23.0
 - enabled wayland support

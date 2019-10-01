@@ -14,7 +14,7 @@
 %def_disable debug
 
 Name: evince
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: A document viewer
@@ -214,6 +214,15 @@ export BROWSER_PLUGIN_DIR=%browser_plugins_path
 %exclude %_libdir/nautilus/extensions-3.0/libevince-properties-page.la
 
 %changelog
+* Sun Sep 29 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.1-alt1
+- 3.32.1
+
+* Wed Sep 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt3
+- rebuilt against libgnome-desktop-3.so.18
+
+* Thu May 16 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt2
+- updated to 3.32.0-22-g0fecf871
+
 * Thu Mar 14 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

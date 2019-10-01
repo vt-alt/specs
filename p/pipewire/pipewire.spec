@@ -13,7 +13,7 @@
 %def_disable jack
 
 Name: pipewire
-Version: %ver_major.6
+Version: %ver_major.7
 Release: alt1
 
 Summary: Media Sharing Server
@@ -156,6 +156,9 @@ This package contains command line utilities for the PipeWire media server.
 %endif
 
 %changelog
+* Fri Sep 27 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.7-alt1
+- 0.2.7
+
 * Mon May 27 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.6-alt1
 - updated to 0.2.6-1-g37613b67
 
