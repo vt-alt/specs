@@ -1,5 +1,5 @@
 Name: strawberry
-Version: 0.6.3
+Version: 0.6.5
 Release: alt1
 Summary: Audio player and music collection organizer
 
@@ -65,7 +65,6 @@ Features:
 # Unbundle taglib next release:
 # https://github.com/taglib/taglib/issues/837#issuecomment-428389347
 
-mv 3rdparty/SPMediaKeyTap/LICENSE 3rdparty/SPMediaKeyTap/LICENCE-SPMediaKeyTap
 mv 3rdparty/singleapplication/LICENSE 3rdparty/singleapplication/LICENSE-singleapplication
 mv 3rdparty/taglib/COPYING 3rdparty/taglib/COPYING-taglib
 
@@ -80,21 +79,27 @@ mv 3rdparty/taglib/COPYING 3rdparty/taglib/COPYING-taglib
 %cmakeinstall_std
 
 %check
-desktop-file-validate %buildroot%_desktopdir/org.strawbs.strawberry.desktop
-appstream-util validate-relax --nonet %buildroot%_datadir/metainfo/org.strawbs.strawberry.appdata.xml
+desktop-file-validate %buildroot%_desktopdir/org.strawberrymusicplayer.strawberry.desktop
+appstream-util validate-relax --nonet %buildroot%_datadir/metainfo/org.strawberrymusicplayer.strawberry.appdata.xml
 
 %files
-%doc COPYING 3rdparty/SPMediaKeyTap/LICENCE-SPMediaKeyTap 3rdparty/taglib/COPYING-taglib 3rdparty/singleapplication/LICENSE-singleapplication
+%doc COPYING 3rdparty/taglib/COPYING-taglib 3rdparty/singleapplication/LICENSE-singleapplication
 %doc Changelog
 %_bindir/strawberry
 %_bindir/strawberry-tagreader
-%_datadir/metainfo/org.strawbs.strawberry.appdata.xml
-%_desktopdir/org.strawbs.strawberry.desktop
+%_datadir/metainfo/org.strawberrymusicplayer.strawberry.appdata.xml
+%_desktopdir/org.strawberrymusicplayer.strawberry.desktop
 %_iconsdir/hicolor/*/apps/strawberry.*
 %_man1dir/strawberry.1.*
 %_man1dir/strawberry-tagreader.1.*
 
 %changelog
+* Tue Oct 01 2019 Leontiy Volodin <lvol@altlinux.org> 0.6.5-alt1
+- New version (0.6.5) with rpmgs script.
+
+* Thu Sep 26 2019 Leontiy Volodin <lvol@altlinux.org> 0.6.4-alt1
+- New version (0.6.4) with rpmgs script.
+
 * Tue Aug 06 2019 Leontiy Volodin <lvol@altlinux.org> 0.6.3-alt1
 - 0.6.3
 - Fixed crash with vlc backend
