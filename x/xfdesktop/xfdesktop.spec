@@ -1,6 +1,6 @@
 Name: xfdesktop
-Version: 4.14.0
-Release: alt1
+Version: 4.14.1
+Release: alt2
 
 Summary: Desktop manager for the Xfce Desktop Environment
 Summary (ru_RU.UTF-8): Менеджер рабочего стола Xfce
@@ -65,6 +65,12 @@ Requires: exo-utils
 %_datadir/backgrounds/xfce
 
 %changelog
+* Mon Sep 30 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt2
+- Fixed package version.
+- Patches from upstream:
+    + Show file names in tooltips (Bug #15899).
+    + fallback style: Highlight selected icons (Bug #15866).
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
 - Updated to 4.14.0.
 
