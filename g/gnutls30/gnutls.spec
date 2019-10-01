@@ -3,7 +3,7 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.9
+Version: 3.6.10
 Release: alt1
 
 Summary: A TLS protocol implementation
@@ -17,7 +17,6 @@ Source: gnutls-%version.tar
 Patch3: Fix-privkey-verify-broken-test.patch
 Patch4: tests-Use-IPv4-only-in-s_server.patch
 Patch6: gnulib-E2K-fix-for-lcc-1.23.patch
-Patch7: fix-i586-textrel.patch
 Patch8: fix-32bit-LTS.patch
 %define libcxx libgnutlsxx%libgnutlsxx28_soname
 %define libssl libgnutls%{libgnutls_openssl_soname}-openssl
@@ -217,7 +216,6 @@ popd
 cp -fv {src/gl,gl}/intprops.h
 cp -fv {src/gl,gl/tests}/xalloc-oversized.h
 
-%patch7 -p1
 %patch8 -p1
 
 touch doc/*.texi
@@ -324,6 +322,10 @@ make -k check
 %endif
 
 %changelog
+* Mon Sep 30 2019 Mikhail Efremov <sem@altlinux.org> 3.6.10-alt1
+- Drop fix-i586-textrel patch.
+- Updated to 3.6.10.
+
 * Fri Aug 09 2019 Mikhail Efremov <sem@altlinux.org> 3.6.9-alt1
 - Fix LTS on 32bit architectures
 - Fix TEXTREL on i586
