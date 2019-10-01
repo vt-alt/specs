@@ -13,7 +13,7 @@
 
 Name: zabbix34-agent
 Version: 3.4.15
-Release: alt1
+Release: alt2
 
 Packager: Alexei Takaseev <taf@altlinux.ru>
 
@@ -38,7 +38,7 @@ BuildPreReq: libelf-devel
 # optimized out: elfutils glibc-kernheaders-generic glibc-kernheaders-x86 libsasl2-3 perl pkg-config python-base python3 python3-base rpm-build-python3 sh3 xz
 BuildRequires: libcurl-devel libelf-devel libldap-devel libpcre-devel libpython3 libssl-devel
 
-BuildRequires: perl-Switch
+BuildRequires: perl-Switch /proc
 
 %package common
 Summary: %name network monitor (common stuff)
@@ -178,5 +178,8 @@ fi
 %config(noreplace) %attr(0400,root,root) %_sysconfdir/sudoers.d/zabbix
 
 %changelog
+* Thu Sep 26 2019 Alexei Takaseev <taf@altlinux.org> 3.4.15-alt2
+- Add BR /proc (ALT #37264)
+
 * Thu Nov 15 2018 Alexei Takaseev <taf@altlinux.org> 3.4.15-alt1
 - Initial build for Sisyphus.
