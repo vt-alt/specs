@@ -13,11 +13,15 @@
 %define lsb_arch e2k
 %define lib_suffix ()(64bit)
 %endif
+%ifarch aarch64
+%define lsb_arch aarch64
+%define lib_suffix ()(64bit)
+%endif
 
 Name: lsb
 Summary: The skeleton package defining packages needed for LSB compliance
 Version: 4.0
-Release: alt7
+Release: alt8
 License: GPL
 Url: http://www.linuxbase.org/
 Group: System/Base
@@ -33,9 +37,7 @@ Source12: remove_initd
 # XXX:
 Source21: lsbinstall
 
-# The seven supported architectures for LSB 4 are: IA32, IA64, PPC32, PPC64, S390, S390X, X86_64.
-# http://www.linuxfoundation.org/en/Specifications
-Exclusivearch: %ix86 x86_64 %e2k
+Exclusivearch: %ix86 x86_64 %e2k aarch64
 
 Requires: lsb-core = %version
 Requires: lsb-cxx = %version
@@ -669,6 +671,9 @@ touch %buildroot%_sysconfdir/lsb-release.d/trialuse-%version-noarch
 %_sysconfdir/lsb-release.d/trialuse-%version-noarch
 
 %changelog
+* Mon Sep 30 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 4.0-alt8
+- added aarch64
+
 * Fri Jun 22 2018 Michael Shigorin <mike@altlinux.org> 4.0-alt7
 - E2K: initial support
 
