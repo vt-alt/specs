@@ -1,22 +1,31 @@
+%def_with devel
+
 Name: kumir2
 Version: 2.1.0
-Release: alt6
+Release: alt7.gita3631abb
 
 Summary: New version of Kumir - simple programming language and IDE for teaching programming
 Summary(ru_RU.UTF-8): Новая версия системы Кумир - простого учебного языка программирования и среды разработки
 
 License: GPL
 Group: Education
-Url: https://github.com/victor-yacovlev/kumir2
-Packager: Denis Kirienko <dk@altlinux.ru>
+URL:  https://www.niisi.ru/kumir/
+#VCS: https://github.com/a-a-maly/kumir2/
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 BuildRequires(pre): cmake
-BuildPreReq: libqt4-devel gcc-c++ python-modules python-modules-json boost-devel
-Requires: libqt4-core
+BuildRequires: gcc-c++
+BuildRequires: qt5-base-devel >= 5.3
+BuildRequires: qt5-svg-devel
+BuildRequires: qt5-x11extras-devel
+BuildRequires: qt5-script-devel
+BuildRequires: qt5-tools
+BuildRequires: python3 >= 3.2
+BuildRequires: git-core
+BuildRequires: boost-devel
 
 Source: %name-%version.tar
-Patch1: kumir2-2.1.0-actor_umki.patch
-Patch2: kumir2-alt-fix-LIB_BASENAME.patch
+Patch1: kumir2-alt-fix-LIB_BASENAME.patch
 
 %description
 Implementation of Kumir programming language, designed by academician
@@ -40,16 +49,27 @@ ALT Linux включает также поддержку исполнителя,
 реального мира -- разработанного в рамках проекта УМКИ
 радиоуправляемого робота.
 
+%if_with devel
+%package devel
+Group: Education
+Summary: Development files for Kumir
+Requires: %name = %EVR
+
+%description devel
+Development files for Kumir.
+%endif
+
 %prep
 %setup
+%patch1 -p1
 sed -i "s/^Categories=.*$/Categories=Education;Qt;ComputerScience;/" *.desktop
-#patch1 -p1
-%patch2 -p2
+# Remove bundled boost
+rm -rf src/3rdparty/boost*
 
 %build
-rm -rf src/3rdparty/boost-1.54.0
-%cmake \
-       -DLIB_BASENAME=%_lib
+export PATH=%_qt5_bindir:$PATH
+%cmake  -DUSE_QT=5 \
+	-DLIB_BASENAME=%_lib
 %cmake_build
 
 %install
@@ -63,7 +83,22 @@ rm -rf src/3rdparty/boost-1.54.0
 %_desktopdir/*
 %_iconsdir/*/*/*/*
 
+%if_with devel
+%ifarch %ix86 x86_64
+%files devel
+%_includedir/kumir2-libs
+%_includedir/kumir2
+%_libdir/cmake/Kumir2
+%endif
+%endif
+
 %changelog
+* Tue Oct 01 2019 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt7.gita3631abb
+- New snapshot.
+- Build with Qt5.
+- Fix URL, maintainet and upstream source.
+- Add devel package.
+
 * Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt6
 - Remove Umki support (ALT #32162).
 - Fix build on ppc64le.
