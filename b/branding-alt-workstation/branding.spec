@@ -20,8 +20,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.990
-Release: alt2
+Version: 8.991
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -369,6 +369,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed Oct 02 2019 Mikhail Efremov <sem@altlinux.org> 8.991-alt1
+- Bump version.
+
 * Mon Sep 16 2019 Mikhail Efremov <sem@altlinux.org> 8.990-alt2
 - Rename slides/ -> Slides/.
 
