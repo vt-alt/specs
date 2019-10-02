@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name: traefik
-Version: 1.7.14
+Version: 1.7.18
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -47,6 +47,7 @@ Documentation: http://docs.traefik.io/
 # $ git rm -r node_modules
 # $ yarn install --pure-lockfile
 # $ npm run build
+# $ rm -rf node_modules/node-sass/vendor
 # $ git add -f node_modules
 # $ git commit -n --no-post-rewrite -m "add node js modules"
 
@@ -129,6 +130,9 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Mon Sep 30 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.18-alt1
+- 1.7.18
+
 * Fri Aug 23 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.14-alt1
 - 1.7.14
 - build with golang-1.12.9 (Fixes: CVE-2019-9512, CVE-2019-9514)
