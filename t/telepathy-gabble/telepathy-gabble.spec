@@ -1,8 +1,9 @@
 %define _libexecdir %_prefix/libexec
+%def_disable check
 
 Name: telepathy-gabble
 Version: 0.18.4
-Release: alt1
+Release: alt2
 
 Summary: Jabber/XMPP connection manager
 License: LGPL
@@ -10,20 +11,23 @@ Group: Networking/Instant messaging
 Url: http://telepathy.freedesktop.org/
 
 Source: http://telepathy.freedesktop.org/releases/telepathy-gabble/%name-%version.tar.gz
+Patch: telepathy-gabble-0.18.4-alt-console_py3.patch
 
 %define telepathy_glib_ver 0.19.9
 %define glib_ver 2.44
 
 Requires: ca-certificates
 
+BuildRequires(pre): rpm-build-python3
 BuildPreReq: libtelepathy-glib-devel >= %telepathy_glib_ver
 BuildPreReq: libgio-devel >= %glib_ver
 BuildRequires: libdbus-devel libdbus-glib-devel libxml2-devel libnice-devel
 BuildRequires: libsoup-devel xsltproc libsqlite3-devel libgnutls-devel libgcrypt-devel gtk-doc
-BuildRequires: python-module-twisted-words python-module-xmpp
-# for tests
-BuildRequires: /proc dbus-tools-gui python-module-dbus python-module-twisted-web python-module-twisted-core-gui
-BuildRequires: python-module-service-identity
+#BuildRequires: python3-module-twisted-words python3-module-xmpp
+%if_enabled check
+BuildRequires: /proc dbus-tools-gui python3-module-dbus python3-module-twisted-web
+BuildRequires: python3-module-twisted-core-gui python3-module-service-identity
+%endif
 
 %description
 Gabble is a Jabber/XMPP connection manager for the Telepathy framework,
@@ -33,20 +37,22 @@ with Jabber/XMPP servers, including Google Talk.
 
 %prep
 %setup
-
+%patch -b .py3
 
 %build
+%add_optflags -D_FILE_OFFSET_BITS=64
 %autoreconf
 %configure \
 	--disable-static \
 	--with-ca-certificates="%_datadir/ca-certificates/ca-bundle.crt"
+	PYTHON=%__python3
 %make_build
 
 %install
 %makeinstall_std
 
 %check
-#%make check
+%make check
 
 %files
 %_bindir/telepathy-gabble-xmpp-console
@@ -70,6 +76,9 @@ with Jabber/XMPP servers, including Google Talk.
 %exclude %_libdir/telepathy/gabble-0/*/*.la
 
 %changelog
+* Wed Oct 02 2019 Yuri N. Sedunov <aris@altlinux.org> 0.18.4-alt2
+- plugins/telepathy-gabble-xmpp-console: fixed for python3 (ALT #37285)
+
 * Tue Nov 15 2016 Yuri N. Sedunov <aris@altlinux.org> 0.18.4-alt1
 - 0.18.4
 
