@@ -1,6 +1,6 @@
 Name: openarena
 Version: 0.8.8
-Release: alt2
+Release: alt3
 
 Summary: Open source first person shooter
 Group: Games/Arcade
@@ -54,6 +54,9 @@ install -pD -m644 %SOURCE3 %buildroot%_datadir/applications/%name.desktop
 %_datadir/pixmaps/%name.png
 
 %changelog
+* Thu Oct 03 2019 Anton Midyukov <antohami@altlinux.org> 0.8.8-alt3
+- Fix path for quake3 binary for aarch64
+
 * Mon Dec 31 2012 Igor Zubkov <icesik@altlinux.org> 0.8.8-alt2
 - Fix path for quake3 binary
 
