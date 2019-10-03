@@ -12,7 +12,7 @@ Summary: NoScript extension for Firefox and Pale Moon
 Summary (ru_RU.utf8): Дополнение NoScript для  Firefox и Pale Moon
 Name: firefox-noscript
 Version: 10.1.7.2
-Release: alt1
+Release: alt2
 Source: noscript-%version.xpi
 License: GPL
 Group: Networking/WWW
@@ -23,7 +23,8 @@ Conflicts: firefox-esr-noscript
 
 Patch1: firefox-noscript-alt-fix-perl-import.patch
 
-BuildRequires(pre): rpm-build-firefox rpm-build-palemoon
+BuildRequires(pre): rpm-build-firefox
+#BuildRequires(pre): rpm-build-palemoon
 BuildRequires: perl-libwww
 BuildRequires: perl-Regexp-Optimizer
 BuildRequires: perl-List-MoreUtils
@@ -100,6 +101,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Wed Oct 02 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 10.1.7.2-alt2
+- Fixed build without rpm-build-palemoon.
+
 * Fri Mar 16 2018 Andrey Cherepanov <cas@altlinux.org> 10.1.7.2-alt1
 - New version (ALT #34305)
 

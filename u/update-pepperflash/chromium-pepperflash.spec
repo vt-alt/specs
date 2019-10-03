@@ -1,12 +1,15 @@
+%def_disable palemoon
+
 Name: update-pepperflash
 Version: 1.6
-Release: alt1
+Release: alt2
 
 Summary: Pepper Flash Player legacy package
 License: GPLv3+
 Group: Networking/WWW
 Url: http://altlinux.org/PepperFlash
-BuildArch: noarch
+
+ExclusiveArch: %ix86 x86_64
 
 Source1: update-pepperflash
 
@@ -17,7 +20,6 @@ nothing, rely on ppapi-plugin-adobe-flash packeage.
 %package -n chromium-pepperflash
 Summary: Pepper Flash Player - browser plugin for Chromium
 Group: Networking/WWW
-BuildArch: noarch
 Requires: ppapi-plugin-adobe-flash
 Requires: chromium
 
@@ -27,7 +29,6 @@ Pepper Flash Player - browser plugin for Chromium (virtual package)
 %package -n firefox-pepperflash
 Summary: Pepper Flash Player - browser plugin for Firefox
 Group: Networking/WWW
-BuildArch: noarch
 Requires: /usr/bin/firefox
 Requires: ppapi-plugin-adobe-flash
 Requires: freshplayerplugin
@@ -38,7 +39,6 @@ Pepper Flash Player - browser plugin for Firefox (virtual package)
 %package -n palemoon-pepperflash
 Summary: Pepper Flash Player - browser plugin for Pale Moon
 Group: Networking/WWW
-BuildArch: noarch
 Requires: palemoon
 Requires: ppapi-plugin-adobe-flash
 Requires: freshplayerplugin
@@ -63,9 +63,15 @@ exit 0
 
 %files -n chromium-pepperflash
 %files -n firefox-pepperflash
+%if_enabled palemoon
 %files -n palemoon-pepperflash
+%endif
 
 %changelog
+* Wed Oct 02 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.6-alt2
+- Dropped palemoon subpackage.
+- Added ExclusiveArch tag to limit architectures to x86-only.
+
 * Thu Sep 29 2016 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.6-alt1
 - Added R: ppapi-plugin-adobe-flash.
 - Removed all download code (ALT#32540).

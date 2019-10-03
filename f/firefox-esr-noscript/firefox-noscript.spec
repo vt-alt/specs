@@ -12,7 +12,7 @@ Summary: NoScript extension for Firefox and Pale Moon (for firefox-esr)
 Summary (ru_RU.utf8): Дополнение NoScript для  Firefox и Pale Moon
 Name: firefox-esr-noscript
 Version: 5.1.8.4
-Release: alt1
+Release: alt2
 Source: noscript-%version.xpi
 License: GPL
 Group: Networking/WWW
@@ -21,7 +21,8 @@ Packager: Alexey Gladkov <legion@altlinux.ru>
 BuildArch: noarch
 Conflicts: firefox-noscript
 
-BuildRequires(pre): rpm-build-firefox rpm-build-palemoon
+BuildRequires(pre): rpm-build-firefox
+#BuildRequires(pre): rpm-build-palemoon
 BuildRequires: unzip
 
 %if_enabled palemoon
@@ -94,6 +95,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Wed Oct 02 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 5.1.8.4-alt2
+- Fixed build without rpm-build-palemoon.
+
 * Mon Mar 19 2018 Andrey Cherepanov <cas@altlinux.org> 5.1.8.4-alt1
 - New version for firefox-esr with name firefox-esr-noscript.
 
