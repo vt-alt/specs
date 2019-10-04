@@ -1,7 +1,7 @@
 %define pg_ver 11
 
 Name: postgresql%pg_ver-pg_partman
-Version: 4.1.0
+Version: 4.2.0
 Release: alt1
 
 Summary: pg_partman is an extension to create and manage both time-based and serial-based table partition sets.
@@ -45,5 +45,8 @@ significantly better.
 %doc %_datadir/doc/postgresql/extension/*
 
 %changelog
+* Wed Oct 02 2019 Alexei Takaseev <taf@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Sat May 18 2019 Alexei Takaseev <taf@altlinux.org> 4.1.0-alt1
 - Initial build for ALT Linux
