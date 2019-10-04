@@ -1,8 +1,8 @@
 %define _localstatedir %_var
 
 Name: bird
-Version: 1.6.4
-Release: alt2
+Version: 1.6.7
+Release: alt1
 Summary: BIRD Internet Routing Daemon
 
 Group: Networking/Other
@@ -124,6 +124,12 @@ install -pD -m644 %SOURCE4 %buildroot%_unitdir/%{name}6.service
 %_sbindir/%{name}cl6
 
 %changelog
+* Thu Sep 12 2019 Anton Farygin <rider@altlinux.ru> 1.6.7-alt1
+- 1.6.7 (Fixes: CVE-2019-16159)
+
+* Tue May 21 2019 Anton Farygin <rider@altlinux.ru> 1.6.4-alt5
+- added upstream patch against errors with clang build
+
 * Wed Jan 16 2019 Anton Farygin <rider@altlinux.ru> 1.6.4-alt2
 - cleared from %%ubt macros
 
