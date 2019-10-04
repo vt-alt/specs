@@ -1,7 +1,7 @@
 
 Summary: Python bindings for the libvirt library
 Name: python-module-libvirt
-Version: 5.6.0
+Version: 5.7.0
 Release: alt1
 Url: http://libvirt.org
 #git://libvirt.org/libvirt-python.git
@@ -56,6 +56,9 @@ of recent versions of Linux (and other OSes).
 %doc  NEWS README COPYING COPYING.LESSER examples
 
 %changelog
+* Mon Sep 09 2019 Alexey Shabalin <shaba@altlinux.org> 5.7.0-alt1
+- new version 5.7.0
+
 * Sat Aug 24 2019 Alexey Shabalin <shaba@altlinux.org> 5.6.0-alt1
 - new version 5.6.0
 

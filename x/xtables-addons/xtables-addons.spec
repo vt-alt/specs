@@ -1,6 +1,6 @@
 Name: xtables-addons
-Version: 2.14
-Release: alt6
+Version: 3.5
+Release: alt2
 Summary: IP tables addons
 Group: System/Kernel and hardware
 
@@ -14,7 +14,8 @@ Source1: %name.watch
 
 %define _libexecdir /usr/libexec
 
-BuildRequires: libiptables-devel libmnl-devel perl-Text-CSV_XS
+BuildRequires(pre): rpm-build-kernel
+BuildRequires: libiptables-devel libmnl-devel perl-Text-CSV_XS perl-Net-CIDR-Lite
 Requires: iptables
 
 %description
@@ -34,7 +35,6 @@ Tools for build and update geoip data
 Summary: xtables module sources
 Group: Development/Kernel
 BuildArch: noarch
-BuildPreReq: rpm-build-kernel
 
 %description -n kernel-source-%name
 XTable addons module sources for Linux kernel.
@@ -71,8 +71,23 @@ tar -cjf %kernel_srcdir/kernel-source-%name-%version.tar.bz2 kernel-source-%name
 %kernel_src/*
 
 %changelog
+* Thu Oct 03 2019 Alexey Shabalin <shaba@altlinux.org> 3.5-alt2
+- update changelog for allow copy to branch p9
+
+* Wed Sep 11 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt1
+- 3.5
+
+* Mon Jul 22 2019 Anton Farygin <rider@altlinux.ru> 3.3-alt3
+- added patch from ubuntu for build with kernel 5.2
+
+* Mon Jul 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.3-alt2
+- Dropped ExclusiveArch tag.
+
 * Mon Jul 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.14-alt6
 - Dropped ExclusiveArch tag.
+
+* Fri Apr 19 2019 Anton Farygin <rider@altlinux.ru> 3.3-alt1
+- 3.3
 
 * Wed Mar 27 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.14-alt5
 - support for 5.0 kernel added

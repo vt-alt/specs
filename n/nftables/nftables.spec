@@ -1,18 +1,15 @@
 Name:           nftables
 Epoch:          1
-Version:        0.9.0
-Release:        alt2
+Version:        0.9.2
+Release:        alt1
 Summary:        nftables is the project that aims to replace the existing {ip,ip6,arp,eb}tables framework
 Group:          System/Libraries
-License:        LGPLv2.1+
+License:        GPL-2.0-only
 URL:            http://netfilter.org/projects/nftables
 # git://git.netfilter.org/nftables
 Source:        %name-%version.tar
-BuildRequires: libmnl-devel libnftnl-devel flex bison libgmp-devel libreadline-devel
-BuildPreReq: docbook2X
-
-#TODO
-# docbook-utils-print dblatex
+BuildRequires: libmnl-devel libnftnl-devel flex bison libgmp-devel libreadline-devel asciidoc-a2x
+BuildRequires(pre): docbook2X
 
 %description
 libnftnl is a userspace library providing a low-level netlink programming interface (API) to the
@@ -24,7 +21,7 @@ This library is currently used by nftables.
 
 %build
 %autoreconf
-%configure --enable-debug --disable-pdf-doc
+%configure --enable-debug
 %make_build
 
 %check
@@ -46,7 +43,9 @@ install -pDm0644 nftables.service %buildroot%_unitdir/nftables.service
 %files
 %doc COPYING files/examples/*.nft files/nftables/*.nft
 %dir %_sysconfdir/nftables
-%attr(644,root,root) %config %_sysconfdir/nftables/*
+%dir %_sysconfdir/nftables/osf
+%_sysconfdir/nftables/osf/*
+%attr(644,root,root) %config %_sysconfdir/nftables/*.nft
 %_libdir/lib%name.so.*
 %_unitdir/*
 %_sbindir/*
@@ -54,6 +53,12 @@ install -pDm0644 nftables.service %buildroot%_unitdir/nftables.service
 
 
 %changelog
+* Tue Aug 20 2019 Alexei Takaseev <taf@altlinux.org> 1:0.9.2-alt1
+- Version 0.9.2
+
+* Wed Jun 26 2019 Alexei Takaseev <taf@altlinux.org> 1:0.9.1-alt1
+- Version 0.9.1
+
 * Tue Jan 15 2019 Alexei Takaseev <taf@altlinux.org> 1:0.9.0-alt2
 - Add systemd unit and simple config
 

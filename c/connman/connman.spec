@@ -2,7 +2,7 @@
 %define _localstatedir %_var
 
 Name: connman
-Version: 1.36
+Version: 1.37
 Release: alt1
 
 Summary: ConnMan is a daemon for managing internet connections.
@@ -156,6 +156,9 @@ ln -s ../connman-openresolv.path %buildroot%_unitdir/multi-user.target.wants
 %_includedir/*
 
 %changelog
+* Tue Sep 10 2019 Alexey Shabalin <shaba@altlinux.org> 1.37-alt1
+- 1.37
+
 * Wed Nov 28 2018 Alexey Shabalin <shaba@altlinux.org> 1.36-alt1
 - 1.36
 

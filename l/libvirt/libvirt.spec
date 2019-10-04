@@ -5,6 +5,7 @@
 
 %define _localstatedir /var
 %define _libexecdir %_prefix/libexec
+%define _runtimedir /run
 %define qemu_user  _libvirt
 %define qemu_group  vmusers
 
@@ -181,7 +182,7 @@
 %endif
 
 Name: libvirt
-Version: 5.6.0
+Version: 5.7.0
 Release: alt1
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
@@ -286,6 +287,7 @@ Requires: iptables
 Requires: dmidecode
 # libvirtd depends on 'messagebus' service
 Requires: dbus
+Requires: nc
 
 %description daemon
 Server side daemon required to manage the virtualization capabilities
@@ -705,7 +707,6 @@ Summary: Client side libraries
 Group: System/Libraries
 # So remote clients can access libvirt over SSH tunnel
 # (client invokes 'nc' against the UNIX socket on the server)
-Requires: nc
 Requires: /etc/sasl2
 
 %description libs
@@ -800,6 +801,7 @@ LOADERS="$LOADERS_OLD:$LOADERS_NEW"
 
 ./bootstrap --no-git --gnulib-srcdir=gnulib-%name-%version
 %configure \
+		--with-runstatedir=%_runtimedir \
 		--disable-static \
 		--disable-rpath \
 		--with-packager-version="%release" \
@@ -807,6 +809,7 @@ LOADERS="$LOADERS_OLD:$LOADERS_NEW"
 		--with-qemu-user=%qemu_user \
 		--with-qemu-group=%qemu_group \
 		--with-sysctl=check \
+		--with-remote-default-mode=legacy \
 		%{subst_with libvirtd} \
 		%{subst_with qemu} \
 		%{subst_with openvz} \
@@ -872,7 +875,6 @@ install -pD -m 755 %SOURCE13  %buildroot%_initdir/virtlogd
 %endif
 install -pD -m 755 %SOURCE14  %buildroot%_initdir/libvirt-guests
 
-install -d -m 0755 %buildroot%_runtimedir/%name
 rm -f %buildroot%_libdir/*.{a,la}
 rm -f %buildroot%_libdir/%name/*/*.{a,la}
 
@@ -1048,19 +1050,18 @@ fi
 %dir %attr(0700, root, root) %_sysconfdir/libvirt
 %dir %_datadir/libvirt
 %dir %attr(0700, root, root) %_logdir/libvirt
-%dir %_runtimedir/%name
 %dir %attr(0700, root, root) %_sysconfdir/libvirt/nwfilter
 %config(noreplace) %_sysconfdir/sysconfig/libvirtd
 %config /lib/tmpfiles.d/libvirtd.conf
 %_unitdir/libvirtd*
-
+%_unitdir/virtproxyd*
 %_unitdir/virt-guest-shutdown.target
 %_initdir/libvirtd
 %config(noreplace) %_sysconfdir/libvirt/libvirtd.conf
+%config(noreplace) %_sysconfdir/libvirt/virtproxyd.conf
 /lib/sysctl.d/*
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd
 %_rpmlibdir/%name.filetrigger
-
 #virtlockd
 %config(noreplace) %_sysconfdir/libvirt/qemu-lockd.conf
 %config(noreplace) %_sysconfdir/sysconfig/virtlockd
@@ -1092,10 +1093,14 @@ fi
 
 %_libexecdir/libvirt_iohelper
 %_sbindir/libvirtd
+%_sbindir/virtproxyd
 %_man8dir/libvirtd.*
 
 %_datadir/augeas/lenses/libvirtd.aug
 %_datadir/augeas/lenses/tests/test_libvirtd.aug
+%_datadir/augeas/lenses/virtproxyd.aug
+%_datadir/augeas/lenses/tests/test_virtproxyd.aug
+
 
 %dir %attr(0711, root, root) %_localstatedir/lib/libvirt/images
 %dir %attr(0711, root, root) %_localstatedir/lib/libvirt/filesystems
@@ -1118,7 +1123,6 @@ fi
 %dir %attr(0700, root, root) %_sysconfdir/libvirt/qemu/networks/autostart
 %dir %_datadir/libvirt/networks
 %_datadir/libvirt/networks/default.xml
-%dir %_runtimedir/%name/network
 %dir %attr(0700, root, root) %_localstatedir/lib/libvirt/network
 %dir %attr(0755, root, root) %_localstatedir/lib/libvirt/dnsmasq
 %endif
@@ -1131,29 +1135,59 @@ fi
 %if_with driver_modules
 %if_with network
 %files daemon-driver-network
+%config(noreplace) %_sysconfdir/libvirt/virtnetworkd.conf
+%_datadir/augeas/lenses/virtnetworkd.aug
+%_datadir/augeas/lenses/tests/test_virtnetworkd.aug
+%_unitdir/virtnetworkd*
+%_sbindir/virtnetworkd
 %_libdir/%name/connection-driver/libvirt_driver_network.so
 %_libexecdir/libvirt_leaseshelper
 %endif
 
 %if_with udev
 %files daemon-driver-nodedev
+%config(noreplace) %_sysconfdir/libvirt/virtnodedevd.conf
+%_datadir/augeas/lenses/virtnodedevd.aug
+%_datadir/augeas/lenses/tests/test_virtnodedevd.aug
+%_unitdir/virtnodedevd*
+%_sbindir/virtnodedevd
 %_libdir/%name/connection-driver/libvirt_driver_nodedev.so
 
 %files daemon-driver-interface
+%config(noreplace) %_sysconfdir/libvirt/virtinterfaced.conf
+%_datadir/augeas/lenses/virtinterfaced.aug
+%_datadir/augeas/lenses/tests/test_virtinterfaced.aug
+%_unitdir/virtinterfaced*
+%_sbindir/virtinterfaced
 %_libdir/%name/connection-driver/libvirt_driver_interface.so
 %endif #if_with udev
 
 %if_with nwfilter
 %files daemon-driver-nwfilter
+%config(noreplace) %_sysconfdir/libvirt/virtnwfilterd.conf
+%_datadir/augeas/lenses/virtnwfilterd.aug
+%_datadir/augeas/lenses/tests/test_virtnwfilterd.aug
+%_unitdir/virtnwfilterd*
+%_sbindir/virtnwfilterd
 %_libdir/%name/connection-driver/libvirt_driver_nwfilter.so
 %endif
 
 %files daemon-driver-secret
+%config(noreplace) %_sysconfdir/libvirt/virtsecretd.conf
+%_datadir/augeas/lenses/virtsecretd.aug
+%_datadir/augeas/lenses/tests/test_virtsecretd.aug
+%_unitdir/virtsecretd*
+%_sbindir/virtsecretd
 %_libdir/%name/connection-driver/libvirt_driver_secret.so
 
 %files daemon-driver-storage
 
 %files daemon-driver-storage-core
+%config(noreplace) %_sysconfdir/libvirt/virtstoraged.conf
+%_datadir/augeas/lenses/virtstoraged.aug
+%_datadir/augeas/lenses/tests/test_virtstoraged.aug
+%_unitdir/virtstoraged*
+%_sbindir/virtstoraged
 %if_with storage_disk
 %_libexecdir/libvirt_parthelper
 %endif
@@ -1221,10 +1255,14 @@ fi
 
 %if_with qemu
 %files daemon-driver-qemu
+%config(noreplace) %_sysconfdir/libvirt/virtqemud.conf
+%_datadir/augeas/lenses/virtqemud.aug
+%_datadir/augeas/lenses/tests/test_virtqemud.aug
+%_unitdir/virtqemud*
+%_sbindir/virtqemud
 %_libdir/%name/connection-driver/libvirt_driver_qemu.so
 %config(noreplace) %_sysconfdir/libvirt/qemu.conf
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd.qemu
-%dir %attr(0750, root, root) %_runtimedir/%name/qemu
 %dir %attr(0750, %qemu_user, %qemu_group) %_localstatedir/lib/libvirt/qemu
 %dir %attr(0750, %qemu_user, %qemu_group) %_cachedir/libvirt/qemu
 %dir %attr(0700, root, root) %_logdir/libvirt/qemu
@@ -1236,10 +1274,14 @@ fi
 
 %if_with lxc
 %files daemon-driver-lxc
+%config(noreplace) %_sysconfdir/libvirt/virtlxcd.conf
+%_datadir/augeas/lenses/virtlxcd.aug
+%_datadir/augeas/lenses/tests/test_virtlxcd.aug
+%_unitdir/virtlxcd*
+%_sbindir/virtlxcd
 %_libdir/%name/connection-driver/libvirt_driver_lxc.so
 %config(noreplace) %_sysconfdir/libvirt/lxc.conf
 %config(noreplace) %_sysconfdir/logrotate.d/libvirtd.lxc
-%dir %_runtimedir/%name/lxc
 %dir %attr(0700, root, root) %_localstatedir/lib/libvirt/lxc
 %dir %attr(0700, root, root) %_localstatedir/log/libvirt/lxc
 %_datadir/augeas/lenses/libvirtd_lxc.aug
@@ -1249,6 +1291,11 @@ fi
 
 %if_with libxl
 %files daemon-driver-libxl
+%config(noreplace) %_sysconfdir/libvirt/virtxend.conf
+%_datadir/augeas/lenses/virtxend.aug
+%_datadir/augeas/lenses/tests/test_virtxend.aug
+%_unitdir/virtxend*
+%_sbindir/virtxend
 %_libdir/%name/connection-driver/libvirt_driver_libxl.so
 %dir %attr(0700, root, root) %_localstatedir/log/libvirt/libxl
 %dir %attr(0700, root, root) %_localstatedir/lib/libvirt/libxl
@@ -1260,6 +1307,11 @@ fi
 
 %if_with vbox
 %files daemon-driver-vbox
+%config(noreplace) %_sysconfdir/libvirt/virtvboxd.conf
+%_datadir/augeas/lenses/virtvboxd.aug
+%_datadir/augeas/lenses/tests/test_virtvboxd.aug
+%_unitdir/virtvboxd*
+%_sbindir/virtvboxd
 %_libdir/%name/connection-driver/libvirt_driver_vbox.so
 %endif
 %endif #driver_modules
@@ -1333,6 +1385,7 @@ fi
 %files login-shell
 %config(noreplace) %_sysconfdir/libvirt/virt-login-shell.conf
 %attr(4710, root, virtlogin) %_bindir/virt-login-shell
+%_libexecdir/virt-login-shell-helper
 %_man1dir/virt-login-shell.*
 %endif
 %endif
@@ -1344,6 +1397,9 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Mon Sep 09 2019 Alexey Shabalin <shaba@altlinux.org> 5.7.0-alt1
+- 5.7.0
+
 * Mon Aug 19 2019 Alexey Shabalin <shaba@altlinux.org> 5.6.0-alt1
 - 5.6.0
 
