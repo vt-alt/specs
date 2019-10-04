@@ -17,7 +17,7 @@
 
 Name: openldap
 Version: %_sover.48
-Release: alt1
+Release: alt2
 
 Provides: openldap2.4 = %version-%release
 Obsoletes: openldap2.4 < %version-%release
@@ -690,6 +690,9 @@ rm -f /var/lib/ldap/%_lib/*.so*
 #[FR] Create chroot-scripts dynamic while build package 
 
 %changelog
+* Fri Oct 04 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.4.48-alt2
+- sasl in chroot fixed
+
 * Wed Aug 28 2019 Alexey Shabalin <shaba@altlinux.org> 2.4.48-alt1
 - 2.4.48 (Fixes: CVE-2019-13057, CVE-2019-13565)
 
