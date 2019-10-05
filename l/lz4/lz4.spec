@@ -1,6 +1,6 @@
 Name: lz4
 Epoch: 1
-Version: 1.9.1
+Version: 1.9.2
 Release: alt1
 Summary: Fast LZ compression algorithm library and tools
 License: GPLv2+ and BSD
@@ -118,6 +118,9 @@ make -k test -C tests BUILD_STATIC=%BUILD_STATIC
 %endif
 
 %changelog
+* Thu Aug 15 2019 Dmitry V. Levin <ldv@altlinux.org> 1:1.9.2-alt1
+- v1.9.1 -> v1.9.2.
+
 * Tue Apr 23 2019 Dmitry V. Levin <ldv@altlinux.org> 1:1.9.1-alt1
 - v1.8.3 -> v1.9.1.
 

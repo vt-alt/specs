@@ -1,5 +1,5 @@
 Name: zstd
-Version: 1.4.2
+Version: 1.4.3
 Release: alt1
 Summary: Zstd compression library and tools
 License: BSD
@@ -118,6 +118,9 @@ export CXXFLAGS="$CFLAGS"
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Aug 19 2019 Dmitry V. Levin <ldv@altlinux.org> 1.4.3-alt1
+- 1.4.2 -> 1.4.3.
+
 * Thu Jul 25 2019 Dmitry V. Levin <ldv@altlinux.org> 1.4.2-alt1
 - 1.3.8 -> 1.4.2.
 

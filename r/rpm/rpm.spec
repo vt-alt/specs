@@ -18,7 +18,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.13.0.1
-Release: alt12
+Release: alt13
 Group: System/Configuration/Packaging
 Url: http://www.rpm.org/
 # http://git.altlinux.org/gears/r/rpm.git
@@ -540,6 +540,9 @@ touch /var/lib/rpm/delay-posttrans-filetriggers
 %_includedir/rpm
 
 %changelog
+* Wed Oct 02 2019 Dmitry V. Levin <ldv@altlinux.org> 4.13.0.1-alt13
+- posttrans-filetriggers: Remove RPM_INSTALL_* variables (closes: #37275).
+
 * Wed Jul 17 2019 Andrew Savchenko <bircoph@altlinux.org> 4.13.0.1-alt12
 - Add E2K arch support:
   - add e2k entries in rpmrc.in;

@@ -5,7 +5,7 @@
 
 Name: rpm-build
 Version: 4.0.4
-Release: alt132
+Release: alt133
 
 %define ifdef() %if %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define get_dep() %(rpm -q --qf '%%{NAME} >= %%|SERIAL?{%%{SERIAL}:}|%%{VERSION}-%%{RELEASE}' %1 2>/dev/null || echo '%1 >= unknown')
@@ -542,6 +542,9 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %files checkinstall
 
 %changelog
+* Thu Sep 26 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.0.4-alt133
+- Added %%autopatch support.
+
 * Sat May 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.0.4-alt132
 - Added %%_pointer_size, %%_is_ilp32, and %%_is_lp64 macros.
 

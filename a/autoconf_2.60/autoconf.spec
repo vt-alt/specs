@@ -4,7 +4,7 @@
 
 Name: %realname%dialect
 Version: 2.69
-Release: alt5
+Release: alt6
 Epoch: 2
 
 Summary: A GNU tool for automatically configuring source code
@@ -102,6 +102,10 @@ done
 %doc AUTHORS NEWS README TODO
 
 %changelog
+* Wed Oct 02 2019 Dmitry V. Levin <ldv@altlinux.org> 2:2.69-alt6
+- Backported two more upstream fixes.
+- AC_PATH_XTRA: removed RPATH injection code.
+
 * Thu Apr 11 2019 Dmitry V. Levin <ldv@altlinux.org> 2:2.69-alt5
 - %%check: fixed build with libtool 2.4.6.
 
