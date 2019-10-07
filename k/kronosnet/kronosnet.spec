@@ -14,7 +14,7 @@
 
 Name: kronosnet
 Summary: Multipoint-to-Multipoint VPN daemon
-Version: 1.10
+Version: 1.12
 Release: alt1
 License: GPLv2+ and LGPLv2+
 Group: Networking/Other
@@ -42,6 +42,7 @@ for High Availability use cases, where redundancy, security, fault tolerance
 and fast fail-over are the core requirements of your application.
 
 %package -n kronosnetd
+License: GPLv2+
 Group: System/Servers
 Summary: Multipoint-to-Multipoint VPN daemon
 
@@ -56,6 +57,7 @@ reconfiguration of the kronosnet(s) without daemon reload
 or service disruption.
 
 %package -n libnozzle1
+License: LGPLv2+
 Summary: Simple userland wrapper around kernel tap devices
 Group: System/Libraries
 
@@ -75,6 +77,7 @@ of tap devices and provides the basic
 pre-up.d/up.d/down.d/post-down.d infrastructure.
 
 %package -n libknet1
+License: LGPLv2+
 Summary: Kronosnet core switching implementation
 Group: System/Libraries
 
@@ -94,6 +97,7 @@ Please refer to the not-yet-existing documentation for further
 information.
 
 %package -n libknet1-crypto-nss-plugin
+License: LGPLv2+
 Summary: libknet1 nss support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -102,6 +106,7 @@ Requires: libknet1 = %version-%release
 NSS crypto support for libknet1.
 
 %package -n libknet1-crypto-openssl-plugin
+License: LGPLv2+
 Summary: libknet1 openssl support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -110,6 +115,7 @@ Requires: libknet1 = %version-%release
 OpenSSL crypto support for libknet1.
 
 %package -n libknet1-crypto-plugins-all
+License: LGPLv2+
 Summary: libknet1 crypto plugins meta package
 Group: System/Libraries
 %{?_enable_nss:Requires: libknet1-crypto-nss-plugin}
@@ -119,6 +125,7 @@ Group: System/Libraries
 meta package to install all of libknet1 crypto plugins
 
 %package -n libknet1-compress-zlib-plugin
+License: LGPLv2+
 Summary: libknet1 zlib support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -127,6 +134,7 @@ Requires: libknet1 = %version-%release
 zlib compression support for libknet1.
 
 %package -n libknet1-compress-lz4-plugin
+License: LGPLv2+
 Summary: libknet1 lz4 and lz4hc support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -135,6 +143,7 @@ Requires: libknet1 = %version-%release
 lz4 and lz4hc compression support for libknet1.
 
 %package -n libknet1-compress-lzo2-plugin
+License: LGPLv2+
 Summary: libknet1 lzo2 support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -143,6 +152,7 @@ Requires: libknet1 = %version-%release
 lzo2 compression support for libknet1.
 
 %package -n libknet1-compress-lzma-plugin
+License: LGPLv2+
 Summary: libknet1 lzma support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -151,6 +161,7 @@ Requires: libknet1 = %version-%release
 lzma compression support for libknet1.
 
 %package -n libknet1-compress-bzip2-plugin
+License: LGPLv2+
 Summary: libknet1 bzip2 support
 Group: System/Libraries
 Requires: libknet1 = %version-%release
@@ -159,6 +170,7 @@ Requires: libknet1 = %version-%release
 bzip2 compression support for libknet1.
 
 %package -n libknet1-compress-zstd-plugin
+License: LGPLv2+
 Group: System/Libraries
 Summary: libknet1 zstd support
 Requires: libknet1 = %version-%release
@@ -167,6 +179,7 @@ Requires: libknet1 = %version-%release
  zstd compression support for libknet1.
 
 %package -n libknet1-compress-plugins-all
+License: LGPLv2+
 Summary: libknet1 compress plugins meta package
 Group: System/Libraries
 %{?_enable_zlib:Requires: libknet1-compress-zlib-plugin}
@@ -180,6 +193,7 @@ Group: System/Libraries
 Meta package to install all of libknet1 compress plugins
 
 %package -n libknet1-plugins-all
+License: LGPLv2+
 Summary: Provides libknet1 plugins meta package
 Group: System/Libraries
 Requires: libknet1-compress-plugins-all
@@ -188,12 +202,13 @@ Requires: libknet1-crypto-plugins-all
 %description -n libknet1-plugins-all
 Meta package to install all of libknet1 plugins
 
-%package -n kronosnet-tests
+%package tests
+License: GPLv2+
 Group: System/Libraries
 Summary: Provides kronosnet test suite
 Requires: libknet1 = %version-%release
 
-%description -n kronosnet-tests
+%description tests
 This package contains all the libknet and libnozzle test suite
 
 %prep
@@ -337,6 +352,9 @@ rm -rf %buildroot/usr/share/doc/kronosnet
 %files -n libknet1-plugins-all
 
 %changelog
+* Fri Oct 04 2019 Alexey Shabalin <shaba@altlinux.org> 1.12-alt1
+- 1.12
+
 * Mon Jun 17 2019 Alexey Shabalin <shaba@altlinux.org> 1.10-alt1
 - 1.10
 
