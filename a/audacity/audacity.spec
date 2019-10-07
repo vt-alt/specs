@@ -1,6 +1,6 @@
 Name: audacity
 Version: 2.3.2
-Release: alt2
+Release: alt3
 Summary: Cross-platform audio editor
 Summary(ru_RU.UTF-8): Кроссплатформенный звуковой редактор
 License: GPL
@@ -15,7 +15,8 @@ Source3: %name-32x32.xpm
 Source4: %name-16x16.xpm
 Source6: %name-%version-help-en.tar
 
-Patch: 0001-Fix-building-with-wxWidgets-3.1.2.patch
+Patch1: 0001-Fix-building-with-wxWidgets-3.1.2.patch
+Patch2: 0002-Fix-Ru-translation-of-signed-and-float.patch
 
 # Debian patches are from https://salsa.debian.org/multimedia-team/audacity/tree/master/debian/patches
 # NetBSD patches are from http://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/audio/audacity/patches/
@@ -96,7 +97,8 @@ For the most up to date manual content, use the on-line manual.
 %prep
 %setup -n %name-src-%version
 
-%patch -p1
+%patch1 -p1
+%patch2 -p1
 
 %patch20 -p1
 %patch50 -p1
@@ -186,6 +188,10 @@ rm -rf %buildroot%_defaultdocdir/%name
 %_datadir/%name/help
 
 %changelog
+* Fri Oct 04 2019 Mikhail Novosyolov <mikhailnov@altlinux.org> 2.3.2-alt3
+- Fix Russian translation of 'signed' and 'float' (Closes: 37238)
+  PRed to upstream: https://github.com/audacity/audacity/pull/381
+
 * Mon Aug 19 2019 Anton Midyukov <antohami@altlinux.org> 2.3.2-alt2
 - fix build with wxGTK 3.1.2 (Thanks Mikhail Novosyolov)
 
