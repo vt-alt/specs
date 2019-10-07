@@ -17,7 +17,7 @@
 
 Name: openldap
 Version: %_sover.48
-Release: alt2
+Release: alt3
 
 Provides: openldap2.4 = %version-%release
 Obsoletes: openldap2.4 < %version-%release
@@ -423,7 +423,7 @@ ln -s . %buildroot%ldap_dir/%_sysconfdir/%_bname
 mkdir -p -m775 %buildroot%ldap_dir/lib
 ln -s lib %buildroot%ldap_dir/lib64
 mkdir -p -m755 %buildroot%ldap_dir/usr/lib/%_bname
-mkdir -p -m755 %buildroot%ldap_dir/usr/lib/sasl2
+mkdir -p -m755 %buildroot%ldap_dir/usr/lib/sasl2-3
 ln -s lib %buildroot%ldap_dir/usr/lib64
 mkdir -p -m775 %buildroot%ldap_dir/var/run
 mkdir -p -m775 %buildroot%ldap_dir%ldap_dir
@@ -556,7 +556,7 @@ fi
 %post servers
 # remove old libs from chroot
 rm -f /var/lib/ldap/%_libdir/openldap/*
-rm -f /var/lib/ldap/%_libdir/sasl2/*
+rm -f /var/lib/ldap/%_libdir/sasl2-3/*
 rm -f /var/lib/ldap/%_libdir/*.so*
 rm -f /var/lib/ldap/%_lib/*.so*
 
@@ -690,6 +690,9 @@ rm -f /var/lib/ldap/%_lib/*.so*
 #[FR] Create chroot-scripts dynamic while build package 
 
 %changelog
+* Mon Oct 07 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.4.48-alt3
+- sasl fix fixed
+
 * Fri Oct 04 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.4.48-alt2
 - sasl in chroot fixed
 
