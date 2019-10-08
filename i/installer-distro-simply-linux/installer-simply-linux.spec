@@ -1,5 +1,5 @@
 Name: installer-distro-simply-linux
-Version: 8.3
+Version: 9.0
 Release: alt1
 
 Summary: Installer common files
@@ -35,22 +35,22 @@ Requires: alterator-sysconfig
 Requires: alterator-license
 #Requires: alterator-auth
 Requires: alterator-datetime >= 4.0
-Requires: openntpd
+Requires: chrony
 Requires: alterator-vm
 Requires: alterator-pkg
 Requires: alterator-luks
 Requires: x-cursor-theme-jimmac
 #features
-Requires: installer-feature-local-clock
 Requires: installer-feature-autohostname-stage2
-Requires: installer-feature-samba-usershares-stage2
+Requires: installer-feature-desktop-disable-remote-stage2
 Requires: installer-feature-desktop-other-fs-stage2
 Requires: installer-feature-desktop-suspend-stage2
-Requires: installer-feature-desktop-disable-remote-stage2
 Requires: installer-feature-hwtweaks-stage2
+Requires: installer-feature-local-clock
 Requires: installer-feature-runlevel5-stage2
-Requires: installer-feature-xdg-user-dirs
+Requires: installer-feature-samba-usershares-stage2
 Requires: installer-feature-slideshow
+Requires: installer-feature-xdg-user-dirs
 
 Provides: installer-lite-stage2
 Provides: installer-simply-linux-stage2
@@ -77,14 +77,16 @@ Requires: alterator-root
 Requires: alterator-net-eth dhcpcd
 Requires: alterator-luks
 #Requires: alterator-x11
+#features
+Requires: installer-feature-bell-off-stage3
+Requires: installer-feature-efi-stage3
+Requires: installer-feature-lightdm-stage3
 Requires: installer-feature-nfs-client-stage3
-Requires: installer-feature-setup-network-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-repo-add
-Requires: installer-feature-bell-off-stage3
-Requires: installer-feature-symlinks-from-sbin
-Requires: installer-feature-efi-stage3
+Requires: installer-feature-setup-network-stage3
 Requires: installer-feature-sudo-enable-by-default-stage3
+Requires: installer-feature-symlinks-from-sbin
 
 Provides: installer-lite-stage3
 Provides: installer-simply-linux-stage3
@@ -119,6 +121,12 @@ Installer stage3
 %_datadir/alterator/steps/*
 
 %changelog
+* Tue Oct 08 2019 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
+- Change lightdm theme to ClassicLooks.
+- stage3: Add installer-feature-lightdm-stage3.
+- cleanup: Arrange installer-features in alphabet order.
+- Replace openntpd -> chrony.
+
 * Thu Jun 22 2017 Mikhail Efremov <sem@altlinux.org> 8.3-alt1
 - initinstall: Force 96 DPI.
 
