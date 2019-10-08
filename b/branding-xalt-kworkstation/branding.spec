@@ -17,7 +17,7 @@
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt0.3
+Release: alt0.4
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Fri Oct 04 2019 Oleg Solovyov <mcpain at altlinux dot org> 9.0.0-alt0.4
+- replace old message when the new one sent to plymouth
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt0.3
 - update plymouth theme (ALT#37097)
 
