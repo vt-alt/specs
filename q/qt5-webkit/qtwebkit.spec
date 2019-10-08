@@ -1,21 +1,21 @@
+%define qdoc_found %{expand:%%(if [ -e %_qt5_bindir/qdoc ]; then echo 1; else echo 0; fi)}
 %add_verify_elf_skiplist %_qt5_libdir/libQt5WebKit.so.*
 %add_verify_elf_skiplist %_qt5_libdir/libQt5WebKitWidgets.so.*
 
-%define qt_module qtwebkit
+%global qt_module qtwebkit
 %def_disable bootstrap
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt11
+Release: alt12
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
 License: LGPLv2 / BSD
 Url: http://qt.io/
-Source: %qt_module-opensource-src-%version.tar
+Source: %qt_module-everywhere-src-%version.tar
 
 # FC
-Patch1: 0012-cmake-Fix-include-dir-in-the-generated-pkg-config-fi.patch
 Patch2: qtwebkit-5.212.0_cmake_cmp0071.patch
 # ALT
 Patch10: alt-flags.patch
@@ -23,7 +23,10 @@ Patch10: alt-flags.patch
 # Automatically added by buildreq on Mon Sep 30 2013 (-bi)
 # optimized out: elfutils fontconfig glib2-devel glibc-devel-static gstreamer-devel libGL-devel libX11-devel libXfixes-devel libfreetype-devel libgst-plugins libqt5-core libqt5-gui libqt5-network libqt5-opengl libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-v8 libqt5-widgets libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-compiler python-modules-encodings python-modules-xml python3 python3-base qt5-base-devel qt5-declarative-devel ruby ruby-stdlibs xorg-compositeproto-devel xorg-fixesproto-devel xorg-renderproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: flex fontconfig-devel gcc-c++ gperf gst-plugins-devel libXcomposite-devel libXext-devel libXrender-devel libgio-devel libicu-devel libjpeg-devel libpng-devel libsqlite3-devel libudev-devel libwebp-devel libxslt-devel perl-Term-ANSIColor python-module-distribute python-module-simplejson qt5-webkit-devel rpm-build-python3 rpm-build-ruby zlib-devel-static
-BuildRequires(pre): rpm-build-ubt
+BuildRequires(pre): rpm-build-ubt rpm-macros-qt5
+%if_disabled bootstrap
+BuildRequires(pre): qt5-tools
+%endif
 BuildRequires: cmake
 BuildRequires: flex fontconfig-devel gcc-c++ libicu-devel libjpeg-devel libpng-devel
 BuildRequires: libsqlite3-devel libudev-devel libwebp-devel libxslt-devel libpcre-devel gperf
@@ -32,15 +35,12 @@ BuildRequires: pkgconfig(glib-2.0) pkgconfig(gio-2.0)
 BuildRequires: libXcomposite-devel libXext-devel libXrender-devel libdrm-devel
 # libGL-devel
 BuildRequires: python-module-distribute python-module-simplejson python-module-json rpm-build-python
-BuildRequires: ruby
+BuildRequires: ruby ruby-libs
 BuildRequires: perl(Term/ANSIColor.pm) perl(Perl/Version.pm) perl(Digest/Perl/MD5.pm)
 BuildRequires: zlib-devel libxml2-devel
 #BuildRequires: libleveldb-devel
 BuildRequires: qt5-base-devel qt5-xmlpatterns-devel qt5-declarative-devel qt5-webchannel-devel
 #qt5-location-devel qt5-multimedia-devel qt5-sensors-devel
-%if_disabled bootstrap
-BuildRequires: qt5-tools
-%endif
 
 %description
 %summary
@@ -86,8 +86,7 @@ Requires: %name-common = %EVR
 
 
 %prep
-%setup -n %qt_module-opensource-src-%version
-%patch1 -p1
+%setup -n %qt_module-everywhere-src-%version
 %patch2 -p1
 #
 %patch10 -p1
@@ -172,7 +171,9 @@ done
 
 %files doc
 %if_disabled bootstrap
+%if %qdoc_found
 %_qt5_docdir/*
+%endif
 %endif
 
 %files -n libqt5-webkit
@@ -195,6 +196,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Fri Oct 04 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt12
+- update from 5.212 branch
+
 * Thu Mar 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt11
 - fix build requires
 
