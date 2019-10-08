@@ -1,5 +1,5 @@
 Name: installer-feature-simply-livecd
-Version: 0.8.11
+Version: 0.9.0
 Release: alt1
 
 Summary: LiveCD install hooks for Simply Linux.
@@ -21,12 +21,13 @@ Requires: libshell
 Requires: livecd-installer-features
 
 # Installer fearures for Simply Linux.
-Requires: installer-feature-samba-usershares-stage2
+Requires: installer-feature-bell-off-stage3
 Requires: installer-feature-desktop-other-fs-stage2
-Requires: installer-feature-sudo-enable-by-default-stage3
+Requires: installer-feature-lightdm-stage3
 Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-online-repo
-Requires: installer-feature-bell-off-stage3
+Requires: installer-feature-samba-usershares-stage2
+Requires: installer-feature-sudo-enable-by-default-stage3
 Requires: installer-feature-symlinks-from-sbin
 
 %description
@@ -55,6 +56,11 @@ cp -ar alterator-menu/ %buildroot%_datadir/livecd-install
 %_datadir/livecd-install/
 
 %changelog
+* Mon Oct 07 2019 Mikhail Efremov <sem@altlinux.org> 0.9.0-alt1
+- Require installer-feature-lightdm-stage3.
+- cleanup: Arrange installer-features in alphabet order.
+- Change lightdm theme to ClassicLooks.
+
 * Mon Jun 19 2017 Mikhail Efremov <sem@altlinux.org> 0.8.11-alt1
 - 05-vm-profile.sh from i-d-simply-linux.
 - Disable thunar automount during install.
