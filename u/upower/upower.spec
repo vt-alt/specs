@@ -3,7 +3,7 @@
 %def_enable check
 
 Name: upower
-Version: 0.99.10
+Version: 0.99.11
 Release: alt1
 
 Summary: Power Management Service
@@ -25,7 +25,7 @@ Patch: %name-%version-%release.patch
 Requires: dbus >= %dbus_ver
 
 BuildRequires: libgio-devel >= %glib_ver
-BuildRequires: gtk-doc intltool libusb-devel libgudev-devel libdbus-devel >= %dbus_ver
+BuildRequires: gtk-doc libusb-devel libgudev-devel libdbus-devel >= %dbus_ver
 BuildRequires: libpolkit-devel libudev-devel gobject-introspection-devel
 BuildRequires: libimobiledevice-devel pkgconfig(systemd)
 %{?_enable_check:BuildRequires: /proc python3 python3-module-dbusmock libumockdev-gir python3-module-dbus}
@@ -76,7 +76,7 @@ GObject introspection devel data for the UPower library
 
 %prep
 %setup
-%patch -p1
+#%%patch -p1
 
 rm -f acinclude.m4
 
@@ -129,6 +129,9 @@ PYTHON=%__python3 %make check
 %_girdir/*.gir
 
 %changelog
+* Fri Oct 04 2019 Yuri N. Sedunov <aris@altlinux.org> 0.99.11-alt1
+- 0.99.11
+
 * Thu Mar 21 2019 Yuri N. Sedunov <aris@altlinux.org> 0.99.10-alt1
 - updated to UPOWER_0_99_10-5-ge06bfc6
 

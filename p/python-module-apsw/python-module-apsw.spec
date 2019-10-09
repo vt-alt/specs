@@ -1,10 +1,10 @@
 %define _name apsw
 %define rel r1
-%define sqlite_ver 3.27.0
-%def_with python3
+%define sqlite_ver 3.29.0
+%def_with python2
 
 Name: python-module-%_name
-Version: 3.27.2
+Version: 3.29.0
 Release: alt1.%rel
 
 Summary: Another Python SQLite Wrapper
@@ -14,10 +14,10 @@ Url: http://rogerbinns.github.io/apsw
 
 Source: https://github.com/rogerbinns/apsw/releases/download/%version-%rel/%_name-%version-%rel.zip
 
-BuildRequires: libsqlite3-devel >= %sqlite_ver python-devel unzip
-
-%if_with python3
+BuildRequires: libsqlite3-devel >= %sqlite_ver unzip
 BuildRequires: python3-devel rpm-build-python3
+%if_with python2
+BuildRequires: python-devel
 %endif
 
 %description
@@ -36,44 +36,53 @@ engine. In contrast to other wrappers such as pysqlite it focuses on
 being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python 3.
 
-
 %prep
-%setup -q -n %_name-%version-%rel
+%setup -n %_name-%version-%rel
 
-%if_with python3
-rm -rf ../python3
-cp -a . ../python3
-find ../python3 -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
+%if_with python2
+rm -rf ../python2
+cp -a . ../python2
+find ../python2 -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python}|'
 %endif
-find -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python}|'
+
+find . -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 
 %build
-%python_build
-%if_with python3
-pushd ../python3
 %python3_build
+
+%if_with python2
+pushd ../python2
+%python_build
 popd
 %endif
 
 %install
-%python_install
-%if_with python3
-pushd ../python3
 %python3_install
+
+%if_with python2
+pushd ../python2
+%python_install
 popd
 %endif
 
 %files
+%if_with python2
 %python_sitelibdir/*
-%doc doc/*
-
-%if_with python3
-%files -n python3-module-%_name
-%python3_sitelibdir/*
 %doc doc/*
 %endif
 
+%files -n python3-module-%_name
+%python3_sitelibdir/*
+%doc doc/*
+
+
 %changelog
+* Wed Oct 02 2019 Yuri N. Sedunov <aris@altlinux.org> 3.29.0-alt1.r1
+- 3.29.0
+
+* Wed Jun 12 2019 Yuri N. Sedunov <aris@altlinux.org> 3.28.0-alt1.r1
+- 3.28.0
+
 * Thu Mar 07 2019 Yuri N. Sedunov <aris@altlinux.org> 3.27.2-alt1.r1
 - 3.27.2
 

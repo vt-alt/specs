@@ -4,7 +4,7 @@
 
 Name: gsound
 Version: %ver_major.2
-Release: alt1
+Release: alt1.1
 
 Summary: GSound is a small library for playing system sounds
 Group: Sound
@@ -76,6 +76,10 @@ GObject introspection devel data for the GSound library.
 
 %prep
 %setup
+%ifarch %e2k
+# unsupported as of lcc 1.23.20
+sed -i 's,--warn-all,-Wall,;s,--warn-error,-Werror,' m4/ax_compiler_flags_gir.m4
+%endif
 
 %build
 %autoreconf
@@ -111,6 +115,9 @@ GObject introspection devel data for the GSound library.
 %_girdir/GSound-%api_ver.gir
 
 %changelog
+* Sat Oct 05 2019 Michael Shigorin <mike@altlinux.org> 1.0.2-alt1.1
+- E2K: avoid lcc-unsupported options
+
 * Sun Nov 01 2015 Yuri N. Sedunov <aris@altlinux.org> 1.0.2-alt1
 - 1.0.2
 

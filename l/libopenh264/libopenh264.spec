@@ -1,9 +1,9 @@
-
+%def_enable snapshot
 %define _name openh264
 %def_enable check
 
 Name: lib%_name
-Version: 1.8.0
+Version: 2.0.0
 Release: alt1
 
 Summary: H.264 codec library
@@ -11,7 +11,11 @@ Group: System/Libraries
 License: BSD
 Url: http://www.%_name.org/
 
+%if_disabled snapshot
 Source: https://github.com/cisco/%_name/archive/v%version/%_name-%version.tar.gz
+%else
+Source: %_name-%version.tar
+%endif
 
 %ifarch %ix86
 %add_optflags -msse2 -mfpmath=sse
@@ -72,6 +76,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_libdir/%name.a
 
 %changelog
+* Fri Oct 04 2019 Yuri N. Sedunov <aris@altlinux.org> 2.0.0-alt1
+- updated to v2.0.0-7-g0e377291
+
 * Wed May 01 2019 Yuri N. Sedunov <aris@altlinux.org> 1.8.0-alt1
 - first build for Sisyphus
 

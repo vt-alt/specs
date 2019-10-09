@@ -9,7 +9,7 @@
 %def_disable check
 
 Name: lib%_name%api_ver
-Version: %ver_major.3
+Version: %ver_major.4
 Release: alt1
 
 Summary: Glorious MIME Utility Library
@@ -45,7 +45,7 @@ IETF specifications.
 %package devel
 Summary: Development files for GMime
 Group: Development/C
-PreReq: %name = %version-%release
+Requires: %name = %version-%release
 
 %description devel
 This package contains development files required for packaging
@@ -72,7 +72,7 @@ GObject introspection devel data for the GMime library.
 %package devel-doc
 Summary: Development documentation for GMime
 Group: Development/Documentation
-Conflicts: %name < %version-%release
+Conflicts: %name < %version
 BuildArch: noarch
 
 %description devel-doc
@@ -81,7 +81,7 @@ This package provides development documentation for the GMime library.
 %package devel-static
 Summary: Static GMime libraries
 Group: Development/C
-PreReq: %name-devel = %version-%release
+Requires: %name-devel = %version-%release
 
 %description devel-static
 This package contains development libraries required for packaging
@@ -134,6 +134,9 @@ statically linked GMime-based software.
 %endif
 
 %changelog
+* Thu Oct 03 2019 Yuri N. Sedunov <aris@altlinux.org> 3.2.4-alt1
+- 3.2.4
+
 * Tue Nov 27 2018 Yuri N. Sedunov <aris@altlinux.org> 3.2.3-alt1
 - 3.2.3
 
