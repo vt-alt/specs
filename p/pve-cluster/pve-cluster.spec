@@ -1,7 +1,7 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
 Version: 6.0.6
-Release: alt1
+Release: alt2
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -19,7 +19,7 @@ Patch0: %name.patch
 Patch1: pve-access-control.patch
 Patch2: pve-cluster-install_vzdump_cron_config.patch
 
-Source3: pve-firsttime
+Source3: %name.filetrigger
 
 BuildRequires: pve-common pve-doc-generator libcheck-devel librrd-devel glib2-devel libfuse-devel libcorosync2-devel libsqlite3-devel xmlto
 BuildRequires: perl(ExtUtils/Embed.pm) perl(Term/ReadLine.pm) perl(Digest/HMAC_SHA1.pm) perl(XML/Parser.pm) perl(RRDs.pm)
@@ -61,8 +61,7 @@ cd ../pve-access-control
 cd ../pve-apiclient
 %make DESTDIR=%buildroot install
 
-mkdir -p %buildroot%_datadir/doc/%name
-install -m644 %SOURCE3 %buildroot%_datadir/doc/%name/
+install -pD -m0755 %SOURCE3 %buildroot%_prefix/lib/rpm/%name.filetrigger
 
 mkdir -p %buildroot%_sysconfdir/cron.d
 touch %buildroot%_sysconfdir/cron.d/vzdump
@@ -80,11 +79,33 @@ cat << __EOF__ > %buildroot%_sysconfdir/sysconfig/%name
 DAEMON_OPTS=""
 __EOF__
 
-cat << __EOF__ > %buildroot%_datadir/doc/%name/rrdcached.sysconfig
-RRDCACHED_USER="root"
-OPTS="-j /var/lib/rrdcached/journal/ -F -b /var/lib/rrdcached/db/ -B"
-SOCKFILE="/run/rrdcached.sock"
-SOCKPERMS=0660
+mkdir -p %buildroot%_localstatedir/rrdcached/{db,journal}
+mkdir -p %buildroot%_sysconfdir/systemd/system
+cat << __EOF__ > %buildroot%_sysconfdir/systemd/system/rrdcached.socket
+[Unit]
+Description=sockets activating rrdcached
+
+[Socket]
+ListenStream=/run/rrdcached.sock
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target
+__EOF__
+
+cat << __EOF__ > %buildroot%_sysconfdir/systemd/system/rrdcached.service
+[Unit]
+Description=Data caching daemon for rrdtool
+After=network.service
+
+[Service]
+Type=forking
+PIDFile=/run/rrdcached.pid
+ExecStart=/usr/bin/rrdcached -j /var/lib/rrdcached/journal/ -F -b /var/lib/rrdcached/db/ -B -p /run/rrdcached.pid -l /run/rrdcached.sock
+
+[Install]
+Also=rrdcached.socket
+WantedBy=default.target
 __EOF__
 
 %post
@@ -106,6 +127,7 @@ if [ -L %_sysconfdir/cron.d/vzdump ]; then
 fi
 
 %files
+%_sysconfdir/systemd/system/rrdcached.s*
 %systemd_unitdir/%name.service
 %_sysconfdir/bash_completion.d/pvecm
 %dir %_sysconfdir/network
@@ -129,11 +151,13 @@ fi
 %dir %perl_vendor_privlib/PVE/Cluster
 %perl_vendor_privlib/PVE/Cluster/IPCConst.pm
 %dir %_localstatedir/%name
+%dir %_localstatedir/rrdcached/db
+%dir %_localstatedir/rrdcached/journal
 %_datadir/zsh/vendor-completions/_pvecm
 %_man1dir/pvecm.1*
 %_man5dir/datacenter.cfg.5*
 %_man8dir/pmxcfs.8*
-%_datadir/doc/%name
+%_prefix/lib/rpm/%name.filetrigger
 
 %files -n pve-access-control
 %_sysconfdir/bash_completion.d/pveum
@@ -152,6 +176,9 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Tue Oct 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt2
+- added filetrigger to verify configuration
+
 * Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt1
 - pve-cluster 6.0-6
 - pve-access-control 6.0-2
