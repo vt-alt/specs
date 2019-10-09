@@ -1,8 +1,8 @@
 %def_without pam
 
 Name: moodle
-Version: 3.7.1
-Release: alt1
+Version: 3.7.2
+Release: alt2
 
 Summary: The world's open source learning platform
 License: GPLv3
@@ -12,8 +12,11 @@ Url: http://moodle.org/
 Packager: Andrey Cherepanov <cas@altlinux.org>
 BuildArch: noarch
 
-BuildRequires(pre): rpm-macros-moodle rpm-macros-apache2 perl-HTML-Parser
+BuildRequires(pre): rpm-macros-moodle
+BuildRequires(pre): rpm-macros-apache2
+BuildRequires(pre): perl-HTML-Parser
 BuildRequires: fonts-ttf-freefont
+BuildRequires: unzip
 
 # Source-url: https://github.com/moodle/moodle/archive/v%version.tar.gz
 Source: %name-%version.tar
@@ -24,6 +27,10 @@ Source20: %moodle_name.httpd2.conf
 Source21: %moodle_name.start.extra.conf
 Source22: %moodle_name.start.mods.conf
 Source23: %moodle_name.httpd2.inc.conf
+
+# Language files
+# Download by elinks https://download.moodle.org/download.php/langpack/3.7/ru.zip for example
+Source30: langpack.tar
 
 %define __spec_autodep_custom_pre export PERL5OPT='-I%buildroot%moodle_dir/filter/algebra/'
 
@@ -79,7 +86,6 @@ Requires: php7-soap
 Requires: php7-xmlreader
 Requires: php7-xmlrpc
 Requires: php7-zip
-Provides: %moodle_name-base = %version-%release
 Provides: %moodle_dir
 Provides: %moodle_admindir
 Provides: %moodle_authdir
@@ -99,8 +105,7 @@ Provides: %moodle_questiondir
 Provides: %moodle_questionformatdir
 Provides: %moodle_themedir
 Provides: %moodle_datadir
-Provides: %moodle_name-lang-en_utf8 = %version-%release
-Provides: %name-lang-en = %version-%release
+Provides: %name-lang-en = %EVR
 
 %description base
 %summary
@@ -200,6 +205,12 @@ s@%%(\{moodle_dir\}|moodle_dir([[:space:]/'\"=]))@%moodle_dir\2@g
 s@%%(\{moodle_datadir\}|moodle_datadir([[:space:]/'\"=]))@%moodle_datadir\2@g
 "
 
+# Install languahe files
+mkdir -p %buildroot%moodle_langdir
+tar xvf %SOURCE30 -C %buildroot%moodle_langdir
+cd %buildroot%moodle_langdir
+for ar in *.zip;do unzip "$ar" >/dev/null && rm -f "$ar";done
+
 %files
 
 %files base
@@ -227,6 +238,12 @@ s@%%(\{moodle_datadir\}|moodle_datadir([[:space:]/'\"=]))@%moodle_datadir\2@g
 %endif
 
 %changelog
+* Tue Oct 08 2019 Andrey Cherepanov <cas@altlinux.org> 3.7.2-alt2
+- Add Russian localization to main package.
+
+* Sat Sep 07 2019 Andrey Cherepanov <cas@altlinux.org> 3.7.2-alt1
+- New version.
+
 * Fri Jul 12 2019 Andrey Cherepanov <cas@altlinux.org> 3.7.1-alt1
 - New version.
 
