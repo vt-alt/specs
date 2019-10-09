@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.2.5
+Version: 4.2.7.1
 Release: alt1
 %K5init no_altplace
 
@@ -316,7 +316,7 @@ done
 %_datadir/color/icc/krita/
 #%_K5plug/krita/
 %_K5xdgapp/*krita*.desktop
-%_K5icon/*/*/apps/calligrakrita.*
+%_K5icon/*/*/apps/krita.*
 %_K5data/color-schemes/*
 %_datadir/metainfo/*krita*.xml
 
@@ -426,6 +426,9 @@ done
 %_libdir/libkritametadata.so.*
 
 %changelog
+* Tue Oct 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.7.1-alt1
+- new version
+
 * Mon Aug 12 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.5-alt1
 - new version
 
