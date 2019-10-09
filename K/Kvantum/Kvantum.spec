@@ -1,15 +1,15 @@
 Name: Kvantum
-Version: 0.11.1
+Version: 0.12.0
 Release: alt1
-Summary: SVG-based theme engine for Qt5, KDE and LXQt
 
+Summary: SVG-based theme engine for Qt5, KDE and LXQt
 License: GPLv3
 Group: Graphical desktop/Other
-Url: https://github.com/tsujan/Kvantum
-Packager: Leontiy Volodin <lvol@altlinux.org>
 
+Url: https://github.com/tsujan/Kvantum
 # Source-url: https://github.com/tsujan/Kvantum/archive/V%version.tar.gz
 Source: %name-%version.tar.gz
+Packager: Leontiy Volodin <lvol@altlinux.org>
 
 BuildRequires: gcc-c++ cmake libX11-devel libXext-devel libqt4-devel qt5-base-devel qt5-tools-devel qt5-svg-devel qt5-x11extras-devel kf5-kwindowsystem-devel desktop-file-utils icon-theme-hicolor
 Requires: %name-data
@@ -38,20 +38,24 @@ BuildArch: noarch
 Kvantum is an SVG-based theme engine for Qt5, KDE and LXQt, with an emphasis
 on elegance, usability and practicality.
 
-This package contains the data needed Kvantum.
+This package contains the data needed for Kvantum.
 
 %prep
 %setup
 
 %build
-%cmake
-%make -C BUILD
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.12
+%add_optflags -std=c++11
+%endif
+%cmake_insource
+%make_build
 
 %install
-%cmakeinstall_std
+%makeinstall_std
 
 # desktop-file-validate doesn't recognize LXQt
-%__subst "s|LXQt|X-LXQt|" %buildroot%_desktopdir/kvantummanager.desktop
+sed -i "s|LXQt|X-LXQt|" %buildroot%_desktopdir/kvantummanager.desktop
 desktop-file-validate %buildroot%_desktopdir/kvantummanager.desktop
 
 %find_lang %name --all-name --with-qt
@@ -84,6 +88,16 @@ desktop-file-validate %buildroot%_desktopdir/kvantummanager.desktop
 %dir %_datadir/kvantummanager/translations
 
 %changelog
+* Wed Oct 09 2019 Leontiy Volodin <lvol@altlinux.org> 0.12.0-alt1
+- 0.12.0
+
+* Tue Jul 30 2019 Leontiy Volodin <lvol@altlinux.org> 0.11.2-alt1
+- 0.11.2
+
+* Tue Jul 02 2019 Michael Shigorin <mike@altlinux.org> 0.11.1-alt2
+- E2K: explicit -std=c++11
+- minor spec cleanup
+
 * Mon May 13 2019 Leontiy Volodin <lvol@altlinux.org> 0.11.1-alt1
 - 0.11.1
 
