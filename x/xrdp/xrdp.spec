@@ -1,6 +1,7 @@
+%global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.11
-Release: alt1
+Release: alt2
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -136,6 +137,8 @@ popd
 %install
 %makeinstall_std
 
+mkdir -p %buildroot%_sysconfdir/xrdp
+
 rm -f %buildroot/%_libdir/xrdp/startwm.sh
 rm -f %buildroot/%_libdir/xrdp/xrdp_control.sh
 install -D -m755 %name-init %buildroot%_initdir/%name
@@ -158,6 +161,10 @@ install -Dp -m 644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/xrdp
 mkdir -p %buildroot%_localstatedir/log/
 touch %buildroot%_localstatedir/log/xrdp-sesman.log
 
+# rsakeys.ini
+touch %buildroot%_sysconfdir/xrdp/rsakeys.ini
+chmod 0600 %buildroot%_sysconfdir/xrdp/rsakeys.ini
+
 # install 'bash -l' startwm script
 install -Dp -m 755 sesman/startwm-bash.sh %buildroot%_sysconfdir/xrdp/startwm-bash.sh
 
@@ -167,7 +174,6 @@ install -Dp -m 644 keygen/openssl.conf %buildroot%_sysconfdir/xrdp/openssl.conf
 # Clean unnecessary files
 find %buildroot -name *.a -delete -o -name *.la -delete
 rm -rf %buildroot{/usr/local,%_includedir,%_pkgconfigdir}
-rm -f %buildroot%_sysconfdir/xrdp/{cert.pem,key.pem,rsakeys.ini}
 
 %pre
 /usr/sbin/groupadd -r -f tsusers 2>/dev/null ||:
@@ -209,6 +215,8 @@ fi
 %config(noreplace) %_sysconfdir/sysconfig/xrdp
 /lib/systemd/system/*.service
 %ghost %_localstatedir/log/xrdp-sesman.log
+%ghost %config(noreplace) %attr(0400,root,root) %verify(not size md5 mtime) %_sysconfdir/xrdp/rsakeys.ini
+%ghost %config(noreplace) %attr(0400,root,root) %verify(not size md5 mtime) %_sysconfdir/xrdp/*.pem
 %config %_sysconfdir/xrdp/sesman.ini
 %config %_sysconfdir/xrdp/xrdp.ini
 %_bindir/xrdp*
@@ -228,6 +236,12 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Mon Oct  7 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.11-alt2
+- Keep keys in /etc/xrdp/ on upgrade and removal. (Important on upgrade
+  from <= 0.9.3-alt1, which used to own these files. They would be removed,
+  but now this package owns them again, so that they are not removed on upgrade.
+  It also marks them as config, so that they are not removed on removal.)
+
 * Sat Aug 24 2019 Andrey Cherepanov <cas@altlinux.org> 0.9.11-alt1
 - New version.
 
