@@ -3,7 +3,7 @@
 %define libname libzip%sover
 %define utilsname libzip-utils
 Name: libzip
-Version: 1.5.1
+Version: 1.5.2
 Release: alt1
 
 Group: System/Libraries
@@ -13,7 +13,6 @@ Url: http://www.nih.at/libzip/
 
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ cmake
 BuildRequires: /usr/bin/groff
 BuildRequires: libssl-devel zlib-devel bzlib-devel
@@ -84,13 +83,19 @@ sed -i '/^ADD_SUBDIRECTORY(regress)$/d' CMakeLists.txt
 %_man3dir/*ZIP*
 
 %changelog
+* Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 1.5.2-alt1
+- new version
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.5.1-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Feb 26 2019 Sergey V Turchin <zerg@altlinux.org> 1.5.1-alt1
 - new version
 
-* Wed Mar 07 2018 Sergey V Turchin <zerg@altlinux.org> 1.4.0-alt1%ubt
+* Wed Mar 07 2018 Sergey V Turchin <zerg@altlinux.org> 1.4.0-alt1
 - new version
 
-* Tue Apr 25 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1%ubt
+* Tue Apr 25 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1
 - new version
 
 * Sat Feb 20 2016 Sergey V Turchin <zerg@altlinux.org> 1.1.2-alt1
