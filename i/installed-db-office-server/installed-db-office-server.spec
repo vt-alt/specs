@@ -1,5 +1,5 @@
 Name: installed-db-office-server
-Version: 1.4.5
+Version: 1.4.6
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
@@ -70,7 +70,7 @@ Databases and config files for rujel
 
 mkdir -p %buildroot/usr/share/%name
 install -Dp -m755 %name/80-office-server %buildroot%_sysconfdir/firsttime.d/80-office-server
-install -Dp -m755 %name/95-office-server-postinstall %buildroot/usr/share/install2/postinstall.d/95-office-server-postinstall
+#install -Dp -m755 %name/95-office-server-postinstall %buildroot/usr/share/install2/postinstall.d/95-office-server-postinstall
 install -Dp -m755 %name/root.d %buildroot/usr/lib/alterator/hooks/root.d/installed-db
 install -Dp -m755 %name/moodle %buildroot/etc/hooks/hostname.d/94-moodle-ldap
 install -Dp -m755 %name/mediawiki %buildroot/etc/hooks/hostname.d/95-mediawiki-ldap
@@ -87,7 +87,7 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 # /var/www/webapps/mediawiki/project-logo.png
 /usr/share/%name
 %_sysconfdir/firsttime.d/80-office-server
-/usr/share/install2/postinstall.d/*
+#/usr/share/install2/postinstall.d/*
 /usr/lib/alterator/hooks/root.d/*
 
 %files mediawiki
@@ -104,6 +104,9 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Wed Oct 09 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.6-alt1
+- Remove 95-office-server-postinstall as sp package is unsupported.
+
 * Mon Jul 15 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.5-alt1
 - Open pages after deploy to pass cache errors
 - Fix write all output include stderr to log
