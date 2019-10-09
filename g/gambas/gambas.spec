@@ -8,8 +8,8 @@ Obsoletes: gambas3-%{*} < %EVR \
 %nil
 
 Name:		gambas
-Version:	3.13.0
-Release:	alt2.1
+Version:	3.14.0
+Release:	alt1
 
 Summary:	IDE based on a basic interpreter with object extensions
 Group:		Development/Tools
@@ -100,8 +100,7 @@ Patch4:		%name-3.12.0-use-libv4l1.patch
 Patch5:		%name-3.11.4-alt-libpoppler-bool-type-fix.patch
 Patch6:		%name-3.11.4-alt-postgre-bool-type-fix.patch
 Patch7:		%name-alt-mysql8-bool-type-fix.patch
-Patch8:		alt-poppler-0.80.patch
-Patch9:		alt-termios.patch
+Patch10: 	%name-alt-postgresql12.patch
 
 Provides:       gambas3 = %EVR
 Obsoletes:      gambas3 < %EVR
@@ -207,6 +206,7 @@ Requires:      %name-gb-qt5-webkit = %version-%release
 Requires:      %name-gb-qt5-ext = %version-%release
 Requires:      %name-gb-form-terminal = %version-%release
 Requires:      %name-gb-term = %version-%release
+Requires:      %name-gb-form-print = %version-%release
 
 %description
 Gambas3 is a free development environment based on a Basic interpreter
@@ -283,6 +283,7 @@ Requires:	%name-gb-net-curl = %version-%release
 %if_with jit
 Requires:	%name-gb-jit = %version-%release
 %endif
+Requires:	%name-gb-form-print = %version-%release
 
 %description ide
 This package includes the complete Gambas3 Development Environment
@@ -1104,6 +1105,18 @@ Requires:	%name-runtime = %version-%release
 This package contains the Gambas3 component for making the GUI of
 terminal applications.
 
+%description gb-form-terminal
+This package contains the Gambas3 component for terminal in form.
+
+%package gb-form-print
+Summary:	Gambas3 component package for print form
+Group:		Development/Tools
+Requires:	%name-runtime = %version-%release
+%prov3 gb-form-print
+
+%description gb-form-print
+This package contains the Gambas3 component for print form.
+
 %prep
 %setup -q
 %patch1 -p1
@@ -1112,8 +1125,7 @@ terminal applications.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
-%patch8 -p1
-%patch9 -p1
+%patch10 -p1
 
 # We used to patch these out, but this is simpler.
 for i in `find . |grep acinclude.m4`; do
@@ -1666,7 +1678,16 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %_libdir/gambas3/gb.term.*
 %appdir/info/gb.term.*
 
+%files gb-form-print
+%_libdir/gambas3/gb.form.print.*
+%appdir/info/gb.form.print.*
+
 %changelog
+* Mon Oct 07 2019 Andrey Cherepanov <cas@altlinux.org> 3.14.0-alt1
+- New version.
+- Fix build with PostgreSQL 12.
+- New component gambas-gb-form-print.
+
 * Thu Sep 19 2019 Sergey V Turchin <zerg@altlinux.org> 3.13.0-alt2.1
 - NMU: fix compile with new poopler
 - NMU: fix compile on ppc64 (thanks glebfm@alt)
