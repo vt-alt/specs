@@ -3,7 +3,7 @@
 
 Name: python-module-%modulename
 Version: 2.0.3
-Release: alt1.1
+Release: alt2
 
 Summary: Tools for using a Web Server Gateway Interface stack
 License: MIT
@@ -52,7 +52,7 @@ cp -a . ../python3
 %python_build
 
 pushd ../python3
-find -type f -name '*.py' -exec 2to3 -w -n '{}' +
+find -type f -name '*.py' -exec 2to3 -w -n -x next '{}' +
 sed -i 's|/usr/bin/env python|/usr/bin/env python3|' \
 	tests/cgiapp_data/*
 %python3_build
@@ -78,6 +78,9 @@ popd
 
 
 %changelog
+* Wed Oct 09 2019 Oleg Solovyov <mcpain@altlinux.org> 2.0.3-alt2
+- disable unneeded "next" fix from 2to3
+
 * Fri May 25 2018 Andrey Bychkov <mrdrew@altlinux.org> 2.0.3-alt1.1
 - fix requires
 

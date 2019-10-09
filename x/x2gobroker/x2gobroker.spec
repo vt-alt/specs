@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt10
+Release: alt11
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -14,9 +14,12 @@ Patch2: alt-get-rid-of-sudo.patch
 Patch3: alt-def.patch
 Patch4: alt-iterate-listsessions.patch
 Patch5: alt-include-loadfactors.patch
+Patch6: alt-fix-tests.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
+# For tests
+BuildRequires: python3-module-PasteScript python3-module-netaddr python3-module-nose python3-module-paramiko python3-module-tornado
 Requires(pre):  python3-module-x2gobroker = %version-%release
 Requires(pre):  shadow-utils
 Requires: x2gobroker-common
@@ -255,6 +258,7 @@ installed on your to-be-managed X2Go servers.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 echo "Files where we will be patching libexecedir:"
@@ -291,6 +295,12 @@ mkdir -p %buildroot%_unitdir
 install -pm0644 x2gobroker-daemon.service %buildroot%_unitdir
 install -pm0644 x2gobroker-authservice.service %buildroot%_unitdir
 install -pm0644 x2gobroker-loadchecker.service %buildroot%_unitdir
+
+%check
+mkdir -p ~/.ssh/
+touch ~/.ssh/id_rsa
+
+%make check
 
 %pre -n python3-module-x2gobroker
 if ! %_bindir/getent group x2gobroker 1>/dev/null 2>/dev/null && %_sbindir/groupadd -r x2gobroker; then
@@ -397,6 +407,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Wed Oct 09 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt11
+- enable tests
+
 * Tue Sep 24 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt10
 - include loadfactors
 
