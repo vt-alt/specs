@@ -1,6 +1,6 @@
 %define theme slinux
 %define Name Simply Linux
-%define codename Cleo
+%define codename Destiny
 %define status %nil
 
 %define brand simply
@@ -8,19 +8,20 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.2.0
-Release: alt1
-BuildArch: noarch
+Version: 8.900
+Release: alt2
 
-BuildRequires: cpio gfxboot >= 4 fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
-BuildRequires: design-bootloader-source >= 5.0-alt2
+%ifarch %ix86 x86_64
+BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
+BuildRequires: design-bootloader-source >= 5.0-alt2 fribidi
+BuildRequires: gfxboot >= 4
+%endif
 
 BuildRequires(pre): rpm-macros-branding
-BuildRequires(pre): libqt4-core 
 BuildRequires: libalternatives-devel
-BuildRequires: libqt4-devel
+BuildRequires: qt5-base-devel
 
-BuildRequires: ImageMagick fontconfig bc libGConf-devel
+BuildRequires: ImageMagick fontconfig bc
 
 Source: %name-%version.tar
 
@@ -40,7 +41,7 @@ Summary: Graphical boot logo for grub2, lilo and syslinux
 Summary(ru_RU.UTF-8): Тема для экрана выбора вариантов загрузки (lilo и syslinux) 
 License: GPLv2+
 
-PreReq: coreutils
+Requires: coreutils
 Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 
 Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
@@ -62,9 +63,11 @@ Summary: Theme for splash animations during bootup
 Summary(ru_RU.UTF-8): Тема для экрана загрузки для дистрибутива "Просто Линукс"
 License: Distributable
 Group:  System/Configuration/Boot and Init
+%ifarch %ix86 x86_64
 Provides: plymouth-theme-%theme
 Requires: plymouth-plugin-script
-PreReq: plymouth
+Requires: plymouth
+%endif
 
 %branding_add_conflicts simply-linux bootsplash
 
@@ -81,6 +84,7 @@ Summary: Design for alterator for Simply Linux
 Summary(ru_RU.UTF-8): Тема для "Центра управления системой" и QT для дистрибутива "Просто Линукс"
 License: GPLv2+
 Group: System/Configuration/Other
+BuildArch: noarch
 Provides: design-alterator-browser-%theme  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
 Provides: alterator-icons design-alterator design-alterator-%theme
 Obsoletes:  branding-alt-%theme-browser-qt  branding-altlinux-%theme-browser-qt 
@@ -90,7 +94,7 @@ Conflicts: branding-sisyphus-server-light-alterator
 
 %branding_add_conflicts simply-linux alterator
 Obsoletes: design-alterator-server design-alterator-desktop design-altertor-browser-desktop  design-altertor-browser-server branding-altlinux-backup-server-alterator
-PreReq(post,preun): alternatives >= 0.2 alterator
+Requires(post,preun): alternatives >= 0.2 alterator
 
 %description alterator
 Design for QT and web alterator for Simply Linux.
@@ -104,12 +108,13 @@ Summary: Design for Simply Linux
 Summary(ru_RU.UTF-8): Тема для дистрибутива "Просто Линукс"
 License: Different licenses
 Group: Graphics
+BuildArch: noarch
 
 Provides: design-graphics-%theme  branding-alt-%theme-graphics
 Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
 Provides: design-graphics = 12.0.0
 
-PreReq(post,preun): alternatives >= 0.2
+Requires(post,preun): alternatives >= 0.2
 %branding_add_conflicts simply-linux graphics
 
 %description graphics
@@ -123,12 +128,13 @@ This package contains some graphics for Simply Linux design.
 %define provide_list altlinux fedora redhat system altlinux
 %define obsolete_list altlinux-release fedora-release redhat-release
 %define conflicts_list altlinux-release-sisyphus altlinux-release-4.0 altlinux-release-5.0 altlinux-release-5.1 altlinux-release-junior altlinux-release-master altlinux-release-server altlinux-release-terminal altlinux-release-small_business
-%package release
 
+%package release
 Summary: Simply Linux release file
 Summary(ru_RU.UTF-8): Описание дистрибутива "Просто Линукс"
 License: GPLv2+
 Group: System/Configuration/Other
+BuildArch: noarch
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
 Obsoletes: %obsolete_list  branding-alt-%theme-release
 Conflicts: %conflicts_list
@@ -148,6 +154,7 @@ Summary: Distribution license and release notes
 Summary(ru_RU.UTF-8): Лицензия и дополнительные сведения для дистрибутива "Просто Линукс"
 License: Distributable
 Group: Documentation
+BuildArch: noarch
 Conflicts: alt-notes-children alt-notes-hpc alt-notes-junior alt-notes-junior-sj alt-notes-junior-sm alt-notes-school-server alt-notes-server-lite alt-notes-skif alt-notes-terminal alt-notes-desktop
 %branding_add_conflicts simply-linux notes
 
@@ -163,13 +170,20 @@ Distribution license and release notes
 Summary: default settings for Xfce for Simply linux distribution
 License: GPLv2+
 Group: Graphical desktop/XFce
+BuildArch: noarch
 Requires: PolicyKit-gnome
 Requires: etcskel
-Requires: gtk3-theme-clearlooks-phenix
+Requires: gtk-theme-classiclooks
 Requires: gnome-themes-standard
 Requires: gnome-icon-theme icon-theme-simple-sl >= 2.7-alt3
 Requires: branding-simply-linux-graphics
 Requires: branding-simply-linux-backgrounds8
+# plugins added on panel by default
+Requires: xfce4-places-plugin
+Requires: xfce4-pulseaudio-plugin
+Requires: xfce4-whiskermenu-plugin
+Requires: xfce4-xkb-plugin
+
 Obsoletes: xfce-settings-lite xfce-settings-school-lite
 %branding_add_conflicts simply-linux xfce-settings
 Conflicts: xfce-settings-simply-linux
@@ -185,6 +199,7 @@ This package contains default settings for Xfce for Simply linux distribution.
 Group: Graphics
 Summary: Backgrounds for SL-8
 License: CC-BY-NC-SA-3.0+
+BuildArch: noarch
 %branding_add_conflicts simply-linux backgrounds8
 
 %description backgrounds8
@@ -195,6 +210,7 @@ Summary: Slideshow for Simply Linux %version installer.
 Summary(ru_RU.UTF-8): Изображения для организации "слайдшоу" в установщике дистрибутива "Просто Линукс"
 License: CC-BY-NC-SA-3.0+
 Group: System/Configuration/Other 
+BuildArch: noarch
 %branding_add_conflicts simply-linux slideshow
 
 %description slideshow
@@ -209,6 +225,7 @@ Summary: Simply Linux html welcome page
 Summary(ru_RU.UTF-8): Стартовая страница для дистрибутива "Просто Линукс"
 License: distributable
 Group: System/Base
+BuildArch: noarch
 Provides: indexhtml indexhtml-%theme = %version indexhtml-Desktop = 1:5.0
 Obsoletes: indexhtml-desktop indexhtml-Desktop
 
@@ -236,6 +253,7 @@ Simply Linux index.html welcome page.
 Summary: menu for Simply Linux
 License: Distributable
 Group: Graphical desktop/Other
+BuildArch: noarch
 Requires(pre): altlinux-freedesktop-menu-common
 Requires: altlinux-freedesktop-menu-common
 
@@ -246,6 +264,7 @@ Menu for Simply Linux
 Summary: Some system settings for Simply Linux
 License: GPLv2+
 Group: System/Base
+BuildArch: noarch
 
 %description system-settings
 Some system settings for Simply Linux.
@@ -317,11 +336,6 @@ cp -r xfce-settings/etcskel/.gtkrc-2.0 %buildroot/etc/skel/
 
 install -m 644 xfce-settings/etcskel/.wm-select %buildroot/etc/skel/
 
-# balou splash theme
-mkdir -p %buildroot%_datadir/themes/SimplyLinux/balou/
-install -m644 xfce-settings/balou/themerc %buildroot%_datadir/themes/SimplyLinux/balou/
-install -m644 images/wallpaper.png %buildroot%_datadir/themes/SimplyLinux/balou/logo.png
-
 # backgrounds
 mkdir -p %buildroot%_datadir/backgrounds/xfce/
 install -m 644 xfce-settings/backgrounds/slinux*.jpg %buildroot%_datadir/backgrounds/xfce/
@@ -355,40 +369,50 @@ cp menu/altlinux-wine.directory %buildroot/usr/share/desktop-directories/
 mkdir -p %buildroot/%_sysconfdir/polkit-1/rules.d/
 cp -a system-settings/polkit-rules/*.rules %buildroot/%_sysconfdir/polkit-1/rules.d/
 
+%ifarch %ix86 x86_64
 #bootloader
 %pre bootloader
 [ -s /usr/share/gfxboot/%theme ] && rm -fr  /usr/share/gfxboot/%theme ||:
 [ -s /boot/splash/%theme ] && rm -fr  /boot/splash/%theme ||:
+%endif
 
 %post bootloader
+%ifarch %ix86 x86_64
 ln -snf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
 cd boot/splash/%theme/
 echo $lang > lang
 [ "$lang" = "C" ] || echo lang | cpio -o --append -F message
+%endif
 . shell-config
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 #shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 
+%ifarch %ix86 x86_64
 %preun bootloader
 [ $1 = 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
     rm -f /boot/splash/message
+%endif
 
 %post indexhtml
 %_sbindir/indexhtml-update
 
 %files bootloader
+%ifarch %ix86 x86_64
 %_datadir/gfxboot/%theme
 /boot/splash/%theme
+%endif
 /boot/grub/themes/%theme
 
 #bootsplash
 %post bootsplash
+%ifarch %ix86 x86_64
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
+%endif
 [ -f /etc/sysconfig/grub2 ] && \
       subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
              /etc/sysconfig/grub2 ||:
@@ -418,8 +442,10 @@ fi
 %_iconsdir/altlinux.png
 
 %files bootsplash
+%ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
 %exclude %_datadir/plymouth/themes/%theme/*.in
+%endif
 
 %files release
 %dir %data_cur_dir
@@ -442,7 +468,6 @@ fi
 /etc/skel/.local
 /etc/skel/.vimrc
 /etc/skel/.gtkrc-2.0
-%_datadir/themes/SimplyLinux/
 
 %files backgrounds8
 /usr/share/backgrounds/xfce/*
@@ -469,6 +494,28 @@ fi
 %config %_sysconfdir/polkit-1/rules.d/*.rules
 
 %changelog
+* Wed Oct 09 2019 Mikhail Efremov <sem@altlinux.org> 8.900-alt2
+- Fix BR: Add fribidi on x86.
+- Fix build on aarch64.
+
+* Tue Oct 08 2019 Mikhail Efremov <sem@altlinux.org> 8.900-alt1
+- Don't use deprecated PreReq.
+- Drop gnome-chess.desktop.
+- Change GTK theme to gtk-theme-classiclooks.
+- Set codename for SL-9.
+- xfce-settings: Drop Russian words.
+- slideshow: Russian slides for SL9.
+- xfce-settings: Replace gnome-system-monitor with xfce4-taskmanager.
+- Use Qt5 to generate theme.
+- Drop splash theme.
+- Drop libGConf-devel from BR.
+- xfce-settings: Update xfwm4 settings.
+- xfce-settings: Drop xfce4-volumed-pulse settings.
+- xfce-settings: Update xfce4-panel settings.
+- xfce-settings: Update xfce4-desktop settings.
+- xfce-settings: Drop xfce4-mixer settings.
+- xfce-settings: Requre plugins added on panel by default.
+
 * Thu Jul 06 2017 Mikhail Efremov <sem@altlinux.org> 8.2.0-alt1
 - Bump version to 8.2.
 - xfce-settings: Fix menu on window key.
