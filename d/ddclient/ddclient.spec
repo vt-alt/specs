@@ -5,20 +5,22 @@
 Summary: A client to update host entries on DynDNS like services
 Summary(ru_RU.UTF8): Клиент для обновления записей служб динамического DNS, подобных DynDNS
 Name: ddclient
-Version: 3.8.1
-Release: alt2.1
+Version: 3.9.0
+Release: alt1
 License: GPLv2
 Group: System/Configuration/Networking
 Url: http://ddclient.sourceforge.net/
-Source0: http://prdownloads.sourceforge.net/ddclient/%name-%version.tar.bz2
+Source0: %name-%version.tar.xz
 Source1: ddclientd
 Source2: README_SSL.ALT.txt
 Patch0: %name-3.7.1-piddir.diff
-Patch1: %name-3.8.1.fix_ssl_warning_altspecifics.diff
+Patch1: %name-3.9.0.fix_ssl_warning_altspecifics.diff
 Patch2: %name-3.8.1-ipv6.patch
 BuildArch: noarch
 
 Requires: perl-Digest-SHA1
+
+BuildRequires: perl-Data-Validate-IP
 
 %description
 DDclient is a small full featured client requiring only Perl and no
@@ -64,7 +66,7 @@ ELSA LANCOM DSL/10, Cisco 2610, сетевого модема 3com 3c886a 56k, S
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p0
+# #%patch2 -p0
 install -m 0644 %SOURCE2 ./README_SSL.ALT.txt
 
 %build
@@ -102,6 +104,9 @@ EOF
 %dir %attr(2770,root,dyndns) /var/run/ddclient
 
 %changelog
+* Thu Oct 03 2019 Motsyo Gennadi <drool@altlinux.ru> 3.9.0-alt1
+- 3.9.0 (#34396)
+
 * Sun May 18 2014 Motsyo Gennadi <drool@altlinux.ru> 3.8.1-alt2.1
 - build for Sisyphus
 
