@@ -40,7 +40,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.2
+Version: 14.2.4
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1512,6 +1512,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 07 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.4-alt1
+- 14.2.4 (Fixes: CVE-2019-10222)
+
 * Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.2-alt1
 - 14.2.2
 

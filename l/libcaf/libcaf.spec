@@ -1,6 +1,6 @@
 Name: libcaf
 Version: 0.16.2
-Release: alt1
+Release: alt2
 
 Summary: An Open Source Implementation of the Actor Model in C++
 
@@ -12,9 +12,12 @@ Url: http://www.actor-framework.org/
 Source: %name-%version.tar
 Patch: libcaf-0.16.2-fix-linking.patch
 
-BuildRequires: gcc-c++ libcurl-devel libssl-devel ocl-icd-devel
+BuildRequires: gcc-c++ libcurl-devel libssl-devel
+%ifnarch ppc64le
+BuildRequires: ocl-icd-devel
+%endif
 
-BuildRequires: cmake
+BuildRequires(pre): cmake
 
 %description
 CAF is an open source C++11 actor model implementation
@@ -37,27 +40,28 @@ This package contains the header files for %name.
 %__subst "s|LIBRARY DESTINATION lib|LIBRARY DESTINATION %_lib|" */CMakeLists.txt
 
 %build
-%cmake
+%cmake \
+%ifarch ppc64le
+    -DCAF_NO_OPENCL:BOOL=yes
+%endif
+
 %cmake_build
 
 %install
 %cmakeinstall_std
 
 %files
-%_libdir/libcaf_core.so.%version
-%_libdir/libcaf_io.so.%version
-%_libdir/libcaf_opencl.so.%version
-%_libdir/libcaf_openssl.so.%version
+%_libdir/libcaf_*.so.*
 
 %files devel
 %_includedir/caf/
-%_libdir/libcaf_core.so
-%_libdir/libcaf_io.so
-%_libdir/libcaf_opencl.so
-%_libdir/libcaf_openssl.so
+%_libdir/libcaf_*.so
 %_datadir/caf/
 
 
 %changelog
+* Tue Oct 08 2019 Alexey Shabalin <shaba@altlinux.org> 0.16.2-alt2
+- disable build with opencl support for ppc64le
+
 * Sun Dec 16 2018 Vitaly Lipatov <lav@altlinux.ru> 0.16.2-alt1
 - initial build for ALT Sisyphus
