@@ -35,8 +35,8 @@
 %def_disable gtk_doc
 
 Name: %_name-bad%api_ver
-Version: %ver_major.0
-Release: alt1.2
+Version: %ver_major.1
+Release: alt2
 
 Summary: A set of GStreamer plugins that need more quality
 Group: System/Libraries
@@ -166,6 +166,12 @@ This package contains documentation for GStreamer Bad Plug-ins.
 %endif
 
 %changelog
+* Fri Oct 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt2
+- rebuilt with libopenh264-2.0.0
+
+* Tue Sep 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt1
+- 1.16.1
+
 * Wed May 01 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.0-alt1.2
 - enabled OpenH264 encoder/decoder plugin for x86_64
 

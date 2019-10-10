@@ -1,22 +1,32 @@
+%def_enable snapshot
+
 %define ver_major 0.4
+%def_enable gtk_doc
 %def_enable check
 
+%ifarch %valgrind_arches
+%def_enable valgrind
+%endif
+
 Name: orc
-Version: %ver_major.29
-Release: alt1
+Version: %ver_major.30.1
+Release: alt0.2
 
 Summary: The Oil Runtime Compiler
 Group: Development/Other
 License: BSD
 URL: http://code.entropywave.com/projects/orc/
 
-# VCS: git://anongit.freedesktop.org/gstreamer/orc
+%if_disabled snapshot
 Source: https://gstreamer.freedesktop.org/src/orc/%name-%version.tar.xz
-#Source: %name-%version.tar
+%else
+# VCS: https://anongit.freedesktop.org/gstreamer/orc
+Source: %name-%version.tar
+%endif
 
-BuildRequires: gtk-doc
-BuildRequires: glib2-devel >= 2.10.0
-%{?_with_valgrind:BuildRequires: valgrind-devel}
+BuildRequires(pre): meson rpm-macros-valgrind
+BuildRequires: glib2-devel >= 2.10.0 gtk-doc
+%{?_enable_valgrind:BuildRequires: valgrind-devel}
 
 %description
 Orc is a library and set of tools for compiling and executing very
@@ -98,45 +108,53 @@ This package contains documentation for Orc.
 %setup
 
 %build
-%add_optflags -D_FILE_OFFSET_BITS=64
-%autoreconf
-%configure \
-	--enable-gtk-doc \
-	--disable-static
-%make_build
+%meson \
+    %{?_enable_gtk_doc:-Dgtk_doc=enabled}
+%nil
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %check
-%{?_enable_check:%make check}
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%meson_test
 
 %files
-%_bindir/orc-bugreport
-%_bindir/orcc
+%_bindir/%name-bugreport
+%_bindir/%{name}c
 
 %files -n lib%name
-%_libdir/liborc-%ver_major.so.*
+%_libdir/lib%name-%ver_major.so.*
 
 %files -n lib%name-test
-%_libdir/liborc-test-%ver_major.so.*
+%_libdir/lib%name-test-%ver_major.so.*
 
 %files -n lib%name-devel
-%dir %_includedir/orc-%ver_major
-%_includedir/orc-%ver_major/orc
-%_libdir/liborc-%ver_major.so
-%_pkgconfigdir/orc-%ver_major.pc
-%_datadir/aclocal/orc.m4
+%dir %_includedir/%name-%ver_major
+%_includedir/%name-%ver_major/orc
+%_libdir/lib%name-%ver_major.so
+%_pkgconfigdir/%name-%ver_major.pc
+%_datadir/aclocal/%name.m4
 
 %files -n lib%name-test-devel
-%_includedir/orc-%ver_major/orc-test
-%_libdir/liborc-test-%ver_major.so
-%_pkgconfigdir/orc-test-%ver_major.pc
+%_includedir/%name-%ver_major/%name-test
+%_libdir/lib%name-test-%ver_major.so
+%_pkgconfigdir/%name-test-%ver_major.pc
 
 %files doc
-%_datadir/gtk-doc/html/orc
+%_datadir/gtk-doc/html/%name
 
 %changelog
+* Thu Sep 26 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.30.1-alt0.2
+- fixed %%check section for %%e2k
+
+* Wed Sep 25 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.30.1-alt0.1
+- 0.4.30.1 snapshot (0.4.30-12-g5e675de)
+
+* Mon Sep 23 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.30-alt1
+- 0.4.30 (ported to Meson build system)
+
 * Mon Apr 15 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.29-alt1
 - 0.4.29
 

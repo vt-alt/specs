@@ -8,7 +8,7 @@
 %def_enable gtk_doc
 
 Name: gstreamer-vaapi
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: GStreamer plugins to use VA-API video acceleration
@@ -81,6 +81,9 @@ GStreamer applications.
 %endif
 
 %changelog
+* Tue Sep 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt1
+- 1.16.1
+
 * Fri Apr 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.0-alt1
 - 1.16.0
 

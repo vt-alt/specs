@@ -3,13 +3,16 @@
 %define gst_api_ver 1.0
 %define _gst_libdir %_libdir/gstreamer-%gst_api_ver
 
-%ifarch %ix86 x86_64 aarch64
+%def_with python2
+%def_disable check
+
+%ifarch %valgrind_arches
 %def_enable valgrind
 %endif
 
 Name: python-module-gst%gst_api_ver
-Version: %ver_major.0
-Release: alt1.1
+Version: %ver_major.1
+Release: alt1
 
 Summary: GStreamer overrides for PyGobject
 Group: Development/Python
@@ -22,17 +25,18 @@ Provides: python-module-gst = %version-%release
 Source: http://gstreamer.freedesktop.org/src/%_name/%_name-%version.tar.xz
 Patch: %name-1.5.2-python-libs.patch
 
-BuildRequires(pre): rpm-build-gir rpm-build-python rpm-build-python3
-BuildRequires: gcc-c++ gst-plugins%gst_api_ver-devel >= %version
-BuildRequires: python-devel python-modules-distutils python-module-pygobject3-devel python-modules-compiler python-module-pytest
-# for python3
+BuildRequires(pre): rpm-build-gir rpm-build-python3 rpm-macros-valgrind
+BuildRequires: orc liborc-test-devel  gcc-c++ gst-plugins%gst_api_ver-devel >= %version
 BuildRequires: python3-devel python3-module-pygobject3-devel python3-module-pytest
-BuildRequires: liborc-test-devel
 %if_enabled valgrind
 BuildRequires: valgrind-tool-devel
 %endif
-# for check
-BuildRequires: /proc gstreamer%gst_api_ver gst-plugins-base%gst_api_ver
+%{?_enable_check:BuildRequires: /proc gstreamer%gst_api_ver gst-plugins-base%gst_api_ver}
+%if_with python2
+BuildRequires(pre): rpm-build-python
+BuildRequires: python-devel python-modules-distutils python-module-pygobject3-devel
+BuildRequires: python-modules-compiler python-module-pytest
+%endif
 
 %description
 This package provides GStreamer overrides for PyGobject.
@@ -47,8 +51,8 @@ This package provides GStreamer overrides for PyGobject.
 
 %prep
 %setup -n %_name-%version -a0
-mv %_name-%version py3build
-for d in {.,py3build}; do
+mv %_name-%version py2build
+for d in . %{?_with_python2:py2build}; do
 pushd $d
 %patch
 popd
@@ -56,35 +60,54 @@ done
 
 %build
 %autoreconf
-%configure
+%configure PYTHON=%__python3
 %make_build
 
-pushd py3build
+%if_with python2
+pushd py2build
 %autoreconf
-%configure PYTHON=%_bindir/python3
+%configure PYTHON=%__python
 %make_build
 popd
+%endif
 
 %install
 %makeinstall_std
 
-pushd py3build
+%if_with python2
+pushd py2build
 %makeinstall_std
 popd
+%endif
 
+%check
+%make check
+
+%if_with python2
+pushd py2build
+%make check
+popd
+%endif
+
+%if_with python2
 %files
 %python_sitelibdir/gi/overrides/*
 %exclude %python_sitelibdir/gi/overrides/*.la
 # gstreamer plugin
 %exclude %_gst_libdir/libgstpython.*
 %doc AUTHORS NEWS
+%endif
 
 %files -n python3-module-gst%gst_api_ver
 %python3_sitelibdir/gi/overrides/*
 %exclude %python3_sitelibdir/gi/overrides/*.la
-
+%doc AUTHORS NEWS
 
 %changelog
+* Tue Sep 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt1
+- 1.16.1
+- made python2 build optional
+
 * Tue Apr 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.0-alt1.1
 - mike@: introduce valgrind knob (on where present)
 

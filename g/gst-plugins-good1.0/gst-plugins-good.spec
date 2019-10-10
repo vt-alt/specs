@@ -19,8 +19,8 @@
 %def_disable check
 
 Name: %_name-good%api_ver
-Version: %ver_major.0
-Release: alt1.1
+Version: %ver_major.1
+Release: alt1
 
 Summary: A set of GStreamer plugins considered good
 Group: System/Libraries
@@ -109,6 +109,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %endif
 
 %changelog
+* Tue Sep 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt1
+- 1.16.1
+
 * Sat Apr 20 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.0-alt1.1
 - mike@: disable BR: valgrind-tool-devel on non-primary arches (rather missing)
 
