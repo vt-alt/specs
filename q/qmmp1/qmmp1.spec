@@ -5,7 +5,7 @@
 
 %define rname qmmp
 Name: qmmp1
-Version: 1.3.3
+Version: 1.3.4
 Release: alt1
 
 Group: Sound
@@ -37,7 +37,8 @@ BuildRequires: libalsa-devel libjack-devel libpulseaudio-devel qt5-multimedia-de
 BuildRequires: libbs2b-devel libcddb-devel libcdio-paranoia-devel libcurl-devel libenca-devel
 BuildRequires: libavformat-devel libwildmidi-devel
 BuildRequires: libfaad-devel libflac-devel libgme-devel libopusfile-devel libsamplerate-devel libsoxr-devel
-BuildRequires: libmad-devel libmodplug-devel libmpcdec-devel libvorbis-devel libwavpack-devel
+BuildRequires: libmad-devel libmpg123-devel
+BuildRequires: libmodplug-devel libmpcdec-devel libvorbis-devel libwavpack-devel
 #BuildRequires: libshout2-devel
 #BuildRequires: libarchive-devel
 #BuildRequires: libsidplayfp-devel
@@ -274,6 +275,9 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %_libdir/lib*.so
 
 %changelog
+* Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.4-alt1
+- new version
+
 * Fri Jul 12 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.3-alt1
 - new version
 
