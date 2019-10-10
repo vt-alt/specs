@@ -1,5 +1,5 @@
 Name: mysql-workbench-community
-Version: 8.0.15
+Version: 8.0.17
 Release: alt1
 
 Summary: A MySQL visual database modeling tool
@@ -20,6 +20,7 @@ Patch3: mysql-workbench-6.3.4-c++11.patch
 Patch4: %name-6.3.4-alt-gcc6.patch
 Patch5: mysql-workbench-community-6.3.10-32bit.patch
 Patch6: mysql-workbench-community-8.0.15-antlr4-runtime.patch
+Patch7: mysql-workbench-8.0.17.suppress-unsupported.patch
 
 Provides: mysql-workbench-oss = %version-%release
 Obsoletes: mysql-workbench-oss < %version-%release
@@ -49,6 +50,9 @@ Obsoletes: mysql-query-browser < %version-%release
 Requires: python-module-paramiko python-module-pexpect
 Requires: mysql-client gnome-keyring
 Requires: %name-data = %version
+
+# https://bugzilla.altlinux.org/35600
+Requires: glibc-devel
 
 BuildRequires(pre): unzip
 BuildRequires(pre): rpm-build-licenses
@@ -121,6 +125,7 @@ Architecture independent files for %name
 %patch5 -p1
 %endif
 %patch6 -p2
+%patch7 -p2
 
 sed -i "s|pcre.h|pcre/pcre.h|" library/grt/src/grtpp_shell.cpp
 sed -i "s|ldconfig|/sbin/ldconfig|" frontend/linux/workbench/mysql-workbench.in
@@ -142,6 +147,12 @@ popd
 %ifarch %ix86
 %add_optflags -Wno-error=format=
 %endif
+
+#8.0.17: http://bugs.mysql.com/97116
+sed -i "s/ -Werror//" CMakeLists.txt
+
+#8.0.17: wb_context_ui_home.cpp:59:10: fatal error: include <zip.h>
+%add_optflags -I/usr/include/libzip
 
 %cmake \
     -DWITH_ANTLR_JAR=%SOURCE1 \
@@ -202,6 +213,12 @@ popd
 %_xdgdatadir/mime-info/*.mime
 
 %changelog
+* Tue Oct 08 2019 Sergey Y. Afonin <asy@altlinux.org> 8.0.17-alt1
+- Updated to last release
+- Removed -Werror from CMakeLists.txt (http://bugs.mysql.com/97116)
+- Disabled "Unsupported Operating System" warning
+- Added "Requires: glibc-devel" (ALT #35600)
+
 * Thu Feb 21 2019 Sergey Y. Afonin <asy@altlinux.ru> 8.0.15-alt1
 - Updated to last release
 - Updated antlr jar to antlr-4.7.1-complete.jar from http://www.antlr4.org/download/
