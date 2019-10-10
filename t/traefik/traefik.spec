@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name: traefik
-Version: 2.0.1
+Version: 2.0.2
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -135,6 +135,10 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.2-alt1
+- 2.0.2
+- update systemd unit for allow write to logfile
+
 * Wed Oct 02 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt1
 - 2.0.1
 
