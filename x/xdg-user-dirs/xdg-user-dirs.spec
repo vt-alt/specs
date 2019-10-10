@@ -1,6 +1,6 @@
 Name: xdg-user-dirs
-Version: 0.14
-Release: alt2
+Version: 0.17
+Release: alt1
 Summary: Handles user special directories
 Group: Graphical desktop/Other
 License: GPLv2+ and MIT
@@ -14,6 +14,8 @@ Patch0: xdg-user-dirs-0.13-alt.patch
 Patch1: user-dirs-fix-encoding-0.13-alt.patch
 Patch2: xdg-user-dirs-0.14-alt-home.patch
 Patch3: user-dirs-update-fix-0.13-alt.patch
+
+BuildRequires: xsltproc docbook-style-xsl
 
 %description
 Contains xdg-user-dirs-update that updates folders in a users
@@ -51,8 +53,16 @@ install -p -m 755 %SOURCE2 %buildroot%_controldir/xdg-user-dirs
 %config(noreplace) %_sysconfdir/xdg/user-dirs.defaults
 %_x11sysconfdir/profile.d/*
 %_controldir/*
+%_man1dir/*user-dir*
+%_man5dir/*user-dir*
 
 %changelog
+* Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 0.17-alt1
+- new version
+
+* Thu Feb 02 2017 Sergey V Turchin <zerg@altlinux.org> 0.14-alt1.M80P.1
+- build for M80P
+
 * Wed Feb 01 2017 Sergey V Turchin <zerg@altlinux.org> 0.14-alt2
 - Add option for alternate home directory
 
