@@ -2,7 +2,7 @@
 
 Name: glibc
 Version: 2.27
-Release: alt10
+Release: alt11
 Epoch: 6
 
 Summary: The GNU libc libraries
@@ -503,6 +503,13 @@ done |sort -u >>libc.lang
 mkdir -p %buildroot%glibc_sourcedir
 cp %SOURCE0 %buildroot%glibc_sourcedir/
 
+%ifarch aarch64
+ln -s /lib64/ld-linux-aarch64.so.1 %buildroot/lib/
+%endif
+%ifarch riscv64
+ln -s /lib64/ld-linux-riscv64-lp64d.so.1 %buildroot/lib/
+%endif
+
 %brp_strip_debug */%_lib/ld-*.so* */%_lib/libpthread-*.so
 
 # due to libpthread.
@@ -643,6 +650,12 @@ fi
 %exclude /%_lib/libanl*.so*
 %exclude /%_lib/librt*.so*
 /%_lib/ld*.so.*
+%ifarch aarch64
+/lib/ld-linux-aarch64.so.1
+%endif
+%ifarch riscv64
+/lib/ld-linux-riscv64-lp64d.so.1
+%endif
 %attr(755,root,root)/%_lib/ld*.so
 %exclude /%_lib/libnss_[a-eg-z]*
 /sbin/glibc_post_upgrade
@@ -759,6 +772,10 @@ fi
 %glibc_sourcedir
 
 %changelog
+* Thu Oct 10 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 6:2.27-alt11
+- Updated to glibc-2.27-141-g5b4f7382af from 2.27 branch.
+- Added ld-linux compat symlinks for aarch64 and riscv64.
+
 * Wed Jul 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 6:2.27-alt10
 - ppc64le:
   + glibc-preinstall: set minimal kernel version to 3.10.0 (current
