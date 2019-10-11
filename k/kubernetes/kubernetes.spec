@@ -11,7 +11,7 @@
 
 Name: kubernetes
 Version: 1.15.4
-Release: alt1
+Release: alt2
 Summary: Container cluster management
 
 Group: System/Configuration/Other
@@ -306,6 +306,9 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Fri Oct 11 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.15.4-alt2
+- Partly revert b378c886 because some deprecated optons steel needed
+
 * Thu Sep 26 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.4-alt1
 - 1.15.4
 
