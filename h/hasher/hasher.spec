@@ -1,6 +1,6 @@
 Name: hasher
-Version: 1.3.36
-Release: alt1
+Version: 1.4.0
+Release: alt2
 
 Summary: Modern safe package building technology
 License: GPLv2+
@@ -24,14 +24,17 @@ Requires: bash-builtin-lockf >= 0:0.2
 Requires: coreutils >= 0:5.2.1-alt3
 # due to "find -exec {} +"
 Requires: findutils >= 0:4.2.28
-# due to hasher-priv zero subconfig identifier support
-Requires: hasher-priv >= 0:1.3.3
+# due to hasher-priv makedev removal
+Requires: hasher-priv >= 1.6.0
 # due to prepare_x11_forwarding()
 Requires: mktemp >= 1:1.3.1
 # first libshell version with fixed shell-quote
 Requires: libshell >= 0:0.0.2-alt4
 # due to def_cache_compress
 Requires: lz4
+
+# due to hsh-fakedev removal
+Conflicts: mkimage < 0.2.28
 
 Obsoletes: pkg-build-utils, libbte
 
@@ -58,6 +61,13 @@ network connection or local mirror is highly recommended.
 %doc FAQ QUICKSTART README apt.conf *.sh
 
 %changelog
+* Fri Oct 11 2019 Dmitry V. Levin <ldv@altlinux.org> 1.4.0-alt2
+- Added "Conflicts: mkimage < 0.2.28" due to hsh-fakedev removal.
+
+* Sun Aug 18 2019 Dmitry V. Levin <ldv@altlinux.org> 1.4.0-alt1
+- Removed hsh-fakedev which became useless with hasher-priv >= 1.6.0.
+- Updated for hasher-priv makedev removal.
+
 * Mon Mar 25 2019 Dmitry V. Levin <ldv@altlinux.org> 1.3.36-alt1
 - Introduced unchecked_initroot_cache control variable.
   This new config variable controls whether the initroot cache is unchecked.

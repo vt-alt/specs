@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.26
+Version: 0.2.28
 Release: alt1
 
 Summary: Simple image creator
@@ -83,6 +83,14 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Fri Sep 13 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2.28-alt1
+- Added support for aarch64 systems (grub-efi boot from ISO-9660)
+  by klark@ and shaba@).
+- Added hasher >= 1.4.0 support.
+
+* Tue Jul 09 2019 Alexey Gladkov <legion@altlinux.ru> 0.2.27-alt1
+- Add support for Open Firmware/OpenBoot/IEEE1275 firmware (glebfm@)
+
 * Thu Jun 13 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.2.26-alt1
 - mki-copy-pkgs: bisection improved
 

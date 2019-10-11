@@ -1,5 +1,5 @@
 Name: hasher-priv
-Version: 1.5.2
+Version: 1.6.0
 Release: alt1
 
 Summary: A privileged helper for the hasher project
@@ -16,8 +16,8 @@ Provides: %helperdir
 PreReq: coreutils, shadow-utils, glibc-utils
 Obsoletes: pkg-build-priv
 
-# Due to libexec hell.
-Conflicts: hasher < 0:1.0.9-alt0.M24.1
+# Due to makedev removal.
+Conflicts: hasher < 1.4.0
 
 BuildPreReq: help2man, sisyphus_check >= 0:0.7.11
 
@@ -59,6 +59,16 @@ groupadd -r -f hashman
 %doc DESIGN
 
 %changelog
+* Tue Sep 10 2019 Dmitry V. Levin <ldv@altlinux.org> 1.6.0-alt1
+- x11_parse_display: fixed hostname:displaynumber separation.
+- Do not issue the warning about X11 auth data mismatch when
+  the message contains no X11 auth data.
+- Added /sys/fs/cgroup to the hardcoded fstab.
+- Removed mount, umount, makedev, maketty, and makeconsole
+  operation modes, their job is now handled by chrootuid1
+  and chrootuid2 operation modes.
+- Introduced allowed_devices configuration option.
+
 * Wed Feb 17 2016 Dmitry V. Levin <ldv@altlinux.org> 1.5.2-alt1
 - chrootuid: Implemented /dev/pts/ptmx support.
 - Hardened default mount options for builtin mount points.
