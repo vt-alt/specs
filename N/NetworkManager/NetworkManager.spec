@@ -1,5 +1,5 @@
-%define git_hash .git173782d7331e
-#define git_hash %nil
+#define git_hash .git173782d7331e
+%define git_hash %nil
 
 %define dbus_version 1.2.12-alt2
 %define libdbus_glib_version 0.76
@@ -65,8 +65,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager
-Version: 1.18.3
-Release: alt2%git_hash
+Version: 1.18.4
+Release: alt1%git_hash
 License: %gpl2plus
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
@@ -779,6 +779,9 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Thu Oct 10 2019 Mikhail Efremov <sem@altlinux.org> 1.18.4-alt1
+- Updated to 1.18.4.
+
 * Sat Sep 28 2019 Mikhail Efremov <sem@altlinux.org> 1.18.3-alt2.git173782d7331e
 - Fix build with glib-2.62.0.
 - Upstream git snapshot (nm-1-18 branch).

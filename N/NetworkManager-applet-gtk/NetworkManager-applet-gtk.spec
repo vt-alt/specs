@@ -17,8 +17,8 @@
 %endif
 
 Name: NetworkManager-applet-gtk
-Version: 1.8.22
-Release: alt2%git_date
+Version: 1.8.24
+Release: alt1%git_date
 License: %gpl2plus
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
@@ -190,6 +190,7 @@ sed -i 's/^PACKAGE = @PACKAGE@/PACKAGE = @GETTEXT_PACKAGE@/' po/Makefile.in.in
 %else
 	--without-libnm-gtk \
 %endif
+	--without-libnma-gtk4 \
 	--enable-mobile-broadband-provider-info \
 	--enable-gtk-doc \
 	--disable-silent-rules \
@@ -253,6 +254,9 @@ make check
 %doc %_datadir/gtk-doc/html/libnma
 
 %changelog
+* Thu Oct 10 2019 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt1
+- Updated to 1.8.24.
+
 * Wed Sep 04 2019 Mikhail Efremov <sem@altlinux.org> 1.8.22-alt2
 - Patches from upstream:
   + editor: register to the connection-removed signal only once.
