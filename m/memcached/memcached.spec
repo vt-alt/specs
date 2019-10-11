@@ -4,7 +4,7 @@
 %def_enable tls
 
 Name: memcached
-Version: 1.5.16
+Version: 1.5.19
 Release: alt1
 
 Summary: memcached - memory caching daemon
@@ -18,7 +18,7 @@ Patch: %name-%version.patch
 %define pkg_user memcached
 %define pkg_group memcached
 
-BuildRequires: libevent-devel perl-devel perl-AnyEvent perl-YAML perl-Term-ReadKey
+BuildRequires: libevent-devel perl-devel perl-AnyEvent perl-YAML perl-Term-ReadKey perl-IO-Socket-SSL
 %{?_enable_seccomp:BuildRequires: libseccomp-devel}
 %{?_enable_sasl:BuildRequires: libsasl2-devel}
 %{?_enable_tls:BuildRequires: libssl-devel >= 1.1.0}
@@ -109,6 +109,12 @@ fi
 %_man1dir/%name-tool.*
 
 %changelog
+* Fri Oct 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.19-alt1
+- new version 1.5.19
+
+* Tue Sep 10 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.17-alt1
+- new version 1.5.17
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.16-alt1
 - 1.5.16
 
