@@ -2,7 +2,7 @@
 
 Summary: OCI runtime written in C
 Name: crun
-Version: 0.9.1
+Version: 0.10.2
 Release: alt1
 Group: Development/Other
 License: GPLv3+
@@ -18,7 +18,6 @@ BuildRequires: libcap-devel
 BuildRequires: libsystemd-devel
 BuildRequires: libyajl-devel
 BuildRequires: libseccomp-devel
-BuildRequires: libselinux-devel
 BuildRequires: go-md2man
 BuildRequires: python3
 Provides: oci-runtime = 2
@@ -47,6 +46,9 @@ rm -f %buildroot%_libdir/*.a
 %_man1dir/*
 
 %changelog
+* Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 0.10.2-alt1
+- 0.10.2
+
 * Mon Sep 23 2019 Alexey Shabalin <shaba@altlinux.org> 0.9.1-alt1
 - 0.9.1
 
