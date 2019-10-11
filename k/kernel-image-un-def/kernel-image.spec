@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
 Release: alt1
 epoch:1 
-%define kernel_base_version	5.2
-%define kernel_sublevel .20
+%define kernel_base_version	5.3
+%define kernel_sublevel .5
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -104,6 +104,7 @@ BuildRequires: module-init-tools >= 3.16
 BuildRequires: lzma-utils
 BuildRequires: libelf-devel
 BuildRequires: bc
+BuildRequires: rsync
 BuildRequires: openssl-devel
 # for check
 %{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
@@ -118,7 +119,8 @@ Provides: kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
 %endif
 
 %if_enabled docs
-BuildRequires: python-module-sphinx perl-Pod-Usage 
+BuildRequires: python3-module-sphinx /usr/bin/sphinx-build perl-Pod-Usage python3-module-sphinx_rtd_theme
+BuildRequires: fontconfig
 %endif
 
 %if_enabled ccache
@@ -704,18 +706,17 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Oct 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.5-alt1
+- v5.3.5  (Fixes: CVE-2019-14821)
+
+* Wed Oct 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.0-alt1
+- v5.3
+
 * Mon Oct 07 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.20-alt1
 - v5.2.20
 
 * Sat Oct 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.19-alt1
 - v5.2.19
-
-* Tue Oct 01 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.18-alt1
-- v5.2.18
-
-* Sat Sep 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.17-alt1
-- v5.2.17  (Fixes: CVE-2019-14814, CVE-2019-14815, CVE-2019-14816, CVE-2019-14821,
-  CVE-2019-15504)
 
 * Mon Sep 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.15-alt1
 - v5.2.15  (Fixes: CVE-2019-15030, CVE-2019-15031)
