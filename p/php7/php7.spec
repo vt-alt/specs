@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.2.19
+Version: 7.2.22
 Release: alt1
 
 %define php7_name      %name
@@ -43,7 +43,7 @@ Patch38: php-no-static-program.patch
 Patch39: php-set-session-save-path.patch
 Patch40: php7-7.1.10-alt-lsattr.patch
 Patch41: php-7.2.12-acinclude.patch
-Patch50: php7-7.2.13-alt-e2k-lcc123.patch
+Patch50: php7-7.2.21-alt-e2k-lcc123.patch
 Patch61: php5-5.5.9-phar-phppath.patch
 Patch62: php-mysqlnd-socket.patch
 Patch63: php-7.2.14-alt-zend-signal-visibility.patch
@@ -193,10 +193,10 @@ subst "s,./stamp=$,," build/buildcheck.sh
 # symbols visibility fix
 sed -is 's,\(zend_module_entry \)\(.*= {\),zend_module_entry __attribute__ ((visibility("default"))) \2,;' ext/*/*.c
 
+%build
 %autoreconf -I build
 ./buildconf --force
 
-%build
 %php7_env
 
 # some plugins can be linked against lcxa (e.g. gd2); it can't be
@@ -436,6 +436,15 @@ chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 %doc tests run-tests.php 
 
 %changelog
+* Wed Sep 04 2019 Anton Farygin <rider@altlinux.ru> 7.2.22-alt1
+- 7.2.22
+
+* Sat Aug 03 2019 Anton Farygin <rider@altlinux.ru> 7.2.21-alt1
+- 7.2.21 (Fixes: CVE-2019-11042, CVE-2019-11041)
+
+* Thu Jul 11 2019 Michael Shigorin <mike@altlinux.org> 7.2.19-alt1.1
+- move autoreconf from %%prep to %%build
+
 * Sat Jun 01 2019 Anton Farygin <rider@altlinux.ru> 7.2.19-alt1
 - 7.2.19 (fixes: CVE-2019-11040)
 - fixed build on mipsel by iv@
