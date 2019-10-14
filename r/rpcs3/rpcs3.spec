@@ -1,11 +1,11 @@
-%define git_ver 8156
-%define git_commit d616ce223c1c6e1e1918080245e0472907d4d254
+%define git_ver 8871
+%define git_commit 9bcd7b534b7dc9f9c0251c21b15c0ba44d4d1eb6
 
-%define glslang_commit c99304c5dc513c43b8f329663326331fc67d9e4d
-%define asmjit_commit 1e550aa568da993acb742ac19f2ab691a2806ad5
+%define glslang_commit c11e3156af2297f89a23c8db3f5e2323733ee556
+%define asmjit_commit fc251c914e77cd079e58982cdab00a47539d7fc5
 %define pugixml_commit 8bf806c035373bd0723a85c0820cfd5c804bf6cd
 %define hidapi_commit 9220f5e77c27b8b3717b277ec8d3121deeb50242
-%define libusb_commit 2e41930f74bbd8d741709283a106837d74065361
+%define libusb_commit 7cfa00e9d723f10167b4d71bceebf2b4b2cbd70e
 %define yaml_cpp_commit eca9cfd64899525d0a61abb0553849676a0fe511
 %define xx_hash_commit 7cc9639699f64b750c0b82333dced9ea77e8436e
 %define llvm_commit b860b5e8f4ee90d6eb567d83ce8ed1a3e71e496f
@@ -13,7 +13,7 @@
 %define cereal_commit 42a45b6e15fcbd1a3d65b033f5d4d0b2ef6c023d
 
 Name: rpcs3
-Version: 0.0.6.%git_ver
+Version: 0.0.7.%git_ver
 Release: alt1
 
 Summary: PS3 emulator/debugger
@@ -121,6 +121,15 @@ popd
 %_datadir/metainfo/%name.appdata.xml
 
 %changelog
+* Sun Oct 13 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.7.8871-alt1
+- Version 0.0.7.8871
+
+* Sat Oct 12 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.7.8862-alt1
+- Version 0.0.7.8862
+- Update asmjit to fc251c9
+- Update glslang to c11e315
+- Update libusb to 7cfa00e
+
 * Wed May 22 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.6.8156-alt1
 - Version 0.0.6.8156
 
