@@ -1,5 +1,5 @@
 Name: flacon
-Version: 5.4.0
+Version: 5.5.1
 Release: alt1
 
 Summary: Audio File Encoder
@@ -72,9 +72,13 @@ popd
 %dir %_iconsdir/hicolor/scalable/apps
 %_iconsdir/hicolor/scalable/apps/%name.svg
 %_datadir/%name
+%_datadir/metainfo/com.github.Flacon.metadata.xml
 %_man1dir/%name.1.*
 
 %changelog
+* Sat Oct 12 2019 Nazarov Denis <nenderus@altlinux.org> 5.5.1-alt1
+- Version 5.5.1
+
 * Wed May 01 2019 Nazarov Denis <nenderus@altlinux.org> 5.4.0-alt1
 - Version 5.4.0
 
