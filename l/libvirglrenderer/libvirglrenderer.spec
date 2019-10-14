@@ -1,6 +1,6 @@
 
 Name: libvirglrenderer
-Version: 0.7.0
+Version: 0.8.0.0.34.4ac3a04c
 Release: alt1
 
 Summary: Virgl Rendering library
@@ -10,8 +10,9 @@ License: MIT
 #VCS: git:git://people.freedesktop.org/~airlied/virglrenderer
 Source: %name-%version.tar
 
+BuildRequires(pre): meson
 BuildRequires: pkgconfig(libdrm) >= 2.4.50
-BuildRequires: pkgconfig(gbm)
+BuildRequires: pkgconfig(gbm) >= 18.0.0
 BuildRequires: pkgconfig(epoxy)
 
 %description
@@ -43,12 +44,11 @@ driver to test virgl rendering without GL.
 %setup
 
 %build
-%autoreconf
-%configure --disable-silent-rules
-%make_build
+%meson
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %files
 %doc COPYING
@@ -63,6 +63,9 @@ driver to test virgl rendering without GL.
 %_bindir/virgl_test_server
 
 %changelog
+* Fri Oct 11 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.0.0.34.4ac3a04c-alt1
+- upstream commit 4ac3a04cb8a4b0d419bccbb7798b59aa098487a6
+
 * Mon Oct 15 2018 Alexey Shabalin <shaba@altlinux.org> 0.7.0-alt1
 - 0.7.0
 
