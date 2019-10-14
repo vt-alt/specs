@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt11
+Release: alt12
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -296,6 +296,20 @@ install -pm0644 x2gobroker-daemon.service %buildroot%_unitdir
 install -pm0644 x2gobroker-authservice.service %buildroot%_unitdir
 install -pm0644 x2gobroker-loadchecker.service %buildroot%_unitdir
 
+# make config files
+for i in access broker error
+do
+  touch %buildroot%_logdir/%name/$i.log
+done
+touch %buildroot%_logdir/%name/x2gobroker-{daemon,authservice,loadchecker}.std{err,out}
+
+# make config files
+for i in access broker error
+do
+  touch %buildroot%_logdir/%name/$i.log
+done
+touch %buildroot%_logdir/%name/x2gobroker-{daemon,authservice,loadchecker}.std{err,out}
+
 %check
 mkdir -p ~/.ssh/
 touch ~/.ssh/id_rsa
@@ -353,7 +367,10 @@ fi
 %exclude %_man1dir/x2gobroker-daemon.1*
 %_man8dir/x2gobroker-keygen.8*
 %_man8dir/x2gobroker-testagent.8*
-%attr(02750,x2gobroker,x2gobroker) %_logdir/x2gobroker
+%dir %attr(02750,x2gobroker,x2gobroker) %_logdir/x2gobroker
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/access.log
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/broker.log
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/error.log
 %attr(00750,x2gobroker,x2gobroker) %_sharedstatedir/x2gobroker
 
 %files common
@@ -376,12 +393,18 @@ fi
 %_sbindir/x2gobroker-authservice
 %_man8dir/x2gobroker-authservice.8*
 %config %_logrotatedir/x2gobroker-authservice
+%_tmpfilesdir/x2gobroker-authservice.conf
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-authservice.stderr
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-authservice.stdout
 
 %files loadchecker
 %_unitdir/x2gobroker-loadchecker.service
 %_sbindir/x2gobroker-loadchecker
 %_man8dir/x2gobroker-loadchecker.8*
 %config %_logrotatedir/x2gobroker-loadchecker
+%_tmpfilesdir/x2gobroker-loadchecker.conf
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-loadchecker.stderr
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-loadchecker.stdout
 
 %files daemon
 %_bindir/x2gobroker-daemon
@@ -390,6 +413,9 @@ fi
 %_man1dir/x2gobroker-daemon.1*
 %_man8dir/x2gobroker-daemon-debug.8*
 %config %_logrotatedir/x2gobroker-daemon
+%_tmpfilesdir/x2gobroker-daemon.conf
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-daemon.stderr
+%attr(0640,x2gobroker,x2gobroker) %_logdir/x2gobroker/x2gobroker-daemon.stdout
 
 %files ssh
 %attr(04510,x2gobroker,x2gobroker-users) %_bindir/x2gobroker-ssh
@@ -407,6 +433,9 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Thu Oct 10 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt12
+- don't run daemon from root
+
 * Wed Oct 09 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt11
 - enable tests
 
