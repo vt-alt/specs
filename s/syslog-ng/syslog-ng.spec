@@ -4,7 +4,7 @@
 
 %define _unpackaged_files_terminate_build 1
 
-%def_enable	geoip
+%def_enable	geoip2
 %def_enable	smtp
 %def_enable	json
 %def_disable	amqp
@@ -17,7 +17,7 @@
 %def_disable	unit_tests
 
 Name: syslog-ng
-Version: 3.22.1
+Version: 3.24.1
 Release: alt1
 
 Summary: syslog-ng daemon
@@ -49,9 +49,10 @@ BuildRequires: rpm-build-licenses
 BuildRequires: flex autoconf-archive glib2-devel libcap-devel libdbi-devel
 BuildRequires: libnet2-devel libpcre-devel libpopt-devel
 BuildRequires: libssl-devel libuuid-devel libivykis-devel
-BuildRequires: xsltproc docbook-style-xsl python-devel
+BuildRequires: xsltproc docbook-style-xsl python3-dev python-dev
 
-%{?_enable_geoip:BuildRequires: libGeoIP-devel}
+%{?_enable_geoip2:BuildRequires: libGeoIP-devel}
+%{?_enable_geoip2:BuildRequires: libmaxminddb-devel}
 %{?_enable_json:BuildRequires: libjson-c-devel}
 %{?_enable_smtp:BuildRequires: libesmtp-devel}
 %{?_enable_amqp:BuildRequires: librabbitmq-c-devel}
@@ -104,12 +105,13 @@ Group: System/Libraries
 %description libdbi
 This module supports a large number of database systems via libdbi.
 
-%package geoip
-Summary: GeoIP support for %{name}
+%package geoip2
+Summary: GeoIP2 support for %{name}
 Group: System/Libraries
+Obsoletes: %name-geoip
 
-%description geoip
-This module provides a function to get GeoIP info from an IPv4 address.
+%description geoip2
+This module provides a function to get GeoIP2 info from an IPv4 address.
 
 %package smtp
 Summary: SMTP destination support for %{name}
@@ -245,7 +247,7 @@ skip_submodules=1 ./autogen.sh
  --enable-manpages \
  --disable-java \
  --disable-java-modules \
- %{subst_enable geoip} \
+ %{subst_enable geoip2} \
  %{subst_enable smtp} \
  %{subst_enable json} \
  %{subst_enable amqp} \
@@ -369,26 +371,28 @@ fi
 %_libdir/%name/libsyslogformat.so
 %_libdir/%name/libsystem-source.so
 %_libdir/%name/libkvformat.so
-# added in 3.8
+# added in 3.8.1-alt1
 %_libdir/%name/libadd-contextual-data.so
 %_libdir/%name/libcef.so
-%_libdir/%name/libdate.so
+#_libdir/%name/libdate.so - removed in 3.24.1-alt1
 %_libdir/%name/libdisk-buffer.so
-# added in 3.12
+# added in 3.12.1-alt1
 %_libdir/%name/libmap-value-pairs.so
 %_libdir/%name/libsnmptrapd-parser.so
 %_libdir/%name/libstardate.so
 %_libdir/%name/libtags-parser.so
 %_libdir/%name/libtfgetent.so
 %_libdir/%name/libxml.so
-# added in 3.13
+# added in 3.13.1-alt1
 %_libdir/%name/libappmodel.so
-# added in 3.18
+# added in 3.18.1-alt1
 %_libdir/%name/libexamples.so
 %_libdir/%name/libhook-commands.so
 %dir %_libdir/%name/loggen
 %_libdir/%name/loggen/libloggen_socket_plugin.so
 %_libdir/%name/loggen/libloggen_ssl_plugin.so
+# added in 3.24.1-alt1
+%_libdir/%name/libtimestamp.so
 
 %_libdir/lib%name-*.so.*
 %_libdir/libevtlog-*.so.*
@@ -419,9 +423,9 @@ fi
 %files libdbi
 %_libdir/%name/libafsql.so
 
-%if_enabled geoip
-%files geoip
-%_libdir/%name/libgeoip-plugin.so
+%if_enabled geoip2
+%files geoip2
+%_libdir/%name/libgeoip2-plugin.so
 %endif
 
 %if_enabled smtp
@@ -492,6 +496,14 @@ fi
 %_libdir/libsyslog-ng-native-connector.a
 
 %changelog
+* Fri Oct 11 2019 Sergey Y. Afonin <asy@altlinux.org> 3.24.1-alt1
+- 3.24.1
+- built syslog-ng-geoip2 instead of syslog-ng-geoip
+- switched to python3-dev
+- syslog-ng.conf:
+  + used system() source instead of unix-dgram ("/dev/log") (ALT #36454)
+  + logging own Syslog-ng's messages to /var/log/syslog/syslog-ng
+
 * Wed Aug 14 2019 Sergey Y. Afonin <asy@altlinux.org> 3.22.1-alt1
 - 3.22.1
 
