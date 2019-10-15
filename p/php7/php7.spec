@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.2.22
+Version: 7.2.23
 Release: alt1
 
 %define php7_name      %name
@@ -436,6 +436,9 @@ chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 %doc tests run-tests.php 
 
 %changelog
+* Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 7.2.23-alt1
+- 7.2.23
+
 * Wed Sep 04 2019 Anton Farygin <rider@altlinux.ru> 7.2.22-alt1
 - 7.2.22
 
