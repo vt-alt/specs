@@ -58,7 +58,7 @@
 Name: systemd
 Epoch: 1
 Version: 242
-Release: alt10
+Release: alt12
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -346,11 +346,16 @@ Group: System/Configuration/Boot and Init
 Summary: systemd utils
 Provides: /sbin/systemctl
 Provides: /bin/systemctl
+Provides: /usr/bin/systemctl
 Provides: /bin/journalctl
 Provides: /sbin/journalctl
 Provides: journalctl = %EVR
 Obsoletes: journalctl < %EVR
 Obsoletes: libsystemd-shared < %EVR
+Obsoletes: bash-completion-%name < %EVR
+Obsoletes: bash-completion-journalctl < %EVR
+Obsoletes: zsh-completion-%name < %EVR
+Obsoletes: zsh-completion-journalctl < %EVR
 
 %description utils
 This package contains utils from systemd:
@@ -478,27 +483,6 @@ with two default sysusers.d/ files for the most basic
 users and groups systemd and the core operating system
 require.
 
-%package -n bash-completion-%name
-Summary: Bash completion for systemd utils
-Group: Shells
-BuildArch: noarch
-Requires: bash-completion
-Requires: %name = %EVR
-Obsoletes: bash-completion-journalctl < %EVR
-
-%description -n bash-completion-%name
-Bash completion for %name.
-
-%package -n zsh-completion-%name
-Summary: Zsh completion for systemd utils
-Group: Shells
-BuildArch: noarch
-Requires: %name = %EVR
-Obsoletes: zsh-completion-journalctl < %EVR
-
-%description -n zsh-completion-%name
-Zsh completion for %name.
-
 %package -n udev
 Group: System/Configuration/Hardware
 Summary: udev - an userspace implementation of devfs
@@ -512,6 +496,8 @@ Obsoletes: hotplug
 Conflicts: util-linux <= 2.22-alt2
 Conflicts: DeviceKit
 Conflicts: make-initrd < 2.2.10
+Obsoletes: bash-completion-udev < %EVR
+Obsoletes: zsh-completion-udev < %EVR
 
 %description -n udev
 Starting with the 2.5 kernel, all physical and virtual devices in a
@@ -553,26 +539,6 @@ BuildArch: noarch
 
 %description -n udev-hwdb
 This package contains internal hardware database for udev.
-
-%package -n bash-completion-udev
-Summary: Bash completion for udev utils
-Group: Shells
-BuildArch: noarch
-Requires: bash-completion
-Requires: udev = %EVR
-
-%description -n bash-completion-udev
-Bash completion for udev.
-
-%package -n zsh-completion-udev
-Summary: Zsh completion for udev utils
-Group: Shells
-BuildArch: noarch
-Requires: udev = %EVR
-Conflicts: zsh-completion-%name < 1:214-alt14
-
-%description -n zsh-completion-udev
-Zsh completion for udev.
 
 %package -n libudev1
 Summary: Shared library to access udev device information
@@ -676,7 +642,11 @@ Static library for libudev.
 	%{?_enable_utmp:-Dutmp=true} \
 	%{?_disable_kill_user_processes:-Ddefault-kill-user-processes=false} \
 	-Ddefault-hierarchy=%hierarchy \
+%ifnarch mipsel
 	-Db_lto=true \
+%else
+	-Db_lto=false \
+%endif
 	-Db_pie=true \
 	-Dversion-tag=v%version-%release \
 	-Dcertificate-root=/etc/pki/tls \
@@ -743,6 +713,7 @@ ln -r -s %buildroot/lib/systemd/systemd %buildroot/sbin/systemd
 ln -r -s %buildroot/lib/systemd/systemd-{binfmt,modules-load,sysctl} %buildroot/sbin/
 # for compatibility with older systemd pkgs which expected it at /sbin/:
 ln -r -s %buildroot/bin/systemctl %buildroot/sbin/
+ln -r -s %buildroot/bin/systemctl %buildroot%_bindir/
 ln -r -s %buildroot/bin/journalctl %buildroot/sbin/
 
 # add defaults services
@@ -1492,6 +1463,7 @@ fi
 
 /sbin/systemctl
 /bin/systemctl
+%_bindir/systemctl
 %_man1dir/systemctl.*
 
 /bin/journalctl
@@ -1540,6 +1512,11 @@ fi
 /sbin/systemd-firstboot
 %_man8dir/systemd-firstboot.*
 %endif
+
+%_datadir/bash-completion/completions/*
+%exclude %_datadir/bash-completion/completions/udevadm
+%_datadir/zsh/site-functions/*
+%exclude %_datadir/zsh/site-functions/_udevadm
 
 %ghost %config(noreplace) %_sysconfdir/machine-info
 %ghost %config(noreplace) %_sysconfdir/hostname
@@ -1762,20 +1739,6 @@ fi
 %endif #ldconfig
 %endif #sysuser
 
-%files -n bash-completion-%name
-%_datadir/bash-completion/completions/*
-%exclude %_datadir/bash-completion/completions/udevadm
-
-%files -n zsh-completion-%name
-%_datadir/zsh/site-functions/*
-%exclude %_datadir/zsh/site-functions/_udevadm
-
-%files -n bash-completion-udev
-%_datadir/bash-completion/completions/udevadm
-
-%files -n zsh-completion-udev
-%_datadir/zsh/site-functions/_udevadm
-
 %files -n libudev1
 /%_lib/libudev.so.*
 
@@ -1817,6 +1780,8 @@ fi
 %_mandir/*/*link*
 %_man5dir/systemd.device*
 %exclude %_man3dir/*
+%_datadir/bash-completion/completions/udevadm
+%_datadir/zsh/site-functions/_udevadm
 
 %files -n udev-extras
 /lib/udev/v4l_id
@@ -1842,6 +1807,17 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Mon Oct 14 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt12
+- merge with v242-stable 2caf5c905c576dfc542311517820a09f18bd8a77
+- add symlink /usr/bin/systemctl -> /bin/systemctl for compat with other distros
+- merge bash and zsh completion packages to utils and udev
+
+* Fri Aug 09 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt11
+- merge with v242-stable 07f0549ffe3413f0e78b656dd34d64681cbd8f00
+
+* Thu Jul 18 2019 Dmitry Terekhin <jqt4@altlinux.org> 1:242-alt10.0.mips1
+- build w/o lto on mipsel
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt10
 - merge with v242-stable 572385e13566f9ca442ee3b46742159b905b4712:
   + networkd: fix link_up()
