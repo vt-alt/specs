@@ -15,7 +15,7 @@
 
 Name: plasma5-%rname
 Version: 5.16.5
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -23,8 +23,12 @@ Summary: KDE Workspace 5 Window Manager
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
-Requires: xorg-xwayland qt5-multimedia qt5-virtualkeyboard kf5-kirigami plasma5-kscreenlocker
-#Requires: xorg-xwayland
+Provides: kf5-kwin = %EVR
+Obsoletes: kf5-kwin < %EVR
+
+Requires: xorg-xwayland kf5-kirigami plasma5-kscreenlocker
+Requires: qml(QtMultimedia) qml(QtQuick.VirtualKeyboard) qml(QtQuick.Controls)
+Requires: qml(org.kde.kquickcontrols) qml(org.kde.plasma.components) qml(org.kde.plasma.core)
 Requires(post): /sbin/setcap
 
 Source: %rname-%version.tar
@@ -52,9 +56,6 @@ BuildRequires: kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knewstuff-devel kf
 BuildRequires: kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwayland-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel
 BuildRequires: kf5-kxmlgui-devel kf5-plasma-framework-devel kf5-solid-devel kf5-sonnet-devel kf5-kidletime-devel
 BuildRequires: plasma5-kscreenlocker-devel plasma5-breeze-devel
-
-Provides: kf5-kwin = %EVR
-Obsoletes: kf5-kwin < %EVR
 
 %description
 KDE Window Manager
@@ -135,7 +136,7 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data kconf_update
+%K5install_move data kconf_update knsrcfiles
 %find_lang %name --with-kde --all-name
 
 %post
@@ -201,6 +202,9 @@ KF5 library
 
 
 %changelog
+* Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt2
+- update requires
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 
