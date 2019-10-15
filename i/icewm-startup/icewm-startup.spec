@@ -5,7 +5,7 @@
 %def_without ivman
 Name: icewm-startup
 Version: 0.20
-Release: alt2
+Release: alt3
 
 Summary: simple pluggable IceWM autostart manager
 
@@ -134,7 +134,9 @@ mount-tray - это небольшой аплет для монтировани�
 Group: Graphical desktop/Icewm
 Summary: notification-daemon autostart at IceWM startup
 Summary(ru_RU.UTF-8): автозапуск notification-daemon при старте IceWM
-Requires: %name notification-daemon
+Requires: %name
+Requires: /usr/bin/nm-applet
+Requires: /usr/libexec/polkit-1/polkit-gnome-authentication-agent-1
 AutoReq: no
 
 %description notification-daemon
@@ -642,6 +644,9 @@ fi
 %config %icewmconfdir/shutdown.d/000-simple-sound
 
 %changelog
+* Tue Oct 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.20-alt3
+- fixed requires for notification-daemon
+
 * Sat Apr 27 2019 Vitaly Lipatov <lav@altlinux.ru> 0.20-alt2
 - build without ivman subpackage
 
