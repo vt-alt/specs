@@ -41,7 +41,11 @@
 %ifarch i586
 %global pyarch i386
 %else
+%ifarch %e2k
+%global pyarch e2k
+%else
 %global pyarch %_arch
+%endif
 %endif
 
 # All bytecode files are now in a __pycache__ subdirectory, with a name
@@ -65,13 +69,11 @@
 %global py_SOVERSION 1.0
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifnarch s390 riscv64
-%global with_valgrind 1
+%ifnarch s390 riscv64 %e2k
+%def_with valgrind
 %else
-%global with_valgrind 0
+%def_without valgrind
 %endif
-
-%global with_gdbm 1
 
 # Change from yes to no to turn this off
 %global with_computed_gotos yes
@@ -80,10 +82,23 @@
 
 %def_disable test_posix_fadvise
 
-Summary: Version 3 of the Python programming language aka Python 3000
+%def_with gdbm
+%def_with bluez
+%def_with x11
+
+%if_with x11
+%def_with tk
+%def_with gl
+%else
+%def_without tk
+%def_without gl
+%endif
+
 Name: python3
-Version: %{pybasever}.3
+Version: %{pybasever}.4
 Release: alt1
+
+Summary: Version 3 of the Python programming language aka Python 3000
 License: Python
 Group: Development/Python3
 
@@ -96,26 +111,18 @@ BuildRequires(pre): rpm-build-python3 >= 0.1.9.3
 BuildPreReq: liblzma-devel
 # For Bluetooth support
 # see https://bugzilla.redhat.com/show_bug.cgi?id=879720
-BuildPreReq: libbluez-devel
 BuildRequires: bzip2-devel db4-devel libexpat-devel gcc-c++ libgmp-devel
-BuildRequires: libffi-devel libGL-devel libX11-devel libncursesw-devel
-BuildRequires: libssl-devel libreadline-devel libsqlite3-devel tcl-devel
-BuildRequires: tk-devel zlib-devel libuuid-devel libnsl2-devel
+BuildRequires: libffi-devel libncursesw-devel
+BuildRequires: libssl-devel libreadline-devel libsqlite3-devel
+BuildRequires: zlib-devel libuuid-devel libnsl2-devel
 BuildRequires: desktop-file-utils
-
-%if %with_gdbm
-BuildRequires: gdbm-devel
-%endif
-
-%if 0%{?with_valgrind}
-BuildRequires: valgrind-devel
-%endif
-
-%if 0%{?with_rewheel}
-BuildRequires: python3-module-setuptools
-BuildRequires: python3-module-pip
-%endif
-
+%{?_with_bluez:BuildPreReq: libbluez-devel}
+%{?_with_x11:BuildRequires: libX11-devel}
+%{?_with_tk:BuildRequires: tcl-devel tk-devel}
+%{?_with_gl:BuildRequires: libGL-devel}
+%{?_with_gdbm:BuildRequires: gdbm-devel}
+%{?_with_valgrind:BuildRequires: valgrind-devel}
+%{?_with_rewheel:BuildRequires: python3-module-setuptools python3-module-pip}
 %{?!_without_check:%{?!_disable_check:BuildRequires: /dev/pts}}
 
 # Fix find-requires
@@ -212,6 +219,11 @@ Patch251: 00251-change-user-install-location.patch
 # Upstream uses Debian-style architecture naming. Change to match Fedora.
 Patch274: 00274-fix-arch-names.patch
 
+# 00316 #
+# We remove the exe files from distutil's bdist_wininst
+# So we mark the command as unsupported - and the tests are skipped
+Patch316: 00316-mark-bdist_wininst-unsupported.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -266,6 +278,9 @@ Patch1008: python3-platform-osrelease.patch
 
 # skip some new tests requiring network
 Patch1009: python-3.6.8-alt-skip-test-network.patch
+
+# See more here: https://github.com/python/cpython/pull/14048
+Patch1010: python3-bpo-21872-fix-lzma-library.patch
 
 # ======================================================
 # Additional metadata, and subpackages
@@ -418,7 +433,7 @@ Requires: %name-modules-tkinter = %EVR
 Requires: %name-modules-curses = %EVR
 Requires: %name-modules-sqlite3 = %EVR
 Requires: %name-tools = %EVR
-%add_python3_req_skip test.test_warnings.data
+%add_python3_req_skip test.test_warnings.data msvcrt _winapi
 
 %description test
 The test modules from the main %name package.
@@ -482,6 +497,7 @@ sed -r -i s/'_PIP_VERSION = "[0-9.]+"'/'_PIP_VERSION = "%{pip_version}"'/ Lib/en
 %patch251 -p1
 
 %patch274 -p1
+%patch316 -p1
 
 # ALT Linux patches
 %if_enabled test_posix_fadvise
@@ -494,6 +510,13 @@ sed -r -i s/'_PIP_VERSION = "[0-9.]+"'/'_PIP_VERSION = "%{pip_version}"'/ Lib/en
 
 %patch1008 -p1
 %patch1009 -p2
+%patch1010 -p1
+
+%ifarch %e2k
+# unsupported as of lcc 1.23.12
+sed -i 's, -fuse-linker-plugin -ffat-lto-objects -flto-partition=none,,' \
+	configure*
+%endif
 
 rm -fr ../build-shared
 mkdir ../build-shared
@@ -752,7 +775,7 @@ install -D -m 0644 Lib/idlelib/Icons/idle_32.png %buildroot%_datadir/icons/hicol
 install -D -m 0644 Lib/idlelib/Icons/idle_48.png %buildroot%_datadir/icons/hicolor/48x48/apps/idle3.png
 desktop-file-install --dir=%buildroot%_datadir/applications %SOURCE10
 
-# We want to have clean bindir
+#h We want to have clean bindir
 rm -rf %buildroot%_bindir/__pycache__
 
 %check
@@ -771,8 +794,8 @@ fi
 # libncurses.so
 # See https://bugzilla.redhat.com/show_bug.cgi?id=539917
 ldd %{buildroot}/%{dynload_dir}/_curses*.so \
-    | grep curses \
-    | grep libncurses.so && (echo "_curses.so linked against libncurses.so" ; exit 1)
+| grep curses \
+| grep libncurses.so && {echo "_curses.so linked against libncurses.so"; exit 1 }
 
 # See about locale: https://www.python.org/dev/peps/pep-0538/
 export LANG=C
@@ -793,9 +816,7 @@ $(pwd)/python -m test.regrtest \
     -x test_cmd_line_script \
     -x test_runpy \
     -x test_multiprocessing_main_handling \
-%ifarch aarch64
     -x test_socket \
-%endif
 %ifarch %{arm}
     -x test_faulthandler
 %endif
@@ -847,7 +868,7 @@ $(pwd)/python -m test.regrtest \
 %dynload_dir/_dbm.cpython-%pyshortver%pyabi.so
 %dynload_dir/_decimal.cpython-%pyshortver%pyabi.so
 %dynload_dir/_elementtree.cpython-%pyshortver%pyabi.so
-%if %with_gdbm
+%if_with gdbm
 %dynload_dir/_gdbm.cpython-%pyshortver%pyabi.so
 %endif
 %dynload_dir/_hashlib.cpython-%pyshortver%pyabi.so
@@ -1030,6 +1051,7 @@ $(pwd)/python -m test.regrtest \
 %_libdir/pkgconfig/python-%pybasever.pc
 %_libdir/pkgconfig/python-%pybasever%pyabi.pc
 
+%if_with tk
 %files tools
 %_bindir/python3-2to3
 %_bindir/2to3-%pybasever
@@ -1057,6 +1079,7 @@ $(pwd)/python -m test.regrtest \
 %pylibdir/turtledemo/*.cfg
 %dir %pylibdir/turtledemo/__pycache__/
 %pylibdir/turtledemo/__pycache__/*%bytecode_suffixes
+%endif
 
 %files modules-sqlite3
 %dir %pylibdir/sqlite3/
@@ -1073,6 +1096,7 @@ $(pwd)/python -m test.regrtest \
 %files modules-nis
 %dynload_dir/nis.cpython-%pyshortver%pyabi.so
 
+%if_with tk
 %files test
 %pylibdir/ctypes/test
 %pylibdir/distutils/tests
@@ -1087,8 +1111,16 @@ $(pwd)/python -m test.regrtest \
 %pylibdir/tkinter/test
 %pylibdir/unittest/test
 %tool_dir/scripts/run_tests.py
+%endif
 
 %changelog
+* Thu Jul 25 2019 Grigory Ustinov <grenka@altlinux.org> 3.7.4-alt1
+- Updated to upstream version 3.7.4.
+- Add patch fixing lzma library.
+- Added bluez, x11, gl, tk knobs (on by default). (thx to mike@)
+- Cleaned up gdbm, rewheel, valgrind knobs. (thx to mike@)
+- E2K: avoid lcc-unsupported valgrind option. (thx to mike@)
+
 * Tue Apr 02 2019 Grigory Ustinov <grenka@altlinux.org> 3.7.3-alt1
 - Updated to upstream version 3.7.3 (Closes: #36297).
 - Added list of architectures which has multilib support in ALT (thx to arei@).
