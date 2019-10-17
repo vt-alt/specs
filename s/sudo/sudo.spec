@@ -1,5 +1,5 @@
 Name: sudo
-Version: 1.8.27
+Version: 1.8.28
 Release: alt1
 Epoch: 1
 
@@ -119,8 +119,12 @@ if [ ! -f "/var/run/control/sudoreplay" ]; then
     echo wheelonly > "/var/run/control/sudoreplay"
 fi
 %post_control -s wheelonly sudoreplay
-if [ $1 -gt 1 -a ! -f "/var/run/control/sudowheel" ]; then
-    echo disabled > "/var/run/control/sudowheel"
+if [ ! -f "/var/run/control/sudowheel" ]; then
+    if [ "$1" -gt 1 ]; then
+        %pre_control sudowheel
+    else
+        echo disabled > "/var/run/control/sudowheel"
+    fi
 fi
 %post_control -s disabled sudowheel
 
@@ -178,6 +182,11 @@ fi
 %_man8dir/sudo_plugin.8*
 
 %changelog
+* Tue Oct 15 2019 Evgeny Sinelnikov <sin@altlinux.org> 1:1.8.28-alt1
+- Update to autumn security release (closes: 37334)
+- Code execution with euid==0 in rare box configurations (fixes: CVE-2019-14287)
+- Fix post script for sudowheel control in case of upgrade in not default state
+
 * Thu Apr 11 2019 Evgeny Sinelnikov <sin@altlinux.org> 1:1.8.27-alt1
 - Update to last winter release
 
