@@ -1,5 +1,5 @@
 Name: lldpd
-Version: 1.0.3
+Version: 1.0.4
 Release: alt1
 Summary: Link Layer Discovery Protocol Daemon
 Source: %name-%version.tar
@@ -13,6 +13,9 @@ Source3: lldpd.all.chroot
 Source4: lldpd.conf.chroot
 Source5: lldpd.service
 Source6: lldpd.tmpfiles
+
+Patch11: lldpd-alt-release.patch
+Patch12: lldpd-fix-build-system-libevent.patch
 
 %def_enable cdp
 %def_enable fdp
@@ -31,6 +34,11 @@ BuildRequires: libssl-devel
 BuildRequires: doxygen
 BuildRequires: libevent-devel
 BuildRequires: libcap-devel
+
+Provides: bash-completion-lldpd = %EVR
+Obsoletes: bash-completion-lldpd < %EVR
+Provides: zsh-completion-lldpd = %EVR
+Obsoletes: zsh-completion-lldpd < %EVR
 
 %{?_with_readline:BuildRequires: libreadline-devel}
 %{?_with_snmp:BuildRequires: libnet-snmp-devel}
@@ -56,14 +64,12 @@ real physical devices, not on bridges, vlans, etc. However, vlans can
 be mapped on the bonding device. You can bridge vlan but not add vlans
 on bridges. More complex setups may give false results.
 
-
 %package devel
 Group: Development/C
 Summary: Link Layer Discovery Protocol Daemon
 
 %description devel
 Header files for LLDP Daemon
-
 
 %package -n bash-completion-lldpd
 Summary: Bash completion for lldpd
@@ -75,7 +81,6 @@ Requires: %name = %version-%release
 %description -n bash-completion-lldpd
 Bash completion for lldpd.
 
-
 %package -n zsh-completion-lldpd
 Summary: Zsh completion for lldpd
 Group: Shells
@@ -85,14 +90,12 @@ Requires: %name = %version-%release
 %description -n zsh-completion-lldpd
 Zsh completion for lldpd.
 
-
 %prep
 %setup
+%patch11 -p1
+%patch12 -p1
 
 %build
-# upstream moved tree to submodule
-mkdir libevent
-
 %autoreconf
 %configure \
     --enable-pie \
@@ -151,6 +154,9 @@ fi
 %_sbindir/*
 %_libdir/liblldpctl.so*
 %_datadir/doc/%name-%version/
+%_datadir/bash-completion/completions/*
+%_datadir/zsh/site-functions/*
+
 %_man8dir/*
 
 %files devel
@@ -158,13 +164,11 @@ fi
 %_libdir/liblldpctl.a
 %_pkgconfigdir/*
 
-%files -n bash-completion-lldpd
-%{_datadir}/bash-completion/completions/*
-
-%files -n zsh-completion-lldpd
-%_datadir/zsh/site-functions/*
-
 %changelog
+* Fri Oct 04 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.4-alt1
+- new version 1.0.4
+- merge complitions subpackages with main package
+
 * Tue Jan 22 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.3-alt1
 - 1.0.3
 
