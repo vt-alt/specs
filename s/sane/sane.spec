@@ -2,8 +2,8 @@
 %define oname %name-backends
 
 Name: sane
-Version: 1.0.27
-Release: alt4
+Version: 1.0.28
+Release: alt1
 
 Summary: This package contains the SANE docs and utils
 Summary(ru_RU.UTF-8): Документация и утилиты для SANE
@@ -14,18 +14,17 @@ Url: http://www.sane-project.org/
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# NOTE: check version!
-Source: https://alioth.debian.org/frs/download.php/latestfile/176/%oname-%version.tar
+Source: https://gitlab.com/sane-project/backends/uploads/9e718daff347826f4cfe21126c8d5091/sane-backends-%version.tar
 #Source1: %name-%version.ru.po
 Source2: %name.xinetd
 
 Patch3: sane-1.0.19-hp-psc.patch
 Patch4: sane-backends-1.0.18-epson-1270.patch
-Patch5: 0001-Revert-use-rewind-instead-of-slow_back_home.patch
+#Patch5: 0001-Revert-use-rewind-instead-of-slow_back_home.patch
 
 # Fedora patches
-Patch109: sane-backends-1.0.18-glibc-2.7.patch
-Patch110: sane-backends-revert-samsung-patch.patch
+#Patch109: sane-backends-1.0.18-glibc-2.7.patch
+#Patch110: sane-backends-revert-samsung-patch.patch
 
 # Mandriva patches
 Patch201: sane-backends-1.0.18-plustek-s12.patch
@@ -33,17 +32,19 @@ Patch201: sane-backends-1.0.18-plustek-s12.patch
 # FIXME: check module linking without provides
 #add_findprov_lib_path %_libdir/%name
 
+BuildRequires: autoconf-archive
+
 Requires: lib%name = %version-%release
 Requires: udev
 Provides: %oname-drivers-scanners = %version-%release
 
-# manually removed: libsane-devel
-# Automatically added by buildreq on Wed Sep 05 2012
-# optimized out: libexif-devel libusb-compat pkg-config tex-common texlive-base texlive-base-bin texlive-common texlive-fonts-recommended texlive-generic-recommended texlive-latex-base
-BuildRequires: glibc-devel libcups-devel libgphoto2-devel libieee1284-devel libjpeg-devel libtiff-devel libusb-devel libv4l-devel libnet-snmp-devel
+BuildRequires: rpm-build-intro
 
-BuildPreReq: libusb-devel
-BuildPreReq: rpm-build-intro
+# manually removed: libsane-devel
+# Automatically added by buildreq on Sat Oct 12 2019
+# optimized out: ghostscript-classic glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gnu-config gnustep-base-devel libdb4-devel libgpg-error libgphoto2-6 libgphoto2_port-12 libnet-snmp35 libnl-devel libpng-devel libssl-devel libstdc++-devel net-snmp-config netpbm pkg-config python-base python-modules python3 python3-base python3-dev python3-module-mpl_toolkits python3-module-paste python3-module-zope ruby ruby-stdlibs sh4 sssd-client
+BuildRequires: libavahi-devel libgphoto2-devel libieee1284-devel libjpeg-devel libnet-snmp-devel libsystemd-devel libtiff-devel libusb-devel libv4l-devel
+
 
 %package -n %name-server
 Summary: SANE as network server
@@ -144,11 +145,11 @@ This package contains SANE static libraries.
 %setup -n %oname-%version
 %patch3
 %patch4
-%patch5 -p1
+#patch5 -p1
 
 # Fedora patches
-%patch109 -p1 -b .glibc-2.7
-%patch110 -p1 -b .samsung
+#patch109 -p1 -b .glibc-2.7
+#patch110 -p1 -b .samsung
 
 # Mandriva patches
 %patch201 -p1 -b .plusteks12
@@ -164,9 +165,15 @@ rm -f backend/dll.conf
 #cp -f %%SOURCE1 po/%oname.ru.po
 
 %build
+%__subst "s|m4_esyscmd_s(\[git describe --dirty\])|%version|" configure.ac
 %autoreconf
 %configure --enable-translations --with-gphoto2 \
-	--enable-libusb_1_0 --with-docdir=%_docdir/%name-%version \
+	--with-usb \
+	--with-systemd \
+	--with-gphoto2 \
+	--with-v4l \
+	--with-snmp \
+	--enable-avahi \
 	--enable-locking \
 	--disable-rpath \
 	--with-lockdir=%_lockdir/%name \
@@ -218,7 +225,7 @@ rm -f %buildroot%_libdir/%name/*.a
 %files -n %name-server
 %config(noreplace) %_sysconfdir/xinetd.d/%name
 %config(noreplace) %_sysconfdir/sane.d/saned.conf
-%_sbindir/*
+%_sbindir/saned
 %_man8dir/saned*
 
 %files -n lib%name -f %oname.lang
@@ -257,6 +264,10 @@ rm -f %buildroot%_libdir/%name/*.a
 %endif
 
 %changelog
+* Sat Oct 12 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0.28-alt1
+- new version 1.0.28 (with rpmrb script)
+- update buildreq (enable build with systemd, avahi)
+
 * Fri May 11 2018 Vitaly Lipatov <lav@altlinux.ru> 1.0.27-alt4
 - revert Color scanning for Samsung models, which support JPEG Lossy compression (ALT bug 34855)
 
