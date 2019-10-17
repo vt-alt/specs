@@ -1,6 +1,6 @@
 Name: winetricks
-Version: 20190310
-Release: alt2
+Version: 20190912
+Release: alt1
 
 Summary: Work around common problems in Wine
 
@@ -67,6 +67,12 @@ desktop-file-validate %buildroot%_desktopdir/%name.desktop
 #exclude %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Thu Sep 26 2019 Vitaly Lipatov <lav@altlinux.ru> 20190912-alt1
+- new version 20190912 (with rpmrb script)
+
+* Sat Jun 22 2019 Vitaly Lipatov <lav@altlinux.ru> 20190615-alt1
+- new version 20190615 (with rpmrb script)
+
 * Fri Apr 19 2019 Vitaly Lipatov <lav@altlinux.ru> 20190310-alt2
 - fix wine-etersoft conflicts
 

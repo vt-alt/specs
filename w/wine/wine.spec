@@ -1,7 +1,7 @@
 %def_enable static
 %define gecko_version 2.47
-%define mono_version 4.9.0
-%define major 4.13
+%define mono_version 4.9.3
+%define major 4.17
 
 Name: wine
 Version: %major.1
@@ -478,6 +478,18 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %endif
 
 %changelog
+* Sat Sep 28 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.17.1-alt1
+- new version 4.17.1 (with rpmrb script)
+- update wine-mono require to 4.9.3
+
+* Sun Sep 15 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.16.1-alt1
+- new version 4.16.1 (with rpmrb script)
+- wine/debug.h: Make wine_dbgstr_wn use UTF-8 for output (eterbug #14134)
+- reapply ntoskrnl.exe: Ignore CProCtrl initialization failure (eterbug #13466)
+
+* Sun Sep 01 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.15.1-alt1
+- new version 4.15.1 (with rpmrb script)
+
 * Sun Aug 04 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.13.1-alt1
 - new version 4.13.1 (with rpmrb script)
 - use EVR instead of version-release
