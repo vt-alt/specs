@@ -3,7 +3,7 @@
 Summary:   Package management service
 Name:      packagekit
 Version:   1.1.12
-Release:   alt9
+Release:   alt12
 License:   GPLv2+ and LGPLv2+
 Group:     Other
 URL:       http://www.freedesktop.org/software/PackageKit/
@@ -49,6 +49,7 @@ Group: Other
 %package cron
 Summary: Cron job and related utilities for PackageKit
 Group: Other
+BuildArch: noarch
 Requires: %name = %EVR
 
 %description cron
@@ -113,7 +114,9 @@ Python3 backend for PackageKit.
 	--enable-aptcc \
 	--enable-python3 \
 	--disable-dummy \
-	--disable-daemon-tests
+	--disable-daemon-tests \
+	--enable-scripts \
+	%nil
 
 %make_build
 
@@ -246,6 +249,17 @@ rm -f %_localstatedir/PackageKit/upgrade_lock ||:
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Mon Oct 14 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt12
+- Imported changes from upstream.
+
+* Mon Sep 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt11
+- Improved provision of information about obsoleting and obsoleted packages.
+
+* Tue Sep 17 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt10
+- Added support for lua scripts.
+- Disabled verbose logging for packagekit service.
+- Pulled minor fixes and updates from upstream.
+
 * Fri Aug 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt9
 - Added special formatting for ALT repositories origin.
 - Fixed displaying obsoleted packages in output of 'pkcon get-updates'.
