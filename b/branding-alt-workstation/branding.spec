@@ -7,7 +7,7 @@
 %define status_en %nil
 %define flavour %brand-%theme
 
-%define gtk_theme TraditionalOk
+%define gtk_theme BlueMenta
 %define icon_theme Papirus
 
 %define design_graphics_abi_epoch 0
@@ -20,21 +20,21 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.991
+Version: 9.0
 Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
-%endif
 BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-sans
-BuildRequires: design-bootloader-source >= 5.0-alt2
+BuildRequires: design-bootloader-source >= 5.0-alt2 fribidi
+%endif
 
 BuildRequires(pre): rpm-macros-branding
 BuildRequires: libalternatives-devel
 BuildRequires: qt5-base-devel
 
-BuildRequires: ImageMagick fontconfig bc libGConf-devel fribidi
+BuildRequires: ImageMagick fontconfig bc
 
 Source: branding.tar
 
@@ -44,9 +44,6 @@ License: GPLv2+
 
 %define distro_name ALT Workstation %version%status_en
 %define distro_name_ru Альт Рабочая станция %version%status
-
-%description
-
 
 %description
 Distro-specific packages with design and texts for %distro_name.
@@ -81,6 +78,7 @@ Summary:  Theme for splash animations during bootup
 Summary(ru_RU.UTF-8): Тема для экрана загрузки для дистрибутива %distro_name_ru
 License:  Distributable
 Group:    System/Configuration/Boot and Init
+BuildArch: noarch
 Provides: plymouth-theme-%theme
 Requires: plymouth-plugin-script
 Requires(pre):   plymouth
@@ -195,6 +193,7 @@ Requires(post): lightdm-gtk-greeter
 Requires(post): libgio
 # To avoid install check conflicts
 Requires: %name-graphics = %EVR
+Conflicts: installer-feature-lightdm-stage3 < 0.1.0-alt1
 
 %description mate-settings
 MATE settings for %distro_name
@@ -240,15 +239,9 @@ Requires(post): indexhtml-common
 %prep
 %setup -n branding
 
-%ifnarch %arm
-%define x86 boot
-%else
-%define x86 %nil
-%endif
-
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' ./configure
 make
 
 %install
@@ -263,25 +256,26 @@ find %buildroot -name \*.in -delete
 %endif
 
 %post bootloader
+[ "$1" -eq 1 ] || exit 0
 %ifarch %ix86 x86_64
-%__ln_s -nf %theme/message /boot/splash/message
+ln -snf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
 cd boot/splash/%theme/
 echo $lang > lang
 [ "$lang" = "C" ] || echo lang | cpio -o --append -F message
+%endif
 . shell-config
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 #shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-%endif
 
 %ifarch %ix86 x86_64
 %preun bootloader
-[ $1 = 0 ] || exit 0
+[ "$1" -eq 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
-    %__rm -f /boot/splash/message
+    rm -f /boot/splash/message
 %endif
 
 %post indexhtml
@@ -291,21 +285,19 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 %ifarch %ix86 x86_64
 %_datadir/gfxboot/%theme
 /boot/splash/%theme
-/boot/grub/themes/%theme
 %endif
+/boot/grub/themes/%theme
 
 #bootsplash
 %post bootsplash
-%ifarch %ix86 x86_64
+[ "$1" -eq 1 ] || exit 0
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 [ -f /etc/sysconfig/grub2 ] && \
       subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
              /etc/sysconfig/grub2 ||:
-%endif
 
 %post mate-settings
-subst 's/^#\?theme-name=.*/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
-subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+[ "$1" -eq 1 ] || exit 0
 /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 
 #release
@@ -332,9 +324,7 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme.png
 
 %files bootsplash
-%ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
-%endif
 
 %files release
 %dir %data_cur_dir
@@ -353,6 +343,7 @@ fi
 %_sysconfdir/skel/.config/
 %_sysconfdir/skel/.gtkrc-2.0
 %_datadir/glib-2.0/schemas/*.gschema.override
+%_datadir/install3/*
 
 %files slideshow
 /etc/alterator/slideshow.conf
@@ -369,6 +360,22 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Oct 18 2019 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
+- Drop redundant empty %%description section.
+- bootloader: Fix %%preun script.
+- mate-settings: Add keyboard layout and full date to LightDM.
+- mate-settings: Don't touch lightdm-gtk-greeter.conf at all.
+- mate-settings: Get rid of gnome-settings.
+- cleanup: Don't use internal rpm macros.
+- all: Don't touch config files during package update.
+- BR: Drop libGConf-devel.
+- BR: Require fribidi on x86 only.
+- bootsplash,bootloader: Package grub and plymouth themes on
+  all arches.
+- build: Install grub and plymouth themes on all arches.
+- mate-settings: Use BlueMenta theme.
+- Use design-bootloader-source on x86 only.
+
 * Wed Oct 02 2019 Mikhail Efremov <sem@altlinux.org> 8.991-alt1
 - Bump version.
 
