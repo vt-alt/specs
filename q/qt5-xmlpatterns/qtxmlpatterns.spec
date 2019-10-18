@@ -1,10 +1,10 @@
 
 %global qt_module qtxmlpatterns
-%def_enable bootstrap
+%def_disable bootstrap
 
 Name: qt5-xmlpatterns
 Version: 5.12.5
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - QtXmlPatterns component
@@ -103,6 +103,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Fri Oct 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
+- build docs
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 
