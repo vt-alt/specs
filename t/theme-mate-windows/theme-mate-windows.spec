@@ -1,5 +1,5 @@
 Name:     theme-mate-windows
-Version:  1.6
+Version:  1.7
 Release:  alt1
 
 Summary:  Mate theme for Windows-like layout
@@ -48,6 +48,9 @@ install -Dm0644 applications.list \
 %_datadir/mate-menu/applications.list-themed
 
 %changelog
+* Fri Oct 18 2019 Ivan A. Melnikov <iv@altlinux.org> 1.7-alt1
+- Avoid overriding XKB configuration (altbug #37346).
+
 * Tue Aug 27 2019 Andrey Cherepanov <cas@altlinux.org> 1.6-alt1
 - Set BlueMenta as default GTK theme.
 
