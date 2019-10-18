@@ -38,13 +38,17 @@
 %global tool_dir %__python3_tooldir
 %global pylibdir_noarch %__python3_libdir_noarch
 
+%ifarch armh
+%global pyarch arm-linux-gnueabi
+%else
 %ifarch i586
-%global pyarch i386
+%global pyarch i386-linux-gnu
 %else
 %ifarch %e2k
-%global pyarch e2k
+%global pyarch e2k-linux-gnu
 %else
-%global pyarch %_arch
+%global pyarch %_arch-linux-gnu
+%endif
 %endif
 %endif
 
@@ -96,7 +100,7 @@
 
 Name: python3
 Version: %{pybasever}.4
-Release: alt1
+Release: alt2
 
 Summary: Version 3 of the Python programming language aka Python 3000
 License: Python
@@ -735,7 +739,7 @@ sed -i 's,/usr/local/bin/python,/usr/bin/python3,' %buildroot%_libdir/python%pyb
 # (BTW, the .py one used to be packaged in python3-3.3):
 ln -sfv \
     "$(relative \
-    %pylibdir/config-%pybasever%pyabi-%pyarch-linux-gnu/python-config.py \
+    %pylibdir/config-%pybasever%pyabi-%pyarch/python-config.py \
     %_bindir/python%pybasever%pyabi-config)" \
     %buildroot%_bindir/python%pybasever%pyabi-config
 
@@ -1027,8 +1031,8 @@ $(pwd)/python -m test.regrtest \
 # "Makefile" and the config-32/64.h file are needed by
 # distutils/sysconfig.py:_init_posix(), so we include them in the core
 # package, along with their parent directories (bug 531901):
-%dir %pylibdir/config-%pybasever%pyabi-%pyarch-linux-gnu/
-%pylibdir/config-%pybasever%pyabi-%pyarch-linux-gnu/Makefile
+%dir %pylibdir/config-%pybasever%pyabi-%pyarch/
+%pylibdir/config-%pybasever%pyabi-%pyarch/Makefile
 %dir %include_dir/
 %include_dir/%_pyconfig_h
 
@@ -1036,8 +1040,8 @@ $(pwd)/python -m test.regrtest \
 %_libdir/libpython%pybasever%pyabi.so.*
 
 %files dev
-%pylibdir/config-%pybasever%pyabi-%pyarch-linux-gnu/*
-%exclude %pylibdir/config-%pybasever%pyabi-%pyarch-linux-gnu/Makefile
+%pylibdir/config-%pybasever%pyabi-%pyarch/*
+%exclude %pylibdir/config-%pybasever%pyabi-%pyarch/Makefile
 %include_dir/*.h
 %include_dir/internal/*.h
 %exclude %include_dir/%_pyconfig_h
@@ -1114,6 +1118,9 @@ $(pwd)/python -m test.regrtest \
 %endif
 
 %changelog
+* Fri Oct 18 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 3.7.4-alt2
+- fix packaging on armh arch
+
 * Thu Jul 25 2019 Grigory Ustinov <grenka@altlinux.org> 3.7.4-alt1
 - Updated to upstream version 3.7.4.
 - Add patch fixing lzma library.
