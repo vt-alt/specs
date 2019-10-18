@@ -1,7 +1,7 @@
 %define rname networkmanager-qt
 
 Name: kf5-%rname
-Version: 5.62.0
+Version: 5.63.0
 Release: alt1
 %K5init altplace
 
@@ -75,6 +75,9 @@ KF5 library
 %_K5lib/libKF5NetworkManagerQt.so.*
 
 %changelog
+* Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
+- new version
+
 * Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
 - new version
 

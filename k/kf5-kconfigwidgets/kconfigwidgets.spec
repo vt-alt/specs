@@ -6,7 +6,7 @@
 %endif
 
 Name: kf5-%rname
-Version: 5.62.0
+Version: 5.63.0
 Release: alt1
 %K5init altplace
 
@@ -127,6 +127,7 @@ mkdir -p %buildroot/%_K5data/kconfigwidgets/
 %_K5link/lib*.so
 %_K5lib/cmake/KF5ConfigWidgets
 %_K5archdata/mkspecs/modules/qt_KConfigWidgets.pri
+%_K5plug/designer/*.so
 
 %files -n libkf5configwidgets
 %_K5lib/libKF5ConfigWidgets.so.*
@@ -143,6 +144,9 @@ mkdir -p %buildroot/%_K5data/kconfigwidgets/
 %endif
 
 %changelog
+* Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
+- new version
+
 * Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
 - new version
 

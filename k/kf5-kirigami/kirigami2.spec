@@ -1,7 +1,7 @@
 %define rname kirigami2
 
 Name: kf5-kirigami
-Version: 5.62.0
+Version: 5.63.0
 Release: alt1
 %K5init
 
@@ -66,6 +66,7 @@ KF5 library
 
 %install
 %K5install
+%K5install_move data kdevappwizard
 %find_lang %name --all-name
 %K5find_qtlang %name --all-name
 
@@ -79,11 +80,15 @@ KF5 library
 %_K5inc/Kirigami2/
 %_libdir/cmake/KF5Kirigami2/
 %_K5archdata/mkspecs/modules/qt_Kirigami2.pri
+%_K5data/kdevappwizard/templates/*kirigami*
 
 %files -n libkf5kirigami2
 %_K5lib/libKF5Kirigami2.so.*
 
 %changelog
+* Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
+- new version
+
 * Mon Sep 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.62.0-alt1
 - new version
 
