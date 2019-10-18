@@ -17,7 +17,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 8.99
+Version: 9.0
 Release: alt1
 Url: https://basealt.ru
 
@@ -323,6 +323,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Oct 17 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.0-alt1
+- version set to 9.0
+
 * Thu Sep  5 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.99-alt1
 - dependence on xdg-utils in indexhtml removed
 
