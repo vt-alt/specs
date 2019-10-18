@@ -3,7 +3,7 @@
 
 Name: ploop
 Version: 7.0.163
-Release: alt1
+Release: alt2
 Group: System/Base
 License: GPLv2
 Summary: Ploop tools
@@ -13,8 +13,11 @@ Source: %name-%version.tar
 
 Patch1: %name-%version.patch
 
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-dev python3-module-setuptools
 BuildRequires: libxml2-devel libe2fs-devel libuuid-devel libssl-devel libjson-c-devel
-BuildRequires: python-devel python-module-setuptools
+
+%add_verify_elf_skiplist %python3_sitelibdir/libploop/*
 
 %description
 This package contains tools to work with ploop devices and images.
@@ -47,22 +50,25 @@ Requires: lib%name = %version-%release
 %description -n lib%name-devel
 Headers of ploop library
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Summary: Python bindings for %name
 Group: Development/Python
 Requires: lib%name = %version-%release
+Provides: python3(libploopapi)
 
-%description -n python-module-%name
-python-module-%name contains Python bindings for %name.
+%description -n python3-module-%name
+python3-module-%name contains Python bindings for %name.
 
 %prep
 %setup
 %patch1 -p1
 
 %build
+export PYTHON=%__python3
 %make_build LIBDIR=%_libdir PLOOP_LOG_FILE=%_logdir/%name.log DEBUG=no all
 
 %install
+export PYTHON=%__python3
 mkdir -p %buildroot%_sbindir
 make \
     DESTDIR=%buildroot \
@@ -95,10 +101,13 @@ make \
 %_includedir/%name
 %_pkgconfigdir/%name.pc
 
-%files -n python-module-%name
-%python_sitelibdir/*
+%files -n python3-module-%name
+%python3_sitelibdir/*
 
 %changelog
+* Thu Oct 17 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.163-alt2
+- convert to python3
+
 * Mon Sep 30 2019 Andrew A. Vasilyev <andy@altlinux.org> 7.0.163-alt1
 - 7.0.163
 
