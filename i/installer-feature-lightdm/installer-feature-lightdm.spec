@@ -1,5 +1,5 @@
 Name: installer-feature-lightdm
-Version: 0.0.1
+Version: 0.1.0
 Release: alt1
 
 Summary: Installer hook for lightdm configuration
@@ -34,5 +34,8 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Wed Oct 16 2019 Mikhail Efremov <sem@altlinux.org> 0.1.0-alt1
+- Setup lightdm-gtk-greeter.conf if needed.
+
 * Thu Aug 22 2019 Mikhail Efremov <sem@altlinux.org> 0.0.1-alt1
 - Initial build.
