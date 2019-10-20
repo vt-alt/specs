@@ -3,8 +3,8 @@
 %define theme education
 %define Theme Education
 %define codename FalcoRusticolus
-%define status beta2
-%define status_en beta2
+%define status %nil
+%define status_en %nil
 %define distro_name ALT Education 9.0%status_en
 %define flavour %brand-%theme
 
@@ -19,7 +19,7 @@
 %define design_graphics_abi_bugfix 0
 
 Name: branding-%flavour
-Version: 8.93
+Version: 9.0
 Release: alt1
 
 %ifarch %ix86 x86_64
@@ -380,11 +380,15 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %post mate-settings
 subst 's/^#\?theme-name=.*/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
 subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+subst 's/^#\?indicators=.*/indicators=~clock;~spacer;~host;~spacer;~session;~layout;~a11y;~power/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
 /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 
 %post xfce-settings
 subst 's/^#\?theme-name=.*/theme-name=%gtk_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
 subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+subst 's/^#\?indicators=.*/indicators=~clock;~spacer;~host;~spacer;~session;~layout;~a11y;~power/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
 
 %files alterator
 %config %_altdir/*.rcc
@@ -459,6 +463,9 @@ subst 's/^#\?icon-theme-name=.*/icon-theme-name=%icon_theme/' /etc/lightdm/light
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Fri Aug 30 2019 Andrey Cherepanov <cas@altlinux.org> 9.0-alt1
+- Release 9.0.
+
 * Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 8.93-alt1
 - Beta2.
 - Use icon theme Papirus-Light instead of Papirus for more contrast symbol icons.
