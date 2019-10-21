@@ -1,5 +1,5 @@
 Name: riot-desktop
-Version: 1.0.3
+Version: 1.4.2
 Release: alt1
 
 Summary: A glossy Matrix collaboration client
@@ -25,7 +25,11 @@ Source3: riot-desktop.desktop
 AutoReq:yes,nonodejs,nonodejs_native,nomono,nopython,nomingw32,nomingw64,noshebang
 #AutoProv: no
 
+ExclusiveArch: x86_64 i586 aarch64
+
 BuildRequires: npm node-asar
+# https://github.com/yarnpkg/yarn/issues/7251
+BuildRequires: /proc yarn
 
 %description
 Riot (formerly known as Vector) is a Matrix web client built using the Matrix React SDK.
@@ -74,6 +78,15 @@ install -D -m644 %SOURCE3 %buildroot%_desktopdir/%name.desktop
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Wed Oct 16 2019 Vitaly Lipatov <lav@altlinux.ru> 1.4.2-alt1
+- new version 1.4.2 (with rpmrb script)
+
+* Wed Sep 04 2019 Vitaly Lipatov <lav@altlinux.ru> 1.3.3-alt1
+- new version 1.3.3 (with rpmrb script)
+
+* Thu Jun 13 2019 Vitaly Lipatov <lav@altlinux.ru> 1.2.1-alt1
+- new version 1.2.1 (with rpmrb script)
+
 * Sun Mar 10 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0.3-alt1
 - build new version from sources
 

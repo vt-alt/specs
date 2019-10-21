@@ -1,6 +1,6 @@
 # TODO: build from sources
 Name: electron
-Version: 4.1.1
+Version: 6.0.12
 Release: alt1
 
 Summary: Build cross platform desktop apps with JavaScript, HTML, and CSS
@@ -18,7 +18,7 @@ Source2: %name-%version-aarch64.tar
 
 Source10: patch_binary.sh
 
-ExclusiveArch: x86_64 i586 aarch64
+#ExclusiveArch: x86_64 i586 aarch64
 
 %set_verify_elf_method skip
 #add_findreq_skiplist %_libdir/%name/bin/code
@@ -42,7 +42,7 @@ tar xfv %SOURCE1
 %ifarch aarch64
 tar xfv %SOURCE2
 # hack: we have lib64/ld-linux-aarch64.so.1
-sed -E -i -e "s@/lib/ld-linux-aarch64.so.1@/lib64/ld-2.27.so\x0________@" ./%name 
+sed -E -i -e "s@/lib/ld-linux-aarch64.so.1@/lib64/ld-2.27.so\x0________@" ./%name ./chrome-sandbox
 rm -rf swiftshader
 %endif
 
@@ -56,10 +56,25 @@ mkdir -p %buildroot%_bindir/
 ln -rs %buildroot%_libdir/%name/%name %buildroot/%_bindir/%name
 
 %files
+%ifarch i586 x86_64 aarch64
 %_bindir/%name
 %_libdir/%name/
+%endif
 
 %changelog
+* Wed Oct 16 2019 Vitaly Lipatov <lav@altlinux.ru> 6.0.12-alt1
+- new version 6.0.12 (with rpmrb script)
+- build stub package for unsupported arches (to be happy with noarch pkgs)
+
+* Wed Sep 04 2019 Vitaly Lipatov <lav@altlinux.ru> 5.0.10-alt1
+- new version 5.0.10 (with rpmrb script)
+
+* Mon Jul 08 2019 Vitaly Lipatov <lav@altlinux.ru> 5.0.6-alt1
+- new version 5.0.6 (with rpmrb script)
+
+* Sat Jun 22 2019 Vitaly Lipatov <lav@altlinux.ru> 5.0.4-alt1
+- new version 5.0.4 (with rpmrb script)
+
 * Sun Mar 24 2019 Vitaly Lipatov <lav@altlinux.ru> 4.1.1-alt1
 - new version 4.1.1 (with rpmrb script)
 
