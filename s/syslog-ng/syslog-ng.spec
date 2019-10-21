@@ -12,13 +12,14 @@
 %def_enable	curl
 %def_enable	systemd
 %def_enable	snmp
+%def_enable	redis
 
 # https://lists.altlinux.org/pipermail/devel/2019-March/207208.html
 %def_disable	unit_tests
 
 Name: syslog-ng
 Version: 3.24.1
-Release: alt1
+Release: alt2
 
 Summary: syslog-ng daemon
 Group: System/Kernel and hardware
@@ -49,7 +50,7 @@ BuildRequires: rpm-build-licenses
 BuildRequires: flex autoconf-archive glib2-devel libcap-devel libdbi-devel
 BuildRequires: libnet2-devel libpcre-devel libpopt-devel
 BuildRequires: libssl-devel libuuid-devel libivykis-devel
-BuildRequires: xsltproc docbook-style-xsl python3-dev python-dev
+BuildRequires: xsltproc docbook-style-xsl python3-dev
 
 %{?_enable_geoip2:BuildRequires: libGeoIP-devel}
 %{?_enable_geoip2:BuildRequires: libmaxminddb-devel}
@@ -60,6 +61,7 @@ BuildRequires: xsltproc docbook-style-xsl python3-dev python-dev
 %{?_enable_curl:BuildRequires: libcurl-devel}
 %{?_enable_systemd:BuildRequires: libsystemd-devel}
 %{?_enable_snmp:BuildRequires: libnet-snmp-devel}
+%{?_enable_redis:BuildRequires: libhiredis-devel}
 
 %if_enabled unit_tests
 BuildRequires: libcriterion-devel
@@ -167,22 +169,29 @@ Group: System/Libraries
 %description snmp
 This module provides SNMP support for %{name}.
 
-%package python
+%package redis
+Summary: redis support for %{name}
+Group: System/Libraries
+
+%description redis
+This module provides redis support for %{name}.
+
+%package python3
 Summary: Python destination support for syslog-ng
 Requires: %name = %version-%release
 Group: System/Libraries
 
-%description python
+%description python3
 This package provides python destination support for syslog-ng
 
-%package -n python-module-%name-debuggercli
+%package -n python3-module-%name-debuggercli
 Summary: Debug bundle generator script
-Requires: %name-python = %version-%release
+Requires: %name-python3 = %version-%release
 Group: System/Libraries
 # https://lists.balabit.hu/pipermail/syslog-ng/2019-August/025404.html
 #BuildArch: noarch
 
-%description -n python-module-%name-debuggercli
+%description -n python3-module-%name-debuggercli
 This package provides debug bundle generator script for
 collecting debug related information.
 
@@ -220,6 +229,8 @@ autoconf
 # fix perl path
 %{__sed} -i 's|^#!/usr/local/bin/perl|#!%{__perl}|' contrib/relogger.pl
 
+find -type f -name "*.py" -exec sed -i 's|/usr/bin/env python|%__python3|' {} \;
+
 %build
 skip_submodules=1 ./autogen.sh
 #add_optflags -levtlog -livykis -lgmodule-2.0 -lglib-2.0 -lpcre
@@ -247,6 +258,7 @@ skip_submodules=1 ./autogen.sh
  --enable-manpages \
  --disable-java \
  --disable-java-modules \
+ --with-python=3 \
  %{subst_enable geoip2} \
  %{subst_enable smtp} \
  %{subst_enable json} \
@@ -463,10 +475,15 @@ fi
 %_libdir/%name/libsnmpdest.so
 %endif
 
-%files python
+%if_enabled redis
+%files redis
+%_libdir/%name/libredis.so
+%endif
+
+%files python3
 %_libdir/%name/libmod-python.so
 
-%files -n python-module-%name-debuggercli
+%files -n python3-module-%name-debuggercli
 #%dir %python_sitelibdir_noarch/syslogng/
 #%python_sitelibdir_noarch/syslogng/*.py*
 #%python_sitelibdir_noarch/syslogng-1.0-py2.7.egg-info
@@ -496,6 +513,14 @@ fi
 %_libdir/libsyslog-ng-native-connector.a
 
 %changelog
+* Sun Oct 20 2019 Sergey Y. Afonin <asy@altlinux.org> 3.24.1-alt2
+- added conf.d.example/00-redefine-source-sys.conf: redefinition
+  "source sys" for kernels before 3.5 (for 2.6.32-ovz-el formally)
+- added syslog-ng-redis subpackage
+- removed python-dev from BuildRequires
+- renamed syslog-ng-python to syslog-ng-python3
+- renamed python-module-syslog-ng-debuggercli to python3-module-syslog-ng-debuggercli
+
 * Fri Oct 11 2019 Sergey Y. Afonin <asy@altlinux.org> 3.24.1-alt1
 - 3.24.1
 - built syslog-ng-geoip2 instead of syslog-ng-geoip
