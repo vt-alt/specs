@@ -2,7 +2,7 @@
 
 Name: kf5-%rname
 Version: 5.63.0
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -70,12 +70,14 @@ KF5 library
 %install
 %K5install
 %K5install_move data locale
+mkdir -p %buildroot/%_K5data/kglobalaccel/
 %find_lang %name --all-name
 %K5find_qtlang %name --all-name
 
 %files common -f %name.lang
 %doc COPYING.LIB README.md
 %_datadir/qlogging-categories5/*.*categories
+%dir %_K5data/kglobalaccel/
 
 %files
 %_bindir/*5
@@ -88,7 +90,7 @@ KF5 library
 %_K5inc/kglobalaccel_version.h
 %_K5inc/KGlobalAccel/
 %_K5link/lib*.so
-%_K5lib/cmake/KF5GlobalAccel
+%_K5lib/cmake/KF5GlobalAccel/
 %_K5archdata/mkspecs/modules/qt_KGlobalAccel.pri
 %_K5dbus_iface/kf5_org.kde.??lobal?ccel*
 
@@ -98,6 +100,9 @@ KF5 library
 %_K5lib/libKF5GlobalAccelPrivate.so.*
 
 %changelog
+* Mon Oct 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt2
+- add kglobalaccel data dir
+
 * Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
 - new version
 
