@@ -1,5 +1,5 @@
 Name: mate-user-guide
-Version: 1.22.1
+Version: 1.22.3
 Release: alt1
 Epoch: 1
 Summary: User Guide for MATE desktop
@@ -39,6 +39,12 @@ Documentations for MATE desktop
 %_desktopdir/%name.desktop
 
 %changelog
+* Wed Oct 16 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.3-alt1
+- 1.22.3
+
+* Wed May 15 2019 Pavel Moseev <mars@altlinux.org> 1:1.22.1-alt2
+- update translation
+
 * Tue Apr 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
 - 1.22.1
 

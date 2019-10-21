@@ -1,7 +1,7 @@
 %define rname mozo
 
 Name: mate-menu-editor
-Version: 1.22.1
+Version: 1.22.2
 Release: alt1
 Epoch: 1
 Summary: MATE Desktop menu editor
@@ -45,6 +45,9 @@ MATE Desktop menu editor
 %_man1dir/%rname.1.*
 
 %changelog
+* Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
+- 1.22.2
+
 * Wed Apr 24 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
 - 1.22.1
 

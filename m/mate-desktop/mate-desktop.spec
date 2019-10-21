@@ -1,5 +1,5 @@
 Name: mate-desktop
-Version: 1.22.1
+Version: 1.22.2
 Release: alt1
 Epoch: 1
 Summary: Shared code for mate-panel, mate-session, mate-file-manager, etc
@@ -102,6 +102,9 @@ __EOF__
 %_datadir/gir-1.0/MateDesktop-2.0.gir
 
 %changelog
+* Tue Oct 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
+- 1.22.2
+
 * Mon Apr 22 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
 - 1.22.1
 

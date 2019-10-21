@@ -1,7 +1,7 @@
 %define _libexecdir %_prefix/libexec
 
 Name: mate-settings-daemon
-Version: 1.22.0
+Version: 1.22.1
 Release: alt1
 Epoch: 1
 Summary: MATE Desktop settings daemon
@@ -81,6 +81,9 @@ find %buildroot%_libdir -name \*.la -delete
 %_pkgconfigdir/%name.pc
 
 %changelog
+* Tue Oct 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
+- 1.22.1
+
 * Mon Mar 04 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.0-alt1
 - 1.22.0
 

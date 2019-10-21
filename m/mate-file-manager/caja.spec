@@ -2,8 +2,8 @@
 %define _libexecdir %_prefix/libexec
 
 Name: mate-file-manager
-Version: 1.22.1
-Release: alt2
+Version: 1.22.2
+Release: alt1
 Epoch: 1
 Summary: File manager for MATE
 License: GPLv2+ and LGPLv2+
@@ -99,6 +99,9 @@ mkdir -p %buildroot%_libdir/caja/extensions-2.0
 %_datadir/gtk-doc/html/libcaja-extension
 
 %changelog
+* Wed Oct 16 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
+- 1.22.2
+
 * Wed Jul 24 2019 Slava Aseev <ptrnine@altlinux.org> 1:1.22.1-alt2
 - Support querying files by contained text
 

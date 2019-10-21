@@ -1,7 +1,7 @@
 %define rname eom
 
 Name: mate-image-viewer
-Version: 1.22.1
+Version: 1.22.2
 Release: alt1
 Epoch: 1
 Summary: Eye of MATE image viewer
@@ -67,6 +67,12 @@ Development files for eom
 %_datadir/gir-1.0/*.gir
 
 %changelog
+* Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
+- 1.22.2
+
+* Fri Sep 06 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt2
+- updated russian translation (closes: #37020)
+
 * Tue Apr 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
 - 1.22.1
 

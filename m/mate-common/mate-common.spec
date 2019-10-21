@@ -1,5 +1,5 @@
 Name: mate-common
-Version: 1.22.0
+Version: 1.22.2
 Release: alt1
 Epoch: 1
 Summary: MATE common build files
@@ -38,6 +38,9 @@ Common scripts and macros to develop with MATE
 %_man1dir/*
 
 %changelog
+* Tue Oct 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
+- 1.22.2
+
 * Mon Mar 04 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.0-alt1
 - 1.22.0
 
