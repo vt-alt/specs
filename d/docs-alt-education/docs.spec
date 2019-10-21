@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.0
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,10 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Mon Oct 21 2019 Elena Mishina <lepata@altlinux.org> 9.0-alt2
+- added recoll
+- fix typo
+
 * Tue Oct 15 2019 Elena Mishina <lepata@altlinux.org> 9.0-alt1
 - update to latest public distr of ALT Education 9.0
 
