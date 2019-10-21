@@ -1,7 +1,7 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
-Version: 6.0.6
-Release: alt2
+Version: 6.0.7
+Release: alt3
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -18,6 +18,7 @@ Source2: pve-apiclient.tar.xz
 Patch0: %name.patch
 Patch1: pve-access-control.patch
 Patch2: pve-cluster-install_vzdump_cron_config.patch
+Patch3: pve-cluster-get_guest_config_property.patch
 
 Source3: %name.filetrigger
 
@@ -45,6 +46,7 @@ control function used by PVE.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
 
 grep '/var/run' * -rl | while read f; do
     sed -i 's|/var/run|/run|' $f
@@ -176,6 +178,9 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt3
+- pve-cluster 6.0-7
+
 * Tue Oct 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.6-alt2
 - added filetrigger to verify configuration
 

@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
 Version: 6.0.7
-Release: alt2
+Release: alt3
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -240,6 +240,9 @@ d /run/pveproxy 0700 www-data www-data -
 f /var/lock/pveproxy.lck 0644 www-data www-data
 f /var/lock/spiceproxy.lck 0644 www-data www-data
 __EOF__
+cat << __EOF__ > %buildroot/lib/tmpfiles.d/pve-firewall.conf
+f /var/lock/pvefw-logger.lck 0644 root root
+__EOF__
 
 mkdir -p %buildroot%_sysconfdir/modules-load.d
 cat << __EOF__ > %buildroot%_sysconfdir/modules-load.d/pve-firewall.conf
@@ -443,6 +446,7 @@ __EOF__
 %_man5dir/*ct.conf.5*
 
 %files -n pve-firewall
+/lib/tmpfiles.d/pve-firewall.conf
 %_datadir/bash-completion/completions/pve-firewall
 %_datadir/zsh/vendor-completions/_pve-firewall
 %_sysconfdir/logrotate.d/pve-firewall
@@ -560,6 +564,9 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt3
+- fixed start pve-firewall
+
 * Wed Sep 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt2
 - pve-manager 6.0-7
 - pve-container 3.0-7
