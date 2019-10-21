@@ -3,7 +3,7 @@
 
 Name: simplescreenrecorder
 Version: 0.3.11
-Release: alt3
+Release: alt4.gitb200b97
 
 Summary: Simple Screen Recording with OpenGL capture
 License: GPLv3
@@ -29,6 +29,7 @@ BuildRequires: pkgconfig(glu)
 BuildRequires: pkgconfig(xi)
 BuildRequires: qt5-linguist
 BuildRequires: libappstream-glib
+BuildRequires: libXinerama-devel
 
 Obsoletes: simplescreenrecording
 
@@ -61,6 +62,9 @@ sed -i 's,^#ifdef __x86_64__,#if defined (__x86_64__) || defined (__e2k__),' \
 %ifarch %arm aarch64
     -DWITH_GLINJECT=FALSE \
 %endif
+%ifarch ppc64le
+    -DWITH_GLINJECT=FALSE \
+%endif
 %cmake_build
 
 %install
@@ -69,7 +73,7 @@ rm -f %buildroot%_libdir/*.la
 
 %files
 %_bindir/*
-%ifnarch %arm aarch64
+%ifnarch %arm aarch64 ppc64le
 %_libdir/lib*
 %endif
 %_desktopdir/*
@@ -79,6 +83,11 @@ rm -f %buildroot%_libdir/*.la
 %_datadir/appdata/*
 
 %changelog
+* Fri Oct 18 2019 Leontiy Volodin <lvol@altlinux.org> 0.3.11-alt4.gitb200b97
+- update from git
+- update buildrequires
+- fixed russian translation
+
 * Thu May 09 2019 Michael Shigorin <mike@altlinux.org> 0.3.11-alt3
 - fixed build on e2k
 - minor spec cleanup
