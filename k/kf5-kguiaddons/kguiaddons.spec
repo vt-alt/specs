@@ -7,7 +7,7 @@
 
 Name: kf5-%rname
 Version: 5.63.0
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -37,7 +37,7 @@ of colors, fonts, text, images, keyboard input.
 %package common
 Summary: %name common package
 Group: System/Configuration/Other
-BuildArch: noarch
+#BuildArch: noarch
 Requires: kf5-filesystem
 %description common
 %name common package
@@ -107,6 +107,8 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 
 %files common -f %name.lang
 %doc COPYING.LIB README.md
+%dir %_K5plug/kf5/kguiaddons/
+%dir %_K5plug/kf5/kguiaddons/kmodifierkey/
 
 %files devel
 %_K5inc/kguiaddons_version.h
@@ -131,6 +133,9 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 %endif
 
 %changelog
+* Mon Oct 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt2
+- add directories to package
+
 * Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
 - new version
 
