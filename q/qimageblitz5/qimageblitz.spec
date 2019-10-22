@@ -6,7 +6,7 @@
 
 Name: qimageblitz5
 Version: 5.0.0
-Release: alt0.1
+Release: alt0.2
 
 Summary: Graphical effect and filter library for KDE
 License: BSD
@@ -53,8 +53,10 @@ This package contains %name development library and headers.
 
 # don't build test
 sed -i '/add_subdirectory.*test/d' CMakeLists.txt
+sed -i 's| -ansi ||' CMakeLists.txt
 # fix requires
 sed -i '/^Requires:[[:space:]]*QtGui$/s|QtGui|Qt5Gui|' blitz/qimageblitz.pc.cmake
+
 
 %build
 %Kbuild \
@@ -77,6 +79,9 @@ sed -i '/^Requires:[[:space:]]*QtGui$/s|QtGui|Qt5Gui|' blitz/qimageblitz.pc.cmak
 %_pkgconfigdir/*.pc
 
 %changelog
+* Tue Oct 22 2019 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt0.2
+- fix compile flags
+
 * Wed Apr 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt0.1
 - build with Qt5
 
