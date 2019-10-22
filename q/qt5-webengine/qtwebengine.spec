@@ -30,7 +30,7 @@
 
 Name: qt5-webengine
 Version: 5.12.5
-Release: alt1
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - QtWebEngine components
@@ -58,6 +58,8 @@ Patch101: alt-pepflashplayer.patch
 Patch102: alt-fix-shrank-by-one-character.patch
 Patch103: qtwebengine-everywhere-src-5.12.4-chromium-add-ppc64le-support.patch
 Patch104: qtwebengine-everywhere-src-5.12.4-add-ppc64le-support.patch
+Patch105: alt-openh264-x86-no-asm.patch
+Patch106: alt-ftbfs.patch
 # Gentoo
 Patch150: qtwebengine-5.12.5-pulseaudio-13.patch
 
@@ -173,6 +175,8 @@ ln -s /usr/include/nspr src/3rdparty/chromium/nspr4
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
+%patch105 -p1
+%patch106 -p1
 #
 %patch150 -p1
 
@@ -260,19 +264,16 @@ export CFLAGS="$OPTFLAGS" CXXFLAGS="$OPTFLAGS"
 mkdir -p %_target_platform
 pushd %_target_platform
 #    CONFIG+=" webcore_debug v8base_debug" \
-#    CONFIG+=" proprietary-codecs" \
-#    WEBENGINE_CONFIG+=" use_proprietary_codecs" \
-#    QMAKE_EXTRA_ARGS+=" -webengine-proprietary-codecs" \
 %_qt5_qmake \
     QMAKE_CFLAGS="$CFLAGS" \
     QMAKE_CXXFLAGS="$CXXFLAGS" \
     QMAKE_LFLAGS+="-Wl,--no-keep-memory -Wl,--hash-size=31 -Wl,--reduce-memory-overheads" \
-    CONFIG+="release force_debug_info link_pulseaudio system-opus system-webp %qt_ffmpeg_type" \
-    WEBENGINE_CONFIG+=" enable_hevc_demuxing use_spellchecker" \
+    CONFIG+="release force_debug_info link_pulseaudio system-opus system-webp %qt_ffmpeg_type proprietary-codecs" \
+    WEBENGINE_CONFIG+=" enable_hevc_demuxing use_spellchecker use_proprietary_codecs" \
+    QMAKE_EXTRA_ARGS+="-webengine-kerberos -webengine-proprietary-codecs" \
 %if_enabled system_icu
     CONFIG+="system-icu" \
     QMAKE_EXTRA_ARGS+="-system-webengine-icu" \
-    QMAKE_EXTRA_ARGS+="-webengine-kerberos" \
 %endif
 %if %is_ffmpeg
     QMAKE_EXTRA_ARGS+="-system-webengine-ffmpeg" \
@@ -364,6 +365,9 @@ done
 %_qt5_archdatadir/mkspecs/modules/qt_*.pri
 
 %changelog
+* Mon Oct 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
+- build internal chromium with additional codecs
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 
