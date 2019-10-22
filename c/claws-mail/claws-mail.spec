@@ -32,7 +32,7 @@
 
 Name:   	claws-mail
 Version:	3.17.4
-Release: 	alt1
+Release: 	alt2
 
 Summary:	Claws Mail is a GTK+ based, user-friendly, lightweight, and fast email client.
 License: 	%gpl3plus
@@ -42,6 +42,11 @@ Url:		https://www.claws-mail.org
 
 Source: %name-%version.tar
 Patch:	%name-%version-%release.patch
+
+# Patches from upstream.
+# Must be dropped with new release.
+Patch1: Fix-crash-in-litehtml_viewer-when-base-tag-has-no-hr.patch
+Patch2: fix-bug-4257-claws-mail-3.17.4-breaks-copy-pasting-f.patch
 
 Obsoletes:	%_oldname < %version
 Provides:	%_oldname
@@ -603,6 +608,8 @@ echo "Libs: -lenchant-2 -lgnutls" >>%name.pc.in
 echo 'echo "%version"' >./version
 
 %patch -p1
+%patch1 -p1
+%patch2 -p1
 
 %autoreconf
 
@@ -906,6 +913,12 @@ install -p -m644 src/plugins/litehtml_viewer/litehtml/LICENSE %buildroot%_defaul
 %exclude %_datadir/doc/%name/RELEASE_NOTES
 
 %changelog
+* Fri Oct 18 2019 Mikhail Efremov <sem@altlinux.org> 3.17.4-alt2
+- Patches from upstream:
+  + Fix crash in litehtml_viewer when <base> tag has no href.
+  + fix bug 4257, 'claws-mail 3.17.4 breaks copy-pasting from
+    emacs-gtk3' (closes: #37347).
+
 * Wed Jul 31 2019 Mikhail Efremov <sem@altlinux.org> 3.17.4-alt1
 - Package litehtml_viewer plugin.
 - Updated to 3.17.4.
