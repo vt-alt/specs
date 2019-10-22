@@ -1,5 +1,5 @@
 %define destname rpm-uscan
-%define debian_ver 2.17.11
+%define debian_ver 2.18.4
 Name: %destname
 Version: 0.20.%debian_ver
 Release: alt1
@@ -43,6 +43,10 @@ pod2man scripts/uscan.pl > %buildroot%_man1dir/%destname.1
 %_man1dir/*
 
 %changelog
+* Mon Oct 21 2019 Igor Vlasenko <viy@altlinux.ru> 0.20.2.18.4-alt1
+- sync with debian uscan 2.18.4
+- force Last-Modified: timestamp (closes: #37360)
+
 * Sat Jun 29 2019 Igor Vlasenko <viy@altlinux.ru> 0.20.2.17.11-alt1
 - added --cleanup option (closes: #36960)
 
