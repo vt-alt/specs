@@ -5,7 +5,7 @@
 
 Name: grantlee5
 Version: 5.1.0
-Release: alt2%ubt
+Release: alt4
 
 Group: System/Libraries
 Summary: Qt string template engine based on the Django template system
@@ -19,7 +19,6 @@ Patch1: grantlee-5.1.0-install_headers_into_versioned_directory.patch
 # Automatically added by buildreq on Mon Aug 10 2015 (-bi)
 # optimized out: cmake-modules elfutils fontconfig fonts-bitmap-misc libEGL-devel libGL-devel libqt5-core libqt5-gui libqt5-script libstdc++-devel libwayland-client libwayland-server python-base python3 python3-base qt5-base-devel ruby ruby-stdlibs
 #BuildRequires: cmake doxygen fonts-bitmap-terminus fonts-otf-stix fonts-ttf-dejavu fonts-ttf-google-droid-kufi fonts-ttf-google-droid-sans fonts-ttf-google-droid-serif fonts-type1-urw fonts-type1-xorg gcc-c++ graphviz libdb4-devel python-module-google qt5-script-devel rpm-build-python3 rpm-build-ruby
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: cmake doxygen gcc-c++ graphviz
 BuildRequires: qt5-base-devel qt5-script-devel kde-common-devel
 
@@ -82,6 +81,7 @@ format for easy browsing.
 %prep
 %setup -q
 %patch1 -p1
+sed -i 's| -ansi ||' CMakeLists.txt
 
 %build
 %Kbuild \
@@ -122,7 +122,13 @@ cp -prf BUILD*/apidox/* %buildroot%_docdir/HTML/en/grantlee5-apidocs
 %doc %_docdir/HTML/en/grantlee5-apidocs/
 
 %changelog
-* Thu Apr 13 2017 Sergey V Turchin <zerg@altlinux.org> 5.1.0-alt2%ubt
+* Tue Oct 22 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.0-alt4
+- fix compile flags
+
+* Fri Jun 14 2019 Sergey V Turchin <zerg@altlinux.org> 5.1.0-alt3
+- dont use ubt macro
+
+* Thu Apr 13 2017 Sergey V Turchin <zerg@altlinux.org> 5.1.0-alt2
 - install headers into versioned directory
 
 * Fri Aug 19 2016 Sergey V Turchin <zerg@altlinux.org> 5.1.0-alt1
