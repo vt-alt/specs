@@ -59,7 +59,7 @@
 %add_findprov_lib_path %vboxdir
 
 Name: virtualbox
-Version: 5.2.30
+Version: 5.2.34
 Release: alt1
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
@@ -556,7 +556,6 @@ cd additions >/dev/null
   install -m755 VBoxClient VBoxControl VBoxService %buildroot/%_bindir/
 
 # OpenGL/EGL part
-  mv {VBoxOGLcrutil,VBoxOGL*spu}.so %buildroot%_libdir/
   install -d %buildroot%vboxadddir
   install -m644 VBoxOGL*.so %buildroot%vboxadddir
   install -m644 VBoxEGL.so %buildroot%vboxadddir
@@ -746,8 +745,6 @@ mountpoint -q /dev || {
 %_sysconfdir/X11/xinit.d/98vboxadd-xclient
 %attr(0755,root,root) %xdrv_pre_d/virtualbox
 %_bindir/VBoxClient
-%_libdir/VBoxOGLcrutil.so
-%_libdir/VBoxOGL*spu.so
 %dir %vboxadddir
 %vboxadddir/*
 %endif
@@ -797,6 +794,12 @@ mountpoint -q /dev || {
 %vboxdir/sdk/bindings/xpcom/include/VBox/com
 
 %changelog
+* Sun Oct 20 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
+- Update to latest of 5.2 release with support kernel-5.3.x (Closes: 37351)
+
+* Mon Oct 14 2019 Valery Sinelnikov <greh@altlinux.org> 5.2.32-alt1
+- Update to latest of 5.2 release
+
 * Tue Jul 09 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.30-alt1
 - Update to latest of 5.2 release with Linux 5.0 and 5.1 support
 

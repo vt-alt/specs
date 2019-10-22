@@ -1,5 +1,5 @@
 %define module_name	virtualbox
-%define module_version	5.2.30
+%define module_version	5.2.34
 
 %define module_release	alt1
 
@@ -98,6 +98,12 @@ install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnet
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Mon Oct 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
+- Updated template for virtualbox 5.2.34
+
+* Wed Aug 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 5.2.30-alt2
+- Build only on %%ix86 and x86_64.
 
 * Tue Jun 09 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.30-alt1
 - Updated template for virtualbox 5.2.30

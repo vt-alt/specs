@@ -1,7 +1,7 @@
 Summary: Generator Tools for Coding SOAP/XML Web Services in C and C++
 Name: gsoap
-Version: 2.8.75
-Release: alt1
+Version: 2.8.94
+Release: alt2
 License: GPLv2+
 Group: Development/Tools
 URL: http://gsoap2.sourceforge.net
@@ -12,41 +12,8 @@ Patch: %name-%version-alt.patch
 #packagereq: optimized out: glibc-devel-static glibc-pthread libcom_err-devel libkrb5-devel libstdc++-devel perl-threads
 BuildRequires: dos2unix flex gcc-c++ libssl-devel libstdc++-devel-static tzdata zlib-devel
 
-# Dirty hack with undefined symbols by design:
-#  struct namespaces;
-#  soap_faultstring();
-#  soap_getfault();
-#  soap_serializefault();
-#  soap_putfault();
-#  soap_faultdetail();
-#  soap_faultsubcode();
-#  soap_getheader();
-#  soap_serializeheader();
-#  soap_faultcode();
-#  soap_putheader();
-# for libraries:
-#  libgsoapck.so.0.0.0
-#  libgsoapck++.so.0.0.0
-#  libgsoap.so.0.0.0
-#  libgsoap++.so.0.0.0
-#  libgsoapssl.so.0.0.0
-#  libgsoapssl++.so.0.0.0
-%set_verify_elf_method unresolved=relaxed
-
 
 %description
-The gSOAP Web services development toolkit offers an XML to C/C++
-language binding to ease the development of SOAP/XML Web services in C
-and C/C++.
-
-
-%package -n lib%name
-Summary: Devel libraries and headers for linking with gSOAP generated stubs
-Group: Development/C
-Provides: %name = %version-%release
-Requires: openssl
-
-%description -n lib%name
 The gSOAP Web services development toolkit offers an XML to C/C++
 language binding to ease the development of SOAP/XML Web services in C
 and C/C++.
@@ -64,6 +31,7 @@ gSOAP generated stubs
 %package -n lib%name-devel-static
 Summary: Static devel libraries and headers for linking with gSOAP generated stubs
 Group: Development/C
+Requires: zlib-devel-static
 
 %description -n lib%name-devel-static
 gSOAP static libraries
@@ -112,16 +80,6 @@ make install DESTDIR=%buildroot
 make check
 
 
-%files -n lib%name
-%doc README.txt NOTES.txt LICENSE.txt
-%_libdir/libgsoap.so.*
-%_libdir/libgsoap++.so.*
-%_libdir/libgsoapck.so.*
-%_libdir/libgsoapck++.so.*
-%_libdir/libgsoapssl.so.*
-%_libdir/libgsoapssl++.so.*
-
-
 %files -n lib%name-devel-static
 %_libdir/libgsoapck.a
 %_libdir/libgsoapck++.a
@@ -141,12 +99,6 @@ make check
 %_libdir/pkgconfig/gsoap++.pc
 %_libdir/pkgconfig/gsoapssl.pc
 %_libdir/pkgconfig/gsoapssl++.pc
-%_libdir/libgsoapck.so
-%_libdir/libgsoapck++.so
-%_libdir/libgsoap.so
-%_libdir/libgsoapssl.so
-%_libdir/libgsoapssl++.so
-%_libdir/libgsoap++.so
 %_includedir/stdsoap2.h
 %dir %_datadir/gsoap
 %dir %_datadir/gsoap/import
@@ -361,8 +313,17 @@ make check
 # Additions in 2.8.75
 %_datadir/gsoap/plugin/httppipe.c
 %_datadir/gsoap/plugin/httppipe.h
+# Additions in 2.8.76
+%_datadir/gsoap/plugin/curlapi.c
+%_datadir/gsoap/plugin/curlapi.h
 
 %changelog
+* Mon Oct 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.8.94-alt2
+- Remove dynamic libraries defected by design
+
+* Sun Oct 20 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.8.94-alt1
+- Update to latest release
+
 * Wed Jan 16 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.8.75-alt1
 - Update to latest winter release
 - Disable ubt macros due binary package identity change
