@@ -2,21 +2,18 @@
 %global _localstatedir %_var
 
 Name: zfs
-Version: 0.7.13
-Release: alt2
+Version: 0.8.2
+Release: alt1
 Summary: ZFS on Linux
 License: CDDL
 Group: System/Kernel and hardware
 URL: http://zfsonlinux.org/
 Conflicts: fuse-zfs
-Requires: spl-utils = %version
 
 Source0: %name-%version.tar
 Patch1: zfs-0.7.13-import-by-disk-id.patch
-Patch2: zfs-0.7.12-alt-fix-replication-overflow.patch
-Patch3: zfs-0.7.13-alt-remove-own-strlcan-strlcpy-strnlen.patch
 
-BuildRequires: libattr-devel libblkid-devel libuuid-devel zlib-devel rpm-build-kernel
+BuildRequires: libblkid-devel libssl-devel libudev-devel libuuid-devel python3-devel zlib-devel rpm-build-kernel
 
 %description
 This package contains the ZFS command line utilities
@@ -24,6 +21,8 @@ This package contains the ZFS command line utilities
 %package utils
 Summary: Native OpenZFS management utilities for Linux
 Group: System/Kernel and hardware
+Provides: spl-utils = %version-%release splat = %version-%release
+Obsoletes: spl-utils < %version-%release
 
 %description utils
 This package provides the zpool and zfs commands that are used to
@@ -56,7 +55,6 @@ Summary: ZFS modules sources for Linux kernel
 Group: Development/Kernel
 BuildArch: noarch
 Provides: kernel-src-%name = %version-%release
-Requires: kernel-source-spl = %version
 
 %description -n kernel-source-%name
 This package contains ZFS modules sources for Linux kernel.
@@ -64,8 +62,6 @@ This package contains ZFS modules sources for Linux kernel.
 %prep
 %setup -q
 %patch1 -p1
-%patch2 -p2
-%patch3 -p2
 sed -i 's|datarootdir|libdir|' lib/libzfs/Makefile.am
 
 %build
@@ -95,7 +91,7 @@ for f in %buildroot%_libdir/lib*.so; do
 done
 mv %buildroot%_libdir/lib*.so.* %buildroot/%_lib/
 
-install -m0644 COPYRIGHT OPENSOLARIS.LICENSE %buildroot%_datadir/doc/%name-utils-%version/
+install -m0644 COPYRIGHT LICENSE %buildroot%_datadir/doc/%name-utils-%version/
 
 touch %buildroot%_sysconfdir/%name/zpool.cache
 mkdir -p %buildroot%_sysconfdir/{modprobe.d,dfs}
@@ -185,6 +181,13 @@ fi
 %_usrsrc/kernel
 
 %changelog
+* Fri Sep 27 2019 Anton Farygin <rider@altlinux.ru> 0.8.2-alt1
+- 0.8.2
+- added conflicts with fuse-zfs
+
+* Mon Jul 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.8.1-alt1
+- 0.8.1
+
 * Tue Mar 26 2019 Anton Farygin <rider@altlinux.ru> 0.7.13-alt2
 - removed ALT glibc functions from libuutil, since  ALT build glibc has its own
   implementation of the strlcat, strlcpy and strnlen functions (closes: #36412)
