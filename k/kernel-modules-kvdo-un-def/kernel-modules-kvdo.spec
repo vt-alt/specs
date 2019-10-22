@@ -1,9 +1,9 @@
 %define module_name     kvdo
-%define module_version  6.2.1.138
-%define module_release  alt2
+%define module_version  6.2.2.18
+%define module_release  alt1
 %define flavour         un-def
 # Note: This project can only be built on x86_64, ppc, and aarch64.
-%define karch           x86_64
+%define karch           x86_64 aarch64 ppc64le
 
 %setup_kernel_module %flavour
 

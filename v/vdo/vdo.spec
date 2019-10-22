@@ -1,7 +1,7 @@
 
 Summary: Management tools for Virtual Data Optimizer
 Name: vdo
-Version: 6.2.1.134
+Version: 6.2.2.18
 Release: alt1
 Group: System/Base
 License: GPLv2
@@ -57,6 +57,9 @@ This package provides the user-space management tools for VDO.
 %_sysconfdir/bash_completion.d/vdo*
 
 %changelog
+* Tue Oct 22 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.2.18-alt1
+- 6.2.2.18
+
 * Sun Aug 11 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.1.134-alt1
 - 6.2.1.134
 
