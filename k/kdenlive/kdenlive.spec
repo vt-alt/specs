@@ -3,9 +3,9 @@
 %define is_ffmpeg %([ -n "`rpmquery --qf '%%{SOURCERPM}' libavformat-devel 2>/dev/null | grep -e '^libav'`" ] && echo 0 || echo 1)
 
 Name: kdenlive
-Version: 19.04.3
+Version: 19.08.2
 Release: alt1
-%K5init no_altplace man
+%K5init no_altplace man appdata
 
 Summary: KDE Non Linear Video Editor
 Summary(ru_RU.utf8): Редактор нелинейного видео монтажа для KDE
@@ -91,8 +91,14 @@ sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 %_K5xmlgui/kdenlive/
 %_K5xdgmime/*.xml
 %_man1dir/kdenlive*
+%_datadir/metainfo/org.kde.kdenlive.appdata.xml
+%_datadir/qlogging-categories5/*.categories
+
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Tue Jul 16 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.3-alt1
 - new version
 
