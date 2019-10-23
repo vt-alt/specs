@@ -1,8 +1,8 @@
 %define rname khangman
 
 Name: kde5-%rname
-Version: 19.08.0
-Release: alt1
+Version: 19.08.1
+Release: alt2
 %K5init
 
 Group: Games/Educational
@@ -13,6 +13,8 @@ License: GPLv2+ / LGPLv2+
 Requires: kde5-kdeedu-data
 
 Source: %rname-%version.tar
+Source10: ru.txt
+Patch1: alt-ru-keys.patch
 
 # Automatically added by buildreq on Fri Mar 18 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 xml-common xml-utils
@@ -34,6 +36,13 @@ is displayed.
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
+mkdir -p po/ru/data/khangman/
+cat <<__EOF__ >po/ru/data/khangman/CMakeLists.txt
+install( FILES ru.txt  DESTINATION \${DATA_INSTALL_DIR}/khangman )
+__EOF__
+install -m 0644 %SOURCE10 po/ru/data/khangman/
+echo 'add_subdirectory(ru/data/khangman)' >> po/CMakeLists.txt
 
 %build
 %K5build
@@ -53,6 +62,12 @@ is displayed.
 %_K5icon/*/*/apps/khangman*.*
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt2
+- add russian keys
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
