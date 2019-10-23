@@ -7,7 +7,7 @@
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt12
+Release: alt13
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
@@ -23,7 +23,7 @@ Patch10: alt-flags.patch
 # Automatically added by buildreq on Mon Sep 30 2013 (-bi)
 # optimized out: elfutils fontconfig glib2-devel glibc-devel-static gstreamer-devel libGL-devel libX11-devel libXfixes-devel libfreetype-devel libgst-plugins libqt5-core libqt5-gui libqt5-network libqt5-opengl libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-v8 libqt5-widgets libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-compiler python-modules-encodings python-modules-xml python3 python3-base qt5-base-devel qt5-declarative-devel ruby ruby-stdlibs xorg-compositeproto-devel xorg-fixesproto-devel xorg-renderproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: flex fontconfig-devel gcc-c++ gperf gst-plugins-devel libXcomposite-devel libXext-devel libXrender-devel libgio-devel libicu-devel libjpeg-devel libpng-devel libsqlite3-devel libudev-devel libwebp-devel libxslt-devel perl-Term-ANSIColor python-module-distribute python-module-simplejson qt5-webkit-devel rpm-build-python3 rpm-build-ruby zlib-devel-static
-BuildRequires(pre): rpm-build-ubt rpm-macros-qt5
+BuildRequires(pre): rpm-macros-qt5
 %if_disabled bootstrap
 BuildRequires(pre): qt5-tools
 %endif
@@ -196,6 +196,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt13
+- update from 5.212 branch
+
 * Fri Oct 04 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt12
 - update from 5.212 branch
 
@@ -208,43 +211,43 @@ done
 * Wed Oct 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt9
 - rebuild with new icu
 
-* Mon Sep 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt8%ubt
+* Mon Sep 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt8
 - rebuild with new Qt
 
-* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt7%ubt
+* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt7
 - rebuild with new Qt
 
-* Fri Jul 27 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt6%ubt
+* Fri Jul 27 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt6
 - fix includes dir in .pc (ALT#35184)
 
-* Wed Jun 13 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt5%ubt
+* Wed Jun 13 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt5
 - rebuild with new Qt
 
-* Tue Apr 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt4%ubt
+* Tue Apr 24 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt4
 - fix build options for aarch64
 
-* Tue Apr 17 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt3%ubt
+* Tue Apr 17 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt3
 - rebuild with new Qt
 
-* Thu Feb 01 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt2%ubt
+* Thu Feb 01 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt2
 - fix cmake-files
 
-* Tue Jan 30 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt1%ubt
+* Tue Jan 30 2018 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt1
 - update to 5.212
 
-* Thu Jan 25 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.4-alt1%ubt
+* Thu Jan 25 2018 Sergey V Turchin <zerg@altlinux.org> 5.9.4-alt1
 - new version
 
-* Tue Dec 05 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.3-alt1%ubt
+* Tue Dec 05 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.3-alt1
 - new version
 
-* Wed Oct 25 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.2-alt2%ubt
+* Wed Oct 25 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.2-alt2
 - turn off multimedia support
 
-* Fri Oct 06 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.2-alt1%ubt
+* Fri Oct 06 2017 Sergey V Turchin <zerg@altlinux.org> 5.9.2-alt1
 - new version
 
-* Thu Dec 15 2016 Sergey V Turchin <zerg@altlinux.org> 5.7.1-alt1%ubt
+* Thu Dec 15 2016 Sergey V Turchin <zerg@altlinux.org> 5.7.1-alt1
 - new version
 
 * Sun Oct 16 2016 Sergey V Turchin <zerg@altlinux.org> 5.6.2-alt0.M80P.1
