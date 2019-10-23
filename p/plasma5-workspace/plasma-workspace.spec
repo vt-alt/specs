@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.17.0
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -393,6 +393,9 @@ done
 
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt2
+- create user data symlink
+
 * Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
 - new version
 
