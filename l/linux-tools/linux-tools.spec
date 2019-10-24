@@ -1,4 +1,4 @@
-%define kernel_base_version 4.19
+%define kernel_base_version 5.3
 %define kernel_source kernel-source-%kernel_base_version
 %add_verify_elf_skiplist %_libexecdir/traceevent_%kernel_base_version/plugins/*
 %add_findreq_skiplist %_datadir/perf_%kernel_base_version-core/tests/*.py
@@ -9,24 +9,30 @@
 
 Name: linux-tools
 Version: %kernel_base_version
-Release: alt1.1
+Release: alt1
 
 Summary: Performance analysis tools for Linux
 License: GPLv2
 Group: Development/Tools
 URL: http://www.kernel.org/
 
-BuildRequires: libaudit-devel elfutils-devel perl-devel libslang2-devel libunwind-devel bison flex binutils-devel asciidoc xmlto libssl-devel liblzma-devel libunwind-devel
+BuildRequires: libaudit-devel elfutils-devel perl-devel libslang2-devel bison flex binutils-devel asciidoc xmlto libssl-devel liblzma-devel libdw-devel
+BuildRequires: libdw-devel
 %ifnarch %arm
 BuildRequires: libnuma-devel
 %endif
-BuildRequires: rpm-build-kernel
+BuildRequires(pre): rpm-build-kernel
+BuildRequires(pre): rpm-macros-alternatives
 BuildRequires: %kernel_source = 1.0.0
 BuildRequires: python-devel
+BuildRequires: readline-devel
+# python-module-docutils is just for rst2man
+BuildRequires: python-module-docutils
+# python3 is just for scripts/bpf_helpers_doc.py
+BuildRequires: python3
 
 Patch1: linux-tools-alt.patch
 Patch2: python-linking.patch
-Patch3: perf-tools-fix-unwind-build-on-i386.patch
 
 AutoReq: yes,noperl,nopython
 AutoProv: yes,noperl,nopython
@@ -143,15 +149,20 @@ Provides: hv_fcopy_daemon
 Hypervfcopyd is an mplementation of host to guest copy.
 functionality for Linux.
 
+%package -n bpftool
+Summary: Inspection and simple manipulation of eBPF programs and maps
+Group: Development/Tools
+
+%description -n bpftool
+This package contains the bpftool, which allows inspection and simple
+manipulation of eBPF programs and maps.
+
 %prep
 %setup -cT
 tar -xf %kernel_src/%kernel_source.tar
 cd %kernel_source
 %patch1 -p1
 %patch2 -p1
-%ifarch %ix86
-%patch3 -p1
-%endif
 
 %build
 # Build perf
@@ -167,6 +178,8 @@ sed -i 's|\(STRACE_GROUPS_DIR[[:blank:]]*=[[:blank:]]*\).*$|\1share/perf_%kernel
      PYTHON_CONFIG=python2-config
 popd
 
+# build bpftool
+%make_build -C %kernel_source/tools/bpf/bpftool
 
 # Build cpupower
 chmod +x %kernel_source/tools/power/cpupower/utils/version-gen.sh
@@ -216,6 +229,31 @@ make VERSION=%kernel_base_version \
 install -d -m 0755 %buildroot%_docdir/%name
 install -m 0644 {CREDITS,design.txt,Documentation/examples.txt,Documentation/tips.txt} %buildroot%_docdir/%name/
 popd
+
+rm %buildroot/%_docdir/perf-tip/tips.txt
+rmdir %buildroot/%_docdir/perf-tip
+
+rename perf  perf_%kernel_base_version  %buildroot%_bindir/perf
+rename trace trace_%kernel_base_version %buildroot%_bindir/trace
+rename perf  perf_%kernel_base_version  %buildroot%_sysconfdir/bash_completion.d/perf
+rename perf  perf_%kernel_base_version  %buildroot%_man1dir/perf*
+
+find %buildroot%_sysconfdir/bash_completion.d \
+	%buildroot%_datadir/perf_%kernel_base_version-core \
+	%buildroot%_libexecdir/perf* \
+	%buildroot%_docdir \
+	-name bin -prune -o -type f \
+	| xargs chmod a-x
+
+make -C %kernel_source/tools/bpf/bpftool \
+	DESTDIR=%buildroot \
+	prefix=%_prefix \
+	bash_compdir=%_sysconfdir/bash_completion.d/ \
+	mandir=%_mandir \
+	install \
+	doc-install
+# provided by man-pages
+rm -f %buildroot/%_man7dir/bpf-helpers.*
 
 # Make alternatives:
 mkdir -p %buildroot%_altdir
@@ -351,6 +389,7 @@ fi
 %_man1dir/perf*
 %_sysconfdir/bash_completion.d/perf_%kernel_base_version
 %_libexecdir/traceevent_%kernel_base_version
+%_libexecdir/perf
 %_datadir/perf_%kernel_base_version-core
 %doc %_docdir/%name
 
@@ -367,9 +406,7 @@ fi
 %_bindir/centrino-decode
 %_bindir/powernow-k8-decode
 %_bindir/x86_energy_perf_policy
-%_man8dir/x86_energy_perf_policy*
 %_bindir/turbostat
-%_man8dir/turbostat*
 %endif
 
 %files -n libcpupower
@@ -407,7 +444,24 @@ fi
 %_udevrulesdir/hypervfcopyd.rules
 %endif
 
+%files -n bpftool
+%_sbindir/bpftool
+%_sysconfdir/bash_completion.d/bpftool
+%_man8dir/bpftool*
+
 %changelog
+* Wed Oct 23 2019 Alexey Shabalin <shaba@altlinux.org> 5.3-alt1
+- Update for 5.3
+- fixed sysvinit scripts
+
+* Tue May 21 2019 Vitaly Chikunov <vt@altlinux.org> 5.1-alt1
+- Add /usr/lib/perf to perf
+- Clean up .spec (fix warnings, remove duplicated files)
+- Build and provide bpftool
+- Use kernel-source-5.1
+- Simplify linux-tools-alt.patch
+- Switch from libunwind to libdw
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 4.19-alt1.1
 - rebuild with new perl 5.28.1
 
