@@ -1,9 +1,9 @@
 %define rname kinfocenter
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Info Center
@@ -97,6 +97,9 @@ KF5 library
 %_K5xmlgui/*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

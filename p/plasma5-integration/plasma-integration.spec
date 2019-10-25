@@ -1,7 +1,7 @@
 %define rname plasma-integration
 
 Name: plasma5-integration
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -55,6 +55,9 @@ Qt applications when running on a KDE Plasma workspace.
 %_K5plug/platformthemes/KDEPlasmaPlatformTheme.so
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

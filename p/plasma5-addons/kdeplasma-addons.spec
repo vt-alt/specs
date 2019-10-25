@@ -8,10 +8,10 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Plasma addons
@@ -156,6 +156,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

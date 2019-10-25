@@ -4,10 +4,10 @@
 %define libmilou libmilou%milou_sover
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Search and Launch
@@ -24,7 +24,7 @@ Patch2: %rname-alt-tooltip.patch
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-declarative-devel qt5-script-devel
 BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdeclarative-devel kf5-ki18n-devel kf5-kpackage-devel
-BuildRequires: kf5-krunner-devel kf5-kservice-devel kf5-plasma-framework-devel
+BuildRequires: kf5-krunner-devel kf5-kservice-devel kf5-plasma-framework-devel kf5-kitemmodels-devel
 
 Provides: kf5-milou = %EVR
 Obsoletes: kf5-milou < %EVR
@@ -93,6 +93,9 @@ KF5 library
 %_K5lib/libmilou.so.%milou_sover
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

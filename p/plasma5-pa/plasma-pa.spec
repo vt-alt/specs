@@ -4,9 +4,9 @@
 %define libqpulseaudioprivate libqpulseaudioprivate%sover
 
 Name: plasma5-pa
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: Audio Volume Plasma Applet
@@ -96,6 +96,9 @@ KF5 library
 #%_K5lib/libQPulseAudioPrivate.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

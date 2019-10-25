@@ -1,8 +1,8 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.16.5
-Release: alt4
+Version: 5.17.0
+Release: alt1
 %K5init no_altplace
 
 Group: System/Configuration/Packaging
@@ -90,31 +90,29 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_libdir/libDiscover*.so
 #
 %doc COPYING*
-#%config(noreplace) %_K5xdgconf/*.knsrc
-%_K5data/knsrcfiles/*.knsrc
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/*
+%_K5libexecdir/DiscoverNotifier
 %_K5exec/discover/runservice
 %dir %_K5plug/discover-notifier/
 %_K5plug/discover-notifier/DiscoverPackageKitNotifier.so
 %dir %_K5plug/discover/
 %_K5plug/discover/kns-backend.so
 %_K5plug/discover/packagekit-backend.so
-%_K5qml/org/kde/discovernotifier/
 %_K5xdgapp/org.kde.discover.desktop
 %_K5xdgapp/org.kde.discover.urlhandler.desktop
+%_K5xdgapp/org.kde.discover.notifier.desktop
+%_K5start/org.kde.discover.notifier.desktop
 %_K5icon/*/*/apps/plasmadiscover.*
-%_K5srv/*
 %_K5xmlgui/*
 %_K5notif/*.notifyrc
 %dir %_K5data/libdiscover/
 %dir %_K5data/libdiscover/categories/
 %_K5data/libdiscover/categories/packagekit-backend-categories.xml
 %_K5data/discover/
-%_K5data/plasma/plasmoids/org.kde.discovernotifier/
+%_K5data/knsrcfiles/*.knsrc
+%_datadir/qlogging-categories5/*.*categories
 %_datadir/metainfo/org.kde.discover.appdata.xml
 %_datadir/metainfo/org.kde.discover.packagekit.appdata.xml
-%_datadir/metainfo/org.kde.discovernotifier.appdata.xml
 
 
 %files flatpak
@@ -127,6 +125,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5icon/*/*/apps/*flatpak*.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Tue Oct 01 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.16.5-alt4
 - Fixed issue with update if one appstream component corresponds to
   multiple packages without strict dependency between those packages.

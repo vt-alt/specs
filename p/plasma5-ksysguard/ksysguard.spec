@@ -1,9 +1,9 @@
 %define rname ksysguard
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 system monitor
@@ -20,7 +20,7 @@ Patch1: alt-ksysguarddrc.patch
 #BuildRequires: extra-cmake-modules gcc-c++ kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdelibs4support-devel kf5-kdesignerplugin-devel kf5-kdoctools kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knewstuff-devel kf5-knotifications-devel kf5-kparts-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-libksysguard-devel kf5-solid-devel kf5-sonnet-devel libsensors3-devel python-module-google qt5-base-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
-BuildRequires: libsensors3-devel
+BuildRequires: libsensors3-devel libpcap-devel libcap-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel
 BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel
 BuildRequires: kf5-kdelibs4support kf5-kdelibs4support-devel
@@ -78,8 +78,9 @@ KF5 library
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
+%dir %_K5plug/ksysguard/
+%dir %_K5plug/ksysguard/process/
 %config(noreplace) %_sysconfdir/ksysguarddrc5
-#%config(noreplace) %_K5xdgconf/*
 %_K5data/knsrcfiles/*.knsrc
 %_K5bin/*
 %_K5lib/libkdeinit5_*.so
@@ -88,6 +89,10 @@ KF5 library
 %_K5notif/*
 %_K5xmlgui/*
 %_K5xdgapp/*.desktop
+#
+%_K5plug/ksysguard/process/ksysguard_plugin_*.so
+%_K5libexecdir/ksysguard/ksgrd_network_helper
+
 
 #%files common -f %name.lang
 #%doc COPYING.LIB README.md
@@ -103,6 +108,9 @@ KF5 library
 #%_K5lib/libksysguard.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

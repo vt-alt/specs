@@ -1,9 +1,9 @@
 %define rname plasma-sdk
 
 Name: plasma5-sdk
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Development/KDE and QT
 Summary: KDE Workspace 5 Applications useful for Plasma Development
@@ -83,6 +83,9 @@ KF5 library
 %_K5srv/*.desktop
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

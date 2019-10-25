@@ -4,10 +4,10 @@
 %define libbreezecommon libbreezecommon%breezecommon_sover
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 visual style
@@ -84,7 +84,6 @@ KF5 library
 %_bindir/*5
 %_K5bin/*
 %_K5cf_bin/*
-%_K5qml/QtQuick/Controls/Styles/Breeze/
 %_K5plug/*.so
 %_K5plug/org.kde.kdecoration2/*.so
 %_K5plug/styles/*.so
@@ -105,6 +104,9 @@ KF5 library
 %_K5lib/libbreezecommon5.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

@@ -1,10 +1,10 @@
 %define rname kscreen
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Display Management software
@@ -26,6 +26,7 @@ BuildRequires: kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kglobalaccel-deve
 BuildRequires: kf5-ki18n-devel kf5-kiconthemes-devel kf5-kitemviews-devel kf5-kservice-devel kf5-ktextwidgets-devel
 BuildRequires: kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel plasma5-libkscreen-devel
 BuildRequires: kf5-sonnet-devel kf5-kdeclarative-devel kf5-plasma-framework-devel kf5-kpackage-devel
+BuildRequires: kf5-kcmutils-devel
 
 Provides: kf5-kscreen = %EVR
 Obsoletes: kf5-kscreen < %EVR
@@ -55,7 +56,7 @@ developing applications that use %name.
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
+#%patch1 -p1
 
 sed -i 's|^\(add_subdirectory.*tests.*\)|#\1|' CMakeLists.txt
 
@@ -64,22 +65,20 @@ sed -i 's|^\(add_subdirectory.*tests.*\)|#\1|' CMakeLists.txt
 
 %install
 %K5install
-%K5install_move data kcm_kscreen kded_kscreen
+%K5install_move data kcm_kscreen kded_kscreen kpackage
 %find_lang %name --all-name
 
 %files -f %name.lang
-#%doc COPYING.LIB README.md
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 %_K5bin/*
-%_K5plug/*.so
+%_K5plug/kcms/kcm_kscreen.so
 %_K5plug/kf5/kded/*.so
 %_K5plug/plasma/applets/*kscreen*.so
-%_K5data/kcm_kscreen/
+%_K5data/kpackage/kcms/kcm_kscreen/
 %_K5data/kded_kscreen/
 %_K5data/plasma/plasmoids/org.kde.kscreen/
 %_K5srv/*.desktop
-#%_K5srv/kded/*.desktop
-%_K5icon/*/*/actions/*.*
+#%_K5icon/*/*/actions/*.*
 
 #%files devel
 #%_K5inc/kscreen_version.h
@@ -89,6 +88,9 @@ sed -i 's|^\(add_subdirectory.*tests.*\)|#\1|' CMakeLists.txt
 #%_K5archdata/mkspecs/modules/qt_KScreen.pri
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

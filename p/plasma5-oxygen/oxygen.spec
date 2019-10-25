@@ -1,7 +1,7 @@
 %define rname oxygen
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -73,7 +73,7 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data kstyle sounds plasma
+%K5install_move data kstyle sounds plasma color-schemes
 %find_lang %name --all-name
 
 %files common -f %name.lang
@@ -87,6 +87,7 @@ KF5 library
 %_K5icon/Oxygen_*/
 %_K5icon/*/*/apps/oxygen-settings.*
 %_K5icon/KDE_Classic/
+%_K5data/color-schemes/*
 %_K5data/plasma/look-and-feel/org.kde.oxygen/
 %_K5plug/*oxygen*.so
 %_K5plug/styles/oxygen.so
@@ -99,6 +100,9 @@ KF5 library
 %_K5lib/liboxygenstyleconfig5.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

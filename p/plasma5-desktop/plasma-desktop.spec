@@ -7,9 +7,9 @@
 
 
 Name: plasma5-desktop
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 plasma desktop view furniture
@@ -125,9 +125,9 @@ KF5 library
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
-%patch13 -p1
+#%patch13 -p1
 %patch14 -p1
-%patch15 -p2
+#%patch15 -p2
 #
 %patch17 -p1
 
@@ -158,8 +158,7 @@ KF5 library
 %_K5icon/*/*/*/*.*
 
 %files
-%config(noreplace) %_K5xdgconf/*
-#%config %_K5conf_dbus_sysd/*.conf
+#%config(noreplace) %_K5xdgconf/*
 %_K5dbus/system.d/*.conf
 %_K5bin/*
 %_K5exec/*
@@ -184,7 +183,7 @@ KF5 library
 %_K5xmlgui/*
 %_K5notif/*
 %_K5data/solid/devices/solid-*.desktop
-%_K5data/color-schemes/*
+#%_K5data/color-schemes/*
 %_K5data/kcm*/
 %_K5cf_upd/*
 %_K5data/kactivitymanagerd/
@@ -201,7 +200,6 @@ KF5 library
 %_K5data/kfontinst/
 %_K5data/konqsidebartng/
 %_K5data/knsrcfiles/*.knsrc
-#%_K5data/ksmserver/
 %_K5dbus_srv/*.service
 %_K5dbus_sys_srv/*.service
 
@@ -210,11 +208,7 @@ KF5 library
 %_datadir/polkit-1/actions/*kcmclock*.policy
 
 %files devel
-#%_K5inc/plasma-desktop_version.h
-#%_K5inc/plasma-desktop/
 %_K5link/lib*.so
-#%_K5lib/cmake/plasma-desktop
-#%_K5archdata/mkspecs/modules/qt_plasma-desktop.pri
 %_K5dbus_iface/*.xml
 
 %files -n %libkfontinst
@@ -225,6 +219,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

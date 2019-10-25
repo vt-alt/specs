@@ -26,10 +26,10 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Plasma
@@ -67,10 +67,10 @@ Patch115: alt-dbus-sessionchange.patch
 Patch117: alt-disable-ctrl-alt-r.patch
 Patch118: alt-session-exclude.patch
 Patch119: alt-freespace-thread-timer.patch
-#
+Patch120: alt-desktop-plasmashell.patch
 Patch121: alt-freememorynotifier.patch
 Patch122: alt-systemmonitor-ignoreconfig.patch
-Patch123: alt-startplasma.patch
+Patch123: alt-desktop-krunner.patch
 Patch124: alt-the-last-checkbox-in-the-widget-settings.patch
 Patch125: alt-filtering-widget-settings-upon-first-launch.patch
 Patch126: alt-translate-keyboard-layouts.patch
@@ -105,7 +105,7 @@ BuildRequires: kf5-kpackage-devel kf5-kparts-devel kf5-kpty-devel kf5-krunner-de
 BuildRequires: kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwallet-devel kf5-kwayland-devel kf5-kwidgetsaddons-devel
 BuildRequires: plasma5-kwin-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel plasma5-libkscreen-devel plasma5-libksysguard-devel kf5-plasma-framework-devel
 BuildRequires: kf5-solid-devel kf5-sonnet-devel kf5-kxmlrpcclient-devel kf5-prison-devel
-BuildRequires: kf5-networkmanager-qt-devel
+BuildRequires: kf5-networkmanager-qt-devel kf5-kpeople-devel kf5-kactivities-stats-devel
 BuildRequires: kf5-kded kf5-kded-devel
 
 Provides: kf5-plasma-workspace = %EVR
@@ -225,11 +225,12 @@ popd
 %patch117 -p1
 %patch118 -p1
 %patch119 -p2
+%patch120 -p1
 %patch121 -p2
 %patch122 -p2
-%patch123 -p1 -b .startplasma
+%patch123 -p1
 %patch124 -p1
-%patch125 -p1
+#%patch125 -p1
 %patch126 -p1
 
 cat %SOURCE1 >> po/ru/freememorynotifier.po
@@ -245,7 +246,7 @@ cat %SOURCE1 >> po/ru/freememorynotifier.po
 %install
 %K5install
 
-%K5install_move data ksplash kstyle solid kdevappwizard kpackage
+%K5install_move data ksplash kstyle solid kdevappwizard kpackage kglobalaccel
 %K5install_move data desktop-directories doc kconf_update kio_desktop knsrcfiles
 
 # fix dbus service
@@ -254,8 +255,8 @@ sed -i 's|^Exec=.*|Exec=%_K5bin/krunner|' %buildroot/%_K5dbus_srv/org.kde.krunne
 mkdir -p %buildroot/%_K5xdgconf/plasma-workspace/env/
 
 mkdir -p %buildroot/%_bindir
-ln -s `relative %_kf5_bin/startkde %_bindir/startkde5` %buildroot/%_bindir/startkde5
-ln -s startkde %buildroot/%_kf5_bin/startkde5
+ln -s `relative %_kf5_bin/startplasma-x11 %_bindir/startkde5` %buildroot/%_bindir/startkde5
+ln -s startplasma-x11 %buildroot/%_kf5_bin/startkde5
 
 # Add chksession support
 mkdir -p %buildroot/%x11confdir/wmsession.d/
@@ -263,9 +264,9 @@ cat <<__EOF__ > %buildroot/%x11confdir/wmsession.d/01PLASMA
 NAME=Plasma
 DESC=Plasma by KDE
 ICON=%_K5icon/hicolor/48x48/apps/kwin.png
-EXEC=%_kf5_bin/startkde
+EXEC=%_kf5_bin/startplasma-x11
 SCRIPT:
-exec %_kf5_bin/startkde
+exec %_kf5_bin/startplasma-x11
 __EOF__
 
 
@@ -276,7 +277,7 @@ cat <<__EOF__ > %buildroot/%_menudir/kde5-session
                         section="Session/Windowmanagers" \
 			title="PLASMA" \
 			longtitle="Plasma by KDE" \
-			command="%_bindir/startkde5" \
+			command="%_bindir/startplasma-x11" \
 			icon="kwin.png"
 __EOF__
 
@@ -298,12 +299,12 @@ done
 %doc COPYING*
 %dir %_K5xdgconf/plasma-workspace/
 %dir %_K5xdgconf/plasma-workspace/env/
-%config(noreplace) %_K5xdgconf/*rc
-%config(noreplace) %_K5xdgconf/*.*categories
 %dir %_K5data/desktop-directories/
 %dir %_K5qml/org/kde/plasma/workspace/
 %dir %_K5qml/org/kde/plasma/private/
 %dir %_K5qml/org/kde/plasma/wallpapers/
+%config(noreplace) %_K5xdgconf/*rc
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %config(noreplace) %x11confdir/wmsession.d/*PLASMA*
@@ -334,6 +335,7 @@ done
 %_K5qml/org/kde/notificationmanager/
 %_K5data/knsrcfiles/*.knsrc
 %_K5data/plasma/
+%_K5data/kglobalaccel/*.desktop
 %_K5data/kio_desktop/
 %_K5data/kpackage/kcms/kcm_translations/
 %_K5data/ksplash/
@@ -391,6 +393,9 @@ done
 
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

@@ -4,9 +4,9 @@
 %define libsystemsettingsview libsystemsettingsview%systemsettingsview_sover
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 settings
@@ -91,7 +91,7 @@ mv %buildroot/%_kf5_xdgapp/kdesystemsettings.desktop %buildroot/%_desktopdir/kf5
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %_bindir/*5
@@ -114,6 +114,9 @@ mv %buildroot/%_kf5_xdgapp/kdesystemsettings.desktop %buildroot/%_desktopdir/kf5
 %_K5lib/libsystemsettingsview.so.%systemsettingsview_sover
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

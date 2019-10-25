@@ -5,7 +5,7 @@
 %define libkdecorationsprivate libkdecorations2private%sover_private
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 %K5init altplace
 
@@ -93,6 +93,9 @@ KF5 library
 %_K5lib/libkdecorations2private.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 5.16.5-alt1
 - new version
 

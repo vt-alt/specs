@@ -1,10 +1,10 @@
 %define rname bluedevil
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 bluetooth stack
@@ -99,6 +99,9 @@ mv %buildroot/%_K5xdgmime/bluedevil-mime.xml %buildroot/%_K5xdgmime/kf5-bluedevi
 %_K5xdgmime/*.xml
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 

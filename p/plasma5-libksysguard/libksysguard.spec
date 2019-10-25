@@ -7,7 +7,7 @@
 %define libprocessui libprocessui%sover
 
 Name: plasma5-%rname
-Version: 5.16.5
+Version: 5.17.0
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -120,7 +120,7 @@ KF5 library
 %files common -f %name.lang
 %doc COPYING.LIB
 %dir %_K5data/ksysguard/
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files devel
 #%_K5inc/libksysguard_version.h
@@ -157,6 +157,9 @@ KF5 library
 %_K5lib/liblsofui.so.*
 
 %changelog
+* Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.0-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.16.5-alt1
 - new version
 
