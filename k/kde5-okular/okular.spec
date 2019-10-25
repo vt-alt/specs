@@ -14,9 +14,9 @@
 %define libokularcore libokular5core%sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
-%K5init %{?_enable_obsolete_kde4:no_altplace}
+%K5init %{?_enable_obsolete_kde4:no_altplace} %{!?_enable_obsolete_kde4:no_appdata}
 
 Group: Office
 Summary: Document Viewer
@@ -135,12 +135,18 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5xmlgui/okular/
 %_K5xdgapp/org.kde.okular.desktop
 %_K5xdgapp/okularApplication_*.desktop
+%if_enabled obsolete_kde4
+%_datadir/metainfo/org.kde.okular.appdata.xml
+%endif
 
 %if_enabled mobile
 %files mobile
 %_K5bin/okularkirigami
 %_K5xdgapp/org.kde.okular.kirigami.desktop
 %_K5xdgapp/org.kde.mobile.okular_*.desktop
+%if_enabled obsolete_kde4
+%_datadir/metainfo/org.kde.okular.kirigami.appdata.xml
+%endif
 %else
 %{?_enable_obsolete_kde4:%exclude %_datadir/kpackage/genericqml/org.kde.mobile.okular/}
 %{!?_enable_obsolete_kde4:%exclude %_K5data/kpackage/genericqml/org.kde.mobile.okular/}
@@ -169,6 +175,9 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5plug/kio_msits.so
 %_K5srv/ms-its.protocol
 %endif
+%if_enabled obsolete_kde4
+%_datadir/metainfo/org.kde.okular-*.metainfo.xml
+%endif
 
 %files devel
 %_K5inc/okular/
@@ -180,6 +189,9 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

@@ -4,7 +4,7 @@
 %define libkonsoleprivate libkonsoleprivate%sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init
 
@@ -84,7 +84,7 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data konsole khotkeys
+%K5install_move data konsole khotkeys knsrcfiles
 %find_lang %name --with-kde --all-name
 
 # install alternatives
@@ -120,6 +120,9 @@ __EOF__
 %_K5lib/libkonsoleprivate.so.%sover
 
 %changelog
+* Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

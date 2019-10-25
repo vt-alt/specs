@@ -23,7 +23,7 @@
 
 %define rname k3b
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
@@ -53,7 +53,7 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-multimedia-devel qt5-declarative-devel
 BuildRequires: libavdevice-devel libavformat-devel libpostproc-devel libswscale-devel
 BuildRequires: libdvdread-devel libflac++-devel liblame-devel libmad-devel libmpcdec-devel
-BuildRequires: libmusicbrainz5-devel
+BuildRequires: libmusicbrainz-devel
 BuildRequires: libsamplerate-devel libsndfile-devel libtag-devel libvorbis-devel
 BuildRequires: kde5-libkcddb-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcmutils-devel kf5-kcodecs-devel kf5-kcompletion-devel
@@ -187,6 +187,9 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 
