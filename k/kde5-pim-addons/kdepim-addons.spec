@@ -12,7 +12,7 @@
 %define libkmailmarkdown libkmailmarkdown%sover
 
 Name: kde5-pim-addons
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init
 
@@ -63,6 +63,7 @@ Requires: kf5-filesystem
 %package devel
 Group: Development/KDE and QT
 Summary: Development files for %name
+Requires: %name-common
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
@@ -70,56 +71,56 @@ developing applications that use %name.
 %package -n %libkaddressbookmergelibprivate
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkaddressbookmergelibprivate
 KF5 library
 
 %package -n %libkaddressbookimportexportlibprivate
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkaddressbookimportexportlibprivate
 KF5 library
 
 %package -n %libshorturlpluginprivate
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libshorturlpluginprivate
 KF5 library
 
 %package -n %libadblocklibprivate
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libadblocklibprivate
 KF5 library
 
 %package -n %libgrammarcommon
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libgrammarcommon
 KF5 library
 
 %package -n %libkmailgrammalecte
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkmailgrammalecte
 KF5 library
 
 %package -n %libkmaillanguagetool
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkmaillanguagetool
 KF5 library
 
 %package -n %libkmailmarkdown
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkmailmarkdown
 KF5 library
 
@@ -202,7 +203,8 @@ Requires: %name-common
 %_K5plug/webengineviewer/
 #%_K5data/messageviewer/
 
-#%files devel
+%files devel
+%_datadir/qtcreator/templates/*
 #%_K5inc/kdepim-addons_version.h
 #%_K5inc/kdepim-addons/
 #%_K5link/lib*.so
@@ -236,6 +238,9 @@ Requires: %name-common
 %_K5lib/libkmailmarkdown.so.*
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

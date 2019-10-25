@@ -6,9 +6,9 @@
 %define libkorganizerprivate libkorganizerprivate%pim_sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
-%K5init
+%K5init no_appdata
 
 Group: Graphical desktop/KDE
 Summary: Electronic organizer
@@ -85,7 +85,7 @@ Requires: %name-common = %version-%release
 
 %install
 %K5install
-%K5install_move data korgac korganizer kontact kconf_update
+%K5install_move data korgac korganizer kontact kconf_update knsrcfiles
 %find_lang %name --with-kde --all-name
 
 %files common -f %name.lang
@@ -148,6 +148,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkorganizerprivate.so.*
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

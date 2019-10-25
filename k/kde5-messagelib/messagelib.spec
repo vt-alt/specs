@@ -10,7 +10,7 @@
 %define libkf5webengineviewer libkf5webengineviewer%sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init
 
@@ -121,14 +121,13 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data libmessageviewer messagelist messageviewer kconf_update org.kde.syntax-highlighting
+%K5install_move data libmessageviewer messagelist messageviewer kconf_update
+%K5install_move data org.kde.syntax-highlighting knsrcfiles
 %find_lang %name --with-kde --all-name
 
 %files common -f %name.lang
 #%doc COPYING*
-#%config(noreplace) %_K5xdgconf/*.*categories
 %_datadir/qlogging-categories5/*.*categories
-#%config(noreplace) %_K5xdgconf/*.knsrc
 %_K5data/*message*/
 %_K5data/org.kde.syntax-highlighting/
 %_K5data/knsrcfiles/*message*.knsrc
@@ -174,6 +173,9 @@ KF5 library
 %_K5lib/libKF5WebEngineViewer.so.*
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

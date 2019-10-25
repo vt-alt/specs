@@ -6,7 +6,7 @@
 %define libkf5ksieve libkf5ksieve%sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init
 
@@ -82,7 +82,7 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data sieve
+%K5install_move data sieve knsrcfiles
 %find_lang %name --with-kde --all-name
 
 %files common -f %name.lang
@@ -112,6 +112,9 @@ KF5 library
 
 
 %changelog
+* Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Mon Sep 09 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 
