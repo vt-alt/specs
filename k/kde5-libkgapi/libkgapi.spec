@@ -12,7 +12,7 @@
 
 Name: kde5-%rname
 Version: 19.08.2
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -31,7 +31,7 @@ Source: %rname-%version.tar
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-webengine-devel qt5-tools-devel
 BuildRequires: libsasl2-devel
-BuildRequires: kde5-kcalcore-devel kde5-kcontacts-devel
+BuildRequires: kf5-kcalcore-devel kf5-kcontacts-devel
 BuildRequires: kf5-kdelibs4support-devel kf5-kdoctools-devel-static kf5-kio-devel kf5-kwallet-devel
 
 %description
@@ -50,7 +50,7 @@ Obsoletes: kf5-libkgapi-common < %EVR
 %package devel
 Group: Development/KDE and QT
 Summary: Development files for %name
-Requires: kf5-kcoreaddons-devel kde5-kcalcore-devel kde5-kcontacts-devel
+Requires: kf5-kcoreaddons-devel kf5-kcalcore-devel kf5-kcontacts-devel
 Provides: kf5-libkgapi-devel = %EVR
 Obsoletes: kf5-libkgapi-devel < %EVR
 %description devel
@@ -60,56 +60,56 @@ developing applications that use %name.
 %package -n %libkpimgapilatitude
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapilatitude
 KF5 library
 
 %package -n %libkpimgapidrive
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapidrive
 KF5 library
 
 %package -n %libkpimgapicore
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapicore
 KF5 library
 
 %package -n %libkpimgapicalendar
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapicalendar
 KF5 library
 
 %package -n %libkpimgapiblogger
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapiblogger
 KF5 library
 
 %package -n %libkpimgapimaps
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapimaps
 KF5 library
 
 %package -n %libkpimgapicontacts
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapicontacts
 KF5 library
 
 %package -n %libkpimgapitasks
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
+Requires: %name-common
 %description -n %libkpimgapitasks
 KF5 library
 
@@ -169,6 +169,9 @@ done
 %_K5lib/libKPimGAPITasks.so.*
 
 %changelog
+* Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt2
+- fix requires, build requires
+
 * Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 

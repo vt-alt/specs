@@ -1,31 +1,24 @@
-%define rname kcalcore
+%define rname kcontacts
 
-Name: kde5-%rname
-Version: 19.08.2
+Name: kf5-%rname
+Version: 5.63.0
 Release: alt1
+Epoch: 1
 %K5init altplace
 
 Group: Graphical desktop/KDE
-Summary: KDE calendar access library
+Summary: Address book API for KDE
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 
 # Automatically added by buildreq on Tue Aug 11 2015 (-bi)
-# optimized out: cmake cmake-modules elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python3 python3-base ruby ruby-stdlibs
-#BuildRequires: extra-cmake-modules gcc-c++ kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdelibs4support-devel kf5-kdesignerplugin-devel kf5-kdoctools kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kparts-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libdb4-devel libical-devel libuuid-devel python-module-google qt5-base-devel rpm-build-python3 rpm-build-ruby
+# optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libqt5-core libqt5-dbus libqt5-gui libqt5-xml libstdc++-devel python-base python3 python3-base ruby ruby-stdlibs
+#BuildRequires: extra-cmake-modules gcc-c++ kf5-kcodecs-devel kf5-kconfig-devel kf5-kcoreaddons-devel kf5-ki18n-devel libdb4-devel python-module-google qt5-base-devel rpm-build-python3 rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel
-BuildRequires: libical-devel libuuid-devel
-BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel
-BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel
-BuildRequires: kf5-kdelibs4support kf5-kdelibs4support-devel
-BuildRequires: kf5-kdoctools kf5-kdoctools-devel-static
-BuildRequires: kf5-kdesignerplugin-devel kf5-kemoticons-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel
-BuildRequires: kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kparts-devel
-BuildRequires: kf5-kservice-devel kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel
-BuildRequires: kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel
+BuildRequires: kf5-kcodecs-devel kf5-kconfig-devel kf5-kcoreaddons-devel kf5-ki18n-devel
 
 %description
 %summary.
@@ -35,22 +28,25 @@ Summary: %name common package
 Group: System/Configuration/Other
 BuildArch: noarch
 Requires: kf5-filesystem
+Provides: kde5-kcontacts-common = %EVR
+Obsoletes: kde5-kcontacts-common < %EVR
 %description common
 %name common package
 
 %package devel
 Group: Development/KDE and QT
 Summary: Development files for %name
-Requires: libical-devel
+Provides: kde5-kcontacts-devel = %EVR
+Obsoletes: kde5-kcontacts-devel < %EVR
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package -n libkf5calendarcore
+%package -n libkf5contacts
 Group: System/Libraries
 Summary: KF5 library
-Requires: %name-common = %version-%release
-%description -n libkf5calendarcore
+Requires: %name-common
+%description -n libkf5contacts
 KF5 library
 
 
@@ -62,26 +58,29 @@ KF5 library
 
 %install
 %K5install
-#%find_lang %name --with-kde --all-name
+%find_lang %name --with-kde --all-name
+mkdir -p %buildroot/%_K5data/kcontacts/
 
-#files common -f %name.lang
-%files common
+%files common -f %name.lang
 %doc COPYING*
 #%config(noreplace) %_K5xdgconf/*.*categories
 %_datadir/qlogging-categories5/*.*categories
+%dir %_K5data/kcontacts/
 
 %files devel
-%_K5inc/kcal*core_version.h
-%_K5inc/KCalendarCore/
-#%_K5inc/kcalcore/
+%_K5inc/kcontacts_version.h
+%_K5inc/KContacts/
 %_K5link/lib*.so
-%_K5lib/cmake/KF5CalendarCore/
-%_K5archdata/mkspecs/modules/qt_KCalendarCore.pri
+%_K5lib/cmake/KF5Contacts/
+%_K5archdata/mkspecs/modules/qt_KContacts.pri
 
-%files -n libkf5calendarcore
-%_K5lib/libKF5CalendarCore.so.*
+%files -n libkf5contacts
+%_K5lib/libKF5Contacts.so.*
 
 %changelog
+* Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.63.0-alt1
+- moved to Frameworks
+
 * Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 
@@ -136,8 +135,8 @@ KF5 library
 * Thu Nov 09 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.2-alt1%ubt
 - new version
 
-* Tue Jul 25 2017 Oleg Solovyov <mcpain@altlinux.org> 17.04.3-alt2%ubt
-- Fix: SOGo compatibility
+* Mon Jul 17 2017 Oleg Solovyov <mcpain@altlinux.org> 17.04.3-alt2%ubt
+- Fix: parsing vcard will fail in case of missing trailing newline
 
 * Fri Jul 14 2017 Sergey V Turchin <zerg@altlinux.org> 17.04.3-alt1%ubt
 - new version
@@ -186,9 +185,6 @@ KF5 library
 
 * Thu Feb 25 2016 Sergey V Turchin <zerg@altlinux.org> 15.12.2-alt1
 - new version
-
-* Mon Feb 08 2016 Sergey V Turchin <zerg@altlinux.org> 15.12.1-alt2
-- rebuild with new libical
 
 * Tue Jan 19 2016 Sergey V Turchin <zerg@altlinux.org> 15.12.1-alt1
 - new version
