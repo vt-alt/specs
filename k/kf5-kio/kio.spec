@@ -1,8 +1,10 @@
 %define rname kio
 
+%def_with streebog
+
 Name: kf5-%rname
 Version: 5.63.0
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -15,6 +17,7 @@ Source10: ru-kio5.po
 Patch1: alt-def-trash.patch
 Patch2: alt-kio-help-fallback-kde4.patch
 Patch3: alt-places-add-dirs.patch
+Patch4: alt-streebog-support.patch
 
 # Automatically added by buildreq on Tue Feb 17 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libXt-devel libcloog-isl4 libcom_err-devel libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms libxml2-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs xml-common xml-utils xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel zlib-devel
@@ -95,12 +98,20 @@ KF5 library
 %patch2 -p1
 %patch3 -p1
 
+%if_with streebog
+%patch4 -p2
+%endif
+
 #msgcat --use-first po/ru/kio5.po %SOURCE10 > po/ru/kio5.po.tmp
 #cat po/ru/kio5.po.tmp >po/ru/kio5.po
 #rm -f po/ru/kio5.po.tmp
 
 %build
-%K5build
+%K5build \
+%if_with streebog
+	-DEXTRA_CRYPTO:BOOL=ON \
+%endif
+	%nil
 
 %install
 %K5install
@@ -155,6 +166,9 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Fri Oct 25 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.63.0-alt2
+- Added support for GOST R 34.11-2012 (Streebog) hash function.
+
 * Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
 - new version
 
