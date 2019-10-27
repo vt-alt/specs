@@ -1,5 +1,5 @@
 Name: wsjtx
-Version: 2.0.0
+Version: 2.1.0
 Release: alt1
 Summary: WSJT-X implements communication protocols or "modes" called JT4, JT9, JT65, and WSPR
 License: GPLv3
@@ -9,7 +9,7 @@ Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
 # Source-url: http://physics.princeton.edu/pulsar/k1jt/%name-%version.tgz
-Patch0: wsjtx-1.8.0-compile-fix.patch
+Patch0: wsjtx-2.0.0-compile-fix.patch
 Patch1: %name-1.9-alt-cmake.patch
 
 Buildrequires(pre): rpm-macros-cmake
@@ -26,6 +26,7 @@ BuildRequires: libportaudio2-devel
 BuildRequires: libfftw3-devel
 BuildRequires: pkgconfig(libusb-1.0)
 BuildRequires: qt5-base-devel
+BuildRequires: qt5-tools-devel
 BuildRequires: pkgconfig(Qt5Concurrent)
 BuildRequires: pkgconfig(Qt5Multimedia)
 BuildRequires: pkgconfig(Qt5SerialPort)
@@ -78,7 +79,6 @@ rm -f src/wsjtx.tgz*
 %patch1 -p2
 
 pushd %name
-
 # remove bundled boost
 rm -rf boost
 
@@ -134,6 +134,9 @@ mv %buildroot%_docdir/%name %buildroot%_docdir/WSJT-X
 %_docdir/WSJT-X
 
 %changelog
+* Thu Oct 24 2019 Anton Midyukov <antohami@altlinux.org> 2.1.0-alt1
+- new version (2.1.0) with rpmgs script
+
 * Sun Dec 23 2018 Anton Midyukov <antohami@altlinux.org> 2.0.0-alt1
 - new version (2.0.0) with rpmgs script
 
