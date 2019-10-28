@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.08.1
-Release: alt2
+Release: alt3
 %K5init
 
 Group: Games/Educational
@@ -62,6 +62,9 @@ echo 'add_subdirectory(ru/data/khangman)' >> po/CMakeLists.txt
 %_K5icon/*/*/apps/khangman*.*
 
 %changelog
+* Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt3
+- fix russian keys
+
 * Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt2
 - add russian keys
 
