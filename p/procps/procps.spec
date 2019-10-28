@@ -1,6 +1,6 @@
 Name: procps
 Version: 3.3.15
-Release: alt4.git4c4d8b24640612
+Release: alt5.gita2b71067936018
 
 Summary: System and process monitoring utilities
 License: GPLv2+, LGPLv2+
@@ -68,6 +68,7 @@ echo -n %version-%release > .tarball-version
 	--disable-static \
 	--disable-kill \
 	--enable-skill \
+	--disable-pidof \
 	--disable-nls \
 	--disable-modern-top \
 	--with-systemd \
@@ -112,6 +113,10 @@ make check
 %_includedir/*
 %_pkgconfigdir/*.pc
 %changelog
+* Wed Oct 23 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt5.gita2b71067936018
+- Don't package pidof.
+- Updated to v3.3.15-85-ga2b7106.
+
 * Wed Aug 28 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt4.git4c4d8b24640612
 - ps: Initialize variable.
 - procio: Make bit field unsigned.
