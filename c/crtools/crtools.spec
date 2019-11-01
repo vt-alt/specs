@@ -1,18 +1,19 @@
 Name: crtools
-Version: 3.10
-#define pre 
-%define ver %version%{?pre:%pre}
-Release: alt1
-Summary: Utility to checkpoint/restore tasks
-License: GPLv2
-Group: System/Configuration/Other
-URL: http://criu.org
-Source: %name-%ver.tar
-#Patch: %name-%version-%release.patch
-Patch0001: 0001-ppc64aarch64-Export-__page_shiftsize-in-libcompel.patch
+Version: 3.13
+Release: alt2
 
-Provides: criu = %version-%release
-ExclusiveArch: x86_64 aarch64 armh
+Summary: Utility to checkpoint/restore tasks
+License: GPL-2.0-only
+Group: System/Configuration/Other
+Url: http://criu.org
+
+# repacked http://download.openvz.org/criu/criu-%version.tar.bz2
+Source: criu-%version.tar
+Patch1: 0001-FEDORA-aio-fix.patch
+Patch2: 0002-ALT-build-against-python3.patch
+
+Provides: criu = %EVR
+ExclusiveArch: x86_64 aarch64 armh ppc64le
 
 BuildRequires: libnet2-devel
 BuildRequires: libprotobuf-c-devel %_bindir/protoc-c
@@ -22,92 +23,118 @@ BuildRequires: asciidoc xmlto %_bindir/a2x
 %description
 An utility to checkpoint/restore tasks.
 
-
-%package -n libcriu
+%package -n libcriu2
 Summary: Shared library of checkpoint/restore
 Group: System/Libraries
-License: LGPLv2
+License: LGPL-2.1-only
+Provides: libcriu
 
-%description -n libcriu
+%description -n libcriu2
 Shared library of checkpoint/restore.
 
+%package -n libcompel1
+Summary: Compel library for CRIU
+Group: System/Libraries
+License: LGPL-2.1-only
+Provides: libcompel
+
+%description -n libcompel1
+Compel library for CRIU.
 
 %package -n libcriu-devel
 Summary: Files for development with libcriu
 Group: Development/C
-Requires: libcriu = %version-%release
+Requires: libcriu
+Requires: libcompel
 
 %description -n libcriu-devel
 Files for development with libcriu.
 
-
-%package -n python-module-criu
+%package -n python3-module-criu
 Summary: Python library of checkpoint/restore
 Group: System/Libraries
 BuildArch: noarch
-Requires: python
-BuildRequires: python-devel
+BuildRequires: python3-devel
 BuildRequires: glibc-devel
 BuildRequires: libprotobuf-c-devel
 BuildRequires: libnl-devel
 BuildRequires: libcap-devel
-BuildRequires(pre): rpm-build-python
-Provides: crit = %version-%release
+BuildRequires: libselinux-devel
+BuildRequires(pre): rpm-build-python3
+Provides: crit = %EVR
+Provides: python-module-criu
 Obsoletes: crtools-pycriu
+Obsoletes: python-module-criu
 
-%description -n python-module-criu
+%description -n python3-module-criu
 Python library library of checkpoint/restore.
 
-
 %prep
-%setup -q -n %name-%ver
-#patch -p1
-%patch0001 -p1
+%setup -n criu-%version
+%patch1 -p2
+%patch2 -p2
 
 %build
 export CFLAGS="%optflags"
 %make_build \
-%ifarch armh
-UNAME-M=armv7l \
-%endif
-PREFIX=%prefix V=1 all docs
+	%ifarch armh
+		UNAME-M=armv7l \
+	%endif
+	PREFIX=%prefix V=1 all docs
 
 %install
 %makeinstall_std \
-%ifarch armh
-UNAME-M=armv7l \
-%endif
-PREFIX=%prefix LIBDIR=%_libdir LIBEXECDIR=%_libexecdir SYSTEMDUNITDIR=%_unitdir
+	%ifarch armh
+		UNAME-M=armv7l \
+	%endif
+	PREFIX=%prefix LIBDIR=%_libdir LIBEXECDIR=%_libexecdir SYSTEMDUNITDIR=%_unitdir
+
+ln -s criu %buildroot%_sbindir/crtools
+ln -s criu.8 %buildroot%_man8dir/crtools.8
+
+find %buildroot -name 'lib*.a' -delete
 
 %files
 %doc README.md COPYING CREDITS
-%_sbindir/*
-%_sbindir/*
-%_libexecdir/criu/scripts/*
-%_man1dir/*
-%_man8dir/*
+%_sbindir/criu
+%_sbindir/crtools
+%_bindir/compel
+%_libexecdir/criu
+%_libexecdir/compel
+%_man1dir/compel.1*
+%_man8dir/criu.8*
+%_man8dir/crtools.8*
 
+%files -n python3-module-criu
+%_bindir/crit
+%python3_sitelibdir_noarch/pycriu
+%_man1dir/crit.1*
 
-%files -n python-module-criu
-%{_bindir}/crit
-%{python_sitelibdir_noarch}/*
+%files -n libcriu2
+%_libdir/libcriu.so.2*
 
-
-%files -n libcriu
-%_libdir/*.so.*
-
+%files -n libcompel1
+%_libdir/libcompel.so.1*
 
 %files -n libcriu-devel
-%_bindir/compel
-%_includedir/*
+%_includedir/criu
+%_includedir/compel
 %_libdir/*.so
-%dir %_libexecdir/compel
-%_libexecdir/compel/*
-%_libdir/libcompel.a
-%_pkgconfigdir/*
-
+%_pkgconfigdir/criu.pc
 
 %changelog
+* Mon Sep 30 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.13-alt2
+- Built for ppc64le.
+- Built with SELinux support.
+
+* Tue Sep 17 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.13-alt1
+- 3.13.
+- Made and packaged crtools as symlink to criu.
+- Made and packaged crtools manpage as symlink to criu manpage.
+- Packaged compel library into separate package libcompel1.
+- python-module-criu -> python3-module-criu.
+- Fixed files packaging issues.
+
 * Sat Nov 03 2018 Alexey Shabalin <shaba@altlinux.org> 3.10-alt1
 - updated to 3.10
 - add patch for build on aarch64
@@ -155,7 +182,7 @@ PREFIX=%prefix LIBDIR=%_libdir LIBEXECDIR=%_libexecdir SYSTEMDUNITDIR=%_unitdir
 - upstream updates and fixes
 
 * Thu Mar 10 2016 Denis Pynkin <dans@altlinux.org> 2.0-alt1
-- Version update 
+- Version update
 
 * Tue Mar 01 2016 Denis Pynkin <dans@altlinux.org> 1.8-alt1
 - New upstream version
