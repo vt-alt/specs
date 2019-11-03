@@ -1,6 +1,6 @@
 Name: libxml2
-Version: 2.9.4.0.12.e905
-Release: alt1.1
+Version: 2.9.10
+Release: alt2
 Epoch: 1
 
 Summary: The library for manipulating XML files
@@ -13,7 +13,7 @@ Url: http://xmlsoft.org/
 %define srcname %name-%version
 
 Source: %srcname.tar
-# http://www.w3.org/XML/Test/xmlts20080827.tar.gz
+# https://www.w3.org/XML/Test/xmlts20130923.tar.gz
 Source1: xmlts.tar
 Patch: %name-%version-%release.patch
 
@@ -248,6 +248,17 @@ install -p -m644 doc/*.html %buildroot%pkgdocdir/
 %doc %_datadir/gtk-doc/html/libxml2/
 
 %changelog
+* Sat Nov 02 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.9.10-alt2
+- xml2-config: fixed regressions introduced in v2.9.10.
+
+* Fri Nov 01 2019 Alexey Shabalin <shaba@altlinux.org> 1:2.9.10-alt1
+- Updated to v2.9.10
+
+* Wed May 22 2019 Alexey Shabalin <shaba@altlinux.org> 1:2.9.9.0.52.f824-alt1
+- v2.9.4-12-ge905f08 -> v2.9.9-52-gf824a4bd
+  (fixes: CVE-2017-9047, CVE-2017-9048, CVE-2017-9049, CVE-2017-9050,
+  CVE-2017-5969, CVE-2018-14404, CVE-2018-9251, CVE-2018-14567).
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.9.4.0.12.e905-alt1.1
 - (NMU) Rebuilt with python-3.6.4.
 
