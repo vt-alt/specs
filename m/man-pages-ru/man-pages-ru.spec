@@ -1,9 +1,9 @@
 Name: man-pages-ru
-Version: 4.17
+Version: 5.03
 Release: alt1
 
-# man-pages-ru_4.17-2385-2385-20181124.tar.bz2
-%define lversion %version-2385-2385-20181124
+# man-pages-ru_5.03-2390-2390-20191017.tar.bz2
+%define lversion %version-2390-2390-20191017
 
 Summary: Russian translations of OS GNU/*/Linux manpages
 Summary(ru_RU.UTF-8): Русские переводы страниц руководства по ОС GNU/*/Linux
@@ -92,6 +92,9 @@ fi
 %_cachedir/man/ru/cat*
 
 %changelog
+* Sun Nov 03 2019 Sergey Y. Afonin <asy@altlinux.org> 5.03-alt1
+- 5.03-2390-2390-20191017 (Closes: #37418)
+
 * Thu May 30 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.17-alt1
 - 4.17-2385-2385-20181124
 
@@ -318,7 +321,7 @@ fi
 * Sun Apr 20 2003 Dmitry V. Levin <ldv@altlinux.org> 0.7-alt24
 - Packaged %_cachedir/man/ru/whatis file.
 - Changed %_cachedir/man/ru permissions
-  from %attr(755,root,root) to %attr(3775,root,man).
+  from %%attr(755,root,root) to %%attr(3775,root,man).
 - Changed %_cachedir/man/ru/cat* permissions
   from %%attr(775,root,man) to %%attr(2775,root,man).
 
