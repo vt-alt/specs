@@ -1,5 +1,5 @@
 Name: whois
-Version: 5.5.1
+Version: 5.5.2
 Release: alt1
 
 Summary: Intelligent WHOIS client
@@ -54,6 +54,9 @@ install -Dpm644 whois.conf %buildroot/etc/whois.conf
 %_mandir/man?/mkpasswd.*
 
 %changelog
+* Wed Oct 02 2019 Dmitry V. Levin <ldv@altlinux.org> 5.5.2-alt1
+- v5.5.1 -> v5.5.2.
+
 * Sun Aug 18 2019 Dmitry V. Levin <ldv@altlinux.org> 5.5.1-alt1
 - v5.5.0 -> v5.5.1.
 
