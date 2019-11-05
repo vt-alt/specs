@@ -9,7 +9,7 @@
 
 Name: gcc%gcc_branch
 Version: 5.3.1
-Release: alt6
+Release: alt7
 
 Summary: GNU Compiler Collection
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
@@ -59,11 +59,11 @@ Url: https://gcc.gnu.org/
 %define java_binaries gappletviewer gcj-dbtool gcjh gij gjar gjarsigner gjavah gkeytool gorbd grmic grmid grmiregistry gserialver gtnameserv jcf-dump jv-convert
 
 %define libquadmath_arches	%ix86 x86_64
-%define libasan_arches		%ix86 x86_64 %arm aarch64
+%define libasan_arches		%ix86 x86_64 %arm aarch64 ppc64le
 %define libtsan_arches		x86_64
-%define libubsan_arches		%ix86 x86_64 %arm aarch64
-%define libatomic_arches	%ix86 x86_64 %arm aarch64
-%define libitm_arches		%ix86 x86_64 %arm aarch64
+%define libubsan_arches		%ix86 x86_64 %arm aarch64 ppc64le
+%define libatomic_arches	%ix86 x86_64 %arm aarch64 ppc64le
+%define libitm_arches		%ix86 x86_64 %arm aarch64 ppc64le
 %define libcilkrts_arches	%ix86 x86_64
 %define liblsan_arches		x86_64
 %define libvtv_arches		%ix86 x86_64
@@ -216,6 +216,7 @@ Patch729: alt-fix-build-with-glibc2.26-ucontext.patch
 Patch730: alt-fix-build-with-glibc2.26-sigaltstack-__res_state.patch
 Patch731: gcc-asan-fix-missing-include-signal-h.patch
 Patch732: alt-fix-texi2pod-perl.patch
+Patch733: upstream-ppc64le-fix-lex-r256656.patch
 Patch800: alt-libtool.m4-gcj.patch
 
 Obsoletes: egcs gcc3.0 gcc3.1
@@ -435,17 +436,11 @@ This package contains GCC OpenMP static library.
 Summary: GCC plugin for GDB
 Group: Development/Debuggers
 Requires: gcc%gcc_branch = %EVR
+Provides: %name-gdb-plugin-devel = %EVR
+Obsoletes: %name-gdb-plugin-devel < %EVR
 
 %description gdb-plugin
 This package contains GCC plugin for GDB C expression evaluation.
-
-%package gdb-plugin-devel
-Summary: GCC plugin for GDB support files
-Group: Development/C
-Requires: %name-gdb-plugin = %EVR
-
-%description gdb-plugin-devel
-This package contains GCC plugin for GDB support files.
 
 ####################################################################
 # GCC JIT Library
@@ -1149,6 +1144,7 @@ version %version.
 %patch730 -p1
 %patch731 -p1
 %patch732 -p1
+%patch733 -p1
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1211957
 sed -i -e 's/ -Wl,-z,nodlopen//g' gcc/ada/gcc-interface/Makefile.in
@@ -1178,7 +1174,7 @@ find -type f -name Makefile\* -print0 |
 	xargs -r0 sed -i 's/-I- //g' --
 
 # Disable unwanted multilib builds.
-%ifarch x86_64
+%ifarch x86_64 mips mipsel mips64 mips64el riscv64 ppc64le
 sed -i 's/\$(CC_FOR_TARGET) --print-multi-lib/echo '"'.;'/" Makefile.*
 sed -i 's/\${CC-gcc} --print-multi-lib/echo '"'.;'/" config-ml.in
 sed -i 's/\[ -z "\$(MULTIDIRS)" \]/true/' config-ml.in
@@ -1342,9 +1338,17 @@ CONFIGURE_OPTS="\
 	--with-arch_32=i586 --with-tune_32=generic \
 	--with-multilib-list=m64,m32,mx32 \
 %endif
-%ifarch ppc ppc64
-	--disable-softfloat --enable-secureplt \
+%ifarch ppc ppc64 ppc64le
+	--enable-secureplt \
 	--with-long-double-128 \
+%endif
+%ifarch ppc ppc64
+	--disable-softfloat \
+%endif
+%ifarch ppc64le
+	--enable-targets=powerpcle-linux \
+	--with-cpu-32=power8 --with-tune-32=power8 \
+	--with-cpu-64=power8 --with-tune-64=power8 \
 %endif
 %ifarch ppc
 	--with-cpu=default32 \
@@ -1695,7 +1699,7 @@ for n in \
     %{?_with_objc:gcc-objc libobjc-devel libobjc-devel-static %{?_with_cxx:gcc-objc++}} \
     %{?_with_go:gcc-go libgo-devel libgo-devel-static} \
     %{?_with_jit:libgccjit-devel} \
-    gcc-gdb-plugin gcc-gdb-plugin-devel \
+    gcc-gdb-plugin \
     ; do
 	pref="${n%%%%-*}"
 	suf="${n#$pref}"
@@ -1796,16 +1800,23 @@ ln -s libgccjit.so.0 %buildroot%_libdir/libgccjit.so
 %gcc_target_libdir/include/mm3dnow.h
 %gcc_target_libdir/include/mm_malloc.h
 %endif
-%ifarch ppc ppc64
+%ifarch ppc ppc64 ppc64le
+%gcc_target_libdir/include/*intrin*.h
 %gcc_target_libdir/include/altivec.h
 %gcc_target_libdir/include/paired.h
 %gcc_target_libdir/include/ppc-asm.h
 %gcc_target_libdir/include/ppu_intrinsics.h
 %gcc_target_libdir/include/si2vmx.h
-%gcc_target_libdir/include/spe.h
 %gcc_target_libdir/include/spu2vmx.h
 %gcc_target_libdir/include/vec_types.h
 %endif
+%endif
+%ifarch ppc ppc64
+%gcc_target_libdir/include/spe.h
+%endif
+%ifarch ppc64le
+%gcc_target_libdir/ecrt*.o
+%gcc_target_libdir/ncrt*.o
 %endif
 %gcc_target_libdir/crt*.o
 %gcc_target_libdir/libgcc_s.so
@@ -2325,15 +2336,13 @@ ln -s libgccjit.so.0 %buildroot%_libdir/libgccjit.so
 %gcc_target_libdir/libgccjit.so
 %endif #with_jit
 
+%if_disabled compat
 %files gdb-plugin
 %config %_sysconfdir/buildreqs/packages/substitute.d/gcc%gcc_branch-gdb-plugin
 %_libdir/libcc1.so.0*
 %gcc_target_libdir/plugin/libcc1plugin.so*
-
-%files gdb-plugin-devel
-%config %_sysconfdir/buildreqs/packages/substitute.d/gcc%gcc_branch-gdb-plugin-devel
-%dir %gcc_target_libdir/
 %gcc_target_libdir/libcc1.so
+%endif
 
 %files locales -f gcc%psuffix.lang
 
@@ -2361,6 +2370,10 @@ ln -s libgccjit.so.0 %buildroot%_libdir/libgccjit.so
 %endif # _cross_platform
 
 %changelog
+* Mon Aug 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 5.3.1-alt7
+- Added ppc64le support.
+- Disabled gdb-plugin packaging in compat mode.
+
 * Fri Apr 12 2019 Dmitry V. Levin <ldv@altlinux.org> 5.3.1-alt6
 - Fixed build with libtool 2.4.6.
 

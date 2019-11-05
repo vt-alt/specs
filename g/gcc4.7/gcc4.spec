@@ -9,7 +9,7 @@
 
 Name: gcc%gcc_branch
 Version: 4.7.2
-Release: alt12
+Release: alt13
 
 Summary: GNU Compiler Collection
 # libgcc, libgfortran, libmudflap, libgomp, libstdc++ and crtstuff have
@@ -17,6 +17,7 @@ Summary: GNU Compiler Collection
 License: GPLv3+, GPLv3+ with exceptions and GPLv2+ with exceptions
 Group: Development/C
 Url: http://gcc.gnu.org/
+ExcludeArch: aarch64 ppc64le
 
 %ifarch ppc
 # On ppc32, we build a 64-bit compiler with default 32-bit mode.
@@ -209,7 +210,7 @@ Patch800: libtool.m4-gcj.patch
 
 Obsoletes: egcs gcc3.0 gcc3.1
 Conflicts: glibc-devel < 2.2.6
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: cpp%gcc_branch = %version-%release
 Requires: libgcov%gcc_branch-devel = %version-%release
 Requires: %binutils_deps, glibc-devel
@@ -422,7 +423,7 @@ using REAL*16 and programs using __float128 math.
 Summary: The GNU C-Compatible Compiler Preprocessor
 Group: Development/C
 Obsoletes: gcc-cpp egcs-cpp cpp3.0 cpp3.1
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 
 %description -n cpp%gcc_branch
 Cpp is the GNU C-Compatible Compiler Preprocessor.
@@ -468,7 +469,7 @@ Provides: libstdc++4.5 = %version
 Obsoletes: libstdc++ libstdc++3.4 libstdc++4.1 libstdc++4.3 libstdc++4.4 libstdc++4.5
 Requires: libgcc1 %REQ %version-%release
 # due to TLS (#9732)
-PreReq: glibc-core >= 6:2.3.6-alt7
+Requires(pre): glibc-core >= 6:2.3.6-alt7
 
 %description -n libstdc++6
 This package contains a rewritten standard compliant GCC Standard C++
@@ -478,7 +479,7 @@ Library.
 Summary: Header files and libraries for C++ development
 Group: Development/C++
 Obsoletes: libstdc++3.0-devel libstdc++3.1-devel
-PreReq: gcc-c++-common >= 1.4.7
+Requires(pre): gcc-c++-common >= 1.4.7
 Requires: libstdc++6 %REQ %version-%release
 Requires: glibc-devel
 
@@ -491,7 +492,7 @@ development.  This includes rewritten implementation of STL.
 Summary: Static libraries for C++ development
 Group: Development/C++
 Obsoletes: libstdc++3.0-devel-static libstdc++3.1-devel-static
-PreReq: gcc-c++-common >= 1.4.7
+Requires(pre): gcc-c++-common >= 1.4.7
 Requires: libstdc++%gcc_branch-devel = %version-%release
 
 %description -n libstdc++%gcc_branch-devel-static
@@ -505,7 +506,7 @@ This package includes static library needed for C++ development.
 Summary: C++ support for gcc
 Group: Development/C++
 Obsoletes: egcs-c++ gcc3.0-c++ gcc3.1-c++
-PreReq: gcc-c++-common >= 1.4.7
+Requires(pre): gcc-c++-common >= 1.4.7
 Requires: %name = %version-%release
 Requires: libstdc++%gcc_branch-devel = %version-%release
 
@@ -534,7 +535,7 @@ Objective-C dynamically linked programs.
 %package -n libobjc%gcc_branch-devel
 Summary: Header files and library for Objective-C development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libobjc4 %REQ %version-%release
 Requires: glibc-devel
 
@@ -546,7 +547,7 @@ Objective-C development.
 %package -n libobjc%gcc_branch-devel-static
 Summary: Static libraries for Objective-C development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libobjc%gcc_branch-devel = %version-%release
 
 %description -n libobjc%gcc_branch-devel-static
@@ -561,7 +562,7 @@ development.
 Summary: Objective-C support for GCC
 Group: Development/Other
 Obsoletes: gcc3.0-objc gcc3.1-objc
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: %name = %version-%release
 Requires: libobjc%gcc_branch-devel = %version-%release
 
@@ -573,7 +574,7 @@ object-oriented derivative of the C language.
 %package objc++
 Summary: Objective-C++ support for GCC
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: %name-objc = %version-%release, %name-c++ = %version-%release
 
 %description objc++
@@ -602,7 +603,7 @@ GNU Fortran dynamically linked programs.
 %package -n libgfortran%gcc_branch-devel
 Summary: Header files and library for GNU Fortran development
 Group: Development/Other
-PreReq: gcc-fortran-common >= 1.4.7
+Requires(pre): gcc-fortran-common >= 1.4.7
 Requires: libgfortran3 %REQ %version-%release
 %ifarch %ix86 x86_64 ia64
 Requires: libquadmath%gcc_branch-devel = %version-%release
@@ -617,7 +618,7 @@ Fortran development.
 %package -n libgfortran%gcc_branch-devel-static
 Summary: Static libraries for GNU Fortran development
 Group: Development/Other
-PreReq: gcc-fortran-common >= 1.4.7
+Requires(pre): gcc-fortran-common >= 1.4.7
 Requires: libgfortran%gcc_branch-devel = %version-%release
 
 %description -n libgfortran%gcc_branch-devel-static
@@ -632,7 +633,7 @@ development.
 Summary: GNU Fortran support for gcc
 Group: Development/Other
 Obsoletes: gcc3.0-g77 gcc3.1-g77
-PreReq: gcc-fortran-common >= 1.4.7
+Requires(pre): gcc-fortran-common >= 1.4.7
 Requires: %name = %version-%release
 Requires: libgfortran%gcc_branch-devel = %version-%release
 
@@ -740,7 +741,7 @@ Summary: Java support for gcc
 Group: Development/Java
 Provides: gcc-java = %version-%release, %_bindir/gcj
 Obsoletes: gcc-java gcc3.0-java gcc3.1-java gcj3.1-tools
-PreReq: gcc-java-common >= 1.4.13
+Requires(pre): gcc-java-common >= 1.4.13
 Requires: %name = %version-%release, libgcj%gcc_branch-devel = %version-%release
 # due to GC requirements:
 # GC Warning: Couldn't read /proc/stat
@@ -778,7 +779,7 @@ Posix 1003.5 Binding (Florist).
 %package -n libgnat%gcc_branch-devel
 Summary: Header files and libraries for Ada 95 development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libgnat%gcc_branch = %version-%release
 
 %description -n libgnat%gcc_branch-devel
@@ -789,7 +790,7 @@ Ada 95 development.
 %package -n libgnat%gcc_branch-devel-static
 Summary: Static libraries for Ada 95 development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libgnat%gcc_branch-devel = %version-%release
 
 %description -n libgnat%gcc_branch-devel-static
@@ -803,8 +804,8 @@ package includes the static libraries needed for Ada 95 development.
 Summary: Ada 95 support for gcc
 Group: Development/Other
 Obsoletes: gcc4.6-gnat gcc4.5-gnat gcc4.4-gnat gcc4.3-gnat gcc4.2-gnat gcc4.1-gnat
-PreReq: gcc-common >= 1.4.7
-PreReq: gcc-gnat-common
+Requires(pre): gcc-common >= 1.4.7
+Requires(pre): gcc-gnat-common
 Requires: %name = %version-%release, libgnat%gcc_branch-devel = %version-%release
 
 %description gnat
@@ -832,7 +833,7 @@ shared libraries.
 %package -n libgo%gcc_branch-devel
 Summary: Header files and libraries for Go development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libgo0 = %version-%release
 
 %description -n libgo%gcc_branch-devel
@@ -842,7 +843,7 @@ Go development.
 %package -n libgo%gcc_branch-devel-static
 Summary: Static libraries for Go development
 Group: Development/Other
-PreReq: gcc-common >= 1.4.7
+Requires(pre): gcc-common >= 1.4.7
 Requires: libgo%gcc_branch-devel = %version-%release
 
 %description -n libgo%gcc_branch-devel-static
@@ -853,7 +854,7 @@ This package includes the static libraries needed for Go development.
 %package go
 Summary: Go support for GCC
 Group: Development/Other
-PreReq: gcc-go-common >= 1.4.15
+Requires(pre): gcc-go-common >= 1.4.15
 Requires: %name = %version-%release
 Requires: libgo%gcc_branch-devel = %version-%release
 
@@ -871,7 +872,6 @@ in order to explicitly use the GNU Go compiler version %version.
 %package locales
 Summary: The GNU Compiler Collection native language support files
 Group: Development/C
-BuildArch: noarch
 Requires: %name = %version-%release
 
 %description locales
@@ -992,7 +992,7 @@ find -type f -name Makefile\* -print0 |
 	xargs -r0 sed -i 's/-I- //g' --
 
 # Disable unwanted multilib builds.
-%ifarch x86_64
+%ifarch x86_64 mips mipsel mips64 mips64el riscv64 ppc64le
 sed -i 's/\$(CC_FOR_TARGET) --print-multi-lib/echo '"'.;'/" Makefile.*
 sed -i 's/\${CC-gcc} --print-multi-lib/echo '"'.;'/" config-ml.in
 sed -i 's/\[ -z "\$(MULTIDIRS)" \]/true/' config-ml.in
@@ -1060,6 +1060,13 @@ for f in */aclocal.m4; do
 	%autoreconf "$d"
 	sh -n "$d"/configure
 done
+
+# Libtoolize now removes those of its build-aux files
+# that haven't been installed during its invocation.
+# Invoke libtoolize once more to install missing files.
+# libffi is just one of those directories that could
+# be used to install all necessary build-aux files.
+%autoreconf libffi
 
 # Hack to avoid building multilib libjava
 # This hack is from Fedora's spec;
@@ -1911,9 +1918,6 @@ popd
 %_infodir/libitm.info*
 %_infodir/libgomp*.info*
 %{?_with_fortran:%_infodir/gfortran.info*}
-%ifarch %ix86 x86_64 ia64
-%{?_with_fortran:%_infodir/libquadmath.info*}
-%endif
 %{?_with_java:%_infodir/gcj.info*}
 %{?_with_java:%_infodir/cp-tools.info*}
 %{?_with_ada:%_infodir/gnat*.info*}
@@ -1928,6 +1932,10 @@ popd
 %endif # _cross_platform
 
 %changelog
+* Fri Oct 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.7.2-alt13
+- Fixed build with libtool 2.4.6 (ldv@).
+- %name-locales: removed noarch.
+
 * Mon Feb 19 2018 Dmitry V. Levin <ldv@altlinux.org> 4.7.2-alt12
 - %name-fortran: do not obsolete gcc-g77.
 
