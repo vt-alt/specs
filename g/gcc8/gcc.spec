@@ -2,7 +2,7 @@
 
 Name: gcc%gcc_branch
 Version: 8.3.1
-Release: alt3
+Release: alt5
 
 Summary: GNU Compiler Collection
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
@@ -16,7 +16,7 @@ Url: https://gcc.gnu.org/
 %define _target_platform ppc64-alt-linux
 %endif
 
-%define snapshot 20190311
+%define snapshot 20190507
 %define srcver %version-%snapshot
 %define srcfilename gcc-%srcver
 %define srcdirname gcc-%srcver
@@ -89,7 +89,7 @@ Url: https://gcc.gnu.org/
 # 0. build gcc N in precompat mode;
 # 1. build gcc N+1 with gcc N;
 # 2. build gcc N in compat mode.
-# Unfortunately, if we skip stage 0 at stage 2, installation of gсс N
+# Unfortunately, if we skip stage 0 at stage 2, installation of gcc N
 # would be broken because it has strict requirements on libgcc1 package,
 # but hasher installs libgcc1 from gcc N+1 early.
 # precompat knob disables interpackage dependencies optimization
@@ -145,7 +145,6 @@ Patch108: gcc-no-add-needed.patch
 Patch109: gcc-foffload-default.patch
 Patch110: gcc-Wno-format-security.patch
 Patch111: gcc-rh1512529-aarch64.patch
-Patch112: gcc-pr89629.patch
 
 # Debian patches.
 Patch201: gcc-textdomain.diff
@@ -186,6 +185,8 @@ Patch729: deb-alt-gcc-as-needed.diff
 Patch730: deb-alt-mips-gcc-multiarch.diff
 Patch731: alt-riscv64-not-use-lp64d.patch
 Patch732: alt-defaults-cxx-Werror-return-type.patch
+Patch733: alt-disable-gdb-plugin-versioning.patch
+Patch734: PR89906.patch
 
 Obsoletes: egcs gcc3.0 gcc3.1
 Conflicts: glibc-devel < 2.2.6
@@ -393,17 +394,11 @@ This package contains GCC OpenMP static library.
 Summary: GCC plugin for GDB
 Group: Development/Debuggers
 Requires: gcc%gcc_branch = %EVR
+Provides: %name-gdb-plugin-devel = %EVR
+Obsoletes: %name-gdb-plugin-devel < %EVR
 
 %description gdb-plugin
 This package contains GCC plugin for GDB C expression evaluation.
-
-%package gdb-plugin-devel
-Summary: GCC plugin for GDB support files
-Group: Development/C
-Requires: %name-gdb-plugin = %EVR
-
-%description gdb-plugin-devel
-This package contains GCC plugin for GDB support files.
 
 ####################################################################
 # GCC JIT Library
@@ -985,7 +980,6 @@ version %version.
 %patch109 -p0
 %patch110 -p0
 %patch111 -p0
-%patch112 -p0
 
 # Debian patches.
 %patch201 -p2
@@ -1025,6 +1019,8 @@ version %version.
 %patch730 -p2
 %patch731 -p1
 %patch732 -p1
+%patch733 -p1
+%patch734 -p1
 
 echo '%distribution %version-%release' > gcc/DEV-PHASE
 
@@ -1382,6 +1378,7 @@ pushd %buildroot%_libdir
 	mv *.o %buildroot%gcc_target_libdir/
 %endif
 	for f in *.so; do
+		[ "$f" != libcc1.so ] || continue
 		v=`objdump -p "$f" |awk '/SONAME/ {print $2}'`
 		[ -f "$v" ]
 		ln -s ../../../"$v" "%buildroot%gcc_target_libdir/$f"
@@ -1484,7 +1481,7 @@ for n in \
     %{?_with_objc:gcc-objc libobjc-devel libobjc-devel-static gcc-objc++} \
     %{?_with_go:gcc-go libgo-devel libgo-devel-static} \
     %{?_with_jit:libgccjit-devel} \
-    gcc-gdb-plugin gcc-gdb-plugin-devel \
+    gcc-gdb-plugin \
     ; do
 	pref="${n%%%%-*}"
 	suf="${n#$pref}"
@@ -2027,16 +2024,13 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %gcc_target_libdir/libgccjit.so
 %endif #with_jit
 
+%if_disabled compat
 %files gdb-plugin
 %config %_sysconfdir/buildreqs/packages/substitute.d/gcc%gcc_branch-gdb-plugin
-%_libdir/libcc1.so.0*
-%gcc_target_libdir/plugin/libcc1plugin.so*
-%gcc_target_libdir/plugin/libcp1plugin.so*
-
-%files gdb-plugin-devel
-%config %_sysconfdir/buildreqs/packages/substitute.d/gcc%gcc_branch-gdb-plugin-devel
-%dir %gcc_target_libdir/
-%gcc_target_libdir/libcc1.so
+%_libdir/libcc1.so
+%gcc_target_libdir/plugin/libcc1plugin.so
+%gcc_target_libdir/plugin/libcp1plugin.so
+%endif # disable_compat
 
 %if_enabled source
 %files -n gcc-source
@@ -2064,6 +2058,14 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %endif #with_pdf
 
 %changelog
+* Mon Aug 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.3.1-alt5
+- Applied upstream fix for PR 89906 (closes: #36972).
+- Removed versioning of lib{cc1,cc1plugin,cp1plugin} libraries
+  (closes: #36046).
+
+* Tue May 07 2019 Dmitry V. Levin <ldv@altlinux.org> 8.3.1-alt4
+- Updated to redhat/gcc-8-branch r270976 (Fedora gcc-8.3.1-4).
+
 * Thu Apr 11 2019 Dmitry V. Levin <ldv@altlinux.org> 8.3.1-alt3
 - Upgraded default -fstack-protector to -fstack-protector-strong.
 - Fixed build with libtool 2.4.6.
