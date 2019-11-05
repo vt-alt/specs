@@ -1,5 +1,5 @@
 Name: libabigail
-Version: 1.2
+Version: 1.6
 Release: alt1
 Summary: ABI Generic Analysis and Instrumentation Library and tools
 Group: Development/Other
@@ -9,7 +9,7 @@ Url: https://sourceware.org/libabigail/
 Source0: %name-%version.tar
 
 # Automatically added by buildreq on Wed Mar 28 2018 (-bi)
-BuildRequires: doxygen gcc-c++ libdw-devel libxml2-devel makeinfo python-module-sphinx
+BuildRequires: doxygen gcc-c++ libdw-devel libxml2-devel makeinfo python3-module-sphinx
 
 %description
 This package contains %summary.
@@ -62,9 +62,10 @@ is correct.
 	--disable-zip-archive \
 	--enable-cxx11=yes \
 	--disable-static \
+	FOUND_SPHINX_BUILD=yes \
 	#
 %make_build
-%make_build -C doc/manuals man info
+%make_build -C doc/manuals man info SPHINXBUILD=sphinx-build-3
 
 %install
 %makeinstall_std
@@ -78,6 +79,7 @@ make -C doc/manuals install-man-and-info-doc DESTDIR=%buildroot
 %make_build -k check
 
 %define _unpackaged_files_terminate_build 1
+%set_verify_elf_method strict
 
 %files -n libabigail0
 %_libdir/libabigail/
@@ -95,6 +97,9 @@ make -C doc/manuals install-man-and-info-doc DESTDIR=%buildroot
 %_infodir/abigail.info*
 
 %changelog
+* Wed Mar 27 2019 Dmitry V. Levin <ldv@altlinux.org> 1.6-alt1
+- 1.2 -> 1.6.
+
 * Wed Mar 28 2018 Dmitry V. Levin <ldv@altlinux.org> 1.2-alt1
 - 1.0.rc2 -> 1.2.
 - Renamed libabigail to abigail-tools, dropped doc subpackage.
