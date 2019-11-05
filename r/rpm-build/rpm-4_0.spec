@@ -5,7 +5,7 @@
 
 Name: rpm-build
 Version: 4.0.4
-Release: alt133
+Release: alt134
 
 %define ifdef() %if %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define get_dep() %(rpm -q --qf '%%{NAME} >= %%|SERIAL?{%%{SERIAL}:}|%%{VERSION}-%%{RELEASE}' %1 2>/dev/null || echo '%1 >= unknown')
@@ -542,6 +542,9 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %files checkinstall
 
 %changelog
+* Fri Nov 01 2019 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt134
+- Backported RPMTAG_VCS support from rpm.org.
+
 * Thu Sep 26 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.0.4-alt133
 - Added %%autopatch support.
 

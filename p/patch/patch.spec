@@ -1,13 +1,12 @@
 Name: patch
-Version: 2.7.6.0.17.9c98
+Version: 2.7.6.0.24.76e7
 Release: alt1
 
 Summary: The GNU patch command, for modifying/upgrading files
 License: GPLv3+
 Group: Text tools
 Url: https://www.gnu.org/software/patch/
-
-# git://git.altlinux.org/gears/p/patch.git
+Vcs: git://git.altlinux.org/gears/p/patch.git
 Source: %name-%version-%release.tar
 
 BuildRequires: gnulib >= 0.1.2305.95c96
@@ -46,6 +45,10 @@ echo -n %version > .tarball-version
 %doc AUTHORS NEWS README
 
 %changelog
+* Sat Nov 02 2019 Dmitry V. Levin <ldv@altlinux.org> 2.7.6.0.24.76e7-alt1
+- patch: v2.7.6-17-g9c98635 -> v2.7.6-24-g76e7758.
+- spec: added VCS tag.
+
 * Wed Dec 26 2018 Dmitry V. Levin <ldv@altlinux.org> 2.7.6.0.17.9c98-alt1
 - patch:
   + v2.7.6-15-g369dccc -> v2.7.6-17-g9c98635 (fixes: CVE-2018-6952);
