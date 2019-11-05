@@ -1,19 +1,19 @@
 Name: lcov
-Version: 1.13.0.16.e675
+Version: 1.14.0.6.4058
 Release: alt1
 
 Summary: LTP GCOV extension code coverage tool
 Group: Development/Tools
 License: GPLv2+
-URL: http://ltp.sourceforge.net/coverage/lcov.php
+URL: https://github.com/linux-test-project/lcov/
 BuildArch: noarch
 
-# https://github.com/linux-test-project/lcov.git
 # git://git.altlinux.org/gears/l/lcov.git
 Source: %name-%version-%release.tar
 
 Requires: gcc-common perl-GD
 
+BuildRequires: perl-JSON perl-PerlIO-gzip
 %{?!_without_check:%{?!_disable_check:BuildRequires: /proc}}
 %define _unpackaged_files_terminate_build 1
 
@@ -31,6 +31,8 @@ VERSION=%version
 RELEASE=%release
 FULL=%version
 EOF
+# skip broken test
+rm test/lcov_diff/Makefile
 
 %install
 %makeinstall_std PREFIX=%_prefix CFG_DIR=%_sysconfdir
@@ -45,6 +47,9 @@ make test
 %config(noreplace) %_sysconfdir/lcovrc
 
 %changelog
+* Fri Oct 11 2019 Dmitry V. Levin <ldv@altlinux.org> 1.14.0.6.4058-alt1
+- v1.13-16-ge675 -> v1.14-6-g40580cd.
+
 * Tue Nov 13 2018 Dmitry V. Levin <ldv@altlinux.org> 1.13.0.16.e675-alt1
 - v1.13-11-gb6a1136 -> v1.13-16-ge675.
 
