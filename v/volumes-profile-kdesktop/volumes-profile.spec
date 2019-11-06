@@ -1,6 +1,6 @@
 Name: volumes-profile-kdesktop
-Version: 0.8.0
-Release: alt1
+Version: 0.9.0
+Release: alt2
 
 Summary: Volumes description for Desktop KDE distribution
 License: GPL
@@ -9,7 +9,6 @@ Url: http://www.altlinux.org/Installer/beans
 BuildArch: noarch
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 
 %description
 Volumes description for Desktop KDE distribution
@@ -30,19 +29,28 @@ install -pm755 10-*.sh %buildroot%hook1dir/
 #%hook2dir/*
 
 %changelog
+* Tue Nov 05 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.0-alt2
+- fix space requirement
+
+* Fri Nov 01 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.0-alt1
+- update profile
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.8.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Thu Dec 06 2018 Sergey V Turchin <zerg@altlinux.org> 0.8.0-alt1
 - use LVM by default
 
-* Fri Oct 27 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.4-alt1%ubt
+* Fri Oct 27 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.4-alt1
 - fix to decrease default swap size
 
-* Wed Oct 25 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.3-alt1%ubt
+* Wed Oct 25 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.3-alt1
 - fix to decrease default swap size
 
-* Wed Aug 16 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.2-alt1%ubt
+* Wed Aug 16 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.2-alt1
 - decrease default swap size
 
-* Mon Jun 26 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.1-alt1%ubt
+* Mon Jun 26 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.1-alt1
 - decrease space requires to fit 32GB-drive
 
 * Fri Apr 15 2016 Sergey V Turchin <zerg@altlinux.org> 0.7.0-alt1
