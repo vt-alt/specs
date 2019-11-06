@@ -1,6 +1,6 @@
 Name: bitcoin
-Version: 0.18.0
-Release: alt1
+Version: 0.18.1
+Release: alt2
 
 Summary: peer-to-peer network based anonymous digital currency
 License: MIT
@@ -13,7 +13,7 @@ Patch0: %name-%version-%release.patch
 # Automatically added by buildreq on Thu Sep 14 2017
 # optimized out: boost-devel boost-devel-headers gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 gnu-config libcom_err-devel libdb4-devel libgpg-error libkrb5-devel libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-test libqt5-widgets libqt5-xml libstdc++-devel llvm perl pkg-config python-base python-modules qt5-base-common
 BuildRequires: boost-filesystem-devel boost-interprocess-devel boost-program_options-devel boost-signals-devel
-BuildRequires: clang lcov libevent-devel libminiupnpc-devel libprotobuf-devel libqrencode-devel
+BuildRequires: clang libevent-devel libminiupnpc-devel libprotobuf-devel libqrencode-devel
 BuildRequires: libssl-devel protobuf-compiler python-module-mpl_toolkits qt5-base-devel qt5-tools libdb4.8_cxx-devel
 
 %description
@@ -57,6 +57,12 @@ rm -f %_bindir/%name
 %doc doc/*
 
 %changelog
+* Mon Oct 28 2019 Alexei Takaseev <taf@altlinux.org> 0.18.1-alt2
+- Remove BR: lcov
+
+* Sun Aug 04 2019 Alexei Takaseev <taf@altlinux.org> 0.18.1-alt1
+- Version 0.18.1
+
 * Fri May 03 2019 Alexei Takaseev <taf@altlinux.org> 0.18.0-alt1
 - Version 0.18.0
 
