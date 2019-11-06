@@ -3,7 +3,7 @@
 
 Name: mate-file-manager
 Version: 1.22.2
-Release: alt1
+Release: alt2
 Epoch: 1
 Summary: File manager for MATE
 License: GPLv2+ and LGPLv2+
@@ -99,6 +99,9 @@ mkdir -p %buildroot%_libdir/caja/extensions-2.0
 %_datadir/gtk-doc/html/libcaja-extension
 
 %changelog
+* Wed Oct 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt2
+- updated russian translation
+
 * Wed Oct 16 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
 - 1.22.2
 
