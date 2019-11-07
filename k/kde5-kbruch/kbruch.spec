@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.08.0
-Release: alt1
+Release: alt3
 %K5init
 
 Group: Education
@@ -11,6 +11,7 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Patch: Fix-incorrect-display-of-user-interface-elements-alt.patch
 
 # Automatically added by buildreq on Fri Apr 01 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 rpm-build-python3 xml-common xml-utils
@@ -50,6 +51,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch -p1
 
 %build
 %K5build
@@ -79,6 +81,12 @@ KF5 library
 #%_K5lib/libKF5Bruch.so.*
 
 %changelog
+* Fri Nov 01 2019 Pavel Moseev <mars@altlinux.org> 19.08.0-alt3
+- fix incorrect display of user interface elements (closes: #37308)
+
+* Mon Oct 28 2019 Pavel Moseev <mars@altlinux.org> 19.08.0-alt2
+- fix incorrect display of user interface elements (closes: #37308)
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
