@@ -1,6 +1,6 @@
 Name: squashfs-tools
-Version: 4.3
-Release: alt3.e38956b
+Version: 4.4
+Release: alt1
 
 Summary: squashfs support
 License: GPL
@@ -26,6 +26,7 @@ This package contains the utilities to (un)compress squashfs images.
 %patch0 -p1
 
 %build
+export CFLAGS="%optflags"
 %make_build XZ_SUPPORT=1 LZO_SUPPORT=1 ZSTD_SUPPORT=1 COMP_DEFAULT=xz
 
 %install
@@ -39,6 +40,12 @@ ln -sf ../../sbin/mksquashfs %buildroot%_bindir/mksquashfs
 %_bindir/*
 
 %changelog
+* Tue Nov 05 2019 Anton Farygin <rider@altlinux.ru> 4.4-alt1
+- 4.4 (fixes: CVE-2015-4645, CVE-2015-4646)
+
+* Wed Aug 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 4.3-alt4.e38956b
+- Fixed build flags and debuginfo.
+
 * Wed Jan 09 2019 Lenar Shakirov <snejok@altlinux.ru> 4.3-alt3.e38956b
 - Add zstd support (commit e38956b)
 - libzstd-devel added to BuildRequires
