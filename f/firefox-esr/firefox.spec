@@ -15,8 +15,8 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.1.0
-Release:        alt2
+Version:        68.2.0
+Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -387,6 +387,19 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 68.2.0-alt1
+- New ESR version (68.2.0).
+- Fixed:
+  + CVE-2019-15903 Heap overflow in expat library in XML_GetCurrentLineNumber
+  + CVE-2019-11757 Use-after-free when creating index updates in IndexedDB
+  + CVE-2019-11758 Potentially exploitable crash due to 360 Total Security
+  + CVE-2019-11759 Stack buffer overflow in HKDF output
+  + CVE-2019-11760 Stack buffer overflow in WebRTC networking
+  + CVE-2019-11761 Unintended access to a privileged JSONView object
+  + CVE-2019-11762 document.domain-based origin isolation has same-origin-property violation
+  + CVE-2019-11763 Incorrect HTML parsing results in XSS bypass technique
+  + CVE-2019-11764 Memory safety bugs fixed in Firefox 70 and Firefox ESR 68.2
+
 * Thu Sep 19 2019 Andrey Cherepanov <cas@altlinux.org> 68.1.0-alt2
 - Fix open context menu (thanks george@).
 
