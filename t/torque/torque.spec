@@ -1,5 +1,5 @@
 # BEGIN SourceDeps(oneline):
-BuildRequires(pre): rpm-helper
+BuildRequires(pre): rpm-build-tcl rpm-helper
 BuildRequires: libelf-devel perl(Curses.pm) perl(ExtUtils/testlib.pm) perl(Sys/Hostname.pm) perl(Time/Local.pm) perl(autouse.pm) perl(subs.pm) pkgconfig(check) zlib-devel
 # END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
@@ -29,7 +29,7 @@ Name:           torque
 Summary:        The Torque resource and queue manager
 Group:          Sciences/Computer science
 Version:        6.1.2
-Release:        alt1_3
+Release:        alt2_3
 License:        TORQUEv1.1
 URL:            http://www.adaptivecomputing.com/products/open-source/torque/
 
@@ -58,8 +58,8 @@ BuildRequires:  doxygen
 BuildRequires:  pkgconfig(ncurses)
 BuildRequires:  pkgconfig(tk)
 BuildRequires:  pkgconfig(tcl)
-BuildRequires:  tclx-devel
-BuildRequires:  openssh-clients openssh-common
+BuildRequires:  tclx
+BuildRequires:  openssh-clients
 BuildRequires:  libreadline-devel
 BuildRequires:  gcc-fortran
 BuildRequires:  gcc-c++
@@ -72,7 +72,7 @@ BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(hwloc)
 BuildRequires:  boost-complete
 
-Requires:       openssh-clients openssh-common
+Requires:       openssh-clients
 Requires:     torque-mom
 Source44: import.info
 
@@ -186,6 +186,7 @@ Obsoletes:      torque-xpbs <= 2.5.3
 %prep
 %setup -q -n %{name}-%{srcversion}
 %patch1 -p1
+
 
 %build
 autoreconf -fi
@@ -304,8 +305,8 @@ popd
 rm -f %{buildroot}%{_mandir}/man1/basl2c.1*
 #__rm -f #{buildroot}#{_mandir}/man3/_*src_drmaa_src_.3*
 
-rm -rf %buildroot/usr/share/doc/torque-drmaa/src
 
+rm -rf %buildroot/usr/share/doc/torque-drmaa/src
 
 %post
 %{_sbindir}/torque_addport
@@ -370,6 +371,7 @@ sed -i 's|MYSERVERNAME|'"$HOSTNAME"'|g' %{torquedir}/server_priv/serverdb
 
 
 %files -n %{devname}
+%doc %_docdir/%name
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/*
 %{_bindir}/pbs-config
@@ -384,6 +386,7 @@ sed -i 's|MYSERVERNAME|'"$HOSTNAME"'|g' %{torquedir}/server_priv/serverdb
 
 
 %files -n %{clientname}
+%doc %_docdir/%name
 %{_unitdir}/trqauthd.service
 %{_sbindir}/trqauthd
 %{_bindir}/qa*
@@ -471,6 +474,7 @@ sed -i 's|MYSERVERNAME|'"$HOSTNAME"'|g' %{torquedir}/server_priv/serverdb
 
 
 %files -n %{momname}
+%doc %_docdir/%name
 %dir %{torquedir}/mom_priv
 %dir %{torquedir}/mom_priv/jobs
 %dir %{torquedir}/mom_logs
@@ -499,6 +503,9 @@ sed -i 's|MYSERVERNAME|'"$HOSTNAME"'|g' %{torquedir}/server_priv/serverdb
 
 
 %changelog
+* Sun Jul 21 2019 Igor Vlasenko <viy@altlinux.ru> 6.1.2-alt2_3
+- fixed build
+
 * Thu Feb 14 2019 Igor Vlasenko <viy@altlinux.ru> 6.1.2-alt1_3
 - new version
 
