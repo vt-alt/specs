@@ -1,6 +1,6 @@
 Name:		libbox2d
 Version:	2.1.2
-Release:	alt2
+Release:	alt2.1
 Summary:	A 2D physics engine for games
 Group:		System/Libraries
 License:	BSD-like
@@ -9,6 +9,7 @@ URL:		http://www.box2d.org
 %define VName %{FName}_v%version
 Source:		http://box2d.googlecode.com/files/%VName.zip
 Patch:		Box2D_CMake.patch
+Patch1:		%name-add-glut.patch
 
 # Automatically added by buildreq on Tue Jul 06 2010
 BuildRequires: cmake gcc-c++ libGLUT-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdmcp-devel libXext-devel libXft-devel libXinerama-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libglui-devel libxkbfile-devel unzip
@@ -33,6 +34,7 @@ Development files for %name, %summary
 %prep
 %setup -n %VName
 %patch -p1
+%patch1 -p2
 # XXX incorrect dates in zipfile
 find . -type f -exec touch {} \;
 rm -r Box2D/glui Box2D/freeglut
@@ -68,6 +70,9 @@ cd %FName/Build
 
 
 %changelog
+* Tue Jun 11 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.2-alt2.1
+- NMU: fix build
+
 * Tue Apr 26 2011 Fr. Br. George <george@altlinux.ru> 2.1.2-alt2
 - Fix debuginfo build
 
