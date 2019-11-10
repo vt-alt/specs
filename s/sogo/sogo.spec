@@ -3,14 +3,21 @@
 
 Summary:      SOGo is a very fast and scalable modern collaboration suite (groupware)
 Name:         sogo
-# Use the same version as in the "nightly" packages at
-# http://v2.sogo.nu/downloads/backend_v3_nightly.html:
-Version:      4.0.8
+Version:      4.1.1
 Release:      alt1
 
 License:      GPL
 URL:          https://sogo.nu/
 # VCS:        https://github.com/inverse-inc/sogo
+# Do not forget to update angular submodule and 
+# update CSS as describe in https://sogo.nu/files/docs/SOGoDevelopersGuide.pdf
+#  git submodule init
+#  git submodule update
+#  cd UI/WebServerResources
+#  npm install
+#  ./node_modules/bower/bin/bower install
+#  ./node_modules/grunt/bin/grunt build
+
 Group:        Communications
 Packager:     Andrey Cherepanov <cas@altlinux.org>
 
@@ -421,6 +428,12 @@ fi
 %preun_service sogo
 
 %changelog
+* Fri Nov 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.1.1-alt1
+- New version.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 4.1.0-alt1
+- New version.
+
 * Mon Jul 22 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.8-alt1
 - New version.
 

@@ -7,7 +7,7 @@
 
 Summary:      SOPE is an extensive set of frameworks which form a complete Web application server environment
 Name:         sope
-Version:      4.0.8
+Version:      4.1.1
 Release:      alt1
 License:      GPL
 URL:          http://sogo.nu/
@@ -28,6 +28,7 @@ BuildRequires: libgmp-devel
 BuildRequires: libgnutls-devel
 BuildRequires: libicu-devel
 BuildRequires: libldap-devel
+BuildRequires: liblzma-devel
 BuildRequires: libmysqlclient-devel
 BuildRequires: libsqlite3-devel
 BuildRequires: libssl-devel
@@ -287,6 +288,12 @@ if [ "$1" = "0" ] ; then # last uninstall
 fi
 
 %changelog
+* Fri Nov 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.1.1-alt1
+- New version.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 4.1.0-alt1
+- New version.
+
 * Mon Jul 22 2019 Andrey Cherepanov <cas@altlinux.org> 4.0.8-alt1
 - New version.
 
