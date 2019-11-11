@@ -17,13 +17,12 @@
 %endif
 
 Name: nvidia_glx_src
-Version: 430.50
+Version: 440.31
 Release: alt1
 
 Source0: null
 Source201: ftp://download.nvidia.com/XFree86/Linux-x86/%version/NVIDIA-Linux-x86_64-%version.run
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
 BuildRequires: libXext-devel libEGL-devel
 BuildRequires: libwayland-client-devel libwayland-server-devel
@@ -151,6 +150,9 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_sysconfdir/OpenCL/vendors/nvidia.icd
 
 %changelog
+* Wed Nov 06 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt1
+- new version
+
 * Mon Sep 30 2019 Sergey V Turchin <zerg@altlinux.org> 430.50-alt1
 - new version
 
@@ -169,27 +171,27 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 * Wed Dec 05 2018 Sergey V Turchin <zerg@altlinux.org> 410.73-alt1
 - new version
 
-* Thu Sep 20 2018 Sergey V Turchin <zerg@altlinux.org> 390.87-alt1%ubt
+* Thu Sep 20 2018 Sergey V Turchin <zerg@altlinux.org> 390.87-alt1
 - new version
 
-* Fri Jun 08 2018 Sergey V Turchin <zerg@altlinux.org> 390.67-alt1%ubt
+* Fri Jun 08 2018 Sergey V Turchin <zerg@altlinux.org> 390.67-alt1
 - new version
 
-* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 390.59-alt1%ubt
+* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 390.59-alt1
 - new version
 
-* Thu Apr 19 2018 Sergey V Turchin <zerg@altlinux.org> 390.48-alt1%ubt
+* Thu Apr 19 2018 Sergey V Turchin <zerg@altlinux.org> 390.48-alt1
 - new version
 
-* Wed Feb 21 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt3%ubt
+* Wed Feb 21 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt3
 - require libnvidia-ml
 
-* Mon Feb 19 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt2%ubt
+* Mon Feb 19 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt2
 - added pkgs:
 libnvidia-cuda
 libnvidia-compiler
 libnvidia-ptxjitcompiler
 libnvidia-ml
 
-* Fri Feb 16 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt1%ubt
+* Fri Feb 16 2018 Oleg Solovyov <mcpain@altlinux.org> 390.25-alt1
 - init

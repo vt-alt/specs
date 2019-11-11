@@ -1,5 +1,5 @@
 Name: nvidia-xconfig
-Version: 430.26
+Version: 440.31
 Release: alt1
 
 Group: System/Configuration/Hardware
@@ -32,6 +32,9 @@ make install PREFIX=%buildroot/%prefix bindir=%buildroot/%_bindir mandir=%buildr
 
 
 %changelog
+* Wed Nov 06 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt1
+- new version
+
 * Tue Jun 11 2019 Sergey V Turchin <zerg@altlinux.org> 430.26-alt1
 - new version
 

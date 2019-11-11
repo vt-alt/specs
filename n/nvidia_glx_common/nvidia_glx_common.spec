@@ -17,10 +17,10 @@
 
 # version-release
 
-%define nv_version 430
-%define nv_release 50
+%define nv_version 440
+%define nv_release 31
 %define nv_minor %nil
-%define pkg_rel alt218
+%define pkg_rel alt219
 %define set_gl_nvidia_ver 1.2.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -310,6 +310,9 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Wed Nov 06 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt219
+- new version
+
 * Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 430.50-alt218
 - new version
 
