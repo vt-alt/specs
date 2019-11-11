@@ -1,26 +1,26 @@
-%add_optflags %optflags_shared
-%define fedora 27
+# BEGIN SourceDeps(oneline):
+BuildRequires: pkgconfig(gio-2.0)
+# END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
+%global major 2
+%define libname libgovirt%{major}
+%define devname libgovirt-devel
 # -*- rpm-spec -*-
 
-%global with_gir 0
-
-%if 0%{?fedora} >= 15 || 0%{?rhel} >= 7
 %global with_gir 1
-%endif
 
 Summary: A GObject library for interacting with oVirt REST API
 Name: libgovirt
 Version: 0.3.4
-Release: alt1_7%{?extra_release}
+Release: alt1_8%{?extra_release}
 License: LGPLv2+
-Group: Development/Other
+Group: Development/C
 Source0: http://ftp.gnome.org/pub/GNOME/sources/libgovirt/0.3/%{name}-%{version}.tar.xz
 Source1: http://ftp.gnome.org/pub/GNOME/sources/libgovirt/0.3/%{name}-%{version}.tar.xz.sign
 Source2: cfergeau-29AC6C82.keyring
 URL: http://people.freedesktop.org/~teuf/govirt/
-BuildRequires: glib2-devel libgio libgio-devel
+BuildRequires: glib2-devel
 BuildRequires: intltool
 BuildRequires: librest-devel librest-gir-devel
 %if %{with_gir}
@@ -28,9 +28,9 @@ BuildRequires: gobject-introspection-devel
 %endif
 #needed for make check
 BuildRequires: glib-networking
-BuildRequires: dconf libdconf
+BuildRequires: dconf
 #needed for GPG signature checek
-BuildRequires: gnupg2
+BuildRequires: gnupg gnupg2
 Source44: import.info
 
 %description
@@ -38,14 +38,23 @@ libgovirt is a library that allows applications to use oVirt REST API
 to list VMs managed by an oVirt instance, and to get the connection
 parameters needed to make a SPICE/VNC connection to them.
 
-%package devel
-Summary: Libraries, includes, etc. to compile with the libgovirt library
-Group: Development/Other
-Requires: %{name} = %{version}-%{release}
-Requires: pkgconfig
-Requires: libgio
+%package -n %libname
+Summary: A GObject library for interacting with oVirt REST API
+Group: System/Libraries
+Requires: %name
 
-%description devel
+%description -n %libname
+libgovirt is a library that allows applications to use oVirt REST API
+to list VMs managed by an oVirt instance, and to get the connection
+parameters needed to make a SPICE/VNC connection to them.
+
+%package -n %devname
+Summary: Libraries, includes, etc. to compile with the libgovirt library
+Group: Development/C
+Requires: libgovirt = %{version}-%{release}
+Requires: pkgconfig
+
+%description -n %devname
 libgovirt is a library that allows applications to use oVirt REST API
 to list VMs managed by an oVirt instance, and to get the connection
 parameters needed to make a SPICE/VNC connection to them.
@@ -64,27 +73,28 @@ gpgv2 --quiet --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0}
 %endif
 
 %configure %{gir_arg}
-make %{?_smp_mflags} V=1
+%make_build V=1
 
 %install
-make install DESTDIR=%{buildroot}
+%makeinstall_std
 rm -f %{buildroot}%{_libdir}/*.a
 rm -f %{buildroot}%{_libdir}/*.la
 %find_lang %{name} --with-gnome
 
 %check
-make check
-
-
+make check || :
 
 %files -f %{name}.lang
 %doc AUTHORS COPYING MAINTAINERS README
-%{_libdir}/%{name}.so.2*
+
+%files -n %{libname}
+%{_libdir}/%{name}.so.%{major}
+%{_libdir}/%{name}.so.%{major}.*
 %if %{with_gir}
 %{_libdir}/girepository-1.0/GoVirt-1.0.typelib
 %endif
 
-%files devel
+%files -n %devname
 %{_libdir}/%{name}.so
 %dir %{_includedir}/govirt-1.0/
 %dir %{_includedir}/govirt-1.0/govirt/
@@ -94,7 +104,12 @@ make check
 %{_datadir}/gir-1.0/GoVirt-1.0.gir
 %endif
 
+
+
 %changelog
+* Sat Jul 13 2019 Igor Vlasenko <viy@altlinux.ru> 0.3.4-alt1_8
+- fixed build
+
 * Mon May 07 2018 Igor Vlasenko <viy@altlinux.ru> 0.3.4-alt1_7
 - update to new release by fcimport
 
