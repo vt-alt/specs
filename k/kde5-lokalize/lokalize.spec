@@ -3,7 +3,7 @@
 %add_findreq_skiplist %_K5data/lokalize/scripts/*.py
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.08.2
 Release: alt1
 %K5init altplace
 
@@ -60,6 +60,9 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 
