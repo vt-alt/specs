@@ -1,6 +1,6 @@
 Name: gutenprint
 Version: 5.3.1
-Release: alt1
+Release: alt2
 Epoch: 1
 Summary: Gutenprint Printer Drivers
 Group: Publishing
@@ -73,6 +73,7 @@ Epson, HP and compatible printers.
 Summary: PPDs for CUPS drivers for Canon, Epson, HP and compatible printers
 Group: System/Configuration/Hardware
 Requires: %name-cups = %EVR
+BuildArch: noarch
 
 %description cups-ppds
 Gutenprint is a package of high quality printer drivers for Linux and
@@ -169,6 +170,9 @@ fi
 %_datadir/cups/model/Global
 
 %changelog
+* Thu Oct 31 2019 Lenar Shakirov <snejok@altlinux.ru> 1:5.3.1-alt2
+- Make gutenprint-cups-ppds noarch
+
 * Mon Dec 17 2018 Andrey Cherepanov <cas@altlinux.org> 1:5.3.1-alt1
 - New version.
 
