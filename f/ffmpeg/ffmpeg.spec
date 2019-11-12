@@ -28,15 +28,22 @@
 %def_enable bzlib
 %def_disable frei0r
 %def_enable gnutls
+%def_enable libaom
 %def_enable libass
 %def_enable libbluray
+%def_enable libbs2b
 %def_enable libcaca
 %def_enable libcdio
+# need libcelt >= 0.11.0
+%def_disable libcelt
 %def_enable libcodec2
 %def_enable libdc1394
+%def_enable libdrm
+%def_enable libflite
 %def_enable libfontconfig
 %def_enable libfreetype
 %def_enable libfribidi
+%def_enable libgme
 %def_enable libgsm
 %def_enable libjack
 %def_enable libmp3lame
@@ -47,12 +54,16 @@
 %def_enable libopus
 %def_enable libpulse
 %def_enable librsvg
+%def_enable librubberband
 %def_disable librtmp
+%def_enable libsnappy
 %def_enable libsoxr
+%def_enable libssh
 %def_enable libspeex
 %def_enable libtheora
 %def_enable libtwolame
 %def_enable libv4l2
+%def_enable libvidstab
 %def_enable libvorbis
 %def_enable libvpx
 %def_enable libwavpack
@@ -62,6 +73,7 @@
 %def_enable libxvid
 %def_enable libzmq
 %def_enable libzvbi
+%def_enable lv2
 %def_enable openal
 %def_enable opengl
 %def_enable vaapi
@@ -89,8 +101,8 @@
 
 Name:		ffmpeg
 Epoch:		2
-Version:	4.1.3
-Release:	alt2
+Version:	4.2.1
+Release:	alt1
 
 Summary:	A command line toolbox to manipulate, convert and stream multimedia content
 License:	GPLv3
@@ -98,10 +110,11 @@ Group:		Video
 
 Url:		http://ffmpeg.org
 
+# https://git.ffmpeg.org/ffmpeg.git
 Source:		%name-%version.tar
+Patch:		%name-%version-%release.patch
 BuildRequires:	libX11-devel libXext-devel libXvMC-devel libXfixes-devel
 BuildRequires:	libalsa-devel
-BuildRequires:	libbluray-devel libass-devel
 %ifarch %ix86 x86_64
 BuildRequires:	yasm
 %endif
@@ -111,15 +124,21 @@ BuildRequires:	yasm
 %{?_enable_bzlib:BuildRequires: bzlib-devel}
 %{?_enable_frei0r:BuildRequires: frei0r-devel}
 %{?_enable_gnutls:BuildRequires: libgnutls-devel}
+%{?_enable_libaom:BuildRequires: libaom-devel >= 1.0.0}
 %{?_enable_libass:BuildRequires: libass-devel}
 %{?_enable_libbluray:BuildRequires: libbluray-devel}
+%{?_enable_libbs2b:BuildRequires: libbs2b-devel}
 %{?_enable_libcaca:BuildRequires: libcaca-devel}
 %{?_enable_libcdio:BuildRequires: libcdio-devel libcdio-paranoia-devel}
+%{?_enable_libcelt:BuildRequires: libcelt-devel}
 %{?_enable_libcodec2:BuildRequires: libcodec2-devel}
 %{?_enable_libdc1394:BuildRequires: libdc1394-devel libraw1394-devel}
+%{?_enable_libdrm:BuildRequires: libdrm-devel}
 %{?_enable_libfreetype:BuildRequires: libfreetype-devel}
-%{?_enable_libfribidi:BuildRequires: fontconfig-devel}
+%{?_enable_libflite:BuildRequires: flite-devel}
+%{?_enable_libfontconfig:BuildRequires: fontconfig-devel}
 %{?_enable_libfribidi:BuildRequires: libfribidi-devel}
+%{?_enable_libgme:BuildRequires: libgme-devel}
 %{?_enable_libgsm:BuildRequires: libgsm-devel}
 %{?_enable_libjack:BuildRequires: libjack-devel}
 %{?_enable_libmp3lame:BuildRequires: liblame-devel}
@@ -129,12 +148,16 @@ BuildRequires:	yasm
 %{?_enable_libopus:BuildRequires: libopus-devel}
 %{?_enable_libpulse:BuildRequires: libpulseaudio-devel}
 %{?_enable_librsvg:BuildRequires: librsvg-devel}
+%{?_enable_librubberband:BuildRequires: librubberband-devel libstdc++-devel}
 %{?_enable_librtmp:BuildRequires: librtmp-devel}
+%{?_enable_libsnappy:BuildRequires: libsnappy-devel}
 %{?_enable_libsoxr:BuildRequires: libsoxr-devel}
+%{?_enable_libssh:BuildRequires: libssh-devel}
 %{?_enable_libspeex:BuildRequires: libspeex-devel}
 %{?_enable_libtheora:BuildRequires: libtheora-devel}
 %{?_enable_libtwolame:BuildRequires: libtwolame-devel}
 %{?_enable_libv4l2:BuildRequires: libv4l-devel}
+%{?_enable_libvidstab:BuildRequires: libvidstab-devel}
 %{?_enable_libvorbis:BuildRequires: libvorbis-devel}
 %{?_enable_libvpx:BuildRequires: libvpx-devel}
 %{?_enable_libwavpack:BuildRequires: libwavpack-devel}
@@ -144,13 +167,14 @@ BuildRequires:	yasm
 %{?_enable_libxvid:BuildRequires: libxvid-devel}
 %{?_enable_libzmq:BuildRequires: libzeromq-devel}
 %{?_enable_libzvbi:BuildRequires: libzvbi-devel}
+%{?_enable_lv2:BuildRequires: liblilv-devel lv2-devel}
 %{?_enable_openal:BuildRequires: libopenal-devel}
 %{?_enable_opengl:BuildRequires: libGL-devel}
 %{?_enable_vaapi:BuildRequires: libva-devel}
 %{?_enable_vdpau:BuildRequires: libvdpau-devel}
 
 %define common_descr \
-FFmpeg is a collection of libraries and tools to process multimedia content \
+FFmpeg is a collection of libraries and tools to process multimedia content\
 such as audio, video, subtitles and related metadata.
 
 %description
@@ -479,6 +503,7 @@ This package contains static development files for libswscale.
 
 %prep
 %setup
+%patch -p1
 
 %build
 xz Changelog
@@ -525,15 +550,21 @@ xz Changelog
 	%{subst_enable bzlib} \
 	%{subst_enable frei0r} \
 	%{subst_enable gnutls} \
+	%{subst_enable libaom} \
 	%{subst_enable libass} \
 	%{subst_enable libbluray} \
+	%{subst_enable libbs2b} \
 	%{subst_enable libcaca} \
 	%{subst_enable libcdio} \
+	%{subst_enable libcelt} \
 	%{subst_enable libcodec2} \
 	%{subst_enable libdc1394} \
+	%{subst_enable libdrm} \
+	%{subst_enable libflite} \
 	%{subst_enable libfontconfig} \
 	%{subst_enable libfreetype} \
 	%{subst_enable libfribidi} \
+	%{subst_enable libgme} \
 	%{subst_enable libgsm} \
 	%{subst_enable libjack} \
 	%{subst_enable libmp3lame} \
@@ -543,12 +574,16 @@ xz Changelog
 	%{subst_enable libopus} \
 	%{subst_enable libpulse} \
 	%{subst_enable librsvg} \
+	%{subst_enable librubberband} \
 	%{subst_enable librtmp} \
+	%{subst_enable libsnappy} \
 	%{subst_enable libsoxr} \
+	%{subst_enable libssh} \
 	%{subst_enable libspeex} \
 	%{subst_enable libtheora} \
 	%{subst_enable libtwolame} \
 	%{subst_enable libv4l2} \
+	%{subst_enable libvidstab} \
 	%{subst_enable libvorbis} \
 	%{subst_enable libvpx} \
 	%{subst_enable libwavpack} \
@@ -558,6 +593,7 @@ xz Changelog
 	%{subst_enable libxvid} \
 	%{subst_enable libzmq} \
 	%{subst_enable libzvbi} \
+	%{subst_enable lv2} \
 	%{subst_enable openal} \
 	%{subst_enable opengl} \
 	%{subst_enable vaapi} \
@@ -740,6 +776,26 @@ xz Changelog
 %endif
 
 %changelog
+* Wed Sep 11 2019 Anton Farygin <rider@altlinux.ru> 2:4.2.1-alt1
+- 4.2.1 (Fixes: CVE-2019-15942)
+
+* Sat Aug 10 2019 Anton Farygin <rider@altlinux.ru> 2:4.2-alt1
+- 4.1.4 -> 4.2
+
+* Wed Jul 31 2019 Nikita Ermakov <arei@altlinux.org> 2:4.1.4-alt2
+- NMU: Remove duplicates of libbluray-devel and libass-devel from BR.
+
+* Tue Jul 23 2019 Anton Farygin <rider@altlinux.ru> 2:4.1.4-alt1
+- 4.1.4 (fixes: CVE-2019-12730)
+
+* Sun May 26 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 2:4.1.3-alt3
+- Built with support of:
+  + libaom and HAP codecs;
+  + bs2b, flite, livl, rubberband and vidstab filters;
+  + Direct Rendering Manager;
+  + Game Music Emu format;
+  + SFTP protocol.
+
 * Fri Apr 19 2019 Michael Shigorin <mike@altlinux.org> 2:4.1.3-alt2
 - fixed doc knob (former docs one, renamed for consistency)
 
