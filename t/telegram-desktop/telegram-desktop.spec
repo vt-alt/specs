@@ -9,7 +9,7 @@
 %def_without libcxx
 
 Name: telegram-desktop
-Version: 1.8.4
+Version: 1.8.15
 Release: alt1
 
 Summary: Telegram is a messaging app with a focus on speed and security
@@ -21,10 +21,9 @@ Url: https://telegram.org/
 # Source-url: https://github.com/telegramdesktop/tdesktop/archive/v%version.tar.gz
 Source: %name-%version.tar
 
-Source2: CMakeLists.txt
-Source3: gen_source_list.sh
+Source2: %name-cmake-%version.tar
 
-Patch1: 0001_add-cmake.patch
+#Patch1: 0001_add-cmake.patch
 Patch3: 0003_qt-plugins.patch
 Patch5: 0005_Downgrade-Qt-version.patch
 Patch6: 0006_fix-static-qt-functions.patch
@@ -33,10 +32,12 @@ Patch15: 0015-disable-resource-fonts.patch
 Patch16: 0016-fix-lzma.patch
 #Patch17: 0017-ligsl-microsoft-fix.patch
 Patch18: 0018-fix-linking.patch
+Patch19: 0019-fix-add-ppc64-e2k-support.patch
 
-# ix86 disabled due to memory limits for linker
-#ExclusiveArch: %ix86 x86_64
-ExclusiveArch: aarch64 x86_64
+# ix86 disabled due to memory limits:
+# /usr/bin/ld.default: error: CMakeFiles/Telegram.dir/generated/scheme.cpp.o(.eh_frame) is too large (0xdddd8 bytes)
+# /usr/bin/ld.default: error in CMakeFiles/Telegram.dir/generated/scheme.cpp.o(.eh_frame); no .eh_frame_hdr table will be created
+ExcludeArch: %ix86
 
 BuildRequires(pre): rpm-build-licenses rpm-macros-qt5 rpm-macros-cmake
 BuildRequires(pre): rpm-macros-kde-common-devel
@@ -46,7 +47,12 @@ BuildRequires(pre): rpm-build-intro >= 2.1.5
 # use no more than system_memory/3000 build procs (see https://bugzilla.altlinux.org/show_bug.cgi?id=35112)
 %_tune_parallel_build_by_procsize 3000
 
-BuildRequires: gcc-c++ libstdc++-devel gyp
+# https://www.altlinux.org/RPM/debuginfo
+#undefine _enable_debug
+#global __find_debuginfo_files %nil
+%define optflags_debug -g0
+
+BuildRequires: gcc-c++ libstdc++-devel gyp python3
 
 # cmake 3.13 due to add_compiler_definitions
 BuildRequires: cmake >= 3.13
@@ -93,7 +99,7 @@ BuildRequires: liblz4-devel
 # C++ sugar
 BuildRequires: libmicrosoft-gsl-devel >= 20180615
 BuildRequires: libvariant-devel
-BuildRequires: librange-v3-devel >= 0.5.0
+BuildRequires: librange-v3-devel >= 0.9.1
 
 # FIXME: libva need only for linking, extra deps?
 
@@ -142,8 +148,8 @@ or business messaging needs.
 
 
 %prep
-%setup
-%patch1 -p1
+%setup -a2
+#patch1 -p1
 %patch3 -p1
 #patch5 -p1
 %patch6 -p1
@@ -151,15 +157,17 @@ or business messaging needs.
 %patch15 -p1
 #patch17 -p2
 %patch18 -p2
+%patch19 -p2
 
-cp %SOURCE2 Telegram/
-cp %SOURCE3 .
-./gen_source_list.sh
+# some hack with precompiled headers (cmake TODO)
+cat Telegram/SourceFiles/mtproto/mtp_pch.h >>Telegram/SourceFiles/stdafx.h
+
+./Telegram/gen_source_list.sh
+
 # MacOS things will conflicts with binary name, so delete Telegram dir
 rm -rf Telegram/Telegram/
 # remove fonts from resources
 rm -rf Telegram/Resources/fonts/
-%__subst "s|.*fonts/OpenSans.*||" Telegram/Resources/qrc/telegram.qrc
 
 %build
 %if_with ffmpeg_static
@@ -170,14 +178,18 @@ cd Telegram
 export CC=clang
 export CXX=clang++
 %endif
+# due precompiled headers
+export CCACHE_SLOPPINESS=pch_defines,time_macros
+cd SourceFiles/codegen
+%cmake_insource
+%make_build
+cd -
 %cmake_insource \
 %if_with libcxx
     -DLLVM_ENABLE_LIBCXX=ON
 %else
     %nil
 %endif
-# due precompiled headers
-export CCACHE_SLOPPINESS=pch_defines,time_macros
 %make_build
 
 %install
@@ -211,6 +223,21 @@ ln -s %name %buildroot%_bindir/telegram
 %doc README.md
 
 %changelog
+* Tue Oct 08 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.15-alt1
+- new version 1.8.15 (with rpmrb script)
+- build codegen separately
+- disable debug due memory usage overhead
+- enable ppc64le build
+
+* Thu Oct 03 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.12-alt1
+- new version 1.8.12 (with rpmrb script)
+
+* Sat Sep 28 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.9-alt1
+- new version 1.8.9 (with rpmrb script)
+
+* Wed Sep 11 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.8-alt1
+- new version 1.8.8 (with rpmrb script)
+
 * Fri Sep 06 2019 Vitaly Lipatov <lav@altlinux.ru> 1.8.4-alt1
 - new version (1.8.4) with rpmgs script
 
