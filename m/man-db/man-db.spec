@@ -1,9 +1,7 @@
-%global cache /var/cache/man
-
 Summary: Tools for searching and reading man pages
 Name: man-db
-Version: 2.7.6.1
-Release: alt4.1
+Version: 2.8.5
+Release: alt2
 # GPLv2+ .. man-db
 # GPLv3+ .. gnulib
 License: GPLv2+ and GPLv3+
@@ -17,10 +15,12 @@ Source1: man-db.crondaily
 Source2: man-db.sysconfig
 Source3: man-db.filetrigger
 
-Patch0: man-db-2.7.6.1-change-owner-of-man-cache.patch
+Patch0: man-db-2.8.5-change-owner-of-man-cache.patch
 
 # http://lists.nongnu.org/archive/html/man-db-devel/2017-01/msg00013.html
 Patch1: man-db-2.7.6.1-fix-override-dir-handling.patch
+
+Patch2: man-db-2.7.6.1-e2k-mcst-path.patch
 
 Obsoletes: man < 2.0
 Obsoletes: man-whatis < 2.0
@@ -66,19 +66,30 @@ BuildArch: noarch
 %description cron
 This package provides periodic update of man-db cache.
 
+%global cache /var/cache/man
+%define _unpackaged_files_terminate_build 1
+
 %prep
 %setup
 
 %patch0 -p1
 %patch1 -p1
+%ifarch %e2k
+%patch2 -p1
+%endif
 
 %build
+%autoreconf -f
+
 %configure \
+    --with-systemdtmpfilesdir=%_tmpfilesdir \
+    --with-systemdsystemunitdir=no \
     --with-sections="1 1p 8 2 3 3p 4 5 6 7 9 0p n l p o 1x 2x 3x 4x 5x 6x 7x 8x" \
     --disable-setuid \
     --enable-cache-owner=root \
     --with-browser=elinks \
     --with-lzip=lzip \
+    --with-xz=xz \
     --with-override-dir=overrides
 
 %make CC="%__cc %optflags" %{?_smp_mflags} V=1
@@ -116,13 +127,16 @@ install -D -p -m 0644 %SOURCE2 %buildroot%_sysconfdir/sysconfig/man-db
 mkdir -p %buildroot%_rpmlibdir
 install -D -p -m 0755 %SOURCE3 %buildroot%_rpmlibdir/man-db.filetrigger
 
-# config for tmpfiles.d
-install -D -p -m 0644 init/systemd/man-db.conf %buildroot/usr/lib/tmpfiles.d/.
+(
+    cd %buildroot
+    find .%_datadir/man -mindepth 1 -maxdepth 1 ! -name 'man*' -printf '%%%%lang(%%f) %%p/man*/*\n' |
+        sed -e 's, \./, /,'
+) > %name.files
 
 %find_lang %name
 %find_lang %name-gnulib
 
-cat %name.lang %name-gnulib.lang > %name.files
+cat %name.lang %name-gnulib.lang >> %name.files
 
 # clear the old cache
 %post
@@ -131,35 +145,33 @@ cat %name.lang %name-gnulib.lang > %name.files
 %files -f %name.files
 %doc README NEWS docs/COPYING
 %config(noreplace) %_sysconfdir/man_db.conf
-%config(noreplace) /usr/lib/tmpfiles.d/man-db.conf
+%config(noreplace) %_tmpfilesdir/man-db.conf
 %_sbindir/*
 %_bindir/*
 %_libdir/man-db
 %_libexecdir/man-db
 %_rpmlibdir/man-db.filetrigger
 %attr(2755,root,man) %verify(not mtime) %dir %cache
-# documentation and translation
 %_man1dir/*.1*
 %_man5dir/*.5*
 %_man8dir/*.8*
-%lang(da)    %_datadir/man/da/man*/*
-%lang(de)    %_datadir/man/de/man*/*
-%lang(es)    %_datadir/man/es/man*/*
-%lang(fr)    %_datadir/man/fr/man*/*
-%lang(id)    %_datadir/man/id/man*/*
-%lang(it)    %_datadir/man/it/man*/*
-%lang(ja)    %_datadir/man/ja/man*/*
-%lang(nl)    %_datadir/man/nl/man*/*
-%lang(pl)    %_datadir/man/pl/man*/*
-%lang(ru)    %_datadir/man/ru/man*/*
-%lang(sv)    %_datadir/man/sv/man*/*
-%lang(zh_CN) %_datadir/man/zh_CN/man*/*
 
 %files cron
 %config(noreplace) %_sysconfdir/cron.daily/man-db.cron
 %config(noreplace) %_sysconfdir/sysconfig/man-db
 
 %changelog
+* Thu Jul 11 2019 Alexey Gladkov <legion@altlinux.ru> 2.8.5-alt2
+- Return patch for e2k.
+
+* Sat Jun 29 2019 Alexey Gladkov <legion@altlinux.ru> 2.8.5-alt1
+- New version (2.8.5)
+- Switch to release tarballs.
+- Use %%_tmpfilesdir.
+
+* Fri Jun 21 2019 Andrey Savchenko <bircoph@altlinux.org> 2.7.6.1-alt5
+- Add MCST-specific man path on e2k
+
 * Thu May 04 2017 Igor Vlasenko <viy@altlinux.ru> 2.7.6.1-alt4.1
 - NMU: added Provides: man-whatis
 
@@ -235,7 +247,7 @@ cat %name.lang %name-gnulib.lang > %name.files
 
 * Tue May 12 2015 Colin Walters <walters@redhat.com> - 2.7.1-5
 - Test for /run/systemd to detect systemd state rather than invoking
-  rpm in % pre - it is not really supported by rpm.
+  rpm in %%pre - it is not really supported by rpm.
 
 * Sat Feb 21 2015 Till Maas <opensource@till.name> - 2.7.1-4
 - Rebuilt for Fedora 23 Change
