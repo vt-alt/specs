@@ -5,7 +5,7 @@
 %def_with check
 
 Name: certmonger
-Version: 0.79.7
+Version: 0.79.8
 Release: alt2
 Summary: Certificate status monitor and PKI enrollment client
 
@@ -36,7 +36,7 @@ BuildRequires: dbus-tools-gui
 BuildRequires: dos2unix
 BuildRequires: nss-utils
 BuildRequires: openssl
-BuildRequires: python-module-dbus
+BuildRequires: python3(dbus)
 %endif
 
 Requires: dbus
@@ -158,6 +158,13 @@ getcert refresh-ca -a >/dev/null 2>&1 || help
 %_man8dir/certmonger.8.*
 
 %changelog
+* Wed Nov 06 2019 Stanislav Levin <slev@altlinux.org> 0.79.8-alt2
+- Added workaround for half-migrated NSS db (NSS_INIT_NOMODDB).
+- Migrated tests to Python3.
+
+* Wed Aug 14 2019 Stanislav Levin <slev@altlinux.org> 0.79.8-alt1
+- 0.79.7 -> 0.79.8.
+
 * Tue Apr 23 2019 Stanislav Levin <slev@altlinux.org> 0.79.7-alt2
 - Fixed upgrade 0.78->0.79.
 
