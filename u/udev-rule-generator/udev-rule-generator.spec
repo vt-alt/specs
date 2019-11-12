@@ -1,6 +1,6 @@
 Name: udev-rule-generator
 Epoch: 2
-Version: 1.2
+Version: 1.3
 Release: alt1
 Summary: Common package for udev rule generator
 Url: https://packages.altlinux.org/en/Sisyphus/srpms/%name
@@ -92,6 +92,9 @@ ln -s /dev/null %buildroot%_sysconfdir/udev/rules.d/80-net-setup-link.rules
 
 
 %changelog
+* Wed Sep 25 2019 Anton Midyukov <antohami@altlinux.org> 2:1.3-alt1
+- run udevd-final before raising the network
+
 * Thu Aug 29 2019 Sergey Y. Afonin <asy@altlinux.org> 2:1.2-alt1
 - returned "eth" by default in write_net_rules (problems with
   the "ether" name detected in some applications)
