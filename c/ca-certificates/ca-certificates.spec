@@ -1,9 +1,9 @@
 Name: ca-certificates
-Version: 2019.03.31
+Version: 2019.10.28
 Release: alt1
 
 Summary: Common CA Certificates
-License: MPL
+License: MPL-2.0
 Group: System/Base
 BuildArch: noarch
 
@@ -11,7 +11,12 @@ Source0: mozilla.tar
 Source1: ca-bundle.trust.p11-kit
 
 BuildRequires: openssl
-BuildRequires: python-modules
+BuildRequires: python3(base64)
+BuildRequires: python3(os)
+BuildRequires: python3(re)
+BuildRequires: python3(textwrap)
+BuildRequires: python3(urllib)
+BuildRequires: python3(subprocess)
 
 Requires: ca-trust
 
@@ -31,7 +36,7 @@ user.
 %build
 export TZ=UTC
 pushd mozilla
-	./certdata2pem.py >c2p.log 2>c2p.err
+	python3 ./certdata2pem.py >c2p.log 2>c2p.err
 popd
 cat %SOURCE1 mozilla/*.tmp-p11-kit > ca-bundle.trust.p11-kit
 
@@ -43,6 +48,17 @@ install -pD -m 644 ca-bundle.trust.p11-kit \
 %_datadir/pki/ca-trust-source/ca-bundle.trust.p11-kit
 
 %changelog
+* Mon Oct 28 2019 Alexey Gladkov <legion@altlinux.ru> 2019.10.28-alt1
+- mozilla: sync with nss-3.47.
+- update license tag.
+- port certdata2pem.py to python3.
+
+* Tue Sep 10 2019 Alexey Gladkov <legion@altlinux.ru> 2019.09.10-alt1
+- mozilla: sync with nss-3.46.
+
+* Thu Jul 11 2019 Alexey Gladkov <legion@altlinux.ru> 2019.07.11-alt1
+- mozilla: sync with nss-3.45.
+
 * Sun Mar 31 2019 Alexey Gladkov <legion@altlinux.ru> 2019.03.31-alt1
 - mozilla: sync with nss-3.43.
 
