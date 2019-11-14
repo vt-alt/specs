@@ -7,7 +7,7 @@
 %set_verify_elf_method unresolved=relaxed
 
 Name: wireshark
-Version: 3.0.1
+Version: 3.0.6
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -23,8 +23,8 @@ Patch: %name-%version-alt.patch
 
 # Automatically added by buildreq on Sun Dec 23 2007
 BuildRequires: control doxygen flex gcc-c++ libadns-devel libcap-devel libcom_err-devel libgnutls-openssl-devel libgcrypt-devel zlib-devel
-BuildRequires: libkrb5-devel libpcap-devel libpcre-devel libportaudio2-devel libssl-devel python unzip xml-utils xsltproc perl-Pod-Parser perl-devel
-BuildRequires: liblua5-devel < 5.3
+BuildRequires: libkrb5-devel libpcap-devel libpcre-devel libportaudio2-devel libssl-devel python3 unzip xml-utils xsltproc perl-Pod-Parser perl-devel
+BuildRequires: liblua5.1-devel
 BuildRequires: libssh-devel
 BuildRequires: libnl-devel
 %if_with nghttp2
@@ -218,6 +218,27 @@ _EOF_
 
 
 %changelog
+* Sun Nov 10 2019 Anton Farygin <rider@altlinux.ru> 3.0.6-alt1
+- 3.0.6
+
+* Tue Oct 01 2019 Anton Farygin <rider@altlinux.ru> 3.0.5-alt1
+- 3.0.5
+
+* Mon Sep 16 2019 Anton Farygin <rider@altlinux.ru> 3.0.4-alt1
+- 3.0.4
+- fixes:
+    * Gryphon dissector infinite loop. CVE-2019-16319
+
+* Mon Jul 22 2019 Anton Farygin <rider@altlinux.ru> 3.0.3-alt1
+- 3.0.3
+- fixes:
+    * ASN.1 BER and related dissectors crash. CVE-2019-13619
+
+* Fri May 31 2019 Anton Farygin <rider@altlinux.ru> 3.0.2-alt1
+- 3.0.2
+- fixes:
+    * Wireshark dissection engine crash. CVE-2019-12295
+
 * Wed Apr 10 2019 Anton Farygin <rider@altlinux.ru> 3.0.1-alt1
 - 3.0.1
 - fixes:
