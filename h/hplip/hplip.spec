@@ -4,7 +4,7 @@
 %def_enable autostart
 %def_enable PPDs
 %def_enable python_code
-%def_without python3
+%def_with python3
 %def_disable foomatic_rip
 %def_disable qt3
 %def_disable qt4
@@ -26,11 +26,13 @@
 %define pysuffix %nil
 %endif
 
-Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
-Name: hplip
-Epoch: 1
-Version: 3.19.8
+Name:    hplip
+Version: 3.19.11
 Release: alt1
+Epoch:   1
+
+Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
+
 %if_without ernie
 License: GPLv2+ and MIT and BSD
 %else
@@ -41,6 +43,11 @@ Group: Publishing
 #URL: http://hplipopensource.com/ -- old
 URL: https://developers.hp.com/hp-linux-imaging-and-printing
 Packager: Andrey Cherepanov <cas@altlinux.org>
+
+# Remove self-satisfied requires
+%if_with python3
+%filter_from_requires /^python3(\(base.*\|installer.*\|prnt\|scan\|copier\))/d
+%endif
 
 %define hpijsname hpijs
 
@@ -76,7 +83,10 @@ BuildRequires(pre): rpm-build-python3
 %add_python_lib_path %_datadir/%name
 %endif
 # Andy Kuleshov report
-Requires: python%{pysuffix}-module-dbus python%{pysuffix}-modules-ctypes
+Requires: python%{pysuffix}-module-dbus
+%if_without python3
+Requires: python-modules-ctypes
+%endif
 %endif
 
 Requires: service => 0.5.9-alt1
@@ -186,6 +196,18 @@ Patch131: hplip-use-binary-str.patch
 Patch132: hplip-colorlaserjet-mfp-m278-m281.patch
 Patch133: hplip-error-print.patch
 Patch134: hplip-hpfax-importerror-print.patch
+Patch135: hplip-wifisetup.patch
+Patch137: hplip-keyserver.patch
+Patch142: hplip-add-ppd-crash.patch
+Patch143: hplip-missing-links.patch
+Patch144: hplip-hplj-3052.patch
+Patch145: hplip-hpmud-string-parse.patch
+Patch146: hplip-m278-m281-needs-plugin.patch
+Patch147: hplip-hpcups-crash.patch
+Patch148: hplip-covscan.patch
+Patch149: hplip-logging-segfault.patch
+Patch150: hplip-systray-blockerror.patch
+Patch152: hplip-missing-drivers.patch
 # end fedora patches
 
 # ubuntu patches
@@ -270,7 +292,7 @@ Requires: dbus-tools-gui
 # for python-notify
 # Requires: notification-daemon
 # for hp-scan -n
-Requires: python%{pysuffix}-module-imaging
+Requires: python%{pysuffix}-module-Pillow
 # from fedora 3.10.9-9 patch 33 (= 133)
 # Enable D-Bus threading (and require pygobject2) (bug #600932).
 # patch33 -p1 -b .dbus-threads
@@ -493,22 +515,11 @@ find . -name *.ppd.gz -exec gunzip '{}' ';'
 %endif
 %patch9 -p2
 
-# The pstotiff filter is rubbish so replace it (launchpad #528394).
 %patch101 -p1 -b .pstotiff-is-rubbish
-
-# Fix compilation.
 %patch102 -p1 -b .strstr-const
-
-# Make utils.checkPyQtImport() look for the gui sub-package (bug #243273).
 %patch103 -p1 -b .ui-optional
-
-# Make sure to avoid handwritten asm.
 %patch104 -p1 -b .no-asm
-
-# Corrected several IEEE 1284 Device IDs using foomatic data.
-# Color LaserJet 2500 series (bug #659040)
-# LaserJet 4100 Series/2100 Series (bug #659039)
-%patch105 -p2 -b .deviceIDs-drv
+%patch105 -p1 -b .deviceIDs-drv
 chmod +x %{SOURCE102} %{SOURCE103}
 mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
 %if_with python3
@@ -520,86 +531,51 @@ mv prnt/drv/hpijs.drv.in{,.deviceIDs-drv-hpijs}
        prnt/drv/hpijs.drv.in.deviceIDs-drv-hpijs \
        > prnt/drv/hpijs.drv.in
 
-# Move udev rules from /etc/ to /usr/lib/ (bug #748208).
 %patch106 -p1 -b .udev-rules
-
-# Retry when connecting to device fails (bug #532112).
 %patch107 -p1 -b .retry-open
-
-# Mark SNMP quirks in PPD for HP OfficeJet Pro 8500 (bug #581825).
 %patch108 -p1 -b .snmp-quirks
-
-# Fixed bogus low ink warnings from hpijs driver (bug #643643).
 %patch109 -p1 -b .hpijs-marker-supply
-
-# Clear old printer-state-reasons we used to manage (bug #510926).
 %patch110 -p1 -b .clear-old-state-reasons
-
-# Avoid busy loop in hpcups when backend has exited (bug #525944).
 %patch111 -p1 -b .hpcups-sigpipe
-
-# Fixed Device ID parsing code in hpijs's dj9xxvip.c (bug #510926).
 %patch113 -p1 -b .bad-low-ink-warning
-
-# Add Device ID for
-# HP LaserJet Color M451dn (bug #1159380)
 %patch114 -p1 -b .deviceIDs-ppd
-
-# Fix ImageableArea for Laserjet 8150/9000 (bug #596298).
 %patch115 -p1 -b .ImageableArea
-
-# Scan to /var/tmp instead of /tmp (bug #1076954).
 %patch116 -p1 -b .scan-tmp
-
-# Treat logging before importing of logger module (bug #984699).
 %patch117 -p1 -b .log-stderr
-
-# Fix parsing of avahi-daemon output (bug #1096939).
 %patch118 -p1 -b .parsing
-
-# Fixed left/right margins for HP DeskJet 990C (LP #1405212).
 %patch120 -p1 -b .dj990c-margin
-
-# Fixed uses of strncpy throughout.
 %patch121 -p1 -b .strncpy
-
-# Don't try to write bytecode cache for hpfax backend (bug #1192761)
-# or hp-config_usb_printer (bug #1266903)
-# or hpps filter (bug #1241548).
 %patch122 -p1 -b .no-write-bytecode
-
-# Ignore IOError when logging output (bug #712537).
 %patch123 -p1 -b .silence-ioerror
- 
-# [abrt] hplip: hp-scan:663:<module>:NameError: name 'source_option' is not defined (bug #1341304)
 %patch124 -p1 -b .sourceoption
-
 %if_without ernie
-# hplip license problem (bug #1364711)
 %patch125 -p1 -b .no-ernie
 rm prnt/hpcups/ErnieFilter.{cpp,h} prnt/hpijs/ernieplatform.h
 %endif
-
-# hplip appdata
 #patch126 -p1 -b .appdata
-
-# hp-check shows 'CUPS incompatible or not running' even if CUPS is running (bug #1456467)
 %patch127 -p1 -b .check-cups
- 
-# hp-firmware:NameError: name 'INTERACTIVE_MODE4' is not defined (bug #1533869)
 %patch130 -p1 -b .typo
-
 %patch131 -p1 -b .use-binary-str
 %patch132 -p1 -b .colorlaserjet-mfp-m278-m281
-
 %patch133 -p1 -b .error-print-fix
 %patch134 -p1 -b .hpfax-import-error-print
+%patch135 -p1 -b .wifisetup-bad-call-fix
+%patch137 -p1 -b .keyserver
+%patch142 -p1 -b .add-ppd-crash
+%patch143 -p1 -b .missing-links
+%patch144 -p1 -b .hp-laserjet-3052-broken-scanning
+%patch145 -p1 -b .hpmud-string-parse
+%patch146 -p1 -b .m278-m281-needs-plugin
+%patch147 -p1 -b .hpcups-crash
+%patch148 -p1 -b .covscan
+%patch149 -p1 -b .logging-segfault
+%patch150 -p1 -b .systray-blockerror
+%patch152 -p1 -b .missing-drivers
 
 # from fedora 3.9.12-3/3.10.9-9
 sed -i.duplex-constraints \
     -e 's,\(UIConstraints.* \*Duplex\),//\1,' \
     prnt/drv/hpcups.drv.in
-
 
 %patch201 -p1 -b .download-plugin
 
@@ -633,7 +609,6 @@ sed -i.duplex-constraints \
 %patch329 -p1
 
 # Conflicted patches
-# CUPS filters should use TMPDIR when available (bug #865603).
 %patch112 -p1 -b .logdir
 
 tar -xf %SOURCE6
@@ -995,7 +970,7 @@ fi
 %{_unitdir}/hplip-printer@.service
 %endif
 %if_with python3
-%{_datadir}/hplip/__pycache__/check-plugin.*
+#{_datadir}/hplip/__pycache__/check-plugin.*
 %dir %{_datadir}/hplip/__pycache__
 %endif
 # global dbus service
@@ -1172,6 +1147,27 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Wed Nov 06 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.11-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP Color LaserJet MFP M776dn
+  + HP Color LaserJet Flow MFP M776z
+  + HP Color LaserJet Flow MFP M776zs
+  + HP Color LaserJet M856dn
+  + HP Color LaserJet M856x
+  + HP Color LaserJet E85055dn
+
+* Thu Oct 31 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.10-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP Color LaserJet MFP M776dn
+  + HP Color LaserJet Flow MFP M776z
+  + HP Color LaserJet Flow MFP M776zs
+  + HP Color LaserJet M856dn
+  + HP Color LaserJet M856x
+  + HP Color LaserJet E85055dn
+- Build with Python3 (ALT #37289).
+
 * Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.8-alt1
 - New version.
 - Added support for new printers:

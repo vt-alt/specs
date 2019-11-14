@@ -1,8 +1,8 @@
-%define utsushi_version 0.59.2
+%define utsushi_version 0.61.0
 
 Name:     imagescan
-Version:  3.59.2
-Release:  alt2
+Version:  3.61.0
+Release:  alt1
 
 Summary:  EPSON Image Scan v3 front-end for scanners and all-in-ones
 License:  GPLv3
@@ -86,7 +86,7 @@ line option.
     --with-sane \
     --with-tiff
  
-%make_build CXXFLAGS="-Wno-error=parentheses -I../.." LDFLAGS="-lpthread"
+%make_build CXXFLAGS="-Wno-error=parentheses -Wno-error=deprecated-declarations -I../.." LDFLAGS="-lpthread"
 
 %install
 %makeinstall_std
@@ -133,6 +133,9 @@ chmod +x %buildroot%_bindir/imagescan
 %_datadir/utsushi/drivers
 
 %changelog
+* Tue Nov 05 2019 Andrey Cherepanov <cas@altlinux.org> 3.61.0-alt1
+- New version.
+
 * Thu Sep 05 2019 Andrey Cherepanov <cas@altlinux.org> 3.59.2-alt2
 - Comment example entries in config file.
 

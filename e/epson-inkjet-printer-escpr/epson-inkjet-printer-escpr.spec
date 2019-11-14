@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.7.2
+%define ver     1.7.5
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -85,6 +85,22 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Wed Nov 06 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.5-alt1
+- New version.
+- Supported new models:
+  + Epson M2110 Series
+  + Epson M2120 Series
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.4-alt1
+- New version.
+- Supported new models:
+  + Epson EP-M552T Series
+
+* Wed Sep 04 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.3-alt1
+- New version.
+- Supported new models:
+  + Epson WF-2810 Series
+
 * Fri Aug 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.2-alt1
 - New version.
 - Supported new models:
