@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.3
-%define kernel_sublevel .8
+%define kernel_sublevel .10
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -112,11 +112,8 @@ Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
 Provides:  kernel-modules-alsa = %version-%release
-
-%ifarch aarch64
 Provides: kernel-modules-kvm-%flavour = %version-%release
 Provides: kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
-%endif
 
 %if_enabled docs
 BuildRequires: python3-module-sphinx /usr/bin/sphinx-build perl-Pod-Usage python3-module-sphinx_rtd_theme
@@ -269,22 +266,6 @@ still useful for some hardware, if the corresponding PATA drivers do
 not work well.
 
 Install this package only if you really need it.
-
-%package -n kernel-modules-kvm-%flavour
-Summary: Linux KVM (Kernel Virtual Machine) modules
-Group: System/Kernel and hardware
-Provides:  kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
-Conflicts: kernel-modules-kvm-%kversion-%flavour-%krelease < %version-%release
-Conflicts: kernel-modules-kvm-%kversion-%flavour-%krelease > %version-%release
-Prereq: coreutils
-Prereq: module-init-tools >= 3.1
-Prereq: %name = %epoch:%version-%release
-Requires(postun): %name = %epoch:%version-%release
-
-%description -n kernel-modules-kvm-%flavour
-Linux kernel module for Kernel Virtual Machine virtualization
-environment.
-
 
 %package -n kernel-modules-v4l-%flavour
 Summary: Video4Linux driver modules (obsolete)
@@ -633,7 +614,6 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/kernel/drivers/gpu/drm
 %ifnarch aarch64
 %exclude %modules_dir/kernel/drivers/ide/
-%exclude %modules_dir/kernel/%kvm_modules_dir
 %endif
 %ghost %modules_dir/modules.alias.bin
 %ghost %modules_dir/modules.dep.bin
@@ -688,9 +668,6 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-ide-%flavour
 %modules_dir/kernel/drivers/ide/
-
-%files -n kernel-modules-kvm-%flavour
-%modules_dir/kernel/%kvm_modules_dir
 %endif
 
 %files -n kernel-modules-drm-nouveau-%flavour
@@ -706,6 +683,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Sun Nov 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.10-alt1
+- v5.3.10
+
+* Thu Nov 07 2019 Vitaly Chikunov <vt@altlinux.org> 1:5.3.8-alt2
+- Merge kernel-modules-kvm into kernel-image.
+
 * Tue Oct 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.8-alt1
 - v5.3.8
 
