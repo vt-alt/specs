@@ -2,8 +2,8 @@
 %global _localstatedir %_var
 
 Name: cups-filters
-Version: 1.22.5
-Release: alt1
+Version: 1.25.11
+Release: alt2
 
 Summary: OpenPrinting CUPS filters and backends
 # For a breakdown of the licensing, see COPYING file
@@ -20,11 +20,10 @@ Url: http://www.linuxfoundation.org/collaborate/workgroups/openprinting/pdf_as_s
 Source0: http://www.openprinting.org/download/cups-filters/cups-filters-%version.tar
 Source1: %name.watch
 Source2: cups-browsed.init
+Source3: default-testpage.pdf
 Patch0: %name-alt.patch
-Patch2: %name-braille-indexv4-path.patch
-Patch3: %name-pjl-as-ps.patch
-Patch4: %name-1.22.0-pftoopvp-gcc8.patch
-Patch5: %name-1.22.0-poppler-0.74.patch
+Patch1: %name-braille-indexv4-path.patch
+Patch2: %name-pjl-as-ps.patch
 
 Conflicts: cups < 1.6.1-alt1
 Conflicts: ghostscript-cups
@@ -56,6 +55,8 @@ BuildRequires: fontconfig-devel
 BuildRequires: liblcms2-devel
 BuildRequires: libgio-devel
 BuildRequires: libavahi-devel libavahi-glib-devel
+# for tests
+BuildRequires: fonts-ttf-dejavu
 
 # Make sure we get postscriptdriver tags.
 BuildRequires: python-module-cups
@@ -102,13 +103,10 @@ serial backend for cups
 %prep
 %setup
 %patch0 -p2
+%patch1 -p2
 %patch2 -p2
-%patch3 -p2
-%patch4 -p2
-%patch5 -p2
 
 %build
-# work-around Rpath
 ./autogen.sh
 
 # --with-pdftops=pdftops - use Poppler instead of Ghostscript (see README)
@@ -118,14 +116,18 @@ serial backend for cups
 	   --without-php \
 	   --with-rcdir=no \
 	   --enable-driverless \
+	   --enable-pclm \
 	   --enable-auto-setup-driverless \
 	   --with-gs-path=/usr/bin/gs \
 	   --enable-opvp \
 	   --enable-dbus \
+	   --with-test-font-path=/usr/share/fonts/ttf/dejavu/DejaVuSans.ttf \
 	   --with-pdftops=hybrid
 
 %make
 
+%check
+make check
 
 %install
 %make install DESTDIR=%buildroot
@@ -134,13 +136,13 @@ mkdir -p %buildroot/%_unitdir/
 install -m 644 utils/cups-browsed.service %buildroot/%_unitdir/
 ln -sf ../lib/cups/filter/foomatic-rip %buildroot/%_bindir/foomatic-rip
 rm -rf %buildroot%_docdir/%name
+install -D -m 644 %SOURCE3 %buildroot/%_datadir/cups/data/
 
 
 %files
 %doc README AUTHORS NEWS
 %config(noreplace) %_sysconfdir/cups/cups-browsed.conf
 %config(noreplace) %_initdir/cups-browsed
-%_sysconfdir/fonts/conf.d/*.conf
 %attr(0755,root,root) %_cups_serverbin/filter/*
 %attr(0755,root,root) %_cups_serverbin/driver/*
 %attr(0755,root,root) %_cups_serverbin/backend/parallel
@@ -189,6 +191,42 @@ rm -rf %buildroot%_docdir/%name
 %_libdir/libfontembed.so
 
 %changelog
+* Mon Oct 28 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.25.11-alt2
+- new default testpage
+
+* Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 1.25.11-alt1
+- new version 1.25.11
+
+* Wed Sep 25 2019 Anton Farygin <rider@altlinux.ru> 1.25.6-alt1
+- new version 1.25.6
+
+* Tue Sep 10 2019 Anton Farygin <rider@altlinux.ru> 1.25.5-alt1
+- new version 1.25.5
+- enabled tests
+- built with pclm support
+
+* Tue Sep 03 2019 Anton Farygin <rider@altlinux.ru> 1.25.4-alt2
+- fixed build with qpdf-9.0.0
+- cleanup patches
+
+* Sun Sep 01 2019 Anton Farygin <rider@altlinux.ru> 1.25.4-alt1
+- new version 1.25.4
+
+* Fri Aug 23 2019 Anton Farygin <rider@altlinux.ru> 1.25.3-alt1
+- new version 1.25.3
+
+* Sun Aug 18 2019 Anton Farygin <rider@altlinux.ru> 1.25.2-alt1
+- new version 1.25.2
+
+* Wed Jul 24 2019 Anton Farygin <rider@altlinux.ru> 1.25.1-alt1
+- new version 1.25.1
+
+* Sun Jun 09 2019 Anton Farygin <rider@altlinux.ru> 1.25.0-alt1
+- new version 1.25.0
+
+* Wed Jun 05 2019 Anton Farygin <rider@altlinux.ru> 1.24.0-alt1
+- new version 1.24.0
+
 * Tue Apr 09 2019 Anton Farygin <rider@altlinux.ru> 1.22.5-alt1
 - new version 1.22.5
 
@@ -279,57 +317,57 @@ rm -rf %buildroot%_docdir/%name
 * Mon Oct 09 2017 Anton Farygin <rider@altlinux.ru> 1.17.9-alt1
 - new version 1.17.9
 
-* Sat Oct 07 2017 Michael Shigorin <mike@altlinux.org> 1.17.8-alt2%ubt
+* Sat Oct 07 2017 Michael Shigorin <mike@altlinux.org> 1.17.8-alt2
 - introduced php knob (on by default)
 
-* Mon Oct 02 2017 Anton Farygin <rider@altlinux.ru> 1.17.8-alt1%ubt
+* Mon Oct 02 2017 Anton Farygin <rider@altlinux.ru> 1.17.8-alt1
 - new version 1.17.8
 
-* Mon Sep 18 2017 Anton Farygin <rider@altlinux.ru> 1.17.7-alt1%ubt
+* Mon Sep 18 2017 Anton Farygin <rider@altlinux.ru> 1.17.7-alt1
 - new version 1.17.7
 - build with ldap
 - enabled auto-setup for driverless printers
 
-* Tue Aug 22 2017 Anton Farygin <rider@altlinux.ru> 1.16.3-alt1%ubt
+* Tue Aug 22 2017 Anton Farygin <rider@altlinux.ru> 1.16.3-alt1
 - new version 1.16.3
 
-* Mon Aug 21 2017 Anton Farygin <rider@altlinux.ru> 1.16.2-alt1%ubt
+* Mon Aug 21 2017 Anton Farygin <rider@altlinux.ru> 1.16.2-alt1
 - new version 1.16.2
 
-* Mon Aug 14 2017 Anton Farygin <rider@altlinux.ru> 1.16.1-alt1%ubt
+* Mon Aug 14 2017 Anton Farygin <rider@altlinux.ru> 1.16.1-alt1
 - new version 1.16.1
 
-* Fri Aug 04 2017 Anton Farygin <rider@altlinux.ru> 1.16.0-alt1%ubt
+* Fri Aug 04 2017 Anton Farygin <rider@altlinux.ru> 1.16.0-alt1
 - new version 1.16.0
 
-* Fri Jul 07 2017 Anton Farygin <rider@altlinux.ru> 1.14.1-alt2%ubt
+* Fri Jul 07 2017 Anton Farygin <rider@altlinux.ru> 1.14.1-alt2
 - rebuild with new php
 
-* Mon Jul 03 2017 Anton Farygin <rider@altlinux.ru> 1.14.1-alt1%ubt
+* Mon Jul 03 2017 Anton Farygin <rider@altlinux.ru> 1.14.1-alt1
 - new version 1.14.1
 
-* Wed May 24 2017 Anton Farygin <rider@altlinux.ru> 1.14.0-alt1%ubt
+* Wed May 24 2017 Anton Farygin <rider@altlinux.ru> 1.14.0-alt1
 - new version 1.14.0
 
-* Tue May 02 2017 Anton Farygin <rider@altlinux.ru> 1.13.5-alt1%ubt
+* Tue May 02 2017 Anton Farygin <rider@altlinux.ru> 1.13.5-alt1
 - new version
 
-* Tue Mar 07 2017 Anton Farygin <rider@altlinux.ru> 1.13.4-alt1%ubt
+* Tue Mar 07 2017 Anton Farygin <rider@altlinux.ru> 1.13.4-alt1
 - new version 1.13.4
 
-* Mon Jan 30 2017 Anton Farygin <rider@altlinux.ru> 1.13.3-alt1%ubt
+* Mon Jan 30 2017 Anton Farygin <rider@altlinux.ru> 1.13.3-alt1
 - new version 1.13.3
 
-* Fri Dec 30 2016 Anton Farygin <rider@altlinux.ru> 1.13.2-alt1%ubt
+* Fri Dec 30 2016 Anton Farygin <rider@altlinux.ru> 1.13.2-alt1
 - new version 1.13.2
 
-* Mon Dec 19 2016 Anton Farygin <rider@altlinux.ru> 1.13.1-alt1%ubt
+* Mon Dec 19 2016 Anton Farygin <rider@altlinux.ru> 1.13.1-alt1
 - new version 1.13.1
 
-* Wed Dec 14 2016 Anton Farygin <rider@altlinux.ru> 1.13.0-alt1%ubt
+* Wed Dec 14 2016 Anton Farygin <rider@altlinux.ru> 1.13.0-alt1
 - new version 1.13.0
 
-* Wed Dec 07 2016 Anton Farygin <rider@altlinux.ru> 1.12.0-alt1%ubt
+* Wed Dec 07 2016 Anton Farygin <rider@altlinux.ru> 1.12.0-alt1
 - new version 1.12.0
 
 * Wed Nov 16 2016 Anton Farygin <rider@altlinux.ru> 1.11.6-alt1
