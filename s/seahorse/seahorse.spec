@@ -1,7 +1,7 @@
 %def_disable snapshot
 %define _unpackaged_files_terminate_build 1
 %define _libexecdir %_prefix/libexec
-%define ver_major 3.32
+%define ver_major 3.34
 %define xdg_name org.gnome.seahorse
 
 %def_disable debug
@@ -11,13 +11,14 @@
 %def_enable pkcs11
 %def_enable ssh
 %def_enable introspection
+%def_enable man
 
 %if_enabled hkp
 %def_enable sharing
 %endif
 
 Name: seahorse
-Version: %ver_major.2
+Version: %ver_major
 Release: alt1
 
 Summary: A password and encryption key manager
@@ -38,9 +39,8 @@ Requires: pinentry-x11
 %{?_enable_sharing:Requires: avahi-daemon}
 
 BuildRequires(pre): meson rpm-build-gnome rpm-build-licenses
-BuildRequires: yelp-tools libappstream-glib-devel yelp-tools
-BuildRequires: gtk-doc docbook-dtds perl-XML-Parser
-BuildRequires: desktop-file-utils
+BuildRequires: yelp-tools libappstream-glib-devel
+BuildRequires: gtk-doc desktop-file-utils
 BuildRequires: gcc-c++ libgtk+3-devel >= 3.22.0
 BuildRequires: gnupg2
 BuildRequires: libgpgme-devel >= 1.0.0
@@ -54,6 +54,7 @@ BuildRequires: pkgconfig(pwquality)
 %{?_enable_sharing:BuildRequires: libavahi-glib-devel >= 0.6 libavahi-devel }
 %{?_enable_ssh:BuildRequires: openssh openssh-clients}
 %{?_enable_introspection:BuildRequires: gobject-introspection-devel libgtk+3-gir-devel}
+%{?_enable_man:BuildRequires: xsltproc docbook-dtds docbook-style-xsl}
 
 %description
 Seahorse is a password and encryption key manager for GNOME desktop.
@@ -66,12 +67,13 @@ Seahorse is a password and encryption key manager for GNOME desktop.
 %{?_disable_ldap:-Dldap-support=false} \
 %{?_disable_pkcs11:-Dpkcs11-support=false} \
 %{?_disable_hkp:-Dhkp-support=false} \
-%{?_disable_sharing:-Dkey-sharing=false}
+%{?_disable_sharing:-Dkey-sharing=false} \
+%{?_enable_man:-Dmanpage=true}
+%nil
 %meson_build
 
 %install
 %meson_install
-
 %find_lang %name --with-gnome
 
 %files -f %name.lang
@@ -83,7 +85,7 @@ Seahorse is a password and encryption key manager for GNOME desktop.
 %_datadir/%name/*
 %_iconsdir/hicolor/*/*/*.*
 %_desktopdir/*.desktop
-%_man1dir/*
+%{?_enable_man:%_man1dir/*}
 %_datadir/dbus-1/services/org.gnome.seahorse.Application.service
 %_datadir/gnome-shell/search-providers/seahorse-search-provider.ini
 %config %_datadir/glib-2.0/schemas/org.gnome.seahorse.gschema.xml
@@ -93,6 +95,9 @@ Seahorse is a password and encryption key manager for GNOME desktop.
 %doc AUTHORS NEWS README* THANKS
 
 %changelog
+* Tue Oct 01 2019 Yuri N. Sedunov <aris@altlinux.org> 3.34-alt1
+- 3.34
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt1
 - 3.32.2
 
