@@ -1,7 +1,7 @@
 %define rname ksysguard
 
 Name: plasma5-%rname
-Version: 5.17.0
+Version: 5.17.2
 Release: alt1
 %K5init altplace no_appdata
 
@@ -108,6 +108,12 @@ KF5 library
 #%_K5lib/libksysguard.so.*
 
 %changelog
+* Fri Nov 01 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.2-alt1
+- new version
+
+* Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.1-alt1
+- new version
+
 * Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
 - new version
 

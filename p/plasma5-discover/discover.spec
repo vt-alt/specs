@@ -1,7 +1,7 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.17.0
+Version: 5.17.2
 Release: alt1
 %K5init no_altplace
 
@@ -22,7 +22,7 @@ Patch3: alt-discover-update-all-packages-from-appstream.patch
 # Automatically added by buildreq on Tue Aug 07 2018 (-bi)
 # optimized out: appstream appstream-qt cmake cmake-modules elfutils fontconfig gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gtk-update-icon-cache kf5-attica-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-common kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-common kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-common kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgio-devel libgpg-error libjson-glib libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-common qt5-base-devel rpm-build-python3 rpm-build-qml ruby ruby-stdlibs sh3
 #BuildRequires: appstream-qt-devel extra-cmake-modules kf5-karchive-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-kio-devel kf5-kirigami-devel kf5-kitemmodels-devel kf5-knewstuff-devel kf5-knotifications-devel kf5-kpackage-devel kf5-plasma-framework-devel libflatpak-devel libssl-devel packagekit-qt-devel python3-dev qt5-declarative-devel qt5-translations rpm-build-ruby
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: libssl-devel qt5-declarative-devel
 BuildRequires: packagekit-qt-devel
 BuildRequires: appstream-qt-devel
@@ -70,7 +70,7 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p2
-%patch3 -p2
+%patch3 -p2 -b .upd-appstream
 
 %build
 %K5build
@@ -125,6 +125,15 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5icon/*/*/apps/*flatpak*.*
 
 %changelog
+* Fri Nov 01 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.2-alt1
+- new version
+
+* Fri Nov 01 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.17.1-alt2
+- Fixed use-after-free bug introduced by last patch.
+
+* Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.1-alt1
+- new version
+
 * Thu Oct 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
 - new version
 
@@ -185,8 +194,8 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 - new version
 - build flatpak support in separate package
 
-* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt2%ubt
+* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt2
 - build without flatpak
 
-* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1%ubt
+* Tue Aug 07 2018 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
 - initial build
