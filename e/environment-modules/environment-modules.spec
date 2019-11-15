@@ -8,7 +8,7 @@ BuildRequires(pre): rpm-macros-alternatives
 
 Name:           environment-modules
 Version:        3.2.10
-Release:        alt2_23
+Release:        alt3_23
 Summary:        Provides dynamic modification of a user's environment
 
 Group:          System/Base
@@ -45,7 +45,7 @@ Patch7:         environment-modules-3.2.10-unload-from-module.patch
 # Fix build with -Werror=implicit-function-declaration
 Patch8:         environment-modules-implicit.patch
 
-BuildRequires:  tcl-devel, tclx-devel, libX11-devel
+BuildRequires:  tcl-devel, tclx, libX11-devel
 BuildRequires:  dejagnu
 BuildRequires:  man-db
 #For ps in startup script
@@ -171,6 +171,9 @@ EOF
 
 
 %changelog
+* Sun Jul 21 2019 Igor Vlasenko <viy@altlinux.ru> 3.2.10-alt3_23
+- fixed build
+
 * Sun Oct 28 2018 Igor Vlasenko <viy@altlinux.ru> 3.2.10-alt2_23
 - fixed build
 
