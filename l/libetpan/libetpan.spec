@@ -1,6 +1,6 @@
 Name: libetpan
-Version: 1.9.3
-Release: alt3
+Version: 1.9.4
+Release: alt1
 
 Summary: This mail library  provide a portable, efficient middleware for different kinds of mail access
 License: %bsdstyle
@@ -10,13 +10,8 @@ Url: https://www.etpan.org/libetpan.html
 
 # git://github.com/dinhviethoa/libetpan.git
 Source: %name-%version.tar
+Source1: libetpan-config
 Patch: %name-%version-%release.patch
-# Patches from upstream git.
-# Must be dropped when new version is released.
-Patch1: Fixed-return-code-of-mailimap_logout-327.patch
-Patch2: Fix-mailmime_write-add-handler-for-MAILMIME_FIELD_LO.patch
-Patch3: Fix-TLS-timeouts-with-recent-versions-of-GnuTLS-330.patch
-Patch4: mailimap_quota_getquotaroot-Fix-SIGSEGV-334.patch
 
 %def_with gnutls
 %def_without openssl
@@ -57,10 +52,6 @@ program which use lib%name.
 %prep
 %setup
 %patch -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 ln -s README.md README
 
 %build
@@ -76,6 +67,9 @@ ln -s README.md README
 %install
 %makeinstall_std
 
+# Install libetpan-config
+install -Dm0755 %SOURCE1 %buildroot%_bindir/%name-config
+
 %files
 %doc ChangeLog NEWS COPYRIGHT README AUTHORS
 %_libdir/%name.so.*
@@ -85,9 +79,13 @@ ln -s README.md README
 %dir %_includedir/%name
 %_includedir/%name/*.h
 %_includedir/%name.h
+%_pkgconfigdir/%name.pc
 %_libdir/%name.so
 
 %changelog
+* Tue Nov 05 2019 Mikhail Efremov <sem@altlinux.org> 1.9.4-alt1
+- Updated to 1.9.4.
+
 * Mon Sep 23 2019 Mikhail Efremov <sem@altlinux.org> 1.9.3-alt3
 - Patch from upstream:
     + mailimap_quota_getquotaroot: Fix SIGSEGV (#334).
