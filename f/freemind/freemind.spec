@@ -17,7 +17,7 @@
 # wait for xstream
 Name: freemind
 Version: 1.0.1
-Release: alt1.1
+Release: alt2
 
 Summary: A Program for creating and viewing Mindmaps
 
@@ -86,6 +86,9 @@ install -D -m644 images/FreeMindWindowIcon.png %buildroot%_pixmapsdir/%name.png
 %_pixmapsdir/*.png
 
 %changelog
+* Mon Oct 28 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt2
+- fix desktop file (ALT bug #36809)
+
 * Mon Feb 01 2016 Igor Vlasenko <viy@altlinux.ru> 1.0.1-alt1.1
 - NMU: corrected java BuildRequires
 
