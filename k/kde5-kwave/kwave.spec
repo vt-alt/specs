@@ -5,7 +5,7 @@
 %define libkwave libkwave%sover
 
 Name: kde5-%rname
-Version: 19.08.2
+Version: 19.08.3
 Release: alt1
 %K5init
 
@@ -97,6 +97,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkwavegui.so.*
 
 %changelog
+* Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
 * Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 

@@ -4,7 +4,7 @@
 %define libkcupslib libkcupslib%sover
 
 Name: kde5-%rname
-Version: 19.08.2
+Version: 19.08.3
 Release: alt1
 %K5init altplace
 
@@ -87,6 +87,9 @@ KF5 library
 %_K5lib/libkcupslib.so.*
 
 %changelog
+* Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
 * Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 
