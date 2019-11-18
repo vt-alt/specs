@@ -1,8 +1,13 @@
+%ifnarch %e2k
+%def_with qt5
+%endif
+
 Name: quiterss
 Version: 0.18.12
-Release: alt1
+Release: alt2
 
 Summary: RSS/Atom aggregator
+Summary(ru_RU.UTF-8): QuiteRSS - быстрая и удобная программа для чтения новостных лент RSS/Atom
 License: GPLv3
 Group: Networking/WWW
 
@@ -10,21 +15,32 @@ Url: http://code.google.com/p/quite-rss/
 Source0: http://quite-rss.googlecode.com/files/QuiteRSS-%{version}-src.tar.gz
 Source44: import.info
 Source45: quiterss.watch
-BuildRequires: pkgconfig(QtGui) pkgconfig(QtNetwork) pkgconfig(QtWebKit) pkgconfig(QtXml) pkgconfig(QtSql)
 BuildRequires: desktop-file-utils
-BuildRequires: libqtsingleapplication-devel pkgconfig(sqlite3) pkgconfig(phonon)
+%if_with qt5
+BuildRequires: qt5-base-devel qt5-tools
+BuildRequires: pkgconfig(Qt5Gui)
+BuildRequires: pkgconfig(Qt5Core)
+BuildRequires: pkgconfig(Qt5Network)
+BuildRequires: pkgconfig(Qt5WebKit)
+BuildRequires: pkgconfig(Qt5Xml)
+BuildRequires: pkgconfig(Qt5Sql)
+BuildRequires: pkgconfig(Qt5Multimedia)
+BuildRequires: pkgconfig(Qt5WebKitWidgets)
+BuildRequires: pkgconfig(Qt5Widgets)
+BuildRequires: libqtsingleapplication-qt5-devel
+Requires: qt5-sql-sqlite3
+%else
+BuildRequires: gcc-c++ qt4-devel
+BuildRequires: pkgconfig(QtGui) pkgconfig(QtNetwork) pkgconfig(QtWebKit) pkgconfig(QtXml) pkgconfig(QtSql)
+BuildRequires: libqtsingleapplication-devel pkgconfig(phonon)
 Requires: libqt4-sql-sqlite
-
-Summary(ru): QuiteRSS - быстрая и удобная программа для чтения новостных лент RSS/Atom
-
-# BEGIN SourceDeps(oneline):
-BuildRequires: gcc-c++ libqt4-devel
-# END SourceDeps(oneline)
+%endif
+BuildRequires: pkgconfig(sqlite3)
 
 %description
 Qt-based RSS/Atom aggregator.
 
-%description -l ru
+%description -l ru_RU.UTF-8
 Быстрая и удобная программа для чтения новостных лент RSS/Atom,
 написанная на Qt.
 
@@ -36,7 +52,11 @@ sed -i 's,phonon/audiooutput.h,kde4/&,' src/application/mainwindow.h
 sed -i 's,phonon/mediaobject.h,kde4/&,' src/application/mainwindow.h
 
 %build
+%if_with qt5
+qmake-qt5 PREFIX=%prefix SYSTEMQTSA=True
+%else
 qmake-qt4 PREFIX=%prefix SYSTEMQTSA=True
+%endif
 %make_build release
 
 %install
@@ -56,6 +76,9 @@ desktop-file-validate %buildroot%_desktopdir/%name.desktop
 %dir %_datadir/%name/lang
 
 %changelog
+* Sun Nov 10 2019 Anton Midyukov <antohami@altlinux.org> 0.18.12-alt2
+- rebuild with qt5 except e2k
+
 * Mon Jul 02 2018 Michael Shigorin <mike@altlinux.org> 0.18.12-alt1
 - new version (watch file uupdate)
 
