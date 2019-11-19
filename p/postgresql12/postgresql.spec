@@ -6,8 +6,8 @@
 
 %define prog_name            postgresql
 %define postgresql_major     12
-%define postgresql_minor     0
-%define postgresql_altrel    2
+%define postgresql_minor     1
+%define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -784,6 +784,9 @@ fi
 %endif
 
 %changelog
+* Wed Nov 13 2019 Alexei Takaseev <taf@altlinux.org> 12.1-alt1
+- 12.1
+
 * Mon Oct 07 2019 Alexei Takaseev <taf@altlinux.org> 12.0-alt2
 - Add temporary provides libpq-devel and libecpg-devel to
   postgresql-devel (ALT #37297)
