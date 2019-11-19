@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt18
+Release: alt19
 
 Summary: GRand Unified Bootloader
 License: GPL
@@ -51,6 +51,7 @@ Patch15: grub-2.02-alt-fedora-linuxefi.patch
 Patch16: grub-2.02-suse-fix-build-with-gcc8.patch
 Patch17: grub-2.02-fix-binutils-break-grub-efi-build.patch
 Patch18: grub-2.02-upstream-default-ptimer.patch
+Patch19: grub-2.02-upstream-xfs-sparse-inodes.patch
 
 # add a rhboot/grub-2.02-sb set of patches to ensure SecureBoot safe operation
 # refer to url:  https://github.com/rhboot/grub2/commits/grub-2.02-sb
@@ -140,6 +141,7 @@ Summary: GRand Unified Bootloader (IEEE1275 variant)
 Group: System/Kernel and hardware
 Requires: %name-common = %version-%release
 %ifarch ppc64le
+Requires: powerpc-utils
 Provides: grub2 = %EVR
 Provides: grub = %EVR
 %endif
@@ -216,6 +218,7 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p2
 
 #SB patches
 %patch101 -p1
@@ -526,6 +529,10 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Tue Oct 29 2019 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt19
+- grub-ieee1275: added R: powerpc-utils. (glebfm@)
+- add xfs-sparse-inodes patch (closes: #37394)
+
 * Tue Aug 13 2019 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt18
 - add extcmd and keystatus modules to EFI images (closes: #36722)
 
