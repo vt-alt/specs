@@ -1,5 +1,5 @@
 Name:           screenfetch
-Version:        3.8.0
+Version:        3.9.0
 Release:        alt1
 Summary:        A "Bash Screenshot Information Tool"
 
@@ -10,8 +10,6 @@ Packager:       Andrey Cherepanov <cas@altlinux.org>
 
 Source:		%name-%version.tar
 Patch:		%name-%version.patch
-
-BuildArch:      noarch
 
 Requires:	scrot
 
@@ -44,6 +42,9 @@ install -Dm 0644 screenfetch.1 %buildroot%_man1dir/%name.1
 %_man1dir/%name.1*
 
 %changelog
+* Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 3.9.0-alt1
+- New version.
+
 * Tue Mar 14 2017 Andrey Cherepanov <cas@altlinux.org> 3.8.0-alt1
 - New version
 
