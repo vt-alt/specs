@@ -17,8 +17,8 @@
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.0.11
-Release: alt2
+Version: 3.0.12
+Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
 License: CMU License
@@ -49,8 +49,8 @@ Source20: %name-sendmail-8.12.9-cyrusv2.m4
 Source21: %name.init
 Source22: %name.cyrus-conf
 
-#Patch7: http://servercc.oakton.edu/~jwade/cyrus/cyrus-imapd-2.1.3/cyrus-imapd-2.1.3-flock.patch
 Patch1: cyrus-imapd-3.0.11-setproctitle.c.patch
+Patch2: cyrus-imapd-3.0.11-logging-limit.patch
 
 PreReq: e2fsprogs /sbin/chkconfig /sbin/service cert-sh-functions
 Requires: su, tzdata
@@ -172,8 +172,9 @@ for IMAP server and SASL library
 echo %version > VERSION
 
 %patch1 -p1
+%patch2 -p1
 
-# hack for really enable pcre
+# hack to really enable pcre
 sed "s|pcreposix\.h|pcre/pcreposix.h|g" -i configure.ac
 sed 's|if test "$ac_cv_header_pcreposix_h" = "yes"|ac_cv_header_pcreposix_h="yes"; if test "$ac_cv_header_pcreposix_h" = "yes"|' -i configure.ac
 %add_optflags -I%_includedir/pcre
@@ -189,6 +190,13 @@ sed "s|@ZLIB@|@ZLIB@ -lpcreposix|" -i perl/sieve/managesieve/Makefile.PL.in
 sed "s|/usr/bin/touch|/bin/touch|" -i cunit/command.testc
 %endif
 
+%ifarch %e2k
+# lcc before 1.24.03 can't do that (mcst#4061)
+find -type f -print0 -name '*.c' |
+	xargs -r0 sed -i 's,optimize("-O3"),optimize(3),g'
+%endif
+
+%build
 autoreconf -v -i
 
 %add_optflags -lcrypto -lsasl2 -lssl -DUSE_SETPROCTITLE
@@ -221,7 +229,6 @@ autoreconf -v -i
   %{?_without_sphinx: --with-sphinx-build=no} \
   #
 
-%build
 %make
 
 # Modify docs master --> cyrus-master
@@ -483,6 +490,15 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Sat Nov 16 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.12-alt1
+- 3.0.12 (fixes: CVE-2019-18928)
+- logging of reached limits (the patch from the
+  https://github.com/cyrusimap/cyrus-imapd/issues/2913)
+
+* Sun Oct 06 2019 Michael Shigorin <mike@altlinux.org> 3.0.11-alt2.1
+- E2K: fix build with lcc < 1.24.03
+- move autoreconf and friends into %%build section
+
 * Tue Sep 10 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.11-alt2
 - built with USE_SETPROCTITLE (some solutions of the
   https://github.com/cyrusimap/cyrus-imapd/issues/2850
