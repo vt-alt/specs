@@ -3,7 +3,7 @@
 
 Name: zziplib
 Version: 0.13.69
-Release: alt1
+Release: alt3
 
 Summary: Lightweight library to easily extract data from zip files
 License: LGPL/MPL
@@ -13,7 +13,6 @@ URL: http://zziplib.sourceforge.net/
 Source: http://downloads.sourceforge.net/zziplib/zziplib-%version.tar
 Patch0: %name-%version-alt.patch
 
-# Automatically added by buildreq on Fri Nov 26 2010
 BuildRequires: libSDL-devel python-modules xmlto zip zlib-devel
 
 %description
@@ -54,6 +53,8 @@ This package contains some useful ZZipLib utilites.
 sed -i 's|^\(CFLAGS.*\)|\1 -g|' $(find ./ -name Makefile.in)
 
 %build
+export PYTHON=/usr/bin/python2
+find . -name '*.py' | xargs sed -i 's@#! /usr/bin/python@#! %__python@g;s@#! /usr/bin/env python@#! %__python@g'
 autoconf
 %configure --enable-sdl --disable-static %{subst_with largefile}
 # strip rpath
@@ -81,6 +82,12 @@ subst 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' */libtool
 %_bindir/*
 
 %changelog
+* Mon Nov 18 2019 Anton Farygin <rider@altlinux.ru> 0.13.69-alt3
+- force python-2.7 to build documentation
+
+* Wed Aug 21 2019 Anton Farygin <rider@altlinux.ru> 0.13.69-alt2
+- added upstream fixes for security issues (fixes: CVE-2018-16548, CVE-2018-17828)
+
 * Tue Apr 03 2018 Anton Farygin <rider@altlinux.ru> 0.13.69-alt1
 - 0.13.69
 
