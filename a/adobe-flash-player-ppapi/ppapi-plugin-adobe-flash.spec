@@ -8,9 +8,9 @@
 Name: adobe-flash-player-ppapi
 %define bin_name ppapi-plugin-adobe-flash
 %define ver_fake 32
-%define ver_ix86 32.0.0.270
-%define ver_x86_64 32.0.0.270
-Release: alt16
+%define ver_ix86 32.0.0.293
+%define ver_x86_64 32.0.0.293
+Release: alt17
 Epoch: 3
 
 %define ver_real %ver_fake
@@ -117,6 +117,9 @@ install -m0644 %SOURCE0 %buildroot/%_desktopdir/
 %_desktopdir/ppapi-plugin-adobe-flash.desktop
 
 %changelog
+* Wed Nov 13 2019 Cronbuild Service <cronbuild@altlinux.org> 3:32-alt17
+- repocop cronbuild 20191113. At your service.
+
 * Sat Oct 12 2019 Cronbuild Service <cronbuild@altlinux.org> 3:32-alt16
 - repocop cronbuild 20191012. At your service.
 
