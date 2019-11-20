@@ -1,6 +1,6 @@
 Name: pesign
 Version: 0.109
-Release: alt5
+Release: alt6
 
 Summary: Signing tool for PE-COFF binaries
 License: GPLv2
@@ -10,6 +10,7 @@ Url: https://github.com/vathpela/pesign
 # git://git.altlinux.org/gears/p/pesign.git
 Source: %name-%version-%release.tar
 Patch0: pesign-0.109-warnings.patch
+Patch1: pesign-fix-build-with-nss3.44.patch
 
 BuildRequires: libnss-devel libpopt-devel
 
@@ -19,8 +20,8 @@ as well as other associated tools.
 
 %prep
 %setup -n %name-%version-%release
-
 %patch0 -p1
+%patch1 -p1
 
 %build
 %make_build OPTFLAGS='%optflags'
@@ -75,6 +76,9 @@ fi
 %ghost %_runtimedir/pesign.pid
 
 %changelog
+* Tue Sep 10 2019 Andrey Cherepanov <cas@altlinux.org> 0.109-alt6
+- Use upstream fix for build with nss >= 3.44.
+
 * Tue Jun 13 2017 Sergey Novikov <sotor@altlinux.org> 0.109-alt5
 - Commented KeyIdTemplate to fix warnings
 
