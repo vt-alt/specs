@@ -18,7 +18,7 @@
 
 Name: calligraplan
 Version: 3.1.0
-Release: alt7
+Release: alt8
 Epoch: 0
 %K5init
 
@@ -266,6 +266,9 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5lib/libplanworkfactory.so.*
 
 %changelog
+* Thu Nov 14 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.1.0-alt8
+- Fixed build
+
 * Fri Aug 23 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt7
 - fix build with new kcalcore
 
