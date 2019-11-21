@@ -42,7 +42,7 @@
 %define minor	8
 %define bugfix	7
 %define beta	%nil
-%define rlz alt19
+%define rlz alt20
 
 Name: %rname%major
 Version: %major.%minor.%bugfix
@@ -115,6 +115,12 @@ Patch303: CVE-2018-19870.patch
 Patch304: CVE-2018-19871.patch
 Patch305: CVE-2018-19872.patch
 Patch306: CVE-2018-19873.patch
+#
+Patch320: gcc9-qforeach.patch
+Patch321: Add_support_for_QT_USE_DRAG_DISTANCE_env_var.patch
+Patch322: Better-handling-of-invalid-font-tables.patch
+Patch323: dont_crash_on_broken_gif_images.patch
+Patch324: xmlpatterns_stack_overflow_fix.diff
 # ALT
 Patch501: qt-4.8.5-alt-honor-SUSv3-locales.patch
 Patch502: qt-4.7.2-alt-ca-certificates-path.patch
@@ -730,6 +736,12 @@ Install this package if you want to create RPM packages that use %name
 %patch304 -p1
 %patch305 -p1
 %patch306 -p1
+#
+%patch320 -p1
+%patch321 -p1
+%patch322 -p1
+%patch323 -p1
+%patch324 -p1
 # ALT
 %patch501 -p1
 %patch502 -p1
@@ -1476,6 +1488,9 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 
 
 %changelog
+* Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt20
+- fix compile with gcc9
+
 * Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt19
 - fix changelog
 
@@ -1496,20 +1511,20 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 * Thu Feb 07 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt14
 - fix to build with new libmysqlclient
 
-* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt13%ubt
+* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt13
 - link with openssl
 
-* Wed May 30 2018 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt12%ubt
+* Wed May 30 2018 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt12
 - update requires
 - fix to build
 
-* Fri May 12 2017 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt11%ubt
+* Fri May 12 2017 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt11
 - rebuild with new libmng
 
-* Thu Apr 06 2017 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.8.7-alt10%ubt
+* Thu Apr 06 2017 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.8.7-alt10
 - moc: fixed work with glibc >= 2.25.
 
-* Wed Feb 01 2017 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt9%ubt
+* Wed Feb 01 2017 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt9
 - build with gcc6
 
 * Wed Apr 27 2016 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt8
