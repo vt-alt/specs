@@ -1,5 +1,5 @@
 Name: thunar
-Version: 1.8.9
+Version: 1.8.11
 Release: alt1
 
 Summary: Thunar File Manager for the Xfce Desktop Environment
@@ -81,16 +81,16 @@ mkdir -p m4/
 
 %install
 %makeinstall_std
-%find_lang Thunar
+%find_lang thunar
 desktop-file-install --dir %buildroot%_desktopdir \
 	--remove-category=Filesystem \
 	--add-category=FileTools \
-	%buildroot%_desktopdir/Thunar-bulk-rename.desktop
+	%buildroot%_desktopdir/thunar-bulk-rename.desktop
 
 %check
 make check
 
-%files -f Thunar.lang
+%files -f thunar.lang
 %doc README NEWS AUTHORS
 %config(noreplace) %_sysconfdir/xdg/Thunar/
 %_bindir/*
@@ -109,7 +109,7 @@ make check
 %_libdir/thunarx-*/*.so
 %_libdir/Thunar/
 %_iconsdir/hicolor/*/*/*
-%_docdir/Thunar
+%_docdir/thunar
 
 %files -n lib%name
 %_libdir/*.so.*
@@ -122,6 +122,12 @@ make check
 %exclude %_libdir/thunarx-*/*.la
 
 %changelog
+* Mon Nov 18 2019 Mikhail Efremov <sem@altlinux.org> 1.8.11-alt1
+- Updated to 1.8.11.
+
+* Mon Nov 11 2019 Mikhail Efremov <sem@altlinux.org> 1.8.10-alt1
+- Updated to 1.8.10.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 1.8.9-alt1
 - Updated to 1.8.9.
 
