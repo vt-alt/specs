@@ -3,7 +3,7 @@
 
 Name: lightdm-gtk-greeter
 Version: 2.0.1
-Release: alt14
+Release: alt15
 Summary: LightDM GTK+ Greeter
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -72,6 +72,10 @@ printf '%_datadir/xgreeters/lightdm-default-greeter.desktop\t%_datadir/xgreeters
 %config(noreplace) %_sysconfdir/lightdm/lightdm-gtk-greeter.conf
 
 %changelog
+* Mon Nov 11 2019 Paul Wolneykien <manowar@altlinux.org> 2.0.1-alt15
+- Russian translation of some prompts and titles (thx Oleg Zenin).
+- Translate the prompts and messages (thx Oleg Zenin).
+
 * Thu Aug 22 2019 Nikita Ermakov <arei@altlinux.org> 2.0.1-alt14
 - NMU: Update to correspond new lightdm API.
 
