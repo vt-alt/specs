@@ -7,7 +7,7 @@
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt13
+Release: alt14
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
@@ -74,6 +74,7 @@ This package contains documentation for Qt5 %qt_module
 Group: System/Libraries
 Summary: Qt5 library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-webkit
 %summary
 
@@ -81,6 +82,7 @@ Requires: %name-common = %EVR
 Group: System/Libraries
 Summary: Qt5 library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-webkitwidgets
 %summary
 
@@ -196,6 +198,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Thu Nov 14 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt14
+- depend on libqt5-core version
+
 * Wed Oct 23 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt13
 - update from 5.212 branch
 
