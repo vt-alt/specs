@@ -18,20 +18,20 @@
 
 Name: branding-%flavour
 Version: 9.0
-Release: alt1
+Release: alt2
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
-%endif
 BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-sans
-BuildRequires: design-bootloader-source >= 5.0-alt2
+BuildRequires: design-bootloader-source >= 5.0-alt2 fribidi
+%endif
 
 BuildRequires(pre): rpm-macros-branding
 BuildRequires: libalternatives-devel
 BuildRequires: qt5-base-devel
 
-BuildRequires: ImageMagick fontconfig bc libGConf-devel fribidi
+BuildRequires: ImageMagick fontconfig bc
 
 Source: branding.tar
 
@@ -75,6 +75,7 @@ Summary:  Theme for splash animations during bootup
 Summary(ru_RU.UTF-8): Тема для экрана загрузки для дистрибутива %distro_name_ru
 License:  Distributable
 Group:    System/Configuration/Boot and Init
+BuildArch: noarch
 Provides: plymouth-theme-%theme
 Requires: plymouth-plugin-script
 Requires(pre):   plymouth
@@ -204,15 +205,9 @@ Requires(post): indexhtml-common
 %prep
 %setup -n branding
 
-%ifnarch %arm
-%define x86 boot
-%else
-%define x86 %nil
-%endif
-
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' ./configure
 make
 
 %install
@@ -227,25 +222,26 @@ find %buildroot -name \*.in -delete
 %endif
 
 %post bootloader
+[ "$1" -eq 1 ] || exit 0
 %ifarch %ix86 x86_64
-%__ln_s -nf %theme/message /boot/splash/message
+ln -snf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
 cd boot/splash/%theme/
 echo $lang > lang
 [ "$lang" = "C" ] || echo lang | cpio -o --append -F message
+%endif
 . shell-config
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 #shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-%endif
 
 %ifarch %ix86 x86_64
 %preun bootloader
-[ $1 = 0 ] || exit 0
+[ "$1" -eq 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
-    %__rm -f /boot/splash/message
+    rm -f /boot/splash/message
 %endif
 
 %post indexhtml
@@ -255,17 +251,16 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 %ifarch %ix86 x86_64
 %_datadir/gfxboot/%theme
 /boot/splash/%theme
-/boot/grub/themes/%theme
 %endif
+/boot/grub/themes/%theme
 
 #bootsplash
 %post bootsplash
-%ifarch %ix86 x86_64
+[ "$1" -eq 1 ] || exit 0
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 [ -f /etc/sysconfig/grub2 ] && \
       subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
              /etc/sysconfig/grub2 ||:
-%endif
 
 #release
 %post release
@@ -291,9 +286,8 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme.png
 
 %files bootsplash
-%ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
-%endif
+%_pixmapsdir/system-logo.png
 
 %files release
 %dir %data_cur_dir
@@ -323,6 +317,11 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Nov 14 2019 Alexey Shabalin <shaba@altlinux.org> 9.0-alt2
+- sync spec with branding-alt-workstation
+- Package system-logo.png for Plymouth
+- add black border for focused buttons
+
 * Thu Oct 17 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.0-alt1
 - version set to 9.0
 
