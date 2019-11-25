@@ -1,6 +1,6 @@
 Name: bind
-Version: 9.11.6.P1
-%define src_version 9.11.6-P1
+Version: 9.11.13
+%define src_version 9.11.13
 Release: alt1
 
 Summary: ISC BIND - DNS server
@@ -46,8 +46,6 @@ Patch0007: 0007-alt-nofile.patch
 Patch0008: 0008-alt-ads-remove.patch
 Patch0009: 0009-Minimize-linux-capabilities.patch
 Patch0010: 0010-Link-libirs-with-libdns-libisc-and-libisccfg.patch
-Patch0011: 0011-Make-build-configured-against-with-gssapi-fail-on-mi.patch
-Patch0012: 0012-Replace-atomic-operations-in-bin-named-client.c-with.patch
 
 # root directory for chrooted environment.
 %define _chrootdir %_localstatedir/bind
@@ -177,10 +175,8 @@ rather than the DNS protocol.
 %patch0006 -p2
 %patch0007 -p2
 %patch0008 -p2
-%patch0009 -p2
+#%%patch0009 -p2
 %patch0010 -p2
-%patch0011 -p2
-%patch0012 -p1
 
 install -D -pm644 %_sourcedir/rfc1912.txt doc/rfc/rfc1912.txt
 install -pm644 %_sourcedir/bind.README.bind-devel README.bind-devel
@@ -213,7 +209,6 @@ sed -i '/# Large File/iAC_SYS_LARGEFILE/' configure.ac
 	--with-randomdev=/dev/random \
 	--enable-threads \
 	--enable-linux-caps \
-	--enable-fetchlimit \
 	--enable-fixed-rrset \
 	--disable-seccomp \
 	 %{subst_with openssl} \
@@ -222,7 +217,6 @@ sed -i '/# Large File/iAC_SYS_LARGEFILE/' configure.ac
 	 %{subst_enable ipv6} \
 	 %{subst_enable static} \
 	--includedir=%{_includedir}/bind9 \
-	--disable-openssl-version-check \
 	--with-libtool \
 	--with-gssapi=yes \
 	--disable-isc-spnego \
@@ -252,7 +246,7 @@ install -pD -m755 addon/lwresd.init %buildroot%_initdir/lwresd
 install -pD -m644 addon/bind.service %buildroot%_unitdir/bind.service
 
 # Install configurations files
-install -pm600 addon/rndc.conf %buildroot%_sysconfdir/
+install -pm640 addon/rndc.conf %buildroot%_sysconfdir/
 install -pD -m644 addon/bind.sysconfig %buildroot%_sysconfdir/sysconfig/bind
 
 # Create a chrooted environment...
@@ -269,7 +263,7 @@ for n in localhost localdomain 127.in-addr.arpa empty; do
 done
 
 install -pm640 addon/rndc.key bind.keys %buildroot%_chrootdir%_sysconfdir/
-ln -snfr %buildroot%_sysconfdir/bind/{named.conf,bind.keys,rndc.key} \
+ln -snfr %buildroot%_sysconfdir/bind/{named.conf,bind.keys} \
 	%buildroot%_sysconfdir/
 
 # Create symlinks for unchrooted bind.
@@ -298,7 +292,7 @@ cp -a CHANGES COPYRIGHT README* \
 install -pm644 contrib/queryperf/README %buildroot%docdir/README.queryperf
 
 xz -9 %buildroot%docdir/{*/*.txt,CHANGES}
-rm -fv %buildroot%docdir/*/{Makefile*,README-SGML,*.dsl*,*.sh*,*.xml}
+rm -v %buildroot%docdir/*/{Makefile*,README-SGML,*.xml}
 
 %define _unpackaged_files_terminate_build 1
 
@@ -377,10 +371,9 @@ fi
 %_sysconfdir/bind
 %_sysconfdir/bind.keys
 %_sysconfdir/named.conf
-%_sysconfdir/rndc.key
 %config %_initdir/bind
 %config %_sysconfdir/sysconfig/bind
-%config(noreplace) %_sysconfdir/rndc.conf
+%config(noreplace) %attr(640,root,named) %_sysconfdir/rndc.conf
 %_unitdir/bind.service
 
 %_man1dir/named-rrchecker.1*
@@ -441,6 +434,27 @@ fi
 %exclude %docdir/COPYRIGHT
 
 %changelog
+* Thu Nov 21 2019 Stanislav Levin <slev@altlinux.org> 9.11.13-alt1
+- 9.11.12 -> 9.11.13 (fixes: CVE-2019-6477).
+
+* Wed Oct 16 2019 Stanislav Levin <slev@altlinux.org> 9.11.12-alt1
+- 9.11.10 -> 9.11.12.
+
+* Wed Sep 18 2019 Stanislav Levin <slev@altlinux.org> 9.11.10-alt2
+- Fixed integration with ipa-dnskeysync.
+
+* Tue Aug 27 2019 Stanislav Levin <slev@altlinux.org> 9.11.10-alt1
+- 9.11.9 -> 9.11.10.
+
+* Thu Aug 01 2019 Stanislav Levin <slev@altlinux.org> 9.11.9-alt1
+- 9.11.8 -> 9.11.9.
+
+* Thu Jun 20 2019 Stanislav Levin <slev@altlinux.org> 9.11.8-alt1
+- 9.11.7 -> 9.11.8 (fixes: CVE-2019-6471).
+
+* Thu May 16 2019 Stanislav Levin <slev@altlinux.org> 9.11.7-alt1
+- 9.11.6.P1 -> 9.11.7.
+
 * Thu Apr 25 2019 Stanislav Levin <slev@altlinux.org> 9.11.6.P1-alt1
 - 9.11.6 -> 9.11.6.P1 (fixes: CVE-2018-5743).
 
