@@ -2,31 +2,37 @@
 %define otrs_user otrs
 
 Name: otrs
-Version: 5.0.23
+Version: 6.0.23
 Release: alt1
 
 Summary: Open source Ticket Request System
 Group: Networking/WWW
-License: %gagpl3only
+License: %gpl3only
 Url: http://www.otrs.org/
-
-Packager: Pavel Zilke <zidex at altlinux dot org>
 
 BuildArch: noarch
 
-Requires(pre): %{_sbindir}/useradd
-Requires(post): perl
-Requires: webserver-common perl-CGI perl-DBI perl-DBD-mysql perl-Crypt-PasswdMD5 perl-Net-DNS perl-ldap perl-GD perl-GD-Text perl-GD-Graph perl-PDF-API2 perl-Compress-Zlib perl-Unicode-Normalize perl-Term-ANSIColor perl-TimeDate perl-YAML-LibYAML perl-Time-Piece perl-Archive-Zip perl-Archive-Tar perl-Template
+BuildRequires(pre): rpm-build-licenses
+BuildRequires(pre): rpm-macros-webserver-common rpm-macros-apache2 >= 3.9
 
-BuildRequires(pre): rpm-build-licenses rpm-macros-webserver-common rpm-macros-apache2 >= 3.9
-BuildRequires: perl-CGI perl-DBI perl-DBD-mysql perl-Crypt-PasswdMD5 perl-Net-DNS perl-ldap perl-GD perl-GD-Text perl-GD-Graph perl-PDF-API2 perl-Compress-Zlib
+Requires: webserver-common perl-CGI perl-DBI perl-DBD-mysql
+
+# requires for start httpd2
+Requires: perl-DateTime perl-Template
+
+# is needed (found in /var/log/httpd2/error_log)
+Requires: perl-Unicode-Collate
+
+# hard requires by otrs.CheckModules.pl
+Requires: perl-Archive-Tar perl-Archive-Zip perl-TimeDate perl-Net-DNS perl-YAML-LibYAML
+
+# some of soft requires by otrs.CheckModules.pl
+Requires: perl-Crypt-Eksblowfish perl-Crypt-SSLeay perl-JSON-XS perl-Mail-IMAPClient perl-IO-Socket-SSL perl-Text-CSV_XS perl-XML-LibXSLT perl-XML-Parser
 
 Source0: %name-%version.tar.gz
 Source1: README.ALT.rus
 Source2: otrs-hold.conf
 Source3: apache2.conf
-
-Patch: otrs-InnoDBLogFileSize.patch
 
 %add_findreq_skiplist */bin/*
 %add_findreq_skiplist */Kernel/*
@@ -49,7 +55,6 @@ Apache 2.x web-server configuration for %name
 
 %prep
 %setup
-%patch -p1
 
 %install
 # install apache config
@@ -88,7 +93,8 @@ rm -f %buildroot%installdir/COPYING
 rm -f %buildroot%installdir/COPYING-Third-Party
 rm -f %buildroot%installdir/INSTALL.md
 rm -f %buildroot%installdir/README.md
-rm -f %buildroot%installdir/UPGRADING.md
+rm -f %buildroot%installdir/SECURITY.md
+rm -f %buildroot%installdir/UPDATING.md
 rm -f %buildroot%installdir/Custom/README
 
 %pre
@@ -131,7 +137,8 @@ cd %installdir/bin/
 %doc INSTALL.md
 %doc README.md
 %doc README.ALT.rus
-%doc UPGRADING.md
+%doc SECURITY.md
+%doc UPDATING.md
 %doc Custom/README
 %defattr(0775,root, %webserver_group)
 %dir %installdir
@@ -151,6 +158,15 @@ cd %installdir/bin/
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/addon.d/A.%name.conf
 
 %changelog
+* Fri Oct 25 2019 Sergey Y. Afonin <asy@altlinux.org> 6.0.23-alt1
+- New version (ALT #37331)
+- changed License (GAGPLv3 to GPLv3)
+- updated Apache 2 configuration
+- updated README.ALT.rus
+- removed otrs-InnoDBLogFileSize.patch
+- updated Requires
+- removed Packager field
+
 * Fri Nov 10 2017 Sergey Y. Afonin <asy@altlinux.ru> 5.0.23-alt1
 - New version
 
