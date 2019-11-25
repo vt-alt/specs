@@ -1,8 +1,8 @@
 %define rname kglobalaccel
 
 Name: kf5-%rname
-Version: 5.63.0
-Release: alt2
+Version: 5.64.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -100,6 +100,9 @@ mkdir -p %buildroot/%_K5data/kglobalaccel/
 %_K5lib/libKF5GlobalAccelPrivate.so.*
 
 %changelog
+* Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
+- new version
+
 * Mon Oct 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt2
 - add kglobalaccel data dir
 

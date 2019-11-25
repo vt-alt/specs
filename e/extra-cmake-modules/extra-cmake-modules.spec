@@ -10,8 +10,8 @@ AutoProv: yes, nopython nopython3
 %add_python3_path %_datadir/ECM/find-modules
 
 Name: extra-cmake-modules
-Version: 5.63.0
-Release: alt1
+Version: 5.64.0
+Release: alt2
 
 Group: Development/Other
 Summary: Additional modules for CMake build system
@@ -30,6 +30,7 @@ Source: %name-%version.tar
 Patch1: alt-find-qcollectiongenerator.patch
 Patch2: alt-fix-python-install-dirs.patch
 Patch3: alt-find-clang-library.patch
+Patch4: alt-remove-c90.patch
 
 # Automatically added by buildreq on Thu Nov 17 2016 (-bi)
 # optimized out: bzr cmake-modules fontconfig libqt4-clucene libqt4-core libqt4-devel libqt4-gui libqt4-help libqt4-network libqt4-sql libqt4-sql-sqlite policycoreutils python-base python-module-4Suite-XML python-module-IPy python-module-PyStemmer python-module-Pygments python-module-babel python-module-cffi python-module-cssselect python-module-docutils python-module-enum34 python-module-google python-module-httplib2 python-module-imagesize python-module-jinja2 python-module-jinja2-tests python-module-markupsafe python-module-mimeparse python-module-numpy python-module-pyasn1 python-module-pygobject3 python-module-pytz python-module-serial python-module-setuptools python-module-six python-module-slip python-module-snowballstemmer python-module-sphinx python-module-twisted-core python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-json python-modules-logging python-modules-multiprocessing python-modules-unittest python3 python3-base rpm-build-python3 ruby xz
@@ -49,6 +50,7 @@ Additional modules for CMake build system needed by KDE Frameworks.
 %patch1 -p1
 %patch2 -p1
 #%patch3 -p1
+%patch4 -p1
 
 %ifarch %e2k
 # unsupported as of lcc 1.23.12 (should be in 1.23.16)
@@ -77,6 +79,12 @@ sed -i 's|-Wl,--fatal-warnings||' kde-modules/KDECompilerSettings.cmake
 %endif
 
 %changelog
+* Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt2
+- don't add -std=gnu90 compile flag
+
+* Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
+- new version
+
 * Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
 - new version
 

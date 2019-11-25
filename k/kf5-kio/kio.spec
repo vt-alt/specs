@@ -3,8 +3,8 @@
 %def_with streebog
 
 Name: kf5-%rname
-Version: 5.63.0
-Release: alt2
+Version: 5.64.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -23,7 +23,8 @@ Patch4: alt-streebog-support.patch
 # optimized out: cmake cmake-modules docbook-dtds elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libXt-devel libcloog-isl4 libcom_err-devel libgpg-error libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms libxml2-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs xml-common xml-utils xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: docbook-style-xsl extra-cmake-modules gcc-c++ kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdoctools kf5-kdoctools-devel-static kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXft-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libacl-devel libattr-devel libkrb5-devel libxkbfile-devel libxslt-devel python-module-google qt5-script-devel qt5-x11extras-devel rpm-build-ruby xsltproc zlib-devel-static
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: docbook-style-xsl extra-cmake-modules gcc-c++ qt5-script-devel qt5-x11extras-devel qt5-tools-devel
+BuildRequires: qt5-script-devel qt5-x11extras-devel qt5-tools-devel qt5-declarative-devel
+BuildRequires: docbook-style-xsl extra-cmake-modules
 BuildRequires: libxslt-devel xsltproc zlib-devel
 BuildRequires: libacl-devel libattr-devel libkrb5-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel
@@ -111,7 +112,7 @@ KF5 library
 %if_with streebog
 	-DEXTRA_CRYPTO:BOOL=ON \
 %endif
-	%nil
+	#
 
 %install
 %K5install
@@ -166,6 +167,9 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
+- new version
+
 * Fri Oct 25 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 5.63.0-alt2
 - Added support for GOST R 34.11-2012 (Streebog) hash function.
 

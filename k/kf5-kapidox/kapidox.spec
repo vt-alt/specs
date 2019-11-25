@@ -3,7 +3,7 @@
 %def_enable python3
 
 Name: kf5-%rname
-Version: 5.63.0
+Version: 5.64.0
 Release: alt1
 %K5init altplace
 %if_disabled python3
@@ -108,6 +108,9 @@ mv %buildroot/usr/lib/python* %buildroot/%_libdir/
 #%_K5archdata/mkspecs/modules/qt_kapidox.pri
 
 %changelog
+* Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
+- new version
+
 * Tue Oct 15 2019 Sergey V Turchin <zerg@altlinux.org> 5.63.0-alt1
 - new version
 

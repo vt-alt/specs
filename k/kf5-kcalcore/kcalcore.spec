@@ -1,7 +1,7 @@
-%define rname kcalcore
+%define rname kcalendarcore
 
-Name: kf5-%rname
-Version: 5.63.0
+Name: kf5-kcalcore
+Version: 5.64.0
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -45,6 +45,7 @@ Obsoletes: kde5-kcalcore-common < %EVR
 Group: Development/KDE and QT
 Summary: Development files for %name
 Requires: libical-devel
+Provides: kde5-kcalendarcore-devel = %EVR
 Provides: kde5-kcalcore-devel = %EVR
 Obsoletes: kde5-kcalcore-devel < %EVR
 %description devel
@@ -87,6 +88,9 @@ KF5 library
 %_K5lib/libKF5CalendarCore.so.*
 
 %changelog
+* Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.64.0-alt1
+- new version
+
 * Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.63.0-alt1
 - moved to Frameworks
 
