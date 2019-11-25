@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.28
+Version: 0.2.29
 Release: alt1
 
 Summary: Simple image creator
@@ -83,6 +83,9 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Thu Nov 14 2019 Alexey Shabalin <shaba@altlinux.org> 0.2.29-alt1
+- Added support grub-efi to efiboot
+
 * Fri Sep 13 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2.28-alt1
 - Added support for aarch64 systems (grub-efi boot from ISO-9660)
   by klark@ and shaba@).
