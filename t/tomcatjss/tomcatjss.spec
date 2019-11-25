@@ -1,9 +1,9 @@
 %define _unpackaged_files_terminate_build 1
 
-%define jss_version 4.5.0
+%define jss_version 4.5.3
 
 Name: tomcatjss
-Version: 7.3.6
+Version: 7.4.1
 Release: alt1
 
 Summary: JSSE module for Apache Tomcat that uses JSS
@@ -61,6 +61,12 @@ ant -v -f build.xml \
 %_javadir/tomcatjss-%version.jar
 
 %changelog
+* Mon Aug 26 2019 Stanislav Levin <slev@altlinux.org> 7.4.1-alt1
+- 7.4.0 -> 7.4.1.
+
+* Tue May 21 2019 Stanislav Levin <slev@altlinux.org> 7.4.0-alt1
+- 7.3.6 -> 7.4.0.
+
 * Wed Oct 10 2018 Stanislav Levin <slev@altlinux.org> 7.3.6-alt1
 - 7.3.5 -> 7.3.6.
 

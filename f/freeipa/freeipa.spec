@@ -1,6 +1,5 @@
 # build defines
 %define _unpackaged_files_terminate_build 1
-%def_with lint
 
 %ifarch %ix86
 %def_with only_client
@@ -8,8 +7,12 @@
 %def_without only_client
 %endif
 
+%if_without only_client
 %def_with fastlint
 %def_with fasttest
+%def_with lint
+%endif
+
 %if_with lint
     %define linter_options --enable-pylint --with-jslint
 %else
@@ -25,12 +28,12 @@
 
 # versions defines
 %define bind_version 9.11
-%define bind_dyndb_ldap_version 11.0
+%define bind_dyndb_ldap_version 11.1-alt7
 %define certmonger_version 0.79.7
-%define ds_version 1.4.1.1
+%define ds_version 1.4.1.6
 %define gssproxy_version 0.8.0-alt2
 %define krb5_version 1.16.3
-%define pki_version 10.6.7
+%define pki_version 10.7.3
 %define python_ldap_version 3.2.0
 %define samba_version 4.7.6
 %define slapi_nis_version 0.56.3
@@ -38,8 +41,8 @@
 %define openldap_version 2.4.47-alt2
 
 Name: freeipa
-Version: 4.7.2
-Release: alt3
+Version: 4.7.3
+Release: alt1
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -95,6 +98,7 @@ BuildRequires: python3-module-sss_nss_idmap
 
 %if_with fasttest
 BuildRequires: keyutils
+BuildRequires: systemd
 %endif
 
 #
@@ -459,6 +463,8 @@ Requires: xz
 Requires: python3-module-coverage
 Requires: python3-module-sssdconfig >= %sssd_version
 Requires: iptables
+# Tests have a huge amount useless Provides
+%set_findprov_skiplist %python3_sitelibdir/ipatests/*
 
 %description -n python3-module-ipatests
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -489,6 +495,7 @@ git checkout -b "patch"
 grep -rl 8080 | xargs sed -i 's/\(\W\|^\)8080\(\W\|$\)/\18090\2/g'
 
 %if_with lint
+git add .
 git commit -am 'with our changes'
 %endif
 
@@ -631,15 +638,6 @@ if [ $1 = 0 ]; then
     /bin/systemctl reload-or-try-restart oddjobd ||:
 fi
 
-%triggerpostun server-common -- freeipa-server-common <= 4.6.1
-if python3 -c "import sys; from ipaserver.install import installutils; sys.exit(0 if installutils.is_ipa_configured() else 1);" > /dev/null 2>&1; then
-        a2dismod ipa-nss >/dev/null 2>&1 ||:
-
-        if systemctl is-enabled httpd2.service >/dev/null 2>&1; then
-                systemctl try-restart httpd2.service >/dev/null 2>&1 ||:
-        fi
-fi
-
 %pre server
 # Stop ipa_kpasswd if it exists before upgrading so we don't have a
 # zombie process when we're done.
@@ -769,6 +767,8 @@ fi
 %_sbindir/ipa-cacert-manage
 %_sbindir/ipa-winsync-migrate
 %_sbindir/ipa-pkinit-manage
+%_sbindir/ipa-crlgen-manage
+%_sbindir/ipa-cert-fix
 %_libexecdir/certmonger/dogtag-ipa-ca-renew-agent-submit
 %_libexecdir/certmonger/ipa-server-guard
 %dir %_libexecdir/ipa
@@ -777,6 +777,7 @@ fi
 %_libexecdir/ipa/ipa-httpd-kdcproxy
 %_libexecdir/ipa/ipa-httpd-pwdreader
 %_libexecdir/ipa/ipa-pki-retrieve-key
+%_libexecdir/ipa/ipa-pki-wait-running
 %_libexecdir/ipa/ipa-otpd
 %dir %_libexecdir/ipa/oddjob
 %attr(0755,root,root) %_libexecdir/ipa/oddjob/org.freeipa.server.conncheck
@@ -826,6 +827,8 @@ fi
 %_man1dir/ipa-cacert-manage.1*
 %_man1dir/ipa-winsync-migrate.1*
 %_man1dir/ipa-pkinit-manage.1*
+%_man1dir/ipa-crlgen-manage.1*
+%_man1dir/ipa-cert-fix.1*
 %_man8dir/ipactl.8*
 
 %_rpmlibdir/freeipa-server.filetrigger
@@ -865,20 +868,20 @@ fi
 %dir %_sysconfdir/ipa/html
 %config(noreplace) %_sysconfdir/ipa/html/ssbrowser.html
 %config(noreplace) %_sysconfdir/ipa/html/unauthorized.html
-%ghost %attr(0644,root,apache2) %config(noreplace) %apache2_sites_available/ipa.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %apache2_extra_enabled/ipa-rewrite.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %apache2_extra_enabled/ipa-kdc-proxy.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %apache2_extra_enabled/ipa-pki-proxy.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %_sysconfdir/ipa/kdcproxy/ipa-kdc-proxy.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %_datadir/ipa/html/ca.crt
-%ghost %attr(0644,root,apache2) %_datadir/ipa/html/krb.con
-%ghost %attr(0644,root,apache2) %_datadir/ipa/html/krb5.ini
-%ghost %attr(0644,root,apache2) %_datadir/ipa/html/krbrealm.con
+%ghost %attr(0644,root,root) %config(noreplace) %apache2_sites_available/ipa.conf
+%ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-rewrite.conf
+%ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-kdc-proxy.conf
+%ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-pki-proxy.conf
+%ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/kdcproxy/ipa-kdc-proxy.conf
+%ghost %attr(0644,root,root) %config(noreplace) %_datadir/ipa/html/ca.crt
+%ghost %attr(0644,root,root) %_datadir/ipa/html/krb.con
+%ghost %attr(0644,root,root) %_datadir/ipa/html/krb5.ini
+%ghost %attr(0644,root,root) %_datadir/ipa/html/krbrealm.con
 %dir %_datadir/ipa/updates/
 %_datadir/ipa/updates/*
 %dir %_sharedstatedir/ipa
 %attr(700,root,root) %dir %_sharedstatedir/ipa/backup
-%ghost %dir %_sharedstatedir/ipa/gssproxy
+%ghost %attr(770,root,_gssproxy) %dir %_sharedstatedir/ipa/gssproxy
 %attr(711,root,root) %dir %_sharedstatedir/ipa/sysrestore
 %attr(700,root,root) %dir %_sharedstatedir/ipa/sysupgrade
 %attr(755,root,root) %dir %_sharedstatedir/ipa/pki-ca
@@ -887,8 +890,8 @@ fi
 %attr(700,root,root) %dir %_sharedstatedir/ipa/passwds
 %attr(770,root,named) %dir %_sharedstatedir/bind/data
 %attr(770,root,named) %dir %_sharedstatedir/bind/dynamic
-%ghost %_sharedstatedir/ipa/pki-ca/publish
-%ghost %_sharedstatedir/bind/zone/dyndb-ldap/ipa
+%ghost %attr(775,root,pkiuser) %_sharedstatedir/ipa/pki-ca/publish
+%ghost %attr(770,named,named) %_sharedstatedir/bind/zone/dyndb-ldap/ipa
 
 %dir %attr(0700,root,root) %_sysconfdir/ipa/custodia
 %dir %_datadir/ipa/schema.d
@@ -939,6 +942,7 @@ fi
 %_sbindir/ipa-join
 %_bindir/ipa
 %config %_sysconfdir/bash_completion.d
+%config %_sysconfdir/sysconfig/certmonger
 %_mandir/man1/ipa.1*
 %_mandir/man1/ipa-getkeytab.1*
 %_mandir/man1/ipa-rmkeytab.1*
@@ -963,19 +967,19 @@ fi
 
 %files client-common
 %dir %attr(0755,root,root) %_sysconfdir/ipa/
-%ghost %attr(0644,root,apache2) %config(noreplace) %_sysconfdir/ipa/default.conf
-%ghost %attr(0644,root,apache2) %config(noreplace) %_sysconfdir/ipa/ca.crt
+%ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/default.conf
+%ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/ca.crt
 %dir %attr(0755,root,root) %_sysconfdir/ipa/nssdb
 # old dbm format
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/cert8.db
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/key3.db
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/secmod.db
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/cert8.db
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/key3.db
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/secmod.db
 # new sql format
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/cert9.db
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/key4.db
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/pkcs11.txt
-%ghost %config(noreplace) %_sysconfdir/ipa/nssdb/pwdfile.txt
-%ghost %config(noreplace) %_sysconfdir/pki/ca-trust/source/ipa.p11-kit
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/cert9.db
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/key4.db
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/pkcs11.txt
+%ghost %attr(600,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/pwdfile.txt
+%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/pki/ca-trust/source/ipa.p11-kit
 %dir %_sharedstatedir/ipa-client
 %dir %_sharedstatedir/ipa-client/pki
 %dir %_sharedstatedir/ipa-client/sysrestore
@@ -997,6 +1001,12 @@ fi
 %python3_sitelibdir/ipaplatform-*-nspkg.pth
 
 %changelog
+* Fri Sep 20 2019 Stanislav Levin <slev@altlinux.org> 4.7.3-alt1
+- 4.7.2 -> 4.7.3.
+
+* Mon Aug 26 2019 Stanislav Levin <slev@altlinux.org> 4.7.2-alt4
+- ALT: Fixed upgrade 4.3.3 -> 4.7.2.
+
 * Mon Jul 15 2019 Stanislav Levin <slev@altlinux.org> 4.7.2-alt3
 - Added support for CI testing (ALT).
 

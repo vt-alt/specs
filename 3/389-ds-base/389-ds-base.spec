@@ -11,8 +11,8 @@
 %def_with cockpit
 
 Name: 389-ds-base
-Version: 1.4.1.2
-Release: alt2
+Version: 1.4.1.10
+Release: alt1
 
 Summary: 389 Directory Server (base)
 License: GPLv3+
@@ -52,6 +52,7 @@ BuildRequires: libsystemd-devel
 BuildRequires: python3(build_manpages)
 BuildRequires: python3(argcomplete)
 BuildRequires: python3(ldap)
+BuildRequires: python3(packaging)
 BuildRequires: python3(six)
 
 %if_with cockpit
@@ -90,6 +91,7 @@ BuildRequires: perl-NetAddr-IP
 %add_python3_req_skip __main__
 
 Requires: libjemalloc2
+Requires: cracklib-words
 
 %description
 389 Directory Server is an LDAPv3 compliant server. The base package includes
@@ -182,10 +184,6 @@ A cockpit UI Plugin for configuring and administering the 389 Directory Server
 # and are not utilized in runtime
 tar -xzf %SOURCE1 -C "./src/cockpit/389-console"
 
-# ALT specific paths
-grep -qrs '\(<\| \)nss3\/' || exit 1
-grep -rl '\(<\| \)nss3\/' | xargs sed -i 's/\(<\| \)nss3\//\1nss\//g'
-
 grep -qsF 'sysctldir = @prefixdir@/lib/sysctl.d' Makefile.am || exit 1
 sed -i 's|sysctldir = .*|sysctldir = %_sysctldir|' Makefile.am
 
@@ -228,8 +226,6 @@ export LDFLAGS='-latomic'
         --enable-debug \
 %endif
         %{?_with_perl:--enable-perl } \
-	--with-nss-lib=%_libdir \
-	--with-nss-inc=%_includedir/nss \
         %{?_with_check:--enable-cmocka } \
         %nil
 
@@ -237,7 +233,7 @@ export LDFLAGS='-latomic'
 
 %if_with cockpit
 # cockpit plugin
-%make 389-console
+SKIP_AUDIT_CI=yes %make 389-console
 %endif
 
 # Python3 bindings
@@ -303,53 +299,51 @@ sysctl --system &> /dev/null ||:
 %post legacy-tools
 %if_with perl
 # Upgrade
-if [ $1 -gt 1 ]; then
-    echo "Checking for upgrade"
-    if ! ( sd_booted && /bin/systemctl --version >/dev/null 2>&1 ); then
-        echo "Likely, you are not using systemd. Please, stop all the dirsrv instances."
-        echo "Then run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
-        exit 0
-    fi
-
-    /bin/systemctl daemon-reload >/dev/null 2>&1 ||:
-    instances=""
-    num_inst=0
-    echo "Looking for Instances in %_sysconfdir/%pkgname"
-    for dir in %_sysconfdir/%pkgname/slapd-* ; do
-        if [ ! -d "$dir" ] ; then continue ; fi
-        case "$dir" in *.removed) continue ;; esac
-        inst="%pkgname@$(echo $(basename $dir) | sed -e 's/slapd-//')"
-        echo "Found Instance $inst"
-        if /bin/systemctl -q is-active "$inst"; then
-            echo "Instance $inst is running, stopping it"
-            if ! /bin/systemctl stop "$inst"; then
-                echo "Cannot stop Instance. Please check it and run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
-                exit 0
-            fi
-            instances="$instances $inst"
-        else
-            echo "Instance $inst is not running"
-        fi
-        let "num_inst++"
-    done
-    if [ "$num_inst" -eq 0 ]; then
-        echo "There are no Instances to upgrade"
-        exit 0
-    fi
-    echo "Upgrading Instances"
-    if ! %_sbindir/setup-ds.pl -u -d -l %_logdir/%pkgname/upgrade.log -s \
-    General.UpdateMode=offline >/dev/null 2>&1; then
-        echo "Upgrade has not been completed successfully. Please check log file %_logdir/%pkgname/upgrade.log and run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
-        exit 0
-    fi
-
-    for inst in $instances; do
-        echo "Restarting Instance $inst"
-        /bin/systemctl start "$inst" ||:
-    done
-
-    echo "Upgrade has been completed successfully"
+echo "389-ds: Checking for upgrade"
+if ! ( sd_booted && /bin/systemctl --version >/dev/null 2>&1 ); then
+    echo "Likely, you are not using systemd. Please, stop all the dirsrv instances."
+    echo "Then run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
+    exit 0
 fi
+
+/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
+instances=""
+num_inst=0
+echo "Looking for Instances in %_sysconfdir/%pkgname"
+for dir in %_sysconfdir/%pkgname/slapd-* ; do
+    if [ ! -d "$dir" ] ; then continue ; fi
+    case "$dir" in *.removed) continue ;; esac
+    inst="%pkgname@$(echo $(basename $dir) | sed -e 's/slapd-//')"
+    echo "Found Instance $inst"
+    if /bin/systemctl -q is-active "$inst"; then
+        echo "Instance $inst is running, stopping it"
+        if ! /bin/systemctl stop "$inst"; then
+            echo "Cannot stop Instance. Please check it and run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
+            exit 0
+        fi
+        instances="$instances $inst"
+    else
+        echo "Instance $inst is not running"
+    fi
+    let "num_inst++"
+done
+if [ "$num_inst" -eq 0 ]; then
+    echo "389-ds: There are no Instances to upgrade"
+    exit 0
+fi
+echo "389-ds: Upgrading Instances"
+if ! %_sbindir/setup-ds.pl -u -d -l %_logdir/%pkgname/upgrade.log -s \
+General.UpdateMode=offline >%_logdir/%pkgname/upgrade.log 2>&1; then
+    echo "Upgrade has not been completed successfully. Please check log file %_logdir/%pkgname/upgrade.log and run an upgrade by %_sbindir/setup-ds.pl -u -s General.UpdateMode=offline"
+    exit 0
+fi
+
+for inst in $instances; do
+    echo "Restarting Instance $inst"
+    /bin/systemctl start "$inst" ||:
+done
+
+echo "389-ds: Upgrade has been completed successfully"
 %endif
 %post_service %pkgname-snmp
 
@@ -375,7 +369,6 @@ fi
 %config(noreplace)%_sysconfdir/%pkgname/config/slapd-collations.conf
 %config(noreplace)%_sysconfdir/%pkgname/config/certmap.conf
 %config(noreplace)%_sysconfdir/%pkgname/config/ldap-agent.conf
-%config(noreplace)%_sysconfdir/%pkgname/config/template-initconfig
 %dir %_datadir/%pkgname
 %_datadir/%pkgname/data/
 %_datadir/%pkgname/inf/
@@ -384,6 +377,8 @@ fi
 %_unitdir/dirsrv-snmp.service
 %_unitdir/dirsrv.target
 %_unitdir/dirsrv@.service
+%dir %_unitdir/dirsrv@.service.d
+%_unitdir/dirsrv@.service.d/custom.conf
 
 %_bindir/dbscan
 %_bindir/ds-replcheck
@@ -444,7 +439,6 @@ fi
 %_man8dir/vlvindex.8.*
 %_man5dir/99user.ldif.5.*
 %_man5dir/certmap.conf.5.*
-%_man5dir/template-initconfig.5.*
 %_man5dir/slapd-collations.conf.5.*
 %_man5dir/dirsrv.5.*
 %_man5dir/dirsrv.systemd.5.*
@@ -505,6 +499,8 @@ fi
 %_man8dir/upgradednformat.8.*
 
 %if_with perl
+%config(noreplace)%_sysconfdir/%pkgname/config/template-initconfig
+%_man5dir/template-initconfig.5.*
 %dir %_datadir/%pkgname/properties
 %_datadir/%pkgname/properties/ns-slapd.properties
 %_datadir/%pkgname/properties/*.res
@@ -581,7 +577,7 @@ fi
 %if_with cockpit
 %files -n cockpit-389-ds
 %dir %_datadir/metainfo/389-console
-%_datadir/metainfo/389-console/org.cockpit-project.389-console.metainfo.xml
+%_datadir/metainfo/389-console/org.port389.cockpit_console.metainfo.xml
 %dir %_datadir/cockpit/389-console
 %_datadir/cockpit/389-console/manifest.json
 %_datadir/cockpit/389-console/*.html
@@ -594,6 +590,21 @@ fi
 %endif
 
 %changelog
+* Thu Nov 14 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.10-alt1
+- 1.4.1.9 -> 1.4.1.10 (fixes: CVE-2019-14824).
+
+* Tue Nov 05 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.9-alt1
+- 1.4.1.8 -> 1.4.1.9.
+
+* Fri Sep 27 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.8-alt1
+- 1.4.1.7 -> 1.4.1.8.
+
+* Tue Sep 24 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.7-alt1
+- 1.4.1.6 -> 1.4.1.7.
+
+* Mon Aug 05 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.6-alt1
+- 1.4.1.2 -> 1.4.1.6.
+
 * Wed Jul 10 2019 Ivan A. Melnikov <iv@altlinux.org> 1.4.1.2-alt2
 - Link with libatomic on mipsel.
 

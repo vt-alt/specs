@@ -4,8 +4,8 @@
 %def_with check
 
 Name: jss
-Version: 4.5.2
-Release: alt1
+Version: 4.6.2
+Release: alt2
 
 Summary: Java Security Services (JSS)
 License: MPLv1.1 or GPLv2+ or LGPLv2+
@@ -23,6 +23,7 @@ BuildRequires: gcc-c++
 BuildRequires: glassfish-jaxb-api
 BuildRequires: /proc
 BuildRequires: cmake
+BuildRequires: java-1.8.0-openjdk-devel
 BuildRequires: jpackage-generic-compat
 BuildRequires: libnss-devel
 BuildRequires: libnspr-devel
@@ -33,13 +34,14 @@ BuildRequires: slf4j-jdk14
 
 %if_with check
 BuildRequires: ctest
+BuildRequires: junit
 BuildRequires: nss-utils
 %endif
 
 Requires: apache-commons-lang
 Requires: apache-commons-codec
 Requires: glassfish-jaxb-api
-Requires: java-headless
+Requires: java-1.8.0-openjdk-headless
 Requires: slf4j
 
 %description
@@ -121,6 +123,21 @@ cp -p *.txt %buildroot%_javadocdir/%name-%version
 %_javadocdir/%name-%version
 
 %changelog
+* Thu Nov 07 2019 Stanislav Levin <slev@altlinux.org> 4.6.2-alt2
+- Fixed NPE during FreeIPA installations (RHBZ: 1766451).
+
+* Wed Oct 16 2019 Stanislav Levin <slev@altlinux.org> 4.6.2-alt1
+- 4.6.1 -> 4.6.2 (closes: CVE-2019-14823).
+
+* Mon Aug 26 2019 Stanislav Levin <slev@altlinux.org> 4.6.1-alt1
+- 4.5.3 -> 4.6.1.
+
+* Thu Jul 11 2019 Stanislav Levin <slev@altlinux.org> 4.5.3-alt2
+- Pinned supported Java.
+
+* Tue May 21 2019 Stanislav Levin <slev@altlinux.org> 4.5.3-alt1
+- 4.5.2 -> 4.5.3.
+
 * Fri Jan 18 2019 Stanislav Levin <slev@altlinux.org> 4.5.2-alt1
 - 4.5.0 -> 4.5.2.
 

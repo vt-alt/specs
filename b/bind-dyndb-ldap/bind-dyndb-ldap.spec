@@ -3,7 +3,7 @@
 
 Name: bind-dyndb-ldap
 Version: 11.1
-Release: alt5
+Release: alt8
 
 Summary: LDAP back-end plug-in for BIND
 License: %gpl2plus
@@ -42,6 +42,44 @@ off of your LDAP server.
 mkdir -p %buildroot%_localstatedir/bind/zone/dyndb-ldap/
 
 %post
+# Transform named.conf if it still has old-style API.
+PLATFORM=$(uname -m)
+
+if [ $PLATFORM == "x86_64" ] ; then
+    LIBPATH=/usr/lib64
+else
+    LIBPATH=/usr/lib
+fi
+
+# The following sed script:
+#   - scopes the named.conf changes to dynamic-db
+#   - replaces arg "name value" syntax with name "value"
+#   - changes dynamic-db header to dyndb
+#   - uses the new way the define path to the library
+#   - removes no longer supported arguments (library, cache_ttl,
+#       psearch, serial_autoincrement, zone_refresh)
+while read -r PATTERN
+do
+    SEDSCRIPT+="$PATTERN"
+done <<EOF
+/^\s*dynamic-db/,/};/ {
+
+  s/\(\s*\)arg\s\+\(["']\)\([a-zA-Z_]\+\s\)/\1\3\2/g;
+
+  s/^dynamic-db/dyndb/;
+
+  s@\(dyndb "[^"]\+"\)@\1 "$LIBPATH/bind/ldap.so"@;
+  s@\(dyndb '[^']\+'\)@\1 '$LIBPATH/bind/ldap.so'@;
+
+  /\s*library[^;]\+;/d;
+  /\s*cache_ttl[^;]\+;/d;
+  /\s*psearch[^;]\+;/d;
+  /\s*serial_autoincrement[^;]\+;/d;
+  /\s*zone_refresh[^;]\+;/d;
+}
+EOF
+
+sed -i.bak --follow-symlinks -e "$SEDSCRIPT" /etc/named.conf
 # restart bind due to upgrade issue caused by binary incompatibility
 # of new installed version of bind and old not removed yet version of
 # dyndb ldap
@@ -59,6 +97,15 @@ systemctl is-enabled --quiet ipa && systemctl restart bind 2>&1 ||:
 %exclude %_libdir/bind/*.la
 
 %changelog
+* Thu Oct 10 2019 Stanislav Levin <slev@altlinux.org> 11.1-alt8
+- Added workaround for LDAP socket error on BIND start.
+
+* Thu Aug 08 2019 Stanislav Levin <slev@altlinux.org> 11.1-alt7
+- Fixed upgrade bind 9.9 -> 9.11.
+
+* Fri May 17 2019 Stanislav Levin <slev@altlinux.org> 11.1-alt6
+- Applied upstream patch.
+
 * Mon Nov 26 2018 Stanislav Levin <slev@altlinux.org> 11.1-alt5
 - Built with new bind 9.11.5.
 - Fixed bind-dyndb-ldap upgrade.
