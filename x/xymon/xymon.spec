@@ -61,8 +61,8 @@ License:	%gpl2only
 URL:		http://xymon.sourceforge.net/
 
 %if_disabled trunk
-Version:	4.3.29
-Release:	alt1
+Version:	4.3.30
+Release:	alt2
 Source0:	http://prdownloads.sourceforge.net/xymon/Xymon/%{version}/%{name}-%{version}.tar.gz
 %else
 %define		trunkVersion	%(svn info ~/svn/xymon/trunk/ | grep ^Revision | awk '{print $2}')
@@ -448,7 +448,7 @@ the Xymon server in NCV format.
 # confreport_back.patch
 %patch49
 
-%patch51 -b .wwwcachedir
+%patch51 -p1
 %patch52 -b .alwaysmultiservers
 %patch53 -b .usesysconfig
 %patch54 -b .serverclient
@@ -477,7 +477,8 @@ the Xymon server in NCV format.
 %patch503 -p1
 %patch504 -p1
 
-sed "s/define MAXCHECK   102400/define MAXCHECK   4194303/" -i client/logfetch.c
+# exit with 1 if "define MAXCHECK   102400" not found
+sed '/define MAXCHECK   102400/{s||define MAXCHECK   4194303|;h};${x;/./{x;q0};x;q1}' -i client/logfetch.c
 
 %if_disabled trunk
   PROTOFILE="xymond/etcfiles/protocols.cfg.DIST"
@@ -1257,6 +1258,12 @@ done
 ################ end extra clients ################
 
 %changelog
+* Thu Oct 31 2019 Sergey Y. Afonin <asy@altlinux.org> 4.3.30-alt2
+- updated xymon.varlibwww.patch and xymon.wwwcachedir.patch for Apache 2.4
+
+* Wed Oct 23 2019 Sergey Y. Afonin <asy@altlinux.org> 4.3.30-alt1
+- new version (bugfix for 4.3.29)
+
 * Thu Sep 12 2019 Sergey Y. Afonin <asy@altlinux.org> 4.3.29-alt1
 - new version  (fixes: CVE-2019-13451, CVE-2019-13452, CVE-2019-13455,
   CVE-2019-13473, CVE-2019-13474, CVE-2019-13484, CVE-2019-13485,
