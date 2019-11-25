@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.3.0
+Version: 1.3.1
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -16,7 +16,7 @@ Packager: Stanislav Ievlev <inger@altlinux.org>
 BuildArch: noarch
 
 Summary: alterator module for basic system settings
-License: GPL
+License: GPL-2.0-or-later
 Group: System/Configuration/Other
 
 Requires: alterator-sh-functions, setup >= 2.2.12-alt1
@@ -50,6 +50,9 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.1-alt1
+- Set Alt+Shift group switch by default (Fixes: 35107)
+
 * Thu Sep 12 2019 Mikhail Efremov <sem@altlinux.org> 1.3.0-alt1
 - installer: Setup localized slideshow for selected language.
 
