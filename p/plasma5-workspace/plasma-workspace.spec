@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.17.3
-Release: alt1
+Release: alt4
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -40,6 +40,7 @@ Requires: sddm-theme-breeze
 Requires: %name-qml
 Requires: /usr/share/design/current xdg-user-dirs
 Requires: iso-codes
+Requires: xmessage
 Requires: qt5-dbus qt5-tools qt5-quickcontrols qt5-virtualkeyboard dbus-tools-gui
 Requires: kf5-kinit kf5-kconfig kf5-kded kf5-kglobalaccel kf5-kdeclarative
 Requires: kf5-kwallet kf5-solid kf5-kimageformats kf5-kdbusaddons kf5-kio kf5-kio-extras
@@ -48,7 +49,7 @@ Requires: plasma5-polkit-kde-agent plasma5-kwin plasma5-kactivitymanagerd
 Source: %rname-%version.tar
 Source1: freememorynotifier.po
 Patch100: alt-startkde.patch
-#
+Patch101: alt-menu-add-tooltip.patch
 Patch102: alt-def-wallpaper-image.patch
 Patch103: alt-plasma-konsole.patch
 Patch104: alt-def-digital-clock.patch
@@ -61,7 +62,7 @@ Patch110: alt-breeze-loginscreen-focus.patch
 Patch111: alt-breeze-one-screen.patch
 Patch112: alt-breeze-pw-renew.patch
 Patch113: alt-breeze-autoupdate-username.patch
-#
+Patch114: alt-menu-search-results-add-genericname.patch
 Patch115: alt-dbus-sessionchange.patch
 #Patch116: alt-refresh-menu.patch
 Patch117: alt-disable-ctrl-alt-r.patch
@@ -204,7 +205,7 @@ Requires: %name-common = %version-%release
 %prep
 %setup -n %rname-%version
 %patch100 -p1 -b .startkde
-#
+%patch101 -p1
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
@@ -219,7 +220,7 @@ pushd sddm-theme
 %patch112 -p1
 popd
 %patch113 -p1
-#
+%patch114 -p1
 %patch115 -p1
 #%patch116 -p1
 %patch117 -p1
@@ -230,7 +231,7 @@ popd
 %patch122 -p2
 %patch123 -p1
 %patch124 -p1
-#%patch125 -p1
+%patch125 -p1
 %patch126 -p1
 
 cat %SOURCE1 >> po/ru/freememorynotifier.po
@@ -393,6 +394,16 @@ done
 
 
 %changelog
+* Wed Nov 20 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt4
+- add generic names to main menu search results
+- add main menu items tooltips
+
+* Tue Nov 19 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt3
+- fix disk activity monitor defaults
+
+* Mon Nov 18 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt2
+- fix requires
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt1
 - new version
 

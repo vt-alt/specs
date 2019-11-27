@@ -8,7 +8,7 @@
 
 Name: plasma5-desktop
 Version: 5.17.3
-Release: alt1
+Release: alt2
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -31,7 +31,7 @@ Patch8: alt-def-desktop-widgets.patch
 Patch10: alt-def-start-empty-session.patch
 Patch11: alt-def-key-numlock.patch
 Patch12: alt-def-layout-indicator.patch
-Patch13: alt-menu-search-results-add-genericname.patch
+#
 Patch14: alt-session-exclude.patch
 Patch15: alt-menu-add-tooltip.patch
 #
@@ -125,9 +125,9 @@ KF5 library
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
-#%patch13 -p1
+#
 %patch14 -p1
-#%patch15 -p2
+%patch15 -p1
 #
 %patch17 -p1
 
@@ -219,6 +219,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Wed Nov 20 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt2
+- add main menu items tooltip
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt1
 - new version
 
