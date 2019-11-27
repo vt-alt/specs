@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
 Version: 6.0.7
-Release: alt3
+Release: alt4
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -73,6 +73,8 @@ Patch37: pve-mini-journalreader-alt.patch
 Patch38: pve-http-server-glyphicons.patch
 Patch39: qemu-server-aarch64-spice.patch
 Patch40: qemu-server-virtio-rng.patch
+Patch41: pve-manager-aarch64.patch
+Patch42: qemu-server-aarch64.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
 BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLeay perl-File-ReadBackwards
@@ -181,6 +183,8 @@ This is used to implement the PVE REST API
 %patch38 -p0 -b .glyphicons
 %patch39 -p0 -b .aarch64-spice
 %patch40 -p0 -b .virtio-rng
+%patch41 -p0 -b .aarch64
+%patch42 -p0 -b .aarch64
 
 find -name Makefile | while read m; do
 	sed -i '/^.*\/usr\/share\/dpkg.*/d' $m;
@@ -564,6 +568,9 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Wed Nov 13 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt4
+- fixed creation/launch of VM on aarch64 (closes: #37441)
+
 * Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt3
 - fixed start pve-firewall
 

@@ -5,8 +5,8 @@
 %define _localstatedir /var
 
 Name: pve-%rname
-Version: 4.0.0
-Release: alt1
+Version: 4.0.1
+Release: alt3
 Epoch: 1
 Summary: QEMU CPU Emulator
 License: GPL/LGPL/BSD
@@ -23,51 +23,57 @@ Source5: qemu-kvm.sh
 
 Source100: Logo.bmp
 
-Patch0: qemu-alt.patch
 Patch100: qemu-3.0.1-uuid.patch
 
-Patch10: 0001-target-i386-add-MDS-NO-feature.patch
-Patch11: 0002-target-i386-define-md-clear-bit.patch
-Patch12: 0003-virtio-balloon-fix-QEMU-4.0-config-size-migration-in.patch
-Patch13: 0004-Fix-heap-overflow-in-ip_reass-on-big-packet-input.patch
-Patch14: 0001-PVE-Config-block-file-change-locking-default-to-off.patch
-Patch15: 0002-PVE-Config-Adjust-network-script-path-to-etc-kvm.patch
-Patch16: 0003-PVE-Config-set-the-CPU-model-to-kvm64-32-instead-of-.patch
-Patch17: 0004-PVE-Config-ui-spice-default-to-pve-certificates.patch
-Patch18: 0005-PVE-Config-smm_available-false.patch
-Patch19: 0006-PVE-Config-glusterfs-no-default-logfile-if-daemonize.patch
-Patch20: 0007-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
-Patch21: 0008-PVE-Up-qmp-add-get_link_status.patch
-Patch22: 0009-PVE-Up-glusterfs-allow-partial-reads.patch
-Patch23: 0010-PVE-Up-qemu-img-return-success-on-info-without-snaps.patch
-Patch24: 0011-PVE-Up-qemu-img-dd-add-osize-and-read-from-to-stdin-.patch
-Patch25: 0012-PVE-Up-qemu-img-dd-add-isize-parameter.patch
-Patch26: 0013-PVE-Up-qemu-img-dd-add-n-skip_create.patch
-Patch27: 0014-PVE-virtio-balloon-improve-query-balloon.patch
-Patch28: 0015-PVE-qapi-modify-query-machines.patch
-Patch29: 0016-PVE-qapi-modify-spice-query.patch
-Patch30: 0017-PVE-internal-snapshot-async.patch
-Patch31: 0018-PVE-block-add-the-zeroinit-block-driver-filter.patch
-Patch32: 0019-PVE-backup-modify-job-api.patch
-Patch33: 0020-PVE-backup-introduce-vma-archive-format.patch
-Patch34: 0021-PVE-Deprecated-adding-old-vma-files.patch
-Patch35: 0022-PVE-vma-add-throttling-options-to-drive-mapping-fifo.patch
-Patch36: 0023-PVE-vma-add-cache-option-to-device-map.patch
-Patch37: 0024-PVE-vma-remove-forced-NO_FLUSH-option.patch
-Patch38: 0025-PVE-Add-dummy-id-command-line-parameter.patch
-Patch39: 0026-PVE-Config-Revert-target-i386-disable-LINT0-after-re.patch
-Patch40: 0027-PVE-Up-Config-file-posix-make-locking-optiono-on-cre.patch
-Patch41: 0028-docs-recommend-use-of-md-clear-feature-on-all-Intel-.patch
-Patch42: 0029-PVE-savevm-async-kick-AIO-wait-on-block-state-write.patch
-Patch43: 0030-PVE-move-snapshot-cleanup-into-bottom-half.patch
-Patch44: 0031-PVE-monitor-disable-oob-capability.patch
+Patch10: 0001-monitor-qmp-resume-monitor-when-clearing-its-queue.patch
+Patch11: 0001-PVE-Config-block-file-change-locking-default-to-off.patch
+Patch12: 0002-PVE-Config-Adjust-network-script-path-to-etc-kvm.patch
+Patch13: 0003-PVE-Config-set-the-CPU-model-to-kvm64-32-instead-of-.patch
+Patch14: 0004-PVE-Config-ui-spice-default-to-pve-certificates.patch
+Patch15: 0005-PVE-Config-smm_available-false.patch
+Patch16: 0006-PVE-Config-glusterfs-no-default-logfile-if-daemonize.patch
+Patch17: 0007-PVE-Config-rbd-block-rbd-disable-rbd_cache_writethro.patch
+Patch18: 0008-PVE-Up-qmp-add-get_link_status.patch
+Patch19: 0009-PVE-Up-glusterfs-allow-partial-reads.patch
+Patch20: 0010-PVE-Up-qemu-img-return-success-on-info-without-snaps.patch
+Patch21: 0011-PVE-Up-qemu-img-dd-add-osize-and-read-from-to-stdin-.patch
+Patch22: 0012-PVE-Up-qemu-img-dd-add-isize-parameter.patch
+Patch23: 0013-PVE-Up-qemu-img-dd-add-n-skip_create.patch
+Patch24: 0014-PVE-virtio-balloon-improve-query-balloon.patch
+Patch25: 0015-PVE-qapi-modify-query-machines.patch
+Patch26: 0016-PVE-qapi-modify-spice-query.patch
+Patch27: 0017-PVE-internal-snapshot-async.patch
+Patch28: 0018-PVE-block-add-the-zeroinit-block-driver-filter.patch
+Patch29: 0019-PVE-backup-modify-job-api.patch
+Patch30: 0020-PVE-backup-introduce-vma-archive-format.patch
+Patch31: 0021-PVE-Deprecated-adding-old-vma-files.patch
+Patch32: 0022-PVE-vma-add-throttling-options-to-drive-mapping-fifo.patch
+Patch33: 0023-PVE-vma-add-cache-option-to-device-map.patch
+Patch34: 0024-PVE-vma-remove-forced-NO_FLUSH-option.patch
+Patch35: 0025-PVE-Add-dummy-id-command-line-parameter.patch
+Patch36: 0026-PVE-Config-Revert-target-i386-disable-LINT0-after-re.patch
+Patch37: 0027-PVE-Up-Config-file-posix-make-locking-optiono-on-cre.patch
+Patch38: 0028-PVE-savevm-async-kick-AIO-wait-on-block-state-write.patch
+Patch39: 0029-PVE-move-snapshot-cleanup-into-bottom-half.patch
+Patch40: 0030-PVE-monitor-disable-oob-capability.patch
+Patch41: 0031-PVE-bug-fix-1071-vma-writer.c-use-correct-AioContext.patch
+Patch42: 0032-qmp_backup-run-backup-related-code-inside-coroutines.patch
+Patch43: 0033-qmp_backup-use-a-CoMutex-to-protect-access-to-backup.patch
+Patch44: 0034-vma_writer_close-avoid-call-to-aio_poll-acquire-flus.patch
+Patch45: 0035-backup_job_create-pass-cluster-size-for-dump.patch
+Patch46: 0036-avoid-calling-dump_cb-with-NULL-data-pointer-for-sma.patch
+Patch47: 0037-rename-config_to_vma-into-pvebackup_co_add_config.patch
+Patch48: 0038-pvebackup_co_dump_cb-do-not-call-job-cancel.patch
+Patch49: 0039-fix-backup-job-completion.patch
+Patch50: 0040-pvebackup_complete_cb-avoid-poll-loop-if-already-ins.patch
+Patch51: 0041-PVE-backup-consider-source-cluster-size-as-well.patch
 
 ExclusiveArch: x86_64 aarch64
-BuildRequires: acpica bzlib-devel glib2-devel flex libaio-devel libalsa-devel libbluez-devel libcap-devel
+BuildRequires: acpica bzlib-devel glib2-devel flex libaio-devel libalsa-devel libcap-devel
 BuildRequires: libcap-ng-devel libcurl-devel libfdt-devel libgnutls-devel libiscsi-devel libjemalloc-devel libjpeg-devel
 BuildRequires: liblzo2-devel libncurses-devel libnettle-devel libnuma-devel libpixman-devel libpng-devel ceph-devel
 BuildRequires: libsasl2-devel libseccomp-devel libspice-server-devel libssh2-devel libusbredir-devel libxfs-devel
-BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler pkgconfig(glusterfs-api)
+BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler pkgconfig(glusterfs-api) pkgconfig(virglrenderer)
 # librdmacm-devel libibverbs-devel libibumad-devel
 BuildRequires: ipxe-roms-qemu seavgabios seabios
 
@@ -149,7 +155,6 @@ This is an auxiliary package.
 
 %prep
 %setup -n %rname-%version
-%patch0 -p1
 
 %patch10 -p1
 %patch11 -p1
@@ -186,6 +191,13 @@ This is an auxiliary package.
 %patch42 -p1
 %patch43 -p1
 %patch44 -p1
+%patch45 -p1
+%patch46 -p1
+%patch47 -p1
+%patch48 -p1
+%patch49 -p1
+%patch50 -p1
+%patch51 -p1
 
 %patch100 -p1
 
@@ -206,14 +218,10 @@ export CFLAGS="%optflags"
 	--disable-werror \
         --disable-sdl \
         --audio-drv-list="alsa" \
-        --enable-bluez  \
+        --enable-virglrenderer \
         --enable-vnc  \
         --enable-spice  \
         --enable-curl \
-        --enable-kvm \
-        --enable-tpm  \
-        --enable-vhost-net \
-        --enable-vhost-scsi  \
         --enable-linux-aio \
         --enable-libusb  \
         --enable-usb-redir \
@@ -224,9 +232,10 @@ export CFLAGS="%optflags"
         --enable-gnutls  \
         --enable-numa  \
         --enable-jemalloc  \
-        --enable-pie \
         --enable-xfsctl \
         --enable-virtfs \
+	--disable-capstone \
+	--disable-gtk \
         --disable-strip \
         --disable-xen \
         --disable-smartcard \
@@ -325,7 +334,6 @@ fi
 %_bindir/elf2dmp
 %_bindir/qemu
 %_bindir/qemu-kvm
-%_bindir/kvm
 %_bindir/qemu*system*
 %_bindir/vma
 %_bindir/qemu-pr-helper
@@ -347,6 +355,15 @@ fi
 %docdir/LICENSE
 
 %changelog
+* Wed Nov 13 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.0.1-alt3
+- 4.0.1-5
+
+* Wed Oct 23 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.0.1-alt2
+- 4.0.1-2
+
+* Wed Oct 02 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.0.0-alt2
+- 4.0.0-6
+
 * Tue Aug 06 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.0.0-alt1
 - 4.0.0-5
 
