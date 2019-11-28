@@ -1,6 +1,6 @@
 Name: x2gobroker
 Version: 0.0.4.1
-Release: alt12
+Release: alt14
 Summary: X2Go Session Broker
 License: AGPLv3+
 Group: Communications
@@ -15,14 +15,15 @@ Patch3: alt-def.patch
 Patch4: alt-iterate-listsessions.patch
 Patch5: alt-include-loadfactors.patch
 Patch6: alt-fix-tests.patch
+Patch7: alt-%name-daemon-user.patch
 
 BuildRequires: python3-module-setuptools
 BuildRequires: perl-File-Which
 # For tests
 BuildRequires: python3-module-PasteScript python3-module-netaddr python3-module-nose python3-module-paramiko python3-module-tornado
-Requires(pre):  python3-module-x2gobroker = %version-%release
-Requires(pre):  shadow-utils
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires:  python3-module-x2gobroker = %EVR
+Requires:  shadow-utils
 
 %description
 X2Go is a server based computing environment with
@@ -56,7 +57,8 @@ Summary: X2Go Session Broker (Python modules)
 Group: Communications
 BuildArch: noarch
 Obsoletes: python-module-x2gobroker < %EVR
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: python3-module-daemon python3-module-setproctitle
 
 %description -n python3-module-x2gobroker
 X2Go is a server based computing environment with
@@ -80,8 +82,8 @@ This package contains the broker's Python library.
 Summary: X2Go Session Broker (PAM authentication service)
 Group: Communications
 BuildArch: noarch
-Requires(pre): python3-module-x2gobroker = %version-%release
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: python3-module-x2gobroker = %EVR
 
 %description authservice
 X2Go is a server based computing environment with
@@ -105,8 +107,8 @@ This package contains the authentication service against the PAM system.
 Summary: X2Go Session Broker (load checker service)
 Group: Communications
 BuildArch: noarch
-Requires(pre): python3-module-x2gobroker = %version-%release
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: python3-module-x2gobroker = %EVR
 
 %description loadchecker
 X2Go is a server based computing environment with
@@ -131,10 +133,9 @@ with dynamic load balancing.
 Summary: X2Go Session Broker (standalone daemon)
 Group: Communications
 BuildArch: noarch
-Requires: x2gobroker = %version-%release
-Requires: x2gobroker-authservice = %version-%release
-Requires: python3-module-daemon python3-module-setproctitle
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: x2gobroker = %EVR
+Requires: x2gobroker-authservice = %EVR
 
 %description daemon
 X2Go is a server based computing environment with
@@ -158,8 +159,8 @@ as standalone daemon.
 %package ssh
 Summary: X2Go Session Broker (SSH broker)
 Group: Communications
-Requires: x2gobroker = %version-%release
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: x2gobroker = %EVR
 
 %description ssh
 X2Go is a server based computing environment with
@@ -184,9 +185,9 @@ to broker agents on remote X2Go servers).
 Summary: X2Go Session Broker (WSGI)
 Group: Communications
 BuildArch: noarch
-Requires: x2gobroker = %version-%release
-Requires: x2gobroker-authservice = %version-%release
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
+Requires: x2gobroker = %EVR
+Requires: x2gobroker-authservice = %EVR
 
 %description wsgi
 X2Go is a server based computing environment with
@@ -210,7 +211,7 @@ Broker as a WSGI application into a running Apache2 httpd.
 %package agent
 Summary: X2Go Session Broker (remote agent)
 Group: Communications
-Requires: x2gobroker-common
+Requires(pre): x2gobroker-common = %EVR
 
 %description agent
 X2Go is a server based computing environment with
@@ -259,6 +260,7 @@ installed on your to-be-managed X2Go servers.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 echo "Files where we will be patching libexecedir:"
@@ -316,14 +318,12 @@ touch ~/.ssh/id_rsa
 
 %make check
 
-%pre -n python3-module-x2gobroker
-if ! %_bindir/getent group x2gobroker 1>/dev/null 2>/dev/null && %_sbindir/groupadd -r x2gobroker; then
-	if ! %_bindir/getent passwd x2gobroker 1>/dev/null 2>/dev/null; then
-		%_sbindir/useradd -c "X2Go Broker System User" \
-		    -d "%_sharedstatedir/x2gobroker" \
-		    -g x2gobroker -r -s /bin/bash x2gobroker || :
-	fi
-fi
+%pre common
+%_sbindir/groupadd -r -f x2gobroker ||:
+%_sbindir/groupadd -r -f x2gobroker-users ||:
+%_sbindir/useradd -c "X2Go Broker System User" \
+	-d "%_sharedstatedir/x2gobroker" \
+	-g x2gobroker -r -s /dev/null x2gobroker >/dev/null 2>&1 ||:
 
 %post authservice
 %post_service x2gobroker-authservice
@@ -342,20 +342,6 @@ fi
 
 %preun daemon
 %preun_service x2gobroker-daemon
-
-%post ssh
-if ! %_bindir/getent group x2gobroker-users 1>/dev/null 2>/dev/null; then
-	%_sbindir/groupadd -r x2gobroker-users
-fi
-
-%pre agent
-if ! %_bindir/getent group x2gobroker 1>/dev/null 2>/dev/null && %_sbindir/groupadd -r x2gobroker; then
-	if ! %_bindir/getent passwd x2gobroker 1>/dev/null 2>/dev/null; then
-		%_sbindir/useradd -c "X2Go Broker System User" \
-		    -d "%_sharedstatedir/x2gobroker" \
-		    -g x2gobroker -r -s /bin/bash x2gobroker || :
-	fi
-fi
 
 %files
 %_bindir/x2gobroker
@@ -433,6 +419,12 @@ fi
 %_man8dir/x2gobroker-pubkeyauthorizer.8*
 
 %changelog
+* Fri Nov 15 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt14
+- run daemon with x2gobroker:x2gobroker perms
+
+* Wed Oct 30 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt13
+- don't run daemon from root
+
 * Thu Oct 10 2019 Oleg Solovyov <mcpain@altlinux.org> 0.0.4.1-alt12
 - don't run daemon from root
 
