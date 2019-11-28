@@ -1,7 +1,7 @@
 %define rname kimagemapeditor
 
 Name: kde5-%rname
-Version: 19.08.2
+Version: 19.08.3
 Release: alt1
 %K5init
 
@@ -69,6 +69,9 @@ Requires: %name-common = %version-%release
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Mon Nov 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
 * Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 
