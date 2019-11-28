@@ -2,8 +2,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: gns3-gui
-Version: 2.2.0
-Release: alt5
+Version: 2.2.2
+Release: alt1
 
 Summary: GNS3 Graphical User Interface
 License: GPLv3
@@ -82,6 +82,9 @@ install -Dp -m0644 %SOURCE5 %buildroot%_desktopdir/gns3.desktop
 %files -n gns3
 
 %changelog
+* Fri Nov 08 2019 Anton Midyukov <antohami@altlinux.org> 2.2.2-alt1
+- new version 2.2.2
+
 * Thu Oct 03 2019 Anton Midyukov <antohami@altlinux.org> 2.2.0-alt5
 - New release 2.2.0
 
