@@ -6,7 +6,7 @@
 
 %define Theme Workstation K
 %define smalltheme kworkstation
-%define codename Centaurea Ruthenica
+%define codename Centaurea Pineticola
 %define brand alt
 %define Brand ALT
 %define fakebrand xalt
@@ -17,7 +17,7 @@
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt0.4
+Release: alt4
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -29,11 +29,9 @@ BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-sans
 BuildRequires: design-bootloader-source >= 5.0-alt2
 BuildRequires: cpio %{?_enable_gfxboot:gfxboot >= 4}
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: libalternatives-devel
 BuildRequires: qt5-base-devel
-
-BuildRequires: ImageMagick fontconfig bc libGConf-devel
+BuildRequires: ImageMagick fontconfig bc libGConf-devel /usr/bin/fribidi
 
 %define Theme_ru Рабочая станция К
 %define Brand_ru Альт
@@ -43,6 +41,9 @@ BuildRequires: ImageMagick fontconfig bc libGConf-devel
 %define ProductName_ru %Brand_ru %Theme_ru %altversion
 
 %define variants alt-kdesktop alt-server alt-starterkit alt-workstation altlinux-kdesktop altlinux-desktop altlinux-office-desktop altlinux-office-server altlinux-lite altlinux-workbench altlinux-sisyphus sisyphus-server school-master school-server school-teacher school-lite school-junior altlinux-gnome-desktop sisyphus-server-light
+
+%define grub_normal white/light-blue
+%define grub_high black/light-gray
 
 Source: %name.tar
 
@@ -62,8 +63,6 @@ License: GPL
 PreReq: coreutils
 Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-%define grub_normal white/black
-%define grub_high black/white
 %description bootloader
 Here you find the graphical boot logo. Suitable for both lilo and syslinux.
 
@@ -344,7 +343,9 @@ echo $lang > lang
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-
+shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/boot.png
+# deprecated
+shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
 
 %preun bootloader
 [ $1 = 0 ] || exit 0
@@ -363,10 +364,7 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 
 #bootsplash
 %post bootsplash
-subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
-[ -f /etc/sysconfig/grub2 ] && \
-      subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
-             /etc/sysconfig/grub2 ||:
+sed -i "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 
 %post gnome-settings
 %gconf2_set string /desktop/gnome/interface/font_name Sans 11
@@ -434,6 +432,18 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Wed Nov 27 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt4
+- fix setup grub
+
+* Tue Nov 26 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt3
+- setup GRUB_BACKGROUND
+
+* Mon Nov 25 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt2
+- make bootsplash progress bar shorten
+
+* Thu Nov 21 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt1
+- update for p9
+
 * Fri Oct 04 2019 Oleg Solovyov <mcpain at altlinux dot org> 9.0.0-alt0.4
 - replace old message when the new one sent to plymouth
 
@@ -455,19 +465,19 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 * Tue Nov 20 2018 Sergey V Turchin <zerg at altlinux dot org> 8.3.0-alt2
 - don't package kde3-settings
 
-* Mon Sep 17 2018 Sergey V Turchin <zerg at altlinux dot org> 8.3.0-alt1%ubt
+* Mon Sep 17 2018 Sergey V Turchin <zerg at altlinux dot org> 8.3.0-alt1
 - new version
 
-* Fri Dec 01 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt3%ubt
+* Fri Dec 01 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt3
 - update indexhtml
 
-* Tue Jul 25 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt2%ubt
+* Tue Jul 25 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt2
 - update steps/sysconfig-base.png
 
-* Thu Jul 20 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt1%ubt
+* Thu Jul 20 2017 Sergey V Turchin <zerg at altlinux dot org> 8.2.0-alt1
 - new version
 
-* Tue Mar 07 2017 Sergey V Turchin <zerg at altlinux dot org> 8.1.0-alt4%ubt
+* Tue Mar 07 2017 Sergey V Turchin <zerg at altlinux dot org> 8.1.0-alt4
 - require pam-limits-desktop; don't use own limits
 
 * Wed Nov 16 2016 Sergey V Turchin <zerg at altlinux dot org> 8.1.0-alt3
