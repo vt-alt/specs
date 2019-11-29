@@ -1,17 +1,15 @@
 Name: xfce4-weather-plugin
 Version: 0.10.0
-Release: alt1
+Release: alt3
 
 Summary: Weather plugin for the Xfce panel
-License: %gpl2plus
+License: GPL-2.0+
 Group: Graphical desktop/XFce
 Url: https://goodies.xfce.org/projects/panel-plugins/%name
 Packager: Xfce Team <xfce@packages.altlinux.org>
 # git://git.xfce.org/panel-plugins/xfce4-weather-plugin
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4util-devel libxfce4ui-gtk3-devel libxfce4panel-gtk3-devel
@@ -53,6 +51,13 @@ mkdir m4
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed Nov 27 2019 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt3
+- Don't use rpm-build-licenses.
+- Fix reading astrodata from cache.
+
+* Fri Nov 22 2019 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt2
+- Fix day/night calculation (closes: #37528).
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt1
 - Updated to 0.10.0.
 
