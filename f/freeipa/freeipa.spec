@@ -41,7 +41,7 @@
 %define openldap_version 2.4.47-alt2
 
 Name: freeipa
-Version: 4.7.3
+Version: 4.7.4
 Release: alt1
 
 Summary: The Identity, Policy and Audit system
@@ -1001,6 +1001,9 @@ fi
 %python3_sitelibdir/ipaplatform-*-nspkg.pth
 
 %changelog
+* Tue Nov 26 2019 Stanislav Levin <slev@altlinux.org> 4.7.4-alt1
+- 4.7.3 -> 4.7.4 (fixes: CVE-2019-14867, CVE-2019-10195).
+
 * Fri Sep 20 2019 Stanislav Levin <slev@altlinux.org> 4.7.3-alt1
 - 4.7.2 -> 4.7.3.
 
