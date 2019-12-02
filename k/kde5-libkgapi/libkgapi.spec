@@ -11,7 +11,7 @@
 %define libkpimgapitasks libkpimgapitasks%sover
 
 Name: kde5-%rname
-Version: 19.08.2
+Version: 19.08.3
 Release: alt2
 %K5init altplace
 
@@ -116,6 +116,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+sed -i '1iadd_definitions(-std=gnu90)' src/saslplugin/CMakeLists.txt
 
 %build
 %K5build \
@@ -169,6 +170,12 @@ done
 %_K5lib/libKPimGAPITasks.so.*
 
 %changelog
+* Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
+- fix to compile
+
+* Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
 * Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt2
 - fix requires, build requires
 
