@@ -7,13 +7,13 @@
 
 Name: freerdp
 Version: 2.0.0
-Release: alt3.git20190806
+Release: alt4.git20190806
 
 Group: Networking/Remote access
 Summary: Remote Desktop Protocol functionality
-License: Apache License 2.0
+License: Apache-2.0
 URL: http://www.freerdp.com
-Packager: Mikhail Kolchin <mvk@altlinux.org>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source: %name-%version.tar
 
@@ -23,6 +23,7 @@ Requires: %name-plugins-standard = %EVR
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
+BuildRequires: extra-cmake-modules
 BuildRequires: docbook-style-xsl git-core xmlto libpcre-devel
 BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(libpcsclite)
@@ -59,13 +60,22 @@ BuildRequires: libfaac-devel
 BuildRequires: libsoxr-devel
 BuildRequires: libffi-devel
 BuildRequires: liborc-devel
+BuildRequires: libicu-devel
+BuildRequires: libcairo-devel
+BuildRequires: libpixman-devel
+BuildRequires: libexpat-devel
+BuildRequires: libXdmcp-devel
+BuildRequires: bzlib-devel
+BuildRequires: libuuid-devel
+BuildRequires: libudev-devel
+BuildRequires: libusb-devel
+BuildRequires: libdbus-glib-devel
 
 %description
 freerdp implements Remote Desktop Protocol (RDP), used in a number of Microsoft
 products. Rdesktop analog.
 
 This is metapackage.
-
 
 %package -n xfreerdp
 Summary: Remote Desktop Protocol client
@@ -188,10 +198,14 @@ the RDP protocol.
 %cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_SHARED_LIBS=ON \
-    -DCMAKE_SKIP_RPATH=ON \
+    -DCMAKE_SKIP_RPATH=FALSE \
+    -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
     -DWITH_ALSA=ON \
+    -DWITH_CAIRO=ON \
     -DWITH_CUPS=ON \
-    -DWITH_CHANNELS=ON -DBUILTIN_CHANNELS=OFF \
+    -DWITH_CHANNELS=ON \
+    -DBUILTIN_CHANNELS=OFF \
+    -DWITH_CLIENT_CHANNELS=ON \
     -DWITH_CLIENT=ON \
     %{?_without_directfb:-DWITH_DIRECTFB=OFF} \
     %{?_without_ffmpeg:-DWITH_FFMPEG=OFF} \
@@ -205,6 +219,8 @@ the RDP protocol.
     -DWITH_FAAC=ON \
     -DWITH_FAAD2=ON \
     -DWITH_GSTREAMER_1_0=ON \
+    -DGSTREAMER_1_0_INCLUDE_DIRS=%{_includedir}/gstreamer-1.0 \
+    -DWITH_ICU=ON \
     -DWITH_IPP=OFF \
     -DWITH_JPEG=ON \
     -DWITH_LAME=ON \
@@ -216,6 +232,10 @@ the RDP protocol.
     -DWITH_PCSC=ON \
     -DWITH_PULSE=ON \
     -DWITH_SERVER=ON \
+    -DCHANNEL_URBDRC=ON \
+    -DCHANNEL_URBDRC_CLIENT=ON \
+    -DWITH_SHADOW_X11=ON \
+    -DWITH_SHADOW_MAC=ON \
     -DWITH_SOXR=ON \
     -DWITH_WAYLAND=ON \
     -DWITH_X11=ON \
@@ -225,10 +245,12 @@ the RDP protocol.
     -DWITH_XINERAMA=ON \
     -DWITH_XKBFILE=ON \
     -DWITH_XRENDER=ON \
+    -DWITH_XTEST=ON \
     -DWITH_XV=ON \
     -DWITH_ZLIB=ON \
 %ifarch x86_64
     -DWITH_SSE2=ON \
+    -DWITH_VAAPI=%{?_with_ffmpeg:ON}%{?!_with_ffmpeg:OFF} \
 %else
     -DWITH_SSE2=OFF \
 %endif
@@ -313,6 +335,12 @@ ln -s freerdp2.pc %buildroot%_pkgconfigdir/freerdp.pc
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Wed Nov 20 2019 Andrey Cherepanov <cas@altlinux.org> 2.0.0-alt4.git20190806
+- Enable support of icu and vaapi.
+- Build liburbdrc-client.so (ALT #34230).
+- Change maintainer.
+- Set package license according to SPDX.
+
 * Mon Aug 12 2019 Andrey Cherepanov <cas@altlinux.org> 2.0.0-alt3.git20190806
 - New snapshot from upstream git repository.
 - Build from upstream git.
