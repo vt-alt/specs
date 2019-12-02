@@ -5,7 +5,7 @@
 
 Name: dhcpcd
 Epoch: 1
-Version: 7.2.3
+Version: 8.1.2
 Release: alt1
 
 Summary: DHCP Client
@@ -91,6 +91,31 @@ fi
 %exclude %_datadir/%name/
 
 %changelog
+* Thu Nov 14 2019 Mikhail Efremov <sem@altlinux.org> 1:8.1.2-alt1
+- Drop obsoleted patch.
+- Updated to 8.1.2.
+
+* Tue Nov 12 2019 Mikhail Efremov <sem@altlinux.org> 1:8.1.1-alt2
+- Patch drom upstream:
+  + INET: Fix corruption of IPv4 address flags when renewing.
+
+* Tue Oct 22 2019 Mikhail Efremov <sem@altlinux.org> 1:8.1.1-alt1
+- Drop "Don't use BSD semantics for UDP." patch.
+- Drop obsoleted patch.
+- Updated to 8.1.1.
+
+* Fri Sep 13 2019 Mikhail Efremov <sem@altlinux.org> 1:8.0.6-alt1
+- Updated to 8.0.6.
+
+* Wed Sep 04 2019 Mikhail Efremov <sem@altlinux.org> 1:8.0.4-alt1
+- Updated to 8.0.4.
+
+* Thu Aug 22 2019 Mikhail Efremov <sem@altlinux.org> 1:8.0.3-alt1
+- Updated to 8.0.3.
+
+* Thu Aug 15 2019 Mikhail Efremov <sem@altlinux.org> 1:8.0.2-alt1
+- Updated to 8.0.2.
+
 * Wed Jul 03 2019 Mikhail Efremov <sem@altlinux.org> 1:7.2.3-alt1
 - Updated url.
 - Updated to 7.2.3.
