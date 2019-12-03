@@ -1,6 +1,6 @@
 Name: u-boot-rpi3
-Version: 2019.07
-Release: alt1
+Version: 2019.10
+Release: alt2
 
 Summary: Das U-Boot
 License: GPL
@@ -10,20 +10,20 @@ ExclusiveArch: armh aarch64
 
 Source: %name-%version-%release.tar
 
-BuildRequires: dtc >= 1.4 flex
+BuildRequires: bc dtc >= 1.4 flex
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
 other processors, which can be installed in a boot ROM and used to
 initialize and test the hardware or to download and run application code.
-This package supports Raspberry 3 boards.
+This package supports Raspberry Pi 3/4 boards.
 
 %ifarch armh
-%define rpi rpi_3_32b
+%define rpi rpi_3_32b rpi_3_b_plus_32b rpi_4_32b
 %define img kernel7.img
 %endif
 %ifarch aarch64
-%define rpi rpi_3
+%define rpi rpi_3 rpi_3_b_plus rpi_4
 %define img kernel8.img
 %endif
 
@@ -31,16 +31,29 @@ This package supports Raspberry 3 boards.
 %setup
 
 %build
-%make_build %{rpi}_defconfig all
+for board in %rpi; do
+	mkdir build
+        %make_build O=build ${board}_defconfig all
+        install -pm0644 -D build/u-boot.bin out/${board}/%img
+        rm -rf build
+done
 
 %install
-install -pm0644 -D u-boot.bin %buildroot%_datadir/u-boot/%rpi/%img
+mkdir -p %buildroot%_datadir/u-boot
+cd out
+find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 
 %files
 %doc README
 %_datadir/u-boot/*
 
 %changelog
+* Wed Oct 09 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt2
+- added 32-bit 3b+ variant just for completeness
+
+* Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
+- 2019.10 released
+
 * Tue Jul 16 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
 - 2019.07 released
 
@@ -67,4 +80,3 @@ install -pm0644 -D u-boot.bin %buildroot%_datadir/u-boot/%rpi/%img
 
 * Tue Feb 07 2017 Sergey Bolshakov <sbolshakov@altlinux.ru> 2017.01-alt1
 - initial
-
