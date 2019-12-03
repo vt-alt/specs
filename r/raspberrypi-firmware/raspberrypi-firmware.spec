@@ -2,8 +2,8 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20190926
-Release: alt1
+Version: 20191105
+Release: alt2
 Url: https://github.com/raspberrypi/firmware
 License: distributable
 Group: System/Kernel and hardware
@@ -28,6 +28,7 @@ Source14: start4.elf
 Source15: start4cd.elf
 Source16: start4db.elf
 Source17: start4x.elf
+Source18: bcm2711-rpi-4-b.dtb
 
 Requires: u-boot-rpi3
 
@@ -36,41 +37,62 @@ Requires: u-boot-rpi3
 
 %install
 %ifarch %arm
-%define target %_datadir/u-boot/rpi_3_32b
+%define target_rpi3 %_datadir/u-boot/rpi_3_32b
+%define target_rpi4 %_datadir/u-boot/rpi_4_32b
 %endif
 
 %ifarch aarch64
-%define target %_datadir/u-boot/rpi_3
+%define target_rpi3 %_datadir/u-boot/rpi_3
+%define target_rpi4 %_datadir/u-boot/rpi_4
 %endif
 
-%__install -d %buildroot/%target
-%__install -m644 %SOURCE0 %buildroot/%target
-%__install -m644 %SOURCE1 %buildroot/%target
-%__install -m644 %SOURCE2 %buildroot/%target
-%__install -m644 %SOURCE3 %buildroot/%target
-%__install -m644 %SOURCE4 %buildroot/%target
-%__install -m644 %SOURCE5 %buildroot/%target
-%__install -m644 %SOURCE6 %buildroot/%target
-%__install -m644 %SOURCE7 %buildroot/%target
-%__install -m644 %SOURCE8 %buildroot/%target
+%__install -d %buildroot/%target_rpi3
+%__install -m644 %SOURCE0 %buildroot/%target_rpi3
+%__install -m644 %SOURCE1 %buildroot/%target_rpi3
+%__install -m644 %SOURCE2 %buildroot/%target_rpi3
+%__install -m644 %SOURCE3 %buildroot/%target_rpi3
+%__install -m644 %SOURCE4 %buildroot/%target_rpi3
+%__install -m644 %SOURCE5 %buildroot/%target_rpi3
+%__install -m644 %SOURCE6 %buildroot/%target_rpi3
+%__install -m644 %SOURCE7 %buildroot/%target_rpi3
+%__install -m644 %SOURCE8 %buildroot/%target_rpi3
 %__install -d %buildroot/%_docdir/%name
 %__install -m644 %SOURCE9 %buildroot/%_docdir/%name
-%__install -m644 %SOURCE10 %buildroot/%target
-%__install -m644 %SOURCE11 %buildroot/%target
-%__install -m644 %SOURCE12 %buildroot/%target
-%__install -m644 %SOURCE13 %buildroot/%target
-%__install -m644 %SOURCE14 %buildroot/%target
-%__install -m644 %SOURCE15 %buildroot/%target
-%__install -m644 %SOURCE16 %buildroot/%target
-%__install -m644 %SOURCE17 %buildroot/%target
+%__install -d %buildroot/%target_rpi4
+%__install -m644 %SOURCE10 %buildroot/%target_rpi4
+%__install -m644 %SOURCE11 %buildroot/%target_rpi4
+%__install -m644 %SOURCE12 %buildroot/%target_rpi4
+%__install -m644 %SOURCE13 %buildroot/%target_rpi4
+%__install -m644 %SOURCE14 %buildroot/%target_rpi4
+%__install -m644 %SOURCE15 %buildroot/%target_rpi4
+%__install -m644 %SOURCE16 %buildroot/%target_rpi4
+%__install -m644 %SOURCE17 %buildroot/%target_rpi4
+%__install -m644 %SOURCE18 %buildroot/%target_rpi4
 
-echo 'enable_uart=1' > %buildroot/%target/config.txt
+cp -a %buildroot/%target_rpi3/bootcode.bin %buildroot/%target_rpi4
+
+echo 'enable_uart=1' > %buildroot/%target_rpi3/config.txt
+echo 'enable_uart=1' > %buildroot/%target_rpi4/config.txt
+
+%ifarch aarch64
+echo 'arm_64bit=1' >> %buildroot/%target_rpi4/config.txt
+%endif
 
 %files
-%target/*
+%target_rpi3/*
+%target_rpi4/*
 %doc %_docdir/%name
 
 %changelog
+* Thu Nov 14 2019 Dmitry Terekhin <jqt4@altlinux.org> 20191105-alt2
+- Added bcm2711-rpi-4-b.dtb for the RasPi4 firmware's work
+
+* Tue Nov 05 2019 Dmitry Terekhin <jqt4@altlinux.org> 20191105-alt1
+- new snapshot
+
+* Tue Oct 08 2019 Anton Midyukov <antohami@altlinux.org> 20190926-alt2
+- Add support u-boot-rpi3-2019.10
+
 * Thu Sep 26 2019 Dmitry Terekhin <jqt4@altlinux.org> 20190926-alt1
 - new snapshot
 
