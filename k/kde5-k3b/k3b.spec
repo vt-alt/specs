@@ -15,7 +15,7 @@
 %define req_permhelper /usr/bin/gpasswd
 
 %define req_std_burning cdrkit cdrdao dvd+rw-tools cdrskin
-%define req_std_common kf5-filesystem %req_permhelper
+%define req_std_common kde5-runtime %req_permhelper
 %define req_multimedia sox-play libsox-fmt-pulseaudio transcode vcdimager normalize lame flac mpc
 #req_multimedia transcode
 %define req_mini %req_std_burning %req_std_common
@@ -24,7 +24,7 @@
 %define rname k3b
 Name: kde5-%rname
 Version: 19.08.3
-Release: alt1
+Release: alt2
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Archiving/Cd burning
@@ -187,6 +187,9 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Fri Nov 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
+- update requires
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 
