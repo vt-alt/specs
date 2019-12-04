@@ -1,7 +1,7 @@
 %define rname ktouch
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.3
 Release: alt1
 %K5init
 
@@ -39,7 +39,9 @@ to write. KTouch can also help you to remember what fingers to use.
 %setup -n %rname-%version
 
 %build
-%K5build
+%K5build \
+    -DCOMPILE_QML=OFF \
+    #
 
 %install
 %K5install
@@ -57,6 +59,12 @@ chmod 0755 %buildroot/%_K5xdgapp/org.kde.ktouch.desktop
 %_K5cfg/ktouch.kcfg
 
 %changelog
+* Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

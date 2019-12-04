@@ -1,7 +1,7 @@
 %define rname kwordquiz
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.08.3
 Release: alt1
 %K5init
 
@@ -58,6 +58,12 @@ language learning features, please try KVocTrain.
 %_K5notif/kwordquiz.notifyrc
 
 %changelog
+* Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
