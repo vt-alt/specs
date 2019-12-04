@@ -5,14 +5,19 @@
 
 %define brand simply
 
+%define gtk_theme ClassicLooks
+%define icon_theme SimpleSL
+%define xfwm4_theme "ClassicLooks XFWM4"
+
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.900
-Release: alt2
+Version: 8.910
+Release: alt1
 
+BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
 %ifarch %ix86 x86_64
-BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
+BuildRequires: cpio
 BuildRequires: design-bootloader-source >= 5.0-alt2 fribidi
 BuildRequires: gfxboot >= 4
 %endif
@@ -63,11 +68,10 @@ Summary: Theme for splash animations during bootup
 Summary(ru_RU.UTF-8): Тема для экрана загрузки для дистрибутива "Просто Линукс"
 License: Distributable
 Group:  System/Configuration/Boot and Init
-%ifarch %ix86 x86_64
+BuildArch: noarch
 Provides: plymouth-theme-%theme
 Requires: plymouth-plugin-script
 Requires: plymouth
-%endif
 
 %branding_add_conflicts simply-linux bootsplash
 
@@ -177,7 +181,7 @@ Requires: gtk-theme-classiclooks
 Requires: gnome-themes-standard
 Requires: gnome-icon-theme icon-theme-simple-sl >= 2.7-alt3
 Requires: branding-simply-linux-graphics
-Requires: branding-simply-linux-backgrounds8
+Requires: branding-simply-linux-backgrounds9
 # plugins added on panel by default
 Requires: xfce4-places-plugin
 Requires: xfce4-pulseaudio-plugin
@@ -188,22 +192,18 @@ Obsoletes: xfce-settings-lite xfce-settings-school-lite
 %branding_add_conflicts simply-linux xfce-settings
 Conflicts: xfce-settings-simply-linux
 
-# NOTE: Drop this requires when SL-9 will be released:
-# at that point these packages will be installed already.
-Requires: branding-simply-linux-backgrounds-legacy branding-simply-linux-backgrounds-vladstudio
-
 %description xfce-settings
 This package contains default settings for Xfce for Simply linux distribution.
 
-%package backgrounds8
+%package backgrounds9
 Group: Graphics
-Summary: Backgrounds for SL-8
+Summary: Backgrounds for SL-9
 License: CC-BY-NC-SA-3.0+
 BuildArch: noarch
-%branding_add_conflicts simply-linux backgrounds8
+%branding_add_conflicts simply-linux backgrounds9
 
-%description backgrounds8
-This package contains backgrounds for Simply Linux 8.
+%description backgrounds9
+This package contains backgrounds for Simply Linux 9.
 
 %package slideshow
 Summary: Slideshow for Simply Linux %version installer.
@@ -275,12 +275,11 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename ./configure
+THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme ./configure
 make
 
 %install
 %makeinstall
-make x86 DESTDIR=%buildroot datadir=%buildroot%_datadir sysconfdir=%buildroot%_sysconfdir
 
 %define data_cur_dir %_datadir/branding-data-current
 mkdir -p %buildroot%data_cur_dir
@@ -326,22 +325,6 @@ for r in %buildroot%data_cur_dir/alt-notes/license.*.html; do
   touch %buildroot%_datadir/alt-notes/"${r##*/}"
 done
 
-mkdir -p %buildroot/etc/skel/XDG-Templates.skel/
-
-cp -r xfce-settings/etcskel/* %buildroot/etc/skel/
-cp -r xfce-settings/etcskel/.config %buildroot/etc/skel/
-cp -r xfce-settings/etcskel/.local %buildroot/etc/skel/
-cp -r xfce-settings/etcskel/.vimrc %buildroot/etc/skel/
-cp -r xfce-settings/etcskel/.gtkrc-2.0 %buildroot/etc/skel/
-
-install -m 644 xfce-settings/etcskel/.wm-select %buildroot/etc/skel/
-
-# backgrounds
-mkdir -p %buildroot%_datadir/backgrounds/xfce/
-install -m 644 xfce-settings/backgrounds/slinux*.jpg %buildroot%_datadir/backgrounds/xfce/
-
-install -pDm0755 xfce-settings/scripts/zdg-move-templates.sh %buildroot%_sysconfdir/X11/profile.d/zdg-move-templates.sh
-
 #slideshow
 mkdir -p %buildroot/usr/share/install2/slideshow
 mkdir -p %buildroot/etc/alterator
@@ -365,10 +348,6 @@ cp menu/50-xfce-applications.menu %buildroot/etc/xdg/menus/xfce-applications-mer
 mkdir -p %buildroot/usr/share/desktop-directories
 cp menu/altlinux-wine.directory %buildroot/usr/share/desktop-directories/
 
-# system-settings
-mkdir -p %buildroot/%_sysconfdir/polkit-1/rules.d/
-cp -a system-settings/polkit-rules/*.rules %buildroot/%_sysconfdir/polkit-1/rules.d/
-
 %ifarch %ix86 x86_64
 #bootloader
 %pre bootloader
@@ -377,6 +356,7 @@ cp -a system-settings/polkit-rules/*.rules %buildroot/%_sysconfdir/polkit-1/rule
 %endif
 
 %post bootloader
+[ "$1" -eq 1 ] || exit 0
 %ifarch %ix86 x86_64
 ln -snf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
@@ -387,13 +367,15 @@ echo $lang > lang
 %endif
 . shell-config
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
-#shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
+shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/boot.png
+# deprecated
+shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
 
 %ifarch %ix86 x86_64
 %preun bootloader
-[ $1 = 0 ] || exit 0
+[ "$1" -eq 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
     rm -f /boot/splash/message
 %endif
@@ -401,21 +383,10 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 %post indexhtml
 %_sbindir/indexhtml-update
 
-%files bootloader
-%ifarch %ix86 x86_64
-%_datadir/gfxboot/%theme
-/boot/splash/%theme
-%endif
-/boot/grub/themes/%theme
-
 #bootsplash
 %post bootsplash
-%ifarch %ix86 x86_64
+[ "$1" -eq 1 ] || exit 0
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
-%endif
-[ -f /etc/sysconfig/grub2 ] && \
-      subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
-             /etc/sysconfig/grub2 ||:
 
 #release
 %post release
@@ -441,11 +412,17 @@ fi
 %_niconsdir/slinux.png
 %_iconsdir/altlinux.png
 
-%files bootsplash
+%files bootloader
 %ifarch %ix86 x86_64
-%_datadir/plymouth/themes/%theme/*
-%exclude %_datadir/plymouth/themes/%theme/*.in
+%_datadir/gfxboot/%theme
+/boot/splash/%theme
 %endif
+/boot/grub/themes/%theme
+
+%files bootsplash
+%_datadir/plymouth/themes/%theme/*
+%_pixmapsdir/system-logo.png
+%exclude %_datadir/plymouth/themes/%theme/*.in
 
 %files release
 %dir %data_cur_dir
@@ -469,7 +446,7 @@ fi
 /etc/skel/.vimrc
 /etc/skel/.gtkrc-2.0
 
-%files backgrounds8
+%files backgrounds9
 /usr/share/backgrounds/xfce/*
 
 %files slideshow
@@ -491,9 +468,34 @@ fi
 /usr/share/desktop-directories/altlinux-wine.directory
 
 %files system-settings
-%config %_sysconfdir/polkit-1/rules.d/*.rules
+%_datadir/polkit-1/rules.d/*.rules
+%_datadir/install3/*
 
 %changelog
+* Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 8.910-alt1
+- components.mk: Fix convert argument.
+- Fix build on non-x86.
+- xfce-settings: Drop requires for legacy backgrounds.
+- Replace backgrounds8 subpackage with backgrounds9.
+- images: Generate boot.jpg from boot.png.
+- images: New images for bootloader, splash and lightdm.
+- images: Drop grub.png.
+- bootsplash: Drop grub.jpg.
+- bootloader: Fix grub setup.
+- cleanup: Don't mix sections.
+- bootsplash: Package system-logo.png.
+- Drop unneeded make.
+- build: Don't hardcode Xfce GTK, icons and xfwm4 themes.
+- build: Move xfce-settings installation to components.mk.
+- system-settings: Package lightdm-gtk-greeter settings.
+- build: Re-work targets.
+- build: Mark targets as PHONY.
+- build: Move system-settings installation to components.mk.
+- all: Don't touch config files during package update.
+- xfce-settings: Drop fuzion-icon autostart file.
+- xfce-settings: Add polkit-gnome autostart file again.
+- bootsplash: Package plymouth theme on all arches.
+
 * Wed Oct 09 2019 Mikhail Efremov <sem@altlinux.org> 8.900-alt2
 - Fix BR: Add fribidi on x86.
 - Fix build on aarch64.

@@ -1,5 +1,5 @@
 Name: installer-distro-simply-linux
-Version: 9.0
+Version: 9.1
 Release: alt1
 
 Summary: Installer common files
@@ -121,6 +121,9 @@ Installer stage3
 %_datadir/alterator/steps/*
 
 %changelog
+* Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 9.1-alt1
+- postinstall: Drop lightdm hook.
+
 * Tue Oct 08 2019 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
 - Change lightdm theme to ClassicLooks.
 - stage3: Add installer-feature-lightdm-stage3.

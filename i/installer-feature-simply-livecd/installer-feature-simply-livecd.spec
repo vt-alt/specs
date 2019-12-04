@@ -1,5 +1,5 @@
 Name: installer-feature-simply-livecd
-Version: 0.9.0
+Version: 0.9.1
 Release: alt1
 
 Summary: LiveCD install hooks for Simply Linux.
@@ -56,6 +56,10 @@ cp -ar alterator-menu/ %buildroot%_datadir/livecd-install
 %_datadir/livecd-install/
 
 %changelog
+* Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 0.9.1-alt1
+- Drop lightdm hook.
+- Kill xfce4-screensaver during install.
+
 * Mon Oct 07 2019 Mikhail Efremov <sem@altlinux.org> 0.9.0-alt1
 - Require installer-feature-lightdm-stage3.
 - cleanup: Arrange installer-features in alphabet order.
