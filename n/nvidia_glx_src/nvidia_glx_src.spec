@@ -1,3 +1,4 @@
+%set_verify_elf_method textrel=relaxed
 
 %define tbname         NVIDIA-Linux-x86_64
 %define dirsuffix %nil
@@ -17,7 +18,7 @@
 %endif
 
 Name: nvidia_glx_src
-Version: 440.31
+Version: 440.36
 Release: alt1
 
 Source0: null
@@ -109,10 +110,7 @@ popd
 
 %build
 
-
 %install
-%set_verify_elf_method textrel=relaxed
-
 # install libraries
 mkdir -p %buildroot/%_libdir/
 install -m 0644 %subd/libcuda.so.%version %buildroot/%_libdir/
@@ -150,6 +148,9 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_sysconfdir/OpenCL/vendors/nvidia.icd
 
 %changelog
+* Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 440.36-alt1
+- new version
+
 * Wed Nov 06 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt1
 - new version
 

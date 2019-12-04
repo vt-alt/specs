@@ -18,10 +18,10 @@
 # version-release
 
 %define nv_version 440
-%define nv_release 31
+%define nv_release 36
 %define nv_minor %nil
-%define pkg_rel alt219
-%define set_gl_nvidia_ver 1.2.0
+%define pkg_rel alt221
+%define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
@@ -97,7 +97,8 @@ Provides: %virtual_pkg_name = %version-%release
 Obsoletes: %virtual_pkg_name < %version-%release
 #
 Conflicts: xorg-x11-mesagl <= 6.8.2-alt7
-PreReq: libGL
+Requires(pre): libGL
+Requires: libGL
 Requires: apt-scripts-nvidia
 Requires: /usr/bin/xsetup-monitor
 Requires(post): x11presetdrv
@@ -310,6 +311,12 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 440.36-alt221
+- new version
+
+* Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt220
+- setup xorg for PRIME render offload
+
 * Wed Nov 06 2019 Sergey V Turchin <zerg@altlinux.org> 440.31-alt219
 - new version
 

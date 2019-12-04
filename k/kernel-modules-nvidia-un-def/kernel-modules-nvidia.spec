@@ -7,12 +7,12 @@
 %define modesetmodule_name	nvidia-modeset
 %define uvmmodule_name		nvidia-uvm
 %define drmmodule_name		nvidia-drm
-%define package_version	440.31
+%define package_version	440.36
 %define module_version	%package_version
 %ifarch %ix86
-%define module_version	390.129
+%define module_version	390.132
 %endif
-%define module_release	alt1
+%define module_release	alt2
 %define flavour		un-def
 %define karch %ix86 x86_64
 
@@ -53,7 +53,7 @@
 %endif
 %define legacy5_src %(echo %legacy5 | tr -d .)
 %nvIF_ver_lt %xorg_ver 1.21
-%define legacy6 390.129
+%define legacy6 390.132
 %else
 %define legacy6 %nil
 %endif
@@ -271,6 +271,15 @@ fi
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Nov 28 2019 Sergey V Turchin <zerg at altlinux dot org> 440.31-alt1
+- fix ix86 module version
+
+* Thu Nov 21 2019 Sergey V Turchin <zerg at altlinux dot org> 440.36-alt1
+- new release (440.36)
+
+* Thu Nov 21 2019 Sergey V Turchin <zerg at altlinux dot org> 440.31-alt2
+- new release (390.132)
 
 * Wed Nov 06 2019 Sergey V Turchin <zerg at altlinux dot org> 440.31-alt1
 - new release (440.31)
