@@ -1,6 +1,6 @@
 %define soversion 5
 Name: oniguruma
-Version: 6.9.2
+Version: 6.9.4
 Release: alt1
 Summary: Regular expressions library
 
@@ -84,6 +84,16 @@ find $RPM_BUILD_ROOT -name '*.la' \
 %_libdir/pkgconfig/%name.pc
 
 %changelog
+* Mon Dec 02 2019 Anton Farygin <rider@altlinux.ru> 6.9.4-alt1
+- 6.9.4
+- fixes:
+	* CVE-2019-19012 Integer overflow related to reg->dmax in search_in_range()
+	* CVE-2019-19203 heap-buffer-overflow in gb18030_mbc_enc_len()
+	* CVE-2019-19204 heap-buffer-overflow in fetch_interval_quantifier()
+
+* Tue Aug 13 2019 Anton Farygin <rider@altlinux.ru> 6.9.3-alt1
+- 6.9.3
+
 * Sat May 11 2019 Anton Farygin <rider@altlinux.ru> 6.9.2-alt1
 - 6.9.2
 
