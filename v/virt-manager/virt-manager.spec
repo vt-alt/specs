@@ -3,7 +3,7 @@
 
 Name: virt-manager
 Version: 2.2.1
-Release: alt1
+Release: alt2
 Summary: Virtual Machine Manager
 
 Group: Emulators
@@ -27,23 +27,14 @@ Requires: libosinfo >= 0.2.10
 Requires: librsvg
 Requires: genisoimage
 
-# add requires based on "from gi.repository import foo"
-Requires: typelib(GObject)
-Requires: typelib(LibvirtGLib) = 1.0
+# define version of requires based on "from gi.repository import foo"
 Requires: typelib(Gtk) = 3.0
-Requires: typelib(Gdk)
-Requires: typelib(GdkPixbuf)
-Requires: typelib(Pango)
-Requires: typelib(GLib)
-Requires: typelib(Gio)
 Requires: typelib(GtkVnc) = 2.0
 Requires: typelib(GtkSource) = 4
 Requires: typelib(SpiceClientGtk) = 3.0
-Requires: typelib(SpiceClientGLib)
 Requires: typelib(Vte) = 2.91
-Requires: typelib(Libosinfo) = 1.0
 
-BuildRequires(pre): rpm-build-python3
+BuildRequires(pre): rpm-build-python3 rpm-build-gir
 BuildRequires: python3-devel python3-module-argcomplete
 BuildRequires: libgio
 BuildRequires: intltool
@@ -52,6 +43,8 @@ BuildRequires: bash-completion
 
 %add_python3_lib_path %_datadir/%name
 %allow_python3_import_path %_datadir/%name
+# libaptindicator is not package in ALT Linux
+%add_typelib_req_skiplist typelib(AppIndicator3)
 
 %description
 Virtual Machine Manager provides a graphical tool for administering
@@ -76,7 +69,6 @@ AutoReqProv: nopython
 
 Requires: virt-manager-common = %EVR
 
-Provides: virt-install
 Provides: virt-clone
 Provides: virt-convert
 Provides: virt-xml
@@ -148,6 +140,9 @@ done
 %_man1dir/virt-xml.1*
 
 %changelog
+* Mon Dec 02 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.1-alt2
+- fixed requires(added gir packages)
+
 * Thu Jul 04 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.1-alt1
 - 2.2.1 (Fixes: CVE-2019-10183)
 
