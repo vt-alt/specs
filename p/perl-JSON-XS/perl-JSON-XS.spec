@@ -1,16 +1,17 @@
 %define _unpackaged_files_terminate_build 1
 %define dist JSON-XS
+
 Name: perl-%dist
-Version: 4.02
-Release: alt1
-Epoch: 3
+Version: 3.04
+Release: alt2
+Epoch: 20191119
 
 Summary: JSON serialising/deserialising, done correctly and fast
 License: GPL or Artistic
 Group: Development/Perl
 
 URL: %CPAN %dist
-Source0: http://www.cpan.org/authors/id/M/ML/MLEHMANN/JSON-XS-%{version}.tar.gz
+Source0: http://www.cpan.org/authors/id/M/ML/MLEHMANN/%{dist}-%{version}.tar.gz
 
 # Automatically added by buildreq on Fri Oct 07 2011
 BuildRequires: perl-Encode perl-common-sense perl-devel perl(Types/Serialiser.pm) perl(Canary/Stability.pm)
@@ -21,11 +22,7 @@ primary goal is to be *correct* and its secondary goal is to be
 *fast*. To reach the latter goal it was written in C.
 
 %prep
-%setup -q -n JSON-XS-%{version}
-if [ %version == 4.0 ]; then
-  echo "4.0 is pre-release, do not use other than for testing."
-  exit 1
-fi
+%setup -q -n %dist-%version
 
 %build
 %perl_vendor_build
@@ -40,6 +37,9 @@ fi
 %perl_vendor_autolib/JSON
 
 %changelog
+* Tue Nov 19 2019 Valery Inozemtsev <shrek@altlinux.ru> 20191119:3.04-alt2
+- reverted to 3.04
+
 * Wed Mar 06 2019 Igor Vlasenko <viy@altlinux.ru> 3:4.02-alt1
 - automated CPAN update
 
