@@ -1,5 +1,5 @@
 %define		php7_extension	pdo_sqlsrv
-%define		real_version	5.2.0
+%define		real_version	5.6.1
 
 Name:	 	php7-%php7_extension
 Version:	%php7_version

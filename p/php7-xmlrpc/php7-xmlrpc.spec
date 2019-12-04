@@ -15,14 +15,13 @@ Packager:       Nikolay A. Fetisov <naf@altlinux.org>
 Source1:	php-%php7_extension.ini
 Source2:	php-%php7_extension-params.sh
 
-Patch0:		php-xmlrpc-fix.patch
-
 BuildRequires(pre): rpm-build-php7
 # Automatically added by buildreq on Tue Jun 13 2017
 # optimized out: gnu-config perl php7-libs python-base python-modules python3 python3-base
 BuildRequires: glibc-devel-static libxml2-devel
 
 BuildRequires:	php7-devel = %php7_version
+BuildRequires:	php7 = %php7_version
 
 %description
 PHP7 module XML-RPC can be used to write XML-RPC servers and clients.
@@ -30,7 +29,6 @@ PHP7 module XML-RPC can be used to write XML-RPC servers and clients.
 %prep
 %setup -T -c
 cp -pr %php7_extsrcdir/%php7_extension/* .
-%patch -p1
 
 %build
 phpize
@@ -50,6 +48,9 @@ export LDFLAGS=-lphp-%_php7_version
 %php7_make_install
 install -D -m 644 %SOURCE1 %buildroot/%php7_extconf/%php7_extension/config
 install -D -m 644 %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
+
+%check
+NO_INTERACTION=1 make test
 
 %files
 %php7_extconf/%php7_extension

@@ -1,5 +1,5 @@
 %define		php7_extension	sqlsrv
-%define		real_version	5.2.0
+%define		real_version	5.6.1
 
 Name:	 	php7-%php7_extension
 Version:	%php7_version
@@ -29,7 +29,7 @@ BuildRequires(pre): rpm-build-php7 rpm-build-licenses
 
 # Automatically added by buildreq on Tue Sep 26 2017
 # optimized out: gnu-config libstdc++-devel libunixODBC-devel-compat perl php7-libs python-base python-modules python3 python3-base
-BuildRequires: gcc-c++ glibc-devel-static libunixODBC-devel php7-devel
+BuildRequires: gcc-c++ libunixODBC-devel php7-devel
 
 BuildRequires: php7-devel = %php7_version
 

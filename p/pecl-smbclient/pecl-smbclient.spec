@@ -2,7 +2,7 @@
 %define pecl7_name smbclient
 
 Name: pecl-%pecl7_name
-Version: 0.9.0
+Version: 1.0.0
 Release: alt1.%php7_version.%php7_release
 
 Summary: A PHP wrapper for libsmbclient
@@ -25,7 +25,6 @@ Samba related functions and 'smb' streams to PHP programs.
 %setup -n %pecl7_name-%version
 
 %build
-cd %pecl7_name-%version
 phpize
 %pecl7_configure '--with-smbclient'
 %make_build

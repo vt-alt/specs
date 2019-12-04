@@ -1,6 +1,6 @@
 %define		php7_extension	apcu
 %define 	real_name	APCu
-%define		real_version	5.1.9
+%define		real_version	5.1.18
 
 Name:	 	php7-%{php7_extension}
 Version:	%php7_version
@@ -26,6 +26,7 @@ BuildRequires(pre): rpm-build-php7
 BuildRequires: glibc-devel-static
 
 BuildRequires: php7-devel = %php7_version
+BuildRequires: php7 = %php7_version
 
 %description
 PHP extension APCu is an APC stripped of opcode caching in
@@ -60,8 +61,11 @@ export LDFLAGS=-lphp-%_php7_version
 install -D -m 644 -- %SOURCE1 %buildroot/%php7_extconf/%php7_extension/config
 install -D -m 644 -- %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 
+%check
+NO_INTERACTION=1 make test
+
 %files
-%doc README.md TECHNOTES.txt TODO NOTICE LICENSE
+%doc README.md TECHNOTES.txt NOTICE LICENSE
 
 %php7_extconf/%php7_extension
 %php7_extdir/*

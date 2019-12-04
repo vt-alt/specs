@@ -13,6 +13,7 @@ Source2:	php-%php7_extension-params.sh
 
 BuildRequires(pre): rpm-build-php7
 BuildRequires:	php7-devel = %php7_version
+BuildRequires:	php7 = %php7_version
 
 %description
 This package allows you to handle multiple Japanese encodings (SJIS, EUC,
@@ -34,14 +35,16 @@ export LDFLAGS=-lphp-%_php7_version
 %php7_make
 
 %install
-%php7_make_install
+%php7_make_install phpincludedir=%includedir
 install -D -m 644 %SOURCE1 %buildroot/%php7_extconf/%php7_extension/config
 install -D -m 644 %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
+
+%check
+NO_INTERACTION=1 make test
 
 %files
 %php7_extconf/%php7_extension
 %php7_extdir/*
-%doc CREDITS README README_PHP3-i18n-ja
 
 %post
 %php7_extension_postin

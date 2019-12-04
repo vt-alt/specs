@@ -55,7 +55,7 @@ install -D -m 644 -- %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 %files
 %php7_extconf/%php7_extension
 %php7_extdir/*
-%doc CREDITS README TODO
+%doc CREDITS README
 %exclude %php7_includedir/*
 
 %post

@@ -1,6 +1,6 @@
 %define		php7_extension	apcu_bc
 %define 	real_name	apcu_bc
-%define		real_version	1.0.3
+%define		real_version	1.0.5
 
 Name:	 	php7-%{php7_extension}
 Version:	%php7_version
@@ -21,10 +21,6 @@ Source2:	php-%php7_extension-params.sh
 Source3:	apcu-headers.tar
 
 BuildRequires(pre): rpm-build-php7
-# Automatically added by buildreq on Tue Jun 13 2017
-# optimized out: gnu-config perl php7-libs python-base python-modules python3 python3-base
-BuildRequires: glibc-devel-static
-
 BuildRequires: php7-devel = %php7_version
 
 Requires: php7-apcu
@@ -75,6 +71,9 @@ install -D -m 644 -- %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Mon Nov 11 2019 Anton Farygin <rider@altlinux.ru> 1.0.5-alt1
+- updated to 1.0.5
 
 * Mon Jan 22 2018 Nikolay A. Fetisov <naf@altlinux.org> 7.1.12-alt1.S1
 - Initial build for ALT Linux Sisyphus

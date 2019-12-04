@@ -1,7 +1,7 @@
 # TODO: build with igbinary
 %define		php7_extension	memcached
 %define 	real_name	memcached
-%define		real_version	3.0.3
+%define		real_version	3.1.4
 
 Name:	 	php7-%{php7_extension}
 Version:	%php7_version
@@ -21,6 +21,7 @@ Source2:	php-%php7_extension-params.sh
 BuildRequires(pre): rpm-build-php7
 BuildRequires: php7-devel = %php7_version
 BuildRequires: libmemcached-devel zlib-devel
+BuildRequires: php7 memcached /proc
 
 %description
 php7-memcached extension uses libmemcached library to provide
@@ -57,6 +58,10 @@ export LDFLAGS=-lphp-%_php7_version
 %php7_make_install
 install -D -m 644 -- %SOURCE1 %buildroot/%php7_extconf/%php7_extension/config
 install -D -m 644 -- %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
+
+%check
+memcached -d
+NO_INTERACTION=1 make test
 
 %files
 %doc CREDITS README.markdown LICENSE

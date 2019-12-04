@@ -2,19 +2,20 @@
 
 Name: php7-%php7_extension
 Version: %php7_version
-Release: %php7_release.1
+Release: %php7_release
 
 Summary: xdebug extensions
 Group: System/Servers
 License: PHP Licence
 
-# Source-url: https://xdebug.org/files/xdebug-2.6.0.tgz
+# Source-url: https://xdebug.org/files/xdebug-2.8.0.tgz
 Source: php7-%php7_extension.tar
 Source1: php-%php7_extension.ini
 Source2: php-%php7_extension-params.sh
 
 BuildRequires(pre): rpm-build-php7
 BuildRequires: php7-devel = %php7_version
+BuildRequires: php7 = %php7_version
 
 %description
 Xdebug is an extension for PHP to assist with debugging and development.
@@ -55,6 +56,9 @@ install -D -m 644 %SOURCE2 %buildroot%php7_extconf/%php7_extension/params
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%php7_version-%php7_release
+
+* Mon Nov 11 2019 Anton Farygin <rider@altlinux.ru> 7.3.10-alt1
+- updated to 2.8.0
 
 * Fri Dec 21 2018 Anton Farygin <rider@altlinux.ru> 7.2.13-alt1.1
 - updated to 2.6.1

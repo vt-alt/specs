@@ -23,6 +23,7 @@ Patch1: php7-opcache-file_cache.patch
 BuildRequires(pre): rpm-build-php7
 BuildRequires: gcc-c++
 BuildRequires: php7-devel = %php7_version
+BuildRequires: php7 = %php7_version
 
 
 %description
@@ -66,6 +67,9 @@ subst 's@php/ext@php/%_php7_version/ext@g' configure
 %php7_make_install
 install -D -m 644 -- %SOURCE1 %buildroot/%php7_extconf/%php7_extension/config
 install -D -m 644 -- %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
+
+%check
+NO_INTERACTION=1 make test
 
 %files
 %php7_extconf/%php7_extension

@@ -7,12 +7,12 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.2.23
+Version: 7.3.11
 Release: alt1
 
 %define php7_name      %name
 %define _php7_version  %version
-%define _php7_major  7.2
+%define _php7_major  7.3
 %define php7_release   %release
 %define rpm_build_version %_php7_version
 
@@ -30,25 +30,24 @@ Source4: phpinfo.tar
 Patch1: php-version.patch
 Patch2: php-shared-1.patch
 Patch3: php-cli-build.patch
-Patch6: php-test-pcntl.patch
-Patch9: php-5.3.3-sapi-scandir.patch
-
-Patch12: php-devel-scripts-alternatives.patch
-Patch13: php-7.1.0-dlopen.patch
-
-Patch30: php-4.3.11-libtool.patch
-Patch33: php-5.2.5-norpath.patch
-Patch34: php-5.1.0b1-cxx.patch
-Patch38: php-no-static-program.patch
-Patch39: php-set-session-save-path.patch
-Patch40: php7-7.1.10-alt-lsattr.patch
-Patch41: php-7.2.12-acinclude.patch
-Patch50: php7-7.2.21-alt-e2k-lcc123.patch
-Patch61: php5-5.5.9-phar-phppath.patch
-Patch62: php-mysqlnd-socket.patch
-Patch63: php-7.2.14-alt-zend-signal-visibility.patch
-Patch64: php-7.2-alt-phar-manfile-suffix.patch
-Patch65: php7-7.1.0-phpize.patch
+Patch4: php-test-pcntl.patch
+Patch5: php-5.3.3-sapi-scandir.patch
+Patch6: php-devel-scripts-alternatives.patch
+Patch7: php-7.1.0-dlopen.patch
+Patch8: php-4.3.11-libtool.patch
+Patch9: php-5.2.5-norpath.patch
+Patch10: php-5.1.0b1-cxx.patch
+Patch11: php-no-static-program.patch
+Patch12: php-set-session-save-path.patch
+Patch13: php7-7.1.10-alt-lsattr.patch
+Patch14: php-7.2.12-acinclude.patch
+Patch15: php7-7.2.21-alt-e2k-lcc123.patch
+Patch16: php5-5.5.9-phar-phppath.patch
+Patch17: php-mysqlnd-socket.patch
+Patch18: php-7.2.14-alt-zend-signal-visibility.patch
+Patch19: php-7.2-alt-phar-manfile-suffix.patch
+Patch20: php7-7.1.0-phpize.patch
+Patch21: php7-7.3-alt-tests-fix.patch
 
 Patch70: php7-debian-Add-support-for-use-of-the-system-timezone-database.patch
 Patch71: php7-debian-Use-system-timezone.patch
@@ -58,6 +57,9 @@ Provides: php-engine = %version-%release
 Provides: %name = %rpm_build_version-%release
 
 BuildRequires: chrpath libmm-devel libxml2-devel ssmtp termutils zlib-devel re2c bison alternatives
+
+# for tests
+BuildRequires: /proc
 
 BuildRequires(pre): rpm-build-php7 rpm-macros-alternatives
 BuildRequires(pre): rpm-build-ubt
@@ -115,7 +117,6 @@ read the file SELF-CONTAINED-EXTENSIONS.
 Group: Development/C
 Summary: Package with common data for various PHP7 packages
 Requires: php-base >= 2.5
-Requires: tzdata
 
 Provides: php7-bcmath = %php7_version-%php7_release
 Provides: php7-ctype = %php7_version-%php7_release
@@ -142,12 +143,14 @@ Provides: php7-sysvshm = %php7_version-%php7_release
 Provides: php7-tokenizer = %php7_version-%php7_release
 Provides: php7-wddx = %php7_version-%php7_release
 Provides: php7-xml = %php7_version-%php7_release
+Provides: php7-dom = %php7_version-%php7_release
 Provides: php7-xmlwriter = %php7_version-%php7_release
 Provides: php7-zlib = %php7_version-%php7_release
 Provides: php7-libs = %php7_version-%release
 
 
 Obsoletes: php7-simplexml php7-mhash
+Obsoletes: php7-dom < %EVR
 
 %description libs
 The php7-libs package contains parts of PHP7 distribution which are
@@ -159,23 +162,24 @@ in use by other PHP7-related packages.
 %patch1 -p2
 %patch2 -p2
 %patch3 -p2
-%patch6 -p1
-%patch9 -p1 -b .scandir
-%patch12 -p2 -b .alternatives
-%patch13 -p0
-%patch30 -p0
-%patch33 -p2
-%patch34 -p2
-%patch38 -p2
-%patch39 -p2
-%patch40 -p1
-%patch41 -p1
-%patch50 -p1
-%patch61 -p1
-%patch62 -p1
-%patch63 -p1
-%patch64 -p1
-%patch65 -p1
+%patch4 -p1
+%patch5 -p1 -b .scandir
+%patch6 -p2 -b .alternatives
+%patch7 -p0
+%patch8 -p0
+%patch9 -p2
+%patch10 -p2
+%patch11 -p2
+%patch12 -p2
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
 %patch70 -p1
 %patch71 -p1
 
@@ -231,7 +235,7 @@ cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
 	--enable-sysvshm \
 	--enable-sysvmsg \
 	--enable-libxml \
-	--disable-dom \
+	--enable-dom \
 	--disable-opcache \
 	--enable-simplexml \
 	--disable-pdo \
@@ -372,6 +376,33 @@ fi
 EOF
 chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 
+%check
+export NO_INTERACTION=1 REPORT_EXIT_STATUS=1
+export SKIP_ONLINE_TESTS=1
+export SKIP_IO_CAPTURE_TESTS=1
+# the test always fails when run in the building tree
+rm -f tests/basic/bug54514.phpt
+# the test fails due to an error in glibc-2.27 packaged for ALT: https://bugzilla.altlinux.org/show_bug.cgi?id=37368
+rm -f ext/standard/tests/strings/setlocale_variation2.phpt
+
+if ! make test; then
+  set +x
+  for f in $(find .. -name \*.diff -type f -print); do
+    if ! grep -q XFAIL "${f/.diff/.phpt}"
+    then
+      echo "TEST FAILURE: $f --"
+      cat "$f"
+      echo -e "\n-- $f result ends."
+    fi
+  done
+  set -x
+# tests contain errors that fail on other architectures 
+%ifarch x86_64
+  exit 1
+%endif
+fi
+unset NO_INTERACTION REPORT_EXIT_STATUS 
+
 %post
 %php7_sapi_postin
 
@@ -436,6 +467,17 @@ chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 %doc tests run-tests.php 
 
 %changelog
+* Tue Nov 19 2019 Anton Farygin <rider@altlinux.ru> 7.3.11-alt1
+- 7.3.11 (fixes: CVE-2019-11043)
+
+* Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 7.3.10-alt1
+- 7.3.10
+- enabled upstream tests
+- enabled dom module
+
+* Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 7.3.9-alt1
+- 7.3.9
+
 * Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 7.2.23-alt1
 - 7.2.23
 
