@@ -14,7 +14,7 @@
 %define nv_version 340
 %define nv_release 107
 %define nv_minor %nil
-%define pkg_rel alt163
+%define pkg_rel alt164
 %def_enable egl
 %def_enable kernelsource
 %def_disable package_wfb
@@ -88,6 +88,7 @@ Patch3: buildfix_kernel_5.0.patch
 Patch4: buildfix_kernel_5.2.patch
 Patch5: alt-libreelec-dont-panic-on-5.1.patch
 Patch6: buildfix_kernel_5.3.patch
+Patch7: buildfix_kernel_5.4.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -170,6 +171,7 @@ pushd kernel/
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 rm -rf precompiled
 popd
 
@@ -316,6 +318,9 @@ fi
 %endif
 
 %changelog
+* Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 340.107-alt164
+- add fix against 5.4 kernel
+
 * Mon Sep 30 2019 Sergey V Turchin <zerg@altlinux.org> 340.107-alt163
 - add fix against 5.3 kernel
 
