@@ -7,7 +7,7 @@
 
 Name: kde5-liquidshell
 Version: 1.5
-Release: alt2
+Release: alt5
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -19,7 +19,6 @@ Requires: plasma5-workspace
 Requires: polkit-kde-plasma-desktop
 
 Source: %rname-%version.tar
-Patch1: alt-ftbfs.patch
 Patch2: alt-def-quicklaunch.patch
 Patch3: alt-def-date-format.patch
 Patch4: alt-panel-minimum-rows.patch
@@ -83,7 +82,6 @@ Requires: %name-common = %version-%release
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -91,7 +89,7 @@ Requires: %name-common = %version-%release
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
+%patch9 -p1 -b .start
 %patch10 -p1
 
 %build
@@ -129,6 +127,15 @@ install -Dm 0644 liquidshell-session.desktop %buildroot/%_datadir/xsessions/liqu
 %_datadir/xsessions/liquidshell-session.desktop
 
 %changelog
+* Thu Nov 28 2019 Sergey V Turchin <zerg@altlinux.org> 1.5-alt5
+- allow configure virtual desktops (Closes: 37527)
+
+* Thu Nov 28 2019 Sergey V Turchin <zerg@altlinux.org> 1.5-alt4
+- add upstream fix to reduce minimum panel height
+
+* Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 1.5-alt3
+- add upstream fixes
+
 * Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 1.5-alt2
 - allow configure virtual desktops (Closes: 37527)
 
