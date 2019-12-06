@@ -1,5 +1,6 @@
+%define _unpackaged_files_terminate_build 0
 Name: btrfs-progs
-Version: 4.20.2
+Version: 5.3.1
 Release: alt1
 
 Summary: Utilities for managing the Btrfs filesystem
@@ -53,7 +54,7 @@ btrfs filesystem-specific programs.
 %build
 autoreconf -fisv
 automake --add-missing ||:
-%configure --disable-python 
+%configure --disable-python --disable-static
 %make_build
 
 %install
@@ -62,6 +63,8 @@ mkdir -p %buildroot%_libdir %buildroot%_bindir
 LIBNAME=`basename \`ls $RPM_BUILD_ROOT/%{_lib}/libbtrfs.so.*.*\``
 ln -s ../../%_lib/$LIBNAME %buildroot%_libdir/libbtrfs.so 
 ln -s ../../sbin/btrfs %buildroot%_bindir/btrfs
+rm -f %buildroot/%{_lib}/libbtrfs.so
+rm -f %buildroot/%{_lib}/libbtrfsutil.so
 
 %files
 /sbin/*
@@ -79,6 +82,21 @@ ln -s ../../sbin/btrfs %buildroot%_bindir/btrfs
 %_includedir/*
 
 %changelog
+* Wed Nov 20 2019 Anton Farygin <rider@altlinux.ru> 5.3.1-alt1
+- 5.3.1
+
+* Sun Sep 08 2019 Anton Farygin <rider@altlinux.ru> 5.2.2-alt1
+- 5.2.2
+
+* Mon Aug 05 2019 Anton Farygin <rider@altlinux.ru> 5.2.1-alt1
+- 5.2.1
+
+* Tue Jun 18 2019 Anton Farygin <rider@altlinux.ru> 5.1.1-alt1
+- 5.1.1
+
+* Tue May 28 2019 Anton Farygin <rider@altlinux.ru> 5.1-alt1
+- 5.1
+
 * Tue Mar 12 2019 Anton Farygin <rider@altlinux.ru> 4.20.2-alt1
 - 4.20.2
 
