@@ -1,52 +1,48 @@
-# BEGIN SourceDeps(oneline):
-BuildRequires: /usr/bin/desktop-file-validate ImageMagick-tools gcc-c++ libGL-devel libGLU-devel python-devel rpm-build-python
-# END SourceDeps(oneline)
-BuildRequires(pre): rpm-macros-fedora-compat
-BuildRequires: boost-filesystem-devel boost-program_options-devel cmake
-# see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
-%define _localstatedir %{_var}
-Name:           openscad
-Version:        2015.03.3
-%global upversion 2015.03-3
-Release:        alt2_12.1
-Summary:        The Programmers Solid 3D CAD Modeller
+Name: openscad
+Version: 2019.05
+Release: alt1
+Summary: The Programmers Solid 3D CAD Modeller
 # COPYING contains a linking exception for CGAL
 # Appdata file is CC0
 # Examples are CC0
-License:        GPLv2 with exceptions and CC0
-Group:          Engineering
-URL:            http://www.%{name}.org/
-Source0:        http://files.%{name}.org/%{name}-%{upversion}.src.tar.gz
-Patch0:         %{name}-polyclipping.patch
-BuildRequires:  cgal libcgal-devel libcgal-qt5-devel
-BuildRequires:  ImageMagick
-BuildRequires:  xorg-xvfb xvfb-run
-BuildRequires:  bison >= 2.4
-BuildRequires:  boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel
-BuildRequires:  desktop-file-utils
-BuildRequires:  eigen3
-BuildRequires:  flex >= 2.5.35
-BuildRequires:  libfreetype-devel >= 2.4
-BuildRequires:  fontconfig-devel >= 2.10
-BuildRequires:  gettext gettext-tools
-BuildRequires:  libGLEW-devel >= 1.6
-BuildRequires:  glib2-devel libgio libgio-devel
-BuildRequires:  libgmp-devel libgmpxx-devel
-BuildRequires:  libharfbuzz-devel libharfbuzz-utils
-BuildRequires:  xorg-dri-nouveau xorg-dri-radeon
-BuildRequires:  libmpfr-devel >= 3.0.0
-BuildRequires:  opencsg-devel >= 1.3.2
-BuildRequires:  libpolyclipping-devel >= 6.1.3
-BuildRequires:  procps sysvinit-utils
-BuildRequires:  python
-BuildRequires:  libqt4-declarative libqt4-devel qt4-designer
-BuildRequires:  libqscintilla2-qt4-devel
-Requires:       font(liberationmono)
-Requires:       font(liberationsans)
-Requires:       font(liberationserif)
-Requires:     %{name}-MCAD = %{version}-%{release}
-Source44: import.info
-Patch33: openscad-2015.03.2-alt-qscintilla.patch
+License: GPLv2 with exceptions and CC0
+Group: Engineering
+Url: http://www.%name.org/
+
+Source0: %name-%version.tar
+#Source-url: https://github.com/%name/%name/releases/download/%name-%version/%name-%version.src.tar.gz
+Patch: openscad-polyclipping.patch
+
+BuildRequires(pre): rpm-macros-cmake rpm-build-python3
+BuildRequires: cmake
+BuildRequires: cgal libcgal-devel libcgal-qt5-devel
+BuildRequires: ImageMagick-tools
+BuildRequires: xorg-xvfb xvfb-run
+BuildRequires: boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel
+BuildRequires: desktop-file-utils
+BuildRequires: eigen3
+BuildRequires: libfreetype-devel >= 2.4
+BuildRequires: fontconfig-devel >= 2.10
+BuildRequires: libGLEW-devel >= 1.6
+BuildRequires: glib2-devel libgio libgio-devel
+BuildRequires: libgmp-devel libgmpxx-devel
+BuildRequires: libharfbuzz-devel libharfbuzz-utils
+BuildRequires: libxml2-devel
+BuildRequires: libdouble-conversion-devel
+BuildRequires: libzip-devel
+BuildRequires: libmpfr-devel >= 3.0.0
+BuildRequires: opencsg-devel >= 1.3.2
+BuildRequires: libpolyclipping-devel >= 6.1.3
+BuildRequires: procps sysvinit-utils
+BuildRequires: qt5-base-devel qt5-designer
+BuildRequires: qt5-multimedia-devel
+BuildRequires: flex
+BuildRequires: libqscintilla2-qt5-devel
+Requires: font(liberationmono)
+Requires: font(liberationsans)
+Requires: font(liberationserif)
+Requires: %name-MCAD = %EVR
+%add_python3_path %_datadir/%name/libraries/MCAD
 
 %description
 OpenSCAD is a software for creating solid 3D CAD objects.
@@ -57,141 +53,88 @@ you are looking for when you are planning to create 3D models of machine
 parts but pretty sure is not what you are looking for when you are more
 interested in creating computer-animated movies.
 
-
 ###############################################
-%package        MCAD
+%package MCAD
 Group: Engineering
-Summary:        OpenSCAD Parametric CAD Library
-License:        LGPLv2+ and LGPLv2 and LGPLv3+ and (GPLv3 or LGPLv2) and (GPLv3+ or LGPLv2) and (CC-BY-SA or LGPLv2+) and (CC-BY-SA or LGPLv2) and CC-BY and BSD and MIT and Public Domain
-URL:            https://www.github.com/openscad/MCAD
-Requires:       %{name} = %{version}-%{release}
-BuildArch:      noarch
+Summary: OpenSCAD Parametric CAD Library
+License: LGPLv2+ and LGPLv2 and LGPLv3+ and (GPLv3 or LGPLv2) and (GPLv3+ or LGPLv2) and (CC-BY-SA or LGPLv2+) and (CC-BY-SA or LGPLv2) and CC-BY and BSD and MIT and Public Domain
+Url: https://www.github.com/openscad/MCAD
+Requires: %name = %version-%release
+BuildArch: noarch
 
-%description    MCAD
+%description MCAD
 This library contains components commonly used in designing and moching up
 mechanical designs. It is currently unfinished and you can expect some API
 changes, however many things are already working.
 
-### LICENSES:
-
-##  LGPLv2+:
-#   2Dshapes.scad
-#   3d_triangle.scad
-#   fonts.scad
-#   gridbeam.scad
-#   hardware.scad
-#   libtriangles.scad
-#   multiply.scad
-#   shapes.scad
-#   screw.scad
-
-##  LGPLv2:
-#   gears.scad
-#   involute_gears.scad
-#   servos.scad
-#   transformations.scad
-#   triangles.scad
-#   unregular_shapes.scad
-#   bitmap/letter_necklace.scad
-
-##  LGPLv3+:
-#   teardrop.scad
-
-##  GPLv3 or LGPLv2:
-#   motors.scad
-#   nuts_and_bolts.scad
-
-
-##  GPLv3+ or LGPLv2:
-#   metric_fastners.scad
-#   regular_shapes.scad
-
-##  CC-BY-SA or LGPLv2+:
-#   bearing.scad
-#   materials.scad
-#   stepper.scad
-#   utilities.scad
-
-##  CC-BY-SA or LGPLv2:
-#   units.scad
-
-##  CC-BY:
-#   polyholes.scad
-#   bitmap/alphabet_block.scad
-#   bitmap/bitmap.scad
-#   bitmap/height_map.scad
-#   bitmap/name_tag.scad
-
-## BSD
-#   boxes.scad
-
-## MIT
-#   constants.scad
-#   curves.scad
-#   math.scad
-
-## Public Domain
-#   lego_compatibility.scad
-#   trochoids.scad
-
-###############################################
-
 %prep
-%setup -qn %{name}-%{upversion}
+%setup
+%patch -p1
 
-# Unbundle polyclipping
-rm src/polyclipping -rf
-%patch0 -p1
-%patch33 -p2
+# Remove unwanted things from MCAD, such as nonworking Python tests
+pushd libraries/MCAD
+for FILE in *.py; do
+  rm -r $FILE
+done
+mv bitmap/README bitmap-README
+popd
+
+# Tests cmake check for MCAD by probing libraries/MCAD/__init__.py
+# But we've just removed it
+sed -i 's@MCAD/__init__.py@MCAD/gears.scad@' tests/CMakeLists.txt
 
 %build
-%{qmake_qt4} PREFIX=%{_prefix}
+%qmake_qt5 PREFIX=%prefix  VERSION=%version CONFIG-=debug
 %make_build
 
 # tests
-cd tests
-cmake .
+pushd tests
+cmake -DPYTHON_EXECUTABLE:STRING=%__python3
 %make_build
-cd -
+popd
 
 %install
-make install INSTALL_ROOT=%{buildroot}
-rm -rf %{buildroot}%{_datadir}/%{name}/fonts
-%find_lang %{name}
+%makeinstall_std INSTALL_ROOT=%buildroot
+rm -r %buildroot%_datadir/%name/fonts
+%find_lang %name
 
-rm %{buildroot}%{_datadir}/%{name}/libraries/MCAD/lgpl-2.1.txt
-rm %{buildroot}%{_datadir}/%{name}/libraries/MCAD/README.markdown
-rm %{buildroot}%{_datadir}/%{name}/libraries/MCAD/TODO
+for FILE in lgpl-2.1.txt README.markdown TODO bitmap-README; do
+  rm %buildroot%_datadir/%name/libraries/MCAD/$FILE
+done
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %buildroot%_desktopdir/%name.desktop
 
 # tests
-cd tests
-ctest %{?_smp_mflags} || : # let the tests fail, as they probably won't work in Koji
-cd -
+pushd tests
+ctest || : # let the tests fail, as they probably won't work in hasher
+popd
 
-%files -f %{name}.lang
+%files -f %name.lang
 %doc COPYING
-%doc README.md RELEASE_NOTES
-%attr(755,root,root) %{_bindir}/%{name}
-%{_datadir}/appdata/*.xml
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/pixmaps/%{name}.png
-%{_datadir}/mime/packages/%{name}.xml
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/examples
-%{_datadir}/%{name}/color-schemes
-%{_datadir}/%{name}/locale
-%dir %{_datadir}/%{name}/libraries
-%{_mandir}/man1/*
+%doc README.md RELEASE_NOTES.md
+%attr(755,root,root) %_bindir/%name
+%_datadir/metainfo/*.xml
+%_desktopdir/%name.desktop
+%_pixmapsdir/%name.png
+%_datadir/mime/packages/%name.xml
+%dir %_datadir/%name
+%_datadir/%name/examples
+%_datadir/%name/color-schemes
+%_datadir/%name/locale
+%dir %_datadir/%name/libraries
+%_man1dir/*
 
 %files MCAD
 %doc libraries/MCAD/lgpl-2.1.txt
 %doc libraries/MCAD/README.markdown libraries/MCAD/TODO
-%{_datadir}/%{name}/libraries/MCAD
+%_datadir/%name/libraries/MCAD
 
 %changelog
+* Wed Nov 27 2019 Anton Midyukov <antohami@altlinux.org> 2019.05-alt1
+- New version 2019.05
+- switch to gear
+
 * Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2015.03.3-alt2_12.1
 - NMU: rebuilt with boost-1.67.0
 
@@ -225,4 +168,3 @@ cd -
 * Thu May 08 2014 Igor Vlasenko <viy@altlinux.ru> 2014.03-alt1_1
 - converted for ALT Linux by srpmconvert tools
 - TODO: fixes for No rule to make target /usr/lib/libCGAL.so
-
