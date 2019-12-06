@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.1.0
+Version: 3.1.3
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,16 @@ __EOF__
 
 
 %changelog
+* Wed Dec 04 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.3-alt1
+- activate window without window manager
+- show version in about dialog
+
+* Tue Dec 03 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.2-alt1
+- update tooltips on language change
+
+* Tue Dec 03 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.1-alt1
+- update tooltips on language change
+
 * Wed Sep 25 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.0-alt1
 - allow to disable virtual keyboard via env or kernel cmdline
 
