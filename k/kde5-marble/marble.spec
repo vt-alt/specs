@@ -5,7 +5,7 @@
 
 Name: kde5-%rname
 Version: 19.08.0
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Education
@@ -14,6 +14,7 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Source2: naturalearth.tar
 Patch1: alt-astro-static.patch
 Patch2: alt-clean-maps.patch
 
@@ -62,6 +63,10 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+rm -fv data/naturalearth/*.pn2
+pushd data/
+tar -xvf %SOURCE2 naturalearth/
+popd
 %patch1 -p1
 #%patch2 -p1
 
@@ -130,6 +135,9 @@ rm -rf %buildroot/%_K5i18n/*/LC_MESSAGES/*_qt.qm
 %_K5lib/libmarblewidget-qt5.so.*
 
 %changelog
+* Thu Dec 05 2019 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt2
+- restore russian Crimea on maps (Closes: #33527)
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
