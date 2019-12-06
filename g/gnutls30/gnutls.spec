@@ -3,7 +3,7 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.10
+Version: 3.6.11
 Release: alt1
 
 Summary: A TLS protocol implementation
@@ -322,6 +322,9 @@ make -k check
 %endif
 
 %changelog
+* Mon Dec 02 2019 Mikhail Efremov <sem@altlinux.org> 3.6.11-alt1
+- Updated to 3.6.11.
+
 * Mon Sep 30 2019 Mikhail Efremov <sem@altlinux.org> 3.6.10-alt1
 - Drop fix-i586-textrel patch.
 - Updated to 3.6.10.
