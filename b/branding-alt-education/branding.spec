@@ -20,7 +20,7 @@
 
 Name: branding-%flavour
 Version: 9.0
-Release: alt1
+Release: alt2
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -403,6 +403,7 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 %files bootsplash
 %ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
+%_pixmapsdir/system-logo.png
 %endif
 
 %files release
@@ -463,6 +464,9 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 9.0-alt2
+- Package system-logo.png for Plymouth.
+
 * Fri Aug 30 2019 Andrey Cherepanov <cas@altlinux.org> 9.0-alt1
 - Release 9.0.
 
