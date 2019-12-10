@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.08.0
-Release: alt1
+Release: alt3
 %K5init
 
 Group: Education
@@ -11,6 +11,8 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Source2: data.tar
+Patch: alt-fix-crimea.patch
 
 # Automatically added by buildreq on Fri Apr 01 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 rpm-build-python3 xml-common xml-utils
@@ -26,6 +28,10 @@ BuildRequires: kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5
 
 %prep
 %setup -n %rname-%version
+tar -xvf %SOURCE2 data/
+%patch -p1
+
+mv data/flags/{ukraine/Crimea,russia/crimea}.png
 
 %build
 %K5build
@@ -47,6 +53,12 @@ BuildRequires: kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5
 
 
 %changelog
+* Fri Dec 05 2019 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt3
+- Crimea: fix Europe and Asia maps
+
+* Thu Dec 05 2019 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt2
+- Move Crimea to Russia
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 
