@@ -17,7 +17,7 @@
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt4
+Release: alt5
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -50,7 +50,7 @@ Source: %name.tar
 Group: Graphics
 Summary: System/Base
 License: GPL
-Url: http://www.basealt.ru
+Url: https://www.basealt.ru/
 
 %description
 Distro-specific packages with design and texts
@@ -271,6 +271,8 @@ ANSI_COLOR="1;33"
 CPE_NAME="cpe:/o:%brand:%smalltheme:%altversion"
 HOME_URL="%url"
 BUG_REPORT_URL="https://bugs.altlinux.org/"
+DOCUMENTATION_URL="https://docs.altlinux.org/"
+SUPPORT_URL="https://support.basealt.ru/"
 __EOF__
 
 #notes
@@ -432,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Fri Dec 06 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt5
+- update urls
+
 * Wed Nov 27 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt4
 - fix setup grub
 
