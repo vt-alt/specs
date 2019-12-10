@@ -1,11 +1,11 @@
 Name: git
-Version: 2.21.0
+Version: 2.24.1
 Release: alt1
 
 Summary: Git core and tools
 License: GPLv2
 Group: Development/Other
-Url: http://git-scm.com/
+Url: https://git-scm.com/
 
 # git://git.altlinux.org/gears/g/git.git
 Source: %name-%version-%release.tar
@@ -41,7 +41,7 @@ BuildRequires: hardlink, libssl-devel, perl-devel, perl-podlators, perl(Error.pm
 %{!?_without_cvs:BuildRequires: cvs perl(DBI.pm)}
 %{!?_disable_curl:BuildRequires: libcurl-devel}
 %{!?_disable_expat:BuildRequires: libexpat-devel}
-%{!?_without_email:BuildRequires: perl(Error.pm) perl(Mail/Address.pm) perl(Net/SMTP/SSL.pm) perl(Term/ReadLine.pm)}
+%{!?_without_email:BuildRequires: perl(Mail/Address.pm) perl(Net/SMTP/SSL.pm) perl(Term/ReadLine.pm)}
 %{!?_without_svn:BuildRequires: perl(Encode.pm) perl(Memoize.pm) perl(SVN/Core.pm) perl(Term/ReadKey.pm) perl(YAML/Any.pm) subversion subversion-server-common}
 %{!?_without_doc:BuildRequires: asciidoc > 0:6.0.3, xmlto}
 %{?!_without_gitweb:BuildRequires: perl(charnames.pm) perl(CGI.pm) perl(Encode.pm)}
@@ -112,7 +112,6 @@ Summary: Perl interface to Git
 Group: Development/Perl
 BuildArch: noarch
 Requires: %name-core = %EVR
-Requires: perl(Error.pm) perl(Mail/Address.pm)
 
 %description -n perl-Git
 Git is a fast, scalable, distributed revision control system with an
@@ -243,6 +242,20 @@ and full access to internals.
 This package contains diff-highlight utility, which is a part of Git
 contributed software.
 
+%package subtree
+Summary: Merge subtrees together and split repository into subtrees
+Group: Development/Other
+BuildArch: noarch
+Requires: %name-core = %EVR
+
+%description subtree
+Git is a fast, scalable, distributed revision control system with an
+unusually rich command set that provides both high-level operations
+and full access to internals.
+
+This package contains git-subtree utility which is a part of Git
+contributed software.
+
 %package full
 Summary: Git core and tools
 Group: Development/Other
@@ -266,6 +279,7 @@ This package contains the full set of Git tools.
 
 %prep
 %setup -n %name-%version-%release
+rm -r perl/Git/LoadCPAN*
 cat >config.mak <<'EOF'
 V = 1
 CFLAGS = %optflags
@@ -288,14 +302,17 @@ touch git-gui/credits
 %make_build -C Documentation doc.dep
 %make_build all %{!?_without_doc:man html}
 %make_build -C contrib/diff-highlight
+%make_build -C contrib/subtree all %{!?_without_doc:doc}
 
 %check
+%{?_without_email:rm t/t9001-send-email.sh}
 %make_build -k test
 
 %install
 %makeinstall_std \
 	install-lib \
 	%{!?_without_doc:install-man install-html}
+%makeinstall_std %{!?_without_doc:install-doc} -C contrib/subtree
 
 mkdir -p %buildroot%_includedir/git
 find -name \*.d -print0 |
@@ -311,7 +328,7 @@ xargs install -pm644 -t %buildroot%_includedir/git -- < headers.list
 
 chmod a-x %buildroot%gitexecdir/git-sh-setup
 install -pDm644 contrib/completion/git-completion.bash \
-	%buildroot/etc/bash_completion.d/git
+	%buildroot%_datadir/bash-completion/completions/git
 # Generate shell functions provides list.
 (
 	echo '# shell functions provides list'
@@ -342,6 +359,7 @@ rm -r %buildroot%_datadir/git-core/contrib/completion
 rm -r %buildroot%_datadir/git-core/contrib/emacs
 rm -r %buildroot%_datadir/git-core/contrib/examples
 rm -r %buildroot%_datadir/git-core/contrib/diff-highlight
+rm -r %buildroot%_datadir/git-core/contrib/subtree
 
 # Remove unpackaged files.
 %{?_without_arch:rm %buildroot%gitexecdir/git-archimport}
@@ -372,7 +390,7 @@ popd
 %files full
 
 %files core
-%config /etc/bash_completion.d/git
+%_datadir/bash-completion/completions/git
 %_bindir/*
 %exclude %_bindir/git-cvs*
 %gitexecdir/
@@ -380,7 +398,9 @@ popd
 %exclude %gitexecdir/git-gui*
 %exclude %gitexecdir/git-citool
 %exclude %gitexecdir/git-add--interactive
+%exclude %gitexecdir/git-subtree
 %exclude %_bindir/gitk
+%exclude %_bindir/diff-highlight
 %exclude %_bindir/diff-highlight
 %{!?_without_arch:%exclude %gitexecdir/git-archimport}
 %{!?_without_email:%exclude %gitexecdir/git-*email*}
@@ -389,6 +409,7 @@ popd
 %exclude %_datadir/git-core/contrib/
 %if_with doc
 %_mandir/man?/*
+%exclude %_man1dir/git-subtree.*
 %exclude %_man1dir/git-daemon.*
 %exclude %_man1dir/git-svn*.1*
 %exclude %_man1dir/git-cvs*.1*
@@ -425,7 +446,9 @@ popd
 
 %files -n perl-Git
 %gitexecdir/git-add--interactive
+%if_with doc
 %_man3dir/Git.3*
+%endif
 %perl_vendor_privlib/Git/
 %perl_vendor_privlib/Git.pm
 %exclude %perl_vendor_privlib/Git/SVN*
@@ -492,7 +515,34 @@ popd
 %_bindir/diff-highlight
 %doc contrib/diff-highlight/README
 
+%files subtree
+%gitexecdir/git-subtree
+%if_with doc
+%_man1dir/git-subtree.*
+%endif #doc
+
 %changelog
+* Sun Dec 08 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.1-alt1
+- 2.24.0 -> 2.24.1 (fixes: CVE-2019-1348, CVE-2019-1387, CVE-2019-19604);
+  this update also addresses a few Windows and/or NTFS issues
+  (fixes: CVE-2019-1349, CVE-2019-1350, CVE-2019-1351, CVE-2019-1352,
+  CVE-2019-1353, CVE-2019-1354).
+
+* Sun Dec 08 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.0-alt4
+- Removed Git::LoadCPAN proxy, we can rely on our system perl
+  Error and Mail::Address modules.
+
+* Sat Dec 07 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.0-alt3
+- Fixed "--without doc" and "--without email" builds
+  (by Michael Shigorin and me).
+
+* Sun Nov 17 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.0-alt2
+- Relocated bash completions (closes: #37426).
+- Packaged git-subtree as a separate subpackage (closes: #37432).
+
+* Mon Nov 04 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.0-alt1
+- 2.21.0 -> 2.24.0.
+
 * Sun Feb 24 2019 Dmitry V. Levin <ldv@altlinux.org> 2.21.0-alt1
 - 2.19.2 -> 2.21.0.
 
