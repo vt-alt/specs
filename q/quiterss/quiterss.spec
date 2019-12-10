@@ -3,8 +3,8 @@
 %endif
 
 Name: quiterss
-Version: 0.18.12
-Release: alt2
+Version: 0.19.2
+Release: alt1
 
 Summary: RSS/Atom aggregator
 Summary(ru_RU.UTF-8): QuiteRSS - быстрая и удобная программа для чтения новостных лент RSS/Atom
@@ -28,7 +28,7 @@ BuildRequires: pkgconfig(Qt5Multimedia)
 BuildRequires: pkgconfig(Qt5WebKitWidgets)
 BuildRequires: pkgconfig(Qt5Widgets)
 BuildRequires: libqtsingleapplication-qt5-devel
-Requires: qt5-sql-sqlite3
+Requires: qt5-sql-sqlite
 %else
 BuildRequires: gcc-c++ qt4-devel
 BuildRequires: pkgconfig(QtGui) pkgconfig(QtNetwork) pkgconfig(QtWebKit) pkgconfig(QtXml) pkgconfig(QtSql)
@@ -36,6 +36,7 @@ BuildRequires: libqtsingleapplication-devel pkgconfig(phonon)
 Requires: libqt4-sql-sqlite
 %endif
 BuildRequires: pkgconfig(sqlite3)
+BuildRequires: dos2unix
 
 %description
 Qt-based RSS/Atom aggregator.
@@ -50,6 +51,8 @@ Qt-based RSS/Atom aggregator.
 sed -i 's,qtsingleapplication.h,QtSolutions/&,' src/application/mainapplication.h
 sed -i 's,phonon/audiooutput.h,kde4/&,' src/application/mainwindow.h
 sed -i 's,phonon/mediaobject.h,kde4/&,' src/application/mainwindow.h
+# 0.19.1 introduced CRLF EOLs here, reported upstream
+dos2unix %name.desktop
 
 %build
 %if_with qt5
@@ -76,6 +79,19 @@ desktop-file-validate %buildroot%_desktopdir/%name.desktop
 %dir %_datadir/%name/lang
 
 %changelog
+* Wed Nov 27 2019 Michael Shigorin <mike@altlinux.org> 0.19.2-alt1
+- new version (watch file uupdate)
+
+* Wed Nov 20 2019 Michael Shigorin <mike@altlinux.org> 0.19.1-alt2
+- replace BR: qt5-sql-sqlite3 with qt5-sql-sqlite (closes: #37515)
+
+* Mon Nov 18 2019 Michael Shigorin <mike@altlinux.org> 0.19.1-alt1
+- new version (watch file uupdate)
+- desktop file fixup
+
+* Sat Nov 16 2019 Anton Midyukov <antohami@altlinux.org> 0.19.0-alt1
+- new version
+
 * Sun Nov 10 2019 Anton Midyukov <antohami@altlinux.org> 0.18.12-alt2
 - rebuild with qt5 except e2k
 
