@@ -1,5 +1,5 @@
 Name: rpm-macros-branding
-Version: 1.0.3
+Version: 1.0.4
 Release: alt1
 Summary: RPM helper macros to build branding packages
 License: %gpl2plus
@@ -20,6 +20,7 @@ Platform6-server-light \
 alt-desktop \
 alt-education \
 alt-server \
+alt-server-v \
 alt-starterkit \
 alt-workstation \
 alt-tonk \
@@ -66,6 +67,9 @@ install -m 0644 branding.rpm.macros %buildroot%_rpmmacrosdir/branding
 %_rpmmacrosdir/*
 
 %changelog
+* Mon Dec 02 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.4-alt1
+- Added server-v.
+
 * Tue Feb 13 2018 Andrey Cherepanov <cas@altlinux.org> 1.0.3-alt1
 - Add alt-tonk
 
