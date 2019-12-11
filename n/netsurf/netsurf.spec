@@ -1,16 +1,16 @@
 Name: netsurf
-Version: 3.8
-Release: alt2
+Version: 3.9
+Release: alt1
 
 Summary: Lightweight Web Browser With Good HTML 4 And CSS Support
 License: GNU General Public License v2 (GPL v2)
 Group: Networking/WWW
 
 Url: http://www.netsurf-browser.org
-Source: netsurf-all.tar.gz
+Source0: netsurf-all.tar.gz
 Source1: netsurf.desktop
 Source2: netsurf.png
-# перевод (дополнительно см.  netsurf-all/netsurf/resources/FatMessages)
+# перевод (дополнительно см. netsurf-all/netsurf/resources/FatMessages)
 Source3: netsurf_Messages
 Patch: netsurf-3.8-alt-e2k.patch
 
@@ -28,6 +28,7 @@ BuildRequires: libmozjs60-devel
 %endif
 BuildRequires: perl-HTML-Parser
 BuildRequires: perl-IO-Compress
+BuildRequires: xxd
 
 # Версия 3.1 + 
 # git clone git://git.netsurf-browser.org/netsurf.git
@@ -79,11 +80,10 @@ subst 's/(enable_javascript, false)/(enable_javascript, true)/' netsurf/desktop/
 %build
 PATH="`pwd`/inst-gtk/bin:$PATH"
 echo $PATH
-
-make TARGET=gtk PREFIX=/usr
+%make_build TARGET=gtk PREFIX=%_usr
 
 %install
-%makeinstall_std PREFIX=/usr
+%makeinstall_std PREFIX=%_usr
 
 install -pDm755 netsurf/nsgtk %buildroot%_libdir/netsurf/nsgtk
 install -pDm755 netsurf/netsurf %buildroot%_bindir/netsurf
@@ -109,6 +109,10 @@ export RPM_FIXUP_METHOD="binconfig pkgconfig libtool"
 %_datadir/pixmaps/*
 
 %changelog
+* Thu Nov 14 2019 Michael Shigorin <mike@altlinux.org> 3.9-alt1
+- 3.9 (see also https://bugs.netsurf-browser.org/mantis/view.php?id=2673)
+- enable parallel build
+
 * Tue Sep 18 2018 Michael Shigorin <mike@altlinux.org> 3.8-alt2
 - E2K: use libmozjs 52, recognize lcc
 - proper libdir detection
