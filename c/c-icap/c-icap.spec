@@ -1,5 +1,5 @@
 Name: 	 c-icap
-Version: 0.5.5
+Version: 0.5.6
 Release: alt1
 Epoch:	 1
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -7,12 +7,14 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 Summary: ICAP server
 License: %lgpl2only
 Group: 	 System/Servers
-Url: 	 http://c-icap.sourceforge.net/
+Url: 	 https://github.com/c-icap
 
 Source0: %name-%version.tar.gz
 Source1: %name.init
 Source2: %name.watch
 Source3: %name.conf
+Source4: %name.service
+Source5: %name.sysconfig
 
 Requires(pre): shadow-utils
 
@@ -55,13 +57,17 @@ ICAP module for scanning content with ClamAV.
 %makeinstall_std
 
 install -pD -m755 %SOURCE1 %buildroot%_initdir/%name
+
+install -pD -m644 %SOURCE4 %buildroot%_unitdir/%name.service
+install -pD -m644 %SOURCE5 %buildroot%_sysconfdir/sysconfig/%name
+
 mkdir -p %buildroot%_sbindir
 mv %buildroot%_bindir/%name %buildroot%_sbindir/%name
 
 mkdir -p %buildroot%_logdir/%name
 touch %buildroot%_logdir/%name/{server,access}.log
 
-mkdir -p %buildroot{%_var/run/%name,%_cachedir/%name}
+mkdir -p %buildroot{/run/%name,%_cachedir/%name}
 
 rm -f %buildroot%_libdir/c_icap/*.la
 
@@ -75,7 +81,7 @@ rm -f %buildroot%_libdir/c_icap/*.la
 %cfg_set AccessLog   %_logdir/%name/access.log ' ' ' '
 %cfg_set LoadMagicFile %_sysconfdir/%name.magic ' ' ' '
 
-# Install /var/run rules
+# Install /run rules
 install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 
 %pre
@@ -92,7 +98,9 @@ install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 %doc AUTHORS README TODO contrib/get_file.pl
 %config(noreplace) %_sysconfdir/%name.conf*
 %config(noreplace) %_sysconfdir/%name.magic*
+%config(noreplace) %_sysconfdir/sysconfig/%name
 %attr (755,root,root) %_initdir/%name
+%_unitdir/%name.service
 %_bindir/*
 %attr (755,root,root) %_sbindir/%name
 %dir %_libdir/c_icap/
@@ -103,7 +111,7 @@ install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 %endif
 %attr (750,_c_icap,root) %_logdir/%name/
 %ghost %_logdir/%name/*.log
-%attr (750,_c_icap,root) %_var/run/%name/
+%attr (750,_c_icap,root) /run/%name/
 %attr (750,_c_icap,root) %_cachedir/%name/
 %_tmpfilesdir/%name.conf
 %_man8dir/c-icap*.8*
@@ -113,6 +121,11 @@ install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 %_libdir/libicapapi.so
 
 %changelog
+* Mon Dec 09 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.5.6-alt1
+- New version.
+- Fix homepage (ALT #35926).
+- Add systemd service file.
+
 * Fri Jan 18 2019 Sergey Y. Afonin <asy@altlinux.ru> 1:0.5.5-alt1
 - New version (ALT #33480)
 
