@@ -2,10 +2,10 @@
 %define koffice_ver 4:2.3.70
 %define oname calligra-plan
 
-%define sover 16
-%define libkplatokernel libkplatokernel%sover
-%define libkplatomodels libkplatomodels%sover
-%define libkplatoui libkplatoui%sover
+%define sover 17
+%define libplankernel libplankernel%sover
+%define libplanmodels libplanmodels%sover
+%define libplanui libplanui%sover
 %define libplankundo2 libplankundo2%sover
 %define libplanmain libplanmain%sover
 %define libplanodf libplanodf%sover
@@ -17,8 +17,8 @@
 %define libplanworkfactory libplanworkfactory%sover
 
 Name: calligraplan
-Version: 3.1.0
-Release: alt8
+Version: 3.2.0
+Release: alt1
 Epoch: 0
 %K5init
 
@@ -32,10 +32,6 @@ Requires: %oname-common = %EVR
 Requires: kf5-kreport
 
 Source: http://download.kde.org/stable/calligra/%version/calligraplan-%version.tar
-# Upstream patches
-Patch1: 0001-Fix-build-with-Qt-5.11-missing-headers.patch
-Patch2: 0002-Fix-compile-on-CI.patch
-Patch3: 0003-Port-to-KCalCore-API-changes.patch
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
@@ -81,25 +77,28 @@ Conflicts: libflake-devel
 %description -n %oname-devel
 Header files and libraries needed for %name development
 
-%package -n %libkplatokernel
+%package -n %libplankernel
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-%description -n %libkplatokernel
+Obsoletes: libkplatokernel%sover < %EVR
+%description -n %libplankernel
 %name library
 
-%package -n %libkplatomodels
+%package -n %libplanmodels
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-%description -n %libkplatomodels
+Obsoletes: libkplatomodels%sover < %EVR
+%description -n %libplanmodels
 %name library
 
-%package -n %libkplatoui
+%package -n %libplanui
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-%description -n %libkplatoui
+Obsoletes: libkplatoui%sover < %EVR
+%description -n %libplanui
 %name library
 
 %package -n %libplankundo2
@@ -167,9 +166,6 @@ Requires: %oname-common = %EVR
 
 %prep
 %setup
-%patch1 -p2
-%patch2 -p1
-%patch3 -p1
 
 %build
 %K5build \
@@ -204,7 +200,7 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5lib/libkdeinit5_calligraplanwork.so
 %_K5plug/calligraplan/parts/calligraplanpart.so
 %_K5plug/calligraplan/formatfilters/planicalexport.so
-%_K5plug/calligraplan/formatfilters/plankplatoimport.so
+%_K5plug/calligraplan/formatfilters/planplannerimport.so
 %_K5plug/calligraplan/schedulers/libplantjscheduler.so
 %_K5plug/calligraplanworkpart.so
 %_datadir/calligraplan/
@@ -217,17 +213,17 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5xdgapp/org.kde.calligraplanwork.desktop
 %_datadir/metainfo/org.kde.calligraplan.appdata.xml
 
-%files -n %libkplatokernel
-%_K5lib/libkplatokernel.so.%sover
-%_K5lib/libkplatokernel.so.*
+%files -n %libplankernel
+%_K5lib/libplankernel.so.%sover
+%_K5lib/libplankernel.so.*
 
-%files -n %libkplatomodels
-%_K5lib/libkplatomodels.so.%sover
-%_K5lib/libkplatomodels.so.*
+%files -n %libplanmodels
+%_K5lib/libplanmodels.so.%sover
+%_K5lib/libplanmodels.so.*
 
-%files -n %libkplatoui
-%_K5lib/libkplatoui.so.%sover
-%_K5lib/libkplatoui.so.*
+%files -n %libplanui
+%_K5lib/libplanui.so.%sover
+%_K5lib/libplanui.so.*
 
 %files -n %libplankundo2
 %_K5lib/libplankundo2.so.%sover
@@ -266,6 +262,9 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5lib/libplanworkfactory.so.*
 
 %changelog
+* Thu Nov 14 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.2.0-alt1
+- 3.1.0 -> 3.2.0
+
 * Thu Nov 14 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.1.0-alt8
 - Fixed build
 
