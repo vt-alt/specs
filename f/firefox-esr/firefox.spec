@@ -15,8 +15,8 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.2.0
-Release:        alt1
+Version:        68.3.0
+Release:        alt2
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -387,6 +387,21 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Fri Dec 06 2019 Andrey Cherepanov <cas@altlinux.org> 68.3.0-alt2
+- Fix last changelog according to https://www.altlinux.org/Vulnerability_Policy.
+
+* Thu Dec 05 2019 Andrey Cherepanov <cas@altlinux.org> 68.3.0-alt1
+- New ESR version (68.3.0).
+- Fixed:
+  + CVE-2019-17008 Use-after-free in worker destruction
+  + CVE-2019-13722 Stack corruption due to incorrect number of arguments in WebRTC code
+  + CVE-2019-11745 Out of bounds write in NSS when encrypting with a block cipher
+  + CVE-2019-17009 Updater temporary files accessible to unprivileged processes
+  + CVE-2019-17010 Use-after-free when performing device orientation checks
+  + CVE-2019-17005 Buffer overflow in plain text serializer
+  + CVE-2019-17011 Use-after-free when retrieving a document in antitracking
+  + CVE-2019-17012 Memory safety bugs fixed in Firefox 71 and Firefox ESR 68.3
+
 * Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 68.2.0-alt1
 - New ESR version (68.2.0).
 - Fixed:
