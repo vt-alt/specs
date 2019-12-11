@@ -1,7 +1,7 @@
 Name: 0ad
 Epoch: 1
 Version: 0.0.23b
-Release: alt1
+Release: alt3
 
 Group: Games/Strategy
 Summary: Free, open-source realtime strategy game of ancient warfare
@@ -9,6 +9,8 @@ License: Various (all distributable)
 Url: http://www.wildfiregames.com/0ad/
 Requires: %name-data = %epoch:%version
 Source: %name-%version.tar
+Patch0: mozjs38-jit-none.patch
+Patch1: 0ad-ppc64le.patch
 
 BuildRequires: gcc-c++ python cmake
 BuildRequires: boost-filesystem-devel boost-flyweight-devel boost-signals-devel
@@ -16,7 +18,7 @@ BuildRequires: libjpeg-devel libpng-devel libvorbis-devel
 BuildRequires: libopenal-devel libGL-devel libSDL2-devel libwxGTK3.0-devel libXcursor-devel
 BuildRequires: libcurl-devel libxml2-devel libnspr-devel libicu-devel zlib-devel
 BuildRequires: libenet-devel libminiupnpc-devel libgloox-devel libsodium-devel
-BuildRequires: libmozjs38-devel
+BuildRequires: python-devel python-module-json
 
 # premake5 requires /proc/self/exe
 BuildRequires: /proc
@@ -38,6 +40,9 @@ educational celebration of game development and ancient history.
 
 %prep
 %setup
+cp -p %{P:0} libraries/source/spidermonkey/FixJitNone.diff
+echo "patch -p0 <../FixJitNone.diff" >>libraries/source/spidermonkey/patch.sh
+%patch1 -p1
 
 %build
 mkdir -p libraries/source/fcollada/src/output/debug/FCollada
@@ -49,7 +54,6 @@ build/workspaces/update-workspaces.sh \
 	--bindir=%_bindir \
 	--datadir=%_datadir/%name \
 	--libdir=%_libdir/%name \
-	--with-system-mozjs38 \
 	-j$NPROCS
 %make_build -C build/workspaces/gcc verbose=1
 
@@ -57,6 +61,7 @@ build/workspaces/update-workspaces.sh \
 install -Dm 0755 binaries/system/pyrogenesis %buildroot%_bindir/pyrogenesis
 install -Dm 0755 binaries/system/libCollada.so %buildroot%_libdir/%name/libCollada.so
 install -Dm 0755 binaries/system/libAtlasUI.so %buildroot%_libdir/%name/libAtlasUI.so
+install -Dm 0755 binaries/system/libmozjs*-ps-release.so %buildroot%_libdir/%name/
 install -Dm 0755 binaries/system/libnvcore.so %buildroot%_libdir/%name/libnvcore.so
 install -Dm 0755 binaries/system/libnvimage.so %buildroot%_libdir/%name/libnvimage.so
 install -Dm 0755 binaries/system/libnvmath.so %buildroot%_libdir/%name/libnvmath.so
@@ -79,6 +84,13 @@ cp -a binaries/data/* %buildroot%_datadir/0ad/
 %_datadir/0ad/*
 
 %changelog
+* Thu Aug 29 2019 Alexey Tourbin <at@altlinux.ru> 1:0.0.23b-alt3
+- ppc64le.patch from wiki.raptorcs.com/wiki/Porting/0ad
+
+* Wed Aug 28 2019 Alexey Tourbin <at@altlinux.ru> 1:0.0.23b-alt2
+- build with bundled mozjs38 again, should cure sporadic segfaults
+- backported a fix for mozjs38 on non-JIT architectures
+
 * Mon Dec 24 2018 Alexey Tourbin <at@altlinux.ru> 1:0.0.23b-alt1
 - official re-release of Alpha 23
 

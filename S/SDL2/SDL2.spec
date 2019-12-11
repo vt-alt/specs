@@ -4,8 +4,8 @@
 %def_with pulse
 
 Name: SDL2
-Version: 2.0.9
-Release: alt2
+Version: 2.0.10
+Release: alt1
 
 Summary: Simple DirectMedia Layer
 License: zlib
@@ -91,6 +91,11 @@ to develop SDL applications.
 %_aclocaldir/sdl2.m4
 
 %changelog
+* Thu Aug 29 2019 Alexey Tourbin <at@altlinux.ru> 2.0.10-alt1
+- 2.0.9 -> 2.0.10
+- this new version is required to build 0ad on ppc64le: SDL_cpuinfo.h
+  used to pull in altivec.h whose "vector" conflicts with std::vector
+
 * Thu Mar 07 2019 Nazarov Denis <nenderus@altlinux.org> 2.0.9-alt2
 - Add vulkan support (ALT #36246)
 
