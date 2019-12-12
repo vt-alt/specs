@@ -18,7 +18,7 @@
 
 Name: branding-%flavour
 Version: 9.0
-Release: alt1
+Release: alt2
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -39,7 +39,7 @@ Group: Graphics
 Summary: System/Base
 License: GPLv2+
 
-%define distro_name ALT Server Virtualization %version%status_en
+%define distro_name ALT Virtualization Server %version%status_en
 %define distro_name_ru Альт Сервер Виртуализации %version%status
 
 %description
@@ -317,6 +317,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Dec 12 2019 Alexey Shabalin <shaba@altlinux.org> 9.0-alt2
+- en: Server Virtualization -> Virtualization Server
+
 * Fri Dec 06 2019 Alexey Shabalin <shaba@altlinux.org> 9.0-alt1
 - initial build as server-v flavour (based on server)
 
