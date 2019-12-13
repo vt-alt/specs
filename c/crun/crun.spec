@@ -2,7 +2,7 @@
 
 Summary: OCI runtime written in C
 Name: crun
-Version: 0.10.2
+Version: 0.10.6
 Release: alt1
 Group: Development/Other
 License: GPLv3+
@@ -30,6 +30,7 @@ crun is a runtime for running OCI containers
 tar -xf %SOURCE11 -C libocispec
 tar -xf %SOURCE12 -C libocispec/image-spec
 tar -xf %SOURCE13 -C libocispec/runtime-spec
+echo "%version" > .tarball-version
 
 %build
 %autoreconf
@@ -46,6 +47,12 @@ rm -f %buildroot%_libdir/*.a
 %_man1dir/*
 
 %changelog
+* Wed Dec 11 2019 Alexey Shabalin <shaba@altlinux.org> 0.10.6-alt1
+- 0.10.6 (fixes: CVE-2019-18837)
+
+* Wed Nov 06 2019 Alexey Shabalin <shaba@altlinux.org> 0.10.4-alt1
+- 0.10.4
+
 * Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 0.10.2-alt1
 - 0.10.2
 
