@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.3.11
+Version: 7.3.12
 Release: alt1
 
 %define php7_name      %name
@@ -48,6 +48,7 @@ Patch18: php-7.2.14-alt-zend-signal-visibility.patch
 Patch19: php-7.2-alt-phar-manfile-suffix.patch
 Patch20: php7-7.1.0-phpize.patch
 Patch21: php7-7.3-alt-tests-fix.patch
+Patch22: php7-7.3.10-alt-e2k-lcc123.patch
 
 Patch70: php7-debian-Add-support-for-use-of-the-system-timezone-database.patch
 Patch71: php7-debian-Use-system-timezone.patch
@@ -180,6 +181,9 @@ in use by other PHP7-related packages.
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
+%ifarch %e2k
+%patch22 -p1
+%endif
 %patch70 -p1
 %patch71 -p1
 
@@ -202,12 +206,6 @@ sed -is 's,\(zend_module_entry \)\(.*= {\),zend_module_entry __attribute__ ((vis
 ./buildconf --force
 
 %php7_env
-
-# some plugins can be linked against lcxa (e.g. gd2); it can't be
-# loaded dynamically, so all binaries should be linked with it
-%ifarch %e2k
-cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
-%endif
 
 %configure \
 	--prefix=%_prefix \
@@ -263,7 +261,6 @@ cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
 	--without-pcre-jit \
 	%endif
 #
-export NPROCS=1
 %php7_make
 
 %install
@@ -467,8 +464,14 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %doc tests run-tests.php 
 
 %changelog
+* Mon Nov 25 2019 Anton Farygin <rider@altlinux.ru> 7.3.12-alt1
+- 7.3.12
+
 * Tue Nov 19 2019 Anton Farygin <rider@altlinux.ru> 7.3.11-alt1
 - 7.3.11 (fixes: CVE-2019-11043)
+
+* Tue Nov 19 2019 Michael Shigorin <mike@altlinux.org> 7.3.10-alt2
+- E2K: lcc support updates: drop 1.21, fix 1.23 (mcst#4061)
 
 * Fri Oct 11 2019 Anton Farygin <rider@altlinux.ru> 7.3.10-alt1
 - 7.3.10
