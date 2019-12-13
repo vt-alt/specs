@@ -117,7 +117,7 @@
 # }}}
 
 Name: qemu
-Version: 4.1.0
+Version: 4.1.1
 Release: alt1
 
 Summary: QEMU CPU Emulator
@@ -1060,6 +1060,9 @@ fi
 %_bindir/ivshmem-server
 
 %changelog
+* Mon Dec 09 2019 Alexey Shabalin <shaba@altlinux.org> 4.1.1-alt1
+- 4.1.1
+
 * Fri Aug 16 2019 Alexey Shabalin <shaba@altlinux.org> 4.1.0-alt1
 - 4.1.0
 
