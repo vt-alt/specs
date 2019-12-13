@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt5
+Release: alt6
 
 Url: http://en.altlinux.org/starterkits
 
@@ -56,7 +56,7 @@ Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design
 Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-bootloader ";done )
 
-%define grub_normal white/blue
+%define grub_normal white/black
 %define grub_high black/white
 
 %description bootloader
@@ -273,7 +273,9 @@ echo $lang > lang
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
+shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND ''
+# deprecated
+shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER ''
 
 %ifarch %ix86 x86_64
 %preun bootloader
@@ -333,6 +335,9 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_sysconfdir/skel/.config/autostart/*
 
 %changelog
+* Wed Dec 11 2019 Anton Midyukov <antohami@altlinux.org> p9-alt6
+- setup black background for grub
+
 * Sat Oct 26 2019 Anton Midyukov <antohami@altlinux.org> p9-alt5
 - bootsplash: add system-logo
 
