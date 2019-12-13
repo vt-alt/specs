@@ -5,7 +5,7 @@
 # https://github.com/containers/buildah
 %global provider_prefix %provider.%provider_tld/%project/%repo
 %global import_path     %provider_prefix
-%global commit         0bafbfe9cb10a177509622010220fd1fc6027f16
+%global commit         9513cb8c7bec0f7789c696aee4d252ebf85194cc
 %global shortcommit    %(c=%commit; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -17,11 +17,11 @@
 
 Name: buildah
 # Bump version in buildah.go too
-Version: 1.11.2
+Version: 1.11.6
 Release: alt1
 Summary: A command line tool used to creating OCI Images
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%provider_prefix
 Source: %name-%version.tar
 Patch: %name-%version.patch
@@ -35,7 +35,6 @@ BuildRequires: libbtrfs-devel
 BuildRequires: libassuan-devel
 BuildRequires: libseccomp-devel
 BuildRequires: glib2-devel
-BuildRequires: libostree-devel
 Requires: runc >= 1.0.0
 Requires: containers-common
 Requires: slirp4netns >= 0.3
@@ -86,6 +85,12 @@ rm -rf -- %buildroot%_datadir
 %_datadir/bash-completion/completions/*
 
 %changelog
+* Wed Dec 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.11.6-alt1
+- 1.11.6
+
+* Mon Oct 07 2019 Alexey Shabalin <shaba@altlinux.org> 1.11.3-alt1
+- 1.11.3
+
 * Sun Sep 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.11.2-alt1
 - Initial build for ALT
 
