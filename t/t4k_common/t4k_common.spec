@@ -1,28 +1,23 @@
-# BEGIN SourceDeps(oneline):
-BuildRequires: gcc-c++ libSDL_ttf-devel
-# END SourceDeps(oneline)
+Group: System/Libraries
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
-%define _localstatedir %{_var}
+%define _localstatedir %_var
 Name: t4k_common
 Version: 0.1.1
-Release: alt2_17
-URL: http://tux4kids.alioth.debian.org/
+Release: alt4.gita6c6b15
+Url: https://github.com/tux4kids/t4kcommon
 Summary: Library for Tux4Kids applications
 License: GPLv3+
-Source0: https://alioth.debian.org/frs/download.php/3540/%{name}-%{version}.tar.gz
-Patch0: t4k_common-0.1.1-libpng15.patch
-Group: System/Libraries
+Source0: %name-%version.tar
+BuildRequires: gcc-c++ libSDL_ttf-devel
 BuildRequires: libSDL-devel libSDL_mixer-devel libSDL_image-devel
 BuildRequires: libSDL_pango-devel libSDL_net-devel librsvg-devel librsvg-gir-devel libcairo-devel
-BuildRequires: libpng-devel libxml2-devel doxygen
-Provides: bundled(liblinebreak)
-Source44: import.info
+BuildRequires: libpng-devel libxml2-devel doxygen libespeak-devel
 
 %package devel
-Summary: Development files for the Tux4Kids library
 Group: Development/Other
-Requires: %{name} = %{version}-%{release}
-Requires: pkg-config
+Summary: Development files for the Tux4Kids library
+Requires: %name = %version-%release
+Requires: pkgconfig
 
 %description
 library of code shared by TuxMath, TuxType, and
@@ -35,11 +30,10 @@ possibly other Tux4Kids apps in the future.
 These are the development files.
 
 %prep
-%setup -q
-
-%patch0 -p0
+%setup
 
 %build
+%autoreconf
 %configure
 %make_build
 doxygen
@@ -47,23 +41,32 @@ rm -f doxygen/html/installdox
 
 %install
 INSTALL='install -p' make DESTDIR=$RPM_BUILD_ROOT install
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
-rm -f $RPM_BUILD_ROOT%{_includedir}/t4k_scandir.h
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/lib%{name}.so
+rm -f $RPM_BUILD_ROOT%_libdir/*.la
+rm -f $RPM_BUILD_ROOT%_libdir/*.a
+rm -f $RPM_BUILD_ROOT%_includedir/t4k_scandir.h
+chmod 755 $RPM_BUILD_ROOT%_libdir/lib%name.so
 
 %files
 %doc COPYING README
-%{_libdir}/lib%{name}.so.*
-%{_datadir}/%{name}/
+%_libdir/lib%name.so.*
+%_datadir/%name/
 
 %files devel
 %doc doxygen/html/
-%{_libdir}/lib%{name}.so
-%{_includedir}/t4k*.h
-%{_libdir}/pkgconfig/t4k_common.pc
+%_libdir/lib%name.so
+%_includedir/t4k*.h
+%_libdir/pkgconfig/t4k_common.pc
 
 %changelog
+* Tue Dec 10 2019 Anton Farygin <rider@altlinux.ru> 0.1.1-alt4.gita6c6b15
+- added a patch from github against crashes with recent version of the librsvg
+
+* Tue Dec 10 2019 Anton Farygin <rider@altlinux.ru> 0.1.1-alt3.git495af34
+- update to upstream master git
+
+* Wed Sep 18 2019 Igor Vlasenko <viy@altlinux.ru> 0.1.1-alt2_22
+- update to new release by fcimport
+
 * Fri Oct 20 2017 Igor Vlasenko <viy@altlinux.ru> 0.1.1-alt2_17
 - update to new release by fcimport
 

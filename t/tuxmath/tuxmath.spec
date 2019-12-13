@@ -1,86 +1,75 @@
+Name: tuxmath
 Group: Games/Other
-# BEGIN SourceDeps(oneline):
-BuildRequires: /usr/bin/desktop-file-install gcc-c++ libxml2-devel pkgconfig(cairo)
-# END SourceDeps(oneline)
-# see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
-%define _localstatedir %{_var}
-Name:           tuxmath
-Version:        2.0.3
-Release:        alt1_5
-Summary:        Educational math tutor for children
+Version: 2.0.3
+Release: alt3
+Summary: Educational math tutor for children
 
-License:        GPLv3+ and CC-BY and OFL
-URL:            http://tux4kids.alioth.debian.org/
-Source0:        https://alioth.debian.org/frs/download.php/3271/%{name}_w_fonts-%{version}.tar.gz
-Source1:        %{name}.appdata.xml
-#Patch0:	        tuxmath_w_fonts-2.0.1-scandir.patch
-Patch1:         tuxmath_w_fonts-2.0.1-gcc5.patch
-#Patch2:         tuxmath_w_fonts-2.0.1-powerup-crash.patch
+License: GPLv3+ and CC-BY and OFL
+Url: https://github.com/tux4kids/tuxmath
+Source0: %{name}-%version.tar
+Source1: %name.appdata.xml
 
-BuildRequires:  gcc
-BuildRequires:  desktop-file-utils libappstream-glib
-BuildRequires:  libSDL-devel
-BuildRequires:  libSDL_image-devel
-BuildRequires:  libSDL_mixer-devel
-BuildRequires:  libSDL_pango-devel
-BuildRequires:  libSDL_net-devel
-BuildRequires:  librsvg-devel librsvg-gir-devel
-BuildRequires:	t4k_common-devel
-Requires:       icon-theme-hicolor
-Source44: import.info
+BuildRequires: gcc-c++ libxml2-devel pkgconfig(cairo)
+BuildRequires: desktop-file-utils libappstream-glib
+BuildRequires: libSDL-devel
+BuildRequires: libSDL_image-devel
+BuildRequires: libSDL_mixer-devel
+BuildRequires: libSDL_pango-devel
+BuildRequires: libSDL_net-devel
+BuildRequires: librsvg-devel librsvg-gir-devel
+BuildRequires: t4k_common-devel
+Requires: icon-theme-hicolor
 
 %description
 TuxMath is an educational math tutor for children. It features several
 different types of gameplay, at a variety of difficulty levels.
 
-
 %prep
-%setup -q -n %{name}_w_fonts-%{version}
-# remove unneeded font files
-rm -f data/fonts/*.ttf
-#%patch0 -p1
-%patch1 -p1
-#%patch2 -p1
-
+%setup
 
 %build
+%autoreconf
 %configure
 %make_build
 
-
 %install
 %makeinstall_std
-%find_lang %{name}
+%find_lang %name
 
 desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications %{name}.desktop
+  --dir $RPM_BUILD_ROOT%_datadir/applications %name.desktop
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+mkdir -p $RPM_BUILD_ROOT%_datadir/icons/hicolor/48x48/apps
 install -p -m 644 data/images/icons/icon.png \
-  $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
+  $RPM_BUILD_ROOT%_datadir/icons/hicolor/48x48/apps/%name.png
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+mkdir -p $RPM_BUILD_ROOT%_datadir/icons/hicolor/scalable/apps
 install -p -m 644 data/images/icons/tuxmath.svg \
-  $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+  $RPM_BUILD_ROOT%_datadir/icons/hicolor/scalable/apps
 
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/appdata
-install -p -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/appdata
+mkdir -p $RPM_BUILD_ROOT%_datadir/appdata
+install -p -m 644 %SOURCE1 $RPM_BUILD_ROOT%_datadir/appdata
 appstream-util validate-relax --nonet \
-  $RPM_BUILD_ROOT%{_datadir}/appdata/%{name}.appdata.xml
+  $RPM_BUILD_ROOT%_datadir/appdata/%name.appdata.xml
 
-%files -f %{name}.lang
-%{_docdir}/%{name}
-%{_bindir}/%{name}*
-%{_bindir}/generate_lesson
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/*
-%{_datadir}/appdata/%{name}.appdata.xml
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
-
+%files -f %name.lang
+%_docdir/%name
+%_bindir/%{name}*
+%_bindir/generate_lesson
+%dir %_datadir/%name
+%_datadir/%name/*
+%_datadir/appdata/%name.appdata.xml
+%_datadir/applications/%name.desktop
+%_datadir/icons/hicolor/48x48/apps/%name.png
+%_datadir/icons/hicolor/scalable/apps/%name.svg
 
 %changelog
+* Tue Dec 10 2019 Anton Farygin <rider@altlinux.ru> 2.0.3-alt3
+- built from upstream git
+
+* Tue Dec 10 2019 Ivan A. Melnikov <iv@altlinux.org> 2.0.3-alt2_5
+- fix segfault in factoroids (closes: #34297)
+
 * Sun Feb 17 2019 Igor Vlasenko <viy@altlinux.ru> 2.0.3-alt1_5
 - fixed build (closes: #221688)
 
