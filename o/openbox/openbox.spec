@@ -1,16 +1,15 @@
 %def_without kde
+%def_without gnome
 
 Name: openbox
 Version: 3.6.1
-Release: alt3
+Release: alt5
 
 Summary: Openbox is a standards compliant, fast, light-weight, extensible window manager
 Summary(ru_RU.UTF-8): Openbox это следующий стандартам, быстрый, лёгкий, расширяемый оконный менеджер
 License: GPLv2+
 Group: Graphical desktop/Other
 Url: http://openbox.org/
-
-Packager: Igor Zubkov <icesik@altlinux.org>
 
 Source0: %name-%version.tar
 Source2: %name-icons.tar.bz2
@@ -27,6 +26,9 @@ Source13: menu.xml
 # ALT Linux
 Patch2: openbox-alt-menu-rc.xml.in.patch
 
+# Fedora patch
+Patch10: openbox-python3.patch
+
 Requires: lib%name = %version-%release
 # for menu "Run" item
 Requires: Xdialog
@@ -42,8 +44,11 @@ BuildPreReq: gettext >= 0.15
 # Automatically added by buildreq on Fri Sep 11 2015 (-bi)
 # optimized out: elfutils fontconfig fontconfig-devel glib2-devel libICE-devel libX11-devel libXau-devel libXext-devel libXft-devel libXrender-devel libfreetype-devel libstartup-notification libxcb-devel perl-Encode perl-Pod-Escapes perl-Pod-Simple perl-Pod-Usage pkg-config python-base rpm-build-gir xorg-kbproto-devel xorg-randrproto-devel xorg-renderproto-devel xorg-xextproto-devel xorg-xproto-devel xz
 BuildRequires: imake libSM-devel libXcursor-devel libXinerama-devel libXrandr-devel libpango-devel libstartup-notification-devel libxml2-devel perl-podlators xorg-cf-files
+BuildRequires: pkgconfig(librsvg-2.0)
+BuildRequires: pkgconfig(imlib2)
 
 BuildRequires: perl-podlators
+BuildRequires(pre): rpm-build-python3
 
 %description
 Openbox is a standards compliant, fast, light-weight, extensible window manager.
@@ -103,6 +108,7 @@ Requires: %_bindir/openbox
 Run KDE with Openbox as the WM.
 %endif
 
+%if_with gnome
 %package gnome
 Summary: Run GNOME with Openbox as the WM
 Group: Graphical desktop/Other
@@ -110,12 +116,13 @@ Requires: %_bindir/openbox
 
 %description gnome
 Run GNOME with Openbox as the WM.
+%endif
 
 %package autostart
 Summary: XDG support for Openbox
 Group: Graphical desktop/Other
 BuildArch: noarch
-Requires: python-module-pyxdg
+%py3_requires xdg
 
 %description autostart
 XDG support for Openbox.
@@ -265,6 +272,7 @@ This theme distributed with Openbox.
 %prep
 %setup -q -a2
 %patch2 -p1
+%patch10 -p1
 sed -i '/^obrender_libobrender_la_LIBADD/ a\\tobt/libobt.la \\' Makefile.am
 
 %build
@@ -350,6 +358,7 @@ install -pD -m 644 %SOURCE13 %buildroot%_sysconfdir/xdg/openbox/
 %_man1dir/openbox-kde-session.*
 %endif
 
+%if_with gnome
 %files gnome
 %config %_sysconfdir/X11/wmsession.d/11openbox-gnome
 %_bindir/openbox-gnome-session
@@ -359,6 +368,7 @@ install -pD -m 644 %SOURCE13 %buildroot%_sysconfdir/xdg/openbox/
 %_datadir/xsessions/openbox-gnome.desktop
 %_man1dir/openbox-gnome-session.*
 %_man1dir/gnome-panel-control.*
+%endif
 
 %files autostart
 %_libexecdir/openbox-xdg-autostart
@@ -405,6 +415,16 @@ install -pD -m 644 %SOURCE13 %buildroot%_sysconfdir/xdg/openbox/
 %_datadir/themes/Syscrash
 
 %changelog
+* Thu Nov 28 2019 Anton Midyukov <antohami@altlinux.org> 3.6.1-alt5
+- add Buildrequires: imlib2 librsvg (Closes: 37547)
+
+* Thu Nov 07 2019 Anton Midyukov <antohami@altlinux.org> 3.6.1-alt4.1
+- fix reguires
+
+* Wed Nov 06 2019 Anton Midyukov <antohami@altlinux.org> 3.6.1-alt4
+- switch to python3
+- Rebuilt without gnome subpackage.
+
 * Thu Sep 21 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 3.6.1-alt3
 - Rebuilt without kde subpackage.
 
