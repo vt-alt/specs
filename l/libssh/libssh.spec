@@ -1,25 +1,26 @@
+%define _unpackaged_files_terminate_build 1
 
 %def_disable gcrypt
 
 Name: libssh
-Version: 0.8.7
+Version: 0.9.3
 Release: alt1
 
 Group: System/Libraries
 Summary: C library to authenticate in a simple manner to one or more SSH servers
 Url: http://www.libssh.org/
-License: LGPL
+License: LGPLv2.1+
 
 # svn checkout svn://svn.berlios.de/libssh/trunk libssh
 Source: http://www.libssh.org/files/%name-%version.tar.gz
-Source1: version-script.libssh
-Source2: compat.lds
-Patch1: version-script.patch
+Source3: libssh_client.config
+Source4: libssh_server.config
+Patch1: fix-path-for-ALT.patch
 
-BuildRequires(pre): rpm-build-ubt
-BuildRequires: cmake doxygen ghostscript-utils graphviz latex2html
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: cmake
 BuildRequires: gcc-c++ %{?_enable_gcrypt: libgcrypt-devel}
-BuildRequires: libssl-devel zlib-devel kde-common-devel
+BuildRequires: libssl-devel zlib-devel
 BuildRequires: libkrb5-devel
 
 %description
@@ -62,23 +63,31 @@ This package contains the development files for %name.
 
 %prep
 %setup -q
-%patch1 -p1
-install -m 0644 %SOURCE1 ./
-install -m 0644 %SOURCE2 ./
+%patch1 -p2
 
 %build
-%Kbuild \
+%cmake \
     -DWITH_ZLIB=ON \
     -DWITH_GSSAPI=ON \
     -DWITH_GCRYPT=%{?_enable_gcrypt:ON}%{!?_enable_gcrypt:OFF} \
+    -DGLOBAL_CLIENT_CONFIG="%_sysconfdir/libssh/libssh_client.config" \
+    -DGLOBAL_BIND_CONFIG="%_sysconfdir/libssh/libssh_server.config" \
     #
 
+%cmake_build
+
 %install
-%Kinstall
+%cmakeinstall_std
+
+mkdir -p %buildroot%_sysconfdir/libssh
+install -m644 %SOURCE3 %buildroot%_sysconfdir/libssh/libssh_client.config
+install -m644 %SOURCE4 %buildroot%_sysconfdir/libssh/libssh_server.config
 
 %files
-%_libdir/libssh.so.4
 %_libdir/libssh.so.*
+%dir %_sysconfdir/libssh
+%config(noreplace) %_sysconfdir/libssh/libssh_client.config
+%config(noreplace) %_sysconfdir/libssh/libssh_server.config
 
 %files devel
 %_pkgconfigdir/%name.pc
@@ -87,6 +96,21 @@ install -m 0644 %SOURCE2 ./
 %_libdir/*.so
 
 %changelog
+* Wed Dec 11 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.3-alt1
+- new version
+- security (Fixes: CVE-2019-14889)
+
+* Tue Dec 10 2019 Alexey Shabalin <shaba@altlinux.org> 0.9.2-alt2
+- fixed path:
+  + /etc/ssh/ -> /etc/openssh/
+  + /usr/lib/sftp-server -> /usr/lib/openssh/sftp-server
+- drop versioning patch
+- add global client and server configs for libssh to /etc/libssh
+- fixed license
+
+* Mon Nov 25 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.2-alt1
+- new version
+
 * Mon Mar 04 2019 Sergey V Turchin <zerg@altlinux.org> 0.8.7-alt1
 - new version
 
@@ -107,10 +131,10 @@ install -m 0644 %SOURCE2 ./
 * Mon Oct 08 2018 Sergey V Turchin <zerg@altlinux.org> 0.8.3-alt1
 - new version
 
-* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 0.8.1-alt1%ubt
+* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 0.8.1-alt1
 - new version
 
-* Tue Aug 08 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.5-alt1%ubt
+* Tue Aug 08 2017 Sergey V Turchin <zerg@altlinux.org> 0.7.5-alt1
 - new version
 - security fix: CVE-2016-0739
 
