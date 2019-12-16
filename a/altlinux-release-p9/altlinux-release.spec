@@ -1,8 +1,11 @@
+# Unpackaged files in buildroot should terminate build
+%define _unpackaged_files_terminate_build 1
+
 %ifndef distro
 %define distro p9
 %endif
 %ifndef timestamp
-%define timestamp 20190514
+%define timestamp 20191210
 %endif
 %ifndef dtext
 %define dtext %distribution %distro
@@ -49,11 +52,26 @@ for n in fedora redhat system; do
 	ln -s altlinux-release %buildroot%_sysconfdir/$n-release
 done
 
+cat << __EOF__ > %buildroot%_sysconfdir/os-release
+NAME=ALT
+VERSION="p9 branch"
+ID=altlinux
+VERSION_ID=9
+PRETTY_NAME="ALT p9 branch"
+ANSI_COLOR="1;33"
+CPE_NAME="cpe:/o:alt:branch:9"
+HOME_URL="https://en.altlinux.org/"
+BUG_REPORT_URL="https://bugs.altlinux.org/"
+__EOF__
+
 %files
 %_sysconfdir/*-*
 %_sysconfdir/buildreqs/packages/ignore.d/*
 
 %changelog
+* Tue Dec 10 2019 Alexey Shabalin <shaba@altlinux.org> 20191210-alt1
+- Added /etc/os-release. (ALT #37565)
+
 * Tue May 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 20190514-alt1
 - Updated Obsoletes lists.
 - Renamed and updated to altlinux-release-p9.
