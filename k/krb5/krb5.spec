@@ -7,7 +7,7 @@
 %def_enable check
 
 Name: krb5
-Version: 1.16.3
+Version: 1.17.1
 Release: alt1
 
 %if_without bootstrap
@@ -32,25 +32,20 @@ Source11: ltxcmds.sty
 # Carry this locally until it's available in a packaged form.
 Source100: noport.c
 
-Patch1: krb5-1.10.1-alt-export-krb5int_get_fq_local_hostname.patch
-
 # fedora patches:
 Patch6: krb5-1.12-fedora-ksu-path.patch
 Patch12: krb5-1.12-fedora-ktany.patch
 Patch23: krb5-1.3.1-fedora-dns.patch
 Patch39: krb5-1.12-fedora-api.patch
 Patch60: krb5-1.12.1-fedora-pam.patch
-Patch63: krb5-1.15.1-fedora-selinux-label.patch
+Patch63: krb5-1.17-beta1-fedora-selinux-label.patch
 Patch71: krb5-1.13-fedora-dirsrv-accountlock.patch
 Patch86: krb5-1.9-fedora-debuginfo.patch
 Patch129: krb5-1.11-fedora-run_user_0.patch
 Patch134: krb5-1.11-fedora-kpasswdtest.patch
 
-
 # alt patches:
 Patch200: krb5-1.16-alt-default_keytab_group.patch
-Patch201: alt-Fix-test-with-fallback-realm-ccache-selection.patch
-
 
 BuildRequires: /dev/pts /proc
 BuildRequires: flex libcom_err-devel libkeyutils-devel
@@ -200,8 +195,6 @@ MIT Kerberos.
 %prep
 %setup
 
-%patch1 -p2
-
 # fedora patches:
 %patch60 -p1 -b .pam
 %patch63 -p1 -b .selinux-label
@@ -217,7 +210,6 @@ MIT Kerberos.
 %patch134 -p1 -b .kpasswdtest
 
 %patch200 -p2 -b .default_keytab_group
-%patch201 -p1
 
 # Generate an FDS-compatible LDIF file.
 inldif=src/plugins/kdb/ldap/libkdb_ldap/kerberos.ldif
@@ -429,8 +421,9 @@ fi
 %dir %_libdir/%name/plugins/preauth
 %dir %_libdir/%name/plugins/tls
 %_libdir/%name/plugins/kdb/db2.so
-%_libdir/%name/plugins/preauth/pkinit.so
 %_libdir/%name/plugins/preauth/otp.so
+%_libdir/%name/plugins/preauth/pkinit.so
+%_libdir/%name/plugins/preauth/spake.so
 %_libdir/%name/plugins/tls/k5tls.so
 
 %_man5dir/krb5.conf.5*
@@ -547,6 +540,14 @@ fi
 # {{{ changelog
 
 %changelog
+* Thu Dec 12 2019 Ivan A. Melnikov <iv@altlinux.org> 1.17.1-alt1
+- 1.17.1
+
+* Wed Jan 09 2019 Ivan A. Melnikov <iv@altlinux.org> 1.17-alt1
+- 1.17
+- drop patch 1, as we don't need that export any more
+- update patch 63 from fedora
+
 * Tue Jan 08 2019 Ivan A. Melnikov <iv@altlinux.org> 1.16.3-alt1
 - 1.16.3 (CVE-2018-20217)
 - apply bootstrap and e2k tweaks (mike@) (closes: #32982)
