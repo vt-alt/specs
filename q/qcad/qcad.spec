@@ -1,21 +1,20 @@
 %def_with debug
 
 Name: 	 qcad
-Version: 3.23.0.5
+Version: 3.23.0.11
 Release: alt1
 Summary: A professional CAD system
 Summary(ru_RU.UTF-8): Профессиональная система CAD
 
 Url: 	 http://www.ribbonsoft.com/qcad.html
 # VCS:   https://github.com/qcad/qcad.git
-License: GPLv3 with exceptions
+# TODO: remove bundled fonts or specify their licenses  
+License: GPL-3.0 with Qt-GPL-exception-1.0 and CC-BY-3.0 and GPL-2.0+ and MIT and BSD-2-Clause and ALT-Public-Domain
 Group:   Graphics
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source0: qcad-%version.tar
-Source1: qcad.desktop
-Source2: qcad
 Patch:   %name-%version-%release.patch
 Patch1:  qcad-qt5-unbundle_libraries.patch
 
@@ -79,7 +78,7 @@ fi
 install -Dm755 release/qcad-bin %buildroot%_libdir/%name/qcad-bin
 
 # Make executable wrapper
-install -Dm0755 %SOURCE2 %buildroot%_bindir/qcad
+install -Dm0755 qcad %buildroot%_bindir/qcad
 
 # Libraries
 install -d %buildroot%_libdir
@@ -104,7 +103,7 @@ cp -a   examples \
 	"%buildroot%_libdir/%name/"
 
 # Desktop file
-install -Dm644 %SOURCE1 %buildroot%_desktopdir/%name.desktop
+install -Dm644 qcad.desktop %buildroot%_desktopdir/%name.desktop
 
 # Icon
 install -Dm644 ./support/doc/api/qcad_icon.png %buildroot%_iconsdir/hicolor/64x64/apps/%name.png
@@ -125,6 +124,18 @@ done
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.23.0.11-alt1
+- New version.
+- Fix open file(s) with spaces (ALT #34893).
+- Fix license tag.
+- Use wrapper and desktop files directly, not as external sources.
+
+* Thu Dec 12 2019 Andrey Cherepanov <cas@altlinux.org> 3.23.0.10-alt1
+- New version.
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 3.23.0.9-alt1
+- New version.
+
 * Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 3.23.0.5-alt1
 - New version.
 
@@ -508,7 +519,7 @@ done
 - specfile bugfix and cleanup
 - russian summary and description
 
-* Wed Apr 10 2001 Rider <rider@altlinux.ru>
+* Tue Apr 10 2001 Rider <rider@altlinux.ru>
 - 1.4.7
 
 * Sat Dec 16 2000 AEN <aen@logic.ru>
@@ -544,7 +555,7 @@ done
 * Thu Jan 27 2000 Camille BИgnis <camille@mandrakesoft.com> 1.3.3-2mdk
 - fixed typo in qcad.kdelink
 
-* Tue Dec 30 1999 Giuseppe GhibР <ghibo@linux-mandrake.com>
+* Thu Dec 30 1999 Giuseppe GhibР <ghibo@linux-mandrake.com>
 - Updated to version 1.3.3.
 
 * Mon Nov  8 1999 Giuseppe GhibР <ghibo@linux-mandrake.com>
