@@ -1,9 +1,9 @@
 Name: xfdashboard
-Version: 0.7.5
+Version: 0.7.7
 Release: alt1
 
 Summary: A Gnome shell like dashboard for Xfce
-License: %gpl2plus
+License: GPL-2.0+
 Group: Graphical desktop/XFce
 Url: https://goodies.xfce.org/projects/applications/xfdashboard/start
 
@@ -12,7 +12,7 @@ Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-BuildRequires(pre): rpm-build-licenses rpm-build-xdg
+BuildRequires(pre): rpm-build-xdg
 
 BuildPreReq: rpm-build-xfce4 >= 0.1.0 xfce4-dev-tools
 BuildPreReq: libxfconf-devel libgarcon-devel libxfce4util-devel libxfce4ui-gtk3-devel
@@ -83,6 +83,10 @@ This package contains development files required to build
 %_libdir/*.so
 
 %changelog
+* Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 0.7.7-alt1
+- Don't use rpm-build-licenses
+- Updated to 0.7.7.
+
 * Mon Aug 20 2018 Mikhail Efremov <sem@altlinux.org> 0.7.5-alt1
 - Updated to 0.7.5.
 
