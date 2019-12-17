@@ -1,6 +1,6 @@
 Name: awesome
 Version: 4.3
-Release: alt2
+Release: alt3
 Group: Graphical desktop/Other
 License: GPL2+
 
@@ -89,9 +89,13 @@ install -D -m 755 %SOURCE2 %buildroot%_sysconfdir/menu-methods/%name
 %_mandir/*/man5/aw*
 %_datadir/%name
 %_desktopdir/%name.desktop
+%_datadir/xsessions/%name.desktop
 %doc LICENSE build/docs/*.md
 
 %changelog
+* Sat Jun  1 2019 Terechkov Evgenii <evg@altlinux.org> 4.3-alt3
+- Add /usr/share/xsessions/awesome.desktop (ALT#36830)
+
 * Thu Apr  4 2019 Terechkov Evgenii <evg@altlinux.org> 4.3-alt2
 - Add libgdk-pixbuf-gir to Requires (ALT#36499)
 
