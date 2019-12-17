@@ -7,7 +7,7 @@
 
 Name: evms
 Version: 2.5.5
-Release: alt39
+Release: alt41
 
 Summary: Enterprise Volume Management System utilities
 License: GPL
@@ -168,6 +168,13 @@ EOF
 %endif
 
 %changelog
+* Wed Dec 04 2019 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt41
+- plugins/fat: fix free space display
+- plugins/gpt: plugins/dos: fix missing 'p' in MMC and NVMe devices
+
+* Tue Oct 08 2019 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt40
+- plugins/lvm2: add pv header extension support
+
 * Wed Jul 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.5.5-alt39
 - GPT:
   + added PowerPC PReP boot partition support;

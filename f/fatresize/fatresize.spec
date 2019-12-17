@@ -1,6 +1,6 @@
 Name: fatresize
 Version: 1.0.3
-Release: alt12.git20090730
+Release: alt13
 
 Summary: The FAT16/FAT32 non-destructive resizer.
 License: %gpl2plus
@@ -38,6 +38,10 @@ The FAT16/FAT32 non-destructive resizer.
 %_man1dir/%name.1.*
 
 %changelog
+* Thu Dec 05 2019 Slava Aseev <ptrnine@altlinux.org> 1.0.3-alt13
+- Remove minimal partition size limitation (512 MiB)
+- Fix getting device name
+
 * Wed Oct 22 2014 Yuri N. Sedunov <aris@altlinux.org> 1.0.3-alt12.git20090730
 - adapted for new libparted (based on debian patch)
 
