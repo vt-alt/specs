@@ -1,15 +1,14 @@
 %define name flow-capture
 %define flowdir %_logdir/%name
-%define piddir %_var/run/%name
+%define piddir /run/%name
 %define fuser _flow
 
 Name: %name
 Version: 0.1
-Release: alt2.2
+Release: alt3
 
 Summary: Flow-capture in Netflow collector program
-License: GPL
-Packager: Evgenii Terechkov <evg@altlinux.ru>
+License: GPL-2.0-or-later
 Group: Monitoring
 Source0: %name.init
 Source1: %name.sysconfig
@@ -42,6 +41,12 @@ install %SOURCE1 %buildroot%_sysconfdir/sysconfig/%name
 mkdir -p %buildroot%flowdir
 mkdir -p %buildroot%piddir
 
+# create tmpfiles config
+mkdir -p %buildroot%_tmpfilesdir
+cat >%buildroot%_tmpfilesdir/%name.conf<<END
+d %piddir 1775 root %fuser -
+END
+
 %pre
 /usr/sbin/useradd -r -d %flowdir -s /dev/null %fuser >/dev/null 2>&1 ||:
 
@@ -55,9 +60,16 @@ mkdir -p %buildroot%piddir
 %_initdir/%name
 %config(noreplace) %_sysconfdir/sysconfig/%name
 %dir %attr (1775,root,%fuser) %flowdir
-%dir %attr (1775,root,%fuser) %piddir
+#dir %attr (1775,root,%fuser) %piddir
+%_tmpfilesdir/%name.conf
 
 %changelog
+* Mon Dec 16 2019 Anton Midyukov <antohami@altlinux.org> 0.1-alt3
+- Add lsb-header for init script
+- replace /var/run to /run
+- create tmpfiles config
+- change license GPL-2.0-or-later
+
 * Sat Dec  1 2007 Terechkov Evgenii <evg@altlinux.ru> 0.1-alt2.2
 - Dir permission fixed according policy (see http://docs.altlinux.ru/alt/devel/ch01s03.html#id2884290)
 
