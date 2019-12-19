@@ -1,19 +1,17 @@
 Name: xfce4-power-manager
 Version: 1.6.5
-Release: alt1
+Release: alt2
 Summary: Power management for the Xfce desktop environment
 Summary (ru_RU.UTF8): Утилита расширенного управления питанием для Xfce
 
 Group: Graphical desktop/XFce
-License: %gpl2plus
+License: GPLv2+
 Url: https://goodies.xfce.org/projects/applications/%name
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
 # Upstream: git://git.xfce.org/xfce/xfce4-power-manager
 Source0: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfconf-devel libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel
@@ -74,6 +72,10 @@ scaling.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed Dec 18 2019 Mikhail Efremov <sem@altlinux.org> 1.6.5-alt2
+- Don't use rpm-build-licenses.
+- Initialize output variables for g_object_get().
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 1.6.5-alt1
 - Updated to 1.6.5.
 
