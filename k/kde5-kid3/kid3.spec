@@ -3,8 +3,8 @@
 
 %define rname kid3
 Name: kde5-%rname
-Version: 3.6.2
-Release: alt2
+Version: 3.8.0
+Release: alt1
 %K5init altplace
 
 Group: Sound
@@ -19,8 +19,9 @@ Patch1: kid3-3.0.2-alt-desktop_ru_uk.patch
 # Automatically added by buildreq on Fri Nov 13 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gtk-update-icon-cache id3lib kf5-kdoctools-devel libEGL-devel libGL-devel libavcodec-devel libavutil-devel libflac-devel libgpg-error libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-multimedia libqt5-network libqt5-printsupport libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl-parent pkg-config python-base python3 python3-base qt5-base-devel qt5-tools ruby ruby-stdlibs xml-common xml-utils zlib-devel
 #BuildRequires: extra-cmake-modules gcc-c++ id3lib-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdelibs4support kf5-kdoctools kf5-kdoctools-devel-static kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel libavdevice-devel libavformat-devel libavresample-devel libchromaprint-devel libflac++-devel libreadline-devel libswscale-devel libtag-devel libvorbis-devel python-module-google qt5-multimedia-devel qt5-tools-devel rpm-build-python3 rpm-build-ruby xsltproc
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: cmake extra-cmake-modules
+BuildRequires: gettext-tools
 BuildRequires: gcc-c++ glib2-devel libreadline-devel /usr/bin/xsltproc
 BuildRequires: libavdevice-devel libavformat-devel libavresample-devel libswscale-devel
 BuildRequires: libchromaprint-devel
@@ -125,7 +126,10 @@ Requires: %name-common = %EVR
 %setup -q -n %rname-%version
 %patch1 -p1
 
-cat %SOURCE1 >po/ru.po
+tmp_file=`mktemp`
+msgcat --use-first po/ru.po %SOURCE1 >"$tmp_file"
+cat "$tmp_file" >po/ru.po
+rm -f "$tmp_file"
 
 find -type f -name CMakeLists.txt | \
 while read f ; do
@@ -184,7 +188,7 @@ done
 %_K5bin/%rname-qt
 %doc %_docdir/kde5-kid3/
 %_iconsdir/*/*/apps/kid3-qt.*
-%_desktopdir/kid3-qt.desktop
+%_desktopdir/net.sourceforge.kid3-qt.desktop
 
 %files -n %rname-ui-cli5
 %doc AUTHORS NEWS README ChangeLog
@@ -201,28 +205,31 @@ done
 #%_K5dbus_iface/*id3*
 
 %changelog
+* Wed Dec 18 2019 Sergey V Turchin <zerg@altlinux.org> 3.8.0-alt1
+- new version
+
 * Tue Oct 09 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.2-alt2
 - update russian translation
 
-* Thu Sep 13 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.2-alt1%ubt
+* Thu Sep 13 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.2-alt1
 - new version
 
-* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.1-alt1%ubt
+* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.1-alt1
 - new version
 
-* Wed Mar 28 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.0-alt1%ubt
+* Wed Mar 28 2018 Sergey V Turchin <zerg@altlinux.org> 3.6.0-alt1
 - new version
 
-* Thu Dec 14 2017 Sergey V Turchin <zerg@altlinux.org> 3.5.1-alt1%ubt
+* Thu Dec 14 2017 Sergey V Turchin <zerg@altlinux.org> 3.5.1-alt1
 - new version
 
-* Thu Aug 10 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.5-alt2%ubt
+* Thu Aug 10 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.5-alt2
 - rebuild with new chromaprint
 
-* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.5-alt1%ubt
+* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.5-alt1
 - new version
 
-* Mon Jan 09 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.4-alt1%ubt
+* Mon Jan 09 2017 Sergey V Turchin <zerg@altlinux.org> 3.4.4-alt1
 - new version
 
 * Fri Jul 15 2016 Sergey V Turchin <zerg@altlinux.org> 3.4.1-alt2
