@@ -1,4 +1,4 @@
-%define git_version 4f8fa0a0024755aae7d95567c63f11d6862d55be
+%define git_version ad5bd132e1492173c85fda2cc863152730b16a92
 
 %def_with ocf
 %def_without tcmalloc
@@ -40,12 +40,12 @@
 %endif
 
 Name: ceph
-Version: 14.2.4
+Version: 14.2.5
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
 
-License: LGPLv2
+License: LGPL-2.1 and LGPL-3.0 and CC-BY-SA-3.0 and GPL-2.0 and BSL-1.0 and BSD-3-Clause and MIT
 Url: http://ceph.com/
 
 ExcludeArch: %ix86 %arm %mips32 ppc
@@ -84,11 +84,11 @@ BuildRequires: rpm-macros-cmake
 BuildRequires: boost-asio-devel boost-devel-headers >= 1.67.0 boost-program_options-devel boost-intrusive-devel
 BuildRequires: boost-filesystem-devel boost-coroutine-devel boost-context-devel boost-lockfree-devel
 %endif
-BuildRequires: gcc-c++ libaio-devel libblkid-devel libcurl-devel libexpat-devel
+BuildRequires: gcc-c++ libaio-devel libblkid-devel libcurl-devel libexpat-devel libcap-ng-devel
 BuildRequires: libfuse-devel libkeyutils-devel
 BuildRequires: libldap-devel libleveldb-devel libnss-devel
 #BuildRequires: libkrb5-devel
-BuildRequires: libssl-devel libudev-devel libxfs-devel libbtrfs-devel
+BuildRequires: libssl-devel libudev-devel libxfs-devel libbtrfs-devel libnl-devel
 %{?_with_libzfs:BuildRequires: libzfs-devel}
 BuildRequires: yasm
 %{?_with_amqp_endpoint:BuildRequires: librabbitmq-c-devel}
@@ -358,6 +358,15 @@ AutoProv: no
 %description mgr-rook
 ceph-mgr-rook is a ceph-mgr plugin for orchestration functions using
 a Rook backend.
+
+%package mgr-k8sevents
+Summary: Ceph Manager plugin to orchestrate ceph-events to kubernetes' events API
+Group: Monitoring
+Requires: ceph-mgr = %EVR
+AutoProv: no
+%description mgr-k8sevents
+ceph-mgr-k8sevents is a ceph-mgr plugin that sends every ceph-events
+to kubernetes' events API
 
 %package mgr-ssh
 Summary: Ssh module for Ceph Manager Daemon
@@ -1236,6 +1245,9 @@ fi
 %files mgr-rook
 %_datadir/ceph/mgr/rook
 
+%files mgr-k8sevents
+%_datadir/ceph/mgr/k8sevents
+
 %files mgr-ssh
 %_datadir/ceph/mgr/ssh
 
@@ -1512,6 +1524,12 @@ fi
 %endif
 
 %changelog
+* Thu Dec 12 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.5-alt1
+- 14.2.5
+- This release fixes a critical BlueStore bug introduced in 14.2.3
+  (and also present in 14.2.4) that can lead to data corruption
+  when a separate WAL device is used.
+
 * Mon Oct 07 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.4-alt1
 - 14.2.4 (Fixes: CVE-2019-10222)
 
