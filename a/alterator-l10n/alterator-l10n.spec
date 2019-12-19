@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.48
+Version: 2.9.50
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,13 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Wed Dec 11 2019 Paul Wolneykien <manowar@altlinux.org> 2.9.50-alt1
+- Updated Russian translations for alterator-fbi/ahttpd-power.
+
+* Tue Dec 10 2019 Paul Wolneykien <manowar@altlinux.org> 2.9.49-alt1
+- Updated Russian translation for alterator-fbi/ahttpd-power.
+- Updated strings for alterator-fbi/ahttpd-power.
+
 * Sun Oct 20 2019 Andrey Cherepanov <cas@altlinux.org> 2.9.48-alt1
 - Add localization and help for alterator-domain-policy.
 

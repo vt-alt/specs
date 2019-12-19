@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-fbi
-Version: 5.42
+Version: 5.47
 Release: alt1
 
 Source: %name-%version.tar
@@ -22,7 +22,8 @@ Requires: alterator >= 5.0-alt1
 Requires: alterator-l10n >= 2.7-alt4
 Requires: alterator-sslkey
 Requires: gettext
-Requires: alterator-l10n >= 0.15
+Requires: alterator-l10n >= 2.9.50
+Requires: /etc/cron.d
 
 Requires(pre): libguile-vhttpd >= 0.7.7-alt1
 Requires(pre): shadow-utils
@@ -152,6 +153,36 @@ fi ||:
 
 
 %changelog
+* Fri Dec 13 2019 Paul Wolneykien <manowar@altlinux.org> 5.47-alt1
+- Fix/improve: Just touch /etc/cron.d in order to reload the schedule.
+
+* Wed Dec 11 2019 Paul Wolneykien <manowar@altlinux.org> 5.46-alt1
+- Fix: Use 'systemctl poweroff' to shutdown the system in the case
+  of systemd.
+- Use catch/message-and-ignore to always re-read the parameters.
+- Added catch/message-and-ignore proc.
+- Fix/improve: Require /etc/cron.d.
+- Fix: Require alterator-l10n >= 2.9.50.
+- Fix/improve: Additional checks for the crond service.
+- Fix/improve: Reload crond service after schedule update.
+
+* Tue Dec 03 2019 Paul Wolneykien <manowar@altlinux.org> 5.45-alt1
+- Power module:
+  -- Added support for reboot, suspend and hibernate
+     scheduling and instant actions.
+  -- Apply the changes to the schedule regardless of the
+     instant action.
+- Form.js: Added support to select elements by id.
+
+* Tue Nov 26 2019 Paul Wolneykien <manowar@altlinux.org> 5.44-alt1
+- Allow the email notification controls only if
+  "state-change-notify-postfix" system service is available.
+- Added controls for email notification to the "power" module.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 5.43-alt1
+- Render table with dynamic fields from JSON (thanks majioa@).
+  See alterator-domain-policy for details.
+
 * Wed Apr 17 2019 Paul Wolneykien <manowar@altlinux.org> 5.42-alt1
 - Update the call-cc-via-reset patch (for E2K).
 - Fixed the accidentally overwritten URL query parsing regexp fix
