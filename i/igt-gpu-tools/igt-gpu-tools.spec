@@ -1,5 +1,5 @@
-Name: intel-gpu-tools
-Version: 1.22
+Name: igt-gpu-tools
+Version: 1.24
 Release: alt1
 
 Summary: tools for debugging the Intel graphics driver
@@ -8,13 +8,16 @@ Group: Development/Debug
 
 # http://cgit.freedesktop.org/xorg/app/intel-gpu-tools/
 Url: http://01.org/linuxgraphics/
-Source: %name-%version.tar.xz
+Source: igt-gpu-tools-%version.tar.xz
 
-# Automatically added by buildreq on Tue Dec 06 2016
-# optimized out: fontconfig libX11-devel libXext-devel libXrender-devel libwayland-client libwayland-server perl pkg-config python-base python-modules python3 python3-base xorg-randrproto-devel xorg-renderproto-devel xorg-videoproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
-BuildRequires: flex glib2-devel gtk-doc libXrandr-devel libXv-devel libcairo-devel libdrm-devel libkmod-devel libpciaccess-devel libprocps-devel libudev-devel libunwind-devel python3-dev xorg-dri2proto-devel
+Provides: intel-gpu-tools-@version@
+Obsoletes: intel-gpu-tools
 
 # dropped by buildreq but still required
+# Automatically added by buildreq on Wed Dec 11 2019
+# optimized out: fontconfig fontconfig-devel glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 libEGL-devel libGL-devel libX11-devel libXau-devel libXext-devel libXrender-devel libcrypt-devel libelf-devel libfreetype-devel libglvnd-devel libgraphite2-devel libharfbuzz-devel libicu-devel libjson-c4 libncurses-devel libp11-kit libpng-devel libsasl2-3 libtinfo-devel libxcb-devel libxmlrpc-client ninja-build perl pkg-config python-modules python2-base python3 python3-base python3-module-pkg_resources sh4 xz zlib-devel
+BuildRequires: flex git-core gtk-doc libXrandr-devel libXv-devel libalsa-devel libcairo-devel libcurl-devel libdb4-devel libdrm-devel libdw-devel libgdbm-devel libgsl-devel libjson-c-devel libkmod-devel libpciaccess-devel libpixman-devel libprocps-devel libudev-devel libunwind-devel libxmlrpc-devel meson python3-dev
+
 BuildRequires: xorg-util-macros
 BuildRequires: libdrm-devel >= 2.4.64
 
@@ -48,7 +51,7 @@ ExclusiveArch: %ix86 x86_64
 Requires: intel-gen4asm = %version
 
 %description
-intel-gpu-tools is a package of tools for debugging the Intel graphics
+igt-gpu-tools is a package of tools for debugging the Intel graphics
 driver, including a GPU hang dumping program, performance monitor,
 and performance microbenchmarks for regression testing the DRM.
 
@@ -62,21 +65,35 @@ intel-gen4asm is a program to compile an assembly language for the Intel 965
 Express Chipset.  It has been used to construct programs for textured video
 in the 2d driver.
 
+%package devel-doc
+Summary: GTK development documentation for %name
+License: MIT
+BuildArch: noarch
+Group: Development/Documentation
+
+%description devel-doc
+%summary
+
 %prep
 %setup
 sed -i 's/NOT-GIT/%release/g' lib/Makefile.sources
 
 %build
-%autoreconf
-%configure
-%make_build
+%meson
+%meson_build
+
+#exit 1 
+#autoreconf
+#configure
+#make_build
 
 %install
-%makeinstall_std
+%meson_install
+#makeinstall_std
 
 %files
 %_bindir/*
-%_libdir/*.so
+%_libdir/*.so*
 %_usr/lib/%name/
 %_datadir/%name/
 #_datadir/gtk-doc/html/%name/
@@ -85,6 +102,9 @@ sed -i 's/NOT-GIT/%release/g' lib/Makefile.sources
 %exclude %_bindir/intel-gen4disasm
 %exclude %_pkgconfigdir/intel-gen4asm.pc
 
+%files devel-doc
+%_datadir/gtk-doc/html/%name
+
 %files -n intel-gen4asm
 %_bindir/intel-gen4asm
 %_bindir/intel-gen4disasm
@@ -92,6 +112,11 @@ sed -i 's/NOT-GIT/%release/g' lib/Makefile.sources
 %doc assembler/README assembler/TODO assembler/doc/examples/
 
 %changelog
+* Wed Dec 11 2019 Fr. Br. George <george@altlinux.ru> 1.24-alt1
+- Autobuild version bump to 1.24
+- Rename to igt-gpu-tools
+- Switch to meson build
+
 * Thu Sep 20 2018 Fr. Br. George <george@altlinux.ru> 1.22-alt1
 - Autobuild version bump to 1.22
 

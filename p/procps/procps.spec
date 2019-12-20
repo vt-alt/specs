@@ -1,11 +1,11 @@
 Name: procps
-Version: 3.3.15
-Release: alt5.gita2b71067936018
+Version: 3.3.16
+Release: alt1
 
 Summary: System and process monitoring utilities
 License: GPLv2+, LGPLv2+
 Group: Monitoring
-URL: https://sourceforge.net/projects/procps-ng/
+URL: https://gitlab.com/procps-ng/procps
 
 # git://git.altlinux.org/gears/p/procps.git
 Source: %name-%version-%release.tar
@@ -113,6 +113,10 @@ make check
 %_includedir/*
 %_pkgconfigdir/*.pc
 %changelog
+* Mon Dec 09 2019 Mikhail Efremov <sem@altlinux.org> 3.3.16-alt1
+- Updated url.
+- Updated to v3.3.16.
+
 * Wed Oct 23 2019 Mikhail Efremov <sem@altlinux.org> 3.3.15-alt5.gita2b71067936018
 - Don't package pidof.
 - Updated to v3.3.15-85-ga2b7106.
