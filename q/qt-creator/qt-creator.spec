@@ -1,18 +1,19 @@
 %define _unpackaged_files_terminate_build 1
 
 # clang 4.0.1 is not supported, only missing clang 3.9
-%def_with ClangCodeModel
+%def_without ClangCodeModel
 
 %add_findreq_skiplist  %_datadir/qtcreator/*
 %add_findprov_skiplist %_datadir/qtcreator/*
 
 Name:    qt-creator
-Version: 4.9.2
+Version: 4.11.0
 Release: alt1
-Summary: Cross-platform IDE for Qt
 
+Summary: Cross-platform IDE for Qt
+License: GPL-3.0 with Qt-GPL-exception-1.0 and MIT and LGPL-2.0 and LGPL-2.1 and LGPL-3.0 and BSD-3-Clause and BSL-1.0 and ALT-Public-Domain
 Group:   Development/Tools
-License: GPLv3 with exceptions
+
 Url:     http://qt-project.org/wiki/Category:Tools::QtCreator
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -21,7 +22,7 @@ Source:  %name-%version.tar
 Source1: qbs.tar
 Source2: perfparser.tar
 
-Patch:   %name-%version-%release.patch
+Patch0:  %name-%version-%release.patch
 Patch1:  qt-creator_ninja-build.patch
 
 Requires: %name-data = %EVR
@@ -32,10 +33,15 @@ Provides: qbs = 1.14.0
 Obsoletes: qbs < 1.14.0
 
 BuildRequires(pre): qt5-base-devel >= 5.9.0
+BuildRequires(pre): rpm-build-python3
 BuildRequires: gcc-c++
 BuildRequires: qt5-designer >= 5.9.0
 BuildRequires: qt5-script-devel >= 5.9.0
+BuildRequires: qt5-declarative-devel >= 5.9.0
+%ifnarch %e2k
+# NB: there's rpm-macros-qt5-webengine out there
 BuildRequires: qt5-webkit-devel >= 5.9.0
+%endif
 BuildRequires: qt5-x11extras-devel >= 5.9.0
 BuildRequires: qt5-xmlpatterns-devel >= 5.9.0
 BuildRequires: qt5-tools-devel >= 5.9.0
@@ -49,6 +55,10 @@ BuildRequires: lld
 %endif
 
 Requires: qt5-quickcontrols
+# Add Qt5 build environment to build Qt project
+Requires: qt5-base-devel
+Requires: qt5-translations
+Requires: qt5-tools
 
 %ifarch %e2k
 # error: cpio archive too big - 4446M
@@ -84,14 +94,19 @@ Data files for %name
 # Unpack submodules content
 tar xf %SOURCE1
 tar xf %SOURCE2
-subst 's,tools\/qdoc3,bin,' doc/doc.pri
+sed -i 's,tools\/qdoc3,bin,' doc/doc.pri
 #subst 's,share\/doc\/qtcreator,share\/qtcreator\/doc,' doc/doc.pri src/plugins/help/helpplugin.cpp
-%patch -p1
+%patch0 -p1
 %patch1 -p1
 %ifarch %e2k
-# strip UTF-8 BOM
-find src -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
+# strip UTF-8 BOM, lcc 1.23 won't ignore it yet
+find src -type f -print0 -name '*.cpp' -o -name '*.h' |
+	xargs -r0 sed -ri 's,^\xEF\xBB\xBF,,'
 %endif
+# Use Python3 for Python scripts
+subst 's@#!.*python[23]\?@#!%__python3@' `find . -name \*.py` \
+	src/shared/qbs/src/3rdparty/python/bin/dmgbuild \
+	src/libs/qt-breakpad/qtbreakpadsymbols
 
 %build
 export QTDIR=%_qt5_prefix
@@ -140,6 +155,25 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 %_datadir/qtcreator/*
 
 %changelog
+* Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 4.11.0-alt1
+- New version.
+- Build without ClangCodeModel due to the lack of LLVM 8.x in repository.
+- Fix license.
+- Set python3 as interpreter of Python scripts.
+
+* Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.2-alt4
+- Add to requirements qt5-tran slations and qt5-tools.
+
+* Fri Nov 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.2-alt3
+- Add Qt5 build environment to build Qt project (ALT #37403).
+
+* Wed Oct 02 2019 Michael Shigorin <mike@altlinux.org> 4.9.2-alt2
+- E2K:
+  + fix build with dummy-qt5-webkit-devel dropped
+  + fix BOM oneliner according to Secure Packaging Policy
+- Added explicit BR: qt5-declarative-devel.
+- Minor spec cleanup.
+
 * Mon Jul 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.9.2-alt1
 - New version.
 
@@ -317,15 +351,3 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 
 * Thu Apr 23 2009 Boris Savelev <boris@altlinux.org> 1.1.0-alt1
 - initial build for Sisyphus from Fedora
-
-* Tue Mar 20 2009 Itamar Reis Peixoto <itamar@ispbrasil.com.br> - 1.0.0-4
-- fix lib's loading in 64 bit machines
-
-* Tue Mar 18 2009 Itamar Reis Peixoto <itamar@ispbrasil.com.br> - 1.0.0-3
-- Changed License to LGPLv2 with exceptions and BR to qt4-devel >= 4.5.0
-
-* Tue Mar 17 2009 Itamar Reis Peixoto <itamar@ispbrasil.com.br> - 1.0.0-2
-- Improved Version to make it more compatible with fedora guidelines
-
-* Sun Mar 15 2009 Itamar Reis Peixoto <itamar@ispbrasil.com.br> - 1.0.0-1
-- initial RPM release
