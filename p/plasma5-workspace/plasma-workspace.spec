@@ -26,8 +26,8 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.17.3
-Release: alt4
+Version: 5.17.4
+Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -394,6 +394,9 @@ done
 
 
 %changelog
+* Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt1
+- new version
+
 * Wed Nov 20 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt4
 - add generic names to main menu search results
 - add main menu items tooltips

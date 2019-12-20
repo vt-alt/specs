@@ -7,8 +7,8 @@
 
 
 Name: plasma5-desktop
-Version: 5.17.3
-Release: alt2
+Version: 5.17.4
+Release: alt1
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -219,6 +219,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt1
+- new version
+
 * Wed Nov 20 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt2
 - add main menu items tooltip
 

@@ -1,9 +1,9 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.17.3
+Version: 5.17.4
 Release: alt1
-%K5init no_altplace
+%K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
 Summary: KDE Software Center
@@ -24,6 +24,7 @@ Patch3: alt-discover-update-all-packages-from-appstream.patch
 #BuildRequires: appstream-qt-devel extra-cmake-modules kf5-karchive-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-ki18n-devel kf5-kio-devel kf5-kirigami-devel kf5-kitemmodels-devel kf5-knewstuff-devel kf5-knotifications-devel kf5-kpackage-devel kf5-plasma-framework-devel libflatpak-devel libssl-devel packagekit-qt-devel python3-dev qt5-declarative-devel qt5-translations rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: libssl-devel qt5-declarative-devel
+BuildRequires: pkgconfig(libmarkdown) pkgconfig(fwupd)  pkgconfig(libmarkdown)
 BuildRequires: packagekit-qt-devel
 BuildRequires: appstream-qt-devel
 BuildRequires: libflatpak-devel
@@ -56,7 +57,15 @@ Group: System/Configuration/Packaging
 Requires: %name
 Requires: flatpak
 %description flatpak
-Plasma Discover flatpak support.
+Integrates Flatpak applications into Discover.
+
+%package fwupd
+Summary: Plasma Discover flatpak support
+Group: System/Configuration/Packaging
+Requires: %name
+#Requires: fwupd
+%description fwupd
+Integrates Fwupd firmware updater into Discover.
 
 %package -n libkf5discover
 Group: System/Libraries
@@ -124,7 +133,13 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5xdgapp/org.kde.discover-flatpak.desktop
 %_K5icon/*/*/apps/*flatpak*.*
 
+%files fwupd
+%_K5plug/discover/fwupd-backend.so
+
 %changelog
+* Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt1
+- new version
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt1
 - new version
 

@@ -14,7 +14,7 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.17.3
+Version: 5.17.4
 Release: alt1
 %K5init altplace
 
@@ -43,7 +43,7 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel-static qt5-declarative-devel
 BuildRequires: libcap-utils libcap-devel
 BuildRequires: libxcbutil-devel libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-cursor-devel libxcbutil-keysyms-devel
-BuildRequires: libxkbcommon-devel libgbm-devel libdrm-devel
+BuildRequires: libxkbcommon-devel libgbm-devel libdrm-devel libEGL-devel
 BuildRequires: fontconfig-devel libfreetype-devel
 BuildRequires: libepoxy-devel libinput-devel libwayland-cursor-devel libwayland-egl-devel libwayland-server-devel
 BuildRequires: qt5-multimedia-devel qt5-script-devel qt5-tools-devel-static qt5-x11extras-devel qt5-sensors-devel
@@ -201,6 +201,12 @@ KF5 library
 
 
 %changelog
+* Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt1
+- new version
+
+* Mon Dec 02 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt2
+- update build requires
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.3-alt1
 - new version
 

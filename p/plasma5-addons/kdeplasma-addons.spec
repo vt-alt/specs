@@ -8,7 +8,7 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.17.3
+Version: 5.17.4
 Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
@@ -99,7 +99,7 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 #
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p2
 %patch5 -p2
 
@@ -156,6 +156,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt1
+- new version
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.3-alt1
 - new version
 
