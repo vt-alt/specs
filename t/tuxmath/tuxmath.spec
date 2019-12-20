@@ -1,13 +1,14 @@
 Name: tuxmath
 Group: Games/Other
 Version: 2.0.3
-Release: alt3
+Release: alt4
 Summary: Educational math tutor for children
 
 License: GPLv3+ and CC-BY and OFL
 Url: https://github.com/tux4kids/tuxmath
 Source0: %{name}-%version.tar
 Source1: %name.appdata.xml
+Patch0: tuxmath-update-russian-po.patch
 
 BuildRequires: gcc-c++ libxml2-devel pkgconfig(cairo)
 BuildRequires: desktop-file-utils libappstream-glib
@@ -26,6 +27,7 @@ different types of gameplay, at a variety of difficulty levels.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %autoreconf
@@ -64,6 +66,9 @@ appstream-util validate-relax --nonet \
 %_datadir/icons/hicolor/scalable/apps/%name.svg
 
 %changelog
+* Tue Dec 17 2019 Anton Farygin <rider@altlinux.ru> 2.0.3-alt4
+- updated russian translation (closes: #26117)
+
 * Tue Dec 10 2019 Anton Farygin <rider@altlinux.ru> 2.0.3-alt3
 - built from upstream git
 
