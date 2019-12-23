@@ -2,7 +2,7 @@
 
 Name:    cgum
 Version: 1.0.1
-Release: alt1
+Release: alt2
 Summary: The C parser for GumTree
 Group:   Development/Other
 License: GPLv2
@@ -14,7 +14,11 @@ Source: %name-%version.tar
 Patch1: %name-%version-alt-paths.patch
 
 BuildRequires: ocaml
-BuildRequires: ocaml-num-devel
+#BuildRequires:	ocaml-num-devel
+# -- be more flexible (no matter whether "num" is included in core OCaml
+# as before in p8 or not as now is Sisyphus);
+# let's substitute the pkg dep by a dep on an arbitrary module from it:
+BuildPreReq: ocaml-cmx(Num)
 
 Requires: coccinelle
 
@@ -45,5 +49,9 @@ install -m644 standard.h %buildroot%_datadir/cgum/
 %_datadir/cgum
 
 %changelog
+* Thu Dec 19 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.0.1-alt2
+- Made BuildReqs more flexible. (So that it builds both in Sisyphus and p8;
+  no matter whether "num" is included in core OCaml.)
+
 * Fri Nov 16 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.1-alt1
 - Initial build for ALT.
