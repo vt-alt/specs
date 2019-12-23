@@ -1,12 +1,12 @@
 %define _name exo
 
 Name: lib%_name
-Version: 0.12.10
+Version: 0.12.11
 Release: alt1
 
 Summary: Extension library to Xfce
 Summary (ru_RU.UTF-8): Библиотека расширений Xfce
-License: %lgpl2plus, %gpl2plus
+License: LGPLv2+ and GPLv2+
 Group: System/Libraries
 Url: https://www.xfce.org
 Packager: Xfce Team <xfce@packages.altlinux.org>
@@ -14,8 +14,6 @@ Packager: Xfce Team <xfce@packages.altlinux.org>
 # Upstream: git://git.xfce.org/xfce/exo
 Source: %_name-%version.tar
 Patch: %_name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: rpm-build-xfce4  xfce4-dev-tools > 4.9 libxfce4util-devel libxfce4ui-devel
 BuildRequires: libgtk+3-devel libxfce4ui-gtk3-devel
@@ -172,6 +170,10 @@ make check
 %_datadir/gtk-doc/html/%{_name}*
 
 %changelog
+* Thu Dec 19 2019 Mikhail Efremov <sem@altlinux.org> 0.12.11-alt1
+- Don't use rpm-build-licenses.
+- Updated to 0.12.11.
+
 * Fri Nov 22 2019 Mikhail Efremov <sem@altlinux.org> 0.12.10-alt1
 - Updated to 0.12.10.
 
