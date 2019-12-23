@@ -1,5 +1,5 @@
 Name: u-boot-sunxi
-Version: 2019.07
+Version: 2019.10
 Release: alt1
 
 Summary: Das U-Boot
@@ -37,13 +37,17 @@ See http://linux-sunxi.org/Bootable_SD_card#Bootloader for details.
 
 %build
 %ifarch aarch64
-export BL31=%_datadir/atf/sun50i_a64/bl31.bin
 boards=$(grep -lr MACH_SUN50I configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
 %else
 boards=$(grep -lr 'MACH_SUN[4-9]I' configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
 %endif
 for board in $boards; do
 	mkdir build
+%ifarch aarch64
+	fgrep -q SUN50I_H6 configs/${board}_defconfig && \
+		export BL31=%_datadir/atf/sun50i_h6/bl31.bin || \
+		export BL31=%_datadir/atf/sun50i_a64/bl31.bin
+%endif
 	%make_build HOSTCC='ccache gcc' CC='ccache gcc' O=build ${board}_defconfig all
 	grep -q '^CONFIG_SPL=y' build/.config && \
 	install -pm0644 -D build/u-boot-sunxi-with-spl.bin out/${board}/u-boot-sunxi-with-spl.bin
@@ -60,6 +64,9 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
+- 2019.10 released
+
 * Wed Jul 17 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
 - 2019.07 released
 
