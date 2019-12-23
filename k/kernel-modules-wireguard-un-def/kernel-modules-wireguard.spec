@@ -1,9 +1,9 @@
 %define module_name	wireguard
-%define module_version	0.0.20190601
+%define module_version	0.0.20191212
 %define module_release	alt1
 
 %define flavour		un-def
-%define karch %ix86 x86_64
+%define karch %ix86 x86_64 aarch64 ppc64le
 BuildRequires(pre): kernel-headers-modules-un-def
 %setup_kernel_module %flavour
 
@@ -49,7 +49,7 @@ tar -jxf %kernel_src/kernel-source-%module_name-%module_version.tar.bz2
 %setup -D -T -n kernel-source-%module_name-%module_version/src
 
 %build
-%make_build -C %_usrsrc/linux-%kversion-%flavour modules SUBDIRS=`pwd`
+%make_build -C %_usrsrc/linux-%kversion-%flavour M=`pwd` modules
 
 %install
 install -d %buildroot%module_dir
@@ -62,6 +62,31 @@ install wireguard.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Dec 12 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191212-alt1
+- New version 0.0.20191212
+
+* Sun Dec 08 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191206-alt1
+- New version 0.0.20191206
+
+* Thu Dec 05 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191205-alt1
+- New version 0.0.20191205
+
+* Thu Nov 28 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191127-alt1
+- New version 0.0.20191127
+
+* Sun Oct 13 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191012-alt1
+- New version 0.0.20191012
+
+* Mon Sep 30 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20190913-alt1
+- New version 0.0.20190913
+
+* Fri Sep 06 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20190905-alt1
+- New version 0.0.20190905
+- Fix build with upcoming kernel 5.3
+
+* Thu Jul 04 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20190702-alt1
+- New version 0.0.20190702
 
 * Sun Jun 02 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20190601-alt1
 - New version 0.0.20190601

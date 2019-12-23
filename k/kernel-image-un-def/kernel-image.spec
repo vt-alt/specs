@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
 Release: alt1
 epoch:1 
-%define kernel_base_version	5.3
-%define kernel_sublevel .15
+%define kernel_base_version	5.4
+%define kernel_sublevel .3
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -48,7 +48,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 %brp_strip_none /boot/*
 
 Summary: The Linux kernel (the core of the Linux operating system)
-License: GPL
+License: GPL-2.0-only
 Group: System/Kernel and hardware
 Url: http://www.kernel.org/
 Packager: Kernel Maintainers Team <kernel@packages.altlinux.org>
@@ -105,7 +105,7 @@ BuildRequires: lzma-utils
 BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: rsync
-BuildRequires: openssl-devel
+BuildRequires: openssl-devel openssl
 # for check
 %{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
@@ -683,12 +683,14 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.3-alt1
+- v5.4.3  (Fixes: CVE-2019-18660, CVE-2019-19332)
+
+* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.0-alt1
+- v5.4
+
 * Thu Dec 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.15-alt1
 - v5.3.15
-
-* Fri Nov 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.14-alt1
-- v5.3.14  (Fixes: CVE-2019-18660)
-
 * Sun Nov 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.13-alt1
 - v5.3.13
 

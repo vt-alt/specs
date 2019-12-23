@@ -1,6 +1,6 @@
 %define module_name	virtualbox-addition
 %define module_version  5.2.34
-%define module_release	alt1
+%define module_release	alt4
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -19,13 +19,17 @@ Summary: VirtualBox modules
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
 
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
 ExclusiveOS: Linux
 Url: http://www.virtualbox.org/
+
+Patch0: vboxcommon-5.4.patch
+Patch1: vboxdrv-5.4.patch
+Patch2: vboxvideo-5.4.patch
 
 BuildPreReq: gcc-c++
 BuildRequires: perl
@@ -49,8 +53,13 @@ Provides: kernel-modules-%vfs_module_name-%kversion-%flavour-%krelease = %versio
 Provides: kernel-modules-%vfs_module_name-%flavour = %version-%release
 Obsoletes: kernel-modules-%vfs_module_name-%flavour
 
+Obsoletes: kernel-modules-%module_name-video-%flavour
+Obsoletes: kernel-modules-%module_name-guest-%flavour
+
 %requires_kimage
 ExclusiveArch: %karch
+
+Requires: virtualbox-guest-common = %module_version
 
 %description
 This package contains VirtualBox addition modules (vboxguest, vboxsf)
@@ -90,8 +99,18 @@ your kernel.
 %prep
 %setup -T -c -n kernel-source-%module_name-%module_version
 tar jxvf %kernel_src/kernel-source-%guest_module_name-%module_version.tar.bz2
+pushd kernel-source-%guest_module_name-%module_version
+%patch0 -p1
+%patch1 -p1
+popd
 tar jxvf %kernel_src/kernel-source-%vfs_module_name-%module_version.tar.bz2
+pushd kernel-source-%vfs_module_name-%module_version
+%patch0 -p1
+popd
 tar jxvf %kernel_src/kernel-source-%video_module_name-%module_version.tar.bz2
+pushd kernel-source-%video_module_name-%module_version
+%patch2 -p1
+popd
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
@@ -109,27 +128,31 @@ cp kernel-source-%guest_module_name-%module_version/Module.symvers \
 %install
 mkdir -p %buildroot/%module_dir
 install -pD -m644 kernel-source-%guest_module_name-%module_version/vboxguest.ko \
-    %buildroot%module_dir/
+    %buildroot%module_dir/vboxguestvbox.ko
 install -pD -m644 kernel-source-%vfs_module_name-%module_version/vboxsf.ko \
     %buildroot%module_dir/
 install -pD -m644 kernel-source-%video_module_name-%module_version/vboxvideo.ko \
-    %buildroot%module_dir/
+    %buildroot%module_dir/vboxvideovbox.ko
 
 %files
 %defattr(644,root,root,755)
 %module_dir
-%exclude %module_dir/vboxvideo.ko
-%exclude %module_dir/vboxguest.ko
-
-%files -n kernel-modules-%module_name-guest-%flavour
-%module_dir/vboxguest.ko
-
-%files -n kernel-modules-%module_name-video-%flavour
-%module_dir/vboxvideo.ko
 
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Dec 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt4
+- Fixed build with un-def kernel-5.4
+- Set license to GPLv2 instead of GPL with unknown version
+
+* Wed Dec 04 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt3
+- Fix dependency to virtualbox-guest-common package for modules configuration
+
+* Tue Dec 03 2019 Valery Sinelnikov <greh@altlinux.org> 5.2.34-alt2
+- Merge separated packages with conflicts modules
+- Rename conflicts modules with suffix 'vbox'
+- Place common install and blacklist rules to virtualbox-guest-utils package
 
 * Mon Oct 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
 - Updated template for virtualbox 5.2.34

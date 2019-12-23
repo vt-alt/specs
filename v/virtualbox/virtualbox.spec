@@ -60,10 +60,10 @@
 
 Name: virtualbox
 Version: 5.2.34
-Release: alt1
+Release: alt3
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
-License: GPL
+License: GPLv2
 Group: Emulators
 Url: http://www.virtualbox.org/
 
@@ -79,7 +79,6 @@ Source3:	%name-addition.rules
 Source4:	%name.rules
 Source5:	60-vboxadd.perms
 Source6:	vboxadd-service.sysconfig
-Source7:	vboxadd.init
 Source8:	vboxadd-service.init
 Source9:	vboxweb-service.sysconfig
 Source10:	vboxweb-service.init
@@ -88,6 +87,8 @@ Source16:	os_altlinux_64.png
 Source22:	%name.service
 Source23:	virtualbox.conf
 Source24:	virtualbox.drvpre.in
+Source25:	virtualbox.modprobe.conf
+Source26:	virtualbox-addition.conf
 
 %if_enabled debug
 Source99:	%vboxdbg.in
@@ -177,12 +178,21 @@ sync time with host system, and intergrates with xorg-server for mouse
 and video driver with OpenGL support, copy/paste between guest and host.
 
 %package guest-utils
-Summary: Additions for VirtualBox OSE guest systems
+Summary: Additions tools for VirtualBox OSE guest systems
 Group: Emulators
+Requires: %name-guest-common = %version-%release
 
 %description guest-utils
 This packages contains basic utils for VirtualBox OSE guest systems.
 It allows to share files and sync time with host system.
+
+%package guest-common
+Summary: Additions common files for VirtualBox OSE guest systems
+Group: Emulators
+
+%description guest-common
+This packages contains common files for VirtualBox OSE guest systems.
+It consists modprobe rules to load kernel modules guest on guest system.
 
 %package webservice
 Summary: VirtualBox Web Service
@@ -313,6 +323,15 @@ This package contains VirtualBox SDK for XPCOM.
 
 cp %SOURCE15 %SOURCE16 src/VBox/Frontends/VirtualBox/images
 
+if pkg-config libglvnd --atleast-version=1.2.0; then
+    sed -i -e 's/^\(#define GLX_EXTRAS\) 1$/\1 0/' src/VBox/Additions/common/crOpenGL/dri_glx.h
+    sed -i -e 's/^\(#define GLX_EXTRAS\) 1$/\1 0/' src/VBox/Additions/common/crOpenGL/glx_proto.h
+fi
+
+# fix python shebang for vboxshell.py
+sed -E -i '1 s@^(#![[:space:]]*)%_bindir/(env[[:space:]]+)?python$@\1%__python@' \
+    src/VBox/Frontends/VBoxShell/vboxshell.py
+
 %build
 ./configure --ose \
     --with-makeself="/usr/bin/makeself.sh" \
@@ -414,7 +433,6 @@ install -Dp -m644 %SOURCE4 \
 
 %if_with additions
 # install additions from src
-install -Dp %SOURCE7 %buildroot%_initdir/vboxadd
 install -Dp %SOURCE8 %buildroot%_initdir/vboxadd-service
 install -Dp -m644 %SOURCE3 %buildroot%_udevrulesdir/60-vboxadd.rules
 
@@ -465,8 +483,9 @@ cp -a \
 find sdk -maxdepth 1 -mindepth 1 -not -name docs -print0 | xargs -0 cp -R --target-directory=%buildroot%vboxdir --parents
 
 cd ../../../../include/
+mkdir -p %buildroot%_includedir
 for d in iprt VBox/com; do
-	cp -R --target-directory=%buildroot%vboxdir/sdk/bindings/xpcom/include --parents $d
+	cp -R --target-directory=%buildroot%_includedir --parents $d
 done
 cd -
 
@@ -565,6 +584,9 @@ cd additions >/dev/null
   install -d %buildroot%xdrv_pre_d
   install -m755 %SOURCE24 %buildroot%xdrv_pre_d/virtualbox
   sed -i -e 's|@bindir@|%_bindir|g' -e 's|@ld_so_confdir@|%ld_so_confdir|g' -e 's|@ld_so_conf@|%ld_so_conf|g' -e 's|@vboxadddir@|%vboxadddir|g' %buildroot%xdrv_pre_d/virtualbox
+
+  install -pDm644 %SOURCE25 %buildroot%_sysconfdir/modprobe.d/virtualbox-addition.conf
+  install -pDm644 %SOURCE26 %buildroot%_sysconfdir/modules-load.d/virtualbox-addition.conf
 
 # create links
   ln -s $(relative %_bindir/VBoxService %_sbindir/) %buildroot%_sbindir/vboxadd-service
@@ -728,12 +750,14 @@ mountpoint -q /dev || {
 %kernel_src/%modnamevideo-%version.tar.bz2
 
 %if_with additions
+%files guest-common
+%config %_sysconfdir/modprobe.d/virtualbox-addition.conf
+%config %_sysconfdir/modules-load.d/virtualbox-addition.conf
+
 %files guest-utils
 /sbin/mount.vboxsf
-%_initrddir/vboxadd
 %_initrddir/vboxadd-service
 %config(noreplace) %_sysconfdir/sysconfig/vboxadd-service
-#_sysconfdir/hal/fdi/policy/90-vboxguest.fdi
 %config %_udevrulesdir/60-vboxadd.rules
 %_sbindir/vboxadd-service
 %_bindir/VBoxControl
@@ -783,17 +807,23 @@ mountpoint -q /dev || {
 %_bindir/xpidl
 %vboxdir/xpidl
 %vboxdir/sdk
-%exclude %vboxdir/sdk/bindings/xpcom/include/iprt
-%exclude %vboxdir/sdk/bindings/xpcom/include/VBox/com
 %if_with python
 %exclude %vboxdir/sdk/bindings/xpcom/python/xpcom
 %endif
 
 %files sdk-xpcom
-%vboxdir/sdk/bindings/xpcom/include/iprt
-%vboxdir/sdk/bindings/xpcom/include/VBox/com
+%_includedir/iprt
+%_includedir/VBox/com
 
 %changelog
+* Wed Dec 04 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt3
+- Add virtualbox-guest-common subpackages with modules load and modprobe rules
+- Fix build with newest libglvnd later than 1.2.0 on Sisyphus
+- Adjust license to GPLv2 (closes: 37575)
+
+* Tue Dec 03 2019 Valery Sinelnikov <greh@altlinux.org> 5.2.34-alt2
+- Add modprobe install rules for renamed vboxguest and vboxvideo
+
 * Sun Oct 20 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
 - Update to latest of 5.2 release with support kernel-5.3.x (Closes: 37351)
 

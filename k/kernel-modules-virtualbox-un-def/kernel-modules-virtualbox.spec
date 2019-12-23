@@ -1,7 +1,7 @@
 %define module_name	virtualbox
 %define module_version	5.2.34
 
-%define module_release	alt1
+%define module_release	alt2
 
 %define drv_module_name	vboxdrv
 %define pci_module_name	vboxpci
@@ -21,13 +21,17 @@ Summary: VirtualBox modules
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
 
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
 ExclusiveOS: Linux
 Url: http://www.virtualbox.org/
+
+Patch0: vboxcommon-5.4.patch
+Patch1: vboxdrv-5.4.patch
+Patch2: vboxnetflt-5.4.patch
 
 BuildPreReq: gcc-c++
 BuildRequires: perl
@@ -58,10 +62,22 @@ or in your /etc/modules.conf file.
 %setup -T -c -n kernel-source-%module_name-%module_version
 tar jxvf %kernel_src/kernel-source-%drv_module_name-%module_version.tar.bz2
 pushd kernel-source-%drv_module_name-%module_version
+%patch0 -p1
+%patch1 -p1
 popd
 tar jxvf %kernel_src/kernel-source-%pci_module_name-%module_version.tar.bz2
+pushd kernel-source-%pci_module_name-%module_version
+%patch0 -p1
+popd
 tar jxvf %kernel_src/kernel-source-%net_module_name-%module_version.tar.bz2
+pushd kernel-source-%net_module_name-%module_version
+%patch0 -p1
+%patch2 -p1
+popd
 tar jxvf %kernel_src/kernel-source-%net_module_adaptor_name-%module_version.tar.bz2
+pushd kernel-source-%net_module_adaptor_name-%module_version
+%patch0 -p1
+popd
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
@@ -98,6 +114,10 @@ install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnet
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Dec 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt2
+- Fixed build with un-def kernel-5.4
+- Set license to GPLv2 instead of GPL with unknown version
 
 * Mon Oct 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
 - Updated template for virtualbox 5.2.34
