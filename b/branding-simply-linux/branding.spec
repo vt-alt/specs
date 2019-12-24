@@ -9,10 +9,29 @@
 %define icon_theme SimpleSL
 %define xfwm4_theme "ClassicLooks XFWM4"
 
+# NOTE: Helper's name must be one of exo helpers.
+%ifarch %e2k %arm aarch64
+# e2k: 2019: no chromium port available
+# aarch64: Seems firefox is faster as reported by jqt4@
+%define web_browser firefox
+%else
+%define web_browser chromium
+%endif
+%define mail_reader thunderbird
+%define file_manager Thunar
+
+# LibreOffice icon theme
+%ifarch %e2k
+# LO5@e2k lacks oxygen icon theme
+%define lo_icon_theme auto
+%else
+%define lo_icon_theme oxygen
+%endif
+
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.910
+Version: 8.920
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -174,7 +193,6 @@ Distribution license and release notes
 Summary: default settings for Xfce for Simply linux distribution
 License: GPLv2+
 Group: Graphical desktop/XFce
-BuildArch: noarch
 Requires: PolicyKit-gnome
 Requires: etcskel
 Requires: gtk-theme-classiclooks
@@ -275,7 +293,7 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme ./configure
+THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme ./configure
 make
 
 %install
@@ -472,6 +490,38 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 8.920-alt1
+- xfce-settings: It is not noarch now.
+- xfce-settings: Set firefox as web browser on ARM.
+- xfce-settings: Fix default file manager.
+- xfce-settings: Replace smplayer with vlc.
+- menu: Drop defaults.list.
+- menu: Drop mimeinfo.cache.
+- xfce-settings: Replace brasero with xfburn.
+- xfce-settings: Don't show power manager in tray again.
+- xfce-settings: Enable brightness control keys by default.
+- xfce-settings: Update xfce4-power-manager settings.
+- menu: Drop xfce4-clipman.desktop.
+- menu: Drop virtualbox.desktop.
+- menu: Update shotwell.desktop, drop shotwell-viewer.desktop.
+- menu: Update pavucontrol.desktop.
+- menu: Drop org.gnome.Cheese.desktop.
+- menu: Update gcompris-edit.desktop.
+- menu: Update easytag.desktop.
+- xfce-settings: Add Shotcut.conf.
+- menu: Fix wesnoth icon.
+- menu: Drop uxterm.desktop.
+- menu: Drop sound-juicer.desktop.
+- menu: Drop ppracer.desktop.
+- menu: Update java-1.8.0-openjdk-*-policytool.desktop.
+- menu: Drop blender-win.desktop.
+- menu: Drop alt-docs-main.desktop.
+- menu: Drop fusion-icon.desktop.
+- xfce-settings: Don't use oxygen icon theme in LO on e2k.
+- xfce-settings: Use firefox on e2k.
+- build: Generate helpers.rc from template.
+- build: Get rid of xfconf-templates/.
+
 * Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 8.910-alt1
 - components.mk: Fix convert argument.
 - Fix build on non-x86.

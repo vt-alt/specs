@@ -1,9 +1,9 @@
 Name: installer-feature-simply-livecd
-Version: 0.9.1
+Version: 9.0.0
 Release: alt1
 
 Summary: LiveCD install hooks for Simply Linux.
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 Url: http://www.altlinux.org/Installer/beans
 BuildArch: noarch
@@ -20,15 +20,26 @@ Requires: libshell
 # Run installer features while install from LiveCD.
 Requires: livecd-installer-features
 
+# For luks installer step. Despite it is installer
+# package it seems harmless enough to be used
+# on live system.
+Requires: installer-distro-simply-linux
+
+# Alterator modules used for livecd-install
+Requires: alterator-grub
+Requires: alterator-vm
+Requires: alterator-luks
+
 # Installer fearures for Simply Linux.
-Requires: installer-feature-bell-off-stage3
+# NOTE: installer-feature-bell-off-stage3 uneeded:
+# the same changes are made by rootfs image script
+# in mkimage-profiles.
 Requires: installer-feature-desktop-other-fs-stage2
 Requires: installer-feature-lightdm-stage3
 Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-samba-usershares-stage2
 Requires: installer-feature-sudo-enable-by-default-stage3
-Requires: installer-feature-symlinks-from-sbin
 
 %description
 LiveCD install hooks for Simply Linux.
@@ -56,6 +67,13 @@ cp -ar alterator-menu/ %buildroot%_datadir/livecd-install
 %_datadir/livecd-install/
 
 %changelog
+* Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 9.0.0-alt1
+- Set license as GPLv2+.
+- Requre alterator modules used by us.
+- Require installer-distro-simply-linux.
+- Drop installer-feature-bell-off-stage3.
+- Drop installer-feature-symlinks-from-sbin.
+
 * Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 0.9.1-alt1
 - Drop lightdm hook.
 - Kill xfce4-screensaver during install.

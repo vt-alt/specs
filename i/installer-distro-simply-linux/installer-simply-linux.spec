@@ -1,29 +1,26 @@
 Name: installer-distro-simply-linux
-Version: 9.1
+Version: 9.2.0
 Release: alt1
 
 Summary: Installer common files
 Summary(ru_RU.UTF-8): Общие пакеты для установки дистрибутива "Simply linux"
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 Source: %name-%version.tar
 
 BuildArch: noarch
 BuildRequires: alterator rpm-devel
 
-%define feature installer-feature-simply-linux
-
 %description
 Installer common files
 
 %description -l ru_RU.UTF-8
 Виртуальный пакет содержащий зависимости на необходимые пакеты и настройки
-для установки дистрибутива "Просто линукс" (Simply linux). 
+для установки дистрибутива "Просто линукс" (Simply linux).
 
 %package stage2
 Summary: Installer stage2
 Summary(ru_RU.UTF-8): Пакеты необходимые на втором этапе установки Simply linux
-License: GPL
 Group: System/Configuration/Other
 Requires: %name = %version-%release
 Requires: installer-stage2
@@ -60,13 +57,12 @@ Obsoletes: installer-simply-linux-stage2
 Installer stage2
 
 %description stage2 -l ru_RU.UTF-8
-Данный виртуальный пакет зависит от пакетов необходимых на втором этапе установки
-дистрибутива "Просто линукс" (Simply linux).
+Данный виртуальный пакет зависит от пакетов необходимых на втором этапе
+установки дистрибутива "Просто линукс" (Simply linux).
 
 %package stage3
 Summary: Installer stage3
 Summary(ru_RU.UTF-8): Пакеты необходимые на третьем этапе установки Simply linux
-License: GPL
 Group: System/Configuration/Other
 Requires: %name = %version-%release
 Requires: installer-stage3
@@ -79,14 +75,12 @@ Requires: alterator-luks
 #Requires: alterator-x11
 #features
 Requires: installer-feature-bell-off-stage3
-Requires: installer-feature-efi-stage3
 Requires: installer-feature-lightdm-stage3
 Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-repo-add
 Requires: installer-feature-setup-network-stage3
 Requires: installer-feature-sudo-enable-by-default-stage3
-Requires: installer-feature-symlinks-from-sbin
 
 Provides: installer-lite-stage3
 Provides: installer-simply-linux-stage3
@@ -96,8 +90,8 @@ Obsoletes: installer-simply-linux-stage3
 Installer stage3
 
 %description stage3 -l ru_RU.UTF-8
-Данный виртуальный пакет зависит от пакетов необходимых на третьем этапе установки
-дистрибутива "Просто линукс" (Simply linux).
+Данный виртуальный пакет зависит от пакетов необходимых на третьем этапе
+установки дистрибутива "Просто линукс" (Simply linux).
 
 %prep
 %setup -q
@@ -108,19 +102,29 @@ Installer stage3
 %find_lang alterator-simply-linux
 
 %files -f alterator-simply-linux.lang
+%_datadir/alterator/steps/*
 
 %files stage2
 %_datadir/install2/installer-steps
 %_datadir/install2/*.d/*
 %_datadir/install2/steps/*
 %_datadir/install2/alterator-menu
-%_datadir/install2/systemd-enabled
-%_datadir/install2/systemd-disabled
 
 %files stage3
-%_datadir/alterator/steps/*
 
 %changelog
+* Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 9.2.0-alt1
+- stage3: Drop installer-feature-efi-stage3.
+- cleanup: Drop unused define.
+- stage3: Move installer step to installer-distro-simply-linux.
+- cosmetic: Split long lines in description.
+- all: Set license as GPLv2+.
+- stage3: Drop services enabled/disabled lists.
+- stage3: Drop installer-feature-symlinks-from-sbin.
+
+* Thu Dec 05 2019 Michael Shigorin <mike@altlinux.org> 9.1.1-alt1
+- initinstall: Add e2k support.
+
 * Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 9.1-alt1
 - postinstall: Drop lightdm hook.
 
