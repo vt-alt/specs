@@ -50,7 +50,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.4.10
+Version: 10.4.11
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -772,6 +772,8 @@ fi
 %exclude %prefix/%plugindir/client_ed25519.so
 %exclude %prefix/%plugindir/dialog.so
 %exclude %prefix/%plugindir/mysql_clear_password.so
+%exclude %prefix/%plugindir/caching_sha2_password.so
+%exclude %prefix/%plugindir/sha256_password.so
 
 %attr(3770,root,mysql) %dir %_logdir/mysql
 %dir %_docdir/%name-%version
@@ -975,6 +977,8 @@ fi
 %prefix/%plugindir/client_ed25519.so
 %prefix/%plugindir/dialog.so
 %prefix/%plugindir/mysql_clear_password.so
+%prefix/%plugindir/caching_sha2_password.so
+%prefix/%plugindir/sha256_password.so
 
 %if_with server
 %files -n lib%{name}d%embedded_soname
@@ -1014,6 +1018,12 @@ fi
 %endif
 
 %changelog
+* Thu Dec 19 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.11-alt1
+- 10.4.11
+- move client plugins to libmariadb package (ALT #37639):
+  + caching_sha2_password
+  + sha256_password
+
 * Fri Dec 06 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.10-alt1
 - 10.4.10
 
