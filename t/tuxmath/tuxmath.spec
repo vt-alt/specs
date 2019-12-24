@@ -1,10 +1,10 @@
 Name: tuxmath
 Group: Games/Other
 Version: 2.0.3
-Release: alt4
+Release: alt5
 Summary: Educational math tutor for children
 
-License: GPLv3+ and CC-BY and OFL
+License: GPLv3 AND CC-BY-SA-3.0 AND OFL-1.1
 Url: https://github.com/tux4kids/tuxmath
 Source0: %{name}-%version.tar
 Source1: %name.appdata.xml
@@ -66,6 +66,9 @@ appstream-util validate-relax --nonet \
 %_datadir/icons/hicolor/scalable/apps/%name.svg
 
 %changelog
+* Fri Dec 20 2019 Anton Farygin <rider@altlinux.ru> 2.0.3-alt5
+- applied another russian translation update
+
 * Tue Dec 17 2019 Anton Farygin <rider@altlinux.ru> 2.0.3-alt4
 - updated russian translation (closes: #26117)
 
