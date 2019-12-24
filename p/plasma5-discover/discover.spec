@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.17.4
-Release: alt1
+Release: alt2
 %K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
@@ -60,10 +60,10 @@ Requires: flatpak
 Integrates Flatpak applications into Discover.
 
 %package fwupd
-Summary: Plasma Discover flatpak support
+Summary: Plasma Discover fwupd support
 Group: System/Configuration/Packaging
 Requires: %name
-#Requires: fwupd
+Requires: fwupd
 %description fwupd
 Integrates Fwupd firmware updater into Discover.
 
@@ -137,6 +137,10 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5plug/discover/fwupd-backend.so
 
 %changelog
+* Wed Dec 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt2
+- fix fwupd subpackage summary
+- update requires
+
 * Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt1
 - new version
 
