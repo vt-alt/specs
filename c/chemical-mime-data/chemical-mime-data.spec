@@ -1,13 +1,13 @@
 Name: chemical-mime-data
 Version: 0.1.94
-Release: alt2
+Release: alt3
 
 Summary: Chemical MIME types database
 Group: System/Libraries
-License: LGPLv2+
-Url: http://sourceforge.net/projects/chemical-mime/
+License: LGPL-2.1-or-later
+Url: https://github.com/dleidert/chemical-mime
 
-Source: http://downloads.sourceforge.net/chemical-mime/%name-%version.tar.gz
+Source: https://downloads.sourceforge.net/chemical-mime/%name-%version.tar.gz
 
 # from Fedora
 Patch: chemical-mime-data-0.1.94-turbomole.patch
@@ -37,10 +37,8 @@ proposed in 1995, though it seems they have never been registered with IANA.
 %make_build
 
 %install
-%make DESTDIR=%buildroot install
-
+%makeinstall_std
 cp AUTHORS ChangeLog HACKING NEWS README THANKS TODO %buildroot%pkgdocdir
-
 %find_lang %name
 
 %files -f %name.lang
@@ -50,6 +48,10 @@ cp AUTHORS ChangeLog HACKING NEWS README THANKS TODO %buildroot%pkgdocdir
 %doc %pkgdocdir
 
 %changelog
+* Tue Dec 24 2019 Yuri N. Sedunov <aris@altlinux.org> 0.1.94-alt3
+- disabled "chemical/x-turbomole-vibrational" (ALT #37671)
+- updated Url and License tags
+
 * Thu Oct 21 2010 Yuri N. Sedunov <aris@altlinux.org> 0.1.94-alt2
 - updated buildrqs
 
