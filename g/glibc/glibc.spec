@@ -2,7 +2,7 @@
 
 Name: glibc
 Version: 2.27
-Release: alt11
+Release: alt12
 Epoch: 6
 
 Summary: The GNU libc libraries
@@ -87,6 +87,10 @@ BuildPreReq: makeinfo
 %define _gconvdir %_libdir/gconv
 %filter_from_provides /GLIBC_PRIVATE/d
 %filter_from_requires /GLIBC_PRIVATE/d
+
+%ifarch aarch64
+%filter_from_provides s@^ld-linux-aarch64\.so\.1.*@&\n/lib/&@
+%endif
 
 %package preinstall
 Summary: The GNU libc preinstall utilities
@@ -772,6 +776,10 @@ fi
 %glibc_sourcedir
 
 %changelog
+* Thu Dec 19 2019 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt12
+- Updated to glibc-2.27-144-gbef0b1cb31 from 2.27 branch.
+- Added compat provides for ld-linux-aarch64.so.1 on aarch64 (closes: #37641).
+
 * Thu Oct 10 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 6:2.27-alt11
 - Updated to glibc-2.27-141-g5b4f7382af from 2.27 branch.
 - Added ld-linux compat symlinks for aarch64 and riscv64.
