@@ -13,11 +13,11 @@
 
 %define major 9
 %define minor 0
-%define bugfix 0
+%define bugfix 1
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
-Release: alt5
+Release: alt1
 
 %define theme %name
 %define design_graphics_abi_epoch 0
@@ -345,9 +345,9 @@ echo $lang > lang
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/boot.png
+shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/grub.png
 # deprecated
-shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
+shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/grub.png
 
 %preun bootloader
 [ $1 = 0 ] || exit 0
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Wed Dec 25 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.1-alt1
+- fix grub background
+
 * Fri Dec 06 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.0-alt5
 - update urls
 
