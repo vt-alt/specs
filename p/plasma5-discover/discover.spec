@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.17.4
-Release: alt2
+Release: alt3
 %K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
@@ -18,6 +18,7 @@ Source1: env-flatpak.sh
 Patch1: alt-offline-updates.patch
 Patch2: alt-skip-obsoleted-and-removed-from-upgrade.patch
 Patch3: alt-discover-update-all-packages-from-appstream.patch
+Patch4: alt-pk-launch.patch
 
 # Automatically added by buildreq on Tue Aug 07 2018 (-bi)
 # optimized out: appstream appstream-qt cmake cmake-modules elfutils fontconfig gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gtk-update-icon-cache kf5-attica-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-common kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-common kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-common kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgio-devel libgpg-error libjson-glib libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-common qt5-base-devel rpm-build-python3 rpm-build-qml ruby ruby-stdlibs sh3
@@ -80,6 +81,7 @@ KF5 library
 %patch1 -p1
 %patch2 -p2
 %patch3 -p2 -b .upd-appstream
+%patch4 -p1
 
 %build
 %K5build
@@ -137,6 +139,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5plug/discover/fwupd-backend.so
 
 %changelog
+* Tue Dec 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt3
+- fix launch of packagekit applications
+
 * Wed Dec 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt2
 - fix fwupd subpackage summary
 - update requires
