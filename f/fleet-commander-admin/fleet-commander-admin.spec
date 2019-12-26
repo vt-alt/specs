@@ -5,8 +5,8 @@
 %def_with check
 
 Name: fleet-commander-admin
-Version: 0.14.0
-Release: alt2
+Version: 0.14.1
+Release: alt1
 
 Summary: Fleet Commander
 License: LGPLv2+ or MIT or BSD
@@ -21,6 +21,7 @@ BuildRequires(pre): rpm-build-xdg
 BuildRequires(pre): rpm-build-python3
 BuildRequires: autoconf-archive
 BuildRequires: python3(dbus)
+BuildRequires: python3(gi)
 BuildRequires: python3(libvirt)
 BuildRequires: python3(pexpect)
 BuildRequires: python3(samba)
@@ -99,10 +100,6 @@ grep -qsr '#!/usr/bin/env[[:space:]]\+python-wrapper.sh' ./tests/ || exit 1
 grep -rl '#!/usr/bin/env[[:space:]]\+python-wrapper.sh' | \
 xargs sed -i 's/#!\/usr\/bin\/env[[:space:]]\+python-wrapper.sh/#!\/usr\/bin\/python3/g'
 
-grep -qsr '#!/usr/bin/env[[:space:]]\+python[[:space:]]*$' || exit 1
-grep -rl '#!/usr/bin/env[[:space:]]\+python[[:space:]]*$' | \
-xargs sed -i 's/#!\/usr\/bin\/env[[:space:]]\+python[[:space:]]*$/#!\/usr\/bin\/python3/g'
-
 grep -qs '#!/usr/bin/env[[:space:]]\+bash[[:space:]]*$' \
 data/fleet-commander-logger.in || exit 1
 sed -i 's/#!\/usr\/bin\/env[[:space:]]\+bash[[:space:]]*$/#!\/bin\/bash/g' data/fleet-commander-logger.in
@@ -168,6 +165,9 @@ ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js
 %_udevrulesdir/81-fleet-commander-logger.rules
 
 %changelog
+* Thu Nov 28 2019 Stanislav Levin <slev@altlinux.org> 0.14.1-alt1
+- 0.14.0 -> 0.14.1.
+
 * Thu Mar 14 2019 Stanislav Levin <slev@altlinux.org> 0.14.0-alt2
 - Fixed install public key into libvirt host.
 

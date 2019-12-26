@@ -4,23 +4,25 @@
 %define _libexecdir    /usr/libexec
 %define cockpit_user   _cockpit-ws
 %define cockpit_group  _cockpit-ws
+%define cockpit_wsinstance_user  _cockpit-wsinstance
 
 %def_with dashboard
 %def_with basic
 %def_with optional
 %def_with doc
-%ifarch aarch64 x86_64
-%def_with kubernetes
+
+%ifarch aarch64 x86_64 ppc64le
+%def_enable docker
+%else
+%def_disable docker
 %endif
 %def_with check
 
 # currently are not packaged on ALTLinux
 # https://pcp.io/
 %def_without pcp
-# https://www.candlepinproject.org
-%def_without subscriptions
 # https://github.com/dm-vdo/vdo
-%def_without vdo
+%def_with vdo
 # http://www.freedesktop.org/software/PackageKit
 %def_without packagekit
 #
@@ -28,7 +30,7 @@
 ###############################################################################
 
 Name: cockpit
-Version: 192
+Version: 208
 Release: alt1
 
 Summary: Web Console for Linux servers
@@ -42,7 +44,7 @@ Source2: node_modules.tar.gz
 Patch: %name-%version-alt.patch
 
 BuildRequires: node
-BuildRequires: intltool
+BuildRequires: libgnutls-devel
 BuildRequires: libjson-glib-devel
 BuildRequires: libsystemd-devel
 BuildRequires: libpolkit-devel
@@ -62,10 +64,6 @@ BuildRequires: xmlto
 BuildRequires: pcp-libs-devel
 %endif
 
-%if_with kubernetes
-BuildRequires: golang
-%endif
-
 %if_with check
 BuildRequires: glib-networking
 BuildRequires: polkit
@@ -83,7 +81,7 @@ Requires: cockpit-system
 %if_with dashboard
 Requires: cockpit-dashboard
 %endif
-%ifarch x86_64 aarch64
+%if_enabled docker
 Requires: cockpit-docker
 %endif
 Requires: cockpit-networkmanager
@@ -93,9 +91,6 @@ Requires: cockpit-packagekit
 %endif
 %if_with pcp
 Requires: cockpit-pcp
-%endif
-%if_with kubernetes
-Requires: cockpit-kubernetes
 %endif
 Requires: cockpit-selinux
 
@@ -153,26 +148,9 @@ Requires: cockpit-shell = %EVR
 Requires: cockpit-systemd = %EVR
 Requires: cockpit-tuned = %EVR
 Requires: cockpit-users = %EVR
-%if_with subscriptions
-Requires: cockpit-subscriptions = %EVR
-%endif
-
 %description system
 This package contains the Cockpit shell and system configuration interfaces.
 
-###############################################################################
-
-%if_with subscriptions
-%package subscriptions
-Summary: Cockpit admin interface package for configuring subscriptions
-Group: System/Base
-BuildArch: noarch
-Requires: subscription-manager
-
-%description subscriptions
-This package contains the Cockpit subscriptions configuration interfaces.
-
-%endif
 ###############################################################################
 
 %package realmd
@@ -345,20 +323,6 @@ If "virt-install" is installed, you can also create new virtual machines.
 
 ###############################################################################
 
-%package machines-ovirt
-BuildArch: noarch
-Summary: Cockpit user interface for oVirt virtual machines
-Group: System/Base
-Requires: cockpit-bridge
-Requires: cockpit-system
-Requires: libvirt
-Requires: libvirt-client
-
-%description machines-ovirt
-The Cockpit components for managing oVirt virtual machines.
-
-###############################################################################
-
 %if_with pcp
 %package pcp
 Summary: Cockpit PCP integration
@@ -386,7 +350,6 @@ bastion hosts, and a basic dashboard.
 
 ###############################################################################
 
-%ifarch x86_64 aarch64
 %package docker
 Summary: Cockpit user interface for Docker containers
 Group: System/Base
@@ -397,23 +360,6 @@ Requires: docker-ce
 %description docker
 The Cockpit components for interacting with Docker and user interface.
 This package is not yet complete.
-%endif
-
-###############################################################################
-
-%if_with kubernetes
-%package kubernetes
-Summary: Cockpit user interface for Kubernetes cluster
-Group: System/Base
-Requires: kubernetes-client
-Requires: cockpit-bridge
-Requires: cockpit-shell
-
-%description kubernetes
-The Cockpit components for visualizing and configuring a Kubernetes
-cluster. Installed on the Kubernetes master. This package is not yet complete.
-
-%endif
 
 ###############################################################################
 
@@ -472,6 +418,7 @@ grep -rl '/usr/bin/false' | xargs sed -i 's/\/usr\/bin\/false/\/bin\/false/g'
     %{?_without_doc:--disable-doc } \
     %{?_with_vdo:--with-vdo-package='"vdo"' } \
     --with-cockpit-user=%cockpit_user \
+    --with-cockpit-ws-instance-user=%cockpit_wsinstance_user \
     --with-selinux-config-type=etc_t \
     --with-appstream-data-packages='[ "appstream-data" ]' \
     --with-nfs-client-package='"nfs-utils"' \
@@ -481,7 +428,7 @@ grep -rl '/usr/bin/false' | xargs sed -i 's/\/usr\/bin\/false/\/bin\/false/g'
 %make -j4 all
 
 %check
-%make -j4 check || { cat ./test-suite.log; exit 1; }
+TMPDIR=/tmp %make -j4 check || { cat ./test-suite.log; exit 1; }
 
 %install
 %makeinstall_std
@@ -506,20 +453,8 @@ rm -f %buildroot%_localstatedir/lib/pcp/config/pmlogconf/tools/cockpit
 rm -rf %buildroot%_datadir/cockpit/pcp/
 %endif
 
-%if_without subscriptions
-rm -rf %buildroot/%_datadir/cockpit/subscriptions/
-%endif
-
-%ifnarch x86_64 aarch64
+%if_disabled docker
 rm -rf %buildroot/%_datadir/cockpit/docker/
-%endif
-
-%if_with kubernetes
-rm %buildroot/%_datadir/cockpit/kubernetes/override.json
-%else
-rm -rf %buildroot/%_datadir/cockpit/kubernetes/
-rm -f \
-%buildroot/%_libexecdir/{cockpit-kube-auth,cockpit-kube-launch,cockpit-stub}
 %endif
 
 %if_without basic
@@ -533,7 +468,7 @@ done
 for lib in systemd tmpfiles.d; do
     rm -r %buildroot/lib/$lib
 done
-for libexec in cockpit-askpass cockpit-session cockpit-ws cockpit-desktop; do
+for libexec in cockpit-askpass cockpit-session cockpit-ws cockpit-tls cockpit-desktop; do
     rm %buildroot/%_libexecdir/$libexec
 done
 rm -r %buildroot/%_lib/security
@@ -547,14 +482,13 @@ rm -f %buildroot%_datadir/metainfo/cockpit.appdata.xml
 %endif
 
 %if_without optional
-for pkg in apps dashboard docker kubernetes machines ovirt packagekit pcp playground storaged; do
+for pkg in apps dashboard docker machines packagekit pcp playground storaged; do
     rm -rf %buildroot/%_datadir/cockpit/$pkg
 done
 rm -r %buildroot/usr/lib/cockpit-test-assets %buildroot/%_sysconfdir/cockpit/cockpit.conf
 rm -r %buildroot/%_libexecdir/cockpit-pcp %buildroot/%_localstatedir/lib/pcp/
-rm -f \
-%buildroot/%_libexecdir/{cockpit-kube-auth,cockpit-kube-launch,cockpit-stub}
 rm -f %buildroot%_datadir/metainfo/org.cockpit-project.cockpit-machines.metainfo.xml
+rm -f %buildroot%_datadir/metainfo/org.cockpit-project.cockpit-storaged.metainfo.xml
 %endif
 
 # don't package css and js debug files
@@ -607,15 +541,11 @@ done
 %files users
 %_datadir/cockpit/users/
 
-%if_with subscriptions
-%files subscriptions
-%_datadir/cockpit/subscriptions/
-%endif
-
 %files ws -f cockpit.lang
 %doc %_man1dir/cockpit-desktop.1.*
 %doc %_man5dir/cockpit.conf.5.*
 %doc %_man8dir/cockpit-ws.8.*
+%doc %_man8dir/cockpit-tls.8.*
 %doc %_man8dir/remotectl.8.*
 %doc %_man8dir/pam_ssh_add.8.*
 %config(noreplace) %_sysconfdir/cockpit/ws-certs.d/
@@ -627,12 +557,23 @@ done
 %_unitdir/cockpit.service
 %_unitdir/cockpit-motd.service
 %_unitdir/cockpit.socket
+%_unitdir/cockpit-wsinstance-http.socket
+%_unitdir/cockpit-wsinstance-http.service
+%_unitdir/cockpit-wsinstance-http-redirect.socket
+%_unitdir/cockpit-wsinstance-http-redirect.service
+%_unitdir/cockpit-wsinstance-https-factory.socket
+%_unitdir/cockpit-wsinstance-https-factory@.service
+%_unitdir/cockpit-wsinstance-https@.socket
+%_unitdir/cockpit-wsinstance-https@.service
+%_unitdir/system-cockpithttps.slice
 %_tmpfilesdir/cockpit-tempfiles.conf
 %_sbindir/remotectl
 /%_lib/security/pam_ssh_add.so
 %_libexecdir/cockpit-ws
+%_libexecdir/cockpit-wsinstance-factory
+%_libexecdir/cockpit-tls
 %_libexecdir/cockpit-desktop
-%attr(4710, root, %cockpit_user) %_libexecdir/cockpit-session
+%attr(4710, root, %cockpit_wsinstance_user) %_libexecdir/cockpit-session
 %attr(775, root, wheel) %_sharedstatedir/cockpit
 %_datadir/cockpit/static/
 %_datadir/cockpit/branding/
@@ -641,6 +582,10 @@ done
 %_sbindir/groupadd -r -f %cockpit_group >/dev/null 2>&1 ||:
 %_sbindir/useradd -r -g %cockpit_group -d %_sharedstatedir/cockpit -s \
 /dev/null -c "User for cockpit web service" %cockpit_user >/dev/null 2>&1 ||:
+
+%_sbindir/groupadd -r -f %cockpit_wsinstance_user >/dev/null 2>&1 ||:
+%_sbindir/useradd -r -g %cockpit_wsinstance_user -d %_sharedstatedir/cockpit -s \
+/dev/null -c "User for cockpit-ws instances" %cockpit_wsinstance_user >/dev/null 2>&1 ||:
 
 %post ws
 if [ $1 -eq 1 ] ; then
@@ -684,6 +629,7 @@ fi
 
 %files storaged
 %_datadir/cockpit/storaged/
+%_datadir/metainfo/org.cockpit-project.cockpit-storaged.metainfo.xml
 
 %files tests
 %config(noreplace) %_sysconfdir/cockpit/cockpit.conf
@@ -693,9 +639,6 @@ fi
 %files machines
 %_datadir/cockpit/machines/
 %_datadir/metainfo/org.cockpit-project.cockpit-machines.metainfo.xml
-
-%files machines-ovirt
-%_datadir/cockpit/ovirt/
 
 %if_with pcp
 %files pcp
@@ -715,17 +658,9 @@ fi
 %_datadir/cockpit/dashboard/
 %endif
 
-%ifarch x86_64 aarch64
+%if_enabled docker
 %files docker
 %_datadir/cockpit/docker/
-%endif
-
-%if_with kubernetes
-%files kubernetes
-%_libexecdir/cockpit-kube-auth
-%_libexecdir/cockpit-kube-launch
-%_libexecdir/cockpit-stub
-%_datadir/cockpit/kubernetes/
 %endif
 
 %if_with packagekit
@@ -737,6 +672,18 @@ fi
 %endif # build optional extension packages
 
 %changelog
+* Fri Nov 29 2019 Stanislav Levin <slev@altlinux.org> 208-alt1
+- 202 -> 208.
+
+* Thu Sep 05 2019 Stanislav Levin <slev@altlinux.org> 202-alt1
+- 194 -> 202.
+
+* Thu Jul 18 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 194-alt2
+- Enabled docker and kubernetes subpackages on ppc64le.
+
+* Mon May 27 2019 Stanislav Levin <slev@altlinux.org> 194-alt1
+- 192 -> 194.
+
 * Thu Apr 18 2019 Stanislav Levin <slev@altlinux.org> 192-alt1
 - 191 -> 192.
 
