@@ -2,7 +2,7 @@
 
 Name:	 	php7-%php7_extension
 Version:	%php7_version
-Release:	%php7_release.1
+Release:	%php7_release.2
 
 Summary:	Zend Opcache extension for opcode caching and optimization
 
@@ -50,6 +50,9 @@ phpize
 
 BUILD_HAVE=`echo %php7_extension | tr '[:lower:]-' '[:upper:]_'`
 %add_optflags -fPIC -L%_libdir
+%ifarch %e2k
+%add_optflags -U__AVX__ -U__SSE2__
+%endif
 export LDFLAGS=-lphp-%_php7_version
 
 # Fix for config.m4 in %%prep would't work for some reason
@@ -85,6 +88,9 @@ NO_INTERACTION=1 make test
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Thu Nov 28 2019 Michael Shigorin <mike@altlinux.org> 7.3.12-alt1.2
+- Fix build on %%e2k (SIMD needs proper porting)
 
 * Fri Jun 16 2017 Nikolay A. Fetisov <naf@altlinux.org> 7.1.6-alt1.S1.1
 - Fix build with enabled Opcache file cache

@@ -1,22 +1,20 @@
 %define	php7_extension	gd
-%define	gd_ver	2
-
-Name:	 	php7-%php7_extension%gd_ver
+Name:	 	php7-%php7_extension
 Version:	%php7_version
-Release:	%php7_release
+Release:	%php7_release.1
 
 Summary:	GD library support for PHP
 Group:		System/Servers
-License:	PHP Licence
+License:	PHP-3.01
 
-Source1:	php-%php7_extension%gd_ver.ini
-Source2:	php-%php7_extension%gd_ver-params.sh
+Source1:	php-%php7_extension.ini
+Source2:	php-%php7_extension-params.sh
 
 BuildRequires(pre): rpm-build-php7
-# Automatically added by buildreq on Thu Jan 28 2010
-BuildRequires: glibc-devel-static libfreetype-devel libjpeg-devel libpng-devel php7-devel t1lib-devel
-
+BuildRequires: glibc-devel-static libfreetype-devel libjpeg-devel libpng-devel php7-devel t1lib-devel libwebp-devel
 BuildRequires:	php7-devel = %php7_version
+Provides: php7-gd2 = %EVR
+Obsoletes: php7-gd2 < %EVR
 
 %description
 The %name includes a dynamic shared object (DSO) that adds
@@ -37,16 +35,13 @@ BUILD_HAVE=`echo %php7_extension | tr '[:lower:]-' '[:upper:]_'`
 %add_optflags -fPIC -L%_libdir
 export LDFLAGS=-lphp-%_php7_version
 %configure \
-	--enable-gd-native-ttf \
-	--without-xpm \
 	--with-jpeg-dir=%_prefix \
 	--with-t1lib \
-	--with-ttf=%_prefix \
+	--with-webp-dir=%_prefix \
 	--with-png-dir=%_prefix \
 	--with-zlib-dir=%_prefix \
 	--with-freetype-dir=%_prefix \
 	--with-libdir=%_lib \
-	--enable-exif \
 	--with-%php7_extension
 %php7_make
 
@@ -69,3 +64,8 @@ install -D -m 644 %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Mon Dec 16 2019 Anton Farygin <rider@altlinux.org>
+- renamed from php7-gd2 to php7-gd
+- built with libwebp (closes: #37626)
+- cleanup buildrequires

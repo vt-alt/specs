@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.3.12
+Version: 7.3.13
 Release: alt1
 
 %define php7_name      %name
@@ -16,7 +16,7 @@ Release: alt1
 %define php7_release   %release
 %define rpm_build_version %_php7_version
 
-License: PHP
+License: PHP-3.01
 Group:	 Development/Other
 Url: http://www.php.net/
 #Git: http://git.php.net/repository/php-src.git
@@ -78,7 +78,7 @@ for CGI scripts.
 Summary:	RPM helper macros to rebuild PHP7 packages
 
 Group:		Development/Other
-License:	GPL
+License:	GPLv3
 BuildArch:	noarch
 
 %description -n rpm-build-php7-version
@@ -464,6 +464,10 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %doc tests run-tests.php 
 
 %changelog
+* Fri Dec 20 2019 Anton Farygin <rider@altlinux.ru> 7.3.13-alt1
+- 7.3.13. (Fixes: CVE-2019-11046, CVE-2019-11045, CVE-2019-11049,
+	          CVE-2019-11050, CVE-2019-11047)
+
 * Mon Nov 25 2019 Anton Farygin <rider@altlinux.ru> 7.3.12-alt1
 - 7.3.12
 
