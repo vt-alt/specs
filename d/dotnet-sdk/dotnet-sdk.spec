@@ -1,12 +1,9 @@
 %define _unpackaged_files_terminate_build 1
 
-# FIXME:
-%define _dotnet_sdkrelease 2.1.505
-# TODO: change package version to sdk version?
-
 # TODO: build from sources
+%define major 3.1
 Name: dotnet-sdk
-Version: 2.1.9
+Version: %major.100
 Release: alt2
 
 Summary: SDK for the .NET Core runtime and libraries
@@ -20,12 +17,14 @@ ExclusiveArch: x86_64
 
 BuildRequires: rpm-build-intro
 
-BuildRequires(pre): rpm-macros-dotnet = %version
+%define _dotnet_sdkrelease %version
+
+BuildRequires(pre): rpm-macros-dotnet = %major.0
 
 BuildRequires: dotnet-bootstrap-sdk = %_dotnet_sdkrelease
 BuildRequires: dotnet
 
-Requires: dotnet-common = %version
+Requires: dotnet-common = %major.0
 
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
@@ -43,9 +42,19 @@ mkdir -p %buildroot%_dotnet_sdk/
 cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/* %buildroot%_dotnet_sdk/
 # dotnet --info get RID string from this .version, line 3
 cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/.version %buildroot%_dotnet_sdk/
+cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/.toolsetversion %buildroot%_dotnet_sdk/
 
+# TODO: standalone package
+mkdir -p %buildroot%_dotnetdir/packs/
+cp -a %_libdir/dotnet-bootstrap/packs/NETStandard.Library.Ref/ %buildroot%_dotnetdir/packs/
+cp -a %_libdir/dotnet-bootstrap/packs/Microsoft.NETCore.App.Ref/ %buildroot%_dotnetdir/packs/
+
+mkdir -p %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
+cp -a %_libdir/dotnet-bootstrap/templates/%_dotnet_corerelease/* %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
+
+# FIXME: double??
 # override binary file
-cp -afv %_dotnetdir/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
+cp -afv %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
 
 mkdir -p %buildroot%_cachedir/dotnet/NuGetFallbackFolder/
 ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet/sdk/NuGetFallbackFolder
@@ -54,13 +63,29 @@ ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet
 %groupadd dotnet || :
 
 %files
-%dir %_libdir/dotnet/sdk/
+%dir %_dotnetdir/sdk/
 %_dotnet_sdk/
+
+# TODO: standalone package
+%_dotnetdir/packs/NETStandard.Library.Ref/
+%_dotnetdir/packs/Microsoft.NETCore.App.Ref/
+
+# TODO: standalone package
+%dir %_dotnetdir/templates/
+%dir %_dotnetdir/templates/%_dotnet_corerelease/
+%_dotnetdir/templates/%_dotnet_corerelease/*.nupkg
+
 %_libdir/dotnet/sdk/NuGetFallbackFolder/
 %dir %_cachedir/dotnet/
 %attr(2775,root,dotnet) %dir %_cachedir/dotnet/NuGetFallbackFolder/
 
 %changelog
+* Wed Dec 18 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt2
+- add NETStandard.Library.Ref and Microsoft.NETCore.App.Ref targeting packs
+
+* Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt1
+- .NET Core SDK 3.1.100 Release
+
 * Wed Mar 13 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt2
 - override apphost binary from our build
 

@@ -5,8 +5,8 @@
 %define pre %nil
 
 Name: dotnet-corefx
-Version: 2.1.9
-Release: alt2
+Version: 3.1.0
+Release: alt1
 
 Summary: .NET Core foundational libraries, called CoreFX
 
@@ -17,7 +17,7 @@ Group: Development/Other
 # Source-url: https://github.com/dotnet/corefx/archive/v%{version}%pre.tar.gz
 Source: %name-%version.tar
 
-ExclusiveArch: x86_64
+ExclusiveArch: aarch64 x86_64
 
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
@@ -39,6 +39,7 @@ BuildRequires: dotnet
 %endif
 
 Requires: dotnet-common = %version
+Requires: dotnet-coreclr = %version
 
 %remove_optflags -frecord-gcc-switches
 BuildRequires: clang llvm cmake libstdc++-devel
@@ -56,7 +57,7 @@ Just copied managed binaries now.
 
 %__subst "s|.*-Werror.*||" src/Native/Unix/CMakeLists.txt
 #find -type f -name "*.sh" | xargs subst "s|/etc/os-release|%_libdir/dotnet/fake-os-release|g"
-cat <<EOF >src/version.c
+cat <<EOF >src/_version.c
 static char sccsid[] __attribute__((used)) = "@(#)Version %version-%release @BuiltBy: %vendor";
 EOF
 
@@ -118,23 +119,29 @@ chmod 0755 %buildroot%_rpmlibdir/%name.filetrigger
 
 %files
 %_rpmlibdir/%name.filetrigger
+#dir %_dotnet_shared/
 %_dotnet_shared/Microsoft.NETCore.App.deps.json
 # managed code
 %_dotnet_shared/*.dll
 # native code
 %_dotnet_shared/System.IO.Compression.Native.so
+%_dotnet_shared/System.IO.Ports.Native.so
 %_dotnet_shared/System.Native.so
 %_dotnet_shared/System.Net.Http.Native.so
 %_dotnet_shared/System.Net.Security.Native.so
 # search for openssl dinamically
 %_dotnet_shared/System.Security.Cryptography.Native.OpenSsl.so
 %_dotnet_shared/System.IO.Compression.Native.a
+%_dotnet_shared/System.IO.Ports.Native.a
 %_dotnet_shared/System.Native.a
 %_dotnet_shared/System.Net.Http.Native.a
 %_dotnet_shared/System.Net.Security.Native.a
 %_dotnet_shared/System.Security.Cryptography.Native.OpenSsl.a
 
 %changelog
+* Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
+- new version (3.1.0) with rpmgs script
+
 * Tue Mar 19 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt2
 - rebuild with dotnet-common 2.1.9
 

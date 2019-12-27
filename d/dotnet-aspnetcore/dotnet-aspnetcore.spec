@@ -8,7 +8,7 @@
 %define pre %nil
 
 Name: dotnet-aspnetcore
-Version: 2.1.9
+Version: 3.1.0
 Release: alt1
 
 Summary: ASP.NET Core is a cross-platform .NET framework for building modern cloud-based web application
@@ -24,7 +24,7 @@ ExclusiveArch: x86_64
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
 
-BuildRequires(pre): rpm-macros-dotnet
+BuildRequires(pre): rpm-macros-dotnet = %version
 
 %if_with bootstrap
 BuildRequires: dotnet-bootstrap-runtime
@@ -61,12 +61,13 @@ Just copied managed binaries now.
 %setup
 
 %install
-mkdir -p %buildroot%_dotnet_aspnetcore_app %buildroot%_dotnet_aspnetcore_all
+mkdir -p %buildroot%_dotnet_aspnetcore_app
+#%buildroot%_dotnet_aspnetcore_all
 %if_with bootstrap
 # managed
-cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/.version %buildroot%_dotnet_aspnetcore_all
-cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/*.dll %buildroot%_dotnet_aspnetcore_all
-cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/*.json %buildroot%_dotnet_aspnetcore_all
+#cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/.version %buildroot%_dotnet_aspnetcore_all
+#cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/*.dll %buildroot%_dotnet_aspnetcore_all
+#cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/*.json %buildroot%_dotnet_aspnetcore_all
 
 # TODO:
 #ln -s %_libdir/libuv.so.1.0.0 %buildroot%_dotnet_aspnetcore_app/libuv.so
@@ -74,9 +75,15 @@ cp -a %bootstrapdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/*.json 
 cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/.version %buildroot%_dotnet_aspnetcore_app
 cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/*.dll %buildroot%_dotnet_aspnetcore_app
 cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/*.json %buildroot%_dotnet_aspnetcore_app
+
+# TODO: subpackage targeting-packs
+mkdir -p %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
+cp -a %bootstrapdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/* %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
+
 %endif
 
 %files
+%dir %_dotnetdir/shared/Microsoft.AspNetCore.App/
 %dir %_dotnet_aspnetcore_app/
 %_dotnet_aspnetcore_app/.version
 %_dotnet_aspnetcore_app/Microsoft.AspNetCore.App.deps.json
@@ -85,12 +92,19 @@ cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/*.json 
 %_dotnet_aspnetcore_app/*.dll
 # native code
 #%_dotnet_aspnetcore_app/
-%dir %_dotnet_aspnetcore_all/
-%_dotnet_aspnetcore_all/.version
-%_dotnet_aspnetcore_all/Microsoft.AspNetCore.All.deps.json
-%_dotnet_aspnetcore_all/Microsoft.AspNetCore.All.runtimeconfig.json
-%_dotnet_aspnetcore_all/*.dll
+#%dir %_dotnet_aspnetcore_all/
+#%_dotnet_aspnetcore_all/.version
+#%_dotnet_aspnetcore_all/Microsoft.AspNetCore.All.deps.json
+#%_dotnet_aspnetcore_all/Microsoft.AspNetCore.All.runtimeconfig.json
+#%_dotnet_aspnetcore_all/*.dll
+
+%dir %_dotnetdir/packs/
+%dir %_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/
+%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
 
 %changelog
+* Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
+- ASP.NET Core 3.1.0
+
 * Wed May 22 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt1
 - initial release for ALT Sisyphus (just copy managed code)

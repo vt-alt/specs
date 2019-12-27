@@ -1,11 +1,12 @@
 %define _unpackaged_files_terminate_build 1
 
+
 %def_without bootstrap
 %define pre %nil
 
 Name: dotnet
-Version: 2.1.9
-Release: alt2
+Version: 3.1.0
+Release: alt1
 
 Summary: Installer packages for the .NET Core runtime and libraries
 
@@ -16,7 +17,7 @@ Group: Development/Other
 # Source-url: %url/archive/v%version%pre.tar.gz
 Source: %name-%version.tar
 
-ExclusiveArch: x86_64
+ExclusiveArch: aarch64 x86_64
 
 BuildRequires: clang llvm
 
@@ -28,7 +29,11 @@ BuildRequires: dotnet-common = %version
 
 # FIXME
 #Requires: dotnet-common >= %_dotnet_major
-Requires: dotnet-common >= 2.1
+Requires: dotnet-common >= 3.1
+# FIXME: warning: Macro %_dotnet_corerelease not found
+# FIXME: error: line 32: Dependency tokens must not contain '%<=>' symbols: Requires: dotnet-coreclr = %_dotnet_corerelease
+#Requires: dotnet-coreclr = %_dotnet_corerelease
+#Requires: dotnet-corefx = %_dotnet_corerelease
 Requires: dotnet-coreclr = %version
 Requires: dotnet-corefx = %version
 #Requires: dotnet-sdk >= %version
@@ -41,6 +46,7 @@ BuildRequires: dotnet-bootstrap
 %define bootstrapdir %_dotnetdir
 %endif
 
+%define exedir artifacts/bin/%_dotnet_rid.Debug/corehost
 
 %description
 This repo contains the code to build the .NET Core runtime,
@@ -61,25 +67,29 @@ find -type f -name "*.sh" | xargs subst "s|/etc/os-release|%_dotnetdir/fake-os-r
 cd src/corehost
 #DOTNET_TOOL_DIR=%bootstrapdir
 sh -x ./build.sh \
-    --arch x64 \
+    --arch %_dotnet_arch \
     --hostver %_dotnet_corerelease \
     --apphostver %_dotnet_corerelease \
     --fxrver %_dotnet_corerelease \
     --policyver %_dotnet_corerelease \
     -portable \
-    --commithash 0 || make -C bin/obj/Linux.x64.Release
-# (parallel generation fail workaround)
+    --commithash 0
 
 %install
 mkdir -p %buildroot%_dotnetdir/
-install -m755 src/corehost/cli/exe/dotnet/dotnet %buildroot%_dotnetdir/
-install -m755 src/corehost/cli/exe/apphost/apphost %buildroot%_dotnetdir/
+install -m755 %exedir/dotnet %buildroot%_dotnetdir/
 
 mkdir -p %buildroot%_dotnet_shared/
-install -m755 src/corehost/cli/dll/libhostpolicy.so %buildroot%_dotnet_shared/
-#install -m755 src/corehost/cli/fxr/libhostfxr.so %buildroot%_dotnet_shared/
+install -m755 %exedir/libhostpolicy.so %buildroot%_dotnet_shared/
+
 mkdir -p %buildroot%_dotnet_hostfxr/
-install -m755 src/corehost/cli/fxr/libhostfxr.so %buildroot%_dotnet_hostfxr/
+install -m755 %exedir/libhostfxr.so %buildroot%_dotnet_hostfxr/
+
+mkdir -p %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/
+install -m755 %exedir/apphost %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/
+install -m644 %exedir/libnethost.so %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/
+install -m644 %exedir/nethost.h %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/
+install -m644 %exedir/nethost.h %buildroot%_dotnet_shared/
 
 mkdir -p %buildroot%_bindir/
 ln -sr %buildroot%_dotnetdir/dotnet %buildroot%_bindir/dotnet
@@ -88,13 +98,28 @@ ln -sr %buildroot%_dotnetdir/dotnet %buildroot%_bindir/dotnet
 %doc THIRD-PARTY-NOTICES.TXT README.md CONTRIBUTING.md LICENSE.TXT
 %_bindir/dotnet
 %_dotnetdir/dotnet
-%_dotnetdir/apphost
 
 %dir %_dotnet_hostfxr/
 %_dotnet_hostfxr/libhostfxr.so
 %_dotnet_shared/libhostpolicy.so
 
+# some doubles
+%_dotnet_shared/nethost.h
+
+
+%dir %_dotnetdir/packs/Microsoft.NETCore.App.Host.%_dotnet_rid/
+%dir %_dotnet_apphostdir/
+%dir %_dotnet_apphostdir/runtimes/
+%dir %_dotnet_apphostdir/runtimes/%_dotnet_rid/
+%dir %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/
+%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost
+%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/libnethost.so
+%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/nethost.h
+
 %changelog
+* Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
+- new version 3.1.0 (with rpmrb script)
+
 * Wed Mar 13 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt2
 - install apphost
 

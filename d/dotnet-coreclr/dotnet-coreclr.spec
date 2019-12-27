@@ -1,11 +1,13 @@
 %define _unpackaged_files_terminate_build 1
 
-%def_without bootstrap
+%def_with bootstrap
+# TODO:
+%def_with skipmanaged
 
 %define pre %nil
 
 Name: dotnet-coreclr
-Version: 2.1.9
+Version: 3.1.0
 Release: alt1
 
 Summary: .NET Core runtime, called CoreCLR, and the base library, called mscorlib
@@ -19,23 +21,16 @@ Source: %name-%version.tar
 Patch1: 0001-Add-support-for-building-under-glibc-2.26-13785.patch
 Patch2: 0001-fix-build-with-clang6.0.patch
 Patch3: dotnet-coreclr-alt-not-supported.patch
-#Source1: init-tools.sh
 
-ExclusiveArch: x86_64
+ExclusiveArch: aarch64 x86_64
 
 #add_verify_elf_skiplist *.dbg
-
-# TODO:
-# verify-elf: WARNING: ./usr/lib64/dotnet/shared/Microsoft.NETCore.App/1.1.1/Linux.x64.Release/libcoreclr.so: eu-elflint failed
-# the file containing the function 'CoreDllMain' might not be compiled with -fpic/-fPIC
-# verify-elf: ERROR: ./usr/lib64/dotnet/shared/Microsoft.NETCore.App/1.1.1/Linux.x64.Release/libcoreclr.so: TEXTREL entry found: 0x0000000000000000
-#set_verify_elf_method relaxed
 
 BuildRequires(pre): rpm-macros-dotnet = %version
 
 BuildRequires: /proc
 
-BuildRequires: clang llvm
+BuildRequires: clang llvm python3
 
 BuildRequires: cmake libstdc++-devel libunwind-devel liblttng-ust-devel liblwp-devel
 #BuildRequires: lldb-devel
@@ -70,16 +65,22 @@ cross platform applications that work on Linux, Mac and Windows.
 %setup
 #patch1 -p1
 #patch2 -p1
-%patch3 -p2
+#patch3 -p2
 
 # make strange error if uncomment due isMSBuildOnNETCoreSupported initialized
-find -type f -name "*.sh" | xargs subst "s|/etc/os-release|%_libdir/dotnet/fake-os-release|g"
+#find -type f -name "*.sh" | xargs subst "s|/etc/os-release|%_libdir/dotnet/fake-os-release|g"
 
 # TODO: CMake Error: CMake can not determine linker language for target: System.Globalization.Native
 #__subst "s|__isMSBuildOnNETCoreSupported=0|__isMSBuildOnNETCoreSupported=1|" build.sh
 
 %build
-DOTNET_TOOL_DIR=%bootstrapdir sh -x ./build.sh x64 release verbose skipnuget ignorewarnings skiprestoreoptdata cmakeargs -DENABLE_LLDBPLUGIN=0
+export DotNetCoreSdkDir=%bootstrapdir
+export DotNetBuildToolsDir=%bootstrapdir
+bash -x ./build.sh -release -verbose -skipnuget -ignorewarnings -skiprestoreoptdata -cmakeargs -DENABLE_LLDBPLUGIN=0 \
+%if_with skipmanaged
+    -skipmanaged \
+%endif
+    %nil
 
 # FIXME: possible hack
 cat <<EOF >.version
@@ -90,7 +91,7 @@ EOF
 %install
 mkdir -p %buildroot%_dotnet_shared/
 # TODO: some publish use?
-cp -a bin/Product/Linux.x64.Release/{System.Globalization.Native.so,lib*.so,corerun,coreconsole,createdump,sosdocsunix.txt} %buildroot%_dotnet_shared/
+cp -a bin/Product/Linux.%_dotnet_arch.Release/{System.Globalization.Native.so,lib*.so,createdump,SOS_README.md} %buildroot%_dotnet_shared/
 
 install -D -m644 .version %buildroot%_dotnet_shared/.version
 
@@ -101,6 +102,11 @@ install -D -m644 .version %buildroot%_dotnet_shared/.version
 # verify-elf: ERROR: ./usr/lib64/dotnet/shared/Microsoft.NETCore.App/2.0.0/createdump: RPATH contains illegal entry "/tmp/.private/lav/RPM/BUILD": /tmp/.private/lav/RPM/BUILD/dotnet-coreclr-2.0.0/bin/obj/Linux.x64.Release/src/dlls/mscordac
 # ldd: libmscordaccore.so => /tmp/.private/lav/RPM/BUILD/dotnet-coreclr-2.0.0/bin/obj/Linux.x64.Release/src/dlls/mscordac/libmscordaccore.so
 #rm -f %buildroot%_libdir/dotnet/shared/Microsoft.NETCore.App/%_dotnet_corerelease/createdump
+
+# TODO
+rm -f %buildroot%_dotnet_shared/libsuperpmi-shim-*.so
+
+rm -f %buildroot%_dotnet_shared/libprotononjit.so
 
 mkdir -p %buildroot%_rpmlibdir
 cat > %buildroot%_rpmlibdir/%name.filetrigger << EOF
@@ -116,14 +122,40 @@ chmod 0755 %buildroot%_rpmlibdir/%name.filetrigger
 %dir %_dotnet_shared/
 %_dotnet_shared/.version
 %_dotnet_shared/System.Globalization.Native.so
-%_dotnet_shared/lib*.so
-%_dotnet_shared/corerun
+
+%_dotnet_shared/libclrgc.so
+%_dotnet_shared/libclrjit.so
+%_dotnet_shared/libcoreclr.so
+%_dotnet_shared/libcoreclrtraceptprovider.so
+%_dotnet_shared/libdbgshim.so
+%_dotnet_shared/libmscordaccore.so
+%_dotnet_shared/libmscordbi.so
+#ifarch x86_64
+#_dotnet_shared/libprotononjit.so
+#endif
+# moved to dotnet/diagnostics repo
+%_dotnet_shared/SOS_README.md
+#_dotnet_shared/libsos.so
+#_dotnet_shared/libsuperpmi-shim-collector.so
+#_dotnet_shared/libsuperpmi-shim-counter.so
+#_dotnet_shared/libsuperpmi-shim-simple.so
+
+#_dotnet_shared/corerun
 %_dotnet_shared/createdump
-%_dotnet_shared/coreconsole
-%_dotnet_shared/sosdocsunix.txt
+#_dotnet_shared/coreconsole
 %_rpmlibdir/%name.filetrigger
 
 %changelog
+* Mon Dec 16 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
+- new version (3.1.0) with rpmgs script
+
+* Sat Oct 05 2019 Vitaly Lipatov <lav@altlinux.ru> 3.0.0-alt1
+- new version (3.0.0) with rpmgs script
+- .NET Core 3.0.0
+
+* Fri May 17 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt2
+- more strict libs packing
+
 * Wed Mar 13 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.9-alt1
 - new version 2.1.9 (with rpmrb script)
 

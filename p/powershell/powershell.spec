@@ -3,7 +3,7 @@
 
 Name: powershell
 Version: 6.0.0
-Release: alt6
+Release: alt7
 
 Summary: PowerShell for every system!
 
@@ -53,6 +53,8 @@ an associated scripting language and a framework for processing cmdlets.
 
 %prep
 %setup -a1
+%__subst "s|.*-Werror.*||" src/libpsl-native/CMakeLists.txt
+
 %__subst "s|\(add_subdirectory(googletest)\)|#\1|g" src/libpsl-native/test/CMakeLists.txt
 
 %__subst "s|hash powershell|false|g" build.sh
@@ -134,6 +136,10 @@ cp %SOURCE2 %buildroot%_man1dir/
 %doc docs/*
 
 %changelog
+* Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 6.0.0-alt7
+- rebuild with .NET Core 3.1
+- disable -Werror
+
 * Wed Mar 20 2019 Vitaly Lipatov <lav@altlinux.ru> 6.0.0-alt6
 - add require to the version from runtime config
 
