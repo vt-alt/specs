@@ -2,19 +2,17 @@
 %define _libexecdir %prefix/libexec
 
 Name: %_name-glib
-Version: 1.24.0
+Version: 1.24.2
 Release: alt1
 
 Summary: QMI modem protocol helper library
-License: %lgpl2plus
+License: LGPLv2+
 Group: System/Libraries
 URL: https://cgit.freedesktop.org/libqmi
-# git://anongit.freedesktop.org/libqmi
+Vcs: git://anongit.freedesktop.org/libqmi
 Source: %name-%version.tar
 
 Patch: %_name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: glib2-devel libgio-devel
 BuildRequires: libmbim-glib-devel >= 1.18.0
@@ -30,7 +28,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.
 
 %package utils
 Summary: QMI command line utilities
-License: %gpl2plus
+License: GPLv2+
 Group: System/Base
 Requires: %name = %version-%release
 
@@ -107,6 +105,11 @@ make check
 
 
 %changelog
+* Tue Dec 24 2019 Mikhail Efremov <sem@altlinux.org> 1.24.2-alt1
+- Don't use rpm-build-licenses.
+- Use RPMTAG_VCS.
+- Updated to 1.24.2.
+
 * Fri Sep 20 2019 Mikhail Efremov <sem@altlinux.org> 1.24.0-alt1
 - Updated to 1.24.0.
 
