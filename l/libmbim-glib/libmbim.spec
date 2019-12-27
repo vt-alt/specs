@@ -2,19 +2,17 @@
 %define _libexecdir %prefix/libexec
 
 Name: %_name-glib
-Version: 1.20.2
+Version: 1.20.4
 Release: alt1
 
 Summary: MBIM modem protocol helper library
-License: %lgpl2plus
+License: LGPLv2+
 Group: System/Libraries
 URL: https://cgit.freedesktop.org/libmbim/libmbim/
 Vcs: git://anongit.freedesktop.org/libmbim/libmbim
 Source: %name-%version.tar
 
 Patch: %_name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: glib2-devel libgio-devel libgudev-devel
 BuildRequires: python-modules-json
@@ -30,7 +28,7 @@ This package contains MBIM modem protocol helper library.
 
 %package utils
 Summary: MBIM command line utilities
-License: %gpl2plus
+License: GPLv2+
 Group: System/Base
 Requires: %name = %version-%release
 
@@ -107,6 +105,10 @@ make check
 
 
 %changelog
+* Tue Dec 24 2019 Mikhail Efremov <sem@altlinux.org> 1.20.4-alt1
+- Don't use rpm-build-licenses.
+- Updated to 1.20.4.
+
 * Wed Nov 06 2019 Mikhail Efremov <sem@altlinux.org> 1.20.2-alt1
 - Use RPMTAG_VCS.
 - Updated to 1.20.2.
