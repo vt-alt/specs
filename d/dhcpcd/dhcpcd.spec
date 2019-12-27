@@ -5,11 +5,11 @@
 
 Name: dhcpcd
 Epoch: 1
-Version: 8.1.2
+Version: 8.1.4
 Release: alt1
 
 Summary: DHCP Client
-License: %bsd
+License: BSD-2-Clause
 Group: System/Servers
 
 URL: https://roy.marples.name/projects/%name
@@ -17,8 +17,6 @@ Source: %name-%version.tar
 Patch0: %name-%version-%release.patch
 
 AutoReq: yes, noshell
-
-BuildRequires: rpm-build-licenses
 
 Conflicts: etcnet < 0.9.10-alt6
 
@@ -91,6 +89,10 @@ fi
 %exclude %_datadir/%name/
 
 %changelog
+* Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 1:8.1.4-alt1
+- Fixed license.
+- Updated to 8.1.4.
+
 * Thu Nov 14 2019 Mikhail Efremov <sem@altlinux.org> 1:8.1.2-alt1
 - Drop obsoleted patch.
 - Updated to 8.1.2.
