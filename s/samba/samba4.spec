@@ -59,7 +59,7 @@
 %endif
 
 Name:    samba
-Version: 4.10.10
+Version: 4.10.11
 Release: alt1
 
 Group:   System/Servers
@@ -1823,6 +1823,12 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Fri Dec 13 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.11-alt1
+- Update to last security winter release
+- Security fixes:
+  + CVE-2019-14861: Samba AD DC zone-named record Denial of Service in DNS management server
+  + CVE-2019-14870: DelegationNotAllowed not being enforced in protocol transition on Samba AD DC
+
 * Tue Oct 29 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.10-alt1
 - Update to second security autumn release
 - Security fixes:
