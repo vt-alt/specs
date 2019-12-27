@@ -2,11 +2,11 @@
 %def_disable gstreamer
 
 Name: tumbler
-Version: 0.2.7
+Version: 0.2.8
 Release: alt1
 
 Summary: A thumbnail D-Bus service
-License: %gpl2plus, %lgpl2plus
+License: GPLv2+ and LGPLv2+
 Group: Graphical desktop/XFce
 
 Url: https://git.xfce.org/xfce/tumbler/
@@ -16,8 +16,6 @@ Requires: lib%name = %version-%release
 
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: gtk-doc intltool libfreetype-devel libgio-devel libgtk+2-devel libjpeg-devel libpng-devel
@@ -37,7 +35,7 @@ specification
 %package -n lib%name
 Summary: A D-bus thumbnailing framweork
 Group: System/Libraries
-License: %lgpl2plus
+License: LGPLv2+
 
 %description -n lib%name
 Tumbler is a D-Bus service for applications to request
@@ -46,7 +44,7 @@ thumbnails for various URI schemes and MIME types
 %package -n lib%name-devel
 Summary: Development files for %name
 Group: Development/C
-License: %lgpl2plus
+License: LGPLv2+
 Requires: lib%name = %version-%release
 
 %description -n lib%name-devel
@@ -88,6 +86,10 @@ Development files and headers for %name
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 0.2.8-alt1
+- Don't use rpm-build-licenses.
+- Updated to 0.2.8.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 0.2.7-alt1
 - Updated to 0.2.7.
 
