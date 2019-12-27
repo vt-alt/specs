@@ -1,5 +1,5 @@
 Name: firmware-linux
-Version: 20190514
+Version: 20191218
 Release: alt1
 
 Summary: Firmware files used by the Linux kernel
@@ -58,6 +58,199 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/*
 
 %changelog
+* Wed Dec 18 2019 Cronbuild Service <cronbuild@altlinux.org> 20191218-alt1
+- upstream changes (GIT c4586ff):
+  + Update AMD cpu microcode (thx John Allen)
+  + inside-secure: add new "mini" firmware for the EIP197 driver (thx Pascal van Leeuwen)
+  + WHENCE: Add raspberry-pi4 SDIO file (thx Josh Boyer)
+  + qcom: update venus firmware files for v5.4 (thx Dikshita Agarwal)
+  + cxgb4: Update firmware to revision 1.24.11.0 (thx Vishal Kulkarni)
+  + brcm: Add BCM43455 NVRAM for Raspberry Pi 4 B (thx Matthias Brugger)
+  + qcom: Add SDM845 Compute DSP firmware (thx Bjorn Andersson)
+  + qcom: Add SDM845 Audio DSP firmware (thx Bjorn Andersson)
+  + qcom: Add SDM845 modem firmware (thx Bjorn Andersson)
+
+* Thu Nov 21 2019 Cronbuild Service <cronbuild@altlinux.org> 20191115-alt1
+- upstream changes (GIT e8a0f4c):
+  + rtl_nic: add firmware rtl8168fp-3 (thx Heiner Kallweit)
+  + Update NXP Management Complex firmware to version 10.18.0 (thx Cristian Sovaiala)
+
+* Wed Nov 13 2019 Cronbuild Service <cronbuild@altlinux.org> 20191113-alt1
+- upstream changes (GIT c62c3c2):
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + amdgpu: update navi14 vcn firmware (thx Alex Deucher)
+  + amdgpu: update navi10 vcn firmware (thx Alex Deucher)
+  + i915: Add HuC firmware v7.0.3 for TGL (thx Daniele Ceraolo Spurio)
+  + i915: Add GuC firmware v35.2.0 for TGL (thx Daniele Ceraolo Spurio)
+  + i915: Add HuC firmware v9.0.0 for EHL (thx Daniele Ceraolo Spurio)
+  + i915: Add GuC firmware v33.0.4 for EHL (thx Daniele Ceraolo Spurio)
+
+* Wed Nov 06 2019 Cronbuild Service <cronbuild@altlinux.org> 20191104-alt1
+- upstream changes (GIT 11bdc57):
+  + rtw88: RTL8723D: add firmware file v48 (thx Yan-Hsuan Chuang)
+
+* Thu Oct 31 2019 Cronbuild Service <cronbuild@altlinux.org> 20191028-alt1
+- upstream changes (GIT 9e194c7):
+  + qed: Add firmware 8.40.33.0 (thx Rasesh Mody)
+  + amdgpu: add new navi14 wks gfx firmware for 19.30 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware for 19.30 (thx Alex Deucher)
+  + amdgpu: update raven firmware for 19.30 (thx Alex Deucher)
+  + Add firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+
+* Wed Oct 23 2019 Cronbuild Service <cronbuild@altlinux.org> 20191023-alt1
+- upstream changes (GIT ad7a8b2):
+  + Mellanox: Add new mlxsw_spectrum2 firmware 29.2000.2308 (thx Ido Schimmel)
+  + Mellanox: Add new mlxsw_spectrum firmware 13.2000.2308 (thx Ido Schimmel)
+  + rtl_nic: add firmware files for RTL8153 (thx Hayes Wang)
+  + rtl_bt: Update configuration file for BT part of RTL8822CU (thx Max Chou)
+  + bnx2x: Add FW 7.13.15.0. (thx Sudarsana Reddy Kalluru)
+  + Update AMD cpu microcode (thx Allen, John)
+
+* Wed Oct 16 2019 Cronbuild Service <cronbuild@altlinux.org> 20191010-alt1
+- upstream changes (GIT 4c3e853):
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+
+* Thu Oct 10 2019 Cronbuild Service <cronbuild@altlinux.org> 20191007-alt1
+- upstream changes (GIT aa95e90):
+  + amdgpu: add initial navi14 firmware form 19.30 (thx Alex Deucher)
+  + rtlwifi: rtl8821ae: Add firmware for the RTL8812AE variant. (thx Larry Finger)
+  + ice: Fix up WHENCE entry and symlink (thx Josh Boyer)
+  + nvidia: Update Tegra210 XUSB firmware to v50.24 (thx Thierry Reding)
+  + nvidia: Add XUSB firmware for Tegra194 (thx Thierry Reding)
+  + copy-firmware: Create symlinks from WHENCE file (thx Thierry Reding)
+
+* Wed Oct 02 2019 Cronbuild Service <cronbuild@altlinux.org> 20190925-alt1
+- upstream changes (GIT c0590d8):
+  + amdgpu: update vega20 ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: update vega12 ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: update vega10 ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: update picasso ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: update raven2 ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: update raven ucode for 19.30 (thx Alex Deucher)
+  + amdgpu: add new raven rlc firmware (thx Alex Deucher)
+
+* Wed Sep 25 2019 Cronbuild Service <cronbuild@altlinux.org> 20190916-alt1
+- upstream changes (GIT 417a9c6):
+  + amdgpu: add initial navi10 firmware (thx Alex Deucher)
+  + drm/i915/firmware: Add v9.0.0 of HuC for Icelake (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v4.0.0 of HuC for Cometlake (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v4.0.0 of HuC for Geminilake (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v2.0.0 of HuC for Broxton (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v4.0.0 of HuC for Kabylake (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v2.0.0 of HuC for Skylake (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v33 of GuC for CML (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v2.04 of DMC for TGL (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v1.09 of DMC for ICL (thx Anusha Srivatsa)
+
+* Wed Sep 11 2019 Cronbuild Service <cronbuild@altlinux.org> 20190909-alt1
+- upstream changes (GIT 6c6918a):
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+
+* Wed Sep 04 2019 Cronbuild Service <cronbuild@altlinux.org> 20190904-alt1
+- upstream changes (GIT 6ddb9d9):
+  + nvidia: Add XUSB firmware for Tegra186 (thx Thierry Reding)
+  + rtl_bt: Update RTL8723D BT FW to 0x828A_96F1 (thx Max Chou)
+  + rtl_nic: add firmware rtl8125a-3 (thx Heiner Kallweit)
+  + Add firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+
+* Thu Aug 29 2019 Cronbuild Service <cronbuild@altlinux.org> 20190824-alt1
+- upstream changes (GIT 7307a29):
+  + brcm: Add 43455 based AP6255 NVRAM for the Minix Neo Z83-4
+    Mini PC (thx Hans de Goede)
+  + brcm: Add 43340 based AP6234 NVRAM for the PoV TAB-P1006W-232
+    tablet (thx Hans de Goede)
+  + iwlwifi: update FWs to core45-152 release (thx Luca Coelho)
+
+* Wed Aug 21 2019 Cronbuild Service <cronbuild@altlinux.org> 20190821-alt1
+- upstream changes (GIT c0fb3d9):
+  + check_whence: Add copy-firmware.sh to the list of ignored files (thx Josh Boyer)
+  + rtl_bt: Update RTL8822C BT FW to V0x098A_94A4 (thx Max Chou)
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + Mellanox: Add new mlxsw_spectrum firmware 13.2000.1886 (thx Ido Schimmel)
+  + rtw88: add a README file (thx Yan-Hsuan Chuang)
+  + rtw88: RTL8822C: add WoW firmware v7.3 (thx Yan-Hsuan Chuang)
+  + rtw88: RTL8822C: update rtw8822c_fw.bin to v7.3 (thx Yan-Hsuan Chuang)
+  + ath10k: QCA9984 hw1.0: update board-2.bin (thx Kalle Valo)
+  + ath10k: QCA9984 hw1.0: update firmware-5.bin to
+    10.4-3.9.0.2-00046 (thx Kalle Valo)
+  + ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00045 (thx Kalle Valo)
+  + ath10k: QCA9888 hw2.0: update board-2.bin (thx Kalle Valo)
+  + ath10k: QCA9888 hw2.0: update firmware-5.bin to
+    10.4-3.9.0.2-00040 (thx Kalle Valo)
+  + ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00045 (thx Kalle Valo)
+  + ath10k: QCA6174 hw3.0: update firmware-6.bin to
+    WLAN.RM.4.4.1-00140-QCARMSWPZ-1 (thx Kalle Valo)
+  + ath10k: QCA4019 hw1.0: update board-2.bin (thx Kalle Valo)
+  + cxgb4: update firmware to revision 1.24.3.0 (thx Vishal Kulkarni)
+  + nfp: update Agilio SmartNIC flower firmware to rev AOTC-2.10.A.38 (thx Louis Peens)
+
+* Wed Jul 31 2019 Cronbuild Service <cronbuild@altlinux.org> 20190726-alt1
+- upstream changes (GIT dff98c6):
+  + nvidia: add missing entries in WHENCE (thx Ben Skeggs)
+  + Update NXP Management Complex firmware to version 10.16.2 (thx Cristian Sovaiala)
+  + iwlwifi: update -48 FWs for Qu and cc (thx Luca Coelho)
+  + iwlwifi: update FWs for 3168, 7265D, 9000, 9260, 8000, 8265
+    and cc (thx Luca Coelho)
+
+* Thu Jul 18 2019 Cronbuild Service <cronbuild@altlinux.org> 20190717-alt1
+- upstream changes (GIT bf13a71):
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 22161 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + amdgpu: update vega10 VCE firmware (thx Alex Deucher)
+  + amdgpu: update picasso vcn firmware (thx Alex Deucher)
+  + amdgpu: update raven vcn firmware (thx Alex Deucher)
+  + amdgpu: update tonga to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: update vega12 to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: partially revert 2579167548be33afb1fe2a9a5c141561ee5a8bbe (thx Alex Deucher)
+  + amdgpu: update vega10 to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: update polaris12 to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: update raven2 to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: update raven to latest 19.20 firmware (thx Alex Deucher)
+  + amdgpu: update picasso to latest 19.20 firmware (thx Alex Deucher)
+  + drm/i915/firmware: Add v33 of GuC for ICL (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v33 of GuC for KBL (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v33 of GuC for SKL (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v33 of GuC for GLK (thx Anusha Srivatsa)
+  + drm/i915/firmware: Add v33 of GuC for BXT (thx Anusha Srivatsa)
+
+* Wed Jul 03 2019 Cronbuild Service <cronbuild@altlinux.org> 20190625-alt1
+- upstream changes (GIT 70e4394):
+  + rsi: add firmware image for redpine 9116 chipset (thx Siva Rebbagondla)
+  + Add firmware file for Intel Bluetooth AX201 (thx Bag, Amit K)
+
+* Thu Jun 27 2019 Cronbuild Service <cronbuild@altlinux.org> 20190620-alt1
+- upstream changes (GIT 7ae3a09):
+  + iwlwifi: add new firmwares for integrated 22000 series (thx Luca Coelho)
+  + iwlwifi: update FW for 22000 to Core45-96 (thx Luca Coelho)
+  + iwlwifi: update FWs for 9000 series to Core45-96 (thx Luca Coelho)
+  + iwlwifi: update Core45 FWs for 22260, 9000 and 9260 (thx Luca Coelho)
+  + iwlwifi: udpate -36 firmware for 8000 series (thx Emmanuel Grumbach)
+  + cavium: Add firmware for CNN55XX crypto driver. (thx Phani Kiran Hemadri)
+  + Update firmware file for Intel Bluetooth 22161 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + Update AMD SEV firmware (thx Allen, John)
+  + update licence text for Marvell firmware (thx Ganapathi Bhat)
+
+* Wed Jun 12 2019 Cronbuild Service <cronbuild@altlinux.org> 20190603-alt1
+- upstream changes (GIT 1884732):
+  + update firmware for mhdp8546 (thx Damian Kos)
+  + rsi: update firmware images for Redpine 9113 chipset (thx Siva Rebbagondla)
+  + imx: sdma: update firmware to v3.5/v4.5 (thx Robin Gong)
+  + nvidia: update GP10[2467] SEC2 RTOS with the one already used
+    on GP108 (thx Ben Skeggs)
+
 * Thu May 16 2019 Cronbuild Service <cronbuild@altlinux.org> 20190514-alt1
 - upstream changes (GIT 711d329):
   + Update firmware file for Intel Bluetooth 8265 (thx Amit K Bag)
