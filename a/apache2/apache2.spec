@@ -12,7 +12,7 @@
 %define macrosname %name-build
 
 Name:    apache2
-Version: 2.4.39
+Version: 2.4.41
 Release: alt1
 Epoch: 1
 
@@ -1514,6 +1514,9 @@ exit 0
 %ghost %apache2_sites_enabled/000-default_https-compat.conf
 
 %changelog
+* Wed Aug 14 2019 Anton Farygin <rider@altlinux.ru> 1:2.4.41-alt1
+- 2.4.41 
+
 * Tue Apr 02 2019 Anton Farygin <rider@altlinux.ru> 1:2.4.39-alt1
 - 2.4.39
 - fixes:
