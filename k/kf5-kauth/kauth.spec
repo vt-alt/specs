@@ -6,7 +6,7 @@
 %endif
 
 Name: kf5-%rname
-Version: 5.64.0
+Version: 5.65.0
 Release: alt1
 %K5init altplace
 
@@ -127,7 +127,7 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 %_K5inc/KAuth/
 %_K5link/lib*.so
 %_K5lib/cmake/KF5Auth
-%_K5archdata/mkspecs/modules/qt_KAuth.pri
+%_K5archdata/mkspecs/modules/qt_KAuth*.pri
 %_K5data/kauth/
 
 %files -n libkf5authcore
@@ -150,6 +150,9 @@ rm -rf %buildroot%_libdir/*/*/*/__*
 %endif
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
 - new version
 

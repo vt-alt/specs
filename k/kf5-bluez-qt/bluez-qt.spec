@@ -1,7 +1,7 @@
 %define rname bluez-qt
 
 Name: kf5-%rname
-Version: 5.64.0
+Version: 5.65.0
 Release: alt1
 %K5init altplace
 
@@ -70,6 +70,9 @@ KF5 library
 %_K5qml/org/kde/bluezqt/
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
 - new version
 

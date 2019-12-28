@@ -3,7 +3,7 @@
 %def_with streebog
 
 Name: kf5-%rname
-Version: 5.64.0
+Version: 5.65.0
 Release: alt1
 %K5init altplace
 
@@ -16,7 +16,7 @@ Source: %rname-%version.tar
 Source10: ru-kio5.po
 Patch1: alt-def-trash.patch
 Patch2: alt-kio-help-fallback-kde4.patch
-Patch3: alt-places-add-dirs.patch
+#
 Patch4: alt-streebog-support.patch
 
 # Automatically added by buildreq on Tue Feb 17 2015 (-bi)
@@ -97,10 +97,9 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %if_with streebog
-%patch4 -p2
+%patch4 -p2 -b .streebog
 %endif
 
 #msgcat --use-first po/ru/kio5.po %SOURCE10 > po/ru/kio5.po.tmp
@@ -167,6 +166,9 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
 - new version
 

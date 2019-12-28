@@ -1,7 +1,7 @@
 %define rname qqc2-desktop-style
 
 Name: kf5-%rname
-Version: 5.64.0
+Version: 5.65.0
 Release: alt1
 %K5init altplace
 
@@ -44,9 +44,12 @@ developing applications that use %name.
 %_K5plug/kf5/kirigami/*.so
 
 %files devel
-%_libdir/cmake/KF5QQC2DeskopStyle/
+%_libdir/cmake/KF5QQC2*Style/
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
 - new version
 

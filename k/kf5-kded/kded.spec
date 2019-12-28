@@ -1,7 +1,7 @@
 %define rname kded
 
 Name: kf5-%rname
-Version: 5.64.0
+Version: 5.65.0
 Release: alt1
 %K5init altplace
 
@@ -70,7 +70,7 @@ KF5 library
 %files
 %_bindir/kded5
 %_K5bin/kded5
-%_K5lib/libkdeinit5_*.so
+#%_K5lib/libkdeinit5_*.so
 %_K5xdgapp/*.desktop
 %_K5srvtyp/*.desktop
 #%_K5dbus_srv/*.service
@@ -88,6 +88,9 @@ KF5 library
 #%_K5lib/libKF5DED.so.*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Mon Nov 11 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt1
 - new version
 

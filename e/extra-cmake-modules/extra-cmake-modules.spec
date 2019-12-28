@@ -10,8 +10,8 @@ AutoProv: yes, nopython nopython3
 %add_python3_path %_datadir/ECM/find-modules
 
 Name: extra-cmake-modules
-Version: 5.64.0
-Release: alt2
+Version: 5.65.0
+Release: alt1
 
 Group: Development/Other
 Summary: Additional modules for CMake build system
@@ -79,6 +79,9 @@ sed -i 's|-Wl,--fatal-warnings||' kde-modules/KDECompilerSettings.cmake
 %endif
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
+- new version
+
 * Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 5.64.0-alt2
 - don't add -std=gnu90 compile flag
 
