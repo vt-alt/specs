@@ -1,7 +1,7 @@
 %define zabbix_user	zabbix
 %define zabbix_group	zabbix
 %define zabbix_home	/dev/null
-%define svnrev		880528396b
+%define svnrev		9377bec666
 
 %def_with pgsql
 %def_enable java
@@ -15,7 +15,7 @@
 %endif
 
 Name: zabbix
-Version: 4.0.14
+Version: 4.0.16
 Release: alt1
 Epoch: 1
 
@@ -638,6 +638,13 @@ fi
 %_includedir/%name
 
 %changelog
+* Fri Dec 20 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.16-alt1
+- 4.0.16
+
+* Wed Nov 27 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.15-alt1
+- 4.0.15
+- sources/zabbix.conf: update to comply Apache 2.4 syntax (thnx nickel@, ALT#37494)
+
 * Tue Oct 29 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.14-alt1
 - 4.0.14
 
