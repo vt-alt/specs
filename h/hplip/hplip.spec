@@ -14,7 +14,8 @@
 # note: flag dropped upstream
 %def_enable udevacl
 %def_disable halacl
-%def_with ernie
+%def_without ernie
+%def_without l10n
 %if_with backport
 %define cups_filters foomatic-filters
 %else
@@ -27,16 +28,16 @@
 %endif
 
 Name:    hplip
-Version: 3.19.11
+Version: 3.19.12
 Release: alt1
 Epoch:   1
 
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
 
 %if_without ernie
-License: GPLv2+ and MIT and BSD
+License: GPL-2.0+ and MIT and BSD-3-Clause
 %else
-License: GPLv2+ and MIT and BSD and IJG and Public Domain and GPLv2+ with exceptions and ISC
+License: GPL-2.0+ and MIT and BSD-3-Clause and IJG and ALT-Public-Domain and GPL-2.0+ with exceptions and ISCL
 %endif
 Group: Publishing
 #URL: http://hplip.sourceforge.net -- old
@@ -156,6 +157,9 @@ Patch9: hplip-3.18.6-alt-auth.patch
 Patch10: http://www.linuxprinting.org/download/printing/hpijs/hpijs-1.4.1-rss.1.patch
 # it is patch 10 rediffed
 Patch12: hplip-3.16.11-alt-fax-setup.patch
+Patch13: hplip-alt-fix-PPD-file-choose-in-qt5.patch
+# Localization files made for old qt3 forms
+Patch14: hplip-alt-use-l10n.patch
 
 # fedora patches
 Patch101: hplip-pstotiff-is-rubbish.patch
@@ -215,7 +219,6 @@ Patch201: hp-plugin-download-fix.patch
 # end ubuntu patches
 
 # debian patches
-Patch301: cope-with-ErnieFilter-absence.patch
 Patch302: 01_rss.patch
 Patch303: 14_charsign_fixes.patch
 Patch304: hp_photosmart_pro_b9100_support.patch
@@ -257,7 +260,7 @@ maintenance, along with python cups backends.
 
 %package hpcups
 Summary: Hpcups printer driver for Hewlett-Packard Co. Inkjet Printers and MFPs
-License: BSD
+License: BSD-3-Clause
 Group: Publishing
 Requires: %name-common = %{?epoch:%epoch:}%version-%release
 Conflicts: %name-common < 3.13
@@ -270,7 +273,7 @@ is based on re-purposed APDK code.
 %if_enabled python_code
 %package gui
 Summary: HPLIP graphical tools for Hewlett-Packard Co. Inkjet Printers and MFPs
-License: GPL
+License: GPL-2.0+
 Group: Publishing
 Obsoletes: xojpanel <= 0.91
 Obsoletes: hpoj-xojpanel <= 0.91
@@ -316,7 +319,7 @@ maintenance can be done.
 %if_enabled autostart
 %package gui-autostart
 Summary: GNOME/KDE/other XDGE autostart file for HPLIP graphical tools
-License: GPL
+License: GPL-2.0+
 Group: Publishing
 Requires: %name-gui = %{?epoch:%epoch:}%version-%release
 BuildArch: noarch
@@ -336,7 +339,7 @@ for GNOME, KDE and other freedesktop compatible desktop environments.
 
 %package recommends
 Summary: recommended packages for hplip
-License: GPL
+License: GPL-2.0+
 Group: Publishing
 Requires: %name = %{?epoch:%epoch:}%version-%release
 Requires: %name-hpcups = %{?epoch:%epoch:}%version-%release
@@ -357,7 +360,7 @@ recommended for use with hplip.
 
 %package common
 Summary: Hewlett-Packard Co. Inkjet Driver Project
-License: GPL
+License: GPL-2.0+
 Group: Publishing
 Conflicts: udev-extras < 0.20090516-alt4
 
@@ -458,7 +461,7 @@ This package contains postscript printer definition files (PPDs) for hpijs cups 
 
 %package hpijs
 Summary: Hewlett-Packard Co. Inkjet Driver Project (Deprecated)
-License: BSD
+License: BSD-3-Clause
 Group: Publishing
 Obsoletes: hpijs < 2.7
 Provides: %hpijsname = %version
@@ -482,7 +485,7 @@ Fixes or updates will not be provided.
 %if_enabled sane_backend
 %package sane
 Summary: SANE driver for scanners in HP's multi-function devices (from HPLIP)
-License: GPL
+License: GPL-2.0+
 Group: Publishing
 Requires: libsane
 Requires: %name-common = %{?epoch:%epoch:}%version-%release
@@ -580,7 +583,6 @@ sed -i.duplex-constraints \
 %patch201 -p1 -b .download-plugin
 
 # debian patches
-%patch301 -p1
 %patch302 -p1
 %patch303 -p1
 %patch304 -p1
@@ -617,6 +619,10 @@ tar -xf %SOURCE6
 #%patch10 -p1
 #popd
 %patch12 -p1
+%patch13 -p2
+%if_with l10n
+%patch14 -p2
+%endif
 
 egrep -lZr '#!/usr/bin/python$' . | xargs -r0 sed -i 's,#!/usr/bin/python$,#!/usr/bin/python%{pysuffix},'
 fgrep -lZr '#!/usr/bin/env python' . | xargs -r0 sed -i 's,#!/usr/bin/env python,#!/usr/bin/python%{pysuffix},'
@@ -1147,6 +1153,35 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.12-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP Color LaserJet Pro M155a
+  + HP Color LaserJet Pro M155nw
+  + HP Color LaserJet Pro M156a
+  + HP Color LaserJet Pro M156nw
+  + HP Color LaserJet Pro M255dn
+  + HP Color LaserJet Pro M255dw
+  + HP Color LaserJet Pro M255nw
+  + HP Color LaserJet Pro M256dn
+  + HP Color LaserJet Pro M256dw
+  + HP Color LaserJet Pro M256nw
+  + HP Color LaserJet Pro MFP M182n
+  + HP Color LaserJet Pro MFP M182nw
+  + HP Color LaserJet Pro MFP M183fw
+  + HP Color LaserJet Pro MFP M184n
+  + HP Color LaserJet Pro MFP M184nw
+  + HP Color LaserJet Pro MFP M185fw
+  + HP Color LaserJet Pro MFP M282nw
+  + HP Color LaserJet Pro MFP M283cdw
+  + HP Color LaserJet Pro MFP M283fdn
+  + HP Color LaserJet Pro MFP M283fdw
+  + HP Color LaserJet Pro MFP M284nw
+  + HP Color LaserJet Pro MFP M285cdw
+  + HP Color LaserJet Pro MFP M285fdn
+  + HP Color LaserJet Pro MFP M285fdw
+- Fix select PPD file in Qt5 GUI (ALT #37610).
+
 * Wed Nov 06 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.11-alt1
 - New version.
 - Added support for the following new Printers:
