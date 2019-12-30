@@ -1,6 +1,6 @@
 Summary: Simple scripts for encrypt and digest files with openssl and caja
 Name: mate-file-manager-actions-gost
-Version: 5
+Version: 5.1
 Release: alt1
 Group: Graphical desktop/MATE
 License: GPL-2.0-or-later
@@ -70,6 +70,9 @@ cp -a %SOURCE16 %buildroot%_datadir/file-manager/actions/
 %exclude %_iconsdir/gnome/48x48/status/dialog-information.png
 
 %changelog
+* Mon Dec 23 2019 Leontiy Volodin <lvol@altlinux.org> 5.1-alt1
+- Fixed incorrect interface behavior when canceling operation (ALT #37666, #37667).
+
 * Tue Dec 17 2019 Leontiy Volodin <lvol@altlinux.org> 5-alt1
 - Disabled output the password.
 - Added README file.
