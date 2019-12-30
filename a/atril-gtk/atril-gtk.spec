@@ -11,11 +11,11 @@
 %def_disable epub
 
 Name:           %_name-gtk
-Version:        1.22.2
+Version:        1.22.3
 Release:        alt1
 Summary:        Document viewer
 
-License:        GPLv2+ and GFDL
+License:        GPLv2+ and GFDL-1.1+
 Group:          Publishing
 URL:            https://github.com/mate-desktop/atril
 Source0:        %name-%version.tar
@@ -274,6 +274,9 @@ rm -f %buildroot%{_datadir}/icons/hicolor/icon-theme.cache
 %endif
 
 %changelog
+* Tue Dec 24 2019 Mikhail Efremov <sem@altlinux.org> 1.22.3-alt1
+- Updated to 1.22.3.
+
 * Fri Nov 08 2019 Mikhail Efremov <sem@altlinux.org> 1.22.2-alt1
 - Updated to 1.22.2.
 
