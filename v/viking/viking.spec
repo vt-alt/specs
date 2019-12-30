@@ -1,17 +1,20 @@
 Name:		viking
-Version:        1.6.0
-Release:	alt1
+Version:	1.7.0
+Release:	alt2
 
 Summary:	GPS data editor and analyzer
 
 Group:		Sciences/Geosciences
-License:	GPLv2
+License:	GPL-2.0-or-later
 URL:		http://sourceforge.net/projects/viking/
 Source0:	%{name}-%{version}.tar
 
 BuildRequires: libcurl-devel libexpat-devel libgps-devel perl-XML-Parser intltool zlib-devel
 BuildRequires: gnome-doc-utils libgtk+2-devel gtk-doc libgexiv2-devel bzlib-devel libmagic-devel
 BuildRequires: libsqlite3-devel
+BuildRequires: libgeoclue2-devel
+BuildRequires: liboauth-devel
+BuildRequires: libnettle-devel
 
 Packager: Anton V. Boyarshinov <boyarsh@altlinux.ru>
 
@@ -34,19 +37,38 @@ ln -s /usr/share/gnome-doc-utils/gnome-doc-utils.make
 %makeinstall
 find %buildroot/usr/share/gnome/help/viking/ -type l -delete
 
+#warning: Installed (but unpackaged) file(s) found:
+rm -f %buildroot/usr/share/icons/hicolor/icon-theme.cache
+
+#hack for fix https://bugzilla.altlinux.org/37674
+pushd po
+make install DESTDIR=%buildroot
+popd
+
 %find_lang %name
+
+%check
+make check
 
 %files -f %name.lang
 %doc AUTHORS ChangeLog COPYING NEWS README TODO doc/
-%{_bindir}/viking
-/usr/share/applications/viking.desktop
-/usr/share/icons/hicolor/48x48/apps/viking.png
-/usr/share/gnome/help/viking
-/usr/share/omf/viking
-/usr/share/viking/
-
+%_bindir/viking
+%_man1dir/*
+%_datadir/applications/viking.desktop
+%_iconsdir/hicolor/48x48/apps/viking.png
+%_datadir/gnome/help/viking
+%_datadir/omf/viking
+%_datadir/viking
 
 %changelog
+* Tue Dec 24 2019 Sergey Y. Afonin <asy@altlinux.org> 1.7.0-alt2
+- packed localization (ALT #37674)
+- updated %%License to SPDX syntax, changed to GPL-2.0-or-later
+- added %%check section
+
+* Thu Oct 17 2019 Anton Midyukov <antohami@altlinux.org> 1.7.0-alt1
+- 1.7.0
+
 * Mon Jun 01 2015 Anton V. Boyarshinov <boyarsh@altlinux.ru> 1.6.0-alt1
 - 1.6.0
 

@@ -15,9 +15,9 @@
 %endif
 
 Name: uhd
-Url: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
-Version: 3.13.0.2
-Release: alt5
+Url: https://github.com/EttusResearch/uhd
+Version: 3.14.1.1
+Release: alt1.1
 License: GPLv3+
 Group: Engineering
 Summary: Universal Hardware Driver for Ettus Research products
@@ -28,16 +28,15 @@ Source1: %name-limits.conf
 # Download command firmware:
 # uhd_images_downloader --types "(fpga|fw)_default" -i images
 Source2: images.tar
-Patch: uhd-3.13.0.2-alt-boost-compat.patch
 
+BuildRequires(pre): rpm-macros-cmake rpm-build-python3
 BuildRequires: ctest cmake
-BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
-BuildRequires: rpm-build-python
-BuildRequires: python-module-setuptools
-BuildRequires: python-module-Cheetah
-BuildRequires: python-module-docutils doxygen libpcap-devel
-BuildRequires: python-module-mako
+BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python3-devel boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
 BuildRequires: libnumpy-devel
+BuildRequires: python3-module-setuptools
+BuildRequires: python3-module-Cheetah
+BuildRequires: python3-module-docutils doxygen libpcap-devel
+BuildRequires: python3-module-mako
 Requires(pre): shadow-change shadow-check shadow-convert shadow-edit shadow-groups shadow-log shadow-submap shadow-utils
 Requires: tkinter
 
@@ -79,24 +78,24 @@ Requires: %name = %EVR
 %description tools
 Tools that are useful for working with and/or debugging USRP device.
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Group: Development/Python
-Summary: Python API for %name
+Summary: Python 3 API for %name
 Requires: %name = %EVR
 
-%description -n python-module-%name
-Python API for %name
+%description -n python3-module-%name
+Python 3 API for %name
 
 %prep
 %setup
-%patch -p1
-tar -xf %SOURCE2
+sed -i 's|/usr/bin/env python|%__python3|' host/python/setup.py.in
 
 %build
 pushd host
 %cmake %{?have_neon} \
         -DENABLE_GPSD=ON \
         -DENABLE_E300=ON \
+        -DENABLE_PYTHON3=ON \
         -DENABLE_PYTHON_API=ON
 %cmake_build
 popd
@@ -108,7 +107,7 @@ popd
 
 %check
 pushd host/BUILD
-make test
+%make_build test
 popd
 
 %install
@@ -135,11 +134,19 @@ mv %buildroot%_docdir/%name/{LICENSE,README.md} _tmpdoc
 install -m 644 -D %SOURCE1 %buildroot%_sysconfdir/security/limits.d/99-usrp.conf
 
 # firmware
-mkdir -p %buildroot%_datadir/uhd/images
-cp -r images/images/* %buildroot%_datadir/uhd/images
+tar -xf %SOURCE2 -C %buildroot%_datadir/uhd/
 
 # remove win stuff
 rm -rf %buildroot%_datadir/uhd/images/winusb_driver
+
+# convert hardlinks to symlinks (to not package the file twice)
+pushd %buildroot%_bindir
+for f in uhd_images_downloader usrp2_card_burner
+do
+  unlink $f
+  ln -s ../..%_libexecdir/uhd/${f}.py $f
+done
+popd
 
 # tools
 install -Dpm 0755 tools/usrp_x3xx_fpga_jtag_programmer.sh %buildroot%_bindir/usrp_x3xx_fpga_jtag_programmer.sh
@@ -177,10 +184,18 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %buildroot%_bindir/chdr_log
 %_bindir/usrp_x3xx_fpga_jtag_programmer.sh
 %_bindir/chdr_log
 
-%files -n python-module-%name
-%python_sitelibdir/%name/
+%files -n python3-module-%name
+%python3_sitelibdir/%name/
 
 %changelog
+* Sat Oct 19 2019 Anton Midyukov <antohami@altlinux.org> 3.14.1.1-alt1.1
+- fix shebang for setup.py
+
+* Thu Oct 17 2019 Anton Midyukov <antohami@altlinux.org> 3.14.1.1-alt1
+- New version 3.14.1.1
+- fix Url
+- switch to python 3 (thanks Aleksey Borisenkov)
+
 * Sat Sep 21 2019 Anton Midyukov <antohami@altlinux.org> 3.13.0.2-alt5
 - add BuildRequires: python-module-setuptools (Fix FTBFS)
 
