@@ -33,13 +33,14 @@
 %define gname  qt5
 Name: qt5-base
 %define major  5
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 %define libname  lib%gname
 
 Group: System/Libraries
 Summary: Qt%major - QtBase components
-License: LGPLv2 with exceptions / GPLv3 with exceptions
+License:  LGPL-2.1 with Qt-LGPL-exception-1.1 or LGPL-3.0-only
+
 Url: http://qt.io/
 
 Source: %qt_module-everywhere-src-%version.tar
@@ -500,6 +501,9 @@ make install INSTALL_ROOT=%buildroot
 sed -i "s|^\s*QMAKE_CFLAGS_OPTIMIZE\s*=.*$|QMAKE_CFLAGS_OPTIMIZE = -O2|" %buildroot%_qt5_archdatadir/mkspecs/common/gcc-base.conf
 sed -i "s|^\s*QMAKE_CFLAGS_OPTIMIZE_FULL\s*=.*$|QMAKE_CFLAGS_OPTIMIZE_FULL = -O3|" %buildroot%_qt5_archdatadir/mkspecs/common/gcc-base.conf
 
+# remove macos staff
+rm -rf %buildroot/%_qt5_archdatadir/mkspecs/features/uikit ||:
+
 # create/own dirs
 mkdir -p %buildroot/{%_qt5_archdatadir/mkspecs/modules,%_qt5_importdir,%_qt5_qmldir,%_qt5_libexecdir,%_qt5_translationdir,%_qt5_docdir,%_qt5_examplesdir}
 mkdir -p %buildroot/%_qt5_plugindir/{accessible,iconengines,script,styles}/
@@ -540,7 +544,7 @@ translationdir=%_qt5_translationdir
 
 Name: Qt%major
 Description: Qt%major Configuration
-Version: 5.12.5
+Version: 5.12.6
 __EOF__
 
 # rpm macros
@@ -803,6 +807,13 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
+* Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
+- fix python requires
+- fix license tag
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

@@ -7,11 +7,11 @@
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt14
+Release: alt15
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
-License: LGPLv2 / BSD
+License: LGPL-2.1-or-later and BSD-3-Clause
 Url: http://qt.io/
 Source: %qt_module-everywhere-src-%version.tar
 
@@ -198,6 +198,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Tue Dec 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt15
+- update from 5.212 branch
+
 * Thu Nov 14 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt14
 - depend on libqt5-core version
 

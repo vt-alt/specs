@@ -4,7 +4,7 @@
 #qml_add_req_skip HelperWidgets
 
 Name: qt5-quickcontrols2
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -53,6 +53,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-quickcontrols2
 %summary
 
@@ -60,6 +61,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-quicktemplates2
 %summary
 
@@ -130,6 +132,9 @@ Requires: %name-devel
 #%_qt5_libdatadir/libQt*.a
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

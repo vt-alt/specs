@@ -6,8 +6,8 @@
 %define kf5_bindir %prefix/lib/kf5/bin
 
 Name: qt5-tools
-Version: 5.12.5
-Release: alt2
+Version: 5.12.6
+Release: alt1
 %define major %{expand:%(X='%version'; echo ${X%%%%.*})}
 %define minor %{expand:%(X=%version; X=${X%%.*}; echo ${X#*.})}
 %define bugfix %{expand:%(X='%version'; echo ${X##*.})}
@@ -35,7 +35,7 @@ Patch10: alt-build-qtconfig.patch
 # Automatically added by buildreq on Tue Oct 01 2013 (-bi)
 # optimized out: elfutils libGL-devel libgst-plugins libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-v8 libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-xml libstdc++-devel pkg-config python-base python3 python3-base qt5-base-devel qt5-declarative-devel ruby ruby-stdlibs
 #BuildRequires: desktop-file-utils gcc-c++ glibc-devel-static python-module-distribute qt5-webkit-devel rpm-build-python3 rpm-build-ruby
-BuildRequires(pre): rpm-build-ubt
+BuildRequires(pre): rpm-build-ubt rpm-macros-qt5
 %ifnarch %e2k
 BuildRequires: clang-devel llvm-devel
 %endif
@@ -134,6 +134,7 @@ Requires: %name-common = %EVR
 Group: System/Libraries
 Summary: Qt5 library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-designer
 %summary
 
@@ -141,6 +142,7 @@ Requires: %name-common = %EVR
 Group: System/Libraries
 Summary: Qt5 library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-designercomponents
 %summary
 
@@ -148,6 +150,7 @@ Requires: %name-common = %EVR
 Group: System/Libraries
 Summary: Qt5 library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-help
 %summary
 
@@ -335,6 +338,9 @@ fi
 %_qt5_libdir/libQt5Help.so.*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Fri Oct 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
 - build docs
 

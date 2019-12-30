@@ -1,7 +1,8 @@
+%define qdoc_found %{expand:%%(if [ -e %_qt5_bindir/qdoc ]; then echo 1; else echo 0; fi)}
 %global qt_module qtnetworkauth
 
 Name: qt5-networkauth
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -11,6 +12,7 @@ License: GPLv3
 
 Source: %qt_module-everywhere-src-%version.tar
 
+BuildRequires(pre): rpm-macros-qt5 qt5-tools
 BuildRequires: gcc-c++ glibc-devel
 BuildRequires: qt5-base-devel qt5-tools
 
@@ -44,6 +46,7 @@ This package contains documentation for Qt5 %qt_module
 Group: System/Libraries
 Summary: Qt5 - library
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-networkauth
 %summary
 
@@ -53,11 +56,15 @@ Requires: %name-common = %EVR
 %build
 %qmake_qt5
 %make_build
+%if %qdoc_found
 %make docs
+%endif
 
 %install
 %install_qt5
+%if %qdoc_found
 %make INSTALL_ROOT=%buildroot install_docs ||:
+%endif
 
 %files common
 
@@ -77,10 +84,15 @@ Requires: %name-common = %EVR
 %_pkgconfigdir/Qt?NetworkAuth.pc
 
 %files doc
+%if %qdoc_found
 %_qt5_docdir/*
+%endif
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

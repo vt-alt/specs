@@ -5,7 +5,7 @@
 %def_enable pulse
 
 Name: qt5-multimedia
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -75,6 +75,7 @@ This package contains documentation for Qt5 %qt_module
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 # gstreamer plugins may be required for proper audio and video playback
 Requires: gst-plugins-base1.0 gst-plugins-good1.0 gst-plugins-bad1.0 gst-plugins-ugly1.0 gst-libav
 Provides: qt5-multimedia = %EVR
@@ -136,6 +137,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

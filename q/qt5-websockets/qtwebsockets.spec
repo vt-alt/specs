@@ -4,7 +4,7 @@
 %define qdoc_found %{expand:%%(if [ -e %_qt5_bindir/qdoc ]; then echo 1; else echo 0; fi)}
 
 Name: qt5-websockets
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -61,6 +61,7 @@ Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
 Requires: qt5-declarative-common
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-websockets
 %summary
 
@@ -110,6 +111,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

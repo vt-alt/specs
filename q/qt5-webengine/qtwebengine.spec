@@ -29,8 +29,8 @@
 %endif
 
 Name: qt5-webengine
-Version: 5.12.5
-Release: alt2
+Version: 5.12.6
+Release: alt1
 
 Group: System/Libraries
 Summary: Qt5 - QtWebEngine components
@@ -59,9 +59,6 @@ Patch102: alt-fix-shrank-by-one-character.patch
 Patch103: qtwebengine-everywhere-src-5.12.4-chromium-add-ppc64le-support.patch
 Patch104: qtwebengine-everywhere-src-5.12.4-add-ppc64le-support.patch
 Patch105: alt-openh264-x86-no-asm.patch
-Patch106: alt-ftbfs.patch
-# Gentoo
-Patch150: qtwebengine-5.12.5-pulseaudio-13.patch
 
 # Automatically added by buildreq on Sun Apr 03 2016
 # optimized out: fontconfig fontconfig-devel gcc-c++ glib2-devel kf5-attica-devel kf5-kjs-devel libEGL-devel libGL-devel libX11-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXi-devel libXrandr-devel libXrender-devel libXtst-devel libfreetype-devel libgpg-error libharfbuzz-devel libharfbuzz-icu libicu-devel libnspr-devel libqt5-clucene libqt5-core libqt5-gui libqt5-help libqt5-network libqt5-positioning libqt5-qml libqt5-quick libqt5-sql libqt5-webchannel libqt5-widgets libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-compiler python-modules-email python-modules-encodings python-modules-multiprocessing python-modules-xml python3 python3-base qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-phonon-devel qt5-tools qt5-webchannel-devel qt5-webkit-devel xorg-compositeproto-devel xorg-damageproto-devel xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-randrproto-devel xorg-recordproto-devel xorg-renderproto-devel xorg-scrnsaverproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
@@ -100,7 +97,7 @@ Common package for %name
 %package devel
 Group: Development/KDE and QT
 Summary: Development files for %name
-Requires: %name-common = %EVR
+Requires: %name-common
 Requires: qt5-base-devel
 %description devel
 %summary.
@@ -108,7 +105,7 @@ Requires: qt5-base-devel
 %package devel-static
 Group: Development/KDE and QT
 Summary: Development files for %name
-Requires: %name-common = %EVR
+Requires: %name-common
 Requires: %name-devel
 %description devel-static
 %summary.
@@ -116,14 +113,15 @@ Requires: %name-devel
 %package doc
 Summary: Document for developing apps which will use Qt5 %qt_module
 Group: Development/KDE and QT
-Requires: %name-common = %EVR
+Requires: %name-common
 %description doc
 This package contains documentation for Qt5 %qt_module
 
 %package -n libqt5-webengine
 Summary: Qt5 library
 Group: System/Libraries
-Requires: %name-common = %EVR
+Requires: %name-common
+Requires: libqt5-core = %_qt5_version
 Requires: qt5-quickcontrols2
 %description -n libqt5-webengine
 %summary
@@ -131,7 +129,8 @@ Requires: qt5-quickcontrols2
 %package -n libqt5-webenginecore
 Summary: Qt5 library
 Group: System/Libraries
-Requires: %name-common = %EVR
+Requires: %name-common
+Requires: libqt5-core = %_qt5_version
 Requires: qt5-quickcontrols2
 %description -n libqt5-webenginecore
 %summary
@@ -139,7 +138,8 @@ Requires: qt5-quickcontrols2
 %package -n libqt5-webenginewidgets
 Summary: Qt5 library
 Group: System/Libraries
-Requires: %name-common = %EVR
+Requires: %name-common
+Requires: libqt5-core = %_qt5_version
 Requires: qt5-quickcontrols2
 %description -n libqt5-webenginewidgets
 %summary
@@ -176,9 +176,6 @@ ln -s /usr/include/nspr src/3rdparty/chromium/nspr4
 %patch103 -p1
 %patch104 -p1
 %patch105 -p1
-%patch106 -p1
-#
-%patch150 -p1
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 #sed -i -e 's!gpu//!gpu/!g' \
@@ -365,6 +362,9 @@ done
 %_qt5_archdatadir/mkspecs/modules/qt_*.pri
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 21 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
 - build internal chromium with additional codecs
 

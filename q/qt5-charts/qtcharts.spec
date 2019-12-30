@@ -2,7 +2,7 @@
 %global qt_module qtcharts
 
 Name: qt5-charts
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -58,6 +58,7 @@ This package contains documentation for Qt5 %qt_module
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-charts
 %summary
 
@@ -103,6 +104,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

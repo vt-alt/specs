@@ -3,8 +3,8 @@
 %def_disable bootstrap
 
 Name: qt5-xmlpatterns
-Version: 5.12.5
-Release: alt2
+Version: 5.12.6
+Release: alt1
 
 Group: System/Libraries
 Summary: Qt5 - QtXmlPatterns component
@@ -13,7 +13,7 @@ License: LGPLv2 / GPLv3
 
 Source: %qt_module-everywhere-src-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
+BuildRequires(pre): rpm-build-ubt rpm-macros-qt5
 BuildRequires: gcc-c++ glibc-devel qt5-base-devel qt5-declarative-devel
 %if_disabled bootstrap
 BuildRequires: qt5-tools
@@ -58,6 +58,7 @@ This package contains documentation for Qt5 %qt_module
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-xmlpatterns
 %summary
 
@@ -103,6 +104,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Fri Oct 18 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt2
 - build docs
 

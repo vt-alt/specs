@@ -2,7 +2,7 @@
 %global qt_module qt3d
 
 Name: qt5-3d
-Version: 5.12.5
+Version: 5.12.6
 Release: alt1
 
 Group: System/Libraries
@@ -58,6 +58,7 @@ This package contains documentation for Qt5 %qt_module
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dcore
 %summary
 
@@ -65,6 +66,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dinput
 %summary
 
@@ -72,6 +74,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dlogic
 %summary
 
@@ -79,6 +82,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquick
 %summary
 
@@ -86,6 +90,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquickinput
 %summary
 
@@ -93,6 +98,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquickrender
 %summary
 
@@ -100,6 +106,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3drender
 %summary
 
@@ -107,6 +114,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dextras
 %summary
 
@@ -114,6 +122,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquickextras
 %summary
 
@@ -121,6 +130,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3danimation
 %summary
 
@@ -128,6 +138,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquickanimation
 %summary
 
@@ -135,6 +146,7 @@ Requires: %name-common = %EVR
 Summary: Qt5 library
 Group: System/Libraries
 Requires: %name-common = %EVR
+Requires: libqt5-core = %_qt5_version
 %description -n libqt5-3dquickscene2d
 %summary
 
@@ -211,6 +223,9 @@ export QT_HASH_SEED=0
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
+- new version
+
 * Mon Oct 07 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.5-alt1
 - new version
 

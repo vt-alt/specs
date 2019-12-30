@@ -15,7 +15,7 @@
 
 Name: rpcs3
 Version: 0.0.7.%git_ver
-Release: alt1
+Release: alt1.1
 
 Summary: PS3 emulator/debugger
 License: GPLv2
@@ -26,18 +26,18 @@ Packager: Nazarov Denis <nenderus@altlinux.org>
 
 ExclusiveArch: x86_64
 
-Source0: https://github.com/RPCS3/%name/archive/%git_commit/%name-%git_commit.tar.gz
-Source1: https://github.com/KhronosGroup/glslang/archive/%glslang_version/glslang-%glslang_version.tar.gz
-Source2: https://github.com/asmjit/asmjit/archive/%asmjit_commit/asmjit-%asmjit_commit.tar.gz
-Source3: https://github.com/zeux/pugixml/archive/%pugixml_commit/pugixml-%pugixml_commit.tar.gz
-Source4: https://github.com/RPCS3/hidapi/archive/%hidapi_commit/hidapi-%hidapi_commit.tar.gz
-Source5: https://github.com/RPCS3/libusb/archive/%libusb_commit/libusb-%libusb_commit.tar.gz
-Source6: https://github.com/jbeder/yaml-cpp/archive/%yaml_cpp_commit/yaml-cpp-%yaml_cpp_commit.tar.gz
-Source7: https://github.com/Cyan4973/xxHash/archive/v%xx_hash_version/xxHash-%xx_hash_version.tar.gz
-Source8: https://github.com/RPCS3/llvm/archive/%llvm_commit/llvm-%llvm_commit.tar.gz
-Source9: https://github.com/USCiLab/cereal/archive/v%cereal_version/cereal-%cereal_version.tar.gz
-Source10: https://github.com/FNA-XNA/FAudio/archive/%faudio_version/FAudio-%faudio_version.tar.gz
-Source11: https://github.com/tcbrindle/span/archive/%span_commit/span-%span_commit.tar.gz
+Source0: https://github.com/RPCS3/%name/archive/%git_commit/%name-%git_commit.tar
+Source1: https://github.com/KhronosGroup/glslang/archive/%glslang_version/glslang-%glslang_version.tar
+Source2: https://github.com/asmjit/asmjit/archive/%asmjit_commit/asmjit-%asmjit_commit.tar
+Source3: https://github.com/zeux/pugixml/archive/%pugixml_commit/pugixml-%pugixml_commit.tar
+Source4: https://github.com/RPCS3/hidapi/archive/%hidapi_commit/hidapi-%hidapi_commit.tar
+Source5: https://github.com/RPCS3/libusb/archive/%libusb_commit/libusb-%libusb_commit.tar
+Source6: https://github.com/jbeder/yaml-cpp/archive/%yaml_cpp_commit/yaml-cpp-%yaml_cpp_commit.tar
+Source7: https://github.com/Cyan4973/xxHash/archive/v%xx_hash_version/xxHash-%xx_hash_version.tar
+Source8: https://github.com/RPCS3/llvm/archive/%llvm_commit/llvm-%llvm_commit.tar
+Source9: https://github.com/USCiLab/cereal/archive/v%cereal_version/cereal-%cereal_version.tar
+Source10: https://github.com/FNA-XNA/FAudio/archive/%faudio_version/FAudio-%faudio_version.tar
+Source11: https://github.com/tcbrindle/span/archive/%span_commit/span-%span_commit.tar
 
 BuildRequires: cmake
 BuildRequires: cvs
@@ -58,7 +58,7 @@ BuildRequires: libwayland-cursor-devel
 BuildRequires: libwayland-egl-devel
 BuildRequires: libwayland-server-devel
 BuildRequires: libxml2-devel
-BuildRequires: python3-dev
+BuildRequires: rpm-build-python3 python3-devel python3-module-yaml python3-module-Pygments
 BuildRequires: qt5-declarative-devel
 BuildRequires: subversion
 
@@ -106,7 +106,9 @@ cmake .. \
 	-DCMAKE_SKIP_RPATH:BOOL=TRUE \
 	-DUSE_NATIVE_INSTRUCTIONS:BOOL=FALSE \
 	-DUSE_SYSTEM_FFMPEG:BOOL=TRUE \
-	-DUSE_SYSTEM_LIBPNG:BOOL=TRUE
+	-DUSE_SYSTEM_LIBPNG:BOOL=TRUE \
+	-DPYTHON_EXECUTABLE="%__python3" \
+	#
 popd
 
 %make_build -C %_target_platform
@@ -127,6 +129,10 @@ popd
 %_datadir/metainfo/%name.appdata.xml
 
 %changelog
+* Thu Dec 26 2019 Sergey V Turchin <zerg@altlinux.org> 0.0.7.9212-alt1.1
+- build with python3
+- don't gzip sources
+
 * Sat Dec 07 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.7.9212-alt1
 - Version 0.0.7-9212
 
