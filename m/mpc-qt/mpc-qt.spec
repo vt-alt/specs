@@ -1,15 +1,13 @@
 Name:     mpc-qt
-Version:  18.03
-Release:  alt2
+Version:  19.06
+Release:  alt1
 
 Summary:  A clone of Media Player Classic reimplemented in Qt.
 License:  GPL-2.0
 Group:    Video
-Url:      https://github.com/cmdrkotori/mpc-qt
+Url:      https://gitlab.com/mpc-qt/mpc-qt
 
 Source:   %name-%version.tar
-
-Patch1: %name-%version-upstream-qt5.11.patch
 
 BuildRequires: qt5-tools-devel
 BuildRequires: qt5-base-devel
@@ -24,10 +22,9 @@ interface and functionality of mpc-h.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
-%qmake_qt5 PREFIX=/usr
+%qmake_qt5 PREFIX=%prefix
 %make_build
 
 %install
@@ -41,8 +38,13 @@ interface and functionality of mpc-h.
 %_datadir/%name
 
 %changelog
+* Mon Dec 23 2019 Anton Midyukov <antohami@altlinux.org> 19.06-alt1
+- New snapshot
+- Update url
+- fix changelog typo
+
 * Tue Sep 25 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 18.03-alt2
 - NMU: fixed build with Qt-5.11.
 
 * Thu Jun 21 2018 Andrey Solodovnikov <hepoh@altlinux.org> 18.03-alt1
-Initial build for Sisyphus
+- Initial build for Sisyphus
