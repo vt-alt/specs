@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.17.4
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -394,6 +394,9 @@ done
 
 
 %changelog
+* Fri Dec 20 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt2
+- don't show empty brakets in menu search
+
 * Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt1
 - new version
 
