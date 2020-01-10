@@ -9,7 +9,7 @@
 
 Name: plasma5-addons
 Version: 5.17.4
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -19,6 +19,8 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Requires: %name-common = %version-%release
+# plasma.quickshare
+Requires: kf5-purpose
 # plasma.diskquota
 Requires: quota
 
@@ -156,6 +158,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Fri Dec 27 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt2
+- fix requires
+
 * Thu Dec 05 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt1
 - new version
 
