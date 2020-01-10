@@ -17,7 +17,7 @@
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.0.12
+Version: 3.0.13
 Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
@@ -50,7 +50,6 @@ Source21: %name.init
 Source22: %name.cyrus-conf
 
 Patch1: cyrus-imapd-3.0.11-setproctitle.c.patch
-Patch2: cyrus-imapd-3.0.11-logging-limit.patch
 
 PreReq: e2fsprogs /sbin/chkconfig /sbin/service cert-sh-functions
 Requires: su, tzdata
@@ -172,7 +171,6 @@ for IMAP server and SASL library
 echo %version > VERSION
 
 %patch1 -p1
-%patch2 -p1
 
 # hack to really enable pcre
 sed "s|pcreposix\.h|pcre/pcreposix.h|g" -i configure.ac
@@ -490,6 +488,9 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Wed Jan 01 2020 Sergey Y. Afonin <asy@altlinux.org> 3.0.13-alt1
+- 3.0.13 (fixes: CVE-2019-19783)
+
 * Sat Nov 16 2019 Sergey Y. Afonin <asy@altlinux.org> 3.0.12-alt1
 - 3.0.12 (fixes: CVE-2019-18928)
 - logging of reached limits (the patch from the
