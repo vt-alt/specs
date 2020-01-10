@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 0
-%define bugfix 1
+%define bugfix 2
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Fri Dec 27 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.2-alt1
+- fix browser-qt colors
+
 * Wed Dec 25 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.1-alt1
 - fix grub background
 
