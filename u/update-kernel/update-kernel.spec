@@ -1,5 +1,5 @@
 Name: update-kernel
-Version: 0.9.14
+Version: 0.9.17
 Release: alt1
 
 Summary: Update kernel and modules
@@ -42,6 +42,17 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Mon Dec 30 2019 Sergey Novikov <sotor@altlinux.org> 0.9.17-alt1
+- update-kernel: remove duplicates modules entries (Closes: #37690)
+
+* Fri Dec 20 2019 Oleg Solovyov <mcpain@altlinux.org> 0.9.16-alt1
+- NMU: do not call apt when there are no kernels to remove
+
+* Thu Dec 19 2019 Oleg Solovyov <mcpain@altlinux.org> 0.9.15-alt1
+- NMU: protect latest kernel from removing (Closes: #34314)
+- NMU: add "-a|--all" option to remove kernels with all flavours
+  (Closes: #34141)
+
 * Wed Jun 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.9.14-alt1
 - update-kernel: fixed in the presence of disttags in package IDs
   printed by APT (apt-cache pkgnames).
