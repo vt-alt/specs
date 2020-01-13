@@ -15,8 +15,8 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.3.0
-Release:        alt2
+Version:        68.4.1
+Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
@@ -387,6 +387,16 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Wed Jan 08 2020 Andrey Cherepanov <cas@altlinux.org> 68.4.1-alt1
+- New ESR version (68.4.1).
+- Fixed:
+  + CVE-2019-17015 Memory corruption in parent process during new content process initialization on Windows
+  + CVE-2019-17016 Bypass of @namespace CSS sanitization during pasting
+  + CVE-2019-17017 Type Confusion in XPCVariant.cpp
+  + CVE-2019-17021 Heap address disclosure in parent process during content process initialization on Windows
+  + CVE-2019-17022 CSS sanitization does not escape HTML tags
+  + CVE-2019-17024 Memory safety bugs fixed in Firefox 72 and Firefox ESR 68.4
+
 * Fri Dec 06 2019 Andrey Cherepanov <cas@altlinux.org> 68.3.0-alt2
 - Fix last changelog according to https://www.altlinux.org/Vulnerability_Policy.
 
