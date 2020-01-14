@@ -4,25 +4,24 @@
 %def_enable ssl
 
 Name: spamassassin
-Version: 3.4.2
+Version: 3.4.3
 Release: alt1
 
 Summary: Spam filter for email written in perl
-License: Apache License v2.0
+License: Apache-2.0
 Group: Networking/Mail
 
 URL: http://www.spamassassin.org/
-Source0: http://www.cpan.org/authors/id/K/KM/KMCGRAIL/SpamAssassin/Mail-SpamAssassin-%{version}.tar.gz
+Source0: http://www.cpan.org/authors/id/K/KM/KMCGRAIL/SpamAssassin/Mail-SpamAssassin-%{version}.tar.bz2
 Source1: spamd.init
 Source2: spamassassin_local.cf
 Source3: spamd.sysconfig
 
 # from Debian:
-Patch10: spamassassin-3.4.2-debian-change_config_paths.patch
-Patch11: spamassassin-3.4.0-sa-check_spamd-man.patch
-Patch12: spamassassin-3.4.2-debian-55_disable_nagios_epm.patch
-Patch13: spamassassin-3.4.2-debian-90_pod_cleanup.patch
-Patch14: spamassassin-3.4.2-debian-bug_766718-net-dns-vers.patch
+Patch10: spamassassin-deb-10_change_config_paths.patch
+Patch11: spamassassin-deb-20_edit_spamc_pod.patch
+Patch12: spamassassin-deb-55_disable_nagios_epm.patch
+Patch13: spamassassin-deb-90_pod_cleanup.patch
 
 %def_without test
 # normal method nukes on errors :(
@@ -40,6 +39,8 @@ BuildRequires: perl-Parse-Syslog
 # Optimized out, but let them be on list (to reassure they will not drop out in future)
 BuildRequires: perl-Net-DNS
 BuildRequires: perl-HTML-Parser
+
+BuildRequires: perl-BSD-Resource perl-TermReadKey
 
 Requires: perl-%pname = %version-%release
 
@@ -142,10 +143,9 @@ subpackages versions with.
 %prep
 %setup -q -n Mail-SpamAssassin-%{version}
 %patch10 -p1
-%patch11 -p0
+%patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
 
 %build
 cp -f spamc/spamc.pod spamc/spamc
@@ -242,7 +242,6 @@ sed "s/^[0-9]\+ \+[0-9]\+/$RNDM1 $RNDM2/" -i %_sysconfdir/cron.d/sa-update >/dev
 %_bindir/spamd
 %_bindir/sa-check_spamd
 %_man1dir/spamd*
-%_man1dir/sa-check_spamd*
 %attr(700,spamd,spamd) %_localstatedir/spamd/
 #attr(3770,root,spamd) /var/run/spamd/
 
@@ -262,6 +261,10 @@ sed "s/^[0-9]\+ \+[0-9]\+/$RNDM1 $RNDM2/" -i %_sysconfdir/cron.d/sa-update >/dev
 #%_man3dir/*
 
 %changelog
+* Fri Jan 03 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.3-alt1
+- 3.4.3 (fixes: CVE-2018-11805, CVE-2019-12420)
+- updated %%License to SPDX syntax
+
 * Mon Dec 31 2018 Igor Vlasenko <viy@altlinux.ru> 3.4.2-alt1
 - NMU: 3.4.2
 
