@@ -18,7 +18,7 @@
 %endif
 
 Name: nvidia_glx_src
-Version: 440.36
+Version: 440.44
 Release: alt1
 
 Source0: null
@@ -97,6 +97,20 @@ Provides: libnvidia-fatbinaryloader = %version-%release
 %description -n libnvidia-fatbinaryloader
 nvidia library
 
+%package -n libnvcuvid
+Group: System/Libraries
+Summary: nvidia library
+Provides: libnvidia-fatbinaryloader = %version-%release
+%description -n libnvcuvid
+nvidia library
+
+%package -n libnvidia-encode
+Group: System/Libraries
+Summary: nvidia library
+Provides: libnvidia-fatbinaryloader = %version-%release
+%description -n libnvidia-encode
+nvidia library
+
 %prep
 %setup -T -c -n %tbname-%version%dirsuffix
 rm -rf %_builddir/%tbname-%version%dirsuffix
@@ -119,6 +133,8 @@ install -m 0644 %subd/libnvidia-opencl.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-compiler.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-ptxjitcompiler.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-ml.so.%version %buildroot/%_libdir/
+install -m 0644 %subd/libnvcuvid.so.%version %buildroot/%_libdir/
+install -m 0644 %subd/libnvidia-encode.so.%version %buildroot/%_libdir/
 mkdir -p %buildroot/%_sysconfdir/OpenCL/vendors/
 install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 
@@ -147,7 +163,19 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_libdir/libnvidia-opencl.so.%version
 %_sysconfdir/OpenCL/vendors/nvidia.icd
 
+%files -n libnvcuvid
+%_libdir/libnvcuvid.so.%{nvidia_opencl_sover}
+%_libdir/libnvcuvid.so.%version
+
+%files -n libnvidia-encode
+%_libdir/libnvidia-encode.so.%{nvidia_opencl_sover}
+%_libdir/libnvidia-encode.so.%version
+
 %changelog
+* Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 440.44-alt1
+- new version
+- package libnvidia-encode, libnvcuvid
+
 * Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 440.36-alt1
 - new version
 
