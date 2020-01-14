@@ -1,5 +1,5 @@
 %define module_name	wireguard
-%define module_version	0.0.20191212
+%define module_version	0.0.20191219
 %define module_release	alt1
 
 %define flavour		un-def
@@ -62,6 +62,9 @@ install wireguard.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Mon Dec 23 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191219-alt1
+- New version 0.0.20191219
 
 * Thu Dec 12 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191212-alt1
 - New version 0.0.20191212
