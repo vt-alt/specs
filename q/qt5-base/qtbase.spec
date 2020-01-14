@@ -34,7 +34,7 @@
 Name: qt5-base
 %define major  5
 Version: 5.12.6
-Release: alt1
+Release: alt2
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -80,10 +80,10 @@ Patch1009: alt-false-detect-groupswitchmodifier.patch
 BuildRequires(pre): rpm-build-ubt
 BuildRequires(pre): libharfbuzz-devel
 BuildRequires: gcc-c++ libcups-devel libdbus-devel libicu-devel libjpeg-devel libpng-devel
-BuildRequires: libproxy-devel libssl-devel
+BuildRequires: libproxy-devel libssl-devel liblksctp-devel
 BuildRequires: libpcre2-devel libudev-devel libEGL-devel libdrm-devel libgbm-devel zlib-devel libgtk+3-devel
 BuildRequires: libmtdev-devel libinput-devel libts-devel
-BuildRequires: pkgconfig(gl) pkgconfig(glesv2) pkgconfig(egl)
+BuildRequires: pkgconfig(gl) pkgconfig(glesv2) pkgconfig(egl) pkgconfig(vulkan)
 BuildRequires: libSM-devel libICE-devel
 BuildRequires: libX11-devel libXi-devel libxkbcommon-devel libxkbcommon-x11-devel
 BuildRequires: libxcb-render-util-devel libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-keysyms-devel
@@ -449,6 +449,7 @@ export QT_PLUGIN_PATH=$QT_DIR/plugins
 %endif
     -openssl-linked \
     -libproxy \
+    -sctp \
     -make examples \
     -no-compile-examples \
     -nomake tests \
@@ -807,6 +808,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Fri Dec 20 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt2
+- build with vulkan, sctp
+
 * Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
 - new version
 
