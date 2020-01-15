@@ -18,7 +18,7 @@
 
 
 Name: dpdk
-Version: 18.11.1
+Version: 18.11.5
 Release: alt1
 Url: http://dpdk.org
 Packager: Lenar Shakirov <snejok@altlinux.ru>
@@ -163,8 +163,11 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 # disablers in makefiles. Strip expclit -march= from optflags since they
 # will only guarantee build failures, DPDK is picky with that.
 export EXTRA_CFLAGS="$(echo %optflags | sed -e 's:-Wall::g' -e 's:-march=[[:alnum:]]* ::g') -Wformat -fPIC -I/etc/sysconfig/kernel/include"
+%ifarch x86_64 i686
+export EXTRA_CFLAGS="$EXTRA_CFLAGS -fcf-protection=full"
+%endif
 
-make V=1 O=%target T=%target %{?_smp_mflags} config
+%make_build V=1 O=%target T=%target config
 
 setconf CONFIG_RTE_MACHINE '"%machine"'
 # Disable experimental features
@@ -204,13 +207,13 @@ setconf CONFIG_RTE_LIBRTE_MLX4_PMD y
 setconf CONFIG_RTE_LIBRTE_MLX5_PMD y
 %endif
 
-make V=1 O=%target %{?_smp_mflags}
+%make_build V=1 O=%target
 %if_with doc
-make V=1 O=%target %{?_smp_mflags} doc-api-html doc-guides-html %{?with_pdfdoc: guides-pdf}
+%make_build V=1 O=%target doc-api-html doc-guides-html %{?with_pdfdoc: guides-pdf}
 %endif
 
 %if_with examples
-make V=1 O=%target/examples T=%target %{?_smp_mflags} examples
+%make_build V=1 O=%target/examples T=%target examples
 %endif
 
 %install
@@ -224,8 +227,11 @@ rm -rf %buildroot%sdkdir/usertools
 rm -rf %buildroot%_sbindir/dpdk_nic_bind
 rm -f %buildroot%_bindir/dpdk-test-crypto-perf
 rm -f %buildroot%_bindir/testbbdev
+%else
+mv %buildroot%_bindir/testbbdev %buildroot%_bindir/dpdk-test-bbdev
 %endif
 rm -f %buildroot%sdkdir/usertools/setup.sh
+rm -f %buildroot%sdkdir/usertools/meson.build
 
 %if_with examples
 find %target/examples/ -name "*.map" | xargs rm -f
@@ -241,7 +247,7 @@ find %buildroot%sdkdir/ -name "*.py" -exec \
 
 # Create a driver directory with symlinks to all pmds
 mkdir -p %buildroot/%pmddir
-for f in %buildroot/%_libdir/*_pmd_*.so; do
+for f in %buildroot/%_libdir/*_pmd_*.so.*; do
     bn=$(basename ${f})
     ln -s ../${bn} %buildroot%pmddir/${bn}
 done
@@ -257,7 +263,7 @@ fi
 EOF
 
 cat << EOF > %buildroot/%_sysconfdir/profile.d/dpdk-sdk-%_arch.csh
-if ( ! \$?RTE_SDK ) then
+if (! -d \$?RTE_SDK ) then
     setenv RTE_SDK "%sdkdir"
     setenv RTE_TARGET "%target"
     setenv RTE_INCLUDE "%incdir"
@@ -265,7 +271,7 @@ endif
 EOF
 
 # Fixup target machine mismatch
-%__subst 's:-%machine_tmpl-:-%machine-:g' %buildroot/%_sysconfdir/profile.d/dpdk-sdk*
+sed -i -e 's:-%machine_tmpl-:-%machine-:g' %buildroot/%_sysconfdir/profile.d/dpdk-sdk*
 
 %files
 # BSD
@@ -304,8 +310,8 @@ EOF
 %sdkdir/usertools/
 %_sbindir/dpdk-devbind
 %_bindir/dpdk-pdump
-%_bindir/testbbdev
 %_bindir/dpdk-pmdinfo
+%_bindir/dpdk-test-bbdev
 %_bindir/dpdk-test-crypto-perf
 %endif
 
@@ -316,6 +322,14 @@ EOF
 %endif
 
 %changelog
+* Fri Dec 27 2019 Alexey Shabalin <shaba@altlinux.org> 18.11.5-alt1
+- Update to LTS release 18.11.5
+- Rename testbbdev to dpdk-test-bbdev
+- Fixed broken symlinks in %%pmddir
+
+* Fri Nov 01 2019 Alexey Shabalin <shaba@altlinux.org> 18.11.3-alt1
+- Update to latest LTS release 18.11.3
+
 * Wed Jun 05 2019 Alexey Shabalin <shaba@altlinux.org> 18.11.1-alt1
 - Update to latest LTS release 18.11.1
 - switch to use python3
