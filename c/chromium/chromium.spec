@@ -16,6 +16,8 @@
 
 %set_verify_elf_method rpath=relaxed textrel=relaxed lfs=relaxed lint=relaxed
 
+%define _unpackaged_files_terminate_build 1
+
 # Leave this alone, please.
 %global target out/Release
 
@@ -27,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        76.0.3809.87
+Version:        79.0.3945.79
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -57,24 +59,30 @@ Patch001: 0001-OPENSUSE-enables-reading-of-the-master-preference.patch
 Patch002: 0002-OPENSUSE-Compile-the-sandbox-with-fPIE-settings.patch
 Patch003: 0003-ALT-Set-appropriate-desktop-file-name-for-default-br.patch
 Patch004: 0004-DEBIAN-manpage-fixes.patch
-Patch005: 0005-DEBIAN-change-icon.patch
-Patch006: 0006-ALT-gcc6-fixes.patch
-Patch007: 0007-DEBIAN-disable-third-party-cookies-by-default.patch
-Patch008: 0008-DEBIAN-add-ps-printing-capability-gtk2.patch
-Patch009: 0009-ALT-fix-shrank-by-one-character.patch
-Patch010: 0010-DEBIAN-10-seconds-may-not-be-enough-so-do-not-kill-t.patch
-Patch011: 0011-FEDORA-path-max.patch
-Patch012: 0012-FEDORA-Ignore-broken-nacl-open-fd-counter.patch
-Patch013: 0013-ALT-Fix-last-commit-position-issue.patch
-Patch014: 0014-FEDORA-Fix-issue-where-timespec-is-not-defined-when-.patch
-Patch015: 0015-ALT-Use-rpath-link-and-absolute-rpath.patch
-Patch016: 0016-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
-Patch017: 0017-FEDORA-Fix-gcc-round.patch
-Patch018: 0018-FEDORA-Fix-memcpy.patch
-Patch019: 0019-ALT-openh264-always-pic-on-x86.patch
-Patch020: 0020-ALT-allow-to-override-clang-through-env-variables.patch
-Patch021: 0021-ALT-Hack-to-avoid-build-error-with-clang7.patch
-Patch022: 0022-ALT-Add-missing-header-on-aarch64.patch
+Patch005: 0005-ALT-gcc6-fixes.patch
+Patch006: 0006-DEBIAN-disable-third-party-cookies-by-default.patch
+Patch007: 0007-DEBIAN-add-ps-printing-capability-gtk2.patch
+Patch008: 0008-ALT-fix-shrank-by-one-character.patch
+Patch009: 0009-DEBIAN-10-seconds-may-not-be-enough-so-do-not-kill-t.patch
+Patch010: 0010-FEDORA-path-max.patch
+Patch011: 0011-FEDORA-Ignore-broken-nacl-open-fd-counter.patch
+Patch012: 0012-ALT-Fix-last-commit-position-issue.patch
+Patch013: 0013-FEDORA-Fix-issue-where-timespec-is-not-defined-when-.patch
+Patch014: 0014-ALT-Use-rpath-link-and-absolute-rpath.patch
+Patch015: 0015-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
+Patch016: 0016-FEDORA-Fix-gcc-round.patch
+Patch017: 0017-FEDORA-Fix-memcpy.patch
+Patch018: 0018-ALT-openh264-always-pic-on-x86.patch
+Patch019: 0019-ALT-allow-to-override-clang-through-env-variables.patch
+Patch020: 0020-ALT-Hack-to-avoid-build-error-with-clang7.patch
+Patch021: 0021-ALT-Add-missing-header-on-aarch64.patch
+Patch022: 0022-GENTOO-Clang-allows-detection-of-these-builtins.patch
+Patch023: 0023-GCC-use-brace-initializer-for-DohUpgrade-vector.patch
+Patch024: 0024-FEDORA-vtable-symbol-undefined.patch
+Patch025: 0025-FEDORA-remove-noexcept.patch
+Patch026: 0026-IWYU-include-algorithm-to-use-std-lower_bound-in-ui-.patch
+Patch027: 0027-IWYU-launch_manager.h-uses-std-vector.patch
+Patch028: 0028-IWYU-include-cstdint-in-register_context.h-as-it-use.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -220,6 +228,12 @@ tar -xf %SOURCE1
 %patch020 -p1
 %patch021 -p1
 %patch022 -p1
+%patch023 -p1
+%patch024 -p1
+%patch025 -p1
+%patch026 -p1
+%patch027 -p1
+%patch028 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -306,7 +320,6 @@ gn_arg closure_compile=false
 # Remove debug
 gn_arg is_debug=false
 gn_arg symbol_level=0
-gn_arg remove_webcore_debug_symbols=true
 
 gn_arg enable_nacl=%{is_enabled nacl}
 gn_arg is_component_ffmpeg=%{is_enabled shared_libraries}
@@ -363,7 +376,8 @@ ninja \
 	-C %target \
 	chrome \
 	chrome_sandbox \
-	chromedriver
+	chromedriver \
+	policy_templates
 
 %install
 mkdir -p -- \
@@ -374,6 +388,10 @@ mkdir -p -- \
 #
 install -m 755 %SOURCE100 %buildroot%_libdir/%name/%name-generic
 install -m 644 %SOURCE200 %buildroot%_sysconfdir/%name/default
+
+# add directories for policy management
+mkdir -p %buildroot%_sysconfdir/%name/policies/managed
+mkdir -p %buildroot%_sysconfdir/%name/policies/recommended
 
 # compatibility symlink
 ln -s %name %buildroot/%_bindir/chromium-browser
@@ -412,7 +430,7 @@ cp -at %buildroot%_libdir/%name -- \
 popd
 
 # Icons
-for size in 22 24 48 64 128 256; do
+for size in 24 48 64 128 256; do
 	install -Dm644 "chrome/app/theme/chromium/product_logo_$size.png" \
 		"%buildroot/%_iconsdir/hicolor/${size}x${size}/apps/%name.png"
 done
@@ -463,6 +481,9 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %dir %_datadir/gnome-control-center
 %dir %_datadir/gnome-control-center/default-apps
 %dir %_sysconfdir/%name
+%dir %_sysconfdir/%name/policies
+%dir %_sysconfdir/%name/policies/managed
+%dir %_sysconfdir/%name/policies/recommended
 %config %_sysconfdir/%name/*
 %attr(4711,root,root) %_libdir/%name/chrome-sandbox
 %_libdir/%name
@@ -485,6 +506,141 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Mon Dec 16 2019 Alexey Gladkov <legion@altlinux.ru> 79.0.3945.79-alt1
+- New version (79.0.3945.79).
+- Security fixes:
+  - CVE-2019-13725: Use after free in Bluetooth.
+  - CVE-2019-13726: Heap buffer overflow in password manager.
+  - CVE-2019-13727: Insufficient policy enforcement in WebSockets.
+  - CVE-2019-13728: Out of bounds write in V8.
+  - CVE-2019-13729: Use after free in WebSockets.
+  - CVE-2019-13730: Type Confusion in V8.
+  - CVE-2019-13732: Use after free in WebAudio.
+  - CVE-2019-13734: Out of bounds write in SQLite.
+  - CVE-2019-13735: Out of bounds write in V8.
+  - CVE-2019-13736: Integer overflow in PDFium.
+  - CVE-2019-13737: Insufficient policy enforcement in autocomplete.
+  - CVE-2019-13738: Insufficient policy enforcement in navigation.
+  - CVE-2019-13739: Incorrect security UI in Omnibox.
+  - CVE-2019-13740: Incorrect security UI in sharing.
+  - CVE-2019-13741: Insufficient validation of untrusted input in Blink.
+  - CVE-2019-13742: Incorrect security UI in Omnibox.
+  - CVE-2019-13743: Incorrect security UI in external protocol handling.
+  - CVE-2019-13744: Insufficient policy enforcement in cookies.
+  - CVE-2019-13745: Insufficient policy enforcement in audio.
+  - CVE-2019-13746: Insufficient policy enforcement in Omnibox.
+  - CVE-2019-13747: Uninitialized Use in rendering.
+  - CVE-2019-13748: Insufficient policy enforcement in developer tools.
+  - CVE-2019-13749: Incorrect security UI in Omnibox.
+  - CVE-2019-13750: Insufficient data validation in SQLite.
+  - CVE-2019-13751: Uninitialized Use in SQLite.
+  - CVE-2019-13752: Out of bounds read in SQLite.
+  - CVE-2019-13753: Out of bounds read in SQLite.
+  - CVE-2019-13754: Insufficient policy enforcement in extensions.
+  - CVE-2019-13755: Insufficient policy enforcement in extensions.
+  - CVE-2019-13756: Incorrect security UI in printing.
+  - CVE-2019-13757: Incorrect security UI in Omnibox.
+  - CVE-2019-13758: Insufficient policy enforcement in navigation.
+  - CVE-2019-13759: Incorrect security UI in interstitials.
+  - CVE-2019-13761: Incorrect security UI in Omnibox.
+  - CVE-2019-13762: Insufficient policy enforcement in downloads.
+  - CVE-2019-13763: Insufficient policy enforcement in payments.
+  - CVE-2019-13764: Type Confusion in V8.
+
+* Mon Dec 02 2019 Alexey Gladkov <legion@altlinux.ru> 78.0.3904.108-alt1
+- New version (78.0.3904.108).
+- Security fixes:
+  - CVE-2019-13723: Use-after-free in Bluetooth.
+  - CVE-2019-13724: Out-of-bounds access in Bluetooth.
+
+* Sat Nov 09 2019 Alexey Gladkov <legion@altlinux.ru> 78.0.3904.97-alt1
+- New version (78.0.3904.97).
+- Security fixes:
+  - CVE-2019-13720: Use-after-free in audio.
+  - CVE-2019-13721: Use-after-free in PDFium.
+
+* Thu Oct 24 2019 Alexey Gladkov <legion@altlinux.ru> 78.0.3904.70-alt1
+- New version (78.0.3904.70).
+- Security fixes:
+  - CVE-2019-13699: Use-after-free in media.
+  - CVE-2019-13700: Buffer overrun in Blink.
+  - CVE-2019-13701: URL spoof in navigation.
+  - CVE-2019-13702: Privilege elevation in Installer.
+  - CVE-2019-13703: URL bar spoofing.
+  - CVE-2019-13704: CSP bypass.
+  - CVE-2019-13705: Extension permission bypass.
+  - CVE-2019-13706: Out-of-bounds read in PDFium.
+  - CVE-2019-13707: File storage disclosure.
+  - CVE-2019-13708: HTTP authentication spoof.
+  - CVE-2019-13709: File download protection bypass.
+  - CVE-2019-13710: File download protection bypass.
+  - CVE-2019-13711: Cross-context information leak.
+  - CVE-2019-13713: Cross-origin data leak.
+  - CVE-2019-13714: CSS injection.
+  - CVE-2019-13715: Address bar spoofing.
+  - CVE-2019-13716: Service worker state error.
+  - CVE-2019-13717: Notification obscured.
+  - CVE-2019-13718: IDN spoof.
+  - CVE-2019-13719: Notification obscured.
+  - CVE-2019-15903: Buffer overflow in expat.
+
+* Mon Oct 21 2019 Alexey Gladkov <legion@altlinux.ru> 77.0.3865.120-alt1
+- New version (77.0.3865.120).
+- Security fixes:
+  - CVE-2019-13693: Use-after-free in IndexedDB.
+  - CVE-2019-13694: Use-after-free in WebRTC.
+  - CVE-2019-13695: Use-after-free in audio.
+  - CVE-2019-13696: Use-after-free in V8.
+  - CVE-2019-13697: Cross-origin size leak.
+
+* Wed Sep 25 2019 Alexey Gladkov <legion@altlinux.ru> 77.0.3865.90-alt1
+- New version (77.0.3865.90).
+- Security fixes:
+  - CVE-2019-13685: Use-after-free in UI.
+  - CVE-2019-13686: Use-after-free in offline pages.
+  - CVE-2019-13687: Use-after-free in media.
+  - CVE-2019-13688: Use-after-free in media.
+
+* Mon Sep 23 2019 Alexey Gladkov <legion@altlinux.ru> 77.0.3865.75-alt1
+- New version (77.0.3865.75).
+- Security fixes:
+  - CVE-2019-13659: URL spoof.
+  - CVE-2019-13660: Full screen notification overlap.
+  - CVE-2019-13661: Full screen notification spoof.
+  - CVE-2019-13662: CSP bypass.
+  - CVE-2019-13663: IDN spoof.
+  - CVE-2019-13664: CSRF bypass.
+  - CVE-2019-13665: Multiple file download protection bypass.
+  - CVE-2019-13666: Side channel using storage size estimate.
+  - CVE-2019-13667: URI bar spoof when using external app URIs.
+  - CVE-2019-13668: Global window leak via console.
+  - CVE-2019-13669: HTTP authentication spoof.
+  - CVE-2019-13670: V8 memory corruption in regex.
+  - CVE-2019-13671: Dialog box fails to show origin.
+  - CVE-2019-13673: Cross-origin information leak using devtools.
+  - CVE-2019-13674: IDN spoofing.
+  - CVE-2019-13675: Extensions can be disabled by trailing slash.
+  - CVE-2019-13676: Google URI shown for certificate warning.
+  - CVE-2019-13677: Chrome web store origin needs to be isolated.
+  - CVE-2019-13678: Download dialog spoofing.
+  - CVE-2019-13679: User gesture needed for printing.
+  - CVE-2019-13680: IP address spoofing to servers.
+  - CVE-2019-13681: Bypass on download restrictions.
+  - CVE-2019-13682: Site isolation bypass.
+  - CVE-2019-13683: Exceptions leaked by devtools.
+  - CVE-2019-5870: Use-after-free in media.
+  - CVE-2019-5871: Heap overflow in Skia.
+  - CVE-2019-5872: Use-after-free in Mojo.
+  - CVE-2019-5873: URL bar spoofing on iOS.
+  - CVE-2019-5874: External URIs may trigger other browsers.
+  - CVE-2019-5875: URL bar spoof via download redirect.
+  - CVE-2019-5876: Use-after-free in media.
+  - CVE-2019-5877: Out-of-bounds access in V8.
+  - CVE-2019-5878: Use-after-free in V8.
+  - CVE-2019-5879: Extensions can read some local files.
+  - CVE-2019-5880: SameSite cookie bypass.
+  - CVE-2019-5881: Arbitrary read in SwiftShader.
+
 * Fri Aug 02 2019 Alexey Gladkov <legion@altlinux.ru> 76.0.3809.87-alt1
 - New version (76.0.3809.87).
 - Security fixes:
