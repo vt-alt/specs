@@ -2,7 +2,7 @@
 
 Name: kf5-%rname
 Version: 5.65.0
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -11,7 +11,7 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
-Patch1: alt-dont-close-pty.patch
+Patch1: alt-fix-su-to-different-non-root-user.patch
 Patch2: alt-export-vars.patch
 
 # Automatically added by buildreq on Fri Feb 13 2015 (-bi)
@@ -55,7 +55,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
+%patch1 -p2
 %patch2 -p1
 
 %build
@@ -84,6 +84,9 @@ KF5 library
 %_K5lib/libKF5Su.so.*
 
 %changelog
+* Thu Jan 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.65.0-alt2
+- Fixed issue preventing using kdesu to switch to different non-root user.
+
 * Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
 - new version
 
