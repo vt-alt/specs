@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.04.1
+Version: 19.08.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -8,7 +8,6 @@ Summary: Set of KDE 5 applications
 License: Public Domain
 
 BuildArch: noarch
-BuildRequires(pre): rpm-build-ubt
 
 %description
 %summary
@@ -86,7 +85,7 @@ Requires: plasma5-user-manager kde5-ksystemlog
 Requires: kde5-konversation kde5-kate
 Requires: kde5-pim kde5-pim-addons kde5-kcron kde5-kruler kde5-ffmpegthumbs
 Requires: kde5-krfb
-Requires: kde5-kdf kde5-kfloppy
+Requires: kde5-kdf
 Requires: kid3-ui-kde5
 Requires: kde5-kipi-plugins-core
 %description -n kde5-big
@@ -103,6 +102,7 @@ Requires: kde5-printing
 Requires: kde5-scanning
 #
 Requires: kde5-konqueror kde5-keditbookmarks
+Requires: kde5-kfloppy
 Requires: kde5-dragon
 Requires: kde5-kmousetool kde5-kmag
 Requires: kde5-juk kde5-kmouth
@@ -194,6 +194,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- move kfloppy from -big to -maxi
+
 * Fri Jun 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.1-alt1
 - add more games
 
@@ -203,43 +206,43 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 * Wed Nov 14 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt2
 - clean requires
 
-* Tue Sep 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1%ubt
+* Tue Sep 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1
 - clean pim requires
 
-* Tue Sep 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1%ubt
+* Tue Sep 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1
 - clean kmail requires
 
-* Fri Sep 21 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1%ubt
+* Fri Sep 21 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1
 - clean requires
 
-* Wed Jul 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.0-alt1%ubt
+* Wed Jul 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.0-alt1
 - update requires
 
-* Fri Mar 16 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.2-alt1%ubt
+* Fri Mar 16 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.2-alt1
 - update requires
 
-* Wed Mar 14 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.1-alt1%ubt
+* Wed Mar 14 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.1-alt1
 - update requires
 
-* Mon Mar 12 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.0-alt1%ubt
+* Mon Mar 12 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.0-alt1
 - update Plasma requires
 
-* Tue Dec 26 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.1-alt1%ubt
+* Tue Dec 26 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.1-alt1
 - update PIM requires
 
-* Fri Dec 22 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.0-alt1%ubt
+* Fri Dec 22 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.0-alt1
 - update requires
 
-* Tue May 02 2017 Sergey V Turchin <zerg@altlinux.org> 17.04.0-alt1%ubt
+* Tue May 02 2017 Sergey V Turchin <zerg@altlinux.org> 17.04.0-alt1
 - update PIM requires
 
-* Thu Apr 13 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.2-alt1%ubt
+* Thu Apr 13 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.2-alt1
 - update requires
 
-* Tue Apr 04 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.1-alt1%ubt
+* Tue Apr 04 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.1-alt1
 - update requires
 
-* Thu Mar 23 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.0-alt1%ubt
+* Thu Mar 23 2017 Sergey V Turchin <zerg@altlinux.org> 16.12.0-alt1
 - update PIM requires
 
 * Tue Nov 01 2016 Sergey V Turchin <zerg@altlinux.org> 5.6.0-alt1
