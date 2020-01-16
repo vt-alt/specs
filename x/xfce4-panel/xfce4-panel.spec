@@ -3,21 +3,19 @@
 %def_enable vala
 
 Name: xfce4-panel
-Version: 4.14.1
+Version: 4.14.3
 Release: alt1
 
 Summary: Panel for Xfce
 Summary(ru_RU.UTF-8): Панель для окружения рабочего стола Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
 Url: https://www.xfce.org/
 
-# Upstream: git://git.xfce.org/xfce/xfce4-panel
+Vcs: git://git.xfce.org/xfce/xfce4-panel
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 >= 0.1.0 xfce4-dev-tools
 BuildPreReq: libxfce4ui-gtk3-devel >= %xfce_ver libexo-gtk3-devel >= 0.6.0 libgarcon-gtk3-devel
@@ -46,7 +44,7 @@ Obsoletes: xfce4-showdesktop-plugin, xfce4-windowlist-plugin
 
 %package -n libxfce4panel
 Summary: Library for Xfce panel (GTK+2)
-License: %lgpl2plus
+License: LGPLv2.1+
 Group: Development/C
 
 %description -n libxfce4panel
@@ -55,7 +53,7 @@ This package contains library for Xfce panel plugins
 
 %package -n libxfce4panel-devel
 Summary: Development files to build Xfce panel plugins (GTK+2)
-License: %lgpl2plus
+License: LGPLv2.1+
 Group: Development/C
 Requires: libxfce4panel = %version-%release
 Provides: %name-devel = %version-%release
@@ -78,7 +76,7 @@ This package contains files to develop plugins for Xfce panel.
 
 %package -n libxfce4panel-gtk3
 Summary: Library for Xfce panel (GTK+3)
-License: %lgpl2plus
+License: LGPLv2.1+
 Group: Development/C
 
 %description -n libxfce4panel-gtk3
@@ -87,7 +85,7 @@ This package contains library for Xfce panel plugins
 
 %package -n libxfce4panel-gtk3-devel
 Summary: Development files to build Xfce panel plugins (GTK+3)
-License: %lgpl2plus
+License: LGPLv2.1+
 Group: Development/C
 Requires: libxfce4panel-gtk3 = %version-%release
 
@@ -194,6 +192,11 @@ Vala bindings for libxfce4panel-gtk3.
 %endif
 
 %changelog
+* Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt1
+- Use Vcs rpm tag.
+- Don't use rpm-build-licenses.
+- Updated to 4.14.3.
+
 * Thu Sep 26 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
 - Updated to 4.14.1.
 
