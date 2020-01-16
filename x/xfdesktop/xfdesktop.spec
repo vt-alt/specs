@@ -1,19 +1,17 @@
 Name: xfdesktop
-Version: 4.14.1
-Release: alt2
+Version: 4.14.2
+Release: alt1
 
 Summary: Desktop manager for the Xfce Desktop Environment
 Summary (ru_RU.UTF-8): Менеджер рабочего стола Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
 Url: https://www.xfce.org/
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/xfdesktop
+Vcs: git://git.xfce.org/xfce/xfdesktop
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libthunar-devel libgarcon-devel libgarcon-gtk3-devel libxfce4panel-gtk3-devel libxfconf-devel libexo-gtk3-devel libxfce4ui-gtk3-devel
@@ -65,6 +63,11 @@ Requires: exo-utils
 %_datadir/backgrounds/xfce
 
 %changelog
+* Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
+- Use Vcs rpm tag.
+- Don't use rpm-build-licenses.
+- Updated to 4.14.0.
+
 * Mon Sep 30 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt2
 - Fixed package version.
 - Patches from upstream:
