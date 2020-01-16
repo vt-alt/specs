@@ -26,8 +26,8 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.17.4
-Release: alt2
+Version: 5.17.5
+Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -72,9 +72,8 @@ Patch120: alt-desktop-plasmashell.patch
 Patch121: alt-freememorynotifier.patch
 Patch122: alt-systemmonitor-ignoreconfig.patch
 Patch123: alt-desktop-krunner.patch
-Patch124: alt-the-last-checkbox-in-the-widget-settings.patch
-Patch125: alt-filtering-widget-settings-upon-first-launch.patch
-Patch126: alt-translate-keyboard-layouts.patch
+Patch124: alt-filtering-widget-settings-upon-first-launch.patch
+Patch125: alt-translate-keyboard-layouts.patch
 
 # Automatically added by buildreq on Sat Mar 21 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig glib2-devel glibc-devel-static kf5-attica-devel kf5-kdoctools-devel kf5-kjs-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcln-devel libcloog-isl4 libdbusmenu-qt52 libgpg-error libgst-plugins1.0 libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-script libqt5-sql libqt5-svg libqt5-test libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libwayland-client libwayland-server libxcb-devel libxcbutil-keysyms libxcbutil-keysyms-devel libxkbfile-devel libxml2-devel pkg-config python-base qt5-base-devel qt5-declarative-devel qt5-webkit-devel rpm-build-gir ruby ruby-stdlibs wayland-devel xml-common xml-utils xorg-fixesproto-devel xorg-kbproto-devel xorg-renderproto-devel xorg-xf86miscproto-devel xorg-xproto-devel zlib-devel
@@ -232,7 +231,6 @@ popd
 %patch123 -p1
 %patch124 -p1
 %patch125 -p1
-%patch126 -p1
 
 cat %SOURCE1 >> po/ru/freememorynotifier.po
 
@@ -394,6 +392,9 @@ done
 
 
 %changelog
+* Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.17.5-alt1
+- new version
+
 * Fri Dec 20 2019 Sergey V Turchin <zerg@altlinux.org> 1:5.17.4-alt2
 - don't show empty brakets in menu search
 

@@ -1,8 +1,8 @@
 %define rname discover
 
 Name: plasma5-%rname
-Version: 5.17.4
-Release: alt3
+Version: 5.17.5
+Release: alt1
 %K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
@@ -139,6 +139,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 %_K5plug/discover/fwupd-backend.so
 
 %changelog
+* Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
+- new version
+
 * Tue Dec 24 2019 Sergey V Turchin <zerg@altlinux.org> 5.17.4-alt3
 - fix launch of packagekit applications
 
