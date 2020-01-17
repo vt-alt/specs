@@ -1,8 +1,6 @@
 Name: rrd
-Version: 1.7.0
-Release: alt1.2
-
-
+Version: 1.7.2
+Release: alt2
 %define native rrdtool
 %define abiversion 8
 %define rrdcached_user root
@@ -13,7 +11,7 @@ Release: alt1.2
 %define	_localstatedir	/var
 
 Summary: RRD - round robin database
-License: %gpl2plus with exceptions
+License: GPL-2.0+ AND LGPL-2.0+
 Group: Development/Databases
 
 Url: http://oss.oetiker.ch/rrdtool
@@ -24,22 +22,23 @@ Source2: rrdcached.sysconfig
 
 Source10: MRTG-HOWTO
 
-Patch0: rrd-1.4.5-alt-build-tcl.patch
+Patch0: rrd-1.7.2-alt-build-tcl.patch
 Patch1: rrdtool-1.4.5-automake-1.11.2.patch
 Patch2: rrdtool-1.4.7-alt-DSO.patch
 Patch3: rrdtool-1.5.3-top-dir.patch
 
 Requires: lib%name = %version-%release
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: rpm-build-licenses
 BuildRequires: chrpath
-BuildRequires: python-module-setuptools
+BuildRequires: python3-module-setuptools
 %if_with tcl
 BuildRequires: rpm-build-tcl tcl-devel
 %endif
 
 # Automatically added by buildreq on Wed Oct 12 2011
-BuildRequires: groff-base libdbi-devel libpango-devel libpng-devel libxml2-devel lua5 perl-Pod-Parser perl-devel python-devel
+BuildRequires: groff-base libdbi-devel libpango-devel libpng-devel libxml2-devel lua5 perl-Pod-Parser perl-devel python3-devel
 
 Summary(ru_RU.UTF-8): RRDtool - база данных с "циклическим обновлением"
 
@@ -85,14 +84,12 @@ Requires: lib%name = %version-%release
 Provides: %name-perl = %version
 Obsoletes: %name-perl < %version
 
-%package -n python-module-rrdtool
+%package -n python3-module-rrdtool
 Summary: Round Robin Database python modules
 Group: Development/Databases
 Requires: lib%name = %version-%release
-Provides: %name-python = %version
-Obsoletes: %name-python < %version
-Provides: python-module-rrd = %version
-Obsoletes: python-module-rrd < 1.5.4-alt2
+Provides: python3-module-rrd = %version
+Obsoletes: python3-module-rrd < 1.5.4-alt2
 
 %if_with tcl
 %package tcl
@@ -189,7 +186,7 @@ put a friendly user interface on it.
 
 This package contains perl modules for access the Round Robin Databases.
 
-%description -n python-module-rrdtool
+%description -n python3-module-rrdtool
 RRD is the Acronym for Round Robin Database. RRD is a system to store and
 display time-series data (i.e. network bandwidth, machine-room temperature,
 server load average). It stores the data in a very compact way that will not
@@ -216,9 +213,6 @@ This package contains tcl extension for access the Round Robin Databases.
 %prep
 %setup -n %native-%version
 %patch0 -p2
-#patch1 -p1
-#patch2 -p2
-#patch3 -p1
 
 find doc bindings/perl-piped -type f -print0 |
 	xargs -r0 fgrep -l /usr/local |
@@ -229,6 +223,7 @@ find doc bindings/perl-piped -type f -print0 |
 sed -i 's@$TCL_PACKAGE_PATH@%_tcldatadir@g' configure.ac
 
 %build
+export PYTHON=%__python3
 %add_optflags -I%_builddir/%native-%version/src %optflags_shared -I%_includedir/cgilib -lpng
 %autoreconf
 %configure \
@@ -263,6 +258,9 @@ popd
 pushd bindings/perl-shared
 	%perl_vendor_install
 popd
+pushd bindings
+%make python
+popd
 
 %if_with tcl
 mkdir -p %buildroot%_tcllibdir/
@@ -278,7 +276,7 @@ rmdir %buildroot%_datadir/%native
 # RPATH
 find %buildroot -name '*.so' | xargs -n 1 chrpath -d
 
-cp {CONTRIBUTORS,COPYRIGHT,TODO,NEWS,THREADS,LICENSE} %buildroot%_docdir/%native-%version/
+cp CONTRIBUTORS COPYRIGHT TODO NEWS THREADS LICENSE  %buildroot%_docdir/%native-%version/
 
 #
 # rrdcached
@@ -315,6 +313,7 @@ rm -f %buildroot/usr/share/locale/hu/LC_MESSAGES/rrdtool.mo
 %preun_service rrdcached
 
 %files -n lib%name%abiversion
+%doc COPYRIGHT
 %_libdir/*.so.*
 
 %files -n lib%name-devel
@@ -323,6 +322,7 @@ rm -f %buildroot/usr/share/locale/hu/LC_MESSAGES/rrdtool.mo
 %_libdir/pkgconfig/*
 
 %files utils
+%doc COPYRIGHT
 %exclude %_bindir/rrdcached
 %_bindir/*
 
@@ -345,13 +345,12 @@ rm -f %buildroot/usr/share/locale/hu/LC_MESSAGES/rrdtool.mo
 %perl_vendor_archlib/RRD*
 %perl_vendor_autolib/RRD*
 
-%files -n python-module-rrdtool
-%python_sitelibdir/*
+%files -n python3-module-rrdtool
+%python3_sitelibdir/*
 
 %if_with tcl
 %files tcl
-%_tcllibdir/tcl*.so
-%_tcldatadir/tcl%name%version/
+%_libdir/tcl*.so
 %endif
 
 # TODO:
@@ -359,6 +358,13 @@ rm -f %buildroot/usr/share/locale/hu/LC_MESSAGES/rrdtool.mo
 #   (the tcl one looks broken too as of 1.5.4-alt2.1)
 
 %changelog
+* Thu Jan 09 2020 Anton Farygin <rider@altlinux.ru> 1.7.2-alt2
+- switched to python-3.7
+- fixed License and added copyright to library and utils package
+
+* Thu Jan 09 2020 Anton Farygin <rider@altlinux.ru> 1.7.2-alt1
+- 1.7.0 -> 1.7.2 (closes: #37648)
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 1.7.0-alt1.2
 - rebuild with new perl 5.28.1
 
