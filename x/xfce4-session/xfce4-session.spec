@@ -1,21 +1,19 @@
 Name: xfce4-session
-Version: 4.14.0
+Version: 4.14.1
 Release: alt1
 
 Summary: Session manager for Xfce desktop environment
 Summary (ru): Менеджер сессий для окружения рабочего стола Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
 Url: https://www.xfce.org/
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/xfce4-session
+Vcs: git://git.xfce.org/xfce/xfce4-session
 Source: %name-%version.tar
 Source1: xfce.wmsession
 
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: libxfconf-devel libxfce4ui-gtk3-devel
@@ -78,6 +76,11 @@ install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
 %_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
+- Use Vcs rpm tag.
+- Don't use rpm-build-licenses.
+- Updated to 4.14.1.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
 - Avoid dependency on systemd-utils.
 - Updated to 4.14.0.
