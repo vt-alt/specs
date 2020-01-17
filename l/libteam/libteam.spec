@@ -6,19 +6,17 @@
 %define _pseudouser_group    _teamd
 
 Name: libteam
-Version: 1.29
+Version: 1.30
 Release: alt1
 
 Summary: Library for controlling team network device
-License: %lgpl2plus
+License: LGPLv2.1+
 Group: System/Libraries
 URL: http://www.libteam.org
-# https://github.com/jpirko/libteam
+Vcs: https://github.com/jpirko/libteam
 Source: %name-%version.tar
 
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: libnl-devel
 BuildRequires: libdaemon-devel
@@ -188,6 +186,11 @@ install -pm 0644 team/capi.py %buildroot%python3_sitelibdir/team/
 %endif
 
 %changelog
+* Thu Jan 09 2020 Mikhail Efremov <sem@altlinux.org> 1.30-alt1
+- Use Vcs tag.
+- Don't use rpm-build-licenses.
+- 1.29 -> 1.30.
+
 * Fri Jul 05 2019 Mikhail Efremov <sem@altlinux.org> 1.29-alt1
 - 1.28 -> 1.29.
 
