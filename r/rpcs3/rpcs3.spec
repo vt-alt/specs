@@ -1,21 +1,21 @@
-%define git_ver 9212
-%define git_commit 6a4ba9d562193228fc90e0d73252775cfafb20b2
+%define git_ver 9300
+%define git_commit 341fdf7eb14763fd06e2eab9a4b2b8f1adf9fdbd
 
-%define glslang_version 7.11.3214
+%define glslang_version 7.13.3496
 %define asmjit_commit fc251c914e77cd079e58982cdab00a47539d7fc5
 %define pugixml_commit 8bf806c035373bd0723a85c0820cfd5c804bf6cd
 %define hidapi_commit 9220f5e77c27b8b3717b277ec8d3121deeb50242
 %define libusb_commit 7cfa00e9d723f10167b4d71bceebf2b4b2cbd70e
 %define yaml_cpp_commit eca9cfd64899525d0a61abb0553849676a0fe511
 %define xx_hash_version 0.6.5
-%define llvm_commit 9836c299733ee5ef14760cd5bdae27e8233d2393
+%define llvm_commit 2e038bff1082175b510a2e8336edf897af9b87a3
 %define cereal_version 1.2.0
 %define faudio_version 19.10
 %define span_commit 9d7559aabdebf569cab3480a7ea2a87948c0ae47
 
 Name: rpcs3
-Version: 0.0.7.%git_ver
-Release: alt1.1
+Version: 0.0.8
+Release: alt2
 
 Summary: PS3 emulator/debugger
 License: GPLv2
@@ -26,18 +26,18 @@ Packager: Nazarov Denis <nenderus@altlinux.org>
 
 ExclusiveArch: x86_64
 
-Source0: https://github.com/RPCS3/%name/archive/%git_commit/%name-%git_commit.tar
-Source1: https://github.com/KhronosGroup/glslang/archive/%glslang_version/glslang-%glslang_version.tar
-Source2: https://github.com/asmjit/asmjit/archive/%asmjit_commit/asmjit-%asmjit_commit.tar
-Source3: https://github.com/zeux/pugixml/archive/%pugixml_commit/pugixml-%pugixml_commit.tar
-Source4: https://github.com/RPCS3/hidapi/archive/%hidapi_commit/hidapi-%hidapi_commit.tar
-Source5: https://github.com/RPCS3/libusb/archive/%libusb_commit/libusb-%libusb_commit.tar
-Source6: https://github.com/jbeder/yaml-cpp/archive/%yaml_cpp_commit/yaml-cpp-%yaml_cpp_commit.tar
-Source7: https://github.com/Cyan4973/xxHash/archive/v%xx_hash_version/xxHash-%xx_hash_version.tar
-Source8: https://github.com/RPCS3/llvm/archive/%llvm_commit/llvm-%llvm_commit.tar
-Source9: https://github.com/USCiLab/cereal/archive/v%cereal_version/cereal-%cereal_version.tar
-Source10: https://github.com/FNA-XNA/FAudio/archive/%faudio_version/FAudio-%faudio_version.tar
-Source11: https://github.com/tcbrindle/span/archive/%span_commit/span-%span_commit.tar
+Source0: %name-%version.tar
+Source1: glslang-%glslang_version.tar
+Source2: asmjit-%asmjit_commit.tar
+Source3: pugixml-%pugixml_commit.tar
+Source4: hidapi-%hidapi_commit.tar
+Source5: libusb-%libusb_commit.tar
+Source6: yaml-cpp-%yaml_cpp_commit.tar
+Source7: xxHash-%xx_hash_version.tar
+Source8: llvm-%llvm_commit.tar
+Source9: cereal-%cereal_version.tar
+Source10: FAudio-%faudio_version.tar
+Source11: span-%span_commit.tar
 
 BuildRequires: cmake
 BuildRequires: cvs
@@ -68,7 +68,7 @@ BuildPreReq: libswresample-devel
 The world's first free and open-source PlayStation 3 emulator/debugger, written in C++ for Windows and Linux.
 
 %prep
-%setup -n %name-%git_commit -b 1 -b 2 -b 3 -b 4 -b 5 -b 6 -b 7 -b 8 -b 9 -b 10 -b 11
+%setup -b 1 -b 2 -b 3 -b 4 -b 5 -b 6 -b 7 -b 8 -b 9 -b 10 -b 11
 %__mv -Tf ../glslang-%glslang_version Vulkan/glslang
 %__mv -Tf ../asmjit-%asmjit_commit asmjit
 %__mv -Tf ../pugixml-%pugixml_commit 3rdparty/pugixml
@@ -129,9 +129,22 @@ popd
 %_datadir/metainfo/%name.appdata.xml
 
 %changelog
+* Sat Jan 04 2020 Nazarov Denis <nenderus@altlinux.org> 0.0.8-alt2
+- Update glslang to 7.13.3496
+
+* Fri Jan 03 2020 Nazarov Denis <nenderus@altlinux.org> 0.0.8-alt1.1
+- build with python3
+- don't gzip sources
+
+* Thu Jan 02 2020 Nazarov Denis <nenderus@altlinux.org> 0.0.8-alt1
+- Version 0.0.8
+
 * Thu Dec 26 2019 Sergey V Turchin <zerg@altlinux.org> 0.0.7.9212-alt1.1
 - build with python3
 - don't gzip sources
+
+* Tue Dec 24 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.7.9250-alt1
+- Version 0.0.7.9250
 
 * Sat Dec 07 2019 Nazarov Denis <nenderus@altlinux.org> 0.0.7.9212-alt1
 - Version 0.0.7-9212
