@@ -1,3 +1,17 @@
+%define descr PyTables is a package for managing hierarchical datasets and designed \
+to efficiently and easily cope with extremely large amounts of data. \
+\
+PyTables is built on top of the HDF5 library, using the Python language \
+and the NumPy package (it also supports numarray and Numeric right \
+out-of-the-box). It features an object-oriented interface that, combined \
+with C extensions for the performance-critical parts of the code \
+(generated using Pyrex), makes it a fast, yet extremely easy to use tool \
+for interactively dealing with, processing and searching very large \
+amounts of data. One important feature of PyTables is that it optimizes \
+memory and disk resources so that data takes much less space (specially \
+if on-flight compression is used) than other solutions such as \
+relational or object oriented databases.
+
 %define hdf5dir %_libdir/hdf5-seq
 %define oname tables
 
@@ -5,7 +19,7 @@
 %def_enable check
 
 Name: py%oname
-Version: 3.5.1
+Version: 3.5.2
 Release: alt1
 Epoch: 1
 Summary: Managing hierarchical datasets
@@ -19,7 +33,7 @@ Source: %name-%version.tar.gz
 %add_findreq_skiplist %python_sitelibdir/%oname/contrib/nctoh5.py
 %add_findreq_skiplist %python3_sitelibdir/%oname/contrib/nctoh5.py
 
-Requires: python-module-%oname = %{?epoch:%epoch:}%version-%release
+Requires: python-module-%oname = %EVR
 
 BuildRequires(pre): rpm-build-python
 BuildPreReq: python-module-numpydoc python-module-numpy-addons
@@ -46,40 +60,16 @@ BuildRequires: python3-module-mock
 %endif
 
 %description
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 %if_with python3
 %package py3
 Summary: Managing hierarchical datasets (Python 3)
 Group: Development/Python3
-Requires: python3-module-%oname = %{?epoch:%epoch:}%version-%release
+Requires: python3-module-%oname = %EVR
 
 %description py3
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 %package -n python3-module-%oname
 Summary: Managing hierarchical datasets (Python 3)
@@ -87,19 +77,7 @@ Group: Development/Python3
 %add_python3_req_skip numarray Scientific
 
 %description -n python3-module-%oname
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains python module of PyTables.
 
@@ -110,19 +88,7 @@ Group: Development/Python3
 Requires: python3-module-%oname = %EVR
 
 %description -n python3-module-%oname-tests
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains tests and examples for PyTables.
 
@@ -133,19 +99,7 @@ Group: Development/Python3
 Requires: python3-module-%oname = %EVR
 
 %description -n python3-module-%oname-bench
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains benchmarks for PyTables.
 %endif
@@ -156,19 +110,7 @@ Group: Development/Documentation
 BuildArch: noarch
 
 %description doc
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains documentation for PyTables.
 
@@ -179,19 +121,7 @@ Group: Development/Python
 %add_python_req_skip numarray
 
 %description -n python-module-%oname
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains python module of PyTables.
 
@@ -202,19 +132,7 @@ Group: Development/Python
 Requires: python-module-%oname = %EVR
 
 %description -n python-module-%oname-tests
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains tests and examples for PyTables.
 
@@ -225,19 +143,7 @@ Group: Development/Python
 Requires: python-module-%oname = %EVR
 
 %description -n python-module-%oname-bench
-PyTables is a package for managing hierarchical datasets and designed
-to efficiently and easily cope with extremely large amounts of data.
-
-PyTables is built on top of the HDF5 library, using the Python language
-and the NumPy package (it also supports numarray and Numeric right
-out-of-the-box). It features an object-oriented interface that, combined
-with C extensions for the performance-critical parts of the code
-(generated using Pyrex), makes it a fast, yet extremely easy to use tool
-for interactively dealing with, processing and searching very large
-amounts of data. One important feature of PyTables is that it optimizes
-memory and disk resources so that data takes much less space (specially
-if on-flight compression is used) than other solutions such as
-relational or object oriented databases.
+%descr
 
 This package contains benchmarks for PyTables.
 
@@ -247,9 +153,9 @@ This package contains benchmarks for PyTables.
 rm -rf ../python3
 cp -a . ../python3
 find ../python3 -type f -name '*.py' -exec \
-	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|' '{}' +
+    sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|' '{}' +
 find ../python3 -type f -name '*.py' -exec \
-	sed -i 's|#!/usr/bin/python|#!/usr/bin/python3|' '{}' +
+    sed -i 's|#!/usr/bin/python|#!/usr/bin/python3|' '{}' +
 find ../python3 -type f -name '*.py' -exec 2to3 -w -n '{}' +
 %endif
 
@@ -273,7 +179,7 @@ cp -fR bench contrib %buildroot%python3_sitelibdir/%oname/
 popd
 pushd %buildroot%_bindir
 for i in $(ls); do
-	mv $i $i.py3
+    mv $i $i.py3
 done
 popd
 %endif
@@ -286,7 +192,7 @@ export PYTHONPATH=%buildroot%python_sitelibdir
 
 install -d %buildroot%_docdir/%name/pdf
 install -p -m644 LICENSE.txt README.rst RELEASE_NOTES.txt THANKS \
-	%buildroot%_docdir/%name
+    %buildroot%_docdir/%name
 cp -fR LICENSES %buildroot%_docdir/%name
 #install -p -m644 doc/build/latex/*.pdf %buildroot%_docdir/%name/pdf
 cp -fR doc/build/html %buildroot%_docdir/%name/
@@ -348,6 +254,9 @@ popd
 %_docdir/%name
 
 %changelog
+* Fri Jul 19 2019 Grigory Ustinov <grenka@altlinux.org> 1:3.5.2-alt1
+- Build new version.
+
 * Tue Apr 09 2019 Grigory Ustinov <grenka@altlinux.org> 1:3.5.1-alt1
 - Build new version for python3.7.
 
