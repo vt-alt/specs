@@ -10,19 +10,23 @@
 %define xfwm4_theme "ClassicLooks XFWM4"
 
 # NOTE: Helper's name must be one of exo helpers.
-%ifarch %e2k %arm aarch64
+%ifarch %e2k %arm aarch64 mipsel
 # e2k: 2019: no chromium port available
 # aarch64: Seems firefox is faster as reported by jqt4@
+# mipsel: firefox works better now -- iv@
 %define web_browser firefox
+%define media_player celluloid
 %else
 %define web_browser chromium
+%define media_player vlc
 %endif
 %define mail_reader thunderbird
 %define file_manager Thunar
 
 # LibreOffice icon theme
-%ifarch %e2k
+%ifarch %e2k mipsel
 # LO5@e2k lacks oxygen icon theme
+# On mipsel we have only LO 6.3+ which also lacks it
 %define lo_icon_theme auto
 %else
 %define lo_icon_theme oxygen
@@ -31,7 +35,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.920
+Version: 8.930
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -201,6 +205,7 @@ Requires: gnome-icon-theme icon-theme-simple-sl >= 2.7-alt3
 Requires: branding-simply-linux-graphics
 Requires: branding-simply-linux-backgrounds9
 # plugins added on panel by default
+Requires: xfce4-datetime-plugin
 Requires: xfce4-places-plugin
 Requires: xfce4-pulseaudio-plugin
 Requires: xfce4-whiskermenu-plugin
@@ -293,7 +298,7 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme ./configure
+THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme MEDIA_PLAYER=%media_player ./configure
 make
 
 %install
@@ -490,6 +495,22 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Fri Jan 17 2020 Mikhail Efremov <sem@altlinux.org> 8.930-alt1
+- Fix changelog.
+- xfce-settings: Set thunar for inode/directory MIME type.
+- menu: Drop gmplayer.desktop.
+- menu: Drop gcompris-edit.desktop.
+- menu: Add gimagereader-qt5.desktop.
+- xfce4-settings: Set Bright theme for xfce4-notifyd.
+- indexhtml: Use https://getalt.org as download link.
+- xfce-settings: Use human-readable name for desktop file.
+- xfce-settings: Require datetime plugin.
+- xfce-settings: Replace orageclock plugin with datetime.
+- menu: Add celluloid desktop file.
+- xfce-settings: Use celluloid as meadia player on non-x86.
+- Use auto icon theme on mipsel (by Ivan A. Melnikov).
+- Use firefox on mipsel (by Ivan A. Melnikov).
+
 * Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 8.920-alt1
 - xfce-settings: It is not noarch now.
 - xfce-settings: Set firefox as web browser on ARM.
@@ -924,7 +945,7 @@ fi
 - Rename and fix fusion-icon.desktop for autostart.
 - backgrounds: Replace slinux_spring_*.png with slinux_spring_*.jpg.
 
-* Wed Jun 30 2011 Alexandra Panyukova <mex3@altlinux.ru> 6.0.0-alt15
+* Thu Jun 30 2011 Alexandra Panyukova <mex3@altlinux.ru> 6.0.0-alt15
 - wallpapers path fixed
 - more sizes of thunar icons
 - greeting, installer, lilo and finish step icons added
