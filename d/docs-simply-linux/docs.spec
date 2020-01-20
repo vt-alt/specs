@@ -4,11 +4,11 @@
 %define _documentationdir %_defaultdocdir/documentation
 %define _docsinstalldir %_defaultdocdir/%variant
 
-%define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-spworkstation
+%define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-spworkstation docs-alt-server-v
 
 Name: docs-%variant
-Version: 8.2
-Release: alt2
+Version: 8.92
+Release: alt1
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,15 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Thu Jan 09 2020 Elena Mishina <lepata@altlinux.org> 8.92-alt1
+- updated to latest public distr
+
+* Tue Dec 10 2019 Elena Mishina <lepata@altlinux.org> 8.91-alt1
+- update to beta verson of Simply Linux 9.0
+
+* Thu Oct 17 2019 Elena Mishina <lepata@altlinux.org> 8.90-alt1
+- update to alpha verson of Simply Linux 9.0
+
 * Wed Oct 17 2018 Elena Mishina <lepata@altlinux.org> 8.2-alt2
 - fix typo
 - update documentation
