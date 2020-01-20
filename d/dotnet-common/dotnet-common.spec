@@ -7,13 +7,15 @@
 %else
 %ifarch aarch64
 %define _dotnet_arch arm64
+%else
+%define _dotnet_arch %arch
 %endif
 %endif
 %define _dotnet_rid linux-%_dotnet_arch
 
 Name: dotnet-common
 Version: 3.1.0
-Release: alt1
+Release: alt2
 
 Summary: Common dir and files for the .NET Core runtime and libraries
 
@@ -22,7 +24,7 @@ Group: Development/Other
 
 Source: %name-%version.tar
 
-ExclusiveArch: %_dotnet_archlist
+#ExclusiveArch: %_dotnet_archlist
 
 %description
 Common dir and files for the .NET Core runtime and libraries.
@@ -101,6 +103,9 @@ install -D -m644 macros %buildroot%_rpmmacrosdir/dotnet
 %_rpmmacrosdir/dotnet
 
 %changelog
+* Mon Dec 30 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt2
+- make rpm-macros-dotnet available on all arches
+
 * Mon Dec 16 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - .NET Core 3.1.0 release
 

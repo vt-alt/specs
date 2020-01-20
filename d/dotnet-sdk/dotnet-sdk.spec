@@ -4,7 +4,7 @@
 %define major 3.1
 Name: dotnet-sdk
 Version: %major.100
-Release: alt2
+Release: alt3
 
 Summary: SDK for the .NET Core runtime and libraries
 
@@ -13,7 +13,7 @@ Group: Development/Other
 
 Source: %name-%version.tar
 
-ExclusiveArch: x86_64
+ExclusiveArch: aarch64 x86_64
 
 BuildRequires: rpm-build-intro
 
@@ -32,7 +32,7 @@ AutoProv: no
 %description
 SDK for the .NET Core runtime and libraries.
 
-Just copying binary now.
+Just copying managed code now.
 
 %prep
 %setup
@@ -80,6 +80,9 @@ ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet
 %attr(2775,root,dotnet) %dir %_cachedir/dotnet/NuGetFallbackFolder/
 
 %changelog
+* Sat Dec 28 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt3
+- build on aarch64
+
 * Wed Dec 18 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt2
 - add NETStandard.Library.Ref and Microsoft.NETCore.App.Ref targeting packs
 

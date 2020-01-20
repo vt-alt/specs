@@ -1,8 +1,7 @@
 # TODO: issue about dash in version: https://github.com/Microsoft/omi/issues/532
-%define post 4
-Name: 	  omi
-Version:  1.4.2
-Release:  alt2
+Name:     omi
+Version:  1.6.2
+Release:  alt1
 
 Summary:  Open Management Infrastructure
 License:  MIT
@@ -11,18 +10,15 @@ Url:      https://github.com/Microsoft/omi
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# Source-url: https://github.com/Microsoft/omi/archive/v%version-%post.tar.gz
+# Source-url: https://github.com/Microsoft/omi/archive/v%version.tar.gz
 Source: %name-%version.tar
-Patch: omi-1.4.2-4-include.patch
-Patch1: omi-1.4.2-4-alt-openssl.patch
 
 # Automatically added by buildreq on Fri Jun 02 2017
 # optimized out: libcom_err-devel libkrb5-devel libstdc++-devel lsb-release pkg-config python-base python-modules python3 python3-base
 BuildRequires: gcc-c++ libpam-devel libssl-devel openssl
 BuildRequires: libkrb5-devel
 
-# FIXME: aarcg64 is not supported by build script yet
-ExclusiveArch: x86_64
+ExclusiveArch: aarch64 x86_64
 
 %ifarch aarch64
 # no lsb
@@ -76,30 +72,29 @@ Internal development files for %name.
 
 %prep
 %setup
-%patch -p1
-%patch1 -p2
 
 %__subst "s|.*-rpath.*|true|g" Unix/buildtool
+# fix aarch detection
+%__subst "s|arm|aarch64|" Unix/buildtool
+# instead of lsb_release
+%__subst "s|distro=.*|distro=ALT|g" Unix/buildtool
+%__subst "s|distro_version=.*|distro_version=Sisyphus|g" Unix/buildtool
 
 %build
 # FIXME: version
 export OMI_BUILDVERSION_MAJOR=$(echo %version | cut -d. -f1)
 export OMI_BUILDVERSION_MINOR=$(echo %version | cut -d. -f2)
 export OMI_BUILDVERSION_PATCH=$(echo %version | cut -d. -f3)
-export OMI_BUILDVERSION_BUILDNR=%post
+# See https://github.com/Microsoft/omi/issues/532
+export OMI_BUILDVERSION_BUILDNR=0
+
 cd Unix
-# for buildtool --target
-export os=LINUX
-export compiler=GNU
 ./configure --prefix=%prefix --localstatedir=/var/omi --sysconfdir=/etc/omi \
 	--libdir=%_libdir --includedir=%_includedir/omi --datadir=%_datadir/%name \
-%ifarch aarch64
-	--target=LINUX_ARM_GNU \
-%endif
 	--certsdir=/etc/omi/ssl
 #	 --credsdir=/etc/omi/creds
 
-%make_build
+%make_build || make
 
 %install
 cd Unix
@@ -164,6 +159,9 @@ cp output/lib/*.a %buildroot%_libdir/%name/lib/
 %_includedir/omi/nits/
 
 %changelog
+* Sun Dec 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1.6.2-alt1
+- new version (1.6.2) with rpmgs script
+
 * Thu Sep 20 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.2-alt2
 - NMU: rebuilt with openssl-1.1.
 

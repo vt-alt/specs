@@ -1,9 +1,10 @@
 # TODO: fix nuget to operate offline
 %def_with prebuild
+%def_disable test
 
 Name: powershell
 Version: 6.0.0
-Release: alt7
+Release: alt8
 
 Summary: PowerShell for every system!
 
@@ -19,20 +20,22 @@ Source1: %name-prebuild-%version.tar
 
 Source2: %name.1
 
-ExclusiveArch: x86_64
+ExclusiveArch: %_dotnet_archlist
+
+BuildRequires(pre): rpm-macros-dotnet
 
 AutoReq:yes,nonodejs,nonodejs_native,nomono,nomonolib,nopython,nomingw32,nomingw64,noshebang
 AutoProv: no
 
-BuildRequires(pre): rpm-macros-dotnet
-
 Requires: dotnet >= 2.0.0
 # uses strict version in runtime config
-Requires: dotnet-coreclr = %_dotnet_corerelease
+#Requires: dotnet-coreclr = %_dotnet_corerelease
 
 BuildRequires: cmake gcc-c++ dotnet >= 2.0.0 dotnet-sdk >= 2.0.0
+%if_enabled test
 # for libpsl-native build
 BuildRequires: ctest libgtest-devel
+%endif
 
 # >= 1.2.100035
 Requires: libomi >= 1.2.0
@@ -56,6 +59,9 @@ an associated scripting language and a framework for processing cmdlets.
 %__subst "s|.*-Werror.*||" src/libpsl-native/CMakeLists.txt
 
 %__subst "s|\(add_subdirectory(googletest)\)|#\1|g" src/libpsl-native/test/CMakeLists.txt
+%if_disabled test
+%__subst "s|add_subdirectory(test)||" src/libpsl-native/CMakeLists.txt
+%endif
 
 %__subst "s|hash powershell|false|g" build.sh
 #rm -f DELETE_ME_TO_DISABLE_CONSOLEHOST_TELEMETRY
@@ -123,11 +129,19 @@ EOF
 chmod 0755 %buildroot%_bindir/%name
 
 # replace downloaded libs with system versions
-ln -sf %_libdir/libmi.so %buildroot%_libdir/%name/runtimes/linux-x64/native/libmi.so
-ln -sf %_libdir/libpsrpclient.so %buildroot%_libdir/%name/runtimes/linux-x64/native/libpsrpclient.so
+rm -rf %buildroot%_libdir/%name/runtimes/linux*
+mkdir -p %buildroot%_libdir/%name/runtimes/%_dotnet_rid/native/
+ln -sf %_libdir/libmi.so %buildroot%_libdir/%name/runtimes/%_dotnet_rid/native/libmi.so
+ln -sf %_libdir/libpsrpclient.so %buildroot%_libdir/%name/runtimes/%_dotnet_rid/native/libpsrpclient.so
 
 mkdir -p %buildroot%_man1dir/
 cp %SOURCE2 %buildroot%_man1dir/
+
+%if_enabled test
+%check
+cd src/libpsl-native
+LD_LIBRARY_PATH=$(pwd)/../powershell-unix ctest --verbose
+%endif
 
 %files
 %_bindir/%name
@@ -136,6 +150,11 @@ cp %SOURCE2 %buildroot%_man1dir/
 %doc docs/*
 
 %changelog
+* Sat Dec 28 2019 Vitaly Lipatov <lav@altlinux.ru> 6.0.0-alt8
+- enable aarch64 build
+- add disabled ctest for libpsl-native
+- drop script coreclr version
+
 * Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 6.0.0-alt7
 - rebuild with .NET Core 3.1
 - disable -Werror
