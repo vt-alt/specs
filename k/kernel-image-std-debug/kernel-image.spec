@@ -2,7 +2,7 @@ Name: kernel-image-std-debug
 Release: alt1
 epoch:1 
 %define kernel_base_version	4.19
-%define kernel_sublevel .49
+%define kernel_sublevel .97
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -26,6 +26,12 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 %def_enable docs
 %else
 %def_disable docs
+%endif
+
+%ifarch %ix86 x86_64
+%def_enable domU
+%else
+%def_disable domU
 %endif
 
 #Remove oss
@@ -52,13 +58,48 @@ Patch0: %name-%version-%release.patch
 %if "%sub_flavour" == "pae"
 ExclusiveArch: i586
 %else
-ExclusiveArch: i586 x86_64
+%if "%sub_flavour" == "debug"
+ExclusiveArch: i586 x86_64 ppc64le
+%else
+ExclusiveArch: i586 x86_64 ppc64le aarch64
+%endif
+%endif
+
+%define make_target bzImage
+%ifarch ppc64le
+%define make_target vmlinux
+%endif
+%ifarch aarch64
+%define make_target Image
+%endif
+
+%define image_path arch/%base_arch/boot/%make_target
+%ifarch ppc64le
+%define image_path %make_target
+%endif
+
+%define arch_dir %base_arch
+%ifarch %ix86 x86_64
+%define arch_dir x86
+%endif
+
+%define kvm_modules_dir arch/%arch_dir/kvm
+
+%define qemu_pkg %_arch
+%ifarch %ix86 x86_64
+%define qemu_pkg x86
+%endif
+%ifarch ppc64le
+%define qemu_pkg ppc
 %endif
 
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
-BuildRequires: dev86 flex
+%ifarch %ix86 x86_64
+BuildRequires: dev86
+%endif
+BuildRequires: flex
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version gcc%kgcc_version-c++
 BuildRequires: gcc%kgcc_version-plugin-devel libgmp-devel libmpc-devel
@@ -67,17 +108,18 @@ BuildRequires: module-init-tools >= 3.16
 BuildRequires: lzma-utils
 BuildRequires: libelf-devel
 BuildRequires: bc
-BuildRequires: openssl-devel 
+BuildRequires: openssl-devel
 # for check
-BuildRequires: qemu-system glibc-devel-static
+%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
 Provides:  kernel-modules-alsa = %version-%release
-
+Provides: kernel-modules-kvm-%flavour = %version-%release
+Provides: kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
 
 %if_enabled docs
-BuildRequires: python-module-sphinx perl-Pod-Usage 
+BuildRequires: python-module-sphinx perl-Pod-Usage
 %endif
 
 %if_enabled ccache
@@ -111,7 +153,8 @@ There are some kernel variants in ALT systems:
 * std-def: standard longterm kernel
 * std-pae: legacy i686 kernel with 64G memory support
 * std-debug: kernel with some DEBUG options enabled
-* un-def: more modern then std-def and with forced preemption enabled
+* un-def: more modern then std-def and with voluntary (on ppc64le) or
+  forced (on x86) preemption enabled.
 
 %package -n kernel-image-domU-%flavour
 Summary: Uncompressed linux kernel for XEN domU boot 
@@ -220,21 +263,6 @@ still useful for some hardware, if the corresponding PATA drivers do
 not work well.
 
 Install this package only if you really need it.
-
-%package -n kernel-modules-kvm-%flavour
-Summary: Linux KVM (Kernel Virtual Machine) modules
-Group: System/Kernel and hardware
-Provides:  kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
-Conflicts: kernel-modules-kvm-%kversion-%flavour-%krelease < %version-%release
-Conflicts: kernel-modules-kvm-%kversion-%flavour-%krelease > %version-%release
-Prereq: coreutils
-Prereq: module-init-tools >= 3.1
-Requires: %name
-
-%description -n kernel-modules-kvm-%flavour
-Linux kernel module for Kernel Virtual Machine virtualization
-environment.
-
 
 %package -n kernel-modules-v4l-%flavour
 Summary: Video4Linux driver modules (obsolete)
@@ -373,8 +401,11 @@ scripts/kconfig/merge_config.sh -m $CONFIGS
 
 %make_build oldconfig
 #%make_build include/linux/version.h
-%make_build bzImage
+%make_build %make_target
 %make_build modules
+%ifarch aarch64
+%make_build dtbs
+%endif
 
 echo "Kernel built $KernelVer"
 
@@ -388,18 +419,25 @@ export ARCH=%base_arch
 KernelVer=%kversion-%flavour-%krelease
 
 install -Dp -m644 System.map %buildroot/boot/System.map-$KernelVer
-install -Dp -m644 arch/%base_arch/boot/bzImage \
+install -Dp -m644 %image_path \
 	%buildroot/boot/vmlinuz-$KernelVer
+%if_enabled domU
 install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
+%endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 make modules_install INSTALL_MOD_PATH=%buildroot
-find %buildroot -name '*.ko' | xargs gzip
 
-mkdir -p %buildroot%kbuild_dir/arch/x86
+%ifarch aarch64
+mkdir -p %buildroot/lib/devicetree/$KernelVer
+find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
+mkdir -p %buildroot/%modules_dir/kernel/drivers/staging/media
+%endif
+
+mkdir -p %buildroot%kbuild_dir/arch/%arch_dir
 install -d %buildroot%kbuild_dir
 cp -a include %buildroot%kbuild_dir/include
-cp -a arch/x86/include %buildroot%kbuild_dir/arch/x86
+cp -a arch/%arch_dir/include %buildroot%kbuild_dir/arch/%arch_dir
 
 
 # drivers-headers install
@@ -429,13 +467,14 @@ cp -a net/mac80211/sta_info.h \
 KbuildFiles="
 	Makefile
 	Module.symvers
-	arch/x86/Makefile
+	arch/%arch_dir/Makefile
+%ifarch %ix86 x86_64
 	arch/x86/Makefile_32
 	arch/x86/Makefile_32.cpu
 %ifarch x86_64
 	arch/x86/Makefile_64
 %endif
-
+%endif
 	scripts/pnmtologo
 	scripts/mod/modpost
 	scripts/mkmakefile
@@ -469,13 +508,15 @@ KbuildFiles="
 	scripts/subarch.include
 	scripts/depmod.sh
 	scripts/gcc-plugins/*.so
+	scripts/ld-version.sh
 	tools/objtool/objtool
-
-
 	.config
 	.kernelrelease
 	gcc_version.inc
 	System.map
+%ifarch aarch64 ppc64le
+	arch/%arch_dir/kernel/module.lds
+%endif
 "
 for f in $KbuildFiles; do
 	[ -e "$f" ] || continue
@@ -503,12 +544,17 @@ popd
 # remove *.bin files
 rm -f %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
+touch %buildroot%modules_dir/modules.{alias,dep,devname,softdep,symbols}
 
 # install documentation
 %if_enabled docs
 install -d %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 cp -a Documentation/* %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 %endif # if_enabled docs
+
+# On some architectures (at least ppc64le) kernel image is ELF and
+# eu-findtextrel will fail if it is not a DSO or PIE.
+%add_verify_elf_skiplist /boot/vmlinuz-*
 
 
 %check
@@ -528,7 +574,20 @@ int main()
 }
 __EOF__
 echo init | cpio -H newc -o | gzip -9n > initrd.img
-timeout --foreground 600 qemu -no-kvm -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console=ttyS0 -initrd initrd.img > boot.log &&
+qemu_arch=%_arch
+qemu_opts=""
+console=ttyS0
+%ifarch %ix86
+qemu_arch=i386
+%endif
+%ifarch ppc64le
+qemu_arch=ppc64
+console=hvc0
+%endif
+%ifarch aarch64
+qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
+%endif
+timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -536,27 +595,40 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	exit 1
 }
 
-
 %files
 /boot/vmlinuz-%kversion-%flavour-%krelease
 /boot/System.map-%kversion-%flavour-%krelease
 /boot/config-%kversion-%flavour-%krelease
-%dir %modules_dir/
+%dir %modules_dir
 %defattr(0600,root,root,0700)
-%modules_dir/*
+%modules_dir/kernel
+%modules_dir/modules.order
+%modules_dir/modules.builtin
+%modules_dir/kernel.builtin.modinfo
 %exclude %modules_dir/build
-%exclude %modules_dir/kernel/drivers/media/
-%exclude %modules_dir/kernel/drivers/staging/
+%exclude %modules_dir/kernel/drivers/media
+%exclude %modules_dir/kernel/drivers/staging
 %exclude %modules_dir/kernel/drivers/gpu/drm
-%exclude %modules_dir/kernel/drivers/ide/
-%exclude %modules_dir/kernel/arch/x86/kvm
+%ifnarch aarch64
+%exclude %modules_dir/kernel/drivers/ide
+%endif
+%ghost %modules_dir/modules.alias
+%ghost %modules_dir/modules.dep
+%ghost %modules_dir/modules.devname
+%ghost %modules_dir/modules.softdep
+%ghost %modules_dir/modules.symbols
 %ghost %modules_dir/modules.alias.bin
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
 %ghost %modules_dir/modules.builtin.bin
+%ifarch aarch64
+/lib/devicetree/%kversion-%flavour-%krelease
+%endif
 
+%if_enabled domU
 %files -n kernel-image-domU-%flavour
 /boot/vmlinux-%kversion-%flavour-%krelease
+%endif
 
 %files -n kernel-headers-%flavour
 %kheaders_dir
@@ -564,7 +636,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %files -n kernel-headers-modules-%flavour
 %kbuild_dir
 %old_kbuild_dir
-%dir %modules_dir/
+%dir %modules_dir
 %modules_dir/build
 
 %if_enabled docs
@@ -577,15 +649,18 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/kernel/drivers/gpu/drm/nouveau
 %exclude %modules_dir/kernel/drivers/gpu/drm/radeon
 %exclude %modules_dir/kernel/drivers/gpu/drm/mgag200
+%ifnarch aarch64
 %exclude %modules_dir/kernel/drivers/gpu/drm/sis
 %exclude %modules_dir/kernel/drivers/gpu/drm/savage
 %exclude %modules_dir/kernel/drivers/gpu/drm/tdfx
 %exclude %modules_dir/kernel/drivers/gpu/drm/r128
 %exclude %modules_dir/kernel/drivers/gpu/drm/mga
 %exclude %modules_dir/kernel/drivers/gpu/drm/via
+%endif
 
 %files -n kernel-modules-drm-ancient-%flavour
 %modules_dir/kernel/drivers/gpu/drm/mgag200
+%ifnarch aarch64
 %modules_dir/kernel/drivers/gpu/drm/sis
 %modules_dir/kernel/drivers/gpu/drm/savage
 %modules_dir/kernel/drivers/gpu/drm/tdfx
@@ -593,26 +668,160 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/gpu/drm/mga
 %modules_dir/kernel/drivers/gpu/drm/via
 
+%files -n kernel-modules-ide-%flavour
+%modules_dir/kernel/drivers/ide/
+%endif
+
 %files -n kernel-modules-drm-nouveau-%flavour
 %modules_dir/kernel/drivers/gpu/drm/nouveau
 
 %files -n kernel-modules-drm-radeon-%flavour
 %modules_dir/kernel/drivers/gpu/drm/radeon
 
-%files -n kernel-modules-ide-%flavour
-%modules_dir/kernel/drivers/ide/
-
-%files -n kernel-modules-kvm-%flavour
-%modules_dir/kernel/arch/x86/kvm
-
 %files -n kernel-modules-v4l-%flavour
 %modules_dir/kernel/drivers/media/
 %dir %modules_dir/kernel/drivers/staging/media
+%dir %modules_dir/kernel/drivers/staging
+%modules_dir/kernel/drivers/media
 
 %files -n kernel-modules-staging-%flavour
-%modules_dir/kernel/drivers/staging/
+%modules_dir/kernel/drivers/staging
 
 %changelog
+* Sat Jan 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.97-alt1
+- v4.19.97
+
+* Wed Jan 15 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.96-alt1
+- v4.19.96(Fixes:_CVE-2019-14615,_CVE-2019-14895)
+
+* Sun Jan 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.95-alt1
+- v4.19.95
+
+* Thu Jan 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.94-alt1
+- v4.19.94
+
+* Mon Jan 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.93-alt1
+- v4.19.93
+
+* Wed Jan 01 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.92-alt1
+- v4.19.92  (Fixes: CVE-2019-19037)
+
+* Sat Dec 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.91-alt1
+- v4.19.91
+
+* Wed Dec 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.90-alt1
+- v4.19.90
+
+* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.89-alt1
+- v4.19.89  (Fixes: CVE-2019-19332)
+
+* Fri Dec 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.88-alt1
+- v4.19.88
+
+* Thu Dec 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.87-alt1
+- v4.19.87  (Fixes: CVE-2019-18660)
+
+* Sun Nov 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.86-alt1
+- v4.19.86
+
+* Thu Nov 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.85-alt1
+- v4.19.85
+
+* Wed Nov 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.84-alt1
+- v4.19.84  (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
+
+* Sun Nov 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.83-alt1
+- v4.19.83
+
+* Wed Nov 06 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.81-alt2
+- Merge kernel-modules-kvm into kernel-image.
+
+* Tue Oct 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.81-alt1
+- v4.19.81
+
+* Fri Oct 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.80-alt1
+- v4.19.80
+
+* Sun Oct 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.79-alt1
+- v4.19.79
+
+* Mon Oct 07 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.78-alt1
+- v4.19.78
+
+* Sat Oct 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.77-alt1
+- v4.19.77
+
+* Tue Oct 01 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.76-alt1
+- v4.19.76
+
+* Sat Sep 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.75-alt1
+- v4.19.75  (Fixes: CVE-2019-14814, CVE-2019-14815, CVE-2019-14816, CVE-2019-14821,
+  CVE-2019-15504)
+
+* Mon Sep 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.73-alt1
+- v4.19.73  (Fixes: CVE-2019-15030, CVE-2019-15031)
+
+* Tue Sep 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.72-alt1
+- v4.19.72
+
+* Fri Sep 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.70-alt1
+- v4.19.70
+
+* Thu Aug 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.69-alt1
+- v4.19.69
+
+* Sun Aug 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.68-alt1
+- v4.19.68
+
+* Fri Aug 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.67-alt1
+- v4.19.67
+
+* Sun Aug 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.66-alt1
+- v4.19.66
+
+* Fri Aug 09 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.65-alt3
+- Pack scripts/ld-version.sh.
+
+* Fri Aug 09 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.65-alt2
+- Support building external modules on ppc64.
+
+* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.65-alt1
+- v4.19.65
+
+* Mon Aug 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.64-alt1
+- v4.19.64  (Fixes: CVE-2019-10207, CVE-2019-11478, CVE-2019-13648, CVE-2019-3900)
+
+* Wed Jul 31 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.19.60-alt2
+- Added aarch64 support.
+
+* Sun Jul 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.60-alt1
+- v4.19.60
+
+* Thu Jul 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt2
+- re-enabled docs subpackage
+
+* Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt1
+- v4.19.59  (Fixes: CVE-2019-3846)
+
+* Fri Jul 12 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.58-alt1
+- v4.19.58
+
+* Fri Jul 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:4.19.57-alt2
+- Added ppc64le support.
+
+* Wed Jul 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.57-alt1
+- v4.19.57
+
+* Tue Jun 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.56-alt1
+- v4.19.56
+
+* Mon Jun 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.55-alt1
+- v4.19.55  (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
+
+* Mon Jun 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.51-alt1
+- v4.19.51
+- multiple kernel remote denial of service issues fixed
+
 * Sun Jun 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.49-alt1
 - v4.19.49
 
