@@ -1,7 +1,7 @@
 %define py_name youtube_dl
 
 Name: youtube-dl
-Version: 2019.07.16
+Version: 2020.01.15
 Release: alt1
 
 Summary: Download videos from YouTube
@@ -82,6 +82,51 @@ cd -
 %python3_sitelibdir/%py_name-*.egg-info
 
 %changelog
+* Fri Jan 17 2020 Cronbuild Service <cronbuild@altlinux.org> 2020.01.15-alt1
+- Updated to 2020.01.15.
+
+* Tue Dec 31 2019 Cronbuild Service <cronbuild@altlinux.org> 2020.01.01-alt1
+- Updated to 2020.01.01.
+
+* Fri Dec 27 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.12.25-alt1
+- Updated to 2019.12.25.
+
+* Sat Nov 30 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.11.28-alt1
+- Updated to 2019.11.28.
+
+* Thu Nov 21 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.11.22-alt1
+- Updated to 2019.11.22.
+
+* Wed Nov 06 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.11.05-alt1
+- Updated to 2019.11.05.
+
+* Mon Oct 28 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.10.29-alt1
+- Updated to 2019.10.29.
+
+* Fri Oct 25 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.10.22-alt1
+- Updated to 2019.10.22.
+
+* Wed Oct 16 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.10.16-alt1
+- Updated to 2019.10.16.
+
+* Tue Oct 01 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.09.28-alt1
+- Updated to 2019.09.28.
+
+* Sat Sep 14 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.09.12.1-alt1
+- Updated to 2019.09.12.1.
+
+* Mon Sep 02 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.09.01-alt1
+- Updated to 2019.09.01.
+
+* Wed Aug 14 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.08.13-alt1
+- Updated to 2019.08.13.
+
+* Fri Aug 02 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.08.02-alt1
+- Updated to 2019.08.02.
+
+* Sun Jul 28 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.07.27-alt1
+- Updated to 2019.07.27.
+
 * Tue Jul 16 2019 Cronbuild Service <cronbuild@altlinux.org> 2019.07.16-alt1
 - Updated to 2019.07.16.
 
