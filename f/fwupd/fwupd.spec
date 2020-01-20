@@ -13,13 +13,13 @@
 
 Summary: Firmware update daemon
 Name: fwupd
-Version: 1.2.9
-Release: alt2
+Version: 1.3.6
+Release: alt1
 License: GPLv2+
 Group: System/Configuration/Hardware
 Url: https://github.com/hughsie/fwupd
 Source0: %name-%version.tar
-Source1: fwupd.watch
+Source2: fwupd.watch
 Patch0: %name-%version-alt.patch
 ExclusiveArch: %ix86 x86_64 aarch64 ppc64le
 
@@ -54,19 +54,28 @@ BuildRequires: meson
 BuildRequires: vala-tools
 BuildRequires: help2man
 BuildRequires: libxmlb-devel
+BuildRequires: bash-completion
+BuildRequires: libtpm2-tss-devel
+BuildRequires: cmake
+BuildRequires: libgusb-gir-devel
+BuildRequires: python3 python3-module-pycairo python3-module-pygobject3 python3-module-Pillow rpm-build-python3
 
 %if_enabled dell
 BuildRequires: libsmbios-devel
 %endif
 
+%if_enabled tests
+BuildRequires: /proc
+%endif
+
 %if_enabled uefi
-BuildRequires: python3 python3-module-pycairo python3-module-pygobject3 python3-module-Pillow
 BuildRequires: libpango-devel
 BuildRequires: libcairo-devel libcairo-gobject-devel
 BuildRequires: libfreetype-devel
 BuildRequires: fontconfig
 BuildRequires: fonts-ttf-dejavu
 BuildRequires: gnu-efi libefivar-devel
+Requires: gcab
 Provides: fwupdate
 Obsoletes: fwupdate
 %endif
@@ -110,8 +119,10 @@ Data files for installed tests.
 %build
 %meson \
     -Dgtkdoc=true \
+    -Dfirmware-packager=true \
     -Dman=false \
     -Dlvfs=true \
+    -Dplugin_flashrom=false \
 %if_enabled tests
     -Dtests=true \
 %else
@@ -145,7 +156,7 @@ Data files for installed tests.
 %if_enabled tests
 %check
 export LD_LIBRARY_PATH=%buildroot%_libdir 
-#meson_test
+%meson_test
 %endif
 
 %install
@@ -158,12 +169,15 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %files -f %name.lang
 %doc README.md AUTHORS COPYING
 %config(noreplace)%_sysconfdir/fwupd/daemon.conf
+%config(noreplace)%_sysconfdir/fwupd/thunderbolt.conf
 %dir %_libexecdir/fwupd
 %dir %_iconsdir/hicolor/scalable/apps
 %_libexecdir/fwupd/fwupd
 %_libexecdir/fwupd/fwupdtool
 %_libexecdir/fwupd/fwupdagent
 %_libexecdir/fwupd/fwupdoffline
+%_libexecdir/fwupd/fwupdtpmevlog
+%_datadir/bash-completion/completions/*
 %_iconsdir/hicolor/scalable/apps/org.freedesktop.fwupd.svg
 %if_enabled uefi
 %_libexecdir/fwupd/fwupdate
@@ -176,7 +190,7 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %config(noreplace)%_sysconfdir/fwupd/remotes.d/*.conf
 %_sysconfdir/pki/fwupd
 %_sysconfdir/pki/fwupd-metadata
-%_sysconfdir/dbus-1/system.d/org.freedesktop.fwupd.conf
+%_datadir/dbus-1/system.d/org.freedesktop.fwupd.conf
 %ifarch x86_64
 %_datadir/fwupd/remotes.d/dell-esrt/metadata.xml
 %endif
@@ -188,9 +202,15 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_datadir/metainfo/org.freedesktop.fwupd.metainfo.xml
 %_datadir/fwupd/metainfo/org.freedesktop.fwupd.remotes.lvfs-testing.metainfo.xml
 %_datadir/fwupd/metainfo/org.freedesktop.fwupd.remotes.lvfs.metainfo.xml
-%_datadir/fwupd/firmware-packager
+%_datadir/fwupd/firmware_packager.py
+%_datadir/fwupd/add_capsule_header.py
+%_datadir/fwupd/install_dell_bios_exe.py
+%_datadir/fwupd/simple_client.py
+%_presetdir/fwupd-refresh.preset
 %_unitdir/fwupd-offline-update.service
 %_unitdir/fwupd.service
+%_unitdir/fwupd-refresh.timer
+%_unitdir/fwupd-refresh.service
 %_unitdir/system-update.target.wants/
 /lib/systemd/system-shutdown/fwupd.shutdown
 %dir %_localstatedir/fwupd
@@ -200,13 +220,16 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_datadir/fwupd/quirks.d/*.quirk
 %_libdir/libfwupd*.so.*
 %_libdir/girepository-1.0/Fwupd-2.0.typelib
+%_libdir/girepository-1.0/FwupdPlugin-1.0.typelib
 /lib/udev/rules.d/*.rules
 %dir %_libdir/fwupd-plugins-3
 %_libdir/fwupd-plugins-3/libfu_plugin_altos.so
 %_libdir/fwupd-plugins-3/libfu_plugin_ata.so
 %_libdir/fwupd-plugins-3/libfu_plugin_csr.so
 %_libdir/fwupd-plugins-3/libfu_plugin_amt.so
+%_libdir/fwupd-plugins-3/libfu_plugin_emmc.so
 %_libdir/fwupd-plugins-3/libfu_plugin_colorhug.so
+%_libdir/fwupd-plugins-3/libfu_plugin_coreboot.so
 %if_enabled dell
 %_libdir/fwupd-plugins-3/libfu_plugin_dell.so
 %_libdir/fwupd-plugins-3/libfu_plugin_dell_esrt.so
@@ -214,31 +237,40 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_libdir/fwupd-plugins-3/libfu_plugin_dell_dock.so
 %_libdir/fwupd-plugins-3/libfu_plugin_dfu.so
 %_libdir/fwupd-plugins-3/libfu_plugin_ebitdo.so
-%_libdir/fwupd-plugins-3/libfu_plugin_flashrom.so
+%_libdir/fwupd-plugins-3/libfu_plugin_tpm.so
+%_libdir/fwupd-plugins-3/libfu_plugin_tpm_eventlog.so
 %_libdir/fwupd-plugins-3/libfu_plugin_fastboot.so
 %_libdir/fwupd-plugins-3/libfu_plugin_nitrokey.so
 %_libdir/fwupd-plugins-3/libfu_plugin_rts54hid.so
 %_libdir/fwupd-plugins-3/libfu_plugin_rts54hub.so
 %_libdir/fwupd-plugins-3/libfu_plugin_superio.so
+%_libdir/fwupd-plugins-3/libfu_plugin_solokey.so
 %_libdir/fwupd-plugins-3/libfu_plugin_steelseries.so
+%_libdir/fwupd-plugins-3/libfu_plugin_jabra.so
+%_libdir/fwupd-plugins-3/libfu_plugin_optionrom.so
+%_libdir/fwupd-plugins-3/libfu_plugin_synaptics_rmi.so
+%_libdir/fwupd-plugins-3/libfu_plugin_vli_usbhub.so
+%_libdir/fwupd-plugins-3/libfu_plugin_synaptics_cxaudio.so
+%_libdir/fwupd-plugins-3/libfu_plugin_logitech_hidpp.so
 %_libdir/fwupd-plugins-3/libfu_plugin_synaptics_prometheus.so
 %if_enabled dell
-%_libdir/fwupd-plugins-3/libfu_plugin_synapticsmst.so
+%_libdir/fwupd-plugins-3/libfu_plugin_synaptics_mst.so
 %endif
 %if_enabled dummy
+%_libdir/fwupd-plugins-3/libfu_plugin_invalid.so
 %_libdir/fwupd-plugins-3/libfu_plugin_test.so
 %endif
+%_libdir/fwupd-plugins-3/libfu_plugin_thelio_io.so
 %_libdir/fwupd-plugins-3/libfu_plugin_thunderbolt.so
 %_libdir/fwupd-plugins-3/libfu_plugin_thunderbolt_power.so
-%_libdir/fwupd-plugins-3/libfu_plugin_udev.so
 %if_enabled uefi
 %_libdir/fwupd-plugins-3/libfu_plugin_nvme.so
 %_libdir/fwupd-plugins-3/libfu_plugin_uefi.so
+%_libdir/fwupd-plugins-3/libfu_plugin_uefi_recovery.so
 %_libdir/fwupd-plugins-3/libfu_plugin_redfish.so
 %config(noreplace)%_sysconfdir/fwupd/uefi.conf
 %config(noreplace)%_sysconfdir/fwupd/redfish.conf
 %endif
-%_libdir/fwupd-plugins-3/libfu_plugin_unifying.so
 %_libdir/fwupd-plugins-3/libfu_plugin_upower.so
 %_libdir/fwupd-plugins-3/libfu_plugin_wacom_usb.so
 %_libdir/fwupd-plugins-3/libfu_plugin_wacom_raw.so
@@ -247,11 +279,14 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 
 %files devel
 %_datadir/gir-1.0/Fwupd-2.0.gir
-%_datadir/gtk-doc/html/libfwupd
+%_datadir/gir-1.0/FwupdPlugin-1.0.gir
+%_datadir/gtk-doc/html/fwupd
 %_includedir/fwupd-1
 %_libdir/libfwupd*.so
 %_libdir/pkgconfig/fwupd.pc
+%_libdir/pkgconfig/fwupdplugin.pc
 %_datadir/vala/vapi/fwupd.*
+%_datadir/vala/vapi/fwupdplugin.*
 
 %files labels
 %if_enabled uefi
@@ -267,6 +302,34 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_datadir/installed-tests/fwupd/*.py*
 
 %changelog
+* Fri Jan 10 2020 Anton Farygin <rider@altlinux.ru> 1.3.6-alt1
+- 1.3.6
+
+* Fri Dec 27 2019 Anton Farygin <rider@altlinux.ru> 1.3.5-alt2
+- added gcab to requires list (used in firmware_packager.py)
+
+* Mon Dec 02 2019 Anton Farygin <rider@altlinux.ru> 1.3.5-alt1
+- 1.3.5
+
+* Mon Nov 25 2019 Anton Farygin <rider@altlinux.ru> 1.3.4-alt1
+- 1.3.4
+
+* Tue Nov 19 2019 Anton Farygin <rider@altlinux.ru> 1.3.3-alt2
+- fixed work with EFI secure boot (closes: #37486)
+
+* Thu Nov 07 2019 Anton Farygin <rider@altlinux.ru> 1.3.3-alt1
+- 1.3.3
+- enabled tests
+
+* Mon Sep 30 2019 Anton Farygin <rider@altlinux.ru> 1.3.2-alt1
+- 1.3.2
+
+* Mon Sep 16 2019 Anton Farygin <rider@altlinux.ru> 1.3.1-alt1
+- 1.3.1
+
+* Tue Jul 30 2019 Anton Farygin <rider@altlinux.ru> 1.2.10-alt1
+- 1.2.10
+
 * Mon Jul 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.2.9-alt2
 - Added ppc64le to ExclusiveArch tag.
 
