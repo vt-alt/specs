@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 0
-%define bugfix 2
+%define bugfix 4
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -434,6 +434,12 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Thu Jan 16 2020 Sergey V Turchin <zerg at altlinux dot org> 9.0.4-alt1
+- update webui branding
+
+* Thu Jan 16 2020 Sergey V Turchin <zerg at altlinux dot org> 9.0.3-alt1
+- update notes
+
 * Fri Dec 27 2019 Sergey V Turchin <zerg at altlinux dot org> 9.0.2-alt1
 - fix browser-qt colors
 
