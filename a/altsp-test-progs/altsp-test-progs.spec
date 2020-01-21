@@ -1,5 +1,5 @@
 Name:     altsp-test-progs
-Version:  1.2
+Version:  2.0
 Release:  alt1
 
 Summary:  Programs for tests for ALT SP OS
@@ -43,8 +43,17 @@ cp -ar autoinstall %buildroot%_libdir/%name-%version
 %doc AUTHORS NEWS README ejector.sh
 
 %changelog
-* Tue Mar 12 2019 Denis Medvedev <nbr@altlinux.org> 1.2-alt1
-- incorporated changes from branch c
+* Wed Jan 15 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.0-alt1
+- build 2.0 version into Sisyphus
+
+* Thu Oct 31 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.2-alt2
+- python2 -> python3
+
+* Thu Apr 25 2019 Denis Medvedev <nbr@altlinux.org> 2.0-alt0.M80C.1
+- bump version number
+
+* Thu Apr 25 2019 Denis Medvedev <nbr@altlinux.org> 1.0-alt0.M80C.7
+- ejector.sh is not needed anymore.
 
 * Thu Feb 28 2019 Denis Medvedev <nbr@altlinux.org> 1.0-alt0.M80C.6
 - added page-analyze,testAlloc and testAllocator, ejector.sh

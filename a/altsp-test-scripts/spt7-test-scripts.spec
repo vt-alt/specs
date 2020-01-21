@@ -1,6 +1,6 @@
-Name: altsp-test-scripts 
-Version: 1.0
-Release: alt1
+Name: altsp-test-scripts
+Version: 1.1
+Release: alt4
 
 Summary: Test scripts for SPT7 distro
 License: GPL
@@ -27,12 +27,27 @@ install -pm755 src/test_access %buildroot%_bindir/
 install -pm755 src/test_clearmem %buildroot%_bindir/
 cp -a setup-tests/ %buildroot%_libexecdir/%name/
 cp -a tests/ %buildroot%_libexecdir/%name/
+mkdir -p %buildroot/etc/sysconfig
+cp sysconfig-s_rm %buildroot/etc/sysconfig/s_rm
 
 %files
 %_bindir/*
 %_libexecdir/%name/
+/etc/sysconfig/*
 
 %changelog
+* Mon Jul 29 2019 Denis Medvedev <nbr@altlinux.org> 1.1-alt4
+- tests moved to /opt
+
+* Fri Jul 26 2019 Denis Medvedev <nbr@altlinux.org> 1.1-alt3
+- s_rm calls s_fill now to prevent remans of dirs in inodes.
+
+* Thu Jun 20 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.1-alt2
+- -r option added to s_rm
+
+* Wed May 22 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.1-alt1
+- s_rm and s_fill packaged
+
 * Wed May 17 2017 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.0-alt1
 - package rename
 
