@@ -18,16 +18,14 @@
 
 Name: NetworkManager-applet-gtk
 Version: 1.8.24
-Release: alt1%git_date
-License: %gpl2plus
+Release: alt2%git_date
+License: GPLv2+
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
-Url: http://www.gnome.org/projects/NetworkManager/
-# Upstream: git://git.gnome.org/network-manager-applet
+Url: https://wiki.gnome.org/Projects/NetworkManager
+Vcs: https://gitlab.gnome.org/GNOME/network-manager-applet.git
 Source: nm-applet-%version.tar
 Patch: nm-applet-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: libdbus-devel libdbus-glib libgtk+3-devel libtool libpolkit1-devel
 
@@ -70,7 +68,7 @@ NetworkManager, including a panel applet for wireless networks.
 
 %if_with libnm_gtk
 %package -n libnm-gtk
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/GNOME
 Summary: Private libraries for NetworkManager GUI support (libnm-glib version)
 
@@ -81,7 +79,7 @@ the GNOME Control Center.
 This library will be obsolete by libnma in the future.
 
 %package -n libnm-gtk-devel
-License: %gpl2plus
+License: GPLv2+
 Group: Development/GNOME and GTK+
 Summary: Private header files for NetworkManager GUI support (libnm-glib version)
 Requires: libnm-gtk = %version-%release
@@ -97,7 +95,7 @@ only by nm-applet and the GNOME control center.
 This library will be obsolete by libnma in the future.
 
 %package -n libnm-gtk-gir
-License: %gpl2plus
+License: GPLv2+
 Group: System/Libraries
 Summary: GObject introspection data for the libnm-gtk
 Requires: libnm-gtk = %version-%release
@@ -106,7 +104,7 @@ Requires: libnm-gtk = %version-%release
 GObject introspection data for the libnm-gtk.
 
 %package -n libnm-gtk-gir-devel
-License: %gpl2plus
+License: GPLv2+
 Group: System/Libraries
 Summary: GObject introspection devel data for the libnm-gtk
 BuildArch: noarch
@@ -118,7 +116,7 @@ GObject introspection devel data for the libnm-gtk.
 %endif
 
 %package -n libnma
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/GNOME
 Summary: Private libraries for NetworkManager GUI support (libnm version)
 
@@ -127,7 +125,7 @@ This package contains private libraries to be used only by nm-applet and
 the GNOME Control Center.
 
 %package -n libnma-devel
-License: %gpl2plus
+License: GPLv2+
 Group: Development/GNOME and GTK+
 Summary: Private header files for NetworkManager GUI support (libnm version)
 Requires: libnma = %version-%release
@@ -139,7 +137,7 @@ This package contains private header and pkg-config files to be used
 only by nm-applet and the GNOME control center.
 
 %package -n libnma-gir
-License: %gpl2plus
+License: GPLv2+
 Group: System/Libraries
 Summary: GObject introspection data for the libnma
 Requires: libnma = %version-%release
@@ -148,7 +146,7 @@ Requires: libnma = %version-%release
 GObject introspection data for the libnma.
 
 %package -n libnma-gir-devel
-License: %gpl2plus
+License: GPLv2+
 Group: System/Libraries
 Summary: GObject introspection devel data for the libnma
 BuildArch: noarch
@@ -254,6 +252,12 @@ make check
 %doc %_datadir/gtk-doc/html/libnma
 
 %changelog
+* Tue Jan 14 2020 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt2
+- Update Url.
+- Use Vcs rpm tag.
+- Don't use rpm-build-licenses.
+- Fixed transparent border on some pages (closes: #37822).
+
 * Thu Oct 10 2019 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt1
 - Updated to 1.8.24.
 
