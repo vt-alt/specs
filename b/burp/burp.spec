@@ -1,9 +1,9 @@
 Name:		burp
-Version:	2.3.4
-Release:	alt1
+Version:	2.3.16
+Release:	alt2
 
 Summary:	Burp is a network-based backup and restore program
-License:	GPL
+License:	AGPL-3.0 and BSD and GPLv2+ and LGPLv2+
 Group:		Archiving/Backup
 Url:		https://burp.grke.org/
 
@@ -20,6 +20,8 @@ BuildRequires:  libacl-devel
 BuildRequires:  libuthash-devel
 BuildRequires:  libyajl-devel
 BuildRequires:  check libcheck-devel
+BuildRequires:  libcap-devel
+BuildRequires:  openssl
 
 BuildRequires: rpm-macros-intro-conflicts
 %filter_from_requires /^\/usr\/local\/bin\/mail\.php$/d
@@ -46,22 +48,13 @@ amount of space that is used by each backup.
 install -D -p -m 0755 .gear/burp.init %{buildroot}%{_initrddir}/burp-server
 install -D -p -m 0644 .gear/burp.service %{buildroot}%{_unitdir}/burp-server.service
 %__subst "s,password,#password,g" %{buildroot}%_sysconfdir/burp/clientconfdir/testclient
-chmod go-rwx %{buildroot}%_sysconfdir/burp
-chmod go-rwx %{buildroot}%_sysconfdir/burp/clientconfdir
-chmod go-rwx %{buildroot}%_sysconfdir/burp/*.conf
 
 %check
 %make_build check
+.gear/test-burp.sh
 
 %files
 %doc %_docdir/%name/
-%dir %_sysconfdir/burp
-%config(noreplace) %_sysconfdir/burp/*.c*nf
-%dir %_sysconfdir/burp/CA-client
-%dir %_sysconfdir/burp/clientconfdir/
-%config(noreplace) %_sysconfdir/burp/clientconfdir/testclient
-%dir %_sysconfdir/burp/clientconfdir/incexc
-%config(noreplace) %_sysconfdir/burp/clientconfdir/incexc/example
 %{_initrddir}/burp-server
 %{_unitdir}/burp-*.*
 %dir %_datadir/%name/
@@ -69,6 +62,18 @@ chmod go-rwx %{buildroot}%_sysconfdir/burp/*.conf
 %_bindir/vss_strip
 %_sbindir/*
 %_man8dir/*
+%defattr(640,root,_burp,3770)
+%dir %_sysconfdir/burp/
+%dir %_sysconfdir/burp/CA-client/
+%dir %_sysconfdir/burp/clientconfdir/
+%dir %_sysconfdir/burp/clientconfdir/incexc/
+%config(noreplace) %_sysconfdir/burp/*.c*nf
+%config(noreplace) %_sysconfdir/burp/clientconfdir/testclient
+%config(noreplace) %_sysconfdir/burp/clientconfdir/incexc/example
+
+%pre
+/usr/sbin/groupadd -r -f _burp
+/usr/sbin/useradd -r -g _burp -d /var/empty -s /dev/null -n -c "BURP BackUp and Restore Program" _burp >/dev/null 2>&1 ||:
 
 %post
 %post_service burp-server
@@ -77,6 +82,21 @@ chmod go-rwx %{buildroot}%_sysconfdir/burp/*.conf
 %preun_service burp-server
 
 %changelog
+* Fri Dec 06 2019 Vitaly Chikunov <vt@altlinux.org> 2.3.16-alt2
+- Adjust chkconfig runlevels so that server isn't enabled by default
+- Make _burp:_burp user and configs owned by root:_burp
+- Fix setgid if group= is not specified
+- Add small functionality test
+
+* Mon Nov 25 2019 Vitaly Chikunov <vt@altlinux.org> 2.3.16-alt1
+- New version 2.3.16
+- Fix license string
+- Fix compatibility with openssl-1.1.1
+- Implement support of keeping readall capabilities
+
+* Tue Oct 01 2019 Vitaly Chikunov <vt@altlinux.org> 2.3.14-alt1
+- New version 2.3.14
+
 * Wed Apr 03 2019 Vitaly Chikunov <vt@altlinux.org> 2.3.4-alt1
 - New version 2.3.4
 
