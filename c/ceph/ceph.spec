@@ -40,7 +40,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.5
+Version: 14.2.6
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1524,6 +1524,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 15 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.6-alt1
+- 14.2.6
+
 * Thu Dec 12 2019 Alexey Shabalin <shaba@altlinux.org> 14.2.5-alt1
 - 14.2.5
 - This release fixes a critical BlueStore bug introduced in 14.2.3
