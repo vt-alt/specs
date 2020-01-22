@@ -2,20 +2,18 @@
 %define git_date %nil
 
 Name: xfce4-whiskermenu-plugin
-Version: 2.3.4
+Version: 2.3.5
 Release: alt1%git_date
 
 Summary: Alternate Xfce menu
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://gottcode.org/xfce4-whiskermenu-plugin/
+Url: https://docs.xfce.org/panel-plugins/xfce4-whiskermenu-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# git://github.com/gottcode/xfce4-whiskermenu-plugin.git
+Vcs: git://github.com/gottcode/xfce4-whiskermenu-plugin.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools gcc-c++ rpm-macros-cmake cmake
 BuildRequires: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel libxfce4util-devel
@@ -53,6 +51,12 @@ keeps a list of the last ten applications that you've launched from it.
 %_man1dir/*.1.*
 
 %changelog
+* Sun Jan 19 2020 Mikhail Efremov <sem@altlinux.org> 2.3.5-alt1
+- Use Vcs rpm tag.
+- Updated url.
+- Don't use rpm-build-licenses.
+- Updated to 2.3.5.
+
 * Tue Nov 05 2019 Mikhail Efremov <sem@altlinux.org> 2.3.4-alt1
 - Updated to 2.3.4.
 
