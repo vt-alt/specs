@@ -1,13 +1,13 @@
 Name: xfce4-panel-profiles
-Version: 1.0.9
-Release: alt2
+Version: 1.0.10
+Release: alt1
 
 Summary: A simple application to manage Xfce panel layouts
 License: GPL-3.0+
 Group: Graphical desktop/XFce
 Url: https://git.xfce.org/apps/xfce4-panel-profiles/about/
 
-# Upstream: https://git.xfce.org/apps/xfce4-panel-profiles/
+Vcs: https://git.xfce.org/apps/xfce4-panel-profiles/
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
@@ -49,8 +49,14 @@ export these panel layouts.
 %_datadir/%name/
 %_desktopdir/*.desktop
 %_datadir/metainfo/*.appdata.xml
+%_man1dir/%name.*
 
 %changelog
+* Wed Jan 15 2020 Mikhail Efremov <sem@altlinux.org> 1.0.10-alt1
+- Added Vcs tag.
+- Added Simply Linux 9 profile.
+- Updated to 1.0.10.
+
 * Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 1.0.9-alt2
 - Don't use rpm-build-licenses.
 - Fix requires: use rpm-build-gir.
