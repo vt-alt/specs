@@ -2,8 +2,15 @@
 
 %def_without crutch
 
+%global __find_debuginfo_files %nil
+%global _unpackaged_files_terminate_build 1
+
+%set_verify_elf_method unresolved=no
+%add_debuginfo_skiplist %go_root %_bindir
+%brp_strip_none %_bindir/*
+
 Name:    gitea
-Version: 1.9.0
+Version: 1.10.2
 Release: alt1
 
 Summary: Git with a cup of tea, painless self-hosted git service
@@ -14,12 +21,13 @@ Url:     https://gitea.io
 
 # https://github.com/go-gitea/gitea
 Source:  %name-%version.tar
+Source1: gopath.tar
 
-Source1: gitea.service
-Source2: gitea.service.d.conf
-Source3: app-%version.ini
+Source2: gitea.service
+Source3: gitea.service.d.conf
 Source4: README.ALT
 
+Patch:  ALT_config.patch
 Patch1: make-version.patch
 
 BuildRequires(pre): rpm-build-golang
@@ -35,6 +43,9 @@ and Gitlab. Gitea is a fork of Gogs.
 
 %prep
 %setup
+tar -xvf %SOURCE1
+mv gopath .gopath
+%patch -p1
 %patch1 -p1
 
 %build
@@ -53,10 +64,10 @@ TAGS="bindata sqlite pam" make VERSION=%version generate all
 mkdir -p %buildroot%_localstatedir/%name
 mkdir -p %buildroot%_logdir/%name
 install -Dm 0755 ".gopath/src/%import_path/%name" %buildroot%_bindir/%name
-install -Dm 0640 %SOURCE1 %buildroot%systemd_unitdir/%name.service
+install -Dm 0644 %SOURCE2 %buildroot%_unitdir/%name.service
 mkdir -p %buildroot%_sysconfdir/systemd/system/gitea.service.d
-install -Dm 0640 %SOURCE2 %buildroot%_sysconfdir/systemd/system/gitea.service.d/port.conf
-install -Dm 0660 %SOURCE3 %buildroot%_sysconfdir/%name/app.ini
+install -Dm 0644 %SOURCE3 %buildroot%_sysconfdir/systemd/system/gitea.service.d/port.conf
+install -Dm 0660 custom/conf/app.ini.sample %buildroot%_sysconfdir/%name/app.ini
 
 # install docs
 mkdir -p %buildroot%_docdir/%name
@@ -65,23 +76,63 @@ install -Dm 0644 ".gopath/src/%import_path/custom/conf/app.ini.sample" \
 install -Dm 0644 %SOURCE4 %buildroot%_docdir/%name/
 
 %pre
-groupadd -rf %name
-useradd -r -g %name -d %_localstatedir/%name %name -s /bin/sh ||:
+groupadd -r -f %name 2>/dev/null ||:
+useradd -r -g %name -c 'Gitea daemon' \
+        -s /bin/bash  -d %_localstatedir/%name %name 2>/dev/null ||:
+
+%post
+%post_service %name
+
+%preun
+%preun_service %name
 
 %files
 %_bindir/%name
-%dir %attr(0700,%name,%name) %_localstatedir/%name
-%dir %attr(0700,%name,%name) %_logdir/%name
+%dir %attr(0750,%name,%name) %_localstatedir/%name
+%dir %attr(0770,root,%name) %_logdir/%name
 %dir %_docdir/%name
 %dir %_sysconfdir/%name
 %config(noreplace) %attr(0660,root,%name) %_sysconfdir/%name/app.ini
-%config(noreplace) %attr(0660,root,%name) %_sysconfdir/systemd/system/gitea.service.d/port.conf
-%systemd_unitdir/%name.service
+%config(noreplace) %_sysconfdir/systemd/system/gitea.service.d/port.conf
+%dir %_sysconfdir/systemd/system/gitea.service.d
+%_unitdir/%name.service
 %_docdir/%name/default-app.ini
 %_docdir/%name/README.ALT
 %doc *.md
 
 %changelog
+* Tue Jan 07 2020 Grigory Ustinov <grenka@altlinux.org> 1.10.2-alt1
+- Build new version.
+
+* Mon Dec 09 2019 Grigory Ustinov <grenka@altlinux.org> 1.10.1-alt1
+- Build new version.
+- Change building scheme.
+
+* Tue Oct 22 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.4-alt3
+- Fix perms on /var/lib/gitea.
+
+* Mon Oct 14 2019 Alexey Shabalin <shaba@altlinux.org> 1.9.4-alt2
+- Update spec:
+  + disable find debuginfo files
+  + %%systemd_unitdir -> %%_unitdir
+  + fixed perm /lib/systemd/system/gitea.service
+  + fixed perm /etc/systemd/system/gitea.service.d/port.conf
+  + fixed perm /var/lib/gitea
+  + fixed perm /var/log/gitea
+  + add %%preun
+  + add comment option to adduser in %%pre
+
+* Mon Oct 14 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.4-alt1
+- Build new version.
+
+* Wed Sep 11 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.3-alt1
+- Build new version.
+
+* Fri Aug 23 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.2-alt1
+- Build new version.
+- Add post section.
+- Updated config-updater for new building scheme.
+
 * Wed Jul 31 2019 Grigory Ustinov <grenka@altlinux.org> 1.9.0-alt1
 - new version 1.9.0
 - Changed config file.
