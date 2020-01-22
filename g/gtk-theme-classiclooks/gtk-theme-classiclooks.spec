@@ -1,19 +1,17 @@
 %define theme_name "ClassicLooks"
 
 Name: gtk-theme-classiclooks
-Version: 1.2.7
+Version: 1.4.2
 Release: alt1
 Epoch: 1
 Summary: ClassicLooks is a Gtk2 & Gtk3 themes
 Group: Graphical desktop/XFce
 
-License: %gpl2plus
+License: GPLv2+
 URL: http://www.itgroup.ro/classiclooks
 Source: %name-%version.tar
 
 BuildArch: noarch
-
-BuildRequires(pre): rpm-build-licenses
 
 Requires: gtk2-theme-classiclooks = %EVR
 Requires: gtk3-theme-classiclooks = %EVR
@@ -100,6 +98,13 @@ done
 %_datadir/themes/*/xfwm4/
 
 %changelog
+* Tue Jan 21 2020 Mikhail Efremov <sem@altlinux.org> 1:1.4.2-alt1
+- Updated to 1.4.2.
+
+* Thu Jan 16 2020 Mikhail Efremov <sem@altlinux.org> 1:1.4.1-alt1
+- Don't use rpm-build-licenses.
+- Updated to 1.4.1.
+
 * Thu Oct 24 2019 Mikhail Efremov <sem@altlinux.org> 1:1.2.7-alt1
 - Updated to 1.2.7.
 - Own themes directories.
