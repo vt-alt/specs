@@ -1,7 +1,7 @@
 %define zabbix_user	zabbix
 %define zabbix_group	zabbix
 %define zabbix_home	/dev/null
-%define svnrev		9377bec666
+%define svnrev		3131fdac04
 
 %def_with pgsql
 %def_enable java
@@ -14,9 +14,10 @@
 %define _unitdir %systemd_unitdir
 %endif
 
+
 Name: zabbix
-Version: 4.0.16
-Release: alt1
+Version: 4.4.4
+Release: alt0.p9.1
 Epoch: 1
 
 Summary: A network monitor
@@ -29,9 +30,8 @@ Url: http://www.zabbix.com
 Source0: %name-%version.tar
 Patch0: %name-%version-alt.patch
 
-%{?_enable_java:BuildPreReq: java-devel-default}
-BuildPreReq: libelf-devel
-BuildRequires(pre): rpm-build-webserver-common rpm-macros-apache2
+%{?_enable_java:BuildRequires(pre): java-devel-default}
+BuildRequires(pre): libelf-devel rpm-build-webserver-common rpm-macros-apache2
 
 # Automatically added by buildreq on Thu Nov 02 2017 (-bi)
 # optimized out: elfutils glibc-kernheaders-generic glibc-kernheaders-x86 libcom_err-devel libkrb5-devel libnet-snmp30 libp11-kit libpq-devel libsasl2-3 libssl-devel net-snmp-config perl pkg-config python-base python3 rpm-build-python3 xz
@@ -396,8 +396,7 @@ find conf -type f -print0 | xargs -0 sed -i \
 
 %install
 # Generate *.mo files
-# TODO 'Remove | grep -v "/locale/fr/"' when fix FR locale
-for pofile in `find frontends/php/locale -type f ! -wholename '*/.svn*' -name '*.po' | grep -v "/locale/fr/"`
+for pofile in `find frontends/php/locale -type f -name '*.po'`
 do
     msgfmt --use-fuzzy -c -o ${pofile%%po}mo $pofile
 done
@@ -553,7 +552,7 @@ fi
 
 %if_with pgsql
 %files common-database-pgsql
-%doc database/postgresql/schema.sql database/postgresql/data.sql database/postgresql/images.sql
+%doc database/postgresql/schema.sql database/postgresql/data.sql database/postgresql/images.sql database/postgresql/timescaledb.sql
 %endif
 
 %files server-common
@@ -638,34 +637,45 @@ fi
 %_includedir/%name
 
 %changelog
+* Tue Jan 21 2020 Andrey Cherepanov <cas@altlinux.org> 1:4.4.4-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Fri Dec 20 2019 Alexei Takaseev <taf@altlinux.org> 1:4.4.4-alt1
+- 4.4.4
+
 * Fri Dec 20 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.16-alt1
 - 4.0.16
 
-* Wed Nov 27 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.15-alt1
-- 4.0.15
-- sources/zabbix.conf: update to comply Apache 2.4 syntax (thnx nickel@, ALT#37494)
+* Thu Nov 28 2019 Alexei Takaseev <taf@altlinux.org> 1:4.4.3-alt1
+- 4.4.3
 
-* Tue Oct 29 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.14-alt1
-- 4.0.14
+* Wed Nov 27 2019 Alexei Takaseev <taf@altlinux.org> 1:4.4.2-alt1
+- 4.4.2
 
-* Thu Oct 03 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.13-alt1
-- 4.0.13
+* Fri Nov 01 2019 Alexei Takaseev <taf@altlinux.org> 1:4.4.1-alt1
+- 4.4.1
 
-* Thu Sep 26 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.12-alt2
+* Thu Oct 03 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.7-alt1
+- 4.2.7
+
+* Thu Sep 26 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.6-alt2
 - Add BR /proc
 
-* Tue Aug 27 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.12-alt1
-- 4.0.12
+* Tue Aug 27 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.6-alt1
+- 4.2.6
 
-* Tue Jul 30 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.11-alt1
-- 4.0.11
+* Tue Jul 30 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.5-alt1
+- 4.2.5
 
-* Wed Jun 26 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.10-alt1
-- 4.0.10
+* Wed Jun 26 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.4-alt1
+- 4.2.4
+
+* Fri May 17 2019 Alexei Takaseev <taf@altlinux.org> 1:4.2.1-alt1
+- 4.2.1
 
 * Fri Apr 19 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.7-alt1
 - 4.0.7
-- Change path to traceroute (ALT#36439)
+- Change path to traceroute (ALT #36439)
 
 * Fri Mar 29 2019 Alexei Takaseev <taf@altlinux.org> 1:4.0.6-alt1
 - 4.0.6
