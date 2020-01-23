@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.3.1
+Version: 1.3.2
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -50,6 +50,12 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Fri Jan 17 2020 Mikhail Efremov <sem@altlinux.org> 1.3.2-alt1
+- Add Portuguese (Brazil) language again.
+- Show language name in this language (closes: #32923).
+- Make all langlists consistent (closes: #37795).
+- Use en_US as default language.
+
 * Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.1-alt1
 - Set Alt+Shift group switch by default (Fixes: 35107)
 
