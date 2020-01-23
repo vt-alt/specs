@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.3.1
+Version: 4.4.0
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -69,6 +69,11 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Fri Jan 17 2020 Mikhail Efremov <sem@altlinux.org> 4.4.0-alt1
+- datetime-functions: Unquote timezone string (closes: #35355).
+- test: Update check-timezone.sh for zone1970.tab file.
+- datetime-functions: Use zone1970.tab file (closes: #37741).
+
 * Thu Aug 22 2019 Paul Wolneykien <manowar@altlinux.org> 4.3.1-alt1
 - Run tests when building.
 - Fix/improve: Protect the installer UI from runtime errors on
