@@ -1,8 +1,10 @@
 %def_disable zeitgeist
+%def_disable settings
 
 Name: qt5-phonon
-Version: 4.10.3
+Version: 4.11.1
 Release: alt2
+%K5init no_altplace
 
 Group: Graphical desktop/KDE
 Summary: KDE5 Multimedia Framework
@@ -10,20 +12,13 @@ Url: http://phonon.kde.org/
 License: LGPLv2+
 
 #Source: ftp://ftp.kde.org/pub/kde/stable/%name/%version/%name-%version.tar.bz2
-Source: phonon4qt5-%version.tar
-# FC
+Source: phonon-%version.tar
 
-# ALT
-Patch100: alt-no-rpath.patch
-Patch101: alt-fix-install.patch
-Patch102: alt-fix-qt-visibility-test.patch
-
-BuildRequires(pre): qt5-base-devel
+BuildRequires(pre): qt5-base-devel rpm-build-kf5
 BuildRequires: qt5-tools-devel qt5-declarative-devel
 BuildRequires: libEGL-devel libGL-devel
 BuildRequires: cmake extra-cmake-modules
 BuildRequires: libalsa-devel libpulseaudio-devel
-BuildRequires: rpm-build-kf5
 %if_enabled zeitgeist
 BuildRequires: libqzeitgeist-devel
 %endif
@@ -62,24 +57,26 @@ with Phonon.
 
 
 %prep
-%setup -qn phonon4qt5-%version
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
+%setup -n phonon-%version
 
 
 %build
 %add_optflags %optflags_shared -UPIE -U__PIE__
 #%add_optflags %optflags_shared
 %K5cmake \
-    -DPHONON_BUILD_PHONON4QT5:BOOL=ON \
     -DSHARE_INSTALL_PREFIX:PATH=%_datadir \
     -DLOCALE_INSTALL_DIR:PATH=%_K5i18n \
     -DPLUGIN_INSTALL_DIR:PATH=%_qt5_archdatadir \
-    -DINCLUDE_INSTALL_DIR:PATH=%_includedir/phonon4qt5 \
     -DPHONON_INSTALL_QT_COMPAT_HEADERS:BOOL=ON \
     -DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT:BOOL=ON \
+    -DPHONON_BUILD_EXPERIMENTAL:BOOL=ON \
+    -DPHONON_BUILD_DEMOS:BOOL=OFF \
+    -DPHONON_BUILD_DESIGNER_PLUGIN:BOOL=ON \
+    -DPHONON_BUILD_SETTINGS:BOOL=ON \
+    -DPHONON_NO_CAPTURE:BOOL=OFF \
     #
+#    -DINCLUDE_INSTALL_DIR:PATH=%_includedir/phonon4qt5 \
+
 %K5make
 
 %install
@@ -94,12 +91,20 @@ do
     ln -sf "$f" "%buildroot/%_libdir/$l"
     rm -f "$p"
 done
-mkdir -p %buildroot/%_datadir/dbus-1/interfaces/
-mv %buildroot/%_K5dbus_iface/* %buildroot/%_datadir/dbus-1/interfaces/
 
 mkdir -p %buildroot/%_qt5_plugindir/phonon4qt5_backend
 
+mkdir -p %buildroot/%_kf5_bin
+mv %buildroot/%_bindir/phononsettings{,-5}
+ln -s `relative %_bindir/phononsettings-5 %_kf5_bin/phononsettings` %buildroot/%_kf5_bin/phononsettings
+
 %K5find_qtlang libphonon_qt
+
+%if_enabled settings
+%files
+%_bindir/phononsettings-5
+%_kf5_bin/phononsettings
+%endif
 
 %files common -f libphonon_qt.lang
 
@@ -121,9 +126,14 @@ mkdir -p %buildroot/%_qt5_plugindir/phonon4qt5_backend
 %_qt5_plugindir/designer/phononwidgets.so
 %_qt5_archdatadir/mkspecs/modules/qt_phonon4qt5.pri
 %_pkgconfigdir/phonon4qt5.pc
-%_datadir/dbus-1/interfaces/org.kde.Phonon4Qt5.AudioOutput.xml
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 4.11.1-alt2
+- don't package settings tool
+
+* Fri Jan 17 2020 Sergey V Turchin <zerg@altlinux.org> 4.11.1-alt1
+- new version
+
 * Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 4.10.3-alt2
 - fix build requires
 
