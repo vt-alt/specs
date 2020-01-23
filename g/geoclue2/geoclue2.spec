@@ -13,7 +13,7 @@
 
 Name: %{_name}2
 Version: %ver_major.3
-Release: alt1
+Release: alt2
 
 Summary: The Geoinformation Service
 Group: System/Libraries
@@ -26,6 +26,10 @@ Source: http://www.freedesktop.org/software/%_name/releases/%ver_major/%_name-%v
 #VCS: https://gitlab.freedesktop.org/geoclue/geoclue.git
 Source: %_name-%version.tar
 %endif
+
+# enable Russian translation
+Source10: ru.po
+Patch10: geoclue2-alt-add-ru-translation.patch
 
 %define glib_ver 2.44
 %define mm_ver 1.6
@@ -120,6 +124,9 @@ This package contains demo programs for GeoClue.
 %setup -n %_name-%version
 rm -f demo/*.desktop.in
 
+%patch10 -p1
+cp -f %SOURCE10 po/ru.po
+
 %build
 %meson \
 	-Ddbus-srv-user=%_name \
@@ -138,6 +145,8 @@ mkdir -p %buildroot%_localstatedir/%_name
 echo 'd %_localstatedir/%_name 0755 %_name %_name' | \
 install -D -m644 /dev/stdin %buildroot%_tmpfilesdir/%_name.conf
 
+%find_lang --all-name %name
+
 %check
 %meson_test
 
@@ -146,7 +155,7 @@ install -D -m644 /dev/stdin %buildroot%_tmpfilesdir/%_name.conf
 %_sbindir/useradd -r -g %_name -d %_localstatedir/%_name -s /dev/null \
     -c 'User for GeoClue service' %_name >/dev/null 2>&1 ||:
 
-%files
+%files -f %name.lang
 %_libexecdir/%_name
 %_sysconfdir/dbus-1/system.d/%__name.conf
 %_sysconfdir/dbus-1/system.d/%__name.Agent.conf
@@ -198,6 +207,9 @@ install -D -m644 /dev/stdin %buildroot%_tmpfilesdir/%_name.conf
 %_xdgconfigdir/autostart/%_name-demo-agent.desktop
 
 %changelog
+* Wed Jul 10 2019 Ivan Razzhivin <underwit@altlinux.org> 2.5.3-alt2
+- enable Russian translation
+
 * Sat May 25 2019 Yuri N. Sedunov <aris@altlinux.org> 2.5.3-alt1
 - 2.5.3
 
