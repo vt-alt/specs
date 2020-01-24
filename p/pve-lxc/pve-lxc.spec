@@ -2,7 +2,7 @@
 
 Name: pve-%rname
 Version: 3.1.0
-Release: alt3
+Release: alt4
 Summary: Linux containers usersapce tools
 Group: System/Configuration/Other
 License: LGPL
@@ -35,6 +35,7 @@ Patch15: 0005-attach-don-t-close-stdout-of-getent.patch
 Patch20: lxc-alt.patch
 Patch21: lxc-altlinux-lxc.patch
 Patch22: lxc-unused-variable.patch
+Patch23: lxc-alt-remove-dependency-on-policycoreutils.patch
 
 BuildRequires: docbook2X libcap-devel libdbus-devel libgnutls-devel libseccomp-devel libselinux-devel
 
@@ -69,6 +70,7 @@ an applications or a system.
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch23 -p1
 
 %build
 %autoreconf
@@ -114,6 +116,9 @@ rm -fr %buildroot/usr/lib/%rname/%rname-apparmor-load
 %_man7dir/*.7*
 
 %changelog
+* Wed Jan 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 3.1.0-alt4
+- remove dependency on policycoreutils
+
 * Wed Aug 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 3.1.0-alt3
 - 3.1.0-64
 
