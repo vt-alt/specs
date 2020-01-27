@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.50
+Version: 2.9.53
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,15 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Wed Jan 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.53-alt1
+- Fix Russian translation of countries (thanks Olesya Gerasimenko).
+
+* Fri Jan 10 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.52-alt1
+- Add translations for alterator-secsetup
+
+* Fri Jan 10 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.51-alt1
+- Update timezone localization from tzdata-2019c.
+
 * Wed Dec 11 2019 Paul Wolneykien <manowar@altlinux.org> 2.9.50-alt1
 - Updated Russian translations for alterator-fbi/ahttpd-power.
 
@@ -513,7 +522,7 @@ make check
 * Mon Jul 05 2010 Andrey Cherepanov <cas@altlinux.org> 2.9-alt8
 - fix conflict with some translated alterator modules (closes: #23719)
 
-* Fri Jun 02 2010 Dmitriy Kruglikov <dkr@altlinux.org>  2.9-alt7
+* Wed Jun 02 2010 Dmitriy Kruglikov <dkr@altlinux.org>  2.9-alt7
 - added translation alterator-sshd
 
 * Fri Apr 09 2010 Anton V. Boyarshinov <boyarsh@altlinux.ru> 2.9-alt6
