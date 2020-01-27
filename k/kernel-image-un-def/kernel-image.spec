@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.4
-%define kernel_sublevel .13
+%define kernel_sublevel .14
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -153,6 +153,7 @@ There are some kernel variants in ALT systems:
 * std-debug: variant of std-def kernel kernel with some DEBUG options enabled;
 * un-def: more modern then std-def and with voluntary (on ppc64le) and
   forced (on x86) preemption enabled.
+* sn-def: insecure kernel for SecretNet only
 
 %package -n kernel-image-domU-%flavour
 Summary: Uncompressed linux kernel for XEN domU boot 
@@ -683,6 +684,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Jan 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.14-alt1
+- v5.4.14
+
 * Sat Jan 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.13-alt1
 - v5.4.13
 
