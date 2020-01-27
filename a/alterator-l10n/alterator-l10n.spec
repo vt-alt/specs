@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.53
+Version: 2.9.54
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,10 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Wed Jan 22 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.54-alt1
+- add translation for alterator-zram-swap
+- update translation alterator-secsetup
+
 * Wed Jan 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.53-alt1
 - Fix Russian translation of countries (thanks Olesya Gerasimenko).
 
