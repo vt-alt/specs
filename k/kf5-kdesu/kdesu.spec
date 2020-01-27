@@ -1,8 +1,8 @@
 %define rname kdesu
 
 Name: kf5-%rname
-Version: 5.65.0
-Release: alt2
+Version: 5.66.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -84,6 +84,9 @@ KF5 library
 %_K5lib/libKF5Su.so.*
 
 %changelog
+* Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.66.0-alt1
+- new version
+
 * Thu Jan 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.65.0-alt2
 - Fixed issue preventing using kdesu to switch to different non-root user.
 

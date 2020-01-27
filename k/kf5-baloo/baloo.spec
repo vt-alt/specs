@@ -1,7 +1,7 @@
 %define rname baloo
 
 Name: kf5-%rname
-Version: 5.65.0
+Version: 5.66.0
 Release: alt1
 %K5init altplace
 
@@ -98,7 +98,6 @@ KF5 library
 %_K5srv/*.protocol
 #%_K5conf_dbus_sysd/*.conf
 #%_K5dbus_sys_srv/*.service
-%_K5icon/hicolor/*/apps/baloo.*
 
 #%files -n polkit-kde-baloo
 #%_datadir/polkit-1/actions/*baloo*filewatch*.policy
@@ -118,6 +117,9 @@ KF5 library
 %_K5lib/libKF5BalooEngine.so.*
 
 %changelog
+* Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.66.0-alt1
+- new version
+
 * Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.65.0-alt1
 - new version
 
