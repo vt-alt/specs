@@ -1,8 +1,8 @@
 %define pypi_name pecan
 
 Name: python-module-%pypi_name
-Version: 1.3.2
-Release: alt2
+Version: 1.3.3
+Release: alt1
 Summary: A lean WSGI object-dispatching web framework
 Group: Development/Python
 
@@ -19,7 +19,7 @@ BuildRequires: python-module-simplegeneric >= 0.8
 BuildRequires: python-module-mako >= 0.4.0
 BuildRequires: python-module-singledispatch
 BuildRequires: python-module-webtest >= 1.3.1
-BuildRequires: python-module-logutils
+BuildRequires: python-module-logutils >= 0.3
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
@@ -29,10 +29,12 @@ BuildRequires: python3-module-simplegeneric >= 0.8
 BuildRequires: python3-module-mako >= 0.4.0
 BuildRequires: python3-module-singledispatch
 BuildRequires: python3-module-webtest >= 1.3.1
-BuildRequires: python3-module-logutils
+BuildRequires: python3-module-logutils >= 0.3
 
 Requires: python-module-singledispatch
-Requires: python-module-logutils
+Requires: python-module-logutils >= 0.3
+Requires: python-module-webob >= 1.2
+Requires: python-module-mako >= 0.4.0
 
 %description
 A WSGI object-dispatching web framework, designed to be lean and
@@ -41,6 +43,10 @@ fast with few dependencies
 %package -n python3-module-%pypi_name
 Summary: A lean WSGI object-dispatching web framework
 Group: Development/Python3
+Requires: python3-module-singledispatch
+Requires: python3-module-logutils >= 0.3
+Requires: python3-module-webob >= 1.2
+Requires: python3-module-mako >= 0.4.0
 
 %description -n python3-module-%pypi_name
 A WSGI object-dispatching web framework, designed to be lean and
@@ -119,6 +125,10 @@ rm -rf %buildroot%python3_sitelibdir/%pypi_name/tests/config_fixtures/bad
 %python3_sitelibdir/*/*/*/+package+/tests
 
 %changelog
+* Wed Jan 22 2020 Alexey Shabalin <shaba@altlinux.org> 1.3.3-alt1
+- 1.3.3
+- update requires
+
 * Tue Jan 29 2019 Stanislav Levin <slev@altlinux.org> 1.3.2-alt2
 - Dropped dependency on python argparse (use stdlib's one).
 
