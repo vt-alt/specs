@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.4
+Version: 1.11
 Release: alt1
 
 Source: %name-%version.tar
@@ -38,6 +38,31 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Wed Jan 22 2020 Ivan Razzhivin <underwit@altlinux.org> 1.11-alt1
+- fix ui text
+- update translation
+
+* Fri Jan 17 2020 Ivan Razzhivin <underwit@altlinux.org> 1.10-alt1
+- fix desktop file
+
+* Wed Jan 15 2020 Ivan Razzhivin <underwit@altlinux.org> 1.9-alt1
+- ui fix
+
+* Wed Jan 15 2020 Ivan Razzhivin <underwit@altlinux.org> 1.8-alt1
+- if user is not selected do not show tty list
+- multiselect for tty
+- correct user list
+- correct tty list
+
+* Fri Jan 10 2020 Ivan Razzhivin <underwit@altlinux.org> 1.7-alt1
+- small fixes
+
+* Fri Jan 10 2020 Ivan Razzhivin <underwit@altlinux.org> 1.6-alt1
+- add localization
+
+* Fri Jan 10 2020 Ivan Razzhivin <underwit@altlinux.org> 1.5-alt1
+- add tty blocking
+
 * Wed Dec 25 2019 Ivan Razzhivin <underwit@altlinux.org> 1.4-alt1
 - add button apply
 - show message if the alt hardening module is inactive
