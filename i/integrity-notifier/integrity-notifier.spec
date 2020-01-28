@@ -1,6 +1,6 @@
 Name:     integrity-notifier
 Version:  0.6.1
-Release:  alt1
+Release:  alt4
 
 Summary:  Integrity event notifier
 License:  GPL v2+
@@ -10,7 +10,7 @@ Url:      http://git.altlinux.org/people/nbr/packages/integrity-notifier.git
 Packager: Denis Medvedev <nbr@altlinux.org>
 BuildArch: noarch
 
-Requires: runit
+Requires: runit /bin/tai64n
 
 Source:   %name-%version.tar
 
@@ -60,6 +60,15 @@ install -D -m0644 log/config %buildroot/%_logdir/integrityd/config
 %config(noreplace) %_sysconfdir/xdg/autostart/*
 
 %changelog
+* Wed May 29 2019 Denis Medvedev <nbr@altlinux.org> 0.6.1-alt4
+- build to c8.1
+
+* Tue May 28 2019 Paul Wolneykien <manowar@altlinux.org> 0.6.1-alt3
+- Fix: Require /bin/tai64n.
+
+* Sat May 25 2019 Denis Medvedev <nbr@altlinux.org> 0.6.1-alt2
+- READMEs updated.
+
 * Mon Apr 29 2019 Paul Wolneykien <manowar@altlinux.org> 0.6.1-alt1
 - Improve: Use the separate desktop message config file with title
   and message.
