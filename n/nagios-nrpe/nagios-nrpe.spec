@@ -11,14 +11,13 @@
 
 Name: nagios-%realname
 Version: 3.2.1
-Release: alt2
+Release: alt3
 
 Summary: NRPE -- Nagios(R) Remote Plug-ins Execution daemon.
 Summary(ru_RU.UTF-8): NRPE -- Сервер выполнения команд Nagios(R) на удаленном хосте.
 License: GPLv2
 Group: Monitoring
 URL: http://www.nagios.org
-Packager: Dmitry Lebkov <dlebkov@altlinux.ru>
 
 ###########################################
 # Relations with Nagios daemon or other nagios-plugins executors pkgs (like NRPE)
@@ -42,13 +41,14 @@ Requires(pre): nagios-common
 Source0: %name-%version.tar
 Source1: %realname-init
 Source2: nagios-addons-nrpe.cfg
+Source3: check_timed_logs.pl
 
 # fix default NRPE configuration
 Patch0: %realname-3.2.1-alt-config.patch
 Patch1: %realname-2.12-alt-defpath.patch
 
-Prefix: %prefix
-
+# due to check_timed_logs.pl
+BuildPreReq: rpm-build-perl perl(File/ReadBackwards.pm) perl(Time/Piece.pm)
 # Automatically added by buildreq on Sat Jul 01 2006
 BuildRequires: libssl-devel openssl
 
@@ -92,7 +92,7 @@ as host or service state.
 %prep
 %setup
 %patch0 -p1
-%patch1 -p1
+#patch1 -p1
 
 %build
 %configure \
@@ -100,34 +100,35 @@ as host or service state.
     --with-nrpe-group=%nagios_grp \
     --with-nrpe-port=65534 \
     --enable-ssl \
-    --enable-command-args \
+    --disable-command-args \
     --with-pluginsdir="%_libexecdir/nagios/plugins"
 
 %make_build all
-pushd contrib
-    gcc -o nrpe_check_control nrpe_check_control.c
-popd
+#pushd contrib
+#	gcc -o nrpe_check_control nrpe_check_control.c
+#popd
 
 %install
-mkdir -p %buildroot/%plugin_docdir
+mkdir -p %buildroot%plugin_docdir
 
 # install binaries
-install -pDm0711 src/nrpe %buildroot/%_sbindir/nrpe
-install -pDm0711 src/check_nrpe %buildroot/%nagios_plugdir/check_nrpe
-install -pDm0711 contrib/nrpe_check_control %buildroot/%nagios_evhdir/nrpe_check_control
+install -pDm0711 src/nrpe %buildroot%_sbindir/nrpe
+install -pDm0711 src/check_nrpe %buildroot%nagios_plugdir/check_nrpe
+#install -pDm0711 contrib/nrpe_check_control %buildroot%nagios_evhdir/nrpe_check_control
+install -pDm0755 %SOURCE3 %buildroot%_sbindir/check_timed_logs.pl
 
 # install config
-install -pDm0644 sample-config/nrpe.cfg %buildroot/%nagios_confdir/nrpe.cfg
-install -pDm0644 %SOURCE2 %buildroot/%plugins_cmddir/nagios-addons-nrpe.cfg
+install -pDm0644 sample-config/nrpe.cfg %buildroot%nagios_confdir/nrpe.cfg
+install -pDm0644 %SOURCE2 %buildroot%plugins_cmddir/nagios-addons-nrpe.cfg
 
 #install init-script
-install -pDm0755 %SOURCE1 %buildroot/%_initdir/nrpe
+install -pDm0755 %SOURCE1 %buildroot%_initdir/nrpe
 
 # install docs
 for d in CHANGELOG.md LEGAL README* SECURITY.md; do
-    install -m 0644 $d %buildroot/%plugin_docdir/
+    install -m 0644 $d %buildroot%plugin_docdir/
 done
-install -m 0644 contrib/README.nrpe_check_control %buildroot/%plugin_docdir/
+#install -m 0644 contrib/README.nrpe_check_control %buildroot%plugin_docdir/
 
 %post
 %post_service %realname
@@ -140,6 +141,7 @@ install -m 0644 contrib/README.nrpe_check_control %buildroot/%plugin_docdir/
 %config(noreplace) %nagios_confdir/nrpe.cfg
 %_initdir/nrpe
 %_sbindir/nrpe
+%_sbindir/check_timed_logs.pl
 %doc %plugin_docdir/*
 # The package does not own its own docdir subdirectory.
 # The line below is added by repocop to fix this bug in a straightforward way.
@@ -149,12 +151,24 @@ install -m 0644 contrib/README.nrpe_check_control %buildroot/%plugin_docdir/
 %files -n nagios-addons-%realname
 %config(noreplace) %plugins_cmddir/nagios-addons-nrpe.cfg
 %nagios_plugdir/check_nrpe
-%nagios_evhdir/nrpe_check_control
+#%nagios_evhdir/nrpe_check_control
 %doc %plugin_docdir/*
 
 %changelog
+* Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.2.1-alt3
+- merge c8.1 changes into sisyphus
+
+* Mon Aug 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 3.2.1-alt2.M80C.2
+- temporarily disabled build of check_control (thx nbr@)
+
+* Mon Aug 05 2019 Ivan Zakharyaschev <imz@altlinux.org> 3.2.1-alt2.M80C.1
+- do not allow arguments (to harden more against CVE-2014-2913, BDU:2019-01845):
+  + set dont_blame_nrpe=0
+  + --disable-command-args
+- package check_timed_logs.pl
+
 * Fri Jan 18 2019 Grigory Ustinov <grenka@altlinux.org> 3.2.1-alt2
-- Real build of new version since 2.12.
+- Real build of new version since 2.12. (Fixes CVE-2014-2913, BDU:2019-01845)
 - Update patches.
 - Massive cleanup spec.
 - Change build scheme.

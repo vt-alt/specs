@@ -13,7 +13,7 @@
 
 Name: nagios
 Version: 3.0.6
-Release: alt6.1
+Release: alt8
 
 Summary: Services and network monitoring system
 License: GPL
@@ -38,6 +38,9 @@ Source12: %name-apache2.conf
 
 # Lighttpd config for Nagios(R)
 Source13: %name-lighttpd.conf
+
+# tmpfiles template
+Source14: nagios-tmpfiles.conf
 
 # fix some default paths
 Patch0: nagios-3.0.2-alt-makefile.patch
@@ -238,6 +241,9 @@ install -pDm0644 %SOURCE12 %buildroot/%_sysconfdir/httpd2/conf/addon.d/A.nagios.
 # lighttpd configs
 install -pDm0644 %SOURCE13 %buildroot/%_sysconfdir/lighttpd/nagios.conf
 
+# tmpfiles creation
+install -pDm0644 %SOURCE14 %buildroot/%_sysconfdir/tmpfiles.d/nagios.conf
+
 %pre common
 %_sbindir/groupadd -r -f %nagios_grp &>/dev/null
 %_sbindir/useradd -r -n -g %nagios_grp -d %_localstatedir/%name \
@@ -334,6 +340,8 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 
 %files common
 %dir %_sysconfdir/%name
+%_sysconfdir/tmpfiles.d/nagios.conf
+
 %dir %plugins_cmddir
 
 %files www
@@ -375,6 +383,12 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 %files full
 
 %changelog
+* Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.0.6-alt8
+- merge sisyphus and c8.1
+
+* Fri Feb 15 2019 Denis Medvedev <nbr@altlinux.org> 3.0.6-alt7
+- added tmpfiles declaration for lockfile
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 3.0.6-alt6.1
 - rebuild with new perl 5.28.1
 

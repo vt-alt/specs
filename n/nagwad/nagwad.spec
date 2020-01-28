@@ -1,6 +1,6 @@
 Name: 	  nagwad
 Version:  0.8
-Release:  alt3%ubt
+Release:  alt4
 
 Summary:  Nagios watch daemon
 License:  GPLv3
@@ -11,8 +11,6 @@ Url: 	  http://git.altlinux.org/people/nbr/packages/nagwad.git
 Source:   %name-%version.tar
 
 BuildArch: noarch
-BuildRequires(pre): rpm-build-ubt
-
 Requires:  systemd
 Requires:  osec-timerunit
 
@@ -32,12 +30,7 @@ Group: System/Servers
 Requires: systemd
 Requires: osec-mailreport
 Conflicts: osec-cronjob
-%if %ubt_id == "M80C"
-Provides: osec-cronjob = 1.2.7-alt3.M80C.1
-%else
-Provides: osec-cronjob
-%endif
-
+Provides: osec-cron
 
 %description -n osec-timerunit
 A set of systemd units that allow periodical start of osec job without using cron
@@ -121,6 +114,27 @@ install -Dm 0755 osec/* %buildroot/etc/osec/
 %_unitdir/osec.timer
 
 %changelog
+* Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.8-alt4
+- build for sisyphus
+
+* Wed Oct 09 2019 Denis Medvedev <nbr@altlinux.org> 0.8-alt3.M80C.7
+- changed the behavour of osec's pipe to leave a log in /var/log
+
+* Thu Aug 08 2019 Denis Medvedev <nbr@altlinux.org> 0.8-alt3.M80C.6
+- added example  nagwad.sh
+
+* Tue Apr 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.8-alt3.M80C.5
+- Updated provides for osec.
+
+* Mon Mar 18 2019 Denis Medvedev <nbr@altlinux.org> 0.8-alt3.M80C.4
+- osec now by default read-only on base, if READABLE= global var not set.
+
+* Fri Jan 19 2018 Denis Medvedev <nbr@altlinux.org> 0.8-alt3.M80C.3
+- reduce of default dir list to check for osec
+
+* Wed May 17 2017 Denis Medvedev <nbr@altlinux.org> 0.8-alt3.M80C.2
+- switch to systemd in logging in c8
+
 * Wed May 17 2017 Denis Medvedev <nbr@altlinux.org> 0.8-alt3%ubt
 - fix permissions for /var/lib/osec
 
