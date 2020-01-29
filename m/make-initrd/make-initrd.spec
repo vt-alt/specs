@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.2.12
+Version: 2.4.0
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -16,6 +16,7 @@ BuildRequires: zlib-devel
 BuildRequires: bzlib-devel
 BuildRequires: liblzma-devel
 BuildRequires: libzstd-devel
+BuildRequires: libelf-devel
 
 Provides: make-initrd(crc32c) = 1
 
@@ -53,9 +54,6 @@ Requires: bootloader-utils >= 0.4.10-alt1
 
 # blkid
 Requires: util-linux >= 2.17.2-alt1
-
-# /sbin/init.initrd
-Requires: sysvinit-initramfs
 
 # This avoids getting a dependency on sh from "#!/bin/sh".
 #AutoReq: yes, nopam, noperl, nopython, noshell, notcl
@@ -210,6 +208,39 @@ fi
 %endif
 
 %changelog
+* Wed Jan 22 2020 Alexey Gladkov <legion@altlinux.ru> 2.4.0-alt1
+- Feature changes:
+  + luks: Add essiv for kernel >= 5.4.0
+- Runtime changes:
+  + Ignore subdirectories in the handlers directory
+  + Remove obsolete debug rules
+- Utilities:
+  + initrd-cp: Use own helper instead of the file utility
+  + depinfo: Add modules.builtin.modinfo support
+- Misc:
+  + Make kernel version check more human readable
+  + Add helpers to compare kernel version
+  + Add testsuite
+  + add-module-pattern: Create tempdir in proper place
+
+* Fri Nov 08 2019 Alexey Gladkov <legion@altlinux.ru> 2.3.0-alt1
+- New feature:
+  + network: New feature to configure network interfaces in initrd.
+- Feature changes:
+  + kbd: Configure console fonts if KMS is enabled
+  + kbd: Use udev to setup font and keymap
+  + kbd: Add guess-script
+- Runtime changes:
+  + Allow negative values in cmdline parameters
+  + Rewrite network configuration
+  + Allow to continue boot process after rdshell
+  + Re-implement ueventd in shell
+  + Allow more than one pre/post script for service
+  + Allow run script before and after each service
+- Utilities:
+  + depinfo: Ignore files in current directory if the argument does
+    not look like module name
+
 * Thu Jul 25 2019 Alexey Gladkov <legion@altlinux.ru> 2.2.12-alt1
 - Runtime changes:
   + Add /etc/sysconfig/init
