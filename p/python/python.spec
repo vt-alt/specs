@@ -4,7 +4,7 @@
 Name: %real_name
 
 Version: 2.7.16
-Release: alt1
+Release: alt1.M90P.1
 
 %define package_name		%real_name
 %define weight			1001
@@ -68,6 +68,7 @@ Patch22: python-2.6.6-alt-bdist_altrpm.patch
 Patch23: python-2.7.4-alt-linux2-platform.patch
 Patch24: python-2.7.10-python-config-ldflags-alt.patch
 Patch25: python2-platform-osrelease.patch
+Patch26: python-ignore-env-trust-security.patch
 
 # TODO: send upstream
 Patch31: python-2.7.14-alt-test_resource-skip-impossible.patch
@@ -722,6 +723,7 @@ install -p -m644 %SOURCE12 -t Lib/distutils/command
 %patch23 -p1
 %patch24 -p2
 %patch25 -p1
+%patch26 -p1
 
 %patch31 -p2
 #patch32 -p2
@@ -1175,6 +1177,9 @@ rm -f %buildroot%_man1dir/python2.1 %buildroot%_man1dir/python.1
 %endif
 
 %changelog
+* Fri Jan 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.7.16-alt1.M90P.1
+- 'Trusted mode': optional modules loading paths restriction
+
 * Mon Apr 01 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.7.16-alt1
 - Updated to 2.7.16 (fixes FTBFS with openssl 1.1.1).
 - Removed redundant R: alternatives.
