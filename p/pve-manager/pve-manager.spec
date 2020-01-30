@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
 Version: 6.0.7
-Release: alt7
+Release: alt9
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -79,6 +79,10 @@ Patch43: pve-mini-journalreader-getopt.patch
 Patch44: 0001-usb-Enable-USB3-for-Spice-USB-passthrough.patch
 Patch45: qemu-server-xhci.patch
 Patch46: pve-manager-timezone.patch
+Patch47: pve-widget-toolkit-ComboGrid-mark-multiSelect.patch
+Patch48: pve-widget-toolkit-ComboGrid-multiSelect.patch
+Patch49: qemu-server-qxl-max_outputs.patch
+Patch50: pve-container-ENV.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
 BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLeay perl-File-ReadBackwards
@@ -193,6 +197,10 @@ This is used to implement the PVE REST API
 %patch44 -p0 -b .usb3
 %patch45 -p0 -b .xhci
 %patch46 -p0 -b .timezone
+%patch47 -p0
+%patch48 -p0
+%patch49 -p0 -b .max_outputs
+%patch50 -p0 -b .ENV
 
 find -name Makefile | while read m; do
 	sed -i '/^.*\/usr\/share\/dpkg.*/d' $m;
@@ -576,6 +584,12 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Wed Jan 22 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt9
+- qemu-server: fixed qxl display
+
+* Tue Jan 21 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt8
+- pve-widget-toolkit: merged some upstream patches
+
 * Wed Jan 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt7
 - fixed get/set timezone
 
