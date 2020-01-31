@@ -3,7 +3,7 @@
 %define is_ffmpeg %([ -n "`rpmquery --qf '%%{SOURCERPM}' libavformat-devel 2>/dev/null | grep -e '^libav'`" ] && echo 0 || echo 1)
 
 Name: kdenlive
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init no_altplace man appdata
 
@@ -79,6 +79,7 @@ sed -i 's|^Exec=\(.*\)|Exec=kde5 \1|' %buildroot/%_K5xdgapp/org.kde.kdenlive.des
 sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 
 %files -f %name.lang
+%doc AUTHORS
 %config(noreplace) %_xdgconfigdir/*kdenlive*
 %_K5bin/*
 %_K5plug/mltpreview.so
@@ -96,6 +97,9 @@ sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 
 
 %changelog
+* Fri Jan 24 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 22 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

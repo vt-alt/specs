@@ -9,6 +9,7 @@
 
 %def_disable debug
 %def_disable vdpau
+%def_enable libvidstab
 
 %define Name MLT
 %define mlt_sover 6
@@ -17,7 +18,7 @@
 %define libmltxx libmlt++%mltxx_sover
 
 Name: mlt
-Version: 6.16.0
+Version: 6.18.0
 Release: alt1
 
 Summary: Multimedia framework designed for television broadcasting
@@ -43,7 +44,7 @@ Patch103: alt-libav.patch
 # optimized out: elfutils gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 libGL-devel libSDL-devel libX11-devel libavcodec-devel libavformat-devel libavutil-devel libcdio-paranoia libdc1394-22 libgpg-error libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-gui libqt5-svg libqt5-widgets libqt5-xml libraw1394-11 libstdc++-devel libvdpau-devel libx265-130 perl pkg-config python-base python-devel python-modules qt5-base-devel rpm-build-gir swig-data xorg-xproto-devel
 #BuildRequires: frei0r-devel ladspa_sdk libSDL2-devel libSDL2_image-devel libalsa-devel libavdevice-devel libavfilter-devel libexif-devel libfftw3-devel libjack-devel libopencv-devel libpulseaudio-devel libsamplerate-devel libsox-devel libswscale-devel libxml2-devel qt5-svg-devel swig
 #BuildRequires: frei0r-devel ladspa_sdk libSDL_image-devel libalsa-devel libavdevice-devel libavformat-devel libexif-devel libfftw3-devel libjack-devel libpulseaudio-devel libsamplerate-devel libsox-devel libswfdec-devel libswscale-devel libxml2-devel python-module-google python3-dev qt5-svg-devel rpm-build-ruby swig
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt libavformat-devel
+BuildRequires(pre): rpm-build-kf5 rpm-build-python3 libavformat-devel
 BuildRequires: qt5-svg-devel
 BuildRequires: frei0r-devel libSDL2_image-devel libalsa-devel libexif-devel
 BuildRequires: libavfilter-devel libswscale-devel libavdevice-devel libavformat-devel
@@ -51,11 +52,14 @@ BuildRequires: libavfilter-devel libswscale-devel libavdevice-devel libavformat-
 BuildRequires: libswresample-devel
 %endif
 BuildRequires: libfftw3-devel libjack-devel libpulseaudio-devel libsamplerate-devel libsox-devel
+BuildRequires: libxml2-devel swig ladspa_sdk
+%if_enabled libvidstab
 BuildRequires: libvidstab-devel
-BuildRequires: libxml2-devel swig python-devel ladspa_sdk
+%endif
 %if_enabled vdpau
 BuildRequires: libvdpau-devel
 %endif
+BuildRequires: python3-devel
 
 %description
 %Name is a multimedia framework designed for television broadcasting.
@@ -101,10 +105,10 @@ Group: Development/C++
 %description -n libmlt++-devel
 Development files for %Name.
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Summary: Python package to work with %Name
 Group: Development/Python
-%description -n python-module-%name
+%description -n python3-module-%name
 This module allows to work with %Name using python..
 
 %prep
@@ -127,8 +131,22 @@ This module allows to work with %Name using python..
 VDPAU_SONAME=`readelf -a %_libdir/libvdpau.so | grep SONAME| sed 's/.*\[//'| sed 's/\].*//'`
 sed -i "s/__VDPAU_SONAME__/${VDPAU_SONAME}/" src/modules/avformat/vdpau.c
 
+find src/swig/python -name '*.py' | xargs sed -i '1s|^#!/usr/bin/env python|#!%{__python3}|'
+sed -i -e 's|which python|which python3|' src/swig/python/build
+sed -i -e 's|python -c|python3 -c|' src/swig/python/build
+sed -i -e 's|python-config|python3-config|' src/swig/python/build
+sed -i -e 's|python{}.{}|python{}.{}m|' src/swig/python/build
+
+%ifarch %e2k
+sed -i 's,-fno-tree-pre,,' configure
+%endif
+
 %build
 %mIF_ver_lt %_qt5_version 5.9
+%add_optflags -std=c++11
+%endif
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.12
 %add_optflags -std=c++11
 %endif
 export CC=gcc CXX=g++ CFLAGS="%optflags" QTDIR=%_qt5_prefix
@@ -164,10 +182,10 @@ export CC=gcc CXX=g++ CFLAGS="%optflags" QTDIR=%_qt5_prefix
 %make_build
 
 %install
-%make DESTDIR=%buildroot install
-install -d %buildroot%python_sitelibdir
-install -pm 0644 src/swig/python/%name.py %buildroot%python_sitelibdir/
-install -pm 0755 src/swig/python/_%name.so %buildroot%python_sitelibdir/
+%makeinstall_std
+install -d %buildroot/%python3_sitelibdir
+install -pm 0644 src/swig/python/%name.py %buildroot/%python3_sitelibdir/
+install -pm 0755 src/swig/python/_%name.so %buildroot/%python3_sitelibdir/
 
 %files -n %name-utils
 #%doc docs/melt.txt
@@ -184,8 +202,8 @@ install -pm 0755 src/swig/python/_%name.so %buildroot%python_sitelibdir/
 %_libdir/libmlt++.so.%mltxx_sover
 %_libdir/libmlt++.so.*
 
-%files -n python-module-%name
-%python_sitelibdir/*
+%files -n python3-module-%name
+%python3_sitelibdir/*
 
 %files -n libmlt-devel
 #%doc docs/framework.txt
@@ -199,44 +217,57 @@ install -pm 0755 src/swig/python/_%name.so %buildroot%python_sitelibdir/
 %_pkgconfigdir/mlt++.pc
 
 %changelog
+* Fri Jan 24 2020 Sergey V Turchin <zerg@altlinux.org> 6.18.0-alt1
+- new version
+
+* Wed Jul 31 2019 Michael Shigorin <mike@altlinux.org> 6.16.0-alt4
+- introduced libvidstab knob (on by default)
+- E2K: explicit -std=c++11; avoid lcc-unsupported option
+
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 6.16.0-alt3
+- build with python3
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 6.16.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 6.16.0-alt1
 - new version
 
 * Tue Mar 26 2019 Sergey V Turchin <zerg@altlinux.org> 6.12.0-alt1
 - new version
 
-* Wed Jul 11 2018 Sergey V Turchin <zerg@altlinux.org> 6.10.0-alt1%ubt.1
+* Wed Jul 11 2018 Sergey V Turchin <zerg@altlinux.org> 6.10.0-alt1.1
 - fix build requires
 
-* Fri Jul 06 2018 Sergey V Turchin <zerg@altlinux.org> 6.10.0-alt1%ubt
+* Fri Jul 06 2018 Sergey V Turchin <zerg@altlinux.org> 6.10.0-alt1
 - new version
 
-* Thu Jun 14 2018 Sergey V Turchin <zerg@altlinux.org> 6.8.0-alt1%ubt
+* Thu Jun 14 2018 Sergey V Turchin <zerg@altlinux.org> 6.8.0-alt1
 - new version
 
-* Thu Apr 05 2018 Oleg Solovyov <mcpain@altlinux.org> 6.6.0-alt2%ubt
+* Thu Apr 05 2018 Oleg Solovyov <mcpain@altlinux.org> 6.6.0-alt2
 - rebuild with libvidstab
 
 * Sun Mar 18 2018 Fr. Br. George <george@altlinux.ru> 6.6.0-alt1
 - Autobuild version bump to 6.6.0
 
-* Tue Dec 26 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt5%ubt
+* Tue Dec 26 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt5
 - fix to build with glibc-2.26
 
-* Wed Nov 01 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt4%ubt.1
+* Wed Nov 01 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt4.1
 - fix compile flags
 
-* Wed Nov 01 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt4%ubt
+* Wed Nov 01 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt4
 - Allow Mlt::Repository to be deleted without bad side effect (ALT#34108)
 
-* Tue Jun 20 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt3%ubt
+* Tue Jun 20 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt3
 - fix find ffmpeg presets
 - update Debian patches
 
-* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt2%ubt
+* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt2
 - rebuild with ffmpeg
 
-* Tue Apr 04 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt1%ubt
+* Tue Apr 04 2017 Sergey V Turchin <zerg@altlinux.org> 6.4.1-alt1
 - new version
 - build without libswfdec (ALT#33326)
 
