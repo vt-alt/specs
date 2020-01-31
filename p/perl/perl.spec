@@ -1,10 +1,10 @@
 Name: perl
-Version: 5.28.1
-Release: alt1
+Version: 5.28.2
+Release: alt2
 Epoch: 1
 
 Summary: Practical Extraction and Report Language
-License: GPL or Artistic
+License: Artistic-1.0 OR GPL-2.0-or-later
 Group: Development/Perl
 URL: http://www.perl.org
 Packager: Perl Maintainers Team <cpan@packages.altlinux.org>
@@ -38,6 +38,8 @@ Patch20: perl-5.24.1-alt-viy-installperl-ExtUtils-MakeMaker-version.patch
 # mail from Oleg Solovyov; see patch body
 Patch21: perl-5.24.3-alt-solovyov.patch
 Patch22: perl-5.28.1-alt-viy-caretx-chroot-support.patch
+Patch23: perl-5.22.3-alt-mcpain-trust-mode.patch
+Patch24: perl-5.28.2-fix-Time-Local-test-2020.patch
 
 # cpan update patches here. use format below:
 #Patch50: cpan-update-Socket-2.013-to-Socket-2.016.diff
@@ -60,9 +62,6 @@ Patch313:        perl-5.26.0-perl-131588-be-a-little-more-careful-in-arybase-_ti
 # Link XS modules to pthread library to fix linking with -z defs,
 # <https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/3RHZEHLRUHJFF2XGHI5RB6YPDNLDR4HG/>
 Patch314:        perl-5.27.8-hints-linux-Add-lphtread-to-lddlflags.patch
-
-# Adjust tests to gdbm-1.15, RT#133295
-Patch315:        perl-5.29.0-Remove-ext-GDBM_File-t-fatal.t.patch
 
 # Fix printing a warning about a wide character when matching a regular
 # expression while ISO-8859-1 locale is in effect, in upstream after 5.29.0
@@ -98,16 +97,8 @@ Patch327:        perl-5.29.2-multiconcat-mutator-not-seen-in-lex.patch
 # in upstream after 5.29.2
 Patch328:        perl-5.29.2-perl-132683-don-t-try-to-convert-PL_sv_placeholder-i.patch
 
-# Fix upack "u" of invalid data, RT#132655, in upstream after 5.29.2
-Patch329:        perl-5.29.2-perl-132655-nul-terminate-result-of-unpack-u-of-inva.patch
-
 # Pass the correct CFLAGS to dtrace
 Patch330:        perl-5.28.0-Pass-CFLAGS-to-dtrace.patch
-
-# Fix script run matching to allow ASCII digits in scripts that use their own in
-# addition, RT#133547, in upstream after 5.29.3
-Patch331:        perl-5.28.1-regexec.c-Rename-variable.patch
-Patch332:        perl-5.28.1-PATCH-perl-133547-script-run-broken.patch
 
 # Fix PathTools tests to cope with ESTALE error, RT#133534,
 # in upstream after 5.29.3
@@ -116,15 +107,85 @@ Patch333:        perl-5.29.3-Accept-also-ESTALE-fix-for-RT-133534.patch
 # Fix an undefined behaviour in S_hv_delete_common(), in upstream after 5.29.5
 Patch334:        perl-5.29.5-S_hv_delete_common-avoid-undefined-behaviour.patch
 
-# Fix in-place edit to replace files on a successful perl exit status,
-# bug #1650041, RT#133659, in upstream after 5.29.5
-Patch335:        perl-5.29.5-perl-133659-move-argvout-cleanup-to-a-new-function.patch
-Patch336:        perl-5.29.5-perl-133659-tests-for-global-destruction-handling-of.patch
-Patch337:        perl-5.29.5-perl-133659-make-an-in-place-edit-successful-if-the-.patch
-
 # Fix compiling regular expressions that contain both compile- and run-time
 # compiled code blocks, RT#133687, in upstream after 5.29.5
 Patch338:        perl-5.29.5-handle-code-mixed-compile-and-runtime.patch
+
+# Adjust tests to gdbm-1.15, RT#133295, in upstream after 5.29.5
+Patch339:        perl-5.28.1-ext-GDBM_File-t-fatal.t-handle-non-fatality.patch
+Patch340:        perl-5.29.5-Correct-spelling-error-in-skip-message.patch
+Patch341:        perl-5.29.5-Avoid-Use-of-uninitialized-value-res-in-numeric-eq-w.patch
+
+# Fix reporting a line number for non-terminated prototypes, RT#133524,
+# in upstream after 5.29.6
+Patch344:        perl-5.28.1-perl-133524-report-line-number-for-Prototype-not-ter.patch
+
+# Fix first eof() return value, RT#133721, in upstream after 5.29.6
+Patch345:        perl-5.29.6-perl-133721-TODO-test-for-eof-with-no-LAST_FH.patch
+Patch346:        perl-5.29.6-First-eof-should-return-true.patch
+
+# Prevent long jumps from clobbering local variables, RT#133575,
+# in upstream after 5.29.6
+Patch349:        perl-5.29.6-perl-133575-prevent-set-longjmp-clobbering-locals-in.patch
+
+# Fix a mismatch with a case-insesitive regular expression on a text with
+# ligatures, RT#133756, in upstream after 5.29.6
+Patch350:        perl-5.29.6-PATCH-perl-133756-Failure-to-match-properly.patch
+
+# Fix setting magic when changing $^R, RT#133782, in upstream after 5.29.7
+Patch353:        perl-5.28.1-perl-133782-set-magic-when-changing-R.patch
+
+# Fix a race when loading XS modules, in upstream after 5.29.7
+Patch354:        perl-5.29.7-Perl_my_cxt_init-fix-potential-race-condition.patch
+
+# Fix a leak when compiling a typed hash dereference, in upstream after 5.29.8
+Patch356:        perl-5.28.1-fix-leak-when-compiling-typed-hash-deref.patch
+Patch357:        perl-5.29.8-fix-blead-on-non-threaded-builds.patch
+
+# Fix a buffer overread when handling a scope error in qr/\(?{/, RT#133879,
+# in upstream after 5.29.8
+Patch358:        perl-5.29.8-handle-scope-error-in-qr.patch
+
+# Fix a buffer overread when parsing a regular expression with an unknown
+# character name, RT#133880, in upstream after 5.29.9
+Patch359:        perl-5.28.1-PATCH-perl-133880-assertion-failure.patch
+
+# Fix mbstate_t initialization in POSIX::mblen, RT#133928,
+# in upstream after 5.29.9
+Patch360:        perl-5.28.1-Fix-POSIX-mblen-mbstate_t-initialization-on-threaded.patch
+
+# Fix a memory leak when cloning a regular expression, in upstream after 5.29.9
+Patch361:        perl-5.29.9-fix-leak-in-cloned-regexes.patch
+
+# Fix a memory leak when spawning threads in a BEGIN phase,
+# in upstream after 5.29.9
+Patch362:        perl-5.29.9-fix-leak-in-BEGIN-threads-new.patch
+
+# Fix a memory leak when assigning a regular expression to a non-copy-on-write
+# string, in upstream after 5.29.9
+Patch363:        perl-5.29.9-avoid-leak-assigning-regexp-to-non-COW-string.patch
+
+# Fix a memory leak when assignig to a localized ${^WARNING_BITS},
+# in upstream after 5.29.9
+Patch364:        perl-5.29.9-fix-leak-with-local-WARNING_BITS.patch
+
+# Fix a memory leak when parsing misindented here-documents,
+# in upstream after 5.29.9
+Patch365:        perl-5.28.1-fix-a-leak-with-indented-heredocs.patch
+
+# Fix a memory leak in package name lookup, RT#133977, in upstream after 5.29.9
+Patch366:        perl-5.29.9-fix-leak-in-package-name-lookup.patch
+Patch367:        perl-5.29.9-Fix-recent-double-free-in-S_parse_gv_stash_name.patch
+
+# Fix a memory leak when deletion in a tied hash dies, in upstream after 5.29.9
+Patch368:        perl-5.29.9-avoid-leak-with-local-h-foo-a-n.patch
+
+# Fix a crash when matching case insensitively, RT#133892,
+# in upstream after 5.29.9
+Patch369:        perl-5.28.1-perl-133892-coredump-in-Perl_re_intuit_start.patch
+
+# Fix a memory leak when warning about malformed UTF-8 string
+Patch370:        perl-5.29.9-fix-leak-in-Perl__force_out_malformed_utf8_message.patch
 # EndPatches(fedora): --------------------------------------
 
 # there's a problem with strict.pm
@@ -293,6 +354,8 @@ equivalent text will have identical binary representations.
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch23 -p1
+%patch24 -p1
 %patch51 -p1
 
 # ------ inserted with srpm-spec-inject-patches(1) -------
@@ -301,7 +364,6 @@ equivalent text will have identical binary representations.
 %patch311 -p1
 %patch313 -p1
 %patch314 -p1
-%patch315 -p1
 %patch317 -p1
 %patch318 -p1
 %patch320 -p1
@@ -311,16 +373,35 @@ equivalent text will have identical binary representations.
 %patch326 -p1
 %patch327 -p1
 %patch328 -p1
-%patch329 -p1
 %patch330 -p1
-%patch331 -p1
-%patch332 -p1
 %patch333 -p1
 %patch334 -p1
-%patch335 -p1
-%patch336 -p1
-%patch337 -p1
 %patch338 -p1
+%patch339 -p1
+%patch340 -p1
+%patch341 -p1
+%patch344 -p1
+%patch345 -p1
+%patch346 -p1
+%patch349 -p1
+%patch350 -p1
+%patch353 -p1
+%patch354 -p1
+%patch356 -p1
+%patch357 -p1
+%patch358 -p1
+%patch359 -p1
+%patch360 -p1
+%patch361 -p1
+%patch362 -p1
+%patch363 -p1
+%patch364 -p1
+%patch365 -p1
+%patch366 -p1
+%patch367 -p1
+%patch368 -p1
+%patch369 -p1
+%patch370 -p1
 # EndPatches(fedora): --------------------------------------
 
 # .orig files can break some test
@@ -358,8 +439,8 @@ sh Configure -ders \
 	-Dmyhostname=localhost -Dperladmin=root@localhost
 
 %ifarch %e2k
-# till apx. lcc-1.23
-echo '-lcxa' >> ./ext.libs
+# before lcc-1.23
+cc --version | grep -q '^lcc:1.21' && echo '-lcxa' >> ./ext.libs
 %endif
 
 # kill rpath
@@ -992,6 +1073,17 @@ echo perl >%buildroot%_sysconfdir/buildreqs/packages/substitute.d/perl-base
 	%autolib/Unicode
 
 %changelog
+* Thu Jan 23 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1:5.28.2-alt2
+- Licence tag fixed
+- build in year 2020 fixed (Time-Local)
+- 'trust mode' implemented by mcpain@
+
+* Sat May 25 2019 Igor Vlasenko <viy@altlinux.ru> 1:5.28.2-alt1
+- 5.28.1 -> 5.28.2
+
+* Thu Apr 04 2019 Michael Shigorin <mike@altlinux.org> 1:5.28.1-alt2
+- E2K: fix build with lcc-1.23
+
 * Fri Jan 04 2019 Igor Vlasenko <viy@altlinux.ru> 1:5.28.1-alt1
 - 5.26.2 -> 5.28.1
 
