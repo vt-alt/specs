@@ -1,6 +1,6 @@
 Name:           x2goclient
 Version:        4.1.2.1
-Release:        alt2
+Release:        alt3
 Summary:        X2Go Client application (Qt)
 
 Group:          Communications
@@ -19,6 +19,8 @@ Patch4:		x2goclient-encoding.patch
 Patch5:		x2goclient-alt-no-pam.patch
 Patch6:		alt-qt5.11.patch
 Patch7:		x2goclient-alt-select-broker-sessions.patch
+Patch8:		x2goclient-strip-home.patch
+Patch9:		x2goclient-use-utf8.patch
 
 BuildRequires(pre): libssh-devel
 BuildRequires(pre): rpm-build-apache2
@@ -66,6 +68,8 @@ You can use it to connect to running sessions and start new sessions.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 # update russian translations
 cat %SOURCE1 >res/i18n/x2goclient_ru.ts
 # Fix up install issues
@@ -105,6 +109,10 @@ ln -s ../../x2go/x2goplugin-apache.conf %buildroot%_sysconfdir/httpd/conf.d/x2go
 %_man1dir/%name.1*
 
 %changelog
+* Wed Jan 29 2020 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.1-alt3
+- Strip home from paths (Closes: #37931, #37934)
+- Send commands via SSH using UTF-8 (Closes: #37933)
+
 * Thu Aug 01 2019 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.1-alt2
 - Allow session selection in broker mode
 
