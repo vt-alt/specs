@@ -2,7 +2,7 @@
 
 Name: alterator-grub
 Version: 0.13
-Release: alt1
+Release: alt2
 
 Summary: alterator module to setup grub bootloader
 License: GPL
@@ -53,6 +53,10 @@ alterator module to setup grub bootloader
 %_bindir/*
 
 %changelog
+* Thu Jan 23 2020 Nikolai Kostrigin <nickel@altlinux.org> 0.13-alt2
+- fix grub bootloader installation failure if a LUKS encryption
+  is chosen for root partition (closes: #28225)
+
 * Tue Jul 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.13-alt1
 - Added ppc64le support.
 

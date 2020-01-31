@@ -3,10 +3,10 @@
 
 Name: grub
 Version: 2.02
-Release: alt20
+Release: alt22
 
 Summary: GRand Unified Bootloader
-License: GPL
+License: GPL-3
 Group: System/Kernel and hardware
 
 Url: http://www.gnu.org/software/grub
@@ -75,12 +75,11 @@ Patch117: grub-2.02-sb-0017-Clean-up-some-errors-in-the-linuxefi-loader.patch
 
 Patch201: grub-2.02-alt-relaxed-kernel-sign-check.patch
 
+BuildRequires(pre): rpm-macros-uefi
 BuildRequires: flex fonts-bitmap-misc fonts-ttf-dejavu libfreetype-devel python-modules ruby autogen
 BuildRequires: liblzma-devel help2man zlib-devel
 BuildRequires: libdevmapper-devel
 BuildRequires: texinfo
-BuildRequires: pesign >= 0.109-alt4
-BuildRequires: rpm-macros-uefi
 
 # fonts: choose one
 
@@ -207,7 +206,7 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
+%patch8 -p2
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
@@ -269,7 +268,8 @@ build_efi_image() {
 		search_label sleep test syslinuxcfg all_video video font \
 		gfxmenu gfxterm gfxterm_background lvm lsefi efifwsetup cat \
 		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
-		extcmd keystatus \
+		extcmd keystatus procfs cryptodisk gcry_rijndael gcry_sha1 \
+		gcry_sha256 luks gcry_sha512 gcry_serpent gcry_twofish \
 		"$@"
 }
 
@@ -390,16 +390,6 @@ install -pDm644 build-efi/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}sb.efi
 install -pDm644 build-efi-relaxed/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}.efi
 %else
 install -pDm644 build-efi/grub.efi %buildroot%_efi_bindir/grub%{efi_suff}.efi
-%endif
-
-# NB: UEFI GRUB2 image gets signed when build environment is set up that way
-%ifarch x86_64
-%pesign -s -i %buildroot%_efi_bindir/grubx64.efi
-%pesign -s -i %buildroot%_efi_bindir/grubia32.efi
-%if_with sb_kern_signature_check_relaxed
-%pesign -s -i %buildroot%_efi_bindir/grubx64sb.efi
-%pesign -s -i %buildroot%_efi_bindir/grubia32sb.efi
-%endif
 %endif
 
 # Remove headers
@@ -530,6 +520,17 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Thu Jan 23 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt22
+- fix debian-install_signed patch (closes: #37664)
+- spec: remove useless pesigning from install section
+  + fix license
+  + move rpm-macros-uefi to BR(pre):
+
+* Mon Jan 20 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt21
+- spec: add crypto modules into EFI binary images to support LUKS encrypted
+  partition booting without dedicated unenctypted /boot partition alongside
+  (closes: #37663)
+
 * Fri Nov 29 2019 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt20
 - improve third-party customizer programs compatibility
   + grub2-sysconfig: add GRUB_BACKGROUND definition
