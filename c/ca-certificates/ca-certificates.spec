@@ -1,5 +1,5 @@
 Name: ca-certificates
-Version: 2019.10.28
+Version: 2020.01.23
 Release: alt1
 
 Summary: Common CA Certificates
@@ -48,6 +48,9 @@ install -pD -m 644 ca-bundle.trust.p11-kit \
 %_datadir/pki/ca-trust-source/ca-bundle.trust.p11-kit
 
 %changelog
+* Thu Jan 23 2020 Alexey Gladkov <legion@altlinux.ru> 2020.01.23-alt1
+- mozilla: sync with nss-3.49.1.
+
 * Mon Oct 28 2019 Alexey Gladkov <legion@altlinux.ru> 2019.10.28-alt1
 - mozilla: sync with nss-3.47.
 - update license tag.
