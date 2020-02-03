@@ -10,9 +10,11 @@
 %define libkmailgrammalecte libkmailgrammalecte%sover
 %define libkmaillanguagetool libkmaillanguagetool%sover
 %define libkmailmarkdown libkmailmarkdown%sover
+%define libkmailquicktextpluginprivate libkmailquicktextpluginprivate%sover
+%define libdkimverifyconfigure libdkimverifyconfigure%sover
 
 Name: kde5-pim-addons
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -124,6 +126,20 @@ Requires: %name-common
 %description -n %libkmailmarkdown
 KF5 library
 
+%package -n %libdkimverifyconfigure
+Group: System/Libraries
+Summary: KF5 library
+Requires: %name-common
+%description -n %libdkimverifyconfigure
+KF5 library
+
+%package -n %libkmailquicktextpluginprivate
+Group: System/Libraries
+Summary: KF5 library
+Requires: %name-common
+%description -n %libkmailquicktextpluginprivate
+KF5 library
+
 %package kaddressbook
 Summary: addon
 Group: Graphical desktop/KDE
@@ -178,17 +194,18 @@ Requires: %name-common
 %files kaddressbook
 %_K5plug/kaddressbook/
 %_K5lib/contacteditor/editorpageplugins/cryptopageplugin.so
-%_K5plug/contacteditor/
-%_K5data/contacteditor/
+#%_K5plug/contacteditor/
+#%_K5data/contacteditor/
 
 %files kmail
 %_K5bin/kmail_*.sh
 %_K5plug/kmail/
 %_K5plug/mailtransport/mailtransport_sendplugin.so
-%_K5data/kmail2/pics/*.*
+#%_K5data/kmail2/pics/*.*
 
 %files korganizer
 %_K5plug/korg_*.so
+%_K5plug/akonadi/emailaddressselectionldapdialogplugin.so
 %_K5srv/korganizer/
 %_K5plug/plasmacalendarplugins/
 %_K5qml/org/kde/plasma/PimCalendars/
@@ -236,8 +253,17 @@ Requires: %name-common
 %files -n %libkmailmarkdown
 %_K5lib/libkmailmarkdown.so.%sover
 %_K5lib/libkmailmarkdown.so.*
+%files -n %libkmailquicktextpluginprivate
+%_K5lib/libkmailquicktextpluginprivate.so.%sover
+%_K5lib/libkmailquicktextpluginprivate.so.*
+%files -n %libdkimverifyconfigure
+%_K5lib/libdkimverifyconfigure.so.%sover
+%_K5lib/libdkimverifyconfigure.so.*
 
 %changelog
+* Thu Jan 16 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

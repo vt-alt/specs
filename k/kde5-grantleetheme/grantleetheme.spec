@@ -4,7 +4,7 @@
 %define libkf5grantleetheme libkf5grantleetheme%sover
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -23,6 +23,7 @@ BuildRequires: extra-cmake-modules
 BuildRequires: grantlee5-devel
 BuildRequires: kf5-kauth-devel kf5-kcodecs-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-ki18n-devel
 BuildRequires: kf5-kiconthemes-devel kf5-knewstuff-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel
+BuildRequires: kf5-kguiaddons-devel
 
 %description
 %summary.
@@ -81,6 +82,9 @@ KF5 library
 %_libdir/grantlee/5.?/*grantlee_*.so
 
 %changelog
+* Thu Jan 16 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

@@ -3,7 +3,7 @@
 %def_enable tools
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init altplace
 
@@ -31,6 +31,7 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: boost-devel extra-cmake-modules qt5-declarative-devel qt5-tools-devel
 BuildRequires: xsltproc xml-utils shared-mime-info
 BuildRequires: libsqlite3-devel libxslt-devel
+BuildRequires: signon-devel libaccounts-glib-devel accounts-qt5-devel kde5-kaccounts-integration-devel
 BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdbusaddons-devel kf5-kdesignerplugin-devel kf5-kguiaddons-devel kf5-ki18n-devel
 BuildRequires: kf5-kiconthemes-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel
@@ -237,7 +238,7 @@ done
 
 %files devel
 %_K5bin/asapcat
-%_K5plug/designer/akonadi5widgets.so
+%_K5plug/designer/akonadiwidgets.so
 %_K5inc/akonadi_version.h
 %_K5inc/Akonadi*/
 %_K5inc/akonadi/
@@ -270,6 +271,9 @@ done
 %endif
 
 %changelog
+* Thu Jan 16 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

@@ -23,8 +23,8 @@
 
 %define rname k3b
 Name: kde5-%rname
-Version: 19.08.3
-Release: alt2
+Version: 19.12.1
+Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Archiving/Cd burning
@@ -136,7 +136,7 @@ KDE 4 library.
 
 %install
 %K5install
-%K5install_move data k3b solid konqsidebartng
+%K5install_move data k3b solid konqsidebartng knsrcfiles
 
 mv %buildroot/%_K5xdgmime/x-k3b.xml \
     %buildroot/%_K5xdgmime/kde5-x-k3b.xml
@@ -146,7 +146,6 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 
 
 %files -f %name.lang
-%config(noreplace) %_K5xdgconf/k3btheme.knsrc
 %doc README.txt FAQ.txt PERMISSIONS.txt ChangeLog
 %_K5bin/%rname
 %_K5plug/%{rname}*.so
@@ -167,6 +166,7 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 #
 %_K5plug/kf5/kio/videodvd.so
 %_K5data/konqsidebartng/virtual_folders/services/videodvd.desktop
+%_K5data/knsrcfiles/k3btheme.knsrc
 %_K5srv/videodvd.protocol
 # permhelper
 %_K5libexecdir/kauth/k3bhelper
@@ -187,6 +187,9 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
 - update requires
 

@@ -4,8 +4,8 @@
 %define libkonsoleprivate libkonsoleprivate%sover
 
 Name: kde5-%rname
-Version: 19.08.3
-Release: alt2
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Terminals
@@ -122,6 +122,9 @@ __EOF__
 %_K5lib/libkonsoleprivate.so.%sover
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Thu Nov 21 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
 - change default colors to WhiteOnBlack
 

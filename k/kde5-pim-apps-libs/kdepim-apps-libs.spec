@@ -9,7 +9,7 @@
 %define libkf5kaddressbookimportexport libkf5kaddressbookimportexport%sover
 
 Name: kde5-pim-apps-libs
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -144,6 +144,9 @@ KF5 library
 
 
 %changelog
+* Thu Jan 16 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

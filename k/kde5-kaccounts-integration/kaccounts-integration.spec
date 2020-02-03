@@ -3,7 +3,7 @@
 %define libkaccounts libkaccounts%sover
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init altplace
 
@@ -20,7 +20,7 @@ Source: %rname-%version.tar
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-declarative-devel
 BuildRequires: accounts-qt5-devel signon-devel
-BuildRequires: kde5-akonadi-devel kde5-akonadi-mime-devel kde5-akonadi-contacts-devel kde5-akonadi-notes-devel
+#BuildRequires: kde5-akonadi-devel kde5-akonadi-mime-devel kde5-akonadi-contacts-devel kde5-akonadi-notes-devel
 BuildRequires: kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcmutils-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel
 BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel
 BuildRequires: kf5-kdelibs4support kf5-kdelibs4support-devel kf5-kdesignerplugin-devel kf5-kdoctools kf5-kdoctools-devel-static
@@ -67,6 +67,7 @@ KF5 library
 
 %install
 %K5install
+%K5install_move data kpackage
 %find_lang %name --with-kde --all-name
 
 mkdir -p %buildroot/%_K5plug/kaccounts/ui
@@ -86,12 +87,16 @@ mkdir -p %buildroot/%_K5plug/kaccounts/{ui,daemonplugins}
 %files -n %libkaccounts
 %_K5lib/libkaccounts.so.%sover
 %_K5lib/libkaccounts.so.*
-%_K5plug/*accounts.so
+%_K5plug/kcms/*accounts.so
 %_K5plug/kf5/kded/accounts.so
 %_K5qml/org/kde/kaccounts/
 %_K5srv/*_kaccounts.desktop
+%_K5data/kpackage/kcms/kcm_kaccounts/
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

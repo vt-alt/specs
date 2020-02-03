@@ -10,9 +10,9 @@
 %define libkonqsidebarplugin libkonqsidebarplugin%konqsidebarplugin_sover
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
-%K5init
+%K5init no_appdata
 
 Group: Networking/WWW
 Summary: Web browser for KDE
@@ -97,7 +97,7 @@ KF5 library
 #    cp -arl %buildroot/%_K5data/konqueror/* %buildroot/%_datadir/konqueror/
 #    rm -rf %buildroot/%_K5data/konqueror/
 #fi
-%K5install_move data akregator doc dolphinpart domtreeviewer fsview kcmcss kcontrol khtml kwebkitpart templates konqueror webenginepart
+%K5install_move data akregator doc dolphinpart fsview kcmcss kcontrol khtml kwebkitpart templates konqueror webenginepart
 
 # install alternatives
 install -d %buildroot/%_sysconfdir/alternatives/packages.d
@@ -136,18 +136,14 @@ rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 %_K5icon/*/*/apps/konqueror.*
 %_K5icon/*/*/apps/fsview.*
 %_K5icon/*/*/apps/webengine.*
-%_K5icon/*/*/actions/htmlvalidator.*
-%_K5icon/*/*/actions/validators.*
 %_K5icon/*/*/actions/babelfish.png
-%_K5icon/*/*/actions/cssvalidator.png
 %_K5icon/*/*/actions/imagegallery.png
-%_K5icon/*/*/actions/webarchiver.png
 %_K5srvtyp/*.desktop
 %_datadir/qlogging-categories5/*.*categories
 
 %files
 %config /%_sysconfdir/alternatives/packages.d/kde5-konqueror
-%config(noreplace) %_K5xdgconf/*
+%config(noreplace) %_K5xdgconf/*rc
 %_K5bin/konqueror
 %_K5bin/kfmclient
 %_K5bin/fsview
@@ -157,7 +153,7 @@ rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 %_K5plug/*.so
 %_K5plug/kf5/kfileitemaction/*.so
 %_K5plug/kf5/parts/*.so
-%_K5start/konqy_preload.desktop
+%_K5start/*.desktop
 %_K5data/fsview/
 %_K5data/kbookmark/
 %_K5data/konqueror/
@@ -166,7 +162,6 @@ rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 %_K5data/webenginepart/
 %_K5data/kcmcss/
 %_K5data/dolphinpart/
-%_K5data/domtreeviewer/
 %_K5data/akregator/pics/*
 %_K5data/kcontrol/pics/*
 %_K5cfg/*.kcfg
@@ -194,6 +189,9 @@ rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 #%_K5lib/libkonqsidebarplugin.so.*
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

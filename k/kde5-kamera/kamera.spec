@@ -1,7 +1,7 @@
 %define rname kamera
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -68,6 +68,9 @@ KF5 library
 %_K5data/solid/actions/*amera*.desktop
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

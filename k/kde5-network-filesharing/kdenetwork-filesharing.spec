@@ -2,8 +2,8 @@
 %define pkg_samba samba
 
 Name: kde5-network-filesharing
-Version: 19.08.3
-Release: alt2
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Graphical desktop/KDE
@@ -52,6 +52,9 @@ BuildRequires: kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel
 %_K5srv/*shareplugin.desktop
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Wed Dec 04 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
 - don't show system users in list
 

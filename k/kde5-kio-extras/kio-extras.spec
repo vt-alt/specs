@@ -8,8 +8,8 @@
 %def_enable exiv2
 
 Name: kde5-%rname
-Version: 19.08.3
-Release: alt2
+Version: 19.12.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -23,8 +23,6 @@ Provides: kf5-kio-extras = %EVR
 Obsoletes: kf5-kio-extras < %EVR
 
 Source: %rname-%version.tar
-# upstream
-Patch1: 24506c2af8d1904a99538543804306c6c2b81ca2.patch
 # ALT
 Patch11: alt-smb-share.patch
 Patch12: alt-mime-rename.patch
@@ -50,7 +48,7 @@ BuildRequires: kf5-kiconthemes-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmode
 BuildRequires: kf5-kjobwidgets-devel kf5-kjs-devel kf5-knotifications-devel kf5-kparts-devel kf5-kpty-devel kf5-kservice-devel
 BuildRequires: kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwallet-devel kf5-kwidgetsaddons-devel
 BuildRequires: kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel
-BuildRequires: kf5-syntax-highlighting-devel
+BuildRequires: kf5-syntax-highlighting-devel kf5-kactivities-stats-devel
 
 %description
 Additional kio-slaves.
@@ -87,7 +85,6 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
 #
 %patch11 -p1
 %patch12 -p1
@@ -145,6 +142,9 @@ rm -rf %buildroot/%_K5doc/*/kioslave5/man
 %_K5lib/libkioarchive.so.%kioarchive_sover
 
 %changelog
+* Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt2
 - fix to compile with libssh-0.9.2
 
