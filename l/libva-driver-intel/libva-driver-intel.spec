@@ -1,5 +1,5 @@
 Name: libva-driver-intel
-Version: 2.3.0
+Version: 2.4.0
 Release: alt1
 
 Summary: VA-API (Video Acceleration API) user mode driver for Intel GEN Graphics family
@@ -12,9 +12,8 @@ Conflicts: libva < 1.1.0
 Source: %name-%version.tar
 
 BuildRequires: intel-gen4asm
-BuildRequires: libdrm-devel libX11-devel libGL-devel libEGL-devel
+BuildRequires: libdrm-devel libX11-devel libGL-devel libEGL-devel python3 rpm-build-python3
 BuildRequires: libva-devel >= 1.7.0
-BuildRequires(pre): rpm-build-ubt
 ExclusiveArch: %ix86 x86_64
 
 %description
@@ -24,6 +23,7 @@ Video decode driver for Intel chipsets.
 %setup
 
 %build
+find -type f -name '*.py' -exec sed -i 's|%_bindir/env python|%_bindir/python3|' -- '{}' +
 %autoreconf
 %configure \
 	--disable-static
@@ -38,6 +38,12 @@ Video decode driver for Intel chipsets.
 %_libdir/dri/*.so
 
 %changelog
+* Mon Jan 13 2020 Anton Farygin <rider@altlinux.ru> 2.4.0-alt1
+- 2.4.0
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.3.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Feb 18 2019 Anton Farygin <rider@altlinux.ru> 2.3.0-alt1
 - 2.3.0
 
@@ -47,13 +53,13 @@ Video decode driver for Intel chipsets.
 * Mon Jun 04 2018 Anton Farygin <rider@altlinux.ru> 2.1.0-alt1
 - 2.1.0
 
-* Wed Jan 24 2018 Anton Farygin <rider@altlinux.ru> 2.0.0-alt1%ubt
+* Wed Jan 24 2018 Anton Farygin <rider@altlinux.ru> 2.0.0-alt1
 - up to 2.0.0
 
-* Tue Jul 11 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt2%ubt
+* Tue Jul 11 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt2
 - fixed summary (closes: #33639)
 
-* Thu Jul 06 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt1%ubt
+* Thu Jul 06 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt1
 - 1.8.3
 
 * Thu Jun 01 2017 Anton Farygin <rider@altlinux.ru> 1.8.2-alt1
