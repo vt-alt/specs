@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.7.6
+%define ver     1.7.7
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -35,7 +35,7 @@ AutoReqProv: no
 Name: %{pkg}
 Version: %{ver}
 Release: alt1
-License: GPL
+License: GPL-2.0+
 URL: http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX
 # Open URL http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX&productName=ET-2750 and push button with magnifier
 Group: System/Configuration/Hardware
@@ -85,6 +85,11 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Wed Jan 29 2020 Andrey Cherepanov <cas@altlinux.org> 1.7.7-alt1
+- New version.
+- Supported new models:
+ + Epson ET-M2120 Series
+
 * Tue Dec 03 2019 Andrey Cherepanov <cas@altlinux.org> 1.7.6-alt1
 - New version.
 - Supported new models:
