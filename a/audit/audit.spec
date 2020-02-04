@@ -6,7 +6,7 @@
 
 Name: audit
 Version: 2.8.5
-Release: alt2
+Release: alt4.git.e4021a9
 Summary: User space tools for Linux kernel 2.6+ auditing
 License: GPL
 Group: Monitoring
@@ -14,7 +14,7 @@ URL: http://people.redhat.com/sgrubb/audit/
 Source: %name-%version.tar
 Patch0: %name-%version-alt.patch
 
-Requires: lib%{name}1 = %version-%release
+Requires: lib%{name}1 = %EVR
 Requires: service >= 0.5.26-alt1
 
 %if_without bootstrap
@@ -37,7 +37,7 @@ the audit subsystem in the Linux 2.6+ kernel.
 Summary: Dynamic library for audit framework
 License: LGPL
 Group: System/Libraries
-Provides: lib%name = %version-%release
+Provides: lib%name = %EVR
 Obsoletes: libaudit = 2.0.4-alt1
 
 %description -n lib%{name}1
@@ -59,8 +59,8 @@ applications to use the audit framework.
 Summary: Header files and static library for libaudit
 License: LGPL
 Group: Development/C
-Requires: lib%{name}1 = %version-%release
-Requires: libauparse0 = %version-%release
+Requires: lib%{name}1 = %EVR
+Requires: libauparse0 = %EVR
 
 %description -n lib%name-devel
 This package contains the static libraries and header
@@ -71,7 +71,7 @@ framework libraries.
 Summary: Python bindings for libaudit
 License: LGPL
 Group: Development/Python
-Requires: lib%{name}1 = %version-%release
+Requires: lib%{name}1 = %EVR
 
 %description -n python-module-%name
 The python-module-%name package contains the bindings so that libaudit
@@ -81,7 +81,7 @@ and libauparse can be used by python.
 Summary: Python3 bindings for libaudit
 License: LGPL
 Group: Development/Python3
-Requires: lib%{name}1 = %version-%release
+Requires: lib%{name}1 = %EVR
 
 %description -n python3-module-%name
 The python3-module-%name package contains the bindings so that libaudit
@@ -109,7 +109,7 @@ sed -i 's@RETVAL=1@&\nstart-stop-daemon -p "/var/run/auditd.pid" -u root -K -n a
 	%{subst_enable static} \
 	%{subst_with prelude}
 
-%make_build CFLAGS=-D_GNU_SOURCE
+%make_build
 
 %install
 %makeinstall_std
@@ -226,6 +226,12 @@ fi
 %endif
 
 %changelog
+* Mon Jan 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.8.5-alt4.git.e4021a9
+- Ported fix from different branch.
+
+* Fri Jan 24 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.8.5-alt3.git.e4021a9
+- Pulled updates from upstream, including memory leak fixes.
+
 * Mon Mar 18 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.8.5-alt2
 - Built python-3 bindings.
 
