@@ -1,5 +1,5 @@
 Name: installer-distro-simply-linux
-Version: 9.2.0
+Version: 9.2.1
 Release: alt1
 
 Summary: Installer common files
@@ -113,6 +113,11 @@ Installer stage3
 %files stage3
 
 %changelog
+* Mon Feb 03 2020 Michael Shigorin <mike@altlinux.org> 9.2.1-alt1
+- 05-vm-profile.sh: fix "Setup 3 for workstation" case
+  (alterator-vm would break given large enough disk
+  when reading the broken autopartitioning scheme).
+
 * Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 9.2.0-alt1
 - stage3: Drop installer-feature-efi-stage3.
 - cleanup: Drop unused define.
