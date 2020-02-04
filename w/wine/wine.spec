@@ -1,10 +1,11 @@
 %def_enable static
-%define gecko_version 2.47
-%define mono_version 4.9.3
-%define major 4.17
+%define gecko_version 2.47.1
+%define mono_version 4.9.4
+%define major 5.0
+%define rel %nil
 
 Name: wine
-Version: %major.1
+Version: %major.2
 Release: alt1
 Epoch: 1
 
@@ -18,9 +19,9 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # TODO: major in gear
 
-# Source-url: https://dl.winehq.org/wine/source/4.x/wine-%major.tar.xz
+# Source-url: https://dl.winehq.org/wine/source/5.0/wine-%major%rel.tar.xz
 Source: %name-%version.tar
-# Source1-url: https://github.com/wine-staging/wine-staging/archive/v%major.tar.gz
+# Source1-url: https://github.com/wine-staging/wine-staging/archive/v%major%rel.tar.gz
 Source1: %name-staging-%version.tar
 
 Source3: %name-%version-desktop.tar
@@ -102,6 +103,7 @@ Requires: glibc-pthread glibc-nss
 Requires: webclient
 
 Requires: wine-gecko = %gecko_version
+Conflicts: wine-mono < %mono_version
 
 BuildRequires: desktop-file-utils
 # Use it instead proprietary MS Core Fonts
@@ -225,6 +227,9 @@ Group: System/Libraries
 Requires: lib%name = %EVR
 Conflicts: libwine-vanilla-twain
 
+# Runtime linked (via dl_open)
+Requires: libsane
+
 %description -n lib%name-twain
 This package contains the library for Twain support.
 
@@ -260,13 +265,13 @@ develop programs which make use of Wine.
 %prep
 %setup -a 1 -a 5
 # Apply wine-staging patches
-wine-staging/patches/patchinstall.sh DESTDIR=$(pwd) --all --backend=patch
+%name-staging/patches/patchinstall.sh DESTDIR=$(pwd) --all --backend=patch
 
 # disable rpath using for executable
 %__subst "s|^\(LDRPATH_INSTALL =\).*|\1|" Makefile.in
 
 # Apply local patches
-wine-patches/patchapply.sh
+%name-patches/patchapply.sh
 
 %build
 %ifarch aarch64
@@ -283,6 +288,7 @@ export CC=clang
 	--without-oss \
 	--without-capi \
 	--without-hal \
+        --without-mingw \
 	--with-xattr
 
 %__make depend
@@ -387,6 +393,7 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %_libdir/wine/*.vxd.so
 %endif
 
+%_libdir/wine/*.com.so
 %_libdir/wine/*.cpl.so
 %_libdir/wine/*.drv.so
 %_libdir/wine/*.dll.so
@@ -478,6 +485,30 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %endif
 
 %changelog
+* Wed Jan 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.0.2-alt1
+- new version 5.0.2 (with rpmrb script)
+- wine 5.0 release
+
+* Sun Jan 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.0.1-alt1
+- new version (5.0.1) with rpmgs script
+- based on wine 5.0-rc6
+- update wine-gecko require to 2.47.1
+
+* Mon Nov 18 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.20.1-alt1
+- new version (4.20.1) with rpmgs script
+- update patch set
+- update wine-mono require to 4.9.4
+
+* Sun Nov 17 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.19.2-alt1
+- improve patchapply.sh, update patches
+
+* Sat Nov 02 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.19.1-alt1
+- new version 4.19.1 (with rpmrb script)
+- make GetDriveType() always return DRIVE_FIXED for C: (eterbug #14223)
+
+* Sat Oct 19 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.18.1-alt1
+- new version 4.18.1 (with rpmrb script)
+
 * Sat Sep 28 2019 Vitaly Lipatov <lav@altlinux.ru> 1:4.17.1-alt1
 - new version 4.17.1 (with rpmrb script)
 - update wine-mono require to 4.9.3

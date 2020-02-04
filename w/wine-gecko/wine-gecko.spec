@@ -3,8 +3,8 @@
 %define geckodir %_datadir/wine/gecko
 
 Name: wine-gecko
-Version: 2.47
-Release: alt2
+Version: 2.47.1
+Release: alt1
 
 Summary: Custom version of Mozilla's Gecko Layout Engine for Wine
 
@@ -14,32 +14,44 @@ Url: http://wiki.winehq.org/Gecko
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-Source0: http://prdownloads.sourceforge.net/wine/wine_gecko-%version-x86.msi
-Source1: http://prdownloads.sourceforge.net/wine/wine_gecko-%version-x86_64.msi
+# Source1-url: http://dl.winehq.org/wine/wine-gecko/%version/wine-gecko-%version-x86.tar.bz2
+Source1: %name-x86-%version.tar
+# Source2-url: http://dl.winehq.org/wine/wine-gecko/%version/wine-gecko-%version-x86_64.tar.bz2
+Source2: %name-x86_64-%version.tar
 
 # TODO: it is impossible build arch packages with files in noarch
 BuildArch: noarch
 #ExclusiveArch: %{ix86} x86_64
 
+AutoReq:no
+AutoProv:no
+
 %description
 Wine implements its own version of Internet Explorer. The implementation
 is based on a custom version of Mozilla's Gecko Layout Engine.
 When your application tries to display a web page, it loads Wine's
-custom Gecko from the file wine_gecko-%version-x86*.msi
-Wine looks for this file first in /usr/share/wine/gecko/
+custom Gecko from the dir /usr/share/wine/gecko/wine-gecko-%version-ARCH_STRING.
+
+%prep
+tar xfv %SOURCE1
+tar xfv %SOURCE2
 
 %install
 mkdir -p %buildroot%geckodir/
-install -m 644 %SOURCE1 %buildroot%geckodir
-install -m 644 %SOURCE0 %buildroot%geckodir
+cp -a $(basename %SOURCE1 .tar) %buildroot%geckodir/wine-gecko-%version-x86/
+cp -a $(basename %SOURCE2 .tar) %buildroot%geckodir/wine-gecko-%version-x86_64/
 
 %files
 %dir %_datadir/wine/
 %dir %geckodir/
-%geckodir/wine_gecko-%version-x86.msi
-%geckodir/wine_gecko-%version-x86_64.msi
+%geckodir/wine-gecko-%version-x86/
+%geckodir/wine-gecko-%version-x86_64/
 
 %changelog
+* Sun Jan 19 2020 Vitaly Lipatov <lav@altlinux.ru> 2.47.1-alt1
+- new version 2.47.1
+- unpack to global wine location (supported since wine 5.0)
+
 * Sun Mar 24 2019 Vitaly Lipatov <lav@altlinux.ru> 2.47-alt2
 - pack wine_gecko x86_64 too
 
