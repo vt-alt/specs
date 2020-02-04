@@ -24,7 +24,7 @@
 %define nv_version 440
 %define nv_release 44
 %define nv_minor %nil
-%define pkg_rel alt203
+%define pkg_rel alt204
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -357,6 +357,9 @@ fi
 %endif
 
 %changelog
+* Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 440.44-alt204
+- add 10DE:0FD1 to list of supported
+
 * Tue Dec 24 2019 Sergey V Turchin <zerg@altlinux.org> 440.44-alt203
 - new version
 
