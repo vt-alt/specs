@@ -1,5 +1,7 @@
+%def_disable check
+
 Name: lsp-plugins
-Version: 1.1.10
+Version: 1.1.13
 Release: alt1
 
 Summary: Linux Studio Plugins
@@ -10,15 +12,14 @@ Url: https://lsp-plug.in/
 #Source: https://sourceforge.net/projects/%name/files/%name/%version/%name-src-%version.tar.gz
 #VCS: https://github.com/sadko4u/lsp-plugins
 Source: https://github.com/sadko4u/%name/archive/%name-%version.tar.gz
-Patch: %name-1.1.10-alt-rpath.patch
-
-ExclusiveArch: %ix86 x86_64
 
 BuildRequires: gcc-c++
 BuildRequires: lv2-devel libjack-devel ladspa_sdk
 BuildRequires: libsndfile-devel libcairo-devel
-BuildRequires: libGL-devel libexpat-devel
+BuildRequires: libGL-devel
 BuildRequires: %_bindir/php
+
+ExclusiveArch: %ix86 x86_64 aarch64
 
 %description
 LSP (Linux Studio Plugins) is a collection of open-source plugins
@@ -62,21 +63,21 @@ Documentation for LSP (Linux Studio Plugins) plugins.
 
 %prep
 %setup -n %name-%name-%version
-# remove rpath
-%patch -b .rpath
 
 %build
-%add_optflags %optflags_warnings
+%add_optflags %optflags_warnings -D_FILE_OFFSET_BITS=64
 export PLATFORM=Linux SYSTEM=Linux
 %make PREFIX=%_prefix \
     BUILD_PROFILE=%_arch \
     CC_FLAGS=-DLSP_NO_EXPERIMENTAL \
     BIN_PATH=%_bindir LIB_PATH=%_libdir \
-    LD_PATH=%_libdir
     DOC_PATH=%_docdir VERBOSE=1
 
 %install
 %makeinstall_std PREFIX=%_prefix LIB_PATH=%_libdir
+
+%check
+%make check
 
 %files -n jack-%name
 %_bindir/*
@@ -103,6 +104,14 @@ export PLATFORM=Linux SYSTEM=Linux
 
 
 %changelog
+* Tue Dec 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1.13-alt1
+- 1.1.13
+- removed rpath.patch
+
+* Sun Dec 22 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1.11-alt1
+- 1.1.11
+- enabled build for aarch64
+
 * Wed Jul 24 2019 Yuri N. Sedunov <aris@altlinux.org> 1.1.10-alt1
 - 1.1.10
 
