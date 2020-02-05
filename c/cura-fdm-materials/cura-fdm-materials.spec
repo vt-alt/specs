@@ -1,5 +1,5 @@
 Name: cura-fdm-materials
-Version: 3.6.0
+Version: 4.4.1
 Release: alt1
 Summary: Cura FDM Material database
 License: Public Domain
@@ -34,6 +34,9 @@ These files are needed to work with printers like Ultimaker 2+ and Ultimaker 3.
 %_datadir/cura/resources/materials
 
 %changelog
+* Sat Jan 25 2020 Anton Midyukov <antohami@altlinux.org> 4.4.1-alt1
+- new version 4.4.1
+
 * Fri Dec 21 2018 Anton Midyukov <antohami@altlinux.org> 3.6.0-alt1
 - new version 3.6.0
 

@@ -6,7 +6,7 @@
 %add_python3_compile_include %_libexecdir/uranium
 
 Name:    Uranium
-Version: 3.6.0
+Version: 4.4.1
 Release: alt1
 
 Summary:  A Python framework for building Desktop applications.
@@ -16,7 +16,7 @@ URL:     https://github.com/Ultimaker/Uranium
 
 Packager: Anton Midyukov <antohami@altlinux.org>
 
-BuildRequires(pre): rpm-build-python3 rpm-macros-cmake rpm-build-ubt
+BuildRequires(pre): rpm-build-python3 rpm-macros-cmake
 BuildRequires: python3-devel cmake
 BuildRequires:  %_bindir/doxygen
 BuildRequires:  %_bindir/msgmerge
@@ -25,6 +25,7 @@ BuildRequires:  %_bindir/msgmerge
 %if 0%{?with_check}
 BuildRequires:  python3-module-Arcus = %version
 BuildRequires:  python3-module-numpy
+BuildRequires:  python3-module-numpy-testing
 BuildRequires:  python3-module-scipy
 BuildRequires:  python3-module-PyQt5
 BuildRequires:  python3-module-pytest
@@ -50,10 +51,6 @@ related applications.
 %prep
 %setup
 
-# empty file. appending to the end to make sure we are not overriding
-# a non empty file in the future
-echo '# empty' >> UM/Settings/ContainerRegistryInterface.py
-
 %build
 # there is no arch specific content, so we set LIB_SUFFIX to nothing
 # see https://github.com/Ultimaker/Uranium/commit/862a246bdfd7e25541b04a35406957612c6f4bb7
@@ -78,9 +75,7 @@ popd
 %check
 %if 0%{?with_check}
 pip3 freeze
-
-# https://github.com/Ultimaker/Uranium/issues/394
-python3 -m pytest -v -k "not TestContainerStack and not TestContainerRegistry"
+python3 -m pytest -v -k "not TestPolygon"
 %endif
 
 %files -f uranium.lang
@@ -94,6 +89,18 @@ python3 -m pytest -v -k "not TestContainerStack and not TestContainerRegistry"
 %doc html LICENSE
 
 %changelog
+* Sat Jan 25 2020 Anton Midyukov <antohami@altlinux.org> 4.4.1-alt1
+- New version 4.4.1
+
+* Thu Oct 03 2019 Stanislav Levin <slev@altlinux.org> 3.6.0-alt4
+- Fixed testing.
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 3.6.0-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Tue Jun 04 2019 Stanislav Levin <slev@altlinux.org> 3.6.0-alt2
+- Fixed Pytest4.x compatibility errors.
+
 * Fri Feb 01 2019 Anton Midyukov <antohami@altlinux.org> 3.6.0-alt1
 - New version 3.6.0
 
