@@ -1,9 +1,9 @@
 Name: libisc-export-dhcp
-Version: 9.11.5
+Version: 9.11.15
 Release: alt1
 
 Summary: ISC BIND 9.9.x exportable libraries to build ISC DHCP
-License: BSD-style
+License: MPL-2.0
 Group: System/Libraries
 Url: http://www.isc.org/products/BIND/
 
@@ -53,10 +53,7 @@ used to build ISC DHCP.
 %patch0003 -p2
 %patch0004 -p2
 
-# XXX oldish stuff introduced in 9.9.6
-sed -i 's/AC_DEFINE(\(.*\), 1)/AC_DEFINE(\1, 1, [\1])/' configure.in
-
-sed -i '/# Large File/iAC_SYS_LARGEFILE/' configure.in
+sed -i '/# Large File/iAC_SYS_LARGEFILE' configure.ac
 
 %build
 %autoreconf
@@ -76,8 +73,9 @@ sed -i '/# Large File/iAC_SYS_LARGEFILE/' configure.in
 	--includedir=%{_includedir}/bind9 \
 	--disable-openssl-version-check \
 	--with-libtool \
-	--with-gssapi=yes \
+	--with-gssapi=no \
 	--disable-isc-spnego \
+	--without-python \
 	#
 
 sed -i \
@@ -111,6 +109,13 @@ done;
 %_libdir/lib*-export.so
 
 %changelog
+* Fri Jan 24 2020 Mikhail Efremov <sem@altlinux.org> 9.11.15-alt1
+- Build without python.
+- Fixed build without gssapi.
+- Updated patches.
+- Updated license.
+- Updated to 9.11.15.
+
 * Wed Dec 05 2018 Mikhail Efremov <sem@altlinux.org> 9.11.5-alt1
 - Updated to 9.11.5.
 

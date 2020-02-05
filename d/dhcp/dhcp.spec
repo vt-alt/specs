@@ -8,14 +8,14 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: dhcp
-Version: 4.4.1
+Version: 4.4.2
 Release: alt1
 Epoch: 1
 
 Summary: Dynamic Host Configuration Protocol (DHCP) distribution
-License: BSD-style
+License: MPL-2.0
 Group: System/Servers
-Url: http://www.isc.org/sw/dhcp/
+Url: https://www.isc.org/dhcp/
 
 %define srcname dhcp-%version%{?patchlevel:%patchlevel}
 Source0: dhcp-%version.tar
@@ -104,7 +104,7 @@ BuildArch: noarch
 %package client
 Summary: The ISC DHCP client daemon
 Group: System/Servers
-PreReq: %name-common = %epoch:%version-%release
+Requires(pre): %name-common = %epoch:%version-%release
 Requires: %name-libs = %epoch:%version-%release
 # NetworkManager can use dhclient
 Provides: nm-dhcp-client
@@ -112,7 +112,7 @@ Provides: nm-dhcp-client
 %package server
 Summary: The ISC DHCP server daemon
 Group: System/Servers
-PreReq: %name-common = %epoch:%version-%release
+Requires(pre): %name-common = %epoch:%version-%release
 Requires: %name-libs = %epoch:%version-%release
 Requires: /var/empty
 Provides: %name = %epoch:%version-%release
@@ -121,14 +121,14 @@ Obsoletes: dhcp, dhcpd
 %package relay
 Summary: The ISC DHCP relay daemon
 Group: System/Servers
-PreReq: %name-common = %epoch:%version-%release
+Requires(pre): %name-common = %epoch:%version-%release
 Requires: %name-libs = %epoch:%version-%release
 Requires: /var/empty
 
 %package omshell
 Summary: The ISC DHCP OMAPI command shell tool
 Group: System/Servers
-PreReq: %name-common = %epoch:%version-%release
+Requires(pre): %name-common = %epoch:%version-%release
 Requires: %name-libs = %epoch:%version-%release
 
 %package devel
@@ -254,8 +254,8 @@ find server -type f -not -name Makefile\* -print0 |
 
 %build
 %add_optflags -fpie -fno-strict-aliasing -Wno-unused -Dlint
-%ifnarch e2k
-# lcc: omapi.c:789: -Werror=array-bounds
+%ifnarch %e2k
+# lcc: omapi.c:854: -Werror=array-bounds
 %add_optflags -Werror
 %endif
 
@@ -563,6 +563,18 @@ fi
 # }}}
 
 %changelog
+* Fri Jan 24 2020 Mikhail Efremov <sem@altlinux.org> 1:4.4.2-alt1
+- Fixed license tag.
+- Updated patches.
+- Updated to 4.4.2.
+
+* Fri Oct 25 2019 Mikhail Efremov <sem@altlinux.org> 1:4.4.1-alt2
+- Don't use deprecated PreReq.
+- Fixed build on e2kv4 through %%e2k macro (by Michael Shigorin).
+- Fixed build with gcc-9.
+- Updated Url.
+- Updated license.
+
 * Fri Dec 07 2018 Mikhail Efremov <sem@altlinux.org> 1:4.4.1-alt1
 - Added patches from Debian.
 - Updated patches.
