@@ -4,7 +4,7 @@
 
 Name: kde5-%rname
 Version: 19.12.1
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -52,7 +52,7 @@ developing applications that use %name.
 Group: System/Libraries
 Summary: KF5 library
 Requires: %name-common = %version-%release
-Requires: signon
+Requires: signon accounts-qml-module
 %description -n %libkaccounts
 KF5 library
 
@@ -94,6 +94,9 @@ mkdir -p %buildroot/%_K5plug/kaccounts/{ui,daemonplugins}
 %_K5data/kpackage/kcms/kcm_kaccounts/
 
 %changelog
+* Tue Jan 28 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt2
+- fix requires
+
 * Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
