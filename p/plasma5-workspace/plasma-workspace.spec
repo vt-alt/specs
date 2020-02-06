@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.17.5
-Release: alt2
+Release: alt3
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -48,6 +48,7 @@ Requires: plasma5-polkit-kde-agent plasma5-kwin plasma5-kactivitymanagerd
 
 Source: %rname-%version.tar
 Source1: freememorynotifier.po
+Source2: libkicker-ru-add.po
 Patch100: alt-startkde.patch
 Patch101: alt-menu-add-tooltip.patch
 Patch102: alt-def-wallpaper-image.patch
@@ -234,7 +235,10 @@ popd
 %patch125 -p1
 %patch126 -p1
 
-cat %SOURCE1 >> po/ru/freememorynotifier.po
+install -m 0644 %SOURCE1 po/ru/freememorynotifier.po
+msgcat --use-first po/ru/libkicker.po %SOURCE2 > po/ru/libkicker.po.tmp
+cat po/ru/libkicker.po.tmp > po/ru/libkicker.po
+rm -f po/ru/libkicker.po.tmp
 
 %build
 %K5build \
@@ -394,6 +398,9 @@ done
 
 
 %changelog
+* Wed Feb 05 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.17.5-alt3
+- translate alt-app-starter menu entry
+
 * Mon Jan 13 2020 Pavel Moseev <mars@altlinux.org> 1:5.17.5-alt2
 - add using the alt-app-starter
 
