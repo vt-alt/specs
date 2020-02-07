@@ -1,7 +1,7 @@
 %define rname kmousetool
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -15,7 +15,7 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules libXtst-devel libXext-devel libXt-devel
 BuildRequires: kf5-kxmlgui-devel kf5-knotifications-devel kf5-kdbusaddons-devel
 BuildRequires: kf5-kdoctools-devel kf5-ki18n-devel kf5-kiconthemes-devel
-BuildRequires: kf5-kcoreaddons-devel kf5-kauth-devel
+BuildRequires: kf5-kcoreaddons-devel kf5-kauth-devel kf5-kwindowsystem-devel
 BuildRequires: qt5-phonon-devel
 
 %description
@@ -40,6 +40,9 @@ BuildRequires: qt5-phonon-devel
 %_K5data/kmousetool/
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %define rname knavalbattle
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -48,6 +48,15 @@ BuildRequires: kf5-kxmlgui-devel kf5-sonnet-devel kf5-kcrash-devel
 %_K5conf_up/knavalbattle.upd
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

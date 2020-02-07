@@ -1,7 +1,7 @@
 %define rname kshisen
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -37,7 +37,6 @@ BuildRequires: kf5-kxmlgui-devel kf5-kcrash-devel
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
-%config(noreplace) %_K5xdgconf/*.*categories
 %doc COPYING*
 %_K5bin/kshisen
 %_K5snd/kshisen/
@@ -45,8 +44,18 @@ BuildRequires: kf5-kxmlgui-devel kf5-kcrash-devel
 %_K5xdgapp/org.kde.kshisen.desktop
 %_K5icon/*/*/apps/kshisen.*
 %_K5cfg/kshisen.kcfg
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

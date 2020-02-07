@@ -2,7 +2,7 @@
 %def_disable tunepimp
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -21,6 +21,7 @@ BuildRequires: extra-cmake-modules qt5-phonon-devel qt5-svg-devel
 BuildRequires: libssl-devel libtag-devel
 BuildRequires: kf5-kcrash-devel kf5-kdelibs4support kf5-kdoctools-devel kf5-kglobalaccel-devel kf5-kiconthemes-devel
 BuildRequires: kf5-kio-devel kf5-knotifications-devel kf5-ktextwidgets-devel kf5-kwallet-devel kf5-kwindowsystem-devel
+BuildRequires: kf5-kdbusaddons-devel
 %if_enabled tunepimp
 BuildRequires: libtunepimp-devel
 %endif
@@ -76,6 +77,9 @@ sed -i '/^find_package.*TunePimp/d' CMakeLists.txt
 %_K5notif/juk.notifyrc
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Mon Nov 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

@@ -4,7 +4,7 @@
 %define libiris_ksirk libiris_ksirk%iris_ksirk_sover
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -67,7 +67,7 @@ Requires: %name-common = %version-%release
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
+%_datadir/qlogging-categories5/*.*categories
 
 %files
 %config(noreplace) %_K5xdgconf/*rc
@@ -85,6 +85,15 @@ Requires: %name-common = %version-%release
 %_K5lib/libiris_ksirk.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

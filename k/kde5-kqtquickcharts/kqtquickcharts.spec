@@ -1,7 +1,7 @@
 %define rname kqtquickcharts
 
 Name: kde5-%rname
-Version: 19.08.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -61,6 +61,15 @@ developing applications that use %name.
 
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
 * Thu Aug 29 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - new version
 

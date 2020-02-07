@@ -1,8 +1,8 @@
 %define rname khangman
 
 Name: kde5-%rname
-Version: 19.08.1
-Release: alt3
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Games/Educational
@@ -62,6 +62,12 @@ echo 'add_subdirectory(ru/data/khangman)' >> po/CMakeLists.txt
 %_K5icon/*/*/apps/khangman*.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
+- new version
+
 * Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt3
 - fix russian keys
 

@@ -1,8 +1,8 @@
 %define rname kgeography
 
 Name: kde5-%rname
-Version: 19.08.0
-Release: alt3
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Education
@@ -53,6 +53,9 @@ mv data/flags/{ukraine/Crimea,russia/crimea}.png
 
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Dec 05 2019 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt3
 - Crimea: fix Europe and Asia maps
 

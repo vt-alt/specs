@@ -7,7 +7,7 @@
 
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -85,8 +85,8 @@ KF5 library
 
 %files common -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5conf_up/kgthemeprovider-migration.upd
+%_datadir/qlogging-categories5/*.*categories
 
 %files -n kde5-carddecks
 %_K5data/carddecks/
@@ -108,6 +108,15 @@ KF5 library
 %_K5lib/libKF5KDEGamesPrivate.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

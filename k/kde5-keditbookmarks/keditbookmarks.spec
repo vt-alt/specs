@@ -4,7 +4,7 @@
 %define libkbookmarkmodel_private libkbookmarkmodel_private%kbookmarkmodel_private_sover
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -73,6 +73,9 @@ Requires: %name-common = %EVR
 %_K5lib/libkbookmarkmodel_private.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

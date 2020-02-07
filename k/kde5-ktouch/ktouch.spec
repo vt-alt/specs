@@ -1,7 +1,7 @@
 %define rname ktouch
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -59,6 +59,9 @@ chmod 0755 %buildroot/%_K5xdgapp/org.kde.ktouch.desktop
 %_K5cfg/ktouch.kcfg
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Wed Nov 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 

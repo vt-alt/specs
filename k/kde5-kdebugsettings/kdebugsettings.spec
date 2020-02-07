@@ -1,9 +1,12 @@
 %define rname kdebugsettings
 
+%define sover 5
+%define libkdebugsettings libkdebugsettings%sover
+
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.12.1
 Release: alt1
-%K5init altplace
+%K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE KDebug Settings
@@ -39,11 +42,11 @@ Summary: Development files for %name
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package -n libkf5debugsettings
+%package -n %libkdebugsettings
 Group: System/Libraries
 Summary: KF5 library
 Requires: %name-common = %version-%release
-%description -n libkf5debugsettings
+%description -n %libkdebugsettings
 KF5 library
 
 
@@ -57,12 +60,22 @@ KF5 library
 %K5install
 %find_lang %name --with-kde --all-name
 
-%files -f %name.lang
-%_K5bin/*
-%_K5xdgapp/*
+
+%files common -f %name.lang
 %_datadir/qlogging-categories5/*.*categories
 
+%files
+%_K5bin/*
+%_K5xdgapp/*
+
+%files -n %libkdebugsettings
+%_K5lib/libkdebugsettings.so.*
+%_K5lib/libkdebugsettings.so.%sover
+
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 

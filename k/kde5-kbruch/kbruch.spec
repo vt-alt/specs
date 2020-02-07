@@ -1,8 +1,8 @@
 %define rname kbruch
 
 Name: kde5-%rname
-Version: 19.08.0
-Release: alt3
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Education
@@ -81,6 +81,9 @@ KF5 library
 #%_K5lib/libKF5Bruch.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Fri Nov 01 2019 Pavel Moseev <mars@altlinux.org> 19.08.0-alt3
 - fix incorrect display of user interface elements (closes: #37308)
 

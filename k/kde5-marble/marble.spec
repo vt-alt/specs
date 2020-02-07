@@ -4,8 +4,8 @@
 %define libmarblewidget libmarblewidget-qt5%marblewidget_sover
 
 Name: kde5-%rname
-Version: 19.08.0
-Release: alt2
+Version: 19.12.1
+Release: alt1
 %K5init
 
 Group: Education
@@ -69,7 +69,6 @@ tar -xvf %SOURCE2 naturalearth/
 popd
 %patch1 -p1
 #%patch2 -p1
-
 sed -i '/add_subdirectory(marble-qt)/d' src/apps/CMakeLists.txt
 
 %build
@@ -135,6 +134,12 @@ rm -rf %buildroot/%_K5i18n/*/LC_MESSAGES/*_qt.qm
 %_K5lib/libmarblewidget-qt5.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Thu Jan 16 2020 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt3
+- fix build with gpsd>=3.20
+
 * Thu Dec 05 2019 Oleg Solovyov <mcpain@altlinux.org> 19.08.0-alt2
 - restore russian Crimea on maps (Closes: #33527)
 

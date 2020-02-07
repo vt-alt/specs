@@ -1,7 +1,7 @@
 %define rname ktimer
 
 Name: kde5-%rname
-Version: 19.08.2
+Version: 19.12.1
 Release: alt1
 %K5init altplace
 
@@ -44,6 +44,9 @@ Lets you start an application after a certain amount of time has passed.
 %_K5icon/*/*/*/ktimer.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Mon Oct 28 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.2-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %define rname kmahjongg
 
 Name: kde5-%rname
-Version: 19.04.0
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -40,15 +40,24 @@ a variation usually known as Mahjong Solitaire.
 
 %files -f %name.lang
 %doc COPYING*
-%config(noreplace) %_K5xdgconf/*.*categories
 %_K5bin/kmahjongg
 %_K5data/kmahjongg/
 %_K5xmlgui/kmahjongg/
 %_K5xdgapp/*kmahjongg*.desktop
 %_K5cfg/*kmahjongg*
 %_K5icon/*/*/apps/*kmahjongg*
+%_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Wed May 08 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - new version
 

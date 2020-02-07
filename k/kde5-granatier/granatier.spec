@@ -1,7 +1,7 @@
 %define rname granatier
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -62,13 +62,13 @@ Requires: %name-common = %version-%release
 
 %files -f %name.lang
 %doc COPYING*
-%config %_K5xdgconf/*.*categories
 %_K5bin/granatier
 %_K5data/granatier
 %_K5xdgapp/*granatier*.desktop
 %_K5xmlgui/granatier/
 %_K5cfg/granatier.kcfg
 %_K5icon/hicolor/*/apps/granatier.*
+%_datadir/qlogging-categories5/*.*categories
 
 #%files devel
 #%_K5inc/granatier_version.h
@@ -81,5 +81,14 @@ Requires: %name-common = %version-%release
 #%_K5lib/libgranatier.so.*
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Mon Jul 01 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - initial build

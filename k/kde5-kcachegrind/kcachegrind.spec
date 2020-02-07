@@ -1,7 +1,9 @@
+%add_findreq_skiplist %_K5bin/hotshot2calltree
+
 %define rname kcachegrind
 
 Name: kde5-%rname
-Version: 19.08.1
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -16,7 +18,7 @@ Requires: valgrind
 
 Source0: %rname-%version.tar
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt rpm-build-licenses
+BuildRequires(pre): rpm-build-kf5 rpm-build-licenses rpm-build-python3
 BuildRequires: qt5-tools-devel
 BuildRequires: extra-cmake-modules
 BuildRequires: kf5-karchive-devel kf5-kdoctools-devel
@@ -31,6 +33,10 @@ consuming execution parts of program.
 %setup -n %rname-%version
 #exclude examples from build
 sed -i -e '/add_subdirectory([[:space:]]*cgview[[:space:]]*)\|add_subdirectory([[:space:]]*qcachegrind[[:space:]]*)/d' CMakeLists.txt
+# fix shebang
+sed -i \
+  -e "s|^#![[:space:]]*/usr/bin/env python$|#!%{__python3}|g" \
+  converters/hotshot2calltree.cmake
 
 %build
 %K5build
@@ -38,9 +44,9 @@ sed -i -e '/add_subdirectory([[:space:]]*cgview[[:space:]]*)\|add_subdirectory([
 %install
 %K5install
 %K5install_move data %rname
-rm -f %buildroot/%_datadir/locale/*/LC_MESSAGES/*.qm
-rm -f %buildroot/%_K5i18n/*/LC_MESSAGES/*.qm
+
 %find_lang %name --with-kde --all-name
+%K5find_qtlang %name --all-name
 
 %files -f %name.lang
 %doc COPYING*
@@ -56,6 +62,12 @@ rm -f %buildroot/%_K5i18n/*/LC_MESSAGES/*.qm
 %_K5data/%rname/
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt2
+- build with python3
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
 - new version
 
@@ -80,21 +92,21 @@ rm -f %buildroot/%_K5i18n/*/LC_MESSAGES/*.qm
 * Mon Feb 25 2019 Sergey V Turchin <zerg@altlinux.org> 18.12.2-alt1
 - new version
 
-* Tue Jul 24 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1%ubt
+* Tue Jul 24 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1
 - new version
 
-* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1%ubt
+* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1
 - new version
 
-* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1%ubt
+* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1
 - new version
 
-* Mon Mar 12 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.3-alt1%ubt
+* Mon Mar 12 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.3-alt1
 - new version
 
-* Fri Nov 17 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.3-alt1%ubt
+* Fri Nov 17 2017 Sergey V Turchin <zerg@altlinux.org> 17.08.3-alt1
 - new version
 
-* Mon Aug 28 2017 Stanislav Levin <slev@altlinux.org> 17.08.0-alt1%ubt
+* Mon Aug 28 2017 Stanislav Levin <slev@altlinux.org> 17.08.0-alt1
 - Initial build
 

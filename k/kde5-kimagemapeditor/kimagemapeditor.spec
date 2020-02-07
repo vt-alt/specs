@@ -1,7 +1,7 @@
 %define rname kimagemapeditor
 
 Name: kde5-%rname
-Version: 19.08.3
+Version: 19.12.1
 Release: alt1
 %K5init
 
@@ -12,12 +12,14 @@ License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 
-# Automatically added by buildreq on Wed Dec 20 2017 (-bi)
-# optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdesignerplugin-devel kf5-kdoctools kf5-kdoctools-devel kf5-kemoticons-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-knotifications-devel kf5-kparts-devel kf5-kservice-devel kf5-ktextwidgets-devel kf5-kunitconversion-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libssl-devel libstdc++-devel libxcbutil-keysyms perl python-base python-modules qt5-base-common qt5-base-devel xml-common xml-utils
-#BuildRequires: extra-cmake-modules gtk-update-icon-cache kf5-kdelibs4support-devel kf5-khtml-devel kf5-kio-devel kf5-kjs-devel
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+# Automatically added by buildreq on Thu Jan 23 2020 (-bi)
+# optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 gtk-update-icon-cache kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdoctools kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libgdk-pixbuf libglvnd-devel libgpg-error libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-positioning libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-svg libqt5-webchannel libqt5-webenginecore libqt5-webenginewidgets libqt5-widgets libqt5-x11extras libqt5-xml libsasl2-3 libstdc++-devel libx265-176 libxcbutil-keysyms python-modules python2-base python3 python3-base qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-webchannel-devel rpm-build-python3 sh4 xml-common xml-utils
+#BuildRequires: appstream extra-cmake-modules kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdoctools-devel kf5-kguiaddons-devel kf5-kiconthemes-devel kf5-kio-devel kf5-kparts-devel kf5-ktextwidgets-devel libssl-devel python-modules-compiler python3-dev qt5-wayland-devel qt5-webengine-devel
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules
-BuildRequires: kf5-kdelibs4support-devel kf5-khtml-devel kf5-kio-devel kf5-kjs-devel
+BuildRequires: qt5-wayland-devel qt5-webengine-devel
+BuildRequires: kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdoctools-devel kf5-kguiaddons-devel
+BuildRequires: kf5-kiconthemes-devel kf5-kio-devel kf5-kparts-devel kf5-ktextwidgets-devel
 
 %description
 An HTML imagemap editor.
@@ -65,10 +67,13 @@ Requires: %name-common = %version-%release
 %_K5icon/*/*/apps/kimagemapeditor.*
 %_K5data/kimagemapeditor/
 %_K5srv/kimagemapeditorpart.desktop
-%_K5xmlgui/kimagemapeditor/
+#%_K5xmlgui/kimagemapeditor/
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
 * Mon Nov 25 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.3-alt1
 - new version
 
@@ -99,20 +104,20 @@ Requires: %name-common = %version-%release
 * Mon Feb 25 2019 Sergey V Turchin <zerg@altlinux.org> 18.12.2-alt1
 - new version
 
-* Tue Jul 24 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1%ubt
+* Tue Jul 24 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt1
 - new version
 
-* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1%ubt
+* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.2-alt1
 - new version
 
-* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1%ubt
+* Fri May 25 2018 Sergey V Turchin <zerg@altlinux.org> 18.04.1-alt1
 - new version
 
-* Wed Mar 14 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.3-alt1%ubt
+* Wed Mar 14 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.3-alt1
 - new version
 
-* Thu Jan 18 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.1-alt1%ubt
+* Thu Jan 18 2018 Sergey V Turchin <zerg@altlinux.org> 17.12.1-alt1
 - new version
 
-* Wed Dec 20 2017 Sergey V Turchin <zerg@altlinux.org> 17.12.0-alt1%ubt
+* Wed Dec 20 2017 Sergey V Turchin <zerg@altlinux.org> 17.12.0-alt1
 - initial build

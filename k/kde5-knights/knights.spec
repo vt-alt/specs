@@ -1,7 +1,7 @@
 %define rname knights
 
 Name: kde5-%rname
-Version: 19.04.2
+Version: 19.12.1
 Release: alt1
 %K5init no_altplace
 
@@ -66,7 +66,6 @@ Requires: %name-common = %version-%release
 
 %files -f %name.lang
 %doc LICENSE*
-%config %_K5xdgconf/*.*categories
 %config(noreplace) %_K5xdgconf/*.knsrc
 %_K5bin/knights
 %_datadir/knights/
@@ -75,6 +74,7 @@ Requires: %name-common = %version-%release
 %_K5xmlgui/knights/
 %_K5xdgapp/*knights*.desktop
 %_datadir/metainfo/*knights*.xml
+%_datadir/qlogging-categories5/*.categories
 
 #%files devel
 #%_K5inc/knights_version.h
@@ -87,6 +87,15 @@ Requires: %name-common = %version-%release
 #%_K5dbus_iface/*nights*.xml
 
 %changelog
+* Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- new version
+
+* Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.1-alt1
+- new version
+
+* Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
+- new version
+
 * Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.2-alt1
 - initial build
 
