@@ -1,13 +1,13 @@
 Name: xfce4-weather-plugin
 Version: 0.10.0
-Release: alt3
+Release: alt4.g1510e45
 
 Summary: Weather plugin for the Xfce panel
 License: GPL-2.0+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/%name
 Packager: Xfce Team <xfce@packages.altlinux.org>
-# git://git.xfce.org/panel-plugins/xfce4-weather-plugin
+Vcs: git://git.xfce.org/panel-plugins/xfce4-weather-plugin
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
@@ -23,11 +23,14 @@ Requires: xfce4-panel >= 4.12.0-alt2
 
 %description
 %name is the plugin for the Xfce panel, that display weather information
+using forecast data provided by met.no.
 
 %prep
 %setup
 %patch -p1
 mkdir m4
+# Don't use git tag in version.
+%xfce4_drop_gitvtag weather_version_tag configure.ac.in
 
 %build
 %xfce4reconf
@@ -51,6 +54,12 @@ mkdir m4
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed Feb 05 2020 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt4.g1510e45
+- Updated Url.
+- Added Vcs tag.
+- Updated description.
+- Upstream git snapshot.
+
 * Wed Nov 27 2019 Mikhail Efremov <sem@altlinux.org> 0.10.0-alt3
 - Don't use rpm-build-licenses.
 - Fix reading astrodata from cache.
