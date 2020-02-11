@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        79.0.3945.79
+Version:        79.0.3945.130
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -506,6 +506,15 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Mon Feb 03 2020 Alexey Gladkov <legion@altlinux.ru> 79.0.3945.130-alt1
+- New version (79.0.3945.130).
+- Security fixes:
+  - CVE-2019-13767: Use after free in media picker.
+  - CVE-2020-6377: Use after free in audio.
+  - CVE-2020-6378: Use-after-free in speech recognizer.
+  - CVE-2020-6379: Use-after-free in speech recognizer.
+  - CVE-2020-6380: Extension message verification error.
+
 * Mon Dec 16 2019 Alexey Gladkov <legion@altlinux.ru> 79.0.3945.79-alt1
 - New version (79.0.3945.79).
 - Security fixes:
