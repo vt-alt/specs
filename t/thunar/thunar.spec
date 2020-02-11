@@ -1,19 +1,19 @@
 Name: thunar
-Version: 1.8.11
+Version: 1.8.12
 Release: alt1
 
 Summary: Thunar File Manager for the Xfce Desktop Environment
 Summary (ru_RU.UTF-8): Файловый менеджер Thunar
 Group: Graphical desktop/XFce
-License: %gpl2plus
+License: GPLv2+ and LGPLv2+
 Url: https://xfce.org
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/thunar
+Vcs: git://git.xfce.org/xfce/thunar
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
-BuildRequires(pre): rpm-build-licenses rpm-build-xfce4 >= 0.1.0
+BuildRequires(pre): rpm-build-xfce4 >= 0.1.0
 
 BuildPreReq: xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel >= 4.8 libxfconf-devel >= 4.8 libexo-gtk3-devel libxfce4ui-gtk3-devel
@@ -37,8 +37,9 @@ Thunar File Manager for the Xfce desktop environment.
 Файловый менеджер Thunar используемый в окружении рабочего стола Xfce.
 
 %package -n lib%name-devel
-Summary: devel files for Thunar
+Summary: Development files for %name
 Group: Graphical desktop/XFce
+License: LGPLv2+
 Requires: lib%name = %version-%release
 Obsoletes: libThunar-devel < 1.3.1
 Provides: libThunar-devel = %version-%release
@@ -48,13 +49,23 @@ This package contains development files required to build
 %name-based software.
 
 %package -n lib%name
-Summary: Shared libraries for Thunar
+Summary: Shared libraries for %name
 Group: Graphical desktop/XFce
+License: LGPLv2+
 Obsoletes: libThunar < 1.3.1
 Provides: libThunar = %version-%release
 
 %description -n lib%name
-This package contains libraries for Thunar.
+This package contains libraries for %name.
+
+%package -n lib%name-devel-doc
+Summary: Development documentation for lib%name
+Group: Development/Documentation
+License: GFDL-1.1+
+BuildArch: noarch
+
+%description -n lib%name-devel-doc
+This package contains development documentation for lib%name.
 
 %prep
 %setup
@@ -71,11 +82,10 @@ mkdir -p m4/
 	--disable-static \
 	--enable-maintainer-mode \
 	--enable-largefile \
-	--disable-gtk-doc \
 	--enable-exif \
 	--enable-pcre \
 	--enable-gio-unix \
-	--disable-silent-rules \
+	--enable-gtk-doc \
 	--enable-debug=minimum
 %make_build
 
@@ -115,13 +125,25 @@ make check
 %_libdir/*.so.*
 
 %files -n lib%name-devel
-#%_datadir/gtk-doc/html/*
 %_pkgconfigdir/*.pc
 %_includedir/thunarx-*/
 %_libdir/*.so
+
+%files -n lib%name-devel-doc
+%_datadir/gtk-doc/html/*
+
 %exclude %_libdir/thunarx-*/*.la
 
 %changelog
+* Fri Jan 31 2020 Mikhail Efremov <sem@altlinux.org> 1.8.12-alt1
+- Cleanup summary a bit.
+- Drop unneded configure option.
+- Enable development docs.
+- Add Vcs tag.
+- Fix license.
+- Get rid of rpm-build-licenses.
+- Updated to 1.8.12.
+
 * Mon Nov 18 2019 Mikhail Efremov <sem@altlinux.org> 1.8.11-alt1
 - Updated to 1.8.11.
 
