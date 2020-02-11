@@ -35,7 +35,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.930
+Version: 8.990
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -351,9 +351,9 @@ done
 #slideshow
 mkdir -p %buildroot/usr/share/install2/slideshow
 mkdir -p %buildroot/etc/alterator
-cp -a slideshow/slides*/  %buildroot/usr/share/install2/slideshow/
+cp -a slideshow/Slides*/  %buildroot/usr/share/install2/slideshow/
 # Set English slideshow as default
-#ln -s slides-en %buildroot/usr/share/install2/slideshow/slides
+ln -s Slides-en %buildroot/usr/share/install2/slideshow/Slides
 install slideshow/slideshow.conf %buildroot/etc/alterator/
 
 #indexhtml
@@ -495,6 +495,13 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Fri Feb 07 2020 Mikhail Efremov <sem@altlinux.org> 8.990-alt1
+- slideshow: Add English slides.
+- slideshow: Rename slides/ -> Slides/.
+- xfce-settings: Add search action to thunar menu.
+- menu: Add mate-search-tool.desktop.
+- xfce-settings: Save session on exit.
+
 * Fri Jan 17 2020 Mikhail Efremov <sem@altlinux.org> 8.930-alt1
 - Fix changelog.
 - xfce-settings: Set thunar for inode/directory MIME type.
