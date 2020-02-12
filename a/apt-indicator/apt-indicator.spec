@@ -1,6 +1,6 @@
 Name: apt-indicator
-Version: 0.3.12
-Release: alt5
+Version: 0.3.13
+Release: alt1
 
 Summary: Applet for indication that newer packages are available
 License: GPL
@@ -74,6 +74,9 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Fri Feb 07 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.13-alt1
+- don't hide systray icon (Closes: 37881)
+
 * Wed Sep 04 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.3.12-alt5
 - really adapt c flags for C++14 (used in the last source changes
   here & in APT in 0.3.12-alt4), so that they really have effect on e2k
