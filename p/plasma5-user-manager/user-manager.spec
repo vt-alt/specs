@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.17.5
-Release: alt1
+Release: alt3
 Epoch: 1
 %K5init altplace
 
@@ -14,6 +14,8 @@ License: GPLv2+ / LGPLv2+
 Requires: accountsservice
 
 Source: %rname-%version.tar
+Patch1: alt-%rname-fix-sddm-conf-path.patch
+Patch2: alt-%rname-use-gost-yescrypt.patch
 
 # Automatically added by buildreq on Wed Sep 16 2015 (-bi)
 # optimized out: cmake cmake-modules cracklib elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms pkg-config python-base python3 python3-base ruby ruby-stdlibs
@@ -37,6 +39,8 @@ Add, remove or edit system users.
 
 %prep
 %setup -n %rname-%version
+%patch1 -p2
+%patch2 -p2
 
 %build
 %K5build
@@ -54,6 +58,13 @@ Add, remove or edit system users.
 %_K5data/user-manager/
 
 %changelog
+* Mon Feb 03 2020 Slava Aseev <ptrnine@altlinux.org> 1:5.17.5-alt3
+- Change reserve hashing prefix to "$2y$" bcrypt
+
+* Mon Feb 03 2020 Slava Aseev <ptrnine@altlinux.org> 1:5.17.5-alt2
+- Fix sddm.conf path
+- Use gost-yescrypt password hashing by default
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.17.5-alt1
 - new version
 
