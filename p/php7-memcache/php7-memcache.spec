@@ -2,12 +2,12 @@
 %define		php7_extension	memcache
 ###############################################################
 Name:	 	php7-%php7_extension
-Version:	4.0.4
+Version:	4.0.5.2
 Release:	alt%php7_version.%php7_release
 
 Summary:	memcached extension for php7
 
-License:	PHP Licence
+License:	PHP-3.0
 Group:		System/Servers
 URL:		https://github.com/websupport-sk/pecl-memcache
 
@@ -71,6 +71,9 @@ NO_INTERACTION=1 make test
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%php7_version-%php7_release
+
+* Thu Feb  6 2020 Anton Farygin <rider@altlinux.ru> 4.0.5.2-alt1 
+- 4.0.4 -> 4.0.5.2
 
 * Mon Nov 11 2019 Anton Farygin <rider@altlinux.ru> 4.0.4-alt1
 - updated to 4.0.4 with php-7.3 support
