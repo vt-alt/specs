@@ -1,5 +1,5 @@
 Name: apt-indicator
-Version: 0.3.13
+Version: 0.3.14
 Release: alt1
 
 Summary: Applet for indication that newer packages are available
@@ -74,6 +74,9 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Thu Feb 13 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.14-alt1
+- update translations (Closes: 37864)
+
 * Fri Feb 07 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.13-alt1
 - don't hide systray icon (Closes: 37881)
 
