@@ -7,12 +7,12 @@
 %set_verify_elf_method unresolved=relaxed
 
 Name: wireshark
-Version: 3.0.6
+Version: 3.0.8
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
 Group: Monitoring
-License: GPL
+License: GPLv2
 Url: http://www.wireshark.org/
 
 Source: http://www.wireshark.org/download/src/%name-%version.tar
@@ -24,7 +24,7 @@ Patch: %name-%version-alt.patch
 # Automatically added by buildreq on Sun Dec 23 2007
 BuildRequires: control doxygen flex gcc-c++ libadns-devel libcap-devel libcom_err-devel libgnutls-openssl-devel libgcrypt-devel zlib-devel
 BuildRequires: libkrb5-devel libpcap-devel libpcre-devel libportaudio2-devel libssl-devel python3 unzip xml-utils xsltproc perl-Pod-Parser perl-devel
-BuildRequires: liblua5.1-devel
+BuildRequires: liblua5.1-compat-devel
 BuildRequires: libssh-devel
 BuildRequires: libnl-devel
 %if_with nghttp2
@@ -113,7 +113,7 @@ extensions.
 %ifarch %e2k
 cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
 %endif
-%cmake
+%cmake -D BUILD_sharkd=off
 %cmake_build
 
 %install
@@ -194,6 +194,7 @@ _EOF_
 %_miconsdir/wireshark.png
 %_niconsdir/wireshark.png
 %_liconsdir/wireshark.png
+%_iconsdir/hicolor/scalable/apps/*.svg
 %_xdgmimedir/packages/%name.xml
 %_datadir/appdata/wireshark.appdata.xml
 
@@ -218,6 +219,20 @@ _EOF_
 
 
 %changelog
+* Tue Jan 21 2020 Anton Farygin <rider@altlinux.ru> 3.0.8-alt1
+- 3.0.8
+- disabled sharkd build
+- fixes:
+   * BT ATT dissector crash. CVE-2020-7045
+
+* Mon Dec 09 2019 Anton Farygin <rider@altlinux.ru> 3.0.7-alt1
+- 3.0.7
+- fixes:
+   * CMS dissector crash. CVE-2019-19553
+
+* Mon Nov 18 2019 Anton Farygin <rider@altlinux.ru> 3.0.6-alt2
+- changed BuildRequires from liblua5.1-devel to liblua5.1-compat-devel
+
 * Sun Nov 10 2019 Anton Farygin <rider@altlinux.ru> 3.0.6-alt1
 - 3.0.6
 
