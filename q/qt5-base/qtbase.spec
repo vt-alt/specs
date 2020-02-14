@@ -34,7 +34,7 @@
 Name: qt5-base
 %define major  5
 Version: 5.12.6
-Release: alt3
+Release: alt4
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -69,6 +69,7 @@ Patch1006: e2k-qt-5.12.4.patch
 Patch1007: alt-decrease-iconloader-fallback-depth.patch
 Patch1008: alt-mkspecs-features.patch
 Patch1009: alt-false-detect-groupswitchmodifier.patch
+Patch1010: alt-glx-check-version.patch
 
 # macros
 %define _qt5 %gname
@@ -396,6 +397,7 @@ EGL integration library for the Qt%major toolkit
 %patch1007 -p1
 %patch1008 -p1
 %patch1009 -p1
+%patch1010 -p2
 
 # install optflags
 %add_optflags %optflags_shared
@@ -814,6 +816,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Thu Feb 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.12.6-alt4
+- Added workaround for opengl issue in x2go.
+
 * Thu Feb 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt3
 - security (Fixes: CVE-2020-0569, CVE-2020-0570)
 
