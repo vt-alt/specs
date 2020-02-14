@@ -1,5 +1,5 @@
 Name: code
-Version: 1.32.3
+Version: 1.42.0
 Release: alt1
 
 Summary: Visual Studio Code
@@ -12,12 +12,12 @@ Group: Development/Other
 # Source-url: https://vscode-update.azurewebsites.net/%version/linux-x64/stable
 Source: %name-%version.tar
 # Source1-url: https://vscode-update.azurewebsites.net/%version/linux-ia32/stable
-Source1: %name-%version-i586.tar
+#Source1: %name-%version-i586.tar
 
 Source2: code.desktop
 Source3: code.png
 
-ExclusiveArch: x86_64 i586
+ExclusiveArch: x86_64
 
 %set_verify_elf_method skip
 %add_findreq_skiplist %_libdir/%name/bin/code
@@ -37,10 +37,6 @@ See https://code.visualstudio.com/docs/setup/linux for installation instructions
 
 %prep
 %setup
-%ifarch i586
-rm -f resources/app/node_modules/vsda/build/Release/vsda_linux64.node
-tar xfv %SOURCE1
-%endif
 
 %build
 
@@ -61,6 +57,26 @@ install -m644 -D %SOURCE3 %buildroot%_pixmapsdir/code.png
 %_pixmapsdir/code.png
 
 %changelog
+* Mon Feb 10 2020 Vitaly Lipatov <lav@altlinux.ru> 1.42.0-alt1
+- new version 1.42.0 (with rpmrb script)
+
+* Tue Dec 24 2019 Vitaly Lipatov <lav@altlinux.ru> 1.41.1-alt1
+- new version 1.41.1 (with rpmrb script)
+
+* Thu Nov 14 2019 Vitaly Lipatov <lav@altlinux.ru> 1.40.1-alt1
+- new version 1.40.1 (with rpmrb script)
+
+* Wed Oct 16 2019 Vitaly Lipatov <lav@altlinux.ru> 1.39.2-alt1
+- new version 1.39.2 (with rpmrb script) (ALT bug 37337)
+
+* Mon Jul 08 2019 Vitaly Lipatov <lav@altlinux.ru> 1.36.0-alt1
+- new version 1.36.0 (ALT bug 34012)
+- moved to Electron version 4.x, which means that
+  VS Code will no longer run on Linux 32-bit
+
+* Sat Jun 22 2019 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt1
+- new version 1.35.0 (with rpmrb script)
+
 * Sun Mar 24 2019 Vitaly Lipatov <lav@altlinux.ru> 1.32.3-alt1
 - new version 1.32.3 (with rpmrb script)
 
