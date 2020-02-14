@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.54
+Version: 2.9.55
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Tue Feb 04 2020 Slava Aseev <ptrnine@altlinux.org> 2.9.55-alt1
+- Update translations for alterator-secsetup
+
 * Wed Jan 22 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.54-alt1
 - add translation for alterator-zram-swap
 - update translation alterator-secsetup

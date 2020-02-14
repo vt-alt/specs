@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.11
+Version: 1.12
 Release: alt1
 
 Source: %name-%version.tar
@@ -10,6 +10,7 @@ Group: System/Configuration/Other
 
 BuildPreReq: alterator
 BuildRequires: gcc gcc-c++ gcc-c++-common librpm-devel 
+Requires: tcb-hash-prefix-control
 
 AutoReq: no
 
@@ -38,6 +39,9 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Tue Feb 04 2020 Slava Aseev <ptrnine@altlinux.org> 1.12-alt1
+- Add checkbox for enabling gost_yescrypt hashing algorithm
+
 * Wed Jan 22 2020 Ivan Razzhivin <underwit@altlinux.org> 1.11-alt1
 - fix ui text
 - update translation
