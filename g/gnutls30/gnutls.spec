@@ -3,7 +3,7 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.11
+Version: 3.6.12
 Release: alt1
 
 Summary: A TLS protocol implementation
@@ -207,14 +207,15 @@ This package contains the GnuTLS API Reference Manual.
 %prep
 %setup -n gnutls-%version
 %patch3 -p2
-# Make sure the gnulib files we'd like to patch are identical:
-cmp {src/gl,gl}/intprops.h
-cmp {src/gl,gl/tests}/xalloc-oversized.h
+
+# We have two gnulib sources.
+# Just apply patch twice for both src/gl/ and gl/.
 pushd src/gl
 %patch6 -p4
 popd
-cp -fv {src/gl,gl}/intprops.h
-cp -fv {src/gl,gl/tests}/xalloc-oversized.h
+pushd gl
+%patch6 -p4
+popd
 
 %patch8 -p1
 
@@ -322,6 +323,10 @@ make -k check
 %endif
 
 %changelog
+* Mon Feb 03 2020 Mikhail Efremov <sem@altlinux.org> 3.6.12-alt1
+- Fixed build with gnulib-E2K-fix-for-lcc-1.23.patch.
+- Updated to 3.6.12.
+
 * Mon Dec 02 2019 Mikhail Efremov <sem@altlinux.org> 3.6.11-alt1
 - Updated to 3.6.11.
 
