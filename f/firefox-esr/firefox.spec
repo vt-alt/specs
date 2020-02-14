@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.4.1
+Version:        68.5.0
 Release:        alt1
 License:        MPL/GPL/LGPL
 Group:          Networking/WWW
@@ -387,6 +387,20 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Wed Feb 12 2020 Andrey Cherepanov <cas@altlinux.org> 68.5.0-alt1
+- New ESR version (68.5.0).
+- Fixed:
+  + CVE-2020-6796 Missing bounds check on shared memory read in the parent process
+  + CVE-2020-6797 Extensions granted downloads.open permission could open arbitrary applications on Mac OSX
+  + CVE-2020-6798 Incorrect parsing of template tag could result in JavaScript injection
+  + CVE-2020-6799 Arbitrary code execution when opening pdf links from other applications, when Firefox is configured as default pdf reader
+  + CVE-2020-6800 Memory safety bugs fixed in Firefox 73 and Firefox ESR 68.5
+
+* Tue Jan 21 2020 Andrey Cherepanov <cas@altlinux.org> 68.4.2-alt1
+- New ESR version (68.4.2).
+- Bugs fixed:
+  + Fixed various issues opening files with spaces in their path (bug 1601905, bug 1602726).
+
 * Wed Jan 08 2020 Andrey Cherepanov <cas@altlinux.org> 68.4.1-alt1
 - New ESR version (68.4.1).
 - Fixed:
