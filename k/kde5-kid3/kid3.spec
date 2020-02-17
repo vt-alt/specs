@@ -3,18 +3,18 @@
 
 %define rname kid3
 Name: kde5-%rname
-Version: 3.8.0
+Version: 3.8.2
 Release: alt1
 %K5init altplace
 
 Group: Sound
 Summary: ID3 tagger
-License: GPLv2
+License: GPL-2.0-or-later
 Url: http://kid3.sourceforge.net/
 
 Source: kid3-%{version}.tar
 Source1: ru.po
-Patch1: kid3-3.0.2-alt-desktop_ru_uk.patch
+Patch1: kid3-3.0.2-alt-desktop_ru.patch
 
 # Automatically added by buildreq on Fri Nov 13 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gtk-update-icon-cache id3lib kf5-kdoctools-devel libEGL-devel libGL-devel libavcodec-devel libavutil-devel libflac-devel libgpg-error libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-multimedia libqt5-network libqt5-printsupport libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl-parent pkg-config python-base python3 python3-base qt5-base-devel qt5-tools ruby ruby-stdlibs xml-common xml-utils zlib-devel
@@ -127,8 +127,8 @@ Requires: %name-common = %EVR
 %patch1 -p1
 
 tmp_file=`mktemp`
-msgcat --use-first po/ru.po %SOURCE1 >"$tmp_file"
-cat "$tmp_file" >po/ru.po
+msgcat --use-first translations/po/ru/kid3_qt.po %SOURCE1 >"$tmp_file"
+cat "$tmp_file" >translations/po/ru/kid3_qt.po
 rm -f "$tmp_file"
 
 find -type f -name CMakeLists.txt | \
@@ -205,6 +205,9 @@ done
 #%_K5dbus_iface/*id3*
 
 %changelog
+* Wed Feb 12 2020 Sergey V Turchin <zerg@altlinux.org> 3.8.2-alt1
+- new version
+
 * Wed Dec 18 2019 Sergey V Turchin <zerg@altlinux.org> 3.8.0-alt1
 - new version
 
