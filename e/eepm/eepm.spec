@@ -1,5 +1,5 @@
 Name: eepm
-Version: 3.1.0
+Version: 3.1.4
 Release: alt1
 
 Summary: Etersoft EPM package manager
@@ -23,6 +23,7 @@ Provides: upm
 %if %_vendor == "alt"
 # FIXHERE: Replace with target platform package manager
 Requires: apt rpm
+Requires: distro_info >= 1.1
 %endif
 
 %description
@@ -68,6 +69,8 @@ chmod a+x %buildroot%_datadir/%name/tools_*
 %if %_vendor == "alt"
 # use external eget
 rm -f %buildroot%_datadir/%name/tools_eget
+# use external distro_info
+rm -f %buildroot%_bindir/distr_info
 %endif
 
 %files
@@ -81,13 +84,47 @@ rm -f %buildroot%_datadir/%name/tools_eget
 %_bindir/upm
 %_bindir/serv
 %_bindir/cerv
+%if %_vendor != "alt"
 %_bindir/distr_info
+%endif
 %_man1dir/*
 %_datadir/%name/
 %_sysconfdir/bash_completion.d/serv
 %_sysconfdir/bash_completion.d/cerv
 
 %changelog
+* Wed Feb 05 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.4-alt1
+- epm-repack: alien will use rpmbuild, assure we have it
+- epm-repack: repack only selected packages with abs paths (eterbug #14411)
+- epm: increase stdinput wait to 10 seconds
+- epm-print: improve print pkgsourcename
+
+* Fri Jan 31 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.3-alt1
+- commit packed files
+- distro_info related fixes
+- add initial openrc support
+- add restore command (install packages by project list (python's requirements.txt)
+- epm install: forbid src.rpm installation
+- epm repolist: support task number(s)
+- epm repack: more cleanup output, print list of converted packages
+- epm restore: add using ldd-requires for binary files
+
+* Tue Nov 26 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.2-alt1
+- improve homebrew support
+- serv: add edit support for systemd
+- fixes for ALT p9 detection
+- epm query_file: use -- after options
+- use external distro_info on non ALT systems
+- epm: add support for a few tasks in addrepo/removerepo/install
+- upgrade: add support for epm upgrade TASK (upgrade only already installed packages)
+- remove TASK: remove all packages from the TASK
+- release_upgrade: install alt-gpgkeys firstly
+
+* Tue Nov 12 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.1-alt1
+- epm-dedup: fix info message (ALT bug 37473)
+- epm: add --no-stdin support (do not read commands from stdin)
+- run internal eepm with --inscript (no read from stdin) (ALT bug 37209)
+
 * Fri Nov 08 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - add epm full-upgrade
 - kernel update/remove: add --auto support (non interactive)
