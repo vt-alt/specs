@@ -2,16 +2,17 @@
 
 Name: partitionmanager
 Version: 4.0.0
-Release: alt1
+Release: alt1.1
 
 Summary: KDE Partition Manager
 License: GPLv3
 Group: Graphical desktop/KDE
-
 Url: https://www.kde.org/applications/system/kdepartitionmanager/
 
 # VCS: https://github.com/KDE/partitionmanager.git
 Source: http://download.kde.org/stable/partitionmanager/%version/src/%name-%version.tar.gz
+
+%K5init no_altplace appdata
 
 Requires: lvm2 cryptsetup
 
@@ -48,14 +49,17 @@ file systems.
 
 %files -f %name.lang
 %_K5bin/%name
-%_kf5_xdgapp/%xdg_name.desktop
-%_kf5_icon/hicolor/scalable/apps/%name.svg
+%_K5xdgapp/%xdg_name.desktop
+%_K5icon/*/*/apps/%name.*
 %_K5cfg/%name.kcfg
 %_K5xmlgui/%name/
 %_datadir/metainfo/%xdg_name.appdata.xml
 %doc README* TODO
 
 %changelog
+* Thu Feb 06 2020 Yuri N. Sedunov <aris@altlinux.org> 4.0.0-alt1.1
+- made visible outside KDE (ALT #38046)
+
 * Thu May 02 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0.0-alt1
 - 4.0.0
 

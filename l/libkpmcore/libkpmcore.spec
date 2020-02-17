@@ -3,7 +3,7 @@
 %define _libexecdir %_prefix/libexec
 
 Name: lib%_name
-Version: 4.0.0
+Version: 4.0.1
 Release: alt1
 
 Summary: Library for managing partitions
@@ -11,7 +11,7 @@ Group: System/Libraries
 License: GPLv3
 Url: https://github.com/KDE/%_name
 
-Source: %url/archive/%_name-%version.tar.gz
+Source: %url/archive/v%version/%_name-%version.tar.gz
 
 Provides: %_name = %version-%release
 
@@ -52,9 +52,9 @@ using %_name.
 
 %files
 %_libexecdir/kauth/kpmcore_externalcommand
-%_K5conf_dbus_sysd/%xdg_name.applicationinterface.conf
-%_K5conf_dbus_sysd/%xdg_name.externalcommand.conf
-%_K5conf_dbus_sysd/%xdg_name.helperinterface.conf
+%_datadir/dbus-1/system.d/%xdg_name.applicationinterface.conf
+%_datadir/dbus-1/system.d/%xdg_name.helperinterface.conf
+%_datadir/dbus-1/system.d/%xdg_name.externalcommand.conf
 %_K5lib/*.so.*
 %_K5plug/*.so
 %_K5dbus_sys_srv/%xdg_name.externalcommand.service
@@ -67,6 +67,9 @@ using %_name.
 
 
 %changelog
+* Mon Oct 07 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0.1-alt1
+- 4.0.1
+
 * Thu May 02 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0.0-alt1
 - 4.0.0
 
