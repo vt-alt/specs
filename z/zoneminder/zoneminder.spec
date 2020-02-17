@@ -1,12 +1,12 @@
-%define zmuid_final apache
+%define zmuid_final apache2
 %define zmgid_final _webserver
 
 Name: zoneminder
-Version: 1.32.3
-Release: alt2
+Version: 1.34.1
+Release: alt1
 Summary: A camera monitoring and analysis tool
 Group: System/Servers 
-License: GPL
+License: GPLv2
 Url: http://www.zoneminder.com
 Source: %name-%version-alt.tar
 Source1: Crud-%version.tar
@@ -19,10 +19,10 @@ Source7: zm-fcgi.inc
 Patch1: zoneminder-1.32.3-alt-mysql8-transition.patch
 
 Conflicts: zm <= 1.22.3
-Requires: libgnutls libgnutls-openssl zlib perl-Class-Date perl-DateTime perl-Date-Manip perl-libwww ffmpeg perl-X10 perl-Sys-Mmap perl-DBD-mysql perl-Storable MySQL-client php7-pdo_mysql su perl-Sys-Mmap webserver perl-Pod-Usage perl-Sys-MemInfo perl-Number-Bytes-Human perl-JSON-MaybeXS perl-Sys-CPU
+Requires: libgnutls libgnutls-openssl zlib perl-Class-Date perl-DateTime perl-Date-Manip perl-libwww ffmpeg perl-X10 perl-Sys-Mmap perl-DBD-mysql perl-Storable php7-pdo_mysql php7-openssl su perl-Data-Entropy perl-Crypt-Eksblowfish perl-Sys-Mmap webserver perl-Pod-Usage perl-Sys-MemInfo perl-Number-Bytes-Human perl-JSON-MaybeXS perl-Sys-CPU
+Requires: perl-SOAP-WSDL perl-Class-Std-Fast perl-Data-UUID perl-IO-Socket-Multicast
 AutoReq: noperl
-BuildRequires: bzlib-devel ffmpeg gcc-c++ libavdevice-devel libavformat-devel libgcrypt-devel libgnutls-openssl-devel libjpeg-devel libmysqlclient-devel libpcre-devel libswscale-devel netpbm perl-Archive-Tar perl-Archive-Zip perl-DBD-mysql perl-Date-Manip perl-MIME-Lite perl-MIME-tools perl-Module-Load perl-Sys-Mmap perl-X10 perl-devel perl-libwww zlib-devel libpolkit-devel cmake libv4l-devel rpm-macros-cmake libvlc-devel libcurl-devel libssl-devel libsystemd-devel libffi-devel libx264-devel libmount-devel libuuid-devel libselinux-devel libblkid-devel libmp4v2
-BuildRequires(pre): rpm-build-ubt
+BuildRequires: bzlib-devel ffmpeg gcc-c++ libavresample-devel libswresample-devel libavdevice-devel libavformat-devel libgcrypt-devel libgnutls-openssl-devel libjpeg-devel libmysqlclient-devel libpcre-devel libswscale-devel netpbm perl-Archive-Tar perl-Archive-Zip perl-DBD-mysql perl-Date-Manip perl-MIME-Lite perl-MIME-tools perl-Module-Load perl-Sys-Mmap perl-X10 perl-devel perl-libwww zlib-devel libpolkit-devel cmake libv4l-devel rpm-macros-cmake libvlc-devel libcurl-devel libssl-devel libsystemd-devel libffi-devel libx264-devel libmount-devel libuuid-devel libselinux-devel libblkid-devel libmp4v2
 
 %description
 ZoneMinder is a set of applications which is intended to provide a complete
@@ -112,7 +112,7 @@ cp db/*.sql %buildroot%_datadir/%name/db
 %preun_service zoneminder
 
 %files
-%doc AUTHORS COPYING README.md README.alt
+%doc COPYING README.md README.alt
 %config(noreplace) %_sysconfdir/zm/zm.conf
 %config(noreplace) %_sysconfdir/zm/conf.d/*.conf
 %ghost %_cachedir/%name
@@ -147,6 +147,24 @@ cp db/*.sql %buildroot%_datadir/%name/db
 %_datadir/%name/www/api
 
 %changelog
+* Mon Feb 03 2020 Anton Farygin <rider@altlinux.ru> 1.34.1-alt1
+- 1.34.1
+
+* Tue Jan 21 2020 Anton Farygin <rider@altlinux.ru> 1.34.0-alt1
+- 1.34.0 (fixes: CVE-2019-13072, CVE-2019-6777, CVE-2019-8429, CVE-2019-8428,
+	  CVE-2019-8427, CVE-2019-8426, CVE-2019-8425, CVE-2019-8424, CVE-2019-8423,
+	  CVE-2019-7352, CVE-2019-7351, CVE-2019-7350, CVE-2019-7349, CVE-2019-7348,
+	  CVE-2019-7347, CVE-2019-7346, CVE-2019-7345, CVE-2019-7344, CVE-2019-7343,
+	  CVE-2019-7342, CVE-2019-7341, CVE-2019-7340, CVE-2019-7339, CVE-2019-7338,
+	  CVE-2019-7337, CVE-2019-7336, CVE-2019-7335, CVE-2019-7334, CVE-2019-7333,
+	  CVE-2019-7332, CVE-2019-7331, CVE-2019-7330, CVE-2019-7329, CVE-2019-7328,
+	  CVE-2019-7326, CVE-2019-7325, CVE-2019-6992, CVE-2019-6991, CVE-2019-6990)
+- switched to apache2 as default user for ZoneMinder
+- removed MySQL-client require
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.32.3-alt3
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Jan 14 2019 Nikolai Kostrigin <nickel@altlinux.org> 1.32.3-alt2
 - fix FTBFS due to transition to libmysqlclient21
 
@@ -162,17 +180,17 @@ cp db/*.sql %buildroot%_datadir/%name/db
 * Tue Sep 25 2018 Anton Farygin <rider@altlinux.ru> 1.32.0-alt1
 - 1.32.0
 
-* Mon Oct 02 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt3%ubt
-- removed spawn-fcgi requires for nginx 
+* Mon Oct 02 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt3
+- removed spawn-fcgi requires for nginx
 	(it does not need on configuration with systemd)
 
-* Wed Jun 21 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt2%ubt
+* Wed Jun 21 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt2
 - removed apache subpackage
 
-* Wed May 10 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt1%ubt
+* Wed May 10 2017 Anton Farygin <rider@altlinux.ru> 1.30.4-alt1
 - new version
 
-* Mon Jan 16 2017 Anton Farygin <rider@altlinux.ru> 1.30.0-alt1%ubt
+* Mon Jan 16 2017 Anton Farygin <rider@altlinux.ru> 1.30.0-alt1
 - added ubt tag to facilitate the backporting process
 
 * Mon Jan 16 2017 Anton Farygin <rider@altlinux.ru> 1.30.0-alt1
