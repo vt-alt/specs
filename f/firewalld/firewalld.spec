@@ -1,9 +1,9 @@
 Name: firewalld
-Version: 0.7.2
+Version: 0.7.3
 Release: alt1
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
-License: %gpl2plus
+License: GPLv2+
 Group: System/Configuration/Networking
 
 URL: https://www.firewalld.org/
@@ -15,7 +15,7 @@ Patch: %name-%version-%release.patch
 BuildArch: noarch
 
 BuildRequires(pre): rpm-build-python3
-BuildRequires(pre): rpm-build-licenses rpm-build-xdg python3-devel
+BuildRequires(pre): rpm-build-xdg python3-devel
 BuildRequires: intltool xsltproc docbook-style-xsl docbook-dtds glib2-devel libgio-devel
 
 Requires: iptables ebtables iptables-ipv6 nftables
@@ -60,12 +60,6 @@ Python3 bindings for firewalld.
 %prep
 %setup
 %patch -p1
-
-# create po/POTFILES.in
-#for i in $(cat po/POTFILES.in.in); do echo $i>>po/POTFILES.in; done
-
-# create po/LINGUAS
-#ls po/*.po | sed -e 's/.po//' | sed -e 's/po\///' > po/LINGUAS
 
 %build
 %autoreconf
@@ -144,6 +138,11 @@ install -pDm755 %SOURCE1 %buildroot%_initdir/%name
 %python3_sitelibdir_noarch/firewall
 
 %changelog
+* Tue Feb 04 2020 Mikhail Efremov <sem@altlinux.org> 0.7.3-alt1
+- Spec cleanup.
+- Drop rpm-build-licenses usage.
+- Updated to 0.7.2.
+
 * Fri Nov 15 2019 Mikhail Efremov <sem@altlinux.org> 0.7.2-alt1
 - Updated to 0.7.2.
 
