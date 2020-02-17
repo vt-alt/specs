@@ -1,5 +1,5 @@
 Name: installer-scripts-remount-stage2
-Version: 0.5.14
+Version: 0.5.16
 Release: alt1
 
 Summary: Shared installer scripts: remount
@@ -48,6 +48,12 @@ __EOF__
 %attr(0755,root,root) %_datadir/install2/initinstall.d/85-start-multipath.sh
 
 %changelog
+* Mon Feb 03 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.16-alt1
+- start_lvm: Activate all LVs when setting up LVM
+
+* Fri Jul 19 2019 Michael Shigorin <mike@altlinux.org> 0.5.15-alt1
+- silence harmless sfdisk's "re-reading the partition table failed"
+
 * Fri Apr 07 2017 Michael Shigorin <mike@altlinux.org> 0.5.14-alt1
 - ignore blkid cache as the script's goal is changing
   block device situation
