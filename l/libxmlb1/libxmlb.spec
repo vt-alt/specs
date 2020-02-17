@@ -2,7 +2,7 @@
 %define soversion 1
 Summary: Library for querying compressed XML metadata
 Name: libxmlb%soversion
-Version: 0.1.13
+Version: 0.1.14
 Release: alt1
 License: LGPLv2+
 Group: System/Libraries
@@ -11,7 +11,6 @@ Source0: %name-%version.tar
 BuildRequires: glib2-devel >= %glib2_version
 BuildRequires: gtk-doc
 BuildRequires: libstemmer-devel
-BuildRequires: libuuid-devel
 BuildRequires: meson
 BuildRequires: gobject-introspection-devel
 
@@ -73,6 +72,9 @@ Files for development with %name.
 %_libdir/pkgconfig/xmlb.pc
 
 %changelog
+* Tue Jan 14 2020 Anton Farygin <rider@altlinux.ru> 0.1.14-alt1
+- 0.1.14
+
 * Fri Oct 25 2019 Anton Farygin <rider@altlinux.ru> 0.1.13-alt1
 - 0.1.13
 
