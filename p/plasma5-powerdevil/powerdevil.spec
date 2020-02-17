@@ -9,7 +9,7 @@
 
 Name: plasma5-%rname
 Version: 5.17.5
-Release: alt2
+Release: alt3
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -20,6 +20,9 @@ License: GPLv2+
 Requires: upower
 
 Source: %rname-%version.tar
+
+Patch1: %rname-alt-kidletime-crash.patch
+Patch2: %rname-alt-dpms-check-fix.patch
 
 # Automatically added by buildreq on Sat Mar 21 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcloog-isl4 libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcb-devel libxcbutil-keysyms libxkbfile-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs xml-common xml-utils xorg-kbproto-devel xorg-randrproto-devel xorg-renderproto-devel xorg-xextproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
@@ -90,6 +93,8 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch1 -p2
+%patch2 -p2
 
 find ./ -type f | \
 while read f ; do
@@ -143,6 +148,10 @@ done
 %_K5lib/libpowerdevilcore.so.%powerdevilcore_sover
 
 %changelog
+* Thu Feb 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.17.5-alt3
+- Fixed crash caused by kidletime.
+- Fixed early exit by powerdevil when DPMS X11 extension isn't present.
+
 * Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt2
 - build with libddcutil
 
