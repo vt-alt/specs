@@ -6,7 +6,7 @@
 
 Name: kde5-%rname
 Version: 19.12.1
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Sound
@@ -15,13 +15,14 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Patch1: KDEBUG-394358.patch
 
 # Automatically added by buildreq on Mon Apr 03 2017 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig gcc-c++ glib-networking gtk-update-icon-cache kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdoctools kf5-kdoctools-devel kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libflac-devel libgdk-pixbuf libgpg-error libogg-devel libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-multimedia libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libwayland-client libwayland-server libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
 #BuildRequires: ImageMagick-tools dconf doxygen extra-cmake-modules kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-kiconthemes-devel kf5-kio-devel kf5-ktextwidgets-devel libGConf libalsa-devel libaudiofile-devel libfftw3-devel libflac++-devel libopus-devel libpulseaudio-devel libsamplerate-devel libvorbis-devel python-module-google python3-dev qt5-multimedia-devel rpm-build-ruby
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-base-devel qt5-multimedia-devel
-BuildRequires: GraphicsMagick-ImageMagick-compat dconf doxygen
+BuildRequires: dconf doxygen
 BuildRequires: libGConf libalsa-devel libaudiofile-devel libfftw3-devel libflac++-devel libopus-devel libpulseaudio-devel libsamplerate-devel libvorbis-devel
 BuildRequires: id3lib-devel libmad-devel
 BuildRequires: kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdoctools-devel-static kf5-kiconthemes-devel kf5-kio-devel kf5-ktextwidgets-devel
@@ -62,9 +63,12 @@ Requires: %name-common = %version-%release
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
 
 %build
-%K5build
+%K5build \
+    -DWITH_DOC=OFF \
+    #
 
 %install
 %K5install
@@ -97,6 +101,10 @@ Requires: %name-common = %version-%release
 %_K5lib/libkwavegui.so.*
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt2
+- add fix against crash on application quit
+- clean build requires
+
 * Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
