@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.4
+Version: 5.5
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -27,23 +27,12 @@ BuildRequires: libdw-devel binutils-devel
 %define mpers_check --enable-mpers=check
 %endif
 
-%package utils
-Summary: Processes strace output and displays a graph of invoked subprocesses
-Group: Development/Debuggers
-BuildArch: noarch
-Requires: %name = %version-%release
-
 %description
 The strace program intercepts and records the system calls called and
 the signals received by a running process.  strace can print a record of
 each system call, its arguments and its return value.  strace is useful
 for diagnosing problems and debugging, as well as for instructional
 purposes.
-
-%description utils
-The strace-graph Perl script processes strace -f output and displays
-a graph of invoked subprocesses.  It is useful for finding out what
-complex commands do.
 
 %prep
 %setup -n %name-%version-%release
@@ -92,10 +81,14 @@ echo 'END OF TEST SUITE INFORMATION'
 %_mandir/man?/*
 %doc COPYING CREDITS NEWS README README-linux-ptrace
 
-%files utils
-%_bindir/strace-graph
-
 %changelog
+* Thu Feb 06 2020 Dmitry V. Levin <ldv@altlinux.org> 5.5-alt1
+- v5.4-7-ga41d025fa -> v5.5.
+
+* Tue Dec 03 2019 Dmitry V. Levin <ldv@altlinux.org> 5.4.0.7.a41d0-alt1
+- v5.4 -> v5.4-7-ga41d025fa.
+- Removed -utils subpackage that contained unsupported strace-graph utility.
+
 * Thu Nov 28 2019 Dmitry V. Levin <ldv@altlinux.org> 5.4-alt1
 - v5.3 -> v5.4.
 
