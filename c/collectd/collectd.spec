@@ -32,11 +32,11 @@
 %def_disable static
 
 Name: collectd
-Version: 5.9.1
+Version: 5.10.0
 Release: alt1
 
 Summary: (Multi-)System statistics collection
-License: GPL
+License: GPLv2 AND MIT
 Group: Monitoring
 
 Url: http://collectd.org
@@ -481,12 +481,9 @@ from collectd into nagios to avoid extra sensor-caused load
 %prep
 %setup
 %patch0 -p1
-#sed -i 's/ -Werror//' src/Makefile.*
 mkdir libltdl
 
 %build
-#libtoolize --ltdl --copy --force
-#%%autoreconf
 ./build.sh
 
 # fixed warnings:
@@ -495,8 +492,6 @@ mkdir libltdl
 # rrdcached.so: underlinked libraries: /lib64/libpthread.so.0
 # rrdtool.so: underlinked libraries: /lib64/libpthread.so.0
 # notify_desktop.so: underlinked libraries: /usr/lib64/libgobject-2.0.so.0
-#%%add_optflags -lpthread -lgobject-2.0 -Wno-error=format-truncation
-%add_optflags -Wno-error=format-truncation
 
 # seems like mainstream uses /var for localstatedir, ALT uses /var/lib
 %configure \
@@ -816,6 +811,10 @@ service %name condrestart ||:
 # - macroize repetitive sections
 
 %changelog
+* Wed Dec 25 2019 Anton Farygin <rider@altlinux.ru> 5.10.0-alt1
+- 5.9.1 -> 5.10.0
+- cleanup spec
+
 * Fri Aug 30 2019 Alexey Shabalin <shaba@altlinux.org> 5.9.1-alt1
 - 5.9.1
 - delete arch depended dpdk package from noarch full package
@@ -857,10 +856,10 @@ service %name condrestart ||:
 - cherry-pick from upstream 'apcups: allow to use plugin without explicit configuration'
   (ALT #33957)
 
-* Mon Oct 16 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 5.7.2-alt2%ubt
+* Mon Oct 16 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 5.7.2-alt2
 - Rebuilt with libdbi-0.9.0.
 
-* Mon Aug 07 2017 Anton Farygin <rider@altlinux.ru> 5.7.2-alt1%ubt
+* Mon Aug 07 2017 Anton Farygin <rider@altlinux.ru> 5.7.2-alt1
 - 5.7.2
 
 * Sat Jul 01 2017 Michael Shigorin <mike@altlinux.org> 5.5.2-alt1.3
