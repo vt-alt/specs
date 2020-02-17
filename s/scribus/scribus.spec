@@ -1,6 +1,6 @@
 Name: scribus
 Version: 1.5.5
-Release: alt6
+Release: alt9.c2aae6886
 Epoch: 1
 
 Summary: DeskTop Publishing application written in Qt
@@ -13,9 +13,6 @@ Packager: Paul Wolneykien <manowar@altlinux.ru>
 
 # Source-url: https://github.com/scribusproject/scribus/archive/master.zip
 Source: %name-%version.tar
-#Source: http://downloads.sourceforge.net/%name/%name-%version.tar
-
-Patch2: scribus-1.5.5-poppler-0.76.patch
 
 BuildRequires: cmake zlib-devel libssl-devel
 BuildRequires: libpoppler-devel libpoppler-cpp-devel
@@ -36,15 +33,15 @@ BuildRequires: libcups-devel
 BuildRequires: fontconfig-devel >= 2.0
 BuildRequires: libxml2-devel >= 2.6.0
 BuildRequires: ghostscript > 9.0
-BuildRequires: python-dev >= 2.3
-BuildRequires: python-modules-tkinter
-BuildRequires: python-module-Pillow
 BuildRequires: libhunspell-devel
 BuildRequires: libpodofo-devel >= 0.9.6
 # boost used only for 2geom
 BuildRequires: boost-devel-headers
 BuildRequires: GraphicsMagick
 BuildRequires: libGraphicsMagick-c++-devel
+
+BuildRequires: rpm-build-python3 python3-dev
+BuildRequires: python3-module-Pillow
 
 # TODO: build with OSG
 
@@ -104,7 +101,6 @@ BuildArch: noarch
 
 %prep
 %setup
-%patch2 -p1
 
 %ifarch %e2k
 # until lcc-1.24: strip UTF-8 BOM
@@ -148,6 +144,7 @@ popd
 %_datadir/mime/packages/scribus.xml
 %_iconsdir/hicolor/*/apps/scribus.png
 %_libdir/%name/
+%attr(0755,root,root) %_libdir/%name/plugins/*.so
 %_man1dir/*
 %exclude %_mandir/de
 %exclude %_mandir/pl
@@ -171,6 +168,16 @@ popd
 %exclude %_docdir/%name/it
 
 %changelog
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt9.c2aae6886
+- update to c2aae688620fa3e75781b2ca4502408d22c1d343 fix build with poppler 0.84)
+- switch to python3
+
+* Thu Jan 02 2020 Paul Wolneykien <manowar@altlinux.org> 1:1.5.5-alt8.c29f478ab
+- Fixed execute permission for *.so plugins (closes: 36962).
+
+* Fri Sep 20 2019 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt7.c29f478ab
+- update to c29f478abf03dc5ac0fd9cd21d0feb589a91d7eb
+
 * Mon Jul 01 2019 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt6
 - fix build with poppler 0.76
 
