@@ -1,18 +1,17 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: libebml
-Version: 1.3.7
+Version: 1.3.10
 Release: alt1
 
 Summary: Extensible Binary Meta Language access library
-License: GPL/QPL
+License: LGPL-2.1-or-later and BSD
 Group: System/Libraries
 
 Url: http://www.matroska.org
 # https://github.com/Matroska-Org/libebml.git
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ cmake
 
 %description
@@ -38,6 +37,8 @@ Files needed to build programs using libebml
 %cmakeinstall_std
 
 %files
+%doc LICENSE*
+%doc README* ChangeLog* CODE_OF_CONDUCT*
 %_libdir/*.so.*
 
 %files devel
@@ -47,6 +48,15 @@ Files needed to build programs using libebml
 %_pkgconfigdir/*.pc
 
 %changelog
+* Tue Feb 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.10-alt1
+- Updated to upstream version 1.3.10.
+
+* Thu Jul 25 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.9-alt1
+- Updated to upstream version 1.3.9.
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.3.7-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Apr 09 2019 Michael Shigorin <mike@altlinux.org> 1.3.7-alt1
 - 1.3.7
 - drop e2k workarounds for good
@@ -54,7 +64,7 @@ Files needed to build programs using libebml
 * Wed Jun 27 2018 Grigory Ustinov <grenka@altlinux.org> 1.3.6-alt2
 - Rebuild for e2k.
 
-* Tue May 29 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.6-alt1.S1
+* Tue May 29 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.6-alt1
 - Updated to upstream version 1.3.6.
 
 * Sun Apr 01 2018 Anton Farygin <rider@altlinux.ru> 1.3.5-alt1
