@@ -3,18 +3,20 @@
 Summary: C++ library for subband sinusoidal modeling time stretching and pitch scaling
 Name: libsbsms%major
 Version: 2.0.2
-Release: alt2
+Release: alt3
 License: GPLv2
 Group: System/Libraries
 URL: http://sbsms.sourceforge.net/
 Source0: %name-%version.tar
 
-Patch0: DEBIAN-set-library-version.patch
-Patch1: ALT-e2k-fft.patch
+Patch1: DEBIAN-set-library-version.patch
+Patch2: ALT-e2k-fft.patch
 Patch3: GENTOO-cflags.patch
 Patch4: ALT-audacity-bug-955.patch
+Patch5: ALT-audacity-bug-1808.patch
 
-BuildRequires: gcc-c++ pkgconfig(sndfile)
+BuildRequires: gcc-c++
+BuildRequires: pkgconfig(sndfile)
 
 %description
 C++ library for subband sinusoidal modeling time stretching and pitch scaling
@@ -31,13 +33,11 @@ Development files of the C++ library for subband sinusoidal modeling time stretc
 %prep
 %setup
 
-%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 %patch3 -p1
 %patch4 -p3
-
-%ifarch %e2k
-%patch1 -p1
-%endif
+%patch5 -p3
 
 %build
 %autoreconf
@@ -51,9 +51,11 @@ Development files of the C++ library for subband sinusoidal modeling time stretc
 	--disable-sse \
 %endif
 	--disable-multithreaded
-# --enable-multithreaded causes building error: "verify-elf: ERROR: ./usr/lib64/libsbsms.so.10.0.1: undefined symbol: pthread_create".
-# According to Gentoo's ebuild (https://gitweb.gentoo.org/repo/gentoo.git/tree/media-libs/libsbsms), multithreaded build segfaults.
-# Multithereding is also disabled by default in both sbsms's upstream and Audacity's built-in sbsms.
+# According to Gentoo's ebuild
+# (https://gitweb.gentoo.org/repo/gentoo.git/tree/media-libs/libsbsms),
+# multithreaded build segfaults.
+# Multithereding is also disabled by default in both
+# sbsms's upstream and Audacity's built-in sbsms.
 	
 %make_build
 
@@ -73,6 +75,11 @@ Development files of the C++ library for subband sinusoidal modeling time stretc
 
 #--------------------------------------
 %changelog
+
+* Sun Nov 24 2019 Mikhail Novosyolov <mikhailnov@altlinux.org> 2.0.2-alt3
+- Port from Audacity commit df1d9a0: ALT-audacity-bug-1808.patch
+- Some spec clean up
+
 * Sun Dec 02 2018 Mikhail Novosyolov <mikhailnov@altlinux.org> 2.0.2-alt2
 - Port from Audacity commit 954bb0f: ALT-audacity-bug-955.patch
 
