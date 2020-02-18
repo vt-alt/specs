@@ -8,7 +8,7 @@
 
 Name: sddm
 Version: 0.18.1
-Release: alt1
+Release: alt3
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -54,6 +54,7 @@ Patch202: alt-dbus-sessionchange.patch
 Patch203: alt-sddm-fix-pw-do-not-match.patch
 Patch204: alt-sddm-visual-fixes.patch
 Patch205: alt-smartcard-pin-login.patch
+Patch206: alt-renew-font-color.patch
 
 # Automatically added by buildreq on Thu Apr 02 2015 (-bi)
 # optimized out: cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-qml libqt5-quick libqt5-test libqt5-xml libstdc++-devel libxcb-devel pkg-config python-base python-module-BeautifulSoup python-module-PyStemmer python-module-Pygments python-module-google python-module-google-apputils python-module-matplotlib python-module-numpy python-module-pyExcelerator python-module-pyparsing python-module-pytz python-module-setuptools python-module-snowballstemmer python-module-zope.interface python-modules python-modules-compiler python-modules-email python-modules-encodings qt5-base-devel qt5-tools
@@ -63,7 +64,7 @@ BuildRequires: cmake extra-cmake-modules glibc-devel
 BuildRequires: libpam-devel libsystemd-devel libudev-devel
 BuildRequires: libxcb-devel libXau-devel libXdmcp-devel
 BuildRequires: qt5-declarative-devel qt5-tools-devel
-BuildRequires: python-module-docutils
+BuildRequires: python3-module-docutils
 
 %description
 SDDM is a modern display manager for X11 aiming to be fast, simple and beatiful.
@@ -97,6 +98,9 @@ ability to create smooth, animated user interfaces.
 %patch203 -p2
 %patch204 -p1
 %patch205 -p3
+%patch206 -p1
+
+sed -i 's|rst2man2.py|rst2man.py3|' data/man/CMakeLists.txt
 
 %build
 %K5build \
@@ -163,6 +167,12 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Wed Feb 12 2020 Oleg Solovyov <mcpain@altlinux.org> 0.18.1-alt3
+- renewal dialog: make prompts more readable
+
+* Tue Dec 17 2019 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt2
+- build with python3-module-docutils
+
 * Thu Jul 04 2019 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt1
 - new version
 
