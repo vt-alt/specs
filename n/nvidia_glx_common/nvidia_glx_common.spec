@@ -18,9 +18,9 @@
 # version-release
 
 %define nv_version 440
-%define nv_release 44
+%define nv_release 59
 %define nv_minor %nil
-%define pkg_rel alt222
+%define pkg_rel alt223
 %define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -311,6 +311,9 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Wed Feb 05 2020 Sergey V Turchin <zerg@altlinux.org> 440.59-alt223
+- new version
+
 * Tue Dec 24 2019 Sergey V Turchin <zerg@altlinux.org> 440.44-alt222
 - new version
 

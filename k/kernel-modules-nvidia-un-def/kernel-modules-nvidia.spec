@@ -7,7 +7,7 @@
 %define modesetmodule_name	nvidia-modeset
 %define uvmmodule_name		nvidia-uvm
 %define drmmodule_name		nvidia-drm
-%define package_version	440.44
+%define package_version	440.59
 %define module_version	%package_version
 %ifarch %ix86
 %define module_version	390.132
@@ -271,6 +271,9 @@ fi
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Nov 28 2019 Sergey V Turchin <zerg at altlinux dot org> 440.59-alt1
+- new release (440.59)
 
 * Thu Nov 28 2019 Sergey V Turchin <zerg at altlinux dot org> 440.44-alt1
 - new releases (440.44, 340.108)
