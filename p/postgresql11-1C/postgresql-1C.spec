@@ -7,7 +7,7 @@
 %define prog_name            postgresql
 %define postgresql_major     11
 %define postgresql_minor     5
-%define postgresql_altrel    1
+%define postgresql_altrel    4
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -61,6 +61,10 @@ Patch112: 00012-index_getattr_optimization.patch
 Patch113: 00013-notransvalue.patch
 Patch114: 00014-optimizer_utils.patch
 Patch115: 00015-lessmem.patch
+Patch116: 00016-empty_materialize.patch
+Patch117: 00017-eqjoinsel_hist.patch
+Patch118: 00018-explain_tuple_count.patch
+Patch119: 00019-aggfix.patch
 
 Provides: %prog_name = %EVR
 Conflicts: %prog_name < %EVR
@@ -234,6 +238,10 @@ database.
 %patch113 -p1
 %patch114 -p1
 %patch115 -p1
+%patch116 -p1
+%patch117 -p1
+%patch118 -p1
+%patch119 -p1
 
 %build
 %autoreconf
@@ -818,6 +826,22 @@ fi
 %endif
 
 %changelog
+* Wed Feb 12 2020 Alexei Takaseev <taf@altlinux.org> 11.5-alt4
+- Fix priv checks for ALTER <object> DEPENDS ON EXTENSION (Fixes CVE-2020-1720)
+
+* Tue Feb 04 2020 Alexei Takaseev <taf@altlinux.org> 11.5-alt3
+- Add patch from 1C:
+    * 00016-empty_materialize.patch
+    * 00017-eqjoinsel_hist.patch
+    * 00018-explain_tuple_count.patch
+    * 00019-aggfix.patch
+
+* Tue Dec 10 2019 Alexei Takaseev <taf@altlinux.org> 11.5-alt2
+- Re-applay patches from 1C:
+    * 00001-1c_FULL_100_EXT.patch
+    * 00010-joinsel.patch
+    * 00015-lessmem.patch
+
 * Tue Oct 29 2019 Alexei Takaseev <taf@altlinux.org> 11.5-alt1
 - 11.5
 - Re-applay patches from 1C:
