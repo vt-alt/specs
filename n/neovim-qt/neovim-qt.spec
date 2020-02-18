@@ -1,5 +1,5 @@
 Name: neovim-qt
-Version: 0.2.12
+Version: 0.2.15
 Release: alt1
 
 Summary: Neovim client library and GUI, in Qt5.
@@ -8,7 +8,6 @@ License: ISC
 Group: Editors
 Url: https://github.com/equalsraf/neovim-qt
 
-# git://git.altlinux.org/gears/n/neovim.git
 Source: %name-%version-%release.tar
 
 BuildRequires(pre): rpm-macros-cmake cmake
@@ -16,6 +15,8 @@ BuildRequires: gcc-c++
 BuildRequires: qt5-base-devel
 BuildRequires: libmsgpack-devel
 BuildRequires: nvim
+
+ExcludeArch: aarch64
 
 %description
 Neovim client library and GUI, in Qt5.
@@ -40,9 +41,25 @@ Neovim client library and GUI, in Qt5.
 %_bindir/nvim-qt
 %_desktopdir/nvim-qt.desktop
 %_datadir/nvim-qt/runtime/plugin/nvim_gui_shim.vim
-%_datadir/pixmaps/nvim-qt.png
+%_iconsdir/hicolor/*/*/*.png
 
 %changelog
+* Fri Nov 8 2019 Vladimir Didenko <cow@altlinux.org> 0.2.15-alt1
+- New version.
+
+* Fri Sep 20 2019 Vladimir Didenko <cow@altlinux.org> 0.2.14-alt2
+- Don't build on aarch64 platform(because we don't build neovim on it
+
+* Thu Sep 19 2019 Vladimir Didenko <cow@altlinux.org> 0.2.14-alt1
+- New version.
+
+* Tue Aug 6 2019 Vladimir Didenko <cow@altlinux.org> 0.2.12-alt3.gitbef46156
+- New version.
+- Add patch for unicode issues.
+
+* Fri Aug 2 2019 Vladimir Didenko <cow@altlinux.org> 0.2.12-alt2.git78224e71
+- New version.
+
 * Wed Jan 16 2019 Vladimir Didenko <cow@altlinux.org> 0.2.12-alt1
 - New version.
 
