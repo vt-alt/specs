@@ -6,7 +6,7 @@
 %endif
 
 Name: kf5-%rname
-Version: 5.66.0
+Version: 5.67.0
 Release: alt1
 %K5init altplace
 
@@ -144,6 +144,9 @@ mkdir -p %buildroot/%_K5data/kconfigwidgets/
 %endif
 
 %changelog
+* Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
+- new version
+
 * Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.66.0-alt1
 - new version
 

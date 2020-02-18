@@ -10,7 +10,7 @@ AutoProv: yes, nopython nopython3
 %add_python3_path %_datadir/ECM/find-modules
 
 Name: extra-cmake-modules
-Version: 5.66.0
+Version: 5.67.0
 Release: alt1
 
 Group: Development/Other
@@ -79,6 +79,9 @@ sed -i 's|-Wl,--fatal-warnings||' kde-modules/KDECompilerSettings.cmake
 %endif
 
 %changelog
+* Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
+- new version
+
 * Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.66.0-alt1
 - new version
 
