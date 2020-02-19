@@ -4,7 +4,7 @@
 %define libkpimkdav libkpimkdav%sover
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 %K5init
 
@@ -78,6 +78,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libKPimKDAV.so.*
 
 %changelog
+* Thu Feb 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Thu Jan 16 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
