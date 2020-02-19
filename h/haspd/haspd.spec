@@ -1,3 +1,5 @@
+# TODO: install 64-bit binaries
+
 # Etersoft (c) 2006, 2007, 2008, 2009, 2010, 2013, 2015, 2016
 # Multiplatform spec for autobuild system Korinf
 
@@ -10,7 +12,7 @@
 # 	kernel-source-XXXX for Slackware / MOPSLinux
 
 Name: haspd
-Version: 7.60
+Version: 7.90
 Release: alt2
 
 Summary: Hardware key protection drivers and license managers
@@ -28,6 +30,11 @@ BuildRequires(pre): rpm-build-intro rpm-build-compat
 BuildRequires: kernel-build-tools libusb-devel libncurses-devel
 
 %define module_dir /lib/modules
+
+# disable Fedora's build-id
+%global _missing_build_ids_terminate_build 0
+# due Empty %files file .../haspd-7.90/debugsourcefiles.list
+%global debug_package %{nil}
 
 # forbid future stripping
 # http://bugs.etersoft.ru/show_bug.cgi?id=10819
@@ -49,7 +56,7 @@ Provides: aksusbd-suse
 #ifarch x86_64
 #BuildPreReq: i586-glibc-core i586-glibc-pthread
 # we need 32bit glibc in any caseOC
-BuildPreReq: ld-linux.so.2 libpthread.so.0
+BuildRequires: ld-linux.so.2 libpthread.so.0
 #else
 Provides: sntl-sud = 7.3.0-0
 #endif
@@ -199,6 +206,12 @@ ln -s /lib/libusb-1.0.so.0 %buildroot/lib/%name/libusb-1.0.so.0
 #module_dir/2*
 
 %changelog
+* Thu Jul 11 2019 Vitaly Lipatov <lav@altlinux.ru> 7.90-alt2
+- disable Fedora's build-id
+
+* Fri Apr 12 2019 Vitaly Lipatov <lav@altlinux.ru> 7.90-alt1
+- update binaries for Sentinel^(R) LDK and Sentinel HASP^(R) v 7.90
+
 * Wed Nov 15 2017 Vitaly Lipatov <lav@altlinux.ru> 7.60-alt2
 - add comment about usbkeytest
 
