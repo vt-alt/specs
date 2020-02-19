@@ -5,8 +5,8 @@
 %define libkwave libkwave%sover
 
 Name: kde5-%rname
-Version: 19.12.1
-Release: alt2
+Version: 19.12.2
+Release: alt1
 %K5init
 
 Group: Sound
@@ -101,6 +101,9 @@ Requires: %name-common = %version-%release
 %_K5lib/libkwavegui.so.*
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt2
 - add fix against crash on application quit
 - clean build requires

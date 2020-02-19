@@ -14,7 +14,7 @@
 %define libokularcore libokular5core%sover
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace} %{!?_enable_obsolete_kde4:no_appdata}
 
@@ -189,6 +189,9 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

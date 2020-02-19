@@ -2,7 +2,7 @@
 %define pkg_samba samba
 
 Name: kde5-network-filesharing
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 %K5init
 
@@ -52,6 +52,9 @@ BuildRequires: kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel
 %_K5srv/*shareplugin.desktop
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

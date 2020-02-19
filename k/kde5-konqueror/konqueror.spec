@@ -10,7 +10,7 @@
 %define libkonqsidebarplugin libkonqsidebarplugin%konqsidebarplugin_sover
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 %K5init no_appdata
 
@@ -102,8 +102,8 @@ KF5 library
 # install alternatives
 install -d %buildroot/%_sysconfdir/alternatives/packages.d
 cat > %buildroot/%_sysconfdir/alternatives/packages.d/kde5-konqueror <<__EOF__
-%_bindir/xbrowser       %_K5bin/konqueror      61
-%_bindir/x-www-browser       %_K5bin/konqueror      61
+%_bindir/xbrowser       %_K5bin/konqueror      0
+%_bindir/x-www-browser       %_K5bin/konqueror      0
 __EOF__
 
 # terminate nspluginviewer
@@ -128,6 +128,11 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 #    --add-mime-type=x-scheme-handler/trash \
 #    %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
+
+# remove InitialPreference
+for f in %buildroot/%_K5xdgapp/*.desktop ; do
+    sed -i 's|^InitialPreference=.*|InitialPreference=-25|' $f
+done
 
 %find_lang %name --with-kde --all-name
 
@@ -189,6 +194,12 @@ rm -f %buildroot/%_K5xdgapp/kfmclient_dir.desktop
 #%_K5lib/libkonqsidebarplugin.so.*
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
+* Wed Feb 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt2
+- decrease application priority
+
 * Tue Jan 21 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
