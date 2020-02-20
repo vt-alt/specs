@@ -1,11 +1,11 @@
 Name: 	 c-icap
 Version: 0.5.6
-Release: alt1
+Release: alt2
 Epoch:	 1
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Summary: ICAP server
-License: %lgpl2only
+License: LGPL-2.1-or-later
 Group: 	 System/Servers
 Url: 	 https://github.com/c-icap
 
@@ -17,8 +17,6 @@ Source4: %name.service
 Source5: %name.sysconfig
 
 Requires(pre): shadow-utils
-
-BuildRequires: rpm-build-licenses
 
 BuildRequires: doxygen libdb4-devel libldap-devel libmemcached-devel zlib-devel bzlib-devel
 
@@ -47,6 +45,13 @@ ICAP module for scanning content with ClamAV.
 %prep
 %setup -q
 
+sed -i "s|/var/run/c-icap|/run/c-icap|g" cfg_param.c
+sed -i "s|/var/run/c-icap|/run/c-icap|g" c-icap.conf.in
+sed -i "s|/var/run/c-icap|/run/c-icap|g" docs/man/c-icap.8.in
+sed -i "s|/var/run/c-icap|/run/c-icap|g" docs/man/Makefile.am
+sed -i "s|/var/run/c-icap|/run/c-icap|g" utils/Makefile.am
+sed -i "s|/var/run/c-icap|/run/c-icap|g" Makefile.am
+
 %build
 %autoreconf
 %undefine _configure_gettext
@@ -67,26 +72,33 @@ mv %buildroot%_bindir/%name %buildroot%_sbindir/%name
 mkdir -p %buildroot%_logdir/%name
 touch %buildroot%_logdir/%name/{server,access}.log
 
-mkdir -p %buildroot{/run/%name,%_cachedir/%name}
+mkdir -p %buildroot/%_cachedir/%name
 
 rm -f %buildroot%_libdir/c_icap/*.la
 
 # Fix configuration
 . shell-config
 %define cfg_set shell_config_set %buildroot%_sysconfdir/%name.conf
-%cfg_set PidFile     %_runtimedir/%name/%name.pid ' ' ' '
-%cfg_set ModulesDir  %_libdir/c_icap ' ' ' '
-%cfg_set ServicesDir %_libdir/c_icap ' ' ' '
-%cfg_set ServerLog   %_logdir/%name/server.log ' ' ' '
-%cfg_set AccessLog   %_logdir/%name/access.log ' ' ' '
-%cfg_set LoadMagicFile %_sysconfdir/%name.magic ' ' ' '
+#cfg_set PidFile        /run/%name/%name.pid ' ' ' '
+#cfg_set CommandsSocket /run/%name/%name.ctl ' ' ' '
+%cfg_set ModulesDir     %_libdir/c_icap ' ' ' '
+%cfg_set ServicesDir    %_libdir/c_icap ' ' ' '
+%cfg_set ServerLog      %_logdir/%name/server.log ' ' ' '
+%cfg_set AccessLog      %_logdir/%name/access.log ' ' ' '
+%cfg_set LoadMagicFile  %_sysconfdir/%name.magic ' ' ' '
 
 # Install /run rules
 install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 
+chmod -x %buildroot/%_sysconfdir/%name.conf*
+chmod -x %buildroot/%_sysconfdir/%name.magic*
+
 %pre
 /usr/sbin/groupadd -r -f _c_icap ||:
 /usr/sbin/useradd -M -n _c_icap -r -d %_runtimedir/%name -s /dev/null -c "System user for %name" -g _c_icap > /dev/null 2>&1 ||:
+
+# home directory was in /var/run/ before 1:0.5.6-alt2
+/usr/sbin/usermod --home /run/%name _c_icap ||:
 
 %post
 %post_service %name
@@ -99,20 +111,19 @@ install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 %config(noreplace) %_sysconfdir/%name.conf*
 %config(noreplace) %_sysconfdir/%name.magic*
 %config(noreplace) %_sysconfdir/sysconfig/%name
-%attr (755,root,root) %_initdir/%name
+%attr(755,root,root) %_initdir/%name
 %_unitdir/%name.service
 %_bindir/*
-%attr (755,root,root) %_sbindir/%name
+%attr(755,root,root) %_sbindir/%name
 %dir %_libdir/c_icap/
 %_libdir/c_icap/*.so
 %_libdir/libicapapi.so.*
 %if_with clamav
 %exclude %_libdir/c_icap/srv_clamav.so
 %endif
-%attr (750,_c_icap,root) %_logdir/%name/
+%attr(750,_c_icap,root) %dir %_logdir/%name/
 %ghost %_logdir/%name/*.log
-%attr (750,_c_icap,root) /run/%name/
-%attr (750,_c_icap,root) %_cachedir/%name/
+%attr(750,_c_icap,root) %_cachedir/%name/
 %_tmpfilesdir/%name.conf
 %_man8dir/c-icap*.8*
 
@@ -121,6 +132,14 @@ install -Dm 0644 %SOURCE3 %buildroot%_tmpfilesdir/%name.conf
 %_libdir/libicapapi.so
 
 %changelog
+* Wed Feb 19 2020 Sergey Y. Afonin <asy@altlinux.org> 1:0.5.6-alt2
+- updated License tag to SPDX syntax, changed to LGPL-2.1-or-later
+- fixed packaging the logging directory
+- removed executable bit from configuration files
+- don't packed /run/c-icap (created automatically by components
+  of systemd-utils package according tempfiles config)
+- replaced /var/run/c-icap to /run/c-icap everywhere
+
 * Mon Dec 09 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.5.6-alt1
 - New version.
 - Fix homepage (ALT #35926).
