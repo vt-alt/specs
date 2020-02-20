@@ -1,5 +1,10 @@
+%def_disable check
+
 %define _localstatedir %_var
 %add_findreq_skiplist %_x11sysconfdir/xinit.d/*
+%add_findreq_skiplist %_unitdir/local.service
+%add_findreq_skiplist %_unitdir/rc-local.service
+%add_findreq_skiplist %_unitdir/quotaon.service
 
 %def_enable static_libsystemd
 %def_enable static_libudev
@@ -10,6 +15,7 @@
 %def_enable quotacheck
 %def_enable randomseed
 %def_enable coredump
+%def_enable pstore
 %def_enable gcrypt
 %def_disable qrencode
 %def_enable microhttpd
@@ -49,16 +55,18 @@
 %def_enable ldconfig
 %endif
 
-%ifarch ia64 %ix86 ppc64 x86_64
+%ifarch ia64 %ix86 ppc64le x86_64 aarch64
 %define mmap_min_addr 65536
 %else
 %define mmap_min_addr 32768
 %endif
 
+%define ver_major 243
+
 Name: systemd
 Epoch: 1
-Version: 242
-Release: alt12
+Version: %ver_major.7
+Release: alt1
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -81,7 +89,6 @@ Source16: altlinux-kmsg-loglevel.service
 Source17: altlinux-save-dmesg.service
 Source18: altlinux-save-dmesg
 Source19: udevd.init
-Source21: 40-ignore-remove.rules
 Source22: scsi_id.config
 Source23: var-lock.mount
 Source24: var-run.mount
@@ -112,7 +119,7 @@ Source78: systemd-sysusers.filetrigger
 
 Patch1: %name-%version.patch
 
-%define dbus_ver 1.4.6
+%define dbus_ver 1.11.0
 
 BuildRequires(pre): rpm-build-xdg meson >= 0.49
 BuildRequires: glibc-kernheaders
@@ -155,6 +162,7 @@ BuildRequires: libkeyutils-devel
 %{?_enable_libiptc:BuildRequires: pkgconfig(libiptc)}
 %{?_enable_polkit:BuildRequires: pkgconfig(polkit-gobject-1)}
 %{?_enable_gnuefi:BuildRequires: gnu-efi}
+%{?_enable_pstore:BuildRequires: libacl-devel libdw-devel liblzma-devel liblz4-devel}
 
 # for make check
 #BuildRequires: /proc
@@ -596,6 +604,7 @@ Static library for libudev.
 	-Dloadkeys-path=/bin/loadkeys \
 	-Dsetfont-path=/bin/setfont \
 	-Dtelinit-path=/sbin/telinit \
+	-Dnologin-path=/sbin/nologin \
 	-Dsystem-uid-max=499 \
 	-Dsystem-gid-max=499 \
 	-Dtty-gid=5 \
@@ -615,6 +624,7 @@ Static library for libudev.
 	%{?_enable_quotacheck:-Dquotacheck=true} \
 	%{?_enable_randomseed:-Drandomseed=true} \
 	%{?_enable_coredump:-Dcoredump=true} \
+	%{?_enable_pstore:-Dpstore=true} \
 	%{?_enable_smack:-Dsmack=true} \
 	%{?_enable_gcrypt:-Dgcrypt=true} \
 	%{?_enable_qrencode:-Dqrencode=true} \
@@ -648,6 +658,8 @@ Static library for libudev.
 	-Db_lto=false \
 %endif
 	-Db_pie=true \
+	-Dman=true \
+	-Dtests=true \
 	-Dversion-tag=v%version-%release \
 	-Dcertificate-root=/etc/pki/tls \
 	-Ddocdir=%_defaultdocdir/%name-%version
@@ -695,6 +707,10 @@ ln -s systemd-reboot.service %buildroot%_unitdir/reboot.service
 ln -s systemd-halt.service %buildroot%_unitdir/halt.service
 ln -s systemd-tmpfiles-setup.service %buildroot%_unitdir/tmpfiles.service
 
+# Make sure the NTP units dir exists
+mkdir -p %buildroot/lib/systemd/ntp-units.d
+mkdir -p %buildroot%_sysconfdir/systemd/ntp-units.d
+
 # restore bind-mounts /var/run -> run and /var/lock -> /run/lock
 # we don't have those directories symlinked
 install -m644 %SOURCE23 %buildroot%_unitdir/var-lock.mount
@@ -739,15 +755,6 @@ ln -s /dev/null %buildroot%_unitdir/keytable.service
 ln -s /dev/null %buildroot%_unitdir/killall.service
 ln -s /dev/null %buildroot%_unitdir/single.service
 ln -s /dev/null %buildroot%_unitdir/netfs.service
-
-# We create all wants links manually at installation time to make sure
-# they are not owned and hence overriden by rpm after the used deleted
-# them.
-rm -r %buildroot%_sysconfdir/systemd/system/*.target.wants
-rm -f %buildroot%_sysconfdir/systemd/system/display-manager.service
-
-# And the default symlink we generate automatically based on inittab
-rm -f %buildroot%_sysconfdir/systemd/system/default.target
 
 # create modules.conf as a symlink to /etc/modules
 mkdir -p %buildroot/lib/modules-load.d
@@ -819,7 +826,7 @@ install -pD -m755 %SOURCE76 %buildroot%_rpmlibdir/systemd-binfmt.filetrigger
 install -pD -m755 %SOURCE77 %buildroot%_rpmlibdir/journal-catalog.filetrigger
 install -pD -m755 %SOURCE78 %buildroot%_rpmlibdir/systemd-sysusers.filetrigger
 
-cat >>%buildroot/lib/sysctl.d/50-default.conf <<EOF
+cat >>%buildroot/lib/sysctl.d/50-mmap-min-addr.conf <<EOF
 # Indicates the amount of address space which a user process will be
 # restricted from mmaping.  Since kernel null dereference bugs could
 # accidentally operate based on the information in the first couple of
@@ -851,7 +858,6 @@ ln -s systemd-udevd.service %buildroot%_unitdir/udevd.service
 ln -r -s %buildroot/lib/systemd/systemd-udevd %buildroot/lib/udev/udevd
 ln -r -s %buildroot/lib/systemd/systemd-udevd %buildroot/sbin/udevd
 
-install -p -m644 %SOURCE21 %buildroot/lib/udev/rules.d/40-ignore-remove.rules
 install -p -m644 %SOURCE22 %buildroot%_sysconfdir/scsi_id.config
 
 cat >>%buildroot%_sysconfdir/udev/udev.conf <<EOF
@@ -886,7 +892,8 @@ install -p -m644 %SOURCE31 %buildroot%_sysconfdir/udev/rules.d/
 install -D -m644 -t %buildroot%_unitdir/systemd-udev-trigger.service.d/ %SOURCE10
 
 %check
-# %make check VERBOSE=1 || { cat test-suite.log; exit 1; }
+export LD_LIBRARY_PATH=$(pwd)/%{__builddir}/src/shared:$(pwd)/%{__builddir}
+%meson_test
 
 %pre
 %_sbindir/groupadd -r -f systemd-journal >/dev/null 2>&1 ||:
@@ -1137,6 +1144,7 @@ fi
 %_sbindir/groupadd -r -f input >/dev/null 2>&1 ||:
 %_sbindir/groupadd -r -f video >/dev/null 2>&1 ||:
 %_sbindir/groupadd -r -f render >/dev/null 2>&1 ||:
+%_sbindir/groupadd -r -f vmusers >/dev/null 2>&1 ||:
 
 %post -n udev
 %post_service udevd
@@ -1181,6 +1189,12 @@ fi
 %endif
 %endif
 
+%if_enabled pstore
+/etc/systemd/pstore.conf
+/lib/systemd/systemd-pstore
+%_man5dir/pstore.*
+%_man8dir/systemd-pstore.*
+%endif
 
 %_bindir/busctl
 %_bindir/systemd-socket-activate
@@ -1242,7 +1256,7 @@ fi
 %_unitdir/*
 
 %if_enabled networkd
-%exclude %_unitdir/*networkd*
+%exclude %_unitdir/*network*
 %exclude %_unitdir/*resolv*
 %exclude %_unitdir/*/*resolv*
 %endif
@@ -1323,7 +1337,7 @@ fi
 %_mandir/*/*vconsole*
 
 %_man8dir/systemd-bless*
-%_man8dir/systemd-boot-check-no-failures*
+%_man8dir/systemd-boot*
 %_man8dir/systemd-debug-generator*
 %_man8dir/systemd-fsck*
 %_man8dir/systemd-fstab-generator*
@@ -1336,7 +1350,7 @@ fi
 %_man8dir/systemd-initctl*
 %_man8dir/systemd-kexec*
 %_man8dir/systemd-makefs*
-%_man8dir/systemd-makeswap*
+%_man8dir/systemd-mkswap*
 %_man8dir/systemd-quota*
 %_man8dir/systemd-random-seed*
 %_man8dir/systemd-rc-local-generator*
@@ -1459,7 +1473,7 @@ fi
 
 %files utils
 %dir /lib/systemd
-/lib/systemd/libsystemd-shared-%version.so
+/lib/systemd/libsystemd-shared-%ver_major.so
 
 /sbin/systemctl
 /bin/systemctl
@@ -1497,8 +1511,13 @@ fi
 /sbin/systemd-sysctl
 %_rpmlibdir/systemd-sysctl.filetrigger
 %config(noreplace) %_sysconfdir/sysctl.d/99-sysctl.conf
-/lib/sysctl.d/50-default.conf
 /lib/sysctl.d/49-coredump-disable.conf
+/lib/sysctl.d/50-default.conf
+/lib/sysctl.d/50-net.conf
+/lib/sysctl.d/50-mmap-min-addr.conf
+%if %_lib == lib64
+/lib/sysctl.d/50-pid-max.conf
+%endif
 %_mandir/*/*sysctl*
 
 /lib/systemd/systemd-backlight
@@ -1512,11 +1531,6 @@ fi
 /sbin/systemd-firstboot
 %_man8dir/systemd-firstboot.*
 %endif
-
-%_datadir/bash-completion/completions/*
-%exclude %_datadir/bash-completion/completions/udevadm
-%_datadir/zsh/site-functions/*
-%exclude %_datadir/zsh/site-functions/_udevadm
 
 %ghost %config(noreplace) %_sysconfdir/machine-info
 %ghost %config(noreplace) %_sysconfdir/hostname
@@ -1555,6 +1569,13 @@ fi
 /lib/systemd/systemd-localed
 %_bindir/timedatectl
 /lib/systemd/systemd-timedated
+%dir /lib/systemd/ntp-units.d
+%dir %_sysconfdir/systemd/ntp-units.d
+
+%_datadir/bash-completion/completions/*
+%exclude %_datadir/bash-completion/completions/udevadm
+%_datadir/zsh/site-functions/*
+%exclude %_datadir/zsh/site-functions/_udevadm
 
 %_mandir/*/*login*
 %exclude %_man3dir/*
@@ -1577,6 +1598,7 @@ fi
 %if_enabled polkit
 %_datadir/polkit-1/rules.d/systemd-networkd.rules
 %endif
+/lib/systemd/systemd-network-generator
 /lib/systemd/system-preset/85-networkd.preset
 /lib/systemd/systemd-networkd
 /lib/systemd/systemd-networkd-wait-online
@@ -1588,9 +1610,8 @@ fi
 # TODO: Provides: /sbin/resolvconf ?
 %exclude /sbin/resolvconf
 %_tmpfilesdir/systemd-network.conf
-%_unitdir/systemd-networkd.*
+%_unitdir/systemd-network*
 %_unitdir/systemd-resolved.*
-%_unitdir/systemd-networkd-wait-online.*
 %_unitdir/altlinux-libresolv*
 %_unitdir/altlinux-openresolv*
 %_unitdir/altlinux-simpleresolv*
@@ -1666,6 +1687,7 @@ fi
 /lib/systemd/system-preset/85-timesyncd.preset
 /lib/systemd/systemd-timesyncd
 /lib/systemd/systemd-time-wait-sync
+/lib/systemd/ntp-units.d/80-systemd-timesync.list
 %_unitdir/systemd-timesyncd.service
 %_unitdir/systemd-time-wait-sync.service
 %_mandir/*/*timesyncd*
@@ -1764,6 +1786,7 @@ fi
 %dir /lib/udev
 %dir /lib/systemd/network
 /lib/systemd/network/*.link
+%_tmpfilesdir/static-nodes-permissions.conf
 /lib/udev/udevd
 /lib/udev/ata_id
 /lib/udev/cdrom_id
@@ -1807,6 +1830,21 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Sun Feb 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt1
+- 243.7 (Fixes: CVE-2020-1712)
+
+* Fri Nov 22 2019 Alexey Shabalin <shaba@altlinux.org> 1:243.4-alt1
+- 243.4 (v243-stable branch)
+
+* Tue Nov 05 2019 Alexey Shabalin <shaba@altlinux.org> 1:243-alt4
+- move completions to systemd-services (ALT #37352)
+- group add vmusers in pre for udev package (ALT #37200)
+
+* Mon Oct 14 2019 Alexey Shabalin <shaba@altlinux.org> 1:243-alt3
+- merge with v243-stable ef677436aa203c24816021dd698b57f219f0ff64
+- add symlink /usr/bin/systemctl -> /bin/systemctl for compat with other distros
+- merge bash and zsh completion packages to utils and udev
+
 * Mon Oct 14 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt12
 - merge with v242-stable 2caf5c905c576dfc542311517820a09f18bd8a77
 - add symlink /usr/bin/systemctl -> /bin/systemctl for compat with other distros
@@ -1855,7 +1893,7 @@ fi
 - update patch timezone detection(mrdrew@)
 
 * Sat Apr 13 2019 Alexey Shabalin <shaba@altlinux.org> 1:242-alt1
-- 242
+- 242 (Fixes: CVE-2019-3842)
 - move execute systemctl daemon-reexec from post-script to filetrigger
 - add requires systemd to libnss-systemd package (ALT #36267)
 - move LOCKFILE to /run/lock in udev init script (ALT #35888)
