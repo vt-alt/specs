@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.08.0
+Version: 19.12.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -63,7 +63,7 @@ Requires: kde5-plasma-applet-places-widget
 Requires: plasma5-kde-gtk-config kf5-baloo plasma5-bluedevil plasma5-kscreen plasma5-ksshaskpass kde5-krdc kde5-kgpg
 Requires: plasma5-khotkeys plasma5-kinfocenter plasma5-addons
 Requires: kde5-khelpcenter kde5-kolourpaint kde5-kio-audiocd
-Requires: plasma5-kmenuedit kf5-solid kf5-kdbusaddons plasma5-kgamma
+Requires: plasma5-kmenuedit plasma5-kgamma plasma5-thunderbolt
 Requires: kde5-kfind kde5-filelight kde5-kcharselect kde5-kteatime kde5-ktimer kde5-spectacle
 Requires: kde5-kamera kde5-network-filesharing kde5-ktorrent
 ##Requires: kde5-kget
@@ -194,6 +194,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Tue Feb 18 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.0-alt1
+- add thunderbolt
+
 * Mon Jan 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.08.0-alt1
 - move kfloppy from -big to -maxi
 
