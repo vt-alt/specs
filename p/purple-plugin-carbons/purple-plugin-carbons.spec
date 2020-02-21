@@ -1,6 +1,6 @@
 Name: purple-plugin-carbons
 Version: 0.2.2
-Release: alt1
+Release: alt2
 
 Summary: Message Carbons plugin for libpurple
 
@@ -39,6 +39,9 @@ make test
 %_libdir/purple-2/carbons.so
 
 %changelog
+* Thu Dec 05 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 0.2.2-alt2
+- Fixed linkage with libjabber.so.0 (added RPATH).
+
 * Mon May 06 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 0.2.2-alt1
 - Updated to 0.2.2.
 - spec: enabled tests (introduced in 0.2.2).
