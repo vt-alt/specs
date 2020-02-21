@@ -18,7 +18,7 @@
 
 Name: NetworkManager-applet-gtk
 Version: 1.8.24
-Release: alt2%git_date
+Release: alt3%git_date
 License: GPLv2+
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
@@ -26,6 +26,11 @@ Url: https://wiki.gnome.org/Projects/NetworkManager
 Vcs: https://gitlab.gnome.org/GNOME/network-manager-applet.git
 Source: nm-applet-%version.tar
 Patch: nm-applet-%version-%release.patch
+# Method 'disabled' was added in NM-1.20
+# We are have NM-1.18 still, so revert this
+# change for now. This patch reverts commit
+# 31c0d3c6b8db22ba464024be7e7cbe31da983a29
+Patch1: remove-disable-method.patch
 
 BuildPreReq: libdbus-devel libdbus-glib libgtk+3-devel libtool libpolkit1-devel
 
@@ -167,6 +172,7 @@ This package contains development documentation for libnma-devel-doc.
 %prep
 %setup -n nm-applet-%version
 %patch -p1
+%patch1 -p1
 %build
 
 %autoreconf
@@ -252,6 +258,9 @@ make check
 %doc %_datadir/gtk-doc/html/libnma
 
 %changelog
+* Wed Feb 19 2020 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt3
+- Remove 'disabled' IPv6 method (closes: #38121).
+
 * Tue Jan 14 2020 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt2
 - Update Url.
 - Use Vcs rpm tag.
