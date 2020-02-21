@@ -8,7 +8,7 @@
 
 Name: sddm
 Version: 0.18.1
-Release: alt3
+Release: alt4
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -89,7 +89,7 @@ ability to create smooth, animated user interfaces.
 %patch110 -p1
 %patch111 -p1
 %patch112 -p1
-%patch113 -p1
+%patch113 -p1 -b .software_render
 %patch114 -p1
 
 %patch200 -p1
@@ -167,6 +167,9 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Tue Feb 18 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt4
+- make empty default InputMethod setting
+
 * Wed Feb 12 2020 Oleg Solovyov <mcpain@altlinux.org> 0.18.1-alt3
 - renewal dialog: make prompts more readable
 
