@@ -1,5 +1,5 @@
 Name: freeswitch
-Version: 1.8.7
+Version: 1.10.2
 Release: alt1
 Epoch: 1
 
@@ -24,7 +24,7 @@ BuildRequires: libxmlrpc-devel libyaml-devel libiksemel-devel libedit-devel
 BuildRequires: libsndfile-devel libpcre-devel liblua5-devel
 BuildRequires: libilbc1-devel >= 0.0.2-alt3 libjs-devel flite-devel
 BuildRequires: libtiff-devel libldap-devel libsoundtouch-devel libldns-devel
-BuildRequires: libpcap-devel perl-devel python-devel
+BuildRequires: libpcap-devel perl-devel
 BuildRequires: libcelt-devel libmpg123-devel liblame-devel libshout2-devel
 BuildRequires: libopenr2.3-devel
 BuildRequires: libnet-snmp-devel libnl-devel libsensors3-devel zlib-devel
@@ -56,14 +56,6 @@ Summary: Development package for FreeSWITCH
 Group: Development/C
 Requires: lib%name = %version-%release
 
-%package -n libfreetdm
-Summary: FreeTDM is a library to interface to Digium and Sangoma boards.
-Group: System/Libraries
-
-%package -n libfreetdm-devel
-Summary: Development package for FreeTDM
-Group: Development/C
-Requires: libfreetdm = %version-%release
 
 %package daemon
 Summary: FreeSWITCH daemon
@@ -71,10 +63,6 @@ Group: System/Servers
 Requires: lib%name = %version-%release
 Requires: freeswitch-sounds-default
 
-%package freetdm
-Summary: FreeTDM modules
-Group: System/Servers
-Requires: %name-daemon = %version-%release
 
 %package lang-de
 Summary: German language dependand modules and sounds for the FreeSwitch
@@ -127,11 +115,6 @@ Summary: Perl support for the FreeSWITCH open source telephony platform
 Group: Development/Perl
 Requires: %name-daemon = %version-%release
 
-%package python
-Summary: Python support for the FreeSWITCH open source telephony platform
-Group: Development/Python
-Requires: %name-daemon = %version-%release
-
 %package vlc
 Summary: VLC support for the FreeSWITCH open source telephony platform
 Group: System/Servers
@@ -153,13 +136,6 @@ FreeSWITCH shared library
 %description -n lib%name-devel
 FreeSWITCH development files
 
-%description -n libfreetdm
-FreeTDM is a library implementing unified high level API for both signaling
-and I/O for multiple telephony boards (Digium and Sangoma are most popular).
-See http://wiki.freeswitch.org/wiki/FreeTDM for details
-
-%description -n libfreetdm-devel
-FreeTDM development part
 
 %description daemon
 FreeSWITCH is an open source telephony platform designed to facilitate
@@ -167,9 +143,6 @@ the creation of voice and chat driven products scaling from a soft-phone
 up to a soft-switch.  It can be used as a simple switching engine,
 a media gateway or a media server to host IVR applications using simple
 scripts or XML to control the callflow.
-
-%description freetdm
-FreeTDM modules for FreeSWITCH
 
 %description java
 Java support for the FreeSWITCH open source telephony platform
@@ -179,9 +152,6 @@ Lua support for the FreeSWITCH open source telephony platform
 
 %description perl
 Perl support for the FreeSWITCH open source telephony platform
-
-%description python
-Python support for the FreeSWITCH open source telephony platform
 
 %description vlc
 VLC support for the FreeSWITCH open source telephony platform
@@ -234,6 +204,7 @@ This package provides simple web-based UI.
 
 %build
 LIBTOOL_M4=/usr/share/libtool/aclocal/libtool.m4 ./bootstrap.sh
+autoreconf -fisv
 cat %SOURCE4 >modules.conf
 # special hack for building libvpx by nasm
 export ASFLAGS='-Ox'
@@ -260,22 +231,11 @@ export ASFLAGS='-Ox'
     #
 make
 
-pushd libs/freetdm
-%configure --with-modinstdir=%_libdir/freeswitch --without-libpri --without-libisdn --with-pic
-make
-popd
-
 %install
-mkdir -p %buildroot%_sysconfdir/freetdm/autoload_configs
 PERL_ARCHLIB=%perl_vendorarch %make_install sysconfdir=%_sysconfdir/freeswitch DESTDIR=%buildroot install
 %make_install sysconfdir=%_sysconfdir/freeswitch DESTDIR=%buildroot config-vanilla
 (cd conf && find dialplan directory -type f | cpio -pmd %buildroot%_sysconfdir/%name)
-pushd libs/freetdm
-%make_install sysconfdir=%_sysconfdir/freeswitch DESTDIR=%buildroot install
-popd
 
-mkdir -p %buildroot%_libdir/freetdm
-mv %buildroot%_libdir/freeswitch/ftmod_* %buildroot%_libdir/freetdm/
 install -pm0755 -D %SOURCE1 %buildroot%_initdir/freeswitch
 install -pm0644 -D %SOURCE2 %buildroot%_tmpfilesdir/freeswitch.conf
 install -pm0644 -D %SOURCE3 %buildroot%_sysconfdir/sysconfig/freeswitch
@@ -289,12 +249,8 @@ mkdir -p \
     %buildroot%_var/lib/freeswitch/recordings \
     %buildroot%_logdir/freeswitch/{cdr-csv,xml_cdr}
 
-mv %buildroot/%_sysconfdir/freetdm/autoload_configs/* %buildroot%_sysconfdir/freeswitch/autoload_configs/
 
 find %buildroot%_libdir/%name  -name \*.la -delete
-find %buildroot%_libdir/freetdm  -name \*.la -delete
-
-%add_python_req_skip _freeswitch
 
 %triggerun daemon -- freeswitch-daemon < 1.6.6-alt2
 if [ $2 -gt 0 ]  && [ $1 -gt 0 ] && [ -f %_sysconfdir/%name/freeswitch.xml ];then 
@@ -331,23 +287,6 @@ fi
 %_libdir/libfreeswitch*.so
 %_pkgconfigdir/freeswitch.pc
 
-%files -n libfreetdm
-%dir %_sysconfdir/freetdm
-%config(noreplace) %_sysconfdir/freetdm/*
-
-%_libdir/libfreetdm.so.*
-
-%dir %_libdir/freetdm
-%_libdir/freetdm/ftmod_analog.so
-%_libdir/freetdm/ftmod_analog_em.so
-%_libdir/freetdm/ftmod_r2.so
-%_libdir/freetdm/ftmod_skel.so
-%_libdir/freetdm/ftmod_zt.so
-
-%files -n libfreetdm-devel
-%_includedir/freetdm
-%_libdir/libfreetdm.so
-%_pkgconfigdir/freetdm.pc
 
 %files daemon
 %doc conf
@@ -367,12 +306,12 @@ fi
 %_bindir/fs_cli
 %_sbindir/fs_ivrd
 %_bindir/fs_encode
+%_bindir/fs_tts
 %_bindir/tone2wav
 
 %dir %_libdir/%name
 %_libdir/%name/mod_abstraction.so
 %_libdir/%name/mod_alsa.so
-%_libdir/%name/mod_avmd.so
 %_libdir/%name/mod_amr.so
 %_libdir/%name/mod_b64.so
 %_libdir/%name/mod_blacklist.so
@@ -380,7 +319,6 @@ fi
 %_libdir/%name/mod_callcenter.so
 %_libdir/%name/mod_cidlookup.so
 %_libdir/%name/mod_cdr_csv.so
-%_libdir/%name/mod_cdr_mongodb.so
 %_libdir/%name/mod_cdr_sqlite.so
 %_libdir/%name/mod_cdr_pg_csv.so
 %_libdir/%name/mod_cluechoo.so
@@ -489,10 +427,6 @@ fi
 
 %dir %attr(0770, root, _pbx) %_var/run/%name
 
-%files freetdm
-%config(noreplace) %attr(0640, root, _pbx) %_sysconfdir/%name/autoload_configs/freetdm.conf.xml
-%_libdir/%name/mod_freetdm.so
-
 %files java
 %config(noreplace) %attr(0640, root, _pbx) %_sysconfdir/%name/autoload_configs/java.conf.xml
 %_libdir/%name/mod_java.so*
@@ -507,11 +441,6 @@ fi
 %_libdir/%name/mod_perl.so*
 %perl_vendor_archlib/freeswitch.pm
 %perl_vendor_autolib/freeswitch
-
-%files python
-%config(noreplace) %attr(0640, root, _pbx) %_sysconfdir/%name/autoload_configs/python.conf.xml
-%_libdir/%name/mod_python.so*
-%python_sitelibdir/freeswitch.py*
 
 %files vlc
 %_libdir/%name/mod_vlc.so*
@@ -600,6 +529,13 @@ fi
 %_datadir/%name/htdocs/portal
 
 %changelog
+* Mon Feb 10 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.2-alt1
+- 1.10.2
+- removed python,freetdm, avmd and mongodb modules
+
+* Tue Oct 08 2019 Michael Shigorin <mike@altlinux.org> 1:1.8.7-alt2
+- E2K: fix build (patch proposed upstream)
+
 * Thu Aug 29 2019 Anton Farygin <rider@altlinux.ru> 1:1.8.7-alt1
 - 1.8.7
 - fixed build on ppc64 (thanks to glebfm@)
