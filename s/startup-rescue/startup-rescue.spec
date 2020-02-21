@@ -1,6 +1,6 @@
 Name: startup-rescue
 Version: 0.32
-Release: alt2
+Release: alt4
 
 Summary: The system startup scripts for rescue disk
 License: GPL
@@ -65,6 +65,12 @@ install -pm755 rescue-remote.init %buildroot%_initdir/rescue-remote
 %_initdir/rescue-remote
 
 %changelog
+* Sat Feb 15 2020 Anton Midyukov <antohami@altlinux.org> 0.32-alt4
+- Fixed DHCP timeout (closes: 38089)
+
+* Mon Nov 18 2019 Alexey Gladkov <legion@altlinux.ru> 0.32-alt3
+- Make idetune optional.
+
 * Tue Jul 09 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.32-alt2
 - Package find-fstab script regardless of architecture.
 
