@@ -50,7 +50,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.4.11
+Version: 10.4.12
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -406,7 +406,7 @@ version.
 tar -xf %SOURCE101 -C libmariadb
 tar -xf %SOURCE102 -C storage/rocksdb/rocksdb
 tar -xf %SOURCE103 -C wsrep-lib
-tar -xf %SOURCE104 -C wsrep-lib/wsrep-API/v26 
+tar -xf %SOURCE104 -C wsrep-lib/wsrep-API/v26
 
 %patch0 -p1
 %patch1 -p1
@@ -1018,6 +1018,12 @@ fi
 %endif
 
 %changelog
+* Sun Feb 09 2020 Alexey Shabalin <shaba@altlinux.org> 10.4.12-alt1
+- 10.4.12
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-2574
+  + CVE-2020-2574
+
 * Thu Dec 19 2019 Alexey Shabalin <shaba@altlinux.org> 10.4.11-alt1
 - 10.4.11
 - move client plugins to libmariadb package (ALT #37639):
@@ -1309,7 +1315,7 @@ fi
 - use /etc/my.cnf.d/server.cnf as default server config
 - drop hardcode chroot and datadir in safe_mysql, mysqld_wrapper, mysql_install_db;
   read chroot and datadir from config
-- split chroot and non-chroot options 
+- split chroot and non-chroot options
   to /etc/my.cnf.server/server-chroot.cnf and /etc/my.cnf.server/server-no-chroot.cnf
 - add control mysqld-chroot for enable and disable chroot
 - add native systemd unit
