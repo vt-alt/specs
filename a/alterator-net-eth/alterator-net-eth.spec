@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.2
+Version: 5.1.4
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,12 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Mon Jan 27 2020 Mikhail Gordeev <obirvalger@altlinux.org> 5.1.4-alt1
+- Do not show domain name if it is absent.
+
+* Thu Jan 16 2020 Mikhail Gordeev <obirvalger@altlinux.org> 5.1.3-alt1
+- Allow creating hostname without domain part
+
 * Mon Aug 26 2019 Mikhail Efremov <sem@altlinux.org> 5.1.2-alt1
 - Refresh UI after commit changes (closes: #37103).
 
