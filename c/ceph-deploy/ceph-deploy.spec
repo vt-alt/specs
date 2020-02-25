@@ -1,56 +1,38 @@
+%define _unpackaged_files_terminate_build 1
+
 %define modname ceph-deploy
 
 Name: ceph-deploy
-Version: 2.0.0
-Release: alt1
+Version: 2.0.1
+Release: alt3
 
 Summary: Deploy Ceph with minimal infrastructure
-Group: System/Base
 License: MIT
+Group: System/Base
 Url: https://github.com/ceph/ceph-deploy
 BuildArch: noarch
 
 Source: %name-%version.tar
-Patch: 0001-altlinux-distro-added.patch
+Patch1: change-version.patch
 
-BuildRequires(pre): rpm-build-python
-BuildRequires: python-module-setuptools
-BuildRequires: python-module-sphinx
-BuildRequires: python-module-virtualenv
-BuildRequires: python-module-remoto
+BuildRequires(pre): rpm-build-python3
+
 BuildRequires: openssh-clients
 BuildRequires: git
 
-# Tox tests requirements
-BuildRequires: python-module-pytest
-BuildRequires: python-module-mock
-BuildRequires: python-module-tox
-BuildRequires: python-module-urlparse3
-
-BuildRequires(pre): rpm-build-python3
-BuildPreReq: python3-module-setuptools
-BuildPreReq: python3-module-virtualenv
-BuildPreReq: python3-module-remoto
+BuildRequires: python3-module-virtualenv
+BuildRequires: python3-module-remoto >= 1.1.4
+BuildRequires: python3-module-sphinx
 
 # Tox tests requirements
-BuildPreReq: python3-module-pytest
-BuildPreReq: python3-module-mock
-BuildPreReq: python3-module-tox
+BuildRequires: python3-module-pytest
+BuildRequires: python3-module-mock
+BuildRequires: python3-module-tox
 
-Requires: python-module-%name = %EVR
+Requires: python3-module-%name = %EVR
 
 
 %description
-ceph-deploy is a way to deploy Ceph relying on just SSH access to the servers, sudo, 
-and some Python. It runs fully on your workstation, requiring no servers, databases, 
-or anything like that.
-
-%package -n python-module-%name
-Summary: Deploy Ceph with minimal infrastructure
-Group: Development/Python
-%py_requires remoto
-
-%description -n python-module-%name
 ceph-deploy is a way to deploy Ceph relying on just SSH access to the servers, sudo, 
 and some Python. It runs fully on your workstation, requiring no servers, databases, 
 or anything like that.
@@ -59,7 +41,6 @@ or anything like that.
 Summary: Deploy Ceph with minimal infrastructure
 Group: Development/Python3
 %py3_requires remoto
-%add_python3_req_skip urlparse
 
 %description -n python3-module-%name
 ceph-deploy is a way to deploy Ceph relying on just SSH access to the servers, sudo, 
@@ -78,18 +59,6 @@ or anything like that.
 
 This package contains documentation for %name
 
-%package -n python-module-%name-tests
-Summary: Tests for python-module-%name
-Group: System/Base
-Requires: python-module-%name = %version-%release
-
-%description -n python-module-%name-tests
-ceph-deploy is a way to deploy Ceph relying on just SSH access to the servers, sudo, 
-and some Python. It runs fully on your workstation, requiring no servers, databases, 
-or anything like that.
-
-This package contains tests for python3-module-%name
-
 %package -n python3-module-%name-tests
 Summary: Tests for python3-module-%name
 Group: System/Base
@@ -104,66 +73,50 @@ This package contains tests for python3-module-%name
 
 %prep
 %setup
-%patch -p1
-sed -i 's/.*remoto.*//' setup.py 
-sed -i 's/.*else:.*//' setup.py
 
-pushd ceph_deploy/util
-sed -i "s/0644/'0664'/" pkg_managers.py
-sed -i "s/0600/'0600'/" pkg_managers.py
-popd
+# Use only for version after release, delete when updating to a new version
+%patch1 -p1
 
-rm -rf ../python3
-cp -fR . ../python3
+sed -i 's|sphinx-build|sphinx-build-3|' docs/Makefile
+
+sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|' \
+    $(find ./ -name '*.py')
 
 %build
-export CEPH_DEPLOY_NO_VENDOR=1
-%python_build_debug
-
-pushd ../python3
-%python3_build_debug
-popd
+%python3_build
 
 export PYTHONPATH=$PWD
 %make -C docs man
 
 %install
-pushd ../python3
 %python3_install
-popd
-pushd %buildroot/%_bindir
-mv %name %name.py3
-popd
 
-export CEPH_DEPLOY_NO_VENDOR=1
-%python_install -O1
-
-%check
-python setup.py test
+install -pDm644 docs/build/man/%name.1 %buildroot%_man1dir/%name.1
 
 %files
 %doc LICENSE README.rst
-%_bindir/*
-
-%files -n python-module-%name
-%python_sitelibdir/*
-%exclude %python_sitelibdir/*/tests/
+%_bindir/%name
+%_man1dir/*
 
 %files -n python3-module-%name
 %python3_sitelibdir/*
 %exclude %python3_sitelibdir/*/tests/
-
-%files docs
-%doc docs/*/man/*
-
-%files -n python-module-%name-tests
-%python_sitelibdir/*/tests/
 
 %files -n python3-module-%name-tests
 %python3_sitelibdir/*/tests/
 
 
 %changelog
+* Tue Feb 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt3
+- master snapshot bcb968a13e0f2643507b06aa8f6249e360e8e742
+
+* Fri Dec 20 2019 Andrey Bychkov <mrdrew@altlinux.org> 2.0.1-alt2
+- build for python2 disabled
+
+* Thu Jul 04 2019 Mikhail Gordeev <obirvalger@altlinux.org> 2.0.1-alt1.g86943fc.1
+- Update to v2.0.1-30-g86943fc
+- Disable useless (it ran 0 tests) check
+
 * Tue Apr 24 2018 Andrey Bychkov <mrdrew@altlinux.org> 2.0.0-alt1
 - Updated version to 2.0.0
 
