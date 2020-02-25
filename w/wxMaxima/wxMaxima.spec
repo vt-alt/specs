@@ -1,9 +1,9 @@
 Name: wxMaxima
-Version: 19.09.1
+Version: 20.02.1
 Release: alt1
 
 Summary: GUI for the computer algebra system Maxima
-License: GPL
+License: GPL-2.0+
 Group: Sciences/Mathematics
 
 Url: https://wxmaxima-developers.github.io/wxmaxima
@@ -11,14 +11,17 @@ Packager: Ilya Mashkin <oddity@altlinux.ru>
 
 Source0: %name-%version.tar
 Source5: wxmaxima-ru.po.bz2
-Patch:  %name-alt-help-path.patch
+Patch:   %name-alt-help-path.patch
 
 Requires: maxima
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libwxGTK3.0-devel libpango-devel libxml2-devel zlib-devel makeinfo
 
-ExclusiveArch: %ix86 x86_64 aarch64 %e2k
+ExclusiveArch: %ix86 x86_64 armh aarch64 %e2k
+
+Provides: wxmaxima = %EVR
+Obsoletes: wxmaxima < %EVR
 
 %description
 wxMaxima is a wxWidgets GUI for the computer algebra system Maxima.
@@ -74,6 +77,44 @@ install -pD -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %_pixmapsdir/*%name.png
 
 %changelog
+* Fri Feb 14 2020 Andrey Cherepanov <cas@altlinux.org> 20.02.1-alt1
+- New version.
+- Complete Russian translations (thanks Olesya Gerasimenko).
+
+* Mon Feb 03 2020 Andrey Cherepanov <cas@altlinux.org> 20.02.0-alt1
+- New version.
+
+* Mon Jan 13 2020 Andrey Cherepanov <cas@altlinux.org> 20.01.2-alt1
+- New version.
+- Complete Russian translations (thanks Olesya Gerasimenko).
+
+* Thu Jan 02 2020 Andrey Cherepanov <cas@altlinux.org> 20.01.1-alt1
+- New version.
+
+* Sun Dec 29 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.4-alt1
+- New version.
+
+* Mon Dec 23 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.2-alt1
+- New version.
+- Provides wxmaxima.
+- Complete Russian translations (thanks Olesya Gerasimenko).
+
+* Wed Dec 11 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.1-alt1
+- New version.
+
+* Wed Dec 04 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.12.0-alt2
+- add armh to exclusive arches, there is nothing exclusive about it
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.0-alt1
+- New version.
+- Fix license according to SPDX.
+
+* Thu Nov 14 2019 Andrey Cherepanov <cas@altlinux.org> 19.11.0-alt1
+- New version.
+
+* Sun Oct 13 2019 Andrey Cherepanov <cas@altlinux.org> 19.10.0-alt1
+- New version.
+
 * Mon Oct 07 2019 Andrey Cherepanov <cas@altlinux.org> 19.09.1-alt1
 - New version.
 
