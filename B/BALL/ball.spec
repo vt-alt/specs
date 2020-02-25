@@ -1,6 +1,6 @@
 Name:       BALL
 Version:    1.4.3_beta1.793.git37fc53c
-Release:    alt2
+Release:    alt3
 
 Summary:    Biochemical Algorithms Library
 License:    LGPL, GPL
@@ -9,6 +9,8 @@ Group:      Sciences/Chemistry
 Url:        http://www.ball-project.org
 Source:     %name-%version.tar
 Source1:    ball.desktop
+
+Patch1: BALL-alt-link-glew.patch
 
 Packager:   Grigory Ustinov <grenka@altlinux.org>
 
@@ -42,6 +44,7 @@ Header files for %name
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %cmake
@@ -77,6 +80,9 @@ cp -vf %SOURCE1 %buildroot%_datadir/applications/
 %_libdir/cmake/BALL/*.cmake
 
 %changelog
+* Mon Nov 11 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.3_beta1.793.git37fc53c-alt3
+- Fixed linking error.
+
 * Thu Feb 21 2019 Grigory Ustinov <grenka@altlinux.org> 1.4.3_beta1.793.git37fc53c-alt2
 - Fixed FTBFS.
 
