@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt22
+Release: alt23
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -270,6 +270,7 @@ build_efi_image() {
 		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
 		extcmd keystatus procfs cryptodisk gcry_rijndael gcry_sha1 \
 		gcry_sha256 luks gcry_sha512 gcry_serpent gcry_twofish \
+		crypto pbkdf2 password_pbkdf2 \
 		"$@"
 }
 
@@ -520,6 +521,10 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Thu Feb 06 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt23
+- spec: add even more crypto modules to enable boot time encrypted
+  password feature operation in SB mode on some UEFI firmwares
+
 * Thu Jan 23 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt22
 - fix debian-install_signed patch (closes: #37664)
 - spec: remove useless pesigning from install section
