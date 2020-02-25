@@ -2,7 +2,7 @@
 %global qt_module qtdoc
 
 Name: qt5-doc
-Version: 5.12.6
+Version: 5.12.7
 Release: alt1
 
 Group: Development/KDE and QT
@@ -87,6 +87,9 @@ export QT_HASH_SEED=0
 %endif
 
 %changelog
+* Thu Feb 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt1
+- new version
+
 * Mon Dec 16 2019 Sergey V Turchin <zerg@altlinux.org> 5.12.6-alt1
 - new version
 

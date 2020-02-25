@@ -33,8 +33,8 @@
 %define gname  qt5
 Name: qt5-base
 %define major  5
-Version: 5.12.6
-Release: alt4
+Version: 5.12.7
+Release: alt1
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -52,10 +52,6 @@ Patch2: qtbase-opensource-src-5.7.1-moc_macros.patch
 # bugreports.qt.io
 Patch11: QTBUG-35459.patch
 Patch12: xcberror_filter.patch
-# upstream
-# Gentoo
-Patch20: CVE-2020-0569.patch
-Patch21: CVE-2020-0570.patch
 # SuSE
 Patch100: disable-rc4-ciphers-bnc865241.diff
 # ALT
@@ -380,9 +376,6 @@ EGL integration library for the Qt%major toolkit
 %patch11 -p1 -b .QTBUG
 #%patch12 -p1
 #
-%patch20 -p1
-%patch21 -p1
-#
 %patch100 -p1
 #
 %patch1000 -p1 -b .ibase
@@ -553,7 +546,7 @@ translationdir=%_qt5_translationdir
 
 Name: Qt%major
 Description: Qt%major Configuration
-Version: 5.12.6
+Version: 5.12.7
 __EOF__
 
 # rpm macros
@@ -816,6 +809,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Thu Feb 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt1
+- new version
+
 * Thu Feb 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.12.6-alt4
 - Added workaround for opengl issue in x2go.
 
