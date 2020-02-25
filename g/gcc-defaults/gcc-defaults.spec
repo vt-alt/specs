@@ -5,19 +5,19 @@
 
 %define gnat_arches		%ix86 x86_64
 %define go_arches		%ix86 x86_64
-%define libasan_arches		%ix86 x86_64 %arm aarch64
-%define libatomic_arches	%ix86 x86_64 %arm aarch64 mips mipsel s390x
-%define libitm_arches		%ix86 x86_64 %arm aarch64 s390x
-%define liblsan_arches		x86_64 aarch64
+%define libasan_arches		%ix86 x86_64 %arm aarch64 ppc64le
+%define libatomic_arches	%ix86 x86_64 %arm aarch64 mips mipsel s390x riscv64 ppc64le
+%define libitm_arches		%ix86 x86_64 %arm aarch64 s390x ppc64le
+%define liblsan_arches		x86_64 aarch64 ppc64le
 %define libmpx_arches		%ix86 x86_64
-%define libquadmath_arches	%ix86 x86_64
-%define libtsan_arches		x86_64 aarch64
-%define libubsan_arches		%ix86 x86_64 %arm aarch64
+%define libquadmath_arches	%ix86 x86_64 ppc64le
+%define libtsan_arches		x86_64 aarch64 ppc64le
+%define libubsan_arches		%ix86 x86_64 %arm aarch64 ppc64le
 %define libvtv_arches		%ix86 x86_64
 
 Name: gcc-defaults
 Version: %gcc_branch
-Release: alt1
+Release: alt2
 License: None
 Group: Development/Other
 
@@ -156,6 +156,7 @@ This is metapackage for %{1}-%{2}. \
 
 # noarch
 %do_package gcc doc 1 %nil
+%do_package gcc gdb-plugin 1 %nil
 %do_package gcc locales 1 %nil
 %do_package gcc objc 1 %nil
 %do_package gcc objc++ 1 %nil
@@ -296,6 +297,10 @@ ln_bin gnat gnatbind gnatchop gnatclean gnatfind gnatkr gnatlink gnatls \
 %endif
 
 %changelog
+* Wed Aug 07 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8-alt2
+- Added ppc64le (ALT#37086) and riscv64 support.
+- Added gcc-gdb-plugin subpackage.
+
 * Mon Oct 29 2018 Gleb F-Malinovskiy <glebfm@altlinux.org> 8-alt1
 - Changed default gcc version to 8.
 - Dropped libcilkrts-* subpackages.
