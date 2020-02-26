@@ -12,8 +12,8 @@
 
 %define rname lokalize
 Name: kde5-%rname
-Version: 19.12.1
-Release: alt2
+Version: 19.12.2
+Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Development/Tools
@@ -84,6 +84,9 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Wed Feb 05 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt2
 - obsolete kde4sdk-lokalize
 - package appdata

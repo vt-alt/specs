@@ -1,7 +1,7 @@
 %define rname poxml
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 %K5init
 
@@ -37,6 +37,9 @@ BuildRequires: kf5-kdelibs4support kf5-kdoctools kf5-kdoctools-devel-static kf5-
 %_K5bin/*
 
 %changelog
+* Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
