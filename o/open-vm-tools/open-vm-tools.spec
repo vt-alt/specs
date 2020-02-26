@@ -3,28 +3,19 @@
 %def_enable xmlsec1
 %def_disable xmlsecurity
 
-%def_enable grabbitmqproxy
 %def_disable deploypkg
 %def_enable multimon
-%def_with dnet
+%def_without dnet
 %def_enable resolutionkms
 
-# build with gtk3 to sisyphus, and with gtk2 to p8
-%if %ubt_id == S1
 %def_without gtk2
 %def_without gtkmm
 %def_with gtk3
 %def_with gtkmm3
-%else
-%def_with gtk2
-%def_with gtkmm
-%def_without gtk3
-%def_without gtkmm3
-%endif
 
-%global majorversion    10.3
-%global minorversion    10
-%global toolsbuild      12406962
+%global majorversion    11.0
+%global minorversion    5
+%global toolsbuild      15389592
 %global toolsversion    %majorversion.%minorversion
 %global toolsdaemon     vmtoolsd
 %global vgauthdaemon    vgauthd
@@ -48,13 +39,13 @@ Source6: %name-%vgauthdaemon.tmpfile
 Source99: 99-vmware-scsi-udev.rules
 
 Patch100: add-altlinux-open-vm-tools.patch
+Patch101: gcc9-drop-obsolete-G_INLINE_FUNC.patch
 
 ExclusiveArch: %ix86 x86_64
 
 # Need for vgauth
 %{?_enable_xmlsec1:Requires: libxmlsec1-openssl >= 1.2.24-alt2}
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++
 BuildRequires: doxygen
 # Fuse is optional and enables vmblock-fuse
@@ -64,8 +55,7 @@ BuildRequires: gtk2-devel >= 2.4.0
 BuildRequires: libgtkmm2-devel libsigc++2-devel
 BuildRequires: libgtk+3-devel >= 2.4.0
 BuildRequires: libgtkmm3-devel libsigc++2-devel
-BuildRequires: libicu-devel
-BuildRequires: libpam0-devel
+BuildRequires: libpam-devel
 BuildRequires: libtirpc-devel
 %{?_with_dnet:BuildRequires: libdnet-devel}
 %{?_enable_multimon:BuildRequires: libX11-devel libXext-devel libXinerama-devel libXi-devel libXrender-devel libXrandr-devel libXtst-devel libICE-devel libSM-devel libXcomposite-devel}
@@ -73,7 +63,6 @@ BuildRequires: libtirpc-devel
 %{?_enable_vgauth:BuildRequires: libssl-devel}
 %{?_enable_xmlsec1:BuildRequires: libxmlsec1-devel libxml2-devel}
 %{?_enable_xmlsecurity:BuildRequires: libxml-security-c-devel libxerces-c-devel}
-%{?_enable_grabbitmqproxy:BuildRequires: libssl-devel}
 %{?_enable_resolutionkms:BuildRequires: libdrm-devel libudev-devel}
 
 #BuildRequires:          kernel-headers-modules-std-def
@@ -107,14 +96,14 @@ VMware virtual machines.
 
 %prep
 %setup
-%patch100 -p1
+#%%patch100 -p1
+%patch101 -p2
 
 rm -rf autom4te.cache
 rm -f configure
 
 %build
 export CXXFLAGS="$RPM_OPT_FLAGS -std=gnu++11"
-export CUSTOM_PROCPS_NAME=procps
 %autoreconf
 
 %undefine _configure_gettext
@@ -124,7 +113,6 @@ export CUSTOM_PROCPS_NAME=procps
     %{subst_enable vgauth} \
     %{subst_enable xmlsec1} \
     %{subst_enable xmlsecurity} \
-    %{subst_enable grabbitmqproxy} \
     %{subst_enable deploypkg} \
     %{subst_enable multimon} \
     %{subst_with dnet} \
@@ -141,10 +129,11 @@ export CUSTOM_PROCPS_NAME=procps
 # export DONT_STRIP=1
 %makeinstall_std
 
+mv %buildroot%_sysconfdir/vmware-tools/tools.conf.example %buildroot%_sysconfdir/vmware-tools/tools.conf
+chmod a-x %buildroot%_sysconfdir/vmware-tools/*.conf
 # Remove exec bit from config files
 chmod a-x %buildroot%_sysconfdir/pam.d/*
 %if_enabled vgauth
-chmod a-x %buildroot%_sysconfdir/vmware-tools/*.conf
 chmod a-x %buildroot%_sysconfdir/vmware-tools/vgauth/schemas/*
 %endif
 
@@ -190,12 +179,6 @@ mkdir -p %buildroot%_runtimedir/vmware
 # upstream
 
 %post
-if [ -f %_bindir/vmware-guestproxycerttool ]; then
-   mkdir -p %_sysconfdir/vmware-tools/GuestProxyData/server
-   mkdir -p -m 0700 %_sysconfdir/vmware-tools/GuestProxyData/trusted
-   %_bindir/vmware-guestproxycerttool -g &> /dev/null || /bin/true
-fi
-
 # Setup mount point for Shared Folders
 if [ -f %_bindir/vmware-checkvm -a                     \
      -f %_bindir/vmhgfs-fuse ] &&                      \
@@ -249,9 +232,6 @@ fi
 %_bindir/vmhgfs-fuse
 %_bindir/vmtoolsd
 %_bindir/vmware-checkvm
-%if_enabled grabbitmqproxy
-%_bindir/vmware-guestproxycerttool
-%endif
 %_bindir/vmware-hgfsclient
 %_bindir/vmware-namespace-cmd
 %_bindir/vmware-rpctool
@@ -291,19 +271,25 @@ fi
 %endif
 
 %changelog
+* Fri Feb 21 2020 Alexey Shabalin <shaba@altlinux.org> 11.0.5-alt1
+- 11.0.5
+
+* Sat Sep 28 2019 Alexey Shabalin <shaba@altlinux.org> 11.0.0-alt1
+- 11.0.0
+
 * Sun Mar 24 2019 Alexey Shabalin <shaba@altlinux.org> 10.3.10-alt1
 - 10.3.10
 
 * Wed Nov 28 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.5-alt1
 - 10.3.5
 
-* Mon Sep 10 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.0-alt1%ubt
+* Mon Sep 10 2018 Alexey Shabalin <shaba@altlinux.org> 10.3.0-alt1
 - 10.3.0
 
 * Thu Sep 06 2018 Grigory Ustinov <grenka@altlinux.org> 10.1.10-alt1.S1.1
 - NMU: rebuild with new openssl.
 
-* Sun Aug 06 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.10-alt1%ubt
+* Sun Aug 06 2017 Alexey Shabalin <shaba@altlinux.ru> 10.1.10-alt1
 - 10.1.10
 - build with gtk3 to sisyphus, and with gtk2 to p8
 - build with vgauth
