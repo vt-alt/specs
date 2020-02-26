@@ -1,9 +1,9 @@
 %define		php7_extension	pdo_sqlsrv
-%define		real_version	5.6.1
+%define		real_version	5.8.0
 
 Name:	 	php7-%php7_extension
 Version:	%php7_version
-Release:	%php7_release
+Release:	%php7_release.1
 
 Summary:	Microsoft Drivers for PHP PDO for SQL Server
 
@@ -83,6 +83,9 @@ install -D -m 644 -- %SOURCE3 README.ALT
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Thu Feb 13 2020 Anton Farygin <rider@altlinux.org> 7.3.14-alt1
+- update to 5.8.0
 
 * Tue Sep 26 2017 Nikolay A. Fetisov <naf@altlinux.org> 7.2.6-alt1
 - Initial build for ALT Linux Sisyphus
