@@ -1,28 +1,30 @@
 %define module_name scapy
 
 Name: scapy
-Version: 2.4.0
-Release: alt1
+Version: 2.4.3
+Release: alt2
 
 Summary: Scapy is a powerful interactive packet manipulation program written in Python
 
 Group: Networking/Other
-License: GPL3
+License: GPLv2
 Url: http://www.secdev.org/projects/scapy/
 
 # Source-url: https://github.com/secdev/scapy/archive/v%version.zip
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 Source: %name-%version.tar
+
 BuildArch: noarch
-Requires: python-base >= 2.5
-Requires: python-module-scapy = %version-%release
+
+Requires: python3-module-scapy = %EVR
 
 Requires: tcpdump
 
-BuildRequires: python-devel python-module-distribute
+BuildRequires: python3-devel python3-module-setuptools
+BuildRequires(pre): rpm-build-python3
 
-Requires: python-dev
+%add_python3_req_skip scapy.modules.six.moves scapy.modules.six.moves.queue
 
 %description
 Scapy is a powerful interactive packet manipulation program.
@@ -32,32 +34,42 @@ much more.
 It can easily handle most classical tasks like scanning, tracerouting,
 probing, unit tests, attacks or network discovery.
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Summary: Python module for %name.
 Group: Development/Python
 
-%description -n python-module-%name
+%description -n python3-module-%name
 Powerful interactive packet manipulation python module scapy.
 
 %prep
 %setup
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
-rm -rf %buildroot%python_sitelibdir/%name/arch/windows
+%python3_install
+rm -rf %buildroot%python3_sitelibdir/%name/arch/windows
 
 %files
 %_bindir/*scapy
 %_man1dir/*
 
-%files -n python-module-scapy
-%python_sitelibdir/%name/
-%python_sitelibdir/%name-*egg-info
+%files -n python3-module-scapy
+%python3_sitelibdir/%name/
+%python3_sitelibdir/%name-*egg-info
 
 %changelog
+* Sun Dec 08 2019 Vitaly Lipatov <lav@altlinux.ru> 2.4.3-alt2
+- fix license (GPLv2 really)
+
+* Tue Oct 15 2019 Vitaly Lipatov <lav@altlinux.ru> 2.4.3-alt1
+- new version 2.4.3 (with rpmrb script)
+- switch to python3
+
+* Fri Aug 16 2019 Vitaly Lipatov <lav@altlinux.ru> 2.4.2-alt1
+- new version 2.4.2 (with rpmrb script)
+
 * Sat Jun 30 2018 Vitaly Lipatov <lav@altlinux.ru> 2.4.0-alt1
 - new version 2.4.0 (with rpmrb script)
 
