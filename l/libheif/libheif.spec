@@ -1,5 +1,5 @@
 Name: libheif
-Version: 1.4.0
+Version: 1.6.2
 Release: alt1
 Summary: HEIF file format decoder and encoder
 License: LGPLv3
@@ -10,7 +10,6 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 Source: %name-%version.tar
 Patch: %name-%version-alt.patch
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ libde265-devel libjpeg-devel libpng-devel libx265-devel libgdk-pixbuf-devel
 
 %description
@@ -44,6 +43,7 @@ Development libraries for %name
 %_libdir/gdk-pixbuf-2.0/2.10.0/loaders/*.so*
 %_datadir/mime/packages/heif.xml
 %_datadir/thumbnailers/heif.thumbnailer
+%_man1dir/*.1*
 
 %files devel
 %_includedir/%name
@@ -51,6 +51,18 @@ Development libraries for %name
 %_pkgconfigdir/%name.pc
 
 %changelog
+* Wed Feb 12 2020 Anton Farygin <rider@altlinux.ru> 1.6.2-alt1
+- 1.6.2
+
+* Fri Dec 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.6.1-alt1
+- 1.6.1
+
+* Thu Nov 14 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.5.1-alt1
+- 1.5.1
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.4.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed Mar 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.4.0-alt1
 - 1.4.0
 

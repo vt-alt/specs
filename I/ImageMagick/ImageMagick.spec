@@ -1,13 +1,12 @@
 %define mversion	6
 %define dversion	%mversion.9.10
-%define drelease	39
+%define drelease	94
 %define qlev		Q16
 %define mgkdir		ImageMagick
 %define soname		6
 %define sonamepp	8
 
-%def_enable rsvg
-%def_enable x
+%def_with rsvg
 %ifarch %e2k
 # lcc's openmp implementation is way too old
 %def_disable openmp
@@ -20,7 +19,7 @@ Version: %dversion.%drelease
 Release: alt1
 
 Summary: An X application for displaying and manipulating images
-License: OpenSource
+License: ImageMagick
 Group: Graphics
 Url: http://www.imagemagick.org/
 
@@ -39,18 +38,18 @@ Requires: ghostscript-classic fonts-type1-urw lib%name%mversion.%soname = %EVR
 
 BuildPreReq: libpng-devel
 
-BuildRequires(pre): rpm-build-ubt
 
 # Automatically added by buildreq on Wed Nov 03 2010
 BuildRequires: bzlib-devel curl gcc-c++ glibc-devel-static graphviz groff-base imake libXext-devel libXt-devel libjasper-devel libjbig-devel liblcms-devel liblqr-devel libtiff-devel libwmf-devel libxml2-devel perl-devel xdg-utils xorg-cf-files
 
 BuildRequires: libjpeg-devel liblcms2-devel liblzma-devel libwebp-devel libgraphviz-devel libjasper-devel libjbig-devel liblcms-devel libtiff-devel libwmf-devel libxml2-devel perl-devel chrpath liblqr-devel libltdl-devel perl-parent
+BuildRequires: libheif-devel libraw-devel libraqm-devel libflif-devel libzstd-devel libfftw3-devel
 
 %{?!_with_bootstrap:BuildRequires: libdjvu-devel openexr-devel transfig libopenjpeg2.0-devel}
 %{?_enable_openmp:BuildRequires: libgomp-devel}
 
-%if_enabled rsvg
-BuildRequires: librsvg-devel libpixman-devel
+%if_with rsvg
+BuildRequires: librsvg-devel
 %endif
 
 Requires: %name-tools %name-doc
@@ -68,9 +67,17 @@ Group: System/Libraries
 Provides: %name-lib = %version
 Obsoletes: %name-lib < %version
 Obsoletes: lib%name < %EVR
+Requires: lib%name%mversion-common = %EVR
 
 %description -n lib%name%mversion.%soname
 %name is a powerful image display, conversion and manipulation libraries.
+
+%package -n lib%name%mversion-common
+Summary: Common files for %name
+Group: System/Libraries
+
+%description -n lib%name%mversion-common
+Common files for lib%{name}.
 
 %package -n lib%{name}++%mversion.%sonamepp
 Summary: %name shared libraries
@@ -162,7 +169,6 @@ subst 's,2.69,2.68,' configure.ac
 	--disable-hdri \
 	--with-gcc-arch=no \
 	--with-perl \
-	%{subst_enable x} \
 	%{subst_enable openmp} \
 	--with-perl-options="PREFIX=%_prefix INSTALLDIRS=vendor" \
 	%{subst_enable static}
@@ -202,6 +208,8 @@ mv %buildroot%_docdir/%name-6 %buildroot%_docdir/%name-%dversion
 %_miconsdir/%name.png
 %_niconsdir/%name.png
 %_liconsdir/%name.png
+
+%files -n lib%name%mversion-common
 %dir %_datadir/%mgkdir-%mversion
 %dir %_sysconfdir/%name-%mversion
 %_datadir/%mgkdir-%mversion/*
@@ -218,6 +226,7 @@ mv %buildroot%_docdir/%name-6 %buildroot%_docdir/%name-%dversion
 %exclude %_docdir/%name-%dversion/www/Magick++
 
 %files -n lib%name%mversion.%soname
+%doc LICENSE
 %dir %_libdir/%mgkdir-%dversion-%soname
 %dir %_libdir/%mgkdir-%dversion-%soname/modules-%qlev
 %dir %_libdir/%mgkdir-%dversion-%soname/modules-%qlev/coders
@@ -252,6 +261,37 @@ mv %buildroot%_docdir/%name-6 %buildroot%_docdir/%name-%dversion
 %endif
 
 %changelog
+* Fri Feb 21 2020 Anton Farygin <rider@altlinux.ru> 6.9.10.94-alt1
+- new version 6.9.10.94
+
+* Wed Feb 12 2020 Anton Farygin <rider@altlinux.ru> 6.9.10.92-alt1
+- new version 6.9.10.92
+- fixed build with librsvg
+- enabled HEIC, RAW, RAQM, FLIF, FFTW and ZSTD formats
+- files needed for the shared library have been moved from tools to common
+  package (closes: #37961)
+
+* Tue Jan 14 2020 Anton Farygin <rider@altlinux.ru> 6.9.10.86-alt1
+- new version 6.9.10.86
+
+* Mon Nov 25 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.74-alt1
+- new version 6.9.10.74
+
+* Fri Sep 20 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.65-alt1
+- new version 6.9.10.65
+
+* Fri Sep 06 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.63-alt1
+- new version 6.9.10.63
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 6.9.10.49-alt2
+- NMU: remove rpm-build-ubt from BR:
+
+* Tue Jun 11 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.49-alt1
+- new version 6.9.10.49
+
+* Fri May 17 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.45-alt1
+- new version 6.9.10.45
+
 * Tue Apr 09 2019 Anton Farygin <rider@altlinux.ru> 6.9.10.39-alt1
 - new version 6.9.10.39
 
