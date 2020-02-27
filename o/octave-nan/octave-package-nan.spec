@@ -4,8 +4,8 @@ BuildRequires: libblas-devel libgomp-devel makeinfo
 %def_with _octave_arch
 %define octpkg nan
 Name: octave-%octpkg
-Version: 3.1.4
-Release: alt2
+Version: 3.4.5
+Release: alt1
 Summary: The NaN-toolbox
 
 Group: Sciences/Mathematics
@@ -46,6 +46,9 @@ A statistics and machine learning toolbox for data with and w/o missing values
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 3.4.5-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 3.1.4-alt2
 - rebuild with octave 5
 

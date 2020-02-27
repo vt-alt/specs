@@ -1,16 +1,16 @@
 # BEGIN SourceDeps(oneline):
 BuildRequires: makeinfo texinfo
 # END SourceDeps(oneline)
-%define octave_pkg_version 1.1.1
+%define octave_pkg_version 1.3.1
 %define octave_pkg_name bsltl
 %define octave_descr_name bsltl
 Name: octave-%octave_pkg_name
-Version: 1.1.1
+Version: 1.3.1
 Release: alt1
 Summary: Biospeckle Laser Tool Library.
 
 Group: Sciences/Mathematics
-License: GPLv3+
+License: GPL-3.0+
 URL: http://www.nongnu.org/bsltl/
 
 Source0: https://downloads.sourceforge.net/project/octave/Octave%%20Forge%%20Packages/Individual%%20Package%%20Releases/%{octave_pkg_name}-%{octave_pkg_version}.tar.gz
@@ -55,6 +55,10 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Tue Feb 18 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.1-alt1
+- New version.
+- Fix license according to SPDX.
+
 * Thu May 24 2018 Igor Vlasenko <viy@altlinux.ru> 1.1.1-alt1
 - initial import by package builder
 

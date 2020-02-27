@@ -5,8 +5,8 @@ BuildRequires: makeinfo
 %define octpkg miscellaneous
 Epoch: 4
 Name: octave-%octpkg
-Version: 1.2.1
-Release: alt4
+Version: 1.3.0
+Release: alt1
 Summary: Miscellaneous functions
 
 Group: Sciences/Mathematics
@@ -38,6 +38,8 @@ Miscellaneous tools that don't fit somewhere else.
 
 %prep
 %setup -q -n %{octpkg}-%{version}
+# Fix shebang for python script
+subst 's,/usr/bin/python,%__python,' inst/physical_constant.py
 
 %build
 %octave_build
@@ -53,6 +55,9 @@ Miscellaneous tools that don't fit somewhere else.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 4:1.3.0-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 4:1.2.1-alt4
 - rebuild with octave 5
 

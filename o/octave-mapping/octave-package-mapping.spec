@@ -4,8 +4,8 @@ BuildRequires: libgdal-devel makeinfo
 %def_with _octave_arch
 %define octpkg mapping
 Name: octave-%octpkg
-Version: 1.2.1
-Release: alt4
+Version: 1.4.0
+Release: alt1
 Summary: Mapping Functions
 
 Group: Sciences/Mathematics
@@ -46,6 +46,9 @@ Simple mapping and GIS .shp and raster file functions.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1.4.0-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.2.1-alt4
 - rebuild with octave 5
 

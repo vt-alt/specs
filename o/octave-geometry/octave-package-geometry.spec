@@ -4,8 +4,8 @@ BuildRequires: makeinfo
 %def_with _octave_arch
 %define octpkg geometry
 Name: octave-%octpkg
-Version: 3.0.0
-Release: alt3
+Version: 4.0.0
+Release: alt1
 Summary: Computational Geometry
 
 Group: Sciences/Mathematics
@@ -46,6 +46,9 @@ Library for geometric computing extending MatGeom functions.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 4.0.0-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 3.0.0-alt3
 - rebuild with octave 5
 

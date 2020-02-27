@@ -1,16 +1,32 @@
 %def_with qt5
 
+%ifarch %ix86
+# libinterp/corefcn/eig.cc-tst segfaults
+%def_disable check
+%endif
+
 Name: octave
-Version: 5.1.0
-Release: alt2
+Version: 5.2.0
+Release: alt1
 
 %define docdir %_defaultdocdir/%name-%version
 
 Summary: GNU Octave -- a high-level language for numerical computations
 License: GPLv3
 Group: Sciences/Mathematics
+
 Url: http://www.octave.org/
 Packager: Andrey Cherepanov <cas@altlinux.org>
+
+Source0: %name-%version-%release.tar
+Source1: octave.filetrigger
+Source2: %name.watch
+
+Patch0: octave-include-pcre.patch
+Patch1: octave-alt-desktop-l10n.patch
+Patch2: octave-alt-fix-build.patch
+Patch3: octave-alt-fix-doc-build.patch
+Patch4: assume-blas-integer-size.patch
 
 BuildRequires: flex gcc-c++ gcc-fortran libcurl-devel libfftw3-devel libglpk-devel
 BuildRequires: libhdf5-devel liblapack-devel libncurses-devel libpcre-devel
@@ -36,16 +52,6 @@ BuildPreReq: libpixman-devel libcairo-devel libXinerama-devel
 BuildPreReq: libXfixes-devel
 BuildPreReq: java-devel-default libX11-devel libgl2ps-devel libncurses-devel libpcre-devel libsuitesparse-devel libtinfo-devel llvm-devel pkgconfig(fontconfig) pkgconfig(freetype2) pkgconfig(portaudio-2.0) pkgconfig(sndfile) pkgconfig(xft) texinfo
 
-Source0: %name-%version-%release.tar
-Source1: octave.filetrigger
-Source2: %name.watch
-
-Patch0: octave-include-pcre.patch
-Patch1: octave-alt-desktop-l10n.patch
-Patch2: octave-alt-fix-build.patch
-Patch3: octave-alt-fix-doc-build.patch
-Patch4: assume-blas-integer-size.patch
-
 Provides:  qtoctave = %EVR
 Obsoletes: qtoctave < %EVR
 Requires: gnuplot
@@ -59,6 +65,8 @@ Requires: %name = %version-%release
 Summary: GNU Octave -- documentation
 Group: Development/Other
 BuildArch: noarch
+
+Summary(ru_RU.UTF-8): GNU Octave -- высокоуровневый язык для численных методов
 
 %description
 GNU Octave is a high-level language, primarily intended for numerical
@@ -93,6 +101,40 @@ with Matlab. It may also be used as a batch-oriented language.
 
 This package contains extra documentation for GNU Octave.
 
+%description -l ru_RU.UTF-8
+GNU Octave является высокоуровневым языком, в первую очередь предназначенным
+для численных методов. Он предоставляет удобный командно-строчный интерфейс
+для решения линейных и нелинейных задач в численном виде, а также для иных
+численных экспериментов с применением языка, в основном совместимого с Matlab.
+Также может применяться для неинтерактивных расчётов.
+
+Octave имеет широкий набор средств для решения общих численных задач
+линейной алгебры, нахождения корней нелинейных уравнений, интегрирования
+ординарных функций, манипулирования полиномами, а также интегрирования
+ординарных дифференциальных и дифференциально-алгебраических уравнений.
+Легко расширяется и подстраивается при помощи определяемых пользователем
+функций, написанных на собственном языке Octave, или с применением
+динамически загружаемых модулей, написанных на C++, C, Fortran или
+иных языках.
+
+%description -l ru_RU.UTF-8 devel
+GNU Octave является высокоуровневым языком, в первую очередь предназначенным
+для численных методов. Он предоставляет удобный командно-строчный интерфейс
+для решения линейных и нелинейных задач в численном виде, а также для иных
+численных экспериментов с применением языка, в основном совместимого с Matlab.
+Также может применяться для неинтерактивных расчётов.
+
+Этот пакет содержит библиотеки и заголовки для разработки.
+
+%description -l ru_RU.UTF-8 doc
+GNU Octave является высокоуровневым языком, в первую очередь предназначенным
+для численных методов. Он предоставляет удобный командно-строчный интерфейс
+для решения линейных и нелинейных задач в численном виде, а также для иных
+численных экспериментов с применением языка, в основном совместимого с Matlab.
+Также может применяться для неинтерактивных расчётов.
+
+Этот пакет содержит дополнительную документацию для GNU Octave.
+
 %define _libexecdir %_libdir
 
 %prep
@@ -107,13 +149,13 @@ This package contains extra documentation for GNU Octave.
 %undefine _configure_gettext
 %autoreconf
 patch -p2 < %PATCH3
-%configure --with-blas=openblas \
-    --enable-dl --enable-shared \
-    --disable-static 
-#    --disable-rpath \
-#    --enable-lite-kernel --enable-picky-flags
-#smp-unaware
-export NPROCS=7
+%configure \
+	--with-blas=openblas \
+	--enable-dl \
+	--enable-shared \
+	--disable-static
+##smp-unaware
+#export NPROCS=7
 %make_build
 
 %install
@@ -144,8 +186,8 @@ mkdir -p %buildroot%_datadir/doc/%name-doc-%version
 mkdir -p %buildroot%_datadir/appdata
 mv %buildroot%_datadir/metainfo/*.xml %buildroot%_datadir/appdata
 
-#check
-#make check
+%check
+%make check
 
 %files
 %doc BUGS COPYING NEWS* README ChangeLog.gz
@@ -175,9 +217,19 @@ mv %buildroot%_datadir/metainfo/*.xml %buildroot%_datadir/appdata
 %_pkgconfigdir/*.pc
 
 %files doc
-%doc doc/interpreter/octave.html doc/liboctave/liboctave.html doc/interpreter/octave.pdf doc/liboctave/liboctave.pdf doc/refcard/refcard*.pdf
+%doc doc/interpreter/octave.html doc/liboctave/liboctave.html
+%doc doc/interpreter/octave.pdf doc/liboctave/liboctave.pdf
+%doc doc/refcard/refcard*.pdf
 
 %changelog
+* Tue Feb 18 2020 Andrey Cherepanov <cas@altlinux.org> 5.2.0-alt1
+- New version.
+
+* Wed Oct 16 2019 Michael Shigorin <mike@altlinux.org> 5.1.0-alt3
+- added Russian package summary/description
+- re-enabled %%check section (except for i586 where it fails)
+- minor spec cleanup
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 5.1.0-alt2
 - to Sisyphus with octave modules rebuild
 

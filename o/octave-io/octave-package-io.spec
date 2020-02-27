@@ -5,8 +5,8 @@ BuildRequires: /usr/bin/octave-config makeinfo
 %define octpkg io
 Epoch: 1
 Name: octave-%octpkg
-Version: 2.4.12
-Release: alt2
+Version: 2.4.13
+Release: alt1
 Summary: Input/Output
 
 Group: Sciences/Mathematics
@@ -47,6 +47,9 @@ Input/Output in external formats.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.4.13-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1:2.4.12-alt2
 - rebuild with octave 5
 

@@ -4,8 +4,8 @@ BuildRequires: makeinfo texinfo
 %def_with _octave_arch
 %define octpkg zeromq
 Name: octave-%octpkg
-Version: 1.4.0
-Release: alt2
+Version: 1.5.0
+Release: alt1
 Summary: ZeroMQ Toolbox
 
 Group: Sciences/Mathematics
@@ -49,6 +49,9 @@ ZeroMQ bindings for GNU Octave
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.0-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.4.0-alt2
 - rebuild with octave 5
 

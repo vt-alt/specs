@@ -4,8 +4,8 @@ BuildRequires: makeinfo
 %def_with _octave_arch
 %define octpkg econometrics
 Name: octave-%octpkg
-Version: 1.1.1
-Release: alt6
+Version: 1.1.2
+Release: alt1
 Summary: Econometrics.
 
 Group: Sciences/Mathematics
@@ -46,6 +46,9 @@ Econometrics functions including MLE and GMM based techniques.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1.1.2-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.1.1-alt6
 - rebuild with octave 5
 

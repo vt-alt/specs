@@ -3,8 +3,8 @@ BuildRequires: makeinfo
 # END SourceDeps(oneline)
 %define octave_pkg_name optics
 Name: octave-%octave_pkg_name
-Version: 0.1.3
-Release: alt2
+Version: 0.1.4
+Release: alt1
 Summary: Optics
 
 Group: Sciences/Mathematics
@@ -50,6 +50,9 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 0.1.4-alt1
+- New version.
+
 * Sat May 26 2018 Igor Vlasenko <viy@altlinux.ru> 0.1.3-alt2
 - build for octave 4.4
 

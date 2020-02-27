@@ -4,8 +4,8 @@ BuildRequires: makeinfo
 %def_with _octave_arch
 %define octpkg stk
 Name: octave-%octpkg
-Version: 2.5.1
-Release: alt2
+Version: 2.6.1
+Release: alt1
 Summary: STK: A Small Toolbox for Kriging
 
 Group: Sciences/Mathematics
@@ -46,6 +46,9 @@ The STK is a (not so) Small Toolbox for Kriging. Its primary
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 2.6.1-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.5.1-alt2
 - rebuild with octave 5
 

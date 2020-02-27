@@ -3,7 +3,7 @@ BuildRequires: makeinfo
 # END SourceDeps(oneline)
 %define octave_pkg_name symbolic
 Name: octave-%octave_pkg_name
-Version: 2.7.1
+Version: 2.8.0
 Release: alt1
 Summary: Octave Symbolic Package using SymPy
 
@@ -53,6 +53,9 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 2.8.0-alt1
+- New version.
+
 * Tue Mar 12 2019 Igor Vlasenko <viy@altlinux.ru> 2.7.1-alt1
 - regenerated from template by package builder
 

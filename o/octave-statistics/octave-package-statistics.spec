@@ -6,9 +6,9 @@ BuildRequires: /usr/bin/octave-cli makeinfo
 %define octave_pkg_name statistics
 Epoch: 1
 Name: octave-%octave_pkg_name
-Version: 1.4.0
+Version: 1.4.1
 Release: alt1
-Summary: Statistics
+Summary: Additional statistics functions for Octave
 
 Group: Sciences/Mathematics
 License: GPLv3+, public domain
@@ -53,6 +53,9 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.4.1-alt1
+- New version.
+
 * Wed Mar 13 2019 Igor Vlasenko <viy@altlinux.ru> 1:1.4.0-alt1
 - new version
 - manually hacked - noarch pkg repacks with arch name

@@ -4,8 +4,8 @@ BuildRequires: /usr/bin/octave-config makeinfo texinfo
 %def_with _octave_arch
 %define octpkg database
 Name: octave-%octpkg
-Version: 2.4.3
-Release: alt3
+Version: 2.4.4
+Release: alt1
 Summary: Database.
 
 Group: Sciences/Mathematics
@@ -51,6 +51,9 @@ Interface to SQL databases, currently only postgresql using libpq.
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 2.4.4-alt1
+- New version.
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.4.3-alt3
 - rebuild with octave 5
 

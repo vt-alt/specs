@@ -4,9 +4,9 @@ BuildRequires: makeinfo
 %define octave_pkg_name splines
 Epoch: 1
 Name: octave-%octave_pkg_name
-Version: 1.3.2
+Version: 1.3.3
 Release: alt1
-Summary: Splines.
+Summary: Additional spline functions for Octave
 
 Group: Sciences/Mathematics
 License: GPLv3+, public domain
@@ -51,6 +51,9 @@ octave -q -H --no-window-system --no-site-file --eval "pkg prefix %buildroot%_da
 %endif
 
 %changelog
+* Wed Feb 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.3.3-alt1
+- New version.
+
 * Sat May 26 2018 Igor Vlasenko <viy@altlinux.ru> 1:1.3.2-alt1
 - build for octave 4.4
 
