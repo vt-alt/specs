@@ -1,5 +1,5 @@
 Name: lsof
-Version: 4.89
+Version: 4.93.2
 Release: alt1
 
 Packager: Victor Forsiuk <force@altlinux.org>
@@ -29,16 +29,27 @@ system.
 ./Configure -n linux
 %make_build DEBUG="%optflags"
 
+sed -e '/.so .\/00DIALECTS/d' \
+    -e 's,.so ./version,.ds VN %version,' \
+    Lsof.8 > lsof.8
+
 %install
 install -pD lsof %buildroot%_sbindir/lsof
 install -pD -m644 lsof.8 %buildroot%_man8dir/lsof.8
+mkdir -p %buildroot%_bindir
+ln -rs %buildroot%_sbindir/lsof %buildroot%_bindir/
 
 %files
 %_sbindir/lsof
+%_bindir/lsof
 %_man8dir/lsof*
 %doc 00*
 
 %changelog
+* Mon Dec 09 2019 Ivan A. Melnikov <iv@altlinux.org> 4.93.2-alt1
+- Update, taking tarball from RH
+- Add lsof symlink to %%_bindir (closes: #37594)
+
 * Thu Aug 18 2016 Fr. Br. George <george@altlinux.ru> 4.89-alt1
 - Update, taking tarball from RH
 
