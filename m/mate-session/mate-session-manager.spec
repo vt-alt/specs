@@ -2,7 +2,7 @@
 
 Name: mate-session
 Version: 1.22.2
-Release: alt1
+Release: alt2
 Epoch: 1
 Summary: MATE Desktop session manager
 License: GPLv2+
@@ -43,7 +43,7 @@ full-featured user session.
 mkdir -p %buildroot%_sysconfdir/X11/wmsession.d/
 cat << __EOF__ > %buildroot%_sysconfdir/X11/wmsession.d/02Mate
 NAME=Mate
-ICON=%_iconsdir/hicolor/scalable/apps/mate.svg
+ICON=%_iconsdir/hicolor/scalable/apps/mate-desktop.svg
 DESC=Mate (Gnome 2) Environment
 EXEC=%_bindir/mate-session
 SCRIPT:
@@ -65,6 +65,10 @@ __EOF__
 %_man1dir/*.1*
 
 %changelog
+* Fri Feb 21 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt2
+- upstream: fix timeout with gnome-keyring 3.34
+- update russian translation (closes: #37402, #37730)
+
 * Tue Oct 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.2-alt1
 - 1.22.2
 
