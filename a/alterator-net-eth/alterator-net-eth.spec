@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.4
+Version: 5.1.5
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Mon Feb 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 5.1.5-alt1
+- Add support of different bridge types
+
 * Mon Jan 27 2020 Mikhail Gordeev <obirvalger@altlinux.org> 5.1.4-alt1
 - Do not show domain name if it is absent.
 

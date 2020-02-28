@@ -1,6 +1,6 @@
 Name: alterator-net-bridge
-Version: 0.2.0
-Release: alt1.1.1
+Version: 0.2.1
+Release: alt1
 
 Source:%name-%version.tar
 
@@ -44,6 +44,9 @@ Alterator module for bridge network interfaces
 %_alterator_backend3dir/*
 
 %changelog
+* Mon Feb 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 0.2.1-alt1
+- Add support of different bridge types
+
 * Fri Apr 13 2018 Grigory Ustinov <grenka@altlinux.org> 0.2.0-alt1.1.1
 - NMU: Replace BuildRequires for guile on e2k arch.
 

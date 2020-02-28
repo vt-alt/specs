@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-net-functions
-Version: 2.0.2
+Version: 2.0.3
 Release: alt1
 
 Requires: libshell >= 0.1.3 etcnet
@@ -41,6 +41,9 @@ helpers for etcnet administration
 %_libexecdir/%name/
 
 %changelog
+* Mon Feb 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 2.0.3-alt1
+- Add support of several bridge types
+
 * Wed Aug 23 2017 Evgeny Sinelnikov <sin@altlinux.ru> 2.0.2-alt1
 - valid_ipv4addr: Allow 0 in last byte. (closes: #33795)
 
