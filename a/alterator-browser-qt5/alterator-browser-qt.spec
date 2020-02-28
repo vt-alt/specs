@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.1.3
+Version: 3.1.4
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,9 @@ __EOF__
 
 
 %changelog
+* Fri Feb 28 2020 Sergey V Turchin <zerg at altlinux dot org> 3.1.4-alt1
+- don't crash on Wayland
+
 * Wed Dec 04 2019 Sergey V Turchin <zerg at altlinux dot org> 3.1.3-alt1
 - activate window without window manager
 - show version in about dialog
