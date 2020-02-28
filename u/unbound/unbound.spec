@@ -1,6 +1,8 @@
+%def_disable static
+
 Name: unbound
 Version: 1.9.6
-Release: alt1
+Release: alt3
 License: BSD
 Url: http://unbound.net/
 Source: %name-%version.tar
@@ -8,16 +10,21 @@ Summary: Validating, recursive, and caching DNS resolver
 Group: System/Servers
 
 %define _chrootdir %_localstatedir/%name
-%define with_python 1
+%define with_python 0
 
 Requires(pre): chrooted
 Requires(pre): lib%name = %version-%release
 
 Provides: %name-chroot(%_chrootdir)
 
-BuildRequires: /proc flex gcc-c++ libssl-devel libldns-devel bind-utils libldns-examples splint xxd libexpat-devel libevent-devel
-%if %with_python
+BuildRequires: /proc flex gcc-c++ libssl-devel libexpat-devel libevent-devel
+BuildRequires: pkgconfig(libsystemd)
+%if %with_python == 2
 BuildRequires: python-devel swig
+%endif
+%if %with_python == 3
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel swig
 %endif
 
 %description
@@ -65,13 +72,22 @@ Requires: lib%name = %version-%release
 %description -n lib%name-devel
 The devel package contains the include files
 
-%if %with_python
+%if %with_python == 2
 %package -n python-module-%name
 Summary: Python modules and extensions for unbound
 Group: Development/Python
 
 %description -n python-module-%name
 Python modules and extensions for unbound
+%endif
+
+%if %with_python == 3
+%package -n python3-module-%name
+Summary: Python3 modules and extensions for unbound
+Group: Development/Python3
+
+%description -n python3-module-%name
+Python3 modules and extensions for unbound
 %endif
 
 %prep
@@ -87,33 +103,45 @@ Python modules and extensions for unbound
 %autoreconf
 
 %configure \
-	    --with-conf-file=%_chrootdir/unbound.conf \
-            --with-pidfile=/run/%name/%name.pid \
-	    --with-username=_%name \
-	    --with-libevent \
+	    %{subst_enable static} \
+	    --enable-pie \
+	    --enable-relro-now \
+	    --disable-rpath \
 	    --with-pthreads \
+	    --with-conf-file=%_chrootdir/unbound.conf \
+	    --with-pidfile=/run/%name/%name.pid \
+	    --with-username=_%name \
+	    --enable-systemd \
+	    --with-libevent \
+	    --with-ssl \
+	    --enable-subnet \
+	    --enable-tfo-client \
+	    --enable-tfo-server \
 %if %with_python
-            --with-pythonmodule --with-pyunbound \
+	    PYTHON_VERSION=%with_python \
+	    --with-pythonmodule --with-pyunbound \
 %endif
-            --enable-sha2
+	    --enable-sha2
 %make
 
 subst 's|# auto-trust-anchor-file:|auto-trust-anchor-file:|g' doc/example.conf
 
 %install
 %make DESTDIR=%buildroot install
-install -d 0700 %buildroot%_localstatedir/%name
-install -d 0755 %buildroot%_initdir
-install -d 0755 %buildroot%_sysconfdir/cron.monthly
+install -d -m 0775 %buildroot%_localstatedir/%name
+install -d -m 0755 %buildroot%_initdir
+install -d -m 0755 %buildroot%_sysconfdir/cron.d
 install -m 0755 %name.init %buildroot%_initdir/unbound
-install -p -m 0755 unbound-monthly.cron  %buildroot%_sysconfdir/cron.monthly/unbound-anchor
+install -p -m 0644 unbound.cron.d  %buildroot%_sysconfdir/cron.d/unbound-anchor
 install -p -m 0644 icannbundle.pem %buildroot%_localstatedir/%name/icannbundle.pem
 # add symbolic link from /etc/unbound/unbound.conf -> /var/lib/unbound/unbound.conf
 ln -s ..%_chrootdir %buildroot%_sysconfdir/%name
 
 #systemd services
-install -D -p -m 0644 unbound.service %buildroot%_unitdir/unbound.service
+install -D -p -m 0644 contrib/unbound.service %buildroot%_unitdir/unbound.service
 install -D -p -m 0644 unbound-keygen.service %buildroot%_unitdir/unbound-keygen.service
+install -D -p -m 0644 unbound-anchor.service %buildroot%_unitdir/unbound-anchor.service
+install -D -p -m 0644 unbound-anchor.timer %buildroot%_unitdir/unbound-anchor.timer
 
 # Install tmpfiles.d config
 install -D -m 0644 tmpfiles-unbound.conf %buildroot%_tmpfilesdir/unbound.conf
@@ -123,13 +151,15 @@ mkdir -p %buildroot%_chrootdir/{keys.d,conf.d,local.d}
 install -p example.com.key %buildroot%_chrootdir/keys.d/
 install -p example.com.conf %buildroot%_chrootdir/conf.d/
 install -p block-example.com.conf %buildroot%_chrootdir/local.d/
+touch %buildroot%_chrootdir/root.key
 
 %if %with_python
-rm %buildroot%python_sitelibdir/*.la
+rm -f %buildroot%python_sitelibdir/*.la
+rm -f %buildroot%python3_sitelibdir/*.la
 %endif
 
 %check
-%make test
+%make check
 
 %pre -n lib%name
 /usr/sbin/groupadd -r -f _%name
@@ -143,7 +173,8 @@ rm %buildroot%python_sitelibdir/*.la
 %files
 %doc doc/README doc/CREDITS doc/LICENSE doc/FEATURES doc/Changelog
 %_initdir/%name
-%_unitdir/*
+%_unitdir/unbound.service
+%_unitdir/unbound-keygen.service
 %_tmpfilesdir/*
 %config(noreplace) %_chrootdir/unbound.conf
 %attr(0755,root,_%name) %dir %_chrootdir/keys.d
@@ -170,7 +201,10 @@ rm %buildroot%python_sitelibdir/*.la
 
 %files -n lib%name
 %attr(1775,root,_%name) %dir %_localstatedir/%name
-%config(noreplace) %_sysconfdir/cron.monthly/unbound-anchor
+%attr(644,_%name,_%name) %ghost %_chrootdir/root.key
+%config(noreplace) %_sysconfdir/cron.d/unbound-anchor
+%_unitdir/unbound-anchor.service
+%_unitdir/unbound-anchor.timer
 %config(noreplace) %_localstatedir/%name/icannbundle.pem
 %_libdir/libunbound*so.*
 %exclude %_libdir/libunbound.so
@@ -178,22 +212,50 @@ rm %buildroot%python_sitelibdir/*.la
 %_man8dir/unbound-anchor*
 %_man3dir/*
 
+%if_enabled static
 %files -n lib%name-devel-static
 %_libdir/libunbound.a
+%endif
 
 %files -n lib%name-devel
 %_includedir/*
 %_libdir/libunbound.so
 %_libdir/pkgconfig/*
 
-%if %with_python
+%if %with_python == 2
 %files -n python-module-%name
 %python_sitelibdir/*
 %doc libunbound/python/examples/*
 %doc pythonmod/examples/*
 %endif
 
+%if %with_python == 3
+%files -n python3-module-%name
+%python3_sitelibdir/*
+%doc libunbound/python/examples/*
+%doc pythonmod/examples/*
+%endif
+
 %changelog
+* Tue Feb 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.9.6-alt3
+- update systemd unit for run without pidfile
+
+* Tue Feb 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.9.6-alt2
+- build unbound without python
+- build with systemd support
+- update unbound-anchor cron config
+- add unbound-anchor.timer
+- disable build static libs
+- update configure options:
+  + --enable-pie
+  + --enable-relro-now
+  + --disable-rpath
+  + --with-ssl
+  + --enable-tfo-client
+  + --enable-tfo-server
+  + --enable-subnet
+- cleanup BR:
+
 * Fri Dec 13 2019 Alexei Takaseev <taf@altlinux.org> 1.9.6-alt1
 - 1.9.6 (Fixes CVE-2019-18934)
 
