@@ -1,9 +1,9 @@
 Name: update-kernel
-Version: 0.9.17
+Version: 0.9.18
 Release: alt1
 
 Summary: Update kernel and modules
-License: GPL
+License: GPL-2.0+
 Group: System/Kernel and hardware
 
 Source: %name-%version.tar
@@ -42,6 +42,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Wed Feb 12 2020 Vitaly Chikunov <vt@altlinux.org> 0.9.18-alt1
+- Support for single word kernel flavours (closes: #36835).
+- Update license tag to be more specific.
+
 * Mon Dec 30 2019 Sergey Novikov <sotor@altlinux.org> 0.9.17-alt1
 - update-kernel: remove duplicates modules entries (Closes: #37690)
 
