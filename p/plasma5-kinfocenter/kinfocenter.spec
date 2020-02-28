@@ -1,22 +1,21 @@
 %define rname kinfocenter
 
 Name: plasma5-%rname
-Version: 5.17.5
-Release: alt2
+Version: 5.18.1
+Release: alt1
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Info Center
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
-Requires: usbids
+Requires: usbids kf5-kirigami
 Provides:  kf5-kinfocenter = %EVR kf5-kinfocenter-common = %EVR plasma5-kinfocenter-common = %EVR
 Obsoletes: kf5-kinfocenter < %EVR kf5-kinfocenter-common < %EVR plasma5-kinfocenter-common < %EVR
 
 Source: %rname-%version.tar
 Patch1: alt-usbids-path.patch
-Patch2: kinfocenter-upstream-energyinfo-crash.patch
 
 # Automatically added by buildreq on Thu Mar 26 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils glibc-devel-static kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libXt-devel libcloog-isl4 libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libraw1394-11 libstdc++-devel libwayland-client libwayland-server libxcbutil-keysyms pkg-config python-base ruby ruby-stdlibs xml-common xml-utils xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
@@ -70,7 +69,6 @@ KF5 library
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-%patch2 -p1
 
 %build
 %K5build
@@ -85,7 +83,7 @@ KF5 library
 %find_lang %name --with-kde --all-name
 
 %files -f %name.lang
-%doc COPYING*
+%doc LICENSES/*
 %_K5bin/*
 %_K5plug/kcms/
 %_K5plug/*.so
@@ -99,6 +97,9 @@ KF5 library
 %_K5xmlgui/*
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Fri Feb 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.17.5-alt2
 - Applied upstream patch fixing crash in energyinfo widget (Closes: #37644)
 

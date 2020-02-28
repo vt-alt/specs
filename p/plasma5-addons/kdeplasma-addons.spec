@@ -8,15 +8,15 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.17.5
-Release: alt2
+Version: 5.18.1
+Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Plasma addons
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Requires: %name-common = %version-%release
 # plasma.quickshare
@@ -160,6 +160,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt1
+- new version
+
 * Thu Feb 13 2020 Oleg Solovyov <mcpain@altlinux.org> 1:5.17.5-alt2
 - fix konsoleprofiles runner
 

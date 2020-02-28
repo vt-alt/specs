@@ -6,7 +6,7 @@
 %define libkscreenlocker libkscreenlocker%sover
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 Epoch: 2
 %K5init altplace
@@ -14,7 +14,7 @@ Epoch: 2
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Screen Locker
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Source: %rname-%version.tar
 Source10: pam-kf5-screenlocker
@@ -121,6 +121,9 @@ install -m 0644 %SOURCE10 %buildroot/%_sysconfdir/pam.d/kf5-screenlocker
 %_K5lib/libKScreenLocker.so.%sover
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 2:5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 2:5.17.5-alt1
 - new version
 

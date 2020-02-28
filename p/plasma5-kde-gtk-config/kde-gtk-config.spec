@@ -1,7 +1,7 @@
 %define rname kde-gtk-config
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -9,7 +9,7 @@ Epoch: 1
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 GNOME/GTK Application Style
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Source: %rname-%version.tar
 Patch1: alt-defaults.patch
@@ -63,31 +63,34 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 ADD_OPTFLAGS=`pkg-config --cflags harfbuzz`
 %add_optflags $ADD_OPTFLAGS
 %K5build \
     -DLIBEXEC_INSTALL_DIR=%_K5exec \
+    -DDATA_INSTALL_DIR=%_K5data \
     #
 
 %install
 %K5install
-%K5install_move data kcm-gtk-module knsrcfiles
+%K5install_move data kconf_update
+#K5install_move data kcm-gtk-module knsrcfiles
 %find_lang %name --all-name
 
 %files -f %name.lang
 %doc COPYING*
-#%config(noreplace) %_K5xdgconf/*.knsrc
-%_K5data/knsrcfiles/*.knsrc
-%_K5exec/*
-%_K5plug/*.so
-%_K5srv/*.desktop
+%_K5exec/*gtk*
+%_K5conf_bin/*gtk*
+%_K5plug/kf5/kded/*gtk*.so
+%_K5conf_up/*gtk*.upd
 %_K5data/kcm-gtk-module/
-%_K5icon/*/*/apps/kde-gtk-config.*
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.17.5-alt1
 - new version
 

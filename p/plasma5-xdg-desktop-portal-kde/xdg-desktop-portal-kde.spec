@@ -1,14 +1,14 @@
 %define rname xdg-desktop-portal-kde
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
 Summary: KDE5 xdg-desktop-portal
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Provides: xdg-desktop-portal-kde = %version-%release
 
@@ -17,13 +17,15 @@ Requires: xdg-desktop-portal
 Source: %rname-%version.tar
 Source1: env.sh
 
-# Automatically added by buildreq on Fri Jun 07 2019 (-bi)
-# optimized out: cmake cmake-modules elfutils gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel libGL-devel libdbusmenu-qt52 libglvnd-devel libgpg-error libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-texttospeech libqt5-widgets libqt5-x11extras libqt5-xml libsasl2-3 libstdc++-devel libxcbutil-keysyms pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 sh4
-#BuildRequires: appstream extra-cmake-modules glib2-devel kf5-ki18n-devel kf5-kio-devel kf5-knotifications-devel kf5-kwayland-devel kf5-kwindowsystem-devel libcups-devel libepoxy-devel libgbm-devel libssl-devel python3-dev qt5-wayland-devel
+# Automatically added by buildreq on Thu Feb 20 2020 (-bi)
+# optimized out: clang7.0 cmake cmake-modules elfutils gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel libdbusmenu-qt52 libglvnd-devel libgpg-error libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-svg libqt5-texttospeech libqt5-widgets libqt5-x11extras libqt5-xml libsasl2-3 libstdc++-devel libwayland-client libwayland-server libxcbutil-keysyms pipewire-libs pkg-config python-modules python2-base python3 python3-base qt5-base-devel qt5-declarative-devel rpm-build-python3 sh4
+#BuildRequires: appstream extra-cmake-modules kf5-kdeclarative-devel kf5-ki18n-devel kf5-kio-devel kf5-kirigami-devel kf5-knotifications-devel kf5-kpackage-devel kf5-kwayland-devel kf5-plasma-framework-devel libcups-devel libepoxy-devel libgbm-devel libssl-devel pipewire-libs-devel python3-dev qt5-wayland-devel
 BuildRequires(pre): rpm-build-kf5
-BuildRequires: extra-cmake-modules qt5-base-devel qt5-wayland-devel
-BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-knotifications-devel kf5-kwayland-devel kf5-kwindowsystem-devel
+BuildRequires: qt5-wayland-devel
 BuildRequires: libcups-devel glib2-devel libepoxy-devel libgbm-devel libssl-devel pipewire-libs-devel
+BuildRequires: extra-cmake-modules kf5-kdeclarative-devel kf5-ki18n-devel kf5-kio-devel kf5-kirigami-devel
+BuildRequires: kf5-knotifications-devel kf5-kpackage-devel kf5-kwayland-devel kf5-plasma-framework-devel
+# python3-dev
 
 
 %description
@@ -39,6 +41,7 @@ that is using Qt/KF5.
 
 %install
 %K5install
+%K5install_move data xdg-desktop-portal-kde
 mkdir -p %buildroot/%_K5xdgconf/plasma-workspace/env/
 install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}.sh
 %find_lang %name --all-name
@@ -48,10 +51,14 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}.sh
 %_K5xdgapp/*portal*.desktop
 %_K5libexecdir/*portal*kde*
 %_K5dbus_srv/*portal*kde*.service
+%_K5data/xdg-desktop-portal-kde/
 %_datadir/xdg-desktop-portal/portals/kde.portal
 %config(noreplace) %_K5xdgconf/plasma-workspace/env/*.sh
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 

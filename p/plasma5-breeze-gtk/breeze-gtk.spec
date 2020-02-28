@@ -1,14 +1,14 @@
 %define rname breeze-gtk
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init no_altplace
 
 Group: Graphical desktop/KDE
 Summary: Breeze GTK2/3 theme
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Provides: kde5-breeze-dark-gtk = %EVR
 
@@ -41,7 +41,7 @@ Provides: gtk3-theme-breeze = %version-%release
 
 %prep
 %setup -n %rname-%version
-%patch1 -p1
+#%patch1 -p1
 #%patch2 -p1
 
 %build
@@ -54,11 +54,14 @@ Provides: gtk3-theme-breeze = %version-%release
 %K5install_move data kconf_update
 
 %files -n gtk-theme-breeze
-%_K5conf_bin/gtkbreeze*
-%_K5conf_up/gtkbreeze*
+#%_K5conf_bin/gtkbreeze*
+#%_K5conf_up/gtkbreeze*
 %_datadir/themes/Breeze*
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 

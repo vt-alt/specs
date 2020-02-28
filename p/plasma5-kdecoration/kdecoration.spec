@@ -1,18 +1,18 @@
 %define rname kdecoration
 %define sover 5
-%define sover_private 6
+%define sover_private 7
 %define libkdecorations libkdecorations2%sover
 %define libkdecorationsprivate libkdecorations2private%sover_private
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init altplace
 
 Group: System/Libraries
 Summary: KDE Workspace 5 Plugin based library to create window decorations
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Source: %rname-%version.tar
 
@@ -93,6 +93,9 @@ KF5 library
 %_K5lib/libkdecorations2private.so.*
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 

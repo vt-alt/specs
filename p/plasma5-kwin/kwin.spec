@@ -14,14 +14,14 @@
 %define libkcmkwincommon libkcmkwincommon%kcmkwincommon_sover
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 Window Manager
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Provides: kf5-kwin = %EVR
 Obsoletes: kf5-kwin < %EVR
@@ -201,6 +201,9 @@ KF5 library
 
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 

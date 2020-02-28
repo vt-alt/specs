@@ -7,14 +7,14 @@
 
 
 Name: plasma5-desktop
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 plasma desktop view furniture
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Requires: plasma5-workspace
 Requires: polkit-kde-plasma-desktop
@@ -28,11 +28,10 @@ Patch5: alt-multimedia-player-chooser.patch
 Patch6: alt-def-panel.patch
 Patch7: alt-def-desktop-containment.patch
 Patch8: alt-def-desktop-widgets.patch
-Patch10: alt-def-start-empty-session.patch
+Patch10: alt-def-session.patch
 Patch11: alt-def-key-numlock.patch
 Patch12: alt-def-layout-indicator.patch
 #
-Patch14: alt-session-exclude.patch
 Patch15: alt-menu-add-tooltip.patch
 #
 Patch17: alt-disable-kwin-runner.patch
@@ -46,7 +45,7 @@ BuildRequires: qt5-declarative-devel qt5-phonon-devel qt5-svg-devel qt5-x11extra
 BuildRequires: scim-devel libibus-devel libgio-devel glib2-devel
 BuildRequires: libudev-devel
 BuildRequires: libGLU-devel libcanberra-devel libpulseaudio-devel libusb-compat-devel libxapian-devel
-BuildRequires: libxcbutil-devel libxcbutil-image-devel
+BuildRequires: libxcbutil-devel libxcbutil-image-devel libxkbcommon-devel
 BuildRequires: xorg-drv-synaptics-devel xorg-sdk xorg-drv-evdev-devel xkeyboard-config-devel xorg-drv-libinput-devel
 BuildRequires: iceauth mkfontdir xset
 BuildRequires: kf5-baloo-devel kf5-kactivities-devel kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcmutils-devel
@@ -126,7 +125,6 @@ KF5 library
 %patch11 -p1
 %patch12 -p1
 #
-%patch14 -p1
 %patch15 -p1
 #
 %patch17 -p1
@@ -145,7 +143,7 @@ KF5 library
 %install
 %K5install
 
-%K5install_move data color-schemes doc kcmmouse knsrcfiles
+%K5install_move data color-schemes doc kcmmouse knsrcfiles kglobalaccel
 %K5install_move data kcm_componentchooser kcminput kcmkeyboard kcmkeys kcm_phonon kcmsolidactions
 %K5install_move data kconf_update kcontrol kdisplay kfontinst konqsidebartng ksmserver solid kpackage
 %K5install_move data plasma/desktoptheme plasma/plasmoids/touchpad
@@ -197,6 +195,7 @@ KF5 library
 %_K5data/kcontrol/
 %_K5data/kcmmouse/
 %_K5data/kdisplay/
+%_K5data/kglobalaccel/*.desktop
 %_K5data/kfontinst/
 %_K5data/konqsidebartng/
 %_K5data/knsrcfiles/*.knsrc
@@ -219,6 +218,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 

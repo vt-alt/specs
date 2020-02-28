@@ -1,15 +1,15 @@
 %define rname user-manager
 
 Name: plasma5-%rname
-Version: 5.17.5
-Release: alt3
+Version: 5.18.1
+Release: alt1
 Epoch: 1
 %K5init altplace
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 User Manager
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 Requires: accountsservice
 
@@ -58,6 +58,9 @@ Add, remove or edit system users.
 %_K5data/user-manager/
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt1
+- new version
+
 * Mon Feb 03 2020 Slava Aseev <ptrnine@altlinux.org> 1:5.17.5-alt3
 - Change reserve hashing prefix to "$2y$" bcrypt
 

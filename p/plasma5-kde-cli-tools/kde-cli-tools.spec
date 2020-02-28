@@ -5,14 +5,14 @@
 %add_findreq_skiplist %_K5exec/kdeeject
 
 Name: plasma5-%rname
-Version: 5.17.5
+Version: 5.18.1
 Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
 Summary: KDE Workspace 5 common cli tools
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later
 
 #Requires: eject
 Requires: qt5-dbus kf5-kdelibs4support
@@ -87,9 +87,13 @@ KF5 library
 %_K5exec/*
 %_K5lib/libkdeinit5_*.so
 %_K5plug/*.so
+%_K5xdgapp/*.desktop
 %_K5srv/*.desktop
 
 %changelog
+* Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
+- new version
+
 * Thu Jan 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.5-alt1
 - new version
 
