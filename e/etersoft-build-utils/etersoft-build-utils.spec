@@ -1,7 +1,7 @@
 # NOTE: do not use clean_spec or rpmcs for this spec
 
 Name: etersoft-build-utils
-Version: 2.8.7
+Version: 2.9.5
 Release: alt1
 
 Summary: A set of rpm build utilities from Etersoft
@@ -68,6 +68,61 @@ RECOMMENDED packages: gcc-c++ perl-libwww ccache elinks mutt hasher curl
 %config(noreplace) %_sysconfdir/eterbuild/repos/*
 
 %changelog
+* Wed Feb 19 2020 Vitaly Lipatov <lav@altlinux.ru> 2.9.5-alt1
+- gitask: add support for subtask in add command
+- gitask: remove subtask if a package already in task
+- rpmbs -a: use gita add instead of direct ssh
+- gitask: fix possible race after task new
+
+* Mon Feb 10 2020 Vitaly Lipatov <lav@altlinux.ru> 2.9.4-alt1
+- gitask: convert space(s) in messages to underscores
+- rpmgs: improve update git repo from upstream
+
+* Fri Jan 31 2020 Vitaly Lipatov <lav@altlinux.ru> 2.9.3-alt1
+- rpmgs: add support for update of remotes branches
+- rpmgs: update predownloaded in any case
+- rpmgs: drop npm and node-gyp node modules from predownloaded
+- rpmgs: check *.watch file in the root dir too
+- rpmgs: empty version support
+- fix 'major' define using
+- rpmgs: add composer.json support
+
+* Fri Jan 10 2020 Vitaly Lipatov <lav@altlinux.ru> 2.9.2-alt1
+- use distro_info (ALT bug 37712)
+- gitask: add -m <message> support for run and commit commands
+- add p9 sources.list
+
+* Sun Nov 17 2019 Vitaly Lipatov <lav@altlinux.ru> 2.9.1-alt1
+- rpmbs: add .gear/postdownload-hook support (use git command to change files)
+- rpmgs: skip repack for the same ext, just commit the file
+- rpmgs: skip autoupdate if we run rpmgs with a version
+
+* Thu Oct 31 2019 Vitaly Lipatov <lav@altlinux.ru> 2.9.0-alt1
+- rpmgs: add watch file support (via rpm-uscan)
+- rpmgs: check if we have no tag name to merge
+- rpmgs: use rpm-uscan if we have .watch file really
+- gitask: use last task for show as default
+- git: allow any git.NAME
+- gitask: rewrite add handling, add support for copy packages list
+
+* Fri Jun 28 2019 Vitaly Lipatov <lav@altlinux.ru> 2.8.10-alt1
+- rpmgs: add support for any version prefix in a git tag
+- gitask: add copy command
+- gitask: allow list packages and tasks
+- rpmbs: add -F option to run task after add
+- gitask: fix task cancel on git.eter/git.office
+- gitask: add rebuild command
+
+* Fri Jun 07 2019 Vitaly Lipatov <lav@altlinux.ru> 2.8.9-alt1
+- run gear-remotes-restore if .gear/upstream/remotes is exists
+- use UTF8 locale instead of C
+- rpmgs: run .gear/source-postupdate-hook
+- rpmgs: add VERSION to hooks args
+
+* Fri May 31 2019 Vitaly Lipatov <lav@altlinux.ru> 2.8.8-alt1
+- gitask: add rebuild support
+- rpmbs: use GIRARHOST for gita using
+
 * Tue Mar 26 2019 Vitaly Lipatov <lav@altlinux.ru> 2.8.7-alt1
 - update pkgrepls
 - rpmgs: fix using Source-git: git://
