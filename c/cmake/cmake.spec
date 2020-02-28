@@ -5,8 +5,8 @@
 %def_without check
 
 Name: cmake
-Version: 3.13.4
-Release: alt3
+Version: 3.16.3
+Release: alt1
 
 Summary: Cross-platform, open-source make system
 
@@ -219,7 +219,6 @@ popd
 %_libdir/libCMakeLib.so
 %_libdir/libCPackLib.so
 %_libdir/libCMakeServerLib.so
-%_libdir/libcmcompress.so
 %_libdir/libcmsys.so
 %_libdir/libcmsys_c.so
 %_datadir/%name/
@@ -232,7 +231,6 @@ popd
 %dir %_docdir/%name-%version/
 #_docdir/%name-%version/ChangeLog.manual
 %_docdir/%name-%version/Copyright.txt
-%_docdir/%name-%version/cmcompress/
 %_docdir/%name-%version/cmsys/
 %exclude %_datadir/%name/Modules/
 %if_enabled jsoncpp_bootstrap
@@ -294,6 +292,12 @@ popd
 %filter_from_requires /^gnustep-Backbone.*/d
 
 %changelog
+* Fri Jan 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.16.3-alt1
+- new version 3.16.3 (with rpmrb script)
+
+* Sun Oct 20 2019 Vitaly Lipatov <lav@altlinux.ru> 3.15.4-alt1
+- new version 3.15.4 (with rpmrb script)
+
 * Wed May 15 2019 Dmitry V. Levin <ldv@altlinux.org> 3.13.4-alt3
 - NMU.
 - macros: fixed bug in definitions of %%cmake and %%cmake_insource
