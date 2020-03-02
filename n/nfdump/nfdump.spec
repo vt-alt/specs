@@ -3,11 +3,11 @@
 
 Name: nfdump
 Version: 1.6.18
-Release: alt1
+Release: alt2
 Summary: collect and process netflow data
 
 Group: Monitoring
-License: %bsd
+License: BSD-3-Clause
 #Url: http://sourceforge.net/projects/nfdump/
 Url: https://github.com/phaag/nfdump/releases
 
@@ -21,8 +21,6 @@ Source7: sfcapd.sysconfig
 Source8: sfcapd.service
 
 Packager: Vladimir Lettiev <crux@altlinux.ru>
-
-BuildRequires: rpm-build-licenses
 
 BuildRequires: librrd-devel libpcap-devel flex bison zlib-devel bzlib-devel
 
@@ -144,6 +142,9 @@ rm %buildroot%_libdir/libnfdump.so
 %endif
 
 %changelog
+* Thu Dec 12 2019 Grigory Ustinov <grenka@altlinux.org> 1.6.18-alt2
+- NMU: Fix license.
+
 * Sun Sep 01 2019 Sergey Y. Afonin <asy@altlinux.org> 1.6.18-alt1
 - 1.6.18 (removed 1.5 compat code)
 - built without --enable-compat15
@@ -204,4 +205,3 @@ rm %buildroot%_libdir/libnfdump.so
 
 * Thu Jun 10 2010 Vladimir Lettiev <crux@altlinux.ru> 1.6.1-alt1
 - initial build
-
