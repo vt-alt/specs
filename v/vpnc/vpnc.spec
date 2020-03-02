@@ -1,6 +1,6 @@
 Name: vpnc
 Version: 0.5.3
-Release: alt6
+Release: alt7
 
 Summary: Client for cisco vpn concentrator
 Group: Networking/Remote access
@@ -10,6 +10,7 @@ Url: http://www.unix-ag.uni-kl.de/~massar/vpnc/
 
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
+Patch2: 0001-vpnc-skip-parsing-responder-lifetime-payload.patch
 
 Packager: Ilya Mashkin <oddity@altlinux.org>
 
@@ -44,6 +45,7 @@ or openconnect.
 %prep
 %setup -q
 %patch -p1
+%patch2 -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="$RPM_OPT_FLAGS -pie" %make PREFIX=%_prefix
@@ -75,6 +77,9 @@ touch %buildroot%_runtimedir/%name/defaultroute \
 %config(noreplace) %_sysconfdir/%name/vpnc-script
 
 %changelog
+* Wed Feb 26 2020 Lenar Shakirov <snejok@altlinux.org> 0.5.3-alt7
+- 0001-vpnc-skip-parsing-responder-lifetime-payload.patch
+
 * Thu Apr 07 2016 Alexey Shabalin <shaba@altlinux.ru> 0.5.3-alt6
 - rebuild with new gnutls
 - fixed Vendor option (ALT#30117)
