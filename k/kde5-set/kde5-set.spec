@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.12.0
+Version: 19.12.1
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -101,6 +101,7 @@ Requires: kde5-games
 Requires: kde5-printing
 Requires: kde5-scanning
 #
+Requires: plasma5-discover-maxi
 Requires: kde5-konqueror kde5-keditbookmarks
 Requires: kde5-kfloppy
 Requires: kde5-dragon
@@ -194,6 +195,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Wed Feb 26 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- add plasma5-discover-maxi
+
 * Tue Feb 18 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.0-alt1
 - add thunderbolt
 
