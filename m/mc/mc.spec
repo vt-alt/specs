@@ -3,11 +3,11 @@
 %define fullname MidnightCommander
 
 Name: mc
-Version: 4.8.23
+Version: 4.8.24
 Release: alt1
 
 # '-gitYYYYMMDD' or ''
-%define ver_date ''
+%define ver_date '-git20200215'
 
 License: %gpl3plus
 Summary: An user-friendly file manager and visual shell
@@ -27,7 +27,7 @@ Source6: mc.zsh
 
 Patch0: %name-%version-%release.patch
 
-Patch1: mc-4.8.16-alt-wrapper.patch
+Patch1: mc-4.8.24-alt-wrapper.patch
 Patch2: mc-4.7.5.1-alt-defaults.patch
 Patch3: mc-4.8.20-alt-menu.patch
 
@@ -40,7 +40,7 @@ Patch101: mc-4.7.0.2-savannah-edit-homekey.patch
 Patch102: mc-4.8.20-alt-forceexec.patch
 
 # http://www.midnight-commander.org/ticket/34
-Patch103: mc-4.8.6-alt-extfs-udar.patch
+Patch103: mc-4.8.24-alt-extfs-udar.patch
 
 BuildRequires(pre): rpm-build-licenses
 
@@ -206,6 +206,9 @@ install -pD -m644 %SOURCE5 %buildroot%_niconsdir/%fullname.png
 %files full
 
 %changelog
+* Sat Feb 29 2020 Sergey Y. Afonin <asy@altlinux.org> 4.8.24-alt1
+- 4.8.24 (updated to 20200215 git snapshot, ALT #37545)
+
 * Thu Jul 04 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.8.23-alt1
 - 4.8.23
 
