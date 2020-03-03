@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.12.2
-Release: alt2
+Release: alt3
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -20,6 +20,7 @@ Source: %rname-%version.tar
 Patch1: %rname-alt-hide-group-menu-without-children.patch
 Patch2: %rname-alt-hide-scrollgroup-menu-without-children.patch
 Patch3: %rname-alt-hide-top-level-menu-without-children.patch
+Patch4: %rname-alt-contents-tree-synchronization.patch
 
 # Automatically added by buildreq on Mon Apr 25 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
@@ -41,6 +42,7 @@ KDE help center.
 %patch1 -p2
 %patch2 -p2
 %patch3 -p2
+%patch4 -p2
 
 %build
 %K5build \
@@ -67,6 +69,9 @@ KDE help center.
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt3
+- Fixed synchronization of contents tree.
+
 * Fri Feb 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt2
 - Hidden empty top level menu items, scrollkeeper menu item
   and menu groups in "Application Manuals" section.
