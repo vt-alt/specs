@@ -9,7 +9,7 @@
 
 Name: plasma5-addons
 Version: 5.18.1
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -31,6 +31,7 @@ Patch3: alt-weather-usability.patch
 Patch4: alt-color-picker.patch
 Patch5: alt-fixed-comic-widget-crash.patch
 Patch6: alt-fix-konsoleprofiles.patch
+Patch7: upstream-comic-widget-remove-extra-button.patch
 
 # Automatically added by buildreq on Mon Mar 30 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils glib2-devel kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libICE-devel libSM-devel libX11-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXmu-devel libXpm-devel libXrandr-devel libXrender-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libcloog-isl4 libdbusmenu-qt52 libgio-devel libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcb-devel libxcbutil-keysyms libxcbutil-keysyms-devel libxkbfile-devel pkg-config python-base qt5-base-devel ruby ruby-stdlibs scim-libs xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
@@ -106,6 +107,7 @@ KF5 library
 %patch4 -p2
 %patch5 -p2
 %patch6 -p2
+%patch7 -p1
 
 %build
 %K5build \
@@ -160,6 +162,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Fri Feb 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:5.18.1-alt2
+- Applied upstream patch removing extra configure button for comic and weather widgets.
+
 * Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt1
 - new version
 
