@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.12.2
-Release: alt3
+Release: alt4
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -14,6 +14,8 @@ Provides: kf5-khelpcenter = %EVR kf5-khelpcenter-common = %EVR
 Obsoletes: kf5-khelpcenter < %EVR kf5-khelpcenter-common < %EVR
 
 Requires: kf5-kdoctools
+# libgrantlee_templates is needed for search function
+Requires: libgrantlee_templates5
 
 Source: %rname-%version.tar
 
@@ -69,6 +71,9 @@ KDE help center.
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Tue Mar 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt4
+- Updated runtime dependencies.
+
 * Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt3
 - Fixed synchronization of contents tree.
 
