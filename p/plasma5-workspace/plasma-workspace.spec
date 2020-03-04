@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.18.1
-Release: alt6
+Release: alt7
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -405,6 +405,9 @@ done
 
 
 %changelog
+* Mon Mar 02 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt7
+- fix start alt-app-starter from menu (Closes: 38166)
+
 * Fri Feb 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:5.18.1-alt6
 - applied upstream fix for configure button icons of some widgets
 
