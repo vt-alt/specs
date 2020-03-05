@@ -1,8 +1,8 @@
 %def_disable static
 
 Name: libfreetype
-Version: 2.10.0
-Release: alt2
+Version: 2.10.1
+Release: alt1
 Summary: A free and portable font rendering engine
 License: FTL or GPLv2+
 Group: System/Libraries
@@ -13,9 +13,9 @@ PreReq: libharfbuzz
 Provides: freetype2 = %version
 Obsoletes: freetype2 < %version
 
-Source0: http://download.savannah.gnu.org/releases/freetype/freetype-%version.tar.bz2
-Source2: http://download.savannah.gnu.org/releases/freetype/freetype-doc-%version.tar.bz2
-Source1: http://download.savannah.gnu.org/releases/freetype/ft2demos-%version.tar.bz2
+Source0: http://download.savannah.gnu.org/releases/freetype/freetype-%version.tar.xz
+Source2: http://download.savannah.gnu.org/releases/freetype/freetype-doc-%version.tar.xz
+Source1: http://download.savannah.gnu.org/releases/freetype/ft2demos-%version.tar.xz
 Source3: ftconfig.h
 
 Patch3: freetype-2.4.10-alt-fttrigon.patch
@@ -157,6 +157,9 @@ mv %buildroot%develdocdir/{FTL.TXT,LICENSE.TXT,CHANGES.bz2} %buildroot%docdir/
 %_bindir/ft*
 
 %changelog
+* Wed Sep 11 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.1-alt1
+- 2.10.1
+
 * Sun Apr 07 2019 Michael Shigorin <mike@altlinux.org> 2.10.0-alt2
 - E2K: fix build (lcc lacks vector_shuffle extension), adjust wordsize test
 
