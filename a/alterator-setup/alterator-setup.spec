@@ -1,8 +1,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-setup
-Version: 0.3.3
-Release: alt5
+Version: 0.3.4
+Release: alt1
 
 Summary: Perform initial setup of an OEM installation (warning!)
 License: GPLv2
@@ -87,6 +87,12 @@ if [ -x /sbin/sd_booted ]; then
 fi
 
 %changelog
+* Fri Feb 14 2020 Mikhail Efremov <sem@altlinux.org> 0.3.4-alt1
+- postinstall: Run indexhtml-update.
+
+* Fri Dec 27 2019 Anton Midyukov <antohami@altlinux.org> 0.3.3-alt6
+- setup.service: restart always (e.g. restart when X falls)
+
 * Thu Dec 12 2019 Anton Midyukov <antohami@altlinux.org> 0.3.3-alt5
 - add conflicts with alterator-livecd, installer-common-stage2
 
