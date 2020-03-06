@@ -1,15 +1,17 @@
+# TODO: build json11 separately
+
 # see LIBTGVOIP_VERSION in VoIPController.h for a version
 
-%def_without systemwebrtc
-%define soname 0.5
+%def_without json11
+
 Name: libtgvoip
 Version: 2.4.4
-Release: alt1
+Release: alt2.c5651ffc72
 
 Summary: VoIP library for Telegram clients
 
 Group: Networking/Instant messaging
-License: Unlicense
+License: Public Domain and BSD
 
 Url: https://github.com/telegramdesktop/libtgvoip
 Packager: Vitaly Lipatov <lav@altlinux.ru>
@@ -17,9 +19,21 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # Source-git: https://github.com/grishka/libtgvoip.git
 Source: %name-%version.tar
 
-BuildRequires: gyp gcc-c++ libopus-devel libssl-devel libalsa-devel libpulseaudio-devel
+Patch1: libtgvoip-system-json11.patch
 
-%add_optflags -fPIC
+# TODO:
+# from webrtc_dsp/modules/audio_processing/aec/aec_core_sse2.cc:17:
+# /usr/lib/gcc/i586-alt-linux/9/include/xmmintrin.h:932:1: error: inlining failed in call to always_inline '__m128 _mm_loadu_ps(const float*)': target specific option mismatch
+#  932 | _mm_loadu_ps (float const *__P)
+%ifarch %ix86
+%add_optflags -msse2
+%endif
+
+BuildRequires: gcc-c++
+BuildRequires: libssl-devel
+BuildRequires: libalsa-devel libpulseaudio-devel
+# >= 1.3
+BuildRequires: libopus-devel
 
 %description
 VoIP library for Telegram clients.
@@ -29,6 +43,7 @@ Dinamically loads libalsa or libpulse.
 %package devel
 Group: Development/Other
 Summary: Development files for %name
+Requires: %name = %EVR
 
 %description devel
 The %name-devel package contains libraries and header files for
@@ -37,64 +52,45 @@ developing applications that use %name.
 
 %prep
 %setup
-# TODO: we can use autotools
-#__subst "s|-msse2|-msse2 -I%_includedir/pulse|g" libtgvoip.gyp
-%__subst "s|static_library',|shared_library',\n'product_extension': 'so.%soname',|" libtgvoip.gyp
-%__subst "s|.*dependencies.*|'link_settings': { 'libraries': ['-ldl', '-lpthread', '-lopus', '-lcrypto'], },|g" libtgvoip.gyp
 
-# TODO
-%if_with systemwebrtc
-rm -rf webrtc_dsp/
-%__subst "s|<(tgvoip_src_loc)/webrtc_dsp|/usr/include/webrtc_audio_processing|" libtgvoip.gyp
+%if_with json11
+%patch1 -p1
+# remove bundled json11
+rm -vf json11.*
 %endif
 
 %build
-# --no-parallel due gyp in hasher:
-#    sl = self._semlock = _multiprocessing.SemLock(kind, value, maxvalue)
-#OSError: [Errno 38] Function not implemented
-gyp --depth=. --no-parallel \
-	-Dlinux_path_opus_include=%_includedir/opus/
-%make_build CXXFLAGS="%optflags -std=gnu++14" CFLAGS="%optflags" V=1
-
-cat <<EOF >%name.pc
-includedir=%_includedir
-
-Name: %name
-Description: %summary
-URL: %url
-Version: %version
-Requires: opus
-Conflicts:
-Libs: -ltgvoip
-Libs.private: -ldl -lpthread -lopus -lcrypto
-Cflags: -I\${includedir}/tgvoip
-EOF
+%autoreconf
+%configure --disable-static
+%make_build
 
 %install
-install -m644 -D out/Debug/lib.target/libtgvoip.so.%soname %buildroot%_libdir/libtgvoip.so.%soname
-install -m644 -D %name.pc %buildroot%_pkgconfigdir/%name.pc
-ln -s libtgvoip.so.%soname %buildroot%_libdir/libtgvoip.so
-mkdir -p %buildroot%_includedir/tgvoip/audio/
-mkdir -p %buildroot%_includedir/tgvoip/video/
-cp -a *.h %buildroot%_includedir/tgvoip/
-cp -a *.hpp %buildroot%_includedir/tgvoip/
-cp -a audio/*.h %buildroot%_includedir/tgvoip/audio/
-cp -a video/*.h %buildroot%_includedir/tgvoip/video/
+%makeinstall_std
 
 %files
-%_libdir/libtgvoip.so.%soname
+%_libdir/libtgvoip.so.*
 
 %files devel
 %doc UNLICENSE
 %_libdir/libtgvoip.so
 %dir %_includedir/tgvoip/
 %_includedir/tgvoip/*.h
+%if_without json11
 %_includedir/tgvoip/json11.hpp
+%endif
 %_includedir/tgvoip/audio/
 %_includedir/tgvoip/video/
-%_pkgconfigdir/%name.pc
+%_includedir/tgvoip/os/
+%_pkgconfigdir/tgvoip.pc
 
 %changelog
+* Sat Jan 25 2020 Vitaly Lipatov <lav@altlinux.ru> 2.4.4-alt2.c5651ffc72
+- update to the latest repo commit c5651ffc728336e56d8567f5c6c179e8a5d4fe55
+- rewrite spec, use autoconf
+- pkg-config name is changed from libtgvoip to tgvoip
+- soname is changed
+- disable build on ppc64le
+
 * Wed Mar 27 2019 Vitaly Lipatov <lav@altlinux.ru> 2.4.4-alt1
 - new version 2.4.4 (with rpmrb script)
 

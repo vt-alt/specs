@@ -1,6 +1,7 @@
 Name: libmicrosoft-gsl
-Version: 20180615
+Version: 2.1.0
 Release: alt1
+Epoch: 1
 
 Summary: Guidelines Support Library
 
@@ -13,7 +14,7 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # Source-git: https://github.com/Microsoft/GSL.git
 Source: %name-%version.tar
 
-BuildRequires: gcc-c++ cmake ctest catch2-devel >= 2.0
+BuildRequires: gcc-c++ cmake ctest catch2-devel >= 2.11.0-alt2
 
 %description
 The Guideline Support Library (GSL) contains functions and types that are suggested
@@ -33,6 +34,8 @@ it is simplest to just include gsl/gsl and gain access to the entire library.
 %package devel
 Group: Development/Other
 Summary: Development files for %name
+Provides: guidelines-support-library-devel = %version-%release
+
 
 %description devel
 The %name-devel package contains libraries and header files for
@@ -40,26 +43,29 @@ developing applications that use %name.
 
 %prep
 %setup
-# FIXME
-#__subst "s|-Werror||g" tests/CMakeLists.txt
+# adopt to external catch2
+%__subst "s|\(add_custom_target(catch)\)|\1\nfind_package(Catch2)|" tests/CMakeLists.txt
+%__subst "s|catch/|catch2/|" tests/*.cpp
+%__subst "/-Werror/d" tests/CMakeLists.txt
 
 %build
 %cmake_insource
 %make_build
-#make_build CXXFLAGS="%optflags -std=gnu++14" CFLAGS="%optflags" V=1
 
 %install
-mkdir -p %buildroot%_includedir/%name/
-cp -a include/gsl %buildroot%_includedir/%name/
+%makeinstall_std
 
 %check
 make test
 
 %files devel
-%dir %_includedir/%name/
-%_includedir/%name/gsl/
+%_includedir/gsl/
 
 %changelog
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1:2.1.0-alt1
+- new version (2.1.0) with rpmgs script
+- move headers to include/gsl
+
 * Mon Jun 18 2018 Vitaly Lipatov <lav@altlinux.ru> 20180615-alt1
 - Revert "not_null constructor is now explicit (#659)", see #699
 

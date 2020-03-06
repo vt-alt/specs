@@ -1,6 +1,6 @@
 Name: libvariant
 Version: 1.1.6
-Release: alt2
+Release: alt3
 
 Summary: C++11/C++14 Variant
 
@@ -41,14 +41,16 @@ developing applications that use %name.
 make test
 
 %install
-mkdir -p %buildroot%_includedir/%name/
-cp -a include/mapbox %buildroot%_includedir/%name/
+mkdir -p %buildroot%_includedir/
+cp -a include/mapbox %buildroot%_includedir/
 
 %files devel
-%dir %_includedir/%name/
-%_includedir/%name/mapbox/
+%_includedir/mapbox/
 
 %changelog
+* Sat Feb 08 2020 Vitaly Lipatov <lav@altlinux.ru> 1.1.6-alt3
+- move headers to /usr/include/mapbox
+
 * Mon Oct 21 2019 Vitaly Lipatov <lav@altlinux.ru> 1.1.6-alt2
 - fix build at ppc64le (s/-march=native/-mcpu=native/)
 - make package as noarch
