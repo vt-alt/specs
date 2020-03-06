@@ -7,7 +7,7 @@
 
 Name: evms
 Version: 2.5.5
-Release: alt41
+Release: alt42
 
 Summary: Enterprise Volume Management System utilities
 License: GPL
@@ -168,6 +168,10 @@ EOF
 %endif
 
 %changelog
+* Thu Jan 16 2020 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt42
+- plugins/lvm2: Return EINVAL when expanding of VG with no available
+  PVs and when shrinking of VG with one child PV (Closes #37393)
+
 * Wed Dec 04 2019 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt41
 - plugins/fat: fix free space display
 - plugins/gpt: plugins/dos: fix missing 'p' in MMC and NVMe devices
