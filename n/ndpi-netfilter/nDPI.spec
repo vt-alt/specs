@@ -2,7 +2,7 @@
 
 Name: ndpi-netfilter
 Version: 2.6
-Release: alt1
+Release: alt2
 Summary: Open source deep packet inspection iptables modules
 Group: Networking/Other
 
@@ -54,6 +54,9 @@ install -m644 kernel-source-ndpi-%version.tar.bz2 %kernel_srcdir/
 %attr(644,root,root) /%_lib/iptables/libxt_ndpi.so
 
 %changelog
+* Wed Feb 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.6-alt2
+- updated from git, build with 5.0 kernel fixed
+
 * Fri Mar 15 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.6-alt1
 - initial build
 

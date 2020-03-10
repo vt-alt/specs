@@ -1,6 +1,6 @@
 %define module_name e1000e
 %define module_version 3.4.2.1
-%define module_release alt1
+%define module_release alt2
 
 %define module_source %module_name.tar
 
@@ -41,6 +41,9 @@ cd ..
 %_usrsrc/*
 
 %changelog
+* Thu Feb 06 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.4.2.1-alt2
+- build with kernel 5.4 fixed
+
 * Fri Oct 19 2018 Pavel Skrylev <majioa@altlinux.org> 3.4.2.1-alt1
 - Bump to 3.4.2.1.
 

@@ -1,8 +1,8 @@
 %define module_name     tripso
-%define module_version  1.0
-%define module_release  alt1.k
+%define module_version  1.1
+%define module_release  alt1
 %define flavour         std-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64 aarch64 ppc64le
 
 %setup_kernel_module %flavour
 

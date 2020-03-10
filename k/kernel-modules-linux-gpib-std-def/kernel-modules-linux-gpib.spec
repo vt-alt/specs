@@ -1,8 +1,8 @@
 %define module_name     linux-gpib
-%define module_version  4.2.0
+%define module_version  4.3.0
 %define module_release  alt3
 %define flavour std-def
-%define karch   x86_64 i586
+%define karch   %ix86 x86_64 aarch64 ppc64le
 
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-std-def
@@ -37,11 +37,11 @@ ExclusiveArch: %karch
 rm -rf %module_name-kernel-%module_version
 tar -jxf %kernel_src/%module_name-%module_version.tar.bz2
 %setup -D -T -n %module_name-kernel-%module_version
+echo > ./configure
+chmod 755 ./configure
 
 %build
-autoreconf -fisv
-%configure --with-linux-srcdir=%_usrsrc/linux-%kversion-%flavour
-make
+LINUX_SRCDIR=%_usrsrc/linux-%kversion-%flavour make
 
 %install
 install -d %buildroot%module_dir

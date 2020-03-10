@@ -1,5 +1,5 @@
 Name:          linux-gpib
-Version:       4.2.0
+Version:       4.3.0
 Release:       alt3
 
 Summary:       Support package for GPIB (IEEE 488) hardware.
@@ -69,15 +69,6 @@ cp -r language/tcl/examples  %buildroot%_docdir/%name-%version/tcl-examples
 # install kernel module sources
 install -pDm0644 %SOURCE1 %kernel_srcdir/%name-%version.tar.bz2
 
-# fix folders
-sed -i -e 's|\$DATADIR/usb/|/lib/firmware/|'\
-  %buildroot/%_sysconfdir/hotplug/usb/*
-sed -i -e '/^DATADIR=/d'\
-  %buildroot/%_sysconfdir/hotplug/usb/*
-sed -i -e 's|%buildroot||'\
-  %buildroot/%_sysconfdir/udev/rules.d/*
-
-%pre
 %_sbindir/groupadd -r -f gpib 2> /dev/null ||:
 
 %files
@@ -89,7 +80,7 @@ sed -i -e 's|%buildroot||'\
 %doc %_docdir/%name-%version/html/*
 %config(noreplace) %_sysconfdir/udev/rules.d/*
 %config(noreplace) %_sysconfdir/gpib.conf
-%_sysconfdir/hotplug/usb/*
+%_libexecdir/udev/*
 %_bindir/ibterm
 %_bindir/ibtest
 %_libdir/libgpib.so.*
@@ -105,12 +96,22 @@ sed -i -e 's|%buildroot||'\
 
 %files -n tcl-%name
 %doc %_docdir/%name-%version/tcl-examples/*
+%doc %_docdir/%name-%version/tcl-examples/.xsetup
 %_libdir/libgpib_tcl*
 
 %files -n kernel-source-%name
 %kernel_src/%name-%version.tar.bz2
 
 %changelog
+* Thu Feb 06 2020 Vladislav Zavjalov <slazav@altlinux.org> 4.3.0-alt3
+- fix callback type for driver_find_device for 5.4 kernel
+
+* Thu Feb 06 2020 Vladislav Zavjalov <slazav@altlinux.org> 4.3.0-alt2
+- remove unneeded include <asm/segment.h>
+
+* Wed Feb 05 2020 Vladislav Zavjalov <slazav@altlinux.org> 4.3.0-alt1
+- v4.3.0
+
 * Thu Mar 28 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 4.2.0-alt3
 - fixed to build with 5.0 kernel
 

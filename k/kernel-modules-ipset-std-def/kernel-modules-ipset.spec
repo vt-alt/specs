@@ -1,6 +1,6 @@
 %define module_name	ipset
-%define module_version	7.3
-%define module_release	alt3
+%define module_version	7.5
+%define module_release	alt1
 
 %define flavour		std-def
 %define karch %ix86 x86_64 aarch64 ppc64le
@@ -13,7 +13,7 @@ Summary: ipset kernel modules
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
 ExclusiveArch: %ix86 x86_64 aarch64 ppc64le
 
@@ -59,6 +59,12 @@ install -p -m644 kernel/net/netfilter/*.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Wed Jan 15 2020 Anton Farygin <rider@altlinux.ru> 7.5-alt1
+- 7.4 -> 7.5
+
+* Fri Dec  6 2019 Anton Farygin <rider@altlinux.ru> 7.3-alt1
+- 7.3 -> 7.4
 
 * Thu Aug  8 2019 Anton Farygin <rider@altlinux.ru> 7.3-alt1
 - 7.1 -> 7.3

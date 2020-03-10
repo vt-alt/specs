@@ -1,6 +1,6 @@
 %define module_name lsadrv
 %define module_version 1.2.3
-%define module_release	alt2
+%define module_release	alt3
 
 %define module_source	%module_name-%module_version.tar
 
@@ -43,6 +43,9 @@ tar -c  kernel-source-%module_name-%module_version | %__bzip2 -c > \
 %_usrsrc/*
 
 %changelog
+* Wed Feb 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1:1.2.3-alt3
+- Fix compilation with kernels >= 5.0
+
 * Wed Dec 11 2019 Vitaly Chikunov <vt@altlinux.org> 1:1.2.3-alt2
 - Fix compilation for std-def (warranty void)
 - Update license tag to GPL-3.0+

@@ -1,9 +1,9 @@
 %define module_name	bcmwl
 %define module_version	6.30.223.248
-%define module_release alt15.k
+%define module_release alt17
 
 %define flavour		std-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-std-def
 
@@ -36,6 +36,7 @@ Patch9: bcmwl-build-kernel4.8.patch
 Patch11: bcmwl-build-kernel4.11.patch
 Patch12: bcmwl-build-kernel4.12.patch
 Patch15: bcmwl-build-kernel4.15.patch
+Patch51: bcmwl-build-kernel5.1.patch
 BuildRequires: perl sharutils
 BuildRequires(pre): rpm-build-kernel
 BuildRequires: kernel-source-%module_name = %module_version
@@ -74,6 +75,7 @@ pushd bcmwl
 %patch11 -p1
 %patch12 -p1
 %patch15 -p1
+%patch51 -p1
 popd
 
 %build
@@ -85,14 +87,14 @@ else
    cp src/lib/wlc_hybrid.o_shipped_i386 lib/wlc_hybrid.o_shipped
 fi
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
-make -C %_usrsrc/linux-%kversion-%flavour SUBDIRS=`pwd` modules
+make -C %_usrsrc/linux-%kversion-%flavour M=`pwd` modules
 
 %install
 mkdir -p $RPM_BUILD_ROOT%module_dir/
 
 cd bcmwl
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
-make -C %_usrsrc/linux-%kversion-%flavour INSTALL_MOD_PATH=%buildroot INSTALL_MOD_DIR=net SUBDIRS=`pwd`  modules_install
+make -C %_usrsrc/linux-%kversion-%flavour INSTALL_MOD_PATH=%buildroot INSTALL_MOD_DIR=net M=`pwd`  modules_install
 
 # blacklist several modules (see ALT bugs #26265, #26250)
 mkdir -p %buildroot/%_sysconfdir/modprobe.d
@@ -117,6 +119,10 @@ __EOF__
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Fri Sep 06 2019 Nikolai Kostrigin <nickel@altlinux.org> 6.30.223.248-alt17
+- build with kernel 5.3 fixed
+- add .gear/km-karch: prevent build for aarch64 and ppc64le
 
 * Mon Oct  5 2015 Anton V. Boyarshinov <boyarsh@altlinux.ru> 6.30.223.248-alt9
 - build with kernel 4.2 fixed
