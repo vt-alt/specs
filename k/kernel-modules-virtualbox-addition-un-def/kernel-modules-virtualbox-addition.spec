@@ -1,6 +1,6 @@
 %define module_name	virtualbox-addition
-%define module_version  5.2.34
-%define module_release	alt4
+%define module_version  6.1.4
+%define module_release	alt5
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -28,8 +28,6 @@ ExclusiveOS: Linux
 Url: http://www.virtualbox.org/
 
 Patch0: vboxcommon-5.4.patch
-Patch1: vboxdrv-5.4.patch
-Patch2: vboxvideo-5.4.patch
 
 BuildPreReq: gcc-c++
 BuildRequires: perl
@@ -51,15 +49,15 @@ Provides: kernel-modules-%video_module_name-%flavour = %version-%release
 
 Provides: kernel-modules-%vfs_module_name-%kversion-%flavour-%krelease = %version-%release
 Provides: kernel-modules-%vfs_module_name-%flavour = %version-%release
-Obsoletes: kernel-modules-%vfs_module_name-%flavour
+Obsoletes: kernel-modules-%vfs_module_name-%flavour < %version-%release
 
-Obsoletes: kernel-modules-%module_name-video-%flavour
-Obsoletes: kernel-modules-%module_name-guest-%flavour
-
-%requires_kimage
+# Don't use requires_kimage macros due it clean from requires
+Requires: %kimage
 ExclusiveArch: %karch
 
 Requires: virtualbox-guest-common = %module_version
+Requires: kernel-modules-%module_name-video-%flavour = %version-%release
+Requires: kernel-modules-%module_name-guest-%flavour = %version-%release
 
 %description
 This package contains VirtualBox addition modules (vboxguest, vboxsf)
@@ -71,8 +69,10 @@ Summary: VirtualBox video modules
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
 %requires_kimage
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
+
+Requires: virtualbox-guest-common = %module_version
 
 %description -n kernel-modules-%module_name-video-%flavour
 This package contains VirtualBox addition vboxvideo module
@@ -86,8 +86,10 @@ Summary: VirtualBox guest modules
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
 %requires_kimage
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
+
+Requires: virtualbox-guest-common = %module_version
 
 %description -n kernel-modules-%module_name-guest-%flavour
 This package contains VirtualBox addition vboxvideo module
@@ -101,27 +103,20 @@ your kernel.
 tar jxvf %kernel_src/kernel-source-%guest_module_name-%module_version.tar.bz2
 pushd kernel-source-%guest_module_name-%module_version
 %patch0 -p1
-%patch1 -p1
 popd
 tar jxvf %kernel_src/kernel-source-%vfs_module_name-%module_version.tar.bz2
 pushd kernel-source-%vfs_module_name-%module_version
 %patch0 -p1
 popd
 tar jxvf %kernel_src/kernel-source-%video_module_name-%module_version.tar.bz2
-pushd kernel-source-%video_module_name-%module_version
-%patch2 -p1
-popd
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
 %make -C kernel-source-%guest_module_name-%module_version \
     KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
-cp kernel-source-%guest_module_name-%module_version/Module.symvers \
-    kernel-source-%vfs_module_name-%module_version
 %make -C kernel-source-%vfs_module_name-%module_version \
-    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
-cp kernel-source-%guest_module_name-%module_version/Module.symvers \
-    kernel-source-%video_module_name-%module_version
+    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion \
+    KBUILD_EXTRA_SYMBOLS=%_builddir/kernel-source-%module_name-%module_version/kernel-source-%guest_module_name-%module_version/Module.symvers
 %make -C kernel-source-%video_module_name-%module_version \
     KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
 
@@ -137,10 +132,50 @@ install -pD -m644 kernel-source-%video_module_name-%module_version/vboxvideo.ko 
 %files
 %defattr(644,root,root,755)
 %module_dir
+%exclude %module_dir/vboxvideovbox.ko
+%exclude %module_dir/vboxguestvbox.ko
+
+%files -n kernel-modules-%module_name-guest-%flavour
+%module_dir/vboxguestvbox.ko
+
+%files -n kernel-modules-%module_name-video-%flavour
+%module_dir/vboxvideovbox.ko
 
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Tue Mar 04 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt5
+- Revert separated modules for compatibility with update-kernel:
+ + kernel-modules-virtualbox-addtition-video-FLAVOUR
+ + kernel-modules-virtualbox-addtition-guest-FLAVOUR
+
+* Tue Mar 04 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt4
+- Fix obsoletes own provides without version
+
+* Tue Mar 04 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt3
+- Added provides for obsoletes separated packages:
+ + kernel-modules-virtualbox-addtition-video-FLAVOUR
+ + kernel-modules-virtualbox-addtition-guest-FLAVOUR
+
+* Tue Feb 25 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt2
+- Fixed build with kernel-5.5 using KBUILD_EXTRA_SYMBOLS environment variable
+  instead of copy Module.symvers into dependend modules source directory.
+
+* Thu Feb 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt1
+- Updated template for virtualbox 6.1.4
+
+* Wed Feb 05 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.2-alt2
+- Rebuild with i586 support
+
+* Wed Jan 22 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.2-alt1
+- Updated template for virtualbox 6.1.2
+
+* Fri Dec 27 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt2
+- Fixed build with un-def kernel-5.4 for virtualbox 6.1.0
+
+* Fri Dec 20 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt1
+- Updated template for virtualbox 6.1.0
 
 * Thu Dec 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt4
 - Fixed build with un-def kernel-5.4

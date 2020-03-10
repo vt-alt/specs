@@ -1,7 +1,7 @@
 %define module_name	virtualbox
-%define module_version	5.2.34
+%define module_version	6.1.4
 
-%define module_release	alt1
+%define module_release	alt2
 
 %define drv_module_name	vboxdrv
 %define pci_module_name	vboxpci
@@ -9,7 +9,7 @@
 %define net_module_adaptor_name	vboxnetadp
 
 %define flavour		std-def
-%define karch %ix86 x86_64
+%define karch x86_64
 BuildRequires(pre): rpm-build-kernel >= 0.100-alt1
 BuildRequires(pre): kernel-headers-modules-std-def
 
@@ -17,11 +17,13 @@ BuildRequires(pre): kernel-headers-modules-std-def
 
 %define module_dir /lib/modules/%kversion-%flavour-%krelease/misc
 
+%def_without vboxpci
+
 Summary: VirtualBox modules
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
 
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
@@ -29,12 +31,16 @@ Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 ExclusiveOS: Linux
 Url: http://www.virtualbox.org/
 
+Patch0: vboxcommon-5.4.patch
+
 BuildPreReq: gcc-c++
 BuildRequires: perl
 BuildRequires: rpm >= 4.0.2-75
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%drv_module_name = %module_version
+%if_with vboxpci
 BuildRequires: kernel-source-%pci_module_name = %module_version
+%endif
 BuildRequires: kernel-source-%net_module_name = %module_version
 BuildRequires: kernel-source-%net_module_adaptor_name = %module_version
 
@@ -58,34 +64,47 @@ or in your /etc/modules.conf file.
 %setup -T -c -n kernel-source-%module_name-%module_version
 tar jxvf %kernel_src/kernel-source-%drv_module_name-%module_version.tar.bz2
 pushd kernel-source-%drv_module_name-%module_version
+%patch0 -p1
 popd
+%if_with vboxpci
 tar jxvf %kernel_src/kernel-source-%pci_module_name-%module_version.tar.bz2
+pushd kernel-source-%pci_module_name-%module_version
+%patch0 -p1
+popd
+%endif
 tar jxvf %kernel_src/kernel-source-%net_module_name-%module_version.tar.bz2
+pushd kernel-source-%net_module_name-%module_version
+%patch0 -p1
+popd
 tar jxvf %kernel_src/kernel-source-%net_module_adaptor_name-%module_version.tar.bz2
+pushd kernel-source-%net_module_adaptor_name-%module_version
+%patch0 -p1
+popd
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
 %make -C kernel-source-%drv_module_name-%module_version \
     KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
-cp kernel-source-%drv_module_name-%module_version/Module.symvers \
-    kernel-source-%pci_module_name-%module_version
+%if_with vboxpci
 %make -C kernel-source-%pci_module_name-%module_version \
-    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
-cp kernel-source-%drv_module_name-%module_version/Module.symvers \
-    kernel-source-%net_module_name-%module_version
+    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion \
+    KBUILD_EXTRA_SYMBOLS=%_builddir/kernel-source-%module_name-%module_version/kernel-source-%drv_module_name-%module_version/Module.symvers
+%endif
 %make -C kernel-source-%net_module_name-%module_version \
-    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
-cp kernel-source-%drv_module_name-%module_version/Module.symvers \
-    kernel-source-%net_module_adaptor_name-%module_version
+    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion \
+    KBUILD_EXTRA_SYMBOLS=%_builddir/kernel-source-%module_name-%module_version/kernel-source-%drv_module_name-%module_version/Module.symvers
 %make -C kernel-source-%net_module_adaptor_name-%module_version \
-    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion
+    KERN_DIR=%_usrsrc/linux-%kversion-%flavour/ KERN_VER=%kversion \
+    KBUILD_EXTRA_SYMBOLS=%_builddir/kernel-source-%module_name-%module_version/kernel-source-%drv_module_name-%module_version/Module.symvers
 
 %install
 mkdir -p %buildroot/%module_dir
 install -pD -m644 kernel-source-%drv_module_name-%module_version/vboxdrv.ko \
     %buildroot%module_dir/
+%if_with vboxpci
 install -pD -m644 kernel-source-%pci_module_name-%module_version/vboxpci.ko \
     %buildroot%module_dir/
+%endif
 install -pD -m644 kernel-source-%net_module_name-%module_version/vboxnetflt.ko \
     %buildroot%module_dir/
 install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnetadp.ko \
@@ -98,6 +117,30 @@ install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnet
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Tue Feb 25 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt2
+- Fixed build with kernel-5.5 using KBUILD_EXTRA_SYMBOLS environment variable
+  instead of copy Module.symvers into dependend modules source directory.
+
+* Thu Feb 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt1
+- Updated template for virtualbox 6.1.4
+
+* Wed Jan 22 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.2-alt1
+- Updated template for virtualbox 6.1.2
+- Build without droped vboxpci
+
+* Fri Dec 27 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt3
+- Fixed build with un-def kernel-5.4 for virtualbox 6.1.0
+
+* Wed Dec 25 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt2
+- Revert to build with vboxpci
+
+* Thu Dec 19 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt1
+- Updated template for virtualbox 6.1.0
+
+* Thu Dec 12 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt2
+- Fixed build with un-def kernel-5.4
+- Set license to GPLv2 instead of GPL with unknown version
 
 * Mon Oct 21 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt1
 - Updated template for virtualbox 5.2.34

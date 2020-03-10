@@ -27,6 +27,7 @@
 %def_with vde
 %def_with libvpx
 %def_with python
+%def_without vboxpci
 
 %ifarch %ix86
 %define vbox_platform linux.x86
@@ -48,10 +49,8 @@
 %endif
 
 %define vboxdatadir %_datadir/virtualbox
-%define vboxadddir %vboxdir/additions
 %define ld_so_confdir %_sysconfdir/ld.so.conf.d
 %define ld_so_conf %ld_so_confdir/%name-%_arch.conf
-%define xdrv_pre_d /usr/libexec/X11/drvpre.d
 
 %filter_from_provides '/^lib[E]\\?GL\\.so\\./d'
 
@@ -59,8 +58,8 @@
 %add_findprov_lib_path %vboxdir
 
 Name: virtualbox
-Version: 5.2.34
-Release: alt3
+Version: 6.1.4
+Release: alt1
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPLv2
@@ -86,9 +85,9 @@ Source15:	os_altlinux.png
 Source16:	os_altlinux_64.png
 Source22:	%name.service
 Source23:	virtualbox.conf
-Source24:	virtualbox.drvpre.in
 Source25:	virtualbox.modprobe.conf
 Source26:	virtualbox-addition.conf
+Source27:	virtualbox-vmsvga.service
 
 %if_enabled debug
 Source99:	%vboxdbg.in
@@ -215,7 +214,6 @@ It allows to control virtual machines via python scripts.
 %package -n %modname
 Summary: Sources for VirtualBox module
 Group: Development/Kernel
-BuildArch: noarch
 Provides: %oldmodname = %version-%release
 
 %description -n %modname
@@ -224,7 +222,6 @@ Sources for VirtualBox kernel module.
 %package -n %modnamepci
 Summary: Sources for VirtualBox module for OSE pci
 Group: Development/Kernel
-BuildArch: noarch
 
 %description -n %modnamepci
 Sources for VirtualBox kernel module for OSE pci.
@@ -232,7 +229,6 @@ Sources for VirtualBox kernel module for OSE pci.
 %package -n %modnamenetflt
 Summary: Sources for VirtualBox module for OSE netfilter
 Group: Development/Kernel
-BuildArch: noarch
 Provides: %oldmodnamenetflt = %version-%release
 
 %description -n %modnamenetflt
@@ -241,7 +237,6 @@ Sources for VirtualBox kernel module for OSE netfilter.
 %package -n %modnamenetadp
 Summary: Sources for VirtualBox module for OSE netadaptor
 Group: Development/Kernel
-BuildArch: noarch
 Provides: %oldmodnamenetadp = %version-%release
 
 %description -n %modnamenetadp
@@ -278,7 +273,6 @@ Sources for VirtualBox kernel module for OSE Video DRM.
 %package common
 Summary: VirtualBox module support files
 Group: System/Configuration/Other
-BuildArch: noarch
 # due to new_summary function and is_builtin_mode bugfix
 PreReq: control >= 0.7.2-alt1
 PreReq: shadow-utils
@@ -323,14 +317,11 @@ This package contains VirtualBox SDK for XPCOM.
 
 cp %SOURCE15 %SOURCE16 src/VBox/Frontends/VirtualBox/images
 
-if pkg-config libglvnd --atleast-version=1.2.0; then
-    sed -i -e 's/^\(#define GLX_EXTRAS\) 1$/\1 0/' src/VBox/Additions/common/crOpenGL/dri_glx.h
-    sed -i -e 's/^\(#define GLX_EXTRAS\) 1$/\1 0/' src/VBox/Additions/common/crOpenGL/glx_proto.h
-fi
-
-# fix python shebang for vboxshell.py
-sed -E -i '1 s@^(#![[:space:]]*)%_bindir/(env[[:space:]]+)?python$@\1%__python@' \
-    src/VBox/Frontends/VBoxShell/vboxshell.py
+# fix python shebang for scripts
+grep -R '^#!/usr/bin/\(env[[:space:]]\+\)\?python' src | cut -d: -f1 |
+    while read f; do
+        sed -E -i '1 s@^(#![[:space:]]*)%_bindir/(env[[:space:]]+)?python$@\1%__python@' "$f"
+    done
 
 %build
 ./configure --ose \
@@ -393,6 +384,9 @@ echo "VBOX_WITH_REGISTRATION_REQUEST :=" >> LocalConfig.kmk
 echo "VBOX_WITH_UPDATE_REQUEST :=" >> LocalConfig.kmk
 echo "KBUILD_VERBOSE := 2" >> LocalConfig.kmk
 echo "VBOX_WITH_EXTPACK_VBOXDTRACE :=" >> LocalConfig.kmk
+%if_with vboxpci
+echo "VBOX_WITH_PCI_PASSTHROUGH := 1" >> LocalConfig.kmk
+%endif
 
 # respect RPM optflags
 echo "TOOL_GCC3_CFLAGS := %optflags" >> LocalConfig.kmk
@@ -424,12 +418,17 @@ false
 
 mkdir -p %buildroot{%_bindir,%_sbindir,%vboxdir/ExtensionPacks,%vboxdatadir,%kernel_src,%_initrddir,%_udevrulesdir}
 
+%ifarch x86_64
 # install common
 install -Dp %SOURCE1 %buildroot%_controldir/%name
 sed -i -e 's|@udevrulesdir@|%_udevrulesdir|g' %buildroot%_controldir/%name
 install -Dp %SOURCE2 %buildroot%_initdir/%name
+%if_without vboxpci
+sed -i -n '/action .* modprobe --syslog $MODULENAMEPCI/!p' %buildroot%_initdir/%name
+%endif
 install -Dp -m644 %SOURCE4 \
 	%buildroot%_udevrulesdir/90-%name.rules
+%endif
 
 %if_with additions
 # install additions from src
@@ -446,9 +445,7 @@ install -m755 src/VBox/Additions/x11/Installer/98vboxadd-xclient %buildroot%_sys
 # install application
 cd out/%vbox_platform/release/bin
 
-#    SUPInstall \
-#    SUPUninstall \
-#    EfiThunk \
+%ifarch x86_64
 cp -a \
     VBoxAutostart \
     VBoxBalloonCtrl \
@@ -465,6 +462,7 @@ cp -a \
     VBoxVolInfo \
     VBoxXPCOMIPCD \
     VirtualBox \
+    VirtualBoxVM \
     iPxeBaseBin \
     xpidl \
     *.r0 \
@@ -491,7 +489,7 @@ cd -
 
 %if_with python
 cd sdk/installer >/dev/null
-  VBOX_INSTALL_PATH=%vboxdir VBOX_VERSION=%version python vboxapisetup.py install --install-lib=%python_sitelibdir --root=%buildroot
+  VBOX_INSTALL_PATH=%vboxdir VBOX_VERSION=%version %__python vboxapisetup.py install --install-lib=%python_sitelibdir --root=%buildroot
 cd -
 %endif
 
@@ -508,6 +506,7 @@ for n in VBoxAutostart \
          VBoxSDL \
          VBoxTunctl \
          VBoxVolInfo \
+         VirtualBoxVM \
          VirtualBox; do
     ln -s $n %buildroot%vboxdir/$(echo $n | tr A-Z a-z)
 done
@@ -524,6 +523,7 @@ for n in VBoxAutostart \
          VBoxVolInfo \
          vboxvolinfo \
          VirtualBox \
+         VirtualBoxVM \
          virtualbox \
 %if_with webservice
          vboxwebsrv \
@@ -532,23 +532,31 @@ for n in VBoxAutostart \
     ln -s $(relative %vboxdir/$n %_bindir/$n) %buildroot%_bindir
 done
 
+# remove breaked symlink to deleted module
+rm -f %buildroot%vboxdir/components/VBoxREM.so
+
 # install kernel sources
 cp -a src/vboxdrv %buildroot%kernel_src/%modname-%version
+%if_with vboxpci
 cp -a src/vboxpci %buildroot%kernel_src/%modnamepci-%version
+%endif
 cp -a src/vboxnetflt %buildroot%kernel_src/%modnamenetflt-%version
 cp -a src/vboxnetadp %buildroot%kernel_src/%modnamenetadp-%version
 tar -C %buildroot%kernel_src -c %modname-%version | bzip2 -c > \
     %buildroot%kernel_src/%modname-%version.tar.bz2
 rm -rf %buildroot%kernel_src/%modname-%version
+%if_with vboxpci
 tar -C %buildroot%kernel_src -c %modnamepci-%version | bzip2 -c > \
     %buildroot%kernel_src/%modnamepci-%version.tar.bz2
 rm -rf %buildroot%kernel_src/%modnamepci-%version
+%endif
 tar -C %buildroot%kernel_src -c %modnamenetflt-%version | bzip2 -c > \
     %buildroot%kernel_src/%modnamenetflt-%version.tar.bz2
 rm -rf %buildroot%kernel_src/%modnamenetflt-%version
 tar -C %buildroot%kernel_src -c %modnamenetadp-%version | bzip2 -c > \
     %buildroot%kernel_src/%modnamenetadp-%version.tar.bz2
 rm -rf %buildroot%kernel_src/%modnamenetadp-%version
+%endif
 
 cd additions >/dev/null
 # install additions kernel sources
@@ -574,17 +582,7 @@ cd additions >/dev/null
   install -d %buildroot/%_bindir
   install -m755 VBoxClient VBoxControl VBoxService %buildroot/%_bindir/
 
-# OpenGL/EGL part
-  install -d %buildroot%vboxadddir
-  install -m644 VBoxOGL*.so %buildroot%vboxadddir
-  install -m644 VBoxEGL.so %buildroot%vboxadddir
-  ln -s VBoxOGL.so %buildroot%vboxadddir/libGL.so.1
-  ln -s VBoxEGL.so %buildroot%vboxadddir/libEGL.so.1
-
-  install -d %buildroot%xdrv_pre_d
-  install -m755 %SOURCE24 %buildroot%xdrv_pre_d/virtualbox
-  sed -i -e 's|@bindir@|%_bindir|g' -e 's|@ld_so_confdir@|%ld_so_confdir|g' -e 's|@ld_so_conf@|%ld_so_conf|g' -e 's|@vboxadddir@|%vboxadddir|g' %buildroot%xdrv_pre_d/virtualbox
-
+# install kernel modules configuration
   install -pDm644 %SOURCE25 %buildroot%_sysconfdir/modprobe.d/virtualbox-addition.conf
   install -pDm644 %SOURCE26 %buildroot%_sysconfdir/modules-load.d/virtualbox-addition.conf
 
@@ -602,11 +600,15 @@ cd additions >/dev/null
   install -d %buildroot%_sysconfdir/security/console.perms.d/
   install -m644 %SOURCE5 %buildroot%_sysconfdir/security/console.perms.d/
 
+  install -d %buildroot%_unitdir/
+  install -m755 %SOURCE27 %buildroot%_unitdir/
+
   mkdir -p %buildroot%_pam_modules_dir/
   install -m644 pam_vbox.so %buildroot%_pam_modules_dir/
 %endif
 cd - >/dev/null
 
+%ifarch x86_64
 # install icons
 mkdir -p %buildroot%_niconsdir
 install -m644 icons/32x32/*.png %buildroot%_niconsdir/
@@ -638,6 +640,10 @@ cp -r ../obj/manual/en_US/HTMLHelp %buildroot%_defaultdocdir/%name-doc-%version/
 # install unit file
 install -pDm644 %SOURCE22 %buildroot%_unitdir/%name.service
 install -pDm644 %SOURCE23 %buildroot%_sysconfdir/modules-load.d/%name.conf
+%if_without vboxpci
+sed -i -n '/vboxcpi/!p' %buildroot%_unitdir/%name.service
+sed -i -n '/vboxcpi/!p' %buildroot%_sysconfdir/modules-load.d/%name.conf
+%endif
 
 
 
@@ -654,6 +660,7 @@ install -pDm644 %SOURCE23 %buildroot%_sysconfdir/modules-load.d/%name.conf
 # install sysconfig for vboxweb-service
   mkdir -p %buildroot%_sysconfdir/sysconfig
   cp %SOURCE9 %buildroot%_sysconfdir/sysconfig/vboxweb-service
+%endif
 %endif
 
 %pre
@@ -692,6 +699,7 @@ mountpoint -q /dev || {
 /usr/sbin/useradd -r -g vboxusers -d %vboxwebdir -c 'VirtualBox Web Service' -n vboxwebsrv -s /bin/sh >/dev/null 2>&1 ||:
 %endif
 
+%ifarch x86_64
 %files
 %_bindir/*
 %vboxdir/*
@@ -700,7 +708,6 @@ mountpoint -q /dev || {
 %exclude %_bindir/VBoxClient
 %exclude %_bindir/VBoxControl
 %exclude %_bindir/VBoxService
-%exclude %vboxadddir 
 %endif
 %if_with webservice
 %exclude %_bindir/vboxwebsrv
@@ -715,7 +722,8 @@ mountpoint -q /dev || {
 %attr(4710,root,vboxusers) %vboxdir/VBoxNetAdpCtl
 %attr(4710,root,vboxusers) %vboxdir/VBoxSDL
 %attr(4710,root,vboxusers) %vboxdir/VBoxVolInfo
-%attr(4710,root,vboxusers) %vboxdir/VirtualBox
+%attr(4710,root,vboxusers) %vboxdir/VirtualBoxVM
+%vboxdir/VirtualBox
 %exclude %vboxdir/sdk
 %exclude %vboxdir/xpidl
 %exclude %vboxdir/VBoxPython*.so
@@ -731,14 +739,17 @@ mountpoint -q /dev || {
 %files -n %modname
 %kernel_src/%modname-%version.tar.bz2
 
+%if_with vboxpci
 %files -n %modnamepci
 %kernel_src/%modnamepci-%version.tar.bz2
+%endif
 
 %files -n %modnamenetflt
 %kernel_src/%modnamenetflt-%version.tar.bz2
 
 %files -n %modnamenetadp
 %kernel_src/%modnamenetadp-%version.tar.bz2
+%endif
 
 %files -n %modnameguest
 %kernel_src/%modnameguest-%version.tar.bz2
@@ -766,13 +777,12 @@ mountpoint -q /dev || {
 %_sysconfdir/security/console.perms.d/60-vboxadd.perms
 
 %files guest-additions
+%_unitdir/virtualbox-vmsvga.service
 %_sysconfdir/X11/xinit.d/98vboxadd-xclient
-%attr(0755,root,root) %xdrv_pre_d/virtualbox
 %_bindir/VBoxClient
-%dir %vboxadddir
-%vboxadddir/*
 %endif
 
+%ifarch x86_64
 %if_with webservice
 %files webservice
 %_initrddir/vboxweb-service
@@ -814,8 +824,32 @@ mountpoint -q /dev || {
 %files sdk-xpcom
 %_includedir/iprt
 %_includedir/VBox/com
+%endif
 
 %changelog
+* Thu Feb 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt1
+- Update to newest version 6.1.4
+
+* Mon Jan 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.2-alt1
+- Update to latest maintenance of 6.1 release
+- Build without droped PCI passthrough host driver, due current code is too
+  incomplete (cannot handle PCIe devices at all), i.e. not useful enough
+
+* Mon Jan 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt3
+- Fix window resize with VMSVGA
+
+* Mon Dec 23 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt2
+- Replace shabang in python scripts
+- Build guest additions only for i586
+- Revert vboxpci module
+
+* Wed Dec 18 2019 Valery Sinelnikov <greh@altlinux.org> 6.1.0-alt1
+- Update to newest version of 6.1 release
+- Remove obsolete kernel source subpackage for vboxpci module
+
+* Wed Dec 18 2019 Valery Sinelnikov <greh@altlinux.org> 6.0.14-alt1
+- Update to newest version of 6.0 release
+
 * Wed Dec 04 2019 Evgeny Sinelnikov <sin@altlinux.org> 5.2.34-alt3
 - Add virtualbox-guest-common subpackages with modules load and modprobe rules
 - Fix build with newest libglvnd later than 1.2.0 on Sisyphus
