@@ -66,7 +66,7 @@
 Name: systemd
 Epoch: 1
 Version: %ver_major.7
-Release: alt1
+Release: alt2
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -1256,7 +1256,8 @@ fi
 %_unitdir/*
 
 %if_enabled networkd
-%exclude %_unitdir/*network*
+%exclude %_unitdir/*networkd*
+%exclude %_unitdir/systemd-network-generator.service
 %exclude %_unitdir/*resolv*
 %exclude %_unitdir/*/*resolv*
 %endif
@@ -1546,6 +1547,7 @@ fi
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.network1.conf
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.machine1.conf
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.import1.conf
+%exclude %_datadir/dbus-1/system.d/org.freedesktop.timesync1.conf
 %_datadir/dbus-1/system-services/org.freedesktop.*.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.systemd1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.resolve1.service
@@ -1553,11 +1555,14 @@ fi
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.machine1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.import1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.portable1.service
+%exclude %_datadir/dbus-1/system-services/org.freedesktop.timesync1.service
 %if_enabled polkit
 %_datadir/polkit-1/actions/*.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.systemd1.policy
-%exclude %_datadir/polkit-1/actions/org.freedesktop.import1.policy
+%exclude %_datadir/polkit-1/actions/org.freedesktop.resolve1.policy
+%exclude %_datadir/polkit-1/actions/org.freedesktop.network1.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.machine1.policy
+%exclude %_datadir/polkit-1/actions/org.freedesktop.import1.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.portable1.policy
 %endif
 
@@ -1597,6 +1602,8 @@ fi
 %_datadir/dbus-1/system-services/org.freedesktop.network1.service
 %if_enabled polkit
 %_datadir/polkit-1/rules.d/systemd-networkd.rules
+%_datadir/polkit-1/actions/org.freedesktop.network1.policy
+%_datadir/polkit-1/actions/org.freedesktop.resolve1.policy
 %endif
 /lib/systemd/systemd-network-generator
 /lib/systemd/system-preset/85-networkd.preset
@@ -1610,22 +1617,22 @@ fi
 # TODO: Provides: /sbin/resolvconf ?
 %exclude /sbin/resolvconf
 %_tmpfilesdir/systemd-network.conf
-%_unitdir/systemd-network*
-%_unitdir/systemd-resolved.*
-%_unitdir/altlinux-libresolv*
-%_unitdir/altlinux-openresolv*
-%_unitdir/altlinux-simpleresolv*
+%_unitdir/*networkd*
+%_unitdir/systemd-network-generator.service
+%_unitdir/*resolv*
 %_unitdir/*/*resolv*
 /lib/systemd/network/80-container-host0.network
-%_mandir/*/*network*
+%_mandir/*/*networkd*
 %_mandir/*/*netdev*
 %_mandir/*/*resolved*
 %_mandir/*/*dnssd*
+%_man1dir/networkctl.*
 %_man1dir/resolvectl.*
 %_man1dir/resolvconf.*
 %_man5dir/dnssec-trust-anchors.d.*
 %_man5dir/systemd.negative.*
 %_man5dir/systemd.positive.*
+%_man5dir/systemd.network.*
 %endif
 
 %files container
@@ -1688,6 +1695,8 @@ fi
 /lib/systemd/systemd-timesyncd
 /lib/systemd/systemd-time-wait-sync
 /lib/systemd/ntp-units.d/80-systemd-timesync.list
+%_datadir/dbus-1/system.d/org.freedesktop.timesync1.conf
+%_datadir/dbus-1/system-services/org.freedesktop.timesync1.service
 %_unitdir/systemd-timesyncd.service
 %_unitdir/systemd-time-wait-sync.service
 %_mandir/*/*timesyncd*
@@ -1800,7 +1809,7 @@ fi
 %_rpmlibdir/udev-hwdb.filetrigger
 %_mandir/*/*udev*
 %_mandir/*/*hwdb*
-%_mandir/*/*link*
+%_mandir/*/*.link*
 %_man5dir/systemd.device*
 %exclude %_man3dir/*
 %_datadir/bash-completion/completions/udevadm
@@ -1830,6 +1839,11 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Mon Mar 09 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt2
+- move resolve1 and network1 polkit policy from systemd-services to systemd-networkd
+- move org.freedesktop.timesync1.service from systemd-service to systemd-timesyncd
+- fixed package network.target and network-online.target
+
 * Sun Feb 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt1
 - 243.7 (Fixes: CVE-2020-1712)
 
