@@ -1,7 +1,7 @@
 %def_without qt4
 
 Name: gimagereader
-Version: 3.3.0
+Version: 3.3.1
 Release: alt2
 
 Summary: A graphical GTK frontend to tesseract-ocr
@@ -14,6 +14,9 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # TODO: https://github.com/manisandro/gImageReader/archive/v%version.tar.gz
 Source: http://sourceforge.net/projects/gimagereader/files/%version/%name-%version.tar
+
+Source1: gimagereader-translations-ru.po
+Source2: manual-ru.html.in
 
 BuildRequires(pre): rpm-macros-cmake
 
@@ -121,6 +124,16 @@ Common files for %name.
 
 %prep
 %setup
+# remove with new version
+# https://redmine.basealt.space/issues/2497
+cp -fv %SOURCE1 po/
+cp -fv %SOURCE2 data/
+# https://bugzilla.altlinux.org/show_bug.cgi?id=36811
+%__subst "s|Приложение OCR|Приложение для распознавания текста|" po/ru.po
+cat <<EOF >>data/gimagereader.desktop.in
+Comment=Scan pages and optical text recognize
+Comment[ru]=Сканирование страниц и распознавание текста
+EOF
 
 %build
 %cmake -DINTERFACE_TYPE=gtk -DENABLE_VERSIONCHECK=0 -DMANUAL_DIR="%_docdir/%name-common"
@@ -189,6 +202,15 @@ ln -s %name-gtk %buildroot%_bindir/%name
 %_bindir/%name
 
 %changelog
+* Mon Mar 09 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.1-alt2
+- apply updated russian translation
+- apply russian manual
+- add Comment to the desktop file (ALT bug 37763)
+- fix russian generic name (ALT bug 36811)
+
+* Sun Oct 27 2019 Vitaly Lipatov <lav@altlinux.ru> 3.3.1-alt1
+- new version 3.3.1 (with rpmrb script)
+
 * Tue Jun 25 2019 Vitaly Lipatov <lav@altlinux.ru> 3.3.0-alt2
 - gimagereader-qt5 now provides gimagereader-qt4 (ALT bug 36946)
 
