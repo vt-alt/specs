@@ -1,5 +1,5 @@
 Name: apt-indicator
-Version: 0.3.14
+Version: 0.3.16
 Release: alt1
 
 Summary: Applet for indication that newer packages are available
@@ -74,6 +74,12 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Tue Mar 10 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.16-alt1
+- fix compiler warnings and fail to work
+
+* Fri Mar 06 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.15-alt1
+- hide unused configuration option
+
 * Thu Feb 13 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.14-alt1
 - update translations (Closes: 37864)
 
