@@ -1,9 +1,9 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt0.4
+Release: alt0.3
 epoch:1 
-%define kernel_base_version	5.3
+%define kernel_base_version	5.5
 %define kernel_sublevel .5
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
@@ -485,6 +485,16 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon Mar 09 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.5.5-alt0.3
+- replaced bcm2711-rpi-4-b.dts file with other modified by firmware
+
+* Wed Mar 04 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.5.5-alt0.2
+- replaced bcm2711-rpi-4-b.dts file with modified by firmware
+- CONFIG_GPIO_SYSFS=y /sys/class/gpio/ is on
+
+* Thu Feb 27 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.5.5-alt0.1
+- updated to 5.5.5 (still RPi-specific)
+
 * Thu Nov 07 2019 Dmitry Terekhin <jqt4@altlinux.org> 1:5.3.5-alt0.4
 - added dtb file from rpi4 fiwmware
 - packing dtbo files in package
