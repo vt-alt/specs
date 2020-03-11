@@ -1,4 +1,5 @@
 %define _unpackaged_files_terminate_build 1
+%define _vpath_builddir %_target_platform
 
 # like subst_with, but replacing '_' with '-'
 %define subst_with_dash() %{expand:%%(echo '%%{subst_with %1}' | sed 's/_/-/g')}
@@ -55,8 +56,6 @@
 %def_without esx
 %endif
 %def_without hyperv
-%def_without xenapi
-
 
 # Then the secondary host drivers
 %def_with network
@@ -108,7 +107,6 @@
 %def_without phyp
 %def_without esx
 %def_without hyperv
-%def_without xenapi
 %def_without network
 %def_without storage_fs
 %def_without storage_lvm
@@ -182,7 +180,7 @@
 %endif
 
 Name: libvirt
-Version: 5.7.0
+Version: 5.10.0
 Release: alt1
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
@@ -236,7 +234,7 @@ Requires: %name-libs = %EVR
 %{?_with_numactl:BuildRequires: libnuma-devel}
 %{?_with_capng:BuildRequires: libcap-ng-devel}
 %{?_with_phyp:BuildRequires: libssh2-devel}
-%{?_with_netcf:BuildRequires: netcf-devel}
+%{?_with_netcf:BuildRequires: netcf-devel >= 0.1.8}
 %{?_with_esx:BuildRequires: libcurl-devel}
 %{?_with_hyperv:BuildRequires: libwsman-devel}
 %{?_with_audit:BuildRequires: libaudit-devel}
@@ -252,6 +250,7 @@ BuildRequires: libreadline-devel
 BuildRequires: libtasn1-devel
 BuildRequires: libattr-devel attr
 BuildRequires: libacl-devel
+BuildRequires: glib2-devel >= 2.48
 BuildRequires: perl-Pod-Parser perl-XML-XPath
 BuildRequires: libxml2-devel xml-utils xsltproc
 BuildRequires: python3 python3-devel
@@ -794,16 +793,15 @@ sed -i 's/virnetsockettest //' tests/Makefile.am
 sed -i 's/vircgrouptest //' tests/Makefile.am
 
 %build
-LOADERS_OLD="%_datadir/OVMF/OVMF_CODE.fd:%_datadir/OVMF/OVMF_VARS.fd"
-LOADERS_NEW="%_datadir/edk2/ovmf/OVMF_CODE.fd:%_datadir/edk2/ovmf/OVMF_VARS.fd:%_datadir/edk2/aarch64/QEMU_EFI-pflash.raw:%_datadir/edk2/aarch64/vars-template-pflash.raw"
-LOADERS="$LOADERS_OLD:$LOADERS_NEW"
-%define with_loader_nvram $LOADERS
 
 ./bootstrap --no-git --gnulib-srcdir=gnulib-%name-%version
+%define _configure_script ../configure
+mkdir %_vpath_builddir
+pushd %_vpath_builddir
 %configure \
+		--enable-dependency-tracking \
 		--with-runstatedir=%_runtimedir \
 		--disable-static \
-		--disable-rpath \
 		--with-packager-version="%release" \
 		--with-init-script=systemd \
 		--with-qemu-user=%qemu_user \
@@ -821,7 +819,6 @@ LOADERS="$LOADERS_OLD:$LOADERS_NEW"
 		%{subst_with phyp} \
 		%{subst_with esx} \
 		%{subst_with hyperv} \
-		%{subst_with xenapi} \
 		%{subst_with network} \
 		%{subst_with_dash storage_fs} \
 		%{subst_with_dash storage_lvm} \
@@ -854,18 +851,17 @@ LOADERS="$LOADERS_OLD:$LOADERS_NEW"
 		%{subst_with audit} \
 		%{subst_with_dash driver_modules} \
 		%{subst_with dtrace} \
-		%{subst_with_dash wireshark} \
 		%{subst_with_dash bash_completion} \
 		%{subst_with_dash nss_plugin} \
-		--with-loader-nvram=%with_loader_nvram \
 		%{subst_with sasl}
 
-
 %make_build
-gzip -9 ChangeLog
+popd
 
 %install
+pushd %_vpath_builddir
 %makeinstall_std
+popd
 
 # Install sysv init scripts
 %if_with libvirtd
@@ -948,16 +944,9 @@ rm -rf %buildroot%_man7dir
 %endif
 
 %check
-cd tests
-%make
-# These 1 tests don't current work
-for i in daemon-conf
-do
-  rm -f $i
-  printf "#!/bin/sh\nexit 0\n" > $i
-  chmod +x $i
-done
-%make check ||:
+pushd %_vpath_builddir
+%make_build check VIR_TEST_DEBUG=1 ||:
+popd
 
 %pre login-shell
 %_sbindir/groupadd -r -f virtlogin
@@ -1010,10 +999,7 @@ fi
 
 %files docs
 %doc docs/*.xml
-%doc %_datadir/gtk-doc/html/libvirt
-
-%doc docs/html docs/devhelp docs/*.gif
-
+%doc docs/html docs/*.gif
 
 %files client
 %_bindir/virsh
@@ -1397,6 +1383,12 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Mon Dec 16 2019 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt1
+- 5.10.0
+
+* Mon Oct 14 2019 Alexey Shabalin <shaba@altlinux.org> 5.8.0-alt1
+- 5.8.0
+
 * Mon Sep 09 2019 Alexey Shabalin <shaba@altlinux.org> 5.7.0-alt1
 - 5.7.0
 

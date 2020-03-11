@@ -28,6 +28,7 @@
 %def_enable vhost_net
 %def_enable vhost_scsi
 %def_enable vhost_vsock
+%def_enable vhost_user_fs
 %def_enable opengl
 %def_enable guest_agent
 %def_enable tools
@@ -106,7 +107,7 @@
 
 %define audio_drv_list %{?_enable_oss:oss} %{?_enable_alsa:alsa} %{?_enable_sdl:sdl} %{?_enable_pulseaudio:pa}
 %define block_drv_list curl dmg %{?_enable_glusterfs:gluster} %{?_enable_libiscsi:iscsi} %{?_enable_libnfs:nfs} %{?_enable_rbd:rbd} %{?_enable_libssh:ssh}
-%define ui_list %{?_enable_gtk:gtk} %{?_enable_curses:curses} %{?_enable_sdl:sdl}
+%define ui_list %{?_enable_gtk:gtk} %{?_enable_curses:curses} %{?_enable_sdl:sdl} %{?_enable_spice:spice-app}
 %define qemu_arches aarch64 alpha arm cris hppa lm32 m68k microblaze mips moxie nios2 or1k ppc riscv s390x sh4 sparc tricore unicore32 x86 xtensa
 
 %global _group vmusers
@@ -117,11 +118,11 @@
 # }}}
 
 Name: qemu
-Version: 4.1.1
-Release: alt1
+Version: 4.2.0
+Release: alt2
 
 Summary: QEMU CPU Emulator
-License: GPL/LGPL/BSD
+License: BSD-2-Clause AND BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later AND MIT
 Group: Emulators
 Url: https://www.qemu.org
 # git://git.qemu.org/qemu.git
@@ -153,12 +154,12 @@ Requires: %name-user = %EVR
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
-BuildRequires: glib2-devel >= 2.40 libgio-devel
+BuildRequires: glib2-devel >= 2.48 libgio-devel
 BuildRequires: makeinfo perl-podlators perl-devel python-module-sphinx
 BuildRequires: libattr-devel-static libcap-devel libcap-ng-devel
 BuildRequires: libxfs-devel
 BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
-BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.5.0.0.20.2431
+BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.5.0.0.20.2431 qboot
 BuildRequires: libpixman-devel >= 0.21.8
 BuildRequires: python3-devel
 # Upstream disables iasl for big endian and QEMU checks for this.
@@ -217,14 +218,15 @@ BuildRequires: libslirp-devel
 Requires: %name-block-curl = %EVR    \
 Requires: %name-block-dmg = %EVR     \
 %{?_enable_glusterfs:Requires: %name-block-gluster = %EVR} \
-%{?_enable_libiscsi:Requires: %name-block-iscsi = %EVR}   \
-%{?_enable_libnfs:Requires: %name-block-nfs = %EVR}     \
-%{?_enable_rbd:Requires: %name-block-rbd = %EVR}     \
-%{?_enable_alsa:Requires: %name-audio-alsa = %EVR}    \
-%{?_enable_oss:Requires: %name-audio-oss = %EVR}     \
-%{?_enable_pulseaudio:Requires: %name-audio-pa = %EVR}      \
-%{?_enable_sdl:Requires: %name-audio-sdl = %EVR}     \
-%{?_enable_curses:Requires: %name-ui-curses = %EVR}
+%{?_enable_libiscsi:Requires: %name-block-iscsi = %EVR}    \
+%{?_enable_libnfs:Requires: %name-block-nfs = %EVR}        \
+%{?_enable_rbd:Requires: %name-block-rbd = %EVR}           \
+%{?_enable_alsa:Requires: %name-audio-alsa = %EVR}         \
+%{?_enable_oss:Requires: %name-audio-oss = %EVR}           \
+%{?_enable_pulseaudio:Requires: %name-audio-pa = %EVR}     \
+%{?_enable_sdl:Requires: %name-audio-sdl = %EVR}           \
+%{?_enable_curses:Requires: %name-ui-curses = %EVR}        \
+%{?_enable_spice:Requires: %name-ui-spice-app = %EVR}
 
 
 ##%%{?_enable_gtk:Requires: %name-ui-gtk = %EVR}        \
@@ -489,7 +491,7 @@ Requires: %%name-common = %%EVR seavgabios \
 Conflicts: %%name-system < 2.10.1-alt1 \
 \
 %%if %%{1} == x86 \
-Requires: seabios >= 1.7.4-alt2 ipxe-roms-qemu edk2-ovmf libseccomp >= 2.2.3 \
+Requires: seabios >= 1.7.4-alt2 ipxe-roms-qemu edk2-ovmf libseccomp >= 2.2.3 qboot \
 %%endif \
 %%if %%{1} == aarch64 \
 Requires: edk2-aarch64 \
@@ -504,6 +506,7 @@ This package provides the system emulator for %%{1}. \
 %%_man1dir/qemu-system-i386.1* \
 %%_datadir/%%name/bios.bin \
 %%_datadir/%%name/bios-256k.bin \
+%%_datadir/%%name/bios-microvm.bin \
 %%_datadir/%%name/sgabios.bin \
 %%_datadir/%%name/linuxboot.bin \
 %%_datadir/%%name/linuxboot_dma.bin \
@@ -544,7 +547,6 @@ This package provides the system emulator for %%{1}. \
 %%_datadir/%%name/ppc_rom.bin \
 %%_datadir/%%name/qemu_vga.ndrv \
 %%_datadir/%%name/skiboot.lid \
-%%_datadir/%%name/spapr-rtas.bin \
 %%_datadir/%%name/u-boot.e500 \
 %%_datadir/%%name/u-boot-sam460-20100605.bin \
 %%_datadir/%%name/openbios-ppc \
@@ -689,6 +691,7 @@ run_configure \
 	--disable-vhost-scsi \
 	--disable-vhost-user \
 	--disable-vhost-vsock \
+	--disable-vhost-user-fs \
 	--disable-virglrenderer \
 	--disable-virtfs \
 	--disable-vnc \
@@ -761,6 +764,7 @@ run_configure \
 	%{?_enable_vhost_net:--enable-vhost-net} \
 	%{?_enable_vhost_scsi:--enable-vhost-scsi } \
 	%{?_enable_vhost_vsock:--enable-vhost-vsock} \
+	%{?_enable_vhost_user_fs:--enable-vhost-user-fs} \
 	--enable-slirp=system \
 	%{subst_enable smartcard} \
 	%{subst_enable libusb} \
@@ -790,6 +794,7 @@ run_configure \
 	%{?_disable_guest_agent:--disable-guest-agent} \
 	%{subst_enable tools} \
 	%{subst_enable libpmem} \
+	--enable-xkbcommon \
 	--disable-xen
 
 %make_build V=1 $buildldflags
@@ -866,6 +871,8 @@ rm -f %buildroot%_datadir/%name/bios.bin
 rm -f %buildroot%_datadir/%name/bios-256k.bin
 # Provided by package sgabios
 #rm -f %buildroot%_datadir/%name/sgabios.bin
+# Provided by package qboot
+rm -f %buildroot%_datadir/%name/bios-microvm.bin
 # Provided by package edk2
 rm %buildroot%_datadir/%name/edk2-*
 rm -r %buildroot%_datadir/%name/firmware
@@ -891,6 +898,7 @@ for bios in vgabios vgabios-cirrus vgabios-qxl vgabios-stdvga vgabios-vmware vga
 done
 
 ln -r -s %buildroot%_datadir/seabios/{bios,bios-256k}.bin %buildroot%_datadir/%name/
+ln -r -s %buildroot%_datadir/qboot/bios-microvm.bin %buildroot%_datadir/%name/
 
 mkdir -p %buildroot%_binfmtdir
 ./scripts/qemu-binfmt-conf.sh --systemd ALL --exportdir %buildroot%_binfmtdir --qemu-path %_bindir
@@ -1060,6 +1068,12 @@ fi
 %_bindir/ivshmem-server
 
 %changelog
+* Thu Feb 27 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.0-alt2
+- Arithmetic error in EDID generation fixed (boyarsh@)
+
+* Mon Dec 16 2019 Alexey Shabalin <shaba@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Mon Dec 09 2019 Alexey Shabalin <shaba@altlinux.org> 4.1.1-alt1
 - 4.1.1
 
