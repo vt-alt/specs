@@ -2,8 +2,8 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20191105
-Release: alt2
+Version: 20200228
+Release: alt1
 Url: https://github.com/raspberrypi/firmware
 License: distributable
 Group: System/Kernel and hardware
@@ -84,6 +84,9 @@ echo 'arm_64bit=1' >> %buildroot/%target_rpi4/config.txt
 %doc %_docdir/%name
 
 %changelog
+* Wed Mar 04 2020 Dmitry Terekhin <jqt4@altlinux.org> 20200228-alt1
+- new snapshot
+
 * Thu Nov 14 2019 Dmitry Terekhin <jqt4@altlinux.org> 20191105-alt2
 - Added bcm2711-rpi-4-b.dtb for the RasPi4 firmware's work
 
