@@ -1,6 +1,9 @@
+%def_enable devel
+%def_disable static
+
 Name: sqlite
 Version: 2.8.17
-Release: alt2.4
+Release: alt2.4.1
 
 Summary: An Embeddable SQL Database Engine, version 2
 License: Public Domain
@@ -14,6 +17,19 @@ Patch2: sqlite-2.8.17-alt-libdir.patch
 Patch3: sqlite-2.8.17-alt-tcl.patch
 Patch4: sqlite-2.8.17-alt-sort+4.patch
 Patch5: sqlite-2.8.17-deb-unsigned-char.patch
+Patch6: sqlite-2.8.17-fc-64bit-fixes.patch
+Patch7: sqlite-2.8.17-fc-test.patch
+# https://sources.debian.org/data/main/s/sqlite/2.8.17-15/debian/patches/09-tcl8.6_compat.patch
+Patch8: sqlite-2.8.17-deb-tcl8.6_compat.patch
+Patch9: sqlite-2.8.17-fc-ppc64.patch
+Patch10: sqlite-2.8.17-fc-cleanup-temp-c.patch
+# https://sources.debian.org/data/main/s/sqlite/2.8.17-15/debian/patches/05-link_with_LDFLAGS.patch
+Patch11: sqlite-2.8.17-deb-link_with_LDFLAGS.patch
+Patch12: sqlite-2.8.17-suse-alt-cleanups.patch
+Patch13: sqlite-2.8.17-suse-detect-sqlite3.patch
+# prepare to GCC 10
+Patch14: sqlite-2.8.17-fc-gcc10.patch
+Patch15: sqlite-2.8.15-fc-arch-double-differences.patch
 
 Requires: lib%name = %version-%release
 
@@ -88,13 +104,24 @@ access without running a separate RDBMS process.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 
 # lemon is now in sqlite3
 rm doc/lemon.html
 
 %build
+export CFLAGS="%optflags"
 autoreconf -fisv
-%configure --enable-utf8 --enable-tempdb-in-ram
+%configure --enable-utf8 --enable-tempdb-in-ram %{subst_enable static}
 %make_build all doc
 %make_build libtcl%name.la tcllibdir=%_tcllibdir
 
@@ -113,6 +140,10 @@ echo "package ifneeded sqlite 2.0 [list load [file join \$dir $dll]]" \
 mkdir -p %buildroot%pkgdocdir
 install -p -m644 doc/*.* %buildroot%pkgdocdir/
 
+%check
+rm test/date.test
+make test
+
 %files
 %_bindir/%name
 %_man1dir/%name.*
@@ -120,14 +151,18 @@ install -p -m644 doc/*.* %buildroot%pkgdocdir/
 %files -n lib%name
 %_libdir/lib%name.so.?*
 
+%if_enabled devel
 %files -n lib%name-devel
 %_includedir/%name.h
 %_libdir/lib%name.so
 #_libdir/lib%name.la
 %_pkgconfigdir/%name.pc
+%endif
 
+%if_enabled static
 %files -n lib%name-devel-static
 %_libdir/lib%name.a
+%endif
 
 %files tcl
 %_tcllibdir/libtcl%name.so*
@@ -141,6 +176,16 @@ install -p -m644 doc/*.* %buildroot%pkgdocdir/
 %pkgdocdir/*.*
 
 %changelog
+* Fri Mar 06 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.8.17-alt2.4.1
+- Backported from Sisyphus.
+- Built with devel subpackage.
+
+* Tue Feb 25 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.8.17-alt2.5
+- Built without devel and devel-static subpackages.
+- spec: Added export CFLAGS with %%optflags to %%build section.
+- Enabled tests (without date.test).
+- Applied a lot of patches from Debian, Fedora and openSUSE project.
+
 * Mon Feb 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.8.17-alt2.4
 - Fixed build on architectures with unsigned char.
 
