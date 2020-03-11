@@ -2,7 +2,7 @@
 
 Name: proftpd
 Version: %ver
-Release: alt0.1.ga73dbfe3b
+Release: alt0.2.ga73dbfe3b
 
 %define _libexecdir %{expand:%_libdir}
 %def_disable tests
@@ -389,7 +389,7 @@ See control(8) for details.
         %{?_enable_tests:--enable-tests} \
         --libexecdir=%_libexecdir/%name \
         --with-pkgconfig=%_pkgconfigdir \
-        --localstatedir=/var/run/proftpd \
+        --localstatedir=/var/lib/proftpd \
         --enable-auth-pam \
         --enable-ctrls \
         --enable-largefile \
@@ -448,6 +448,14 @@ EOF
 mkdir -p %buildroot/var/log/%name
 rm -f %buildroot%_libexecdir/%name/*.a
 
+# create tmpfiles conf
+mkdir -p %buildroot%_tmpfilesdir
+cat >%buildroot%_tmpfilesdir/%name.conf<<END
+d /run/proftpd 0750 root root -
+END
+
+mkdir -p -m0750 %buildroot/run/proftpd
+
 %find_lang %name
 
 %pre
@@ -480,6 +488,7 @@ fi
 %config(noreplace) %_initdir/%name
 %config(noreplace) %_sysconfdir/xinetd.d/%name
 %config(noreplace) %_sysconfdir/logrotate.d/%name
+%_tmpfilesdir/%name.conf
 %_sbindir/*
 %_bindir/ftp*
 %_man1dir/ftpasswd.*
@@ -493,7 +502,7 @@ fi
 %_man8dir/ftpshut.*
 %_man8dir/ftpdctl.*
 %_man8dir/ftpscrub.*
-%dir /var/run/%name
+%dir /var/lib/%name
 %dir /var/log/%name
 %dir %_libexecdir/%name
 
@@ -664,6 +673,11 @@ fi
 %_controldir/%name
 
 %changelog
+* Wed Dec 25 2019 Anton Midyukov <antohami@altlinux.org> 1.3.6-alt0.2.ga73dbfe3b
+- replace /var/run -> /run, /var/lock -> /run/lock
+- create tmpfiles config (Closes: 37187)
+- change localstatedir=/var/lib/proftpd instead /var/run/proftpd
+
 * Tue Jul 23 2019 L.A. Kostis <lakostis@altlinux.ru> 1.3.6-alt0.1.ga73dbfe3b
 - Updated to 1.3.6-ga73dbfe3b.
 - Fix mod_copy bug #4372 (Ensure that mod_copy checks for <Limits> for its SITE
