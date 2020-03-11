@@ -8,9 +8,9 @@
 %def_disable webkit
 
 Name: choqok
-Version: 1.6
-Release: alt2%ubt
-%K5init no_altplace
+Version: 1.7.0
+Release: alt1
+%K5init no_altplace appdata
 
 Group: Networking/Instant messaging
 Summary: Micro-Blogging Client
@@ -23,8 +23,8 @@ Patch1: choqok-0.9.85-alt-dbus-services-install.patch
 # Automatically added by buildreq on Fri Nov 18 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-attica-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdoctools kf5-kdoctools-devel kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libgst-plugins1.0 libjson-c libqca-qt5 libqt4-core libqt4-network libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-positioning libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-sensors libqt5-sql libqt5-svg libqt5-webchannel libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libtelepathy-qt5-farstream0 libtelepathy-qt5-service0 libtelepathy-qt50 libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel qt5-webkit-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
 #BuildRequires: extra-cmake-modules kf5-kcmutils-devel kf5-kdelibs4support kf5-kdewebkit-devel kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kglobalaccel-devel kf5-kguiaddons-devel kf5-kio-devel kf5-knotifications-devel kf5-knotifyconfig-devel kf5-kparts-devel kf5-ktextwidgets-devel kf5-kwallet-devel libqca-qt5-devel python-module-google python3-dev qoauth-devel rpm-build-ruby telepathy-qt5-devel
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
-BuildRequires: extra-cmake-modules
+BuildRequires(pre): rpm-build-kf5
+BuildRequires: extra-cmake-modules qt5-networkauth-devel
 BuildRequires: qoauth-qt5-devel
 BuildRequires: libqca-qt5-devel telepathy-qt5-devel
 BuildRequires: kf5-kcmutils-devel kf5-kdelibs4support
@@ -33,7 +33,7 @@ BuildRequires: kf5-kdewebkit-devel
 %endif
 BuildRequires: kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kglobalaccel-devel
 BuildRequires: kf5-kguiaddons-devel kf5-kio-devel kf5-knotifications-devel kf5-knotifyconfig-devel kf5-kparts-devel kf5-ktextwidgets-devel
-BuildRequires: kf5-kwallet-devel
+BuildRequires: kf5-kwallet-devel kf5-purpose-devel
 
 %description
 Choqok is a Free/Open Source micro-blogging client for K Desktop Environment
@@ -89,9 +89,10 @@ sed -i '/find_package.*KF5WebKit/d' plugins/CMakeLists.txt
 
 
 %files -f %name.lang
-%doc COPYING AUTHORS TODO changelog
+%doc COPYING AUTHORS changelog
 %_K5bin/choqok
 %_K5plug/*choqok*.so
+%_K5plug/kf5/purpose/*.so
 %if_enabled webkit
 %_K5plug/kf5/parts/*choqok*.so
 %_K5srv/ServiceMenus/*choqok*.desktop
@@ -107,7 +108,8 @@ sed -i '/find_package.*KF5WebKit/d' plugins/CMakeLists.txt
 %_K5srvtyp/*choqok*.desktop
 %_K5dbus_srv/org.kde.choqok.service
 %_K5xmlgui/*choqok*/
-%_K5notif/choqok/
+%_K5notif/*choqok*.notifyrc
+%_datadir/metainfo/*choqok*.xml
 
 %files -n %libchoqok
 %_K5lib/libchoqok.so.%choqok_sover
@@ -128,7 +130,16 @@ sed -i '/find_package.*KF5WebKit/d' plugins/CMakeLists.txt
 
 
 %changelog
-* Wed Aug 23 2017 Sergey V Turchin <zerg@altlinux.org> 1.6-alt2%ubt
+* Fri Mar 06 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.0-alt1
+- new version
+
+* Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 1.6-alt4
+- fix compile with new Qt
+
+* Fri Jun 14 2019 Sergey V Turchin <zerg@altlinux.org> 1.6-alt3
+- don't use ubt macro
+
+* Wed Aug 23 2017 Sergey V Turchin <zerg@altlinux.org> 1.6-alt2
 - build without kdewebkit
 
 * Mon Nov 21 2016 Sergey V Turchin <zerg@altlinux.org> 1.6-alt0.M80P.1
