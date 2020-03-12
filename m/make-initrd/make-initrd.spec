@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.4.0
+Version: 2.5.0
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -208,6 +208,20 @@ fi
 %endif
 
 %changelog
+* Fri Mar 06 2020 Alexey Gladkov <legion@altlinux.ru> 2.5.0-alt1
+- Feature changes:
+  + kbd: Reimplement feature
+  + mdadm: Try to make problem array writable
+  + mdadm: Run mdadm -IRs only once if needed
+  + mdadm: Allow to use custom mdadm.conf
+  + mdadm: Wait a certain time after the appearance of the raid
+    member before starting the degraded raid
+  + luks: Allow to skip keydev in the luks-key= and in the /etc/luks.keys
+  + usb: Add more usb modules and make them optional
+- Misc:
+  + guess: Add guessing drm modules
+  + Use MODULES_TRY_ADD for hardcoded module lists
+
 * Wed Jan 22 2020 Alexey Gladkov <legion@altlinux.ru> 2.4.0-alt1
 - Feature changes:
   + luks: Add essiv for kernel >= 5.4.0
