@@ -7,10 +7,10 @@
 %define module_version	5.1.1.8
 %define module_release alt15
 
-%define flavour		std-def
+%define flavour		un-def
 %define karch %ix86 x86_64 aarch64 ppc64le
 BuildRequires(pre): rpm-build-kernel
-BuildRequires(pre): kernel-headers-modules-std-def
+BuildRequires(pre): kernel-headers-modules-un-def
 
 %setup_kernel_module %flavour
 
