@@ -1,9 +1,10 @@
+%define _unpackaged_files_terminate_build 1
 
 %def_enable vgauth
 %def_enable xmlsec1
 %def_disable xmlsecurity
 
-%def_disable deploypkg
+%def_enable deploypkg
 %def_enable multimon
 %def_without dnet
 %def_enable resolutionkms
@@ -22,7 +23,7 @@
 
 Name: open-vm-tools
 Version: %toolsversion
-Release: alt1
+Release: alt3
 Summary: Open Virtual Machine Tools for virtual machines hosted on VMware
 Group: System/Kernel and hardware
 License: GPLv2
@@ -76,7 +77,7 @@ This package contains only the core user-space programs and libraries of
 
 %package desktop
 Summary: User experience components for Open Virtual Machine Tools
-Group: System/Libraries
+Group: System/Configuration/Other
 Requires: %name = %version-%release
 
 %description desktop
@@ -93,6 +94,16 @@ Requires: %name = %version-%release
 This package contains only the user-space programs and libraries of
 %name that are essential for developing customized applications for
 VMware virtual machines.
+
+%package test
+Summary: Test utilities for Open Virtual Machine Tools
+Group: Development/Other
+Requires: %name = %version-%release
+
+%description test
+This package contains only the test utilities for %name that are
+useful for verifying the functioning of %name in VMware virtual
+machines.
 
 %prep
 %setup
@@ -237,6 +248,7 @@ fi
 %_bindir/vmware-rpctool
 %_bindir/vmware-toolbox-cmd
 %_bindir/vmware-xferlogs
+%_libdir/libDeployPkg.so.*
 %_libdir/libguestlib.so.*
 %_libdir/libhgfs.so.*
 %_libdir/libvmtools.so.*
@@ -261,8 +273,10 @@ fi
 
 %files devel
 %doc docs/api/build/*
-%_includedir/vmGuestLib/
+%_includedir/vmGuestLib
+%_includedir/libDeployPkg
 %_libdir/pkgconfig/*.pc
+%_libdir/libDeployPkg.so
 %_libdir/libguestlib.so
 %_libdir/libhgfs.so
 %_libdir/libvmtools.so
@@ -270,7 +284,20 @@ fi
 %_libdir/libvgauth.so
 %endif
 
+%if_enabled vgauth
+%files test
+%_bindir/vmware-vgauth-smoketest
+%endif
+
+
 %changelog
+* Fri Mar 06 2020 Alexey Shabalin <shaba@altlinux.org> 11.0.5-alt3
+- readd detect ALT Distro
+
+* Thu Mar 05 2020 Alexey Shabalin <shaba@altlinux.org> 11.0.5-alt2
+- enable deploypkg support
+- add test package
+
 * Fri Feb 21 2020 Alexey Shabalin <shaba@altlinux.org> 11.0.5-alt1
 - 11.0.5
 
