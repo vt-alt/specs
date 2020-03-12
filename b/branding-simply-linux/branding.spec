@@ -9,6 +9,13 @@
 %define icon_theme SimpleSL
 %define xfwm4_theme "ClassicLooks XFWM4"
 
+# Enable compositing on x86_64 only
+%ifarch x86_64
+%define xfwm4_compositing true
+%else
+%define xfwm4_compositing false
+%endif
+
 # NOTE: Helper's name must be one of exo helpers.
 %ifarch %e2k %arm aarch64 mipsel
 # e2k: 2019: no chromium port available
@@ -35,7 +42,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.990
+Version: 8.991
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -298,7 +305,7 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme MEDIA_PLAYER=%media_player ./configure
+THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme XFWM4_COMPOSITING=%xfwm4_compositing DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme MEDIA_PLAYER=%media_player ./configure
 make
 
 %install
@@ -495,6 +502,10 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Tue Mar 10 2020 Mikhail Efremov <sem@altlinux.org> 8.991-alt1
+- xfce-settings: Enable compositing on x86_64 only.
+- menu: Hide mcedit.
+
 * Fri Feb 07 2020 Mikhail Efremov <sem@altlinux.org> 8.990-alt1
 - slideshow: Add English slides.
 - slideshow: Rename slides/ -> Slides/.
