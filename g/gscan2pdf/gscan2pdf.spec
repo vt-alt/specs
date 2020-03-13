@@ -1,7 +1,7 @@
 %def_without test
 
 Name: gscan2pdf
-Version: 2.2.1
+Version: 2.6.5
 Release: alt1
 
 Summary: A GUI to ease the process of producing a multipage PDF from a scan
@@ -18,27 +18,24 @@ Source: http://prdownloads.sf.net/%name/%name/%version/%name-%version.tar
 BuildArch: noarch
 
 # perl(Gtk2/Ex/PodViewer.pm) at line 3501 (depth 4) inside eval SKIP
-Requires: perl(Gtk2/Ex/PodViewer.pm) xdg-utils unpaper
+#Requires: perl(Gtk2/Ex/PodViewer.pm)
 
-# manually removed: python3 ruby ruby-stdlibs  rpm-build-python3
-# Automatically added by buildreq on Tue May 12 2015 (-bi)
-# optimized out: fontconfig libX11-locales libgdk-pixbuf libwayland-client libwayland-server perl-Cairo perl-Compress-Raw-Bzip2 perl-Compress-Raw-Zlib perl-Encode perl-Exporter-Tiny perl-Glib perl-Gtk2 perl-HTML-Parser perl-HTML-Tagset perl-IO-Compress perl-IO-String perl-IO-Zlib perl-Math-Complex perl-Pango perl-Pod-Escapes perl-Pod-Simple perl-Try-Tiny perl-devel perl-parent perl-threads python-base python3 python3-base
-BuildRequires: libdb4-devel perl-Archive-Tar perl-Config-General perl-Filesys-Df perl-Goo-Canvas perl-Gtk2-Ex-Simple-List perl-Gtk2-ImageView perl-List-MoreUtils perl-Locale-gettext perl-Log-Log4perl perl-Magick perl-PDF-API2 perl-Proc-ProcessTable perl-Readonly perl-Sane perl-Set-IntSpan perl-Sub-Name perl-podlators perl-Text-Balanced
+BuildRequires: libdb4-devel perl-Archive-Tar perl-Config-General perl-Filesys-Df perl-List-MoreUtils perl-Locale-gettext perl-Log-Log4perl perl-PDF-API2 perl-Proc-ProcessTable perl-Readonly perl-Set-IntSpan perl-Sub-Name perl-podlators perl-Text-Balanced
 
-BuildPreReq: perl-Data-UUID perl-JSON-PP perl-Date-Calc perl-Image-Sane perl-Sub-Override perl-GooCanvas2 perl-Gtk3-SimpleList libgoocanvas2-gir
+BuildRequires: perl-Data-UUID perl-JSON-PP perl-Date-Calc perl-Image-Sane perl-Sub-Override perl-Time-Piece
+BuildRequires: perl-Gtk3 perl-Gtk3-SimpleList libgoocanvas2-gir perl-GooCanvas2
 
 Requires: libgoocanvas2-gir perl-Pod-Perldoc
 
-BuildPreReq: perl-Magick perl-Sane >= 0.05
+BuildRequires: perl-Magick perl-Sane >= 0.05
 
-BuildPreReq: perl-devel
+BuildRequires: perl-devel
 
 # needs for backports
 BuildPreReq: perl-Try-Tiny
 
 # ImageMagick
 Requires: %_bindir/convert
-
 Requires: perl-Magick
 
 # %_bindir/cjb2
@@ -46,6 +43,11 @@ Requires: djvu-utils
 
 # tiffcp
 Requires: libtiff-utils
+
+Requires: xdg-utils unpaper
+
+# /usr/bin/scanimage
+Requires: sane
 
 # OCR:
 #Requires: cuneiform
@@ -60,6 +62,7 @@ Scanning is handled with SANE via scanimage. PDF conversion is done by libtiff.
 %setup
 #patch -p2
 %__subst "s|use Gtk3 0.028 -init;|use Gtk3 0.028; INIT { Gtk3->init; }|g" bin/%name
+%__subst "5iuse Gtk3;" lib/Gscan2pdf/Canvas.pm
 # djvu %_bindir/cjb2
 %__subst "s|requires djvulibre-bin|djvu-utils|g" bin/%name
 
@@ -84,15 +87,24 @@ find %buildroot -name .packlist | xargs rm -f
 %_bindir/gscan2pdf
 #_bindir/scanadf-perl
 #_bindir/scanimage-perl
-%_desktopdir/%name.desktop
+%_desktopdir/*%name.desktop
 %_datadir/%name/
-%_datadir/metainfo/gscan2pdf.appdata.xml
+%_datadir/metainfo/*gscan2pdf.appdata.xml
 %_datadir/help/C/gscan2pdf/
 %_pixmapsdir/*
 %_man1dir/*
 %perl_vendor_privlib/Gscan2pdf/
 
 %changelog
+* Sat Mar 07 2020 Vitaly Lipatov <lav@altlinux.ru> 2.6.5-alt1
+- new version 2.6.5 (with rpmrb script)
+
+* Sun Jul 07 2019 Vitaly Lipatov <lav@altlinux.ru> 2.5.4-alt1
+- new version 2.5.4 (with rpmrb script)
+
+* Sun Feb 10 2019 Vitaly Lipatov <lav@altlinux.ru> 2.3.0-alt1
+- new version 2.3.0 (with rpmrb script)
+
 * Fri Dec 14 2018 Vitaly Lipatov <lav@altlinux.ru> 2.2.1-alt1
 - new version 2.2.1 (with rpmrb script)
 
