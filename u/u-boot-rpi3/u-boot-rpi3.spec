@@ -1,9 +1,9 @@
 Name: u-boot-rpi3
-Version: 2019.10
-Release: alt2
+Version: 2020.01
+Release: alt1
 
 Summary: Das U-Boot
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 ExclusiveArch: armh aarch64
@@ -48,6 +48,9 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
+- 2020.01 released
+
 * Wed Oct 09 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt2
 - added 32-bit 3b+ variant just for completeness
 
