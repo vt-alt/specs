@@ -8,7 +8,7 @@
 
 Name: sddm
 Version: 0.18.1
-Release: alt4
+Release: alt6
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -22,6 +22,7 @@ Requires: qt5-quickcontrols
 Source: %name-%version.tar
 Source1: sddm.conf
 Source2: tmpfiles-sddm.conf
+Source3: ru.ts
 Source10: sddm.pam
 Source11: sddm-autologin.pam
 Source12: sddm-greeter.pam
@@ -55,6 +56,7 @@ Patch203: alt-sddm-fix-pw-do-not-match.patch
 Patch204: alt-sddm-visual-fixes.patch
 Patch205: alt-smartcard-pin-login.patch
 Patch206: alt-renew-font-color.patch
+Patch207: alt-translate-renew-dialog.patch
 
 # Automatically added by buildreq on Thu Apr 02 2015 (-bi)
 # optimized out: cmake-modules elfutils libEGL-devel libGL-devel libcloog-isl4 libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-qml libqt5-quick libqt5-test libqt5-xml libstdc++-devel libxcb-devel pkg-config python-base python-module-BeautifulSoup python-module-PyStemmer python-module-Pygments python-module-google python-module-google-apputils python-module-matplotlib python-module-numpy python-module-pyExcelerator python-module-pyparsing python-module-pytz python-module-setuptools python-module-snowballstemmer python-module-zope.interface python-modules python-modules-compiler python-modules-email python-modules-encodings qt5-base-devel qt5-tools
@@ -99,6 +101,7 @@ ability to create smooth, animated user interfaces.
 %patch204 -p1
 %patch205 -p3
 %patch206 -p1
+%patch207 -p1
 
 sed -i 's|rst2man2.py|rst2man.py3|' data/man/CMakeLists.txt
 
@@ -122,6 +125,10 @@ sed -i 's|rst2man2.py|rst2man.py3|' data/man/CMakeLists.txt
     -DUID_MIN=500 \
     -DUID_MAX=32000 \
     #
+
+lconvert-qt5 -i data/translations/ru.ts %SOURCE3 -o data/translations/ru.ts.new
+rm -f data/translations/ru.ts
+mv data/translations/ru.ts{.new,}
 
 %install
 %K5install
@@ -167,6 +174,12 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Thu Feb 27 2020 Oleg Solovyov <mcpain@altlinux.org> 0.18.1-alt6
+- fix patch
+
+* Thu Feb 20 2020 Oleg Solovyov <mcpain@altlinux.org> 0.18.1-alt5
+- renewal dialog: translate strings
+
 * Tue Feb 18 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt4
 - make empty default InputMethod setting
 
