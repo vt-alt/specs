@@ -2,7 +2,7 @@
 %def_disable dialer
 
 Name: plasma5-phone-components
-Version: 5.18.1
+Version: 5.18.3
 Release: alt1
 %K5init altplace
 
@@ -12,7 +12,9 @@ Url: http://www.kde.org
 License: GPL-2.0-or-later
 
 Source: %rname-%version.tar
-Patch1: alt-disable-maliit.patch
+Patch1: alt-kwinwrapper.patch
+Patch2: alt-def-shell.patch
+Patch3: alt-no-dialer.patch
 
 # Automatically added by buildreq on Fri Feb 21 2020 (-bi)
 # optimized out: cmake cmake-modules elfutils gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gstreamer1.0-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-common kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-common kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-common kf5-kwidgetsaddons-devel kf5-kwindowsystem-devel kf5-kxmlgui-devel kf5-solid-devel libdbusmenu-qt52 libglvnd-devel libgpg-error libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-test libqt5-texttospeech libqt5-widgets libqt5-x11extras libqt5-xml libsasl2-3 libstdc++-devel libtelepathy-qt5-farstream0 libtelepathy-qt5-service0 libtelepathy-qt50 libwayland-client libxcbutil-keysyms pkg-config python-modules python2-base python3 python3-base qt5-base-common qt5-base-devel qt5-declarative-devel rpm-build-gir rpm-build-python3 rpm-build-qml sh4
@@ -56,7 +58,9 @@ Requires: %name-common
 %prep
 %setup -n %rname-%version
 %patch1 -p1
+%patch2 -p1
 %if_disabled dialer
+%patch3 -p1
 sed -i 's|\(.*add_subdirectory.*dialer.*\)|#\1|' CMakeLists.txt
 %endif
 
@@ -85,5 +89,14 @@ sed -i 's|\(.*add_subdirectory.*dialer.*\)|#\1|' CMakeLists.txt
 %_datadir/wayland-sessions/plasma-mobile.desktop
 
 %changelog
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.3-alt1
+- new version
+
+* Thu Mar 05 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt3
+- update defaults
+
+* Thu Mar 05 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt2
+- update defaults
+
 * Thu Feb 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
 - initial build

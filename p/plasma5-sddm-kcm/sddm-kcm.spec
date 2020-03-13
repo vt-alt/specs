@@ -1,7 +1,7 @@
 %define rname sddm-kcm
 
 Name: plasma5-%rname
-Version: 5.18.1
+Version: 5.18.3
 Release: alt1
 Epoch: 1
 %K5init altplace
@@ -93,6 +93,9 @@ KF5 library
 %_datadir/polkit-1/actions/*
 
 %changelog
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.3-alt1
+- new version
+
 * Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.1-alt1
 - new version
 

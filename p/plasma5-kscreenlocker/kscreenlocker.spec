@@ -6,7 +6,7 @@
 %define libkscreenlocker libkscreenlocker%sover
 
 Name: plasma5-%rname
-Version: 5.18.1
+Version: 5.18.3
 Release: alt1
 Epoch: 2
 %K5init altplace
@@ -121,6 +121,9 @@ install -m 0644 %SOURCE10 %buildroot/%_sysconfdir/pam.d/kf5-screenlocker
 %_K5lib/libKScreenLocker.so.%sover
 
 %changelog
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 2:5.18.3-alt1
+- new version
+
 * Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 2:5.18.1-alt1
 - new version
 

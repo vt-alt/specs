@@ -1,7 +1,7 @@
 %define rname plasma-browser-integration
 
 Name: plasma5-browser-integration
-Version: 5.18.1
+Version: 5.18.3
 Release: alt1
 %K5init altplace
 
@@ -82,5 +82,8 @@ Requires: %name-common
 #%_K5lib/libplasma-browser-integration.so.*
 
 %changelog
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.3-alt1
+- new version
+
 * Thu Feb 27 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
 - new version

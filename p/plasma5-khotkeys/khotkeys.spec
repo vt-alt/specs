@@ -4,7 +4,7 @@
 %define libkhotkeysprivate libkhotkeysprivate%khotkeysprivate_sover
 
 Name: plasma5-%rname
-Version: 5.18.1
+Version: 5.18.3
 Release: alt1
 %K5init altplace
 
@@ -96,6 +96,9 @@ KF5 library
 %_K5lib/libkhotkeysprivate.so.%khotkeysprivate_sover
 
 %changelog
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.3-alt1
+- new version
+
 * Wed Feb 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.1-alt1
 - new version
 
