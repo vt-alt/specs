@@ -6,15 +6,15 @@
 
 Name: radvd
 Version: 2.18
-Release: alt1
+Release: alt2
 
 Summary: A Router Advertisement daemon
 # The code includes the advertising clause, so it's GPL-incompatible
-License: BSD with advertising
+License: ALT-RADVD
 Group: System/Servers
 
 Url: http://www.litech.org/radvd/
-# git://github.com/reubenhwk/radvd.git
+Vcs: git://github.com/reubenhwk/radvd.git
 Source0: %name-%version.tar
 Source1: %name.init
 Source2: %name.sysconfig
@@ -91,6 +91,14 @@ install -m 644 %SOURCE4 %buildroot%_sysconfdir/radvd.conf
 %_sbindir/radvdump
 
 %changelog
+* Tue Feb 25 2020 Mikhail Efremov <sem@altlinux.org> 2.18-alt2
+- Use Vcs tag.
+- Update license.
+- Patches from upstream:
+    + Fix segfault  because of accessing  NULL pointer.
+    + Crash on SIGHUP when config file removed.
+    + fix wrong assignment of struct msghdr.
+
 * Tue Feb 26 2019 Mikhail Efremov <sem@altlinux.org> 2.18-alt1
 - Disable silent rules.
 - Add radvd.conf.empty file again.
