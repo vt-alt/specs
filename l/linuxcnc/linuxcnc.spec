@@ -1,12 +1,14 @@
 # Unpackaged files in buildroot should terminate build
 %define _unpackaged_files_terminate_build 1
 
+%python_req_hier
+
 %def_without docs
 %def_without static
 %set_verify_elf_method unresolved=relaxed
 Name: linuxcnc
-Version: 2.7.14
-Release: alt1
+Version: 2.7.15
+Release: alt2
 
 Summary: LinuxCNC controls CNC machines
 Summary(ru_RU.UTF-8): Программа управления ЧПУ станков
@@ -14,11 +16,12 @@ License: GPLv2+ and LGPLv2
 Group: Engineering
 Url: https://github.com/LinuxCNC/linuxcnc
 
+ExclusiveArch: aarch64 alpha %arm ia64 %ix86 x86_64
+
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
-Patch: fix_build_with_libmodbus3.1.4.patch
+Source1: aarch64-io.h
 Patch1: fix-dir-path.patch
-Patch2: without-sys-io.h-for-no-x86.patch
 Buildrequires(pre): rpm-build-tcl rpm-build-python
 BuildRequires: gcc-c++ pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gtk+-2.0)
@@ -28,9 +31,11 @@ BuildRequires: pkgconfig(libmodbus)
 BuildRequires: pkgconfig(libusb-1.0)
 BuildRequires: pkgconfig(libudev)
 BuildRequires: libncurses-devel libreadline-devel
+BuildRequires: libtirpc-devel
 BuildRequires: kmod
 BuildRequires: man-db
 BuildRequires: python-modules-tkinter python-modules-unittest
+BuildRequires: python-module-yapps2
 BuildRequires: boost-devel-headers boost-python-devel
 BuildRequires: pkgconfig(pygtk-2.0)
 BuildRequires: tcl-devel tk-devel tcl-img tclx bwidget
@@ -48,12 +53,11 @@ Requires: %name-doc = %version
 
 Requires: %name-data = %version
 Requires: lib%name = %version
-%py_requires gtk.glade
-%add_tcl_req_skip Hal
-%add_tcl_req_skip Linuxcnc
-%add_tcl_req_skip Ngcgui
+Requires: tclx tcl-blt
+%py_requires Xlib
 %add_python_req_skip emccanon
 %add_python_req_skip interpreter
+%add_python_req_skip gtk.gdk
 
 # replace requres python-module-gst -> python-module-gst1.0
 # see https://github.com/LinuxCNC/linuxcnc/commit/fe2483ceb06a1ae93669e0f98657eb8fa1638915
@@ -72,7 +76,7 @@ LinuxCNC это программа, которая работает на ОС Li
 ПК, которые могут интерпретировать G-код и запустить станок с ЧПУ. Изначально он
 был разработан для фрезерного станка, но поддержка была добавлена и для токарных
 станков и многих других типов машин. Он может быть использован с токарными
-станками, станками плазменной резки, маршрутизаторами, роботами, и так далее.
+станками, станками плазменной резки, роботами и так далее.
 
 %package -n liblinuxcnc-devel
 Summary: Development files for %name
@@ -92,7 +96,6 @@ Static version of linuxcnc libraries
 
 %package data
 Summary: Data files for %name
-Buildarch: noarch
 Group: Engineering
 Conflicts: linuxcnc-doc < 2.7.12
 
@@ -134,12 +137,24 @@ Spanish documementation for %name
 
 %prep
 %setup
-%patch -p1
 %patch1 -p1
-%patch2 -p1
+
+sed -i 's|lib/tcltk/linuxcnc|%_lib/tcl/linuxcnc|' lib/python/rs274/options.py
+sed -i 's|INCLUDES := .|INCLUDES := . /usr/include/tirpc|' src/Makefile
+sed -i 's|LDFLAGS := |LDFLAGS := -ltirpc |' src/Makefile
+%ifarch aarch64
+mkdir -p src/rtapi/sys
+cp %SOURCE1 src/rtapi/sys/io.h
+%endif
 
 #fix make install
 sed 's/ -o root//g' -i src/Makefile
+
+# explicitly set python-2
+find . -type f | xargs sed -i \
+	-e '1s:^#!/usr/bin/env python$:#!/usr/bin/python%__python_version:' \
+	-e '1s:^#!/usr/bin/python$:#!/usr/bin/python%__python_version:' \
+	%nil
 
 %build
 pushd src
@@ -147,8 +162,9 @@ pushd src
 %configure \
     --enable-non-distributable=yes \
     --with-realtime=uspace \
+    --with-python=$(which python2) \
     %if_with docs
-    --enable-build-documentation=pdf \
+    --enable-build-documentation=pdf
     %endif
 
 %make_build
@@ -221,8 +237,7 @@ popd
 %exclude %_datadir/axis/images
 %_datadir/%name/hallib
 %_datadir/%name/ncfiles
-%dir %_libexecdir/tcltk
-%_libexecdir/tcltk/%name
+%_tcllibdir/%name
 %python_sitelibdir/*
 
 %files -n lib%name
@@ -270,6 +285,30 @@ popd
 %endif
 
 %changelog
+* Thu Mar 12 2020 Anton Midyukov <antohami@altlinux.org> 2.7.15-alt2
+- Fixed tcl dir again
+
+* Fri Mar 06 2020 Anton Midyukov <antohami@altlinux.org> 2.7.15-alt1
+- New version 2.7.15
+
+* Thu Mar 5 2020 Anton Midyukov <antohami@altlinux.org> 2.7.14-alt5
+- Fixed tcl dir
+- Enabled hierarchical dependency search for python2
+- Update buildrequires
+- Added missing requires
+
+* Mon Dec 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.7.14-alt4
+- Rebuilt with boost-1.71.0.
+
+* Tue Oct 01 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.7.14-alt3
+- Added ExclusiveArch tag to limit architectures to aarch64, alpha, %%arm,
+  ia64, %%ix86, and x86_64.
+- Removed noarch from %%name-data subpackage.
+
+* Sat May 25 2019 Anton Midyukov <antohami@altlinux.org> 2.7.14-alt2
+- Add io.h for aarch64 (dummy) instead of without-sys-io.h-for-no-x86.patch
+- Build with libtirpc
+
 * Tue Jul 03 2018 Anton Midyukov <antohami@altlinux.org> 2.7.14-alt1
 - new version 2.7.14
 
