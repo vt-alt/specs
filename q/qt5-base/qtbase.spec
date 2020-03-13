@@ -34,7 +34,7 @@
 Name: qt5-base
 %define major  5
 Version: 5.12.7
-Release: alt1
+Release: alt2
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -499,6 +499,10 @@ make install INSTALL_ROOT=%buildroot
 [ -d doc/qtcore ] && %make INSTALL_ROOT=%buildroot install_docs ||:
 %endif
 
+# install private qtxcb headers
+mkdir -p %buildroot/%_qt5_headerdir/QtXcb
+install -m 0644 src/plugins/platforms/xcb/*.h %buildroot/%_qt5_headerdir/QtXcb/
+
 # uninstall optflags
 sed -i "s|^\s*QMAKE_CFLAGS_OPTIMIZE\s*=.*$|QMAKE_CFLAGS_OPTIMIZE = -O2|" %buildroot%_qt5_archdatadir/mkspecs/common/gcc-base.conf
 sed -i "s|^\s*QMAKE_CFLAGS_OPTIMIZE_FULL\s*=.*$|QMAKE_CFLAGS_OPTIMIZE_FULL = -O3|" %buildroot%_qt5_archdatadir/mkspecs/common/gcc-base.conf
@@ -607,7 +611,6 @@ while read f ; do
 done
 # link includes into qt prefix
 ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %buildroot/%_qt5_prefix/include
-
 
 %if 0%{?qtchooser}
 %files
@@ -809,6 +812,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Fri Mar 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt2
+- package private qtxcb headers (Closes: 38191)
+
 * Thu Feb 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt1
 - new version
 
