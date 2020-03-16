@@ -1,6 +1,6 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
-Version: 2.7.10
+Version: 2.8.10
 Release: alt1
 
 Group: System/Libraries
@@ -14,16 +14,26 @@ Url: http://www.ansible.com
 Packager: Evgenii Terechkov <evg@altlinux.org>
 
 BuildArch: noarch
-BuildRequires: python-module-setuptools asciidoc-a2x python-module-jinja2 python-module-yaml python-modules-json python-module-packaging python-module-docutils
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-module-six
+BuildRequires: python3-module-setuptools asciidoc-a2x python3-module-jinja2 python3-module-yaml python-modules-json python3-module-packaging python3-module-docutils
 
 Requires: ca-certificates >= 2015.10.29
-%py_requires yaml
-%py_requires paramiko
+%py3_requires yaml
+%py3_requires paramiko
 
 # Skip findreq on all modules:
-%add_findreq_skiplist %python_sitelibdir/%name/modules/*
-%add_findreq_skiplist %python_sitelibdir/%name/plugins/*
-%add_findreq_skiplist %python_sitelibdir/%name/module_utils/ansible_tower.py
+%add_findreq_skiplist %python3_sitelibdir/%name/modules/*
+%add_findreq_skiplist %python3_sitelibdir/%name/plugins/*
+%add_findreq_skiplist %python3_sitelibdir/%name/module_utils/ansible_tower.py
+
+%add_python3_req_skip __main__
+
+%py3_provides ansible.module_utils.six.moves
+%py3_provides ansible.module_utils.six.moves.http_cookiejar
+%py3_provides ansible.module_utils.six.moves.urllib.error
+%py3_provides ansible.module_utils.six.moves.urllib.parse
+%py3_provides ansible.module_utils.six.moves.urllib.request
 
 %description
 Ansible is a radically simple model-driven configuration management,
@@ -37,26 +47,44 @@ are transferred to managed machines automatically.
 %patch0 -p1
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
 mkdir -p %buildroot%_sysconfdir/%name/
 cp examples/ansible.cfg %buildroot%_sysconfdir/%name/
 touch %buildroot%_sysconfdir/%name/hosts
 mkdir -p %buildroot/%_man1dir
-make docs
+make PYTHON=python3 docs
 cp -v docs/man/man1/*.1 %buildroot/%_man1dir/
 
 %files
 %_bindir/%{name}*
 %config(noreplace) %_sysconfdir/%name
 %_man1dir/%{name}*
-%python_sitelibdir/%{name}*
+%python3_sitelibdir/%{name}*
 %doc examples/playbooks examples/scripts examples/hosts
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Thu Mar 12 2020 Alexey Shabalin <shaba@altlinux.org> 2.8.10-alt1
+- 2.8.10
+- Fixes:
+  + CVE-2019-14846
+  + CVE-2019-14856
+  + CVE-2019-14864
+  + CVE-2019-14904
+  + CVE-2019-14905
+
+* Thu Sep 12 2019 Grigory Ustinov <grenka@altlinux.org> 2.8.4-alt2
+- Transfer ansible on python3.
+
+* Tue Sep  3 2019 Terechkov Evgenii <evg@altlinux.org> 2.8.4-alt1
+- 2.8.4 (ALT#36899)
+
+* Fri Jun 14 2019 Terechkov Evgenii <evg@altlinux.org> 2.7.11-alt1
+- 2.7.11
+
 * Tue Apr 30 2019 Terechkov Evgenii <evg@altlinux.org> 2.7.10-alt1
 - 2.7.10
 - Add python-module-docutils in BR: to build on e2k (patch by mike@)
