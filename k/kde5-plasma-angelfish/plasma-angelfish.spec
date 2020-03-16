@@ -4,11 +4,11 @@
 %define libfalkonprivate libfalkonprivate%sover
 
 Name: kde5-plasma-angelfish
-Version: 1.4.0
-Release: alt3
+Version: 1.5.1
+Release: alt1
 %K5init altplace
 
-Summary: A very fast open source browser based on WebKit core
+Summary: Webbrowser designed for mobile devices
 License: GPLv3+
 Group: Networking/WWW
 Url: https://anongit.kde.org/plasma-angelfish.git
@@ -17,6 +17,7 @@ Requires(post,preun): alternatives >= 0.2
 Provides: webclient
 
 Source: %rname-%version.tar
+Patch1: alt-def-size.patch
 
 # Automatically added by buildreq on Tue Feb 25 2020 (-bi)
 # optimized out: alternatives cmake cmake-modules elfutils fontconfig gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 libgdk-pixbuf libglvnd-devel libgpg-error libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-gui libqt5-network libqt5-positioning libqt5-qml libqt5-quick libqt5-quickcontrols2 libqt5-svg libqt5-test libqt5-webchannel libqt5-webengine libqt5-webenginecore libqt5-widgets libsasl2-3 libstdc++-devel libx265-176 python-modules python2-base python3 python3-base qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-webchannel-devel rpm-build-python3 sh4
@@ -27,15 +28,14 @@ BuildRequires: extra-cmake-modules kf5-kcoreaddons-devel kf5-ki18n-devel kf5-kir
 BuildRequires: desktop-file-utils
 
 %description
-Falkon is a new and very fast World Wide Web Browser
-which uses Qt Framework and its QtWebKit rendering core.
-It is a lightweight browser with some advanced functions
-like integrated AdBlock, Search Engines Manager, Theming
-support, Speed Dial and SSL Certificate manager.
+This is the webbrowser designed to
+- be used on small mobile devices,
+- integrate well in Plasma workspaces
 
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
 
 %build
 %K5build
@@ -65,6 +65,12 @@ desktop-file-install --mode=0755 --dir %buildroot/%_K5xdgapp \
 %_K5icon/*/*/apps/*angelfish*.*
 
 %changelog
+* Fri Mar 06 2020 Sergey V Turchin <zerg@altlinux.org> 1.5.1-alt1
+- new version
+
+* Thu Feb 27 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.0-alt4
+- fix package description
+
 * Tue Feb 25 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.0-alt3
 - fix provides and requires
 
