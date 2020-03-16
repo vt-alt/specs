@@ -8,7 +8,7 @@
 %def_with gnutls
 
 Name: squid
-Version: 4.8
+Version: 4.10
 Release: alt1
 %define langpack_ver 20170901 
 Summary: The Squid proxy caching server
@@ -295,6 +295,20 @@ chown -R %name:%name %_spooldir/%name >/dev/null 2>&1 ||:
 %exclude %_man8dir/cachemgr.cgi.*
 
 %changelog
+* Sat Mar 14 2020 Alexey Shabalin <shaba@altlinux.org> 4.10-alt1
+- Updated to 4.10.
+- Fixed:
+  + CVE-2019-12526 Heap Overflow issue in URN processing.
+  + CVE-2019-12523 Multiple issues in URI processing.
+  + CVE-2019-18676 Multiple issues in URI processing.
+  + CVE-2019-18677 Cross-Site Request Forgery issue in HTTP Request processing.
+  + CVE-2019-18678 HTTP Request Splitting issue in HTTP message processing.
+  + CVE-2019-18679 Information Disclosure issue in HTTP Digest Authentication.
+  + CVE-2020-8449 Improper Input Validation issues in HTTP Request processing.
+  + CVE-2020-8450 Improper Input Validation issues in HTTP Request processing.
+  + CVE-2019-12528 Information Disclosure issue in FTP Gateway.
+  + CVE-2020-8517 Buffer Overflow issue in ext_lm_group_acl helper.
+
 * Mon Jul 15 2019 Alexey Shabalin <shaba@altlinux.org> 4.8-alt1
 - Updated to 4.8
 - Fixes:
