@@ -20,7 +20,7 @@
 
 Name: branding-%flavour
 Version: 9.0
-Release: alt2
+Release: alt3
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -418,6 +418,7 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 /etc/skel/.config/autostart/nm-applet.desktop
 /etc/skel/.config/kdeglobals
 /etc/skel/.config/konsolerc
+%_datadir/templates/*
 
 %files fvwm-settings
 %_sysconfdir/skel/.fvwm2rc
@@ -464,6 +465,9 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 9.0-alt3
+- Add OpenDocument templates for KDE5.
+
 * Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 9.0-alt2
 - Package system-logo.png for Plymouth.
 
