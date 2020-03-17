@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -61,7 +61,7 @@ Requires: gtk2-theme-breeze
 Requires: kf5-qqc2-desktop-style
 Requires: kde5-plasma-applet-places-widget
 Requires: plasma5-kde-gtk-config kf5-baloo plasma5-bluedevil plasma5-kscreen plasma5-ksshaskpass kde5-krdc kde5-kgpg
-Requires: plasma5-khotkeys plasma5-kinfocenter plasma5-addons
+Requires: plasma5-khotkeys plasma5-kinfocenter plasma5-addons plasma5-browser-integration
 Requires: kde5-khelpcenter kde5-kolourpaint kde5-kio-audiocd
 Requires: plasma5-kmenuedit plasma5-kgamma plasma5-thunderbolt
 Requires: kde5-kfind kde5-filelight kde5-kcharselect kde5-kteatime kde5-ktimer kde5-spectacle
@@ -195,6 +195,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- add plasma5-browser-integration
+
 * Wed Feb 26 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - add plasma5-discover-maxi
 
