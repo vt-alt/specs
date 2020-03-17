@@ -66,7 +66,7 @@
 Name: systemd
 Epoch: 1
 Version: %ver_major.7
-Release: alt2
+Release: alt3
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -1839,6 +1839,9 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Wed Mar 11 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt3
+- fixed PATH env for units
+
 * Mon Mar 09 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt2
 - move resolve1 and network1 polkit policy from systemd-services to systemd-networkd
 - move org.freedesktop.timesync1.service from systemd-service to systemd-timesyncd
