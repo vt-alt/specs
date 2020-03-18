@@ -1,6 +1,6 @@
 #define status beta
 Name: rosegarden
-Version: 17.12
+Version: 19.12
 Release: alt1
 
 Summary: MIDI and audio sequencer and musical notation editor
@@ -27,6 +27,13 @@ or home recording environments.
 
 %prep
 %setup
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.20
+sed -i "1 i\set (CMAKE_CXX_STANDARD 11)" CMakeLists.txt
+# strip UTF-8 BOM for lcc < 1.24
+find -type f -print0 -name '*.cpp' -o -name '*.h' |
+	xargs -r0 sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 %cmake
@@ -49,6 +56,12 @@ or home recording environments.
 %_datadir/mime/packages/*
 
 %changelog
+* Sun Mar 08 2020 Vitaly Lipatov <lav@altlinux.ru> 19.12-alt1
+- NMU: new version 19.12 (ALT bug 38088)
+
+* Sat Oct 05 2019 Michael Shigorin <mike@altlinux.org> 17.12-alt2
+- E2K: explicit -std=c++11; strip UTF-8 BOM for lcc < 1.24
+
 * Fri Feb 09 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 17.12-alt1
 - Updated to upstream version 17.12.
 
