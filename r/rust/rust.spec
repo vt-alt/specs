@@ -1,4 +1,4 @@
-%define rust_ver 1.35.0
+%define rust_ver 1.36.0
 %define rust_rel alt1
 %define cargo_ver %rust_ver
 %define cargo_rel %rust_rel
@@ -19,8 +19,6 @@ Patch1: rust-gdb.patch
 # Rust issue #61206
 # Patch from FreeBSD https://svnweb.freebsd.org/ports/head/lang/rust/files/patch-src_bootstrap_native.rs?view=markup&pathrev=502416
 Patch2: rust-llvm-build.patch
-# Rust issue #60184
-Patch3:rust-llvm-build-i686.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
@@ -43,7 +41,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.34.2
+%define r_ver 1.35.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -198,7 +196,6 @@ data to provide information about the Rust standard library.
 
 %patch1 -p2
 %patch2
-%patch3 -p1
 
 %if_with bootstrap
 tar xf %r_src
@@ -332,6 +329,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Thu Aug 22 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.36.0-alt1
+- 1.36.0
+
 * Fri May 31 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.35.0-alt1
 - 1.35.0
 

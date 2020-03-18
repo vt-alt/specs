@@ -1,19 +1,20 @@
 %def_with	enigmail
 %def_without	google_calendar
+%def_with	bundled_cbindgen
 %def_enable     mach_build
 %define 	r_name thunderbird
 %ifndef build_parallel_jobs
 %define build_parallel_jobs 32
 %endif
 
-%define enigmail_version  2.0.12
+%define enigmail_version  2.1.5
 %define gdata_version     2.6
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	60.8.0
+Version:	68.6.0
 Release:	alt1
-License:	MPL/GPL
+License:	MPL-2.0
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
 
@@ -25,29 +26,25 @@ Source2:	rpm-build.tar
 Source3:	thunderbird.desktop
 Source4:	thunderbird-mozconfig
 Source5:	thunderbird-default-prefs.js
-Source6:	lightning-ru.tar
+Source6:	lightning-langpacks-%version.tar.xz
+# Get $HOME/.cargo after run cargo install cbindgen (without bin/cbindgen)
+Source7:	cbindgen-source.tar.bz2
 
 Patch6:		01_locale.patch
 Patch8:		thunderbird-timezones.patch
 Patch9:		thunderbird-install-paths.patch
 Patch11:	thunderbird-alt-allow-send-in-windows-1251.patch
 
-Patch20:        build-big-endian.patch
 Patch21:        mozilla-1353817.patch
-Patch22:        build-jit-atomic-always-lucky.patch
 Patch23:        build-aarch64-skia.patch
-Patch24:        rhbz-1354671.patch
 Patch25:        Bug-1238661---fix-mozillaSignalTrampoline-to-work-.patch
 Patch26:        bug1375074-save-restore-x28.patch
-Patch27: 	rust-ignore-not-available-documentation.patch
-
-Patch28:        thunderbird-60.7.2-alt-libpng-std=gnu89.patch
 Patch29:        thunderbird-60.7.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
-Patch30:        thunderbird-60.7.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
-
+Patch30:        thunderbird-68.2.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch31: 	mozilla-1512162.patch
+Patch33:	mozilla-1576268.patch
 
 Patch40:        enigmail-use-juniorModeForceOff.patch
-Patch41:	enigmail-fix-ru-l10n-markup.patch
 Patch42:	enigmail-gost.patch
 Patch43:        enigmail-disable-pEpAutoDownload.patch
 
@@ -55,6 +52,9 @@ BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
 BuildRequires(pre): browser-plugins-npapi-devel
 
+%ifarch %{arm} %{ix86}
+BuildRequires: gcc-c++
+%endif
 BuildRequires: clang7.0
 BuildRequires: clang7.0-devel
 BuildRequires: llvm7.0-devel
@@ -90,6 +90,8 @@ BuildRequires: libpulseaudio-devel
 BuildRequires: libXcomposite-devel
 BuildRequires: libXdamage-devel
 BuildRequires: libdbus-glib-devel
+BuildRequires: node
+BuildRequires: nasm
 
 # Python requires
 BuildRequires: python-module-distribute
@@ -206,10 +208,13 @@ thunderbird packages by some Alt Linux Team Policy compatible way.
 %prep
 %setup -q
 
+%if_with bundled_cbindgen
+tar xf %SOURCE7
+%endif
+
 %if_with enigmail
 tar -xf %SOURCE1
 %patch40 -p1
-%patch41 -p1
 %patch42 -p1
 %patch43 -p1
 # Fix <br> in translations
@@ -222,33 +227,48 @@ tar -xf %SOURCE2
 #patch8 -p2
 #patch9 -p2
 %patch11 -p2
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%ifarch aarch64
-%patch24 -p1
-%endif
+%patch21 -p2
+%patch23 -p2
 %ifarch %arm
 %patch25 -p1
 %endif
 #patch26 -p1
-%patch27 -p1
-%patch28 -p2
 %patch29 -p2
 %patch30 -p2
+%patch31 -p1
+%patch33 -p1
 
 #echo %version > mail/config/version.txt
 
 cp -f %SOURCE4 .mozconfig
 
-echo 'ac_add_options --enable-calendar' >> .mozconfig
+%ifnarch ppc64le %{arm} %{ix86}
+echo "ac_add_options --enable-linker=lld" >> .mozconfig
+%else
+echo "ac_add_options --enable-linker=bfd" >> .mozconfig
+%endif
+%ifarch %{ix86} x86_64
+echo "ac_add_options --disable-elf-hack" >> .mozconfig
+%endif
+
+# Non blocking stdout for NodeJS
+cat > "/tmp/node-stdout-nonblocking-wrapper" << ENDL.
+#!/bin/sh
+exec /usr/bin/node "\$@" 2>&1 | cat -
+ENDL.
+chmod +x /tmp/node-stdout-nonblocking-wrapper
+echo 'export NODEJS="/tmp/node-stdout-nonblocking-wrapper"' >> .mozconfig
 
 sed -i -e '\,hyphenation/,d' comm/mail/installer/removed-files.in
 
 %build
 %add_optflags %optflags_shared
 %add_findprov_lib_path %tbird_prefix
+
+%if_with bundled_cbindgen
+env CARGO_HOME=.cargo cargo --offline install cbindgen
+export PATH=`pwd`/.cargo/bin:$PATH
+%endif
 
 # Add fake RPATH
 rpath="/$(printf %%s '%tbird_prefix' |tr '[:print:]' '_')"
@@ -277,8 +297,23 @@ export CXXFLAGS="$MOZ_OPT_FLAGS"
 export CFLAGS="$CFLAGS -DHAVE_USR_LIB64_DIR=1"
 %endif
 
+%ifarch %{arm} %{ix86}
+export RUSTFLAGS="-Cdebuginfo=0"
+export LLVM_PARALLEL_LINK_JOBS=1
+# See https://lwn.net/Articles/797303/ for linker flags
+# For bfd on i586
+export CXXFLAGS="$CXXFLAGS -Wl,--no-keep-memory -Wl,--reduce-memory-overheads -Wl,--hash-size=1021"
+# For gold on i586
+#export CXXFLAGS="$CXXFLAGS -Wl,--no-threads -Wl,--no-keep-files-mapped -Wl,--no-map-whole-files -Wl,--no-mmap-output-file -Wl,--stats"
+%endif
+
+#ifarch %{arm} %{ix86}
+#export CC="gcc"
+#export CXX="g++"
+#else
 export CC="clang"
 export CXX="clang++"
+#endif
 export PREFIX='%_prefix'
 export LIBDIR='%_libdir'
 export INCLUDEDIR='%_includedir'
@@ -294,10 +329,17 @@ mkdir objdir
 # Do not use desktop notify during build process
 export MOZ_NOSPAM=1
 
+# Don't throw "old profile" dialog box
+export MOZ_ALLOW_DOWNGRADE=1
+
 export NPROCS=%build_parallel_jobs
 # Decrease NPROCS prevents oomkill terror on x86_64
 %ifarch x86_64
 export NPROCS=16
+%endif
+# Build for i586 in one thread
+%ifarch %ix86
+export NPROCS=1
 %endif
 
 ./mach configure
@@ -324,7 +366,7 @@ pushd enigmail
 		STRIP="/bin/true" \
 		MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 	mkdir -p $dir/mozilla/dist
-	unzip build/enigmail*.xpi -d $dir/mozilla/dist/enigmail
+	unzip build-tb/enigmail*.xpi -d $dir/mozilla/dist/enigmail
 popd
 %endif
 
@@ -444,15 +486,16 @@ unzip -q -u -d %buildroot/%google_calendar_ciddir -- \
 )
 
 # Replace packed Lightning extension by unpackaged one to able apply localization by separate packages
-%define lightning_dir %buildroot%_libdir/%name/distribution/extensions/\{e2fda1a4-762b-4020-b5ad-a41df1933103\}
+%define lightning_dir %buildroot%_libdir/%name/extensions/\{e2fda1a4-762b-4020-b5ad-a41df1933103\}
 rm -f %lightning_dir.xpi
-cp -aL objdir/dist/bin/distribution/extensions/\{e2fda1a4-762b-4020-b5ad-a41df1933103\} \
+mkdir -p %lightning_dir
+cp -aL objdir/dist/bin/distribution/extensions/\{e2fda1a4-762b-4020-b5ad-a41df1933103\}/* \
        %lightning_dir
 
-# Add ru localization in manifest
-locale_ru="$(grep en-US %lightning_dir/chrome.manifest | sed 's/en-US/ru/g')"
-echo -e "$locale_ru" >> %lightning_dir/chrome.manifest
-tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
+# lightning langpacks install
+cd %buildroot%_libdir/%name/extensions
+tar xf %SOURCE6
+chmod a+r *.xpi
 
 %files
 %doc AUTHORS
@@ -491,6 +534,97 @@ tar xvf %SOURCE6 -C "%lightning_dir" chrome/calendar-ru chrome/lightning-ru
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 68.6.0-alt1
+- New version (68.6.0).
+- Fixed:
+  + CVE-2020-6805 Use-after-free when removing data about origins
+  + CVE-2020-6806 BodyStream::OnInputStreamReady was missing protections against state confusion
+  + CVE-2020-6807 Use-after-free in cubeb during stream destruction
+  + CVE-2020-6811 Devtools' 'Copy as cURL' feature did not fully escape website-controlled data, potentially leading to command injection
+  + CVE-2019-20503 Out of bounds reads in sctp_load_addresses_from_init
+  + CVE-2020-6812 The names of AirPods with personally identifiable information were exposed to websites with camera or microphone permission
+  + CVE-2020-6814 Memory safety bugs fixed in Thunderbird 68.6
+
+* Wed Feb 12 2020 Andrey Cherepanov <cas@altlinux.org> 68.5.0-alt1
+- New version (68.5.0).
+- Fixed:
+  + CVE-2020-6793 Out-of-bounds read when processing certain email messages
+  + CVE-2020-6794 Setting a master password post-Thunderbird 52 does not delete unencrypted previously stored passwords
+  + CVE-2020-6795 Crash processing S/MIME messages with multiple signatures
+  + CVE-2020-6797 Extensions granted downloads.open permission could open arbitrary applications on Mac OSX
+  + CVE-2020-6798 Incorrect parsing of template tag could result in JavaScript injection
+  + CVE-2020-6792 Message ID calculcation was based on uninitialized data
+  + CVE-2020-6800 Memory safety bugs fixed in Thunderbird 68.5
+
+* Mon Feb 03 2020 Andrey Cherepanov <cas@altlinux.org> 68.4.2-alt1
+- New version.
+
+* Sat Jan 11 2020 Andrey Cherepanov <cas@altlinux.org> 68.4.1-alt1
+- New version (68.4.1).
+- Fixed:
+  + CVE-2019-17026 IonMonkey type confusion with StoreElementHole and FallibleStoreElement
+  + CVE-2019-17015 Memory corruption in parent process during new content process initialization on Windows
+  + CVE-2019-17016 Bypass of @namespace CSS sanitization during pasting
+  + CVE-2019-17017 Type Confusion in XPCVariant.cpp
+  + CVE-2019-17021 Heap address disclosure in parent process during content process initialization on Windows
+  + CVE-2019-17022 CSS sanitization does not escape HTML tags
+  + CVE-2019-17024 Memory safety bugs fixed in Thunderbird 68.4.1
+- Enigmail 2.1.5.
+
+* Mon Dec 23 2019 Andrey Cherepanov <cas@altlinux.org> 68.3.1-alt1
+- New version (68.3.1).
+- Fixed:
+  + CVE-2019-17008 Use-after-free in worker destruction
+  + CVE-2019-13722 Stack corruption due to incorrect number of arguments in WebRTC code
+  + CVE-2019-11745 Out of bounds write in NSS when encrypting with a block cipher
+  + CVE-2019-17009 Updater temporary files accessible to unprivileged processes
+  + CVE-2019-17010 Use-after-free when performing device orientation checks
+  + CVE-2019-17005 Buffer overflow in plain text serializer
+  + CVE-2019-17011 Use-after-free when retrieving a document in antitracking
+  + CVE-2019-17012 Memory safety bugs fixed in Firefox 71, Firefox ESR 68.3, and Thunderbird 68.3
+- Enigmail 2.1.4.
+
+* Sat Nov 09 2019 Andrey Cherepanov <cas@altlinux.org> 68.2.2-alt1
+- New version (68.2.2).
+- Fixed:
+  + CVE-2019-15903 Heap overflow in expat library in XML_GetCurrentLineNumber
+  + CVE-2019-11757 Use-after-free when creating index updates in IndexedDB
+  + CVE-2019-11758 Potentially exploitable crash due to 360 Total Security
+  + CVE-2019-11759 Stack buffer overflow in HKDF output
+  + CVE-2019-11760 Stack buffer overflow in WebRTC networking
+  + CVE-2019-11761 Unintended access to a privileged JSONView object
+  + CVE-2019-11762 document.domain-based origin isolation has same-origin-property violation
+  + CVE-2019-11763 Incorrect HTML parsing results in XSS bypass technique
+  + CVE-2019-11764 Memory safety bugs fixed in Thunderbird 68.2
+- Enigmail 2.1.3.
+
+* Sun Oct 13 2019 Andrey Cherepanov <cas@altlinux.org> 68.1.2-alt1
+- New version (68.1.2).
+- Fixed:
+  + CVE-2019-11739 Covert Content Attack on S/MIME encryption using a crafted multipart/alternative message
+  + CVE-2019-11746 Use-after-free while manipulating video
+  + CVE-2019-11744 XSS by breaking out of title and textarea elements using innerHTML
+  + CVE-2019-11742 Same-origin policy violation with SVG filters and canvas to steal cross-origin images
+  + CVE-2019-11752 Use-after-free while extracting a key value in IndexedDB
+  + CVE-2019-11743 Cross-origin access to unload event attributes
+  + CVE-2019-11740 Memory safety bugs fixed in Firefox 69, Firefox ESR 68.1, Firefox ESR 60.9, Thunderbird 68.1, and Thunderbird 60.9
+  + CVE-2019-11755 Spoofing a message author via a crafted S/MIME message
+
+* Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 68.0-alt1
+- New version (68.0).
+- Fixed:
+  + CVE-2019-9811 Sandbox escape via installation of malicious language pack
+  + CVE-2019-11711 Script injection within domain through inner window reuse
+  + CVE-2019-11712 Cross-origin POST requests can be made with NPAPI plugins by following 308 redirects
+  + CVE-2019-11713 Use-after-free with HTTP/2 cached stream
+  + CVE-2019-11729 Empty or malformed p256-ECDH public keys may trigger a segmentation fault
+  + CVE-2019-11715 HTML parsing error can contribute to content XSS
+  + CVE-2019-11717 Caret character improperly escaped in origins
+  + CVE-2019-11719 Out-of-bounds read when importing curve25519 private key
+  + CVE-2019-11730 Same-origin policy treats all files in a directory as having the same-origin
+  + CVE-2019-11709 Memory safety bugs fixed in Firefox 68, Firefox ESR 60.8, and Thunderbird 60.8
+- Enigmail 2.1.2.
+
 * Wed Jul 10 2019 Andrey Cherepanov <cas@altlinux.org> 60.8.0-alt1
 - New version (60.8.0).
 - Fixed:
