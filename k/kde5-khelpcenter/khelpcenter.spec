@@ -1,8 +1,8 @@
 %define rname khelpcenter
 
 Name: kde5-%rname
-Version: 19.12.2
-Release: alt4
+Version: 19.12.3
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -71,6 +71,9 @@ KDE help center.
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Tue Mar 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt4
 - Updated runtime dependencies.
 
