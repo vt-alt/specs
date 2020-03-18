@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        79.0.3945.130
+Version:        80.0.3987.132
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -77,12 +77,13 @@ Patch019: 0019-ALT-allow-to-override-clang-through-env-variables.patch
 Patch020: 0020-ALT-Hack-to-avoid-build-error-with-clang7.patch
 Patch021: 0021-ALT-Add-missing-header-on-aarch64.patch
 Patch022: 0022-GENTOO-Clang-allows-detection-of-these-builtins.patch
-Patch023: 0023-GCC-use-brace-initializer-for-DohUpgrade-vector.patch
-Patch024: 0024-FEDORA-vtable-symbol-undefined.patch
-Patch025: 0025-FEDORA-remove-noexcept.patch
-Patch026: 0026-IWYU-include-algorithm-to-use-std-lower_bound-in-ui-.patch
-Patch027: 0027-IWYU-launch_manager.h-uses-std-vector.patch
-Patch028: 0028-IWYU-include-cstdint-in-register_context.h-as-it-use.patch
+Patch023: 0023-FEDORA-vtable-symbol-undefined.patch
+Patch024: 0024-FEDORA-remove-noexcept.patch
+Patch025: 0025-Include-cmath-for-std-pow.patch
+Patch026: 0026-gcc-abstract.patch
+Patch027: 0027-gcc-blink.patch
+Patch028: 0028-BookmarkModelMerger-Move-RemoteTreeNode-declaration-.patch
+Patch029: 0029-gcc-permissive.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -99,7 +100,7 @@ BuildRequires:  glibc-kernheaders
 BuildRequires:  clang7.0
 BuildRequires:  clang7.0-devel
 BuildRequires:  llvm7.0-devel
-BuildRequires:  lld-devel
+BuildRequires:  lld7.0-devel
 %endif
 BuildRequires:  ninja-build
 BuildRequires:  gperf
@@ -234,6 +235,7 @@ tar -xf %SOURCE1
 %patch026 -p1
 %patch027 -p1
 %patch028 -p1
+%patch029 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -506,6 +508,53 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Fri Mar 06 2020 Alexey Gladkov <legion@altlinux.ru> 80.0.3987.132-alt1
+- New version (80.0.3987.132).
+- Security fixes:
+  - CVE-2019-18197: Multiple vulnerabilities in XML.
+  - CVE-2019-19923: Out of bounds memory access in SQLite.
+  - CVE-2019-19925: Multiple vulnerabilities in SQLite.
+  - CVE-2019-19926: Inappropriate implementation in SQLite.
+  - CVE-2020-6381: Integer overflow in JavaScript.
+  - CVE-2020-6382: Type Confusion in JavaScript.
+  - CVE-2020-6383: Type confusion in V8.
+  - CVE-2020-6384: Use after free in WebAudio.
+  - CVE-2020-6385: Insufficient policy enforcement in storage.
+  - CVE-2020-6386: Use after free in speech.
+  - CVE-2020-6387: Out of bounds write in WebRTC.
+  - CVE-2020-6388: Out of bounds memory access in WebAudio.
+  - CVE-2020-6389: Out of bounds write in WebRTC.
+  - CVE-2020-6390: Out of bounds memory access in streams.
+  - CVE-2020-6391: Insufficient validation of untrusted input in Blink.
+  - CVE-2020-6392: Insufficient policy enforcement in extensions.
+  - CVE-2020-6393: Insufficient policy enforcement in Blink.
+  - CVE-2020-6394: Insufficient policy enforcement in Blink.
+  - CVE-2020-6395: Out of bounds read in JavaScript.
+  - CVE-2020-6396: Inappropriate implementation in Skia.
+  - CVE-2020-6397: Incorrect security UI in sharing.
+  - CVE-2020-6398: Uninitialized use in PDFium.
+  - CVE-2020-6399: Insufficient policy enforcement in AppCache.
+  - CVE-2020-6400: Inappropriate implementation in CORS.
+  - CVE-2020-6401: Insufficient validation of untrusted input in Omnibox.
+  - CVE-2020-6402: Insufficient policy enforcement in downloads.
+  - CVE-2020-6403: Incorrect security UI in Omnibox.
+  - CVE-2020-6404: Inappropriate implementation in Blink.
+  - CVE-2020-6405: Out of bounds read in SQLite.
+  - CVE-2020-6406: Use after free in audio.
+  - CVE-2020-6407: Out of bounds memory access in streams.
+  - CVE-2020-6408: Insufficient policy enforcement in CORS.
+  - CVE-2020-6409: Inappropriate implementation in Omnibox.
+  - CVE-2020-6410: Insufficient policy enforcement in navigation.
+  - CVE-2020-6411: Insufficient validation of untrusted input in Omnibox.
+  - CVE-2020-6412: Insufficient validation of untrusted input in Omnibox.
+  - CVE-2020-6413: Inappropriate implementation in Blink.
+  - CVE-2020-6414: Insufficient policy enforcement in Safe Browsing.
+  - CVE-2020-6415: Inappropriate implementation in JavaScript.
+  - CVE-2020-6416: Insufficient data validation in streams.
+  - CVE-2020-6417: Inappropriate implementation in installer.
+  - CVE-2020-6418: Type confusion in V8.
+  - CVE-2020-6420: Insufficient policy enforcement in media.
+
 * Mon Feb 03 2020 Alexey Gladkov <legion@altlinux.ru> 79.0.3945.130-alt1
 - New version (79.0.3945.130).
 - Security fixes:

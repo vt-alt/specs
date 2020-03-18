@@ -1,9 +1,9 @@
 Name: libopus
-Version: 1.2.1
-Release: alt1.1
+Version: 1.3.1
+Release: alt2
 
 Summary: Opus Audio Codec library
-License: BSD-style
+License: BSD
 Group: System/Libraries
 Url: http://opus-codec.org/
 # http://downloads.xiph.org/releases/opus/%name-%version.tar.gz
@@ -14,7 +14,7 @@ Source: opus-%version.tar
 %description
 The Opus codec is designed for interactive speech and audio transmission
 over the Internet. It is designed by the IETF Codec Working Group and
-incorporates technology from Skype's SILK codec and Xiph.Org's CELT codec. 
+incorporates technology from Skype's SILK codec and Xiph.Org's CELT codec.
 
 %package devel
 Summary: Development files for libopus
@@ -39,6 +39,7 @@ statically linked libopus-based software.
 %setup -n opus-%version
 
 %build
+%autoreconf
 %configure \
 	--enable-intrinsics \
 	--enable-ambisonics \
@@ -74,6 +75,12 @@ statically linked libopus-based software.
 %endif
 
 %changelog
+* Thu Mar 12 2020 Oleg Solovyov <mcpain@altlinux.org> 1.3.1-alt2
+- fix unknown version in opus.pc (Closes: 38210)
+
+* Sun Mar 08 2020 L.A. Kostis <lakostis@altlinux.ru> 1.3.1-alt1
+- 1.3.1.
+
 * Tue Sep 05 2017 L.A. Kostis <lakostis@altlinux.ru> 1.2.1-alt1.1
 - disable run-time cpu detection only on x86_64.
 
