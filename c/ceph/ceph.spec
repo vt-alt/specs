@@ -1,4 +1,5 @@
-%define git_version ad5bd132e1492173c85fda2cc863152730b16a92
+%define git_version 2d095e947a02261ce61424021bb43bd3022d35cb
+%define _unpackaged_files_terminate_build 1
 
 %def_with ocf
 %def_without tcmalloc
@@ -40,7 +41,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.7
+Version: 14.2.8
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -346,7 +347,7 @@ disk failures using local algorithms and machine-learning databases.
 Summary: diskprediction_cloud module for Ceph Manager Daemon
 Group: Monitoring
 Requires: ceph-mgr = %EVR
-AutoProv: no
+AutoReqProv: no
 %description mgr-diskprediction-cloud
 ceph-mgr-diskprediction-cloud is a ceph-mgr plugin that tries to predict
 disk failures using services in the Google cloud.
@@ -1196,6 +1197,7 @@ fi
 %_bindir/ceph-mgr
 %dir %_datadir/ceph/mgr
 %_datadir/ceph/mgr/__pycache__
+%_datadir/ceph/mgr/alerts
 %_datadir/ceph/mgr/balancer
 %_datadir/ceph/mgr/crash
 %_datadir/ceph/mgr/devicehealth
@@ -1228,8 +1230,8 @@ fi
 %files mgr-diskprediction-local
 %_datadir/ceph/mgr/diskprediction_local
 
-#files mgr-diskprediction-cloud
-#_datadir/ceph/mgr/diskprediction_cloud
+%files mgr-diskprediction-cloud
+%_datadir/ceph/mgr/diskprediction_cloud
 
 %files mgr-influx
 %_datadir/ceph/mgr/influx
@@ -1525,6 +1527,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 10 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.8-alt1
+- 14.2.8
+
 * Wed Feb 19 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.7-alt1
 - 14.2.7 (Fixes: CVE-2020-1699, CVE-2020-1700)
 
