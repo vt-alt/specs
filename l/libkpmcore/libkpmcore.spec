@@ -3,7 +3,7 @@
 %define _libexecdir %_prefix/libexec
 
 Name: lib%_name
-Version: 4.0.1
+Version: 4.1.0
 Release: alt1
 
 Summary: Library for managing partitions
@@ -17,7 +17,7 @@ Provides: %_name = %version-%release
 
 %define blkid_ver 2.30
 
-Requires: polkit
+Requires: sfdisk polkit
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: gcc-c++ extra-cmake-modules %_bindir/appstreamcli
@@ -67,6 +67,9 @@ using %_name.
 
 
 %changelog
+* Mon Feb 10 2020 Yuri N. Sedunov <aris@altlinux.org> 4.1.0-alt1
+- 4.1.0
+
 * Mon Oct 07 2019 Yuri N. Sedunov <aris@altlinux.org> 4.0.1-alt1
 - 4.0.1
 
