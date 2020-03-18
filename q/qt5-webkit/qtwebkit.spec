@@ -7,7 +7,7 @@
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt15
+Release: alt16
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
@@ -198,6 +198,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt16
+- update from 5.212 branch
+
 * Tue Dec 17 2019 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt15
 - update from 5.212 branch
 
