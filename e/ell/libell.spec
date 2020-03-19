@@ -1,8 +1,8 @@
-%define git 1b8e643
+%define git %nil
 
 Name: ell
-Version: 0.4
-Release: alt1.g%git
+Version: 0.28
+Release: alt1
 Summary: Embedded Linux library
 Group: System/Libraries
 License: LGPLv2+
@@ -58,6 +58,9 @@ Headers for developing against libell.
 %_pkgconfigdir/ell.pc
 
 %changelog
+* Sun Mar 15 2020 L.A. Kostis <lakostis@altlinux.ru> 0.28-alt1
+- 0.28.
+
 * Sat Mar 31 2018 L.A. Kostis <lakostis@altlinux.ru> 0.4-alt1.g1b8e643
 - rebuild for ALTLinux.
 

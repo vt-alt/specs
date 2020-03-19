@@ -7,7 +7,7 @@
 %def_enable deprecated
 
 Name: bluez
-Version: 5.50
+Version: 5.54
 Release: alt1
 
 Summary: Bluetooth utilities
@@ -21,15 +21,13 @@ Conflicts: udev-extras < 169
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 # fc
-Patch10: 0001-Allow-using-obexd-without-systemd-in-the-user-session.patch
-
-Obsoletes: bluez-alsa < 5.0
+Patch10: 0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
 Obsoletes: obex-data-server < 0.4.6-alt3
 
 BuildRequires: glib2-devel libudev-devel libdbus-devel libreadline-devel
 BuildRequires: systemd-devel gtk-doc
 %{?_enable_obex:BuildRequires: libical-devel libicu-devel}
-%{?_enable_btpclient:BuildRequires: libell-devel >= 0.3}
+%{?_enable_btpclient:BuildRequires: libell-devel >= 0.28}
 # for check
 BuildRequires: /proc
 
@@ -83,6 +81,7 @@ export CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
 %configure \
 	--enable-library \
 	--enable-threads \
+	--enable-external-ell \
 	%{subst_enable obex} \
 	%{subst_enable btpclient} \
 	--enable-cups \
@@ -176,6 +175,22 @@ chkconfig bluetoothd on
 %endif
 
 %changelog
+* Sun Mar 15 2020 L.A. Kostis <lakostis@altlinux.ru> 5.54-alt1
+- 5.54;
+- remove merged patches;
+- security fixes:
+  + CVE-2020-0556 (closes #38220).
+
+* Wed Sep 18 2019 L.A. Kostis <lakostis@altlinux.ru> 5.50-alt1.2
+- Added patch:
+  + 0001-policy-Add-logic-to-connect-a-Sink.patch (fixing issue when a2dp wasn't
+    selected properly)
+
+* Mon Sep 16 2019 L.A. Kostis <lakostis@altlinux.ru> 5.50-alt1.1
+- Remove conflicting obsoletes with bluez-alsa.
+- Added patch:
+  + 0001-tools-Fix-build-after-y2038-changes-in-glibc.patch
+
 * Fri Jun 22 2018 L.A. Kostis <lakostis@altlinux.ru> 5.50-alt1
 - 5.50.
 
