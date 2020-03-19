@@ -43,7 +43,7 @@
 
 Name: branding-simply-linux
 Version: 8.991
-Release: alt1
+Release: alt2
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
 %ifarch %ix86 x86_64
@@ -502,6 +502,9 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Tue Mar 17 2020 Mikhail Efremov <sem@altlinux.org> 8.991-alt2
+- xfce-settings: Fix some MIME types associations.
+
 * Tue Mar 10 2020 Mikhail Efremov <sem@altlinux.org> 8.991-alt1
 - xfce-settings: Enable compositing on x86_64 only.
 - menu: Hide mcedit.
