@@ -1,6 +1,6 @@
 Name:		burp
-Version:	2.3.16
-Release:	alt2
+Version:	2.3.22
+Release:	alt1
 
 Summary:	Burp is a network-based backup and restore program
 License:	AGPL-3.0 and BSD and GPLv2+ and LGPLv2+
@@ -9,7 +9,6 @@ Url:		https://burp.grke.org/
 
 # https://github.com/grke/burp.git master
 Source:		%{name}-%{version}.tar
-Patch:		%{name}-%{version}-%{release}.patch
 
 BuildRequires:  libtool
 BuildRequires:  librsync-devel
@@ -24,7 +23,8 @@ BuildRequires:  libcap-devel
 BuildRequires:  openssl
 
 BuildRequires: rpm-macros-intro-conflicts
-%filter_from_requires /^\/usr\/local\/bin\/mail\.php$/d
+%add_findreq_skiplist %_datadir/%name/scripts/*
+%add_optflags -Wno-error=unused-variable
 
 %description
 Burp is a network backup and restore program, using client and server.
@@ -33,7 +33,6 @@ amount of space that is used by each backup.
 
 %prep
 %setup
-%patch -p1
 
 %build
 %autoreconf
@@ -82,6 +81,13 @@ install -D -p -m 0644 .gear/burp.service %{buildroot}%{_unitdir}/burp-server.ser
 %preun_service burp-server
 
 %changelog
+* Thu Feb 13 2020 Vitaly Chikunov <vt@altlinux.org> 2.3.22-alt1
+- Update to 2.3.22.
+- Overwrite our `readall=' support with upstream version.
+
+* Wed Feb 12 2020 Vitaly Chikunov <vt@altlinux.org> 2.3.16-alt3
+- Remove parasite dependencies from optional scripts.
+
 * Fri Dec 06 2019 Vitaly Chikunov <vt@altlinux.org> 2.3.16-alt2
 - Adjust chkconfig runlevels so that server isn't enabled by default
 - Make _burp:_burp user and configs owned by root:_burp
