@@ -1,18 +1,20 @@
 %filter_from_requires s,python-module-zope\.app\.appsetup,,
 
 Name: os-prober
-Version: 1.74
-Release: alt1
+Version: 1.77
+Release: alt3
 
 Summary: Operating systems detector
 License: GPLv2+
 Group: System/Configuration/Boot and Init
-Url: http://packages.debian.org/sid/os-prober
+Url: https://salsa.debian.org/installer-team/os-prober
+#Git: https://salsa.debian.org/installer-team/os-prober.git
 
-Packager: Vitaly Kuznetsov <vitty@altlinux.ru>
 Source0: %name-%version.tar
 
 Patch: %name-1.42-UUID-rootdev-alt.patch
+Patch1: %name-1.77-alt-grub2-detect-auto-reference.patch
+Patch2: %name-1.77-alt-grub2-skip-30_os-prober-parsing.patch
 
 %description
 This is a small package that may be depended on by any bootloader
@@ -22,6 +24,8 @@ them, and work out how to boot other linux installs.
 %prep
 %setup
 %patch -p1
+%patch1 -p1 
+%patch2 -p1
 
 %build
 %make_build
@@ -60,6 +64,17 @@ mkdir -p %buildroot%_localstatedir/%name
 %_localstatedir/%name
 
 %changelog
+* Fri Mar 20 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.77-alt3
+- fix grub2-skip-30_os-prober-parsing patch
+
+* Wed Mar 11 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.77-alt2
+- add grub2-detect-auto-reference patch
+- add grub2-skip-30_os-prober-parsing patch
+
+* Tue Apr 30 2019 Nikolai Kostrigin <nickel@altlinux.org> 1.77-alt1
+- 1.77 (closes: #37224)
+  + relies on grub-mount
+
 * Fri Mar 03 2017 Hihin Ruslan <ruslandh@altlinux.ru> 1.74-alt1
 - 1.74
 

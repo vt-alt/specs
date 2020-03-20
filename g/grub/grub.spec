@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt23
+Release: alt25
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -35,7 +35,6 @@ Source13: grub-entries.8
 Patch0: grub-2.02-os-alt.patch
 Patch1: grub-2.00-sysconfig-path-alt.patch
 Patch2: grub-2.02-altlinux-theme.patch
-Patch3: grub-2.00-debian-uefi-os-prober.patch
 Patch4: grub-2.02-os-alt-xen.patch
 Patch5: grub-2.02-debian-disable_floppies.patch
 Patch6: grub-2.02-add-fw_path-variable.patch
@@ -52,6 +51,7 @@ Patch16: grub-2.02-suse-fix-build-with-gcc8.patch
 Patch17: grub-2.02-fix-binutils-break-grub-efi-build.patch
 Patch18: grub-2.02-upstream-default-ptimer.patch
 Patch19: grub-2.02-upstream-xfs-sparse-inodes.patch
+Patch20: grub-2.02-alt-os-prober-compat.patch
 
 # add a rhboot/grub-2.02-sb set of patches to ensure SecureBoot safe operation
 # refer to url:  https://github.com/rhboot/grub2/commits/grub-2.02-sb
@@ -80,6 +80,7 @@ BuildRequires: flex fonts-bitmap-misc fonts-ttf-dejavu libfreetype-devel python-
 BuildRequires: liblzma-devel help2man zlib-devel
 BuildRequires: libdevmapper-devel
 BuildRequires: texinfo
+BuildRequires: libfuse-devel
 
 # fonts: choose one
 
@@ -151,7 +152,7 @@ Group: System/Kernel and hardware
 Requires: %name-common = %EVR
 Provides: grub2-efi = %EVR
 Obsoletes: grub2-efi < %EVR
-PreReq: efibootmgr >= 15
+Requires(pre): efibootmgr >= 15
 %ifarch aarch64
 Provides: grub2 = %EVR
 Provides: grub = %EVR
@@ -201,7 +202,6 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch0 -p2
 %patch1 -p1
 %patch2 -p2
-%patch3 -p1
 %patch4 -p2
 %patch5 -p1
 %patch6 -p1
@@ -218,6 +218,7 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p2
+%patch20 -p2
 
 #SB patches
 %patch101 -p1
@@ -449,6 +450,7 @@ rm %buildroot%_sysconfdir/grub.d/41_custom
 %_bindir/grub-mkpasswd-pbkdf2
 %_bindir/grub-mkrelpath
 %_bindir/grub-mkrescue
+%_bindir/grub-mount
 %_bindir/grub-script-check
 %_bindir/grub-syslinux2cfg
 %_datadir/grub/grub-mkconfig_lib
@@ -521,6 +523,16 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Tue Mar 10 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt25
+- improve grub-2.02-alt-os-prober-compat patch
+
+* Thu Feb 20 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt24
+- introduce compatibility with os-prober 1.77 (closes: #36624)
+  + remove grub-2.00-debian-uefi-os-prober patch
+  + add alt-os-prober-compat patch
+  + spec: add libfuse-devel to BR to support grub-mount feature
+- spec: replace deprecated PreReq with Requires(pre) for efibootmgr
+
 * Thu Feb 06 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt23
 - spec: add even more crypto modules to enable boot time encrypted
   password feature operation in SB mode on some UEFI firmwares
