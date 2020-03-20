@@ -1,7 +1,7 @@
 %def_with debug
 
 Name: 	 qcad
-Version: 3.23.0.11
+Version: 3.24.3.0
 Release: alt1
 Summary: A professional CAD system
 Summary(ru_RU.UTF-8): Профессиональная система CAD
@@ -17,6 +17,7 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 Source0: qcad-%version.tar
 Patch:   %name-%version-%release.patch
 Patch1:  qcad-qt5-unbundle_libraries.patch
+Patch2:  qcad-alt-use-system-zlib.patch
 
 BuildRequires: gcc-c++ qt5-base-devel python
 BuildRequires: desktop-file-utils
@@ -55,16 +56,19 @@ QCad это профессиональная CAD система. С QCad вы м
 %setup -q
 %patch -p1
 %patch1 -p1
+%patch2 -p1
+rm -rf src/3rdparty/opennurbs/zlib
 %if_with debug
 echo 'DEFINES -= QT_NO_DEBUG_OUTPUT' >> shared.pri
 %endif
 %qmake_qt5
 #lupdate-qt5 %name.pro
 
+%define fallback_qt_version 5.12.3
 if [ ! -e src/3rdparty/qt-labs-qtscriptgenerator-%_qt5_version ] ; then
     pushd src/3rdparty
-    cp -ar qt-labs-qtscriptgenerator-5.7.0 qt-labs-qtscriptgenerator-%_qt5_version
-    mv qt-labs-qtscriptgenerator-%_qt5_version/qt-labs-qtscriptgenerator-5.7.0.pro qt-labs-qtscriptgenerator-%_qt5_version/qt-labs-qtscriptgenerator-%_qt5_version.pro
+    cp -ar qt-labs-qtscriptgenerator-%fallback_qt_version qt-labs-qtscriptgenerator-%_qt5_version
+    mv qt-labs-qtscriptgenerator-%_qt5_version/qt-labs-qtscriptgenerator-%fallback_qt_version.pro qt-labs-qtscriptgenerator-%_qt5_version/qt-labs-qtscriptgenerator-%_qt5_version.pro
     popd
 fi
 
@@ -124,6 +128,31 @@ done
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Wed Mar 18 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.3.0-alt1
+- New version.
+- Build with system zlib (ALT #38141).
+
+* Thu Feb 20 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.2.6-alt1
+- New version.
+
+* Wed Feb 12 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.2.4-alt1
+- New version.
+
+* Thu Feb 06 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.2.3-alt1
+- New version.
+
+* Tue Jan 21 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.2.1-alt1
+- New version.
+
+* Mon Jan 06 2020 Andrey Cherepanov <cas@altlinux.org> 3.24.1.0-alt1
+- New version.
+
+* Mon Dec 23 2019 Andrey Cherepanov <cas@altlinux.org> 3.24.0.1-alt1
+- New version.
+
+* Wed Dec 18 2019 Andrey Cherepanov <cas@altlinux.org> 3.24.0.0-alt1
+- New version.
+
 * Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 3.23.0.11-alt1
 - New version.
 - Fix open file(s) with spaces (ALT #34893).
