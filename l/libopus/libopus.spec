@@ -1,6 +1,6 @@
 Name: libopus
 Version: 1.3.1
-Release: alt2
+Release: alt3
 
 Summary: Opus Audio Codec library
 License: BSD
@@ -8,6 +8,7 @@ Group: System/Libraries
 Url: http://opus-codec.org/
 # http://downloads.xiph.org/releases/opus/%name-%version.tar.gz
 Source: opus-%version.tar
+Source1: package_version
 
 %def_disable static
 
@@ -37,6 +38,7 @@ statically linked libopus-based software.
 
 %prep
 %setup -n opus-%version
+cp %SOURCE1 .
 
 %build
 %autoreconf
@@ -75,6 +77,9 @@ statically linked libopus-based software.
 %endif
 
 %changelog
+* Wed Mar 18 2020 Oleg Solovyov <mcpain@altlinux.org> 1.3.1-alt3
+- remove git garbage from opus.pc (Closes: 38210)
+
 * Thu Mar 12 2020 Oleg Solovyov <mcpain@altlinux.org> 1.3.1-alt2
 - fix unknown version in opus.pc (Closes: 38210)
 
