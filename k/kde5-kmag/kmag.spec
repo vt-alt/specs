@@ -1,7 +1,7 @@
 %define rname kmag
 
 Name: kde5-%rname
-Version: 19.12.2
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -40,6 +40,9 @@ those working in the fields of image analysis, web development etc.
 %_K5data/%rname/
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
 - new version
 

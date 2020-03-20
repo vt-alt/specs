@@ -1,8 +1,8 @@
 %define rname filelight
 
 Name: kde5-%rname
-Version: 19.12.2
-Release: alt2
+Version: 19.12.3
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -78,6 +78,9 @@ KF5 library
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Feb 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.2-alt2
 - fixed displaying duplicate mount points
 

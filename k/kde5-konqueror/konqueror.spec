@@ -10,7 +10,7 @@
 %define libkonqsidebarplugin libkonqsidebarplugin%konqsidebarplugin_sover
 
 Name: kde5-%rname
-Version: 19.12.2
+Version: 19.12.3
 Release: alt1
 %K5init no_appdata
 
@@ -19,7 +19,7 @@ Summary: Web browser for KDE
 Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
-PreReq(post,preun): alternatives >= 0.2
+Requires(post,preun): alternatives >= 0.2
 Requires: indexhtml
 Provides: webclient %_bindir/xbrowser %_bindir/x-www-browser
 Provides: kde5-www-browser
@@ -194,6 +194,9 @@ done
 #%_K5lib/libkonqsidebarplugin.so.*
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
 - new version
 

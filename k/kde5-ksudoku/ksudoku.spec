@@ -1,7 +1,7 @@
 %define rname ksudoku
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -49,6 +49,9 @@ only one instance of each symbol.
 %_K5xmlgui/%{rname}/
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

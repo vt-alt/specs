@@ -1,7 +1,7 @@
 %define rname knights
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init no_altplace
 
@@ -87,6 +87,9 @@ Requires: %name-common = %version-%release
 #%_K5dbus_iface/*nights*.xml
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

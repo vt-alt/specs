@@ -1,7 +1,7 @@
 %define rname katomic
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -47,6 +47,9 @@ BuildRequires: kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-kcrash-devel
 %_K5conf_up/katomic-*
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %define rname kruler
 
 Name: kde5-%rname
-Version: 19.12.2
+Version: 19.12.3
 Release: alt1
 %K5init altplace
 
@@ -45,6 +45,9 @@ BuildRequires: kf5-ki18n-devel kf5-knotifications-devel kf5-kwidgetsaddons-devel
 
 
 %changelog
+* Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Fri Feb 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
 - new version
 

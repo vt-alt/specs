@@ -1,7 +1,7 @@
 %define rname kigo
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -50,6 +50,9 @@ glass or plastic) on the vacant intersections of a grid of 19x19 lines (9x9 or
 %_K5xdgconf/%{rname}.knsrc
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

@@ -1,7 +1,7 @@
 %define rname step
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -61,8 +61,12 @@ you can not only learn but feel how physics works!
 %_K5icon/*/*/actions/step_*.*
 %_K5icon/*/*/actions/pointer.*
 %_K5xmlgui/step/
+%_K5xdgmime/*step*.xml
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 

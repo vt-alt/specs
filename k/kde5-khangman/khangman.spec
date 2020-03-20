@@ -1,7 +1,7 @@
 %define rname khangman
 
 Name: kde5-%rname
-Version: 19.12.1
+Version: 19.12.3
 Release: alt1
 %K5init
 
@@ -62,6 +62,9 @@ echo 'add_subdirectory(ru/data/khangman)' >> po/CMakeLists.txt
 %_K5icon/*/*/apps/khangman*.*
 
 %changelog
+* Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- new version
+
 * Thu Jan 23 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - new version
 
