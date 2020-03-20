@@ -1,10 +1,10 @@
 
 %global qt_module qtdeclarative
-%def_enable bootstrap
+%def_disable bootstrap
 
 Name: qt5-declarative
 Version: 5.12.7
-Release: alt2
+Release: alt4
 
 Group: System/Libraries
 Summary: Qt5 - QtDeclarative component
@@ -256,6 +256,12 @@ cat %SOURCE2 >> %buildroot%_rpmmacrosdir/qml.env
 %_bindir/rpmbqml-qmlinfo
 
 %changelog
+* Tue Mar 17 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt4
+- build docs
+
+* Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt3
+- build docs
+
 * Thu Feb 27 2020 Oleg Solovyov <mcpain@altlinux.org> 5.12.7-alt2
 - fix automatic qml provides
 
