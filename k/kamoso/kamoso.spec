@@ -1,18 +1,30 @@
-Name:           kamoso
-Version:        19.08.0
-Release:        alt1
+%def_without ru_doc
 
-Group:          Video
-Summary:        Application for taking pictures and videos from a webcam
-URL:            https://userbase.kde.org/Kamoso
+Name:    kamoso
+Version: 19.12.3
+Release: alt1
 
-License:        GPLv2+
+Group:   Video
+Summary: Application for taking pictures and videos from a webcam
+URL:     https://userbase.kde.org/Kamoso
 
-Source0:        %name-%version.tar
-Source1:	%name.watch
+License: GPLv2+
+
+# Download from http://download.kde.org/stable/release-service/19.12.0/src/kamoso-19.12.0.tar.xz
+Source0: %name-%version.tar
+Source1: %name.watch
+Source2: po.tar
+Source3: kamoso-ru.po
+Source4: kamoso-ru-doc.po
+Patch1:  kamoso-add-l10n.patch
+Patch2:  kamoso-alt-fix-l10n-ru.patch
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
+BuildRequires: gettext-tools
+%if_with ru_doc
+BuildRequires: itstool
+%endif
 BuildRequires: qt5-declarative-devel
 BuildRequires: qt5-graphicaleffects
 BuildRequires: kf5-kauth-devel
@@ -45,12 +57,24 @@ BuildRequires: gst-plugins1.0-devel
 
 Requires: libkf5quickaddons
 Requires: kf5-purpose
+Requires: kf5-ki18n-common
 
 %description
 Kamoso is an application to take pictures and videos out of your webcam.
 
 %prep
-%setup -q
+%setup
+%patch1 -p1
+%patch2 -p1
+tar xf %SOURCE2
+# Merge Russian localization to current version
+msgmerge %SOURCE3 po/ru/kamoso.po -o $TMPDIR/kamoso.po
+cp $TMPDIR/kamoso.po po/ru/kamoso.po
+%if_with ru_doc
+# Apply Russian localization to documentation
+msgfmt %SOURCE4 -o $TMPDIR/kamoso.mo
+itstool -m $TMPDIR/kamoso.mo -o ru/ doc/index.docbook
+%endif
 
 %build
 %add_optflags -I%_libdir/gstreamer-1.0/include
@@ -73,6 +97,28 @@ Kamoso is an application to take pictures and videos out of your webcam.
 %_K5notif/%name.notifyrc
 
 %changelog
+* Tue Mar 10 2020 Andrey Cherepanov <cas@altlinux.org> 19.12.3-alt1
+- New version.
+
+* Tue Feb 18 2020 Andrey Cherepanov <cas@altlinux.org> 19.12.2-alt1
+- New version.
+- Add localization (ALT #37707).
+
+* Thu Dec 12 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.0-alt1
+- New version.
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 19.11.90-alt1
+- New version.
+
+* Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.3-alt1
+- New version.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.2-alt1
+- New version.
+
+* Thu Sep 05 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.1-alt1
+- New version.
+
 * Fri Aug 16 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.0-alt1
 - New version.
 
