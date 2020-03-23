@@ -1,8 +1,8 @@
 %def_without build_docs
 
 Name:    synfigstudio
-Version: 1.3.11
-Release: alt2
+Version: 1.3.12
+Release: alt1
 
 Summary: Synfig studio - animation program
 Group:   Office
@@ -15,6 +15,7 @@ Patch0: %name-%version-%release.patch
 ExclusiveArch: %ix86 x86_64
 
 BuildRequires(pre): rpm-build-xdg
+BuildRequires(pre): rpm-build-python3
 BuildPreReq: fonts-ttf-liberation
 BuildRequires: gcc-c++
 BuildRequires: /proc
@@ -64,6 +65,8 @@ BuildRequires: openjade
 %endif
 
 Requires: lib%name = %version-%release
+
+%add_python3_compile_include %_datadir/synfig/plugins
 
 %description
 Synfig Animation Studio is a powerful, industrial-strength vector-based
@@ -168,6 +171,10 @@ find %buildroot%_xdgmimedir/ -maxdepth 1 -a -type f -delete
 # Remove .la files
 rm -f %buildroot%_libdir/synfig/modules/*.la
 
+# Add python3 shebang to all python files
+subst '/^#!\/usr\/bin\/env python$/d' `find %buildroot -name \*.py`
+subst '1i#!%__python3' `find %buildroot -name \*.py`
+
 %find_lang synfig
 %find_lang %name
 cat synfig.lang >> %name.lang
@@ -198,6 +205,9 @@ cat synfig.lang >> %name.lang
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Feb 03 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.12-alt1
+- New version.
+
 * Mon Apr 22 2019 Andrey Cherepanov <cas@altlinux.org> 1.3.11-alt2
 - Fix build (ALT #36651).
 
