@@ -1,5 +1,5 @@
 Name: QtBitcoinTrader
-Version: 1.40.43
+Version: 1.40.50
 Release: alt1
 Summary: Bitcoin Secure Trading Client for most popular Bitcoin exchanges
 Url: http://sourceforge.net/projects/bitcointrader/
@@ -7,9 +7,7 @@ Group: Office
 License: GPLv3
 Source0: BitcoinTraderQtSRC_v%{version}.zip
 
-# Automatically added by buildreq on Wed Sep 16 2015 (-bi)
-# optimized out: elfutils fontconfig libGL-devel libcom_err-devel libkrb5-devel libqt5-core libqt5-gui libqt5-multimedia libqt5-network libqt5-script libqt5-widgets libstdc++-devel python-base python3 python3-base qt5-base-devel qt5-declarative-devel
-BuildRequires: ImageMagick-tools gcc-c++ libssl-devel qt5-multimedia-devel qt5-script-devel qt5-svg-devel unzip zlib-devel
+BuildRequires: ImageMagick-tools gcc-c++ libssl-devel qt5-multimedia-devel qt5-script-devel qt5-svg-devel qt5-speech-devel unzip zlib-devel
 
 %description
 Qt Bitcoin Trader
@@ -43,6 +41,9 @@ convert -resize 16x16 %name.png %buildroot%_miconsdir/%name.png
 %_miconsdir/%name.png
 
 %changelog
+* Sun Mar 22 2020 Motsyo Gennadi <drool@altlinux.ru> 1.40.50-alt1
+- 1.40.50
+
 * Fri Sep 13 2019 Motsyo Gennadi <drool@altlinux.ru> 1.40.43-alt1
 - 1.40.43
 
