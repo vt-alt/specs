@@ -1,5 +1,5 @@
 Name: timeshift
-Version: 19.01
+Version: 20.03
 Summary: System restore tool for Linux
 Release: alt1
 License: GPLv3
@@ -7,7 +7,10 @@ Group: Archiving/Backup
 URL: https://github.com/teejee2008/timeshift.git
 Source: %name-%version.tar
 
-BuildRequires: vala libjson-glib-devel libgee0.8-devel libvte3-devel
+BuildRequires: vala
+BuildRequires: libjson-glib-devel
+BuildRequires: libgee0.8-devel
+BuildRequires: libvte3-devel
 Requires: rsync
 
 %description
@@ -39,6 +42,13 @@ rm -f %buildroot%_bindir/%name-uninstall
 %_datadir/polkit-1/actions/in.teejeetech.pkexec.timeshift.policy
 
 %changelog
+* Sun Mar 08 2020 Alexander Makeenkov <amakeenk@altlinux.org> 20.03-alt1
+- New version
+
+* Tue Nov 05 2019 Alexander Makeenkov <amakeenk@altlinux.org> 19.08.1-alt1
+- New version 19.08.1
+- Fixed build
+
 * Tue Feb 12 2019 Mikhail Savostyanov <mik@altlinux.org> 19.01-alt1
 - New version 19.01
 
