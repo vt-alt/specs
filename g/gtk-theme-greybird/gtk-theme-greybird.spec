@@ -1,17 +1,19 @@
 %define theme_name Greybird
 
 Name: gtk-theme-greybird
-Version: 3.22.10
+Version: 3.22.11
 Release: alt1
 Summary: A clean minimalistic theme for Xfce, GTK+ 2 and 3
 Group: Graphical desktop/XFce
 
 License: GPLv2+ or CC-BY-SA
 URL: https://shimmerproject.org/
-# https://github.com/shimmerproject/Greybird
+Vcs: https://github.com/shimmerproject/Greybird
 Source: %name-%version.tar
 
 BuildArch: noarch
+
+BuildRequires(pre): meson
 
 BuildRequires: sassc xml-utils
 # For glib-compile-resources
@@ -84,12 +86,11 @@ Themes for Xfce4 notifyd as part of the Greybird theme.
 %setup
 
 %build
-%autoreconf
-%configure
-%make_build
+%meson
+%meson_build -v
 
 %install
-%makeinstall_std
+%meson_install
 
 %files
 
@@ -97,22 +98,31 @@ Themes for Xfce4 notifyd as part of the Greybird theme.
 %doc LICENSE.GPL LICENSE.CC
 %dir %_datadir/themes/%theme_name/
 %_datadir/themes/%theme_name/index.theme
+%_datadir/themes/%theme_name-dark/index.theme
 
 %files -n gtk2-theme-greybird
 %_datadir/themes/%theme_name/gtk-2.0/
+%_datadir/themes/%theme_name-dark/gtk-2.0/
 
 %files -n gtk3-theme-greybird
 %_datadir/themes/%theme_name/gtk-3.0/
 %_datadir/themes/%theme_name/gnome-shell/
 %_datadir/themes/%theme_name/plank/
+%_datadir/themes/%theme_name-dark/gtk-3.0/
+%_datadir/themes/%theme_name-dark/gnome-shell/
+%_datadir/themes/%theme_name-dark/plank/
 
 %files -n metacity-theme-greybird
 %_datadir/themes/%theme_name/metacity-1/
+%_datadir/themes/%theme_name-dark/metacity-1/
 
 %files -n xfwm4-theme-greybird
 %_datadir/themes/%theme_name/xfwm4/
 %dir %_datadir/themes/%theme_name-accessibility/
 %_datadir/themes/%theme_name-accessibility/xfwm4/
+%_datadir/themes/%theme_name-dark/xfwm4/
+%dir %_datadir/themes/%theme_name-dark-accessibility/
+%_datadir/themes/%theme_name-dark-accessibility/xfwm4/
 %dir %_datadir/themes/%theme_name-compact/
 %_datadir/themes/%theme_name-compact/xfwm4/
 
@@ -122,10 +132,15 @@ Themes for Xfce4 notifyd as part of the Greybird theme.
 %_datadir/themes/%theme_name-bright/xfce-notify-4.0/
 
 %exclude %_datadir/themes/%theme_name/Greybird.emerald
-%exclude %_datadir/themes/%theme_name/ubiquity-panel-bg.png
 %exclude %_datadir/themes/%theme_name/unity
+%exclude %_datadir/themes/%theme_name-dark/Greybird-dark.emerald
+%exclude %_datadir/themes/%theme_name-dark/unity
 
 %changelog
+* Wed Mar 18 2020 Mikhail Efremov <sem@altlinux.org> 3.22.11-alt1
+- Add Vcs tag.
+- 3.22.11.
+
 * Thu Feb 14 2019 Mikhail Efremov <sem@altlinux.org> 3.22.10-alt1
 - 3.22.10.
 
