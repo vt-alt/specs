@@ -1,37 +1,40 @@
+%define _unpackaged_files_terminate_build 1
+
 %define service_name loolwsd
 %define service_user lool
 %define default_loroot %_libdir/LibreOffice
 %define loolparent %_localstatedir
 
+%ifarch ppc64le
+%define __nprocs 32
+%endif
+
 Name: libreoffice-online
-Version: 6.0.2.3
-Release: alt3
-
+Version: 6.2.3.2
+Release: alt2
 Summary: LibreOffice Online WebSocket Daemon
-
-License: MPLv2
+License: MPL-2.0
 Group: Office
-Url: https://gerrit.libreoffice.org/p/online.git
+Url: https://www.libreoffice.org/download/libreoffice-online/
 
+# https://git.libreoffice.org/online
 Source0: %name-%version.tar
-Source1: %service_name.init
-Source2: %name.conf.nginx
-Source3: %name.conf.apache2
-Source4: node-modules.tar
+Source1: node_modules-%version.tar
+Source2: %service_name.init
+Source3: %name.conf.nginx
+Source4: %name.conf.apache2
 
-Patch0: remove-rpath.patch
-Patch1: disable-setcap.patch
+Patch1: remove-rpath.patch
 Patch2: disable-copying-libs.patch
 Patch3: fix-conf-dir.patch
-Patch4: log-to-file.patch
-Patch5: i586-build.patch
-Patch6: i586-lfs-support.patch
-Patch7: ru-translation.patch
-Patch8: npm-shrinkwrap.patch
-Patch9: package.patch
-Patch10: loleaflet-makefile.patch
-Patch11: fix-printing-size-type.patch
-Patch12: libreoffice-online-upstream-gcc8.patch
+Patch4: ru-translation.patch
+Patch5: loleaflet-makefile.patch
+Patch6: skip-installing-http-configs.patch
+Patch7: alt-systemd-service.patch
+Patch8: alt-use-hash-directory.patch
+Patch9: alt-gcc-compat.patch
+Patch10: alt-python2-compat.patch
+Patch11: alt-32bit-build.patch
 
 Requires: LibreOffice python3 fonts-ttf-core
 
@@ -50,9 +53,9 @@ and interoperability match that of LibreOffice.
 %package nginx
 Summary: nginx web-server default configuration for %name
 Group: Networking/WWW
-Requires: %name nginx
-
 BuildArch: noarch
+Requires: %name = %EVR
+Requires: nginx
 
 %description nginx
 nginx web-server default configuration for %name.
@@ -60,83 +63,54 @@ nginx web-server default configuration for %name.
 %package apache2
 Summary: Apache 2.x web-server default configuration for %name
 Group: Networking/WWW
-Requires: %name apache2
-
 BuildArch: noarch
+Requires: %name = %EVR
+Requires: apache2
+Requires: apache2-mods
+Requires: apache2-mod_ssl
 
 %description apache2
 Apache 2.x web-server default configuration for %name.
 
 %prep
-%setup
-%patch0 -p1
+%setup -a1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-
-%if "%_lib" != "lib64"
 %patch5 -p1
 %patch6 -p1
-%endif
-
-tar -xf %SOURCE4 -C loleaflet/
-
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
 
 %build
-sh autogen.sh
-
-%configure --enable-silent-rules \
-           --with-lokit-path=bundled/include \
-           --disable-setcap \
-           --with-lo-path=%default_loroot \
-           --localstatedir=%_var \
-%ifnarch x86_64
-           --disable-seccomp
+%add_optflags -D_FILE_OFFSET_BITS=64
+%ifarch ppc64le
+# ppc64le misses following definition
+%add_optflags -D__linux=1
 %endif
 
-mkdir -p bin && cd bin
-ln -s ../loleaflet/node_modules/jake/bin/cli.js jake
-cd -
-export PATH="$PATH:$(pwd)/bin"
+%autoreconf
+%configure \
+	--with-lokit-path=bundled/include \
+	--disable-setcap \
+	--with-lo-path=%default_loroot \
+	--localstatedir=%_var \
+%ifnarch x86_64
+	--disable-seccomp \
+%endif
+	%nil
 
 %make_build
 
 %install
-export PATH="$PATH:$(pwd)/bin"
 %makeinstall_std
 
-unit_file="%buildroot%_unitdir/%service_name.service"
-
-mkdir -p %buildroot%_unitdir
-
-cat > "$unit_file" << EOF
-[Unit]
-Description=LibreOffice Online WebSocket Daemon
-After=network.target
-
-[Service]
-EnvironmentFile=-%_sysconfdir/sysconfig/%service_name
-ExecStart=%_bindir/%service_name --version \
---o:sys_template_path=%loolparent/%service_user/systemplate \
---o:lo_template_path=%default_loroot \
---o:child_root_path=%loolparent/%service_user/child-roots \
---o:file_server_root_path=%_datadir/%name
-User=%service_user
-KillMode=control-group
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-install -D -m 755 %SOURCE1 %buildroot%_initdir/%service_name
+install -D -m 644 %service_name.service %buildroot%_unitdir/%service_name.service
+install -D -m 755 %SOURCE2 %buildroot%_initdir/%service_name
 
 install -d -m 755 %buildroot%_var/adm/fillup-templates
 install -d -m 755 %buildroot%_cachedir/%name
@@ -152,13 +126,17 @@ mkdir -p %buildroot%_sysconfdir/pam.d
 echo "auth       required     pam_unix.so" > %buildroot%_sysconfdir/pam.d/%service_name
 echo "account    required     pam_unix.so" >>  %buildroot%_sysconfdir/pam.d/%service_name
 
-install -pD -m0644 %SOURCE2 %buildroot%_sysconfdir/nginx/sites-available.d/%name.conf
-install -pD -m0644 %SOURCE3 %buildroot%_sysconfdir/httpd2/conf/sites-available/%name.conf
+install -pD -m0644 %SOURCE3 %buildroot%_sysconfdir/nginx/sites-available.d/%name.conf
+install -pD -m0644 %SOURCE4 %buildroot%_sysconfdir/httpd2/conf/sites-available/%name.conf
 
-mkdir -p %buildroot%_logdir
-touch %buildroot%_logdir/%service_name.log
+install -pD -m0644 etc/*.pem %buildroot%_sysconfdir/%name/
 
-install -pD -m0644 etc/*.pem %buildroot%_sysconfdir/%name
+ln -s dist %buildroot%_datadir/%name/loleaflet/$(echo %version | cut -d . -f 1-3)
+
+cp etc/apache2/loolwsd.conf loolwsd.apache2.conf
+cp etc/nginx/loolwsd.conf loolwsd.nginx.conf
+
+mv %buildroot%_defaultdocdir/%name ./%{name}-doc
 
 %pre
 getent group %service_user >/dev/null || groupadd -r %service_user
@@ -186,33 +164,44 @@ a2enmod headers
 %_initdir/httpd2 condreload
 
 %files
+%doc COPYING
+%doc AUTHORS ChangeLog README NEWS PROBLEMS
+%doc %{name}-doc
 %_bindir/*
 %_datadir/%name
-%_defaultdocdir/%name
+%_man1dir/*
 %dir %_sysconfdir/%name/
-%attr(755,%service_user,%service_user) %_cachedir/%name
-%dir %attr(755,%service_user,%service_user) %loolparent/%service_user
-%attr(755,%service_user,%service_user) %loolparent/%service_user/child-roots
-%attr(755,%service_user,%service_user) %loolparent/%service_user/systemplate
-%attr(644,%service_user,%service_user) %_logdir/%service_name.log
+%config(noreplace) %attr(640, %service_user, root) %_sysconfdir/%name/%service_name.xml
+%config(noreplace) %_sysconfdir/%name/loolkitconfig.xcu
 %config(noreplace) %attr(640,%service_user, root) %_sysconfdir/%name/*.pem
-%attr(755,root,root) %_initdir/%service_name
 %config(noreplace) %_sysconfdir/sysconfig/%service_name
 %config(noreplace) %_sysconfdir/cron.d/%service_name.cron
 %config(noreplace) %_sysconfdir/pam.d/%service_name
-%config(noreplace) %attr(640, %service_user, root) %_sysconfdir/%name/%service_name.xml
-%config(noreplace) %_sysconfdir/%name/loolkitconfig.xcu
-%config %attr(644, root, root) %_unitdir/%service_name.service
-
-%doc AUTHORS ChangeLog README NEWS TODO
+%_initdir/%service_name
+%_unitdir/%service_name.service
+%dir %attr(-,%service_user,%service_user) %loolparent/%service_user
+%dir %attr(-,%service_user,%service_user) %loolparent/%service_user/child-roots
+%dir %attr(-,%service_user,%service_user) %loolparent/%service_user/systemplate
+%dir %attr(-,%service_user,%service_user) %_cachedir/%name
 
 %files nginx
+%doc loolwsd.nginx.conf
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/nginx/sites-available.d/%name.conf
 
 %files apache2
+%doc loolwsd.apache2.conf
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/sites-available/%name.conf
 
 %changelog
+* Wed Mar 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.3.2-alt2
+- Fixed build on p9 for ppc64le.
+
+* Wed Mar 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.3.2-alt1
+- Updated to upstream version 6.2.3.2.
+
+* Wed Aug 21 2019 Alexei Takaseev <taf@altlinux.org> 6.0.2.3-alt3.1
+- Fix build (race-condition on ppc64le)
+
 * Tue Feb 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 6.0.2.3-alt3
 - NMU: fixed build.
 
