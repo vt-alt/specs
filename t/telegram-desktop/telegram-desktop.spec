@@ -7,7 +7,7 @@
 %def_without ffmpeg_static
 
 Name: telegram-desktop
-Version: 1.9.14
+Version: 1.9.21
 Release: alt1
 
 Summary: Telegram Desktop messaging app
@@ -51,6 +51,7 @@ Requires: libqt5-core >= %_qt5_version
 BuildRequires: qt5-base-devel-static
 
 BuildRequires: libenchant2-devel
+BuildRequires: libhunspell-devel
 
 # for autoupdater (included ever if disabled)
 # TODO:
@@ -177,7 +178,6 @@ export CCACHE_SLOPPINESS=pch_defines,time_macros
 %makeinstall_std
 # XDG files
 #install -m644 -D lib/xdg/tg.protocol %buildroot%_Kservices/tg.protocol
-install -m644 -D lib/xdg/telegramdesktop.appdata.xml %buildroot%_datadir/appdata/telegram-desktop.appdata.xml
 
 ln -s %name %buildroot%_bindir/Telegram
 ln -s %name %buildroot%_bindir/telegram
@@ -191,7 +191,6 @@ ln -s %name %buildroot%_bindir/telegramdesktop
 %_desktopdir/telegramdesktop.desktop
 #_Kservices/tg.protocol
 %_datadir/metainfo/telegramdesktop.appdata.xml
-%_datadir/appdata/%name.appdata.xml
 %_iconsdir/hicolor/16x16/apps/telegram.png
 %_iconsdir/hicolor/32x32/apps/telegram.png
 %_iconsdir/hicolor/48x48/apps/telegram.png
@@ -203,6 +202,12 @@ ln -s %name %buildroot%_bindir/telegramdesktop
 %doc README.md
 
 %changelog
+* Tue Mar 17 2020 Vitaly Lipatov <lav@altlinux.ru> 1.9.21-alt1
+- new version 1.9.21 (with rpmrb script)
+
+* Sun Mar 15 2020 Vitaly Lipatov <lav@altlinux.ru> 1.9.20-alt1
+- new version 1.9.20 (with rpmrb script)
+
 * Tue Feb 18 2020 Vitaly Lipatov <lav@altlinux.ru> 1.9.14-alt1
 - new version 1.9.14 (with rpmrb script)
 
