@@ -7,7 +7,7 @@
 %set_verify_elf_method unresolved=relaxed
 
 Name: wireshark
-Version: 3.0.8
+Version: 3.0.9
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -219,6 +219,12 @@ _EOF_
 
 
 %changelog
+* Thu Mar 12 2020 Anton Farygin <rider@altlinux.ru> 3.0.9-alt1
+- 3.0.9
+- fixes:
+   * LTE RRC dissector could leak memory. CVE-2020-9431
+   * WiMax DLMAP dissector could crash. CVE-2020-9430
+
 * Tue Jan 21 2020 Anton Farygin <rider@altlinux.ru> 3.0.8-alt1
 - 3.0.8
 - disabled sharkd build
