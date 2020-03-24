@@ -1,5 +1,5 @@
 Name: code
-Version: 1.42.0
+Version: 1.43.0
 Release: alt1
 
 Summary: Visual Studio Code
@@ -30,6 +30,8 @@ BuildRequires: libsecret
 # we need it for AutoReq
 BuildRequires: libgtk+3 libxkbfile libnss libnspr libXtst libalsa libcups libXScrnSaver libGConf
 
+Provides: vscode = %version-%release
+
 %description
 Visual Studio Code is a new choice of tool that combines the simplicity
 of a code editor with what developers need for the core edit-build-debug cycle.
@@ -57,6 +59,9 @@ install -m644 -D %SOURCE3 %buildroot%_pixmapsdir/code.png
 %_pixmapsdir/code.png
 
 %changelog
+* Fri Mar 13 2020 Vitaly Lipatov <lav@altlinux.ru> 1.43.0-alt1
+- new version 1.43.0 (with rpmrb script)
+
 * Mon Feb 10 2020 Vitaly Lipatov <lav@altlinux.ru> 1.42.0-alt1
 - new version 1.42.0 (with rpmrb script)
 
