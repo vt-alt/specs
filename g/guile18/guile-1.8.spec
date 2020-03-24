@@ -5,7 +5,7 @@
 
 Name: %{iname}18
 Version: %sversion.7
-Release: alt7
+Release: alt8
 Epoch: 1
 
 Summary: A GNU implementation of Scheme for application extensibility
@@ -20,6 +20,7 @@ Patch2: guile-1.8.7-testsuite.patch
 Patch3: guile-1.8.7-testsuite2.patch
 Patch4: guile-1.8.7-mkdir-umask.patch
 Patch5: guile-1.8.7-overflow.patch
+Patch6: guile-2.0.2-fix-read-beyond-end-of-hashtable-size-array-in-hasht.patch
 
 BuildRequires: libgmp-devel libltdl-devel libncurses-devel libreadline-devel
 BuildRequires: /proc /dev/pts
@@ -54,6 +55,7 @@ Install this package if you are going to develop extendable programs.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %__subst -p 's/^libguile_la_LDFLAGS = .*/& $(GUILE_CFLAGS)/' libguile/Makefile*
 
@@ -97,6 +99,14 @@ make check
 %_libdir/pkgconfig/%iname-%sversion.pc
 
 %changelog
+* Tue Mar 17 2020 Ivan Zakharyaschev <imz@altlinux.org>  1:1.8.7-alt8
+- Fixes:
+  + OVE-20200317-0001 excessive/unoptimal memory allocation for hashtables due to read-beyond-end
+
+    (Thanks svace & coverity static analysis,
+    https://lists.gnu.org/archive/html/guile-devel/2011-07/msg00069.html,
+    backported from 2.0.3.)
+
 * Fri Dec 14 2018 Dmitry V. Levin <ldv@altlinux.org> 1:1.8.7-alt7
 - Fixed build (see rhbz#1307394).
 
@@ -106,6 +116,8 @@ make check
 * Mon Jul 30 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:1.8.7-alt5
 - stop providing guile-devel
 - drop devel-static subpackage
+- fix incorrect behavior (due to integer overflow) when compiled with gcc >= 6
+  (https://lists.gnu.org/archive/html/guile-devel/2016-02/msg00045.html)
 
 * Tue Oct 11 2016 Mikhail Efremov <sem@altlinux.org> 1:1.8.7-alt4
 - Remove 'umask' calls from 'mkdir'.
