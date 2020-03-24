@@ -1,5 +1,5 @@
 Name: chrooted
-Version: 0.3.9
+Version: 0.3.10
 Release: alt1
 
 Summary: The chrooted environment helper
@@ -55,6 +55,24 @@ install -Dpm755 resolvconf %buildroot%_sysconfdir/hooks/resolv.conf.d/update_chr
 %config %_chrootdir
 
 %changelog
+* Wed Mar 11 2020 Ivan Zakharyaschev <imz@altlinux.org> 0.3.10-alt1
+- Fixes:
+  + OVE-20200311-0001 Normal update operations by root can corrupt/crash running processes through modifying libraries
+
+    (Normally, the processes that can be affected are only the services
+    already running in the chrooted environment being updated, if it is on
+    a different filesystem than the system libraries, and hence they
+    can't be hardlinked. Extraordinarily, if a file in a chrooted
+    environment has been a hardlink to a system library, but ln hasn't
+    succeeded this time for some reason, the affected processes are any
+    already running processes system-wide.
+
+    This could happen only as a result of actions initiated by root:
+    for example, a package upgrade which included the old version of
+    chrooted, or a package upgrade which included libraries in a system
+    with the old version of chrooted, or an invocation of
+    /sbin/update_chrooted.)
+
 * Tue Apr 10 2018 Maxim Voronov <mvoronov@altlinux.org> 0.3.9-alt1
 - copy_resolv_conf: added support for symlinked /etc/localtime (see #32346).
 
