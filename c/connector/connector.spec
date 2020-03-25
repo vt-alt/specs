@@ -1,5 +1,5 @@
 Name: connector
-Version: 1.8.6
+Version: 1.8.8
 Release: alt1
 
 Summary: Remote desktop chooser
@@ -32,7 +32,7 @@ install -pDm644 %name.desktop %buildroot%_desktopdir/%name.desktop
 mkdir -p %buildroot%basedir/data/
 install -p *.png *.glade %buildroot%basedir/data/
 install -p *.py %buildroot%basedir/
-install -pm755 %name-check-version %buildroot%basedir/
+install -pm755 %name-check-* %buildroot%basedir/
 install -pDm644 %name.man %buildroot%_man1dir/%name.1
 %find_lang --with-man %name
 install -pDm644 kiosk.access %buildroot%_sysconfdir/%name/kiosk.access
@@ -46,7 +46,7 @@ cp -r icons/hicolor %buildroot%_iconsdir/
 %dir %basedir
 %basedir/data
 %basedir/*.py
-%basedir/%name-check-version
+%basedir/%name-check-*
 %_man1dir/*
 %dir %_sysconfdir/%name
 %config(noreplace) %_sysconfdir/%name/kiosk.access
@@ -54,6 +54,19 @@ cp -r icons/hicolor %buildroot%_iconsdir/
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Tue Feb 4 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.8.8-alt1
+- FreeRDP:
+ + Added escaping special characters in a password
+ + Updated setting the window size
+ + Added checking AUTH_FAILED error
+- Added the debug mode
+- Added key 'quit' for cmdline
+
+* Wed Jan 22 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.8.7-alt1
+- FreeRDP: added checking errors
+- Disabled empty name for connections
+- Added default sorting to connections and its change
+
 * Tue Dec 17 2019 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.8.6-alt1
 - Added 'drag-and-drop' for create label of the connection
 - Added the possibility to open Remmina and RDP files
