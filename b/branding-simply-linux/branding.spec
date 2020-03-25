@@ -39,11 +39,13 @@
 %define lo_icon_theme oxygen
 %endif
 
+%define java_version 1.8.0
+
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 8.991
-Release: alt2
+Version: 9.0
+Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
 %ifarch %ix86 x86_64
@@ -57,6 +59,9 @@ BuildRequires: libalternatives-devel
 BuildRequires: qt5-base-devel
 
 BuildRequires: ImageMagick fontconfig bc
+
+# For java-*-openjdk-*-policytool.desktop
+BuildRequires: java-%{java_version}-openjdk
 
 Source: %name-%version.tar
 
@@ -283,7 +288,6 @@ Simply Linux index.html welcome page.
 Summary: menu for Simply Linux
 License: Distributable
 Group: Graphical desktop/Other
-BuildArch: noarch
 Requires(pre): altlinux-freedesktop-menu-common
 Requires: altlinux-freedesktop-menu-common
 
@@ -377,6 +381,12 @@ mkdir -p %buildroot/etc/xdg/menus/xfce-applications-merged
 cp menu/50-xfce-applications.menu %buildroot/etc/xdg/menus/xfce-applications-merged/
 mkdir -p %buildroot/usr/share/desktop-directories
 cp menu/altlinux-wine.directory %buildroot/usr/share/desktop-directories/
+# Find and use java policy desktop file: its name arch-dependent
+JAVA_POLICY_DESKTOP="$(find /usr/share/applications -mindepth 1 -maxdepth 1 \
+                       -name 'java-%{java_version}-openjdk-*-policytool.desktop')" >/dev/null 2>&1
+[ -n "$JAVA_POLICY_DESKTOP" ] || exit 1
+cp -a "$JAVA_POLICY_DESKTOP" %buildroot/usr/share/slinux-style/applications/
+echo "NoDisplay=True" >>%buildroot/usr/share/slinux-style/applications/"${JAVA_POLICY_DESKTOP##*/}"
 
 %ifarch %ix86 x86_64
 #bootloader
@@ -502,6 +512,10 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Tue Mar 24 2020 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
+- menu: Use system java-*-openjdk-*-policytool.desktop.
+- indexhtml: Update download links.
+
 * Tue Mar 17 2020 Mikhail Efremov <sem@altlinux.org> 8.991-alt2
 - xfce-settings: Fix some MIME types associations.
 
