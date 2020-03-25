@@ -1,26 +1,26 @@
-Name: cutecom
-Version: 0.40.0
-Release: alt1
+Name:     cutecom
+Version:  0.51.0
+Release:  alt1
 
-Summary: A graphical serial terminal
-License: GPLv2
-Group: Communications
-
-Url: http://cutecom.sourceforge.net
-Source: %name-%version.tgz
-Patch: cutecom-0.40.0-mga-fixinstall.patch
-Packager: Michael Shigorin <mike@altlinux.org>
-
-# Automatically added by buildreq on Wed Nov 05 2008
-BuildRequires: cmake gcc-c++
-
+Summary:  A graphical serial terminal
 Summary(pl): Graficzny terminal szeregowy
 Summary(ru_RU.UTF-8): Графический последовательный терминал
+License:  GPL-3.0+
+Group:    Communications
+Url:      https://gitlab.com/cutecom/cutecom
+
+Source:   %name-%version.tar
+Patch:    cutecom-0.40.0-mga-fixinstall.patch
+
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: cmake gcc-c++
 BuildRequires: desktop-file-utils
 BuildRequires: pkgconfig(Qt5Core)
 BuildRequires: pkgconfig(Qt5Gui)
 BuildRequires: pkgconfig(Qt5SerialPort)
 BuildRequires: pkgconfig(Qt5Widgets)
+# build MarkDown
+BuildRequires: pandoc
 
 # Required for xmodem support
 Requires: lrzsz
@@ -44,12 +44,11 @@ Cutecom - графический последовательный термина
 %patch -p1
 
 %build
-PATH=$PATH:%_libdir/qt4/bin
-%cmake_insource
-%make_build
+%cmake
+%cmake_build
 
 %install
-%makeinstall_std
+%cmakeinstall_std
 
 # Upstream script does not install the .desktop file if KDE is not installed,
 # so we install it manually
@@ -60,14 +59,22 @@ desktop-file-install --dir %buildroot%_desktopdir \
 	--add-category=System \
 	cutecom.desktop
 
+pandoc -f markdown -t html README.md -o README.html
+
 %files
-%doc Changelog LICENSE README* TODO
+%doc Changelog LICENSE README.html *.png TODO
 %_bindir/*
 %_man1dir/*
 %_desktopdir/*
 %_iconsdir/hicolor/scalable/apps/cutecom.svg
 
 %changelog
+* Fri Mar 13 2020 Anton Midyukov <antohami@altlinux.org> 0.51.0-alt1
+- 0.51.0
+- switch to git
+- update license
+- update url
+
 * Mon May 29 2017 Michael Shigorin <mike@altlinux.org> 0.40.0-alt1
 - 0.40.0
   + Qt5 version
