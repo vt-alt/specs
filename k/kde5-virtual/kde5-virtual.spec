@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.15.0
+Version: 5.16.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -150,6 +150,16 @@ Requires: kf5-filesystem
 %description -n kde5-audio-player-0-dummy
 %summary
 
+%package -n kde5-audio-player-2-elisa
+Group: Graphical desktop/KDE
+Summary: Elisa audio player
+Provides: kde5-audio-player = %EVR
+Provides: kde5-audio-player-elisa = %EVR
+Requires: kf5-filesystem
+Requires: kde5-elisa
+%description -n kde5-audio-player-2-elisa
+%summary
+
 %package -n kde5-audio-player-4-qmmp
 Group: Graphical desktop/KDE
 Summary: QMMP audio player
@@ -207,6 +217,7 @@ Requires: kde5-telepathy
 %files -n kde5-email-client-4-thunderbird
 
 %files -n kde5-audio-player-0-dummy
+%files -n kde5-audio-player-2-elisa
 %files -n kde5-audio-player-4-qmmp
 
 %files -n kde5-messenger-client-0-dummy
@@ -214,6 +225,9 @@ Requires: kde5-telepathy
 %files -n kde5-messenger-client-4-telepathy
 
 %changelog
+* Fri Mar 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.16.0-alt1
+- add kde5-audio-player-elisa
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 5.15.0-alt1
 - add kde5-messenger-client
 
