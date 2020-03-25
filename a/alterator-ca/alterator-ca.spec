@@ -1,7 +1,7 @@
 # vim: set ft=spec: -*- rpm-spec -*-
 
 Name: alterator-ca
-Version: 0.5.5
+Version: 0.5.7
 Release: alt1
 
 Summary: Office Server CA Manager
@@ -53,6 +53,12 @@ install -p -m755 hook/ca %buildroot%_libexecdir/alterator/hooks/trust.d
 %dir %_localstatedir/alterator-ca/out
 
 %changelog
+* Tue Mar 24 2020 Slava Aseev <ptrnine@altlinux.org> 0.5.7-alt1
+- Use sha256 default_md (Closes: #38213)
+
+* Mon Dec 23 2019 Andrey Cherepanov <cas@altlinux.org> 0.5.6-alt1
+- Use compat nameopt for certificate Subject for openssl 1.1.
+
 * Fri Oct 07 2016 Andrey Cherepanov <cas@altlinux.org> 0.5.5-alt1
 - Fix URL replace with CSRF preventing token (ALT #32428)
 - Fix indentation of form fields
