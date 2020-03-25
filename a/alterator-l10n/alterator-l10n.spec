@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.56
+Version: 2.9.57
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,10 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Tue Mar 03 2020 Slava Aseev <ptrnine@altlinux.org> 2.9.57-alt1
+- Update Russian translations and help for alterator-openvpn-server
+  and alterator-net-openvpn
+
 * Fri Feb 07 2020 Anton Midyukov <antohami@altlinux.org> 2.9.56-alt1
 - Updated Russian translation and help for alterator-grub.
 - Updated strings for alterator-grub.

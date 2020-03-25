@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-net-openvpn
-Version: 0.8.12
+Version: 0.8.13
 Release: alt1
 License: %gpl2plus
 Group: System/Configuration/Other
@@ -17,6 +17,7 @@ Requires: alterator-l10n >= 2.7-alt12
 Requires: openvpn >= 2.1
 Requires: etcnet
 Requires: openresolv
+Requires: alterator-openvpn-sh-functions
 
 BuildPreReq: alterator >= 4.7-alt3
 
@@ -42,6 +43,9 @@ Alterator module for openvpn connections configuration
 %_alterator_backend3dir/*
 
 %changelog
+* Fri Feb 28 2020 Slava Aseev <ptrnine@altlinux.org> 0.8.13-alt1
+- Add ability to select cipher, tls-cipher and digest
+
 * Fri Aug 31 2018 Paul Wolneykien <manowar@altlinux.org> 0.8.12-alt1
 - Fix: Allow to use either a hostname or an IP-address as the
   server address.

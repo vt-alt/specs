@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: cert-sh-functions
-Version: 1.0.4
+Version: 1.0.6
 Release: alt1
 
 BuildArch: noarch
@@ -28,6 +28,12 @@ install -Dpm644 %name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Fri Mar 13 2020 Andrey Cherepanov <cas@altlinux.org> 1.0.6-alt1
+- Use sha256 algorithm for cert generate for request (ALT #38213).
+
+* Mon Dec 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.0.5-alt1
+- Return ssl_fatal() for compatibility (ALT #37212).
+
 * Wed Apr 17 2019 Mikhail Efremov <sem@altlinux.org> 1.0.4-alt1
 - Check for openssl-config existance (closes: #36602).
 

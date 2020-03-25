@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-openvpn-server
-Version: 0.8.5
+Version: 0.8.6
 Release: alt1
 License: %gpl2plus
 Group: System/Configuration/Other
@@ -18,6 +18,7 @@ Requires: alterator-l10n >= 2.7-alt12
 Requires: openvpn >= 2.1
 Requires: etcnet
 Requires: openresolv 
+Requires: alterator-openvpn-sh-functions
 
 BuildPreReq: alterator >= 4.7-alt3
 BuildPreReq: rpm-build-licenses
@@ -42,6 +43,9 @@ Alterator module for openvpn server configuration
 %_alterator_backend3dir/*
 
 %changelog
+* Fri Feb 28 2020 Slava Aseev <ptrnine@altlinux.org> 0.8.6-alt1
+- Add ability to select cipher, tls-cipher and digest
+
 * Mon May 16 2016 Mikhail Efremov <sem@altlinux.org> 0.8.5-alt1
 - Fix check for addresses range.
 
