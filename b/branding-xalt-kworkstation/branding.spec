@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 0
-%define bugfix 5
+%define bugfix 6
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -35,8 +35,8 @@ BuildRequires: ImageMagick fontconfig bc libGConf-devel /usr/bin/fribidi
 
 %define Theme_ru Рабочая станция К
 %define Brand_ru Альт
-%define status BETA
-%define status_ru БЕТА
+%define status %nil
+%define status_ru %nil
 %define ProductName %Brand %Theme %altversion
 %define ProductName_ru %Brand_ru %Theme_ru %altversion
 
@@ -434,6 +434,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Tue Mar 24 2020 Sergey V Turchin <zerg at altlinux dot org> 9.0.6-alt1
+- remove beta label
+
 * Wed Mar 04 2020 Sergey V Turchin <zerg at altlinux dot org> 9.0.5-alt1
 - update buttons focus color
 
