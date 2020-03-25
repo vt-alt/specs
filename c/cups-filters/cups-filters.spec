@@ -2,8 +2,8 @@
 %global _localstatedir %_var
 
 Name: cups-filters
-Version: 1.25.11
-Release: alt2
+Version: 1.27.1
+Release: alt1
 
 Summary: OpenPrinting CUPS filters and backends
 # For a breakdown of the licensing, see COPYING file
@@ -59,7 +59,7 @@ BuildRequires: libavahi-devel libavahi-glib-devel
 BuildRequires: fonts-ttf-dejavu
 
 # Make sure we get postscriptdriver tags.
-BuildRequires: python-module-cups
+BuildRequires: python3-module-cups
 
 Requires: poppler-utils
 Requires: /usr/bin/gs
@@ -94,7 +94,7 @@ This is the development package for OpenPrinting CUPS filters and backends.
 %package -n cups-backend-serial
 Epoch: 1
 Summary: serial backend for cups
-License: GPL
+License: GPLv2
 Group: System/Servers
 
 %description -n cups-backend-serial
@@ -191,6 +191,27 @@ install -D -m 644 %SOURCE3 %buildroot/%_datadir/cups/data/
 %_libdir/libfontembed.so
 
 %changelog
+* Fri Feb 21 2020 Anton Farygin <rider@altlinux.ru> 1.27.1-alt1
+- new version 1.27.1
+
+* Wed Jan 29 2020 Anton Farygin <rider@altlinux.ru> 1.27.0-alt1
+- new version 1.27.0
+
+* Wed Jan 15 2020 Anton Farygin <rider@altlinux.ru> 1.26.2-alt1
+- new version 1.26.2
+
+* Fri Jan 10 2020 Anton Farygin <rider@altlinux.ru> 1.26.1-alt1
+- new version 1.26.1
+
+* Tue Dec 17 2019 Anton Farygin <rider@altlinux.ru> 1.26.0-alt1
+- new version 1.26.0
+
+* Mon Dec 02 2019 Anton Farygin <rider@altlinux.ru> 1.25.13-alt1
+- new version 1.25.13
+
+* Thu Nov 14 2019 Anton Farygin <rider@altlinux.ru> 1.25.12-alt1
+- new version 1.25.12
+
 * Mon Oct 28 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.25.11-alt2
 - new default testpage
 

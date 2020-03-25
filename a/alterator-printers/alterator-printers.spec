@@ -1,9 +1,6 @@
-%define backend printer-drivers
-%define _altdata_dir %_datadir/alterator
-
 Name: alterator-printers
-Version: 6.0
-Release: alt12
+Version: 6.2
+Release: alt2
 
 Source:%name-%version.tar
 
@@ -15,27 +12,18 @@ Group: System/Configuration/Other
 BuildArch: noarch
 
 #TODO: will be installed only if needed
-Requires: cups >= 1.2.0 , samba-client-cups,printer-testpages
+Requires: cups >= 1.2.0, samba-client-cups, printer-testpages
 
-Requires: alterator >= 2.9 , alterator-backend-%backend
-Requires: alterator-standalone, alterator-l10n >= 2.9-alt25
+Requires: alterator >= 2.9, alterator-standalone, alterator-l10n >= 2.9-alt25
+Requires: foomatic-db-engine, gzip-utils
 
 BuildPreReq: alterator >= 2.9-alt0.3, alterator-standalone >= 2.4-alt0.8
 
 %description
 simple alterator module for printer administration
 
-%package -n alterator-backend-%backend
-Summary: alterator backend for printer drivers maintainance
-Group: Publishing
-
-Requires: foomatic-db-engine, gzip-utils
-
-%description -n alterator-backend-%backend
-alterator backend for printer drivers maintainance
-
 %prep
-%setup -q
+%setup
 
 %build
 %make_build
@@ -44,15 +32,25 @@ alterator backend for printer drivers maintainance
 %makeinstall DESTDIR=%buildroot
 
 %files
-%_altdata_dir/images/*
-%_altdata_dir/ui/*/
-%_altdata_dir/applications/*
-
-%files -n alterator-backend-%backend
+%_alterator_datadir/images/*
+%_alterator_datadir/ui/*/
+%_alterator_datadir/applications/*
 %_alterator_backend3dir/*
 %_libexecdir/%name
 
 %changelog
+* Fri Mar 06 2020 Lenar Shakirov <snejok@altlinux.org> 6.2-alt2
+- Change path to /usr/sbin/accept -> /usr/sbin/cupsaccept
+
+* Tue Dec 30 2014 Lenar Shakirov <snejok@altlinux.ru> 6.2-alt1
+- simply find drivers by "lpinfo -m"
+  * Instead of awk/find/foomatic wrappers
+
+* Sat Dec 20 2014 Lenar Shakirov <snejok@altlinux.ru> 6.1-alt1
+- backend merged to main package
+- lcl.scm: "bind to serial" checkbox added
+- lcl.scm: code optimizations
+
 * Mon Dec 08 2014 Lenar Shakirov <snejok@altlinux.ru> 6.0-alt12
 - Raw printer support added
 - mdl.scm: Vendors sorted in backend
@@ -145,7 +143,7 @@ alterator backend for printer drivers maintainance
 
 * Thu Jun 18 2009 Lenar Shakirov <snejok@altlinux.ru> 5.0-alt2
 - update to new alterator (replace string-starts-with? by string-prefix?)
-- desktop file updated and moved to %_altdata_dir/applications/
+- desktop file updated and moved to %alterator_datadir/applications/
 - packager and url added to spec
 - Makefile cleaned
 - frame:buttons-view obsolete: use simple button
