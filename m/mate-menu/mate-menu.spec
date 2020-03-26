@@ -1,6 +1,6 @@
 Name:    mate-menu
-Version: 19.10.1
-Release: alt1
+Version: 20.04.1
+Release: alt2
 
 Summary: An Advanced Menu for the MATE Desktop
 # MIT is needed for keybinding.py
@@ -24,9 +24,10 @@ BuildArch: noarch
 
 Source:  %name-%version.tar
 Patch1: alt-applet-name-l10n.patch
-Patch2: alt-fix-cyrillic-desktop-names.patch
-Patch3: alt-menubutton-label-l10n.patch
-Patch4: alt-use-themed-app-list.patch
+Patch2: alt-menubutton-label-l10n.patch
+Patch3: alt-use-themed-app-list.patch
+Patch4: alt-start-button-themed-icon.patch
+Patch5: alt-desktop-place-fix.patch
 
 %description
 This is MATE Menu, a fork of MintMenu. An advanced menu for MATE.
@@ -38,6 +39,7 @@ Supports filtering, favorites, autosession, and many other features.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 %python3_build
@@ -45,7 +47,6 @@ Supports filtering, favorites, autosession, and many other features.
 %install
 %python3_install
 %find_lang %name --with-gnome
-for lang in es_419 zh-Hans;do echo "%_datadir/locale/$lang/LC_MESSAGES/%name.mo" >> %name.lang;done
 
 %files -f %name.lang
 %doc *.md
@@ -60,5 +61,15 @@ for lang in es_419 zh-Hans;do echo "%_datadir/locale/$lang/LC_MESSAGES/%name.mo"
 %_man1dir/%name.1*
 
 %changelog
+* Thu Mar 23 2020 Pavel Vasenkov <pav@altlinux.org> 20.04.1-alt2
+- Fix open link to Desktop (ALT #37850)
+- Fix edit properties (ALT #37851)
+
+* Thu Mar 12 2020 Andrey Cherepanov <cas@altlinux.org> 20.04.1-alt1
+- New version.
+
+* Tue Oct 01 2019 Andrey Cherepanov <cas@altlinux.org> 19.10.2-alt1
+- New version.
+
 * Thu Aug 15 2019 Andrey Cherepanov <cas@altlinux.org> 19.10.1-alt1
 - Initial build for Sisyphus
