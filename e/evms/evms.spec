@@ -7,7 +7,7 @@
 
 Name: evms
 Version: 2.5.5
-Release: alt42
+Release: alt43
 
 Summary: Enterprise Volume Management System utilities
 License: GPL
@@ -168,6 +168,10 @@ EOF
 %endif
 
 %changelog
+* Wed Mar 18 2020 Michael Shigorin <mike@altlinux.org> 2.5.5-alt43
+- plugins/dos/bsd.c: fix use-after-free;
+  bug/diags/patch by Andrey Sokolov (closes: #38150)
+
 * Thu Jan 16 2020 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt42
 - plugins/lvm2: Return EINVAL when expanding of VG with no available
   PVs and when shrinking of VG with one child PV (Closes #37393)
