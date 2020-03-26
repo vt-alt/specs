@@ -2,7 +2,7 @@
 
 Name: kchmviewer
 Version: 7.7
-Release: alt1
+Release: alt3
 
 Summary: A CHM (Winhelp) and EPUB viewer
 License: %gpl3plus
@@ -10,11 +10,12 @@ Group: Office
 Url: http://kchmviewer.net
 
 Source: %name-%version.tar
-Patch1: %name-%version-alt-force-qt5-webkit.patch
+Patch1: %name-%version-qtwebengine.patch
 Patch2: %name-%version-alt-underlinking.patch
 
 BuildRequires(pre): rpm-build-licenses rpm-macros-make
-BuildRequires: gcc-c++ libchm-devel libzip-devel qt5-base-devel qt5-webkit-devel
+BuildRequires: gcc-c++ libchm-devel libzip-devel qt5-base-devel
+BuildRequires: qt5-webengine-devel
 BuildRequires: libXxf86misc-devel
 
 Obsoletes: kchmviewer4 <= 4.0-alt3
@@ -31,13 +32,13 @@ non-English help files, including Korean, Chinese and Japanese.
 
 %prep
 %setup
-%patch1 -p2
+%patch1 -p1
 %patch2 -p2
 
 %build
-%add_optflags -I%_includedir/libzip -I%_libdir/libzip/include
-%qmake_qt5 QMAKE_CXX_FLAGS="%optflags"
-%make_build_ext
+%add_optflags -I%_includedir/libzip
+%qmake_qt5
+%make_build
 
 %install
 %installqt5
@@ -50,8 +51,15 @@ install -pD -m644 packages/kchmviewer.desktop %buildroot%_desktopdir/%name.deskt
 %_iconsdir/hicolor/*/apps/%name.png
 %_desktopdir/%name.desktop
 %doc ChangeLog DBUS-bindings FAQ README
+%doc COPYING
 
 %changelog
+* Thu Mar 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 7.7-alt3
+- Fixed epub support.
+
+* Wed Mar 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 7.7-alt2
+- Rebuilt with qtwebengine instead of qtwebkit.
+
 * Tue Feb 05 2019 Slava Aseev <ptrnine@altlinux.org> 7.7-alt1
 - Version 7.7
 
