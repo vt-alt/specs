@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init
 
 Group: File tools
@@ -12,6 +12,8 @@ License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
 Patch1: alt-gpg-bin.patch
+Patch2: alt-revoke-fix-segfault.patch
+Patch3: alt-remove-details-button.patch
 
 # Automatically added by buildreq on Wed Mar 29 2017 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ glibc-devel-static gtk-update-icon-cache kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kdoctools kf5-kdoctools-devel kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libgpg-error-devel libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-sql libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 xml-common xml-utils
@@ -30,6 +32,8 @@ Graphical GPG frontend.
 %prep
 %setup -n %rname-%version
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 %K5build
@@ -54,6 +58,10 @@ Graphical GPG frontend.
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Mon Mar 23 2020 Oleg Solovyov <mcpain@altlinux.org> 19.12.3-alt2
+- remove unneeded "Details >>" button in signature check dialog
+- fix crash when revoking keys after deletion
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
