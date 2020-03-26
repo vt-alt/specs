@@ -2,7 +2,7 @@
 
 Name: icon-theme-%_name
 Version: 0.17
-Release: alt1
+Release: alt2
 
 Summary: hicolor-icon-theme is the default fallback theme used by implementations of the icon theme specification.
 License: GPLv2
@@ -12,6 +12,8 @@ Url: http://www.freedesktop.org/wiki/Software/icon-theme/
 Source: http://icon-theme.freedesktop.org/releases/hicolor-icon-theme-%version.tar.xz
 
 BuildArch: noarch
+
+Provides: hicolor-icon-theme
 
 %description
 This is a set of directories for default fallback icons used by
@@ -67,6 +69,9 @@ touch %buildroot%_datadir/icons/hicolor/icon-theme.cache
 %_datadir/icons/hicolor/icon-theme.cache
 
 %changelog
+* Mon Mar 23 2020 Yuri N. Sedunov <aris@altlinux.org> 0.17-alt2
+- provides hicolor-icon-theme (ALT #38261)
+
 * Mon Sep 18 2017 Yuri N. Sedunov <aris@altlinux.org> 0.17-alt1
 - 0.17
 
