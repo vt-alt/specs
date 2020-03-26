@@ -1,5 +1,5 @@
 Name: foo2zjs
-Version: 20180519
+Version: 20200207
 Release: alt1
 
 Summary: ZJS (some HP/Minolta) printer driver
@@ -210,6 +210,10 @@ install -pD -m644 %SOURCE7 %buildroot%_udevrulesdir/11-hplj10xx.rules
 
 rm -rf %buildroot%_docdir/%name/
 
+# Make relative symlink for %_libexecdir/cups/filter/command2foo2lava-pjl
+rm -f %buildroot%_libexecdir/cups/filter/command2foo2lava-pjl
+ln -s ../../../bin/command2foo2lava-pjl %buildroot%_libexecdir/cups/filter/command2foo2lava-pjl
+
 %files -n %name-apps
 %_miconsdir/hplj1020.png
 %_niconsdir/hplj1020.png
@@ -244,6 +248,7 @@ rm -rf %buildroot%_docdir/%name/
 %_localstatedir/foo2xqx/*
 %_localstatedir/foo2hp/*
 %_localstatedir/foo2qpdl/*
+%_libexecdir/cups/filter/command2foo2lava-pjl
 
 # discontinued
 %exclude %_bindir/printer-profile
@@ -251,6 +256,13 @@ rm -rf %buildroot%_docdir/%name/
 %exclude %_localstatedir/foo2zjs/hplj10xx_gui.tcl
 
 %changelog
+* Wed Mar 18 2020 Andrey Cherepanov <cas@altlinux.org> 20200207-alt1
+- New snapshot.
+- Support for new models:
+  + HP LaserJet Pro M1132s MFP
+  + Samsung ML-1670
+  + Samsung ML-1675
+
 * Fri Jul 13 2018 Oleg Solovyov <mcpain@altlinux.org> 20180519-alt1
 - 2018-05-19 tarball
 
