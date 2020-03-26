@@ -1,10 +1,10 @@
-%define nspr_version 4.21-alt1
+%define nspr_version 4.25-alt1
 
 Summary:	Netscape Network Security Services(NSS)
 Name:		nss
-Version:	3.45.0
+Version:	3.51.0
 Release:	alt1
-License:	MPL/GPL/LGPL
+License:	MPL-2.0
 Group:		System/Libraries
 Url:		http://www.mozilla.org/projects/security/pki/nss
 Packager:	Alexey Gladkov <legion@altlinux.ru>
@@ -269,8 +269,39 @@ EOF
 
 %files -n lib%name-nssckbi-checkinstall
 
+# https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_Releases
 # https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_{version}_release_notes
 %changelog
+* Sat Mar 14 2020 Alexey Gladkov <legion@altlinux.ru> 3.51.0-alt1
+- New version (3.51).
+
+* Fri Feb 14 2020 Alexey Gladkov <legion@altlinux.ru> 3.49.2-alt1
+- New version (3.49.2).
+
+* Thu Jan 23 2020 Alexey Gladkov <legion@altlinux.ru> 3.49.1-alt1
+- New version (3.49.1).
+- Security fixes:
+  + CVE-2019-17023: Additional HRR Tests
+- Certificate Authority Changes:
+  + Add Entrust Root Certification Authority - G4 Cert
+
+* Mon Dec 02 2019 Alexey Gladkov <legion@altlinux.ru> 3.47.1-alt1
+- New version (3.47.1).
+- Security fixes:
+  + CVE-2019-11745: EncryptUpdate should use maxout, not block size.
+
+* Mon Oct 28 2019 Alexey Gladkov <legion@altlinux.ru> 3.47.0-alt1
+- New version (3.47).
+- Update license tag.
+
+* Tue Sep 10 2019 Alexey Gladkov <legion@altlinux.ru> 3.46.0-alt1
+- New version (3.46).
+- Certificate Authority Changes:
+  + Remove CN = Swisscom Root CA 2
+  + Remove CN = Class 2 Primary CA
+  + Remove CN = Class 2 Primary CA
+  + Remove CN = Deutsche Telekom Root CA 2
+
 * Thu Jul 11 2019 Alexey Gladkov <legion@altlinux.ru> 3.45.0-alt1
 - New version (3.45).
 

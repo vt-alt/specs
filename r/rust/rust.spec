@@ -1,4 +1,4 @@
-%define rust_ver 1.36.0
+%define rust_ver 1.37.0
 %define rust_rel alt1
 %define cargo_ver %rust_ver
 %define cargo_rel %rust_rel
@@ -41,7 +41,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.35.0
+%define r_ver 1.36.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -232,8 +232,7 @@ channel = "stable"
 codegen-units = 1
 codegen-tests = false
 rpath = false
-debuginfo = false
-debuginfo-lines = false
+debug = false
 EOF
 
 %if_without bundled_llvm
@@ -329,6 +328,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Mon Aug 26 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.37.0-alt1
+- 1.37.0
+
 * Thu Aug 22 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.36.0-alt1
 - 1.36.0
 

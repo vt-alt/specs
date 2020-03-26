@@ -4,19 +4,19 @@
 %define firefox_prefix  %_libdir/firefox
 %define firefox_datadir %_datadir/firefox
 
-%define gst_version 1.0
-%define nspr_version 4.21
-%define nss_version 3.45.0
-%define rust_version  1.35.0
-%define cargo_version 1.35.0
+%define gst_version   1.0
+%define nspr_version  4.24
+%define nss_version   3.49.1
+%define rust_version  1.37.0
+%define cargo_version 1.37.0
 
 Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox
-Version:        68.0.1
-Release:        alt0.p9.1
-License:        MPL/GPL/LGPL
+Version:        72.0.2
+Release:        alt0.1.p9
+License:        MPL-2.0
 Group:          Networking/WWW
 URL:            http://www.mozilla.org/projects/firefox/
 
@@ -32,6 +32,9 @@ Source6:        firefox.desktop
 Source7:        firefox-wayland.desktop
 Source8:        firefox.c
 Source9:        firefox-prefs.js
+Source10:       firefox-l10n.txt
+Source11:       l10n.tar
+Source12:       firefox-privacy-prefs.js
 
 ### Start Patches
 Patch001: 0001-ALT-fix-werror-return-type.patch
@@ -42,8 +45,9 @@ Patch005: 0005-FEDORA-build-arm.patch
 Patch006: 0006-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
 Patch007: 0007-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
 Patch008: 0008-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
-Patch009: 0009-ALT-Include-linux-sockios.h-header.patch
-Patch010: 0010-ALT-Fix-aarch64-build.patch
+Patch009: 0009-ALT-Fix-aarch64-build.patch
+Patch010: 0010-MOZILLA-1568569-Linux-video-is-semi-transparent-on-W.patch
+Patch011: 0011-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -92,6 +96,7 @@ BuildRequires: libdbus-devel libdbus-glib-devel
 BuildRequires: node
 BuildRequires: nasm
 BuildRequires: libxkbcommon-devel
+BuildRequires: libdrm-devel
 
 # Python requires
 BuildRequires: /dev/shm
@@ -115,14 +120,19 @@ BuildRequires: libnss-devel-static
 BuildRequires: autoconf_2.13
 %set_autoconf_version 2.13
 
-Obsoletes:	firefox-3.6 firefox-4.0 firefox-5.0
-Conflicts:	firefox-settings-desktop
+Provides: webclient
+Requires: mozilla-common
 
-Provides:	webclient
-Requires:	mozilla-common
+Obsoletes: firefox-ru <= 70.0.1
+Obsoletes: firefox-uk <= 70.0.1
+Obsoletes: firefox-kk <= 70.0.1
+
+Provides: firefox-ru = %EVR
+Provides: firefox-uk = %EVR
+Provides: firefox-kk = %EVR
 
 # ALT#30732
-Requires:	gst-plugins-ugly%gst_version
+Requires: gst-plugins-ugly%gst_version
 
 Requires: libnspr >= %nspr_version
 Requires: libnss >= %nss_version
@@ -158,6 +168,25 @@ Requires:	rpm-build-mozilla.org
 These helper macros provide possibility to rebuild
 firefox packages by some Alt Linux Team Policy compatible way.
 
+%package -n firefox-config-privacy
+Summary:	Firefox configuration with the paranoid privacy settings
+Group:		System/Configuration/Networking
+BuildArch:	noarch
+
+Requires: %name = %version-%release
+
+%description -n firefox-config-privacy
+Settings disable:
+* obsolete ssl protocols;
+* safebrowsing, trackingprotection and other requests to third-party services;
+* telemetry;
+* webrtc;
+* the social features;
+* dns and network predictors/prefetch;
+* and some more...
+
+Most likely you don't need to use this package.
+
 %prep
 %setup -q -n firefox-%version -c
 
@@ -172,12 +201,14 @@ firefox packages by some Alt Linux Team Policy compatible way.
 %patch008 -p1
 %patch009 -p1
 %patch010 -p1
+%patch011 -p1
 ### Finish apply patches
 
 cd mozilla
 
 tar -xf %SOURCE1
 tar -xf %SOURCE2
+tar -xf %SOURCE11
 
 cp -f %SOURCE4 .mozconfig
 
@@ -195,29 +226,37 @@ ac_add_options --disable-elf-hack
 %endif
 EOF
 
-mkdir -p -- my_rust_vendor
-tar --strip-components=1 -C my_rust_vendor --overwrite -xf %SOURCE3
-
-mkdir -p -- .cargo
-cat > .cargo/config <<EOF
-[source.crates-io]
-replace-with = "vendored-sources"
-
-[source.vendored-sources]
-directory = "$PWD/my_rust_vendor"
-EOF
-
 
 %build
+# compile cbindgen
+CBINDGEN_HOME="$PWD/cbindgen"
+CBINDGEN_BINDIR="$CBINDGEN_HOME/bin"
+
+if [ ! -x "$CBINDGEN_BINDIR/cbindgen" ]; then
+	mkdir -p -- "$CBINDGEN_HOME"
+
+	tar --strip-components=1 -C "$CBINDGEN_HOME" --overwrite -xf %SOURCE3
+
+	cat > "$CBINDGEN_HOME/config" <<-EOF
+		[source.crates-io]
+		replace-with = "vendored-sources"
+
+		[source.vendored-sources]
+		directory = "$CBINDGEN_HOME"
+	EOF
+
+	env CARGO_HOME="$CBINDGEN_HOME" \
+		cargo install cbindgen
+fi
+
+# compile firefox
 cd mozilla
 
 %add_optflags %optflags_shared
 %add_findprov_lib_path %firefox_prefix
 
-env CARGO_HOME="$PWD/.cargo" \
-	cargo install cbindgen
-
 export MOZ_BUILD_APP=browser
+export MOZ_CHROME_MULTILOCALE="$(tr '\n' ' ' < %SOURCE10)"
 
 MOZ_OPT_FLAGS="-pipe -O2 -g0"
 
@@ -238,6 +277,10 @@ export CXXFLAGS="$MOZ_OPT_FLAGS"
 #ifnarch %{ix86}
 export CC="clang"
 export CXX="clang++"
+export AR="llvm-ar"
+export NM="llvm-nm"
+export RANLIB="llvm-ranlib"
+export LLVM_PROFDATA="llvm-profdata"
 #else
 #export CC="gcc"
 #export CXX="g++"
@@ -246,11 +289,9 @@ export CXX="clang++"
 export LIBIDL_CONFIG=/usr/bin/libIDL-config-2
 export srcdir="$PWD"
 export SHELL=/bin/sh
-export RUST_BACKTRACE=1
 export RUSTFLAGS="-Cdebuginfo=0"
-export BUILD_VERBOSE_LOG=1
-export MOZ_MAKE_FLAGS="-j6"
-export PATH="$PWD/.cargo/bin:$PATH"
+export MOZ_MAKE_FLAGS="-j10"
+export PATH="$CBINDGEN_BINDIR:$PATH"
 
 autoconf old-configure.in > old-configure
 pushd js/src
@@ -258,6 +299,12 @@ autoconf old-configure.in > old-configure
 popd
 
 ./mach build
+
+while read -r loc; do
+	./mach build chrome-$loc
+done < %SOURCE10
+
+make -C objdir/browser/installer multilocale.txt
 
 $CC $CFLAGS \
 	-Wall -Wextra \
@@ -271,6 +318,7 @@ $CC $CFLAGS \
 cd mozilla
 
 export SHELL=/bin/sh
+export MOZ_CHROME_MULTILOCALE="$(tr '\n' ' ' < %SOURCE10)"
 
 mkdir -p \
 	%buildroot/%mozilla_arch_extdir/%firefox_cid \
@@ -285,7 +333,8 @@ make -C objdir \
 	install
 
 # install altlinux-specific configuration
-install -D -m 644 %SOURCE9 %buildroot/%firefox_prefix/browser/defaults/preferences/all-altlinux.js
+install -D -m 644 %SOURCE9  %buildroot/%firefox_prefix/browser/defaults/preferences/all-altlinux.js
+install -D -m 644 %SOURCE12 %buildroot/%_sysconfdir/firefox/pref/all-privacy.js
 
 cat > %buildroot/%firefox_prefix/browser/defaults/preferences/firefox-l10n.js <<EOF
 pref("intl.locale.matchOS", true);
@@ -358,22 +407,23 @@ rm -rf -- \
 # Add real RPATH
 (set +x
 	rpath="/$(printf %%s '%firefox_prefix' |tr '[:print:]' '_')"
-	find %buildroot/%firefox_prefix -type f |
+	find %buildroot -type f |
 	while read f; do
 		t="$(readlink -ev "$f")"
-		file "$t" | fgrep -qs ELF || continue
-		if chrpath -l "$t" | fgrep -qs "RPATH=$rpath"; then
-			chrpath -r "%firefox_prefix" "$t"
-		fi
+		file "$t" | fgrep -qs ELF ||
+			continue
+		chrpath -l "$t" |
+			fgrep -qs \
+				-e "RPATH=$rpath" \
+				-e "RUNPATH=$rpath" ||
+			continue
+		chrpath -r "%firefox_prefix" "$t"
 	done
 )
 
-%pre
-for n in defaults browserconfig.properties; do
-	[ ! -L "%firefox_prefix/$n" ] || rm -f "%firefox_prefix/$n"
-done
-
 %files
+%dir %_sysconfdir/firefox
+%dir %_sysconfdir/firefox/pref
 %_altdir/firefox
 %_bindir/firefox
 %firefox_prefix
@@ -394,7 +444,98 @@ done
 %files -n rpm-build-firefox
 %_rpmmacrosdir/firefox
 
+%files -n firefox-config-privacy
+%config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
+
 %changelog
+* Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 72.0.2-alt0.1.p9
+- Backport new version with security fixed to p9 branch.
+
+* Thu Jan 23 2020 Alexey Gladkov <legion@altlinux.ru> 72.0.2-alt1
+- New release (72.0.2).
+- Security fixes:
+  + CVE-2019-17015: Memory corruption in parent process during new content process initialization on Windows
+  + CVE-2019-17016: Bypass of @namespace CSS sanitization during pasting
+  + CVE-2019-17017: Type Confusion in XPCVariant.cpp
+  + CVE-2019-17018: Windows Keyboard in Private Browsing Mode may retain word suggestions
+  + CVE-2019-17019: Python files could be inadvertently executed upon opening a download
+  + CVE-2019-17020: Content Security Policy not applied to XSL stylesheets applied to XML documents
+  + CVE-2019-17021: Heap address disclosure in parent process during content process initialization on Windows
+  + CVE-2019-17022: CSS sanitization does not escape HTML tags
+  + CVE-2019-17023: NSS may negotiate TLS 1.2 or below after a TLS 1.3 HelloRetryRequest had been sent
+  + CVE-2019-17024: Memory safety bugs fixed in Firefox 72 and Firefox ESR 68.4
+  + CVE-2019-17025: Memory safety bugs fixed in Firefox 72
+  + CVE-2019-17026: IonMonkey type confusion with StoreElementHole and FallibleStoreElement
+
+* Thu Dec 05 2019 Alexey Gladkov <legion@altlinux.ru> 71.0-alt1
+- New release (71.0).
+- Update license tag.
+- Security fixes:
+  + CVE-2019-11756: Use-after-free of SFTKSession object
+  + CVE-2019-17008: Use-after-free in worker destruction
+  + CVE-2019-13722: Stack corruption due to incorrect number of arguments in WebRTC code
+  + CVE-2019-11745: Out of bounds write in NSS when encrypting with a block cipher
+  + CVE-2019-17014: Dragging and dropping a cross-origin resource, incorrectly loaded as an image, could result in information disclosure
+  + CVE-2019-17009: Updater temporary files accessible to unprivileged processes
+  + CVE-2019-17010: Use-after-free when performing device orientation checks
+  + CVE-2019-17005: Buffer overflow in plain text serializer
+  + CVE-2019-17011: Use-after-free when retrieving a document in antitracking
+  + CVE-2019-17012: Memory safety bugs fixed in Firefox 71 and Firefox ESR 68.3
+  + CVE-2019-17013: Memory safety bugs fixed in Firefox 71
+
+* Thu Oct 31 2019 Alexey Gladkov <legion@altlinux.ru> 70.0.1-alt1
+- New release (70.0.1).
+- Builtin ru, kk, uk locales.
+
+* Mon Oct 28 2019 Alexey Gladkov <legion@altlinux.ru> 70.0-alt1
+- New release (70.0).
+- Fixed:
+  + CVE-2018-6156: Heap buffer overflow in FEC processing in WebRTC
+  + CVE-2019-15903: Heap overflow in expat library in XML_GetCurrentLineNumber
+  + CVE-2019-11757: Use-after-free when creating index updates in IndexedDB
+  + CVE-2019-11759: Stack buffer overflow in HKDF output
+  + CVE-2019-11760: Stack buffer overflow in WebRTC networking
+  + CVE-2019-11761: Unintended access to a privileged JSONView object
+  + CVE-2019-11762: document.domain-based origin isolation has same-origin-property violation
+  + CVE-2019-11763: Incorrect HTML parsing results in XSS bypass technique
+  + CVE-2019-11765: Incorrect permissions could be granted to a website
+  + CVE-2019-17000: CSP bypass using object tag with data: URI
+  + CVE-2019-17001: CSP bypass using object tag when script-src 'none' is specified
+  + CVE-2019-17002: upgrade-insecure-requests was not being honored for links dragged and dropped
+  + CVE-2019-11764: Memory safety bugs fixed in Firefox 70 and Firefox ESR 68.2
+
+* Fri Oct 04 2019 Alexey Gladkov <legion@altlinux.ru> 69.0.2-alt1
+- New release (69.0.2).
+
+* Fri Sep 27 2019 Alexey Gladkov <legion@altlinux.ru> 69.0.1-alt1
+- New release (69.0.1).
+- Fixed:
+  + CVE-2019-11754: Pointer Lock is enabled with no user notification
+
+* Wed Sep 11 2019 Alexey Gladkov <legion@altlinux.ru> 69.0-alt1
+- New release (69.0).
+- Fixed:
+  + CVE-2019-11751: Malicious code execution through command line parameters
+  + CVE-2019-11746: Use-after-free while manipulating video
+  + CVE-2019-11744: XSS by breaking out of title and textarea elements using innerHTML
+  + CVE-2019-11742: Same-origin policy violation with SVG filters and canvas to steal cross-origin images
+  + CVE-2019-11736: File manipulation and privilege escalation in Mozilla Maintenance Service
+  + CVE-2019-11753: Privilege escalation with Mozilla Maintenance Service in custom Firefox installation location
+  + CVE-2019-11752: Use-after-free while extracting a key value in IndexedDB
+  + CVE-2019-9812: Sandbox escape through Firefox Sync
+  + CVE-2019-11741: Isolate addons.mozilla.org and accounts.firefox.com
+  + CVE-2019-11743: Cross-origin access to unload event attributes
+  + CVE-2019-11748: Persistence of WebRTC permissions in a third party context
+  + CVE-2019-11749: Camera information available without prompting using getUserMedia
+  + CVE-2019-5849: Out-of-bounds read in Skia
+  + CVE-2019-11750: Type confusion in Spidermonkey
+  + CVE-2019-11737: Content security policy directives ignore port and path if host is a wildcard
+  + CVE-2019-11738: Content security policy bypass through hash-based sources in directives
+  + CVE-2019-11747: 'Forget about this site' removes sites from pre-loaded HSTS list
+  + CVE-2019-11734: Memory safety bugs fixed in Firefox 69
+  + CVE-2019-11735: Memory safety bugs fixed in Firefox 69 and Firefox ESR 68.1
+  + CVE-2019-11740: Memory safety bugs fixed in Firefox 69, Firefox ESR 68.1, and Firefox ESR 60.9
+
 * Thu Aug 15 2019 Andrey Cherepanov <cas@altlinux.org> 68.0.1-alt0.p9.1
 - Backport new version to p9 branch.
 
