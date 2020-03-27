@@ -1,5 +1,5 @@
 Name: mdds
-Version: 1.4.2
+Version: 1.5.0
 Release: alt1
 Summary: A collection of multi-dimensional data structures and indexing algorithms
 
@@ -8,10 +8,12 @@ License: MIT
 Url: https://gitlab.com/mdds/mdds
 # http://kohei.us/files/%%name/src/%%name-%%version.tar.bz2
 Source0: %name-%version.tar.bz2
+Patch: mdds-1.5.0-python3.patch
 
-# Automatically added by buildreq on Mon Jul 11 2016
-# optimized out: libstdc++-devel python-base python-module-PyStemmer python-module-Pygments python-module-babel python-module-cssselect python-module-docutils python-module-ecdsa python-module-jinja2 python-module-jinja2-tests python-module-markupsafe python-module-pycrypto python-module-pytz python-module-setuptools python-module-six python-module-snowballstemmer python-module-sphinx python-module-sphinx_rtd_theme python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-json python-modules-multiprocessing python-modules-unittest python-modules-xml
-BuildRequires: ctags doxygen gcc-c++ git-core python-module-alabaster python-module-breathe python-module-html5lib python-module-sphinx-bootstrap-theme time boost-devel
+BuildRequires: boost-devel
+# Automatically added by buildreq on Mon Dec 02 2019
+# optimized out: libstdc++-devel perl python-module-sphinx python-modules python2-base python3 python3-base python3-module-OpenSSL python3-module-Pygments python3-module-babel python3-module-cffi python3-module-chardet python3-module-cryptography python3-module-docutils python3-module-idna python3-module-imagesize python3-module-jinja2 python3-module-markupsafe python3-module-packaging python3-module-pkg_resources python3-module-pytz python3-module-requests python3-module-six python3-module-sphinx python3-module-urllib3 sh4 xz
+BuildRequires: ctags doxygen gcc-c++ python3-module-alabaster python3-module-breathe python3-module-sphinx_rtd_theme python3-module-sphinxcontrib-applehelp python3-module-sphinxcontrib-devhelp python3-module-sphinxcontrib-htmlhelp python3-module-sphinxcontrib-jsmath python3-module-sphinxcontrib-qthelp python3-module-sphinxcontrib-serializinghtml
 
 %description
 A collection of multi-dimensional data structures and indexing algorithms.
@@ -47,6 +49,7 @@ Docs for %name.
 
 %prep
 %setup
+%patch -p0
 # this is only used in tests
 %autoreconf
 sed -i -e '/^CPPFLAGS_NODEBUG=/s/=.*/="%optflags"/' configure
@@ -72,6 +75,7 @@ cp -a ./example %buildroot/%_docdir/%name-%version/
 
 %files doc
 %_docdir/%name-%version/*
+%exclude %_docdir/%name
 
 %files devel
 %doc *.md CHANGELOG AUTHORS
@@ -79,6 +83,10 @@ cp -a ./example %buildroot/%_docdir/%name-%version/
 %_datadir/pkgconfig/*
 
 %changelog
+* Mon Dec 02 2019 Fr. Br. George <george@altlinux.ru> 1.5.0-alt1
+- Autobuild version bump to 1.5.0
+- Switch to python3 sphinx
+
 * Mon Sep 17 2018 Fr. Br. George <george@altlinux.ru> 1.4.2-alt1
 - Autobuild version bump to 1.4.2
 

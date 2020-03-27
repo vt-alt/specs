@@ -13,22 +13,20 @@
 
 %ifarch mipsel
 %def_without java
-%def_disable kde4
 %def_disable qt5
 %else
 %def_with java
 %if_enabled kde5
 %def_enable qt5
 %else
-%def_enable kde4
 %def_disable qt5
 %endif
 %endif
 %def_disable mergelibs
 
 Name: LibreOffice-still
-%define hversion 6.2
-%define urelease 8.2
+%define hversion 6.3
+%define urelease 5.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
@@ -67,29 +65,26 @@ Source100:	forky.c
 Source200:	key.gpg
 Source300:	libreoffice.unused
 Source400:	images_oxygen.zip
-Source401:      libreoffice6.1-scalable-desktop-icons.tar
 
 ## FC patches
 Patch1: FC-0001-don-t-suppress-crashes.patch
-Patch2: FC-0001-Resolves-rhbz-1432468-disable-opencl-by-default.patch
 
 ## Long-term FC patches
 
 ## ALT patches
 Patch401: alt-001-MOZILLA_CERTIFICATE_FOLDER.patch
 Patch402: alt-002-tmpdir.patch
-Patch403: alt-003-poppler-compat.patch
 Patch404: alt-004-shortint.patch
 Patch405: alt-005-mysql8-transition.patch
+# Based on upstream commit 56ffe3c0a1261
+Patch406: 0001-Switch-mdds-to-1.5.0-and-liborcus-to-0.15.0.patch
+Patch410: alt-006-unversioned-desktop-files.patch
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %lodir/share/config/webcast/*
 %add_findreq_skiplist %lodir/sdk/examples/python/toolpanel/toolpanel.py 
 
 BuildRequires: ant apache-commons-httpclient apache-commons-lang bsh cppunit-devel flex fonts-ttf-liberation gcc-c++ git-core gperf gst-plugins1.0-devel hunspell-en imake libGConf-devel libGLEW-devel libabw-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-glib-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgtk+2-devel libgtk+3-devel libharfbuzz-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmythes-devel libneon-devel libnss-devel libodfgen-devel liborcus-devel libredland-devel libsane-devel libvigra-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxslt-devel mdds-devel pentaho-reporting-flow-engine perl-Archive-Zip postgresql-devel python3-dev unzip xorg-cf-files zip
-%if_with kde4
-BuildRequires: kde4libs-devel
-%endif
 BuildRequires: python2.7(distutils) libunixODBC-devel libX11-devel libXext-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libssl-devel
 
 # 4.4
@@ -128,7 +123,10 @@ BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-kwindowsystem-devel
 %endif
 
 # 6.1.5.2
-BuildRequires: libpoppler-devel
+#BuildRequires: libpoppler-devel
+
+# 6.3.5.2
+BuildRequires: fontforge
 
 %if_without python
 BuildRequires: python3-dev
@@ -195,18 +193,6 @@ Requires: %name-common = %EVR
 Conflicts: LibreOffice-qt5
 %description qt5
 qt5 extensions for %name
-%endif
-
-%if_with kde4
-%package kde4
-Summary: KDE4 Extensions for %name
-Group:  Office
-Requires: %uname = %EVR
-Requires: %name-common = %EVR
-Provides:  LibreOffice4-kde4 = %EVR
-Obsoletes: LibreOffice4-kde4 < %EVR
-%description kde4
-KDE4 extensions for %name
 %endif
 
 %if_enabled kde5
@@ -284,7 +270,6 @@ components, CalcAddin functions). It is compatible over several
 versions because the API remains unaffected and will only be extended
 with new functions.
 
-
 # TODO redefine %%lang adding corr langpack
 # define macro for quick langpack description
 %define langpack(l:n:mh) \
@@ -315,18 +300,16 @@ echo Direct build
 
 ## FC apply patches
 %patch1 -p1
-%patch2 -p1
 
 ## Long-term FC patches applying
 
 ## ALT apply patches
 %patch401 -p0
-#patch402 -p1
-#patch403 -p1
+%patch402 -p1
 %patch404 -p1
 %patch405 -p2
-
-tar xf %SOURCE401
+%patch406 -p1
+%patch410 -p1
 
 # Hack in proper LibreOffice PATH in libreofficekit
 sed -i 's@/libreoffice/@/LibreOffice/@g' libreofficekit/Library_libreofficekitgtk.mk
@@ -348,7 +331,7 @@ install -D %SOURCE100 forky.c
 for n in office writer impress calc base draw math qstart; do
 	oname=lo$n
 	case "$n" in 
-		office) opt=""; oname=libreoffice%hversion;;
+		office) opt=""; oname=libreoffice;;
 		qstart) opt="--quickstart --nologo --nodefault";;
 		*) opt="--$n";;
 	esac
@@ -370,6 +353,10 @@ test -r %conffile && . %conffile ||:
 %build
 export CC=%_target_platform-gcc
 export CXX=%_target_platform-g++
+%ifarch mipsel
+export CFLAGS="-Os --param ggc-min-expand=20 --param ggc-min-heapsize=32768 -g0"
+export CXXFLAGS="$CFLAGS"
+%endif
 ./autogen.sh \
 	--prefix=%_prefix \
 	--libdir=%_libdir \
@@ -383,6 +370,8 @@ export CXX=%_target_platform-g++
         --enable-dbus \
         --enable-evolution2 \
         --enable-gio \
+	--enable-build-opensymbol \
+	--enable-avahi \
         %{subst_with java} \
         --without-fonts \
         --without-myspell-dicts \
@@ -403,7 +392,6 @@ export CXX=%_target_platform-g++
 	--enable-release-build \
 	--with-help \
   \
-        %{subst_enable kde4} \
         %{subst_enable qt5} \
 	--enable-gtk \
 	--enable-gtk3 \
@@ -412,8 +400,6 @@ export CXX=%_target_platform-g++
         --enable-kde5 \
 %endif
 	--disable-gstreamer-0-10 \
-  \
-  	--enable-avahi \
 %if_with lto
   	--enable-lto \
 %endif
@@ -493,9 +479,6 @@ find %buildroot%lodir -name "*_gtk[^3]*" | sed 's@^%buildroot@@' > files.gtk2
 # Create gtk3 plugin list
 find %buildroot%lodir -name "*_gtk3*" ! -name "*_kde5*" | sed 's@^%buildroot@@' > files.gtk3
 
-# Create kde4 plugin list
-find %buildroot%lodir -name "*kde4*" | sed 's@^%buildroot@@' > files.kde4
-
 # Create qt5 plugin list
 find %buildroot%lodir -name "*qt5*"   | sed 's@^%buildroot@@' > files.qt5
 
@@ -503,7 +486,7 @@ find %buildroot%lodir -name "*qt5*"   | sed 's@^%buildroot@@' > files.qt5
 find %buildroot%lodir -name "*_kde5*" -o -name "libkde5*" | sed 's@^%buildroot@@' > files.kde5
 
 # Generate base filelist by removing files from  separated packages
-{ cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk2 files.gtk3 files.kde4 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
+{ cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk2 files.gtk3 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
 
 # Return Oxygen icon theme from LibreOffice 5.3 (see https://bugs.documentfoundation.org/show_bug.cgi?id=110353 for details)
 install -D %SOURCE400 %buildroot%lodir/share/config/images_oxygen.zip
@@ -513,19 +496,17 @@ unset RPM_PYTHON
 
 # Install wrappers
 for n in lo*.sh; do install -m755 -D $n %buildroot%_bindir/${n%%.sh}; done
-install -m755 -D libreoffice%hversion.sh %buildroot%_bindir/loffice
-install -m755 libreoffice%hversion.sh %buildroot%_bindir/libreoffice
-install -m755 libreoffice%hversion.sh %buildroot%_bindir/libreoffice%hversion
+install -Dm755 libreoffice.sh %buildroot%_bindir/libreoffice
+install -Dm755 libreoffice.sh %buildroot%_bindir/loffice
+ln -s loffice %buildroot%_bindir/soffice
 
-# install icons
+# Install icons
 for f in `( cd sysui/desktop/icons; find hicolor -type f )`; do
 	d=`dirname "$f"`; n=`basename "$f"`
 	install -D sysui/desktop/icons/$f %buildroot%_iconsdir/$d/$n
-	ln -sr %buildroot%_iconsdir/$d/$n %buildroot%_iconsdir/$d/libreoffice%hversion-$n
 done
 
-# TODO icon-themes/
-
+# Install desktop files
 mkdir -p %buildroot%_desktopdir
 for n in writer impress calc base draw math;  do
 	ln %buildroot%lodir/share/xdg/$n.desktop %buildroot%_desktopdir/$n.desktop
@@ -558,27 +539,23 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 
 %files common -f files.nolang
 %exclude /gid_Module*
-%_bindir/libreoffice%hversion
+%_bindir/libreoffice
 %config %conffile
 %lodir/share/extensions/package.txt
 #lodir/share/extensions/presentation-minimizer
-%_iconsdir/*/*/apps/libreoffice%{hversion}-*.*g
+%_iconsdir/*/*/apps/*.*g
 
 %files integrated
 %_bindir/*
-%exclude %_bindir/libreoffice%hversion
+%exclude %_bindir/libreoffice
 %_desktopdir/*
 %_iconsdir/*/*/mimetypes/*
 %_iconsdir/*/*/apps/*
-%exclude %_iconsdir/*/*/apps/libreoffice%{hversion}-*.*g
+%exclude %_iconsdir/*/*/apps/*.*g
 
 %files gtk2 -f files.gtk2
 
 %files gtk3 -f files.gtk3
-
-%if_with kde4
-%files kde4 -f files.kde4
-%endif
 
 %if_enabled qt5
 %files qt5 -f files.qt5
@@ -616,6 +593,16 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Fri Feb 28 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.5.2-alt1
+- New version 6.3.5.2 (Still).
+- Set MOZILLA_CERTIFICATE_FOLDER as default Firefox profile.
+- Remove version from Name and icon names in desktop files.
+- Remove old scalable icons.
+- Do not use version suffux for icons and in desktop files.
+
+* Wed Dec 04 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.8.2-alt2
+- Rebuilt with mdds-1.5.0 and boost-1.71.0.
+
 * Mon Oct 28 2019 Andrey Cherepanov <cas@altlinux.org> 6.2.8.2-alt1
 - New version 6.2.8.2 (Still).
 

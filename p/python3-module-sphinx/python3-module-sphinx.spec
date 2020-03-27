@@ -1,61 +1,66 @@
 %define _unpackaged_files_terminate_build 1
 
-%define oname sphinx
-%define sphinx_dir %python_sitelibdir_noarch/%oname
+%def_disable docs
+%def_disable check
 
-Name: python-module-%oname
+%define oname sphinx
+%define sphinx3_dir %python3_sitelibdir_noarch/%oname
+
+Name: python3-module-%oname
 Epoch: 1
-Version: 1.6.5
-Release: alt7
+Version: 2.2.0
+Release: alt2.1.p9
 
 Summary: Tool for producing documentation for Python projects
 License: BSD
-Group: Development/Python
+Group: Development/Python3
 Url: http://sphinx-doc.org
 
 BuildArch: noarch
 
-%py_requires simplejson
-%py_requires alabaster
-%py_requires requests
-%py_requires typing
-%py_requires sphinxcontrib.websupport
-%py_requires docutils
+%py3_requires alabaster
+%py3_requires requests
 
-Provides: python-module-objects.inv
-Obsoletes: python-module-objects.inv
+Provides: python3-module-objects.inv
+Obsoletes: python3-module-objects.inv
 
 # https://github.com/sphinx-doc/sphinx.git
 Source0: %name-%version.tar
 Source1: conf.py.template
-Source2: macro
-Source4: refcounting.py
+Source2: macro3
+Source3: refcounting.py
 
-Patch0: sphinx-1.4b1-alt-avoid-download-objects.inv.patch 
-# deprecate formatargspec() and format_annotation()
-Patch1: 464f94c2380b4cb2600735c0c0085e771da2bce4.patch
-Patch2: sphinx-1.6.5-Fix-sphinx.testing-uses-deprecated-pytest-API-Node.patch
-Patch3: sphinx-1.6.4-alt-disable-remote-tests.patch
+Patch1: %oname-alt-tests-offline.patch
+Patch2: %oname-2.2.0-Drop-extra-dep-on-Pytest.patch
 
-BuildRequires(pre): rpm-build-python
+BuildRequires(pre): rpm-build-python3
 BuildRequires: python-sphinx-objects.inv
-BuildRequires: python-module-docutils
-BuildRequires: python-module-html5lib
-BuildRequires: python-module-nose
-BuildRequires: python-module-alabaster
-BuildRequires: python2.7(typing)
-BuildRequires: python2.7(sphinxcontrib.websupport)
 BuildRequires: /usr/bin/convert
-BuildRequires: python2.7(sphinxcontrib)
-BuildRequires: %py_dependencies imagesize
-# For %%check:
-BuildRequires: %py_dependencies mock
-BuildRequires: python2.7(pytest)
-# minimal deps on the built-in sqlite driver have been fixed in 1.0.8-alt2:
-BuildRequires: python-module-SQLAlchemy >= 1.0.8-alt2
+
+%if_enabled check
+BuildRequires: python3(_testcapi)
+BuildRequires: python3(pytest)
+BuildRequires: python3-module-html5lib
+BuildRequires: python3-module-nose
+BuildRequires: python3(typing)
+BuildRequires: python3(sphinxcontrib.websupport)
+BuildRequires: python3(sphinxcontrib.serializinghtml)
+BuildRequires: python3(sphinxcontrib.applehelp)
+BuildRequires: python3(sphinxcontrib.devhelp)
+BuildRequires: python3(sphinxcontrib.htmlhelp)
+BuildRequires: python3(sphinxcontrib.qthelp)
+BuildRequires: python3(sphinxcontrib.jsmath)
+# For running the new sphinx itself (and generating the docs):
+BuildRequires: python3(imagesize)
+BuildRequires: python3(mock)
+BuildRequires: python3(docutils)
+BuildRequires: python3(jinja2)
+BuildRequires: python3(pygments)
+BuildRequires: python3-module-SQLAlchemy >= 1.0.8-alt2
 # These 2 must be recent to pass the tests:
-BuildRequires: python-module-Pygments >= 2.1.3
-BuildRequires: python-module-alabaster >= 0.7.6-alt2.git20150703
+BuildRequires: python3-module-Pygments >= 2.1.3
+BuildRequires: python3-module-alabaster >= 0.7.6-alt2.git20150703
+%endif
 
 %description
 Sphinx is a tool that makes it easy to create intelligent and beautiful
@@ -64,10 +69,9 @@ multiple reStructuredText sources)
 
 %package devel
 Summary: Development package for Sphinx
-Group: Development/Python
-Requires: %name = %EVR
-Requires: %name-pickles = %EVR
-Requires: rpm-macros-sphinx = %EVR
+Group: Development/Python3
+Requires: python3-module-%oname = %EVR
+Requires: rpm-macros-sphinx3 = %EVR
 
 %description devel
 Sphinx is a tool that makes it easy to create intelligent and beautiful
@@ -76,35 +80,16 @@ multiple reStructuredText sources)
 
 This package destinated for development of Python modules.
 
-%package -n rpm-macros-sphinx
-Summary: RPM macros for build with Sphinx
-Group: Development/Python
-
-# W.r.t. to the content of the macros (see the substitution in %%install):
-#Requires: %sphinx_dir
-# ...but we do not add such a formal dependency,
-# because it is not needed at all
-# given the intended usage of rpm-macros-* packages.
-# The guarantee that a macro doesn't refer to a path other
-# than the current valid %%sphinx_dir
-# is given by the strict dep of the main pkg (on EVR of the macros pkg).
-
-%description -n rpm-macros-sphinx
-Sphinx is a tool that makes it easy to create intelligent and beautiful
-documentation for Python projects (or other documents consisting of
-multiple reStructuredText sources)
-
-This packages contains RPM macros for build with Sphinx.
-
 %package tests
 Summary: Tests for Sphinx
-Group: Development/Python
-Requires: %name = %EVR
-%py_requires nose
-%add_python_req_skip compiler
-%add_python_req_skip missing_module missing_package1 missing_package2
-%add_python_req_skip dummy missing_package3
-%add_findreq_skiplist %sphinx_dir/tests/typing_test_data.py
+Group: Development/Python3
+Requires: python3-module-%oname = %EVR
+%py3_requires nose
+%add_python3_req_skip compiler
+%add_python3_req_skip missing_module missing_package1 missing_package2
+%add_python3_req_skip missing_package3
+%add_python3_req_skip dummy missing_package1.missing_module1 missing_package3.missing_module3
+%add_python3_req_skip mod_resource mod_something sphinx.missing_module4 unknown
 
 %description tests
 Sphinx is a tool that makes it easy to create intelligent and beautiful
@@ -113,11 +98,12 @@ multiple reStructuredText sources)
 
 This packages contains tests for Sphinx.
 
+%if_enabled docs
 %package doc
 Summary: Documentation for Sphinx
-Group: Development/Python
-%add_findreq_skiplist %sphinx_dir/pickle/_downloads/example_google.py
-%add_findreq_skiplist %sphinx_dir/pickle/_downloads/example_numpy.py
+Group: Development/Python3
+%add_findreq_skiplist %sphinx3_dir/pickle/_downloads/example_google.py
+%add_findreq_skiplist %sphinx3_dir/pickle/_downloads/example_numpy.py
 
 %description doc
 Sphinx is a tool that makes it easy to create intelligent and beautiful
@@ -128,7 +114,7 @@ This package contains documentation for Sphinx itself.
 
 %package pickles
 Summary: Pickles for Sphinx
-Group: Development/Python
+Group: Development/Python3
 
 %description pickles
 Sphinx is a tool that makes it easy to create intelligent and beautiful
@@ -136,109 +122,151 @@ documentation for Python projects (or other documents consisting of
 multiple reStructuredText sources)
 
 This packages contains pickles for Sphinx.
+%endif
+
+%package -n rpm-macros-sphinx3
+Summary: RPM macros for build with Sphinx (Python 3)
+Group: Development/Python3
+
+# W.r.t. to the content of the macros (see the substitution in %%install):
+#Requires: %sphinx3_dir
+# ...but -- see the comment for rpm-macros-sphinx.
+
+%description -n rpm-macros-sphinx3
+Sphinx is a tool that makes it easy to create intelligent and beautiful
+documentation for Python projects (or other documents consisting of
+multiple reStructuredText sources)
+
+This packages contains RPM macros for build with Sphinx.
 
 %prep
 %setup
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+
 install -pm644 %SOURCE1 .
 
 ln -s %_datadir/python-sphinx/objects.inv doc/
 ln -s %_datadir/python-sphinx/objects.inv tests/
 
-cp %SOURCE4 sphinx/ext/
-
+cp %SOURCE3 sphinx/ext/
 install -pm644 %SOURCE2 .
-# Invalid Python2:
-rm tests/py35/test_autodoc_py35.py
 
 %build
-%python_build
+%python3_build
 
+%if_enabled docs
 # docs
 %make_build -C doc html
 %make_build -C doc man
+%endif
 
 %install
-%python_install
+%python3_install
 
-# tests
-cp -R tests %buildroot%sphinx_dir/
-for i in $(find %buildroot%sphinx_dir/tests -type d)
+cp -R tests %buildroot%sphinx3_dir/
+for i in $(find %buildroot%sphinx3_dir/tests -type d)
 do
 	touch $i/__init__.py
 done
 
 ln -rs %buildroot%_datadir/python-sphinx/objects.inv \
-	%buildroot%sphinx_dir/
+	%buildroot%sphinx3_dir/
 # There is some objects.inv there already; probably, we want to update it:
 ln -frs %buildroot%_datadir/python-sphinx/objects.inv \
-	%buildroot%sphinx_dir/tests/
+	%buildroot%sphinx3_dir/tests/
 
+pushd %buildroot%_bindir
+for i in $(ls); do
+    mv $i py3_$i
+    ln -s py3_$i $i-3
+    ln -s py3_$i $i-%__python3_version
+done
+popd
+
+%if_enabled docs
 # docs
 install -d %buildroot%_docdir/%name
 install -d %buildroot%_man1dir
 cp -R doc/_build/html %buildroot%_docdir/%name/
 install -p -m644 AUTHORS CHANGES* EXAMPLES LICENSE README.rst \
 	%buildroot%_docdir/%name
+%endif
 
 # macros
 install -d %buildroot%_rpmmacrosdir
-sed -e 's:@SPHINX_DIR@:%sphinx_dir:g' < macro > %buildroot%_rpmmacrosdir/sphinx
+sed -e 's:@SPHINX3_DIR@:%sphinx3_dir:g' < macro3 > %buildroot%_rpmmacrosdir/sphinx3
 
+%if_enabled docs
 # add pickle files
 %make_build -C doc pickle
 
-install -d %buildroot%sphinx_dir/doctrees
+install -d %buildroot%sphinx3_dir/doctrees
 install -p -m644 doc/_build/doctrees/*.pickle \
-	%buildroot%sphinx_dir/doctrees/
-cp -R doc/_build/pickle %buildroot%sphinx_dir/
+	%buildroot%sphinx3_dir/doctrees/
+cp -R doc/_build/pickle %buildroot%sphinx3_dir/
+%endif
+
 install -p -m644 conf.py.template \
-	%buildroot%sphinx_dir/
+	%buildroot%sphinx3_dir/
 
 mkdir -p %buildroot%_rpmlibdir
-cat <<\EOF >%buildroot%_rpmlibdir/%name-files.req.list
-%sphinx_dir	%name
+cat <<\EOF >%buildroot%_rpmlibdir/python3-module-%oname-files.req.list
+%sphinx3_dir	python3-module-%oname
 EOF
 
 %check
 # Tried to export NOSE_PROCESSES=%%__nprocs, but it makes a lot tests fail.
 export LC_ALL=en_US.utf8 # some tests fail otherwise, because they use paths with Unicode
+export TESTS_NO_NETWORK=1
 
+# disable remote tests
 rm -f tests/test_build_linkcheck.py
-PYTHONPATH=$(pwd) %make_build test
+PYTHONPATH=$(pwd) %make_build PYTHON=python3 test
 
 %files
 %_bindir/*
-%sphinx_dir/
-%exclude %sphinx_dir/tests
-%exclude %sphinx_dir/testing
-%exclude %sphinx_dir/pickle
-%exclude %sphinx_dir/doctrees
-%python_sitelibdir/*.egg-info
+%sphinx3_dir/
+%exclude %sphinx3_dir/tests
+%exclude %sphinx3_dir/testing
+%if_enabled docs
+%exclude %sphinx3_dir/pickle
+%exclude %sphinx3_dir/doctrees
+%endif
+%python3_sitelibdir/*.egg-info
 
 %files devel
 
-%files pickles
-%sphinx_dir/pickle
-%sphinx_dir/doctrees
-
 %files tests
-%sphinx_dir/tests
-%sphinx_dir/testing
+%sphinx3_dir/tests
+%sphinx3_dir/testing
+
+%if_enabled docs
+%files pickles
+%sphinx3_dir/pickle
+%sphinx3_dir/doctrees
 
 %files doc
 %doc %_docdir/%name
+%endif
 
-%files -n rpm-macros-sphinx
-%_rpmmacrosdir/sphinx
-%_rpmlibdir/%name-files.req.list
+%files -n rpm-macros-sphinx3
+%_rpmmacrosdir/sphinx3
+%_rpmlibdir/python3-module-%oname-files.req.list
 
 %changelog
-* Mon Sep 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:1.6.5-alt7
-- Rebuilt without support for python-3.
+* Thu Mar 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.2.0-alt2.1.p9
+- Build before python3-module-sphinxcontrib-jsmath (bootstrap).
+
+* Tue Oct 01 2019 Stanislav Levin <slev@altlinux.org> 1:2.2.0-alt3
+- Dropped extra dep on testing/tests.
+
+* Mon Sep 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.2.0-alt2
+- Rebuilt with docs and tests.
+
+* Mon Sep 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.2.0-alt1
+- Updated to upstream version 2.2.0 (Closes: #37252).
+- Disabled build for python-2.
 
 * Sun Jun 09 2019 Stanislav Levin <slev@altlinux.org> 1:1.6.5-alt6
 - Moved tests out to their own package.

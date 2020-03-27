@@ -4,21 +4,22 @@
 
 %def_disable check
 
-Name:           python-module-%oname
-Version:        1.0.1
-Release:        alt5
+Name:           python3-module-%oname
+Version:        1.1.2
+Release:        alt1
 Summary:        Sphinx API for Web Apps
 License:        BSD
-Group:          Development/Python
+Group:          Development/Python3
 BuildArch:      noarch
 URL:            http://sphinx-doc.org/
 
 # https://github.com/sphinx-doc/sphinxcontrib-websupport.git
 Source: %name-%version.tar
 
-BuildRequires: python-devel python-module-docutils python-module-jinja2 python-module-mock python-module-pytest
-BuildRequires: python-module-setuptools python-module-six python-module-sphinx python2.7(sqlalchemy)
-BuildRequires: python-module-whoosh python-module-xapian
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel python3-module-docutils python3-module-jinja2 python3-module-mock python3-module-pytest
+BuildRequires: python3-module-setuptools python3-module-six python3-module-sphinx python3(sqlalchemy)
+BuildRequires: python3-module-whoosh python3-module-xapian
 
 %description
 sphinxcontrib-websupport provides a Python API to easily integrate Sphinx
@@ -28,23 +29,24 @@ documentation into your Web application.
 %setup
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
 
 %check
-py.test tests/
+py.test3 tests/
 
 %files
 %doc LICENSE README.rst
-%python_sitelibdir/sphinxcontrib/websupport
-%python_sitelibdir/sphinxcontrib_websupport-%{version}*-py?.?-*.pth
-%python_sitelibdir/sphinxcontrib_websupport-%{version}*-py?.?.egg-info
+%python3_sitelibdir/sphinxcontrib/websupport
+%python3_sitelibdir/sphinxcontrib_websupport-%{version}*-py?.?-*.pth
+%python3_sitelibdir/sphinxcontrib_websupport-%{version}*-py?.?.egg-info
 
 %changelog
-* Tue Sep 24 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.1-alt5
-- Rebuild without support for python-3.
+* Mon Sep 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.2-alt1
+- Updated to upstream version 1.1.2.
+- Built without support for python-2.
 
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.0.1-alt4.qa1
 - NMU: remove rpm-build-ubt from BR:
