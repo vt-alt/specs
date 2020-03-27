@@ -7,7 +7,7 @@
 Name: cura
 Epoch: 1
 Version: 4.4.1
-Release: alt1.1
+Release: alt2
 Summary: 3D printer control software
 License: LGPLv3+
 
@@ -27,6 +27,8 @@ Patch1:         disable-code-style-check.patch
 Patch2:         fix-runtime.patch
 # PATCH-FIX-OPENSUSE fix-crash-on-start.patch
 Patch3:         fix-crash-on-start.patch
+# PATCH-FIX-OPENSUSE -- avoid bad UI layout and crash in preview
+Patch4:         0001-Avoid-crash-caused-by-KDE-qqc2-desktop-style.patch
 
 BuildArch: noarch
 
@@ -76,6 +78,7 @@ needs. As it's open source, our community helps enrich it even more.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Wrong end of line encoding
 dos2unix docs/How_to_use_the_flame_graph_profiler.md
@@ -117,6 +120,9 @@ desktop-file-validate %buildroot%_datadir/applications/%name.desktop
 %_libexecdir/%name
 
 %changelog
+* Tue Mar 24 2020 Anton Midyukov <antohami@altlinux.org> 1:4.4.1-alt2
+- Avoid crash caused by KDE qqc2 desktop style
+
 * Sun Jan 26 2020 Anton Midyukov <antohami@altlinux.org> 1:4.4.1-alt1.1
 - Fix requires
 
