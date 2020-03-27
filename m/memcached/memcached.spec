@@ -1,10 +1,10 @@
 %def_enable seccomp
-%def_disable extstore
+%def_enable extstore
 %def_enable sasl
 %def_enable tls
 
 Name: memcached
-Version: 1.5.19
+Version: 1.6.2
 Release: alt1
 
 Summary: memcached - memory caching daemon
@@ -67,9 +67,9 @@ perl version.pl
 %install
 %makeinstall_std
 install -pD -m755 %name.init %buildroot%_initdir/%name
-install -pD -m640 %name.sysconfig %buildroot/etc/sysconfig/%name
-install -pD -m644 %name.service %buildroot/%_unitdir/%name.service
-install -pD -m644 %{name}@.service %buildroot/%_unitdir/%{name}@.service
+install -pD -m640 %name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
+install -pD -m644 %name.service %buildroot%_unitdir/%name.service
+install -pD -m644 %{name}@.service %buildroot%_unitdir/%{name}@.service
 
 # tool
 install -pD -m755 scripts/memcached-tool %buildroot%_bindir/memcached-tool
@@ -94,21 +94,34 @@ fi
 %preun_service %name
 
 %files
-%config(noreplace) %attr(640,root,adm) /etc/sysconfig/%name
+%config(noreplace) %attr(640,root,adm) %_sysconfdir/sysconfig/%name
 %_bindir/%name
 %_man1dir/%name.*
 %_initdir/*
-%_unitdir/*.service
+%_unitdir/*
 %doc AUTHORS doc/CONTRIBUTORS ChangeLog NEWS README.md doc/*.txt
 
 %files devel
-%_includedir/%name/
+%_includedir/*
 
 %files tool
 %_bindir/%name-tool
 %_man1dir/%name-tool.*
 
 %changelog
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.6.2-alt1
+- new version 1.6.2 (ALT #38273)
+
+* Wed Mar 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.6.1-alt1
+- new version 1.6.1.
+- enable extstore
+
+* Sun Feb 09 2020 Alexey Shabalin <shaba@altlinux.org> 1.5.22-alt1
+- new version 1.5.22
+
+* Sat Jan 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.5.21-alt1
+- new version 1.5.21
+
 * Fri Oct 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.5.19-alt1
 - new version 1.5.19
 
@@ -131,23 +144,23 @@ fi
 * Thu Nov 29 2018 Alexey Shabalin <shaba@altlinux.org> 1.5.12-alt1
 - 1.5.12
 
-* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.5.10-alt1%ubt
+* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.5.10-alt1
 - 1.5.10
 
-* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 1.5.9-alt1%ubt
+* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 1.5.9-alt1
 - 1.5.9
 
-* Sun Apr 01 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.7-alt1%ubt
+* Sun Apr 01 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.7-alt1
 - 1.5.7
 
-* Sun Mar 04 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.6-alt1%ubt
+* Sun Mar 04 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.6-alt1
 - 1.5.6
 - disable UDP port by default (fixed CVE-2018-1000115)
 - drop scripts package
 - add tool package
 - add memcached@.service for allow start "instanced" version, like 'memcached@11211'
 
-* Tue Jan 09 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.4-alt1%ubt
+* Tue Jan 09 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.4-alt1
 - 1.5.4
 
 * Tue Nov 07 2017 Alexey Shabalin <shaba@altlinux.ru> 1.5.3-alt1
