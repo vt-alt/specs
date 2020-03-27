@@ -1,9 +1,9 @@
 %define _unpackaged_files_terminate_build 1
 
-%define libsepol_ver 2.8
+%define libsepol_ver 3.0
 
 Name: setools
-Version: 4.2.1
+Version: 4.2.2
 Release: alt1
 License: %gpl2plus
 URL: https://github.com/SELinuxProject/setools/wiki
@@ -116,6 +116,9 @@ egrep 'apol\.1' %name.lang > %name-gui.lang
 %python3_sitelibdir/setoolsgui
 
 %changelog
+* Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 4.2.2-alt1
+- Updated to upstream version 4.2.2.
+
 * Wed Feb 27 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 4.2.1-alt1
 - Updated to upstream version 4.2.1.
 - New version builds with python-3 only.

@@ -5,8 +5,8 @@
 Summary: SELinux policy core utilities
 Name: policycoreutils
 Epoch:   1
-Version: 2.9
-Release: alt2
+Version: 3.0
+Release: alt1
 License: GPLv2
 Group: System/Base
 Url: https://github.com/SELinuxProject/selinux
@@ -114,7 +114,6 @@ develop policy in an SELinux environment.
 Summary: SELinux configuration GUI
 Group: System/Base
 Requires: policycoreutils = %EVR
-Requires: selinux-policy
 
 %description gui
 system-config-selinux is a utility for managing the SELinux environment.
@@ -193,10 +192,6 @@ install -D -m 0755 %SOURCE1 %buildroot%_initddir/restorecond
 install -D -m 0755 %SOURCE2 %buildroot%_initddir/sandbox
 install -D -m 0755 %SOURCE9 %buildroot%_initddir/mcstrans
 
-for f in system-config-selinux selinux-polgengui; do
-	ln -sf consolehelper %buildroot%_bindir/$f
-done
-
 install -d -m 0755 %buildroot{%_datadir/mcstrans,%_sysconfdir/selinux/mls/setrans.d}
 cp -r mcstrans-%version/share/* %buildroot%_datadir/mcstrans/
 
@@ -208,7 +203,7 @@ ln -sv $(relative %_sbindir/fixfiles /sbin/fixfiles) %buildroot/sbin/fixfiles
 egrep 'newrole\.1' %name.lang > %name-newrole.lang
 egrep 'sandbox\.5|sandbox\.8|seunshare\.8' %name.lang > %name-sandbox.lang
 egrep 'restorecond\.8' %name.lang > %name-restorecond.lang
-egrep 'mcs\.8|mcstransd\.8|setrans\.conf\.8' %name.lang > %name-mcstransd.lang
+egrep 'mcs\.8|mcstransd\.8|setrans\.conf\.5' %name.lang > %name-mcstransd.lang
 egrep 'sepolgen\.8|sepolicy-booleans\.8|sepolicy-generate\.8|sepolicy-interface\.8|sepolicy-network\.8|sepolicy\.8|sepolicy-communicate\.8|sepolicy-manpage\.8|sepolicy-transition\.8|semodule_expand\.8|semodule_link\.8|semodule_unpackage\.8' %name.lang > %name-devel.lang
 egrep 'system-config-selinux\.8|selinux-polgengui\.8|sepolicy-gui\.8' %name.lang > %name-gui.lang
 
@@ -336,9 +331,9 @@ grep -Fvx -f %name-newrole.lang -f %name-sandbox.lang -f %name-restorecond.lang 
 %_initrddir/mcstrans
 %_unitdir/mcstrans.service
 %dir %_sysconfdir/selinux/mls/setrans.d
+%_man5dir/setrans.conf.*
 %_man8dir/mcs.*
 %_man8dir/mcstransd.*
-%_man8dir/setrans.conf.*
 %_datadir/mcstrans
 
 %files devel -f %name-devel.lang
@@ -383,9 +378,9 @@ grep -Fvx -f %name-newrole.lang -f %name-sandbox.lang -f %name-restorecond.lang 
 %_datadir/system-config-selinux/*png
 %_datadir/system-config-selinux/*.ui
 
-%_datadir/system-config-selinux/selinux-polgengui.desktop
-%_datadir/system-config-selinux/sepolicy.desktop
-%_datadir/system-config-selinux/system-config-selinux.desktop
+%_desktopdir/selinux-polgengui.desktop
+%_desktopdir/sepolicy.desktop
+%_desktopdir/system-config-selinux.desktop
 
 %_xdgconfigdir/autostart/restorecond.desktop
 
@@ -410,6 +405,13 @@ grep -Fvx -f %name-newrole.lang -f %name-sandbox.lang -f %name-restorecond.lang 
 %python3_sitelibdir/__pycache__/*
 
 %changelog
+* Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.0-alt1
+- Updated to upstream version 3.0.
+
+* Sat Oct 05 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.9-alt3
+- NMU.
+- policycoreutils-gui: removed requirement on selinux-policy (closes: #35687).
+
 * Tue Apr 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.9-alt2
 - Updated man pages translation by Olesya Gerasimenko.
 

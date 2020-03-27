@@ -2,17 +2,19 @@
 
 Name: checkpolicy
 Epoch: 1
-Version: 2.9
-Release: alt2
+Version: 3.0
+Release: alt1
 Summary: SELinux policy compiler
 Group: System/Configuration/Other
 License: GPLv2
 Url: https://github.com/SELinuxProject/selinux
 
 Source: %name-%version.tar
-Patch1: %name-%version-checkpolicy-alt.patch
 
-BuildRequires: flex libselinux-devel >= 2.9 libsepol-devel >= 2.9 libsepol-devel-static >= 2.9
+BuildRequires: flex
+BuildRequires: libselinux-devel >= %version
+BuildRequires: libsepol-devel >= %version
+BuildRequires: libsepol-devel-static >= %version
 
 %description
 Security-enhanced Linux is a patch of the Linux(R) kernel and a number
@@ -30,7 +32,6 @@ Only required for building policies.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 %make_build LIBDIR=%_libdir CFLAGS="%optflags"
@@ -48,6 +49,9 @@ done
 %_man8dir/*
 
 %changelog
+* Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.0-alt1
+- Updated to upstream version 3.0.
+
 * Tue Apr 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.9-alt2
 - Updated man pages translation by Olesya Gerasimenko.
 

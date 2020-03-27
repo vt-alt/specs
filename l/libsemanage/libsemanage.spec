@@ -6,7 +6,7 @@
 
 Name: libsemanage
 Epoch: 1
-Version: 2.9
+Version: 3.0
 Release: alt1
 Summary: Library, which provides an interface for SELinux management
 Group: System/Libraries
@@ -17,9 +17,11 @@ Source: %name-%version.tar
 Patch0: %name-%version-alt.patch
 
 BuildRequires(pre): rpm-build-python3
-BuildRequires: bzlib-devel flex libustr-devel libsepol-devel >= 2.9 libselinux-devel >= 2.9 libaudit-devel
+BuildRequires: bzlib-devel flex libustr-devel libaudit-devel
+BuildRequires: libsepol-devel >= %version
+BuildRequires: libselinux-devel >= %version
 BuildRequires: swig python3-devel
-%{!?_disable_check:BuildRequires: CUnit-devel libsepol-devel-static >= 2.9 libselinux-devel-static >= 2.9}
+%{!?_disable_check:BuildRequires: CUnit-devel libsepol-devel-static >= %version libselinux-devel-static >= %version }
 
 %description
 This package provides the shared libraries for the manipulation of
@@ -114,6 +116,9 @@ ln -sf $(relative /%_lib/libsemanage.so.1 %_libdir/libsemanage.so) %buildroot/%_
 %python3_sitelibdir/*
 
 %changelog
+* Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.0-alt1
+- Updated to upstream version 3.0.
+
 * Mon Mar 18 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.9-alt1
 - Updated to upstream version 2.9.
 
