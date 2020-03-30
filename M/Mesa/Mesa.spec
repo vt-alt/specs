@@ -67,7 +67,7 @@
 
 Name: Mesa
 Version: 19.1.8
-Release: alt1
+Release: alt1.p9
 Epoch: 4
 License: MIT
 Summary: OpenGL compatible 3D graphics library
@@ -221,6 +221,16 @@ Group: System/X11
 
 %description -n xorg-dri-armsoc
 DRI drivers for various SoCs
+
+%package -n mesa-dri-drivers
+Summary: Mesa-based DRI drivers
+Group: System/X11
+Requires: xorg-dri-swrast
+Requires: xorg-dri-radeon
+Requires: xorg-dri-nouveau
+
+%description -n mesa-dri-drivers
+Mesa-based DRI drivers.
 
 %set_verify_elf_method unresolved=relaxed
 
@@ -494,7 +504,12 @@ cd -
 %files -n xorg-dri-armsoc -f xorg-dri-armsoc.list
 %endif
 
+%files -n mesa-dri-drivers
+
 %changelog
+* Wed Mar 25 2020 Andrey Cherepanov <cas@altlinux.org> 4:19.1.8-alt1.p9
+- Add metapackage mesa-dri-drivers for compatibility with some legacy packages
+
 * Thu Oct 31 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.8-alt1
 - 19.1.8
 
