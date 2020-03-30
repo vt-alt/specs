@@ -1,10 +1,10 @@
 Name: mysql-workbench-community
-Version: 8.0.17
+Version: 8.0.19
 Release: alt1
 
 Summary: A MySQL visual database modeling tool
 
-License: %gpllgpl2only
+License: GPL-2.0-or-later and LGPL-2.0-or-later and CC-BY-3.0 and MIT and Scintilla and Public-Domain
 Group: Development/Databases
 Url: http://wb.mysql.com
 Source0: %name-%version.tar.gz
@@ -55,7 +55,6 @@ Requires: %name-data = %version
 Requires: glibc-devel
 
 BuildRequires(pre): unzip
-BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-build-xdg
 
 # MySQL only
@@ -98,13 +97,19 @@ BuildRequires: libXinerama-devel libXi-devel libXrandr-devel libXcursor-devel li
 BuildRequires: libat-spi2-core-devel at-spi2-atk-devel
 BuildRequires: libssh-devel >= 0.8.5
 
+# 8.0.19
+BuildRequires: libthai-devel libdatrie-devel rapidjson
+
 %description
-MySQL Workbench is modeling tool that allows you to design
-and generate MySQL databases graphically.
+MySQL Workbench is modeling tool that allows you to
+design and generate MySQL databases graphically.
+
+Some parts of code have separate licenses.
+Look to %_defaultdocdir/%name-%version/License.txt
 
 %package data
 Summary: Architecture independent files for %name
-License: %gpllgpl2only
+License: GPL-2.0-or-later and LGPL-2.0-or-later and CC-BY-3.0 and MIT and Scintilla and Public-Domain
 Group: Development/Databases
 BuildArch: noarch
 Conflicts: %name < %version
@@ -112,6 +117,9 @@ Conflicts: mysql-workbench-gpl-data
 
 %description data
 Architecture independent files for %name
+
+Some parts of code have separate licenses.
+Look to %_defaultdocdir/%name-%version/License.txt
 
 %prep
 
@@ -121,9 +129,9 @@ Architecture independent files for %name
 #patch2 -p1
 #patch3 -p1
 #patch4 -p2
-%ifarch %ix86
-%patch5 -p1
-%endif
+#ifarch %ix86
+#patch5 -p1
+#endif
 %patch6 -p2
 %patch7 -p2
 
@@ -143,16 +151,15 @@ pushd %_builddir/%name-%version/ANTLR-CPP
  DESTDIR=%_builddir/%name-%version/ANTLR-CPP make install
 popd
 
-%add_optflags -Wno-error=maybe-uninitialized -Wno-error=deprecated-declarations -std=c++11
 %ifarch %ix86
 %add_optflags -Wno-error=format=
 %endif
 
-#8.0.17: http://bugs.mysql.com/97116
-sed -i "s/ -Werror//" CMakeLists.txt
-
 #8.0.17: wb_context_ui_home.cpp:59:10: fatal error: include <zip.h>
 %add_optflags -I/usr/include/libzip
+
+#8.0.19: https://lists.altlinux.org/pipermail/devel/2020-March/210126.html
+sed -i "s/ -Wno-deprecated-copy//g" CMakeLists.txt
 
 %cmake \
     -DWITH_ANTLR_JAR=%SOURCE1 \
@@ -213,6 +220,14 @@ popd
 %_xdgdatadir/mime-info/*.mime
 
 %changelog
+* Thu Mar 19 2020 Sergey Y. Afonin <asy@altlinux.org> 8.0.19-alt1
+- Updated to last release
+- Removed all -Wno-error= for x86_64 in spec file
+- Removed hack for http://bugs.mysql.com/97116
+- Removed -Wno-deprecated-copy from CMakeLists.txt (gcc8 not supported it)
+- Not used mysql-workbench-community-6.3.10-32bit.patch
+- Updated License tag to SPDX syntax
+
 * Tue Oct 08 2019 Sergey Y. Afonin <asy@altlinux.org> 8.0.17-alt1
 - Updated to last release
 - Removed -Werror from CMakeLists.txt (http://bugs.mysql.com/97116)
