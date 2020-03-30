@@ -1,11 +1,13 @@
 %define rname purpose
 
+%def_disable bootstrap
+
 %define sover 5
 %define libphabricatorhelpers libphabricatorhelpers%sover
 %define libreviewboardhelpers libreviewboardhelpers%sover
 
 Name: kf5-%rname
-Version: 5.67.0
+Version: 5.68.0
 Release: alt1
 %K5init altplace
 
@@ -14,7 +16,10 @@ Summary: Abstraction to provide and leverage actions of a specific kind
 Url: http://www.kde.org
 License: LGPLv2.1+
 
-Requires: kde5-connect kf5-kirigami
+Requires: kf5-kirigami
+%if_disabled bootstrap
+Requires: kde5-connect
+%endif
 
 Source: %rname-%version.tar
 
@@ -24,7 +29,10 @@ Source: %rname-%version.tar
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-base-devel qt5-declarative-devel
 #BuildRequires: kde5-connect
-BuildRequires: accounts-qt5-devel intltool kde5-kaccounts-integration-devel signon-devel
+%if_disabled bootstrap
+BuildRequires: kde5-kaccounts-integration-devel
+%endif
+BuildRequires: accounts-qt5-devel intltool signon-devel
 BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdeclarative-devel kf5-ki18n-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel
 BuildRequires: kf5-kpackage-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel
@@ -103,8 +111,7 @@ KF5 library
 %_K5plug/kf5/kfileitemaction/*.so
 %_K5qml/org/kde/purpose/
 %_K5data/purpose/
-%_K5data/kpackage/Purpose/
-#%_K5icon/*/*/apps/reviewboard.*
+#%_K5data/kpackage/Purpose/
 %_K5icon/*/*/actions/kipiplugin_youtube.*
 %_K5icon/*/*/apps/*purpose*.*
 %_datadir/accounts/services/kde/
@@ -128,6 +135,9 @@ KF5 library
 %_K5lib/libKF5PurposeWidgets.so.*
 
 %changelog
+* Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
+- new version
+
 * Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
 - new version
 

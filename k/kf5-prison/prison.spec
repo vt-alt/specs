@@ -1,7 +1,7 @@
 %define rname prison
 
 Name: kf5-%rname
-Version: 5.67.0
+Version: 5.68.0
 Release: alt1
 %K5init altplace
 
@@ -73,6 +73,9 @@ KF5 library
 %_K5qml/org/kde/prison/
 
 %changelog
+* Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
+- new version
+
 * Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
 - new version
 

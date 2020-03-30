@@ -3,7 +3,7 @@
 %add_python3_path %_libdir/cmake
 
 Name: kf5-%rname
-Version: 5.67.0
+Version: 5.68.0
 Release: alt1
 %K5init altplace
 
@@ -126,6 +126,9 @@ mv %buildroot/%_datadir/locale/* %buildroot/%_K5i18n/
 %_K5lib/libKF5KDELibs4Support.so.*
 
 %changelog
+* Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
+- new version
+
 * Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
 - new version
 

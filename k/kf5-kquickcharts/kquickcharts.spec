@@ -1,7 +1,7 @@
 %define rname kquickcharts
 
 Name: kf5-%rname
-Version: 5.67.0
+Version: 5.68.0
 Release: alt1
 %K5init altplace
 
@@ -18,6 +18,7 @@ Source: %rname-%version.tar
 # optimized out: cmake cmake-modules elfutils fontconfig gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 libglvnd-devel libqt5-core libqt5-gui libqt5-network libqt5-qml libqt5-quick libqt5-quickcontrols2 libqt5-quicktemplates2 libsasl2-3 libstdc++-devel perl python-modules python2-base python3 python3-base python3-dev qt5-base-devel qt5-declarative-devel rpm-build-python3 rpm-build-qml sh4
 #BuildRequires: appstream ccmake extra-cmake-modules git-core libssl-devel python-modules-compiler python3-module-mpl_toolkits qt5-quickcontrols2-devel qt5-wayland-devel rpm-build-kf5
 BuildRequires(pre): rpm-build-kf5
+BuildRequires: rpm-build-qml
 BuildRequires: extra-cmake-modules qt5-base-devel qt5-quickcontrols2-devel
 #BuildRequires: qt5-wayland-devel
 
@@ -76,6 +77,9 @@ Requires: %name-common = %version-%release
 #%_K5lib/libkquickcharts.so.*
 
 %changelog
+* Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
+- new version
+
 * Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.67.0-alt1
 - new version
 
