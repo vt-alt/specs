@@ -1,5 +1,5 @@
 Name: kde5-telepathy
-Version: 19.04.0
+Version: 19.12.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -14,7 +14,7 @@ Requires: mjpegtools
 Requires: telepathy-accounts-signon
 Requires: telepathy-mission-control
 Requires: telepathy-gabble
-Requires: telepathy-haze
+#Requires: telepathy-haze
 Requires: telepathy-idle
 Requires: telepathy-rakia
 Requires: telepathy-salut
@@ -42,6 +42,9 @@ BuildRequires(pre): rpm-build-ubt
 %files
 
 %changelog
+* Fri Mar 27 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.0-alt1
+- don't require telepathy-haze
+
 * Mon Jun 10 2019 Sergey V Turchin <zerg@altlinux.org> 19.04.0-alt1
 - require kde5-ktp-call-ui
 
