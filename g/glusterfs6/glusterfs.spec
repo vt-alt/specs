@@ -1,6 +1,6 @@
 # TODO: --enable-bd-xlator
 
-%define major 6.6
+%define major 6.8
 #define _localstatedir /var
 %def_enable epoll
 %def_enable fusermount
@@ -647,6 +647,9 @@ rm -fv %buildroot%glusterlibdir/cloudsync-plugins/cloudsyncs3.so
 %endif
 
 %changelog
+* Wed Mar 25 2020 Vitaly Lipatov <lav@altlinux.ru> 6.8-alt1
+- new version 6.8 (with rpmrb script)
+
 * Thu Nov 14 2019 Vitaly Lipatov <lav@altlinux.ru> 6.6-alt1
 - new version 6.6 (with rpmrb script)
 
