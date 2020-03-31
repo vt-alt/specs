@@ -1,12 +1,15 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt0.3
+Release: alt0.2
 epoch:1 
+%define kernel_need_version	5.6
+# kernel-source-5.6 does not currently exist. Use 5.5
 %define kernel_base_version	5.5
-%define kernel_sublevel .5
-%define kernel_extra_version	%nil
-Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
+%define kernel_sublevel .0
+%define kernel_extra_version	.rc2
+# kernel version is 5.6
+Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
 # 0.0.X -- preX
 # 0.X.0 -- rcX
@@ -36,7 +39,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 %def_disable oss
 ## Don't edit below this line ##################################
 
-%define kversion	%kernel_base_version%kernel_sublevel%kernel_extra_version
+%define kversion	%kernel_need_version%kernel_sublevel%kernel_extra_version
 %define modules_dir	/lib/modules/%kversion-%flavour-%krelease
 
 %define kheaders_dir	%_prefix/include/linux-%kversion-%flavour
@@ -105,6 +108,7 @@ Provides: kernel = %kversion
 Requires(pre): coreutils
 Requires(pre): module-init-tools >= 3.1
 Requires(pre): mkinitrd >= 1:2.9.9-alt1
+Requires(pre): rpi4-boot-switch
 
 %description
 This package contains the Linux kernel that is used to boot and run
@@ -485,6 +489,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Mar 25 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.0.rc2-alt0.2
+- CONFIG_BT_HCIUART_BCM=y for bluetooth work
+
+* Tue Mar 24 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.0.rc2-alt0.1
+- updated to 5.6.0.rc2 (still RPi-specific)
+
 * Mon Mar 09 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.5.5-alt0.3
 - replaced bcm2711-rpi-4-b.dts file with other modified by firmware
 
