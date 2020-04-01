@@ -1,5 +1,5 @@
 Name: xfce4-terminal
-Version: 0.8.9.1
+Version: 0.8.9.2
 Release: alt1
 
 Summary: Terminal emulator application for Xfce
@@ -8,6 +8,7 @@ License: GPLv2+
 Group: Terminals
 Url: https://www.xfce.org
 Packager: Xfce Team <xfce@packages.altlinux.org>
+Vcs: git://git.xfce.org/apps/xfce4-terminal
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
@@ -46,7 +47,6 @@ xfce4-terminal - легкий и удобный эмулятор термина�
 %xfce4reconf
 %configure \
 	--enable-maintainer-mode \
-	--enable-dbus \
 	--enable-gen-doc \
 	--enable-debug=minimum
 %make_build
@@ -64,6 +64,11 @@ xfce4-terminal - легкий и удобный эмулятор термина�
 %_desktopdir/*
 
 %changelog
+* Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 0.8.9.2-alt1
+- Add Vcs tag.
+- Drop obsoleted configure option.
+- Updated to 0.8.9.2.
+
 * Sat Dec 28 2019 Mikhail Efremov <sem@altlinux.org> 0.8.9.1-alt1
 - Updated to 0.8.9.1.
 
