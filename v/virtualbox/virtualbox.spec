@@ -59,7 +59,7 @@
 
 Name: virtualbox
 Version: 6.1.4
-Release: alt1
+Release: alt4
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPLv2
@@ -85,9 +85,10 @@ Source15:	os_altlinux.png
 Source16:	os_altlinux_64.png
 Source22:	%name.service
 Source23:	virtualbox.conf
-Source25:	virtualbox.modprobe.conf
-Source26:	virtualbox-addition.conf
+Source25:	virtualbox-vboxvideo.modprobe.conf
+Source26:	virtualbox-vboxguest.modprobe.conf
 Source27:	virtualbox-vmsvga.service
+Source28:	virtualbox-addition.conf
 
 %if_enabled debug
 Source99:	%vboxdbg.in
@@ -192,6 +193,22 @@ Group: Emulators
 %description guest-common
 This packages contains common files for VirtualBox OSE guest systems.
 It consists modprobe rules to load kernel modules guest on guest system.
+
+%package guest-common-vboxvideo
+Summary: Additions common files for VirtualBox OSE vboxvideo driver
+Group: Emulators
+
+%description guest-common-vboxvideo
+This packages contains common files for VirtualBox OSE vboxvideo driver.
+It consists modprobe rules to load kernel module vboxvideo on guest system.
+
+%package guest-common-vboxguest
+Summary: Additions common files for VirtualBox OSE vboxguest driver
+Group: Emulators
+
+%description guest-common-vboxguest
+This packages contains common files for VirtualBox OSE vboxguest driver.
+It consists modprobe rules to load kernel module vboxguest on guest system.
 
 %package webservice
 Summary: VirtualBox Web Service
@@ -583,8 +600,9 @@ cd additions >/dev/null
   install -m755 VBoxClient VBoxControl VBoxService %buildroot/%_bindir/
 
 # install kernel modules configuration
-  install -pDm644 %SOURCE25 %buildroot%_sysconfdir/modprobe.d/virtualbox-addition.conf
-  install -pDm644 %SOURCE26 %buildroot%_sysconfdir/modules-load.d/virtualbox-addition.conf
+  install -pDm644 %SOURCE25 %buildroot%_sysconfdir/modprobe.d/virtualbox-vboxvideo.conf
+  install -pDm644 %SOURCE26 %buildroot%_sysconfdir/modprobe.d/virtualbox-vboxguest.conf
+  install -pDm644 %SOURCE28 %buildroot%_sysconfdir/modules-load.d/virtualbox-addition.conf
 
 # create links
   ln -s $(relative %_bindir/VBoxService %_sbindir/) %buildroot%_sbindir/vboxadd-service
@@ -762,8 +780,13 @@ mountpoint -q /dev || {
 
 %if_with additions
 %files guest-common
-%config %_sysconfdir/modprobe.d/virtualbox-addition.conf
 %config %_sysconfdir/modules-load.d/virtualbox-addition.conf
+
+%files guest-common-vboxvideo
+%config %_sysconfdir/modprobe.d/virtualbox-vboxvideo.conf
+
+%files guest-common-vboxguest
+%config %_sysconfdir/modprobe.d/virtualbox-vboxguest.conf
 
 %files guest-utils
 /sbin/mount.vboxsf
@@ -827,6 +850,16 @@ mountpoint -q /dev || {
 %endif
 
 %changelog
+* Thu Mar 19 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt4
+- Fix shared clipboard regression:
+  https://www.virtualbox.org/ticket/19336 (Closes: 38239)
+
+* Fri Mar 13 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt3
+- Removed loading the vboxpci kernel module (Closes: 38157)
+
+* Wed Mar 04 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt2
+- Add separated modprobe rules for vboxguest and vboxvideo
+
 * Thu Feb 20 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt1
 - Update to newest version 6.1.4
 
