@@ -1,18 +1,17 @@
 Name:     apt-repo
-Version:  1.3.10
+Version:  1.3.11
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
-License:  GPLv3+
+License:  GPL-3.0+
 Group:    System/Configuration/Packaging
 URL: 	  http://altlinux.org/apt-repo
 Packager: Andrey Cherepanov <cas@altlinux.org> 
 BuildArch: noarch
 
 Source:   %name-%version.tar
-BuildRequires: gzip
-Requires:  apt
-Requires:  curl
+Requires: apt
+Requires: curl
 
 %description
 The apt-repo script allow to show, add and remove APT repositories
@@ -24,18 +23,24 @@ component, branch name or task number.
 
 %install
 install -Dm755 %name %buildroot%_bindir/%name
-mkdir -p %buildroot%_man1dir
 install -Dpm 644 %name.8 %buildroot%_man8dir/%name.8
-gzip %buildroot%_man8dir/%name.8
+install -Dpm 644 %name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 
 %find_lang %name
 
 %files -f %name.lang
 %doc TODO
+%config(noreplace) %_sysconfdir/sysconfig/%name
 %_bindir/%name
 %_man8dir/%name.8*
 
 %changelog
+* Mon Mar 30 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.11-alt1
+- Add new repositories: c8.1, autoimports.p9 and altlinuxclub.p9.
+- Use proxy from APT for network operations (thanks asy@) (ALT #38294).
+- Set optional Arepo ignoring in file /etc/sysconfig/apt-repo (ALT #34167).
+- Fix License tag according to SPDX.
+
 * Mon May 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.3.10-alt1
 - Add p9 branch.
 - Add --dry-run mode (ALT #35726).
