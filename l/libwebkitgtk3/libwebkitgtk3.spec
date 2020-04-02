@@ -20,11 +20,11 @@
 
 Name: libwebkitgtk3
 Version: 2.4.11
-Release: alt7
+Release: alt9.1.p9
 
 Summary: Web browser engine
 Group: System/Libraries
-License: %bsd %lgpl2plus
+License: LGPL-2.0+ and BSD-3-Clause
 
 Url: http://www.webkitgtk.org
 
@@ -36,13 +36,14 @@ Patch3: webkitgtk-2.4.11-icu59.patch
 # https://bugs.webkit.org/show_bug.cgi?id=126985
 Patch4: webkitgtk-x86-assembler-fix.patch
 Patch5: webkitgtk-2.4.10-suse-aarch64.patch
+Patch6: webkitgtk-2.4.11-icu65.patch
 
 Obsoletes: %name-webinspector
 Provides: %name-webinspector = %EVR
 
 Requires: libjavascriptcoregtk3 = %version-%release
 
-BuildRequires(pre): rpm-build-licenses rpm-build-gir
+BuildRequires(pre): rpm-build-gir
 BuildRequires: gcc-c++ libicu-devel bison perl-Switch zlib-devel
 BuildRequires: chrpath
 BuildRequires: flex >= 2.5.33
@@ -64,7 +65,6 @@ BuildRequires: fontconfig-devel >= 2.4 libfreetype-devel libharfbuzz-devel
 BuildRequires: libgio-devel >= 2.25.0
 BuildRequires: python-modules-json
 BuildRequires: ruby ruby-stdlibs
-
 
 %if %acceleration_backend == opengl
 BuildRequires: libGL-devel libXcomposite-devel libXdamage-devel
@@ -224,16 +224,22 @@ GObject introspection data for the Webkit2 library
 %patch3
 %patch4 -p2
 %patch5 -p1
+%patch6 -p2
 
 # fix build translations
 %__subst 's|^all-local:|all-local: stamp-po|' GNUmakefile.am
 rm -f Source/autotools/{compile,config.guess,config.sub,depcomp,install-sh,ltmain.sh,missing,libtool.m4,ltoptions.m4,ltsugar.m4,ltversion.m4,lt~obsolete.m4,gsettings.m4,gtk-doc.m4}
 
+# fix python shebang
+subst 's|#!/usr/bin/env python|#!%__python|' `fgrep -Rl '#!/usr/bin/env python' *`
+
 %build
 %add_optflags -Wno-expansion-to-defined -Wno-implicit-fallthrough
 # Use linker flags to reduce memory consumption
 %add_optflags -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
-%ifarch ppc ppc64 ppc64le
+# Add flags to prevent delete null pointer checks
+%add_optflags -fno-delete-null-pointer-checks
+%ifarch ppc ppc64 ppc64le riscv64
 %add_optflags -DENABLE_YARR_JIT=0
 %endif
 
@@ -244,9 +250,13 @@ rm -f Source/autotools/{compile,config.guess,config.sub,depcomp,install-sh,ltmai
 echo "GTK_DOC_CHECK([1.10])" >> configure.ac
 gtkdocize --copy
 %autoreconf -I Source/autotools
+export PYTHON=%__python
 %configure \
-%ifarch ppc ppc64 ppc64le
+%ifarch ppc ppc64 ppc64le riscv64 mipsel
 	--disable-jit \
+%endif
+%ifarch riscv64
+	--enable-fast-malloc \
 %endif
 	--enable-video \
 	--with-acceleration-backend=%acceleration_backend \
@@ -351,6 +361,21 @@ chrpath --delete %buildroot%_libexecdir/%_name/MiniBrowser
 
 
 %changelog
+* Wed Mar 25 2020 Andrey Cherepanov <cas@altlinux.org> 2.4.11-alt9.1.p9
+- Backport fix to p9 branch.
+
+* Wed Mar 25 2020 Andrey Cherepanov <cas@altlinux.org> 2.4.11-alt10
+- Do not delete null pointer checks (ALT #38256).
+- Fix build.
+
+* Tue Nov 26 2019 Ivan A. Melnikov <iv@altlinux.org> 2.4.11-alt9
+- Fixed build with recent libicu.
+- Update license tag.
+- Disable JIT on mipsel.
+
+* Thu Jun 20 2019 Nikita Ermakov <arei@altlinux.org> 2.4.11-alt8
+- Add RISC-V (vr64gc) support.
+
 * Fri May 31 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.4.11-alt7
 - Fixed build on ppc architectures.
 
