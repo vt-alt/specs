@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -11,6 +11,7 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Source: %rname-%version.tar
+Patch1: alt-def-krunner.patch
 
 # Automatically added by buildreq on Wed Jun 17 2015 (-bi)
 # optimized out: cmake cmake-modules elfutils libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libtelepathy-logger-qt5 libtelepathy-qt5 libtelepathy-qt5-devel libxcbutil-keysyms python-base python3 python3-base qt5-base-devel ruby ruby-stdlibs telepathy-logger-qt5-devel
@@ -49,6 +50,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
 
 %build
 %K5build
@@ -73,6 +75,9 @@ KF5 library
 #%_K5lib/libktp-contact-runner.so.*
 
 %changelog
+* Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt2
+- turn off krunner plugin by default
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
