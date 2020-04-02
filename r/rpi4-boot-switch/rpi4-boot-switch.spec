@@ -1,9 +1,14 @@
 %define noub rpi4-boot-nouboot
 %define ubfw rpi4-boot-uboot-fw
 %define uboot rpi4-boot-uboot
+%define ftrigger rpi4-boot-nouboot.filetrigger
+%define ftrgrname rpi4-boot-nouboot-filetrigger
+%define ftrigger2 rpi4-boot-uboot.filetrigger
+%define ftrgrname2 rpi4-boot-uboot-filetrigger
+%define firsttimename rpi4-uboot-directory-cleanup
 
 Name: rpi4-boot-switch
-Version: 0.1
+Version: 0.5
 Release: alt1
 Summary: Switch of boot mode for Raspberry Pi 4
 License: GPLv2+
@@ -16,6 +21,9 @@ Source1: %ubfw
 Source2: %uboot
 Source3: README.ru
 Source4: README.en
+Source5: %ftrigger
+Source6: %ftrigger2
+Source7: %firsttimename
 
 %description
 Switch of boot mode for Raspberry Pi 4
@@ -41,19 +49,62 @@ Firmware загружает ядро, dtb и initrd. U-boot не использ�
 Firmware загружает dtb. U-boot загружает ядро и initrd.
 U-boot загружает ядро, dtb и initrd.
 
+%package -n %ftrgrname
+Summary: Do a kernel update on /mnt/FIRMPART
+Group: System/Configuration/Other
+Requires: %name
+
+%description -n %ftrgrname
+This filetrigger executes "rpi4-boot-nouboot --default"
+to do a kernel update on /mnt/FIRMPART
+
+%package -n %ftrgrname2
+Summary: Do a u-boot update on files in directory /usr/share/u-boot/rpi_4/
+Group: System/Configuration/Other
+Requires: %name
+
+%description -n %ftrgrname2
+This filetrigger executes "rpi4-boot-uboot --update-uboot-only"
+to do a u-boot update on files in directory /usr/share/u-boot/rpi_4/
+
 %install
 install -Dpm 0755 %SOURCE0 %buildroot%_sbindir/%noub
 install -Dpm 0755 %SOURCE1 %buildroot%_sbindir/%ubfw
 install -Dpm 0755 %SOURCE2 %buildroot%_sbindir/%uboot
 install -m 644 %SOURCE3 ./
 install -m 644 %SOURCE4 ./
+install -Dpm 0755 %SOURCE5 %buildroot%_rpmlibdir/%ftrigger
+install -Dpm 0755 %SOURCE6 %buildroot%_rpmlibdir/%ftrigger2
+install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
 
 %files
 %doc README.ru README.en
+%_sysconfdir/firsttime.d/%firsttimename
 %_sbindir/%noub
 %_sbindir/%ubfw
 %_sbindir/%uboot
 
+%files -n %ftrgrname
+%_rpmlibdir/%ftrigger
+
+%files -n %ftrgrname2
+%_rpmlibdir/%ftrigger2
+
 %changelog
+* Thu Apr 02 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.5-alt1
+- rpi4-boot-nouboot --bootstrap: backup dtb file
+
+* Thu Apr 02 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4-alt1
+- Improve remount process
+- rpi4-boot-uboot: add --update-uboot-only option and u-boot files filetrigger
+- rpi4-boot-nouboot: add --bootstrap option with firsttime cleanup script
+
+* Wed Apr 01 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.3-alt1
+- Gently remount /mnt/FIRMPART
+
+* Wed Apr 01 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.2-alt1
+- rpi4-boot-nouboot: added --default option
+- Added rpi4-boot-nouboot.filetrigger
+
 * Fri Nov 22 2019 Dmitry Terekhin <jqt4@altlinux.org> 0.1-alt1
 - Initial build
