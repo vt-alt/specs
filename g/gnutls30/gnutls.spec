@@ -3,7 +3,7 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.12
+Version: 3.6.13
 Release: alt1
 
 Summary: A TLS protocol implementation
@@ -323,6 +323,10 @@ make -k check
 %endif
 
 %changelog
+* Tue Mar 31 2020 Mikhail Efremov <sem@altlinux.org> 3.6.13-alt1
+- Updated gnulib-E2K-fix-for-lcc-1.23.patch.
+- Updated to 3.6.13.
+
 * Mon Feb 03 2020 Mikhail Efremov <sem@altlinux.org> 3.6.12-alt1
 - Fixed build with gnulib-E2K-fix-for-lcc-1.23.patch.
 - Updated to 3.6.12.
