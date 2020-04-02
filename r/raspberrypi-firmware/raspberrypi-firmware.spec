@@ -3,7 +3,7 @@
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
 Version: 20200228
-Release: alt1
+Release: alt2
 Url: https://github.com/raspberrypi/firmware
 License: distributable
 Group: System/Kernel and hardware
@@ -76,6 +76,8 @@ echo 'enable_uart=1' > %buildroot/%target_rpi4/config.txt
 
 %ifarch aarch64
 echo 'arm_64bit=1' >> %buildroot/%target_rpi4/config.txt
+echo 'disable_overscan=1' >> %buildroot/%target_rpi4/config.txt
+echo 'dtparam=audio=on' >> %buildroot/%target_rpi4/config.txt
 %endif
 
 %files
@@ -84,6 +86,11 @@ echo 'arm_64bit=1' >> %buildroot/%target_rpi4/config.txt
 %doc %_docdir/%name
 
 %changelog
+* Wed Apr 01 2020 Dmitry Terekhin <jqt4@altlinux.org> 20200228-alt2
+- Added parameters in config.txt for RPi4:
+- disable_overscan=1
+- dtparam=audio=on
+
 * Wed Mar 04 2020 Dmitry Terekhin <jqt4@altlinux.org> 20200228-alt1
 - new snapshot
 
