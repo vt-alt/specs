@@ -3,7 +3,7 @@
 
 Name:    1c-preinstall
 Version: 8.3
-Release: alt11
+Release: alt12
 
 Summary: Set correct environment for 1C:Enterprise client
 License: GPL
@@ -16,9 +16,12 @@ BuildRequires: libImageMagick
 %endif
 BuildArch: noarch
 
+Requires: file
 Requires: fontconfig
 Requires: glib2
 Requires: glibc-pthread
+Requires: libSM
+Requires: libX11
 Requires: libatk
 Requires: libcairo
 Requires: libcom_err
@@ -27,17 +30,17 @@ Requires: libfreetype
 Requires: libgcc1
 Requires: libgdk-pixbuf
 Requires: libgio
+Requires: libgperftools
+Requires: libgsf
 Requires: libgtk+2
 Requires: libkrb5
+Requires: libnsl1
 Requires: libpango
-Requires: libSM
 Requires: libsoup
 Requires: libstdc++6
 Requires: libwebkitgtk2
-Requires: libX11
+Requires: libwebkitgtk3
 Requires: zlib
-
-Requires: libgsf
 
 Source1:  xdg-current-desktop.sh 
 
@@ -90,6 +93,12 @@ mkdir -p %buildroot
 %endif
 
 %changelog
+* Thu Mar 26 2020 Andrey Cherepanov <cas@altlinux.org> 8.3-alt12
+- Requires file package (ALT #31214).
+- Requires libnsl1 (ALT #37176).
+- Requires libwebkitgtk3 (ALT #37905).
+- Requires libgperftool (ALT #37912).
+
 * Thu Mar 30 2017 Andrey Cherepanov <cas@altlinux.org> 8.3-alt11
 - Return libgsf requirement for support save to XLS (ALT #33298)
 
