@@ -1,26 +1,25 @@
 Name: xfce4-pulseaudio-plugin
-Version: 0.4.2
+Version: 0.4.3
 Release: alt1
 
 Summary: A pulseaudio plugin for the Xfce panel
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-pulseaudio-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# git://git.xfce.org/panel-plugins/xfce4-pulseaudio-plugin
+Vcs: git://git.xfce.org/panel-plugins/xfce4-pulseaudio-plugin
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
 %def_disable wnck
 
-BuildRequires(pre): rpm-build-licenses
-
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel libxfce4util-devel
+BuildRequires: libexo-gtk3-devel
 BuildRequires: libxfconf-devel
 BuildRequires: libpulseaudio-devel libnotify-devel
-BuildRequires: libkeybinder3-devel libdbus-glib-devel
+BuildRequires: libkeybinder3-devel
 %{?_enable_wnck:BuildRequires: libwnck3-devel}
 
 Requires: xfce4-panel >= 4.11
@@ -59,6 +58,15 @@ A panel plugin for controlling PulseAudio mixer.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 0.4.3-alt1
+- Added libexo-gtk3-devel to BR.
+- Updated url.
+- Added Vcs tag.
+- Don't use rpm-build-licenses.
+- Dropped libdbus-glib-devel from BR.
+- Dropped obsoleted patch.
+- Updated to 0.4.3.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 0.4.2-alt1
 - Updated to 0.4.2.
 
