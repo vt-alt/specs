@@ -9,7 +9,7 @@
 
 Name: plasma5-addons
 Version: 5.18.3
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -26,7 +26,7 @@ Requires: quota
 
 Source: %rname-%version.tar
 Patch1: alt-sover.patch
-#
+Patch2: alt-def-krunners.patch
 Patch3: alt-weather-usability.patch
 Patch4: alt-color-picker.patch
 Patch5: alt-fixed-comic-widget-crash.patch
@@ -100,7 +100,7 @@ KF5 library
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-#
+%patch2 -p1
 #%patch3 -p1
 %patch4 -p2
 %patch5 -p2
@@ -158,6 +158,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.3-alt2
+- turn off some krunner plugins by default
+
 * Wed Mar 11 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.3-alt1
 - new version
 
