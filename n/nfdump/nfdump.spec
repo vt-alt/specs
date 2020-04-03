@@ -1,13 +1,22 @@
 # https://bugzilla.altlinux.org/36391
 %def_without	devel
 
-Name: nfdump
-Version: 1.6.18
-Release: alt2
-Summary: collect and process netflow data
+%if_with devel
+%def_with	libnfdump
+%else
+%def_without	libnfdump
+%endif
 
+Name: nfdump
+Version: 1.6.19
+Release: alt1
+Summary: collect and process netflow data
 Group: Monitoring
+%if_without libnfdump
+License: GPL-2.0-or-later
+%else
 License: BSD-3-Clause
+%endif
 #Url: http://sourceforge.net/projects/nfdump/
 Url: https://github.com/phaag/nfdump/releases
 
@@ -22,13 +31,17 @@ Source8: sfcapd.service
 
 Packager: Vladimir Lettiev <crux@altlinux.ru>
 
-BuildRequires: librrd-devel libpcap-devel flex bison zlib-devel bzlib-devel
+BuildRequires: librrd-devel libpcap-devel flex bison bzlib-devel
 
 %description
 Nfdump is a set of tools to collect and process netflow data.
 It's fast and has a powerful filter pcap like syntax. Nfdump
 supports netflow versions v5, v7, v9 and IPFIX as well as a
 limited set of sflow and is IPv6 compatible.
+%if_without libnfdump
+Binaries was built with the LZ4 code under the BSD-2-Clause License and
+the mini subset of the LZO code under the GPL-2.0-or-later License.
+%endif
 
 %package nfprofile
 Summary: nfprofile - netflow profiler
@@ -39,6 +52,10 @@ nfprofile is the netflow profiler program for NfSen. It reads
 the netflow data from the files stored by nfcapd and creates
 the corresponding output files for every channel required.
 This program is run only by NfSen.
+%if_without libnfdump
+Binaries was built with the LZ4 code under the BSD-2-Clause License and
+the mini subset of the LZO code under the GPL-2.0-or-later License.
+%endif
 
 %package nftrack
 Summary: nftrack - Port tracking decoder for NfSen plugin PortTracker.
@@ -46,13 +63,21 @@ Group: Monitoring
 
 %description nftrack
 nftrack - Port tracking decoder for NfSen plugin PortTracker.
+%if_without libnfdump
+Binaries was built with the LZ4 code under the BSD-2-Clause License and
+the mini subset of the LZO code under the GPL-2.0-or-later License.
+%endif
 
+%if_with libnfdump
 %package -n libnfdump
 Summary: nfdump shared library
+License: GPL-2.0-or-later
 Group: System/Libraries
 
 %description -n libnfdump
-nfdump shared library
+nfdump shared library; it built with LZ4 code under the BSD-2-Clause License
+and mini subset of the LZO code under the GPL-2.0-or-later License.
+%endif
 
 %if_with devel
 %package -n libnfdump-devel
@@ -61,6 +86,7 @@ Group: Development/C
 
 %description -n libnfdump-devel
 nfdump development files
+
 %endif
 
 %prep
@@ -69,7 +95,16 @@ nfdump development files
 %build
 %autoreconf
 %configure \
+%if_without libnfdump
+	--disable-shared \
+	--enable-static \
+%else
+	--enable-shared \
 	--disable-static \
+%endif
+%if_with devel
+	--enable-devel \
+%endif
 	--enable-nfprofile \
 	--enable-nftrack \
 	--enable-sflow \
@@ -92,7 +127,11 @@ install -m0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/sfcapd
 install -m0644 %SOURCE8 %buildroot%_unitdir/sfcapd.service
 
 %if_without devel
-rm %buildroot%_libdir/libnfdump.so
+rm -f %buildroot%_libdir/libnfdump.so
+%endif
+
+%if_without libnfdump
+rm -f %buildroot%_libdir/libnfdump.a
 %endif
 
 %pre
@@ -133,8 +172,10 @@ rm %buildroot%_libdir/libnfdump.so
 %files nftrack
 %_bindir/nftrack
 
+%if_with libnfdump
 %files -n libnfdump
 %_libdir/libnfdump-%version.so
+%endif
 
 %if_with devel
 %files -n libnfdump-devel
@@ -142,6 +183,14 @@ rm %buildroot%_libdir/libnfdump.so
 %endif
 
 %changelog
+* Wed Mar 25 2020 Sergey Y. Afonin <asy@altlinux.org> 1.6.19-alt1
+- 1.6.19
+- disabled libnfdump subpackage (ALT #36391, second stage)
+- added separate License tag for libnfdump subpackage
+- the value of the main License tag is selected depending
+  on the libnfdump subpackage building status
+- removed zlib-devel from BuildRequires
+
 * Thu Dec 12 2019 Grigory Ustinov <grenka@altlinux.org> 1.6.18-alt2
 - NMU: Fix license.
 
