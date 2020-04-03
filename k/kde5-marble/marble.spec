@@ -5,7 +5,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init
 
 Group: Education
@@ -17,6 +17,7 @@ Source: %rname-%version.tar
 Source2: naturalearth.tar
 Patch1: alt-astro-static.patch
 Patch2: alt-clean-maps.patch
+Patch3: alt-def-krunners.patch
 
 # Automatically added by buildreq on Thu Mar 17 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ gtk-update-icon-cache kf5-attica-devel kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libgst-plugins1.0 libjson-c libqt5-concurrent libqt5-core libqt5-dbus libqt5-designer libqt5-gui libqt5-location libqt5-network libqt5-opengl libqt5-positioning libqt5-printsupport libqt5-qml libqt5-quick libqt5-script libqt5-sensors libqt5-sql libqt5-svg libqt5-test libqt5-webchannel libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms pkg-config python-base python-modules python3 python3-base qt5-base-devel qt5-declarative-devel qt5-script-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils zlib-devel
@@ -69,6 +70,7 @@ tar -xvf %SOURCE2 naturalearth/
 popd
 %patch1 -p1
 #%patch2 -p1
+%patch3 -p1
 sed -i '/add_subdirectory(marble-qt)/d' src/apps/CMakeLists.txt
 
 %build
@@ -134,6 +136,9 @@ rm -rf %buildroot/%_K5i18n/*/LC_MESSAGES/*_qt.qm
 %_K5lib/libmarblewidget-qt5.so.*
 
 %changelog
+* Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt2
+- disable krunner plugin by default
+
 * Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
