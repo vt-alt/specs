@@ -1,5 +1,5 @@
 Name: firmware-linux
-Version: 20191218
+Version: 20200320
 Release: alt1
 
 Summary: Firmware files used by the Linux kernel
@@ -58,6 +58,100 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/*
 
 %changelog
+* Fri Mar 20 2020 Cronbuild Service <cronbuild@altlinux.org> 20200320-alt1
+- upstream changes (GIT edf390c):
+  + mediatek: Add mt8183 SCP firmware (thx Erin Lo)
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + amdgpu: update vega20 firmware from 19.50 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware from 19.50 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware from 19.50 (thx Alex Deucher)
+  + rtl_bt: Add firmware and configuration files for RTL8822C BT
+    UART chip (thx Hilda Wu)
+  + i915: Add DMC firmware v2.06 for TGL (thx Jos? Roberto de Souza)
+  + i915: add HuC firmware v7.0.12 for TGL (thx Daniele Ceraolo Spurio)
+
+* Fri Mar 20 2020 L.A. Kostis <lakostis@altlinux.ru> 20200302-alt1.1
+- cronbuild: fix changelog encoding
+
+* Fri Mar 06 2020 Cronbuild Service <cronbuild@altlinux.org> 20200302-alt1
+- upstream changes (GIT 0148cfe):
+  + check_whence: python3/utf-8 support (thx Brian Norris)
+  + Makefile: improve `make check` usefulness (thx Brian Norris)
+  + mediatek: Remove in-tree symlinks (thx Josh Boyer)
+  + qca: Fix blueooth firmware name for QCA6174 (thx Rocky Liao)
+  + mediatek: move MT8173 VPU FW to subfolder (thx gtk_ruiwang)
+
+* Fri Feb 28 2020 Cronbuild Service <cronbuild@altlinux.org> 20200224-alt1
+- upstream changes (GIT efcfa03):
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + qca: Add firmware files for BT chip wcn3991. (thx Balakrishna Godavarthi)
+
+* Sat Feb 22 2020 Cronbuild Service <cronbuild@altlinux.org> 20200217-alt1
+- upstream changes (GIT 2277987):
+  + nvidia: add TU116/117 signed firmware (thx Gourav Samaiya)
+  + drm/amdgpu: update to latest 19.50 firmware for raven (thx Alex Deucher)
+  + mediatek: update MT8173 VPU firmware to v1.1.4 (thx gtk_ruiwang)
+
+* Fri Feb 07 2020 Cronbuild Service <cronbuild@altlinux.org> 20200207-alt1
+- upstream changes (GIT 6f89735):
+  + rtl_nic: update firmware for RTL8153A (thx Hayes Wang)
+  + rtl_bt: Update RTL8822C BT FW to V0x0998_C2B4 (thx Max Chou)
+  + add firmware for MT7622 (thx Ryder Lee)
+  + add version 2 for MT7615E (thx Ryder Lee)
+  + amdgpu: update to latest navi10 firmware from 19.50 (thx Alex Deucher)
+  + Revert "radeon: update oland rlc microcode from amdgpu" (thx Alex Deucher)
+  + amlogic: update video decoder firmwares (thx Maxime Jourdan)
+  + amdgpu: add renoir firmware for 19.50 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware for 19.50 (thx Alex Deucher)
+  + nfp: update Agilio SmartNIC flower firmware to rev AOTC-2.12.A.13 (thx Louis Peens)
+  + qca: update bluetooth firmware for QCA6174 (thx Kalle Valo)
+
+* Fri Jan 24 2020 Cronbuild Service <cronbuild@altlinux.org> 20200121-alt1
+- upstream changes (GIT 1eb2408):
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + nvidia: add TU102/TU104/TU106 signed firmware (thx Gourav Samaiya)
+
+* Fri Jan 17 2020 Cronbuild Service <cronbuild@altlinux.org> 20200113-alt1
+- upstream changes (GIT 9c340bd):
+  + amdgpu: update navi10 firmware for 19.50 (thx Alex Deucher)
+  + amdgpu: Add navi10 TA ucode (thx Alex Deucher)
+  + mediatek: update MT8173 VPU firmware to v1.1.3 (thx gtk_ruiwang)
+
+* Sat Jan 11 2020 Cronbuild Service <cronbuild@altlinux.org> 20200107-alt1
+- upstream changes (GIT 67d4ff5):
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2000.2714 (thx Ido Schimmel)
+  + radeon: update oland rlc microcode from amdgpu (thx Alex Deucher)
+  + amdgpu: update vega20 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update vega12 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update vega10 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update picasso microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update raven2 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update raven microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update navi10 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: update navi14 microcode for 19.50 (thx Alex Deucher)
+  + amdgpu: add TA microcode for Raven asics (thx Alex Deucher)
+  + qed: Add firmware 8.42.2.0 (thx Michal Kalderon)
+  + qcom: Switch SDM845 WLAN firmware (thx Bjorn Andersson)
+  + add NXP firmware licence file (thx Ganapathi Bhat)
+
+* Wed Dec 25 2019 Cronbuild Service <cronbuild@altlinux.org> 20191220-alt1
+- upstream changes (GIT 6871bff):
+  + ath10k: WCN3990 hw1.0: add firmware
+    WLAN.HL.2.0-01387-QCAHLSWMTPLZ-1 (thx Kalle Valo)
+  + ath10k: QCA9984 hw1.0: update firmware-5.bin to
+    10.4-3.9.0.2-00070 (thx Kalle Valo)
+  + ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00047 (thx Kalle Valo)
+  + ath10k: QCA9888 hw2.0: update firmware-5.bin to
+    10.4-3.9.0.2-00070 (thx Kalle Valo)
+  + ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00047 (thx Kalle Valo)
+  + ath10k: QCA6174 hw3.0: update board-2.bin (thx Kalle Valo)
+
 * Wed Dec 18 2019 Cronbuild Service <cronbuild@altlinux.org> 20191218-alt1
 - upstream changes (GIT c4586ff):
   + Update AMD cpu microcode (thx John Allen)
