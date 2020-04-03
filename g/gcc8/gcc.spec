@@ -1,13 +1,13 @@
 %define gcc_branch 8
 
 Name: gcc%gcc_branch
-Version: 8.3.1
-Release: alt5
+Version: 8.4.1
+Release: alt0.p9.1
 
 Summary: GNU Compiler Collection
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
 # GCC Runtime Exception.
-License: GPLv3+, GPLv3+ with exceptions and GPLv2+ with exceptions
+License: LGPL-2.1-or-later and LGPL-3.0-or-later and GPL-2.0-or-later and GPL-3.0-or-later and GPL-3.0-or-later with GCC-exception-3.1
 Group: Development/C
 Url: https://gcc.gnu.org/
 
@@ -16,7 +16,7 @@ Url: https://gcc.gnu.org/
 %define _target_platform ppc64-alt-linux
 %endif
 
-%define snapshot 20190507
+%define snapshot 20200305
 %define srcver %version-%snapshot
 %define srcfilename gcc-%srcver
 %define srcdirname gcc-%srcver
@@ -133,7 +133,14 @@ Url: https://gcc.gnu.org/
 
 Source: %srcfilename.tar
 
+# Upstream branch.
+Patch0: gcc-8-branch.patch
+
+# Upstream backports.
+Patch10: powerpc-predefined-macros.patch
+
 # Fedora patches.
+Patch99: gcc-fedora-vendor-branch.patch
 Patch100: gcc-hack.patch
 Patch102: gcc-i386-libgomp.patch
 Patch103: gcc-sparc-config-detection.patch
@@ -186,7 +193,6 @@ Patch730: deb-alt-mips-gcc-multiarch.diff
 Patch731: alt-riscv64-not-use-lp64d.patch
 Patch732: alt-defaults-cxx-Werror-return-type.patch
 Patch733: alt-disable-gdb-plugin-versioning.patch
-Patch734: PR89906.patch
 
 Obsoletes: egcs gcc3.0 gcc3.1
 Conflicts: glibc-devel < 2.2.6
@@ -968,7 +974,14 @@ version %version.
 %prep
 %setup -n %srcdirname
 
+# Upstream branch.
+%patch0 -p1
+
+# Upstream backports.
+%patch10 -p1
+
 # Fedora patches.
+%patch99 -p1
 %patch100 -p0
 %patch102 -p0
 %patch103 -p0
@@ -1020,7 +1033,6 @@ version %version.
 %patch731 -p1
 %patch732 -p1
 %patch733 -p1
-%patch734 -p1
 
 echo '%distribution %version-%release' > gcc/DEV-PHASE
 
@@ -1724,13 +1736,13 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %files -n libvtv0
 %_libdir/libvtv.so.0*
 %endif
+%endif #compat
 
 %ifarch %libmpx_arches
 %files -n libmpx2
 %_libdir/libmpx.so.2*
 %_libdir/libmpxwrappers.so.2*
 %endif
-%endif #compat
 
 %files plugin-devel
 %config %_sysconfdir/buildreqs/packages/substitute.d/gcc%gcc_branch-plugin-devel
@@ -2058,6 +2070,21 @@ cp %SOURCE0 %buildroot%gcc_sourcedir/
 %endif #with_pdf
 
 %changelog
+* Tue Mar 10 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.4.1-alt0.p9.1
+- Backported to p9 branch.
+
+* Thu Mar 05 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.4.1-alt1
+- Updated to git://gcc.gnu.org/git/gcc.git releases/gcc-8
+  commit 7191ace5b8e96c6ed63ccdda25de978876c73ab1.
+- Rebased redhat vendor branch to releases/gcc-8 branch.
+- ppc64le: backported upstream fix for predefined macros (ALT#38185).
+
+* Tue Aug 13 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.3.1-alt7
+- Rebuilt in gcc9 compatibility mode.
+
+* Tue Aug 13 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.3.1-alt6
+- Rebuilt in precompat mode to prepare for gcc9 build.
+
 * Mon Aug 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.3.1-alt5
 - Applied upstream fix for PR 89906 (closes: #36972).
 - Removed versioning of lib{cc1,cc1plugin,cp1plugin} libraries
