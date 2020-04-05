@@ -8,7 +8,7 @@
 %define firsttimename rpi4-uboot-directory-cleanup
 
 Name: rpi4-boot-switch
-Version: 0.5
+Version: 0.6
 Release: alt1
 Summary: Switch of boot mode for Raspberry Pi 4
 License: GPLv2+
@@ -91,6 +91,9 @@ install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
 %_rpmlibdir/%ftrigger2
 
 %changelog
+* Sun Apr 05 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.6-alt1
+- rpi4-boot-uboot*: always edit file extlinux.conf
+
 * Thu Apr 02 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.5-alt1
 - rpi4-boot-nouboot --bootstrap: backup dtb file
 
