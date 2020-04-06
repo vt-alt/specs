@@ -1,9 +1,9 @@
 Name: gear-cronbuild
-Version: 1.39
+Version: 1.41
 Release: alt1
 
 Summary: gear repository automated build utility
-License: GPL
+License: GPLv2+
 Group: Development/Other
 Packager: Igor Vlasenko <viy@altlinux.org>
 Url: http://www.altlinux.org/Gear/cronbuild
@@ -45,6 +45,12 @@ install -m 644 *.1 %buildroot%_man1dir/
 %_mandir/man?/*
 
 %changelog
+* Fri Jan 10 2020 Igor Vlasenko <viy@altlinux.ru> 1.41-alt1
+- bugfix release
+
+* Wed Jan 08 2020 Igor Vlasenko <viy@altlinux.ru> 1.40-alt1
+- new version
+
 * Wed Nov 07 2018 Igor Vlasenko <viy@altlinux.ru> 1.39-alt1
 - new version
 
