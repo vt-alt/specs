@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.6.0
+Version:        68.6.1
 Release:        alt1
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -387,6 +387,12 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Sat Apr 04 2020 Andrey Cherepanov <cas@altlinux.org> 68.6.1-alt1
+- New ESR version (68.6.1).
+- Fixed:
+  + CVE-2020-6819 Use-after-free while running the nsDocShell destructor
+  + CVE-2020-6820 Use-after-free when handling a ReadableStream
+
 * Tue Mar 10 2020 Andrey Cherepanov <cas@altlinux.org> 68.6.0-alt1
 - New ESR version (68.6.0).
 - Fix license tag according to SPDX.
