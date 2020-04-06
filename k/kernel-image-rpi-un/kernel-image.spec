@@ -1,13 +1,13 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt0.2
+Release: alt2
 epoch:1 
 %define kernel_need_version	5.6
 # kernel-source-5.6 does not currently exist. Use 5.5
 %define kernel_base_version	5.5
-%define kernel_sublevel .0
-%define kernel_extra_version	.rc2
+%define kernel_sublevel .2
+%define kernel_extra_version	%nil
 # kernel version is 5.6
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -109,6 +109,7 @@ Requires(pre): coreutils
 Requires(pre): module-init-tools >= 3.1
 Requires(pre): mkinitrd >= 1:2.9.9-alt1
 Requires(pre): rpi4-boot-switch
+Requires(pre): rpi4-boot-nouboot-filetrigger
 
 %description
 This package contains the Linux kernel that is used to boot and run
@@ -489,6 +490,13 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon Apr 06 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.2-alt2
+- Rebuild for p9
+
+* Sun Apr 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:5.6.2-alt1
+- Update to latest mainstream release 5.6.2
+- Add requires to post script filetrigger for booting without U-Boot
+
 * Wed Mar 25 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.0.rc2-alt0.2
 - CONFIG_BT_HCIUART_BCM=y for bluetooth work
 
