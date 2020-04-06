@@ -65,8 +65,8 @@
 
 Name: systemd
 Epoch: 1
-Version: %ver_major.7
-Release: alt3
+Version: %ver_major.8
+Release: alt1
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -85,9 +85,6 @@ Source10: systemd-udev-trigger-no-reload.conf
 Source11: env-path-user.conf
 Source12: env-path-system.conf
 Source14: systemd-user.pam
-Source16: altlinux-kmsg-loglevel.service
-Source17: altlinux-save-dmesg.service
-Source18: altlinux-save-dmesg
 Source19: udevd.init
 Source22: scsi_id.config
 Source23: var-lock.mount
@@ -695,11 +692,6 @@ ln -s ../altlinux-libresolv.path %buildroot%_unitdir/multi-user.target.wants
 install -m644 %SOURCE8 %buildroot%_unitdir/altlinux-clock-setup.service
 ln -s ../altlinux-clock-setup.service %buildroot%_unitdir/sysinit.target.wants
 ln -s altlinux-clock-setup.service %buildroot%_unitdir/clock.service
-install -m644 %SOURCE16 %buildroot%_unitdir/altlinux-kmsg-loglevel.service
-ln -s ../altlinux-kmsg-loglevel.service %buildroot%_unitdir/sysinit.target.wants
-install -m755 %SOURCE18 %buildroot/lib/systemd/altlinux-save-dmesg
-install -m644 %SOURCE17 %buildroot%_unitdir/altlinux-save-dmesg.service
-ln -s ../altlinux-save-dmesg.service %buildroot%_unitdir/basic.target.wants
 install -m644 %SOURCE27 %buildroot%_unitdir/altlinux-first_time.service
 ln -s ../altlinux-first_time.service %buildroot%_unitdir/basic.target.wants
 ln -s systemd-random-seed.service %buildroot%_unitdir/random.service
@@ -1242,7 +1234,6 @@ fi
 /lib/systemd/systemd-user-sessions
 /lib/systemd/systemd-vconsole-setup
 /lib/systemd/systemd-volatile-root
-/lib/systemd/altlinux-save-dmesg
 /lib/systemd/systemd-sysv-install
 /lib/systemd/systemd-sulogin-shell
 
@@ -1839,6 +1830,10 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Mon Mar 30 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.8-alt1
+- 243.8 (v243-stable branch)
+- drop altlinux-kmsg-loglevel.service and altlinux-save-dmesg.service
+
 * Wed Mar 11 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt3
 - fixed PATH env for units
 
