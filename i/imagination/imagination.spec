@@ -1,8 +1,8 @@
 %define renderer ffmpeg
 
 Name:     imagination
-Version:  3.4
-Release:  alt5
+Version:  3.5.1
+Release:  alt1
 
 Summary:  Imagination is a lightweight and simple DVD slide show maker
 License:  GPLv2
@@ -17,7 +17,7 @@ Source2:  ru.po
 
 Patch1: Add-translation-support-to-some-files.patch
 
-BuildRequires: libgtk+2-devel
+BuildRequires: libgtk+3-devel
 BuildRequires: intltool
 BuildRequires: libsox-devel
 BuildRequires: xsltproc
@@ -37,12 +37,13 @@ and FreeBSD written in C language and built with the GTK+2 toolkit.
 
 %prep
 %setup
+%patch1 -p2
 cp %SOURCE2 po/ru.po
-%patch1 -p1
 
 %build
+%undefine _configure_gettext
 %configure
-%make_build
+%make_build CFLAGS="$CFLAGS -DPLUGINS_INSTALLED=1"
 
 %install
 %makeinstall_std
@@ -60,6 +61,10 @@ rm -f %buildroot%_libdir/%name/*.la
 %_datadir/doc/%name
 
 %changelog
+* Tue Feb 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.5.1-alt1
+- New version 3.5.1.
+- Build with GTK+3.
+
 * Thu Jan 30 2020 Pavel Moseev <mars@altlinux.org> 3.4-alt5
 - Add translation support to some files.
 - Update Russian translation (thanks Olesya Gerasimenko).
