@@ -1,13 +1,13 @@
 %def_without bootstrap
 %define destname gear-uupdate
 Name: %destname
-Version: 0.28.0
+Version: 0.28.1
 Release: alt1
 
 Summary: Helper utility to be called by uscan for gear repository update
 Source: %name-%version.tar
 
-License: GPL2+
+License: GPLv2+
 Group: Development/Other
 URL: http://www.altlinux.org/Gear/gear-uupdate
 
@@ -43,6 +43,9 @@ install -m 644 gear-*.1 %buildroot%_man1dir/
 %_man1dir/*
 
 %changelog
+* Sat Jan 11 2020 Igor Vlasenko <viy@altlinux.ru> 0.28.1-alt1
+- bugfixes thanks to grenka@
+
 * Tue Aug 20 2019 Igor Vlasenko <viy@altlinux.ru> 0.28.0-alt1
 - use --ignore-exclude by default (closes: #37129)
 
