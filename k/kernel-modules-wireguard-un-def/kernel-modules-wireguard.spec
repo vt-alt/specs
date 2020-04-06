@@ -1,5 +1,5 @@
 %define module_name	wireguard
-%define module_version	0.0.20191219
+%define module_version	1.0.20200330
 %define module_release	alt1
 
 %define flavour		un-def
@@ -23,9 +23,9 @@ BuildRequires(pre): rpm-build-kernel
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name = %module_version
 
-Provides:  kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%release
-Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %version-%release
-Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%release
+Provides:  kernel-modules-%module_name-%kversion-%flavour-%krelease = %EVR
+Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %EVR
+Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %EVR
 
 PreReq: coreutils
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
@@ -42,6 +42,9 @@ for many different circumstances. Initially released for the Linux kernel, it
 plans to be cross-platform and widely deployable. It is currently under heavy
 development, but already it might be regarded as the most secure, easiest to
 use, and simplest VPN solution in the industry.
+
+WireGuard was merged into the Linux kernel for 5.6. This package contains a
+backport of WireGuard for kernels 3.10 to 5.5, as an out of tree module.
 
 %prep
 rm -rf kernel-source-%module_name-%module_version
@@ -62,6 +65,18 @@ install wireguard.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Tue Mar 31 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200330-alt1
+- New version 1.0.20200330
+  + source code is in sync with kernel 5.6 released on 2020.03.29
+
+* Fri Mar 27 2020 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20200318-alt1
+- New version 0.0.20200318
+
+* Thu Mar 12 2020 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20200215-alt1
+- New version 0.0.20200215
+  + provides backport of WireGuard for kernels 3.10 to 5.5
+  + spec: switch to strict dependencies
 
 * Mon Dec 23 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.0.20191219-alt1
 - New version 0.0.20191219
