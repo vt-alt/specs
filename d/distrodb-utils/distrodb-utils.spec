@@ -1,12 +1,12 @@
 Name: distrodb-utils
-Version: 0.246
+Version: 0.247
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: utils for managing Distrodb databases
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic
 Source: %name-%version.tar
 Url: http://www.altlinux.org/Packaging_Automation/DistroMap
 
@@ -47,6 +47,9 @@ install -m 644 DistroDB/CLI/*.pm %buildroot%perl_vendor_privlib/DistroDB/CLI/
 %perl_vendor_privlib/DistroDB
 
 %changelog
+* Tue Dec 31 2019 Igor Vlasenko <viy@altlinux.ru> 0.247-alt1
+- new version
+
 * Thu Sep 12 2019 Igor Vlasenko <viy@altlinux.ru> 0.246-alt1
 - new version
 
