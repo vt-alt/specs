@@ -2,14 +2,14 @@
 %define module Gear-Remotes
 
 Name: perl-%module
-Version: 0.021
+Version: 0.022
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module - Perl extension for quering Gear remotes files
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 # TODO: upload to http://search.cpan.org/dist/%module
 Url: https://www.altlinux.org/Gear/remotes
@@ -68,6 +68,9 @@ gear-remotes-utils are utils for managing .gear/upstream/remotes file.
 %_man1dir/*
 
 %changelog
+* Sat Mar 07 2020 Igor Vlasenko <viy@altlinux.ru> 0.022-alt1
+- new version
+
 * Tue Feb 12 2019 Igor Vlasenko <viy@altlinux.ru> 0.021-alt1
 - new version
 
