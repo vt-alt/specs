@@ -6,14 +6,14 @@ BuildRequires: perl(Pod/Usage.pm) perl(Source/Repository/Matcher/CPAN2ALT.pm) pe
 %define module %orepo-%obranch-altlinux-sisyphus
 
 Name: distromap-%module
-Version: 0.284
+Version: 0.285
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module DistroMap database
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic
 Source: %name-%version.tar
 Url: http://repocop.altlinux.org/
 
@@ -51,6 +51,9 @@ install -m 755 bin/* %buildroot%_bindir/
 %_datadir/distromap/*
 
 %changelog
+* Tue Dec 31 2019 Igor Vlasenko <viy@altlinux.ru> 0.285-alt1
+- db update
+
 * Sat Mar 02 2019 Igor Vlasenko <viy@altlinux.ru> 0.284-alt1
 - db update
 
