@@ -10,8 +10,8 @@
 %brp_strip_none %_bindir/*
 
 Name: kubernetes
-Version: 1.15.4
-Release: alt2
+Version: 1.16.4
+Release: alt1
 Summary: Container cluster management
 
 Group: System/Configuration/Other
@@ -264,7 +264,6 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_man1dir/kube-apiserver.*
 %_man1dir/kube-controller-manager.*
 %_man1dir/kube-scheduler.*
-%_man1dir/cloud-controller-manager.*
 %_bindir/kube-apiserver
 %_bindir/kube-controller-manager
 %_bindir/kube-scheduler
@@ -306,6 +305,9 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Fri Dec 20 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.16.4-alt1
+- 1.16.4
+
 * Fri Oct 11 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.15.4-alt2
 - Partly revert b378c886 because some deprecated optons steel needed
 
