@@ -1,16 +1,15 @@
 #define testname spec-has-obsolete-macroses
 
 Name: repocop-unittest-altlinux-java
-Version: 0.13
+Version: 0.14
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
-Url: http://repocop.altlinux.org 
+Url: http://repocop.altlinux.org
 
 Summary: repocop package checks for conformance with Java Packaging Policy.
 Group: Development/Other
-License: GPL or Artistic
-#Url: 
+License: GPLv2+ or Artistic
 Source: %name-%version.tar
 
 Requires: repocop >= 0.59
@@ -44,6 +43,9 @@ install -d -m 755 %buildroot%_datadir/repocop/fixscripts/
 #%_datadir/repocop/fixscripts/*
 
 %changelog
+* Mon Jan 13 2020 Igor Vlasenko <viy@altlinux.ru> 0.14-alt1
+- updated altlinux-java-forbidden-requires.posttest
+
 * Mon Jul 09 2012 Igor Vlasenko <viy@altlinux.ru> 0.13-alt1
 - added distrotest
 
