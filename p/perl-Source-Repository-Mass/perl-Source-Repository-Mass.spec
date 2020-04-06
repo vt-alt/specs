@@ -1,14 +1,14 @@
 %define module Source-Repository-Mass
 
 Name: perl-%module
-Version: 0.430
+Version: 0.432
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module - Perl extension for converting SRPM and spec files
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar
 #Url: http://search.cpan.org/dist/%module
 Url: https://www.altlinux.org/Packaging_Automation/MassProcessing
@@ -37,6 +37,12 @@ Conflicts: perl-Source-Repository < 0.391
 %perl_vendor_privlib/Source*
 
 %changelog
+* Thu Mar 26 2020 Igor Vlasenko <viy@altlinux.ru> 0.432-alt1
+- bugfix release
+
+* Fri Jan 03 2020 Igor Vlasenko <viy@altlinux.ru> 0.431-alt1
+- new version
+
 * Thu Oct 31 2019 Igor Vlasenko <viy@altlinux.ru> 0.430-alt1
 - removed russianfedora support
 

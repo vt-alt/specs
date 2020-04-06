@@ -4,14 +4,14 @@
 #define _without_test 1
 
 Name: perl-%module
-Version: 0.074
+Version: 0.075
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: Perl library for finding build dependencies from software sources
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 Url: http://search.cpan.org/dist/%module
 
@@ -46,6 +46,9 @@ install -Dm644 stdheaders.txt %buildroot%_datadir/%module/headers-ignore/stdhead
 %_man1dir/sourcedep-resolve*
 
 %changelog
+* Mon Jan 13 2020 Igor Vlasenko <viy@altlinux.ru> 0.075-alt1
+- new version
+
 * Thu Oct 17 2019 Igor Vlasenko <viy@altlinux.ru> 0.074-alt1
 - new version
 
