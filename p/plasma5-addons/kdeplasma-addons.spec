@@ -8,8 +8,8 @@
 %define libplasmapotdprovidercore libplasmapotdprovidercore%plasmapotdprovidercore_sover
 
 Name: plasma5-addons
-Version: 5.18.3
-Release: alt2
+Version: 5.18.4
+Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -158,6 +158,9 @@ KF5 library
 %_K5lib/libplasmapotdprovidercore.so.%plasmapotdprovidercore_sover
 
 %changelog
+* Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.4-alt1
+- new version
+
 * Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.3-alt2
 - turn off some krunner plugins by default
 

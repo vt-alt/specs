@@ -1,8 +1,8 @@
 %define rname plasma-browser-integration
 
 Name: plasma5-browser-integration
-Version: 5.18.3
-Release: alt2
+Version: 5.18.4
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -84,6 +84,9 @@ Requires: %name-common
 #%_K5lib/libplasma-browser-integration.so.*
 
 %changelog
+* Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt1
+- new version
+
 * Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.3-alt2
 - turn off krunner plugin by default
 

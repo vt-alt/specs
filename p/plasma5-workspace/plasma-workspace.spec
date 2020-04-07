@@ -26,8 +26,8 @@
 %endif
 
 Name: plasma5-workspace
-Version: 5.18.3
-Release: alt3
+Version: 5.18.4
+Release: alt1
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -405,6 +405,9 @@ done
 
 
 %changelog
+* Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.4-alt1
+- new version
+
 * Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.3-alt3
 - turn off some krunner plugins by default
 

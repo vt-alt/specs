@@ -7,8 +7,8 @@
 
 
 Name: plasma5-desktop
-Version: 5.18.3
-Release: alt3
+Version: 5.18.4
+Release: alt1
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -220,6 +220,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt1
+- new version
+
 * Wed Apr 01 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.3-alt3
 - disable plasma krunner plugin by default
 
