@@ -7,11 +7,11 @@
 %def_enable augeas
 %def_enable nozzle
 %def_enable vqsim
+%define _localstatedir %_var
 
 Name: corosync
-Version: 3.0.2
-Release: alt3
-
+Version: 3.0.3.0.18.g89b0d
+Release: alt2
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
 License: BSD
 Group: System/Base
@@ -41,8 +41,6 @@ BuildRequires: doxygen libqb-devel graphviz libsocket-devel zlib-devel libknet-d
 %{?_enable_xmlconf:BuildRequires: libxslt-devel}
 %{?_enable_augeas:BuildRequires: augeas libaugeas-devel}
 %{?_enable_vqsim:BuildRequires: libreadline-devel}
-
-%define _localstatedir %_var
 
 %description
 This package contains the Corosync Cluster Engine Executive, several
@@ -110,10 +108,10 @@ mkdir -p m4
 %install
 %makeinstall_std
 %makeinstall_std -C init
-
-install -p -D -m644 %buildroot%_sysconfdir/corosync/corosync.conf.example %buildroot%_sysconfdir/corosync/corosync.conf
-
+touch %buildroot%_sysconfdir/corosync/corosync.conf
+%if_enabled dbus
 install -p -D -m644 %_builddir/%name-%version/conf/corosync-signals.conf %buildroot/%_sysconfdir/dbus-1/system.d/corosync-signals.conf
+%endif
 
 #Initscripts
 install -p -D -m755 %SOURCE1 %buildroot%_initdir/corosync
@@ -135,6 +133,11 @@ install -p -m 644 tools/corosync-notifyd.sysconfig.example %buildroot%_sysconfdi
 # /etc/sysconfig/corosync
 install -p -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconfig/corosync
 
+rm -f %buildroot%_sysconfdir/corosync/corosync.conf.example
+ln -r -s \
+    %buildroot%_defaultdocdir/%name-%version/corosync.conf.example \
+    %buildroot%_sysconfdir/corosync/corosync.conf.example
+
 %check
 %make check
 
@@ -147,20 +150,22 @@ install -p -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconf
 %preun_service corosync-notifyd
 
 %files
-%doc AUTHORS README* LICENSE
+%doc AUTHORS README* LICENSE conf/corosync.conf.example
 %_bindir/*
 %_sbindir/*
 %dir %_sysconfdir/corosync
 %dir %_sysconfdir/corosync/service.d
 %dir %_sysconfdir/corosync/uidgid.d
-%config(noreplace) %_sysconfdir/corosync/corosync.conf
-%config(noreplace) %_sysconfdir/corosync/corosync.conf.example
+%ghost %config(noreplace) %_sysconfdir/corosync/corosync.conf
+%_sysconfdir/corosync/corosync.conf.example
 %config(noreplace) %_sysconfdir/sysconfig/corosync-notifyd
 %config(noreplace) %_sysconfdir/sysconfig/corosync
 %config(noreplace) %_logrotatedir/corosync
 %_unitdir/corosync.service
 %_unitdir/corosync-notifyd.service
+%if_enabled dbus
 %_sysconfdir/dbus-1/system.d/corosync-signals.conf
+%endif
 %_initrddir/corosync
 %_initrddir/corosync-notifyd
 %_datadir/corosync
@@ -169,7 +174,7 @@ install -p -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconf
 %_datadir/augeas/lenses/*
 %endif
 %dir %_localstatedir/lib/corosync
-%attr(700, root, root) %_logdir/cluster
+%attr(750, root, adm) %_logdir/cluster
 %_man5dir/*
 %_man7dir/*
 %_man8dir/*
@@ -196,6 +201,12 @@ install -p -m 644 init/corosync.sysconfig.example %buildroot%_sysconfdir/sysconf
 %endif
 
 %changelog
+* Sat Apr 04 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.3.0.18.g89b0d-alt2
+- package empty %%_sysconfdir/corosync/corosync.conf as %%ghost
+
+* Wed Dec 18 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.3.0.18.g89b0d-alt1
+- upstream snapshot 89b0d62f8bd9d5ba90db5a37866c029b821da838
+
 * Tue Jul 23 2019 Alexey Shabalin <shaba@altlinux.org> 3.0.2-alt3
 - add libknet1-crypto-nss-plugin dependency
 
