@@ -19,7 +19,10 @@
 
 %def_disable debug
 
-%def_without manual
+%def_with manual
+%def_without manualbuild
+%def_without manualchm
+%def_without manualsdk
 %def_with additions
 %def_with webservice
 %def_without java
@@ -59,7 +62,7 @@
 
 Name: virtualbox
 Version: 6.1.4
-Release: alt4
+Release: alt5
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPLv2
@@ -89,6 +92,12 @@ Source25:	virtualbox-vboxvideo.modprobe.conf
 Source26:	virtualbox-vboxguest.modprobe.conf
 Source27:	virtualbox-vmsvga.service
 Source28:	virtualbox-addition.conf
+
+%if_with manual
+%if_without manualbuild
+Source100:	UserManual-%version.pdf
+%endif
+%endif
 
 %if_enabled debug
 Source99:	%vboxdbg.in
@@ -139,10 +148,13 @@ BuildRequires: libgsoap-devel libgsoap-devel-static > 2.8.0
 BuildRequires: python-dev
 %endif
 BuildRequires: libpam-devel
-%if_with manual
+%if_with manualbuild
 BuildRequires: texlive-latex-recommended
 BuildRequires: docbook-style-xsl
 BuildRequires: /usr/bin/chmcmd
+%endif
+%if_with manualchm
+BuildRequires: i586-wine-vanilla
 %endif
 %if_with vnc
 BuildRequires: libvncserver-devel
@@ -302,15 +314,13 @@ required to use the vboxdrv kernel module in the ALT Linux system.
 The kernel module itself is not included - you need to install the
 appropriate kernel-modules-virtualbox-* package for your kernel.
 
-%if_with manual
 %package doc
 Summary: VirtualBox documentation
 Group: Documentation
-BuildArch: noarch
+Requires: %name = %version-%release
 
 %description doc
 This package contains VirtualBox User Manual.
-%endif
 
 %package sdk
 Summary: VirtualBox SDK
@@ -362,9 +372,12 @@ grep -R '^#!/usr/bin/\(env[[:space:]]\+\)\?python' src | cut -d: -f1 |
 %if_without libvpx
     --disable-libvpx \
 %endif
-%if_without manual
+%if_without manualbuild
     --disable-docs \
-%endif    
+%endif
+%if_with manualchm
+    --setup-wine \
+%endif
 %ifarch x86_64
     --disable-vmmraw \
 %endif
@@ -410,10 +423,23 @@ echo "TOOL_GCC3_CFLAGS := %optflags" >> LocalConfig.kmk
 echo "TOOL_GCC3_CXXFLAGS := %optflags" >> LocalConfig.kmk
 echo "VBOX_GCC_OPT := %optflags" >> LocalConfig.kmk
 
-%if_with manual
+%if_with manualsdk
 echo "VBOX_WITH_DOCS_SDKREF      := 1" >> LocalConfig.kmk
+%endif
+%if_without manualsdk
+echo "VBOX_WITH_DOCS_SDKREF      :=" >> LocalConfig.kmk
+%endif
+%if_with manualchm
 echo "VBOX_WITH_DOCS_CHM         := 1" >> LocalConfig.kmk
 echo "VBOX_CHMCMD                := 1" >> LocalConfig.kmk
+%endif
+%if_without manualchm
+echo "VBOX_WITH_DOCS_CHM         :=" >> LocalConfig.kmk
+echo "VBOX_CHMCMD                :=" >> LocalConfig.kmk
+%endif
+%if_with manualbuild
+echo "VBOX_PATH_DOCBOOK          := /usr/share/xml/docbook/xsl-stylesheets" >> LocalConfig.kmk
+echo "VBOX_PATH_DOCBOOK_DTD      := /usr/share/xml/docbook/dtd/4.5" >> LocalConfig.kmk
 %endif
 
 #source env.sh
@@ -645,14 +671,25 @@ install -m644 virtualbox.xml %buildroot%_xdgmimedir/packages/virtualbox.xml
 
 # install menu entries
 mkdir -p %buildroot%_desktopdir
-install -m644 virtualbox.desktop %buildroot%_desktopdir/
+install -m644 %name.desktop %buildroot%_desktopdir/
+sed -i 's|^DocPath=|#DocPath=|' %buildroot%_desktopdir/%name.desktop
 
 # install docs
 mkdir -p %buildroot%_defaultdocdir/%name-doc-%version
 %if_with manual
-install -m644 UserManual.pdf VirtualBox.chm %buildroot%_defaultdocdir/%name-doc-%version/
-find sdk/docs -maxdepth 1 -mindepth 1 -print0 | xargs -0 -i install -m644 {} %buildroot%_defaultdocdir/%name-doc-%version/
+%if_with manualbuild
+install -m644 UserManual.pdf %buildroot%_defaultdocdir/%name-doc-%version/
 cp -r ../obj/manual/en_US/HTMLHelp %buildroot%_defaultdocdir/%name-doc-%version/HTML
+%endif
+%if_with manualchm
+install -m644 VirtualBox.chm %buildroot%_defaultdocdir/%name-doc-%version/
+%endif
+%if_with manualsdk
+find sdk/docs -maxdepth 1 -mindepth 1 -print0 | xargs -0 -i install -m644 {} %buildroot%_defaultdocdir/%name-doc-%version/
+%endif
+%if_without manualbuild
+install -m644 %SOURCE100 %buildroot%_defaultdocdir/%name-doc-%version/UserManual.pdf
+%endif
 %endif
 
 # install unit file
@@ -690,6 +727,14 @@ sed -i -n '/vboxcpi/!p' %buildroot%_sysconfdir/modules-load.d/%name.conf
 
 %preun
 %preun_service virtualbox
+
+%post doc
+sed -i 's|^#DocPath=|DocPath=|' %_desktopdir/%name.desktop
+XDG_DATA_DIRS="%_datadir" update-desktop-database -q ||:
+
+%preun doc
+sed -i 's|^DocPath=|#DocPath=|' %_desktopdir/%name.desktop
+XDG_DATA_DIRS="%_datadir" update-desktop-database -q ||:
 
 %pre common
 %pre_control %name
@@ -850,6 +895,9 @@ mountpoint -q /dev || {
 %endif
 
 %changelog
+* Fri Apr 03 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt5
+- Build with installable documentation (Closes: 38316)
+
 * Thu Mar 19 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt4
 - Fix shared clipboard regression:
   https://www.virtualbox.org/ticket/19336 (Closes: 38239)
