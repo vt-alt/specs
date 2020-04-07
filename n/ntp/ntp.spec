@@ -1,12 +1,12 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: ntp
-Version: 4.2.8p13
-Release: alt1
+Version: 4.2.8p14
+Release: alt2
 %define srcname %name-%version%{?patchlevel:%patchlevel}
 
 Summary: The Network Time Protocol (NTP)
-License: %bsdstyle
+License: GPL-3.0-or-later
 Group: System/Configuration/Other
 Url: http://www.ntp.org/
 
@@ -26,6 +26,7 @@ Source22: chrooted-ntpd.conf
 Source23: chrooted-ntpd.lib
 
 Patch1: %name-4.2.6p5-alt-compile-dirty-hack-NANO.patch
+Patch2: %name-4.2.8p14-MD5-to-SHA1-default.patch
 
 Requires: ntp-doc = %version-%release
 Requires: ntp-utils = %version-%release
@@ -36,7 +37,6 @@ Requires: ntpd = %version-%release
 # man8/ntpq.8 is a symlink to man1/ntp.1 which in ntp-utils
 %add_findreq_skiplist %_man8dir/ntpq.*
 
-BuildPreReq: rpm-build-licenses
 BuildRequires: zlib-devel
 
 # due to readline library linked with tinfo.
@@ -47,6 +47,8 @@ BuildRequires: libcap-devel
 
 # ntp_crypto_rnd.c:93: undefined reference to `arc4random_buf'
 BuildRequires: libssl-devel
+# https://bugzilla.altlinux.org/38287
+%(rpmquery --qf 'Requires: libcrypto = %%{VERSION}' libssl-devel)
 
 # for sbin/update-leap
 BuildRequires: perl-File-Fetch perl-Digest-SHA perl-HTTP-Tiny perl-Net-SSLeay perl-IO-Socket-SSL
@@ -58,7 +60,9 @@ BuildRequires: perl-File-Fetch perl-Digest-SHA perl-HTTP-Tiny perl-Net-SSLeay pe
 of a computer client or server to another server or reference time\
 source, such as a radio or satellite receiver or modem. It provides\
 client accuracies typically within a millisecond on LANs and up to\
-a few tens of milliseconds on WANs.
+a few tens of milliseconds on WANs.\
+\
+Binaries was built with a source code under various free licenses.
 
 %package aux
 Summary: The Network Time Protocol (NTP) auxiliary package
@@ -147,7 +151,8 @@ This package contains Network Time Protocol daemon.
 sed -i 's,-Wnormalized=id,,' sntp/libevent/configure*
 %endif
 
-%patch1 -p1
+#patch1 -p1
+%patch2 -p2
 
 # Fix progname initialization when argc==0.
 fgrep -rl --include='*.c' 'progname = argv[0];' . |
@@ -180,7 +185,10 @@ echo '#define HAVE_LIBREADLINE 1' >>config.h
 %make_build
 
 %check
+# https://lists.altlinux.org/pipermail/devel/2020-March/210366.html
+%ifnarch ppc64le
 make check
+%endif
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT perllibdir=%perl_vendor_privlib install
@@ -342,6 +350,16 @@ fi
 %ghost %ROOT/%_lib/libresolv.so.2
 
 %changelog
+* Sat Apr 04 2020 Sergey Y. Afonin <asy@altlinux.org> 4.2.8p14-alt2
+- updated License tag to SPDX syntax, changed to GPL-3.0-or-later
+- added ntp-4.2.8p14-MD5-to-SHA1-default.patch (ALT #38300)
+- added libcrypto with build version to Requires (ALT #38287)
+
+* Mon Mar 23 2020 Sergey Y. Afonin <asy@altlinux.org> 4.2.8p14-alt1
+- 4.2.8p14 (medium security update, look to "NEWS" file)
+- disabled alt-compile-dirty-hack-NANO.patch
+- disabled "make check" for ppc64le due to --gc-sections problem
+
 * Tue Mar 12 2019 Sergey Y. Afonin <asy@altlinux.ru> 4.2.8p13-alt1
 - 4.2.8p13
 
