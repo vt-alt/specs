@@ -2,14 +2,14 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: perl-%module
-Version: 0.075
+Version: 0.076
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: RPM-Source-Editor extension for converting tarballs to SRPMs
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 Url: http://search.cpan.org/dist/%module
 
@@ -55,6 +55,9 @@ RPM-Source-BundleImport plugin for Perl source code
 %perl_vendor_privlib/RPM/Source/BundleImport/Perl
 
 %changelog
+* Sat Mar 28 2020 Igor Vlasenko <viy@altlinux.ru> 0.076-alt1
+- new version
+
 * Tue Oct 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.075-alt1
 - new version
 

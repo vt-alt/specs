@@ -4,26 +4,52 @@ BuildRequires: perl(Carp.pm) perl(File/Basename.pm) perl(File/Path.pm) perl(File
 %define module RPM-Source-Convert
 
 Name: perl-%module
-Version: 0.676
+Version: 0.682
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module - Perl extension for converting SRPM and spec files
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 Url: http://search.cpan.org/dist/%module
 
 BuildRequires: perl-devel perl-RPM-Source-Editor perl-RPM-Source-Dependency-Analyzer perl(RPM/Vercmp.pm) perl-DistroMap perl(Source/Package/Comparators/Raw.pm)
 Requires: perl-RPM-Source-Editor > 0.9235
 
-# for srpmbackport 
+# for srpmbackport
+%package -n srpmbackport
+Group: Development/Other
+Summary: backport from Sisyphus to branches
 Requires: distromap-altlinux-sisyphus-altlinux-branch
+Requires: perl-RPM-Source-Convert = %EVR
 Conflicts: perl-RPM-Source-Editor < 0.73
+Conflicts: perl-RPM-Source-Convert < 0.677
+
+# for srpmimport
+%package -n srpmimport
+Group: Development/Other
+Summary: utils for porting from other rpm based distros to Sisyphus
+Requires: distromap-fedora-rawhide-altlinux-sisyphus
+Requires: distromap-mageia-cauldron-altlinux-sisyphus
+Requires: distromap-rosa-default-altlinux-sisyphus
+Requires: distromap-suse-default-altlinux-sisyphus
+Requires: rpm-macros-suse-compat
+Requires: rpm-macros-mageia-compat
+Requires: rpm-macros-fedora-compat
+Requires: perl-RPM-Source-Convert = %EVR
+Conflicts: perl-RPM-Source-Convert < 0.677
+#Obsoletes: perl-RPM-Source-Convert < 0.677
 
 %description
 %summary
+
+%description -n srpmbackport
+Util for backporting srpms and spec files from Sisyphus to branches
+
+%description -n srpmimport
+Utils for porting srpms and spec files from other rpm based distros to Sisyphus
 
 %prep
 %setup -q -n %module-%version
@@ -37,11 +63,26 @@ Conflicts: perl-RPM-Source-Editor < 0.73
 %files
 %doc Changes
 #doc README
-%_bindir/srpmbackport
-%_bindir/srpmconvert-*
 %perl_vendor_privlib/RPM*
 
+%files -n srpmbackport
+%_bindir/srpmbackport
+
+%files -n srpmimport
+%_bindir/srpmconvert-*
+
 %changelog
+* Sat Mar 28 2020 Igor Vlasenko <viy@altlinux.ru> 0.682-alt1
+- new version
+
+* Mon Feb 24 2020 Igor Vlasenko <viy@altlinux.ru> 0.681-alt1
+- new version
+
+* Fri Jan 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.680-alt1
+- new version
+- split srpmbackport and srpmimport subpackages
+- added requires (closes: #37717)
+
 * Fri Aug 30 2019 Igor Vlasenko <viy@altlinux.ru> 0.676-alt1
 - new version
 
