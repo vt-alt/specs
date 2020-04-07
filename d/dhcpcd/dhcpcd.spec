@@ -5,7 +5,7 @@
 
 Name: dhcpcd
 Epoch: 1
-Version: 8.1.6
+Version: 8.1.7
 Release: alt1
 
 Summary: DHCP Client
@@ -89,6 +89,9 @@ fi
 %exclude %_datadir/%name/
 
 %changelog
+* Thu Apr 02 2020 Mikhail Efremov <sem@altlinux.org> 1:8.1.7-alt1
+- Updated to 8.1.7.
+
 * Tue Jan 28 2020 Mikhail Efremov <sem@altlinux.org> 1:8.1.6-alt1
 - Updated to 8.1.6.
 
