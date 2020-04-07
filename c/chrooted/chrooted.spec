@@ -1,5 +1,5 @@
 Name: chrooted
-Version: 0.3.10
+Version: 0.3.11
 Release: alt1
 
 Summary: The chrooted environment helper
@@ -55,6 +55,10 @@ install -Dpm755 resolvconf %buildroot%_sysconfdir/hooks/resolv.conf.d/update_chr
 %config %_chrootdir
 
 %changelog
+* Fri Apr 03 2020 Dmitry V. Levin <ldv@altlinux.org> 0.3.11-alt1
+- Copy: always dereference symbolic links in SOURCE
+  (by Alexey Shabalin; closes: #33591).
+
 * Wed Mar 11 2020 Ivan Zakharyaschev <imz@altlinux.org> 0.3.10-alt1
 - Fixes:
   + OVE-20200311-0001 Normal update operations by root can corrupt/crash running processes through modifying libraries
