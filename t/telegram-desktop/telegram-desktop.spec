@@ -7,7 +7,7 @@
 %def_without ffmpeg_static
 
 Name: telegram-desktop
-Version: 1.9.21
+Version: 2.0.1
 Release: alt1
 
 Summary: Telegram Desktop messaging app
@@ -202,6 +202,15 @@ ln -s %name %buildroot%_bindir/telegramdesktop
 %doc README.md
 
 %changelog
+* Tue Mar 31 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.1-alt1
+- new version 2.0.1 (with rpmrb script)
+
+* Mon Mar 30 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.0-alt1
+- new version 2.0.0 (with rpmrb script)
+
+* Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.9.22-alt1
+- new version 1.9.22 (with rpmrb script)
+
 * Tue Mar 17 2020 Vitaly Lipatov <lav@altlinux.ru> 1.9.21-alt1
 - new version 1.9.21 (with rpmrb script)
 
