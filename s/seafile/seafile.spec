@@ -1,5 +1,5 @@
 Name: seafile
-Version: 6.2.11
+Version: 7.0.6
 Release: alt1
 
 Summary: Full-fledged cloud storage platform
@@ -18,28 +18,19 @@ Source2: nginx.conf.example
 
 Patch: seafile-curl-7.62.patch
 
-#Requires: python-module-mako
-#Requires: python-module-webpy
-#Requires: python-module-simplejson
-
 Requires: lib%name = %version-%release
 
-# manually removed: python-module-mwlib 
-# Automatically added by buildreq on Sun Nov 10 2013
-# optimized out: glib2-devel gnu-config libevent-devel libgio-devel libsearpc-devel mariadb-client mariadb-common pkg-config python-base python-devel python-module-distribute python-module-zope python-modules
-BuildRequires: intltool libssl-devel libuuid-devel python-module-paste python-module-peak
+BuildRequires: intltool libssl-devel libuuid-devel
 BuildRequires: zlib-devel libjson-glib-devel
 BuildRequires: vala
+BuildRequires: rpm-build-python3 python3-devel
 
-BuildRequires: libsearpc-devel >= 3.0.4
+BuildRequires: libsearpc-devel >= 3.2.0
 
 BuildRequires: libsqlite3-devel >= 3.7
 BuildRequires: libevent-devel >= 2.0
 BuildRequires: libarchive-devel >= 2.8.5
 BuildRequires: libcurl-devel >= 7.17
-
-# server requires
-#BuildRequires: libzdb-devel >= 2.12
 
 %description
 Seafile is a next-generation open source cloud storage system
@@ -63,6 +54,24 @@ Seafile FUSE access.
 Seafile is a next-generation open source cloud storage system
 with advanced support for file syncing, privacy protection and teamwork.
 
+%package cli
+Summary: Seafile CLI client
+Group: Networking/File transfer
+Requires: lib%name = %version-%release
+
+%description cli
+Seafile CLI client.
+
+Seafile is a next-generation open source cloud storage system
+with advanced support for file syncing, privacy protection and teamwork.
+
+%package -n python3-module-seafile
+Summary: Seafile client python3 module
+Group: Networking/File transfer
+
+%description -n python3-module-seafile
+The python3 module with Seafile client.
+
 %package -n lib%name
 Summary: Seafile library files
 Group: Networking/File transfer
@@ -73,7 +82,7 @@ The lib%name package contains libraries for Seafile.
 %package -n lib%name-devel
 Summary: Development files for lib%name
 Requires: lib%name = %version-%release
-Group: Networking/File transfer
+Group: Development/C
 
 %description -n lib%name-devel
 The lib%name-devel package contains libraries and header files for
@@ -85,10 +94,11 @@ developing applications that use lib%name.
 cp %SOURCE1 .
 # remove buildroot from .pc file
 %__subst 's/(DESTDIR)//' lib/libseafile.pc.in
+%__subst 's@#!/usr/bin/env python@#!%__python3@' app/seaf-cli
 
 %build
 %autoreconf
-%configure --disable-static
+%configure --disable-static PYTHON=%__python3
 # FIXME: breakes build
 %make_build || %make
 
@@ -96,14 +106,18 @@ cp %SOURCE1 .
 %makeinstall_std
 
 %files
-%_bindir/seaf-cli
 %_bindir/seaf-daemon
-%_man1dir/seaf-cli.1.*
 %_man1dir/seaf-daemon*.1.*
+
+%files cli
+%_bindir/seaf-cli
+%_man1dir/seaf-cli.1.*
 
 %files -n lib%name
 %_libdir/*.so.*
-%python_sitelibdir/%name/
+
+%files -n python3-module-seafile
+%python3_sitelibdir/%name/
 
 %files -n lib%name-devel
 %_includedir/*
@@ -111,6 +125,20 @@ cp %SOURCE1 .
 %_pkgconfigdir/lib%name.pc
 
 %changelog
+* Wed Feb 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.6-alt1
+- new version 7.0.6 (with rpmrb script)
+
+* Sat Jan 18 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.5-alt1
+- new version 7.0.5 (with rpmrb script)
+- pack seaf-cli in standalone package
+- use python3 only
+
+* Fri Aug 30 2019 Vitaly Lipatov <lav@altlinux.ru> 7.0.2-alt1
+- new version 7.0.2 (with rpmrb script)
+
+* Wed Jun 12 2019 Vitaly Lipatov <lav@altlinux.ru> 7.0.1-alt1
+- new version 7.0.1 (with rpmrb script)
+
 * Tue Feb 12 2019 Vitaly Lipatov <lav@altlinux.ru> 6.2.11-alt1
 - new version 6.2.11 (with rpmrb script)
 

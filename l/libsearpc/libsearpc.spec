@@ -1,6 +1,6 @@
 Name: libsearpc
-Version: 3.1
-Release: alt3.qa1
+Version: 3.2.0
+Release: alt1
 
 Summary: RPC library for Seafile
 
@@ -8,16 +8,17 @@ Group: Networking/File transfer
 License: GPLv3
 Url: https://github.com/haiwen/libsearpc
 
-Packager: Konstantin Artyushkin <akv@altlinux.org>
+Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# Source-url: https://github.com/haiwen/libsearpc/archive/v%version-latest.tar.gz
+# Source-url: https://github.com/haiwen/libsearpc/archive/v%version.tar.gz
 Source: %name-%version.tar
+Patch: 9b2e2dc65213fb22ed400dc54e4c2279564df62b.patch
 
 BuildRequires: glib2-devel libjansson-devel
 
 BuildRequires: libgio-devel
 
-BuildRequires: python-devel
+BuildRequires: rpm-build-python3 python3-devel
 
 %description
 Searpc is a simple C language RPC framework based on GObject system.
@@ -26,19 +27,29 @@ Searpc handles the serialization/deserialization part of RPC, the transport part
 %package devel
 Summary: Development files for %name
 Requires: %name = %version-%release
-Group: Networking/File transfer
+Group: Development/C
 
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
+%package -n python3-module-pysearpc
+Summary: Seafile RPC python3 module
+Group: Networking/File transfer
+
+%description -n python3-module-pysearpc
+Seafile RPC python3 module.
+
+
 %prep
 %setup
+%patch -p1
 sed -i 's/(DESTDIR)//' libsearpc.pc.in
+sed -i -e 's@#!/usr/bin/env python@#!%__python3@' lib/searpc-codegen.py
 
 %build
 %autoreconf
-%configure --disable-static --disable-compile-demo --enable-server-pkg
+%configure --disable-static --disable-compile-demo --enable-server-pkg PYTHON=%__python3
 %make_build
 
 %install
@@ -47,7 +58,9 @@ sed -i 's/(DESTDIR)//' libsearpc.pc.in
 %files
 %doc AUTHORS README.markdown
 %_libdir/*.so.*
-%python_sitelibdir/pysearpc/
+
+%files -n python3-module-pysearpc
+%python3_sitelibdir/pysearpc/
 
 %files devel
 %_bindir/searpc-codegen.py
@@ -56,6 +69,11 @@ sed -i 's/(DESTDIR)//' libsearpc.pc.in
 %_pkgconfigdir/%name.pc
 
 %changelog
+* Sun Jan 19 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.0-alt1
+- new version (3.2.0) with rpmgs script
+- switch to python3 (build the module as standalone package)
+- add fix memory leak patch (out of release)
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 3.1-alt3.qa1
 - NMU: applied repocop patch
 

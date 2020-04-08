@@ -1,6 +1,6 @@
 Name: ccnet
-Version: 6.3.4
-Release: alt3
+Version: 7.1.1
+Release: alt1
 
 Summary: Framework for writing networked applications in C
 
@@ -13,14 +13,11 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # Source-url: https://github.com/haiwen/ccnet-server/archive/v%version-server.tar.gz
 Source: %name-%version.tar
 
-# manually removed: python-module-mwlib 
-# Automatically added by buildreq on Fri Sep 06 2013
-# optimized out: glib2-devel gnu-config libgio-devel pkg-config python-base python-devel python-module-distribute python-module-zope python-modules
-BuildRequires: libevent-devel libssl-devel libuuid-devel python-module-paste python-module-peak
+BuildRequires: libevent-devel libssl-devel libuuid-devel
 
 BuildRequires: libsqlite3-devel
 
-BuildRequires: libsearpc-devel >= 3.0.4
+BuildRequires: libsearpc-devel >= 3.2.0
 
 BuildRequires: vala >= 0.8
 
@@ -28,6 +25,8 @@ BuildRequires: vala >= 0.8
 BuildRequires: libmysqlclient-devel
 
 BuildRequires: libzdb-devel >= 2.10.2
+
+BuildRequires: rpm-build-python3
 
 #Requires: lib%name = %version-%release
 
@@ -37,7 +36,7 @@ Ccnet is a framework for writing networked applications in C.
 %package -n lib%name
 Summary: Library of framework for writing networked applications in C
 Group: Networking/File transfer
-Requires: libsearpc >= 3.0.4
+Requires: libsearpc >= 3.2.0
 
 
 %description -n lib%name
@@ -63,23 +62,23 @@ Conflicts: %name < %EVR
 Ccnet server part.
 Ccnet is a framework for writing networked applications in C.
 
-%package -n python-module-%name
+%package -n python3-module-%name
 Summary: Ccnet python module
 Requires: lib%name = %version-%release
 Group: Networking/File transfer
 
-%description -n python-module-%name
+%description -n python3-module-%name
 Ccnet python module.
 
 %prep
 %setup
 %__subst 's/(DESTDIR)//' libccnet.pc.in
 # since MySQL 8.0
-%__subst "s|my_bool|bool|" net/common/db-wrapper/mysql-db-ops.c
+%__subst "s|my_bool|bool|" net/common/ccnet-db.c
 
 %build
 %autoreconf
-%configure --disable-static
+%configure --disable-static PYTHON=%__python3
 
 # smp build does not work
 %make_build || %make
@@ -94,8 +93,8 @@ Ccnet python module.
 %files -n lib%name
 %_libdir/*.so.*
 
-%files -n python-module-%name
-%python_sitelibdir/%name/
+%files -n python3-module-%name
+%python3_sitelibdir/%name/
 
 %files server
 %_bindir/ccnet-init
@@ -110,6 +109,10 @@ Ccnet python module.
 %_pkgconfigdir/lib%name.pc
 
 %changelog
+* Sun Jan 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.1.1-alt1
+- new version 7.1.1 (with rpmrb script)
+- python3 fix
+
 * Wed Mar 06 2019 Vitaly Lipatov <lav@altlinux.ru> 6.3.4-alt3
 - fix build with MySQL 8.x
 
