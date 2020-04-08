@@ -1,14 +1,13 @@
 %define ver_major 0.9.14
 
 Name: compiz
-Version: %ver_major.0
+Version: %ver_major.1
 Release: alt1
 
 Summary: OpenGL window and compositing manager
-License: MIT/X11 GPL
+License: GPLv2 and LGPLv2 and MIT
 Group: System/X11
-Url: http://www.compiz.org/
-# https://launchpad.net/compiz
+Url: https://git.launchpad.net/compiz
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
 #ExclusiveArch: i586 x86_64
@@ -17,17 +16,15 @@ Provides: compiz-fusion-plugins-main compizconfig-backend-gconf ccsm emerald
 Obsoletes: libcompizconfig compiz-fusion-plugins-extra compiz-gtk python-module-compizconfig compiz-gnome
 Obsoletes: compiz-fusion-plugins-main compizconfig-backend-gconf ccsm emerald
 
-Source: https://launchpad.net/%name/%ver_major/%version/+download/%name-%version.tar.xz
+Source: %name-%version.tar
+Patch: %name-%version-%release.patch
 
-Patch0: compiz-0.9.14.0-alt-python_sitelibdir.patch
-Patch1: compiz-0.9.13.0-alt-po.patch
-Patch2: compiz-0.9.14.0-alt-ascii-to-utf8.patch
-
+BuildRequires(pre): rpm-build-python3
 BuildRequires: boost-devel-headers cmake gcc-c++ intltool libGLU-devel libSM-devel libXcomposite-devel
 BuildRequires: libXcursor-devel libXdamage-devel libXi-devel libXinerama-devel libXrandr-devel libdbus-devel
 BuildRequires: libglibmm-devel libjpeg-devel libmetacity3.0-devel libnotify-devel libprotobuf-devel librsvg-devel
 BuildRequires: libstartup-notification-devel libwnck3-devel libxslt-devel protobuf-compiler xsltproc
-BuildRequires: pkgconfig(mate-window-settings-2.0) pkgconfig(gnome-desktop-2.0) python3-devel python3-module-Cython
+BuildRequires: pkgconfig(mate-window-settings-2.0) python3-devel python3-module-Cython
 BuildRequires: libpcre-devel libXdmcp-devel libdrm-devel libfribidi-devel libpixman-devel libpng-devel
 
 %description
@@ -35,11 +32,23 @@ Compiz is an OpenGL compositing manager that use GLX_EXT_texture_from_pixmap
 for binding redirected top-level windows to texture objects. It has a flexible
 plug-in system and it is designed to run well on most graphics hardware.
 
+%package -n lib%name
+Summary: OpenGL compositing manager library
+Group: System/Libraries
+
+%description -n lib%name
+OpenGL compositing manager library
+
+%package -n lib%name-devel
+Summary: Development files for %name
+Group: Development/C++
+
+%description -n lib%name-devel
+Development files for %name
+
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%patch -p1
 
 %build
 %define lib_suffix %nil
@@ -56,9 +65,7 @@ cmake .. \
 	-DLIB_SUFFIX=%lib_suffix \
 	-DCOMPIZ_BUILD_WITH_RPATH=FALSE \
 	-DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=OFF \
-	-DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
-	-DCOMPIZ_BUILD_TESTING=OFF \
-	-DUSE_KDE4=OFF
+	-DCOMPIZ_BUILD_TESTING=OFF
 popd
 find -name flags.make | while read l; do sed -i 's|\ -Werror\ | |g' $l; done
 %make_build -C %_target_platform
@@ -79,37 +86,53 @@ cat << __EOF__ > %buildroot%_sysconfdir/compizconfig/mate.ini
 s0_active_plugins = core;composite;opengl;decor;matecompat;move;resize;imgpng;wall;session;copytex;compiztoolbox;wobbly;switcher;scale;place;
 __EOF__
 
-%if "%_lib" == "lib64"
-mv %buildroot%python3_sitelibdir_noarch/* %buildroot%python3_sitelibdir/
-%endif
-
-rm -fr %buildroot%_datadir/compiz/cmake
+mkdir -p %buildroot%_datadir/cmake/Modules/%name
+mv %buildroot%_datadir/cmake*/Find*.cmake %buildroot%_datadir/cmake/Modules/%name/
 rm -f %buildroot%_bindir/compiz-decorator
-#rm -f %buildroot%_libdir/*.so
-rm -fr %buildroot%_includedir
-rm -fr %buildroot%_pkgconfigdir
-rm -fr %buildroot%_datadir/cmake*
+rm -f %buildroot%python3_sitelibdir_noarch/*.egg-info
 
 %find_lang --output=global.lang %name ccsm
 
 %files -f global.lang
+%doc AUTHORS COPYING* README
 %dir %_sysconfdir/compizconfig
 %config(noreplace) %_sysconfdir/compizconfig/*
 %_bindir/*
-%_libdir/%name
-%_libdir/compizconfig
-%_libdir/lib*.so.*
-%_libdir/libcompizconfig_gsettings_backend.so
-%python3_sitelibdir/*
+%python3_sitelibdir_noarch/ccm
+%python3_sitelibdir/*.so
 %_desktopdir/*.desktop
 %_datadir/ccsm
 %_datadir/%name
 %_datadir/glib-2.0/schemas/*.gschema.xml
+%_datadir/gnome-control-center/keybindings/50-compiz-*.xml
 %_iconsdir/hicolor/*/apps/*.png
 %_iconsdir/hicolor/*x*/apps/*.svg
 %_iconsdir/hicolor/scalable/apps/*.svg
 
+%files -n lib%name
+%_libdir/%name
+%_libdir/compizconfig
+%_libdir/libcompiz_core.so.*
+%_libdir/libdecoration.so.*
+%_libdir/libcompizconfig.so.*
+%_libdir/libcompizconfig_gsettings_backend.so
+
+%files -n lib%name-devel
+%_includedir/%name
+%_includedir/compizconfig
+%_libdir/libcompiz_core.so
+%_libdir/libdecoration.so
+%_libdir/libcompizconfig.so
+%_pkgconfigdir/*.pc
+%_datadir/cmake/Modules/%name
+
 %changelog
+* Wed Mar 04 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.9.14.1-alt1
+- 0.9.14.1
+
+* Mon Feb 03 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.9.14.0-alt2
+- updated build dependencies
+
 * Fri Mar 22 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.9.14.0-alt1
 - 0.9.14.0
 
