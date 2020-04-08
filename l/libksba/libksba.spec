@@ -2,7 +2,7 @@
 
 Name: libksba
 Version: 1.3.6
-Release: alt8
+Release: alt13
 
 Group: System/Libraries
 Summary: X.509 library
@@ -13,8 +13,11 @@ Source0: %name-%version.tar
 Patch1:		%{name}-info.patch
 
 # GOST patch
-%define gostversion 1.0.0
-Patch2: %name-%version-gost-%gostversion.patch
+%define gostversion 2.0.0
+Patch2: %name-%version-derutil.patch
+Patch3: %name-%version-gost-cms.patch
+Patch4: %name-%version-pkcs7-gost.patch
+#Patch5: %name-%version-pkcs8.patch
 Provides: %name(gost) = %gostversion
 
 # Automatically added by buildreq on Tue Apr 06 2004 (-bi)
@@ -47,6 +50,9 @@ Static libraries for the %name-devel package
 %setup -q
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+#%patch5 -p1
 
 #__aclocal
 #__autoconf
@@ -63,6 +69,8 @@ Static libraries for the %name-devel package
 %makeinstall
 #rm -fv %buildroot/usr/share/info/dir
 
+%check
+%make_build check
 
 %files
 %doc AUTHORS NEWS README 
@@ -84,6 +92,25 @@ Static libraries for the %name-devel package
 %endif
 
 %changelog
+* Tue Oct 22 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt13
+- Maintenance release.
+
+* Wed Oct 16 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt12
+- Fix the PKCS#7 parser: by '*' skip only the first bit/octet string.
+
+* Tue Oct 15 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt11
+- Postpone PKCS#8 (private key) modifications.
+
+* Tue Oct 15 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt10
+- Switch the autotests on.
+
+* Tue Oct 15 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt9
+- Reworked ASN.1 PKCS#7 parser / builder with GOST support.
+- Support of GOST-R.3410-2012 and the appropriate cipher S-box.
+- Make read_values() not to skip leading zeros of a value.
+- Fixed read_values(): handle the default case with no parameters.
+- Try to support the headless RSA private key format.
+
 * Wed Dec 19 2018 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt8
 - Fixed writing the algorithm capabilities.
 - Fixed read_values() for an unspecified (RSA) value.

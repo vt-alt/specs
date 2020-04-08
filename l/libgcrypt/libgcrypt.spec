@@ -6,8 +6,8 @@
 %define soversion 20
 
 Name: libgcrypt
-Version: 1.8.4
-Release: alt2
+Version: 1.8.5
+Release: alt3
 
 %define soname %{name}%{soversion}
 
@@ -21,10 +21,15 @@ Source: %name-%version.tar
 Patch0: libgcrypt-1.8.4-fix-overflow-streebog.patch
 
 # GOST patch
-%define vkoversion 1.0.0
-Patch1: %name-%version-vko-%vkoversion.patch
+%define vko_ver 2.0.0
+%define imit_ver 1.0.0
+%define keymeshing_ver 1.0.0
+Patch1: libgcrypt-1.8.5-curves-2012.patch
+Patch2: libgcrypt-1.8.5-vko-salt.patch
+Patch3: libgcrypt-1.8.5-gost89-optimize.patch
+Patch4: libgcrypt-1.8.5-gost89-imit.patch
+Patch5: libgcrypt-1.8.5-gost89-keymeshing.patch
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: libgpg-error-devel >= %req_gpgerror_ver
 %if_enabled static
 BuildRequires: glibc-devel-static
@@ -45,7 +50,9 @@ Group: System/Libraries
 Requires: libgpg-error >= %req_gpgerror_ver
 Provides: %name = %version-%release
 # GOST provides
-Provides: %name(vko) = %vkoversion
+Provides: %name(vko) = %vko_ver
+Provides: %name(imit) = %imit_ver
+Provides: %name(keymeshing) = %keymeshing_ver
 %description -n %soname
 Libgcrypt is a general purpose cryptographic library
 based on the code from GNU Privacy Guard.
@@ -96,6 +103,10 @@ Static libraries for the %name-devel package
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 %if_enabled info_nogen
 sed -i "s|^info_TEXINFOS|#info_TEXINFOS|" doc/Makefile.am
 sed -i "s|^gcrypt_TEXINFOS|#gcrypt_TEXINFOS|" doc/Makefile.am
@@ -160,6 +171,7 @@ install -m 0644 doc/*.info %buildroot/%_infodir/
 %_libdir/*.so
 %_datadir/aclocal/*
 %_infodir/*
+%_pkgconfigdir/*.pc
 
 %if_enabled static
 %files devel-static
@@ -167,6 +179,24 @@ install -m 0644 doc/*.info %buildroot/%_infodir/
 %endif
 
 %changelog
+* Tue Oct 22 2019 Paul Wolneykien <manowar@altlinux.org> 1.8.5-alt3
+- Maintenance release.
+
+* Wed Oct 02 2019 Paul Wolneykien <manowar@altlinux.org> 1.8.5-alt2
+- CryptoPro key meshing for GOST-28147.
+- GOST-28147 IMIT mode (thx Dmitry Eremin-Solenikov).
+- GOST-28147 optimizations (thx Dmitry Eremin-Solenikov).
+- GOST VKO support in ECDH: multiply by an optional UKM value.
+- Added GOST-R.3410-2012 curves.
+
+* Thu Aug 29 2019 Paul Wolneykien <manowar@altlinux.org> 1.8.5-alt1
+- Freshed up to version 1.8.5 (fixes CVE-2019-13627).
+- Upstream: Improve ECDSA unblinding.
+- Upstream: Provide a pkg-config file for libgcrypt.
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.8.4-alt3
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon May 13 2019 Paul Wolneykien <manowar@altlinux.org> 1.8.4-alt2
 - Added patch fixing carry overflow in Stribog 512-bit addition.
 

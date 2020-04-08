@@ -1,10 +1,11 @@
 
 %def_disable gpgutils
 %define _localstatedir /var
+%def_disable beta
 
 Name: gnupg2
-Version: 2.2.15
-Release: alt1
+Version: 2.2.17
+Release: alt8
 
 Group: Text tools
 Summary: The GNU Privacy Guard suite
@@ -38,7 +39,7 @@ Conflicts: pinentry-common < 0.9.2
 Conflicts: gnupg-pkcs11-scd <= 0.9.2-alt5
 
 # FC
-Patch11: gnupg-2.1.21-insttools.patch
+Patch11: gnupg-2.2.17-insttools.patch
 Patch12: gnupg-2.1.19-exponential.patch
 Patch13: gnupg-2.1.10-secmem.patch
 Patch14: gnupg-2.1.1-ocsp-keyusage.patch
@@ -46,25 +47,31 @@ Patch15: gnupg-2.1.1-fips-algo.patch
 Patch16: gnupg-2.1.21-large-rsa.patch
 Patch17: gnupg-2.2.0-file-is-digest.patch
 # ALT
+Patch100: alt-revision.patch
 Patch101: alt-xloadimage.patch
 Patch102: alt-agent-fix-password-request.patch
 Patch103: alt-texinfo.patch
 
 # GOST patch/requires/provides
-%define gostversion 1.0.0
-Patch18: %name-%version-gost-%gostversion.patch
-Requires: libgcrypt(vko) >= 1.0.0
-Requires: libksba(gost) >= 1.0.0
+%define gostversion 2.0.3
+Patch18: %name-%version-gost-common.patch
+Patch19: %name-%version-gost-agent.patch
+Patch20: %name-%version-gost-g10.patch
+Patch21: %name-%version-gost-sm.patch
+Patch22: %name-%version-gost-dirmngr.patch
+Requires: libgcrypt(vko) >= 2.0.0
+Requires: libgcrypt(imit) >= 1.0.0
+Requires: libgcrypt(keymeshing) >= 1.0.0
+Requires: libksba(gost) >= 2.0.0
 Provides: %name(gost) = %gostversion
 
 # Issuers patch/provides
-%define issuersversion 1.0.0
-Patch19: %name-%version-issuers-%issuersversion.patch
-Provides: %name(issuersconf) = %issuersversion
+%define issuersconfversion 1.0.1
+Patch23: %name-%version-issuersconf.patch
+Provides: %name(issuersconf) = %issuersconfversion
 
-BuildRequires(pre): rpm-build-ubt
-BuildRequires: libgcrypt-devel >= 1.8.3-alt4
-BuildRequires: libksba-devel >= 1.3.6-alt7
+BuildRequires: libgcrypt-devel >= 1.8.5-alt2
+BuildRequires: libksba-devel >= 1.3.6-alt12
 BuildRequires: libassuan-devel
 BuildRequires: libgnutls-devel libnpth-devel
 BuildRequires: bzlib-devel libcurl-devel libldap-devel
@@ -85,7 +92,7 @@ functionality up into several modules.
 
 %prep
 %setup -n gnupg-%version
-%patch11 -p1
+%patch11 -p2
 #%patch12 -p1
 %patch13 -p1
 %patch14 -p1
@@ -94,12 +101,29 @@ functionality up into several modules.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
 %patch101 -p1
 #%patch102 -p1
 %patch103 -p1
 rm doc/*.info*
 
+# Version revision
+%patch100 -p2
+%if_disabled beta
+sed -i -e 's/@BETA@/no/' configure.ac
+%else
+sed -i -e 's/@BETA@/yes/' configure.ac
+%endif
+sed -i -e 's/@REVISION@/gost-%gostversion/' -e 's/@REVISION_DESC@/ALT/' configure.ac
+
 %build
+# Need to regenerate the build files in order to include the new
+# GOST modules:
+%autoreconf
+
 %add_optflags -fno-strict-aliasing
 %configure \
 	--enable-gpg-is-gpg2 \
@@ -134,8 +158,6 @@ sed -i 's|@LIBEXECDIR@|%_libexecdir|g' \
 install -pDm755 %_sourcedir/gnupg-agent-wrapper.sh \
 	%buildroot%_libexecdir/gnupg/gnupg-agent-wrapper
 
-mv %buildroot%_infodir/gnupg{,2}.info
-
 install -pm644 AUTHORS NEWS THANKS %buildroot%docdir/
 
 %find_lang %name
@@ -162,6 +184,37 @@ install -pm644 AUTHORS NEWS THANKS %buildroot%docdir/
 %docdir
 
 %changelog
+* Tue Nov 05 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt8
+- Fixed segfault in gpg encryption with a GOST key on i586.
+
+* Thu Oct 31 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt7
+- Switch to an opaque session key value to prevent key length errors.
+
+* Tue Oct 29 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt6
+- Fix: Try to determine the signer digest algorithm using the
+  public key.
+
+* Wed Oct 23 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt5
+- Reflect support of the GOST algorithms in 'gpgsm --version'.
+- Reflect support of the GOST algorithms in 'gpg --version'
+
+* Thu Oct 17 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt4
+- Fixed build requires.
+
+* Wed Oct 16 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt3
+- Mark the version as release with GOST revision number %gostversion.
+
+* Tue Oct 15 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt2
+- Support GOST-R.3410-2012 in OpenPGP and S/MIME modes.
+- Support local GOST key generation (OpenPGP mode).
+- GnuPG 2 info page is now available as 'gnupg'.
+
+* Tue Jul 09 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt1
+- Freshed up to version 2.2.17.
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 2.2.15-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Mar 26 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.15-alt1
 - Freshed up to version 2.2.15.
 

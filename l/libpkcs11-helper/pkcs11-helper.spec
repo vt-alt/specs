@@ -9,7 +9,7 @@
 
 Name: lib%_name
 Version: 1.25.1
-Release: alt6
+Release: alt7
 Summary: A library for using PKCS#11 providers
 
 Group: Development/Other
@@ -21,8 +21,8 @@ Source: %name-%version.tar
 Provides: %_name = %version-%release
 Obsoletes: %_name < %version-%release
 
-%define vkoversion 1.0.1
-Patch0: %name-%version-gost-derive-%vkoversion.patch
+%define vkoversion 2.0.0
+Patch0: %name-%version-gost-derive.patch
 Provides: %name(vko) = %vkoversion
 
 BuildRequires: doxygen graphviz
@@ -96,6 +96,11 @@ rm -f %buildroot%_libdir/*.la
 %_man8dir/*.8*
 
 %changelog
+* Wed Oct 16 2019 Paul Wolneykien <manowar@altlinux.org> 1.25.1-alt7
+- Added support for GOST 2012 VKO.
+- Don't diversify the resulting GOST key.
+- Adapt to the new key derivation data format: key + UKM.
+
 * Mon Feb 18 2019 Paul Wolneykien <manowar@altlinux.org> 1.25.1-alt6
 - Pass the decrypt/unwrap/derive result code out of the decryptAny()
   function.

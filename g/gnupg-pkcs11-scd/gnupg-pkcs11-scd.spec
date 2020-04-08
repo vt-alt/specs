@@ -4,7 +4,7 @@
 
 Name: gnupg-pkcs11-scd
 Version: 0.9.2
-Release: alt7
+Release: alt8
 
 Summary: A GnuPG PKCS#11 token daemon
 Group: System/Configuration/Hardware
@@ -12,7 +12,7 @@ License: BSD
 Url: https://github.com/alonbl/gnupg-pkcs11-scd
 
 Source: %name-%version.tar
-Patch0: %name-%version-gost-1.0.0.patch
+Patch0: %name-%version-gost.patch
 
 %if_enabled LibreSSL
 BuildRequires: LibreSSL-devel
@@ -27,7 +27,7 @@ BuildRequires: libgcrypt-devel
 BuildRequires: libgpg-error-devel
 BuildRequires: libpkcs11-helper-devel
 
-Requires: libpkcs11-helper(vko) >= 1.0.0
+Requires: libpkcs11-helper(vko) >= 2.0.0
 
 %description
 gnupg-pkcs11 is a project to implement a BSD-licensed smart-card daemon to
@@ -59,6 +59,18 @@ we strongly disagree with WK\'s attitude towards it.
 %_man1dir/*.1.*
 
 %changelog
+* Wed Oct 16 2019 Paul Wolneykien <manowar@altlinux.org> 0.9.2-alt8
+- GOST 2012 NIDs, OIDs and PKCS#11 mechanisms.
+- Require libpkcs11-helper(vko) >= 2.0.0.
+- Adapt for the new key+UKM format used in GnuPG.
+- Fixed the typo about Libgcrypt initialization.
+- Fixed pk_decrypt() for an RSA key.
+- Fixed typo in the "key-friendly" messages.
+- Don't abort on error when LEARN the certificates.
+- Reverse the digest for GOST signatures.
+- Additional GOST 2001 OpenSSL NIDs (XchA, XchB).
+- Update to the new OpenSSL version.
+
 * Thu Feb 21 2019 Paul Wolneykien <manowar@altlinux.org> 0.9.2-alt7
 - Fixed copying of overlapped memory areas.
 
