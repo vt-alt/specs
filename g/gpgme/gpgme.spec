@@ -10,12 +10,14 @@
 %define gpg_bin_path %_bindir/gpg2
 %define gpgsm_bin_path %_bindir/gpgsm
 
+%def_disable beta
+
 %add_python3_req_skip _gpgme
 %add_python_req_skip _gpgme
 
 Name: gpgme
-Version: 1.11.1
-Release: alt2
+Version: 1.13.1
+Release: alt1
 
 Summary: GnuPG Made Easy is a library designed to make access to GnuPG easier for applications
 License: LGPLv2.1+
@@ -34,7 +36,11 @@ Patch11: gpgme-1.4.3-alt-version-script.patch
 Patch12: gpgme-1.3.0-alt-gpgme-config-assuan.patch
 Patch13: gpgme-1.3.0-alt-tests.patch
 Patch14: gpgme-1.3.2-rh-alt-linkage.patch
+Patch15: alt-revision.patch
 
+#GOST
+%define gostversion 1.0.0
+Patch16: %name-%version-gost-constants.patch
 
 %def_disable static
 %{?_enable_static:BuildPreReq: glibc-devel-static}
@@ -44,6 +50,7 @@ BuildRequires(pre): python-devel python3-devel
 BuildRequires: /proc gcc-c++ gnupg2 libgpg-error-devel libpth-devel libstdc++-devel libassuan-devel >= 2.0
 BuildRequires: texinfo
 BuildRequires: qt5-base-devel swig
+BuildRequires: glib2-devel
 
 %package common
 Summary: %name common package
@@ -148,6 +155,15 @@ GPGME-based statically linked applications.
 %patch12 -p1
 %patch13 -p1
 #%patch14 -p1
+%patch15 -p2
+%patch16 -p1
+
+%if_disabled beta
+sed -i -e 's/@BETA@/no/' configure.ac
+%else
+sed -i -e 's/@BETA@/yes/' configure.ac
+%endif
+sed -i -e 's/@REVISION@/gost-%gostversion/' -e 's/@REVISION_DESC@/ALT/' configure.ac
 
 rm doc/*.info* m4/{libtool,lt}*.m4
 
@@ -203,6 +219,9 @@ export PATH=$PWD/tmp_bin:$PATH
 %_libdir/cmake/QGpgme/
 %_datadir/aclocal/*.m4
 %_infodir/*.info*
+%_pkgconfigdir/%name.pc
+%_pkgconfigdir/%name-*.pc
+%_datadir/common-lisp/source/%name
 
 %if_enabled static
 %files -n lib%name-devel-static
@@ -221,6 +240,9 @@ export PATH=$PWD/tmp_bin:$PATH
 %_libdir/libqgpgme.so.%qgpgme_sover.*
 
 %changelog
+* Mon Dec 09 2019 Paul Wolneykien <manowar@altlinux.org> 1.13.1-alt1
+- Fresh up to v 1.13.1.
+
 * Wed Jan 30 2019 Paul Wolneykien <manowar@altlinux.org> 1.11.1-alt2
 - Remove the redundant %%ubt macro.
 - Added GOST hash constants from libgcrypt (308--311).
