@@ -1,18 +1,18 @@
 Name: xfce4-screensaver
-Version: 0.1.8
+Version: 0.1.10
 Release: alt1
 
 Summary: Screen saver and locker for Xfce
-License: %gpl2plus, %lgpl2plus
+License: GPLv2+ and LGPLv2+
 Group: Graphical desktop/XFce
 Url: https://git.xfce.org/apps/xfce4-screensaver/about/
 
-# Upstream: https://git.xfce.org/apps/xfce4-screensaver
+Vcs: https://git.xfce.org/apps/xfce4-screensaver
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-BuildRequires(pre): rpm-build-licenses rpm-build-xdg
+BuildRequires(pre): rpm-build-xdg
 
 BuildPreReq: rpm-build-xfce4 >= 0.1.0 xfce4-dev-tools
 BuildPreReq: libxfconf-devel libgarcon-gtk3-devel libxfce4ui-gtk3-devel libxfce4util-devel
@@ -74,6 +74,14 @@ and the Xfconf configuration backend.
 %_pixmapsdir/*.svg
 
 %changelog
+* Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 0.1.10-alt1
+- 0.1.9 -> 0.1.10.
+
+* Mon Mar 23 2020 Mikhail Efremov <sem@altlinux.org> 0.1.9-alt1
+- Use Vcs tag.
+- Don't use rpm-build-licenses.
+- 0.1.8 -> 0.1.9.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 0.1.8-alt1
 - 0.1.7 -> 0.1.8.
 

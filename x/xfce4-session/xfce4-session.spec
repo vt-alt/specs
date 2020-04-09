@@ -1,5 +1,5 @@
 Name: xfce4-session
-Version: 4.14.1
+Version: 4.14.2
 Release: alt1
 
 Summary: Session manager for Xfce desktop environment
@@ -29,6 +29,8 @@ Requires: xfce4-about
 
 Obsoletes: xfce-utils < %version
 Obsoletes: libxfsm < %version-%release
+
+Conflicts: xfce4-screensaver < 0.1.10-alt1
 
 %define _unpackaged_files_terminate_build 1
 
@@ -76,6 +78,10 @@ install -Dm0644 %SOURCE1 %buildroot%_x11sysconfdir/wmsession.d/10Xfce4
 %_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
+- Added conflict for broken xfce4-screensaver.
+- Updated to 4.14.2.
+
 * Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
 - Use Vcs rpm tag.
 - Don't use rpm-build-licenses.
