@@ -1,6 +1,6 @@
 Name: installer-feature-setup-plymouth
-Version: 0.5.4
-Release: alt1
+Version: 0.5.5
+Release: alt2
 
 Summary: Set up plymouth
 License: GPL
@@ -8,6 +8,8 @@ Group: System/Configuration/Other
 Url: http://www.altlinux.org/Installer/beans
 BuildArch: noarch
 Source: %name-%version.tar
+
+Requires: dmsetup
 
 %description
 Set up environment plymouth
@@ -24,6 +26,12 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Wed Apr 08 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.5-alt2
+- update requires
+
+* Tue Apr 07 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.5-alt1
+- check if root volume is under LUKS (closes: #38328)
+
 * Wed Sep 04 2019 Mikhail Efremov <sem@altlinux.org> 0.5.4-alt1
 - Handle empty uuid (closes: #37191).
 
