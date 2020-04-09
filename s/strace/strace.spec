@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.5
+Version: 5.6
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -57,7 +57,7 @@ mkdir build
 cd build
 %define _configure_script ../configure
 CFLAGS_FOR_BUILD="$RPM_OPT_FLAGS"; export CFLAGS_FOR_BUILD
-%configure --enable-gcc-Werror %mpers_check #--enable-maintainer-mode
+%configure %mpers_check #--enable-maintainer-mode
 %make_build
 
 %install
@@ -82,6 +82,9 @@ echo 'END OF TEST SUITE INFORMATION'
 %doc COPYING CREDITS NEWS README README-linux-ptrace
 
 %changelog
+* Tue Apr 07 2020 Dmitry V. Levin <ldv@altlinux.org> 5.6-alt1
+- v5.5 -> v5.6.
+
 * Thu Feb 06 2020 Dmitry V. Levin <ldv@altlinux.org> 5.5-alt1
 - v5.4-7-ga41d025fa -> v5.5.
 
