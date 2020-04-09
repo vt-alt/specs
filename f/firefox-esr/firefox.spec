@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.6.1
+Version:        68.7.0
 Release:        alt1
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -387,6 +387,15 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Mon Apr 06 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt1
+- New ESR version (68.7.0).
+- Fixes:
+  + CVE-2020-6828 Preference overwrite via crafted Intent from malicious Android application
+  + CVE-2020-6827 Custom Tabs in Firefox for Android could have the URI spoofed
+  + CVE-2020-6821 Uninitialized memory could be read when using the WebGL copyTexSubImage method
+  + CVE-2020-6822 Out of bounds write in GMPDecodeData when processing large images
+  + CVE-2020-6825 Memory safety bugs fixed in Firefox 75 and Firefox ESR 68.7
+
 * Sat Apr 04 2020 Andrey Cherepanov <cas@altlinux.org> 68.6.1-alt1
 - New ESR version (68.6.1).
 - Fixed:
