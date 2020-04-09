@@ -1,5 +1,5 @@
 Name: git
-Version: 2.24.1
+Version: 2.25.2
 Release: alt1
 
 Summary: Git core and tools
@@ -522,6 +522,12 @@ popd
 %endif #doc
 
 %changelog
+* Tue Mar 17 2020 Dmitry V. Levin <ldv@altlinux.org> 2.25.2-alt1
+- 2.25.1 -> 2.25.2.
+
+* Mon Feb 17 2020 Dmitry V. Levin <ldv@altlinux.org> 2.25.1-alt1
+- 2.24.1 -> 2.25.1.
+
 * Sun Dec 08 2019 Dmitry V. Levin <ldv@altlinux.org> 2.24.1-alt1
 - 2.24.0 -> 2.24.1 (fixes: CVE-2019-1348, CVE-2019-1387, CVE-2019-19604);
   this update also addresses a few Windows and/or NTFS issues
@@ -1323,5 +1329,5 @@ popd
 * Thu Jul 14 2005 Eric Biederman <ebiederm@xmission.com>
 - Add the man pages, and the --without docs build option
 
-* Wed Jul 7 2005 Chris Wright <chris@osdl.org>
+* Thu Jul 7 2005 Chris Wright <chris@osdl.org>
 - initial git spec file
