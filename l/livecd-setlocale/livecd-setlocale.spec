@@ -1,5 +1,5 @@
 Name: livecd-setlocale
-Version: 0.3.7
+Version: 0.3.8
 Release: alt1
 
 Summary: Automatically set locale from /proc/cmdline
@@ -33,6 +33,9 @@ rm -f %_sysconfdir/profile.d/00dconf-kbd.sh
 %_unitdir/livecd-setlocale.service
 
 %changelog
+* Sun Mar 29 2020 Anton Midyukov <antohami@altlinux.org> 0.3.8-alt1
+- set alt+shift for switch keyboard layout
+
 * Thu May 12 2016 Michael Shigorin <mike@altlinux.org> 0.3.7-alt1
 - drop generated hook when uninstalling (closes: #32040)
 
