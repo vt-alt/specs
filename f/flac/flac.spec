@@ -1,15 +1,15 @@
-%define flacdocs %_docdir/%name-%version
+%define flacdocs %_docdir/%name
 %define soversion 8
 %define cppsoversion 6
 
 %set_verify_elf_method textrel=relaxed
 
 Name: flac
-Version: 1.3.2
-Release: alt2
+Version: 1.3.3
+Release: alt1
 
 Summary: Free Lossless Audio Codec
-License: GPLv2+
+License: GPL-2.0-or-later and BSD-3-Clause and GFDL-1.1-or-later
 Group: Sound
 Url: https://xiph.org/flac/download.html
 Source: %name-%version.tar
@@ -20,10 +20,6 @@ Requires: lib%name%soversion = %version-%release
 %def_disable static
 %{?_enable_static:BuildRequires: glibc-devel-static}
 
-%ifarch %ix86 x86_64
-#BuildRequires: nasm
-%endif
-
 # Automatically added by buildreq on Fri Mar 25 2011
 BuildRequires: docbook-utils doxygen gcc-c++ libogg-devel
 
@@ -33,7 +29,7 @@ FLAC (%url) is an Open Source lossless audio codec.
 %package -n lib%name%soversion
 Summary: FLAC shared library
 Group: System/Libraries
-License: BSD-like
+License: BSD-3-Clause
 Provides: lib%name = %version
 
 %description -n lib%name%soversion
@@ -43,7 +39,7 @@ functions for manipulating FLAC format audio files.
 %package -n lib%name-devel
 Summary: Development files for FLAC
 Group: Development/C
-License: BSD-like
+License: BSD-3-Clause and GFDL-1.1-or-later
 Requires: lib%name%soversion = %version-%release
 Provides: liboggflac-devel = %version
 Obsoletes: liboggflac-devel < %version
@@ -55,7 +51,7 @@ FLAC-based software.
 %package -n lib%name-devel-static
 Summary: Static libraries for FLAC
 Group: Development/C
-License: BSD-like
+License: BSD-3-Clause
 Requires: lib%name-devel = %version-%release
 
 %description -n lib%name-devel-static
@@ -65,7 +61,7 @@ statically linked FLAC-based software.
 %package -n lib%name++%cppsoversion
 Summary: Object shared library FLAC++
 Group: System/Libraries
-License: BSD-like
+License: BSD-3-Clause
 Requires: lib%name%soversion = %version-%release
 Provides: lib%name++ = %version
 
@@ -76,7 +72,7 @@ of functions for manipulating FLAC format audio files.
 %package -n lib%name++-devel
 Summary: Development files for FLAC++ library
 Group: Development/C
-License: BSD-like
+License: BSD-3-Clause
 Requires: lib%name++%cppsoversion = %version-%release
 Provides: liboggflac++-devel = %version
 Obsoletes: liboggflac++-devel < %version
@@ -88,7 +84,7 @@ FLAC++-based software.
 %package -n lib%name++-devel-static
 Summary: Static libraries for FLAC++ library
 Group: Development/C
-License: BSD-like
+License: BSD-3-Clause
 Requires: lib%name++-devel = %version-%release
 
 %description -n lib%name++-devel-static
@@ -118,12 +114,8 @@ install -pm644 COPYING.Xiph AUTHORS README %buildroot%flacdocs/
 %files
 %_bindir/*
 %_mandir/man?/*
-%dir %flacdocs/
-%dir %flacdocs/html/
-%flacdocs/html/*.html
-%flacdocs/html/*.ico
-%flacdocs/html/*.css
-%flacdocs/html/images
+%flacdocs/
+%exclude %flacdocs/[ACR]*
 
 %files -n lib%name%soversion
 %_libdir/libFLAC.so.*
@@ -133,14 +125,12 @@ install -pm644 COPYING.Xiph AUTHORS README %buildroot%flacdocs/
 %flacdocs/COPYING.Xiph
 
 %files -n lib%name-devel
-%_datadir/aclocal/libFLAC.m4
+%_aclocaldir/libFLAC.m4
 %_libdir/libFLAC.so
-%_includedir/FLAC
+%_includedir/FLAC/
 %_pkgconfigdir/flac.pc
 %dir %flacdocs/
-%dir %flacdocs/html
-%flacdocs/html/api
-%flacdocs/FLAC.tag
+%flacdocs/api/
 
 %if_enabled static
 %files -n lib%name-devel-static
@@ -161,9 +151,10 @@ install -pm644 COPYING.Xiph AUTHORS README %buildroot%flacdocs/
 %_libdir/libFLAC++.a
 %endif
 
-# TODO: 1.3.2+
-
 %changelog
+* Sun Aug 04 2019 Dmitry V. Levin <ldv@altlinux.org> 1.3.3-alt1
+- 1.3.2 -> 1.3.3.
+
 * Tue Mar 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.3.2-alt2
 - Rebuilt without xmms plugin.
 
@@ -296,5 +287,5 @@ install -pm644 COPYING.Xiph AUTHORS README %buildroot%flacdocs/
 * Wed Aug 8 2001 Andrey Astafiev <andrei@altlinux.ru> 1.0-alt1
 - First version of RPM package.
 
-* Wed Jul 20 2001 Josh Coalson
+* Fri Jul 20 2001 Josh Coalson
 - FLAC 1.0 is out!
