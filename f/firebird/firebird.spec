@@ -1,6 +1,6 @@
 %define _unpackaged_files_terminate_build 1
 
-%define major 3.0.4.33054
+%define major 3.0.5.33220
 %define minor 0
 %define pkgname Firebird
 %define pkgversion %major-%minor
@@ -8,12 +8,13 @@
 
 Name: firebird
 Version: %major.%minor
-Release: alt1.qa1
+Release: alt1
 Summary: Firebird SQL Database, fork of InterBase
 Group: Databases
 License: IPL
 Url: https://www.firebirdsql.org/
 
+# https://github.com/FirebirdSQL/firebird.git
 Source: %name-%version.tar
 Source1: %name.init
 
@@ -23,8 +24,6 @@ Patch3: %name-%version-fedora-honour-buildflags.patch
 Patch4: %name-%version-fedora-cloop-honour-build-flags.patch
 Patch5: %name-%version-fedora-add-pkgconfig-files.patch
 Patch6: %name-%version-fedora-Provide-sized-global-delete-operators-when-compiled.patch
-Patch7: %name-%version-alt-rpath.patch
-Patch8: %name-%version-alt-build-flags.patch
 
 Requires: libfbclient = %EVR
 
@@ -127,8 +126,6 @@ Examples for Firebird SQL server.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p2
-%patch8 -p1
 
 # sed vs patch for portability and addtional location changes
 # based on FIREBIRD=%_libdir/firebird
@@ -175,7 +172,9 @@ rm -rf ./extern/{editline,icu,libtomcrypt,libtommath,zlib} || { echo "rm -rf fai
 	--with-fbmsg=%_localstatedir/%name/system/ \
 	--with-fblog=%_logdir/%name \
 	--with-fbglock=%_runtimedir/%name \
-	--with-fbplugins=%_libdir/%name/plugins
+	--with-fbplugins=%_libdir/%name/plugins \
+	--disable-rpath \
+	%nil
 
 %make
 
@@ -355,6 +354,9 @@ fi
 %_datadir/%name/examples/*
 
 %changelog
+* Fri Apr 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.5.33220.0-alt1
+- Updated to upstream version 3.0.5.33220-0.
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 3.0.4.33054.0-alt1.qa1
 - NMU: applied repocop patch
 
