@@ -3,13 +3,14 @@
 %global realname p1_utils
 
 Name: erlang-%realname
-Version: 1.0.14
+Version: 1.0.18
 Release: alt1
 Summary: Erlang Utility Modules from ProcessOne
 Group: Development/Erlang
-License: ASL 2.0
-BuildArch: noarch
+License: Apache-2.0
 Url: https://github.com/processone/p1_utils
+
+BuildArch: noarch
 
 # https://github.com/processone/p1_utils.git
 Source: %name-%version.tar
@@ -18,7 +19,7 @@ Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 
 %description
 Erlang Utility Modules from ProcessOne.
@@ -41,6 +42,12 @@ Erlang Utility Modules from ProcessOne.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.18-alt1
+- Updated to upstream version 1.0.18.
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.15-alt1
+- Updated to upstream version 1.0.15.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.14-alt1
 - Updated to upstream version 1.0.14.
 

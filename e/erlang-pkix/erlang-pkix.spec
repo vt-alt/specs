@@ -1,23 +1,23 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname pkix
+%define realname pkix
 
 Name: erlang-%realname
-Version: 1.0.1
+Version: 1.0.5
 Release: alt1
-
 Summary: PKIX certificates management for Erlang
 Group: Development/Erlang
-License: Apache 2.0
-BuildArch: noarch
+License: Apache-2.0
 Url: https://github.com/processone/pkix
+
+BuildArch: noarch
 
 # https://github.com/processone/pkix.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 
 %add_findprov_skiplist %_erllibdir/%realname-%version/priv/cacert.pem
 %add_findreq_skiplist  %_erllibdir/%realname-%version/priv/cacert.pem
@@ -49,6 +49,12 @@ ln -s $(relative %_sysconfdir/pki/tls/certs/ca-bundle.trust.crt %_erllibdir/%rea
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.5-alt1
+- Updated to upstream version 1.0.5.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.2-alt1
+- Updated to upstream version 1.0.2.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.1-alt1
 - Updated to upstream version 1.0.1.
 

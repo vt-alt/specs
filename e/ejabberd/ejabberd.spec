@@ -8,17 +8,17 @@
 %def_enable sqlite
 %def_enable pam
 %def_enable zlib
-%def_enable riak
 %def_enable tools
 
 Name: ejabberd
-Version: 19.02
-Release: alt3
+Version: 20.03
+Release: alt1
 Summary: Fault-tolerant distributed Jabber server written in Erlang
-License: GPL2
+License: GPL-2.0 with OpenSSL-exception
 Group: System/Servers
+Url: https://www.process-one.net/en/ejabberd/
+
 BuildArch: noarch
-Url: http://www.process-one.net/en/ejabberd/
 
 # https://github.com/processone/ejabberd.git
 Source: %name-%version.tar
@@ -35,7 +35,7 @@ Patch12: ejabberd-alt-erllibs-path.patch
 BuildRequires(pre): jabber-common >= 0.2
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-devel erlang-otp-devel libcom_err-devel libexpat-devel libssl-devel zlib-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-lager
 BuildRequires: erlang-p1_utils
 BuildRequires: erlang-cache_tab
@@ -51,6 +51,9 @@ BuildRequires: erlang-eimp
 BuildRequires: erlang-sd_notify
 BuildRequires: erlang-pkix
 BuildRequires: erlang-mqtree
+BuildRequires: erlang-idna
+BuildRequires: erlang-yconf
+BuildRequires: erlang-p1_acme
 %{?_enable_stun:BuildRequires: erlang-stun}
 %{?_enable_sip:BuildRequires: erlang-esip}
 %{?_enable_mysql:BuildRequires: erlang-p1_mysql}
@@ -58,12 +61,14 @@ BuildRequires: erlang-mqtree
 %{?_enable_sqlite:BuildRequires: erlang-sqlite3 libsqlite3-devel}
 %{?_enable_pam:BuildRequires: erlang-epam}
 %{?_enable_zlib:BuildRequires: erlang-ezlib}
-%{?_enable_riak:BuildRequires: erlang-riak_client}
 %{?_enable_tools:BuildRequires: erlang-luerl}
 
 Requires: erlang
 Requires: jabber-common >= 0.2
 Requires: su
+
+# workaround for bug #36925
+Requires: erlang-lager
 
 Provides: %name-pam = %EVR
 Obsoletes: %name-pam
@@ -77,7 +82,6 @@ Obsoletes: %name-pam
 %add_erlang_req_modules_skiplist Elixir.Logger.Utils
 %add_erlang_req_modules_skiplist eredis
 %add_erlang_req_modules_skiplist eredis_sub
-%add_erlang_req_modules_skiplist riak_object
 
 %description
 ejabberd is a Free and Open Source distributed fault-tolerant Jabber
@@ -147,7 +151,6 @@ sed -i -e "s|@ERL_LIBS@|%_erllibdir/%name-%version:|g" ejabberdctl.template
 	%{subst_enable sqlite} \
 	%{subst_enable pam} \
 	%{subst_enable zlib} \
-	%{subst_enable riak} \
 	%{subst_enable tools}
 
 #--enable-user=ejabberd
@@ -202,6 +205,7 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 
 %_jabber_server_dir/ejabberd
 
+%_man5dir/*
 %_man8dir/*
 
 %attr(1770,root,ejabberd) %dir %_localstatedir/ejabberd
@@ -209,6 +213,12 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %attr(1770,root,ejabberd) %dir %_lockdir/ejabberd
 
 %changelog
+* Tue Mar 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 20.03-alt1
+- Updated to upstream version 20.03.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 19.05-alt1
+- Updated to upstream version 19.05.
+
 * Fri Mar 15 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 19.02-alt3
 - ejabberd.service: service type was changed to notify again (was changed by
   mistake in the previous release).

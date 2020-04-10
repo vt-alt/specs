@@ -1,22 +1,23 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname p1_mysql
+%define realname p1_mysql
 
 Name: erlang-%realname
-Version: 1.0.9
+Version: 1.0.14
 Release: alt1
 Summary: Pure Erlang MySQL driver
 Group: Development/Erlang
-License: BSD
-BuildArch: noarch
+License: BSD-3-Clause
 Url: https://github.com/processone/p1_mysql
+
+BuildArch: noarch
 
 # https://github.com/processone/p1_mysql.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 
 %description
 This is an Erlang MySQL driver.
@@ -39,6 +40,12 @@ This is an Erlang MySQL driver.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.14-alt1
+- Updated to upstream version 1.0.14.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.11-alt1
+- Updated to upstream version 1.0.11.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.9-alt1
 - Updated to upstream version 1.0.9.
 

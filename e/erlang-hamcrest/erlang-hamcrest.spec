@@ -1,15 +1,16 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname hamcrest
+%define realname hamcrest
 
 Name: erlang-%realname
 Version: 0.1.0
-Release: alt2.git0766ea0
+Release: alt3.git.0766ea0
 Summary: A framework for writing matcher objects using declarative rules
 Group: Development/Erlang
 License: MIT and BSD
-BuildArch: noarch
 Url: https://github.com/hyperthunk/hamcrest-erlang
+
+BuildArch: noarch
 
 # https://github.com/hyperthunk/hamcrest-erlang.git
 Source: %name-%version.tar
@@ -18,7 +19,7 @@ Patch1: erlang-hamcrest-fedora-remove-the-warnings-cause-by-type-declarations.pa
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-common_test-devel
 BuildRequires: erlang-proper
 
@@ -48,6 +49,9 @@ export ERL_LIBS=%buildroot%_erllibdir
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.1.0-alt3.git.0766ea0
+- Fixed build with rebar2.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.1.0-alt2.git0766ea0
 - Updated to current version.
 

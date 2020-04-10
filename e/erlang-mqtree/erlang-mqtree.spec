@@ -1,15 +1,15 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname mqtree
+%define realname mqtree
 
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.2
+Version: 1.0.7
 Release: alt1
 Summary: Index tree for MQTT topic filters
 Group: Development/Erlang
-License: ASL 2.0
+License: Apache-2.0
 Url: https://github.com/processone/mqtree
 
 # https://github.com/processone/mqtree.git
@@ -17,7 +17,7 @@ Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-p1_utils
 
 %description
@@ -42,5 +42,11 @@ topic filters for efficient matching.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.7-alt1
+- Updated to upstream version 1.0.7.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.3-alt1
+- Updated to upstream version 1.0.3.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.2-alt1
 - Initial build for ALT.

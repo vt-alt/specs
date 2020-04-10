@@ -4,19 +4,20 @@
 
 Name: erlang-%realname
 Version: 1.3
-Release: alt1
+Release: alt2
 Summary: A QuickCheck-inspired property-based testing tool for Erlang
 Group: Development/Erlang
 License: GPLv3+
-BuildArch: noarch
 Url: https://github.com/manopapad/proper
+
+BuildArch: noarch
 
 # https://github.com/manopapad/proper.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 
 %description
 PropEr (PROPerty-based testing tool for ERlang) is a QuickCheck-inspired
@@ -41,6 +42,9 @@ export ERL_LIBS=%buildroot%_erllibdir
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3-alt2
+- Fixed build with rebar2.
+
 * Mon Jan 14 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3-alt1
 - Updated to upstream version 1.3.
 

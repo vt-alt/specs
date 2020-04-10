@@ -5,11 +5,11 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.5
+Version: 1.0.7
 Release: alt1
 Summary: Native zlib driver for Erlang / Elixir
 Group: Development/Erlang
-License: Apache 2.0
+License: Apache-2.0
 Url: https://github.com/processone/ezlib
 
 # https://github.com/processone/ezlib.git
@@ -17,7 +17,7 @@ Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: zlib-devel
 
 %description
@@ -43,6 +43,12 @@ Native zlib driver for Erlang / Elixir. This library focuses on compression / de
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.7-alt1
+- Updated to upstream version 1.0.7.
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.6-alt1
+- Updated to upstream version 1.0.6.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.5-alt1
 - Updated to upstream version 1.0.5.
 

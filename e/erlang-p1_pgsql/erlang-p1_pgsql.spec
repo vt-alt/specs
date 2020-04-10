@@ -1,22 +1,26 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname p1_pgsql
+%define realname p1_pgsql
 
 Name: erlang-%realname
-Version: 1.1.7
+Version: 1.1.9
 Release: alt1
 Summary: Pure Erlang PostgreSQL driver
 Group: Development/Erlang
-License: ERPL
-BuildArch: noarch
+License: ErlPL-1.1
 Url: https://github.com/processone/p1_pgsql
+
+BuildArch: noarch
 
 # https://github.com/processone/p1_pgsql.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
+
+Obsoletes: erlang-pgsql < %EVR
+Provides: erlang-pgsql = %EVR
 
 %description
 This is an Erlang PostgreSQL driver.
@@ -39,6 +43,12 @@ This is an Erlang PostgreSQL driver.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.9-alt1
+- Updated to upstream version 1.1.9.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.8-alt1
+- Updated to upstream version 1.1.8.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.7-alt1
 - Updated to upstream version 1.1.7.
 

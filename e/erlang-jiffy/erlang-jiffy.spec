@@ -1,13 +1,15 @@
-%global realname jiffy
+%define _unpackaged_files_terminate_build 1
+
+%define realname jiffy
 
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 0.14.8
-Release: alt1%ubt
+Version: 1.0.1
+Release: alt1
 Summary: JSON NIFs for Erlang
 Group: Development/Erlang
-License: MIT
+License: BSD-3-Clause and MIT
 Url: https://github.com/davisp/jiffy
 
 # https://github.com/davisp/jiffy.git
@@ -16,9 +18,8 @@ Source: %name-%version.tar
 Patch1: erlang-jiffy-fedora-use-system-double-conversion.patch
 
 BuildRequires(pre): rpm-build-erlang
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-p1_utils
 BuildRequires: gcc-c++
 BuildRequires: libdouble-conversion-devel
@@ -49,5 +50,14 @@ rm -rf c_src/double-conversion
 %_erllibdir/%realname-%version
 
 %changelog
-* Tue Apr 17 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.14.8-alt1%ubt
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.1-alt1
+- Updated to upstream version 1.0.1.
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0.14.8-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.14.8-alt2
+- NMU: remove %%ubt from release
+
+* Tue Apr 17 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.14.8-alt1
 - Initial build for ALT.

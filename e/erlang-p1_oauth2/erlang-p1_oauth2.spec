@@ -3,21 +3,21 @@
 %global realname p1_oauth2
 
 Name: erlang-%realname
-Version: 0.6.4
+Version: 0.6.6
 Release: alt1
-
 Summary: An Oauth2 implementation for Erlang
 Group: Development/Erlang
 License: MIT
-BuildArch: noarch
 Url: https://github.com/processone/p1_oauth2
+
+BuildArch: noarch
 
 # https://github.com/processone/p1_oauth2.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-proper
 BuildRequires: erlang-meck
 
@@ -43,6 +43,12 @@ OAuth2. It is a fork of erlang-oauth2 by processone, and is needed by ejabberd.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.6-alt1
+- Updated to upstream version 0.6.6.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.5-alt1
+- Updated to upstream version 0.6.5.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.4-alt1
 - Updated to upstream version 0.6.4.
 

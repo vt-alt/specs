@@ -1,9 +1,12 @@
-%global realname jose
+%define _unpackaged_files_terminate_build 1
+
+%define realname jose
 
 %add_erlang_req_modules_skiplist Elixir.Atom
 %add_erlang_req_modules_skiplist Elixir.Enum
 %add_erlang_req_modules_skiplist Elixir.HashDict
 %add_erlang_req_modules_skiplist Elixir.IO
+%add_erlang_req_modules_skiplist Elixir.Jason
 %add_erlang_req_modules_skiplist Elixir.JOSE.Poison
 %add_erlang_req_modules_skiplist Elixir.Kernel
 %add_erlang_req_modules_skiplist Elixir.Map
@@ -31,27 +34,28 @@
 %add_erlang_req_modules_skiplist ojson
 
 Name: erlang-%realname
-Version: 1.8.4
-Release: alt1%ubt
+Version: 1.9.0
+Release: alt1
 Summary: JSON Object Signing and Encryption (JOSE) for Erlang and Elixir
 Group: Development/Erlang
-License: MPLv2.0
-BuildArch: noarch
+License: MIT
 Url: https://github.com/potatosalad/erlang-jose
+
+BuildArch: noarch
 
 # https://github.com/potatosalad/erlang-jose.git
 Source: %name-%version.tar
 
-Patch1: erlang-jose-fedora-use-include-instead-of-include_lib-for-jose-in-tests.patch
-Patch2: erlang-jose-fedora-remove-warnings_as_errors-to-work-around-47.patch
+Patch1: erlang-jose-fedora-remove-warnings_as_errors-to-work-around-47.patch
+Patch2: erlang-jose-alt-base64url-version.patch
 
 BuildRequires(pre): rpm-build-erlang
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-common_test-devel
 BuildRequires: erlang-base64url
 BuildRequires: erlang-triq
+BuildRequires: erlang-proper
 
 %description
 JSON Object Signing and Encryption (JOSE) for Erlang and Elixir.
@@ -71,10 +75,19 @@ JSON Object Signing and Encryption (JOSE) for Erlang and Elixir.
 %rebar_eunit -C rebar.test.config
 
 %files
-%doc LICENSE
+%doc LICENSE.md
 %doc README.md
 %_erllibdir/%realname-%version
 
 %changelog
-* Tue Apr 17 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.4-alt1%ubt
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.9.0-alt1
+- Updated to upstream version 1.9.0.
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.8.4-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.8.4-alt2
+- NMU: remove %%ubt from release
+
+* Tue Apr 17 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.4-alt1
 - Initial build for ALT.

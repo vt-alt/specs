@@ -1,15 +1,15 @@
 %define _unpackaged_files_terminate_build 1
 
-%global realname esip
+%define realname esip
 
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.28
+Version: 1.0.32
 Release: alt1
 Summary: ProcessOne SIP server component in Erlang
 Group: Development/Erlang
-License: ASL 2.0
+License: Apache-2.0
 Url: https://github.com/processone/esip
 
 # https://github.com/processone/esip.git
@@ -19,7 +19,7 @@ Patch1: erlang-esip-fedora-include_lib.patch
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-p1_utils
 BuildRequires: erlang-stun
 BuildRequires: erlang-fast_tls
@@ -48,6 +48,12 @@ ProcessOne SIP server component in Erlang.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.32-alt1
+- Updated to upstream version 1.0.32.
+
+* Thu Jun 06 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.29-alt1
+- Updated to upstream version 1.0.29.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.28-alt1
 - Updated to upstream version 1.0.28.
 

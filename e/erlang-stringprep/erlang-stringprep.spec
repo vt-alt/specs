@@ -5,11 +5,11 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.15
+Version: 1.0.19
 Release: alt1
 Summary: Fast Stringprep implementation for Erlang / Elixir
 Group: Development/Erlang
-License: Tcl/Tk and ASL 2.0
+License: Apache-2.0 and TCL
 Url: https://github.com/processone/stringprep
 
 # https://github.com/processone/stringprep.git
@@ -17,7 +17,7 @@ Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
 BuildRequires: erlang-p1_utils
 BuildRequires: gcc-c++
 
@@ -50,6 +50,12 @@ The library includes support for several Stringprep profiles used in XMPP protoc
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.19-alt1
+- Updated to upstream version 1.0.19.
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.16-alt1
+- Updated to upstream version 1.0.16.
+
 * Tue Mar 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.15-alt1
 - Updated to upstream version 1.0.15.
 

@@ -3,13 +3,14 @@
 %global realname lager
 
 Name: erlang-%realname
-Version: 3.6.7
-Release: alt1
+Version: 3.6.10
+Release: alt2
 Summary: A logging framework for Erlang/OTP
 Group: Development/Erlang
-License: ASL 2.0
-BuildArch: noarch
+License: Apache-2.0
 Url: https://github.com/erlang-lager/lager
+
+BuildArch: noarch
 
 # https://github.com/erlang-lager/lager.git
 Source: %name-%version.tar
@@ -19,7 +20,10 @@ Source: %name-%version.tar
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
 BuildRequires: erlang-goldrush
-BuildRequires: rebar
+BuildRequires: /usr/bin/rebar
+
+# workaround for bug #36925
+Requires: erlang-goldrush
 
 %description
 Lager (as in the beer) is a logging framework for Erlang. Its purpose is to
@@ -41,6 +45,12 @@ plays nicely with traditional UNIX logging tools like logrotate and syslog.
 %_erllibdir/%realname-%version
 
 %changelog
+* Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.6.10-alt2
+- Fixed build with rebar2.
+
+* Wed Jun 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.6.10-alt1
+- Updated to upstream version 3.6.10.
+
 * Mon Jan 14 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.6.7-alt1
 - Updated to upstream version 3.6.7.
 
