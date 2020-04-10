@@ -1,12 +1,12 @@
 Name: libogg
-Version: 1.3.3
+Version: 1.3.4
 Release: alt1
 
 Summary: Ogg Bitstream Library
 Summary(ru_RU.UTF-8): Библиотека потокового формата Ogg
-License: BSD-style
+License: BSD-3-Clause
 Group: System/Libraries
-Url: http://www.xiph.org/ogg/
+Url: https://www.xiph.org/ogg/
 # https://downloads.xiph.org/releases/ogg/%name-%version.tar.xz
 Source: %name-%version.tar
 
@@ -79,6 +79,9 @@ install -pm644 AUTHORS CHANGES COPYING %buildroot%docdir/
 %endif
 
 %changelog
+* Sat Aug 31 2019 Dmitry V. Levin <ldv@altlinux.org> 1.3.4-alt1
+- 1.3.3 -> 1.3.4.
+
 * Mon Dec 17 2018 Dmitry V. Levin <ldv@altlinux.org> 1.3.3-alt1
 - 1.3.2 -> 1.3.3.
 
