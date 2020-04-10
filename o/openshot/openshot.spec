@@ -1,17 +1,19 @@
 %def_disable snapshot
-%define ver_major 2.4
+%define ver_major 2.5
+%define xdg_name org.openshot.OpenShot
 
 Name: openshot
-Version: %ver_major.3
+Version: %ver_major.1
 Release: alt1
 
 Summary: Non Linear Video Editor using Python and MLT
 Group: Video
-License: GPLv3
+License: GPL-3.0
 Url: http://www.openshotvideo.com/
 
 %if_disabled snapshot
-Source: https://launchpad.net/%name/%ver_major/%version/+download/%name-qt-%version.tar.gz
+#Source: https://launchpad.net/%name/%ver_major/%version/+download/%name-qt-%version.tar.gz
+Source: https://github.com/OpenShot/openshot-qt/archive/v%version/%name-qt-%version.tar.gz
 %else
 # VCS: https://github.com/OpenShot/openshot-qt.git
 Source: %name-%version.tar.gz
@@ -19,8 +21,8 @@ Source: %name-%version.tar.gz
 
 BuildArch: noarch
 
-Requires: python3-module-%name >= 0.2.2
-Requires: blender inkscape
+Requires: python3-module-%name >= 0.2.5
+Requires: blender inkscape xdg-utils
 
 %add_typelib_req_skiplist typelib(Unity)
 # should be self-satisfied
@@ -58,11 +60,20 @@ Xbox, and many more common formats.
 %_desktopdir/*
 %_iconsdir/hicolor/*/*/%{name}-qt.*
 %_datadir/mime/packages/*
-%_datadir/metainfo/%{name}-qt.appdata.xml
+%_datadir/metainfo/%xdg_name.appdata.xml
 %doc AUTHORS README*
 
 
 %changelog
+* Mon Mar 16 2020 Yuri N. Sedunov <aris@altlinux.org> 2.5.1-alt1
+- 2.5.1
+
+* Mon Feb 10 2020 Yuri N. Sedunov <aris@altlinux.org> 2.5.0-alt1
+- 2.5.0
+
+* Sat Mar 30 2019 Yuri N. Sedunov <aris@altlinux.org> 2.4.4-alt1
+- 2.4.4
+
 * Sun Sep 23 2018 Yuri N. Sedunov <aris@altlinux.org> 2.4.3-alt1
 - 2.4.3
 

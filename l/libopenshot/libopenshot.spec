@@ -4,31 +4,35 @@
 %define ver_major 0.2
 %define api_ver 1.0
 %def_disable doc
+%def_enable check
 
 Name: lib%_name
-Version: %ver_major.2
+Version: %ver_major.5
 Release: alt1
 
 Summary: OpenShot Video Library
 Group: System/Libraries
-License: GPLv3
+License: GPL-3.0
 Url: https://launchpad.net/%name
 
 %if_disabled snapshot
-Source: %url/%ver_major/%version/+download/%name-%version.tar.gz
+#Source: %url/%ver_major/%version/+download/%name-%version.tar.gz
+Source: https://github.com/OpenShot/%name/archive/v%version/%name-%version.tar.gz
 %else
 # VCS: https://github.com/OpenShot/libopenshot.git
 Source: %name-%version.tar
 %endif
+Patch: libopenshot-0.2.4-alt-return-type.patch
 
 %define __python %nil
-BuildRequires(pre): cmake rpm-build-python3
-BuildRequires: %name-audio-devel >= 0.1.7
-BuildRequires: gcc-c++ libgomp-devel libunittest-cpp-devel jsoncpp-devel
+BuildRequires(pre): rpm-macros-cmake rpm-build-python3
+BuildRequires: %name-audio-devel >= 0.1.9
+BuildRequires: cmake gcc-c++ libgomp-devel libunittest-cpp-devel jsoncpp-devel
 BuildRequires: qt5-multimedia-devel libzeromq-cpp-devel libImageMagick-devel
 BuildRequires: libavcodec-devel libavformat-devel libavutil-devel
 BuildRequires: libavresample-devel libswresample-devel libswscale-devel libavdevice-devel
 BuildRequires: python3-devel swig
+%{?_enable_check:BuildRequires: ctest ImageMagick-tools}
 
 %description
 libopenshot is an open-source, cross-platform C++ library dedicated to
@@ -57,8 +61,10 @@ This package provides Python3 bindings for OpenShot Video Library.
 
 %prep
 %setup
+%patch -b .return-type
 
 %build
+%add_optflags %(getconf LFS_CFLAGS) -DNDEBUG
 %cmake  -DUSE_SYSTEM_JSONCPP:BOOL=ON \
 	-DMAGICKCORE_HDRI_ENABLE:BOOL=ON \
 	-DMAGICKCORE_QUANTUM_DEPTH=16
@@ -67,9 +73,13 @@ This package provides Python3 bindings for OpenShot Video Library.
 %install
 %cmakeinstall_std
 
+%check
+export LD_LIBRARY_PATH=%buildroot%_libdir
+%make -C BUILD test
+
 %files
 %_libdir/%name.so.*
-%doc AUTHORS README
+%doc AUTHORS README*
 
 %files devel
 %_includedir/%name/
@@ -79,6 +89,16 @@ This package provides Python3 bindings for OpenShot Video Library.
 %python3_sitelibdir/*
 
 %changelog
+* Mon Mar 16 2020 Yuri N. Sedunov <aris@altlinux.org> 0.2.5-alt1
+- 0.2.5
+
+* Mon Feb 10 2020 Yuri N. Sedunov <aris@altlinux.org> 0.2.4-alt1
+- 0.2.4
+- %%check section
+
+* Sat Mar 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.2.3-alt1
+- 0.2.3
+
 * Sun Sep 23 2018 Yuri N. Sedunov <aris@altlinux.org> 0.2.2-alt1
 - 0.2.2
 
