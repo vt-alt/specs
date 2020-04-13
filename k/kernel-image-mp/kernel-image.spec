@@ -1,4 +1,4 @@
-%define kernel_base_version	5.2
+%define kernel_base_version	5.5
 %define kernel_sublevel        .16
 %define kernel_extra_version	%nil
 
@@ -41,11 +41,12 @@ ExclusiveArch: armh aarch64
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
-BuildRequires: bc flex lzma-utils
+BuildRequires: bc flex kmod lzma-utils
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version
 BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
 BuildRequires: libssl-devel
+BuildRequires: rsync
 
 %if_enabled ccache
 BuildRequires: ccache
@@ -256,6 +257,48 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Apr 13 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.16-alt1
+- 5.5.16
+
+* Wed Mar 25 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.12-alt1
+- 5.5.12
+
+* Fri Mar 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.8-alt1
+- 5.5.8
+
+* Tue Feb 18 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.4-alt1
+- 5.5.4
+
+* Thu Feb 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.0-alt1
+- 5.5.0
+
+* Thu Jan 30 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.16-alt1
+- 5.4.16
+
+* Wed Jan 15 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.12-alt1
+- 5.4.12
+
+* Sun Jan 05 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.8-alt1
+- 5.4.8
+
+* Thu Dec 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.4-alt1
+- 5.4.4
+
+* Mon Dec 16 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.16-alt1
+- 5.3.16
+
+* Fri Nov 22 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.12-alt1
+- 5.3.12
+
+* Tue Oct 29 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.8-alt1
+- 5.3.8
+
+* Mon Oct 07 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.4-alt1
+- 5.3.4
+
+* Thu Sep 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.0-alt1
+- 5.3
+
 * Thu Sep 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.2.16-alt1
 - 5.2.16
 

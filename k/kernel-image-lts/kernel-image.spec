@@ -1,5 +1,5 @@
-%define kernel_base_version	4.19
-%define kernel_sublevel        .104
+%define kernel_base_version	5.4
+%define kernel_sublevel        .32
 %define kernel_extra_version	%nil
 
 Name: kernel-image-lts
@@ -41,11 +41,12 @@ ExclusiveArch: armh aarch64
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
-BuildRequires: bc flex lzma-utils
+BuildRequires: bc flex kmod lzma-utils
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version
 BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
 BuildRequires: libssl-devel
+BuildRequires: rsync
 
 %if_enabled ccache
 BuildRequires: ccache
@@ -256,6 +257,15 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Apr 13 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.32-alt1
+- 5.4.32
+
+* Wed Apr 01 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.28-alt1
+- 5.4.28
+
+* Thu Mar 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.24-alt1
+- 5.4.24
+
 * Thu Feb 20 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.19.104-alt1
 - 4.19.104
 
