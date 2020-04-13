@@ -4,7 +4,7 @@
 %define major 3.1
 Name: dotnet-sdk
 Version: %major.100
-Release: alt3
+Release: alt5
 
 Summary: SDK for the .NET Core runtime and libraries
 
@@ -24,6 +24,9 @@ BuildRequires(pre): rpm-macros-dotnet = %major.0
 BuildRequires: dotnet-bootstrap-sdk = %_dotnet_sdkrelease
 BuildRequires: dotnet
 
+# SDK unusable without dotnet CLI
+Requires: dotnet = %major.0
+
 Requires: dotnet-common = %major.0
 
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
@@ -40,6 +43,7 @@ Just copying managed code now.
 %install
 mkdir -p %buildroot%_dotnet_sdk/
 cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/* %buildroot%_dotnet_sdk/
+
 # dotnet --info get RID string from this .version, line 3
 cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/.version %buildroot%_dotnet_sdk/
 cp -a %_libdir/dotnet-bootstrap/sdk/%_dotnet_sdkrelease/.toolsetversion %buildroot%_dotnet_sdk/
@@ -52,9 +56,12 @@ cp -a %_libdir/dotnet-bootstrap/packs/Microsoft.NETCore.App.Ref/ %buildroot%_dot
 mkdir -p %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
 cp -a %_libdir/dotnet-bootstrap/templates/%_dotnet_corerelease/* %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
 
-# FIXME: double??
-# override binary file
-cp -afv %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
+# apphost used as executable, f.i. dotnet tool install --global paket will install it in $HOME/.dotnet/tools as paket
+rm -f %buildroot%_dotnet_sdk/AppHostTemplate/apphost
+
+# link deps workaround
+#ln -sr %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
+cp %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
 
 mkdir -p %buildroot%_cachedir/dotnet/NuGetFallbackFolder/
 ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet/sdk/NuGetFallbackFolder
@@ -80,6 +87,13 @@ ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet
 %attr(2775,root,dotnet) %dir %_cachedir/dotnet/NuGetFallbackFolder/
 
 %changelog
+* Thu Feb 20 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt5
+- revert apphost copying
+
+* Fri Feb 14 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt4
+- add strict dotnet cli requires (SDK unusable without it)
+- replace copy of apphost with link to the original
+
 * Sat Dec 28 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt3
 - build on aarch64
 
