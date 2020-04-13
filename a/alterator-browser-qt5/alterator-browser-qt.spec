@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.1.4
+Version: 3.1.6
 Release: alt1
 
 Source:%name-%version.tar
@@ -20,7 +20,7 @@ License: GPL
 Group: System/Configuration/Other
 Packager: Sergey V Turchin <zerg at altlinux dot org>
 
-PreReq(post,preun): alternatives >= 0.2
+Requires(post,preun): alternatives >= 0.2
 Requires: qt5-translations
 Requires: qt5-virtualkeyboard
 Requires: /usr/bin/xdg-open
@@ -82,6 +82,12 @@ __EOF__
 
 
 %changelog
+* Wed Apr 08 2020 Sergey V Turchin <zerg at altlinux dot org> 3.1.6-alt1
+- build with debuginfo
+
+* Tue Apr 07 2020 Sergey V Turchin <zerg at altlinux dot org> 3.1.5-alt1
+- fix reload translator on language change
+
 * Fri Feb 28 2020 Sergey V Turchin <zerg at altlinux dot org> 3.1.4-alt1
 - don't crash on Wayland
 
