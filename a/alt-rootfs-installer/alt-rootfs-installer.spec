@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.3.1.2
+Version: 0.3.2
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPLv2+
@@ -40,6 +40,11 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Mon Apr 13 2020 Anton Midyukov <antohami@altlinux.org> 0.3.2-alt1
+- Added resize option
+- Replace LABEL to UUID /usr/share/u-boot/rpi_4/cmdline.txt
+- Update supported boards (u-boot 2020.01)
+
 * Wed Nov 13 2019 Anton Midyukov <antohami@altlinux.org> 0.3.1.2-alt1
 - Simplified check for Raspberry Pi devices targets
 - Add u-boot 2019.10 support
