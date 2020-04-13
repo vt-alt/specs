@@ -1,5 +1,5 @@
 Name: kodi
-Version: 18.5
+Version: 18.6
 Release: alt1
 
 Summary: Kodi Media Center
@@ -140,12 +140,14 @@ mkdir %buildroot%_libdir/kodi/addons
 %files
 %docdir
 
+%ifnarch armh aarch64
 %config(noreplace) %_sysconfdir/X11/wmsession.d/20KODI
+%_datadir/xsessions/kodi.desktop
+%endif
 
 %_bindir/kodi
 %_bindir/kodi-standalone
 
-%_datadir/xsessions/kodi.desktop
 %_desktopdir/kodi.desktop
 %_iconsdir/hicolor/*/apps/kodi.png
 
@@ -167,6 +169,12 @@ mkdir %buildroot%_libdir/kodi/addons
 %_datadir/kodi/cmake
 
 %changelog
+* Thu Mar 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.6-alt1
+- 18.6 Leia released
+
+* Tue Feb 04 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.5-alt2
+- do not package xsession-related files on gbm variant
+
 * Tue Nov 26 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.5-alt1
 - 18.5 Leia released
 
