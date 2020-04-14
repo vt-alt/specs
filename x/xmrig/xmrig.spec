@@ -1,28 +1,37 @@
 Name:		xmrig
-Version:	2.14.1
-Release:	alt1
-Summary:	Monero (XMR) CPU miner
+Version:	5.10.0
+Release:	alt1.1
+Summary:	RandomX and CryptoNight CPU miner
 Url:		https://github.com/xmrig/xmrig
 Group:		Office
 License:	GPLv3
 Source0:	%name.tar.xz
 
-BuildRequires: cmake gcc-c++ libmicrohttpd-devel libssl-devel-static libstdc++-devel-static libuv-devel libkrb5-devel zlib-devel
+Patch0:		%name-2.99.4-minimum_donate_0.diff
+Patch1:		%name-5.10.0-Wno-class-memaccess_alt_rm.diff
+
+BuildRequires:	cmake gcc-c++ libmicrohttpd-devel libssl-devel-static libstdc++-devel-static libuv-devel libkrb5-devel zlib-devel
+
+ExcludeArch:	ppc64le aarch64
 
 %description
-XMRig is high performance Monero (XMR) CPU miner, with the official full Windows support.
-Originally based on cpuminer-multi with heavy optimizations/rewrites and removing a lot
-of legacy code, since version 1.0.0 complete rewritten from scratch on C++.
+XMRig is high performance RandomX and CryptoNight CPU miner, with the official full
+Windows support. Originally based on cpuminer-multi with heavy optimizations/rewrites
+and removing a lot of legacy code, since version 1.0.0 complete rewritten from scratch
+on C++.
 
 %prep
 %setup -n %name
+%patch0 -p1
+%patch1 -p1
 
 %build
 mkdir ./build && cd ./build
 cmake		../. \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_CXX_FLAGS:STRING="%optflags" \
-		-DCMAKE_C_FLAGS:STRING="%optflags"
+		-DCMAKE_C_FLAGS:STRING="%optflags" \
+		-DWITH_HWLOC=OFF
 %make_build
 
 %install
@@ -34,6 +43,24 @@ install -Dp -m 0755 ./%name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Sun Apr 12 2020 Motsyo Gennadi <drool@altlinux.ru> 5.10.0-alt1.1
+- add ExcludeArch for aarch64
+
+* Thu Apr 09 2020 Motsyo Gennadi <drool@altlinux.ru> 5.10.0-alt1
+- 5.10.0
+
+* Wed Mar 11 2020 Motsyo Gennadi <drool@altlinux.ru> 5.9.0-alt1
+- 5.9.0
+
+* Sat Aug 24 2019 Motsyo Gennadi <drool@altlinux.ru> 3.1.0-alt1.1
+- add ExcludeArch for ppc64le
+
+* Sat Aug 24 2019 Motsyo Gennadi <drool@altlinux.ru> 3.1.0-alt1
+- 3.1.0
+
+* Tue Aug 06 2019 Motsyo Gennadi <drool@altlinux.ru> 2.99.4-alt1
+- 2.99.4
+
 * Fri Mar 15 2019 Motsyo Gennadi <drool@altlinux.ru> 2.14.1-alt1
 - 2.14.1
 
