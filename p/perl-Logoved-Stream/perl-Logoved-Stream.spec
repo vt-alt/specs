@@ -1,14 +1,14 @@
 %define module Logoved-Stream
 
 Name: perl-%module
-Version: 0.021
+Version: 0.024
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: Stream parser library for rpmbuild -v, hasher, beehive logs.
 Group: Development/Perl
-License: GPLv2+ or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 #Url: http://search.cpan.org/dist/%module
 Url: http://git.altlinux.org/people/viy/packages/Logoved-Stream.git
@@ -55,6 +55,15 @@ Repocop listener for Logoved-Stream beehive log parser.
 %perl_vendor_privlib/Logoved/Stream/Out/Listener/Repocop*
 
 %changelog
+* Sat Apr 04 2020 Igor Vlasenko <viy@altlinux.ru> 0.024-alt1
+- new version
+
+* Wed Apr 01 2020 Igor Vlasenko <viy@altlinux.ru> 0.023-alt1
+- new version
+
+* Wed Apr 01 2020 Igor Vlasenko <viy@altlinux.ru> 0.022-alt1
+- new version
+
 * Fri Dec 06 2019 Igor Vlasenko <viy@altlinux.ru> 0.021-alt1
 - new version
 
