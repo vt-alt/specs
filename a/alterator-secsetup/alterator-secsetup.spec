@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.12
+Version: 1.13
 Release: alt1
 
 Source: %name-%version.tar
@@ -39,6 +39,9 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Tue Mar 31 2020 Ivan Razzhivin <underwit@altlinux.org> 1.13-alt1
+- set right path to the help
+
 * Tue Feb 04 2020 Slava Aseev <ptrnine@altlinux.org> 1.12-alt1
 - Add checkbox for enabling gost_yescrypt hashing algorithm
 
