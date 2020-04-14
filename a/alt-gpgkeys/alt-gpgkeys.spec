@@ -1,9 +1,9 @@
 Name: alt-gpgkeys
-Version: 0.7.162
-Release: alt1
+Version: 0.7.171
+Release: alt2
 
 Summary: ALT GnuPG keys
-License: GPL
+License: GPL-2.0-or-later
 Group: System/Configuration/Packaging
 Packager: ALT Security Team <security@altlinux.com>
 BuildArch: noarch
@@ -21,7 +21,7 @@ This package contains ALT Linux Team GnuPG keyring.
 
 %package utils
 Summary: utilities to manipulate %name
-License: GPL
+License: GPL-2.0-or-later
 Group: System/Configuration/Packaging
 Requires: %name = %version-%release
 
@@ -61,6 +61,47 @@ install -pm755 alt-gpgkey-check alt-gpgkey-strip \
 %_bindir/*
 
 %changelog
+* Mon Apr 13 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.171-alt2
+- Fixed previous changelog entry.
+
+* Mon Apr 13 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.171-alt1
+- Updated expired key: manowar@ (A321B068; closes: #38344).
+
+* Mon Mar 30 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.170-alt1
+- Updated key: arseny@ (62E619E5; closes: #38291).
+- Added keys:
+  + mattaku@ (E8FAAE39; see #38040);
+  + kevl@ (7B247518; see #37940).
+
+* Tue Mar 03 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.169-alt1
+- Updated expired key: ildar@ (799AEF89; closes: #22294).
+- Added keys:
+  + pav@ (0C72E18D; see #38059);
+  + rav263@ (119B912B; see #37984).
+
+* Fri Jan 31 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.168-alt1
+- Replaced key: snowmix@ (4DE2462A -> E2F5E034; closes: #37955).
+- Updated key: bircoph@ (5372756C; closes: #37932).
+
+* Mon Jan 20 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.167-alt1
+- Updated expired keys:
+  + x09@ (0C16659B; see: #34359);
+  + naf@ (DD7132A6; closes: #37772).
+
+* Wed Dec 25 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.166-alt1
+- Added key: nickf@ (FB7F7DCC; see #36074).
+
+* Mon Dec 09 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.165-alt1
+- Added key: greh@ (880615FF; see #37333).
+- Changed License tags to GPL-2.0-or-later.
+
+* Tue Oct 29 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.164-alt1
+- Added key: nir@ (0CAE7AAC; see #35053).
+- Added key: zacat@ (ABF555DC; see #35204).
+
+* Mon Sep 30 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.163-alt1
+- Added key: arbars@ (6C3802AA; see #37105).
+
 * Tue Aug 06 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.162-alt1
 - Added keys:
   + valentina@ (46F5A98B; see #37006);
