@@ -1,9 +1,9 @@
-%define		softver 68.0
-%define		buildver 3590.0
+%define		softver 69.0
+%define		buildver 3653.0
 
 Name:		opera64-dev
 Version:	%softver.%buildver
-Release:	alt1
+Release:	alt1.1
 Packager:	Motsyo Gennadi <drool@altlinux.ru>
 Summary:	A fast and secure web browser and Internet suite
 Group:		Networking/WWW
@@ -11,6 +11,7 @@ License:	Distributable
 Vendor:		Opera Software ASA
 Url:		http://www.opera.com/
 Source0:	opera-%softver.%buildver.x86_64.linux.tar.bz2
+Source1:	opera-lib_extra-libffmpeg.so
 
 ExclusiveArch:	x86_64
 
@@ -20,7 +21,7 @@ Obsoletes:	opera-dev
 %add_verify_elf_skiplist %_libdir/*-linux-gnu/opera-developer/*.so
 %set_verify_elf_method textrel=relaxed
 
-BuildRequires: libGConf libXScrnSaver libXtst libalsa libcurl libnotify libnss libgtk+3 libgtk+2
+BuildRequires: libGConf libXScrnSaver libXtst libalsa libcurl libnotify libnss libgtk+3
 
 %description
 Opera is a small, fast, customizable, powerful and user-friendly web
@@ -32,12 +33,13 @@ client, web developer tools (Opera Dragonfly), and a personal web server
 %setup -q -n opera-%softver.%buildver.x86_64.linux
 
 %install
-mkdir -p %buildroot{%_bindir,%_libdir,%_datadir}
+mkdir -p %buildroot{%_bindir,%_libdir/x86_64-linux-gnu/opera-developer/lib_extra,%_datadir}
 cp -a ./lib/* %buildroot%_libdir/
 cp -a ./share/* %buildroot%_datadir
 ln -s %_libdir/x86_64-linux-gnu/opera-developer/opera-developer %buildroot%_bindir/opera-developer
 subst 's|usr/lib/|%_libdir/|g' %buildroot%_datadir/lintian/overrides/opera-developer
 subst 's|PepperFlash/libpepflashplayer.so|pepper-plugins/libpepflashplayer.so|g' %buildroot%_libdir/*-linux-gnu/opera-developer/resources/pepper_flash_config.json
+cp -a %SOURCE1 %buildroot%_libdir/x86_64-linux-gnu/opera-developer/lib_extra/libffmpeg.so
 
 %post
 chmod 4755 %_libdir/x86_64-linux-gnu/opera-developer/opera_sandbox
@@ -52,6 +54,12 @@ chmod 4755 %_libdir/x86_64-linux-gnu/opera-developer/opera_sandbox
 %_datadir/mime/packages/*.xml
 
 %changelog
+* Sat Apr 11 2020 Motsyo Gennadi <drool@altlinux.ru> 69.0.3653.0-alt1.1
+- moved libffmpeg.so from source-package to the separate source file
+
+* Sat Apr 11 2020 Motsyo Gennadi <drool@altlinux.ru> 69.0.3653.0-alt1
+- packaged 69.0.3653.0 snapshot
+
 * Sun Feb 16 2020 Motsyo Gennadi <drool@altlinux.ru> 68.0.3590.0-alt1
 - packaged 68.0.3590.0 snapshot
 
