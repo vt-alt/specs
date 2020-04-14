@@ -7,13 +7,13 @@
 %define build_parallel_jobs 32
 %endif
 
-%define enigmail_version  2.1.5
+%define enigmail_version  2.1.6
 %define gdata_version     2.6
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	68.6.0
-Release:	alt1
+Version:	68.7.0
+Release:	alt2
 License:	MPL-2.0
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -534,6 +534,19 @@ chmod a+r *.xpi
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt2
+- Add security fixes information to changelog.
+
+* Wed Apr 08 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt1
+- New version (68.7.0).
+- Fixes:
+  + CVE-2020-6819 Use-after-free while running the nsDocShell destructor
+  + CVE-2020-6820 Use-after-free when handling a ReadableStream
+  + CVE-2020-6821 Uninitialized memory could be read when using the WebGL copyTexSubImage method
+  + CVE-2020-6822 Out of bounds write in GMPDecodeData when processing large images
+  + CVE-2020-6825 Memory safety bugs fixed in Thunderbird 68.7.0
+- Enigmail 2.1.6.
+
 * Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 68.6.0-alt1
 - New version (68.6.0).
 - Fixed:
