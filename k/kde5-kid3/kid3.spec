@@ -4,7 +4,7 @@
 %define rname kid3
 Name: kde5-%rname
 Version: 3.8.2
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Sound
@@ -205,6 +205,9 @@ done
 #%_K5dbus_iface/*id3*
 
 %changelog
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 3.8.2-alt2
+- fix russian GenericName in menu-item
+
 * Wed Feb 12 2020 Sergey V Turchin <zerg@altlinux.org> 3.8.2-alt1
 - new version
 
