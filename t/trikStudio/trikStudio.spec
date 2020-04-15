@@ -1,21 +1,34 @@
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist  %_libdir/trikStudio/*.so* %_libdir/trikStudio/plugins/tools/kitPlugins/*.so %_libdir/trikStudio/plugins/tools/*.so %_libdir/trikStudio/plugins/editors/*.so
 %def_without separate_trikruntime
-%define trikrunime_version 3.2.0-aa444d318d338cce56a7bd308ed3b7d728aa6d4e
+%def_without sanitize
+%def_without debug
+%define appname trik-studio
+
 Name: trikStudio
-Version: 3.2.0
-Release: alt3
+Version: 2019.8
+Release: alt8
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
-License: Apache License 2.0
+License: Apache-2.0
 Group: Education
 Url: https://github.com/qreal/qreal/
 
-Packager: Anton Midyukov <antohami@altlinux.org>
-Source: %name-%version.tar.gz
+Packager: Evgeny Sinelnikov <sin@altlinux.org>
+Source: %name-%version.tar
+Patch: %name-%version-alt.patch
+Patch1: gamepad.patch
 
 BuildRequires: gcc-c++ qt5-base-devel qt5-svg-devel qt5-script-devel qt5-multimedia-devel libusb-devel libudev-devel libgmock-devel
+BuildRequires: libqscintilla2-qt5-devel zlib-devel libquazip-qt5-devel python3-dev libhidapi-devel libusb-devel
+# Workaround due project build with -fsanitize=undefined natively
+# https://bugzilla.altlinux.org/show_bug.cgi?id=38106
+#if_with sanitize
+BuildRequires: libubsan-devel-static
+#endif
+BuildRequires: rsync qt5-tools
 
+Requires: libquazip-qt5 libhidapi
 Requires: %name-data = %version-%release
 Conflicts: lib%name
 
@@ -66,18 +79,44 @@ Trik runtime development files for %name
 
 %prep
 %setup
-sed -e '2 a export LD_LIBRARY_PATH=%_libdir\/trikStudio\/' -i installer/platform/trikStudio.sh
-cd plugins/robots/thirdparty/trikRuntime
-tar -xf trikRunTime-%trikrunime_version.tar.bz2
+%patch -p1
+sed -e '2 a export LD_LIBRARY_PATH=%_libdir\/%name\/' -i installer/platform/trikStudio.sh
+sed -e 's|^trik-studio|%_libdir/%name/trik-studio|' -i installer/platform/trikStudio.sh
+
+pushd plugins/robots/thirdparty/Box2D
+tar -xf Box2D.tar.bz2
+popd
+pushd plugins/robots/thirdparty/trikRuntime
+tar -xf trikRuntime.tar.bz2
+popd
+pushd thirdparty/gamepad
+rm -rf qscintilla quazip
+tar -xf gamepad.tar.bz2
+%patch1
+popd
+pushd qrgui/thirdparty
+tar -xf qt-solutions.tar.bz2
+popd
 
 %build
-%qmake_qt5 -r CONFIG-=debug CONFIG+=release CONFIG+=no_rpath PREFIX=%_prefix LIBDIR=%_libdir qrealRobots.pro
-#%%qmake_qt5 -r 'QMAKE_CXXFLAGS=-pipe -Wall -g -O2 -fPIC -DPIC -std=c++0x' CONFIG-=debug CONFIG+=no_rpath CONFIG+=release PREFIX=/usr qrealRobots.pro
+%qmake_qt5 -r \
+%if_with debug
+    CONFIG+=debug CONFIG-=release \
+%else
+    CONFIG-=debug CONFIG+=release \
+%endif
+%if_with sanitize
+    CONFIG+=!nosanitizers \
+%endif
+    CONFIG+=no_rpath \
+    PREFIX=%_prefix LIBDIR=%_libdir studio.pro
 %make_build
 
 %install
 %make_install INSTALL_ROOT=%buildroot install
 mv %buildroot%_libdir/*.so* %buildroot%_libdir/%name
+mv %buildroot%_bindir/trik-studio %buildroot%_libdir/%name/
+ln -fs %name %buildroot%_bindir/trik-studio
 %if_with separate_trikruntime
 mv %buildroot%_prefix/lib/libqslog*.so* %buildroot%_libdir
 mv %buildroot%_prefix/lib/libtrik*.so* %buildroot%_libdir
@@ -91,11 +130,21 @@ rm -rf %buildroot%_includedir/trik*
 rm -rf %buildroot%_includedir/qslog*
 rm -rf %buildroot%_includedir/QsLog*
 %endif
+rm -f %buildroot/lib/*PythonQt_QtAll* %buildroot/include/PythonQt_QtAll.h
+rm -f %buildroot%_libdir/%name/plugins/tools/kitPlugins/librobots-null-interpreter.so
+
+pushd bin/release
+for d in examples help translations images; do
+    cp -fr $d %buildroot%_datadir/%name/
+done
+#cp -fr trikSharp %buildroot%_libdir/%name/
+cp -f gamepad %buildroot%_bindir/
+popd
 
 %files
 %_bindir/*
 %_libdir/%name
-%_sysconfdir/%name.config
+%_sysconfdir/%appname.config
 
 %files data
 %_datadir/%name
@@ -121,6 +170,39 @@ rm -rf %buildroot%_includedir/QsLog*
 %endif
 
 %changelog
+* Thu Apr 09 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt8
+- Fix gamepad segfault during close application
+
+* Fri Mar 20 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt7
+- Fix to load default platform config
+
+* Wed Mar 18 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt6
+- Replace /etc/trikStudio.config settings to global settingsDefaultValues
+
+* Wed Mar 18 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt5
+- Add requirement to libhidapi for ev3 robots plugin
+- Fix null model removing
+
+* Fri Mar 13 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt4
+- Disable sanitize_undefined due it produces false positives with derived
+  objects causing the runtime error member with call on address which does
+  not point to an object of type.
+
+* Tue Feb 18 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt3
+- Build with workaround force requirement to libubsan-devel-static
+- Add missed requirement to libquazip-qt5
+
+* Sun Feb 16 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt2
+- Build with explicitly enable gcc sanitize options needs
+  libubsan-devel-static as build requirement
+
+* Fri Feb 14 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt1
+- Update to 2019.8
+- Change license to Apache-2.0
+
+* Thu Nov 21 2019 Valery Sinelnikov <greh@altlinux.org> 2019.6-alt1
+- New version 2019.6
+
 * Thu Jun 20 2019 Evgeny Sinelnikov <sin@altlinux.org> 3.2.0-alt3
 - Fix program name in desktop file (Closes: 36823)
 
