@@ -1,17 +1,16 @@
 Name:           xfce4-notifyd
-Version:        0.4.4
+Version:        0.6.0
 Release:        alt1
 Summary:        Simple notification daemon for Xfce
 Summary(ru_RU.UTF-8): Менеджер уведомлений для Xfce
 
 Group:          Graphical desktop/XFce
-License:        %gpl2only
+License:        GPL-2.0-only
 URL:            https://docs.xfce.org/apps/notifyd/start
+Vcs:            git://git.xfce.org/apps/xfce4-notifyd
 Source0:        %name-%version.tar
 Patch:          %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: libxfce4ui-gtk3-devel libxfconf-devel libxfce4util-devel
@@ -97,6 +96,11 @@ Notification plugin for the Xfce panel.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed Apr 08 2020 Mikhail Efremov <sem@altlinux.org> 0.6.0-alt1
+- Added Vcs tag.
+- Don't use rpm-build-licenses.
+- Updated to 0.6.0.
+
 * Tue Apr 30 2019 Mikhail Efremov <sem@altlinux.org> 0.4.4-alt1
 - Updated to 0.4.4.
 
