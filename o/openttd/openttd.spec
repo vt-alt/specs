@@ -1,23 +1,25 @@
-%define svnrev 28002
+%define daterev 20200331
+%define gitsnapshot c8cd5f7f3ad26dc34cfceae50ae33c897b8c2cf6
+
 Name: openttd
-Version: 1.9.1
+Version: 1.10.0
 Release: alt1
 
 Summary: An open source clone of the Microprose game "Transport Tycoon Deluxe".
-License: GPL
+License: GPLv2
 Group: Games/Strategy
 URL: https://www.openttd.org/
 Requires: TiMidity++
 Requires: fonts-ttf-dejavu
-Requires: %name-data = %version-%release
-Requires: openttd-3rd-party >= 0.5.5
+Requires: %name-data = %EVR
+Requires: openttd-3rd-party >= 0.6.0
 
 Source: %name-%version.tar
 Source1: %name.watch
 
 Patch0: %name-%version-alt.patch
 
-BuildRequires: libSDL-devel libpng-devel libfreetype-devel fontconfig-devel gcc-c++ liblzo2-devel liblzma-devel
+BuildRequires: libSDL2-devel libpng-devel libfreetype-devel fontconfig-devel gcc-c++ liblzo2-devel liblzma-devel libxdg-basedir-devel libfluidsynth-devel
 
 %description
 An open source clone of the Microprose game "Transport Tycoon Deluxe".
@@ -37,7 +39,7 @@ Data files for %name
 %patch0 -p1
 
 %build
-echo "%version	%svnrev	0	%version" >.ottdrev
+echo "%version	%daterev	0	%gitsnapshot	1	1" >.ottdrev
 
 ./configure \
     --prefix-dir=%_prefix \
@@ -45,7 +47,7 @@ echo "%version	%svnrev	0	%version" >.ottdrev
     --with-png \
     --with-freetype \
     --with-fontconfig \
-    --without-libtimidity
+#
     
 %make_build WITH_SDL=1 UNIX=1 RELEASE=%version INSTALL=1 WITH_NETWORK=1 ISTAG=1 ISSTABLETAG=1 \
     USE_HOMEDIR=1 VERBOSE=1 PERSONAL_DIR=.%name \
@@ -80,7 +82,7 @@ install -pD -m644 docs/%name.6 %buildroot%_man6dir/
 %_prefix/games/%name
 
 %files data
-%doc docs/* bin/scripts README.md known-bugs.txt changelog.txt COPYING
+%doc docs/* bin/scripts README.md known-bugs.txt changelog.txt COPYING.md
 %_datadir/games/%name
 %_datadir/applications/%name.desktop
 %_niconsdir/%name.png
@@ -89,6 +91,15 @@ install -pD -m644 docs/%name.6 %buildroot%_man6dir/
 %_man6dir/*
 
 %changelog
+* Mon Apr 06 2020 Anton Farygin <rider@altlinux.ru> 1.10.0-alt1
+- 1.10.0
+
+* Sat Sep 21 2019 Anton Farygin <rider@altlinux.ru> 1.9.3-alt1
+- 1.9.3
+
+* Tue Aug 06 2019 Anton Farygin <rider@altlinux.ru> 1.9.2-alt1
+- 1.9.2
+
 * Wed Apr 10 2019 Anton Farygin <rider@altlinux.ru> 1.9.1-alt1
 - 1.9.1
 
