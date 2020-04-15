@@ -1,22 +1,23 @@
 # #%define svn git20170409
 
 Name: handbrake
-Version: 1.1.2
-Release: alt4
+Version: 1.3.1
+Release: alt3
 Summary: Multithreaded Video Transcoder
 Packager: Motsyo Gennadi <drool@altlinux.ru>
-Source: http://prdownloads.sourceforge.net/handbrake/HandBrake-%version.tar.bz2
+Source0: HandBrake-%version.tar.bz2
 # #Source0: %name-%svn.tar.bz2
 
 Source101: https://download.handbrake.fr/contrib/libvpx-1.7.0.tar.gz
-Source102: http://download.handbrake.fr/handbrake/contrib/yasm-1.3.0.tar.gz
+Source102: https://github.com/FFmpeg/nv-codec-headers/releases/download/n9.0.18.1/nv-codec-headers-9.0.18.1.tar.gz
 Source103: https://download.handbrake.fr/handbrake/contrib/libav-12.3.tar.gz
-Source104: https://download.handbrake.fr/handbrake/contrib/libdvdread-6.0.0.tar.bz2
-Source105: https://download.handbrake.fr/handbrake/contrib/libdvdnav-6.0.0.tar.bz2
-Source106: https://download.handbrake.fr/contrib/x265_2.6.tar.gz
-Source107: https://download.handbrake.fr/handbrake/contrib/cmake-3.9.6.tar.gz
-Source108: https://download.handbrake.fr/handbrake/contrib/libbluray-1.0.2.tar.bz2
-Source109: https://download.handbrake.fr/handbrake/contrib/fdk-aac-0.1.5.tar.gz
+Source104: https://download.videolan.org/pub/videolan/libdvdread/6.0.2/libdvdread-6.0.2.tar.bz2
+Source105: https://download.videolan.org/pub/videolan/libdvdnav/6.0.1/libdvdnav-6.0.1.tar.bz2
+Source106: https://download.videolan.org/pub/videolan/x265/x265_3.2.1.tar.gz
+Source107: https://download.handbrake.fr/handbrake/contrib/ffmpeg-4.2.2.tar.bz2
+Source108: https://download.videolan.org/pub/videolan/libbluray/1.1.2/libbluray-1.1.2.tar.bz2
+Source109: https://download.handbrake.fr/handbrake/contrib/fdk-aac-2.0.1.tar.gz
+Source110: https://code.videolan.org/videolan/dav1d/-/archive/0.5.1/dav1d-0.5.1.tar.bz2
 
 Source200: x265-x32.patch
 
@@ -24,7 +25,12 @@ Url: http://handbrake.fr/
 Group: Video
 License: GPLv2+
 
-BuildRequires: bzlib-devel doxygen gcc-c++ intltool libass-devel libdbus-glib-devel libfribidi-devel libglademm-devel libgtk+3-devel libharfbuzz-devel libjansson-devel liblame-devel libnotify-devel libopus-devel libsamplerate-devel libssl-devel libtheora-devel libvorbis-devel libx264-devel libxml2-devel python-modules-json
+BuildRequires: bzlib-devel doxygen gcc-c++ intltool libass-devel libdbus-glib-devel libfribidi-devel libglademm-devel libgtk+3-devel
+BuildRequires: libharfbuzz-devel libjansson-devel liblame-devel libnotify-devel libopus-devel libsamplerate-devel libssl-devel libtheora-devel
+BuildRequires: libvorbis-devel libx264-devel libxml2-devel python-modules-json cmake libspeex-devel liblzma-devel libnuma-devel libvpx5-devel
+BuildRequires: nasm meson
+
+ExclusiveArch: x86_64
 
 %description
 HandBrake is an open-source, GPL-licensed, multiplatform, multithreaded video
@@ -59,7 +65,7 @@ This package contains a GTK+ graphical user interface for Handbrake.
 %__mkdir download
 for f in \
 %{S:101} %{S:102} %{S:103} %{S:104} %{S:105} %{S:106} \
-%{S:107} %{S:108} %{S:109} \
+%{S:107} %{S:108} %{S:109} %{S:110} \
 ; do
      %__ln_s "$f" download/
 done
@@ -74,7 +80,7 @@ export CXXFLAGS="%optflags"
 %__cp "%{S:200}" contrib/x265_12bit/A99-x265-x32.patch
 
 ./configure	--prefix="%buildroot%prefix" \
-		--force \
+		--snapshot \
 		--disable-gtk-update-checks \
 		--enable-fdk-aac
 pushd build
@@ -104,6 +110,24 @@ popd
 %_datadir/metainfo/*.xml
 
 %changelog
+* Sat Mar 28 2020 Motsyo Gennadi <drool@altlinux.ru> 1.3.1-alt3
+- ExclusiveArch x86_64 only
+
+* Sat Mar 28 2020 Motsyo Gennadi <drool@altlinux.ru> 1.3.1-alt2
+- ExcludeArch aarch64
+
+* Sat Mar 28 2020 Motsyo Gennadi <drool@altlinux.ru> 1.3.1-alt1
+- 1.3.1
+
+* Fri Mar 01 2019 Motsyo Gennadi <drool@altlinux.ru> 1.2.2-alt2
+- build with x265 v2.8
+
+* Fri Mar 01 2019 Motsyo Gennadi <drool@altlinux.ru> 1.2.2-alt1
+- 1.2.2
+
+* Sun Jan 06 2019 Motsyo Gennadi <drool@altlinux.ru> 1.2.0-alt1
+- 1.2.0
+
 * Sun Jan 06 2019 Grigory Ustinov <grenka@altlinux.org> 1.1.2-alt4
 - Fixed FTBFS (corrected popd call).
 
