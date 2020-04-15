@@ -1,8 +1,9 @@
 Name: printer-driver-brlaser
 Version: 6
-Release: alt1
+Release: alt2
 
 Source: %name-%version.tar
+Patch1: %name-max_lines_per_block_.patch
 
 Summary: Brother laser printer driver
 URL: https://github.com/pdewacht/brlaser
@@ -54,6 +55,7 @@ Lenovo M7605D
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %cmake
@@ -67,5 +69,9 @@ Lenovo M7605D
 %_datadir/cups/drv/brlaser.drv
 
 %changelog
+* Tue Mar 24 2020 Grigory Maksimov <zacat@altlinux.org> 6-alt2
+- Added patch:
+  * printer-driver-brlaser-max_lines_per_block_.patch
+
 * Tue Oct 15 2019 Grigory Maksimov <zacat@altlinux.org> 6-alt1
 - Initial build for ALT
