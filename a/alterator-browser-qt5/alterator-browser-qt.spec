@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.1.6
+Version: 3.2.0
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,10 @@ __EOF__
 
 
 %changelog
+* Mon Apr 13 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.0-alt1
+- allow to show passwords
+- add theme:arrow-{up,down,left,right} standart pixmaps
+
 * Wed Apr 08 2020 Sergey V Turchin <zerg at altlinux dot org> 3.1.6-alt1
 - build with debuginfo
 
