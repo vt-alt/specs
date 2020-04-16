@@ -41,7 +41,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.8
+Version: 14.2.9
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1527,6 +1527,12 @@ fi
 %endif
 
 %changelog
+* Wed Apr 15 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.9-alt1
+- 14.2.9
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-1759 Fixed nonce reuse in msgr V2 secure mode
+  + CVE-2020-1760 Fixed XSS due to RGW GetObject header-splitting
+
 * Tue Mar 10 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.8-alt1
 - 14.2.8
 
