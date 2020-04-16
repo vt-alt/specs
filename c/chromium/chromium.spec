@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        80.0.3987.132
+Version:        81.0.4044.92
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -79,11 +79,8 @@ Patch021: 0021-ALT-Add-missing-header-on-aarch64.patch
 Patch022: 0022-GENTOO-Clang-allows-detection-of-these-builtins.patch
 Patch023: 0023-FEDORA-vtable-symbol-undefined.patch
 Patch024: 0024-FEDORA-remove-noexcept.patch
-Patch025: 0025-Include-cmath-for-std-pow.patch
-Patch026: 0026-gcc-abstract.patch
-Patch027: 0027-gcc-blink.patch
-Patch028: 0028-BookmarkModelMerger-Move-RemoteTreeNode-declaration-.patch
-Patch029: 0029-gcc-permissive.patch
+Patch025: 0025-gcc-blink.patch
+Patch026: 0026-ALT-fix-build.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -150,6 +147,8 @@ BuildRequires:  pkgconfig(xrandr)
 BuildRequires:  pkgconfig(xrender)
 BuildRequires:  pkgconfig(xscrnsaver)
 BuildRequires:  pkgconfig(xt)
+BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(gbm)
 BuildRequires:  python
 BuildRequires:  python-modules-json
 BuildRequires:  python-modules-distutils
@@ -233,9 +232,6 @@ tar -xf %SOURCE1
 %patch024 -p1
 %patch025 -p1
 %patch026 -p1
-%patch027 -p1
-%patch028 -p1
-%patch029 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -262,11 +258,11 @@ sed -i \
 	third_party/libaom/source/config/linux/ia32/config/aom_config.h
 
 mkdir -p third_party/node/linux/node-linux-x64/bin
-ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
+ln -s %_bindir/node third_party/node/linux/node-linux-x64/bin/
 
 rm -f -- .rpm/depot_tools/ninja
-ln -s /usr/bin/ninja .rpm/depot_tools/ninja
-
+ln -s %_bindir/ninja .rpm/depot_tools/ninja
+ln -s %_bindir/python2 .rpm/depot_tools/python
 
 %build
 %if_enabled clang
@@ -508,6 +504,33 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Wed Apr 08 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.92-alt1
+- New version (81.0.4044.92).
+- Security fixes:
+  - CVE-2020-6423: Use after free in audio.
+  - CVE-2020-6430: Type Confusion in V8.
+  - CVE-2020-6431: Insufficient policy enforcement in full screen.
+  - CVE-2020-6432: Insufficient policy enforcement in navigations.
+  - CVE-2020-6433: Insufficient policy enforcement in extensions.
+  - CVE-2020-6434: Use after free in devtools.
+  - CVE-2020-6435: Insufficient policy enforcement in extensions.
+  - CVE-2020-6436: Use after free in window management.
+  - CVE-2020-6437: Inappropriate implementation in WebView.
+  - CVE-2020-6438: Insufficient policy enforcement in extensions.
+  - CVE-2020-6439: Insufficient policy enforcement in navigations.
+  - CVE-2020-6440: Inappropriate implementation in extensions.
+  - CVE-2020-6441: Insufficient policy enforcement in omnibox.
+  - CVE-2020-6442: Inappropriate implementation in cache.
+  - CVE-2020-6443: Insufficient data validation in developer tools.
+  - CVE-2020-6444: Uninitialized Use in WebRTC.
+  - CVE-2020-6445: Insufficient policy enforcement in trusted types.
+  - CVE-2020-6446: Insufficient policy enforcement in trusted types.
+  - CVE-2020-6447: Inappropriate implementation in developer tools.
+  - CVE-2020-6448: Use after free in V8.
+  - CVE-2020-6454: Use after free in extensions.
+  - CVE-2020-6455: Out of bounds read in WebSQL.
+  - CVE-2020-6456: Insufficient validation of untrusted input in clipboard.
+
 * Fri Mar 06 2020 Alexey Gladkov <legion@altlinux.ru> 80.0.3987.132-alt1
 - New version (80.0.3987.132).
 - Security fixes:
