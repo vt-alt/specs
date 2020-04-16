@@ -2,7 +2,7 @@
 %define zmgroup _webserver
 
 Name: zoneminder
-Version: 1.34.5
+Version: 1.34.9
 Release: alt1
 Summary: A camera monitoring and analysis tool
 Group: System/Servers 
@@ -156,6 +156,9 @@ cp db/*.sql %buildroot%_datadir/%name/db
 %_datadir/%name/www/api
 
 %changelog
+* Tue Apr 07 2020 Anton Farygin <rider@altlinux.ru> 1.34.9-alt1
+- 1.34.9
+
 * Sun Mar 01 2020 Anton Farygin <rider@altlinux.ru> 1.34.5-alt1
 - 1.34.5
 - default socket path for php7-fpm changed to
