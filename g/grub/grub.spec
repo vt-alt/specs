@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt25
+Release: alt26
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -271,7 +271,7 @@ build_efi_image() {
 		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
 		extcmd keystatus procfs cryptodisk gcry_rijndael gcry_sha1 \
 		gcry_sha256 luks gcry_sha512 gcry_serpent gcry_twofish \
-		crypto pbkdf2 password_pbkdf2 \
+		crypto pbkdf2 password_pbkdf2 echo regexp \
 		"$@"
 }
 
@@ -523,6 +523,10 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Wed Apr 08 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt26
+- spec: add echo and regexp modules into EFI image
+  + echo fixes env vars passing to kernel cmdline in SB mode
+
 * Tue Mar 10 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt25
 - improve grub-2.02-alt-os-prober-compat patch
 
