@@ -1,18 +1,16 @@
 Name: xfce4-taskmanager
-Version: 1.2.2
+Version: 1.2.3
 Release: alt1
 
 Summary: Taskmanager for Xfce Desktop
 Summary(ru_RU.UTF-8): Системный монитор для Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/applications/xfce4-taskmanager
+Url: https://docs.xfce.org/apps/xfce4-taskmanager
 Packager: Xfce Team <xfce@packages.altlinux.org>
-# git://git.xfce.org/apps/xfce4-taskmanager
+Vcs: git://git.xfce.org/apps/xfce4-taskmanager
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: glib2-devel intltool libXmu-devel
@@ -52,6 +50,12 @@ mkdir m4/
 %_iconsdir/hicolor/*/*/*.*
 
 %changelog
+* Sat Apr 11 2020 Mikhail Efremov <sem@altlinux.org> 1.2.3-alt1
+- Update url.
+- Add Vcs tag.
+- Don't use rpm-build-licenses.
+- Updated to 1.2.3.
+
 * Wed Dec 19 2018 Mikhail Efremov <sem@altlinux.org> 1.2.2-alt1
 - Updated to 1.2.2.
 
