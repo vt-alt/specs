@@ -1,4 +1,4 @@
-%define rust_ver 1.37.0
+%define rust_ver 1.38.0
 %define rust_rel alt1
 %define cargo_ver %rust_ver
 %define cargo_rel %rust_rel
@@ -19,6 +19,8 @@ Patch1: rust-gdb.patch
 # Rust issue #61206
 # Patch from FreeBSD https://svnweb.freebsd.org/ports/head/lang/rust/files/patch-src_bootstrap_native.rs?view=markup&pathrev=502416
 Patch2: rust-llvm-build.patch
+# Rust issue #63911
+Patch3: https://github.com/rust-lang/rust/pull/63941.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
@@ -41,7 +43,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.36.0
+%define r_ver 1.37.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -138,7 +140,7 @@ This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 1.2.0
+Version: 1.4.4
 Release: alt1
 Group: Development/Tools
 Requires: rust-cargo = %cargo_ver-%cargo_rel
@@ -196,6 +198,7 @@ data to provide information about the Rust standard library.
 
 %patch1 -p2
 %patch2
+%patch3 -p1
 
 %if_with bootstrap
 tar xf %r_src
@@ -233,6 +236,7 @@ codegen-units = 1
 codegen-tests = false
 rpath = false
 debug = false
+deny-warnings = false
 EOF
 
 %if_without bundled_llvm
@@ -328,6 +332,9 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Fri Sep 27 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.38.0-alt1
+- 1.38.0
+
 * Mon Aug 26 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.37.0-alt1
 - 1.37.0
 
