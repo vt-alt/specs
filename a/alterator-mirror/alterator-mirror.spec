@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-mirror
-Version: 0.4.8
+Version: 0.4.9
 Release: alt1
 
 Source:%name-%version.tar
@@ -15,6 +15,7 @@ Group: System/Configuration/Other
 Requires: alterator >= 5.3 alterator-sh-functions >= 0.10-alt5 libshell
 Requires: sisyphus-mirror >= 0.8.3
 Requires: alterator-l10n >= 2.4-alt9 altlinux-repos
+Requires: vixie-cron
 
 BuildPreReq: alterator >= 5.0
 BuildRequires: alterator-fbi
@@ -43,7 +44,6 @@ local mirrors setup and maintainance
 
 %install
 %makeinstall
-
 install -d %buildroot%_logdir/%name
 install -Dpm640 %name.logrotate %buildroot%_sysconfdir/logrotate.d/%name
 
@@ -60,6 +60,9 @@ install -Dpm640 %name.logrotate %buildroot%_sysconfdir/logrotate.d/%name
 %attr(700,root,adm) %_logdir/%name
 
 %changelog
+* Tue Apr 07 2020 Andrey Cherepanov <cas@altlinux.org> 0.4.9-alt1
+- Enable and start crond service to start scheduled execution.
+
 * Thu Aug 30 2018 Paul Wolneykien <manowar@altlinux.org> 0.4.8-alt1
 - Fixed hour:minute parsing of the input time values.
 

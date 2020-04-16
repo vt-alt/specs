@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.59
+Version: 2.9.60
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Wed Apr 08 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.60-alt1
+- Update l10n and help for alterator-mirror (ALT #30705).
+
 * Tue Apr 07 2020 Oleg Solovyov <mcpain@altlinux.org> 2.9.59-alt1
 - Update Russian translations of countries
 
