@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: gns3-gui
-Version: 2.2.2
+Version: 2.2.7
 Release: alt1
 
 Summary: GNS3 Graphical User Interface
@@ -18,7 +18,7 @@ Source: %name-%version.tar
 Source1: gns3-16x16.png
 Source2: gns3-32x32.png
 Source3: gns3-48x48.png
-Source4: gns3.xml
+#Source4: gns3.xml
 Source5: gns3.desktop
 
 BuildRequires: python3-devel python3-module-setuptools
@@ -64,7 +64,7 @@ install -Dp -m0644 %SOURCE1 %buildroot%_miconsdir/gns3.png
 install -Dp -m0644 %SOURCE1 %buildroot%_iconsdir/hicolor/48x48/mimetypes/application-x-gns3.png
 install -Dp -m0644 %SOURCE2 %buildroot%_niconsdir/gns3.png
 install -Dp -m0644 %SOURCE3 %buildroot%_liconsdir/gns3.png
-install -Dp -m0644 %SOURCE4 %buildroot%_datadir/mime/packages/gns3.xml
+#install -Dp -m0644 %SOURCE4 %buildroot%_datadir/mime/packages/gns3.xml
 install -Dp -m0644 %SOURCE5 %buildroot%_desktopdir/gns3.desktop
 
 %files
@@ -73,15 +73,19 @@ install -Dp -m0644 %SOURCE5 %buildroot%_desktopdir/gns3.desktop
 %python3_sitelibdir/gns3
 %python3_sitelibdir/gns3_gui-*.egg-info
 %_desktopdir/gns3.desktop
-%_miconsdir/gns3.png
-%_niconsdir/gns3.png
-%_liconsdir/gns3.png
-%_iconsdir/hicolor/48x48/mimetypes/application-x-gns3.png
-%_datadir/mime/packages/gns3.xml
+%_iconsdir/hicolor/*/apps/gns3.*
+%_iconsdir/hicolor/*/mimetypes/application-x-gns3*.*
+%_datadir/mime/packages/gns3-gui.xml
 
 %files -n gns3
 
 %changelog
+* Sun Apr 12 2020 Anton Midyukov <antohami@altlinux.org> 2.2.7-alt1
+- new version 2.2.7
+
+* Tue Jan 14 2020 Anton Midyukov <antohami@altlinux.org> 2.2.5-alt1
+- new version 2.2.5
+
 * Fri Nov 08 2019 Anton Midyukov <antohami@altlinux.org> 2.2.2-alt1
 - new version 2.2.2
 

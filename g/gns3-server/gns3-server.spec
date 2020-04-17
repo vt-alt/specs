@@ -5,7 +5,7 @@
 %add_findreq_skiplist %python3_sitelibdir/gns3server/compute/docker/*
 
 Name: gns3-server
-Version: 2.2.2
+Version: 2.2.7
 Release: alt1
 
 Summary: GNS3 server manages emulators such as Dynamips, VirtualBox or Qemu/KVM
@@ -60,6 +60,12 @@ echo '' > requirements.txt
 %exclude %python3_sitelibdir/tests/controller
 
 %changelog
+* Sun Apr 12 2020 Anton Midyukov <antohami@altlinux.org> 2.2.7-alt1
+- new version 2.2.7
+
+* Tue Jan 14 2020 Anton Midyukov <antohami@altlinux.org> 2.2.5-alt1
+- new version 2.2.5
+
 * Fri Nov 08 2019 Anton Midyukov <antohami@altlinux.org> 2.2.2-alt1
 - new version 2.2.2
 
