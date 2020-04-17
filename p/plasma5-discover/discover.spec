@@ -6,7 +6,7 @@
 
 Name: plasma5-%rname
 Version: 5.18.4
-Release: alt1
+Release: alt2
 %K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
@@ -142,6 +142,10 @@ mv %buildroot/%_libdir/plasma-discover/lib*.so* %buildroot/%_libdir/
 mkdir -p %buildroot/%_K5xdgconf/plasma-workspace/env/
 install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-flatpak.sh
 
+for f in %buildroot/%_K5xdgapp/org.kde.discover{.,-}*.desktop ; do
+    sed -i '/^X-DocPath=/d' $f
+done
+
 %find_lang %name --with-kde --all-name
 
 %files
@@ -201,6 +205,9 @@ install -m 0755 %SOURCE1 %buildroot/%_K5xdgconf/plasma-workspace/env/%{name}-fla
 
 
 %changelog
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt2
+- remove unnecessary X-DocPath from desktop-files
+
 * Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt1
 - new version
 
