@@ -1,5 +1,5 @@
 Name: libabigail
-Version: 1.6
+Version: 1.7
 Release: alt1
 Summary: ABI Generic Analysis and Instrumentation Library and tools
 Group: Development/Other
@@ -97,6 +97,9 @@ make -C doc/manuals install-man-and-info-doc DESTDIR=%buildroot
 %_infodir/abigail.info*
 
 %changelog
+* Wed Feb 26 2020 Dmitry V. Levin <ldv@altlinux.org> 1.7-alt1
+- 1.6 -> 1.7.
+
 * Wed Mar 27 2019 Dmitry V. Levin <ldv@altlinux.org> 1.6-alt1
 - 1.2 -> 1.6.
 
