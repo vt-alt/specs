@@ -3,10 +3,10 @@
 
 Summary:      SOGo is a very fast and scalable modern collaboration suite (groupware)
 Name:         sogo
-Version:      4.1.1
-Release:      alt1
+Version:      4.3.0
+Release:      alt2
 
-License:      GPL
+License:      GPL-2.0+ and LGPL-2.1+
 URL:          https://sogo.nu/
 # VCS:        https://github.com/inverse-inc/sogo
 # Do not forget to update angular submodule and 
@@ -15,7 +15,6 @@ URL:          https://sogo.nu/
 #  git submodule update
 #  cd UI/WebServerResources
 #  npm install
-#  ./node_modules/bower/bin/bower install
 #  ./node_modules/grunt/bin/grunt build
 
 Group:        Communications
@@ -59,7 +58,7 @@ BuildRequires: libwbxml-devel
 BuildRequires: openchange-devel
 %endif
 BuildRequires: zlib-devel
-BuildRequires: python-module-samba-DC
+BuildRequires: python3-module-samba
 
 %description
 SOGo is a groupware server built around OpenGroupware.org (OGo) and
@@ -324,7 +323,7 @@ install -Dm0644 README  %buildroot%_defaultdocdir/sogo-activesync-%version/READM
 popd
 
 %files
-%doc ChangeLog NEWS Scripts/*sh Scripts/updates.php Apache/SOGo-apple-ab.conf
+%doc CHANGELOG.md README.md Scripts/*sh Scripts/updates.php Apache/SOGo-apple-ab.conf
 %config(noreplace) %attr(0640, root, %sogo_user) %_sysconfdir/sogo/sogo.conf
 %config(noreplace) %_logrotatedir/sogo
 %config(noreplace) %_sysconfdir/cron.d/sogo
@@ -428,6 +427,16 @@ fi
 %preun_service sogo
 
 %changelog
+* Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.0-alt2
+- Returned to Sisyphus.
+
+* Mon Jan 27 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.0-alt1
+- New version.
+
+* Wed Dec 18 2019 Andrey Cherepanov <cas@altlinux.org> 4.2.0-alt1
+- New version.
+- Fix license tag.
+
 * Fri Nov 01 2019 Andrey Cherepanov <cas@altlinux.org> 4.1.1-alt1
 - New version.
 
@@ -497,7 +506,7 @@ fi
 * Tue Jul 11 2017 Andrey Cherepanov <cas@altlinux.org> 3.2.10-alt1
 - New version
 
-* Wed Jun 21 2017 Evgeny Sinelnikov <sin@altlinux.ru> 3.2.9-alt2%ubt
+* Wed Jun 21 2017 Evgeny Sinelnikov <sin@altlinux.ru> 3.2.9-alt2.S1
 - Add universal build tag (aka ubt macros)
 
 * Fri Jun 09 2017 Evgeny Sinelnikov <sin@altlinux.ru> 3.2.9-alt2
