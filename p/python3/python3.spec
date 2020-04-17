@@ -100,7 +100,7 @@
 
 Name: python3
 Version: %{pybasever}.4
-Release: alt2
+Release: alt3
 
 Summary: Version 3 of the Python programming language aka Python 3000
 License: Python
@@ -286,6 +286,12 @@ Patch1009: python-3.6.8-alt-skip-test-network.patch
 # See more here: https://github.com/python/cpython/pull/14048
 Patch1010: python3-bpo-21872-fix-lzma-library.patch
 
+# 'Trust mode': optional modules loading paths restriction
+Patch1011: python3-ignore-env-trust-security.patch
+
+#set shebang to explicit python2
+Patch1012: python3-alt-2to3-python-version.patch
+
 # ======================================================
 # Additional metadata, and subpackages
 # ======================================================
@@ -381,6 +387,8 @@ Requires: %name = %EVR
 Requires: %name-modules-tkinter = %EVR
 Requires: %name-modules-curses = %EVR
 Requires: %name-modules-nis = %EVR
+# No real need in python-base in this package
+%filter_from_requires /^python-base/d
 
 %description tools
 This package contains several tools included with Python 3
@@ -515,6 +523,8 @@ sed -r -i s/'_PIP_VERSION = "[0-9.]+"'/'_PIP_VERSION = "%{pip_version}"'/ Lib/en
 %patch1008 -p1
 %patch1009 -p2
 %patch1010 -p1
+%patch1011 -p1
+%patch1012 -p2
 
 %ifarch %e2k
 # unsupported as of lcc 1.23.12
@@ -1055,7 +1065,6 @@ $(pwd)/python -m test.regrtest \
 %_libdir/pkgconfig/python-%pybasever.pc
 %_libdir/pkgconfig/python-%pybasever%pyabi.pc
 
-%if_with tk
 %files tools
 %_bindir/python3-2to3
 %_bindir/2to3-%pybasever
@@ -1070,6 +1079,7 @@ $(pwd)/python -m test.regrtest \
 %exclude %tool_dir/scripts/run_tests.py
 %doc %pylibdir/Doc
 
+%if_with tk
 %files modules-tkinter
 %pylibdir/idlelib
 %exclude %pylibdir/idlelib/idle_test
@@ -1118,6 +1128,10 @@ $(pwd)/python -m test.regrtest \
 %endif
 
 %changelog
+* Fri Jan 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.7.4-alt3
+- hackaround forbidden python-base dep
+- 'Trusted mode': optional modules loading paths restriction
+
 * Fri Oct 18 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 3.7.4-alt2
 - fix packaging on armh arch
 
