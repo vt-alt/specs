@@ -1,5 +1,5 @@
 Name: libuv
-Version: 1.28.0
+Version: 1.35.0
 Release: alt1
 
 Summary: Evented I/O for NodeJS
@@ -11,12 +11,10 @@ Url: https://github.com/libuv/libuv
 # Source-url: https://github.com/libuv/libuv/archive/v%version.tar.gz
 Source: %name-%version.tar
 
-BuildRequires: python-devel gcc-c++ openssl-devel zlib-devel gyp
-
-%add_python_req_skip TestCommon
+BuildRequires: gcc-c++ openssl-devel zlib-devel
 
 %description
-libuv is a new platform layer for Node. Its purpose is to abstract IOCP on Windows 
+libuv is a new platform layer for Node. Its purpose is to abstract IOCP on Windows
 and libev on Unix systems. We intend to eventually contain all platform differences in this library.
 
 %package devel
@@ -57,6 +55,29 @@ rm -f %buildroot%_libdir/%name.a
 
 
 %changelog
+* Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt1
+- new version 1.35.0 (with rpmrb script)
+
+* Thu Feb 20 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.2-alt1
+- new version 1.34.2 (with rpmrb script)
+
+* Tue Jan 21 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.1-alt1
+- new version 1.34.1 (with rpmrb script)
+- drop python-devel and gyp from buildreqs
+- fix node fail if /proc is not mounted (https://github.com/nodejs/help/issues/2099)
+
+* Fri Jan 17 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.0-alt1
+- new version 1.34.0 (with rpmrb script)
+
+* Tue Oct 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1.33.1-alt1
+- new version 1.33.1 (with rpmrb script)
+
+* Tue Oct 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1.33.0-alt1
+- new version 1.33.0 (with rpmrb script)
+
+* Wed Sep 18 2019 Vladimir Didenko <cow@altlinux.ru> 1.32.0-alt1
+- new version 1.32.0
+
 * Thu Jun 06 2019 Vitaly Lipatov <lav@altlinux.ru> 1.28.0-alt1
 - new version 1.28.0 (with rpmrb script)
 

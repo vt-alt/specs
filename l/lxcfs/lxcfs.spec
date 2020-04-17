@@ -1,18 +1,16 @@
 Name:		lxcfs
-Version:	3.0.3
+Version:	4.0.2
 Release:	alt1
 Summary:	FUSE filesystem for LXC
 
 Group:		Development/Other
-License:	Apache v.2
+License:	Apache-2.0
 URL:		https://github.com/lxc/lxcfs
 
 Packager:	Denis Pynkin <dans@altlinux.ru>
 
 Source0:	%name-%version.tar
 Source1:	lxcfs.sysvinit
-
-Requires: libfuse
 
 BuildRequires: libfuse-devel
 BuildRequires: help2man
@@ -38,9 +36,11 @@ FUSE filesystem for LXC, offering the following features:
 
 %install
 %makeinstall_std
+
 mkdir -p %buildroot%_localstatedir/%name
-#mkdir -p %buildroot%_initdir
 install -Dm0755 %SOURCE1 %buildroot%_initdir/lxcfs
+
+find %buildroot -name '*.la' -delete
 
 %post
 [ -d "%_localstatedir/%name" ] || mkdir -p %_localstatedir/%name
@@ -51,17 +51,26 @@ install -Dm0755 %SOURCE1 %buildroot%_initdir/lxcfs
 
 %files
 %doc AUTHORS COPYING README.md
-%_bindir/*
-%_libdir/%name/*
-%_man1dir/*
-%_initdir/*
-%_unitdir/*
+%_bindir/%name
+%_libdir/%name/lib%name.so
+%_man1dir/%name.1*
+%_initdir/%name
+%_unitdir/%name.service
 %_datadir/lxc/config/common.conf.d/*
 %dir %_datadir/%name
 %_datadir/%name/*
 %ghost %dir %_localstatedir/%name
 
 %changelog
+* Wed Apr 15 2020 Alexey Shabalin <shaba@altlinux.org> 4.0.2-alt1
+- new version 4.0.2
+
+* Tue Mar 31 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.0.1-alt1
+- Updated to 4.0.1.
+
+* Thu Jul 04 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.0.4-alt1
+- 3.0.4
+
 * Wed Feb 06 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.0.3-alt1
 - 3.0.3
 

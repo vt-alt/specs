@@ -10,12 +10,12 @@
 %define lxduser lxd
 
 Name:		lxd
-Version:	3.10
-Release:	alt2
+Version:	4.0.0
+Release:	alt1
 Summary:	LXD -- REST API, command line tool and OpenStack integration plugin for LXC.
 
 Group:		Development/Other
-License:	Apache v.2
+License:	Apache-2.0
 URL:		https://%import_path
 
 Packager:	Denis Pynkin <dans@altlinux.ru>
@@ -42,13 +42,18 @@ Requires:	btrfs-progs
 Requires:	lvm2
 Requires:	squashfs-tools
 Requires:	liblxd_sqlite3
+Requires:	rsync
+Requires:	iptables
+Requires:	dnsmasq
 
 BuildRequires: libcap-devel
 BuildRequires: libuv-devel
 
 BuildRequires: liblxd_sqlite3-devel
 BuildRequires: libdqlite-devel
-
+BuildRequires: libraft-devel
+BuildRequires: libco-devel
+BuildRequires: libudev-devel
 BuildRequires: help2man
 # Needed for manpages generation. Accessing to '/proc/self/...'
 BuildRequires: /proc
@@ -73,7 +78,7 @@ which use the supplementary Go tools libraries with %import_path imports.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -p1
 
 %build
 export BUILDDIR="$PWD/.build"
@@ -106,38 +111,38 @@ for f in %buildroot/%_bindir/*; do
 done
 
 # lxc-bridge
-mkdir -p -- %buildroot/%_libexecdir/lxd
+mkdir -p -- %buildroot%_libexecdir/lxd
 
 # Crontab entry for images update
-%__install -D %SOURCE2 %buildroot/%_sysconfdir/cron.hourly/lxd-image-update
+%__install -D %SOURCE2 %buildroot%_sysconfdir/cron.hourly/lxd-image-update
 
 # configuration
-%__install -D %SOURCE3 %buildroot/%_sysconfdir/sysconfig/lxd
+%__install -D %SOURCE3 %buildroot%_sysconfdir/sysconfig/lxd
 # configuration for dnsmasq called in lxd-bridge
-%__install -D %SOURCE4 %buildroot/%_sysconfdir/lxd/dnsmasq.conf
+%__install -D %SOURCE4 %buildroot%_sysconfdir/lxd/dnsmasq.conf
 
 #services
 # systemd
-mkdir -p %buildroot/%_unitdir
-cp -av %SOURCE11 %buildroot/%_unitdir/
-cp -av %SOURCE12 %buildroot/%_unitdir/
-cp -av %SOURCE13 %buildroot/%_unitdir/
+mkdir -p %buildroot%_unitdir
+cp -av %SOURCE11 %buildroot%_unitdir/
+cp -av %SOURCE12 %buildroot%_unitdir/
+cp -av %SOURCE13 %buildroot%_unitdir/
 
 # install bash completion
-mkdir -p %buildroot/%_datadir/bash-completion/completions/
-cp -av scripts/bash/lxd-client %buildroot/%_datadir/bash-completion/completions/
+mkdir -p %buildroot%_datadir/bash-completion/completions/
+cp -av scripts/bash/lxd-client %buildroot%_datadir/bash-completion/completions/
 
 # /var/{lib,log}/lxd
 mkdir -p %buildroot%_localstatedir/%name
 mkdir -p %buildroot%_logdir/%name
 
 # Install the manpages
-mkdir -p %buildroot/%_man1dir
-help2man %buildroot/%_bindir/fuidshift -n "uid/gid shifter" --no-info > %buildroot/%_man1dir/fuidshift.1
-help2man %buildroot/%_bindir/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%version > %buildroot/%_man1dir/lxc-to-lxd.1
-help2man %buildroot/%_bindir/lxd-benchmark -n "The container lightervisor - benchmark" --no-info --no-discard-stderr > %buildroot/%_man1dir/lxd-benchmark.1
-%buildroot/%_bindir/lxd manpage %buildroot/%_man1dir/
-%buildroot/%_bindir/lxc manpage %buildroot/%_man1dir/
+mkdir -p %buildroot%_man1dir
+help2man %buildroot%_bindir/fuidshift -n "uid/gid shifter" --no-info --no-discard-stderr > %buildroot%_man1dir/fuidshift.1
+help2man %buildroot%_bindir/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%version --no-discard-stderr > %buildroot%_man1dir/lxc-to-lxd.1
+help2man %buildroot%_bindir/lxd-benchmark -n "The container lightervisor - benchmark" --no-info --no-discard-stderr > %buildroot%_man1dir/lxd-benchmark.1
+%buildroot%_bindir/lxd manpage %buildroot%_man1dir/
+%buildroot%_bindir/lxc manpage %buildroot%_man1dir/
 
 %pre
 %_sbindir/groupadd -r -f %lxdgroup 2>/dev/null || :
@@ -172,6 +177,22 @@ help2man %buildroot/%_bindir/lxd-benchmark -n "The container lightervisor - benc
 %exclude %go_path/src/%import_path/go.sum
 
 %changelog
+* Tue Apr 14 2020 Alexey Shabalin <shaba@altlinux.org> 4.0.0-alt1
+- New version.
+
+* Tue Nov 12 2019 Denis Pynkin <dans@altlinux.org> 3.18-alt1
+- New version
+- Have to checkout module with:
+  go get github.com/spf13/cobra@77e4d5aecc4d34e58f72e5a1c4a5a13ef55e6f44
+- Fix help2man call
+- Added new build requirements to libraft and libco
+
+* Mon Sep 30 2019 Denis Pynkin <dans@altlinux.org> 3.17-alt1
+- New version
+
+* Sun Jun 02 2019 Mikhail Gordeev <obirvalger@altlinux.org> 3.10-alt3
+- Add rsync, iptables and dnsmasq to requires
+
 * Wed Mar 13 2019 Mikhail Gordeev <obirvalger@altlinux.org> 3.10-alt2
 - Fix build by vendorizing build dependencies
 
