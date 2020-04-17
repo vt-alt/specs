@@ -1,5 +1,5 @@
 Name:     theme-mate-windows
-Version:  1.7
+Version:  1.9
 Release:  alt1
 
 Summary:  Mate theme for Windows-like layout
@@ -13,7 +13,6 @@ Source:   %name-%version.tar
 
 BuildArch: noarch
 
-Requires: gksu
 Requires: dconf
 # Required GTK+ themes
 Requires: mate-themes
@@ -48,6 +47,12 @@ install -Dm0644 applications.list \
 %_datadir/mate-menu/applications.list-themed
 
 %changelog
+* Thu Apr 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.9-alt1
+- Remove gksu requirement.
+
+* Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 1.8-alt1
+- Remove zz-mate-menu.gschema.override obsoleted by mate-menu-20.04.
+
 * Fri Oct 18 2019 Ivan A. Melnikov <iv@altlinux.org> 1.7-alt1
 - Avoid overriding XKB configuration (altbug #37346).
 
