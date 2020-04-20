@@ -8,7 +8,7 @@
 %endif
 
 Name: nfdump
-Version: 1.6.19
+Version: 1.6.20
 Release: alt1
 Summary: collect and process netflow data
 Group: Monitoring
@@ -183,6 +183,9 @@ rm -f %buildroot%_libdir/libnfdump.a
 %endif
 
 %changelog
+* Mon Apr 13 2020 Sergey Y. Afonin <asy@altlinux.org> 1.6.20-alt1
+- 1.6.20
+
 * Wed Mar 25 2020 Sergey Y. Afonin <asy@altlinux.org> 1.6.19-alt1
 - 1.6.19
 - disabled libnfdump subpackage (ALT #36391, second stage)
