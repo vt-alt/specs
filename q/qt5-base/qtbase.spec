@@ -10,7 +10,7 @@
 %define IF_ver_not_eq() %if "%(rpmvercmp '%1' '%2')" != "0"
 
 #def_enable qtchooser
-%def_disable bootstrap
+%def_enable bootstrap
 %def_enable sql_pgsql
 %def_enable sql_odbc
 %def_enable sql_ibase
@@ -33,8 +33,8 @@
 %define gname  qt5
 Name: qt5-base
 %define major  5
-Version: 5.12.7
-Release: alt2
+Version: 5.12.8
+Release: alt1
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -550,7 +550,7 @@ translationdir=%_qt5_translationdir
 
 Name: Qt%major
 Description: Qt%major Configuration
-Version: 5.12.7
+Version: 5.12.8
 __EOF__
 
 # rpm macros
@@ -812,6 +812,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Thu Apr 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt1
+- new version
+
 * Fri Mar 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt2
 - package private qtxcb headers (Closes: 38191)
 

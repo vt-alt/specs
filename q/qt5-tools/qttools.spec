@@ -1,13 +1,13 @@
 
 %global qt_module qttools
-%def_disable bootstrap
+%def_enable bootstrap
 %def_disable qtconfig
 
 %define kf5_bindir %prefix/lib/kf5/bin
 
 Name: qt5-tools
-Version: 5.12.7
-Release: alt3
+Version: 5.12.8
+Release: alt1
 %define major %{expand:%(X='%version'; echo ${X%%%%.*})}
 %define minor %{expand:%(X=%version; X=${X%%.*}; echo ${X#*.})}
 %define bugfix %{expand:%(X='%version'; echo ${X##*.})}
@@ -39,7 +39,10 @@ BuildRequires(pre): rpm-build-ubt rpm-macros-qt5
 %ifnarch %e2k
 BuildRequires: clang-devel llvm-devel
 %endif
-BuildRequires: desktop-file-utils gcc-c++ glibc-devel libicu-devel /usr/bin/convert
+BuildRequires: desktop-file-utils gcc-c++ glibc-devel libicu-devel
+%if_enabled qtconfig
+BuildRequires: /usr/bin/convert
+%endif
 BuildRequires: qt5-base-devel qt5-declarative-devel-static qt5-xmlpatterns-devel
 #BuildRequires: qt5-webkit-devel
 BuildRequires: libXext-devel libX11-devel
@@ -343,6 +346,9 @@ fi
 %_qt5_libdir/libQt5Help.so.*
 
 %changelog
+* Thu Apr 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt1
+- new version
+
 * Mon Mar 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.12.7-alt3
 - Fixed docs generation
 

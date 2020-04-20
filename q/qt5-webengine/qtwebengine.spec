@@ -29,7 +29,7 @@
 %endif
 
 Name: qt5-webengine
-Version: 5.12.7
+Version: 5.12.8
 Release: alt1
 
 Group: System/Libraries
@@ -59,6 +59,7 @@ Patch102: alt-fix-shrank-by-one-character.patch
 Patch103: qtwebengine-everywhere-src-5.12.4-chromium-add-ppc64le-support.patch
 Patch104: qtwebengine-everywhere-src-5.12.4-add-ppc64le-support.patch
 Patch105: alt-openh264-x86-no-asm.patch
+Patch106: qtwebengine-everywhere-src-5.12.6-alt-armh.patch
 
 # Automatically added by buildreq on Sun Apr 03 2016
 # optimized out: fontconfig fontconfig-devel gcc-c++ glib2-devel kf5-attica-devel kf5-kjs-devel libEGL-devel libGL-devel libX11-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXi-devel libXrandr-devel libXrender-devel libXtst-devel libfreetype-devel libgpg-error libharfbuzz-devel libharfbuzz-icu libicu-devel libnspr-devel libqt5-clucene libqt5-core libqt5-gui libqt5-help libqt5-network libqt5-positioning libqt5-qml libqt5-quick libqt5-sql libqt5-webchannel libqt5-widgets libstdc++-devel libxml2-devel pkg-config python-base python-modules python-modules-compiler python-modules-email python-modules-encodings python-modules-multiprocessing python-modules-xml python3 python3-base qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-phonon-devel qt5-tools qt5-webchannel-devel qt5-webkit-devel xorg-compositeproto-devel xorg-damageproto-devel xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-randrproto-devel xorg-recordproto-devel xorg-renderproto-devel xorg-scrnsaverproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
@@ -176,6 +177,7 @@ ln -s /usr/include/nspr src/3rdparty/chromium/nspr4
 %patch103 -p1
 %patch104 -p1
 %patch105 -p1
+%patch106 -p1
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 #sed -i -e 's!gpu//!gpu/!g' \
@@ -362,6 +364,12 @@ done
 %_qt5_archdatadir/mkspecs/modules/qt_*.pri
 
 %changelog
+* Thu Apr 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt1
+- new version
+
+* Thu Apr 02 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.12.7-alt2
+- fix build on armh arch
+
 * Thu Feb 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.7-alt1
 - new version
 
