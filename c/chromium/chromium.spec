@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        81.0.4044.92
+Version:        81.0.4044.113
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -69,18 +69,18 @@ Patch011: 0011-FEDORA-Ignore-broken-nacl-open-fd-counter.patch
 Patch012: 0012-ALT-Fix-last-commit-position-issue.patch
 Patch013: 0013-FEDORA-Fix-issue-where-timespec-is-not-defined-when-.patch
 Patch014: 0014-ALT-Use-rpath-link-and-absolute-rpath.patch
-Patch015: 0015-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
-Patch016: 0016-FEDORA-Fix-gcc-round.patch
-Patch017: 0017-FEDORA-Fix-memcpy.patch
-Patch018: 0018-ALT-openh264-always-pic-on-x86.patch
-Patch019: 0019-ALT-allow-to-override-clang-through-env-variables.patch
-Patch020: 0020-ALT-Hack-to-avoid-build-error-with-clang7.patch
-Patch021: 0021-ALT-Add-missing-header-on-aarch64.patch
-Patch022: 0022-GENTOO-Clang-allows-detection-of-these-builtins.patch
-Patch023: 0023-FEDORA-vtable-symbol-undefined.patch
-Patch024: 0024-FEDORA-remove-noexcept.patch
-Patch025: 0025-gcc-blink.patch
-Patch026: 0026-ALT-fix-build.patch
+Patch015: 0015-FEDORA-Fix-gcc-round.patch
+Patch016: 0016-FEDORA-Fix-memcpy.patch
+Patch017: 0017-ALT-openh264-always-pic-on-x86.patch
+Patch018: 0018-ALT-allow-to-override-clang-through-env-variables.patch
+Patch019: 0019-ALT-Hack-to-avoid-build-error-with-clang7.patch
+Patch020: 0020-ALT-Add-missing-header-on-aarch64.patch
+Patch021: 0021-GENTOO-Clang-allows-detection-of-these-builtins.patch
+Patch022: 0022-FEDORA-vtable-symbol-undefined.patch
+Patch023: 0023-FEDORA-remove-noexcept.patch
+Patch024: 0024-gcc-blink.patch
+Patch025: 0025-ALT-fix-build.patch
+Patch026: 0026-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -504,6 +504,11 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Thu Apr 16 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.113-alt1
+- New version (81.0.4044.113).
+- Security fixes:
+  - CVE-2020-6457: Use after free in speech recognizer.
+
 * Wed Apr 08 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.92-alt1
 - New version (81.0.4044.92).
 - Security fixes:
