@@ -4,7 +4,7 @@
 #set_compress_method none
 %set_compress_method %mansuff
 Name: girar-nmu
-Version: 2.010.2
+Version: 2.011.0
 Release: alt1
 
 Summary: girar client utilities for NMU automation
@@ -109,6 +109,9 @@ EOF
 %_man1dir/girar-*
 
 %changelog
+* Sun Apr 05 2020 Igor Vlasenko <viy@altlinux.ru> 2.011.0-alt1
+- new version
+
 * Mon Sep 30 2019 Igor Vlasenko <viy@altlinux.ru> 2.010.2-alt1
 - bugfix release
 
