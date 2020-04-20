@@ -14,8 +14,8 @@
 # git rev-list --count remotes/upstream/releases/FreeCAD-0-17
 
 Name:    freecad
-Version: 0.18.2
-Release: alt2
+Version: 0.18.4
+Release: alt0.1.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: GPL / LGPL
@@ -92,7 +92,7 @@ BuildRequires: libsmesh-devel libnetgen-devel
 %if_with glvnd
 BuildRequires: libglvnd-devel
 %else
-Requires: libGL-devel libGLU-devel
+Requires: libEGL-devel libGLU-devel
 %endif
 #BuildRequires: texlive-extra-utils
 
@@ -161,9 +161,13 @@ export PATH=$PATH:%qtbindir
 	-DSMESH_VERSION_MAJOR=7 \
 %endif
 %if_with glvnd
-    -DOpenGL_GL_PREFERENCE=GLVND \
+	-DOpenGL_GL_PREFERENCE=GLVND \
 %endif
 	-DFREECAD_USE_EXTERNAL_PIVY=ON 
+
+# Fix Unknown release and repository URL
+sed -i 's,FCRevision      \"Unknown\",FCRevision      \"%{release} (Git)\",' src/Build/Version.h
+sed -i 's,FCRepositoryURL \"Unknown\",FCRepositoryURL \"git://github.com/FreeCAD/FreeCAD.git master\",' src/Build/Version.h
 
 export NPROCS=%build_parallel_jobs
 %make_build VERBOSE=1
@@ -225,6 +229,18 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Tue Apr 14 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt1
+- New version.
+
+* Thu Jul 18 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.18.3-alt1
+- New version.
+
+* Fri May 24 2019 Slava Aseev <ptrnine@altlinux.org> 1:0.18.2-alt3
+- Rebuild with vtk8.2
+
 * Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.18.2-alt2
 - Use desktop file and mime data from upstream (ALT #36762).
 - Add Russian localization of desktop file as patch.
