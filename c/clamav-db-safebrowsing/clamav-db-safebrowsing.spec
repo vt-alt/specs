@@ -1,12 +1,13 @@
-%define dbname		daily
+%define dbname		safebrowsing
 %define dir		var/lib/clamav-db
 %define sys_clamav 	/var/lib/clamav
 %define sys_db		/var/lib/clamav-db
-%define checksum	8ae9b2a69816de632d57ae5ea0eb73f6
+%define checksum	840565358d854889da34734a8ee1886d
 
 Name:    clamav-db-%dbname
-Version: 20200418
+Version: 20191110
 Release: alt1
+Epoch:   1
 
 Summary: Antivirus database for ClamAV (%dbname)
 Summary(ru): Антивирусная база для ClamAV (%dbname)
@@ -50,23 +51,20 @@ done
 %attr(664,mail,root) %config(noreplace) /%dir/%dbname.cvd
 
 %changelog
-* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 20200418-alt1
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 1:20191110-alt1
 - Update database.
 
-* Fri Nov 08 2019 Andrey Cherepanov <cas@altlinux.org> 20191107-alt1
+* Fri May 10 2019 Andrey Cherepanov <cas@altlinux.org> 1:20190510-alt1
 - Update database.
 
-* Fri May 10 2019 Andrey Cherepanov <cas@altlinux.org> 20190510-alt1
-- Update database.
-
-* Wed Apr 06 2016 Andrey Cherepanov <cas@altlinux.org> 20160404-alt1
+* Wed Apr 06 2016 Andrey Cherepanov <cas@altlinux.org> 1:20160311-alt1
 - Update database
 - Test checksum
 
-* Mon Dec 28 2015 Andrey Cherepanov <cas@altlinux.org> 20151030-alt1
+* Mon Dec 28 2015 Andrey Cherepanov <cas@altlinux.org> 1:20140106-alt1
 - Update database
 
-* Tue Jan 27 2015 Andrey Cherepanov <cas@altlinux.org> 20150106-alt1
+* Tue Jan 27 2015 Andrey Cherepanov <cas@altlinux.org> 20150127-alt1
 - Update database
 
 * Wed Dec 24 2014 Andrey Cherepanov <cas@altlinux.org> 20141224-alt1

@@ -2,11 +2,11 @@
 %define dir		var/lib/clamav-db
 %define sys_clamav 	/var/lib/clamav
 %define sys_db		/var/lib/clamav-db
-%define checksum	a22e1b59c5e8b8eff166271b08b4ad72
+%define checksum	0fdc6dc2135ebeb8289cca7bd6a69c43
 
 Name:    clamav-db-%dbname
-Version: 20170608
-Release: alt2
+Version: 20191125
+Release: alt1
 
 Summary: Antivirus database for ClamAV (%dbname)
 Summary(ru): Антивирусная база для ClamAV (%dbname)
@@ -58,6 +58,9 @@ test "$(md5sum "%buildroot%sys_db/%dbname.cvd" | cut -f1 -d' ')" = "%checksum"
 %attr(664,mail,root) %config(noreplace) /%dir/%dbname.cvd
 
 %changelog
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 20191125-alt1
+- Update database.
+
 * Mon May 13 2019 Andrey Cherepanov <cas@altlinux.org> 20170608-alt2
 - Obsoletes clamav-db-safebrowsing.
 
