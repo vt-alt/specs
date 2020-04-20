@@ -6,7 +6,7 @@
 Name: fence-agents
 Summary: Fence Agents
 Version: 4.3.3
-Release: alt1
+Release: alt2
 License: GPLv2+ and LGPLv2+
 Group: System/Base
 Url: http://sourceware.org/cluster/wiki/
@@ -491,6 +491,7 @@ License: GPLv2+ and LGPLv2+
 Summary: Fence agent for SBD (storage-based death)
 #Requires: sbd
 Requires: fence-agents-common = %version-%release
+Requires: sbd
 BuildArch: noarch
 Group: System/Base
 
@@ -603,6 +604,7 @@ sed -i '/^.*pywsman.*/d' configure.ac
 %build
 %autoreconf
 export PYTHON="/usr/bin/python3"
+export SBD_PATH="/usr/sbin/sbd"
 %configure --localstatedir=%_var
 %make_build
 
@@ -882,6 +884,10 @@ ln -sf ../../sbin/fence_scsi %buildroot%_datadir/cluster/fence_scsi_check_hardre
 %_man8dir/fence_zvmip.8*
 
 %changelog
+* Thu Apr 09 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.3-alt2
+- Fix path to sbd executable in fence-agents-sbd (ALT #38343).
+- Add sbd to requirements of fence-agents-sbd.
+
 * Wed May 08 2019 Andrew A. Vasilyev <andy@altlinux.org> 4.3.3-alt1
 - 4.3.3
 - Add gce, ironic, openstack, powerman, vmware-vcloud modules.
