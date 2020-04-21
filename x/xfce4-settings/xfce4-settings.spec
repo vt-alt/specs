@@ -1,5 +1,5 @@
 Name: xfce4-settings
-Version: 4.14.2
+Version: 4.14.3
 Release: alt1
 Summary: Settings Manager for Xfce
 Summary (ru_RU.UTF-8): Менеджер настроек Xfce
@@ -9,7 +9,7 @@ Url: https://www.xfce.org/
 Group: Graphical desktop/XFce
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/xfce4-settings
+Vcs: git://git.xfce.org/xfce/xfce4-settings
 Source: %name-%version.tar
 Source1: xfce4-fixkeyboard
 Patch: %name-%version-%release.patch
@@ -71,6 +71,10 @@ install -pDm0755 %SOURCE1 %buildroot%_bindir/xfce4-fixkeyboard
 %_iconsdir/*/*/*/*.*
 
 %changelog
+* Mon Apr 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt1
+- Added Vcs tag.
+- Updated to 4.14.3.
+
 * Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
 - Don't use rpm-build-licenses.
 - Updated to 4.14.2.
