@@ -1,21 +1,19 @@
 Name: xfwm4
-Version: 4.14.0
+Version: 4.14.1
 Release: alt1
 
 %def_enable epoxy
 
 Summary: Window manager for Xfce
 Summary (ru_RU.UTF8): Менеджер окон для окружения рабочего стола Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
 Url: https://www.xfce.org/
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/xfwm4
+Vcs: git://git.xfce.org/xfce/xfwm4
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4ui-gtk3-devel libxfconf-devel
@@ -79,6 +77,11 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Mon Apr 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
+- Added Vcs tag.
+- Don't use rpm-build-licenses.
+- Updated to 4.14.1.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.0-alt1
 - Enabled libepoxy support.
 - Updated to 4.14.0.
