@@ -2,8 +2,8 @@
 # odbcinst -i -d -f template
 
 Name: mysql-connector-odbc
-Version: 8.0.13
-Release: alt2
+Version: 8.0.19
+Release: alt1
 
 Summary: MySQL Connector/ODBC - ODBC driver for MySQL
 
@@ -22,8 +22,6 @@ Source2: odbcinst.ini
 
 Patch1: %name-5.3.11-alt-rpath.patch
 Patch2: %name-8.0.13-fedora-myodbc-64bit.patch
-Patch3: %name-8.0.13-alt-prevent-i586-libssl-bundling.patch
-
 
 BuildRequires(pre): rpm-build-licenses
 
@@ -48,7 +46,6 @@ setup instructions can be found at
 
 %patch1
 %patch2 -p1
-%patch3 -p2
 
 %build
 %cmake -G "Unix Makefiles" \
@@ -71,15 +68,30 @@ install -m 0644 %SOURCE1 odbc.ini
 install -m 0644 %SOURCE2 odbcinst.ini
 sed -e 's#@@lib@@#%{_libdir}#g' -i odbcinst.ini
 
-rm -f %buildroot/%_prefix/{ChangeLog,README.txt,LICENSE.txt}
+rm -f %buildroot/%_prefix/{ChangeLog,README.txt,LICENSE.txt,INFO_BIN,INFO_SRC}
 
 %files
-%doc ChangeLog README.txt LICENSE.txt odbcinst.ini odbc.ini
+%doc ChangeLog README.txt LICENSE.txt odbcinst.ini odbc.ini INFO_BIN INFO_SRC
 %_bindir/myodbc-installer
 %_libdir/libmyodbc*
 %exclude %_prefix/test
 
 %changelog
+* Thu Feb 20 2020 Nikolai Kostrigin <nickel@altlinux.org> 8.0.19-alt1
+- New version
+- Remove obsolete fedora-fix-build patch
+- Remove obsolete fedora-fix-inconsistency patch
+- Remove obsolete prevent-i586-libssl-bundling patch
+
+* Mon Dec 09 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.18-alt1
+- New version
+- Update prevent-i586-libssl-bundling patch
+- Add patches fixing build from Fedora
+
+* Wed Oct 02 2019 Nikolai Kostrigin <nickel@altlinux.org> 8.0.15-alt1
+- New version
+  + INFO_BIN & INFO_SRC introduced by upstream to provide build environment info
+
 * Fri Dec 28 2018 Nikolai Kostrigin <nickel@altlinux.org> 8.0.13-alt2
 - Prevent undesired libssl bundling for i586
 
