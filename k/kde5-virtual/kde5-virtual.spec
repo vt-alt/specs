@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.16.0
+Version: 5.17.0
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -127,6 +127,7 @@ Provides: kde5-email-client-kmail = %EVR
 Requires: kf5-filesystem
 Requires: kde5-kmail kde5-pim-addons-kmail kde5-pim-addons-plugins bogofilter bogofilter-utils
 Requires: kde5-akonadi-import-wizard kde5-kmail-account-wizard kde5-mbox-importer kde5-pim-sieve-editor
+Requires: kde5-grantlee-editor
 %description -n kde5-email-client-2-kmail
 %summary
 
@@ -225,6 +226,9 @@ Requires: kde5-telepathy
 %files -n kde5-messenger-client-4-telepathy
 
 %changelog
+* Mon Apr 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.17.0-alt1
+- update kmail requires
+
 * Fri Mar 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.16.0-alt1
 - add kde5-audio-player-elisa
 
