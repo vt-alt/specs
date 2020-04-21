@@ -6,7 +6,7 @@
 %define Name Kile
 %define oname kile
 Name: kile
-Version: 2.1.3
+Version: 2.9.93
 Release: alt1
 Summary: LaTeX source editor - TeX shell
 Group: Publishing
@@ -16,8 +16,8 @@ Source: %oname-%version.tar
 #Patch: %oname-%version-%release.patch
 Packager: Evgeny Sinelnikov <sin@altlinux.ru>
 
-Requires: libkbibtexpart4
-Requires: kde4graphics-okular
+Requires: libkbibtexpart9
+Requires: kde5-okular
 Requires: %_bindir/asy %_bindir/convert %_bindir/dblatex
 Requires: %_bindir/bibtex %_bindir/dvipdfm %_bindir/dvipng
 Requires: %_bindir/dvips %_bindir/latex %_bindir/latex2html
@@ -25,49 +25,74 @@ Requires: %_bindir/lilypond %_bindir/makeindex %_bindir/mpost
 Requires: %_bindir/pdflatex %_bindir/pdftex %_bindir/ps2pdf
 Requires: %_bindir/tex
 
-BuildRequires(pre): rpm-build-licenses
-BuildRequires: doxygen gcc-c++ cmake kde4libs-devel
+BuildRequires(pre): rpm-build-licenses rpm-build-kf5
+BuildRequires: doxygen gcc-c++
+BuildRequires: cmake extra-cmake-modules
+BuildRequires: qt5-base-devel
+BuildRequires: qt5-script-devel
+BuildRequires: kf5-kio-devel
+BuildRequires: kf5-kxmlgui-devel
+BuildRequires: kf5-kiconthemes-devel
+BuildRequires: kf5-ki18n-devel
+BuildRequires: kf5-kparts-devel
+BuildRequires: kf5-kcoreaddons-devel
+BuildRequires: kf5-kcrash-devel
+BuildRequires: kf5-kparts-devel
+BuildRequires: kf5-kdoctools-devel
+BuildRequires: kf5-kinit-devel
+BuildRequires: kf5-khtml-devel kf5-kjs-devel
+BuildRequires: kf5-kguiaddons-devel
+BuildRequires: kf5-kdbusaddons-devel
+BuildRequires: kf5-ktextwidgets-devel
+BuildRequires: kf5-ktexteditor-devel
+BuildRequires: kf5-kwindowsystem-devel
+BuildRequires: kde5-okular-devel
 BuildRequires: libXt-devel libjpeg-devel xml-utils xorg-cf-files
 
 Obsoletes: kde4-kile
 Conflicts: kde3-kile
 
 %description
-%Name is a program for KDE 4, that integrates many tools needed to
+%Name is a program for KDE 5, that integrates many tools needed to
 develop documents with LaTeX, in just one application.
-
 
 %prep
 %setup -n %oname-%version
 #patch -p1
 
-
 %build
-%K4cmake -DKMIMELNK_INSTALL_DIR=%_K4mimelnk -DKILE_VERSION=%version
-%K4make
-
+%K5cmake -DKILE_VERSION=%version
+%K5build
 
 %install
-%K4install
+%K5install
 
 %find_lang --with-kde %oname
 
+rm -fr %buildroot%_docdir/%oname
 
 %files -f %oname.lang
 %doc AUTHORS ChangeLog README README.cwl %oname-remote-control.txt
-%_bindir/*
-%_iconsdir/hicolor/*/*/*.png
-%_iconsdir/hicolor/scalable/apps/*
-%_K4xdg_apps/*
-%_K4apps/%oname
-%_K4conf_update/*
-%_K4cfg/*
-%_K4xdg_mime/%{oname}*
-%_K4dbus_interfaces/*
-%_K4doc/*/%oname
-%_K4i18n/*/LC_MESSAGES/*.mo
+%_K5bin/*
+%_K5icon/*/*/apps/*
+%_K5xdgapp/*
+%_K5xdgconf/*
+%_datadir/kconf_update/*
+%_datadir/%oname
+%_libdir/*.so
+%_K5cfg/*
+%_K5dbus_iface/*
+%_K5doc/*/%oname
+%_K5xdgmime/*
+%_datadir/metainfo/*
 
 %changelog
+* Wed Dec 25 2019 Anton Midyukov <antohami@altlinux.org> 2.9.93-alt1
+- update to 3.0 beta 3
+
+* Tue Sep 17 2019 Anton Midyukov <antohami@altlinux.org> 2.9.92-alt1
+- update to 3.0 beta 2
+
 * Thu Jun 20 2013 Evgeny Sinelnikov <sin@altlinux.ru> 2.1.3-alt1
 - update to last stable release
 
