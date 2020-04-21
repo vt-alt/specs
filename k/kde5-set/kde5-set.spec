@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.12.2
+Version: 19.12.3
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -172,10 +172,10 @@ Requires: kde5-kontact kde5-pim-data-exporter
 Requires: kde5-email-client
 Requires: kde5-akregator kde5-kalarm kde5-knotes
 Requires: kde5-korganizer kde5-akonadi-calendar-tools
-Requires: kde5-kaddressbook kde5-grantlee-editor
+Requires: kde5-kaddressbook
 ##Requires:  kde5-blogilo
 # akonadi based email client
-#Requires: kde5-akonadi-import-wizard kde5-mbox-importer kde5-pim-sieve-editor kde5-mbox-importer kde5-pim-sieve-editor
+#Requires: kde5-akonadi-import-wizard kde5-mbox-importer kde5-pim-sieve-editor kde5-mbox-importer kde5-pim-sieve-editor kde5-grantlee-editor
 %description -n kde5-pim
 %summary
 
@@ -195,6 +195,9 @@ Requires: kde5-kaddressbook kde5-grantlee-editor
 %files -n kde5-pim
 
 %changelog
+* Mon Apr 20 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
+- clear pim requires
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
 - add plasma5-browser-integration
 
