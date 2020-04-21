@@ -1,5 +1,5 @@
 Name: git
-Version: 2.25.3
+Version: 2.25.4
 Release: alt1
 
 Summary: Git core and tools
@@ -522,6 +522,9 @@ popd
 %endif #doc
 
 %changelog
+* Sun Apr 19 2020 Dmitry V. Levin <ldv@altlinux.org> 2.25.4-alt1
+- 2.25.3 -> 2.25.4 (fixes: CVE-2020-11008).
+
 * Wed Mar 18 2020 Dmitry V. Levin <ldv@altlinux.org> 2.25.3-alt1
 - 2.25.2 -> 2.25.3 (fixes: CVE-2020-5260).
 
