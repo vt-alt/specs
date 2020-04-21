@@ -6,8 +6,8 @@
 %define appname trik-studio
 
 Name: trikStudio
-Version: 2019.8
-Release: alt8
+Version: 2020.1
+Release: alt1
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
 License: Apache-2.0
@@ -170,6 +170,9 @@ popd
 %endif
 
 %changelog
+* Fri Apr 17 2020 Valery Sinelnikov <greh@altlinux.org> 2020.1-alt1
+- Update to 2020.1
+
 * Thu Apr 09 2020 Valery Sinelnikov <greh@altlinux.org> 2019.8-alt8
 - Fix gamepad segfault during close application
 
