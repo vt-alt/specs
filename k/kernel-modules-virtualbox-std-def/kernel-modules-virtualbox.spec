@@ -1,7 +1,7 @@
 %define module_name	virtualbox
-%define module_version	6.1.4
+%define module_version	6.1.6
 
-%define module_release	alt2
+%define module_release	alt1
 
 %define drv_module_name	vboxdrv
 %define pci_module_name	vboxpci
@@ -117,6 +117,9 @@ install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnet
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Wed Apr 15 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.6-alt1
+- Updated template for virtualbox 6.1.6
 
 * Tue Feb 25 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.4-alt2
 - Fixed build with kernel-5.5 using KBUILD_EXTRA_SYMBOLS environment variable
