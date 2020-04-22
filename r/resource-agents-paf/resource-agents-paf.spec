@@ -3,7 +3,7 @@
 
 Name: resource-agents-paf
 Version: 2.3.0
-Release: alt1
+Release: alt2
 BuildArch: noarch
 Packager: Pavel Vasenkov <pav@altlinux.org>
 
@@ -34,12 +34,15 @@ Requires: perl, resource-agents, pacemaker >= 1.1.13, corosync >= 2.0.0
 %files
 %doc README.md CHANGELOG.md LICENSE
 
-%attr(755, -, -) %{_ocfroot}/resource.d/heartbeat/pgsqlms
+%{_ocfroot}/resource.d/heartbeat/pgsqlms
 %{_ocfroot}/lib/heartbeat/OCF_ReturnCodes.pm
 %{_ocfroot}/lib/heartbeat/OCF_Directories.pm
 %{_ocfroot}/lib/heartbeat/OCF_Functions.pm
 %{_datadir}/resource-agents/ocft/configs/pgsqlms
 
 %changelog
-* Thu Apr 09 2020 Pavel Vasenkov <pav@altlinux.ru> 2.3.0-alt1
+* Mon Apr 20 2020 Pavel Vasenkov <pav@altlinux.org> 2.3.0-alt2
+- Change spec file
+
+* Thu Apr 09 2020 Pavel Vasenkov <pav@altlinux.org> 2.3.0-alt1
 - Initial commit in Sisyphus
