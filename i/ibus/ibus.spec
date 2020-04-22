@@ -19,11 +19,11 @@
 %def_disable installed_tests
 
 Name: ibus
-Version: 1.5.21
-Release: alt1
+Version: 1.5.22
+Release: alt2
 
 Summary: Intelligent Input Bus for Linux OS
-License: LGPLv2+
+License: LGPL-2.1 and Unicode
 Group: System/Libraries
 Url: https://github.com/ibus/ibus/wiki
 
@@ -38,8 +38,9 @@ Source1: ibus-xinput
 %define gtk3_binary_version %(pkg-config --variable=gtk_binary_version gtk+-3.0)
 
 Requires: iso-codes setxkbmap xmodmap
-Requires: lib%name = %version-%release
-Requires: lib%name-gir = %version-%release
+Requires: lib%name = %EVR
+Requires: lib%name-gir = %EVR
+Requires: %name-dicts = %EVR
 
 %{?_enable_gconf:Requires(post,preun):GConf}
 %{?_enable_dconf:Requires(pre): dconf}
@@ -81,6 +82,16 @@ BuildRequires: GConf
 %description
 IBus means Intelligent Input Bus. It is an input framework for Linux OS.
 
+%package dicts
+Summary: IBus dictionaries
+Group: Text tools
+License: Unicode
+BuildArch: noarch
+
+%description dicts
+This package provides Unicode %{?_enable_emoji_dict:and Emoji}
+dictionaries for IBus.
+
 %package -n lib%name
 Summary: IBus libraries
 Group: System/Libraries
@@ -92,7 +103,7 @@ This package contains the libraries for IBus
 %package -n lib%name-gir
 Summary: GObject introspection data for the IBus library
 Group: System/Libraries
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description -n lib%name-gir
 This package contains typelib file for the IBus library.
@@ -101,7 +112,7 @@ This package contains typelib file for the IBus library.
 Summary: IBus im module for gtk2
 Group: System/Libraries
 Requires(pre): libgtk+2
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description gtk2
 This package contains IBus im module for gtk2.
@@ -110,7 +121,7 @@ This package contains IBus im module for gtk2.
 Summary: IBus im module for gtk3
 Group: System/Libraries
 Requires(pre): libgtk+3
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description gtk3
 This package contains IBus im module for gtk3.
@@ -118,7 +129,7 @@ This package contains IBus im module for gtk3.
 %package -n lib%name-devel
 Summary: Development tools for ibus
 Group: Development/C
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description -n lib%name-devel
 This package contains the header files for IBus library.
@@ -127,8 +138,8 @@ This package contains the header files for IBus library.
 Summary: GObject introspection devel data for IBus
 Group: Development/Other
 BuildArch: noarch
-Requires: lib%name-gir = %version-%release
-Requires: lib%name-devel = %version-%release
+Requires: lib%name-gir = %EVR
+Requires: lib%name-devel = %EVR
 
 %description -n lib%name-gir-devel
 This package contains gir files for IBus library.
@@ -137,7 +148,7 @@ This package contains gir files for IBus library.
 Summary: Developer documents for IBus
 Group: Development/Other
 BuildArch: noarch
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n lib%name-devel-docs
 This package contains developer documentation for IBus.
@@ -171,7 +182,7 @@ override some functions in GObject-Introspection.
 %package tests
 Summary: Tests for IBus
 Group: Development/Other
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description tests
 This package provides tests programs that can be used to verify
@@ -231,11 +242,13 @@ fi
 %endif
 
 %files -f %{name}10.lang
-%dir %_datadir/ibus/
+%dir %_datadir/%name/
 %_bindir/%name
 %_bindir/%name-daemon
 %_bindir/%name-setup
 %_datadir/%name/*
+# dicts
+%exclude %_datadir/%name/dicts
 %_desktopdir/*
 %_iconsdir/hicolor/*/apps/*
 %_libexecdir/%name-portal
@@ -274,6 +287,10 @@ fi
 %doc AUTHORS README
 
 %exclude %_datadir/bash-completion/completions/ibus.bash
+
+%files dicts
+%dir %_datadir/%name/dicts
+%_datadir/%name/dicts/*
 
 %files -n lib%name
 %_libdir/lib%name-1.0.so.*
@@ -326,6 +343,12 @@ fi
 %endif
 
 %changelog
+* Tue Apr 21 2020 Yuri N. Sedunov <aris@altlinux.org> 1.5.22-alt2
+- moved dictionaries to separate -dicts subpackage (ALT #38372)
+
+* Tue Mar 17 2020 Yuri N. Sedunov <aris@altlinux.org> 1.5.22-alt1
+- 1.5.22
+
 * Fri Aug 23 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.21-alt1
 - 1.5.21
 - new -tests subpackage

@@ -8,7 +8,7 @@
 
 Name: plasma5-desktop
 Version: 5.18.4
-Release: alt1
+Release: alt2
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -18,6 +18,8 @@ License: GPL-2.0-or-later
 
 Requires: plasma5-workspace
 Requires: polkit-kde-plasma-desktop
+# for ibus-ui-emojier-plasma
+Requires: ibus-dicts
 
 Source: %rname-%version.tar
 Patch1: alt-def-font.patch
@@ -220,6 +222,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Tue Apr 21 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt2
+- fix requires
+
 * Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt1
 - new version
 
