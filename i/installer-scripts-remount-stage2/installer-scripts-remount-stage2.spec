@@ -1,5 +1,5 @@
 Name: installer-scripts-remount-stage2
-Version: 0.5.16
+Version: 0.5.17
 Release: alt1
 
 Summary: Shared installer scripts: remount
@@ -48,6 +48,9 @@ __EOF__
 %attr(0755,root,root) %_datadir/install2/initinstall.d/85-start-multipath.sh
 
 %changelog
+* Wed Apr 15 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.17-alt1
+- start_luks: Remount only empty password containers
+
 * Mon Feb 03 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.16-alt1
 - start_lvm: Activate all LVs when setting up LVM
 
