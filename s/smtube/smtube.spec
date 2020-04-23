@@ -1,5 +1,5 @@
 Name:		smtube
-Version:	18.1.0
+Version:	20.1
 Release:	alt1
 Summary:	Youtube Browser for SMPlayer
 Summary(ru_RU.UTF8):	Браузер YouTube для SMPlayer
@@ -35,7 +35,7 @@ SMTube є утилітою для пошуку та завантаження в�
 
 %prep
 %setup -n %name-%version
-%patch -p1
+%patch0 -p1
 
 %build
 subst 's|share/doc/smtube|share/doc/smtube-%version|g' Makefile
@@ -58,6 +58,9 @@ cd ./src && qmake "QMAKE_CXXFLAGS+=%optflags -DTRANSLATION_PATH=%_datadir/%name/
 %_datadir/%name/translations/*.qm
 
 %changelog
+* Tue Apr 21 2020 Motsyo Gennadi <drool@altlinux.ru> 20.1-alt1
+- 20.1
+
 * Sat Jan 20 2018 Motsyo Gennadi <drool@altlinux.ru> 18.1.0-alt1
 - 18.1.0 (#34436)
 
