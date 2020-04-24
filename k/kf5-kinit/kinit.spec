@@ -1,7 +1,7 @@
 %define rname kinit
 
 Name: kf5-%rname
-Version: 5.68.0
+Version: 5.69.0
 Release: alt1
 %K5init altplace
 
@@ -90,6 +90,9 @@ KF5 library
 #%_K5lib/libKF5Init.so.*
 
 %changelog
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
+- new version
+
 * Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
 - new version
 

@@ -7,7 +7,7 @@
 %define libreviewboardhelpers libreviewboardhelpers%sover
 
 Name: kf5-%rname
-Version: 5.68.0
+Version: 5.69.0
 Release: alt1
 %K5init altplace
 
@@ -36,7 +36,7 @@ BuildRequires: accounts-qt5-devel intltool signon-devel
 BuildRequires: kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel
 BuildRequires: kf5-kcoreaddons-devel kf5-kdeclarative-devel kf5-ki18n-devel kf5-kio-devel kf5-kitemviews-devel kf5-kjobwidgets-devel
 BuildRequires: kf5-kpackage-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel
-BuildRequires: kf5-knotifications-devel kf5-kirigami-devel
+BuildRequires: kf5-knotifications-devel kf5-kirigami-devel kf5-kwindowsystem-devel
 
 %description
 Purpose offers the possibility to create integrate services and actions on
@@ -135,6 +135,9 @@ KF5 library
 %_K5lib/libKF5PurposeWidgets.so.*
 
 %changelog
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
+- new version
+
 * Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
 - new version
 

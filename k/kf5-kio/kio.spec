@@ -3,8 +3,8 @@
 %def_with streebog
 
 Name: kf5-%rname
-Version: 5.68.0
-Release: alt1
+Version: 5.69.0
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -54,6 +54,7 @@ Summary: Development files for %name
 Requires: qt5-base-devel
 Requires: kf5-kbookmarks-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kcoreaddons-devel
 Requires: kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kxmlgui-devel kf5-solid-devel
+Requires: kf5-kwindowsystem-devel
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
@@ -166,6 +167,12 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Mon Apr 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt2
+- fix requires
+
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
+- new version
+
 * Mon Mar 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.68.0-alt1
 - new version
 

@@ -1,8 +1,8 @@
 %define rname solid
 
 Name: kf5-%rname
-Version: 5.68.0
-Release: alt2
+Version: 5.69.0
+Release: alt1
 %K5init altplace
 
 Group: System/Libraries
@@ -86,6 +86,9 @@ sed -i '/num_to_alloc.*\/\//s|//\(.*\)|/* \1 */|' BUILD/src/solid/predicate_lexe
 %_K5qml/org/kde/solid/
 
 %changelog
+* Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
+- new version
+
 * Fri Mar 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.68.0-alt2
 - Added hack to repeat unmounting few times in case of errors.
 
