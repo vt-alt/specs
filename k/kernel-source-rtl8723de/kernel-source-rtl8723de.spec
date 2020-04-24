@@ -5,7 +5,7 @@
 
 Name: kernel-source-%module_name
 Version: %module_version
-Release: alt11
+Release: alt12
 
 Group: Development/Kernel
 Summary: Linux %module_name modules sources
@@ -41,6 +41,9 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Tue Apr 21 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt12
+- update from smlinux/current branch
+
 * Fri Mar 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt11
 - return rtl8723de sources
 
