@@ -1,8 +1,8 @@
 %def_disable check
 
 Name:    cloud-init
-Version: 19.2
-Release: alt3
+Version: 20.1
+Release: alt1
 
 Summary: Cloud instance init scripts
 Group:   System/Configuration/Boot and Init
@@ -25,16 +25,20 @@ Patch1: %name-%version-%release.patch
 %add_findreq_skiplist /lib/systemd/system-generators/cloud-init-generator
 
 BuildArch: noarch
-# /proc for tests
-BuildRequires: /proc
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-dev python3-module-distribute python3-module-nose python3-module-mocker
 BuildRequires: python3-module-yaml python3-module-oauthlib
 BuildRequires: systemd-devel
-# For tests
-BuildRequires: python3-module-requests python3-module-jsonpatch python3-module-configobj python3-module-mock python3-module-oauthlib
-BuildRequires: python3-module-httpretty python3-module-serial iproute2 util-linux net-tools python3-module-jinja2 python3-module-contextlib2 python3-module-prettytable
+BuildRequires: python3-module-httpretty python3-module-serial iproute2
+BuildRequires: util-linux net-tools python3-module-jinja2
+BuildRequires: python3-module-contextlib2 python3-module-prettytable
+%if_enabled check
+BuildRequires: /proc
+BuildRequires: python3-module-requests python3-module-jsonpatch
+BuildRequires: python3-module-configobj python3-module-mock
+BuildRequires: python3-module-oauthlib rpm-build-vm
+%endif
 
 Requires: sudo
 Requires: e2fsprogs
@@ -97,7 +101,9 @@ rm -f %buildroot%_sysconfdir/cloud/templates/*.suse.*
 rm -f %buildroot%_sysconfdir/cloud/templates/*.ubuntu.*
 
 %check
-make unittest3
+if [ -w /dev/kvm ]; then
+    vm-run make unittest3
+fi
 
 %post
 %post_service cloud-config
@@ -139,6 +145,9 @@ make unittest3
 %dir %_sharedstatedir/cloud
 
 %changelog
+* Mon Apr 06 2020 Mikhail Gordeev <obirvalger@altlinux.org> 20.1-alt1
+- Update to 20.1
+
 * Mon Sep 02 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.2-alt3
 - Create package cloud-init-config-netplan
 
