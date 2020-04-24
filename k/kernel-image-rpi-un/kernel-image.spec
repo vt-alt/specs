@@ -1,7 +1,7 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt2
+Release: alt3
 epoch:1 
 %define kernel_need_version	5.6
 # kernel-source-5.6 does not currently exist. Use 5.5
@@ -490,6 +490,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Apr 23 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.2-alt3
+- CONFIG_BCM2711_THERMAL=y for working thermal sensor on RPi4
+
 * Mon Apr 06 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.2-alt2
 - Rebuild for p9
 
