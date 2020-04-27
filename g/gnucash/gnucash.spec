@@ -5,13 +5,13 @@
 %def_with aqbanking
 
 Name: 	 gnucash
-Version: 3.7
-Release: alt2
+Version: 3.10
+Release: alt1
 
 Summary: GnuCash is an application to keep track of your finances
 Summary(ru_RU.UTF8): Программа учёта финансов GnuCash
 
-License: GPLv2+
+License: GPL-2.0+
 Group:   Office
 Url: 	 http://www.gnucash.org
 
@@ -19,10 +19,14 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source:  %name-%version.tar
 Source1: gtest.tar
+Source2: %name.1
+Source3: gnc-vcs-info.h
+Source4: ChangeLog
 Source5: %name-README.RU
 Source7: conv_gnucash2.sh
+Source8: gnucash.appdata.xml.in
+Source9: gnucash.desktop.in
 
-Patch: %name-%version-%release.patch
 Patch1: %name-alt-check-supported-gwenhywfar-version.patch
 Patch2: %name-alt-fix-rpath.patch
 Patch3: %name-glib-warnings.patch
@@ -32,7 +36,7 @@ AutoReq: yes, noperl
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
 BuildRequires: libgtk+3-devel
-BuildRequires: doxygen graphviz guile22-devel intltool libglade-devel
+BuildRequires: doxygen graphviz guile-devel intltool libglade-devel
 BuildRequires: libgwenhywfar-devel libgwenhywfar-gtk3
 BuildRequires: libofx-devel libreadline-devel slib-guile
 BuildRequires: libdconf-devel
@@ -46,6 +50,7 @@ BuildRequires: libexpat-devel
 BuildRequires: libpcre-devel
 BuildRequires: libpixman-devel
 BuildRequires: libdrm-devel
+BuildRequires: libsecret-devel
 BuildRequires: xsltproc
 BuildRequires: zlib-devel
 BuildRequires: libxslt-devel
@@ -60,6 +65,7 @@ BuildRequires: python-devel
 %endif
 BuildRequires: perl-podlators
 BuildRequires: perl-Date-Manip
+BuildRequires: /proc
 
 Requires: %{name}-program = %EVR
 Requires: %{name}-quotes = %EVR
@@ -130,11 +136,15 @@ fetch and update.
 
 %prep
 %setup -q
-%patch -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 tar xf %SOURCE1
+cp %SOURCE2 doc
+cp %SOURCE3 libgnucash/core-utils
+cp %SOURCE4 .
+cp %SOURCE8 gnucash/gnome
+cp %SOURCE9 gnucash/gnome
 
 %build
 %cmake \
@@ -147,7 +157,7 @@ tar xf %SOURCE1
        -DGENERATE_SWIG_WRAPPERS=ON \
        -DGMOCK_ROOT=`pwd`/gtest/googlemock \
        -DGTEST_ROOT=`pwd`/gtest/googletest
-%cmake_build VERBOSE=1
+%cmake_build
 
 %install
 %cmakeinstall_std
@@ -201,6 +211,17 @@ rm -f %buildroot%_datadir/gnucash/gnome \
 %files quotes
 
 %changelog
+* Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 3.10-alt1
+- New version.
+- Fix License tag according to SPDX.
+
+* Mon Apr 06 2020 Andrey Cherepanov <cas@altlinux.org> 3.9-alt1
+- New version.
+
+* Thu Mar 05 2020 Andrey Cherepanov <cas@altlinux.org> 3.8-alt1
+- New version.
+- Build directly from upstream tag.
+
 * Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 3.7-alt2
 - NMU: use buildreq libdbi-drivers-dbd-sqlite3 for sqlite
 - disable python bindings
