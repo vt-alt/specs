@@ -1,8 +1,8 @@
-%def_disable translation
+%def_enable translation
 
 Name: nvidia-settings
 Version: 440.59
-Release: alt1
+Release: alt2
 
 Group: System/Configuration/Hardware
 Summary: Tool for configuring the NVIDIA driver
@@ -22,7 +22,7 @@ Patch1: xlibs.patch
 Patch2: cflags.patch
 Patch3: alt-ui-modules-dir.patch
 Patch4: add-error-popup.patch
-Patch100: nvidia-settings-410.73-alt-integrate-translation.patch
+Patch100: nvidia-settings-440.59-alt-integrate-translation.patch
 
 # Automatically added by buildreq on Mon May 13 2013 (-bi)
 # optimized out: elfutils fontconfig fontconfig-devel glib2-devel libGL-devel libX11-devel libXext-devel libXrender-devel libatk-devel libcairo-devel libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libpango-devel libwayland-client libwayland-server pkg-config python-base xorg-randrproto-devel xorg-renderproto-devel xorg-videoproto-devel xorg-xextproto-devel xorg-xf86vidmodeproto-devel xorg-xproto-devel
@@ -64,7 +64,7 @@ Development files for %name
 %patch4 -p2
 %if_enabled translation
 mkdir -p po/msg
-%patch100 -p2
+%patch100 -p1
 install -p -m644 %SOURCE100 src/gtk+-2.x/gettext.h
 install -p -m644 %SOURCE101 po/msg/ru.po
 %endif
@@ -125,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Thu Apr 23 2020 Ivan Razzhivin <underwit@altlinux.org> 440.59-alt2
+- fix russian translation
+
 * Wed Feb 05 2020 Sergey V Turchin <zerg@altlinux.org> 440.59-alt1
 - new version
 
