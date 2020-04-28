@@ -1,32 +1,7 @@
 %define branch 0.12
-%define svn svn9218
+%define svn svn9359
 
 %define rel alt1
-
-%if "%rel" == "alt0.M51"
-%define PLUG_DISABLE "UDISKS2_PLUGIN OPUS_PLUGIN WITH_NEW_JACK WITH_QSUI ARCHIVE_PLUGIN"
-%define PLUG_ENABLE "FFMPEG_LEGACY UDISKS_PLUGIN JACK_PLUGIN"
-%endif
-
-%if "%rel" == "alt0.M60T"
-%define PLUG_DISABLE "UDISKS2_PLUGIN ARCHIVE_PLUGIN"
-%define PLUG_ENABLE "UDISKS_PLUGIN WITH_NEW_JACK"
-%endif
-
-%if "%rel" == "alt0.M70T"
-%define PLUG_DISABLE "UDISKS_PLUGIN ARCHIVE_PLUGIN"
-%define PLUG_ENABLE "UDISKS2_PLUGIN WITH_NEW_JACK"
-%endif
-
-%if "%rel" == "alt0.M80P"
-%define PLUG_DISABLE "UDISKS_PLUGIN"
-%define PLUG_ENABLE "UDISKS2_PLUGIN WITH_NEW_JACK ARCHIVE_PLUGIN"
-%endif
-
-%if "%rel" == "alt1"
-%define PLUG_DISABLE "UDISKS_PLUGIN"
-%define PLUG_ENABLE "UDISKS2_PLUGIN WITH_NEW_JACK ARCHIVE_PLUGIN"
-%endif
 
 Version: %branch.7
 Epoch: 1
@@ -41,11 +16,14 @@ Packager: Motsyo Gennadi <drool@altlinux.ru>
 Url: http://qmmp.ylsoftware.com/
 Source0: %name-%branch.tar.bz2
 
-Requires: unzip winamplike-skins lib%name = %version-%release %name-out-pulseaudio = %version-%release
+Requires: unzip winamplike-skins lib%name = %version-%release
+
+Provides: %name-out-pulseaudio
+Obsoletes: %name-out-pulseaudio
 
 BuildPreReq: rpm-build-wlskins doxygen
 
-BuildRequires: gcc-c++ libavformat-devel libmad-devel
+BuildRequires: cmake gcc-c++ libavformat-devel libmad-devel
 BuildRequires: libcurl-devel libfaad-devel libmpg123-devel libmodplug-devel
 BuildRequires: libmpcdec-devel libpulseaudio-devel >= 0.9.15 libqt4-devel
 BuildRequires: libsoxr-devel libtag-devel >= 1.6 libvorbis-devel
@@ -53,21 +31,7 @@ BuildRequires: libwavpack-devel libalsa-devel libflac-devel libbs2b-devel >= 3.0
 BuildRequires: libprojectM-devel >= 2.0.1 jackit-devel xorg-xf86miscproto-devel
 BuildRequires: libenca-devel libcddb-devel libmms-devel >= 0.4 libwildmidi-devel >= 0.2.3.4
 BuildRequires: libgme-devel libGLU-devel libsidplayfp-devel >= 1.0.3 libshout2-devel
-
-# for ALT >= 8 only
-%define alt_over_8 libcdio-devel
-%if "%rel" == "alt1"
-%define alt_over_8 libcdio-paranoia-devel libarchive-devel
-%endif
-%if "%rel" == "alt0.M80P"
-%define alt_over_8 libcdio-paranoia-devel libarchive-devel
-%endif
-BuildRequires: %alt_over_8
-
-%if "%rel" != "alt0.M51"
-# disable for 5.1
-BuildRequires: libopusfile-devel
-%endif
+BuildRequires: libcdio-paranoia-devel libarchive-devel libopusfile-devel
 
 %description
 QMMP is an audio-player, written with help of Qt library.
@@ -253,13 +217,13 @@ Group: System/Libraries
 Shared libraries for Qmmp
 
 # Output plugins
-%package -n %name-out-pulseaudio
-Summary: Qmmp PulseAudio Output Plugin
+%package -n %name-out-alsa
+Summary: Qmmp ALSA Output Plugin
 Group: Sound
 Requires: qmmp = %version-%release
 
-%description -n %name-out-pulseaudio
-Qmmp PulseAudio Output Plugin
+%description -n %name-out-alsa
+Qmmp ALSA Output Plugin
 
 %package -n %name-out-oss
 Summary: Qmmp OSS Output Plugin
@@ -702,7 +666,7 @@ Group: Sound
 BuildArch: noarch
 Requires: qmmp qmmp-in-wavpack qmmp-mpris qmmp-notifier
 Requires: qmmp-eff-soxr qmmp-in-ffmpeg qmmp-in-mplayer
-Requires: qmmp-in-flac qmmp-out-pulseaudio qmmp-in-modplug qmmp-in-midi
+Requires: qmmp-in-flac qmmp-out-alsa qmmp-in-modplug qmmp-in-midi
 Requires: qmmp-in-musepack qmmp-statusicon qmmp-in-sndfile qmmp-in-cue
 Requires: qmmp-vis-analyzer qmmp-scrobbler qmmp-hal qmmp-hotkey qmmp-gnomehotkey
 Requires: qmmp-eff-bs2b qmmp-vis-projectm qmmp-fileops qmmp-converter
@@ -711,16 +675,7 @@ Requires: qmmp-kdenotify qmmp-eff-ladspa qmmp-covermanager qmmp-rgscan
 Requires: qmmp-eff-crossfade qmmp-udisks qmmp-in-gme qmmp-in-sid qmmp-history
 Requires: qmmp-streambrowser qmmp-trackchange qmmp-copypaste qmmp-eff-extrastereo
 Requires: qmmp-out-qtmultimedia qmmp-out-icecast qmmp-eff-filewriter qmmp-eff-monotostereo
-
-%if "%rel" != "alt0.M51"
-# disable for 5.1
-Requires: qmmp-in-opus qmmp-qsui
-%endif
-
-%if "%alt_over_8" != "libcdio-devel"
-# ALT >= 8 only
 Requires: qmmp-in-archive
-%endif
 
 %description -n %name-full
 Virtual package for full installation Qmmp (exclude %name-devel).
@@ -730,31 +685,19 @@ Virtual package for full installation Qmmp (exclude %name-devel).
 
 %build
 # # with CMake
-# # cmake \
-# # 	-DCMAKE_INSTALL_PREFIX=%prefix \
-# # 	-DCMAKE_CXX_FLAGS:STRING="%optflags" \
-# # 	-DCMAKE_C_FLAGS:STRING="%optflags" \
-# # 	-DLIB_DIR:STRING=%_lib \
-# # 	-DUSE_OSS:BOOL=TRUE
-
-# # with QMake
-export PATH=$PATH:%_qt4dir/bin
-qmake	"QMAKE_CFLAGS+=%optflags" \
-	"QMAKE_CXXFLAGS+=%optflags" \
-	LIB_DIR=%_libdir \
-	'DISABLED_PLUGINS=OSS4_PLUGIN %PLUG_DISABLE' \
-	'CONFIG+=%PLUG_ENABLE QMMP_DEFAULT_OUTPUT=pulse' \
-	%name.pro
+cmake \
+	-DCMAKE_INSTALL_PREFIX=%prefix \
+	-DCMAKE_CXX_FLAGS:STRING="%optflags" \
+	-DCMAKE_C_FLAGS:STRING="%optflags" \
+	-DQMMP_DEFAULT_OUTPUT=pulse \
+	-DLIB_DIR:STRING=%_lib \
+	-DUSE_OSS:BOOL=TRUE
 %make_build VERBOSE=1
 
 cd doc && doxygen Doxyfile
 
 %install
-# # with CMake
-# # %make DESTDIR=%buildroot install
-
-# # with QMake
-%make INSTALL_ROOT=%buildroot install
+%make DESTDIR=%buildroot install
 
 mkdir -p %buildroot%_datadir/%name-0
 ln -s %_wlskindir %buildroot%_datadir/%name-0/skins
@@ -778,7 +721,7 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %_libdir/%name-%branch/Input/libmpeg*
 %_libdir/%name-%branch/Input/libvorbis*
 %_libdir/%name-%branch/Ui/libskinned*
-%_libdir/%name-%branch/Output/libalsa*
+%_libdir/%name-%branch/Output/libpulseaudio*
 %_libdir/%name-%branch/PlayListFormats/*.so
 %_libdir/%name-%branch/CommandLineOptions/*.so
 %_libdir/%name-%branch/FileDialogs/*.so
@@ -792,8 +735,8 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %_libdir/*.so.0.12*
 
 # Output plugins
-%files -n %name-out-pulseaudio
-%_libdir/%name-%branch/Output/libpulseaudio*
+%files -n %name-out-alsa
+%_libdir/%name-%branch/Output/libalsa*
 
 %files -n %name-out-oss
 %_libdir/%name-%branch/Output/liboss*
@@ -850,17 +793,11 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %files -n %name-in-sid
 %_libdir/%name-%branch/Input/libsid*
 
-%if "%alt_over_8" != "libcdio-devel"
-# ALT >= 8 only
 %files -n %name-in-archive
 %_libdir/%name-%branch/Input/libarchive*
-%endif
 
-%if "%rel" != "alt0.M51"
-# disable for 5.1
 %files -n %name-in-opus
 %_libdir/%name-%branch/Input/libopus*
-%endif
 
 # Visualization plugins
 %files -n %name-vis-analyzer
@@ -899,10 +836,8 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %_libdir/%name-%branch/Transports/libmms*
 
 # Interface plugins
-%if "%rel" != "alt0.M51"
 %files -n %name-qsui
 %_libdir/%name-%branch/Ui/libqsui*
-%endif
 
 # General plugins
 %files -n %name-converter
@@ -974,6 +909,12 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %files -n %name-full
 
 %changelog
+* Sun Apr 26 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.7-alt1.svn9359
+- 0.12.7 svn9359 version
+
+* Sun Apr 26 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.7-alt1.svn9358
+- 0.12.7 svn9358 version
+
 * Sun Jan 26 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.7-alt1.svn9218
 - 0.12.7 svn9218 version
 
