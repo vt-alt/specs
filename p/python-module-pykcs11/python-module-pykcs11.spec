@@ -2,7 +2,7 @@
 
 Name: python-module-pykcs11
 Version: 1.4.3
-Release: alt1
+Release: alt2
 Summary: A complete PKCS#11 wrapper for Python
 Group: Development/Python
 License: GPLv2
@@ -14,7 +14,7 @@ BuildRequires: rpm-build-python python-module-setuptools
 BuildRequires: gcc-c++
 
 %if_with python3
-BuildRequires: rpm-build-python3 python3-module-setuptools
+BuildRequires: rpm-build-python3 python3-module-setuptools python3-devel
 %endif
 
 %description
@@ -60,7 +60,7 @@ cp -fR . ../python3
 
 %if_with python3
 pushd ../python3
-%python3_install
+%python3_build
 popd
 %endif
 
@@ -84,5 +84,8 @@ cd ../python3
 %endif
 
 %changelog
+* Wed Apr 22 2020 Lenar Shakirov <snejok@altlinux.org> 1.4.3-alt2
+- Fix python3 build
+
 * Fri Jul 14 2017 Lenar Shakirov <snejok@altlinux.ru> 1.4.3-alt1
 - Initial build for ALT
