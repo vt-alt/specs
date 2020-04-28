@@ -3,7 +3,7 @@
 
 Name: babel
 Version: 2.0.0
-Release: alt2.qa1
+Release: alt2.qa2
 Summary: Language tool for high-performance scientific computing community
  
 License: LGPL v2.1
@@ -241,6 +241,7 @@ This package contains user manual for Babel.
 
 %prep
 %setup
+find -name Makefile.in -exec sed 's/-traditional/& -Ubool -Uvector/' -i {} \;
 
 %build
 export JAVAPREFIX="%_libexecdir/jvm/java"
@@ -364,6 +365,9 @@ done
 %_docdir/%name
 
 %changelog
+* Thu Oct 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.0.0-alt2.qa2
+- Fixed build on ppc64le.
+
 * Fri Nov 30 2018 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.0.0-alt2.qa1
 - Removed redundant BR: w3c-libwww-devel.
 
