@@ -1,67 +1,81 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: blender
-Version: 2.79b
-Release: alt7
+Version: 2.82
+Release: alt1.a
 
 Summary: 3D modeling, animation, rendering and post-production
-License: GPLv2
+License: GPL-3.0-or-later
 Group: Graphics
-URL: http://www.blender.org/
+URL: https://www.blender.org
 
-# Repacked http://download.blender.org/source/blender-%%version.tar.gz
+# git://git.blender.org/blender.git
 Source: %name-%version.tar
+
+# git submodules
+# before updating submodules via script don't forget
+# to update relative submodule paths into absolute ones
+Source1: locale-%version.tar
+Source2: addons-%version.tar
+Source3: addons_contrib-%version.tar
+Source4: tools-%version.tar
 
 Patch11: 0001-blender_thumbnailer.patch
 Patch12: 0002-install_in_usr_share.patch
-Patch13: 0003-locales_directory_install.patch
-Patch14: 0004-update_manpages.patch
-Patch15: 0005-do_not_use_version_number_in_system_path.patch
-Patch16: 0006-look_for_dejavu_ttf_with_fontconfig.patch
-
-# https://git.archlinux.org/svntogit/community.git/tree/trunk/ffmpeg4.0.patch?h=packages/blender&id=059566c3ec72
-Patch17: blender-2.79-arch-ffmpeg40.patch
+Patch13: 0004-do_not_use_version_number_in_system_path.patch
+Patch14: blender-2.82-fedora-fix_appdata_validation.patch
 
 Patch21: blender-2.66-alt-pcre.patch
 Patch22: blender-2.77-alt-enable-localization.patch
 Patch23: blender-2.77-alt-usertempdir.patch
-Patch24: blender-2.79-upstream-gcc8.patch
-Patch25: blender-2.79-alt-gcc8.patch
-Patch26: blender-2.79-slackbuilds-PyRNA-python3.7.patch
-Patch27: blender-2.79-fedora-oiio2.patch
+Patch24: blender-2.80-alt-include-deduplication-check-skip.patch
+Patch25: blender-2.80-alt-use-system-glog.patch
+Patch26: blender-2.82-alt-link-fix.patch
 
 BuildRequires(pre): rpm-build-python3
-
-# Automatically added by buildreq on Mon Oct 31 2016
-# optimized out: boost-devel boost-devel-headers cmake-modules fontconfig libGL-devel libGLU-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libavcodec-devel libavutil-devel libfreetype-devel libstdc++-devel pkg-config python-base python-modules python3 python3-base xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-xproto-devel zlib-devel
 BuildRequires: boost-filesystem-devel boost-locale-devel
 BuildRequires: cmake gcc-c++
-BuildRequires: fontconfig-devel libGLEW-devel libXi-devel
+BuildRequires: libGLEW-devel libXi-devel
 BuildRequires: libavdevice-devel libavformat-devel
 BuildRequires: libfftw3-devel libjack-devel libopenal-devel libsndfile-devel
-BuildRequires: libjpeg-devel libopenjpeg-devel libpng-devel libtiff-devel libpcre-devel libswscale-devel libxml2-devel
+BuildRequires: libjpeg-devel pkgconfig(libopenjp2) libpng-devel libtiff-devel libpcre-devel libswscale-devel libxml2-devel
 BuildRequires: liblzo2-devel
 BuildRequires: libopenCOLLADA-devel >= 0-alt3
-BuildRequires: python3-devel >= 3.5
+BuildRequires: python3-devel
+BuildRequires: libnumpy-py3-devel
 BuildRequires: libopenimageio-devel
 BuildRequires: libopencolorio-devel
 BuildRequires: openexr-devel
 BuildRequires: libpugixml-devel
+BuildRequires: libglog-devel libgflags-devel eigen3-devel
+BuildRequires: libXxf86vm-devel libXrender-devel
+BuildRequires: tbb-devel
+BuildRequires: libfreetype-devel
+# TODO: when libnumpy-py3-devel is fixed, remove dependency to libnumpy-devel
+BuildRequires: libnumpy-devel
+# Remove following dependency when libopenjpeg2.0-devel is fixed
+BuildRequires: openjpeg-tools2.0
 
 %add_python3_path %_datadir/%name/scripts
-%add_python3_req_skip BPyWindow
 %add_python3_req_skip _bpy
 %add_python3_req_skip _bpy_path
-%add_python3_req_skip _freestyle
 %add_python3_req_skip _cycles
-%add_python3_req_skip bge
+%add_python3_req_skip _freestyle
 %add_python3_req_skip bgl
-%add_python3_req_skip blend
 %add_python3_req_skip blf
-%add_python3_req_skip enchant
-%add_python3_req_skip mathutils
+%add_python3_req_skip idprop.types
+%add_python3_req_skip gpu
+%add_python3_req_skip io_scene_gltf2.blender.com
+%add_python3_req_skip io_scene_gltf2.blender.exp
+%add_python3_req_skip io_scene_gltf2.io.com
+%add_python3_req_skip io_scene_gltf2.io.exp
+%add_python3_req_skip mathutils.bvhtree
 %add_python3_req_skip mathutils.geometry
 %add_python3_req_skip mathutils.noise
+%add_python3_req_skip oscurart_tools.files
+%add_python3_req_skip oscurart_tools.mesh
+%add_python3_req_skip oscurart_tools.object
+%add_python3_req_skip oscurart_tools.render
 
 %py3_provides BPyMesh
 %py3_provides Blender
@@ -93,98 +107,110 @@ scripting, rendering, compositing, post-production and game creation
 на языке Python.
 
 %prep
-%setup
+%setup -a 1 -a 2 -a 3 -a 4
 
 # debian
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
 
-%patch17 -p1
+# fedora
+%patch14 -p1
 
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
-%patch25 -p2
+%patch25 -p1
 %patch26 -p1
-%patch27 -p1
 
 %ifnarch %ix86 x86_64
 sed -i 's,-fuse-ld=gold,,' build_files/cmake/platform/platform_unix.cmake
 %endif
+
+# Delete the bundled FindOpenJPEG to make find_package use the system version
+# instead (the local version hardcodes the openjpeg version so it is not update
+# proof)
+rm -f build_files/cmake/Modules/FindOpenJPEG.cmake
+
+# Remove bundled libraries which must not be used instead of system ones
+rm -rf extern/{Eigen3,glew,lzo,gflags,glog}
 
 %build
 BUILD_DATE="$(stat -c '%%y' '%SOURCE0' | date -f - '+%%Y-%%m-%%d')"
 BUILD_TIME="$(stat -c '%%y' '%SOURCE0' | date -f - '+%%H:%%M:%%S')"
 
 # needed due to non-standard location of pcre.h header
-%add_optflags "$(pkg-config --cflags libpcre)"
+%add_optflags "-I%_includedir/pcre"
 
 %add_optflags -fPIC -funsigned-char -fno-strict-aliasing
 
-export CFLAGS="%optflags"
-export CXXFLAGS="%optflags"
-
-mkdir cmake-make
-pushd cmake-make
-
-cmake .. \
-  -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+%cmake \
 %ifnarch %{ix86} x86_64
-  -DWITH_RAYOPTIMIZATION=OFF \
-  -DWITH_CPU_SSE=OFF \
+	-DWITH_RAYOPTIMIZATION=OFF \
+	-DWITH_CPU_SSE=OFF \
 %endif
- -DCMAKE_SKIP_RPATH=ON \
- -DBUILD_SHARED_LIBS=OFF \
- -DWITH_FFTW3=ON \
- -DWITH_JACK=ON \
- -DWITH_CODEC_SNDFILE=ON \
- -DWITH_IMAGE_OPENJPEG=ON \
- -DWITH_PYTHON=ON \
- -DWITH_PYTHON_INSTALL=OFF \
- -DWITH_CODEC_FFMPEG=ON \
- -DWITH_GAMEENGINE=ON \
- -DWITH_CXX_GUARDEDALLOC=OFF \
- -DWITH_INSTALL_PORTABLE=OFF \
- -DWITH_PYTHON_SAFETY=ON \
- -DWITH_PLAYER=ON \
- -DWITH_OPENMP=OFF \
- -DWITH_OPENCOLLADA=ON \
- -DWITH_FONTCONFIG=ON \
- -DWITH_CYCLES=ON \
- -DWITH_OPENCOLORIO=ON \
- -DWITH_OPENIMAGEIO=ON \
- -DWITH_SYSTEM_GLEW=ON \
- -DWITH_SYSTEM_LZO=ON \
- -DWITH_SYSTEM_OPENJPEG=ON \
- -DWITH_IMAGE_OPENEXR=ON \
- -DPYTHON_VERSION="%_python3_version" \
- -DBUILDINFO_OVERRIDE_DATE="$BUILD_DATE" \
- -DBUILDINFO_OVERRIDE_TIME="$BUILD_TIME" \
- #
+	-DBUILD_SHARED_LIBS=OFF \
+	-DWITH_FFTW3=ON \
+	-DWITH_JACK=ON \
+	-DWITH_CODEC_SNDFILE=ON \
+	-DWITH_IMAGE_OPENJPEG=ON \
+	-DWITH_PYTHON=ON \
+	-DWITH_PYTHON_INSTALL=OFF \
+	-DWITH_CODEC_FFMPEG=ON \
+	-DWITH_CXX_GUARDEDALLOC=OFF \
+	-DWITH_INSTALL_PORTABLE=OFF \
+	-DWITH_PYTHON_SAFETY=ON \
+	-DWITH_OPENMP=OFF \
+	-DWITH_OPENCOLLADA=ON \
+	-DWITH_CYCLES=ON \
+	-DWITH_OPENCOLORIO=ON \
+	-DWITH_OPENIMAGEIO=ON \
+	-DWITH_SYSTEM_GLEW=ON \
+	-DWITH_SYSTEM_LZO=ON \
+	-DWITH_SYSTEM_EIGEN3:BOOL=ON \
+	-DWITH_SYSTEM_GFLAGS:BOOL=ON \
+	-DWITH_SYSTEM_GLOG:BOOL=ON \
+	-DWITH_IMAGE_OPENEXR=ON \
+	-DWITH_TBB:BOOL=ON \
+	-DWITH_USD:BOOL=ON \
+	-DPYTHON_VERSION="%_python3_version" \
+	-DBUILDINFO_OVERRIDE_DATE="$BUILD_DATE" \
+	-DBUILDINFO_OVERRIDE_TIME="$BUILD_TIME" \
+	-DWITH_DOC_MANPAGE:BOOL=ON \
+	%nil
 
-popd
-
-%make_build -C cmake-make
+%cmake_build
 
 %install
-%makeinstall_std -C cmake-make
+%cmakeinstall_std
 
-%find_lang blender
+mkdir -p %buildroot%_datadir/metainfo
+install -m644 release/freedesktop/*.appdata.xml %buildroot%_datadir/metainfo/
 
-%files -f %name.lang
+%files
 %_bindir/*
 %_desktopdir/*
-%_iconsdir/hicolor/*/apps/%name.png
 %_iconsdir/hicolor/scalable/apps/%name.svg
+%_iconsdir/hicolor/symbolic/apps/%name-symbolic.svg
 %_datadir/%name/
+%_datadir/metainfo/*.appdata.xml
 %_defaultdocdir/%name/
+%_man1dir/*.1*
 
 %changelog
+* Wed Apr 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.82-alt1.a
+- Updated to upstream version 2.82a.
+
+* Tue Mar 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.82-alt1
+- Updated to upstream version 2.82.
+
+* Tue Jan 21 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.81-alt1.a
+- Updated to upstream version 2.81a.
+
+* Wed Jul 31 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.80-alt1
+- Updated to upstream version 2.80.
+
 * Tue May 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.79b-alt7
 - Fixed compatibility with python-3.7.
 - Rebuilt with openimageio-2.0.8.
