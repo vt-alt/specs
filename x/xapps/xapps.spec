@@ -1,7 +1,9 @@
 %define translations_name xapp
 
+%define libxappsdir /usr/lib/xapps
+
 Name: xapps
-Version: 1.4.8
+Version: 1.6.9
 Release: alt1
 
 Summary: Libraries and common resources for XApps
@@ -12,8 +14,11 @@ Packager: Vladimir Didenko <cow@altlinux.org>
 
 Source: %name-%version.tar
 
+AutoReqProv: nopython
+%define __python %nil
+
 Requires: lib%name = %version-%release
-BuildPreReq: rpm-build-licenses rpm-build-gnome
+BuildRequires(pre): rpm-build-licenses rpm-build-gnome rpm-build-python3
 
 # From configure.in
 BuildPreReq: intltool >= 0.35
@@ -27,9 +32,9 @@ BuildPreReq: gsettings-desktop-schemas-devel >= 3.5.91
 BuildRequires: meson
 BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libgnomekbd-devel
 BuildRequires: vala-tools
-BuildRequires: rpm-build-python rpm-build-python3
-BuildRequires: python-module-pygobject3-devel
 BuildRequires: python3-module-pygobject3-devel
+
+%add_python3_path %libxappsdir
 
 %description
 Libraries and common resources for XApps
@@ -90,19 +95,28 @@ Requires: lib%name-gir = %version-%release
 %description -n lib%name-gir-devel
 GObject introspection devel data for the %name library
 
-%package -n python-module-%name-overrides
-Summary: Python Xapp overrides Library
-Group: Development/Python
-
-%description -n python-module-%name-overrides
-Python Xapp overrides Library
-
 %package -n python3-module-%name-overrides
 Summary: Python3 Xapp overrides Library
 Group: Development/Python3
 
 %description -n python3-module-%name-overrides
-Python3 Xapp overrides Library
+Python3 Xapp pverrides Library
+
+%package -n %name-applet-constants
+Summary: Common constants for XApps applets
+Group: Graphical desktop/GNOME
+
+%description -n %name-applet-constants
+Common constants for XApps applets
+
+%package -n mate-xapp-status-applet
+Summary: XAppStatusIcon applet for mate panel
+Group: Graphical desktop/GNOME
+Requires: %name-applet-constants
+BuildArch: noarch
+
+%description -n mate-xapp-status-applet
+XAppStatusIcon applet for mate panel
 
 %prep
 %setup -q -n %name-%version
@@ -115,6 +129,11 @@ Python3 Xapp overrides Library
 %meson_install
 
 %find_lang %translations_name
+
+# This module name is too generic. I don't want to make it visible for
+# the whole system
+%filter_from_requires /python3[(]applet_constants[)]/d
+%filter_from_provides /python3[(]applet_constants[)]/d
 
 %files -n %name-schemas
 %_datadir/glib-2.0/schemas/org.x.apps.*.xml
@@ -147,14 +166,47 @@ Python3 Xapp overrides Library
 %files -n lib%name-gir-devel
 %_girdir/*
 
-%files -n python-module-%name-overrides
-%python_sitelibdir/gi/overrides/XApp.py*
-
 %files -n python3-module-%name-overrides
 %python3_sitelibdir/gi/overrides/XApp.py
 %python3_sitelibdir/gi/overrides/__pycache__/*
 
+%files -n %name-applet-constants
+%dir %libxappsdir
+%libxappsdir/applet_constants.*
+%dir %libxappsdir/__pycache__/
+%libxappsdir/__pycache__/*
+
+%files -n mate-xapp-status-applet
+%libxappsdir/mate-xapp-status-applet.py
+%_datadir/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
+%_datadir/mate-panel/applets/org.x.MateXAppStatusApplet.mate-panel-applet
+
 %changelog
+* Tue Jan 14 2020 Vladimir Didenko <cow@altlinux.org> 1.6.9-alt1
+- 1.6.9
+
+* Tue Dec 17 2019 Vladimir Didenko <cow@altlinux.org> 1.6.8-alt1
+- 1.6.8
+
+* Wed Dec 11 2019 Vladimir Didenko <cow@altlinux.org> 1.6.7-alt1
+- 1.6.7
+
+* Mon Dec 2 2019 Vladimir Didenko <cow@altlinux.org> 1.6.5-alt1
+- 1.6.5
+
+* Thu Nov 28 2019 Vladimir Didenko <cow@altlinux.org> 1.6.3-alt1
+- 1.6.3
+
+* Fri Nov 22 2019 Vladimir Didenko <cow@altlinux.org> 1.6.2-alt1
+- 1.6.2
+
+* Mon Nov 18 2019 Vladimir Didenko <cow@altlinux.org> 1.6.1-alt1
+- 1.6.1
+- remove Python 2 sub-package
+
+* Thu Sep 12 2019 Vladimir Didenko <cow@altlinux.org> 1.4.9-alt1
+- 1.4.9
+
 * Wed Jul 10 2019 Vladimir Didenko <cow@altlinux.org> 1.4.8-alt1
 - 1.4.8
 
