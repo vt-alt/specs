@@ -1,8 +1,8 @@
 %def_enable tsget
 
 Name: openssl1.1
-Version: 1.1.1d
-Release: alt1.1
+Version: 1.1.1g
+Release: alt1
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
 License: OpenSSL
@@ -19,7 +19,6 @@ Source4: cc.sh
 Patch03: openssl-alt-config.patch
 Patch04: openssl-alt-engines-path.patch
 Patch05: openssl-alt-e2k-makecontext.patch
-Patch06: openssl-upstream-properly-handle-BIO_CTRL_PENDING-and-BIO_CTRL_WPENDING.patch
 
 # Patches from Fedora
 # Build changes
@@ -221,7 +220,6 @@ on the command line.
 %patch03 -p1
 %patch04 -p1
 %patch05 -p2
-%patch06 -p1
 
 %patch101 -p1
 #%%patch102 -p1 (different config)
@@ -246,6 +244,9 @@ on the command line.
 #%%patch150 -p1 (new functionality; not sure)
 
 find -type f -name \*.orig -delete
+# Skip afalg test.
+# This test fails when af_alg moudle is loaded, but with no aes_cbc support.
+rm test/recipes/30-test_afalg.t
 
 # Correct shared library name.
 sed -i 's/\\\$(SHLIB_MAJOR)\.\\\$(SHLIB_MINOR)/\\$(VERSION)/g' Configure
@@ -464,6 +465,9 @@ LD_LIBRARY_PATH=%buildroot/%_lib \
 %endif
 
 %changelog
+* Tue Apr 21 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1g-alt1
+- Updated to 1.1.1g (fixes CVE-2019-1551, CVE-2020-1967).
+
 * Sat Sep 21 2019 Michael Shigorin <mike@altlinux.org> 1.1.1d-alt1.1
 - Fixed build --without check.
 
