@@ -3,15 +3,16 @@
 %define _userunitdir %_prefix/lib/systemd/user
 
 %def_enable docs
+%{?_enable_docs:%def_enable docbook_docs}
 
 Name: flatpak-builder
-Version: 1.0.8
-Release: alt1
+Version: 1.0.10
+Release: alt1.1
 Epoch:1
 
 Summary: Tool to build flatpaks from source
 Group: Development/Other
-License: LGPLv2+
+License: LGPL-2.1
 Url: http://flatpak.org/
 
 # VCS: https://github.com/flatpak/flatpak-builder.git
@@ -33,6 +34,7 @@ Requires: /usr/bin/strip
 Requires: /usr/bin/svn
 Requires: /bin/tar
 Requires: /usr/bin/unzip
+Requires: /usr/bin/7z
 
 BuildRequires: flatpak >= %flatpak_ver
 BuildRequires: libcap-devel
@@ -47,7 +49,8 @@ BuildRequires: pkgconfig(yaml-0.1)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: libcurl-devel
 BuildRequires: xsltproc
-%{?_enable_docs:BuildRequires: xmlto docbook-dtds docbook-style-xsl}
+%{?_enable_docs:BuildRequires: xsltproc docbook-dtds docbook-style-xsl}
+%{?_enable_docbook_docs:BuildRequires: xmlto}
 
 %description
 Flatpak-builder is a tool for building flatpaks from sources.
@@ -60,7 +63,8 @@ See http://flatpak.org/ for more information.
 %build
 %autoreconf
 %configure \
-    %{?_enable_docs--enable-docbook-docs} \
+    %{?_disable_docs:--disable-documentation --disable-docbook-docs} \
+    %{?_enable_docbook_docs:--enable-docbook-docs} \
     --with-dwarf-header=%_includedir/libdwarf
 %make_build
 
@@ -69,11 +73,20 @@ See http://flatpak.org/ for more information.
 
 %files
 %_bindir/%name
-%_man1dir/%name.1*
+%{?_enable_docs:%_man1dir/%name.1*
 %_man5dir/flatpak-manifest.5*
-%{?_enable_docs:%doc %_docdir/%name}
+%{?_enable_docbook_docs:%doc %_docdir/%name}}
 
 %changelog
+* Sat Apr 11 2020 Yuri N. Sedunov <aris@altlinux.org> 1:1.0.10-alt1.1
+- improved "docs" knob
+
+* Sat Mar 21 2020 Yuri N. Sedunov <aris@altlinux.org> 1:1.0.10-alt1
+- 1.0.10
+
+* Sun Nov 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1:1.0.9-alt1
+- 1.0.9
+
 * Fri Jun 28 2019 Yuri N. Sedunov <aris@altlinux.org> 1:1.0.8-alt1
 - 1.0.8
 

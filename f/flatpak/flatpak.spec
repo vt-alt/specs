@@ -8,11 +8,12 @@
 # peer to peer support requires ostree >= 2018.2 with experimental/P2P API
 %def_disable p2p
 %def_enable docs
+%def_with system_dbus_proxy
 # cannot run bwrap in hasher
 %def_disable check
 
 Name: flatpak
-Version: 1.4.2
+Version: 1.6.3
 Release: alt1
 
 Summary: Application deployment framework for desktop apps
@@ -29,13 +30,14 @@ Source: %name-%version.tar
 %define flatpak_user %name
 
 %define ostree_ver 2018.9
-%define bwrap_ver 0.2.1
+%define bwrap_ver 0.4.1
 %define libarchive_ver 2.8.0
 
 Requires: lib%name = %version-%release
 Requires: %_bindir/fusermount
 Requires: %_bindir/bwrap
 Requires: bubblewrap >= %bwrap_ver
+%{?_with_system_dbus_proxy:Requires: xdg-dbus-proxy}
 Requires: ostree
 Requires: dconf
 Requires: fuse
@@ -61,6 +63,7 @@ BuildRequires: libfuse-devel
 BuildRequires: udev-rules
 BuildRequires: %_bindir/bwrap
 BuildRequires: bubblewrap >= %bwrap_ver
+%{?_with_system_dbus_proxy:BuildRequires: xdg-dbus-proxy}
 BuildRequires: %_bindir/xsltproc
 %{?_enable_docs:BuildRequires: %_bindir/xmlto docbook-dtds docbook-style-xsl}
 BuildRequires: /proc
@@ -101,7 +104,9 @@ This package contains the pkg-config file and development headers for %name.
            --with-system-bubblewrap \
            %{?_enable_docs:--enable-docbook-docs} \
            --with-systemdsystemunitdir=%_unitdir \
-           --with-systemduserunitdir=%_userunitdir
+           --with-systemduserunitdir=%_userunitdir \
+           %{?_with_system_dbus_proxy:DBUS_PROXY=%_bindir/xdg-dbus-proxy}
+%nil
 %make_build
 
 %install
@@ -136,7 +141,7 @@ install -d %buildroot%_localstatedir/lib/flatpak
 %_datadir/polkit-1/actions/%xdg_name.policy
 %_datadir/polkit-1/rules.d/%xdg_name.rules
 %_libexecdir/%name-portal
-%_libexecdir/%name-dbus-proxy
+%{?_without_system_dbus_proxy:%_libexecdir/%name-dbus-proxy}
 %_libexecdir/%name-session-helper
 %_libexecdir/%name-system-helper
 %_libexecdir/%name-validate-icon
@@ -151,6 +156,10 @@ install -d %buildroot%_localstatedir/lib/flatpak
 %_userunitdir/%name-portal.service
 %_userunitdir/%name-session-helper.service
 %_prefix/lib/systemd/user-environment-generators/60-%name
+%_prefix/lib/systemd/user/flatpak-oci-authenticator.service
+%_libexecdir/%name-oci-authenticator
+%_datadir/dbus-1/interfaces/org.freedesktop.Flatpak.Authenticator.xml
+%_datadir/dbus-1/services/org.flatpak.Authenticator.Oci.service
 %_man5dir/*
 %doc NEWS README.md
 %{?_enable_docs:%doc %_docdir/%name/}
@@ -169,6 +178,27 @@ install -d %buildroot%_localstatedir/lib/flatpak
 
 
 %changelog
+* Tue Mar 31 2020 Yuri N. Sedunov <aris@altlinux.org> 1.6.3-alt1
+- 1.6.3
+
+* Thu Feb 13 2020 Yuri N. Sedunov <aris@altlinux.org> 1.6.2-alt1
+- 1.6.2
+
+* Mon Jan 27 2020 Yuri N. Sedunov <aris@altlinux.org> 1.6.1-alt1
+- 1.6.1
+
+* Sat Dec 21 2019 Yuri N. Sedunov <aris@altlinux.org> 1.6.0-alt1
+- 1.6.0
+
+* Fri Dec 13 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.2-alt1
+- 1.5.2
+
+* Sun Nov 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1.5.0-alt1
+- 1.5.0
+
+* Sat Sep 07 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4.2-alt1.1
+- rebuilt with system dbus-proxy
+
 * Fri Jun 14 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4.2-alt1
 - 1.4.2
 - %%pre: create flatpak group/user

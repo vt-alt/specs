@@ -1,11 +1,12 @@
 %def_enable selinux
-%def_enable userns
-
-# "etuid" or "none"
+# "setuid" or "none"
 %define priv_mode setuid
+%if %priv_mode == "setuid"
+%def_enable userns
+%endif
 
 Name: bubblewrap
-Version: 0.3.3
+Version: 0.4.1
 Release: alt1
 
 Summary: Unprivileged sandboxing tool
@@ -73,6 +74,12 @@ setcap -q "cap_sys_admin,cap_net_admin,cap_sys_chroot,cap_setuid,cap_setgid=ep" 
 %_datadir/bash-completion/completions/bwrap
 
 %changelog
+* Tue Mar 31 2020 Yuri N. Sedunov <aris@altlinux.org> 0.4.1-alt1
+- 0.4.1
+
+* Tue Dec 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.0-alt1
+- 0.4.0
+
 * Fri May 03 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.3-alt1
 - 0.3.3
 
