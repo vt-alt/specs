@@ -1,5 +1,5 @@
 Name: code
-Version: 1.43.0
+Version: 1.44.2
 Release: alt1
 
 Summary: Visual Studio Code
@@ -59,6 +59,9 @@ install -m644 -D %SOURCE3 %buildroot%_pixmapsdir/code.png
 %_pixmapsdir/code.png
 
 %changelog
+* Sat Apr 18 2020 Vitaly Lipatov <lav@altlinux.ru> 1.44.2-alt1
+- new version 1.44.2 (with rpmrb script)
+
 * Fri Mar 13 2020 Vitaly Lipatov <lav@altlinux.ru> 1.43.0-alt1
 - new version 1.43.0 (with rpmrb script)
 
