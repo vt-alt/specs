@@ -2,7 +2,7 @@
 
 Name: p7zip
 Version: 16.02
-Release: alt4
+Release: alt5
 
 Summary: 7zip unofficial port - a file-archiver with highest compression ratio
 License: Freely distributable
@@ -19,6 +19,12 @@ Patch4: CVE-2018-10115.patch
 # Automatically added by buildreq on Sat Oct 08 2011
 # optimized out: libstdc++-devel
 BuildRequires: gcc-c++
+%ifarch %ix86
+BuildRequires: nasm
+%endif
+%ifarch x86_64
+BuildRequires: yasm
+%endif
 
 %description
 p7zip is a port of 7-Zip for Unix. 7-Zip is a file archiver
@@ -69,6 +75,13 @@ The devel package contains the p7zip include files.
 find . -name '*.cpp' -exec \
 subst 's@getenv("P7ZIP_HOME_DIR")@"%_libdir/p7zip/"@g' {} \;
 
+%ifarch %ix86
+cp -f makefile.linux_x86_asm_gcc_4.X makefile.machine
+%endif
+%ifarch x86_64
+cp -f makefile.linux_amd64_asm makefile.machine
+%endif
+
 # NB: 'all' is not default target in this makefile
 %make_build OPTFLAGS="%optflags" all2
 
@@ -104,6 +117,9 @@ xargs -0 install -pm644 -t %buildroot%includedir/
 %includedir
 
 %changelog
+* Thu Apr 23 2020 Andrey Cherepanov <cas@altlinux.org> 16.02-alt5
+- build with asssembler code (ex. for benchmarking AES256CBC:2)
+
 * Sun Nov 04 2018 Michael Shigorin <mike@altlinux.org> 16.02-alt4
 - E2K: fix FTBFS; tune optflags a bit
 
