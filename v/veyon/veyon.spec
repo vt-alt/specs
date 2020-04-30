@@ -2,7 +2,7 @@
 
 Name: veyon
 Version: 4.2.5
-Release: alt2
+Release: alt3
 Group: Education
 License: GPLv2
 Url: https://veyon.io/
@@ -38,7 +38,7 @@ BuildRequires: libqca2-devel
 BuildRequires: libqca-qt5-devel
 BuildRequires: libXdamage-devel
 BuildRequires: libXtst-devel
-Requires: polkit
+Requires: polkit qca-qt5-ossl
 
 %description
 Veyon is a free and open source software 
@@ -102,6 +102,9 @@ Veyon доступен на разных языках и предоставля�
 %_datadir/%name
 
 %changelog
+* Tue Apr 21 2020 Pavel Moseev <mars@altlinux.org> 4.2.5-alt3
+- Fix launch of Veyon in ALT Workstation x86_64 (closes: #37950)
+
 * Wed Jan 15 2020 Pavel Moseev <mars@altlinux.org> 4.2.5-alt2
 - Fix launch of Veyon. Use pkexec instead of gksudo and kdesudo (closes: #37651)
 
