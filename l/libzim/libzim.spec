@@ -1,5 +1,5 @@
 Name:    libzim
-Version: 5.1.0
+Version: 6.1.1
 Release: alt1
 Summary: Library for reading/writing ZIM files
 
@@ -20,6 +20,7 @@ BuildRequires: libxapian-devel
 BuildRequires: libicu-devel
 BuildRequires: python3-dev
 BuildRequires: python3-module-Cython
+BuildRequires: ninja-build
 
 Provides: zimlib = %version-%release
 
@@ -46,8 +47,8 @@ developing applications that use %{name}.
 %setup
 
 %build
-%meson
-%meson_build
+%meson -Dwerror=false
+%meson_build 
 
 %install
 %meson_install
@@ -63,6 +64,21 @@ developing applications that use %{name}.
 %_pkgconfigdir/%name.pc
 
 %changelog
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 6.1.1-alt1
+- New version.
+
+* Thu Apr 09 2020 Andrey Cherepanov <cas@altlinux.org> 6.1.0-alt1
+- New version.
+
+* Tue Oct 01 2019 Andrey Cherepanov <cas@altlinux.org> 6.0.2-alt1
+- New version.
+
+* Tue Sep 10 2019 Andrey Cherepanov <cas@altlinux.org> 6.0.1-alt1
+- New version.
+
+* Wed Sep 04 2019 Andrey Cherepanov <cas@altlinux.org> 6.0.0-alt1
+- New version.
+
 * Thu Aug 22 2019 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
 - New version.
 
