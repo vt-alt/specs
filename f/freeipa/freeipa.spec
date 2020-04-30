@@ -42,7 +42,7 @@
 
 Name: freeipa
 Version: 4.7.4
-Release: alt2
+Release: alt3
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -1002,6 +1002,10 @@ fi
 %python3_sitelibdir/ipaplatform-*-nspkg.pth
 
 %changelog
+* Thu Feb 06 2020 Evgeny Sinelnikov <sin@altlinux.org> 4.7.4-alt3
+- Fixed compatibility with Samba 4.11
+- Backported fix Pylint with python3: Remove subclassing from object
+
 * Mon Dec 16 2019 Stanislav Levin <slev@altlinux.org> 4.7.4-alt2
 - Fixed automount NFS share.
 - Fixed trust creation.

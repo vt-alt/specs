@@ -59,7 +59,7 @@
 %endif
 
 Name:    samba
-Version: 4.10.11
+Version: 4.11.7
 Release: alt1
 
 Group:   System/Servers
@@ -115,7 +115,6 @@ BuildRequires: libpam-devel
 BuildRequires: perl-devel
 BuildRequires: perl-Parse-Yapp
 BuildRequires: libpopt-devel
-BuildRequires: python-devel
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
 BuildRequires: libreadline-devel
@@ -140,27 +139,23 @@ BuildRequires: libcups-devel
 BuildRequires: gawk libgtk+2-devel libcap-devel libuuid-devel
 %{?_with_doc:BuildRequires: inkscape libxslt xsltproc netpbm dblatex html2text docbook-style-xsl}
 %if_without talloc
-BuildRequires: libtalloc-devel >= 2.1.16
-BuildRequires: python-module-talloc-devel
+BuildRequires: libtalloc-devel >= 2.2.0
 BuildRequires: python3-module-talloc-devel
 %endif
 
 %if_without tevent
-BuildRequires: libtevent-devel >= 0.9.39
-BuildRequires: python-module-tevent
+BuildRequires: libtevent-devel >= 0.10.0
 BuildRequires: python3-module-tevent
 %endif
 
 %if_without tdb
-BuildRequires: libtdb-devel >= 1.3.18
-BuildRequires: python-module-tdb
+BuildRequires: libtdb-devel >= 1.4.2
 BuildRequires: python3-module-tdb
 %endif
 
 %if_without ldb
-%define ldb_version 1.5.6
+%define ldb_version 2.0.9
 BuildRequires: libldb-devel = %ldb_version
-BuildRequires: python-module-pyldb-devel
 BuildRequires: python3-module-pyldb-devel
 %endif
 %{?_with_testsuite:BuildRequires: ldb-tools}
@@ -199,6 +194,15 @@ Requires: %name-winbind-common = %version-%release
 Requires(pre): %name-common = %version-%release
 %endif
 Conflicts: %name-dc-mitkrb5
+
+# Workaround for unneeded python2.7 requires
+%add_python_req_skip bisect
+%add_python_req_skip ctypes
+%add_python_req_skip json
+%add_python_req_skip logging
+%add_python_req_skip ldb
+%add_python_req_skip tdb
+%add_python_req_skip xml
 
 %description dc
 Samba as Active Directory Domain Services (AD DS) also called a domain controller,
@@ -407,19 +411,6 @@ Obsoletes: libnetapi-DC-devel < 4.10
 
 %description -n libnetapi-devel
 Samba netapi development files
-
-%package -n python-module-%name
-Summary: Samba Python libraries
-Group: Networking/Other
-Requires: %name-libs = %version-%release
-Provides: python-module-%dcname = %version-%release
-Obsoletes: python-module-%dcname < 4.10
-
-%add_python_req_skip Tdb
-
-%description -n python-module-%name
-The %rname-python package contains the Python libraries needed by programs
-that use SMB, RPC and other Samba provided protocols in Python programs.
 
 %package -n python3-module-%name
 Summary: Samba Python3 libraries
@@ -802,7 +793,6 @@ cp -a ../%rname-%version ../%rname-%version-separate-heimdal-server
 %if_with clustering_support \
 	--with-cluster-support \
 %endif \
-	--extra-python=python2.7 \
 	--libdir=%_samba_libdir \
 	--with-modulesdir=%_samba_mod_libdir \
 	--with-privatelibdir=%_samba_mod_libdir \
@@ -864,6 +854,10 @@ printf '#!/bin/bash\nexport PYTHONPATH="%_samba_dc_mod_libdir/python%_python3_ve
 printf "%_bindir/samba-tool\t%_samba_dc_mod_libdir/bin/samba-tool\t50\n" >> %buildroot%_altdir/samba-heimdal
 chmod 0755 %buildroot%_samba_dc_mod_libdir/bin/samba-tool
 
+printf '#!/bin/bash\nexport PYTHONPATH="%_samba_dc_mod_libdir/python%_python3_version"\nexec %_sbindir/samba_downgrade_db.py3 "$@"\n' >%buildroot%_samba_dc_mod_libdir/sbin/samba_downgrade_db
+printf "%_sbindir/samba_downgrade_db\t%_samba_dc_mod_libdir/sbin/samba_downgrade_db\t50\n" >> %buildroot%_altdir/samba-heimdal
+chmod 0755 %buildroot%_samba_dc_mod_libdir/sbin/samba_downgrade_db
+
 %makeinstall_std
 
 rm -f %buildroot%_altdir/samba-mit
@@ -893,6 +887,11 @@ mv %buildroot%_bindir/samba-tool %buildroot%_bindir/samba-tool.py3
 printf '#!/bin/bash\nexec %_bindir/samba-tool.py3 "$@"\n' >%buildroot%_samba_mod_libdir/bin/samba-tool
 printf "%_bindir/samba-tool\t%_samba_mod_libdir/bin/samba-tool\t20\n" > %buildroot%_altdir/samba-mit-dc-client
 chmod 0755 %buildroot%_samba_mod_libdir/bin/samba-tool
+
+mv %buildroot%_sbindir/samba_downgrade_db %buildroot%_sbindir/samba_downgrade_db.py3
+printf '#!/bin/bash\nexec %_sbindir/samba_downgrade_db.py3 "$@"\n' >%buildroot%_samba_mod_libdir/sbin/samba_downgrade_db
+printf "%_bindir/samba_downgrade_db\t%_samba_mod_libdir/sbin/samba_downgrade_db\t20\n" >> %buildroot%_altdir/samba-mit-dc-client
+chmod 0755 %buildroot%_samba_mod_libdir/sbin/samba_downgrade_db
 
 %endif
 
@@ -1008,8 +1007,6 @@ ln -s %_bindir/smbspool %buildroot%{cups_serverbin}/backend/smb
 %_fixperms %buildroot%perl_vendor_privlib
 
 # remove tests form python modules
-rm -rf %buildroot%python_sitelibdir/samba/{tests,subunit,external/subunit,external/testtool}
-rm -f %buildroot%python_sitelibdir/samba/third_party/iso8601/test_*.py
 rm -rf %buildroot%python3_sitelibdir/samba/{tests,subunit,external/subunit,external/testtool}
 rm -f %buildroot%python3_sitelibdir/samba/third_party/iso8601/test_*.py
 %if_with separate_heimdal_server
@@ -1036,9 +1033,6 @@ cp -a docs-xml/output/htmldocs %buildroot%_defaultdocdir/%rname/
 %if_without libsmbclient
 /bin/rm -f %buildroot%_man7dir/libsmbclient.7*
 %endif
-
-# Install pidl/lib/Parse/Pidl/Samba3/Template.pm
-cp -a pidl/lib/Parse/Pidl/Samba3/Template.pm %buildroot%_datadir/perl5/Parse/Pidl/Samba3/
 
 # Copy libsamba_util private headers
 mkdir -p %buildroot%_includedir/samba-4.0/private/lib/util/charset
@@ -1130,6 +1124,7 @@ TDB_NO_FSYNC=1 %make_build test
 %_sbindir/samba_dnsupdate
 %_sbindir/samba_spnupdate
 %_sbindir/samba_upgradedns
+%_sbindir/samba_downgrade_db
 %else #!separate_heimdal_server
 %doc COPYING README.md WHATSNEW.txt
 %doc examples/autofs examples/LDAP examples/misc
@@ -1155,6 +1150,7 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_mod_libdir/sbin/samba_dnsupdate
 %_samba_mod_libdir/sbin/samba_spnupdate
 %_samba_mod_libdir/sbin/samba_upgradedns
+%_samba_mod_libdir/sbin/samba_downgrade_db
 
 %files -n task-samba-dc-mitkrb5
 %endif
@@ -1164,6 +1160,7 @@ TDB_NO_FSYNC=1 %make_build test
 %_altdir/samba-mit-dc-client
 %_samba_mod_libdir/bin/samba-tool
 %_bindir/samba-tool.py3
+%_sbindir/samba_downgrade_db.py3
 %else
 %_bindir/samba-tool
 %endif
@@ -1171,6 +1168,7 @@ TDB_NO_FSYNC=1 %make_build test
 %if_with doc
 %_man8dir/samba-tool.8*
 %_man8dir/samba-gpupdate.8*
+%_man8dir/samba_downgrade_db.8*
 %endif #doc
 %endif #dc
 
@@ -1341,7 +1339,6 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_libdir/libsamba-credentials.so
 %_samba_libdir/libsamba-errors.so
 %_samba_libdir/libsamba-hostconfig.so
-%_samba_libdir/libsamba-policy.so
 %_samba_libdir/libsamba-util.so
 %_samba_libdir/libsamdb.so
 %_samba_libdir/libsmbconf.so
@@ -1357,7 +1354,6 @@ TDB_NO_FSYNC=1 %make_build test
 %_pkgconfigdir/ndr_standard.pc
 %_pkgconfigdir/samba-credentials.pc
 %_pkgconfigdir/samba-hostconfig.pc
-%_pkgconfigdir/samba-policy.pc
 %_pkgconfigdir/samba-util.pc
 %_pkgconfigdir/samdb.pc
 
@@ -1377,7 +1373,6 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_libdir/libsamba-credentials.so.*
 %_samba_libdir/libsamba-errors.so.*
 %_samba_libdir/libsamba-hostconfig.so.*
-%_samba_libdir/libsamba-policy.so.*
 %_samba_libdir/libsamba-util.so.*
 %_samba_libdir/libsamdb.so.*
 %_samba_libdir/libsmbconf.so.*
@@ -1427,6 +1422,7 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_mod_libdir/libflag-mapping-samba4.so
 %_samba_mod_libdir/libgenrand-samba4.so
 %_samba_mod_libdir/libgensec-samba4.so
+%_samba_mod_libdir/libgpo-samba4.so
 %_samba_mod_libdir/libgse-samba4.so
 %_samba_mod_libdir/libgpext-samba4.so
 %if_with dc
@@ -1449,18 +1445,16 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_mod_libdir/libndr-samba4.so
 %_samba_mod_libdir/libnet-keytab-samba4.so
 %_samba_mod_libdir/libnetif-samba4.so
-%_samba_mod_libdir/libnon-posix-acls-samba4.so
 %_samba_mod_libdir/libnpa-tstream-samba4.so
 %_samba_mod_libdir/libposix-eadb-samba4.so
+%_samba_mod_libdir/libprinter-driver-samba4.so
 %_samba_mod_libdir/libprinting-migrate-samba4.so
 %_samba_mod_libdir/libregistry-samba4.so
 %_samba_mod_libdir/libsamba-cluster-support-samba4.so
 %_samba_mod_libdir/libsamba-debug-samba4.so
 %_samba_mod_libdir/libsamba-modules-samba4.so
-%_samba_mod_libdir/libsamba-net-samba4.so
 %_samba_mod_libdir/libsamba-security-samba4.so
 %_samba_mod_libdir/libsamba-sockets-samba4.so
-%_samba_mod_libdir/libsamba-python-samba4.so
 %_samba_mod_libdir/libsamdb-common-samba4.so
 %_samba_mod_libdir/libsecrets3-samba4.so
 %_samba_mod_libdir/libserver-id-db-samba4.so
@@ -1643,9 +1637,6 @@ TDB_NO_FSYNC=1 %make_build test
 %endif
 %perl_vendor_privlib/*
 
-%files -n python-module-%name
-%python_sitelibdir/samba/
-
 %files -n python3-module-%name
 %python3_sitelibdir/samba/
 %_libdir/libsamba*.cpython-*.so.*
@@ -1823,6 +1814,24 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Tue Mar 10 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.7-alt1
+- Update to latest spring release of Samba 4.11
+- Fix search with scope ONE and small result sets with ldb-2.0.9
+
+* Thu Feb 06 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.6-alt1
+- Update to newest release of Samba 4.11
+
+* Fri Jan 24 2020 Evgeny Sinelikov <sin@altlinux.org> 4.10.13-alt1
+- Update to latest stable release of the Samba 4.10
+- Security fixes:
+  + CVE-2019-14902: Replication of ACLs set to inherit down a subtree on AD Directory not automatic
+  + CVE-2019-14907: Crash after failed character conversion at log level 3 or above
+  + CVE-2019-19344: Use after free during DNS zone scavenging in Samba AD DC
+
+* Thu Jan 23 2020 Grigory Ustinov <grenka@altlinux.org> 4.10.11-alt2
+- Build without python2 support
+- Get rid of ubt macros
+
 * Fri Dec 13 2019 Evgeny Sinelikov <sin@altlinux.org> 4.10.11-alt1
 - Update to last security winter release
 - Security fixes:
@@ -1950,19 +1959,19 @@ TDB_NO_FSYNC=1 %make_build test
 - Update to latest autumn release
 - Disable ubt macros due binary package identity change
 
-* Tue Sep 25 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.9.1-alt1%ubt
+* Tue Sep 25 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.9.1-alt1.S1
 - Update to second release of Samba 4.9
 
-* Tue Sep 18 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.9.0-alt1%ubt
+* Tue Sep 18 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.9.0-alt1.S1
 - Update to first release of Samba 4.9
 
-* Fri Sep 14 2018 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.8.5-alt2%ubt
+* Fri Sep 14 2018 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.8.5-alt2.S1
 - Fixed the patch which allows joining to Windows based domain controllers
 
-* Fri Aug 24 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.5-alt1%ubt
+* Fri Aug 24 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.5-alt1.S1
 - Update to latest summer release
 
-* Tue Aug 14 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.4-alt1%ubt
+* Tue Aug 14 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.4-alt1.S1
 - Update to summer security release
 - Security fixes:
   + CVE-2018-1139 Weak authentication protocol allowed
@@ -1973,170 +1982,170 @@ TDB_NO_FSYNC=1 %make_build test
   + CVE-2018-10919 Confidential attribute disclosure from the AD LDAP server
 + Build with subpackage for Python3
 
-* Wed Jul 07 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.3-alt2%ubt
+* Wed Jul 07 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.3-alt2.S1
 - Rebuild Samba DC with MIT Kerberos
 - Fix join.py with automatically connect to domain naming master
 
-* Wed Jul 04 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.3-alt1%ubt
+* Wed Jul 04 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.3-alt1.S1
 - Update to new summer release of Samba 4.8
 
-* Thu Jun 21 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.8-alt1%ubt
+* Thu Jun 21 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.8-alt1.S1
 - Update to first summer release of Samba 4.7
 - Fix doc knob: task-samba-dc should conditionally R: samba-DC-doc
 - Rebuild for e2k with missing SYS_setgroups32
 - Disable glusterfs and cephfs for e2k
 - Disable cephfs support for mipsel
 
-* Fri Jun 08 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.7-alt2%ubt
+* Fri Jun 08 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.7-alt2.S1
 - Split samba-DC-common to separate samba-DC-common-tools
 - Fix build against new python Sisyphus release with libnsl2
 
-* Fri Apr 27 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.1-alt1%ubt
+* Fri Apr 27 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.8.1-alt1.S1
 - Update to latest release of Samba 4.8
 
-* Thu Apr 19 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.7-alt1%ubt
+* Thu Apr 19 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.7-alt1.S1
 - Update to first spring release of Samba 4.7
 
-* Fri Mar 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.6-alt1%ubt
+* Fri Mar 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.6-alt1.S1
 - Update to latest winter release of Samba 4.7
 
-* Thu Mar 15 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.14-alt1%ubt.1
+* Thu Mar 15 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.14-alt1.S1.1
 - Rebuild security release (Fixes: CVE-2018-1050, CVE-2018-1057) with old
   ceph version without libceph-common for c7/c8
 
-* Mon Mar 12 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.14-alt1%ubt
+* Mon Mar 12 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.14-alt1.S1
 - Update to spring security release
 - Security fixes:
   + CVE-2018-1050 Codenomicon crashes in spoolss server code
   + CVE-2018-1057 Unprivileged user can change any user (and admin) password
 
-* Tue Feb 20 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.13-alt1%ubt
+* Tue Feb 20 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.13-alt1.S1
 - Update to second winter release with common bugfixes
 
-* Tue Jan 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.12-alt2%ubt
+* Tue Jan 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.6.12-alt2.S1
 - Fix trouble with joined machine account moving when it already exists.
   Move it only if the admin specified an explicit OU (Samba bug #12696)
 
-* Fri Jan 05 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.4-alt1%ubt
+* Fri Jan 05 2018 Evgeny Sinelnikov <sin@altlinux.org> 4.7.4-alt1.S1
 - Update to first winter release of Samba 4.7
 
-* Thu Dec 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.12-alt1%ubt
+* Thu Dec 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.12-alt1.S1
 - Update to first winter release with common bugfixes (closes: 33210)
 
-* Thu Nov 23 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.11-alt2%ubt
+* Thu Nov 23 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.11-alt2.S1
 - Backport from Heimdal upstream include/includedir directives for krb5.conf
 
-* Tue Nov 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.3-alt1%ubt
+* Tue Nov 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.3-alt1.S1
 - Update for second autumn security release of Samba 4.7
 
-* Tue Nov 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.11-alt1%ubt
+* Tue Nov 21 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.11-alt1.S1
 - Second autumn security release (Fixes: CVE-2017-14746, CVE-2017-15275)
 
-* Fri Nov 17 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.2-alt1%ubt
+* Fri Nov 17 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.2-alt1.S1
 - Update to third autumn release of Samba 4.7
 
-* Thu Nov 16 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.10-alt1%ubt
+* Thu Nov 16 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.10-alt1.S1
 - Update for third autumn release with common bugfixes
 
-* Tue Nov 14 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.1-alt1%ubt
+* Tue Nov 14 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.1-alt1.S1
 - Update for second autumn release with common bugfixes of Samba 4.7
 
-* Wed Oct 25 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.0-alt2%ubt
+* Wed Oct 25 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.7.0-alt2.S1
 - Fix KDC not works in configuration with trusted domain (samba bug #13078)
 
-* Wed Oct 25 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.9-alt1%ubt
+* Wed Oct 25 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.9-alt1.S1
 - Update for second autumn release with common bugfixes
 
-* Thu Oct 12 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.8-alt3%ubt
+* Thu Oct 12 2017 Evgeny Sinelnikov <sin@altlinux.org> 4.6.8-alt3.S1
 - Fix KDC not works in configuration with trusted domain (samba bug #13078)
 
-* Wed Sep 27 2017 Alexey Shabalin <shaba@altlinux.ru> 4.6.8-alt2%ubt
+* Wed Sep 27 2017 Alexey Shabalin <shaba@altlinux.ru> 4.6.8-alt2.S1
 - rebuild with new  libcephfs
 
-* Fri Sep 22 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.7.0-alt1%ubt
+* Fri Sep 22 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.7.0-alt1.S1
 - Update to new autumn release of Samba 4.7
 - Revert removed lpcfg_register_defaults_hook() for openchange
 
-* Wed Sep 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.8-alt1%ubt
+* Wed Sep 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.8-alt1.S1
 - Update for autumn security release:
   + CVE-2017-12150 (SMB1/2/3 connections may not require signing where they
    should)
   + CVE-2017-12151 (SMB3 connections don't keep encryption across DFS redirects)
   + CVE-2017-12163 (Server memory information leak over SMB1)
 
-* Wed Sep 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt3%ubt
+* Wed Sep 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt3.S1
 - Avoid build trouble with ubt macros id on branch c8
 
-* Fri Aug 18 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt2%ubt
+* Fri Aug 18 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt2.S1
 - Clean code from old merged chunks
 
-* Wed Aug 09 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt1%ubt
+* Wed Aug 09 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.7-alt1.S1
 - Update to second summer release
 
-* Sat Jul 15 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.6-alt2%ubt
+* Sat Jul 15 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.6-alt2.S1
 - Rebuild with universal build tag (aka ubt macros) for p7 and c7
 
-* Wed Jul 12 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.6-alt1%ubt
+* Wed Jul 12 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.6-alt1.S1
 - Update to summer security release
 - Security fixes:
   + CVE-2017-11103 Orpheus' Lyre KDC-REP service name validation
 
-* Tue Jun 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.5-alt2%ubt
+* Tue Jun 20 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.5-alt2.S1
 - Remove conflict samba-DC-libs with samba-libs
 - Adjust python module requirement to samba-DC-common-libs
 - Add conflict python-module-samba-DC with python-module-samba
 
-* Tue Jun 06 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.5-alt1%ubt
+* Tue Jun 06 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.5-alt1.S1
 - Udpate to first summer release
 
-* Mon Jun 05 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.4-alt2%ubt
+* Mon Jun 05 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.4-alt2.S1
 - Add libldb-modules-DC package with domain controller ldb modules for ldb-tools
 - Add samba-DC-common-libs with libraries for common modules
 - Append list of libraries consists in libwbclient-DC to not require
   samba-DC-common-libs
 
-* Wed May 24 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.4-alt1%ubt
+* Wed May 24 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.4-alt1.S1
 - Update to second spring security release
 - Fix longtime initialization bug in ldb proxy
 - Security fixes:
   + CVE-2017-7494 Remote code execution from a writable share
 
-* Tue Apr 25 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.3-alt1%ubt
+* Tue Apr 25 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.3-alt1.S1
 - Udpate to second spring release
 - Remove conflict winbind with libwbclient-sssd due upgrade problems
 
-* Wed Apr 12 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.2-alt2%ubt
+* Wed Apr 12 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.2-alt2.S1
 - Fix problem with failed to create kerberos keytab during join to domain
 
-* Fri Mar 31 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.2-alt1%ubt
+* Fri Mar 31 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.2-alt1.S1
 - Update with regression fix of spring security release
 - Revert winbind problem fixes with access user to keytab due troubles in 4.6.x
 
-* Thu Mar 23 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.1-alt1%ubt
+* Thu Mar 23 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.1-alt1.S1
 - Update to spring security release
 - Fixed build --without docs (closes: 33118)
 - Security fixes:
   + CVE-2017-2619 Symlink race allows access outside share definition
 
-* Tue Mar 07 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.0-alt1%ubt
+* Tue Mar 07 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.6.0-alt1.S1
 - Udpate to first spring release
 - Revert removed unused DCERPC_FAULT_UNK_IF for openchange
 
-* Wed Feb 01 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.5-alt1%ubt
+* Wed Feb 01 2017 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.5-alt1.S1
 - Update to winter release
 - Fix PAM winbind problem with access user to keytab
 
-* Wed Dec 28 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.3-alt2%ubt
+* Wed Dec 28 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.3-alt2.S1
 - Do not delete an existing valid credential cache for KEYRING type
 - Set FQDN to lower at fill_mem_keytab_from_system_keytab()
 
-* Mon Dec 19 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.3-alt1%ubt
+* Mon Dec 19 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.3-alt1.S1
 - Update for release with security fixes:
   - CVE-2016-2123 (ndr_pull_dnsp_name contains an integer wrap problem)
   - CVE-2016-2125 (client code always requests a forwardable ticket)
   - CVE-2016-2126 (crash winbindd using a legitimate Kerberos ticket)
 
-* Mon Dec 19 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.2-alt1%ubt
+* Mon Dec 19 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.2-alt1.S1
 - Udpate to first winter release
 
 * Sat Dec 03 2016 Evgeny Sinelnikov <sin@altlinux.ru> 4.5.1-alt2

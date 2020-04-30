@@ -2,7 +2,7 @@
 %def_with check
 
 Name: libtevent
-Version: 0.9.39
+Version: 0.10.2
 Release: alt1
 Summary: The tevent library
 License: LGPLv3+
@@ -12,15 +12,14 @@ Url: http://tevent.samba.org/
 Source: http://samba.org/ftp/tevent/tevent-%{version}.tar.gz
 Patch: tevent-alt-fix-python-ldflags.patch
 
-BuildRequires: libtalloc-devel >= 2.1.16
-BuildRequires: python-module-talloc-devel >= 2.1.16
-BuildRequires: python-devel zlib-devel
+BuildRequires: libtalloc-devel >= 2.3.1
+BuildRequires: zlib-devel
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
-BuildRequires: python3-module-talloc-devel
+BuildRequires: python3-module-talloc-devel >= 2.3.1
 
-Requires: libtalloc >= 2.1.16
+Requires: libtalloc >= 2.3.1
 
 %description
 Tevent is an event system based on the talloc memory management library.
@@ -36,14 +35,6 @@ Requires: %name = %version-%release
 
 %description devel
 Header files needed to develop programs that link against the tevent library.
-
-%package -n python-module-tevent
-Group: Development/Python
-Summary: Python bindings for the Tevent library
-Requires: %name = %version-%release
-
-%description -n python-module-tevent
-Python bindings for libtevent
 
 %package -n python3-module-tevent
 Group: Development/Python3
@@ -62,7 +53,6 @@ Python3 bindings for libtevent
 %configure \
 	--disable-rpath \
 	--bundled-libraries=NONE \
-	--extra-python=python2.7 \
 	--builtin-libraries=replace
 
 %make_build
@@ -83,16 +73,18 @@ make test
 %_libdir/libtevent.so
 %_pkgconfigdir/tevent.pc
 
-%files -n python-module-tevent
-%python_sitelibdir/_tevent.so
-%python_sitelibdir/tevent.py*
-
 %files -n python3-module-tevent
 %python3_sitelibdir/_tevent.cpython*.so
 %python3_sitelibdir/tevent.py
 %python3_sitelibdir/__pycache__/tevent.*
 
 %changelog
+* Wed Feb 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.10.2-alt1
+- Update to latest release without crypt replace
+
+* Thu Oct 31 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.10.1-alt1
+- Update to new release without python2 support
+
 * Wed Feb 27 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.9.39-alt1
 - Update to latest release with python3 by default
 

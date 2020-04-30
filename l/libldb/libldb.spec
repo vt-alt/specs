@@ -8,7 +8,7 @@
 %endif
 
 Name: libldb
-Version: 1.5.6
+Version: 2.0.9
 Release: alt1
 Summary: A schema-less, ldap like, API and database
 License: LGPLv3+
@@ -18,14 +18,13 @@ Url: http://ldb.samba.org/
 Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
 Patch: ldb-samba-modules.patch
 Patch1: ldb-alt-fix-python-ldflags.patch
-Patch2: ldb-lmdb-disable-tests.patch
+Patch2: ldb-skip-test_guid_indexed_v1_db-on-mips64el-ppc64le-mipsel.patch
 
-BuildRequires: python-devel python-module-tdb python-module-talloc-devel python-module-tevent
 BuildRequires: libpopt-devel libldap-devel xsltproc docbook-style-xsl docbook-dtds
 BuildRequires: libcmocka-devel >= 1.1.3
-BuildRequires: libtdb-devel >= 1.3.18
-BuildRequires: libtalloc-devel >= 2.1.16
-BuildRequires: libtevent-devel >= 0.9.39
+BuildRequires: libtdb-devel >= 1.4.2
+BuildRequires: libtalloc-devel >= 2.2.0
+BuildRequires: libtevent-devel >= 0.10.0
 %if_with mdb
 BuildRequires: liblmdb-devel >= 0.9.16
 %endif
@@ -36,9 +35,9 @@ BuildRequires: python3-module-tdb
 BuildRequires: python3-module-talloc-devel
 BuildRequires: python3-module-tevent
 
-Requires: libtdb >= 1.3.16
-Requires: libtalloc >= 2.1.14
-Requires: libtevent >= 0.9.37
+Requires: libtdb >= 1.4.2
+Requires: libtalloc >= 2.2.0
+Requires: libtevent >= 0.10.0
 %if_with mdb
 Requires: liblmdb >= 0.9.16
 %endif
@@ -63,23 +62,6 @@ Requires: %name = %version-%release
 %description -n ldb-tools
 Tools to manage LDB files
 
-%package -n python-module-pyldb
-Group: Development/Python
-Summary: Python bindings for the LDB library
-Requires: %name = %version-%release
-
-%description -n python-module-pyldb
-Python bindings for the LDB library
-
-%package -n python-module-pyldb-devel
-Group: Development/Python
-Summary: Development files for the Python bindings for the LDB library
-Requires: python-module-pyldb = %version-%release
-Requires: %name-devel = %version-%release
-
-%description -n python-module-pyldb-devel
-Development files for the Python bindings for the LDB library
-
 %package -n python3-module-pyldb
 Group: Development/Python3
 Summary: Python3 bindings for the LDB library
@@ -101,10 +83,7 @@ Development files for the Python3 bindings for the LDB library
 %setup -n ldb-%version
 %patch -p2
 %patch1 -p1
-
-%if_without mdb
-%patch2 -p2
-%endif
+%patch2 -p1
 
 %build
 %undefine _configure_gettext
@@ -115,7 +94,6 @@ Development files for the Python3 bindings for the LDB library
 		--builtin-libraries=replace \
 		--with-modulesdir=%_libdir/ldb/modules \
 		--with-samba-modulesdir=%_libdir/samba \
-                --extra-python=python2.7 \
 %if_without mdb
                 --without-ldb-lmdb \
 %endif
@@ -182,21 +160,11 @@ make test
 %_man1dir/ldbsearch.1.*
 %_libdir/ldb/libldb-cmdline.so
 
-%files -n python-module-pyldb
-%python_sitelibdir/ldb.so
-%python_sitelibdir/_ldb_text.py*
-%_libdir/libpyldb-util.so.1*
-
-%files -n python-module-pyldb-devel
-%_includedir/pyldb.h
-%_libdir/libpyldb-util.so
-%_pkgconfigdir/pyldb-util.pc
-
 %files -n python3-module-pyldb
 %python3_sitelibdir/ldb.cpython-*.so
 %python3_sitelibdir/_ldb_text.py
 %python3_sitelibdir/__pycache__/_ldb_text.cpython-*.py*
-%_libdir/libpyldb-util.cpython-*.so.1*
+%_libdir/libpyldb-util.cpython-*.so.*
 
 %files -n python3-module-pyldb-devel
 %_includedir/pyldb.h
@@ -204,6 +172,18 @@ make test
 %_pkgconfigdir/pyldb-util.cpython-*.pc
 
 %changelog
+* Tue Mar 10 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.9-alt1
+- Update to the 2.0.9 for latest samba-4.11 releases
+
+* Wed Feb 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.8-alt1
+- Update to the 2.0.8 for newest samba-4.11 releases
+
+* Tue Nov 05 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.0.7-alt2
+- Disable toggle_guidindex_check_pack test for mips64el, ppc64le and mipsel
+
+* Thu Oct 31 2019 Evgeny Sinelnikov <sin@altlinux.org> 2.0.7-alt1
+- Update to the 2.0.7 for newest samba-4.11 releases without python2 support
+
 * Fri Oct 18 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.5.6-alt1
 - Update to the 1.5.6 for newest samba-4.10 releases
 

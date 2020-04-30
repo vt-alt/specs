@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 Name: python-module-bzr-git
 Version: 0.6.12
-Release: alt4.bzr20150806
+Release: alt5.bzr20150806
 
 %setup_python_module bzr-git
+%def_without test
 
 Summary: A GIT branch and repository format implementation for bzr
 License: %gpl2plus
@@ -69,6 +70,10 @@ This package contain tools and test suites for testing bzr-git.
 %build
 %python_build
 
+%if_with tests
+rm -rf %buildroot%python_sitelibdir/bzrlib/plugins/git/tests
+%endif
+
 %install
 %python_install --install-lib %python_sitelibdir
 %find_lang %name
@@ -85,11 +90,16 @@ install -m0644 git-remote-bzr.1 %buildroot%_man1dir
 %_bindir/*
 %_man1dir/*
 
+%if_with tests
 %files -n python-module-bzr-git-tests
 %dir %python_sitelibdir/bzrlib/plugins/git
 %python_sitelibdir/bzrlib/plugins/git/tests
+%endif
 
 %changelog
+* Thu Feb 06 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.6.12-alt5.bzr20150806
+- Build without tests for python module due module tdb build for python3 only
+
 * Sat Apr 27 2019 Anatoly Kitaykin <cetus@altlinux.org> 0.6.12-alt4.bzr20150806
 - Re-package files
 

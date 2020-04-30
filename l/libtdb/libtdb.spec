@@ -3,11 +3,11 @@
 %def_with check
 
 Name: libtdb
-Version: 1.3.18
+Version: 1.4.3
 Release: alt1
 
 Summary: A trivial database system
-License: GPL
+License: LGPLv3+
 Group: System/Libraries
 Url: http://tdb.samba.org/
 
@@ -15,7 +15,6 @@ Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
 Patch: tdb-alt-fix-python-ldflags.patch
 
 BuildRequires: docbook-dtds docbook-style-xsl xsltproc
-BuildRequires: rpm-build-python python-devel
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
@@ -72,14 +71,6 @@ able to have multiple writers to the databases at one time.
 
 These are the development files.
 
-%package -n python-module-tdb
-Group: Development/Python
-Summary: Python bindings for the Tdb library
-Requires: %name = %version-%release
-
-%description -n python-module-tdb
-Python bindings for libtdb
-
 %package -n python3-module-tdb
 Group: Development/Python3
 Summary: Python3 bindings for the Tdb library
@@ -96,7 +87,6 @@ Python3 bindings for libtdb
 %undefine _configure_gettext
 %configure \
            --disable-rpath \
-           --extra-python=python2.7 \
            --bundled-libraries=NONE \
 	   --builtin-libraries=replace
 
@@ -123,16 +113,19 @@ make test
 %_includedir/tdb.h
 %_pkgconfigdir/tdb.pc
 
-%files -n python-module-tdb
-%python_sitelibdir/tdb.so
-%python_sitelibdir/_tdb_text.py*
-
 %files -n python3-module-tdb
 %python3_sitelibdir/tdb.cpython-*.so
 %python3_sitelibdir/_tdb_text.py*
 %python3_sitelibdir/__pycache__/_tdb_text.cpython*.py*
 
 %changelog
+* Wed Feb 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.4.3-alt1
+- Update to latest release without crypt replace
+- Set license to LGPLv3+
+
+* Thu Oct 31 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.4.2-alt1
+- Update to new release without python2 support
+
 * Wed Feb 27 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.3.18-alt1
 - Update to latest release with python3 by default
 

@@ -2,7 +2,7 @@
 %def_with check
 
 Name: libtalloc
-Version: 2.1.16
+Version: 2.3.1
 Release: alt1
 Epoch: 1
 
@@ -31,32 +31,12 @@ Requires: %name = %EVR
 %description devel
 Header files needed to develop programs that link against the Talloc library.
 
-%package -n python-module-talloc
-Group: Development/Python
-Summary: Python bindings for the Talloc library
-Requires: libtalloc = %EVR
-
-Provides: libpytalloc = %EVR
-Obsoletes: libpytalloc < 2.1.14
-
-%description -n python-module-talloc
-Python libraries for creating bindings using talloc
-
-%package -n python-module-talloc-devel
-Group: Development/Python
-Summary: Development libraries for python-module-talloc
-Requires: python-module-talloc = %EVR
-
-Provides: libpytalloc-devel = %EVR
-Obsoletes: libpytalloc-devel < 2.1.14
-
-%description -n python-module-talloc-devel
-Development libraries for python-module-talloc
-
 %package -n python3-module-talloc
 Group: Development/Python3
 Summary: Python3 bindings for the Talloc library
 Requires: libtalloc = %EVR
+Provides: libpytalloc = %EVR
+Obsoletes: libpytalloc < %EVR
 
 %description -n python3-module-talloc
 Python 3 libraries for creating bindings using talloc
@@ -65,6 +45,8 @@ Python 3 libraries for creating bindings using talloc
 Group: Development/Python3
 Summary: Development libraries for python3-module-talloc
 Requires: python3-module-talloc = %EVR
+Provides: libpytalloc-devel = %EVR
+Obsoletes: libpytalloc-devel < %EVR
 
 %description -n python3-module-talloc-devel
 Development libraries for python3-module-talloc
@@ -79,7 +61,6 @@ Development libraries for python3-module-talloc
 		--disable-rpath-install \
 		--bundled-libraries=NONE \
 		--builtin-libraries=replace \
-		--extra-python=python2.7 \
 		--disable-silent-rules
 %make_build
 
@@ -101,15 +82,6 @@ make test
 %_pkgconfigdir/talloc.pc
 %_man3dir/talloc.3.*
 
-%files -n python-module-talloc
-%_libdir/libpytalloc-util.so.*
-%python_sitelibdir/talloc.so
-
-%files -n python-module-talloc-devel
-%_includedir/pytalloc.h
-%_pkgconfigdir/pytalloc-util.pc
-%_libdir/libpytalloc-util.so
-
 %files -n python3-module-talloc
 %_libdir/libpytalloc-util.cpython*.so.*
 %python3_sitelibdir/talloc.cpython*.so
@@ -120,29 +92,34 @@ make test
 %_libdir/libpytalloc-util.cpython*.so
 
 %changelog
+* Tue Jan 21 2020 Grigory Ustinov <grenka@altlinux.org> 1:2.3.1-alt1
+- Build new version for python3.8.
+- Build without python2 (now libpytalloc is on python3).
+- Clean up changelog.
+
 * Wed Feb 27 2019 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.16-alt1
 - Update to latest release with python3 by default
 
 * Tue Nov 27 2018 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.14-alt2
 - Disable ubt macros due binary package identity changes
 
-* Sun Jul 22 2018 Stanislav Levin <slev@altlinux.org> 1:2.1.14-alt1%ubt
+* Sun Jul 22 2018 Stanislav Levin <slev@altlinux.org> 1:2.1.14-alt1.S1
 - 2.1.12 -> 2.1.14
 - Build package for Python3
 
-* Fri Mar 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.12-alt1%ubt
+* Fri Mar 23 2018 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.12-alt1.S1
 - Update to latest release for samba-4.8
 
-* Wed Mar 14 2018 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.11-alt1%ubt
+* Wed Mar 14 2018 Evgeny Sinelnikov <sin@altlinux.org> 1:2.1.11-alt1.S1
 - Update to latest release for samba-4.7
 
-* Thu Aug 17 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.10-alt1%ubt
+* Thu Aug 17 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.10-alt1.S1
 - Update to release for samba-4.7.0 with tevent-0.9.33
 
-* Sat Jul 15 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.9-alt2%ubt
+* Sat Jul 15 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.9-alt2.S1
 - Rebuild with universal build tag (aka ubt macros) for p7 and c7
 
-* Tue Mar 07 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.9-alt1%ubt
+* Tue Mar 07 2017 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.9-alt1.S1
 - Update to release for samba-4.6.0
 
 * Thu Sep 08 2016 Evgeny Sinelnikov <sin@altlinux.ru> 1:2.1.8-alt1
@@ -196,20 +173,3 @@ make test
 
 * Tue Nov 24 2009 Ilya Shpigor <elly@altlinux.org> 2.0.0-alt1
 - initial build for ALT Linux Sisyphus
-
-* Tue Sep  8 2009 Simo Sorce <ssorce@redhat.com> - 2.0.0-0
-- New version from upstream.
-- Build also sover 1 compat library to ease packages migration
-
-* Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
-
-* Wed Jun 17 2009 Simo Sorce <ssorce@redhat.com> - 1.3.1-1
-- Original tarballs had a screw-up, rebuild with new fixed tarballs from
-  upstream.
-
-* Tue Jun 16 2009 Simo Sorce <ssorce@redhat.com> - 1.3.1-0
-- New Upstream release.
-
-* Wed May 6 2009 Simo Sorce <ssorce@redhat.com> - 1.3.0-0
-- First public independent release from upstream
