@@ -15,17 +15,15 @@
 %endif
 
 Name: NetworkManager-openvpn
-Version: 1.8.10
+Version: 1.8.12
 Release: alt1%git_date
-License: %gpl2plus
+License: GPLv2+
 Group: System/Configuration/Networking
 Summary: NetworkManager VPN plugin for OpenVPN
 Url: http://www.gnome.org/projects/NetworkManager
-# git://git.gnome.org/network-manager-openvpn
+Vcs: https://gitlab.gnome.org/GNOME/NetworkManager-openvpn.git
 Source0: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildRequires: intltool
 BuildRequires: libnm-devel >= %nm_version
@@ -46,7 +44,7 @@ NetworkManager-openvpn provides VPN support to NetworkManager for
 OpenVPN.
 
 %package gtk
-License: %gpl2plus
+License: GPLv2+
 Summary: Applications for use %name with %nm_applet_name
 Group: Graphical desktop/GNOME
 Requires: %nm_applet_name >= %nm_applet_version
@@ -88,7 +86,7 @@ make check
 %_libexecdir/NetworkManager/nm-openvpn-service
 %_libexecdir/NetworkManager/nm-openvpn-service-openvpn-helper
 %_libdir/NetworkManager/libnm-vpn-plugin-openvpn.so
-%config %_sysconfdir/dbus-1/system.d/nm-openvpn-service.conf
+%config %_datadir/dbus-1/system.d/nm-openvpn-service.conf
 %if_with libnm_glib
 %config %_sysconfdir/NetworkManager/VPN/nm-openvpn-service.name
 %endif
@@ -105,6 +103,11 @@ make check
 %exclude %_libdir/NetworkManager/*.la
 
 %changelog
+* Mon Apr 20 2020 Mikhail Efremov <sem@altlinux.org> 1.8.12-alt1
+- Added Vcs tag.
+- Don't use rpm-build-licenses.
+- Updated to 1.8.12.
+
 * Mon Feb 11 2019 Mikhail Efremov <sem@altlinux.org> 1.8.10-alt1
 - Updated to 1.8.10.
 
