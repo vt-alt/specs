@@ -6,7 +6,7 @@
 
 Name: python-module-%oname
 Version: 1.2.6
-Release: alt1
+Release: alt2
 Summary: behave is behaviour-driven development, Python style
 License: BSD
 Group: Development/Python
@@ -33,6 +33,7 @@ BuildRequires: python2.7(hamcrest)
 BuildRequires: python2.7(mock)
 BuildRequires: python2.7(nose)
 BuildRequires: python2.7(path.py)
+BuildRequires: python2.7(pytest)
 BuildRequires: python3(hamcrest)
 BuildRequires: python3(mock)
 BuildRequires: python3(nose)
@@ -204,6 +205,9 @@ export TOXENV=py%{python_version_nodots python},py%{python_version_nodots python
 %python3_sitelibdir/behave-%version-py%_python3_version.egg-info/
 
 %changelog
+* Mon Jun 10 2019 Stanislav Levin <slev@altlinux.org> 1.2.6-alt2
+- Added missing dep on Pytest.
+
 * Fri Jan 25 2019 Stanislav Levin <slev@altlinux.org> 1.2.6-alt1
 - 1.2.5 -> 1.2.6.
 - Dropped BR on python argparse.
