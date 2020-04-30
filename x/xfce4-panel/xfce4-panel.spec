@@ -3,7 +3,7 @@
 %def_enable vala
 
 Name: xfce4-panel
-Version: 4.14.3
+Version: 4.14.4
 Release: alt1
 
 Summary: Panel for Xfce
@@ -192,6 +192,18 @@ Vala bindings for libxfce4panel-gtk3.
 %endif
 
 %changelog
+* Tue Apr 28 2020 Mikhail Efremov <sem@altlinux.org> 4.14.4-alt1
+- Dropped bogus patch.
+- Updated to 4.14.4.
+
+* Tue Mar 17 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt3.g95d18aa4
+- Enable Vala bindings again.
+- Fix remote_event signal.
+
+* Mon Mar 16 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt2.g95d18aa4
+- Disable Vala bindings for now.
+- Upstream git snapshot (xfce-4.14 branch).
+
 * Mon Jan 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt1
 - Use Vcs rpm tag.
 - Don't use rpm-build-licenses.
