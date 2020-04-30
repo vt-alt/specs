@@ -1,3 +1,4 @@
+%define _unpackaged_files_terminate_build 1
 %def_without debug
 %def_with libs
 %def_with devel
@@ -11,8 +12,8 @@
 %define ROUTER_ROOT %_localstatedir/mysqlrouter
 
 Name: MySQL
-Version: 8.0.19
-Release: alt2
+Version: 8.0.20
+Release: alt1
 
 Summary: A very fast and reliable SQL database engine
 Summary(ru_RU.UTF-8): Очень быстрый и надежный SQL-сервер
@@ -52,9 +53,9 @@ Source30: mysqlrouter.conf
 Patch0: mysql-%version.patch
 
 # ALTLinux
-Patch1: mysql-8.0.18-alt-chroot.patch
+Patch1: mysql-8.0.20-alt-chroot.patch
 Patch2: mysql-5.0.20-alt-libdir.patch
-Patch4: mysql-8.0.19-alt-client.patch
+Patch4: mysql-8.0.20-alt-client.patch
 Patch5: mysql-8.0.12-alt-load_defaults.patch
 Patch6: mysql-5.1.50-alt-fPIC-innodb.patch
 Patch7: mysql-8.0.12-alt-mysql_config-libs.patch
@@ -493,6 +494,11 @@ rm -f %buildroot%_datadir/mysql/magic
 rm -f %buildroot%_datadir/mysql/mysqld_multi.server
 rm -f %buildroot%_bindir/mysqld_pre_systemd
 rm -f %buildroot%_libdir/libmysqlservices.a
+rm -f %buildroot%_unitdir/mysqld@.service
+rm -f %buildroot%_bindir/comp_err
+%if_disabled static
+rm -f %buildroot%_libdir/libmysqlclient*.a
+%endif
 
 # broken manpages referencing missing paths
 rm -f %buildroot%_man1dir/mysql{_client_,}test_embedded.1
@@ -692,6 +698,8 @@ fi
 %_bindir/mysqlpump
 %_bindir/mysqlshow
 %_bindir/mysqltest
+%_bindir/mysqltest_safe_process
+%_bindir/mysqlxtest
 %_bindir/mysqlslap
 %_bindir/mysql_config_editor
 %_bindir/ibd2sdi
@@ -774,6 +782,19 @@ fi
 %attr(3770,root,mysql) %dir %ROOT/tmp
 
 %changelog
+* Tue Apr 28 2020 Nikolai Kostrigin <nickel@altlinux.org> 8.0.20-alt1
+- new version
+  + (fixes: CVE-2019-15601, CVE-2020-2780, CVE-2020-2804, CVE-2020-2760)
+  + (fixes: CVE-2020-2893, CVE-2020-2895, CVE-2020-2898, CVE-2020-2903)
+  + (fixes: CVE-2020-2896, CVE-2020-2765, CVE-2020-2892, CVE-2020-2897)
+  + (fixes: CVE-2020-2923, CVE-2020-2924, CVE-2020-2901, CVE-2020-2928)
+  + (fixes: CVE-2020-2904, CVE-2020-2925, CVE-2020-2759, CVE-2020-2763)
+  + (fixes: CVE-2020-2812, CVE-2020-2926, CVE-2020-2921, CVE-2020-2930)
+- spec: fix bogus dates and trailing space in changelog
+- update alt-chroot patch
+- update alt-client patch
+- solve unpackaged files warnings
+
 * Fri Apr 17 2020 Nikolai Kostrigin <nickel@altlinux.org> 8.0.19-alt2
 - spec: add explicit conflicts between MySQL and mariadb subpackages
   to fix MySQL-server biarch package installation failure with mariadb
@@ -835,16 +856,16 @@ fi
 * Wed May 30 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt7
 - fix chrooted mysqld operation under SysVinit
 
-* Wed May 29 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt6
+* Tue May 29 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt6
 - modify chroot control facility (combine server and client setup)
-- fix unowned dir /etc/my.cnf.server (closes: #32229) 
+- fix unowned dir /etc/my.cnf.server (closes: #32229)
 
-* Wed May 24 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt5
+* Thu May 24 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt5
 - fix installation with preinstalled maria-db (conflict mariadb-server-control)
 - add database upgrade warning message to post install scripts
 - fixed typo in initscript (thanks to rider@)
 
-* Wed May 10 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt4
+* Thu May 10 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt4
 - enable backport to p8 (merge commit history)
 
 * Wed May 09 2018 Nikolai Kostrigin <nickel@altlinux.org> 5.7.21-alt3
@@ -1455,7 +1476,7 @@ fi
 - Init script has new status command which displays pids of mysqld processes
 - Various C++ fixes against g++ 2.96
 
-* Tue Nov 16 2000 Mikhail Zabaluev <mookid@sigent.ru> 3.23.27-1mdk_mhz
+* Thu Nov 16 2000 Mikhail Zabaluev <mookid@sigent.ru> 3.23.27-1mdk_mhz
 - Updated to 3.23.27
 - --with-extra-charsets=all, because we need Cyrillic
 - made sure that readline is external
@@ -1468,7 +1489,7 @@ fi
 - Added separate libmysql_r directory; now both a threaded
   and non-threaded library is shipped.
 
-* Tue Aug 09 2000 Jean-Michel Dault <jmdault@mandrakesoft.com> 3.23.22-2mdk
+* Wed Aug 09 2000 Jean-Michel Dault <jmdault@mandrakesoft.com> 3.23.22-2mdk
 - Put libmysqlclient.so in devel package
 
 * Mon Aug 07 2000 Jean-Michel Dault <jmdault@mandrakesoft.com> 3.23.22-1mdk
@@ -1499,7 +1520,7 @@ fi
 * Mon Apr 03 2000 Jean-Michel Dault <jmdault@mandrakesoft.com> 3.22.32-2mdk
 - new group
 
-* Mon Feb 27 2000 Jean-Michel Dault <jmdault@netrevolution.com> 3.22.32-1mdk
+* Sun Feb 27 2000 Jean-Michel Dault <jmdault@netrevolution.com> 3.22.32-1mdk
 - updated to 3.22.32 - security updates
 
 * Wed Jan 19 2000 Jean-Michel Dault <jmdault@netrevolution.com>
@@ -1511,10 +1532,10 @@ fi
 * Mon Jan 3 2000 Jean-Michel Dault <jmdault@netrevolution.com>
 - updated to 3.22.29
 
-* Wed Dec 31 1999 Jean-Michel Dault <jmdault@netrevolution.com>
+* Fri Dec 31 1999 Jean-Michel Dault <jmdault@netrevolution.com>
 - rebuilt for Mandrake 7.0
 
-* Sat Dec 12 1999 Jean-Michel Dault <jmdault@netrevolution.com>
+* Sun Dec 12 1999 Jean-Michel Dault <jmdault@netrevolution.com>
 - updated to 3.22.27
 
 * Wed Sep 1 1999 Jean-Michel Dault <jmdault@netrevolution.com>
