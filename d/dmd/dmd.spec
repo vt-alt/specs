@@ -9,40 +9,46 @@ ExclusiveArch: %ix86 x86_64
 %endif
 
 Name: dmd
-Version: 2.082.0
-Release: alt2
+Version: 2.091.0
+Release: alt1
 Summary: The D Programming Language
 Group: Development/Other
-License: GPL
-Url: http://dlang.org/
+License: BSL-1.0
+Url: https://dlang.org/
 
+# https://github.com/dlang/dmd.git
 Source: %name-%version.tar
+# https://github.com/dlang/druntime.git
 Source2: druntime-%version.tar
+# https://github.com/dlang/phobos.git
 Source3: phobos-%version.tar
+# https://github.com/dlang/tools.git
 Source4: tools-%version.tar
 
-Patch1: druntime-%version-alt-build.patch
-Patch2: posix-in-druntime.patch
-Patch3: dmd-%version-alt-build-removed.patch
-Patch4: phobos-%version-alt-build.patch
+Patch1: druntime-2.082.0-alt-build.patch
+Patch2: druntime-2.082.0-alt-files-list.patch
+Patch3: dmd-2.091.0-alt-build.patch
+Patch4: phobos-2.082.0-alt-build.patch
 
 BuildRequires: gcc-c++ curl-devel
 BuildRequires: zlib-devel
 # DMD now requires D compiler to build
 BuildRequires: dmd
+BuildRequires: /proc
 
 Provides: libdruntime = %EVR
 Provides: libdruntime-devel = %EVR
 Provides: libphobos = %EVR
 Provides: libphobos-devel = %EVR
 Conflicts: ldc
+Requires: /proc
 
 %description
-The D programming language is an object-oriented, imperative, multi-paradigm 
-system programming language created by Walter Bright of Digital Mars. It 
-originated as a re-engineering of C++, but even though it is mainly influenced 
-by that language, it is not a variant of C++. D has redesigned some C++ features 
-and has been influenced by concepts used in other programming languages, such as 
+The D programming language is an object-oriented, imperative, multi-paradigm
+system programming language created by Walter Bright of Digital Mars. It
+originated as a re-engineering of C++, but even though it is mainly influenced
+by that language, it is not a variant of C++. D has redesigned some C++ features
+and has been influenced by concepts used in other programming languages, such as
 Java, Python, Ruby, C#, and Eiffel.
 
 #%package -n libphobos2
@@ -84,7 +90,7 @@ popd
 pushd src
 %make_build -f posix.mak MODEL=%MODEL
 popd
-  
+
 export CFLAGS=-fPIC
 export CXXFLAGS=-fPIC
 
@@ -163,6 +169,12 @@ cp -r docs/man/man5/* %buildroot%_man5dir/
 %_libdir/libphobos2.a
 
 %changelog
+* Tue Apr 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.091.0-alt1
+- Updated to upstream version 2.091.0.
+
+* Tue Jul 30 2019 Konstantin Rybakov <kastet@altlinux.org> 2.087.0-alt1
+- Updated to upstream version 2.087.0.
+
 * Tue Mar 26 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.082.0-alt2
 - Linked dynamic libraries to system zlib (Closes: #36380)
 
