@@ -1,13 +1,15 @@
 %def_without python
 Name: liborcus
 Version: 0.14.1
-Release: alt1
+Release: alt2
 Summary: Standalone file import filter library for spreadsheet documents
 
 Group: System/Libraries
 License: MIT
 Url: http://gitorious.org/orcus
 Source: orcus-%version.tar.gz
+
+Patch1: %name-upstream-mdds-1.5.patch
 
 %define libver 0.14
 
@@ -44,6 +46,7 @@ Python3 bindings for Orcus
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 sed -i 's|liborcus_@ORCUS_API_VERSION@_la_LIBADD = |& ../parser/liborcus-parser-@ORCUS_API_VERSION@.la|' src/liborcus/Makefile.am
@@ -96,6 +99,9 @@ ln -s %name-%libver.pc %buildroot%_pkgconfigdir/%name.pc
 %endif
 
 %changelog
+* Mon Dec 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.14.1-alt2
+- Rebuilt with boost-1.71.0 and mdds-1.5.0.
+
 * Mon Sep 17 2018 Fr. Br. George <george@altlinux.ru> 0.14.1-alt1
 - Autobuild version bump to 0.14.1
 - Introduce python3 module

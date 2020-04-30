@@ -1,6 +1,6 @@
 Name: libetonyek
 Version: 0.1.9
-Release: alt1
+Release: alt1.1
 Summary: A library for import of Apple Keynote presentations
 
 Group: System/Libraries
@@ -8,6 +8,7 @@ License: MPLv2.0
 # https://gerrit.libreoffice.org/#/admin/projects/libetonyek
 Url: http://www.freedesktop.org/wiki/Software/libetonyek/
 Source: %name-%version.tar.xz
+Patch1: 0001-glm-force-dmat3-initialization-needed-from-v0.9.9.0.patch
 
 BuildRequires: cppunit-devel
 
@@ -47,6 +48,7 @@ Currently supported: XHTML, raw, text.
 
 %prep
 %setup
+%patch1 -p1
 ## XXX hack out mdds=1.0 (too low)
 #sed -i 's/mdds-1.0/mdds/' configure.ac
 %ifarch e2k
@@ -56,7 +58,7 @@ Currently supported: XHTML, raw, text.
 
 %build
 %autoreconf
-%configure --disable-silent-rules --disable-static --disable-werror --with-mdds=1.4
+%configure --disable-silent-rules --disable-static --disable-werror --with-mdds=1.5
 sed -i \
     -e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
     -e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' \
@@ -91,6 +93,10 @@ make check
 %_bindir/*
 
 %changelog
+* Tue Apr 28 2020 Andrey Cherepanov <cas@altlinux.org> 0.1.9-alt1.1
+- Fix build with mdds-1.5.
+- glm: force dmat3 initialization.
+
 * Mon Feb 11 2019 Fr. Br. George <george@altlinux.ru> 0.1.9-alt1
 - Autobuild version bump to 0.1.9
 
