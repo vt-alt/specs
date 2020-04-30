@@ -2,14 +2,14 @@
 %define module Logoved-DB
 
 Name: perl-%module
-Version: 0.013
+Version: 0.016
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: perl library for Logoved framework and DB
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 #Url: http://search.cpan.org/dist/%module
 #Url: http://git.altlinux.org/people/viy/packages/logoved.git
@@ -96,7 +96,8 @@ cp -a hooks %buildroot%_datadir/srpmtools/
 %files -n logoved
 %_bindir/logoved-grep
 %_bindir/logoved-report
-# TODO: write mans!!!
+%_man1dir/logoved-report*
+# TODO: write man for logoved-grep!!!
 
 %files -n logoved-batchfix
 %_bindir/logoved-batchfix*
@@ -118,6 +119,15 @@ cp -a hooks %buildroot%_datadir/srpmtools/
 %endif
 
 %changelog
+* Wed Apr 29 2020 Igor Vlasenko <viy@altlinux.ru> 0.016-alt1
+- new version
+
+* Fri Apr 03 2020 Igor Vlasenko <viy@altlinux.ru> 0.015-alt1
+- new version
+
+* Sat Dec 07 2019 Igor Vlasenko <viy@altlinux.ru> 0.014-alt1
+- new version
+
 * Fri Apr 12 2019 Igor Vlasenko <viy@altlinux.ru> 0.013-alt1
 - new version
 
