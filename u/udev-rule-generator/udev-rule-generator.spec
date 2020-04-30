@@ -1,6 +1,6 @@
 Name: udev-rule-generator
 Epoch: 2
-Version: 1.3
+Version: 1.4
 Release: alt1
 Summary: Common package for udev rule generator
 Url: https://packages.altlinux.org/en/Sisyphus/srpms/%name
@@ -58,7 +58,7 @@ touch %buildroot%_sysconfdir/udev/rules.d/70-persistent-cd.rules
 # udev rule generator
 install -p -m644 rule_generator.functions %buildroot/lib/udev/
 install -p -m755 write_net_rules %buildroot/lib/udev/
-install -p -m644 write_net_rules.sysconfig %buildroot%_sysconfdir/sysconfig/write_net_rules
+install -p -m644 udev-rule-generator.sysconfig %buildroot%_sysconfdir/sysconfig/udev-rule-generator
 install -p -m644 75-persistent-net-generator.rules %buildroot/lib/udev/rules.d/
 install -p -m755 write_cd_rules %buildroot/lib/udev/
 install -p -m644 75-cd-aliases-generator.rules %buildroot/lib/udev/rules.d/
@@ -85,13 +85,18 @@ ln -s /dev/null %buildroot%_sysconfdir/udev/rules.d/80-net-setup-link.rules
 
 %files net
 %config(noreplace,missingok) %verify(not md5 size mtime) %ghost %_sysconfdir/udev/rules.d/70-persistent-net.rules
-%config(noreplace) %verify(not md5 size mtime) %_sysconfdir/sysconfig/write_net_rules
+%config(noreplace) %verify(not md5 size mtime) %_sysconfdir/sysconfig/udev-rule-generator
 %_sysconfdir/udev/rules.d/80-net-setup-link.rules
 /lib/udev/rules.d/75-persistent-net-generator.rules
 /lib/udev/write_net_rules
 
 
 %changelog
+* Sun Apr 26 2020 Sergey Y. Afonin <asy@altlinux.org> 2:1.4-alt1
+- renamed sysconfig/write_net_rules to sysconfig/udev-rule-generator
+- renaming interfaces if 70-persistent-net.rules recently changed (ALT #32166)
+- added the ability to update persistent-net.rules (ALT #29282)
+
 * Wed Sep 25 2019 Anton Midyukov <antohami@altlinux.org> 2:1.3-alt1
 - run udevd-final before raising the network
 
