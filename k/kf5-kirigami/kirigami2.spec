@@ -2,7 +2,7 @@
 
 Name: kf5-kirigami
 Version: 5.69.0
-Release: alt1
+Release: alt2
 %K5init
 
 Group: System/Libraries
@@ -14,6 +14,7 @@ Requires: %name-common = %version-%release
 Requires: qt5-quickcontrols2 qt5-graphicaleffects
 
 Source0: %rname-%version.tar
+Patch: alt-fix-systemsettings-crash.patch
 
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules qt5-quickcontrols2-devel
@@ -60,6 +61,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch -p1
 
 %build
 %K5build
@@ -86,6 +88,9 @@ KF5 library
 %_K5lib/libKF5Kirigami2.so.*
 
 %changelog
+* Wed Apr 29 2020 Oleg Solovyov <mcpain@altlinux.org> 5.69.0-alt2
+- fix crash (Closes: #38410)
+
 * Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
 - new version
 
