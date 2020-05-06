@@ -2,7 +2,7 @@
 %define rel alt1
 
 Name: qbittorrent
-Version: 4.2.3
+Version: 4.2.5
 Epoch: 1
 Release: %rel
 
@@ -97,12 +97,18 @@ make clean
 %files
 %doc AUTHORS COPYING INSTALL NEWS README.* TODO Changelog
 %_bindir/%name
-%_datadir/applications/*
+%_desktopdir/*
 %_man1dir/%name.*
 %_datadir/icons/hicolor/*/*/*
 %_datadir/metainfo/*.xml
 
 %changelog
+* Sat May 02 2020 Motsyo Gennadi <drool@altlinux.ru> 1:4.2.5-alt1
+- 4.2.5
+
+* Thu Apr 23 2020 Motsyo Gennadi <drool@altlinux.ru> 1:4.2.4-alt1
+- 4.2.4
+
 * Sun Apr 12 2020 Motsyo Gennadi <drool@altlinux.ru> 1:4.2.3-alt1
 - 4.2.3
 
