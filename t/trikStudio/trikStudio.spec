@@ -7,7 +7,7 @@
 
 Name: trikStudio
 Version: 2020.1
-Release: alt1
+Release: alt3
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
 License: Apache-2.0
@@ -139,6 +139,8 @@ for d in examples help translations images; do
 done
 #cp -fr trikSharp %buildroot%_libdir/%name/
 cp -f gamepad %buildroot%_bindir/
+mkdir -p %buildroot%_datadir/%name/languages
+cp -f ../../thirdparty/gamepad/gamepad/languages/*.qm %buildroot%_datadir/%name/languages/
 popd
 
 %files
@@ -170,6 +172,13 @@ popd
 %endif
 
 %changelog
+* Thu Apr 30 2020 Valery Sinelnikov <greh@altlinux.org> 2020.1-alt3
+- Changing the path of the language catalog with translation for the gamepad
+
+* Thu Apr 23 2020 Valery Sinelnikov <greh@altlinux.org> 2020.1-alt2
+- Build with latest gamepad sources
+- Copy language directory with translation for gamepad (Closes: 38375)
+
 * Fri Apr 17 2020 Valery Sinelnikov <greh@altlinux.org> 2020.1-alt1
 - Update to 2020.1
 
