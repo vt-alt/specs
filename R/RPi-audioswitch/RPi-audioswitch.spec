@@ -1,5 +1,5 @@
 Name: RPi-audioswitch
-Version: 1.2
+Version: 1.3
 Release: alt1
 
 License: CC-BY-4.0
@@ -49,6 +49,9 @@ install -D -m0644 icons/%name-16x16.png %buildroot%_iconsdir/hicolor/16x16/apps/
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Mon May 04 2020 Pavel Isopenko <pauli@altlinux.org> 1.3-alt1
+- HDMI-1 device support
+
 * Mon Nov 25 2019 Pavel Isopenko <pauli@altlinux.org> 1.2-alt1
 - add icons
 - fix License: tag
