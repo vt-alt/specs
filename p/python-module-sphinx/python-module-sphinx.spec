@@ -6,7 +6,7 @@
 Name: python-module-%oname
 Epoch: 1
 Version: 1.6.5
-Release: alt7
+Release: alt8
 
 Summary: Tool for producing documentation for Python projects
 License: BSD
@@ -164,18 +164,8 @@ rm tests/py35/test_autodoc_py35.py
 %install
 %python_install
 
-# tests
-cp -R tests %buildroot%sphinx_dir/
-for i in $(find %buildroot%sphinx_dir/tests -type d)
-do
-	touch $i/__init__.py
-done
-
 ln -rs %buildroot%_datadir/python-sphinx/objects.inv \
 	%buildroot%sphinx_dir/
-# There is some objects.inv there already; probably, we want to update it:
-ln -frs %buildroot%_datadir/python-sphinx/objects.inv \
-	%buildroot%sphinx_dir/tests/
 
 # docs
 install -d %buildroot%_docdir/%name
@@ -213,7 +203,6 @@ PYTHONPATH=$(pwd) %make_build test
 %files
 %_bindir/*
 %sphinx_dir/
-%exclude %sphinx_dir/tests
 %exclude %sphinx_dir/testing
 %exclude %sphinx_dir/pickle
 %exclude %sphinx_dir/doctrees
@@ -226,7 +215,6 @@ PYTHONPATH=$(pwd) %make_build test
 %sphinx_dir/doctrees
 
 %files tests
-%sphinx_dir/tests
 %sphinx_dir/testing
 
 %files doc
@@ -237,6 +225,9 @@ PYTHONPATH=$(pwd) %make_build test
 %_rpmlibdir/%name-files.req.list
 
 %changelog
+* Wed Apr 29 2020 Grigory Ustinov <grenka@altlinux.org> 1:1.6.5-alt8
+- Fixed FTBFS (Removed copying tests).
+
 * Mon Sep 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:1.6.5-alt7
 - Rebuilt without support for python-3.
 
