@@ -1,6 +1,6 @@
 Name:		transgui
-Version:	5.15.4
-Release:	alt1%ubt
+Version:	5.18.0
+Release:	alt2
 
 Summary:	An App to remotely control a Transmission Bit-Torrent client
 Summary(ru_RU.UTF8): Приложение для удаленного управления Бит-торрент-клиентом Transmission
@@ -17,6 +17,8 @@ Source2:	%name.1
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: /usr/bin/convert lazarus
+
+ExclusiveArch: %ix86 x86_64
 
 %add_findreq_skiplist %_datadir/%name/lang/%name.pl
 
@@ -75,7 +77,13 @@ rm -f %buildroot%_datadir/%name/lang/transgui.template
 %_datadir/%name/lang
 
 %changelog
-* Sat Apr 28 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 5.15.4-alt1%ubt
+* Tue May 05 2020 Motsyo Gennadi <drool@altlinux.ru> 5.18.0-alt2
+- ExclusiveArch %ix86 x86_64 only (lazarus)
+
+* Tue May 05 2020 Motsyo Gennadi <drool@altlinux.ru> 5.18.0-alt1
+- 5.18.0
+
+* Sat Apr 28 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 5.15.4-alt1.S1
 - Updated to upstream version 5.15.4.
 
 * Sun Jan 12 2014 Motsyo Gennadi <drool@altlinux.ru> 5.0.1-alt3
