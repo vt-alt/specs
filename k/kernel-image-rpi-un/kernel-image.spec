@@ -1,14 +1,14 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt3
+Release: alt1
 epoch:1 
 %define kernel_need_version	5.6
-# kernel-source-5.6 does not currently exist. Use 5.5
-%define kernel_base_version	5.5
-%define kernel_sublevel .2
+# Used when kernel-source-x.y does not currently exist in repository.
+%define kernel_base_version	5.6
+%define kernel_sublevel .10
 %define kernel_extra_version	%nil
-# kernel version is 5.6
+# kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
 # 0.0.X -- preX
@@ -490,6 +490,10 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon May 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:5.6.10-alt1
+- Update to latest mainstream release 5.6.10
+- Build with native kernel-source-5.6 instead of kernel-source-5.5
+
 * Thu Apr 23 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.2-alt3
 - CONFIG_BCM2711_THERMAL=y for working thermal sensor on RPi4
 
