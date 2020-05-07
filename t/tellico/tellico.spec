@@ -1,5 +1,5 @@
 Name: 	 tellico
-Version: 3.2.1
+Version: 3.3
 Release: alt1
 
 Summary: A collection manager for KDE
@@ -10,10 +10,12 @@ Url:     http://tellico-project.org/
 
 Source:  %name-%version.tar
 Source2: FindKSane.cmake
+Patch1:  tellico-fix-missing-qt-constant.patch
 
 ExclusiveArch: %ix86 x86_64
 
 BuildRequires(pre): rpm-build-kf5
+BuildRequires(pre): rpm-build-python3
 BuildRequires: gcc-c++
 BuildRequires: extra-cmake-modules
 BuildRequires: qt5-declarative-devel
@@ -60,13 +62,20 @@ video games, coins, stamps, trading cards, comic books, and wines.
 %setup -q
 # See https://bugzilla.altlinux.org/show_bug.cgi?id=30814
 #cp %SOURCE2 cmake/modules/FindKSane.cmake
+%patch1 -p1
 
 %build
 %K5init no_altplace
 %K5build
 
 %install
-%K5install
+%cmakeinstall_std
+
+# fix python shebangs
+find %buildroot -type f -print0 |
+      xargs -r0 grep -lZ '^#![[:space:]]*%_bindir/.*python$' -- |
+      xargs -r0 sed -E -i '1 s@^(#![[:space:]]*)%_bindir/(env[[:space:]]+)?python$@\1%__python3@'
+
 %find_lang --with-kde %name
 
 %files -f %name.lang
@@ -81,8 +90,16 @@ video games, coins, stamps, trading cards, comic books, and wines.
 %_K5xdgconf/%{name}*
 %_K5xdgmime/%name.xml
 %_K5xmlgui/%name
+%_datadir/metainfo/org.kde.tellico.appdata.xml
 
 %changelog
+* Sun Apr 26 2020 Andrey Cherepanov <cas@altlinux.org> 3.3-alt1
+- New version.
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 3.2.3-alt1
+- New version.
+- Package appdata file.
+
 * Wed Jul 10 2019 Andrey Cherepanov <cas@altlinux.org> 3.2.1-alt1
 - New version.
 
