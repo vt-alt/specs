@@ -2,7 +2,7 @@
 
 Name:	 	php7-%php7_extension
 Version:	%php7_version
-Release:	%php7_release.2
+Release:	%php7_release.3
 
 Summary:	Zend Opcache extension for opcode caching and optimization
 
@@ -88,6 +88,9 @@ NO_INTERACTION=1 make test
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with php7-%version-%release
+
+* Thu Apr 30 2020 Vitaly Lipatov <lav@altlinux.ru> 7.3.16-alt1.3
+- fix SAPI name (ALT bug 38412)
 
 * Thu Nov 28 2019 Michael Shigorin <mike@altlinux.org> 7.3.12-alt1.2
 - Fix build on %%e2k (SIMD needs proper porting)
