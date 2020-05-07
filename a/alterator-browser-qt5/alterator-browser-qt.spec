@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.2.0
+Version: 3.2.1
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,9 @@ __EOF__
 
 
 %changelog
+* Wed May 06 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.1-alt1
+- fix wizard buttons tooltip translation
+
 * Mon Apr 13 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.0-alt1
 - allow to show passwords
 - add theme:arrow-{up,down,left,right} standart pixmaps
