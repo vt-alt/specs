@@ -1,20 +1,16 @@
 Name:		wally
 Summary:	Qt4 wallpaper changer
-Version:	2.3.2
-Release:	alt0.2.qa2
+Version:	2.4.4
+Release:	alt1
 License:	GPLv2+
 Group:		Graphics
 Packager:	Motsyo Gennadi <drool@altlinux.ru>
 URL:		http://code.google.com/p/wally/
 Source0:	http://wally.googlecode.com/files/%name-%version.tar.gz
-Patch0:		%name-2.3.2-fix_build.diff
-Patch1:   %name-2.3.2-alt-DSO.diff
+Source1:	%name.desktop
+Patch0:		%name-2.4.4-alt-DSO.diff
 
-# Automatically added by buildreq on Mon May 03 2010 (-bi)
-BuildRequires: ImageMagick-tools cmake gcc-c++ glib2-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libqt4-devel
-
-Requires: libqt4-core
-BuildRequires: desktop-file-utils
+BuildRequires: /usr/bin/convert cmake gcc-c++ glib2-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libqt4-devel
 
 %description
 Wally is a Qt4 wallpaper changer, using multiple sources like files, folders,
@@ -28,7 +24,6 @@ Supported Window Managers: - Win32 - MacOSX (using OSA scripts) - KDE3 - KDE4
 %prep
 %setup
 %patch0 -p1
-%patch1 -p2
 
 %build
 cmake \
@@ -46,37 +41,20 @@ convert -resize 16x16 res/images/%name.xpm %buildroot%_miconsdir/%name.png
 convert -resize 32x32 res/images/%name.xpm %buildroot%_niconsdir/%name.png
 convert -resize 48x48 res/images/%name.xpm %buildroot%_liconsdir/%name.png
 
-# menu-entry
-mkdir -p %buildroot%_desktopdir
-cat > %buildroot%_desktopdir/%name.desktop << EOF
-[Desktop Entry]
-Type=Application
-Encoding=UTF-8
-Terminal=false
-Name=Wally
-Comment=A Qt4 wallpaper changer using multiple sources
-Exec=%name
-Icon=%name
-Categories=Qt;DesktopSettings;Graphics;
-EOF
-desktop-file-install --dir %buildroot%_desktopdir \
-	--remove-category=Graphics \
-	--add-category=DesktopSettings \
-	--add-category=Settings \
-	%buildroot%_desktopdir/wally.desktop
+install -Dp -m 0644 %SOURCE1 %buildroot%_desktopdir/wally.desktop
 
 %files
-%doc DISCLAIMER README.shortcuts README.XFCE4 LICENSE
+%doc DISCLAIMER README.* LICENSE
 %_bindir/%name
-# #%exclude %{_datadir}/kde4/services/plasma-wallpaper-wallyplugin.desktop
-# #%exclude %{_libdir}/kde4/plasma_wallpaper_wallyplugin.so
-# #%exclude %{_datadir}/icons/oxygen/16x16/apps/wallyplugin.png
 %_desktopdir/%name.desktop
 %_miconsdir/%name.png
 %_niconsdir/%name.png
 %_liconsdir/%name.png
 
 %changelog
+* Fri May 01 2020 Motsyo Gennadi <drool@altlinux.ru> 2.4.4-alt1
+- 2.4.4
+
 * Wed Jun 20 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 2.3.2-alt0.2.qa2
 - Fixed build
 
