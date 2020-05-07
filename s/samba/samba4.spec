@@ -59,7 +59,7 @@
 %endif
 
 Name:    samba
-Version: 4.11.7
+Version: 4.11.8
 Release: alt1
 
 Group:   System/Servers
@@ -154,7 +154,7 @@ BuildRequires: python3-module-tdb
 %endif
 
 %if_without ldb
-%define ldb_version 2.0.9
+%define ldb_version 2.0.10
 BuildRequires: libldb-devel = %ldb_version
 BuildRequires: python3-module-pyldb-devel
 %endif
@@ -1814,6 +1814,12 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Tue Apr 28 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.8-alt1
+- Update to latest stable security release of the Samba 4.11
+- Security fixes:
+  + CVE-2020-10700: Fix use-after-free in AD DC LDAP server when ASQ and paged_results combined
+  + CVE-2020-10704: Fix LDAP Denial of Service (stack overflow) in Samba AD DC
+
 * Tue Mar 10 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.7-alt1
 - Update to latest spring release of Samba 4.11
 - Fix search with scope ONE and small result sets with ldb-2.0.9
