@@ -1,5 +1,5 @@
 Name: firewalld
-Version: 0.7.3
+Version: 0.7.4
 Release: alt1
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
@@ -7,7 +7,7 @@ License: GPLv2+
 Group: System/Configuration/Networking
 
 URL: https://www.firewalld.org/
-# git://git.fedorahosted.org/firewalld.git
+Vcs: https://github.com/firewalld/firewalld
 Source: %name-%version.tar
 Source1: %name.init
 Patch: %name-%version-%release.patch
@@ -67,6 +67,7 @@ export PYTHON=/usr/bin/python3
 %configure \
 	--enable-sysconfig \
 	--enable-systemd \
+	--localstatedir=%_var \
 	--with-systemd-unitdir=%systemd_unitdir \
 	--with-iptables=/sbin/iptables \
 	--with-iptables-restore=/sbin/iptables-restore \
@@ -108,6 +109,7 @@ install -pDm755 %SOURCE1 %buildroot%_initdir/%name
 %_usr/lib/firewalld
 %systemd_unitdir/firewalld.service
 %config %_sysconfdir/modprobe.d/firewalld-sysctls.conf
+%config %_sysconfdir/logrotate.d/*
 %config %_datadir/dbus-1/system.d/FirewallD.conf
 %_datadir/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %_datadir/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy.choice
@@ -138,10 +140,16 @@ install -pDm755 %SOURCE1 %buildroot%_initdir/%name
 %python3_sitelibdir_noarch/firewall
 
 %changelog
+* Wed Apr 22 2020 Mikhail Efremov <sem@altlinux.org> 0.7.4-alt1
+- Added Vcs tag.
+- Packaged logrotate config.
+- Fixed changelog entry.
+- Updated to 0.7.4.
+
 * Tue Feb 04 2020 Mikhail Efremov <sem@altlinux.org> 0.7.3-alt1
 - Spec cleanup.
 - Drop rpm-build-licenses usage.
-- Updated to 0.7.2.
+- Updated to 0.7.3.
 
 * Fri Nov 15 2019 Mikhail Efremov <sem@altlinux.org> 0.7.2-alt1
 - Updated to 0.7.2.
