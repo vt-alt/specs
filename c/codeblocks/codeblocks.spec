@@ -1,9 +1,6 @@
 Name: codeblocks
-# Don't forget to make a new parallel branch with upstream sources, when you
-# will update codeblocks for a new version. In sisyphus branch windows blobs
-# should be cleared.
-Version: 17.12
-Release: alt8
+Version: 20.03
+Release: alt1
 
 Summary: Code::Blocks is open source, cross platform free C++ IDE
 Summary(ru_RU.UTF-8): Code::Blocks это кросс-платформенная свободная среда разработки для C++ с открытым исходным кодом
@@ -21,15 +18,14 @@ Source4: %name.po
 
 Patch0: codeblocks-language-detection-from-locale.patch
 Patch1: codeblocks-ebuild.conf.patch
-
-# should be checked in next release
 Patch2: %name-%version-FortranProject_autotools_build.patch
-Patch3: %name-%version-FortranProject_fix_build_gcc7_failed.patch
+Patch3: %name-%version-add-shebang-to-gdb-fortran-extension.patch
+Patch4: %name-%version-multi-arch.patch
 
-Requires: automake >= 1.7 wxGTK gcc gcc-c++ gdb xterm gamin mythes-en
+Requires: automake >= 1.7 libwxGTK3.1 gcc gcc-c++ gdb xterm gamin mythes-en
 
-BuildRequires: boost-devel gcc-c++ libICE-devel libgamin-devel libgtk+2-devel
-BuildRequires: libhunspell-devel libwxGTK-contrib-gizmos-devel libwxGTK-devel
+BuildRequires: boost-devel gcc-c++ libICE-devel libgamin-devel libgtk+3-devel
+BuildRequires: libhunspell-devel libwxGTK-contrib-gizmos-devel libwxGTK3.1-devel
 BuildRequires: tinyxml-devel zip zlib-devel bzlib-devel
 
 %description
@@ -76,21 +72,25 @@ cp %SOURCE4 .
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch2 -p2
+%patch3 -p2
+%patch4 -p1
 
 %build
 msgfmt %name.po -o %name.mo
 ./bootstrap
-
 %configure --with-contrib-plugins=all \
-           --with-boost-libdir=%_libdir
+           --with-boost-libdir=%_libdir \
+           --enable-fortran \
+           --disable-pch
 %make_build
 
 %install
 %makeinstall_std
+
 rm -f %buildroot/%_libdir/%name/plugins/*.la
 rm -f %buildroot/%_libdir/%name/wxContribItems/*.la
+rm -f %buildroot/%_libdir/%name/plugins/contrib/*.la
 
 install -m 644 -D alt-icons/16x16/%name.png %buildroot%_miconsdir/%name.png
 install -m 644 -D alt-icons/32x32/%name.png %buildroot%_niconsdir/%name.png
@@ -107,10 +107,9 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_datadir/mime/packages/%name.xml
 %_man1dir/*
 %exclude %_man1dir/codesnippets.1.xz
-%exclude %_datadir/%name/images/16x16/fproject*
-%exclude %_datadir/%name/images/fproject*
 
 %dir %_datadir/%name
+%dir %_datadir/%name/locale
 %dir %_datadir/%name/locale/ru_RU
 %_datadir/%name/locale/ru_RU/codeblocks.mo
 
@@ -135,12 +134,9 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_datadir/%name/icons
 %dir %_datadir/%name/images
 %_datadir/%name/images/*.png
-%_datadir/%name/images/16x16
-%_datadir/%name/images/codecompletion
 %_datadir/%name/images/settings
 %_datadir/%name/compilers
 %_datadir/%name/lexers
-%_datadir/%name/locale
 %dir %_libdir/%name
 %dir %_libdir/%name/plugins
 %_libdir/%name/plugins/libabbreviations.*
@@ -165,6 +161,10 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_niconsdir/%name.png
 %_liconsdir/%name.png
 %_pixmapsdir/%name.png
+# Fix of post-install unowned files
+%dir %_iconsdir/hicolor/48x48/mimetypes
+%dir %_iconsdir/hicolor/64x64
+%dir %_iconsdir/hicolor/64x64/apps
 
 %files contrib
 %_bindir/cb_share_config
@@ -205,6 +205,7 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_datadir/%name/Profiler.zip
 %_datadir/%name/RegExTestbed.zip
 %_datadir/%name/ReopenEditor.zip
+%_datadir/%name/rndgen.zip
 %_datadir/%name/SmartIndent*.zip
 %_datadir/%name/SpellChecker.zip
 %_datadir/%name/SymTab.zip
@@ -214,12 +215,38 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_datadir/%name/wxSmithAui.zip
 %_datadir/%name/wxsmithcontribitems.zip
 
+%_datadir/%name/images/16x16/*
+%_datadir/%name/images/20x20/*
+%_datadir/%name/images/24x24/*
+%_datadir/%name/images/28x28/*
+%_datadir/%name/images/32x32/*
+%_datadir/%name/images/40x40/*
+%_datadir/%name/images/48x48/*
+%_datadir/%name/images/56x56/*
+%_datadir/%name/images/64x64/*
+%_datadir/%name/images/fortranproject/*
+%_datadir/%name/images/fortranproject/16x16/*
+%_datadir/%name/images/fortranproject/20x20/*
+%_datadir/%name/images/fortranproject/24x24/*
+%_datadir/%name/images/fortranproject/28x28/*
+%_datadir/%name/images/fortranproject/32x32/*
+%_datadir/%name/images/fortranproject/40x40/*
+%_datadir/%name/images/fortranproject/48x48/*
+%_datadir/%name/images/fortranproject/56x56/*
+%_datadir/%name/images/fortranproject/64x64/*
+# Fix of post-install unowned files
+%dir %_datadir/%name/images/16x16
+%dir %_datadir/%name/images/20x20
+%dir %_datadir/%name/images/24x24
+%dir %_datadir/%name/images/28x28
+%dir %_datadir/%name/images/32x32
+%dir %_datadir/%name/images/40x40
+%dir %_datadir/%name/images/48x48
+%dir %_datadir/%name/images/56x56
+%dir %_datadir/%name/images/64x64
+%dir %_datadir/%name/images/fortranproject
+
 %_datadir/%name/images/codesnippets
-%_datadir/%name/images/DoxyBlocks
-%_datadir/%name/images/fortranproject
-%_datadir/%name/images/16x16/fproject*
-%_datadir/%name/images/fproject*
-%_datadir/%name/images/ThreadSearch
 %_datadir/%name/images/wxsmith
 %_datadir/%name/lib_finder
 %_datadir/%name/SpellChecker
@@ -256,6 +283,7 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_libdir/%name/plugins/libProfiler.*
 %_libdir/%name/plugins/libRegExTestbed.*
 %_libdir/%name/plugins/libReopenEditor.*
+%_libdir/%name/plugins/librndgen.*
 %_libdir/%name/plugins/libSmartIndent*.*
 %_libdir/%name/plugins/libSpellChecker.*
 %_libdir/%name/plugins/libSymTab.*
@@ -276,6 +304,13 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_libdir/pkgconfig/wxsmith-contrib.pc
 
 %changelog
+* Mon Mar 30 2020 Grigory Ustinov <grenka@altlinux.org> 20.03-alt1
+- Build new version.
+- Reworked FortranProject patch, so it still works.
+
+* Fri Mar 27 2020 Grigory Ustinov <grenka@altlinux.org> 17.12-alt9
+- Rebuild with libwxGTK3.1 (Closes: #37714).
+
 * Mon Jun 03 2019 Grigory Ustinov <grenka@altlinux.org> 17.12-alt8
 - Update russian localization of desktop file (thx to cas@).
 
