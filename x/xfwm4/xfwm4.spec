@@ -1,5 +1,5 @@
 Name: xfwm4
-Version: 4.14.1
+Version: 4.14.2
 Release: alt1
 
 %def_enable epoxy
@@ -11,7 +11,7 @@ Group: Graphical desktop/XFce
 Url: https://www.xfce.org/
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-Vcs: git://git.xfce.org/xfce/xfwm4
+Vcs: https://gitlab.xfce.org/xfce/xfwm4.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
@@ -77,6 +77,10 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Sun May 03 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
+- Updated Vcs tag.
+- Updated to 4.14.2.
+
 * Mon Apr 13 2020 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
 - Added Vcs tag.
 - Don't use rpm-build-licenses.
