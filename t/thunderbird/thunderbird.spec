@@ -12,7 +12,7 @@
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	68.7.0
+Version:	68.8.0
 Release:	alt2
 License:	MPL-2.0
 Group:		Networking/Mail
@@ -29,6 +29,7 @@ Source5:	thunderbird-default-prefs.js
 Source6:	lightning-langpacks-%version.tar.xz
 # Get $HOME/.cargo after run cargo install cbindgen (without bin/cbindgen)
 Source7:	cbindgen-source.tar.bz2
+Source8:        thunderbird-wayland.desktop
 
 Patch6:		01_locale.patch
 Patch8:		thunderbird-timezones.patch
@@ -65,7 +66,7 @@ BuildRequires: rust-cargo
 BuildRequires: /proc
 BuildRequires: doxygen gcc-c++ imake libIDL-devel makedepend
 BuildRequires: libXt-devel libX11-devel libXext-devel libXft-devel libXScrnSaver-devel libXcomposite-devel libXdamage-devel
-BuildRequires: libXcursor-devel libXi-devel
+BuildRequires: libXcursor-devel libXi-devel libxkbcommon-devel
 BuildRequires: libcurl-devel libgtk+3-devel libhunspell-devel libjpeg-devel
 BuildRequires: libgtk+2-devel
 BuildRequires: xorg-cf-files chrpath alternatives yasm
@@ -141,6 +142,16 @@ Thunderbird makes emailing safer, faster and easier than
 ever before and can also scale to meet the most sophisticated
 organizational needs.
 The package contains Lightning - an integrated calendar for Thunderbird.
+
+%package wayland
+Summary: Thunderbird Wayland launcher
+Group: Networking/Mail
+BuildArch: noarch
+Requires: %name
+
+%description wayland
+The thunderbird-wayland package contains launcher and desktop file
+to run Thunderbird natively on Wayland.
 
 %if_with enigmail
 %package enigmail
@@ -419,15 +430,16 @@ rm -rf -- \
 	%buildroot/%tbird_prefix/README.txt \
 	#
 
-# desktop file
-install -D -m 644 %SOURCE3 %buildroot/%_datadir/applications/thunderbird.desktop
+# desktop files
+install -Dpm644 %SOURCE3 %buildroot/%_desktopdir/thunderbird.desktop
+install -Dpm644 %SOURCE8 %buildroot/%_desktopdir/thunderbird-wayland.desktop
 
 # install altlinux-specific configuration
-install -D -m 644 %SOURCE5 %buildroot/%tbird_prefix/defaults/pref/all-altlinux.js
+install -Dpm644 %SOURCE5 %buildroot/%tbird_prefix/defaults/pref/all-altlinux.js
 
 # icons
 for s in 16 22 24 32 48 64 128 256; do
-	install -D -m 644 \
+	install -Dpm644 \
 		comm/mail/branding/thunderbird/default$s.png \
 		%buildroot/%_iconsdir/hicolor/${s}x${s}/apps/thunderbird.png
 done
@@ -497,6 +509,20 @@ cd %buildroot%_libdir/%name/extensions
 tar xf %SOURCE6
 chmod a+r *.xpi
 
+# Wrapper for wayland
+cat > %buildroot%_bindir/thunderbird-wayland <<'EOF'
+#!/bin/sh
+export GDK_BACKEND=wayland
+export MOZ_ENABLE_WAYLAND=1
+export MOZ_GTK_TITLEBAR_DECORATION=client
+export XDG_SESSION_TYPE=wayland
+
+unset DISPLAY
+
+exec %_bindir/thunderbird "$@"
+EOF
+chmod +x %buildroot%_bindir/thunderbird-wayland
+
 %files
 %doc AUTHORS
 %_bindir/*
@@ -507,6 +533,10 @@ chmod a+r *.xpi
 %_datadir/applications/%r_name.desktop
 %_iconsdir/hicolor/*/apps/thunderbird.png
 %_iconsdir/hicolor/symbolic/apps/thunderbird-symbolic.svg
+
+%files wayland
+%_bindir/thunderbird-wayland
+%_datadir/applications/thunderbird-wayland.desktop
 
 %if_with enigmail
 %exclude %enigmail_ciddir
@@ -534,6 +564,22 @@ chmod a+r *.xpi
 %_sysconfdir/rpm/macros.d/%r_name
 
 %changelog
+* Wed May 06 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt2
+- Add security fixes information to changelog.
+
+* Tue May 05 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt1
+- New version (68.8.0).
+- Fixes:
+  + CVE-2020-12397 Sender Email Address Spoofing using encoded Unicode characters
+  + CVE-2020-12387 Use-after-free during worker shutdown
+  + CVE-2020-6831 Buffer overflow in SCTP chunk input validation
+  + CVE-2020-12392 Arbitrary local file access with 'Copy as cURL'
+  + CVE-2020-12393 Devtools' 'Copy as cURL' feature did not fully escape website-controlled data, potentially leading to command injection
+  + CVE-2020-12395 Memory safety bugs fixed in Thunderbird 68.8.0
+
+* Mon May 04 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt3
+- Add Wayland support (ALT #38433).
+
 * Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt2
 - Add security fixes information to changelog.
 
