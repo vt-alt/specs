@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.7.0
+Version:        68.8.0
 Release:        alt1
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -387,6 +387,17 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Tue May 05 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt1
+- New ESR version (68.8.0).
+- Fixes:
+  + CVE-2020-12387 Use-after-free during worker shutdown
+  + CVE-2020-12388 Sandbox escape with improperly guarded Access Tokens
+  + CVE-2020-12389 Sandbox escape with improperly separated process types
+  + CVE-2020-6831 Buffer overflow in SCTP chunk input validation
+  + CVE-2020-12392 Arbitrary local file access with 'Copy as cURL'
+  + CVE-2020-12393 Devtools' 'Copy as cURL' feature did not fully escape website-controlled data, potentially leading to command injection
+  + CVE-2020-12395 Memory safety bugs fixed in Firefox 76 and Firefox ESR 68.8
+
 * Mon Apr 06 2020 Andrey Cherepanov <cas@altlinux.org> 68.7.0-alt1
 - New ESR version (68.7.0).
 - Fixes:
