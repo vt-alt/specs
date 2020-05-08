@@ -26,7 +26,7 @@
 
 Name: LibreOffice-still
 %define hversion 6.3
-%define urelease 5.2
+%define urelease 6.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
@@ -532,6 +532,29 @@ mv %buildroot%lodir/program/liblibreofficekitgtk.so %buildroot%_libdir/
 mkdir -p %buildroot%_includedir/LibreOfficeKit
 install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 
+# Make symkinks for x-office-* icons
+# oasis-text -> x-office-document
+# oasis-spreadsheet -> x-office-spreadsheet
+# oasis-presentation -> x-office-presentation
+# oasis-drawing -> image-x-generic
+for dir in `ls -d %buildroot%_iconsdir/hicolor/*`; do
+	for type in text spreadsheet presentation drawing; do
+		target="$type"
+		if [ "$type" == "text" ]; then
+			target="x-office-document"
+		elif ["$type" == "drawing" ]; then
+			target="image-x-generic"
+		else
+			target="x-office-$type"
+		fi
+		for format in png svg; do
+			if [ -e $dir/mimetypes/oasis-$type.$format ]; then
+				ln -s oasis-$type.$format $dir/mimetypes/$target.$format
+			fi
+		done
+	done
+done
+
 %files
 
 %files sdk
@@ -593,6 +616,9 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Thu Apr 30 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.6.2-alt1
+- New version 6.3.6.2 (Still).
+
 * Fri Feb 28 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.5.2-alt1
 - New version 6.3.5.2 (Still).
 - Set MOZILLA_CERTIFICATE_FOLDER as default Firefox profile.
