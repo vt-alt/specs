@@ -5,7 +5,7 @@
 
 Name: rpm-build
 Version: 4.0.4
-Release: alt134
+Release: alt139
 
 %define ifdef() %if %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define get_dep() %(rpm -q --qf '%%{NAME} >= %%|SERIAL?{%%{SERIAL}:}|%%{VERSION}-%%{RELEASE}' %1 2>/dev/null || echo '%1 >= unknown')
@@ -28,7 +28,7 @@ Release: alt134
 
 Summary: Scripts and executable programs used to build packages
 Summary(ru_RU.UTF-8): Файлы, необходимые для установки SRPM-пакетов и сборки RPM-пакетов
-License: GPL
+License: GPLv2+
 Group: Development/Other
 Obsoletes: spec-helper
 Requires: librpmbuild = %version-%release
@@ -98,20 +98,20 @@ BuildRequires: libdb4.7-devel libelf-devel liblzma-devel libpopt-devel python-de
 %package -n lib%oname
 Summary: Shared libraries required for applications which will manipulate RPM packages
 Summary(ru_RU.UTF-8): Файлы, необходимые для разработки приложений, взаимодействующих с RPM-пакетами
-License: GPL/LGPL
+License: GPLv2+ or LGPLv2.1+
 Group: System/Libraries
 
 %package -n librpmbuild
 Summary: Shared library required for applications which will build RPM packages
 Summary(ru_RU.UTF-8): Разделяемая библиотека для разработки приложений, собирающих RPM-пакеты
-License: GPL/LGPL
+License: GPLv2+ or LGPLv2.1+
 Group: System/Libraries
 Requires: lib%oname = %version-%release
 
 %package -n lib%oname-devel
 Summary: Development files for applications which will manipulate RPM packages
 Summary(ru_RU.UTF-8): Файлы, необходимые для разработки приложений, взаимодействующих с RPM-пакетами
-License: GPL/LGPL
+License: GPLv2+ or LGPLv2.1+
 Group: Development/C
 Provides: %oname-devel = %version-%release
 Obsoletes: %oname-devel
@@ -121,7 +121,7 @@ Requires: libpopt-devel
 %package -n lib%oname-devel-static
 Summary: Static libraries for developing statically linked applications which will manipulate RPM packages
 Summary(ru_RU.UTF-8): Статические библиотеки, необходимые для разработки статических приложений, взаимодействующих с RPM-пакетами
-License: GPL/LGPL
+License: GPLv2+ or LGPLv2.1+
 Group: Development/C
 Requires: lib%oname-devel = %version-%release
 Requires: libbeecrypt-devel-static, libdb4.7-devel-static, libpopt-devel-static, zlib-devel-static
@@ -190,7 +190,7 @@ This package contains statically linked version of the RPM program.
 Version: %{rpm_version}_%__python_version
 Summary: Python bindings for apps which will manipulate RPM packages
 Summary(ru_RU.UTF-8): Интерфейс для разработки Python-приложений, взаимодействующих с RPM-пакетами
-License: GPL/LGPL
+License: GPLv2+ or LGPLv2.1+
 Group: Development/Python
 Requires: lib%oname = %rpm_version-%release
 Requires: python = %__python_version
@@ -276,51 +276,6 @@ lib/test-set
 chmod a-w %buildroot%_usrsrc/RPM{,/RPMS/*}
 
 rm %buildroot%_libdir/librpm{,build,db,io}.so
-%if 0
-# Save list of packages through cron.
-#mkdir -p %buildroot%_sysconfdir/cron.daily
-#install -p -m0750 scripts/%oname.daily -T %buildroot%_sysconfdir/cron.daily/%oname
-#
-#mkdir -p %buildroot%_sysconfdir/logrotate.d
-#install -p -m0640 scripts/%oname.log -T %buildroot%_sysconfdir/logrotate.d/%oname
-
-mkdir -p %buildroot{%_rpmlibdir/macros.d,%_sysconfdir/%oname/macros.d}
-touch %buildroot%_sysconfdir/%oname/macros
-cat << E_O_F > %buildroot%_sysconfdir/%oname/macros.cdb
-%{?enable_cdb:#%%__dbi_cdb	%enable_cdb}
-E_O_F
-
-mkdir -p %buildroot%_localstatedir/%oname
-for dbi in \
-	Basenames Conflictname Dirnames Group Installtid Name Providename \
-	Provideversion Removetid Requirename Requireversion Triggername \
-	Sigmd5 Sha1header Filemd5s Packages \
-	__db.001 __db.002 __db.003 __db.004 __db.005 __db.006 __db.007 \
-	__db.008 __db.009
-do
-    touch "%buildroot%_localstatedir/%oname/$dbi"
-done
-touch %buildroot%_localstatedir/%oname/files-awaiting-filetriggers
-
-# Prepare documentation.
-xz -9 CHANGES ||:
-mkdir -p %buildroot%_docdir/%oname-%rpm_version
-install -p -m0644 CHANGES.xz CREDITS README README.ALT* \
-	%buildroot%_docdir/%oname-%rpm_version/
-cp -a doc/manual %buildroot%_docdir/%oname-%rpm_version/
-rm -f %buildroot%_docdir/%oname-%rpm_version/manual/{Makefile*,buildroot}
-#if_with apidocs
-cp -a apidocs/man/man3 %buildroot%_mandir/
-cp -a apidocs/html %buildroot%_docdir/%oname-%rpm_version/apidocs/
-#endif #with apidocs
-
-# rpminit(1).
-install -pD -m0755 rpminit -T %buildroot%_bindir/rpminit
-install -pD -m0644 rpminit.1 -T %buildroot%_man1dir/rpminit.1
-
-# Valid groups.
-install -p -m0644 GROUPS %buildroot%_rpmlibdir/
-%endif
 
 # buildreq ignore rules.
 install -pD -m0644 rpm-build.buildreq -T %buildroot%_sysconfdir/buildreqs/files/ignore.d/rpm-build
@@ -340,18 +295,6 @@ popd
 ls -d %buildroot%_rpmlibdir/*-%{_target_os}* |
 	grep -Fv /brp- |
 	sed -e "s|^%buildroot|%%attr(-,root,%oname) |g" >>rpmbuild.platform
-
-%if 0
-#ifdef add_findreq_skiplist
-# These shell libraries hopefully do not require anything special,
-# but we want to keep the "rpm" package dependencies to bare minimum.
-%add_findreq_skiplist %_rpmlibdir/functions
-%add_findreq_skiplist %_rpmlibdir/find-package
-#endif
-# However, syntax check is still a good idea.
-sh -n %buildroot%_rpmlibdir/functions
-sh -n %buildroot%_rpmlibdir/find-package
-%endif
 
 %if "%_lib" == "lib"
 if [ -s /lib/libc.so.6 -a -s /lib/libz.so.1 -a -s /lib/librt.so.1 -a -n "$(getconf LFS_CFLAGS)" ]; then
@@ -388,86 +331,6 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %_libdir/librpm-*.so
 %_libdir/librpmdb-*.so
 %_libdir/librpmio-*.so
-
-%if 0
-%files -n lib%oname-devel
-%_libdir/librpm.so
-%_libdir/librpmdb.so
-%_libdir/librpmio.so
-%_libdir/librpmbuild.so
-%_includedir/%oname
-%if_with apidocs
-%_man3dir/*
-%dir %_docdir/%oname-%rpm_version
-%_docdir/%oname-%rpm_version/apidocs
-%endif #with apidocs
-
-%files -n lib%oname-devel-static
-%_libdir/*.a
-
-%files -f %oname.lang
-%dir %_docdir/%oname-%rpm_version
-%_docdir/%oname-%rpm_version/[A-Z]*
-%_docdir/%oname-%rpm_version/manual
-
-#%config(noreplace,missingok) %_sysconfdir/cron.daily/%oname
-#%config(noreplace,missingok) %_sysconfdir/logrotate.d/%oname
-
-%rpmdirattr %_rpmlibdir/macros.d
-%dir %_sysconfdir/%oname
-%dir %_sysconfdir/%oname/macros.d
-%config(noreplace,missingok) %_sysconfdir/%oname/macros
-%config(noreplace,missingok) %_sysconfdir/%oname/macros.??*
-
-%rpmdirattr %_localstatedir/%oname
-%rpmdbattr %_localstatedir/%oname/Basenames
-%rpmdbattr %_localstatedir/%oname/Conflictname
-%rpmdbattr %_localstatedir/%oname/__db.0*
-%rpmdbattr %_localstatedir/%oname/Dirnames
-%rpmdbattr %_localstatedir/%oname/Filemd5s
-%rpmdbattr %_localstatedir/%oname/Group
-%rpmdbattr %_localstatedir/%oname/Installtid
-%rpmdbattr %_localstatedir/%oname/Name
-%rpmdbattr %_localstatedir/%oname/Packages
-%rpmdbattr %_localstatedir/%oname/Providename
-%rpmdbattr %_localstatedir/%oname/Provideversion
-%rpmdbattr %_localstatedir/%oname/Removetid
-%rpmdbattr %_localstatedir/%oname/Requirename
-%rpmdbattr %_localstatedir/%oname/Requireversion
-%rpmdbattr %_localstatedir/%oname/Sigmd5
-%rpmdbattr %_localstatedir/%oname/Sha1header
-%rpmdbattr %_localstatedir/%oname/Triggername
-%rpmdbattr %_localstatedir/%oname/files-awaiting-filetriggers
-
-/bin/rpm
-%_bindir/rpm
-%_bindir/rpm2cpio
-%_bindir/rpmdb
-%_bindir/rpm[eiu]
-%_bindir/rpmsign
-%_bindir/rpmquery
-%_bindir/rpmverify
-%_bindir/rpminit
-%_bindir/rpm*cmp
-
-%rpmattr %_rpmlibdir/pdeath_execute
-%rpmattr %_rpmlibdir/rpm[dikq]
-%_rpmlibdir/rpm[euv]
-%rpmdatattr %_rpmlibdir/GROUPS
-%_prefix/lib/rpmpopt
-%_prefix/lib/rpmrc
-
-%rpmattr %_rpmlibdir/posttrans-filetriggers
-%rpmattr %_rpmlibdir/0ldconfig.filetrigger
-
-%rpmattr %_rpmlibdir/functions
-%rpmattr %_rpmlibdir/find-package
-%rpmdatattr %_rpmlibdir/.provides.sh
-
-%_man1dir/rpminit.*
-%_man8dir/rpm.*
-%_man8dir/rpm2cpio.*
-%endif
 
 %files -f rpmbuild.platform
 %config %_sysconfdir/buildreqs/files/ignore.d/*
@@ -509,6 +372,7 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %rpmattr %_rpmlibdir/static.*
 %rpmattr %_rpmlibdir/suggest_bpp
 %rpmattr %_rpmlibdir/symlinks.*
+%rpmattr %_rpmlibdir/systemd-services.*
 %rpmattr %_rpmlibdir/tmpdir.sh
 %rpmattr %_rpmlibdir/verify-elf
 %rpmattr %_rpmlibdir/*.awk
@@ -542,6 +406,28 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %files checkinstall
 
 %changelog
+* Tue Apr 21 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt139
+- ldd.in: made preloading of PIE objects work again.
+- Set the value of SOURCE_DATE_EPOCH environment variable (if any)
+  as the source package buildtime.
+
+* Tue Apr 07 2020 Alexey Tourbin <at@altlinux.ru> 4.0.4-alt138
+- find-package, shebang.req: introduced RPM_FINDPACKAGE_MANDATORY=1.
+  When an interpreter is invoked by name, as in "#!/usr/bin/env python32",
+  and is missing, this will now force the dependency on /usr/bin/python32.
+
+* Sat Jan 04 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt137
+- Fixed %%autopatch and %%patch regression introduced in previous release.
+
+* Fri Jan 03 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt136
+- Generate requirements on binaries used in systemd service files
+  (by Anton V. Boyarshinov)
+- Made %%autopatch and %%patch accept -pg (by Vladimir D. Seleznev).
+- Fixed build with new gettext.
+
+* Sun Nov 24 2019 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt135
+- Fixed build with glibc >= 2.28.
+
 * Fri Nov 01 2019 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt134
 - Backported RPMTAG_VCS support from rpm.org.
 
