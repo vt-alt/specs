@@ -4,7 +4,7 @@
 
 Name: python-module-%oname
 Version: 0.7.5
-Release: alt1.1
+Release: alt1.2
 Summary: Python Bindings for the EVE Online API
 License: MIT
 Group: Development/Python
@@ -13,6 +13,7 @@ Url: https://pypi.python.org/pypi/EVELink/
 
 # https://github.com/eve-val/evelink.git
 Source: %name-%version.tar
+Patch0: evelink-async-fix.patch
 
 BuildRequires: python-devel python-module-setuptools
 BuildRequires: python-module-z4r-coveralls python-module-mock
@@ -52,6 +53,11 @@ EVELink provides a means to access the EVE XML API from Python.
 
 %prep
 %setup
+%patch0 -p1
+
+# Set correct python2 executable in shebang and scripts
+subst 's|#!.*python$|#!%__python|' $(grep -Rl '#!.*python$' *) \
+    $(find ./ -name '*.py')
 
 %if_with python3
 cp -fR . ../python3
@@ -106,6 +112,11 @@ popd
 %endif
 
 %changelog
+* Thu Apr 30 2020 Pavel Vasenkov <pav@altlinux.org> 0.7.5-alt1.2
+- (NMU) fixed:
+  * rename variable with reserved name
+  * set correct python2 executable in shebang and scripts
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.7.5-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 
