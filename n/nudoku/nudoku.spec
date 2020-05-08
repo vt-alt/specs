@@ -1,6 +1,6 @@
 Name:     nudoku
 Version:  2.0.0
-Release:  alt1
+Release:  alt2
 
 Summary:  ncurses based sudoku game
 License:  GPLv3
@@ -12,6 +12,8 @@ Packager: Grigory Ustinov <grenka@altlinux.org>
 
 Source:   %name-%version.tar
 
+Patch: nudoku-2.0.0-fix-gettext-version.patch
+
 BuildRequires: libncursesw-devel
 
 %description
@@ -19,6 +21,7 @@ BuildRequires: libncursesw-devel
 
 %prep
 %setup
+%patch -p1
 
 %build
 %autoreconf
@@ -35,6 +38,9 @@ BuildRequires: libncursesw-devel
 %doc AUTHORS LICENSE README.md
 
 %changelog
+* Mon Jan 13 2020 Grigory Ustinov <grenka@altlinux.org> 2.0.0-alt2
+- Fixed FTBFS.
+
 * Tue Jul 30 2019 Grigory Ustinov <grenka@altlinux.org> 2.0.0-alt1
 - Build new version.
 
