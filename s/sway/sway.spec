@@ -1,28 +1,27 @@
 %define _unpackaged_files_terminate_build 1
-%define oversion 1.0
 
-Name:		sway
-Version:	1.0
-Release:	alt1
-
-Summary:	i3wm drop-in replacement for Wayland
-
-Url:		http://swaywm.org/
-License:	MIT
-Group:		Graphical desktop/Other
+Name: sway
+Version: 1.4
+Release: alt1.1.p9
+Epoch:   1
+Summary: i3wm drop-in replacement for Wayland
+License: MIT
+Url: http://swaywm.org/
+Group: Graphical desktop/Other
 
 # https://github.com/swaywm/sway
 # git://git.altlinux.org/gears/s/sway.git
-Source0:	%name-%version-%release.tar
-Source2:	startsway
+Source0: %name-%version.tar
+Source1: startsway
+Source2: Sway_Wallpaper_Gray.png
 
-Patch00:	sway-config.patch
+Patch00: sway-config.patch
 
-BuildPreReq: libwlc-devel >= 0.0.10
-BuildPreReq: libdbus-devel
-
+BuildRequires: gcc-c++
 BuildRequires: asciidoc-a2x
+BuildRequires: cmake
 BuildRequires: libcap-devel
+BuildRequires: libdbus-devel
 BuildRequires: libevdev-devel
 BuildRequires: libgdk-pixbuf-devel
 BuildRequires: libjson-c-devel
@@ -32,48 +31,52 @@ BuildRequires: libpcre-devel
 BuildRequires: libwayland-cursor-devel
 BuildRequires: libwayland-egl-devel
 BuildRequires: libwlc0-devel
-BuildRequires: libwlroots-devel
+BuildRequires: libwlc-devel >= 0.0.10
+BuildRequires: libwlroots-devel >= 0.10.1-alt2
+BuildRequires: libGLES-devel
 BuildRequires: meson
+BuildRequires: scdoc
 BuildRequires: time
 
-Requires:	/etc/tcb
-Requires:	%name-data
-Requires(post):	/sbin/setcap
+# swaybg is now distributed as a standalone program which is compatible with many Wayland compositors (sway 1.1-rc1)
+Requires: swaybg
 
-%package	data
-Summary:	i3wm drop-in replacement for Wayland - data files
-Group:		Graphical desktop/Other
-BuildArch:	noarch
+# swayidle, a new idle management daemon, is available separately (sway 1.0)
+Requires: swayidle
 
-%define common_descr \
-Sway is a drop-in replacement for the i3 window manager, but for Wayland \
-instead of X11. It works with your existing i3 configuration and \
-supports most of i3's features, and a few extras.
+Requires: dmenu-wl
+Requires: %name-data
 
 %description
-%common_descr
+Sway is a drop-in replacement for the i3 window manager, but for Wayland
+instead of X11. It works with your existing i3 configuration and
+supports most of i3's features, and a few extras.
+
+%package data
+Summary: i3wm drop-in replacement for Wayland - data files
+Group: Graphical desktop/Other
+BuildArch: noarch
 
 %description data
-%common_descr
-
 This package contains data files.
 
 %prep
-%setup -n %name-%version-%release
-%patch00 -p1
-
-sed -i -e "s/'json-c', version: '>=0.13'/'json-c', version: '>=0.12'/" meson.build
+%setup
+%patch00 -p2
 
 %build
 %meson \
-	-Dsway-version="%oversion" \
 	-Dwerror=false \
 	#
 %meson_build
 
 %install
 %meson_install
-install -pm0755 -D %SOURCE2 %buildroot%_bindir/
+
+mkdir -p %buildroot/%_sysconfdir/%name/config.d
+
+install -p -m0755 -D %SOURCE1 %buildroot/%_bindir/
+install -p -m0644 -D %SOURCE2 %buildroot/%_datadir/backgrounds/%name/
 
 rm -rf -- \
 	%buildroot/%_datadir/bash-completion \
@@ -81,25 +84,22 @@ rm -rf -- \
 	%buildroot/%_datadir/zsh \
 	#
 
-%post
-/sbin/setcap cap_sys_ptrace,cap_sys_tty_config=eip %_bindir/%name
-
 %files
 %doc LICENSE
 %doc README.md
 %dir %_sysconfdir/%name
+%dir %_sysconfdir/%name/config.d
 %dir %_sysconfdir/%name/security.d
 %config(noreplace) %_sysconfdir/%name/config
 %config(noreplace) %_sysconfdir/%name/security.d/00-defaults
 %_bindir/sway
 %_bindir/startsway
 %_bindir/swaybar
-%_bindir/swaybg
 %_bindir/swaymsg
 %_bindir/swaynag
-#%%_man1dir/*
-#%%_man5dir/*
-#%%_man7dir/*
+%_man1dir/*
+%_man5dir/*
+%_man7dir/*
 %_datadir/wayland-sessions/sway.desktop
 
 %files data
@@ -107,6 +107,36 @@ rm -rf -- \
 %_datadir/backgrounds/%name/*
 
 %changelog
+* Wed Apr 29 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.4-alt1.1.p9
+- Backport new version to p9 branch.
+
+* Fri Mar 27 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.4-alt2
+- Remove privilege escalation.
+
+* Wed Mar 25 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.4-alt1
+- New version (1.4)
+
+* Sat Dec 07 2019 Alexey Gladkov <legion@altlinux.ru> 1:1.2-alt2
+- Fix BuildRequires.
+
+* Wed Nov 06 2019 Alexey Gladkov <legion@altlinux.ru> 1:1.2-alt1
+- New version (1.2)
+
+* Fri Aug 09 2019 Alexey Gladkov <legion@altlinux.ru> 1.2.rc1-alt1
+- New version (1.2-rc1)
+
+* Thu Aug 08 2019 Alexey Gladkov <legion@altlinux.ru> 1.1.1-alt2
+- Rewrite startsway script:
+  + Set XDG_* env variables to some default values
+  + Start dbus session (optional)
+- Require dmenu-wl
+
+* Tue Jun 04 2019 Alexey Gladkov <legion@altlinux.ru> 1.1.1-alt1
+- New version (1.1.1)
+
+* Wed May 22 2019 Alexey Gladkov <legion@altlinux.ru> 1.1-alt1.rc3
+- New version (1.1-rc3)
+
 * Sun Mar 24 2019 Alexey Gladkov <legion@altlinux.ru> 1.0-alt1
 - New version (1.0)
 
