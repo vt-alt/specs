@@ -4,7 +4,7 @@
 %def_enable telepathy
 
 Name: pidgin-sipe
-Version: 1.24.0
+Version: 1.25.0
 Release: alt1
 Summary: Pidgin plugin for connecting to MS Communications Server
 
@@ -26,6 +26,7 @@ BuildRequires: pkgconfig(gmime-3.0) >= 3.0.0
 BuildRequires: pkgconfig(nss)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(purple) >= 2.8.0
+BuildRequires: flex
 %{?_with_vv:BuildRequires: pkgconfig(nice) >= 0.1.0 pkgconfig(gstreamer-1.0) pkgconfig(gstreamer-rtp-1.0) pkgconfig(farstream-0.2)}
 %{?_with_krb5:BuildRequires: libkrb5-devel gssntlmssp-devel}
 %{?_enable_telepathy:BuildRequires: pkgconfig(dbus-glib-1) pkgconfig(telepathy-glib) >= 0.18.0 pkgconfig(gobject-2.0)}
@@ -86,7 +87,7 @@ rm -f %buildroot%_libdir/purple-2/*.la
 %find_lang %name
 
 %files -f %name.lang
-%doc AUTHORS ChangeLog HACKING COPYING NEWS README TODO
+%doc AUTHORS ChangeLog COPYING NEWS README TODO
 %_libdir/purple-2/libsipe.so
 %_pixmapsdir/pidgin/protocols/*/sipe.*
 %_datadir/metainfo/%name.metainfo.xml
@@ -98,6 +99,9 @@ rm -f %buildroot%_libdir/purple-2/*.la
 %_datadir/telepathy/profiles/sipe.profile
 
 %changelog
+* Mon Feb 24 2020 Nikita Nikiforov <rav263@altlinux.org> 1.25.0-alt1
+- 1.25.0
+
 * Tue Apr 23 2019 Andrew A. Vasilyev <andy@altlinux.org> 1.24.0-alt1
 - 1.24.0
 
