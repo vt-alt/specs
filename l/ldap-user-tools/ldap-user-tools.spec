@@ -2,8 +2,8 @@
 %define _hooksdir %_sysconfdir/hooks/hostname.d
 
 Name:    ldap-user-tools
-Version: 0.9.4
-Release: alt1.1
+Version: 0.9.5
+Release: alt1
 
 Summary: Utilities to work with LDAP users
 Group:   Development/Other
@@ -50,6 +50,9 @@ install -pm755 -d %buildroot/%_sysconfdir/alterator/openldap
 %dir %_sysconfdir/alterator/openldap
 
 %changelog
+* Tue May 05 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.5-alt1
+- Check full name of added group member (ALT #38441).
+
 * Tue Jul 24 2018 Andrey Cherepanov <cas@altlinux.org> 0.9.4-alt1.1
 - Rebuild with new Ruby autorequirements.
 
