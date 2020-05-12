@@ -5,7 +5,7 @@
 
 Name: kernel-source-%module_name
 Version: %module_version
-Release: alt12
+Release: alt13
 
 Group: Development/Kernel
 Summary: Linux %module_name modules sources
@@ -19,6 +19,7 @@ Source: %name-%version.tar
 Patch1: alt-build-time.diff
 Patch2: alt-ampdu-buf-define.diff
 Patch3: switch.diff
+Patch4: alt-kernel-5.6-proc_ops.diff
 
 BuildRequires: kernel-build-tools
 
@@ -31,6 +32,7 @@ pushd %name-%version
 %patch1 -p1
 #%patch2 -p1
 %patch3 -p1
+%patch4 -p1
 popd
 
 %install
@@ -41,6 +43,9 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt13
+- fix against kernel 5.6
+
 * Tue Apr 21 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt12
 - update from smlinux/current branch
 
