@@ -1,5 +1,5 @@
 Name:           xfce4-notifyd
-Version:        0.6.0
+Version:        0.6.1
 Release:        alt1
 Summary:        Simple notification daemon for Xfce
 Summary(ru_RU.UTF-8): Менеджер уведомлений для Xfce
@@ -7,7 +7,7 @@ Summary(ru_RU.UTF-8): Менеджер уведомлений для Xfce
 Group:          Graphical desktop/XFce
 License:        GPL-2.0-only
 URL:            https://docs.xfce.org/apps/notifyd/start
-Vcs:            git://git.xfce.org/apps/xfce4-notifyd
+Vcs:            https://gitlab.xfce.org/apps/xfce4-notifyd.git
 Source0:        %name-%version.tar
 Patch:          %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
@@ -17,7 +17,6 @@ BuildRequires: libxfce4ui-gtk3-devel libxfconf-devel libxfce4util-devel
 BuildRequires: libxfce4panel-gtk3-devel
 BuildRequires: libgio-devel libICE-devel libX11-devel libSM-devel
 BuildRequires: desktop-file-utils libnotify-devel
-BuildRequires: exo-csource
 
 # Automatically added by buildreq on Mon Sep 21 2009
 BuildRequires: intltool libglade-devel
@@ -65,9 +64,9 @@ Notification plugin for the Xfce panel.
 %build
 %xfce4reconf
 %configure \
-    --enable-maintainer-mode \
+	--enable-maintainer-mode \
 	--enable-dbus-start-daemon \
-    --enable-debug=minimum
+	--enable-debug=minimum
 %make_build
 
 %install
@@ -75,7 +74,7 @@ Notification plugin for the Xfce panel.
 %find_lang %name
 
 %files -f %name.lang
-%doc AUTHORS ChangeLog NEWS README TODO
+%doc AUTHORS NEWS README TODO
 %_bindir/xfce4-notifyd-config
 %_libdir/xfce4/notifyd/
 %_desktopdir/*.desktop
@@ -96,6 +95,11 @@ Notification plugin for the Xfce panel.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Wed May 06 2020 Mikhail Efremov <sem@altlinux.org> 0.6.1-alt1
+- Dropped exo-csource from BR.
+- Updated Vcs tag.
+- Updated to 0.6.1.
+
 * Wed Apr 08 2020 Mikhail Efremov <sem@altlinux.org> 0.6.0-alt1
 - Added Vcs tag.
 - Don't use rpm-build-licenses.
