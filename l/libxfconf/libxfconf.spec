@@ -6,21 +6,19 @@
 %def_disable gsettings
 
 Name: lib%_name
-Version: 4.14.1
+Version: 4.14.3
 Release: alt1
 
 Summary: Hierarchical configuration system for Xfce
 Summary (ru_RU.UTF-8): Система конфигурации Xfce
-License: %gpl2only
+License: GPL-2.0-only and LGPL-2.0-only
 Group: Graphical desktop/XFce
+Vcs: https://gitlab.xfce.org/xfce/xfconf.git
 Url: https://www.xfce.org/
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/xfce/xfconf
 Source: %_name-%version.tar
 Patch: %_name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 %define _unpackaged_files_terminate_build 1
 
@@ -50,6 +48,7 @@ Header files for the %name library.
 
 %package -n %_name-utils
 Summary: Utils for Xfce configuration system
+License: GPL-2.0-only
 Group: Graphical desktop/XFce
 Requires: %name = %version-%release
 
@@ -98,6 +97,7 @@ GObject introspection devel data for %name.
 %if_enabled vala
 %package vala
 Summary: Vala bindings for %name
+License: LGPLv2.1+
 Group: System/Libraries
 Requires: %name-devel = %EVR
 BuildArch: noarch
@@ -181,6 +181,14 @@ mkdir -p %buildroot/%_sysconfdir/xdg/xfce4/xfconf/xfce-perchannel-xml
 %endif
 
 %changelog
+* Wed May 06 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt1
+- Updated to 4.14.3.
+
+* Wed May 06 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
+- Added Vcs tag.
+- Fixed license.
+- Updated to 4.14.2.
+
 * Mon Aug 12 2019 Mikhail Efremov <sem@altlinux.org> 4.14.1-alt1
 - Updated to 4.14.1.
 
