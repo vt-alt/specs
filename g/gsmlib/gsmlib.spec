@@ -1,6 +1,6 @@
 Name: gsmlib
 Version: 1.11
-Release: alt4.041028.qa2
+Release: alt5.041028
 
 Summary: Library to access GSM mobile phones through GSM modems
 License: LGPLv2
@@ -10,6 +10,7 @@ URL: http://www.pxh.de/fs/gsmlib
 Source: http://www.pxh.de/fs/gsmlib/snapshots/gsmlib-pre1.11-041028.tar.gz
 
 Patch1: gsmlib-template.patch
+Patch2: gsmlib-1.11-fix-build-with-gettext-0.20.patch
 Patch3: gsmlib-1.10-underlink.patch
 
 # Patches from arc@help0.ru  Arcady Ivanov
@@ -61,6 +62,7 @@ necessary for developing programs which use the gsmlib library.
 %setup
 
 %patch1 -p1
+%patch2 -p2
 %patch3 -p1
 
 %patch11 -p0
@@ -100,6 +102,9 @@ subst 's/^gsmsstk/#gsmsstk/g; s/gsmsiexfer gsmsstk/gsmsiexfer/' ext/Makefile.am
 %_libdir/*.so
 
 %changelog
+* Wed May 06 2020 Anton Midyukov <antohami@altlinux.org> 1.11-alt5.041028
+- Fix build with gettext 0.20
+
 * Wed Jul 29 2015 Anton Farygin <rider@altlinux.ru> 1.11-alt4.041028.qa2
 - rebuild for new gcc5 ABI
 
