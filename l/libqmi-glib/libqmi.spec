@@ -2,7 +2,7 @@
 %define _libexecdir %prefix/libexec
 
 Name: %_name-glib
-Version: 1.24.8
+Version: 1.24.10
 Release: alt1
 
 Summary: QMI modem protocol helper library
@@ -105,6 +105,9 @@ make check
 
 
 %changelog
+* Thu May 07 2020 Mikhail Efremov <sem@altlinux.org> 1.24.10-alt1
+- Updated to 1.24.10.
+
 * Wed Mar 18 2020 Mikhail Efremov <sem@altlinux.org> 1.24.8-alt1
 - Updated to 1.24.8.
 
