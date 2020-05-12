@@ -1,12 +1,12 @@
 %define git	 e7b0afc
 %define ver      1.9.7
-%define rel      alt3.%git
+%define rel      alt4.%git
 
 Summary: Graphics file browser utility
 Name: gliv
 Version: %ver
 Release: %rel
-License: GPL
+License: LGPL-2
 Group: Graphics
 Url: http://guichaz.free.fr/gliv
 Source: %name-%ver-%git.tar.bz2
@@ -51,6 +51,10 @@ install -m 644 %name.desktop %buildroot%_datadir/applications/%name.desktop
 %_man1dir/%{name}.1*
 
 %changelog
+* Sat Mar 21 2020 L.A. Kostis <lakostis@altlinux.ru> 1.9.7-alt4.e7b0afc
+- Update gettext patch.
+- Update License tag.
+
 * Thu May 02 2019 L.A. Kostis <lakostis@altlinux.ru> 1.9.7-alt3.e7b0afc
 - bump gettext version requires.
 - rebuild w/ recent autoconf (fixes #36667).
