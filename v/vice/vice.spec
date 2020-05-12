@@ -1,42 +1,49 @@
 Name: vice
-Version: 2.1
-Release: alt9
+Version: 3.4
+Release: alt2
 
 Summary: Versatile Commodore Emulator
-License: GPL v2+
+Summary(pl.UTF-8): Uniwersalny emulator Commodore
+License: GPL-2.0-or-later
 Group: Emulators
 
-Url: http://www.viceteam.org
-Source0: http://www.zimmers.net/anonftp/pub/cbm/crossplatform/emulators/VICE/%name-%version.tar.gz
+Url: https://netcologne.dl.sourceforge.net/project/vice-emu
+Source0: https://netcologne.dl.sourceforge.net/project/vice-emu/releases/%name-%version.tar.gz
 Source1: vice-c128.desktop
-Source2: vice-c64.desktop
-Source3: vice-cbm2.desktop
-Source4: vice-pet.desktop
-Source5: vice-plus4.desktop
-Source6: vice-vic20.desktop
-Source7: vice-vsid.desktop
-Source8: vice-c1541.desktop
+Source2: vice-c1541.desktop
+Source3: vice-c64dtv.desktop
+Source4: vice-c64sc.desktop
+Source5: vice-cbm2.desktop
+Source6: vice-cbm5x0.desktop
+Source7: vice-pet.desktop
+Source8: vice-plus4.desktop
+Source9: vice-vic20.desktop
+Source10: vice-vsid.desktop
 Source11: vice-normalicons.tar.bz2
 Source12: vice-largeicons.tar.bz2
 Source13: vice-miniicons.tar.bz2
-Patch0: vice-info.patch
-Patch1: vice-gettext.patch
-Patch2: vice-home_etc.patch
-Patch3: vice-2.1-fix-str-fmt.patch
-Patch4: vice-2.1-fix-alsa-fragment.patch
-Patch5: vice-2.1-gcc44.patch
-Patch6: vice-2.1-alt-DSO.patch
-Patch7: vice-2.1-alt-libpng15.patch
-Patch8: texi2html-perl522.patch
-Patch9: vice-2.1-alt-perl524.patch
+Patch0: vice-3.4-fix-build.patch
+Patch1: vice-3.4-fix-destination-path.patch
 Packager: Michael Shigorin <mike@altlinux.org>
 
-# Automatically added by buildreq on Mon Mar 16 2009
-BuildRequires: flex gcc-c++ libGL-devel libSDL-devel libXrandr-devel libesd-devel libgtk+2-devel libjpeg-devel liblame-devel libreadline-devel libungif-devel
-BuildRequires: libpng-devel zlib-devel libX11-devel libXxf86vm-devel libalsa-devel
-BuildRequires: texinfo
-
-Summary(pl.UTF-8):	Uniwersalny emulator Commodore
+BuildRequires: flex gcc-c++
+BuildRequires: libGL-devel
+BuildRequires: libSDL2-devel
+BuildRequires: libXrandr-devel
+BuildRequires: libesd-devel
+BuildRequires: libjpeg-devel
+BuildRequires: liblame-devel
+BuildRequires: libreadline-devel
+BuildRequires: libungif-devel
+BuildRequires: libpng-devel
+BuildRequires: zlib-devel
+BuildRequires: libX11-devel
+BuildRequires: libXxf86vm-devel
+BuildRequires: libalsa-devel
+BuildRequires: makeinfo
+BuildRequires: xa
+BuildRequires: libpulseaudio-devel
+BuildRequires: libavcodec-devel libswresample-devel
 
 %description
 VICE is a Versatile Commodore Emulator, i.e. a program that runs on a
@@ -54,31 +61,18 @@ pasował do tej linii), CBM-II (C610) oraz Plus4.
 
 %prep
 %setup
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p0
-%patch4 -p2
-%patch5 -p0
-%patch6 -p2
-%patch7 -p2
-%patch8 -p1
-%patch9 -p1
+%patch0 -p2
+%patch1 -p2
 
 %build
 touch ABOUT-NLS config.rpath
 %add_optflags -fno-strict-aliasing
 %autoreconf
 %configure \
-	--enable-autobpp \
-	--with-sdl \
-	--enable-fullscreen \
-	--enable-gnomeui \
-	--enable-nls \
-	--without-xaw3d \
-	--without-included-gettext \
-	--with-x
-%make
+	--enable-sdlui2 \
+	--enable-external-ffmpeg
+
+%make_build
 
 %install
 install -d %buildroot{%_desktopdir,%_pixmapsdir}
@@ -90,8 +84,8 @@ rm -f doc/html/{Makefile*,texi2html}
 rm -rf %buildroot%_datadir/vice/doc
 
 install -pm644 \
-	%SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 \
-	%SOURCE5 %SOURCE6 %SOURCE7 %SOURCE8 \
+	%SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 %SOURCE5 \
+	%SOURCE6 %SOURCE7 %SOURCE8 %SOURCE9 %SOURCE10 \
 	%buildroot%_desktopdir
 
 mkdir -p %buildroot%_iconsdir/hicolor/{16x16,32x32,48x48}/apps
@@ -99,28 +93,26 @@ tar xjf %SOURCE11 -C %buildroot%_iconsdir/hicolor/32x32/apps
 tar xjf %SOURCE12 -C %buildroot%_iconsdir/hicolor/48x48/apps
 tar xjf %SOURCE13 -C %buildroot%_iconsdir/hicolor/16x16/apps
 
-pushd src/arch/unix/x11
-for i in *icon.c; do
-	install -pm644 $i %buildroot%_pixmapsdir/${i%%.c}.xpm
-done
-popd
-
 %find_lang %name
 
 %files -f %name.lang
 %doc AUTHORS ChangeLog FEEDBACK NEWS README
-%doc doc/iec-bus.txt doc/mon.txt doc/html
+%doc doc/iec-bus.txt doc/html
 %_bindir/*
-%_usr/lib/%name/
+%_prefix/lib/%name/
 %_mandir/man?/*
 %_infodir/*.info*
 %_desktopdir/*.desktop
-%_pixmapsdir/*
+#_pixmapsdir/*
 %_iconsdir/hicolor/*/*/*.png
 
-# TODO: build with ffmpeg support
-
 %changelog
+* Tue May 12 2020 Anton Midyukov <antohami@altlinux.org> 3.4-alt2
+- Rebuild with xa
+
+* Mon May 04 2020 Anton Midyukov <antohami@altlinux.org> 3.4-alt1
+- New version 3.4
+
 * Wed Feb 06 2019 Michael Shigorin <mike@altlinux.org> 2.1-alt9
 - rebuilt against libreadline7
 
