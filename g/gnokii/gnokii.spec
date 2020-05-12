@@ -1,13 +1,13 @@
-# vim: set ft=spec: -*- rpm-spec -*-
+%define _unpackaged_files_terminate_build 1
 
 Name: gnokii
 Version: 0.6.31
-Release: alt2
+Release: alt3
 
 Summary: Unix tool suite for Nokia mobile phones
 Group: Communications
-License: GPL
-Url: http://www.gnokii.org/
+License: GPL-2.0-or-later
+Url: https://www.gnokii.org/
 
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
@@ -131,6 +131,8 @@ sed 's,/usr/local/sbin,%_sbindir,g' \
 	< Docs/sample/gnokiirc \
 	> %buildroot%_sysconfdir/gnokiirc
 
+rm %buildroot%_libdir/smsd/*.la
+
 %find_lang %name
 
 %files -f %name.lang
@@ -184,6 +186,9 @@ sed 's,/usr/local/sbin,%_sbindir,g' \
 %_libdir/smsd/libsmsd_sqlite.so
 
 %changelog
+* Wed Feb 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.31-alt3
+- Fixed build with new gettext.
+
 * Thu Feb 07 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.6.31-alt2
 - Fix FTBFS against libmysqlclient.so.21
 
