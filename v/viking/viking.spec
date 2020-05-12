@@ -1,6 +1,6 @@
 Name:		viking
 Version:	1.7.0
-Release:	alt2
+Release:	alt3
 
 Summary:	GPS data editor and analyzer
 
@@ -9,8 +9,9 @@ License:	GPL-2.0-or-later
 URL:		http://sourceforge.net/projects/viking/
 Source0:	%{name}-%{version}.tar
 
-BuildRequires: libcurl-devel libexpat-devel libgps-devel perl-XML-Parser intltool zlib-devel
-BuildRequires: gnome-doc-utils libgtk+2-devel gtk-doc libgexiv2-devel bzlib-devel libmagic-devel
+BuildRequires: libcurl-devel libexpat-devel libgps-devel perl-XML-Parser intltool
+BuildRequires: gnome-doc-utils libgtk+2-devel gtk-doc libgexiv2-devel libmagic-devel
+BuildRequires: zlib-devel bzlib-devel libzip-devel
 BuildRequires: libsqlite3-devel
 BuildRequires: libgeoclue2-devel
 BuildRequires: liboauth-devel
@@ -27,10 +28,13 @@ in C with the GTK+ 2.
 %prep
 %setup -q
 
+patch -p1 < gps_api_9_support.patch
+
 %build
 ln -s /usr/share/gnome-doc-utils/gnome-doc-utils.make
 %autoreconf
-%configure --disable-mapnik
+%add_optflags -I/usr/include/libzip
+%configure --disable-mapnik --enable-geocaches
 %make
 
 %install
@@ -61,9 +65,14 @@ make check
 %_datadir/viking
 
 %changelog
+* Sat Jan 18 2020 Sergey Y. Afonin <asy@altlinux.org> 1.7.0-alt3
+- gps api 9 support (gpsd 3.20, patch from Debian)
+- built with libzip-devel
+- enabled geocaches
+
 * Tue Dec 24 2019 Sergey Y. Afonin <asy@altlinux.org> 1.7.0-alt2
 - packed localization (ALT #37674)
-- updated %%License to SPDX syntax, changed to GPL-2.0-or-later
+- updated License to SPDX syntax, changed to GPL-2.0-or-later
 - added %%check section
 
 * Thu Oct 17 2019 Anton Midyukov <antohami@altlinux.org> 1.7.0-alt1
