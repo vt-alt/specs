@@ -1,9 +1,9 @@
 Name:     bleachbit
-Version:  2.2
+Version:  4.0.0
 Release:  alt1
 
 Summary:  Remove unnecessary files, free space, and maintain privacy
-License:  GPLv3+
+License:  GPL-3.0+
 Group:    Archiving/Other
 URL:      http://www.bleachbit.org/
 
@@ -11,13 +11,15 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source0:  %name-%version.tar
 Patch1:   %name-apt-rpm-specific.patch
-Patch2:   %name-regression-fix.patch
+Patch2:   %name-alt-reasonable-config.patch
 
 BuildArch:      noarch
 
-BuildRequires(pre): rpm-build-gnome python-devel
+BuildRequires(pre): rpm-build-gnome python3-devel
 
-%add_python_req_skip Windows win32api win32con win32file winioctlcon
+%add_python3_req_skip win32api win32con win32file winioctlcon
+%add_python3_path %_datadir/%name
+%filter_from_provides /^python3(/d
 
 %description
 BleachBit deletes unnecessary files to free valuable disk space,
@@ -33,7 +35,7 @@ and history list of many common programs.
 
 %build
 make -C po local 
-%python_build
+%python3_build
 
 %install
 %makeinstall_std prefix=%_prefix
@@ -47,13 +49,22 @@ rm -f %buildroot%_datadir/%name/Windows.py*
 %files -f %name.lang
 %doc COPYING README.md
 %_bindir/%name
-%_desktopdir/%name.desktop
+%_desktopdir/*.desktop
 %_datadir/%name/
 %_pixmapsdir/%name.png
-%_datadir/appdata/*.appdata.xml
+%_datadir/metainfo/*.metainfo.xml
 %_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon May 04 2020 Andrey Cherepanov <cas@altlinux.org> 4.0.0-alt1
+- New version.
+- Fix License tag according SPDX.
+- Build with python3.
+- Do not check updates and use dark theme by default.
+
+* Wed Feb 05 2020 Stanislav Levin <slev@altlinux.org> 2.2-alt2
+- Fixed FTBS.
+
 * Thu Apr 11 2019 Andrey Cherepanov <cas@altlinux.org> 2.2-alt1
 - New version.
 
