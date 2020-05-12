@@ -5,27 +5,30 @@
 Name: progsreiserfs
 %define lname lib%name
 Version: 0.3.0.5
-Release: alt3
+Release: alt4
 Summary: Programs needed for manipulating reiserfs partitions
-Summary(uk_UA.CP1251): �������� ��� ������������� �������� ����� � reiserfs
-License: %gpl2plus
+Summary(ru_RU.UTF-8): Программа для манипулирования разделами диска с reiserfs
+Summary(uk_UA.UTF-8): Програми для маніпулювання розділами диску з reiserfs
+License: GPL-2.0-or-later
 Group: System/Configuration/Hardware
 # Url: ftp://ftp.namesys.com/pub/libreiserfs/
 Source: %name-%version.tar
 Patch: %name-%version-m4.patch
+Patch1: libreiserfs-0.3.0.5-gettext.patch
 %{?_enable_shared:Requires: %lname = %version-%release}
 
-BuildPreReq: rpm-build-licenses
 BuildRequires: libuuid-devel
 
 %description
 %name is a package that allows you to create, destroy, resize and copy
 reiserfs filesystem.
 
-%description -l uk_UA.CP1251
-%name - �����, ���� ������ ����������, ���������, �������� ����� ��
-�������� ������� ������� reiserfs.
+%description -l uk_UA.UTF-8
+%name - пакет, який дозволє створювати, знищувати, змінювати розмір та
+копіювати файлову систему reiserfs.
 
+%description -l ru_RU.UTF-8
+%name - пакет для создания, удаления, изменения рамера и копирования файловой системы reiserfs.
 
 %if_enabled shared
 %package -n %lname
@@ -61,6 +64,7 @@ This package includes the libraries needed to statically link software with
 %prep
 %setup -q
 %patch -p1
+%patch1 -p1
 for f in mk tune; do
 	sed -i -r "s/(${f}fs)\.(reiserfs)/\2.\1/g" doc/${f}fs.reiserfs.8
 done
@@ -114,6 +118,10 @@ done
 
 
 %changelog
+* Tue May 05 2020 Anton Midyukov <antohami@altlinux.org> 0.3.0.5-alt4
+- Fix build with gettext > 0.20
+- Cleanup spec
+
 * Thu Jul 04 2013 Led <led@altlinux.ru> 0.3.0.5-alt3
 - rename tunefs.reiserfs* to reiserfs.tunefs*
   (conflicts w/reiserfsprogs)
@@ -186,3 +194,4 @@ done
 
 * Mon Feb 11 2002 Yury Umanets <umka@altlinux.ru> progsreiserfs-0.1.5-alt1
 - Initial release
+
