@@ -1,6 +1,6 @@
 Name: faces
 Version: 1.7.7
-Release: alt6.2
+Release: alt7
 
 Summary: A list monitor with a visual output
 License: LGPL
@@ -8,6 +8,7 @@ Group: Networking/Mail
 Url: http://www.cs.indiana.edu/ftp/faces/
 
 Source: ftp://ftp.cs.indiana.edu/pub/%name/%name/%name-%version.tar.bz2
+Patch: faces-1.7.7-fix-build-with-gettext-0.20.patch
 
 BuildRequires: libgtk+2-devel libICE-devel
 
@@ -63,6 +64,7 @@ libcompface-devel contains the %name program development environment,
 
 %prep
 %setup
+%patch -p1
 touch config.rpath
 sed -i 's|@GT_NO@||g' */Makefile.in
 sed -i 's|@GT_YES@|#NO#|g' */Makefile.in
@@ -98,6 +100,9 @@ install -pD -m644 faces.desktop %buildroot%_desktopdir/%name.desktop
 %_man3dir/compface.3.*
 
 %changelog
+* Tue May 05 2020 Anton Midyukov <antohami@altlinux.org> 1.7.7-alt7
+- Fix build with gettext >= 0.20.0
+
 * Thu Mar 15 2018 Igor Vlasenko <viy@altlinux.ru> 1.7.7-alt6.2
 - NMU: added URL (closes: #34652)
 
