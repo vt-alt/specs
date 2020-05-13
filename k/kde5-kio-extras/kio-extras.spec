@@ -9,7 +9,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -23,6 +23,7 @@ Provides: kf5-kio-extras = %EVR
 Obsoletes: kf5-kio-extras < %EVR
 
 Source: %rname-%version.tar
+Patch1: CVE-2020-12755.patch
 # ALT
 Patch11: alt-smb-share.patch
 Patch12: alt-mime-rename.patch
@@ -85,7 +86,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
-#
+%patch1 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
@@ -142,6 +143,9 @@ rm -rf %buildroot/%_K5doc/*/kioslave5/man
 %_K5lib/libkioarchive.so.%kioarchive_sover
 
 %changelog
+* Tue May 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt2
+- don't store unasked fish:/ passwords (Fixes: CVE-2020-12755)
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
