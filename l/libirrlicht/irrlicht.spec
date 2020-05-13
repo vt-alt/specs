@@ -5,7 +5,7 @@
 
 Name: libirrlicht
 Version: 1.8.4
-Release: alt1
+Release: alt2
 
 Summary: Fast Open-source 3D engine
 License: BSD-style
@@ -65,6 +65,7 @@ Provides: liblibirrlicht1 = %EVR
 Obsoletes: liblibirrlicht1 < %EVR
 Conflicts: liblibirrlicht1 < %EVR
 Provides: libirrlicht = %version
+Provides: libirrlicht = %version-%release
 Obsoletes: libirrlicht < 1.8
 Conflicts: libirrlicht < 1.8
 
@@ -154,6 +155,9 @@ cp -a include/*.h %{buildroot}%{_includedir}/%{realname}/
 %endif
 
 %changelog
+* Tue Jun 11 2019 Michael Shigorin <mike@altlinux.org> 1.8.4-alt2
+- Added P: libirrlicht = %%version-%%release for -devel
+
 * Tue Nov 21 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.4-alt1
 - Updated to upstream version 1.8.4.
 

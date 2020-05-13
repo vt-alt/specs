@@ -3,7 +3,7 @@
 %global gitname celeron55
 
 Name:		minetest
-Version:	5.0.1
+Version:	5.2.0
 Release:	alt1
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
@@ -159,6 +159,15 @@ fi
 %_man6dir/minetestserver.6*
 
 %changelog
+* Thu Apr 09 2020 Andrey Cherepanov <cas@altlinux.org> 5.2.0-alt1
+- New version.
+
+* Tue Jan 28 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.1-alt1
+- New version.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
+- New version.
+
 * Thu Apr 18 2019 Andrey Cherepanov <cas@altlinux.org> 5.0.1-alt1
 - New version.
 
