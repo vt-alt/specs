@@ -1,5 +1,5 @@
 Name: frescobaldi
-Version: 3.0.1
+Version: 3.1.2
 Release: alt1
 
 Summary: LilyPond music score editor
@@ -50,24 +50,32 @@ Frescobaldi is a LilyPond music score editor, with following features:
 
 %build
 %python3_build
+cd linux && %make_build
 
 %install
 %python3_install
 install -d %buildroot%_liconsdir/
 rsvg-convert -w 48 -h 48  \
-%buildroot%_iconsdir/hicolor/scalable/apps/%name.svg \
-  -o %buildroot%_liconsdir/%name.png
+%buildroot%_iconsdir/hicolor/scalable/apps/org.frescobaldi.Frescobaldi.svg \
+  -o %buildroot%_liconsdir/org.frescobaldi.Frescobaldi.png
 
 %files
 %doc README.md
 %_bindir/%name
 %python3_sitelibdir_noarch/*
-%_desktopdir/%name.desktop
-%_iconsdir/hicolor/scalable/apps/%name.svg
-%_liconsdir/%name.png
+%_desktopdir/*.desktop
+%_iconsdir/hicolor/scalable/apps/*.svg
+%_datadir/metainfo/org.frescobaldi.Frescobaldi.metainfo.xml
+%_liconsdir/*.png
 %_man1dir/*
 
 %changelog
+* Wed May 06 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.2-alt1
+- new version 3.1.2 (with rpmrb script)
+
+* Fri Feb 07 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.1-alt1
+- new version 3.1.1 (with rpmrb script)
+
 * Wed Jun 14 2017 Vitaly Lipatov <lav@altlinux.ru> 3.0.1-alt1
 - build new python3 version
 
