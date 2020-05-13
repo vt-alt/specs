@@ -3,18 +3,20 @@
 %def_with python3
 
 Name: python-module-%modulename
-Version: 0.10.0
+Version: 1.1.0
 Release: alt1
 
 %setup_python_module %modulename
 
 Summary: Pika is a pure-Python implementation of the AMQP 0-9-1 protocol.
+
 License: MPLv2.0
 Group: Development/Python
-
 Url: http://github.com/pika/pika
+
 BuildArch: noarch
 
+# Source-git: https://github.com/pika/pika.git
 Source: %name-%version.tar
 
 BuildRequires(pre): rpm-macros-sphinx
@@ -22,6 +24,9 @@ BuildRequires: python-devel
 BuildRequires: python-module-setuptools
 BuildRequires: python-module-sphinx-devel python-module-twisted-core
 BuildRequires: python-module-tornado
+
+%add_python_req_skip asyncio
+
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildPreReq: python3-devel python3-module-setuptools
@@ -109,6 +114,12 @@ rm -fr %buildroot%python3_sitelibdir/*/tests
 %endif
 
 %changelog
+* Sat May 02 2020 Pavel Vasenkov <pav@altlinux.org> 1.1.0-alt1
+- new version 1.1.0
+
+* Sat Jun 01 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt1
+- new version 1.0.1 (with rpmrb script)
+
 * Mon Apr 11 2016 Alexey Shabalin <shaba@altlinux.ru> 0.10.0-alt1
 - 0.10.0
 
