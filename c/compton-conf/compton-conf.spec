@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: compton-conf
-Version: 0.14.1
+Version: 0.15.0
 Release: alt1
 
 Summary: GUI configuration tool for compton X composite manager
@@ -45,6 +45,9 @@ Requires: compton >= 5
 %doc AUTHORS COPYING README.md
 
 %changelog
+* Mon Apr 27 2020 Anton Midyukov <antohami@altlinux.org> 0.15.0-alt1
+- new version 0.15.0
+
 * Fri Mar 08 2019 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt1
 - new version 0.14.1
 

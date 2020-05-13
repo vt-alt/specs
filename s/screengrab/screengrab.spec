@@ -1,16 +1,21 @@
 # Unpackaged files in buildroot should terminate build
 %define _unpackaged_files_terminate_build 1
 
-%set_verify_elf_method relaxed
+#set_verify_elf_method relaxed
 
 Name: screengrab
-Version: 1.101
+Version: 2.0.1
 Release: alt1
+
 Summary: ScreenGrab is a tool for geting screenshots
 License: GPLv2
-Source0: %name-%version.tar
-Url: https://github.com/lxqt/screengrab
 Group: Graphics
+
+Url: https://github.com/lxqt/screengrab
+Source: %name-%version.tar
+Patch0: screengrab-1.99-CMakeLists.patch
+Patch1: core-cli-upload-option.patch
+Patch2: disable-cli-upload-option.patch
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: /proc
@@ -24,10 +29,6 @@ BuildRequires: pkgconfig(Qt5Widgets)
 BuildRequires: pkgconfig(Qt5X11Extras)
 BuildRequires: pkgconfig(Qt5Xdg)
 BuildRequires: kf5-kwindowsystem-devel
-
-Patch0: screengrab-1.99-CMakeLists.patch
-Patch1: core-cli-upload-option.patch
-Patch2: disable-cli-upload-option.patch
 
 %description
 ScreenGrab -- program getting screenshots working in Linux and Windows.
@@ -43,16 +44,23 @@ Main features:
 %prep
 %setup
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
+#patch1 -p1
+#patch2 -p1
 
-find . -type f | xargs chmod 644
+find -type f -print0 | xargs -r0 chmod 644 --
 
 # fix docs directories
 sed -i 's|${CMAKE_INSTALL_FULL_DOCDIR}|${CMAKE_INSTALL_FULL_DOCDIR}-%version|g' CMakeLists.txt
 
+%ifarch %e2k
+%add_optflags -std=c++11
+%endif
+
 %build
 %cmake -DSG_GLOBALSHORTCUTS=OFF \
+       -DSG_DBUS_NOTIFY=ON \
+       -DSG_EXT_EDIT=OFF \
+       -DSG_EXT_UPLOADS=OFF \
        -DUPDATE_TRANSLATIONS=ON
 
 %cmake_build
@@ -60,17 +68,13 @@ sed -i 's|${CMAKE_INSTALL_FULL_DOCDIR}|${CMAKE_INSTALL_FULL_DOCDIR}-%version|g' 
 %install
 %cmakeinstall_std
 
-# remove unneeded devel files
-find %buildroot -name '*.so' -delete
-
 # Icons
-%__mkdir -p %buildroot/{%_miconsdir,%_liconsdir}
+mkdir -p %buildroot/{%_miconsdir,%_liconsdir}
 convert -resize 48x48 img/%name.png %buildroot%_liconsdir/%name.png
 convert -resize 16x16 img/%name.png %buildroot%_miconsdir/%name.png
 
 %files
 %_bindir/%name
-%_libdir/*.so.*
 %_desktopdir/%name.desktop
 %_docdir/%name-%version/
 %_datadir/%name/
@@ -79,6 +83,16 @@ convert -resize 16x16 img/%name.png %buildroot%_miconsdir/%name.png
 %_liconsdir/%name.png
 
 %changelog
+* Sat Apr 25 2020 Anton Midyukov <antohami@altlinux.org> 2.0.1-alt1
+- new version 2.0.1
+
+* Mon Mar 23 2020 Anton Midyukov <antohami@altlinux.org> 2.0.0-alt1
+- new version 2.0.0
+
+* Thu Jun 06 2019 Michael Shigorin <mike@altlinux.org> 1.101-alt1.1
+- E2K: explicit -std=c++11
+- minor spec cleanup/fixup
+
 * Fri Mar 08 2019 Anton Midyukov <antohami@altlinux.org> 1.101-alt1
 - new version 1.101
 

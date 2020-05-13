@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: libsysstat
-Version: 0.4.2
+Version: 0.4.3
 Release: alt1
 
 Summary: Library used to query system info and statistics
@@ -51,6 +51,9 @@ which is used to query system info and statistics.
 %_datadir/cmake/*/
 
 %changelog
+* Sat Apr 25 2020 Anton Midyukov <antohami@altlinux.org> 0.4.3-alt1
+- new version 0.4.3
+
 * Sat Jan 26 2019 Anton Midyukov <antohami@altlinux.org> 0.4.2-alt1
 - new version 0.4.2
 

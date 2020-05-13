@@ -1,6 +1,6 @@
 Name: lxqt
-Version: 0.14
-Release: alt3
+Version: 0.15
+Release: alt1
 Summary: Meta package for install LxQt
 Group: Graphical desktop/Other
 License: GPL
@@ -66,19 +66,21 @@ Requires: pulseaudio-daemon pulseaudio-utils alsa-plugins-pulse
 Requires: lxqt-openssh-askpass >= %version
 Requires: lxqt-admin >= %version
 # archiver
-Requires: file-roller
+Requires: lxqt-archiver
 # task-manager
 Requires: qps
 # clipboard history applet
 Requires: qlipper
 # fonts
-Requires: fonts-ttf-liberation
+Requires: fonts-ttf-core
 # pdf-viewer
 Requires: qpdfview
 # image-viewer
 Requires: lximage-qt
 # themes for window manager
 Requires: openbox-themes
+# Graphical wrapper for su
+Requires: lxqt-sudo
 
 %description regular
 %summary
@@ -87,6 +89,13 @@ Requires: openbox-themes
 %files regular
 
 %changelog
+* Sun Apr 26 2020 Anton Midyukov <antohami@altlinux.org> 0.15-alt1
+- lxqt-regular: requires lxqt-sudo
+- lxqt-regular: requires lxqt-archiver instead file-roller
+
+* Sat Nov 30 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt4
+- lxqt-regular: requires fonts-ttf-core (Closes: 37511)
+
 * Wed Jun 26 2019 Anton Midyukov <antohami@altlinux.org> 0.14-alt3
 - lxqt requires openbox-themes
 

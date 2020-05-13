@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: liblxqt
-Version: 0.14.1
+Version: 0.15.0
 Release: alt1
 
 Summary: Core utility library for LxQt components
@@ -11,6 +11,7 @@ Group: Graphical desktop/Other
 
 Url: https://lxqt.org
 Source: %name-%version.tar
+Patch: liblxqt-0.14.1-fix_translate_load.patch
 
 BuildRequires: gcc-c++ cmake rpm-macros-cmake
 BuildRequires: qt5-base-devel qt5-x11extras-devel qt5-tools-devel
@@ -18,6 +19,8 @@ BuildRequires: kf5-kwindowsystem-devel
 BuildRequires: lxqt-build-tools libqtxdg-devel
 BuildRequires: libpolkitqt5-qt5-devel
 BuildRequires: git-core
+BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: pkgconfig(gio-unix-2.0)
 
 Provides: librazorqt = %version
 Obsoletes: librazorqt < 0.7.0
@@ -41,9 +44,11 @@ This package provides the development files for LXQt library.
 
 %prep
 %setup
+%patch -p1
 
 %build
-%cmake -DPULL_TRANSLATIONS=OFF -DUPDATE_TRANSLATIONS=OFF
+%cmake -DUPDATE_TRANSLATIONS=ON \
+	
 %cmake_build
 
 %install
@@ -64,6 +69,15 @@ This package provides the development files for LXQt library.
 %_datadir/cmake/*/
 
 %changelog
+* Sat Apr 25 2020 Anton Midyukov <antohami@altlinux.org> 0.15.0-alt1
+- new version 0.15.0
+
+* Mon Mar 23 2020 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt3
+- rebuilt with libqtxdg-0.2.0
+
+* Sat Dec 14 2019 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt2
+- fix load qt5 translation (Thanks zerg@)
+
 * Fri Mar 08 2019 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt1
 - new version 0.14.1
 

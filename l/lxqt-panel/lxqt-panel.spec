@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: lxqt-panel
-Version: 0.14.1
+Version: 0.15.0
 Release: alt1
 
 Summary: Desktop panel
@@ -27,6 +27,7 @@ BuildRequires: libXdmcp-devel libXdamage-devel
 BuildRequires: libXcomposite-devel libXrender-devel libxcbutil-devel
 BuildRequires: libmenu-cache-devel libstatgrab-devel libsensors3-devel
 BuildRequires: libxkbcommon-devel libxkbcommon-x11-devel
+BuildRequires: libgio-devel
 
 # see bug 34612
 BuildRequires: pkgconfig(libpulse)
@@ -77,6 +78,12 @@ This package provides the development files for %name.
 %_includedir/*/*.h
 
 %changelog
+* Sat Apr 25 2020 Anton Midyukov <antohami@altlinux.org> 0.15.0-alt1
+- new version 0.15.0
+
+* Mon Mar 23 2020 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt2
+- rebuilt with libqtxdg-0.2.0
+
 * Fri Mar 08 2019 Anton Midyukov <antohami@altlinux.org> 0.14.1-alt1
 - new version 0.14.1
 
