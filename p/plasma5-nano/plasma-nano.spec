@@ -1,7 +1,7 @@
 %define rname plasma-nano
 
 Name: plasma5-nano
-Version: 5.18.4
+Version: 5.18.5
 Release: alt1
 %K5init altplace
 
@@ -64,6 +64,9 @@ Requires: %name-common
 %_K5srv/*nano*.desktop
 
 %changelog
+* Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt1
+- new version
+
 * Thu Apr 02 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt1
 - new version
 

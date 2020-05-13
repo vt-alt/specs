@@ -5,8 +5,8 @@
 %define libdiscovernotifiers libdiscovernotifiers%sover
 
 Name: plasma5-%rname
-Version: 5.18.4
-Release: alt2
+Version: 5.18.5
+Release: alt1
 %K5init no_altplace appdata
 
 Group: System/Configuration/Packaging
@@ -205,6 +205,9 @@ done
 
 
 %changelog
+* Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt1
+- new version
+
 * Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.4-alt2
 - remove unnecessary X-DocPath from desktop-files
 
