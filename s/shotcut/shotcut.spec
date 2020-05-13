@@ -4,7 +4,7 @@
 %define _vstring %(echo %{version} |tr -d ".")
 
 Name: shotcut
-Version: 18.10.01
+Version: 20.02.02
 Release: alt1
 Summary: A free, open source, cross-platform video editor
 Summary(ru_RU.UTF-8): Свободный кросс-платфоорменный видеоредактор
@@ -13,12 +13,8 @@ Group: Video
 Url: http://www.shotcut.org/
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
-Patch: shotcut-18.10-nicepath.patch
 # Melt patch /usr/bin/melt
-Patch1: mlt_path.patch
-# shotcut-noupdatecheck.patch -- Disable automatic update check
-Patch2: shotcut-noupdatecheck.patch
-Patch3: shotcut-18.06.02-qt.patch
+Patch: mlt_path.patch
 
 BuildRequires: gcc-c++
 BuildRequires: desktop-file-utils
@@ -110,10 +106,7 @@ Data files for %name
 
 %prep
 %setup
-%patch -p1
-%patch1 -p0
-#patch2 -p0
-#patch3 -p0
+%patch -p0
 
 # Create version.json from current version
 echo "{" > version.json
@@ -153,11 +146,15 @@ done
 %_iconsdir/hicolor/*/apps/org.shotcut.Shotcut.png
 %_datadir/metainfo/org.shotcut.Shotcut.appdata.xml
 %_datadir/mime/packages/org.shotcut.Shotcut.xml
+%_man1dir/*
 
 %files data
 %_datadir/%name
 
 %changelog
+* Mon Feb 17 2020 Fr. Br. George <george@altlinux.ru> 20.02.02-alt1
+- new version 20.02.02
+
 * Wed Oct 03 2018 Fr. Br. George <george@altlinux.ru> 18.10.01-alt1
 - new version 18.10.01
 
