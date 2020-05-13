@@ -34,7 +34,7 @@
 Name: qt5-base
 %define major  5
 Version: 5.12.8
-Release: alt2
+Release: alt3
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -66,6 +66,7 @@ Patch1007: alt-decrease-iconloader-fallback-depth.patch
 Patch1008: alt-mkspecs-features.patch
 Patch1009: alt-false-detect-groupswitchmodifier.patch
 Patch1010: alt-glx-check-version.patch
+Patch1011: alt-kernel-requires.patch
 
 # macros
 %define _qt5 %gname
@@ -391,6 +392,7 @@ EGL integration library for the Qt%major toolkit
 %patch1008 -p1
 %patch1009 -p1
 %patch1010 -p2
+%patch1011 -p1
 
 # install optflags
 %add_optflags %optflags_shared
@@ -812,6 +814,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Wed May 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt3
+- reduce kernel version requires for OVZ kernel
+
 * Thu Apr 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt2
 - build docs
 
