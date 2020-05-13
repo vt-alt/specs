@@ -3,8 +3,8 @@
 
 Summary:      SOGo is a very fast and scalable modern collaboration suite (groupware)
 Name:         sogo
-Version:      4.3.0
-Release:      alt2
+Version:      4.3.2
+Release:      alt1
 
 License:      GPL-2.0+ and LGPL-2.1+
 URL:          https://sogo.nu/
@@ -20,10 +20,13 @@ URL:          https://sogo.nu/
 Group:        Communications
 Packager:     Andrey Cherepanov <cas@altlinux.org>
 
-Source:       SOGo-%version.tar.gz
+Source:       SOGo-%version.tar
 Source1:      sogo.init
 Source2:      angular-material.tar
-Patch:        %name-%version-alt.patch
+Patch1: sogo-alt-fix-enter-letters-in-address-field.patch
+Patch2: sogo-alt-fixes.patch
+Patch3: sogo-angular-css-update.patch
+Patch4: sogo-alt-fix-timeZoneWithAbbreviation.patch
 
 Requires:      stmpclean
 Requires:      tzdata
@@ -248,9 +251,13 @@ SOGo backend for OpenChange
 %prep
 %setup -q -n SOGo-%version
 tar xf %SOURCE2
-< %PATCH0 filterdiff -p1 -x UI/WebServerResources/angular-material | patch -p1
-# Workaround for wrong beahaviour call of timeZoneWithAbbreviation with GMT or UTC
-subst 's/timeZoneWithAbbreviation/timeZoneWithName/g' $(grep -Rl timeZoneWithAbbreviation *)
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+
+# Set correct python2 executable in shebang                                                                                                                                                    
+subst 's|#!.*python$|#!%__python|' $(grep -Rl '#!.*python$' *)
 
 %build
 . /usr/share/GNUstep/Makefiles/GNUstep.sh
@@ -427,6 +434,14 @@ fi
 %preun_service sogo
 
 %changelog
+* Thu May 07 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.2-alt1
+- New version.
+- Build afrom upstream tag and separate patch files.
+- Move /var/run/sogo to /run/sogo.
+
+* Sat May 02 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.1-alt1
+- New version.
+
 * Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.0-alt2
 - Returned to Sisyphus.
 
