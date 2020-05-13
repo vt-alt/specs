@@ -2,8 +2,8 @@
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: vulkan
-Version: 1.1.107
-Release: alt1
+Version: 1.1.121
+Release: alt1.1
 Summary: Khronos group Vulkan API SDK
 
 Group: System/Libraries
@@ -25,13 +25,16 @@ BuildRequires: libImageMagick-devel libpciaccess-devel libsystemd-devel
 BuildRequires: python3-devel libxcb-devel libXau-devel libXdmcp-devel libX11-devel libXrandr-devel
 BuildRequires: wayland-devel libwayland-server-devel libwayland-client-devel libwayland-cursor-devel libwayland-egl-devel
 # strict requires due internal dependency
-BuildRequires: glslang-devel = 7.11.3188
-BuildRequires: libspirv-tools-devel = 2019.3
+BuildRequires: glslang-devel = 7.12.3352
+BuildRequires: libspirv-tools-devel = 2019.4
 
 # textrel due asm optimisation in loader code
 %ifarch i586
 %set_verify_elf_method textrel=relaxed
 %endif
+
+# filter out self-provided requires
+%add_python3_req_skip spec_tools.util
 
 %description
 Vulkan is a new generation graphics and compute API that provides
@@ -164,19 +167,26 @@ chrpath -d %buildroot%_bindir/vulkaninfo
 %files validation-layers
 %_includedir/*
 %exclude %_includedir/vulkan
-%dir %_sysconfdir/vulkan/explicit_layer.d
-%dir %_datadir/vulkan/explicit_layer.d
-%dir %_datadir/vulkan/implicit_layer.d
 %_datadir/vulkan/explicit_layer.d/*.json
 %_libdir/libVkLayer*.so
 %_libdir/libVkLayer*.a
 
 %files filesystem
 %dir %_sysconfdir/vulkan
+%dir %_sysconfdir/vulkan/explicit_layer.d
 %dir %_datadir/vulkan
 %dir %_datadir/vulkan/icd.d
+%dir %_datadir/vulkan/explicit_layer.d
+%dir %_datadir/vulkan/implicit_layer.d
 
 %changelog
+* Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 1.1.121-alt1.1
+- Fix python3 requires.
+
+* Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 1.1.121-alt1
+- Updated to v1.1.121.
+- .spec: relocate some dirs from -validation-layers to -filesystem.
+
 * Mon May 06 2019 L.A. Kostis <lakostis@altlinux.ru> 1.1.107-alt1
 - Updated to v1.1.107:
   + vulkan-headers v1.1.107.

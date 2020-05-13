@@ -2,8 +2,8 @@
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: glslang
-Version: 7.11.3188
-Release: alt2
+Version: 7.12.3352
+Release: alt1
 
 Summary: OpenGL and OpenGL ES shader front end and validator
 Group: Development/C++
@@ -18,7 +18,7 @@ Patch1: %{name}-alt-shared-opt.patch
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: python3-devel libspirv-tools-devel
+BuildRequires: python3-devel libspirv-tools-devel = 2019.4
 
 %description
 glslang is the official reference compiler front end for the OpenGL
@@ -74,6 +74,10 @@ Requires: %name = %EVR
 %_includedir/SPIRV
 
 %changelog
+* Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 7.12.3352-alt1
+- stable release August 20, 2019 (7.12.3352).
+- added strict dependency to spirv-tools.
+
 * Fri May 03 2019 L.A. Kostis <lakostis@altlinux.ru> 7.11.3188-alt2
 - Try to fix build w/ shared libspirv-tools.
 

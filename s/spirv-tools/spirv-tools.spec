@@ -1,11 +1,11 @@
 %define sover 0
-%define git 26c1b88
+%define git %nil
 %define build_type RelWithDebInfo
 %define _cmake %cmake -GNinja -DCMAKE_BUILD_TYPE:STRING="%build_type" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: spirv-tools
-Version: 2019.3
-Release: alt2.g%{git}
+Version: 2019.4
+Release: alt1
 
 Summary: API and commands for processing SPIR-V modules
 Group: Development/C++
@@ -16,12 +16,11 @@ Packager: Nazarov Denis <nenderus@altlinux.org>
 
 Source: https://github.com/KhronosGroup/SPIRV-Tools/archive/v%version/SPIRV-Tools-%version.tar.gz
 Patch0: %name-soname-alt.patch
-Patch1: %name-alt-use-python3.patch
 
 BuildRequires(pre): cmake ninja-build
 BuildRequires: gcc-c++
 BuildRequires: python3-devel
-BuildRequires: spirv-headers = 1.3.7-alt0.1.g2434b89
+BuildRequires: spirv-headers >= 1.4.1
 
 %description
 The package includes an assembler, binary module parser,
@@ -50,7 +49,6 @@ integration into other code bases directly.
 %prep
 %setup -n SPIRV-Tools-%version
 %patch0 -p2
-%patch1 -p2
 
 %build
 %_cmake \
@@ -86,6 +84,10 @@ ninja -C BUILD install
 %_includedir/%name
 
 %changelog
+* Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 2019.4-alt1
+- Updated to 2019.4.
+- Update all -alt patches.
+
 * Thu May 02 2019 L.A. Kostis <lakostis@altlinux.ru> 2019.3-alt2.g26c1b88
 - fix debuginfo build (disable compression).
 - use ninja build.
