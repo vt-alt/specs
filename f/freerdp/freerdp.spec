@@ -6,8 +6,8 @@
 %def_without gss
 
 Name: freerdp
-Version: 2.0.0
-Release: alt5
+Version: 2.1.0
+Release: alt1
 
 Group: Networking/Remote access
 Summary: Remote Desktop Protocol functionality
@@ -339,8 +339,11 @@ patchelf --set-rpath %_libdir/freerdp2 %buildroot%_bindir/freerdp-proxy
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt1
+- New version (2.1.0) (Fixes: CVE-2020-11039, CVE-2020-11038, CVE-2020-11043, CVE-2020-11040, CVE-2020-11041, CVE-2020-11019, CVE-2020-11017, CVE-2020-11018).
+
 * Fri Apr 10 2020 Andrey Cherepanov <cas@altlinux.org> 2.0.0-alt5
-- New version (2.0.0).
+- New version (2.0.0) (Fixes: CVE-2020-11521, CVE-2020-11522, CVE-2020-11523, CVE-2020-11524, CVE-2020-11525, CVE-2020-11526).
 
 * Wed Nov 20 2019 Andrey Cherepanov <cas@altlinux.org> 2.0.0-alt4.git20190806
 - Enable support of icu and vaapi.
