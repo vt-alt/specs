@@ -1,5 +1,5 @@
 Name: libmicrosoft-gsl
-Version: 2.1.0
+Version: 3.0.1
 Release: alt1
 Epoch: 1
 
@@ -11,10 +11,14 @@ License: MIT
 Url: https://github.com/Microsoft/GSL
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# Source-git: https://github.com/Microsoft/GSL.git
+# Source-url: https://github.com/microsoft/GSL/archive/%version.tar.gz
 Source: %name-%version.tar
 
-BuildRequires: gcc-c++ cmake ctest catch2-devel >= 2.11.0-alt2
+BuildRequires: gcc-c++ cmake
+%if_with test
+#ctest catch2-devel >= 2.11.0-alt2
+BuildRequires: libgtest-devel
+%endif
 
 %description
 The Guideline Support Library (GSL) contains functions and types that are suggested
@@ -44,24 +48,32 @@ developing applications that use %name.
 %prep
 %setup
 # adopt to external catch2
-%__subst "s|\(add_custom_target(catch)\)|\1\nfind_package(Catch2)|" tests/CMakeLists.txt
-%__subst "s|catch/|catch2/|" tests/*.cpp
+#__subst "s|\(add_custom_target(catch)\)|\1\nfind_package(Catch2)|" tests/CMakeLists.txt
+#__subst "s|catch/|catch2/|" tests/*.cpp
 %__subst "/-Werror/d" tests/CMakeLists.txt
 
 %build
-%cmake_insource
+%cmake_insource -DGSL_TEST:BOOL=false
 %make_build
 
 %install
 %makeinstall_std
 
+%if_with test
 %check
 make test
+%endif
 
 %files devel
 %_includedir/gsl/
+/usr/share/cmake/Microsoft.GSL/
 
 %changelog
+* Mon May 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1:3.0.1-alt1
+- new version (3.0.1) with rpmgs script
+- switch from catch2 to google test (disable google test for a time)
+- build from tarball
+
 * Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1:2.1.0-alt1
 - new version (2.1.0) with rpmgs script
 - move headers to include/gsl
