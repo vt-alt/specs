@@ -1,6 +1,6 @@
 Name: teamviewer-preinstall
-Version: 11.0
-Release: alt2
+Version: 15.0
+Release: alt1
 
 Summary: TeamViewer pre-installation scripts
 Group: Networking/WWW
@@ -9,54 +9,44 @@ Url: http://www.teamviewer.com
 
 Source: %name-%version.tar
 
-ExclusiveArch: %ix86
+BuildArch: noarch
 
-BuildRequires: libexpat
-BuildRequires: libalsa zlib
-BuildRequires: libSM libXext libXtst
-BuildRequires: libXdamage libXfixes libXrender
-BuildRequires: libXinerama libXrandr
-BuildRequires: libfreetype libfontconfig
-BuildRequires: libdbus libjpeg libpng12
+Requires: libalsa
+Requires: libSM libXext libXtst libXau
+Requires: libXdamage libXfixes libXrender
+Requires: libXinerama libXrandr
+Requires: libdbus
+Requires: libqt5-webkitwidgets libqt5-x11extras qt5-quickcontrols
+Requires: bash4
 
-Requires: bash >= 3.0
-Requires: expat >= 1.95
-
-%install
-mkdir -p %buildroot%_libdir/%name
-for lib in \
-    libSM.so.6 \
-    libXdamage.so.1 \
-    libXext.so.6 \
-    libXfixes.so.3 \
-    libXinerama.so.1 \
-    libXrandr.so.2 \
-    libXrender.so.1 \
-    libXtst.so.6 \
-    libasound.so.2 \
-    libdbus-1.so.3 \
-    libexpat.so.1 \
-    libfontconfig.so.1 \
-    libfreetype.so.6 \
-    libgcc_s.so.1 \
-    libjpeg.so.62 \
-    libnss_db.so.2 \
-    libpng12.so.0 \
-    libz.so.1
-do 
-    ln -s "$(ls {,/usr}/lib/$lib 2>/dev/null)" %buildroot%_libdir/%name/$lib || echo "ABSENT LIBRARY $lib"
-done
+%build
 
 %description
-TeamViewer pre-installation scripts.
-See http://www.teamviewer.com
+TeamViewer pre-installation package.
+See http://www.teamviewer.com and https://www.altlinux.org/TeamViewer
 
-Check with teamviewer_11.0.57095.i686.rpm
+Download teamviewer_15.5.tar.xz, untar, 'cd' to it, run ./teamviewer as user
+Run this, if your default shell is bash3:
+
+$ find . -type f -print0 | xargs -0 sed -i 's!#\!/bin/bash!#\!/bin/bash4!g'
+$ find . -type f -print0 | xargs -0 sed -i 's!#\!/bin/sh!#\!/bin/sh4!g'
+
+%post
+echo "Download teamviewer_15.5.tar.xz, untar, 'cd' to it, run ./teamviewer as user"  >&2
+echo "See https://www.altlinux.org/TeamViewer" >&2
+
+if [ "${BASH_VERSINFO[0]}" -lt 4 ];then
+	echo "Run this, if your default shell is bash3:"  >&2
+	echo "$ find . -type f -print0 | xargs -0 sed -i 's!#\!/bin/bash!#\!/bin/bash4!g'" >&2
+	echo "$ find . -type f -print0 | xargs -0 sed -i 's!#\!/bin/sh!#\!/bin/sh4!g'" >&2
+fi
 
 %files
-%_libdir/%name
 
 %changelog
+* Fri May 01 2020 Lenar Shakirov <snejok@altlinux.org> 15.0-alt1
+- preinstall packages for native teamviewer_15.5.tar.xz
+
 * Thu Jan 26 2017 Andrey Cherepanov <cas@altlinux.org> 11.0-alt2
 - Add glibc-nss to requirements
 
