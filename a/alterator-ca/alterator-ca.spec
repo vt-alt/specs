@@ -1,7 +1,7 @@
 # vim: set ft=spec: -*- rpm-spec -*-
 
 Name: alterator-ca
-Version: 0.5.7
+Version: 0.5.8
 Release: alt1
 
 Summary: Office Server CA Manager
@@ -53,6 +53,9 @@ install -p -m755 hook/ca %buildroot%_libexecdir/alterator/hooks/trust.d
 %dir %_localstatedir/alterator-ca/out
 
 %changelog
+* Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 0.5.8-alt1
+- Hide all messages from c_rehash (ALT #38463).
+
 * Tue Mar 24 2020 Slava Aseev <ptrnine@altlinux.org> 0.5.7-alt1
 - Use sha256 default_md (Closes: #38213)
 
