@@ -2,8 +2,8 @@
 %def_with check
 
 Name: oddjob
-Version: 0.34.4
-Release: alt3
+Version: 0.34.6
+Release: alt1
 Summary: A D-Bus service which runs odd jobs on behalf of client applications
 
 Group: System/Servers
@@ -137,6 +137,12 @@ rm %buildroot%_libdir/security/pam_oddjob_mkhomedir.la
 %preun_service oddjobd
 
 %changelog
+* Tue May 12 2020 Stanislav Levin <slev@altlinux.org> 0.34.6-alt1
+- 0.34.4 -> 0.34.6 (fixes: CVE-2020-10737).
+
+* Fri Jun 07 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.34.4-alt4
+- Fix DBus error messages with disabled SELinux (RH#510457, RHBA-2010:0668)
+
 * Tue Feb 05 2019 Stanislav Levin <slev@altlinux.org> 0.34.4-alt3
 - Enable debug logging for testing.
 
