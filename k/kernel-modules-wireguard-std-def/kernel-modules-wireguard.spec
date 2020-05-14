@@ -1,5 +1,5 @@
 %define module_name	wireguard
-%define module_version	1.0.20200401
+%define module_version	1.0.20200506
 %define module_release	alt1
 
 %define flavour		std-def
@@ -65,6 +65,18 @@ install wireguard.ko %buildroot%module_dir
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu May 07 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200506-alt1
+- New version 1.0.20200506
+
+* Thu Apr 30 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200429-alt1
+- New version 1.0.20200429
+
+* Mon Apr 27 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200426-alt1
+- New version 1.0.20200426
+
+* Tue Apr 14 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200413-alt1
+- New version 1.0.20200413
 
 * Mon Apr 06 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200401-alt1
 - New version 1.0.20200401
