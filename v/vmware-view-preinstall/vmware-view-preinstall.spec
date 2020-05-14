@@ -1,6 +1,6 @@
 Name: vmware-view-preinstall
-Version: 4.10.0
-Release: alt4
+Version: 5.4.1
+Release: alt2
 
 Summary: VMware Horizon Client pre-installation scripts
 License: public domain
@@ -9,14 +9,25 @@ Group: System/Configuration/Other
 Url: http://altlinux.org/vmware-view
 ExclusiveArch: %ix86 x86_64
 
+Requires: python-modules-sqlite3
+Requires: python-modules-xml
+Requires: python-modules-logging
+
+Requires: libgtk+3
+Requires: libgst-plugins0.10-base
 Requires: libXScrnSaver
-Requires: libXtst
-Requires: libgst-plugins
-Requires: libgtk+2
-Requires: libgtkmm2
-Requires: libpng12
+Requires: libalsa
+Requires: libavutil56
+Requires: libdbus
+Requires: libgcrypt20
+Requires: libnss
+Requires: libsane
 Requires: libudev0
 Requires: libusb
+Requires: libva
+Requires: libva1
+Requires: libxkbfile
+Requires: libxml2
 
 BuildArch: noarch
 
@@ -27,6 +38,12 @@ VMware-Horizon-Client-%version bundle on this system.
 %files
 
 %changelog
+* Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt2
+- Does not require python2-base.
+
+* Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt1
+- Update requirements for new version.
+
 * Mon Mar 18 2019 Andrey Cherepanov <cas@altlinux.org> 4.10.0-alt4
 - Make package noarch.
 

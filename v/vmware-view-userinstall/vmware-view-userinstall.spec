@@ -1,6 +1,6 @@
 Name: vmware-view-userinstall
-Version: 5.3.0
-Release: alt1
+Version: 5.4.1
+Release: alt2
 
 Summary: VMware Horizon Client pre-installation scripts
 License: Public domain
@@ -11,7 +11,7 @@ Source: %name-%version.tar
 
 ExclusiveArch: %ix86 x86_64
 
-Requires: vmware-view-preinstall >= 4.10.0-alt3
+Requires: vmware-view-preinstall >= 5.4.1
 Requires: userinstall-helper >= 0.2
 Requires: python-modules-sqlite3
 
@@ -45,6 +45,12 @@ cp -a checksums %buildroot%uinstdir/goodsums
 %uinstdir/goodsums/*
 
 %changelog
+* Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt2
+- Requires for new version of vmware-view-preinstall.
+
+* Tue May 05 2020 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt1
+- New version.
+
 * Fri Jan 24 2020 Andrey Cherepanov <cas@altlinux.org> 5.3.0-alt1
 - New version.
 
