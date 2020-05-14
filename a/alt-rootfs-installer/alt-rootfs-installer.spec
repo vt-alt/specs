@@ -1,8 +1,8 @@
 Name: alt-rootfs-installer
-Version: 0.3.2
+Version: 0.3.3
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: System/Configuration/Other
 Url:  https://git.altlinux.org/people/antohami/packages/alt-rootfs-installer.git
 BuildArch: noarch
@@ -40,6 +40,9 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Thu May 14 2020 Anton Midyukov <antohami@altlinux.org> 0.3.3-alt1
+- Fix typo
+
 * Mon Apr 13 2020 Anton Midyukov <antohami@altlinux.org> 0.3.2-alt1
 - Added resize option
 - Replace LABEL to UUID /usr/share/u-boot/rpi_4/cmdline.txt
