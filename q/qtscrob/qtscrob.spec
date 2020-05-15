@@ -1,23 +1,26 @@
 
 Name: qtscrob
 Version: 0.11
-Release: alt1
+Release: alt2
 
 Group: Sound
 Summary: Submit .scrobbler.log from portable players to Last.fm and Libre.fm
 Url: http://qtscrob.sourceforge.net/
-License: GPLv2
+License: GPL-2.0-only
 
 Requires: %name-gui %name-cli
 
 Source: qtscrob-%version.tar
 # Debian
 Patch1: 0001-Add-dependencies-between-install-and-compress-man.patch
+Patch2: dont-update-language-files.patch
+Patch3: install-higher-res-icons.patch
+Patch4: qt5-port.patch
 
 # Automatically added by buildreq on Thu May 22 2014 (-bi)
 # optimized out: elfutils fontconfig libX11-devel libXext-devel libcloog-isl4 libqt4-core libqt4-gui libqt4-network libqt4-sql libqt4-xml libstdc++-devel libusb-devel phonon-devel pkg-config python-base
 #BuildRequires: desktop-file-utils dos2unix gcc-c++ glibc-devel-static libicu50 libmtp-devel libqt4-devel ruby ruby-stdlibs
-BuildRequires: desktop-file-utils dos2unix gcc-c++ glibc-devel libmtp-devel libqt4-devel
+BuildRequires: desktop-file-utils gcc-c++ glibc-devel libmtp-devel libXext-devel qt5-base-devel qt5-tools
 
 %description
 Update your last.fm profile using information from portable player!
@@ -57,14 +60,16 @@ as "last.fm" or "libre.fm".
 find ./ -type f | \
 while read f
 do
-    dos2unix $f
     chmod 0644 $f
 done
 
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 cd src
-%qmake_qt4 PREFIX=%prefix
+%qmake_qt5 PREFIX=%_prefix
 
 
 %build
@@ -74,7 +79,7 @@ cd src
 
 %install
 cd src
-%make install INSTALL_ROOT=%buildroot
+%installqt5
 ln -s scrobbler %buildroot/%_bindir/qtscrob-cli
 ln -s qtscrob %buildroot/%_bindir/qtscrob-gui
 
@@ -102,5 +107,11 @@ desktop-file-install \
 %_man1dir/qtscrob.*
 
 %changelog
+* Wed May 13 2020 Sergey V Turchin <zerg@altlinux.org> 0.11-alt2
+- port to Qt5
+
+* Thu May 22 2014 Sergey V Turchin <zerg@altlinux.org> 0.11-alt0.M70P.1
+- built for M70P
+
 * Thu May 22 2014 Sergey V Turchin <zerg@altlinux.org> 0.11-alt1
 - initial build
