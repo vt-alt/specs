@@ -14,7 +14,7 @@
 %define nv_version 340
 %define nv_release 108
 %define nv_minor %nil
-%define pkg_rel alt166
+%define pkg_rel alt167
 %def_enable egl
 %def_enable kernelsource
 %def_disable package_wfb
@@ -85,6 +85,7 @@ Source100: nvidia_create_xinf
 Patch1: buildfix_kernel_4.11.patch
 Patch2: buildfix_kernel_5.2.patch
 Patch3: buildfix_kernel_5.5.patch
+Patch4: buildfix_kernel_5.6.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -164,6 +165,7 @@ pushd kernel/
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p2
 rm -rf precompiled
 popd
 
@@ -310,6 +312,9 @@ fi
 %endif
 
 %changelog
+* Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt167
+- add fix against 5.6 kernel
+
 * Wed Feb 05 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt166
 - add fix against 5.5 kernel
 

@@ -27,7 +27,7 @@
 %define nv_version 390
 %define nv_release 132
 %define nv_minor %nil
-%define pkg_rel alt201
+%define pkg_rel alt202
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -101,6 +101,8 @@ Source100: nvidia_create_xinf
 Patch1: alt-fix-build-kernel.patch
 Patch2: alt-ignore-dma-remap.patch
 Patch3: kernel-5.5.patch
+Patch4: kernel-5.6.patch
+Patch5: kernel-5.6-x86_64.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -122,7 +124,7 @@ Sources for %{bin_pkg_name}_%{version} package
 
 
 %package -n %{bin_pkg_name}_%{version}
-PreReq: %{bin_pkg_name}_common >= %version
+Requires(pre,postun): %{bin_pkg_name}_common >= %version
 Requires(post): x11presetdrv
 #Requires: libGLdispatch libGLX
 Requires: %libnvidia_egl_wayland >= 0
@@ -169,6 +171,10 @@ pushd kernel
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p2
+%patch4 -p2
+%ifarch x86_64
+%patch5 -p2
+%endif
 rm -rf precompiled
 popd
 
@@ -352,6 +358,9 @@ fi
 %endif
 
 %changelog
+* Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 390.132-alt202
+- add fix against 5.6 kernel
+
 * Thu Feb 06 2020 Sergey V Turchin <zerg@altlinux.org> 390.132-alt201
 - add fix against 5.5 kernel
 
