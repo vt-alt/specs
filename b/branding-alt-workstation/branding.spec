@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.0
+Version: 9.0.900
 Release: alt1
 Url: https://basealt.ru
 
@@ -176,7 +176,6 @@ BuildArch: noarch
 Summary: MATE settings for %distro_name
 License: Distributable
 Group:   Graphical desktop/GNOME
-Requires: gksu
 Requires: dconf
 # Specified themes
 Requires: icon-theme-ePapirus
@@ -360,6 +359,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed Apr 29 2020 Mikhail Efremov <sem@altlinux.org> 9.0.900-alt1
+- mate-settings: Drop gksu.
+
 * Fri Oct 18 2019 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
 - Drop redundant empty %%description section.
 - bootloader: Fix %%preun script.
