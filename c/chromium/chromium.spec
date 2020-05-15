@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        81.0.4044.113
+Version:        81.0.4044.138
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -504,6 +504,18 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Wed May 13 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.138-alt1
+- New version (81.0.4044.138).
+- Security fixes:
+  - CVE-2020-6464: Type Confusion in Blink.
+  - CVE-2020-6831: Stack buffer overflow in SCTP.
+  - CVE-2020-6461: Use after free in storage.
+  - CVE-2020-6462: Use after free in task scheduling.
+  - CVE-2020-6458: Out of bounds read and write in PDFium.
+  - CVE-2020-6459: Use after free in payments.
+  - CVE-2020-6460: Insufficient data validation in URL formatting.
+  - CVE-2020-6463: Use after free in ANGLE.
+
 * Thu Apr 16 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.113-alt1
 - New version (81.0.4044.113).
 - Security fixes:
