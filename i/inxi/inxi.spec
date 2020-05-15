@@ -1,11 +1,11 @@
 Name: inxi
-Version: 3.0.36
+Version: 3.1.00
 Release: alt1
 
 Summary: A full featured system information script
 Summary(ru): Скрипт вывода полной информации об оборудовании и системе
 
-License: GPLv3
+License: GPL-3.0-or-later
 Group: Monitoring
 URL: https://smxi.org
 # Source-url: https://github.com/smxi/inxi/archive/%version-1.tar.gz
@@ -51,6 +51,15 @@ install -p -D -m 644 %name.1 %buildroot/%_man1dir/%name.1
 %_man1dir/%name.1*
 
 %changelog
+* Sat May 09 2020 Leontiy Volodin <lvol@altlinux.org> 3.1.00-alt1
+- New version (3.1.00)
+
+* Mon Apr 13 2020 Leontiy Volodin <lvol@altlinux.org> 3.0.38-alt1
+- New version (3.0.38)
+
+* Wed Nov 20 2019 Leontiy Volodin <lvol@altlinux.org> 3.0.37-alt1
+- New version (3.0.37)
+
 * Thu Aug 15 2019 Leontiy Volodin <lvol@altlinux.org> 3.0.36-alt1
 - New version (3.0.36)
 
