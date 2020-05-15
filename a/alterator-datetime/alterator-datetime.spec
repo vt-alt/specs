@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.4.0
+Version: 4.5.0
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -69,6 +69,12 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Wed May 13 2020 Mikhail Efremov <sem@altlinux.org> 4.5.0-alt1
+- Check that supported ntp service is installed (closes: #38168).
+- datetime-functions: Add numeric TZ to list_zone() output
+  (closes: #20505).
+- datetime-functions: Declare variable.
+
 * Fri Jan 17 2020 Mikhail Efremov <sem@altlinux.org> 4.4.0-alt1
 - datetime-functions: Unquote timezone string (closes: #35355).
 - test: Update check-timezone.sh for zone1970.tab file.
