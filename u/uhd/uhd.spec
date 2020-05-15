@@ -16,8 +16,8 @@
 
 Name: uhd
 Url: https://github.com/EttusResearch/uhd
-Version: 3.14.1.1
-Release: alt1.1
+Version: 3.15.0.0
+Release: alt1
 License: GPLv3+
 Group: Engineering
 Summary: Universal Hardware Driver for Ettus Research products
@@ -29,9 +29,11 @@ Source1: %name-limits.conf
 # uhd_images_downloader --types "(fpga|fw)_default" -i images
 Source2: images.tar
 
+Patch: uhd-0.14.1.1-python3-fix.patch
+
 BuildRequires(pre): rpm-macros-cmake rpm-build-python3
 BuildRequires: ctest cmake
-BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python3-devel boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
+BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-polygon-devel boost-program_options-devel boost-python3-devel boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
 BuildRequires: libnumpy-devel
 BuildRequires: python3-module-setuptools
 BuildRequires: python3-module-Cheetah
@@ -79,7 +81,7 @@ Requires: %name = %EVR
 Tools that are useful for working with and/or debugging USRP device.
 
 %package -n python3-module-%name
-Group: Development/Python
+Group: Development/Python3
 Summary: Python 3 API for %name
 Requires: %name = %EVR
 
@@ -89,6 +91,11 @@ Python 3 API for %name
 %prep
 %setup
 sed -i 's|/usr/bin/env python|%__python3|' host/python/setup.py.in
+
+%patch -p1
+
+# fix python shebangs
+find . -type f -name "*.py" -exec sed -i '/^#!/ s|.*|#!%__python3|' {} \;
 
 %build
 pushd host
@@ -188,6 +195,17 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %buildroot%_bindir/chdr_log
 %python3_sitelibdir/%name/
 
 %changelog
+* Sat Jan 11 2020 Anton Midyukov <antohami@altlinux.org> 3.15.0.0-alt1
+- New version 3.15.0.0
+
+* Wed Dec 25 2019 Anton Midyukov <antohami@altlinux.org> 3.14.1.1-alt3
+- fix python3 shebang and syntax for utils
+- fix Group
+
+* Tue Dec 03 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.14.1.1-alt2
+- Fixed shebang for installed scripts.
+- Rebuilt with boost-1.71.0.
+
 * Sat Oct 19 2019 Anton Midyukov <antohami@altlinux.org> 3.14.1.1-alt1.1
 - fix shebang for setup.py
 
