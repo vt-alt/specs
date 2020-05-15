@@ -1,17 +1,16 @@
 %def_without dbus
+%define origver 2020.1
 
-%define major 2018.2
 Name: FlightGear
-Version: %major.2
+Version: %origver
 Release: alt1
 
 Summary: open-source flight simulator
-
-License: GPL
+License: GPLv2+
 Group: Games/Arcade
-Url: http://www.flightgear.org
 
-# Source0-url: https://sourceforge.net/projects/flightgear/files/release-%major/flightgear-%version.tar.bz2
+Url: http://www.flightgear.org
+# Source0-url: https://sourceforge.net/projects/flightgear/files/release-%origver/flightgear-%version.tar.bz2
 Source0: %name-%version.tar
 Source2: FlightGear.menu
 Source3: FlightGear-22x22.xpm
@@ -31,7 +30,7 @@ Patch6: 0006-make-fglauncher-a-static-library.patch
 Requires: FlightGear-data = %version
 #Requires: fgrun >= 1.6.1
 
-BuildRequires: libsimgear-devel-static = %version
+BuildRequires: libsimgear-devel = %version
 BuildRequires: libOpenSceneGraph-devel >= 3.4.0
 BuildRequires: boost-devel >= 1.44
 BuildRequires: plib-devel >= 1.8.5
@@ -63,7 +62,7 @@ This package contains the engine; see also fgrun or fgo to start
 FlightGear conveniently.
 
 You will also need some experience and probably a tutorial:
-http://www.4p8.com/eric.brasseur/flight_simulator_tutorial.html
+http://ericbrasseur.org/flight_simulator_tutorial.html
 
 %prep
 %setup
@@ -85,18 +84,19 @@ done
 # argh
 sed -i 's,/lib/FlightGear,/share/flightgear,' CMakeLists.txt
 
-# a glitch in 2.10.0:
-# http://www.mail-archive.com/flightgear-devel@lists.sourceforge.net/msg39430.html
-rm -f src/Include/version.h
-
-# TODO: link with external sqlite3
-%ifarch e2k
-# unsupported as of lcc-1.21.20
+# TODO: link with external sqlite3?
+%ifarch %e2k
+# unsupported as of lcc-1.23.21
 sed -i 's,-fno-fast-math,,' 3rdparty/sqlite3/CMakeLists.txt
 %endif
 
 %build
-%cmake
+# FIXME: tests got linking problems with lcc 1.23.20, cf. mcst#3675?
+%cmake \
+%ifarch %e2k
+	-DENABLE_TESTS:BOOL=OFF \
+%endif
+	%nil
 %cmake_build
 
 %install
@@ -112,6 +112,12 @@ rm -rf %buildroot%_datadir/bash-completion/ %buildroot%_datadir/zsh/
 %_desktopdir/org.flightgear.FlightGear.desktop
 
 %changelog
+* Tue May 12 2020 Michael Shigorin <mike@altlinux.org> 2020.1-alt1
+- 2020.1
+
+* Sat Oct 12 2019 Michael Shigorin <mike@altlinux.org> 2018.2.2-alt2
+- fix build on e2kv4+ with lcc 1.23.20 too
+
 * Thu Jun 21 2018 Vitaly Lipatov <lav@altlinux.ru> 2018.2.2-alt1
 - new version (2018.2.2)
 - rebuild against OpenSceneGraph 3.4.1
