@@ -1,64 +1,43 @@
 %set_verify_elf_method textrel=relaxed
 
 Name: pcsx2
-Version: 1.4.0
-Release: alt2%ubt
+Version: 1.6.0
+Release: alt1
 
 Summary: Playstation 2 console emulator
 License: GPLv3
 Group: Emulators
 
-Url: http://pcsx2.net/
+Url: http://%name.net/
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
 ExclusiveArch: %ix86
 
 Source: https://github.com/PCSX2/%name/archive/v%version/%name-%version.tar.gz
-Patch0: %name-gcc6-alt.patch
 
-BuildRequires(pre): rpm-build-ubt
-
-BuildRequires: bzlib-devel
 BuildRequires: cmake
+BuildRequires: compat-libwxGTK3.0-gtk2-devel
 BuildRequires: gcc-c++
-BuildRequires: libGLEW-devel
-BuildRequires: libSDL-devel
+BuildRequires: libGLU-devel
+BuildRequires: libSDL2-devel
 BuildRequires: libXmu-devel
 BuildRequires: libaio-devel
-BuildRequires: libalsa-devel
-BuildRequires: libcggl-devel
 BuildRequires: libgtk+2-devel
-BuildRequires: libjpeg-devel
 BuildRequires: liblzma-devel
-BuildRequires: libpng++-devel
+BuildRequires: libpcap-devel
 BuildRequires: libportaudio2-devel
 BuildRequires: libsoundtouch-devel
-BuildRequires: libwxGTK-devel
+BuildRequires: libudev-devel
+BuildRequires: libxml2-devel
 
 %description
 PCSX2 is an emulator for the playstation 2 video game console. It is written mostly in C++, some part are in C and x86 assembly.
 There is still lot of on going work to improve compatibility & speed.
 
-%package plugin-cdvdiso
-Summary: CDVDiso plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-cdvdiso
-CDVDiso plugin for PCSX2
-
-%package plugin-cdvdlinuz
-Summary: CDVDlinuz plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-cdvdlinuz
-CDVDlinuz plugin for PCSX2
-
 %package plugin-cdvdnull
 Summary: CDVDnull plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-cdvdnull
 CDVDnull plugin for PCSX2
@@ -66,7 +45,7 @@ CDVDnull plugin for PCSX2
 %package plugin-fwnull
 Summary: FWnull plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-fwnull
 FWnull plugin for PCSX2
@@ -74,63 +53,55 @@ FWnull plugin for PCSX2
 %package plugin-gsdx
 Summary: GSdx plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-gsdx
 GSdx plugin for PCSX2
 
-%package plugin-gsnull
-Summary: GSnull plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-gsnull
-GSnull plugin for PCSX2
-
-%package plugin-lilypad
-Summary: LilyPad plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-lilypad
-LilyPad plugin for PCSX2
-
-%package plugin-padnull
-Summary: PADnull plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-padnull
-PADnull plugin for PCSX2
-
-%package plugin-spu2null
-Summary: SPU2null plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-spu2null
-SPU2null plugin for PCSX2
-
 %package plugin-usbnull
 Summary: USBnull plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-usbnull
 USBnull plugin for PCSX2
 
+%package plugin-cdvdgigaherz
+Summary: cdvdgigaherz plugin for PCSX2
+Group: Emulators
+Requires: %name = %EVR
+
+%description plugin-cdvdgigaherz
+cdvdgigaherz plugin for PCSX2
+
+%package plugin-dev9ghzdrk
+Summary: dev9ghzdrk plugin for PCSX2
+Group: Emulators
+Requires: %name = %EVR
+
+%description plugin-dev9ghzdrk
+dev9ghzdrk plugin for PCSX2
+
 %package plugin-dev9null
 Summary: dev9null plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-dev9null
 dev9null plugin for PCSX2
 
+%package plugin-onepad-legacy
+Summary: onepad legacy plugin for PCSX2
+Group: Emulators
+Requires: %name = %EVR
+
+%description plugin-onepad-legacy
+onepad legacy plugin for PCSX2
+
 %package plugin-onepad
 Summary: onepad plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-onepad
 onepad plugin for PCSX2
@@ -138,22 +109,13 @@ onepad plugin for PCSX2
 %package plugin-spu2x
 Summary: spu2x plugin for PCSX2
 Group: Emulators
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description plugin-spu2x
 spu2x plugin for PCSX2
 
-%package plugin-zzogl
-Summary: zzogl plugin for PCSX2
-Group: Emulators
-Requires: %name = %version-%release
-
-%description plugin-zzogl
-zzogl plugin for PCSX2
-
 %prep
 %setup
-%patch0 -p1
 
 %build
 %__mkdir_p %_target_platform
@@ -169,10 +131,8 @@ cmake .. \
 	-DPLUGIN_DIR:PATH=%_libdir/%name \
 	-DGAMEINDEX_DIR:PATH=%_datadir/%name \
 	-DPACKAGE_MODE:BOOL=TRUE \
-	-DXDG_STD:BOOL=TRUE \
-	-DSDL2_API:BOOL=FALSE \
-	-DWX28_API:BOOL=TRUE \
-	-DEXTRA_PLUGINS:BOOL=TRUE
+	-DwxWidgets_CONFIG_EXECUTABLE=%_libdir/wx/config/gtk2-unicode-3.0 \
+	-Wno-dev
 popd
 
 %make_build -C %_target_platform
@@ -183,22 +143,15 @@ popd
 %find_lang --output=%name.lang %{name}_{Iconized,Main}
 
 %files -f %name.lang
-%doc bin/docs/PCSX2_*.pdf
+%doc bin/docs/*.pdf
 %_bindir/PCSX2*
 %dir %_libdir/%name
-%_libdir/%name/ps2hw.dat
 %_desktopdir/PCSX2.desktop
 %_man1dir/PCSX2.1.*
 %dir %_datadir/%name
 %_datadir/%name/GameIndex.dbf
 %_datadir/%name/cheats_ws.zip
 %_pixmapsdir/PCSX2.xpm
-
-%files plugin-cdvdiso
-%_libdir/%name/libCDVDiso.so
-
-%files plugin-cdvdlinuz
-%_libdir/%name/libCDVDlinuz.so
 
 %files plugin-cdvdnull
 %_libdir/%name/libCDVDnull.so
@@ -207,36 +160,33 @@ popd
 %_libdir/%name/libFWnull-0.7.0.so
 
 %files plugin-gsdx
-%_libdir/%name/libGSdx-1.0.0.so
-
-%files plugin-gsnull
-%_libdir/%name/libGSnull.so
-
-%files plugin-lilypad
-%_libdir/%name/libLilyPad-0.11.0.so
-
-%files plugin-padnull
-%_libdir/%name/libPADnull.so
-
-%files plugin-spu2null
-%_libdir/%name/libSPU2null.so
+%_libdir/%name/libGSdx.so
 
 %files plugin-usbnull
 %_libdir/%name/libUSBnull-0.7.0.so
 
+%files plugin-cdvdgigaherz
+%_libdir/%name/libcdvdGigaherz.so
+
+%files plugin-dev9ghzdrk
+%_libdir/%name/libdev9ghzdrk-0.4.so
+
 %files plugin-dev9null
 %_libdir/%name/libdev9null-0.5.0.so
 
+%files plugin-onepad-legacy
+%_libdir/%name/libonepad-legacy.so
+
 %files plugin-onepad
-%_libdir/%name/libonepad-1.1.0.so
+%_libdir/%name/libonepad.so
 
 %files plugin-spu2x
 %_libdir/%name/libspu2x-2.0.0.so
 
-%files plugin-zzogl
-%_libdir/%name/libzzogl-0.4.0.so
-
 %changelog
+* Fri May 08 2020 Nazarov Denis <nenderus@altlinux.org> 1.6.0-alt1
+- Version 1.6.0
+
 * Mon Jul 23 2018 Nazarov Denis <nenderus@altlinux.org> 1.4.0-alt2%ubt
 - Rebuilt with new GLEW
 
