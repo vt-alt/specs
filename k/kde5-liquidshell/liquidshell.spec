@@ -6,8 +6,8 @@
 %define libliquidshell liquidshell%liquidshell_sover
 
 Name: kde5-liquidshell
-Version: 1.5
-Release: alt5
+Version: 1.7.1
+Release: alt1
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -27,7 +27,6 @@ Patch6: alt-def-wallpaper.patch
 Patch7: alt-clean-device-notifier.patch
 Patch8: alt-start-menu-icon.patch
 Patch9: alt-start_liquidshell.patch
-Patch10: alt-virt-desk-conf.patch
 
 # Automatically added by buildreq on Sat Jun 09 2018 (-bi)
 # optimized out: cmake cmake-modules elfutils gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 kf5-attica-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgio-devel libgpg-error libnm-devel libqt5-concurrent libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcb-devel libxcbutil-keysyms perl python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3
@@ -84,13 +83,12 @@ Requires: %name-common = %version-%release
 %setup -n %rname-%version
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
+#%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1 -b .start
-%patch10 -p1
 
 %build
 %K5build
@@ -111,8 +109,9 @@ SCRIPT:
 exec /usr/bin/start_liquidshell
 __EOF__
 install -Dm 0755 org.kde.liquidshell.desktop %buildroot/%_kf5_xdgapp/
-install -Dm 0755 start_liquidshell %buildroot/%_bindir/
 install -Dm 0644 liquidshell-session.desktop %buildroot/%_datadir/xsessions/liquidshell-session.desktop
+mkdir -p %buildroot/%_bindir/
+mv %buildroot/%_K5bin/start_liquidshell %buildroot/%_bindir/
 
 %find_lang %name --with-kde --all-name
 
@@ -127,6 +126,9 @@ install -Dm 0644 liquidshell-session.desktop %buildroot/%_datadir/xsessions/liqu
 %_datadir/xsessions/liquidshell-session.desktop
 
 %changelog
+* Fri May 15 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.1-alt1
+- new version
+
 * Thu Nov 28 2019 Sergey V Turchin <zerg@altlinux.org> 1.5-alt5
 - allow configure virtual desktops (Closes: 37527)
 
