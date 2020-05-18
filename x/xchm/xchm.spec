@@ -3,7 +3,7 @@
 
 Name: xchm
 Version: 1.23
-Release: alt4
+Release: alt4.1
 
 Summary: xCHM - the CHM viewer for UNIX
 License: GPLv2+
@@ -16,7 +16,6 @@ Source1: xchm.desktop
 BuildRequires: gcc-c++
 BuildRequires: libchm-devel
 BuildRequires: compat-libwxGTK3.0-gtk2-devel
-BuildRequires: libxmlrpcxx-devel
 BuildRequires: libssl-devel
 
 %description
@@ -29,8 +28,7 @@ xCHM - the CHM files viewer for UNIX.
 %autoreconf
 %configure \
 	--enable-debug \
-	--enable-optimize \
-	--enable-xmlrpc
+	--enable-optimize
 %make_build
 
 %install
@@ -53,6 +51,9 @@ install -pD -m644 art/xchm-48.xpm %buildroot%_liconsdir/xchm.xpm
 %_liconsdir/*
 
 %changelog
+* Wed May 13 2020 Andrey Cherepanov <cas@altlinux.org> 1.23-alt4.1
+- NMU: Build without libxmlrpcxx
+
 * Thu Aug 09 2018 Anton Midyukov <antohami@altlinux.org> 1.23-alt4
 - Rebuilt with compat-wxGTK3.0-gtk2
 - enable unpackaged files terminate build
