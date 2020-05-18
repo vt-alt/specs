@@ -1,14 +1,14 @@
 Name: sendmail
 
-%define tarbolversion 8.16.0.41
+%define tarbolversion 8.16.0.45
 
 Version: %tarbolversion
-Release: alt2
+Release: alt1
 
 Packager: Sergey Y. Afonin <asy@altlinux.ru>
 
 Summary: A widely used Mail Transport Agent (MTA)
-License: %sendmail_license
+License: Sendmail-8.23
 Group: System/Servers
 URL: http://www.sendmail.org
 
@@ -48,7 +48,7 @@ Source36: %name-cyrus-imap-localrelay.mc
 # Patches section
 Patch0: %name-8.15.1-alt.patch
 Patch1: %name-8.10.0-makemapman.patch
-Patch2: %name-8.14.3-smrsh.patch
+Patch2: %name-8.16.0.45-smrsh.patch
 Patch3: %name-8.8.7-rmail.patch
 Patch4: %name-8.12.2-aliasesDoS.patch
 Patch5: %name-8.11.1-up-limit.patch
@@ -71,11 +71,10 @@ Provides: MTA, MailTransportAgent, smtpdaemon
 
 Conflicts: postfix, meta1, exim-common
 
-PreReq: sendmail-common
 Requires: %name-submit = %{version}-%{release}, makemap = %{version}-%{release}
 
 BuildConflicts: bind-devel
-BuildPreReq: libpam0-devel rpm-build-licenses
+BuildRequires(pre): libpam0-devel sendmail-common
 
 # Not detected by buildreq
 BuildRequires: openssl
@@ -100,7 +99,7 @@ specific recomendations README.alt and README.cyrus-imap).
 
 %package submit
 Summary: sendmail's submit service
-License: %sendmail_license
+License: Sendmail-8.23
 Group: System/Servers
 Conflicts: postfix
 AutoReq: yes, noshell
@@ -110,7 +109,7 @@ This package need for sending mail from command line
 
 %package -n makemap
 Summary: makemap utility of sendmail
-License: %sendmail_license
+License: Sendmail-8.23
 Group: Databases
 
 %description -n makemap
@@ -119,7 +118,7 @@ sendmail(8) and in some other software. It's working with Berkeley DB.
 
 %package doc
 Summary: Documentation about the Sendmail Mail Transport Agent program
-License: %sendmail_license
+License: Sendmail-8.23
 Group: System/Servers
 AutoReq: yes, noshell
 Conflicts: %name < %version-%release, %name > %version-%release
@@ -136,7 +135,7 @@ Sendmail.
 
 %package cf
 Summary: The files needed to reconfigure Sendmail
-License: %sendmail_license
+License: Sendmail-8.23
 Group: System/Servers
 Requires: make, m4
 Conflicts: %name < %version-%release, %name > %version-%release
@@ -500,6 +499,16 @@ EOF
 %doc docs/LICENSE
 
 %changelog
+* Sun May 10 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.0.45-alt1
+- New version
+- updated smrsh.patch for 8.16.0.45
+- used gethostbyname2 instead of gethostbyname/RES_USE_INET6,
+  removed sendmail-8.15.2-glibc-2.30.patch
+
+* Sun Mar 29 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.0.41-alt3
+- fixed FTBFS: added sendmail-8.15.2-glibc-2.30.patch (from OpenSUSE)
+- Updated License tag to SPDX syntax
+
 * Wed Mar 06 2019 Sergey Y. Afonin <asy@altlinux.ru> 8.16.0.41-alt2
 - sendmail-access.main: added IPv6 example for cidrexpand
 
@@ -956,7 +965,7 @@ EOF
 * Mon Sep  4 2000 Guillaume Cottenceau <gc@mandrakesoft.com> 8.11.0-3mdk
 - config-noreplace initscript
 
-* Thu Aug 26 2000 David BAUDENS <baudens@mandrakesoft.com> 8.11.0-2mdk
+* Sat Aug 26 2000 David BAUDENS <baudens@mandrakesoft.com> 8.11.0-2mdk
 - Fix bad dependencies on Perl
 - %%config(noreplace) /etc/sendmail.cf
 
