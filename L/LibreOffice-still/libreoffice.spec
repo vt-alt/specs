@@ -32,9 +32,11 @@ Version: %hversion.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt1
+
+Release: alt2
+
 Summary: LibreOffice Productivity Suite (Still version)
-License: LGPL
+License: LGPL-3.0+ and MPL-2.0
 Group: Office
 URL: http://www.libreoffice.org
 
@@ -462,6 +464,7 @@ cd $WORKDIR/CustomTarget/sysui/share/libreoffice
 
 %install
 %makeinstall DESTDIR=%buildroot INSTALLDIR=%lodir
+
 %if_with python
 # Ignore dull /usr/local/bin/python hack
 chmod -x %buildroot%lodir/program/python-core*/lib/cgi.py
@@ -499,21 +502,26 @@ for n in lo*.sh; do install -m755 -D $n %buildroot%_bindir/${n%%.sh}; done
 install -Dm755 libreoffice.sh %buildroot%_bindir/libreoffice
 install -Dm755 libreoffice.sh %buildroot%_bindir/loffice
 ln -s loffice %buildroot%_bindir/soffice
+ln -s ../%_lib/%name/program/unopkg %buildroot%_bindir/unopkg
 
 # Install icons
 for f in `( cd sysui/desktop/icons; find hicolor -type f )`; do
 	d=`dirname "$f"`; n=`basename "$f"`
-	install -D sysui/desktop/icons/$f %buildroot%_iconsdir/$d/$n
+	if [[ "$d" == *apps ]]; then
+		# Add prefix to apps icons
+		install -D sysui/desktop/icons/$f %buildroot%_iconsdir/$d/libreoffice-$n
+	else
+		install -D sysui/desktop/icons/$f %buildroot%_iconsdir/$d/$n
+	fi
 done
 
 # Install desktop files
-mkdir -p %buildroot%_desktopdir
-for n in writer impress calc base draw math;  do
-	ln %buildroot%lodir/share/xdg/$n.desktop %buildroot%_desktopdir/$n.desktop
-done
-
 # Hack out "Education" category from Math
-sed -i 's/Education;//' %buildroot%lodir/share/xdg/math.desktop
+subst 's/Education;//' %buildroot%lodir/share/xdg/math.desktop
+for f in %buildroot%lodir/share/xdg/*.desktop; do
+	n=`basename "$f"`
+	install -Dpm0644 "$f" %buildroot%_desktopdir/libreoffice-$n
+done
 
 # TODO some other hack with .mime (?)
 mkdir -p %buildroot%_datadir/mime-info %buildroot%_datadir/mimelnk/application %buildroot%_datadir/application-registry
@@ -555,6 +563,14 @@ for dir in `ls -d %buildroot%_iconsdir/hicolor/*`; do
 	done
 done
 
+# Install appdata files
+mkdir -p %buildroot%_datadir/metainfo
+cp -a sysui/desktop/appstream-appdata/*.xml %buildroot%_datadir/metainfo
+
+# Install man pages
+install -Dpm0644 sysui/desktop/man/libreoffice.1 %buildroot%_man1dir/libreoffice.1
+install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
+
 %files
 
 %files sdk
@@ -563,18 +579,22 @@ done
 %files common -f files.nolang
 %exclude /gid_Module*
 %_bindir/libreoffice
+%_bindir/unopkg
 %config %conffile
 %lodir/share/extensions/package.txt
-#lodir/share/extensions/presentation-minimizer
-%_iconsdir/*/*/apps/*.*g
+%_iconsdir/*/*/apps/libreoffice-*.*g
+%_datadir/metainfo/*.appdata.xml
+%_man1dir/libreoffice.1*
+%_man1dir/unopkg.1*
 
 %files integrated
 %_bindir/*
 %exclude %_bindir/libreoffice
-%_desktopdir/*
+%exclude %_bindir/unopkg
+%_desktopdir/libreoffice-*.desktop
 %_iconsdir/*/*/mimetypes/*
 %_iconsdir/*/*/apps/*
-%exclude %_iconsdir/*/*/apps/*.*g
+%exclude %_iconsdir/*/*/apps/libreoffice-*.*g
 
 %files gtk2 -f files.gtk2
 
@@ -586,6 +606,7 @@ done
 
 %if_enabled kde5
 %files kde5 -f files.kde5
+%_datadir/metainfo/org.libreoffice.kde.metainfo.xml
 %endif
 
 %files extensions
@@ -616,6 +637,9 @@ done
 %_includedir/LibreOfficeKit
 
 %changelog
+* Thu May 14 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.6.2-alt2
+- Put libreoffice- prefix to icons and desktop files (ALT #38480).
+
 * Thu Apr 30 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.6.2-alt1
 - New version 6.3.6.2 (Still).
 
