@@ -1,5 +1,5 @@
 %define nagios_usr nagios
-%define nagios_grp nagios
+%define nagios_grp nagiosnew
 %define plugins_cmddir   %_sysconfdir/nagios/commands
 %define templates_cfgdir %_sysconfdir/nagios/templates
 %define time_cfgdir      %_sysconfdir/nagios/timeperiods
@@ -13,7 +13,7 @@
 
 Name: nagios
 Version: 3.0.6
-Release: alt8
+Release: alt13
 
 Summary: Services and network monitoring system
 License: GPL
@@ -33,7 +33,8 @@ Source2: %name.web-users
 Source10: %name-apache.conf
 
 # Apache config for Nagios(R)
-Source11: 100-%name.conf
+Source11: 100-%name.mods.conf
+Source15: 100-%name.extra.conf
 Source12: %name-apache2.conf
 
 # Lighttpd config for Nagios(R)
@@ -50,6 +51,8 @@ Patch3: nagios-3.0.6-alt-scripts.patch
 Patch4: nagios-3.0.6-alt-config.patch
 Patch10: nagios-3.0.2-nagiosdevlist-disable-contactgroup-svc-notifications.patch
 Patch11: nagios-3.0.6-alt-warnings.patch
+Patch12: nagios-3.0.6-alt-ignore-empty-hostgroups.patch
+Patch13: nagios-3.0.6-alt-format-comments.patch
 
 ###########################################
 # Provide the abstract service names (which are virtual pkg names),
@@ -167,6 +170,8 @@ Virtual package for complete install of Nagios(R) monitoring system.
 %patch4 -p1 -b .p4
 %patch10 -p1 -b .p10
 %patch11 -p1 -b .p11
+%patch12 -p2 -b .p12
+%patch13 -p2 -b .p13
 
 %build
 PATH=$PATH:/usr/sbin
@@ -236,6 +241,7 @@ install -m 0640 %SOURCE2 %buildroot/%_sysconfdir/%name/
 
 # apache2 configs
 install -pDm0644 %SOURCE11 %buildroot/%_sysconfdir/httpd2/conf/mods-start.d/100-nagios.conf
+install -pDm0644 %SOURCE15 %buildroot/%_sysconfdir/httpd2/conf/extra-start.d/100-nagios.conf
 install -pDm0644 %SOURCE12 %buildroot/%_sysconfdir/httpd2/conf/addon.d/A.nagios.conf
 
 # lighttpd configs
@@ -270,9 +276,9 @@ gpasswd -a apache2 %nagios_grp
 a2chkconfig
 %_initdir/httpd2 condrestart
 %postun www-apache2
-gpasswd -d apache2 %nagios_grp
-a2chkconfig
-%_initdir/httpd2 condrestart
+[ "$1" = "1" ] || gpasswd -d apache2 %nagios_grp
+[ "$1" = "1" ] || a2chkconfig
+[ "$1" = "1" ] || %_initdir/httpd2 condrestart
 
 %post www-lighttpd
 gpasswd -a lighttpd %nagios_grp
@@ -371,6 +377,7 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 
 %files www-apache2
 %config(noreplace) %_sysconfdir/httpd2/conf/mods-start.d/100-nagios.conf
+%config(noreplace) %_sysconfdir/httpd2/conf/extra-start.d/100-nagios.conf
 %config(noreplace) %_sysconfdir/httpd2/conf/addon.d/A.nagios.conf
 
 %files www-lighttpd
@@ -383,6 +390,23 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 %files full
 
 %changelog
+* Wed May 13 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt13
+- Fix: Require "authn_core" module in 100-nagios.mods.conf.
+
+* Wed Apr 15 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt12
+- Fixed www-apache2 upgrade: enable httpd-addon.d with
+  extra-start.d/100-nagios.conf.
+
+* Wed Apr 15 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt11
+- Fixed "www-apache2" package upgrade: keep "apache2" user in the
+  "%nagios_grp" group.
+
+* Mon Mar 02 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt10
+- Pretty-print the comments (patch).
+
+* Wed Feb 26 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt9
+- Silently ignore empty hostgroups (patch).
+
 * Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.0.6-alt8
 - merge sisyphus and c8.1
 

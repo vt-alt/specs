@@ -1,25 +1,29 @@
-BuildRequires(pre): rpm-build-python rpm-build-python3
+BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-setuptools
 BuildRequires: desktop-file-utils
 # Automatically added by buildreq on Tue Jun 27 2017
 # optimized out: libqt5-core python-base python-modules python3 python3-base python3-module-setuptools
 BuildRequires: python3-dev python3-module-PyQt5 python3-module-sip
 BuildRequires: python3-module-keyring python3-module-dbus
+BuildRequires: python3-module-psutil
+BuildRequires: /proc
 
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
-%define _localstatedir %{_var}
+%define _localstatedir %_var
 Name:           nagstamon
-Version:        3.2
-Release:        alt1
+Version:        3.4.1
+Release:        alt2
 Summary:        Nagios status monitor for the desktop
 License:        GPLv2
 Group:          Monitoring
 Url:            http://nagstamon.ifw-dresden.de/
 Source:         %name-%version.tar
-%py3_requires   secretstorage sip
+%py3_requires   secretstorage sip keyring gssapi
 BuildArch:      noarch
-Patch1:         nagstamon-2.1-alt-translation-in-QUI-__init__.patch
+Patch1:         %name-%version-init-translator.patch
 Patch2:         nagstamon-3.0.1-alt-default-values-in-config.patch
+Patch3:         %name-%version-system-config.patch
+Patch4:         %name-%version-abstract-socket.patch
 Source44:       import.info
 Source1:        all.ts
 Source2:        all.qm
@@ -33,8 +37,10 @@ servers.
 
 %prep
 %setup
-%patch1 -p2
+%patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 cp %SOURCE1 %SOURCE2 Nagstamon/QUI/
 
@@ -43,37 +49,48 @@ python3 setup.py build
 
 %install
 python3 setup.py install \
-    --root=%{buildroot} \
-    --install-lib=%{python3_sitelibdir_noarch}
+    --root=%buildroot \
+    --install-lib=%python3_sitelibdir_noarch
 
-mv %{buildroot}/%{_bindir}/nagstamon.py %{buildroot}/%{_bindir}/nagstamon
+mv %buildroot/%_bindir/nagstamon.py %buildroot/%_bindir/nagstamon
 #i18n ru_RU
-install -D -m 644 Nagstamon/QUI/all.qm %{buildroot}/%{python3_sitelibdir_noarch}/Nagstamon/translate/ru_RU.qm
+install -D -m 644 Nagstamon/QUI/all.qm %buildroot/%python3_sitelibdir_noarch/Nagstamon/translate/ru_RU.qm
 
 
 # desktop stuff
-mkdir -p %{buildroot}%{_datadir}/{applications,pixmaps}
+mkdir -p %buildroot%_datadir/applications,pixmaps
 install -m 644 Nagstamon/resources/nagstamon.svg \
-    %{buildroot}%{_datadir}/pixmaps/nagstamon.svg
+    %buildroot%_datadir/pixmaps/nagstamon.svg
 install -m 644 Nagstamon/resources/nagstamon.desktop \
-    %{buildroot}/%{_datadir}/applications/nagstamon.desktop
+    %buildroot/%_datadir/applications/nagstamon.desktop
 
 desktop-file-install \
-  --dir=%{buildroot}%{_datadir}/applications \
-  %{buildroot}/%{_datadir}/applications/nagstamon.desktop
+  --dir=%buildroot%_datadir/applications \
+  %buildroot/%_datadir/applications/nagstamon.desktop
 
 %files
 %doc ChangeLog COPYRIGHT LICENSE
-%{_datadir}/pixmaps/nagstamon.svg
-%{_datadir}/applications/nagstamon.desktop
-%{python3_sitelibdir_noarch}/Nagstamon
-%{python3_sitelibdir_noarch}/Nagstamon/translate/*.qm
-%{_bindir}/nagstamon
-%{_mandir}/man1/nagstamon.1*
-%{python3_sitelibdir_noarch}/*.egg-info
+%_datadir/pixmaps/nagstamon.svg
+%_datadir/applications/nagstamon.desktop
+%python3_sitelibdir_noarch/Nagstamon
+%python3_sitelibdir_noarch/Nagstamon/translate/*.qm
+%_bindir/nagstamon
+%_mandir/man1/nagstamon.1*
+%python3_sitelibdir_noarch/*.egg-info
 
 
 %changelog
+* Wed Feb 12 2020 Paul Wolneykien <manowar@altlinux.org> 3.4.1-alt2
+- Fix: Require python module 'gssapi'.
+- Fix: Require python module 'keyring'.
+- Added fixed version of the ALT translation initialization patch.
+- Added abstract-socket patch (thx Denis Medvedev).
+- Read partial configs from /etc/nagstamon/<subject> directory.
+
+* Wed Feb 05 2020 Grigory Ustinov <grenka@altlinux.org> 3.4.1-alt1
+- new version 3.4.1
+- Cleanup spec file
+
 * Thu Dec 20 2018 Grigory Ustinov <grenka@altlinux.org> 3.2-alt1
 - new version 3.2
 

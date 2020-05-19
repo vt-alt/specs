@@ -1,18 +1,19 @@
 Name: 	  nagwad
-Version:  0.8
-Release:  alt4
+Version:  0.9.5
+Release:  alt1
 
 Summary:  Nagios watch daemon
 License:  GPLv3
-Group:    System/Servers
+Group:    Monitoring
 Url: 	  http://git.altlinux.org/people/nbr/packages/nagwad.git
 
 
 Source:   %name-%version.tar
 
 BuildArch: noarch
-Requires:  systemd
-Requires:  osec-timerunit
+Requires:  systemd audit
+Requires:  osec-cronjob
+Requires:  nagios-nrpe >= 3.2.1-alt4
 
 %description
 Daemon that listens to journald and generates alerts based on journal messages
@@ -22,98 +23,109 @@ alerts when unauthorized USB devices are inserted.
 %prep
 %setup
 
+%package templates
+Summary: Nagios templates for a nagwad node
+Group:   Monitoring
+Obsoletes: %name-server
+Conflicts: %name-server
+Conflicts: nagios < 3.0.6-alt9
+Requires: xvt openssh-clients
 
-%package -n osec-timerunit
+%description templates
+These are Nagios configuration templates for monitoring a nagwad-node.
 
-Summary: Osec job started from systemd unit
-Group: System/Servers
-Requires: systemd
-Requires: osec-mailreport
-Conflicts: osec-cronjob
-Provides: osec-cron
+%package actions
+Summary: Nagstamon actions for a nagwad node
+Group:   Monitoring
+Requires: xvt openssh-clients
 
-%description -n osec-timerunit
-A set of systemd units that allow periodical start of osec job without using cron
-
-%package server
-
-Summary: Server for nagwad example data and docs
-Group:   System/Servers
-
-%description server
-These are examples of configuration of Nagios for the controlling machine.
-
-%pre
-/usr/sbin/groupadd -r -f osec
-/usr/sbin/useradd -r -g osec -d /dev/null -s /dev/null -n osec >/dev/null 2>&1 ||:
-
-
+%description actions
+These are Nagstamon action commands suitable for a nagwad-node.
 
 %install
-install -Dm 0755 usr/sbin/nagwad %buildroot%_sbindir/nagwad
-mkdir -p  %buildroot%_libexecdir/nagwad/device
-mkdir -p  %buildroot%_libexecdir/nagwad/audit
-mkdir -p  %buildroot%_libexecdir/nagwad/authdata
-mkdir -p  %buildroot%_libexecdir/nagwad/osec
-install -Dm 0755 usr/lib/nagwad/nagwad.sh  %buildroot%_libexecdir/nagwad/
-install -Dm 0755 usr/lib/nagwad/device/*  %buildroot%_libexecdir/nagwad/device/
-install -Dm 0755 usr/lib/nagwad/audit/*  %buildroot%_libexecdir/nagwad/audit/
-install -Dm 0755 usr/lib/nagwad/authdata/*  %buildroot%_libexecdir/nagwad/authdata/
-install -Dm 0755 usr/lib/nagwad/osec/*  %buildroot%_libexecdir/nagwad/osec/
-install -Dm 0755 unit/nagwad.service %buildroot/%_unitdir/nagwad.service
-install -Dm 0755 unit/osec.service %buildroot/%_unitdir/osec.service
-install -Dm 0755 unit/osec.timer %buildroot/%_unitdir/osec.timer
+install -Dm 0755 scripts/nsca-shell %buildroot%_bindir/nsca-shell
+install -Dm 0755 scripts/nagwad %buildroot%_sbindir/nagwad
+install -Dm 0755 scripts/nagwad.sh  %buildroot%_libexecdir/nagwad/nagwad.sh
+install -Dm 0755 scripts/nrpe/check_authdata %buildroot/%_libexecdir/nagios/plugins/check_authdata
+install -Dm 0755 scripts/nrpe/check_devices %buildroot/%_libexecdir/nagios/plugins/check_devices
+install -Dm 0755 scripts/nrpe/check_login %buildroot/%_libexecdir/nagios/plugins/check_login
+install -Dm 0755 scripts/nrpe/check_osec %buildroot/%_libexecdir/nagios/plugins/check_osec
 
-mkdir -p  %buildroot%_libexecdir/nagios/plugins/
-install -Dm 0755 nagios/plugins/* %buildroot/%_libexecdir/nagios/plugins/
-mkdir -p %buildroot/%_docdir
-install -Dm 0755 README.md  %buildroot/%_docdir
-mkdir -p %buildroot/%_docdir/examples/nrpe
-install -Dm 0755 examples/nrpe/*  %buildroot/%_docdir/examples/nrpe/
-mkdir -p %buildroot/%_docdir/examples/nagios/server/objects
-mkdir -p %buildroot/%_docdir/examples/nagios/server/templates
-cp -ar examples/nagios/*  %buildroot/%_docdir/examples/nagios/
-install -Dm 0755 signal.odt %buildroot/%_docdir
-mkdir -p %buildroot/var/lib/nagwad/audit
-mkdir -p %buildroot/var/lib/nagwad/audit_archived
-mkdir -p %buildroot/var/lib/nagwad/authdata
-mkdir -p %buildroot/var/lib/nagwad/authdata_archived
-mkdir -p %buildroot/var/lib/nagwad/osec
-mkdir -p %buildroot/var/lib/nagwad/osec_archived
-mkdir -p %buildroot/var/lib/nagwad/device
-mkdir -p %buildroot/var/lib/nagwad/device_archived
+install -Dm 0644 conf/audit/rules.d/50-nagwad.rules %buildroot%_sysconfdir/audit/rules.d/50-nagwad.rules
+install -Dm 0644 conf/nagios/templates/50-nagwad.cfg %buildroot%_sysconfdir/nagios/templates/50-nagwad.cfg
+install -Dm 0644 conf/nagwad/authdata/authdata.regexp %buildroot%_sysconfdir/nagwad/authdata/authdata.regexp
+install -Dm 0644 conf/nagwad/device/device.regexp %buildroot%_sysconfdir/nagwad/device/device.regexp
+install -Dm 0644 conf/nagwad/login/login.regexp %buildroot%_sysconfdir/nagwad/login/login.regexp
+install -Dm 0644 conf/nagwad/osec/osec.regexp %buildroot%_sysconfdir/nagwad/osec/osec.regexp
+install -Dm 0644 conf/nagios/nrpe/nagwad.cfg %buildroot%_sysconfdir/nagios/nrpe-commands/nagwad.cfg
+install -Dm 0644 conf/nagstamon/actions/action_Lock_host.conf %buildroot%_sysconfdir/nagstamon/actions/action_Lock_host.conf
+install -Dm 0644 conf/nagstamon/actions/action_NSCA_shell.conf %buildroot%_sysconfdir/nagstamon/actions/action_NSCA_shell.conf
 
-mkdir -p %buildroot/var/lib/osec
-chmod 775 %buildroot/var/lib/osec
-mkdir -p %buildroot/etc/osec
-mkdir -p %buildroot/%_datadir/osec
-install -Dm 0755 osec.cron  %buildroot/%_datadir/osec/
-install -Dm 0755 osec/* %buildroot/etc/osec/
+install -Dm 0644 unit/nagwad.service %buildroot/%_unitdir/nagwad.service
 
+mkdir -p %buildroot/var/log/nagwad
 
 %files
-
-%_sbindir/*
-%_libexecdir/nagwad/*
-%_unitdir/nagwad.service
+%doc README.md
+%_bindir/nsca-shell
+%_sbindir/nagwad
+%_libexecdir/nagwad
+%_unitdir/nagwad.*
 %_libexecdir/nagios/plugins/*
-/var/lib/nagwad/
-%_docdir/README.md
-%_docdir/examples/nrpe/*
+%_sysconfdir/nagwad
+%config(noreplace) %_sysconfdir/audit/rules.d/*nagwad*.rules
+%config(noreplace) %_sysconfdir/nagwad/*/*.regexp
+%config(noreplace) %_sysconfdir/nagios/nrpe-commands/nagwad.cfg
+/var/log/nagwad
 
+%files templates
+%doc signal.odt
+%config(noreplace) %_sysconfdir/nagios/templates/*nagwad*.cfg
 
-%files server
-%_docdir/examples/nagios/*
-%_docdir/signal.odt
-
-%files -n osec-timerunit
-/etc/osec/*
-%attr(770,root,osec) /var/lib/osec/
-%_datadir/osec/*
-%_unitdir/osec.service
-%_unitdir/osec.timer
+%files actions
+%config(noreplace) %_sysconfdir/nagstamon/actions/*.conf
 
 %changelog
+* Thu May 07 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.5-alt1
+- Fixed quotation in NSCA shell action.
+- Fixed OSEC regular expression for Nagwad.
+
+* Wed Apr 22 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.4-alt2
+- Switch to cronjob until timerunit patch is accepted by the OSEC's
+  maintainer.
+
+* Mon Apr 13 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.4-alt1
+- Verbose descriptions in template checks.
+
+* Mon Mar 02 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.3-alt1
+- Conflicts with nagios < 3.0.6-alt9.
+- Fixed nsca-shell missing show_usage().
+- Added hostgroup "nagwad-nodes" and bind nagwad checks to it.
+
+* Wed Feb 12 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.2-alt1
+- Fix/improve: Force SSH to allocate a PTY.
+- Fix/improve the nsca-shell: pass shell arguments after --rcfile.
+- Fix/improve: Make the login.regexp react to an auth error from
+  any service.
+
+* Wed Feb 12 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.1-alt1
+- Added Nagstamon actions (package '%name-actions').
+- Install /etc/... files with %%config(noreplace).
+- Fixed check_authdata checker.
+- Obsolete nagwad-server.
+- Fix: Rename NRPE script: check_devices.
+
+* Fri Feb 07 2020 Paul Wolneykien <manowar@altlinux.org> 0.9-alt1
+- Define the nagwad NRPE commands in the separate
+  /etc/nagios/nrpe-commands/nagwad.cfg (requires nagios-nrpe >=
+  3.2.1-alt4).
+- Switch to /etc/nagwad and /var/log/nagwad directories.
+- Moved osec timerunit to the osec SRC RPM.
+- Use auditd to watch for /etc/passwd and group changes.
+- Sanitized and modernized nagwad scripts.
+- Added the wrapper command 'nsca-shell' for sending shell
+  typescript to the Nagios server using the NSCA interface.
+
 * Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.8-alt4
 - build for sisyphus
 

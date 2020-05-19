@@ -7,11 +7,11 @@
 %define nagios_evhdir    %_libexecdir/nagios/eventhandlers
 %define plugin_docdir    %_docdir/%name-%version
 %define nagios_usr nagios
-%define nagios_grp nagios
+%define nagios_grp nagiosnew
 
 Name: nagios-%realname
 Version: 3.2.1
-Release: alt3
+Release: alt5
 
 Summary: NRPE -- Nagios(R) Remote Plug-ins Execution daemon.
 Summary(ru_RU.UTF-8): NRPE -- Сервер выполнения команд Nagios(R) на удаленном хосте.
@@ -37,18 +37,16 @@ Conflicts: nagios-daemon > %EVR
 
 Requires: nagios-plugins
 Requires(pre): nagios-common
+Conflicts: nagios < 3.0.6-alt12
 
 Source0: %name-%version.tar
 Source1: %realname-init
 Source2: nagios-addons-nrpe.cfg
-Source3: check_timed_logs.pl
 
 # fix default NRPE configuration
 Patch0: %realname-3.2.1-alt-config.patch
 Patch1: %realname-2.12-alt-defpath.patch
 
-# due to check_timed_logs.pl
-BuildPreReq: rpm-build-perl perl(File/ReadBackwards.pm) perl(Time/Piece.pm)
 # Automatically added by buildreq on Sat Jul 01 2006
 BuildRequires: libssl-devel openssl
 
@@ -115,7 +113,6 @@ mkdir -p %buildroot%plugin_docdir
 install -pDm0711 src/nrpe %buildroot%_sbindir/nrpe
 install -pDm0711 src/check_nrpe %buildroot%nagios_plugdir/check_nrpe
 #install -pDm0711 contrib/nrpe_check_control %buildroot%nagios_evhdir/nrpe_check_control
-install -pDm0755 %SOURCE3 %buildroot%_sbindir/check_timed_logs.pl
 
 # install config
 install -pDm0644 sample-config/nrpe.cfg %buildroot%nagios_confdir/nrpe.cfg
@@ -130,6 +127,8 @@ for d in CHANGELOG.md LEGAL README* SECURITY.md; do
 done
 #install -m 0644 contrib/README.nrpe_check_control %buildroot%plugin_docdir/
 
+mkdir -p %buildroot%nagios_confdir/nrpe-commands
+
 %post
 %post_service %realname
 
@@ -138,10 +137,10 @@ done
 
 %files
 %dir %nagios_confdir
+%dir %nagios_confdir/nrpe-commands
 %config(noreplace) %nagios_confdir/nrpe.cfg
 %_initdir/nrpe
 %_sbindir/nrpe
-%_sbindir/check_timed_logs.pl
 %doc %plugin_docdir/*
 # The package does not own its own docdir subdirectory.
 # The line below is added by repocop to fix this bug in a straightforward way.
@@ -155,6 +154,17 @@ done
 %doc %plugin_docdir/*
 
 %changelog
+* Thu May 07 2020 Paul Wolneykien <manowar@altlinux.org> 3.2.1-alt5
+- Remove check_timed_logs.pl: use package nagios-plugins-timed-logs
+  instead.
+- Set to use "nagiosnew" group in all configs.
+
+* Fri Feb 07 2020 Paul Wolneykien <manowar@altlinux.org> 3.2.1-alt4
+- Merged-in changes from v3.2.1-alt2.M80C.3.
+
+* Fri Feb 07 2020 Paul Wolneykien <manowar@altlinux.org> 3.2.1-alt2.M80C.3
+- Enable inclusion of /etc/nagios/nrpe-commands by default.
+
 * Wed Jan 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.2.1-alt3
 - merge c8.1 changes into sisyphus
 
