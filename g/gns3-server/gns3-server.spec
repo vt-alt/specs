@@ -5,7 +5,7 @@
 %add_findreq_skiplist %python3_sitelibdir/gns3server/compute/docker/*
 
 Name: gns3-server
-Version: 2.2.7
+Version: 2.2.8
 Release: alt1
 
 Summary: GNS3 server manages emulators such as Dynamips, VirtualBox or Qemu/KVM
@@ -24,15 +24,16 @@ BuildRequires(pre): rpm-build-python3 rpm-build-gir
 Requires: cpulimit
 Requires: dynamips >= 0.2.11
 Requires: python3-module-yarl >= 1.3
+Requires: python3-module-aiohttp >= 3.5.0
 Requires: python3-module-aiohttp-cors >= 0.7.0
 Requires: python3-module-jinja2 >= 2.7.3 
 Requires: python3-module-aiohttp >= 3.5.4
 Requires: python3-module-aiofiles >= 0.4.0
+Requires: python3-module-async_generator >= 1.10
+Requires: python3-module-async-timeout >= 3.0.1
 Requires: python3-module-jsonschema >= 2.6.0
 Requires: python3-module-raven >= 5.23.0
-Requires: python3-module-psutil >= 3.0.0
-#Requires: qemu
-#Requires: wireshark
+Requires: python3-module-psutil >= 5.6.6
 Requires: iouyap
 Requires: ubridge
 Requires: vpcs
@@ -60,6 +61,9 @@ echo '' > requirements.txt
 %exclude %python3_sitelibdir/tests/controller
 
 %changelog
+* Sun May 10 2020 Anton Midyukov <antohami@altlinux.org> 2.2.8-alt1
+- new version 2.2.8
+
 * Sun Apr 12 2020 Anton Midyukov <antohami@altlinux.org> 2.2.7-alt1
 - new version 2.2.7
 

@@ -5,21 +5,15 @@
 %def_without docs
 %def_without check
 
-Name: python-module-%oname
-Version: 3.5.4
+Name: python3-module-%oname
+Version: 3.6.2
 Release: alt1
 Summary: http client/server for asyncio
 License: ASLv2.0
-Group: Development/Python
+Group: Development/Python3
 Url: https://github.com/KeepSafe/aiohttp.git
 Source: %name-%version.tar
 
-%description
-http client/server for asyncio (PEP-3156).
-
-%package -n python3-module-%oname
-Summary: http client/server for asyncio
-Group: Development/Python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools python3-module-Cython
 %if_with check
@@ -32,15 +26,15 @@ BuildRequires: python3-module-sphinxcontrib-asyncio python3-module-sphinxcontrib
 %endif
 %py3_requires chardet idna_ssl
 
-%description -n python3-module-%oname
+%description
 http client/server for asyncio (PEP-3156).
 
-%package -n python3-module-%oname-tests
+%package tests
 Summary: Tests for %oname
 Group: Development/Python3
 Requires: python3-module-%oname = %EVR
 
-%description -n python3-module-%oname-tests
+%description tests
 http client/server for asyncio (PEP-3156).
 
 This package contains tests for %oname.
@@ -94,6 +88,12 @@ python3 setup.py test
 %python3_sitelibdir/*/*/*test*
 
 %changelog
+* Sun May 10 2020 Anton Midyukov <antohami@altlinux.org> 3.6.2-alt1
+- 3.6.2 released
+
+* Fri Nov 29 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 3.6.1-alt1
+- 3.6.1 released
+
 * Sun Apr 07 2019 Anton Midyukov <antohami@altlinux.org> 3.5.4-alt1
 - New version 3.5.4
 - Disable check
