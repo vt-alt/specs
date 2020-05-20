@@ -1,15 +1,15 @@
 %define oname yakuake
 
 Name:    kde5-%oname
-Version: 19.08.0
+Version: 20.04.1
 Release: alt1
 
 Summary: Very powerful Quake style Konsole for KF5
 License: GPLv2, GPLv3 or any later version accepted by the membership of KDE e.V.
 Group: Terminals
-Url: http://extragear.kde.org/apps/yakuake/
+Url: http://yakuake.kde.org/
 
-# Download from https://download.kde.org/stable/yakuake/
+# Download from https://download.kde.org/stable/release-service//$pkgver/src/yakuake-$pkgver.tar.xz
 Source: %oname-%version.tar
 
 BuildRequires(pre): rpm-build-kf5
@@ -83,6 +83,27 @@ This version is built with KF5.
 %_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 20.04.1-alt1
+- New version.
+
+* Sun Apr 26 2020 Andrey Cherepanov <cas@altlinux.org> 20.04.0-alt1
+- New version.
+
+* Tue Mar 10 2020 Andrey Cherepanov <cas@altlinux.org> 19.12.3-alt1
+- New version.
+
+* Fri Feb 14 2020 Andrey Cherepanov <cas@altlinux.org> 19.12.2-alt1
+- New version.
+
+* Fri Dec 20 2019 Andrey Cherepanov <cas@altlinux.org> 19.12.0-alt1
+- New version.
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.3-alt1
+- New version.
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.2-alt1
+- New version.
+
 * Sun Aug 25 2019 Andrey Cherepanov <cas@altlinux.org> 19.08.0-alt1
 - New version.
 
