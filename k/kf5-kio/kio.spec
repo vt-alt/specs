@@ -3,7 +3,7 @@
 %def_with streebog
 
 Name: kf5-%rname
-Version: 5.69.0
+Version: 5.70.1
 Release: alt2
 %K5init altplace
 
@@ -16,7 +16,7 @@ Source: %rname-%version.tar
 Source10: ru-kio5.po
 Patch1: alt-def-trash.patch
 Patch2: alt-kio-help-fallback-kde4.patch
-#
+Patch3: alt-find-exe.patch
 Patch4: alt-streebog-support.patch
 
 # Automatically added by buildreq on Tue Feb 17 2015 (-bi)
@@ -98,6 +98,7 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %if_with streebog
 %patch4 -p2 -b .streebog
@@ -167,6 +168,15 @@ KF5 library
 %_K5lib/libKF5KIONTLM.so.*
 
 %changelog
+* Tue May 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.1-alt2
+- fix find executables
+
+* Tue May 19 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.1-alt1
+- new version
+
+* Tue May 12 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.0-alt1
+- new version
+
 * Mon Apr 20 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt2
 - fix requires
 

@@ -1,8 +1,8 @@
 %define rname kirigami2
 
 Name: kf5-kirigami
-Version: 5.69.0
-Release: alt2
+Version: 5.70.0
+Release: alt1
 %K5init
 
 Group: System/Libraries
@@ -88,6 +88,9 @@ KF5 library
 %_K5lib/libKF5Kirigami2.so.*
 
 %changelog
+* Tue May 12 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.0-alt1
+- new version
+
 * Wed Apr 29 2020 Oleg Solovyov <mcpain@altlinux.org> 5.69.0-alt2
 - fix crash (Closes: #38410)
 

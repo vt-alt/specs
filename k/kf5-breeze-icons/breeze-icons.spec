@@ -1,7 +1,7 @@
 %define rname breeze-icons
 
 Name: kf5-%rname
-Version: 5.69.0
+Version: 5.70.0
 Release: alt1
 %K5init no_altplace
 
@@ -83,6 +83,13 @@ done
 
 rm -rf %buildroot/%_iconsdir/tmp-*
 
+# remove unappropriate icons symlinks
+for i in calc
+do
+    find %buildroot/%_iconsdir -type l \( -name ${i}.png -o -name ${i}.svg \) | \
+	while read f; do rm -f ${f} ||: ; done
+done
+
 # fix broken symlinks
 find %buildroot/%_iconsdir -type l | \
 while read l ; do
@@ -93,6 +100,9 @@ done
 %_iconsdir/breeze*/
 
 %changelog
+* Tue May 12 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.0-alt1
+- new version
+
 * Wed Apr 15 2020 Sergey V Turchin <zerg@altlinux.org> 5.69.0-alt1
 - new version
 
