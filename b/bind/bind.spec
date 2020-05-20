@@ -1,10 +1,10 @@
 Name: bind
-Version: 9.11.13
-%define src_version 9.11.13
+Version: 9.11.19
+%define src_version 9.11.19
 Release: alt1
 
 Summary: ISC BIND - DNS server
-License: MPLv2.0
+License: MPL-2.0
 Group: System/Servers
 Url: http://www.isc.org/products/BIND/
 
@@ -434,6 +434,12 @@ fi
 %exclude %docdir/COPYRIGHT
 
 %changelog
+* Tue May 19 2020 Stanislav Levin <slev@altlinux.org> 9.11.19-alt1
+- 9.11.18 -> 9.11.19 (fixes: CVE-2020-8616, CVE-2020-8617).
+
+* Fri Apr 17 2020 Stanislav Levin <slev@altlinux.org> 9.11.18-alt1
+- 9.11.13 -> 9.11.18.
+
 * Thu Nov 21 2019 Stanislav Levin <slev@altlinux.org> 9.11.13-alt1
 - 9.11.12 -> 9.11.13 (fixes: CVE-2019-6477).
 
