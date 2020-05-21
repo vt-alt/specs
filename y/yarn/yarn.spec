@@ -1,7 +1,7 @@
 
 Name: yarn
-Version: 1.17.3
-Release: alt1
+Version: 1.22.4
+Release: alt0.1.p9
 Summary: Fast, reliable, and secure dependency management
 Group: Development/Tools
 License: BSD
@@ -11,6 +11,9 @@ Source: https://github.com/yarnpkg/yarn/releases/download/v%version/yarn-v%versi
 BuildRequires(pre): rpm-macros-nodejs
 
 BuildArch: noarch
+
+Conflicts: hadoop-yarn
+Conflicts: cmdtest
 
 %description
 Fast, reliable, and secure dependency management.
@@ -32,6 +35,16 @@ ln -s %nodejs_sitelib/%name/bin/%name.js %buildroot%_bindir/yarnpkg
 %nodejs_sitelib/%name
 
 %changelog
+* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 1.22.4-alt0.1.p9
+- Backport new version to p9 branch.
+- Set conflicts to hadoop-yarn and cmdtest.
+
+* Sat Apr 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.22.4-alt1
+- 1.22.4
+
+* Sun Mar 01 2020 Alexey Shabalin <shaba@altlinux.org> 1.22.0-alt1
+- 1.22.0
+
 * Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.17.3-alt1
 - 1.17.3
 

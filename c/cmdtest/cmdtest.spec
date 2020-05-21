@@ -1,7 +1,7 @@
 
 Name: cmdtest
 Version: 0.30
-Release: alt1
+Release: alt1.1.p9
 
 Summary: Black-box testing for Unix command line tools
 
@@ -25,6 +25,9 @@ BuildRequires: python-devel
 BuildRequires: python-module-cliapp
 BuildRequires: python-module-markdown
 BuildRequires: python-module-ttystatus
+
+Conflicts: yarn
+Conflicts: hadoop-yarn
 
 %description
 cmdtest black box tests Unix command line tools. Roughly, it is given
@@ -57,6 +60,9 @@ rm -rf build
 %python_sitelibdir_noarch/*
 
 %changelog
+* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 0.30-alt1.1.p9
+- Add conflict to yarn.
+
 * Sat Oct 07 2017 Vitaly Lipatov <lav@altlinux.ru> 0.30-alt1
 - new version 0.30 (with rpmrb script)
 
