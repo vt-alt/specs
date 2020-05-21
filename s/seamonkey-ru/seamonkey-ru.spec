@@ -2,7 +2,7 @@
 %define ciddir	%sm_prefix/extensions/%cid
 
 Name:		seamonkey-ru
-Version:	2.49.4
+Version:	2.53.2
 Release:	alt1
 Summary:	Russian (RU) Language Pack for Seamonkey
 
@@ -11,8 +11,10 @@ Group:		Networking/WWW
 URL:		http://mozilla-russia.org/products/seamonkey/
 Packager:	Andrey Cherepanov <cas@altlinux.org>
 
-Source0:	ru-%version.xpi
+Source0:	seamonkey-%{version}.ru.langpack.xpi
 Source1:	%name.watch
+
+ExclusiveArch: %ix86 x86_64
 
 Requires:	hunspell-ru
 Requires:	seamonkey >= %version
@@ -41,6 +43,15 @@ ln -s %_datadir/myspell/ru_RU.dic %buildroot/%ciddir/dictionaries/ru.dic
 %ciddir
 
 %changelog
+* Tue May 19 2020 Andrey Cherepanov <cas@altlinux.org> 2.53.2-alt1
+- New version.
+
+* Thu Apr 30 2020 Andrey Cherepanov <cas@altlinux.org> 2.53.2-alt0.1.b1
+- New version (beta1).
+
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 2.53.1-alt1
+- New version.
+
 * Mon Jul 30 2018 Michael Shigorin <mike@altlinux.org> 2.49.4-alt1
 - New version
 

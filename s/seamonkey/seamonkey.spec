@@ -12,20 +12,27 @@
 %define sm_idldir       %_datadir/idl/%name
 %define sm_includedir   %_includedir/%name
 %define sm_develdir     %sm_prefix-devel
+%ifndef build_parallel_jobs
+%define build_parallel_jobs 32
+%endif
+%define beta_suffix	%nil
 
 Name: 	 seamonkey
-Version: 2.49.4
+Version: 2.53.2
 Release: alt1
 Epoch:   1
 Summary: Web browser and mail reader
-License: MPL/NPL
+License: MPL-2.0
 Group:   Networking/WWW
 
 Packager:   Andrey Cherepanov <cas@altlinux.org>
 
 Url: http://www.mozilla.org/projects/seamonkey/
 
-Source0:	%name-%version.source.tar.xz
+# TODO: build failed on aarch64 and ppc64le
+ExclusiveArch: %ix86 x86_64
+
+Source0:	%name-%version%beta_suffix.source.tar.xz
 Source2:	mozilla-searchplugins.tar
 Source3:	seamonkey-alt-browser.desktop
 Source4:	seamonkey-alt-mail.desktop
@@ -33,8 +40,9 @@ Source5:	seamonkey-prefs.js
 Source6:	enigmail.tar
 Source7:	seamonkey-mozconfig
 Source8:	rpm-build.tar
+Source9:        cbindgen-vendor.tar
 
-Patch: 		seamonkey-fix-installdirs.patch
+Patch0:		seamonkey-fix-installdirs.patch
 Patch1:		seamonkey-2.2-alt-machOS-fix.patch
 Patch2:		seamonkey-2.0.14-alt-fix-plugin-path.patch
 Patch3:		xulrunner-noarch-extensions.patch
@@ -42,12 +50,14 @@ Patch3:		xulrunner-noarch-extensions.patch
 Patch5:		thunderbird-with-system-mozldap.patch
 %endif
 Patch6:		seamonkey-2.13.2-alt-fix-build.patch
-Patch7:     	seamonkey-2.19-elfhack.patch
 Patch8:		seamonkey-2.26-enable-addons.patch
 Patch9:		mozilla-js-makefile.patch
 Patch10:	firefox-32-baseline-disable.patch
+Patch11:        seamonkey-2.53.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch12:        seamonkey-2.53.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
 
-PreReq:		urw-fonts
+
+Requires(pre,postun): urw-fonts
 
 #Obsoletes
 Obsoletes:	seamonkey-dom-inspector
@@ -74,10 +84,16 @@ BuildRequires(pre): browser-plugins-npapi-devel
 %if_with system_mozldap
 BuildPreReq: mozldap-devel
 %endif
-BuildRequires: gcc-c++ libdnet-devel libgtk+2-devel libIDL-devel wget libarchive-devel lbzip2 libpixman-devel
+BuildRequires: gcc-c++
+%define clang_version %nil
+BuildRequires: clang%clang_version
+BuildRequires: clang%clang_version-devel
+BuildRequires: llvm%clang_version-devel
+BuildRequires: lld-devel
+BuildRequires: libdnet-devel libgtk+2-devel libgtk+3-devel libIDL-devel wget libarchive-devel libpixman-devel
 BuildRequires: libjpeg-devel libpng-devel libXinerama-devel libXext-devel
 BuildRequires: libXp-devel libXt-devel makedepend net-tools unzip libalsa-devel yasm libwireless-devel
-BuildRequires: xorg-cf-files zip libXft-devel libvpx-devel
+BuildRequires: xorg-cf-files zip libXft-devel libvpx5-devel
 BuildRequires: desktop-file-utils libcurl-devel libhunspell-devel libsqlite3-devel
 BuildRequires: autoconf_2.13 chrpath alternatives libGL-devel
 BuildRequires: libstartup-notification-devel libfreetype-devel fontconfig-devel libnotify-devel
@@ -87,6 +103,16 @@ BuildRequires: libpulseaudio-devel
 BuildRequires: libXcomposite-devel
 BuildRequires: libXdamage-devel
 BuildRequires: libGConf-devel
+BuildRequires: libevent-devel
+BuildRequires: libproxy-devel
+BuildRequires: libdbus-devel
+BuildRequires: libdbus-glib-devel
+BuildRequires: libXcursor-devel
+BuildRequires: libXi-devel
+# Rust requires
+BuildRequires: rust
+BuildRequires: rust-cargo
+BuildRequires: /proc
 
 # Mozilla requires
 BuildRequires:	libnspr-devel       >= 4.9.2-alt1
@@ -143,14 +169,14 @@ These helper macros provide possibility to rebuild
 seamonkey packages by some Alt Linux Team Policy compatible way.
 
 %prep
-%setup
+%setup -n %name-%version%beta_suffix
 
 ### Moved enigmail to mailnews
 %if_with enigmail
 tar -xf %SOURCE6 -C mailnews/extensions/
 %endif
 
-%patch0 -p1
+#patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p0
@@ -158,16 +184,15 @@ tar -xf %SOURCE6 -C mailnews/extensions/
 %patch5 -p1 -b .mozldap
 %endif
 %patch6 -p2
-%patch7 -p2
 #%%patch8 -p2
 #patch9 -p2
 
 # https://bugzilla.altlinux.org/30322
 %ifarch %{ix86}
-pushd mozilla
-%patch10 -p2
-popd
+%patch10 -p1
 %endif
+%patch11 -p1
+%patch12 -p1
 
 ### Copying .mozconfig to build directory
 cp -f %SOURCE7 .mozconfig
@@ -176,9 +201,24 @@ cp -f %SOURCE7 .mozconfig
 echo 'ac_add_options --enable-calendar' >> .mozconfig
 %endif
 
+mkdir -p -- my_rust_vendor
+tar --strip-components=1 -C my_rust_vendor --overwrite -xf %SOURCE9
+
+mkdir -p -- .cargo
+cat > .cargo/config <<EOF
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "$PWD/my_rust_vendor"
+EOF
+
 %build
 %add_optflags %optflags_shared
 %add_findprov_lib_path %sm_prefix
+
+env CARGO_HOME="$PWD/.cargo" \
+        cargo install cbindgen
 
 # Add fake RPATH
 rpath="/$(printf %%s '%sm_prefix' |tr '[:print:]' '_')"
@@ -191,6 +231,19 @@ export MOZ_BUILD_APP=suite
 export CFLAGS="$CFLAGS -DHAVE_USR_LIB64_DIR=1"
 %endif
 
+%ifarch %{arm} %{ix86}
+export RUSTFLAGS="-Cdebuginfo=0"
+export LLVM_PARALLEL_LINK_JOBS=1
+# See https://lwn.net/Articles/797303/ for linker flags
+# For bfd on i586
+export CXXFLAGS="$CXXFLAGS -Wl,--no-keep-memory -Wl,--reduce-memory-overheads -Wl,--hash-size=1021"
+# For gold on i586
+#export CXXFLAGS="$CXXFLAGS -Wl,--no-threads -Wl,--no-keep-files-mapped -Wl,--no-map-whole-files -Wl,--no-mmap-output-file -Wl,--stats"
+%endif
+
+export CC="clang"
+export CXX="clang++"
+
 export PREFIX="%_prefix"
 export LIBDIR="%_libdir"
 export SHELL="/bin/bash"
@@ -199,11 +252,14 @@ export MOZILLA_SRCDIR="$srcdir/mozilla"
 
 autoconf
 
-# On x86 architectures, Mozilla can build up to 4 jobs at once in parallel,
-# however builds tend to fail on other arches when building in parallel.
-%ifarch %ix86 x86_64
-[ "%__nprocs" -ge 2 ] && MOZ_SMP_FLAGS=-j2
-[ "%__nprocs" -ge 4 ] && MOZ_SMP_FLAGS=-j4
+export NPROCS=%build_parallel_jobs
+# Decrease NPROCS prevents oomkill terror on x86_64
+%ifarch x86_64
+export NPROCS=16
+%endif
+# Build for i586 in one thread
+%ifarch %ix86
+export NPROCS=1
 %endif
 
 # a kludge since 2.26 ...
@@ -211,6 +267,8 @@ mkdir objdir
 ln -s ../objdir mozilla/objdir
 
 %make_build -f client.mk build \
+	-j $NPROCS \
+	MOZ_PARALLEL_BUILD=$NPROCS \
 	mozappdir=%sm_prefix \
 	STRIP="/bin/true" \
 	MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
@@ -310,17 +368,14 @@ mkdir -p %buildroot/%_sysconfdir/rpm/macros.d
 tar -xf %SOURCE8
 cp -a rpm-build/rpm.macros.seamonkey %buildroot/%_sysconfdir/rpm/macros.d/%name
 
-
 # install altlinux-specific configuration
 install -D -m 644 %SOURCE5 %buildroot/%sm_prefix/defaults/preferences/all-altlinux.js
 
 # install icons
-	install -D suite/branding/nightly/icons/gtk/default16.png \
-	%buildroot%_miconsdir/%name.png
-	install -D suite/branding/nightly/icons/gtk/default.png \
-	%buildroot%_niconsdir/%name.png
-	install -D suite/branding/nightly/icons/gtk/%name.png \
-	%buildroot%_iconsdir/hicolor/128x128/apps/%name.png
+test -e suite/branding/seamonkey/default32.png || cp suite/branding/seamonkey/default{,32}.png
+for s in 16 32 48 64 128; do
+	install -Dpm0644 suite/branding/seamonkey/default${s}.png %buildroot%_iconsdir/hicolor/${s}x${s}/apps/%name.png
+done
 
 # install search plugins
 tar -C %buildroot%sm_prefix -xf %SOURCE2
@@ -373,9 +428,7 @@ printf '%_bindir/xbrowser\t%_bindir/%name\t100\n' > %buildroot%_altdir/%name
 %_datadir/applications/*.desktop
 %sm_prefix
 %sm_noarch_extensionsdir
-%_miconsdir/%name.png
-%_niconsdir/%name.png
-%_iconsdir/hicolor/128x128/apps/%name.png
+%_iconsdir/hicolor/*/apps/%name.png
 %if_with lightning
 %exclude %lightning_ciddir
 %endif
@@ -385,16 +438,24 @@ printf '%_bindir/xbrowser\t%_bindir/%name\t100\n' > %buildroot%_altdir/%name
 %lightning_ciddir
 %endif
 
-%files devel
-%dir %sm_idldir
-%sm_idldir
-%sm_includedir
-%sm_develdir
-
 %files -n rpm-build-seamonkey
 %_sysconfdir/rpm/macros.d/%name
 
 %changelog
+* Mon May 18 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.2-alt1
+- New stable version.
+- Remove deprecated lbzip2.
+
+* Thu Apr 30 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.2-alt0.1.b1
+- 2.53.2 Beta 1 compatible with Rust 1.41.0 (ALT #38169).
+- Do not package deprecated seamonkey-devel package.
+- Use Clang for build.
+- Fix License tag according to SPDX.
+
+* Mon Apr 20 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.1-alt1
+- 2.53.1
+- build with gtk3
+
 * Mon Jul 30 2018 Michael Shigorin <mike@altlinux.org> 1:2.49.4-alt1
 - 2.49.4
 
