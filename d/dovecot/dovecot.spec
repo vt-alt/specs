@@ -5,15 +5,14 @@
 %def_disable debug
 
 Name: dovecot
-Version: 2.3.7.2
+Version: 2.3.10.1
 Release: alt1
+
 Summary: Dovecot secure IMAP/POP3 server
 License: MIT
 Group: System/Servers
-Url: http://www.dovecot.org/
 
-Obsoletes: dovecot1.0
-Obsoletes: dovecot1.2
+Url: http://www.dovecot.org/
 
 # Repacked https://dovecot.org/releases/2.3/dovecot-%version.tar.gz
 Source0: %name-%version.tar
@@ -38,6 +37,9 @@ PreReq: mailboxes-control
 # optimized out: libcom_err-devel libkrb5-devel libpq-devel libstdc++-devel pkg-config
 BuildRequires: bzlib-devel gcc-c++ libldap-devel libmysqlclient-devel libpam-devel libsasl2-devel libsqlite3-devel libssl-devel openssl postgresql-devel zlib-devel
 BuildRequires: libkrb5-devel
+
+Obsoletes: dovecot1.0
+Obsoletes: dovecot1.2
 
 %description
 Dovecot is an IMAP/POP3 server for Linux/UNIX-like systems, written with
@@ -71,7 +73,12 @@ Libraries and headers for Dovecot
 sed -i 's@/usr/local@/usr@g' src/plugins/fts/decode2text.sh
 sed -i 's@/usr/local@/usr@g' doc/example-config/conf.d/90-quota.conf
 
-gzip -9 ChangeLog
+%ifarch %e2k
+# lcc 1.23.12 won't do that
+sed -i 's, ATTR_RETURNS_NONNULL,,' src/lib/mempool.h
+%endif
+
+xz -9 ChangeLog
 
 %build
 %add_optflags -D_DEFAULT_SOURCE=1
@@ -94,23 +101,23 @@ export ACLOCAL='aclocal -I .'
 # setup right ssl directory
 sed -i 's|/etc/ssl|%_ssldir|' doc/mkcert.sh doc/example-config/conf.d/10-ssl.conf
 
-cp %SOURCE4 src/lib
+cp -a %SOURCE4 src/lib
 %make_build
 
 %install
 %makeinstall_std
 
-install -D -m 0600 %SOURCE1 %buildroot%_sysconfdir/pam.d/dovecot
-install -D -m 0755 %SOURCE2 %buildroot%_initdir/%name
+install -Dp -m 0600 %SOURCE1 %buildroot%_sysconfdir/pam.d/dovecot
+install -Dp -m 0755 %SOURCE2 %buildroot%_initdir/%name
 
 # generate ghost .pem files
 touch empty
-install -D -m600 empty %buildroot%_ssldir/certs/dovecot.pem
-install -D -m600 empty %buildroot%_ssldir/private/dovecot.pem
+install -Dp -m600 empty %buildroot%_ssldir/certs/dovecot.pem
+install -Dp -m600 empty %buildroot%_ssldir/private/dovecot.pem
 
-mkdir -p %buildroot/var/run/dovecot/{login,empty}
-chmod 755 %buildroot/var/run/dovecot
-chmod 700 %buildroot/var/run/dovecot/login
+mkdir -p %buildroot/run/dovecot/{login,empty}
+chmod 755 %buildroot/run/dovecot
+chmod 700 %buildroot/run/dovecot/login
 mkdir -p %buildroot/var/cache/dovecot/indexes
 
 # Install dovecot configuration and dovecot-openssl.cnf
@@ -129,9 +136,19 @@ find %buildroot%_libdir/%name/ -name '*.la' | xargs rm -f
 
 # remove what we don't want
 rm -f %buildroot%_sysconfdir/dovecot/README
+rm -f %buildroot%_bindir/dovecot-sysreport
+rm -f %buildroot%_man1dir/dovecot-sysreport.1*
 
 # hi buildreq!
 ( cd %buildroot%_libdir; ln -s %name/lib*.so.* . )
+
+# create tmpfiles.conf
+mkdir -p %buildroot%_tmpfilesdir
+cat >%buildroot%_tmpfilesdir/%name.conf<<END
+d /run/dovecot 0755 root root -
+d /run/dovecot/empty 0750 root root -
+d /run/dovecot/login 0700 root root -
+END
 
 %pre
 %pre_control mailboxes
@@ -159,10 +176,9 @@ useradd -r -n -g dovenull -c 'Dovecot untrusted login processes' \
 
 %dir %_cachedir/dovecot
 %dir %_cachedir/dovecot/indexes
-%dir %_runtimedir/dovecot
-%dir %_runtimedir/dovecot/empty
-%dir %_runtimedir/dovecot/login
 %dir %_localstatedir/dovecot
+
+%_tmpfilesdir/%name.conf
 
 %_initdir/dovecot
 
@@ -195,6 +211,23 @@ useradd -r -n -g dovenull -c 'Dovecot untrusted login processes' \
 %_libdir/dovecot/dovecot-config
 
 %changelog
+* Wed May 20 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.3.10.1-alt1
+- Updated to 2.3.10.1 (fixes CVE-2020-10957, CVE-2020-10958, CVE-2020-10967).
+
+* Thu Jan 23 2020 Fr. Br. George <george@altlinux.ru> 2.3.9.2-alt1
+- Autobuild version bump to 2.3.9.2
+
+* Wed Dec 25 2019 Anton Midyukov <antohami@altlinux.org> 2.3.7.2-alt3.1
+- not packaged /run/dovecot
+
+* Sat Nov 30 2019 Anton Midyukov <antohami@altlinux.org> 2.3.7.2-alt3
+- Create _tmpfilesdir/dovecot.conf (Closes: 37554)
+- Replace /var/run -> /run, /var/lock -> /run/lock
+
+* Tue Sep 03 2019 Michael Shigorin <mike@altlinux.org> 2.3.7.2-alt2
+- E2K: fixed build with sed equivalent of george@'s patch.
+- Care a bit more about timestamps et al.
+
 * Wed Aug 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.3.7.2-alt1
 - Updated to 2.3.7.2 (fixes CVE-2019-11500).
 
