@@ -6,7 +6,7 @@
 %def_without gss
 
 Name: freerdp
-Version: 2.1.0
+Version: 2.1.1
 Release: alt1
 
 Group: Networking/Remote access
@@ -339,6 +339,13 @@ patchelf --set-rpath %_libdir/freerdp2 %buildroot%_bindir/freerdp-proxy
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.1-alt1
+- New version.
+- Fixes:
+  + CVE: GHSL-2020-100 OOB Read in ntlm_read_ChallengeMessage
+  + CVE: GHSL-2020-101 OOB Read in security_fips_decrypt due to uninitialized value
+  + CVE: GHSL-2020-102 OOB Write in crypto_rsa_common
+
 * Sun May 10 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt1
 - New version (2.1.0) (Fixes: CVE-2020-11039, CVE-2020-11038, CVE-2020-11043, CVE-2020-11040, CVE-2020-11041, CVE-2020-11019, CVE-2020-11017, CVE-2020-11018).
 
