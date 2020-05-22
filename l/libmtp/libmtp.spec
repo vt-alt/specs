@@ -2,7 +2,7 @@
 %define sover 9
 
 Name: libmtp
-Version: 1.1.16
+Version: 1.1.17
 Release: alt1
 Packager: Dmitriy Khanzhin <jinn@altlinux.org>
 
@@ -15,7 +15,7 @@ Url: http://libmtp.sourceforge.net/
 Source: %name-%version.tar
 
 # Automatically added by buildreq on Sat Apr 18 2009
-BuildRequires: libusb-devel
+BuildRequires: libusb-devel libgcrypt-devel
 
 %package -n %name%sover
 Summary: a library for accessing Media Transfer Protocol devices
@@ -66,7 +66,6 @@ touch config.rpath
 %autoreconf
 %configure \
 	%{subst_enable static} \
-	--disable-mtpz \
 	--with-udev=/lib/udev \
 	--with-udev-group=audio \
 	--with-udev-mode=0660
@@ -109,6 +108,10 @@ rm -rf %buildroot%_docdir/%name-%version/html
 %_bindir/*
 
 %changelog
+* Tue Feb 04 2020 Dmitriy Khanzhin <jinn@altlinux.org> 1.1.17-alt1
+- 1.1.17
+- enabled mtpz
+
 * Sun Oct 28 2018 Dmitriy Khanzhin <jinn@altlinux.org> 1.1.16-alt1
 - 1.1.16
 - removed unneeded patch
