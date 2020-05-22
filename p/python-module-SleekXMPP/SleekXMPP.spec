@@ -4,7 +4,7 @@
 
 Name: python-module-%oname
 Version: 1.3.3
-Release: alt1
+Release: alt3
 
 Summary: Python 2.6+/3.1+ XMPP Library
 
@@ -16,6 +16,7 @@ Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
 
 # Source-git: https://github.com/fritzy/SleekXMPP.git
 Source: %name-%version.tar
+Patch1: python3-async.patch
 
 BuildArch: noarch
 
@@ -82,6 +83,7 @@ This package contains tests for %oname.
 
 %prep
 %setup
+%patch1 -p1
 %__subst "s|\(from sleekxmpp.thirdparty.suelta.util\)|#\1 (https://github.com/fritzy/SleekXMPP/issues/480)|" sleekxmpp/plugins/xep_0138.py
 
 %if_with python3
@@ -99,6 +101,11 @@ pushd ../python3
 %python3_build_debug
 popd
 %endif
+
+# Set correct python2 executable in shebang and scripts
+find . -type f -print0 |
+        xargs -r0 grep -lZ '^#![[:space:]]*%_bindir/.*python\>' -- |
+        xargs -r0 sed -E -i '1 s@^(#![[:space:]]*)%_bindir/(env[[:space:]]+)?python\>@\1%__python@' --
 
 %install
 %python_install
@@ -142,6 +149,12 @@ cp -fR docs/_build/pickle %buildroot%python_sitelibdir/%oname/
 %endif
 
 %changelog
+* Thu May 14 2020 Pavel Vasenkov <pav@altlinux.org> 1.3.3-alt3
+- Set correct python2 executable in shebang and scripts
+
+* Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 1.3.3-alt2.1aeefd
+- merge with 1aeefd88accf45947c6376e9fac3abae9cbba8aa
+
 * Sun Dec 24 2017 Vitaly Lipatov <lav@altlinux.ru> 1.3.3-alt1
 - build 1.3.3
 
