@@ -2,20 +2,20 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: xchm
-Version: 1.23
-Release: alt4.1
+Version: 1.31
+Release: alt1
 
 Summary: xCHM - the CHM viewer for UNIX
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: Office
 
 URL: http://xchm.sourceforge.net
-Source: http://downloads.sourceforge.net/xchm/xchm-%version.tar.gz
+Source: %name-%version.tar
 Source1: xchm.desktop
 
 BuildRequires: gcc-c++
 BuildRequires: libchm-devel
-BuildRequires: compat-libwxGTK3.0-gtk2-devel
+BuildRequires: libwxGTK3.0-devel
 BuildRequires: libssl-devel
 
 %description
@@ -34,23 +34,23 @@ xCHM - the CHM files viewer for UNIX.
 %install
 %makeinstall_std
 install -pD -m644 %SOURCE1 %buildroot%_desktopdir/xchm.desktop
-install -pD -m644 art/xchm-16.xpm %buildroot%_miconsdir/xchm.xpm
-install -pD -m644 art/xchm-32.xpm %buildroot%_niconsdir/xchm.xpm
-install -pD -m644 art/xchm-48.xpm %buildroot%_liconsdir/xchm.xpm
 
 %find_lang %name
 
 %files -f %name.lang
 %doc AUTHORS COPYING ChangeLog README
 %_bindir/xchm
+%_datadir/metainfo/*
 %_desktopdir/xchm.desktop
-%_pixmapsdir/*.xpm
-%_pixmapsdir/*.png
-%_miconsdir/*
-%_niconsdir/*
-%_liconsdir/*
+%_iconsdir/hicolor/*/apps/*
+%_man1dir/*
 
 %changelog
+* Wed May 20 2020 Anton Midyukov <antohami@altlinux.org> 1.31-alt1
+- New version 1.31
+- build with wxGTK3.0
+- fix License tag
+
 * Wed May 13 2020 Andrey Cherepanov <cas@altlinux.org> 1.23-alt4.1
 - NMU: Build without libxmlrpcxx
 
