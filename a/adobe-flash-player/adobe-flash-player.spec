@@ -2,9 +2,9 @@
 Name: adobe-flash-player
 %define bin_name mozilla-plugin-adobe-flash
 %define ver_fake 32
-%define ver_ix86 32.0.0.363
-%define ver_x86_64 32.0.0.363
-Release: alt112
+%define ver_ix86 32.0.0.371
+%define ver_x86_64 32.0.0.371
+Release: alt113
 Epoch: 3
 
 %define ver_real %ver_fake
@@ -59,6 +59,9 @@ fake
 %files -n %bin_name
 
 %changelog
+* Wed May 13 2020 Cronbuild Service <cronbuild@altlinux.org> 3:32-alt113
+- repocop cronbuild 20200513. At your service.
+
 * Wed Apr 15 2020 Cronbuild Service <cronbuild@altlinux.org> 3:32-alt112
 - repocop cronbuild 20200415. At your service.
 
