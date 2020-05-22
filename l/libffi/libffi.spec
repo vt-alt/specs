@@ -2,11 +2,11 @@
 
 Name: libffi
 Version: 3.2.1
-Release: alt2
+Release: alt3
 Epoch: 1
 
 Summary: Foreign Function Interface library
-License: BSD-style
+License: MIT
 Group: System/Libraries
 URL: http://sourceware.org/libffi
 
@@ -102,6 +102,10 @@ make -k check
 %_libdir/*.a
 
 %changelog
+* Tue May 19 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:3.2.1-alt3
+- Fixed testsuite regressions.
+- Fixed License tag.
+
 * Sat Jun 09 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.2.1-alt2
 - Applied patch for aarch64 from Fedora.
 
