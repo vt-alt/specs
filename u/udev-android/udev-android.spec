@@ -6,11 +6,11 @@
 %define adbusersgroup adbusers
 
 Name: udev-android
-Version: 0.0.20170103
+Version: 0.0.20190315
 Release: alt1
 
 Summary: Udev rules for adb and fastboot
-License: %gpl3only
+License: GPL3
 Group: System/Configuration/Hardware
 
 Url: https://github.com/M0Rf30/android-udev-rules
@@ -45,6 +45,9 @@ ln -snf "`relative "%targetlicense" "%sourcelicense"`" %buildroot%targetlicense
 %pkgdocdir
 
 %changelog
+* Tue Aug 06 2019 Pavel Nakonechnyi <zorg@altlinux.org> 0.0.20190315-alt1
+- New version: 20190315
+
 * Tue Jan 03 2017 Aleksey Avdeev <solo@altlinux.org> 0.0.20170103-alt1
 - New version: 20170103
 
