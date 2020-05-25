@@ -4,7 +4,7 @@
 %define _pkgdocdir %_docdir/%name
 
 Name: pdns
-Version: 4.2.1
+Version: 4.2.2
 Release: alt1
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System/Servers
@@ -108,7 +108,6 @@ This package contains the lua2 backend for %name
 Summary: SQLite backend for %name
 Group: System/Servers
 Requires: %name = %version-%release
-BuildRequires: sqlite-devel
 %global backends %backends gsqlite3
 
 %description backend-sqlite
@@ -352,6 +351,12 @@ mkdir -p %buildroot%_localstatedir/%name
 %_unitdir/ixfrdist@.service
 
 %changelog
+* Fri May 22 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.2-alt1
+- 4.2.2
+
+* Fri Mar 06 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.2.1-alt2
+- NMU: Fixed BuildRequires (dropped needless sqlite-devel).
+
 * Sat Feb 22 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt1
 - 4.2.1 (Fixes: CVE-2017-15091, CVE-2018-10851, CVE-2018-14626, CVE-2019-3871, CVE-2019-10162, CVE-2019-10163)
 
