@@ -4,7 +4,7 @@
 %define prog_name            postgresql
 %define postgresql_major     9
 %define postgresql_minor     5
-%define postgresql_subminor  21
+%define postgresql_subminor  22
 %define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -370,16 +370,6 @@ chown postgres:postgres ~postgres/.bash_profile
 
 # $2, holds the number of instances of the target package that will remain
 # after the operation if $2 is 0, the target package will be removed
-%triggerpostun -- %{prog_name}9.3-server
-if [ "$2" -eq 0 ]; then
-       %post_service %prog_name
-fi
-
-%triggerpostun -- %{prog_name}9.4-server
-if [ "$2" -eq 0 ]; then
-       %post_service %prog_name
-fi
-
 %triggerpostun -- %{prog_name}9.5-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
@@ -395,12 +385,17 @@ if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
-%triggerpostun -- %{prog_name}10-1C-server
+%triggerpostun -- %{prog_name}11-1C-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
 %triggerpostun -- %{prog_name}11-server
+if [ "$2" -eq 0 ]; then
+       %post_service %prog_name
+fi
+
+%triggerpostun -- %{prog_name}12-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
@@ -753,6 +748,9 @@ fi
 %endif
 
 %changelog
+* Fri May 22 2020 Alexei Takaseev <taf@altlinux.org> 9.5.22-alt1
+- 9.5.22
+
 * Wed Feb 12 2020 Alexei Takaseev <taf@altlinux.org> 9.5.21-alt1
 - 9.5.21
 

@@ -7,7 +7,7 @@
 %define prog_name            postgresql
 %define postgresql_major     11
 %define postgresql_minor     5
-%define postgresql_altrel    4
+%define postgresql_altrel    5
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -46,25 +46,7 @@ Patch6: 0006-Workaround-for-will-always-overflow-destination-buff.patch
 Patch8: 0001-Add-postgresql-startup-method-through-service-1-to-i.patch
 
 # 1C
-Patch101: 00001-1c_FULL_100_EXT.patch
-Patch102: 00002-online_analyze.patch
-Patch103: 00003-plantuner.patch
-Patch104: 00004-postgresql-1c-10.patch
-Patch105: 00005-coalesce_cost.patch
-Patch106: 00006-pg_receivewal.patch
-Patch107: 00007-remove_selfjoin.patch
-Patch108: 00008-planner_timing.patch
-Patch109: 00009-opt_group_by_and_cost_sort.patch
-Patch110: 00010-joinsel.patch
-Patch111: 00011-max_files_per_process.patch
-Patch112: 00012-index_getattr_optimization.patch
-Patch113: 00013-notransvalue.patch
-Patch114: 00014-optimizer_utils.patch
-Patch115: 00015-lessmem.patch
-Patch116: 00016-empty_materialize.patch
-Patch117: 00017-eqjoinsel_hist.patch
-Patch118: 00018-explain_tuple_count.patch
-Patch119: 00019-aggfix.patch
+Patch101: 00001-1C-FULL.patch
 
 Provides: %prog_name = %EVR
 Conflicts: %prog_name < %EVR
@@ -224,24 +206,6 @@ database.
 
 # 1C
 %patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
-%patch110 -p1
-%patch111 -p1
-%patch112 -p1
-%patch113 -p1
-%patch114 -p1
-%patch115 -p1
-%patch116 -p1
-%patch117 -p1
-%patch118 -p1
-%patch119 -p1
 
 %build
 %autoreconf
@@ -826,6 +790,9 @@ fi
 %endif
 
 %changelog
+* Fri May 22 2020 Alexei Takaseev <taf@altlinux.org> 11.5-alt5
+- Replace all 1C patches by 00001-1C-FULL.patch
+
 * Wed Feb 12 2020 Alexei Takaseev <taf@altlinux.org> 11.5-alt4
 - Fix priv checks for ALTER <object> DEPENDS ON EXTENSION (Fixes CVE-2020-1720)
 
