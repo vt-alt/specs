@@ -1,8 +1,8 @@
 %def_disable static
 
 Name: unbound
-Version: 1.9.6
-Release: alt3
+Version: 1.10.2
+Release: alt1
 License: BSD
 Url: http://unbound.net/
 Source: %name-%version.tar
@@ -237,6 +237,10 @@ rm -f %buildroot%python3_sitelibdir/*.la
 %endif
 
 %changelog
+* Fri May 22 2020 Alexei Takaseev <taf@altlinux.org> 1.10.2-alt1
+- 1.10.2
+- (Fixes CVE-2020-12662, CVE-2020-12663)
+
 * Tue Feb 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.9.6-alt3
 - update systemd unit for run without pidfile
 
