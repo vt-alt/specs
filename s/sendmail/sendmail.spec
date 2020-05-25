@@ -1,6 +1,6 @@
 Name: sendmail
 
-%define tarbolversion 8.16.0.45
+%define tarbolversion 8.16.0.48
 
 Version: %tarbolversion
 Release: alt1
@@ -69,8 +69,6 @@ Patch50: %name-contrib-expn.pl-tempfile.patch
 
 Provides: MTA, MailTransportAgent, smtpdaemon
 
-Conflicts: postfix, meta1, exim-common
-
 Requires: %name-submit = %{version}-%{release}, makemap = %{version}-%{release}
 
 BuildConflicts: bind-devel
@@ -101,7 +99,7 @@ specific recomendations README.alt and README.cyrus-imap).
 Summary: sendmail's submit service
 License: Sendmail-8.23
 Group: System/Servers
-Conflicts: postfix
+Conflicts: postfix, meta1, exim-common
 AutoReq: yes, noshell
 
 %description submit
@@ -499,6 +497,12 @@ EOF
 %doc docs/LICENSE
 
 %changelog
+* Thu May 21 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.0.48-alt1
+- New version
+- moved "Conflicts: postfix, meta1, exim-common" to submit subpackage
+  (thanks to invariabilis@basealt)
+- built with _FFR_RFC7505
+
 * Sun May 10 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.0.45-alt1
 - New version
 - updated smrsh.patch for 8.16.0.45
