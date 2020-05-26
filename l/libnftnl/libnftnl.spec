@@ -1,43 +1,49 @@
-Name:           libnftnl
-Version:        1.1.4
-Release:        alt1
-Summary:        Netfilter nf_tables infrastructure library
-Group:          System/Libraries
-License:        GPL-2.0-only
-URL:            http://netfilter.org/projects/libnftnl/
-Source:        %name-%version.tar
+# examples depend on this
+%def_with check
+%def_enable check
+
+Name: libnftnl
+Version: 1.1.6
+Release: alt1
+
+Summary: Netfilter nf_tables infrastructure library
+License: GPL-2.0-only
+Group: System/Libraries
+
+Url: http://netfilter.org/projects/libnftnl/
+Source: %name-%version.tar
 BuildRequires: libmnl-devel libmxml-devel libjansson-devel
 
 %description
-libnftnl is a userspace library providing a low-level netlink programming interface (API) to the
-in-kernel nf_tables subsystem. The library libnftnl has been previously known as libnftables.
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+The library libnftnl has been previously known as libnftables.
 This library is currently used by nftables.
 
-%package        devel
-Summary:        Development files for %name
-Group:          System/Libraries
-Requires:       pkgconfig, %name = %version-%release
+%package devel
+Summary: Development files for %name
+Group: System/Libraries
+Requires: pkgconfig, %name = %version-%release
 
-%description   devel
+%description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package        devel-static
-Summary:        Development files for %name
-Group:          System/Libraries
-Requires:       pkgconfig, %name = %version-%release
+%package devel-static
+Summary: Development files for %name
+Group: System/Libraries
+Requires: pkgconfig, %name = %version-%release
 
-%description   devel-static
+%description devel-static
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package        examples
-Summary:        Examples for %name
-Group:          System/Libraries
+%package examples
+Summary: Examples for %name
+Group: System/Libraries
 
-%description    examples
+%description examples
 The %name-examples package contains examples files for %name.
-
 
 %prep
 %setup
@@ -47,10 +53,11 @@ The %name-examples package contains examples files for %name.
 %configure --with-xml-parsing --with-json-parsing --enable-static
 %make_build
 
+# FIXME: --without check will cause packaging breakage
 %check
 %make check
 mkdir -p %buildroot%_sbindir
-cp examples/.libs/* %buildroot%_sbindir/
+cp -a examples/.libs/* %buildroot%_sbindir/
 
 %install
 %makeinstall_std
@@ -67,11 +74,25 @@ cp examples/.libs/* %buildroot%_sbindir/
 %files devel-static
 %_libdir/*.a
 
+%if_with check
+%if_enabled check
 %files examples
 %doc examples/*.c
 %_sbindir/*
+%endif
+%endif
 
 %changelog
+* Fri Apr 03 2020 Alexei Takaseev <taf@altlinux.org> 1.1.6-alt1
+- Version 1.1.6
+
+* Tue Dec 03 2019 Alexei Takaseev <taf@altlinux.org> 1.1.5-alt1
+- Version 1.1.5
+
+* Sat Oct 05 2019 Michael Shigorin <mike@altlinux.org> 1.1.4-alt2
+- Fix build --without check (still weird though)
+- Minor spec cleanup
+
 * Tue Aug 20 2019 Alexei Takaseev <taf@altlinux.org> 1.1.4-alt1
 - Version 1.1.4
 
