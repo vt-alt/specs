@@ -12,7 +12,7 @@
 
 %global gopath      %_datadir/gocode
 %global import_path github.com/openshift/origin
-%global commit 0cbc58b117403b9d9169dbafdfac59ef104bb997
+%global commit 07e3a8d53563c7fc72445178fa82d71e1e1cad7e
 %global kube_commit d4cacc043ac762235e16cb7361d527cb4189393c
 %global etcd_commit 121edf0467052d55876a817b89875fb39a99bf78
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -30,17 +30,18 @@
 
 Name: origin
 Version: 3.11.0
-Release: alt1
+Release: alt3
 Summary: Open Source Container Management
-License: ASL 2.0
+License: Apache-2.0
 Group: System/Configuration/Other
 Url: https://%import_path
 Source: %name-%version.tar
+Patch: %name-%version-%release.patch
 
 #ExclusiveArch:  %go_arches
 ExclusiveArch: x86_64 aarch64
 
-BuildRequires(pre): rpm-build-golang rpm-build-ubt
+BuildRequires(pre): rpm-build-golang
 BuildRequires: systemd
 BuildRequires: bsdtar
 BuildRequires: golang >= %golang_version
@@ -134,8 +135,10 @@ Group: System/Configuration/Other
 
 %prep
 %setup
+%patch -p1
 
 %build
+export GO111MODULE=off
 # Create Binaries only for building arch
 %ifarch x86_64
   BUILD_PLATFORM="linux/amd64"
@@ -293,6 +296,12 @@ install -p -m 644 contrib/systemd/origin-accounting.conf %buildroot%_sysconfdir/
 %_bindir/template-service-broker
 
 %changelog
+* Sun May 24 2020 Alexey Shabalin <shaba@altlinux.org> 3.11.0-alt3
+- snapshot of release-3.11 branch (07e3a8d53563c7fc72445178fa82d71e1e1cad7e)
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 3.11.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Thu Jan 17 2019 Alexey Shabalin <shaba@altlinux.org> 3.11.0-alt1
 - new version 3.11.0
 

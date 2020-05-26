@@ -10,7 +10,7 @@
 
 Name: promu
 Version: 0.5.0
-Release: alt1
+Release: alt2
 Summary: Prometheus Utility Tool
 
 Group: Development/Other
@@ -40,6 +40,7 @@ cd .gopath/src/%import_path
 export VERSION=%version
 export COMMIT=%commit
 export BRANCH=altlinux
+export GOFLAGS="-mod=vendor"
 
 go install -ldflags "-X main.version=$VERSION -X main.commit=$COMMIT -X main.branch=$BRANCH" ./...
 
@@ -54,6 +55,9 @@ rm -rf -- %buildroot%_datadir
 %_bindir/*
 
 %changelog
+* Mon Sep 23 2019 Alexey Shabalin <shaba@altlinux.org> 0.5.0-alt2
+- fixed build with golang-1.13
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 0.5.0-alt1
 - 0.5.0
 

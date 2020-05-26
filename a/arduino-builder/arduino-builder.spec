@@ -7,7 +7,7 @@ BuildRequires: gcc-c++ rpm-build-golang
 %define _localstatedir %{_var}
 Name:           arduino-builder
 Version:        1.3.25
-Release:        alt2_4
+Release:        alt3_4
 Summary:        A command line tool for compiling Arduino sketches
 License:        GPLv2+
 URL:            http://www.arduino.cc
@@ -55,6 +55,8 @@ mkdir -p ./_build
 ln -s $(pwd)/src ./_build/
 
 export GOPATH="$(pwd)/_build:%{go_path}:$(pwd)/vendor"
+export GO111MODULE=off
+# export GOFLAGS="-mod=vendor"
 
 # Fix missing build-id
 function gobuild { go build -a -ldflags "-B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')" -v -x "$@"; }
@@ -83,6 +85,9 @@ install -p src/arduino.cc/builder/hardware/*.txt %{buildroot}%{_datadir}/arduino
 %{_datadir}/arduino/hardware
 
 %changelog
+* Thu May 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.3.25-alt3_4
+- fixed build
+
 * Fri Jul 19 2019 Igor Vlasenko <viy@altlinux.ru> 1.3.25-alt2_4
 - aarch64 build
 

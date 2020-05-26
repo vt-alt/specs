@@ -12,7 +12,7 @@
 
 Name: prometheus-%oname
 Version: 0.15.0
-Release: alt2
+Release: alt3
 Summary: Prometheus snmp exporter
 
 Group: Development/Other
@@ -44,6 +44,7 @@ from SNMP for use by the Prometheus monitoring system.
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
+export GOFLAGS="-mod=vendor"
 %golang_prepare
 promu build
 
@@ -83,6 +84,9 @@ install -m0755 .gopath/src/%import_path/generator/generator %buildroot%_bindir/%
 %config(noreplace) %_sysconfdir/prometheus/snmp.yml
 
 %changelog
+* Sat Sep 28 2019 Alexey Shabalin <shaba@altlinux.org> 0.15.0-alt3
+- fixed build with golang-1.13
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.15.0-alt2
 - NMU: remove rpm-build-ubt from BR:
 

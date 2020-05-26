@@ -3,7 +3,7 @@
 
 Name: opensnitch
 Version: 1.0.0
-Release: alt2.b.git5c8f710
+Release: alt3.b.git5c8f710
 Summary: OpenSnitch is a GNU/Linux port of the Little Snitch application firewall
 License: GPLv3
 Group: Networking/Other
@@ -59,6 +59,7 @@ This package contains opensnitch ui.
 export BUILDDIR="$PWD/.build"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
+export GOFLAGS="-mod=vendor"
 
 %golang_prepare
 
@@ -113,6 +114,9 @@ mkdir -p %buildroot%_pseudouser_home
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Sun May 24 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.0-alt3.b.git5c8f710
+- fixed build
+
 * Fri Mar 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.0-alt2.b.git5c8f710
 - Updated to current upstream version (Closes: #36208)
 

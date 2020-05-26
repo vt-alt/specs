@@ -1,5 +1,5 @@
 %global import_path github.com/junegunn/fzf
-%global commit b46227dcb6f1718d66ad828443d9f03a4bd58c4c
+%global commit 14f90502a49b868b6c9fed4a86d413427052fb81
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -10,7 +10,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		fzf
-Version:	0.18.0
+Version:	0.21.1
 Release:	alt1
 Summary:	A general-purpose command-line fuzzy finder.
 
@@ -78,6 +78,8 @@ export BUILDDIR="$PWD/.build"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
 
+# Don't try to download dependencies from network
+rm -f go.mod
 %golang_prepare
 rm -fr "$BUILDDIR/src/$IMPORT_PATH/vendor"
 cp -alv -- vendor/* "$BUILDDIR/src"
@@ -132,6 +134,21 @@ install -Dpm0644 plugin/fzf.vim %buildroot%vim_runtime_dir/plugin/
 %vim_runtime_dir/plugin/*
 
 %changelog
+* Fri Apr 10 2020 Vladimir Didenko <cow@altlinux.org> 0.21.1-alt1
+- New version
+
+* Thu Mar 19 2020 Vladimir Didenko <cow@altlinux.org> 0.21.0-alt1
+- New version
+
+* Wed Jan 8 2020 Vladimir Didenko <cow@altlinux.org> 0.20.0-alt1
+- New version
+
+* Thu Nov 28 2019 Vladimir Didenko <cow@altlinux.org> 0.19.0-alt1
+- New version
+
+* Fri Sep 6 2019 Vladimir Didenko <cow@altlinux.org> 0.18.0-alt2
+- Fix build with golang 1.13
+
 * Mon Apr 8 2019 Vladimir Didenko <cow@altlinux.org> 0.18.0-alt1
 - New version
 

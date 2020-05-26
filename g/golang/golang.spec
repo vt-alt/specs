@@ -9,7 +9,7 @@
 # contains binary-like things (ELF data for tests, etc)
 %global _unpackaged_files_terminate_build 1
 
-%global go_arches %ix86 x86_64 aarch64 %arm mipsel ppc64le
+%global go_arches %ix86 x86_64 aarch64 %arm mipsel ppc64le riscv64
 %global go_root %_libdir/golang
 
 %ifarch x86_64
@@ -30,12 +30,16 @@
 %ifarch ppc64le
 %global go_hostarch  ppc64le
 %endif
+%ifarch riscv64
+%global go_hostarch  riscv64
+%endif
+
 
 %def_disable check
 
 Name:    golang
-Version: 1.12.17
-Release: alt1
+Version: 1.14.3
+Release: alt2
 Summary: The Go Programming Language
 Group:   Development/Other
 License: BSD
@@ -47,6 +51,7 @@ Source0: golang-%version.tar
 Source1: golang-gdbinit
 Patch2:  golang-alt-certs-path.patch
 Patch100: 0001-Don-t-use-the-bundled-tzdata-at-runtime-except-for-t.patch
+Patch101: 0001-avoid-requires-libselinux-utils.patch
 
 ExclusiveArch: %go_arches
 
@@ -114,6 +119,7 @@ Go sources and documentation.
 
 %patch2 -p1
 %patch100 -p1
+%patch101 -p1
 
 %build
 # go1.5 bootstrapping. The compiler is written in golang.
@@ -287,11 +293,42 @@ mkdir -p -- \
 
 
 %changelog
+* Sun May 17 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.3-alt2
+- merge chanlog with p9
+
+* Sat May 16 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.3-alt1
+- New version (1.14.3).
+
+* Sat May 02 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.2-alt2
+- avoid requires libselinux-utils.
+
+* Tue Apr 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.2-alt1
+- 1.14.2
+
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.1-alt1
+- 1.14.1
+
+* Thu Feb 27 2020 Alexey Shabalin <shaba@altlinux.org> 1.14-alt1
+- 1.14
+- Build on riscv64
+
+* Thu Feb 20 2020 Alexey Shabalin <shaba@altlinux.org> 1.13.8-alt1
+- 1.13.8
+
 * Thu Feb 20 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.17-alt1
 - 1.12.17
 
+* Tue Jan 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.13.6-alt1
+- 1.13.6
+
 * Tue Jan 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.15-alt1
 - 1.12.15
+
+* Fri Dec 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.13.5-alt1
+- 1.13.5
+
+* Wed Nov 06 2019 Alexey Shabalin <shaba@altlinux.org> 1.13.4-alt1
+- 1.13.4 (Fixes: CVE-2019-17596)
 
 * Wed Nov 06 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.13-alt1
 - New version (1.12.13).
@@ -299,8 +336,14 @@ mkdir -p -- \
 * Wed Nov 06 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.11-alt1
 - New version (1.12.11). (Fixes: CVE-2019-17596)
 
+* Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 1.13.1-alt1
+- 1.13.1
+
 * Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.10-alt1
 - New version (1.12.10). (Fixes: CVE-2019-16276)
+
+* Thu Sep 05 2019 Alexey Shabalin <shaba@altlinux.org> 1.13-alt1
+- 1.13
 
 * Mon Aug 19 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.9-alt1
 - 1.12.9 (Fixes: CVE-2019-14809, CVE-2019-9512, CVE-2019-9514)
