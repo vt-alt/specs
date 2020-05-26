@@ -15,7 +15,7 @@
 %define libnm_util libnm-util%nm_util_sover
 %endif
 
-%define ppp_version 2.4.7
+%define ppp_version %((%{__awk} '/^#define VERSION/ { print $NF }' /usr/include/pppd/patchlevel.h 2>/dev/null||echo none)|/usr/bin/tr -d '"')
 %define wpa_supplicant_version 0.7.3-alt3
 %define dhcpcd_version 4.0.0
 %define openresolv_version 3.5.4-alt3
@@ -65,13 +65,13 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager
-Version: 1.18.4
+Version: 1.18.6
 Release: alt1%git_hash
-License: %gpl2plus
+License: GPLv2+ and LGPLv2+
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
 Url: http://www.gnome.org/projects/NetworkManager/
-# git://git.freedesktop.org/git/NetworkManager/NetworkManager.git
+Vcs: git://git.freedesktop.org/git/NetworkManager/NetworkManager.git
 Source: %name-%version.tar
 Source1: %name.conf
 Source2: 50-ntp
@@ -83,8 +83,6 @@ Source9: NetworkManager-prestart
 Source10: nm-dispatcher-sh-functions
 Source11: NetworkManager.init
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 # For tests
 %{?!_without_check:%{?!_disable_check:BuildPreReq: dbus dhcpcd dhcp-client}}
@@ -132,7 +130,7 @@ This is virtual package for install NetworkManager daemon
 and all its plugins (excluding VPN plugins).
 
 %package daemon
-License: %gpl2plus
+License: GPLv2+
 Group: System/Configuration/Networking
 Summary: Network Link Manager and User Applications
 Requires: dbus >= %dbus_version
@@ -167,6 +165,7 @@ This package contents NetworkManager daemon itself and other
 utilities.
 
 %package adsl
+License: GPLv2+
 Summary: ADSL device plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: ppp-pppoe
@@ -177,6 +176,7 @@ Requires: %name-ppp = %version-%release
 This package contains NetworkManager support for ADSL devices.
 
 %package bluetooth
+License: GPLv2+
 Summary: Bluetooth device plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: %_name = %version-%release
@@ -186,6 +186,7 @@ Requires: %name-wwan = %version-%release
 This package contains NetworkManager support for Bluetooth devices.
 
 %package ovs
+License: GPLv2+
 Summary: OpenVSwitch device plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: %_name = %version-%release
@@ -195,6 +196,7 @@ Requires: openvswitch
 This package contains NetworkManager support for OpenVSwitch bridges.
 
 %package team
+License: GPLv2+
 Summary: Team device plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: teamd
@@ -204,6 +206,7 @@ Requires: %_name = %version-%release
 This package contains NetworkManager support for team devices.
 
 %package wifi
+License: GPLv2+
 Summary: Wifi plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: wpa_supplicant >= %wpa_supplicant_version
@@ -213,6 +216,7 @@ Requires: %_name = %version-%release
 This package contains NetworkManager support for Wifi and OLPC devices.
 
 %package wwan
+License: GPLv2+
 Summary: Mobile broadband device plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: ModemManager >= 0.7
@@ -222,6 +226,7 @@ Requires: %_name = %version-%release
 This package contains NetworkManager support for mobile broadband (WWAN) devices.
 
 %package ppp
+License: GPLv2+
 Summary: PPP plugin for NetworkManager
 Group: System/Configuration/Networking
 Requires: %_name = %version-%release
@@ -231,7 +236,7 @@ Requires: ppp = %ppp_version
 This package contains NetworkManager support for PPP.
 
 %package tui
-License: %gpl2plus
+License: GPLv2+
 Summary: Curses-based Text User Interface for NetworkManager
 Group: System/Configuration/Networking
 Requires: %_name = %version-%release
@@ -241,7 +246,7 @@ Requires: %_name = %version-%release
 
 %if_with libnm_glib
 %package devel
-License: %gpl2plus
+License: LGPLv2+
 Summary: Libraries and headers for adding NetworkManager support to applications
 Group: Development/Other
 Requires: libdbus-glib >= %libdbus_glib_version
@@ -254,7 +259,7 @@ functionality from applications.
 %endif
 
 %package -n libnm
-License: %gpl2plus
+License: LGPLv2+
 Summary: Library for adding NetworkManager support to applications
 Group: System/Libraries
 
@@ -264,7 +269,7 @@ NetworkManager functionality from applications.
 
 %if_with libnm_glib
 %package -n %libnm_glib
-License: %gpl2plus
+License: LGPLv2+
 Summary: Library for adding NetworkManager support to applications that use glib
 Group: System/Libraries
 Requires: dbus >= %dbus_version
@@ -275,7 +280,7 @@ This package contains the library that applications can use to query
 connection status via NetworkManager.
 
 %package -n %libnm_glib_vpn
-License: %gpl2plus
+License: LGPLv2+
 Summary: Library for creating VPN connections via NetworkManager
 Group: System/Libraries
 Requires: dbus >= %dbus_version
@@ -286,7 +291,7 @@ This package contains the library that applications can use for creating
 VPN connections via NetworkManager.
 
 %package -n %libnm_util
-License: %gpl2plus
+License: LGPLv2+
 Summary: A convenience library to ease the access to NetworkManager.
 Group: System/Libraries
 Requires: dbus >= %dbus_version
@@ -297,6 +302,7 @@ This package contains a convenience library to ease the access to
 NetworkManager.
 
 %package glib-devel
+License: LGPLv2+
 Summary: Header files for adding NetworkManager support to applications that use glib.
 Group: Development/GNOME and GTK+
 Requires: libnm-glib-devel libnm-glib-vpn-devel libnm-util-devel
@@ -308,6 +314,7 @@ Deprecated and will be removed soon.
 %endif
 
 %package -n libnm-devel
+License: LGPLv2+
 Summary: Header files for adding NetworkManager support to applications.
 Group: Development/C
 Requires: glib2-devel
@@ -321,6 +328,7 @@ applications using NetworkManager functionality.
 
 %if_with libnm_glib
 %package -n libnm-glib-devel
+License: LGPLv2+
 Summary: Header files for adding NetworkManager support to applications that use glib.
 Group: Development/C
 Requires: %name-devel = %version-%release
@@ -335,6 +343,7 @@ This package contains the header and pkg-config files for development
 applications that can to query connection status via NetworkManager.
 
 %package -n libnm-glib-vpn-devel
+License: LGPLv2+
 Summary: Header files for %libnm_glib_vpn
 Group: Development/C
 Requires: %name-devel = %version-%release
@@ -349,6 +358,7 @@ This package contains the header and pkg-config files for development
 applications that can to create VPN connections via NetworkManager.
 
 %package -n libnm-util-devel
+License: LGPLv2+
 Summary: Header files for %libnm_util
 Group: Development/C
 Requires: %name-devel = %version-%release
@@ -363,6 +373,7 @@ for %libnm_util.
 %endif
 
 %package -n libnm-devel-doc
+License: GFDL-1.1+
 Summary: Development documentation for %name
 Group: Development/Documentation
 BuildArch: noarch
@@ -372,6 +383,7 @@ This package contains development documentation for %name.
 
 %if_with libnm_glib
 %package devel-doc
+License: GFDL-1.1+
 Summary: Development documentation for %name
 Group: Development/Documentation
 Obsoletes: NetworkManager-glib-devel-doc < 0.9.10.0
@@ -388,6 +400,7 @@ Includes libnm-util and libnm-glib development documentation.
 %endif
 
 %package -n libnm-gir
+License: LGPLv2+
 Summary: GObject introspection data for the NetworkManager (libnm)
 Group: System/Libraries
 Requires: libnm = %version-%release
@@ -396,6 +409,7 @@ Requires: libnm = %version-%release
 GObject introspection data for the NetworkManager (libnm).
 
 %package -n libnm-gir-devel
+License: LGPLv2+
 Summary: GObject introspection devel data for the NetworkManager (libnm)
 Group: System/Libraries
 BuildArch: noarch
@@ -406,6 +420,7 @@ GObject introspection devel data for the NetworkManager (libnm).
 
 %if_with libnm_glib
 %package glib-gir
+License: LGPLv2+
 Summary: GObject introspection data for the NetworkManager
 Group: System/Libraries
 Requires: %libnm_glib %libnm_glib_vpn %libnm_util
@@ -414,6 +429,7 @@ Requires: %libnm_glib %libnm_glib_vpn %libnm_util
 GObject introspection data for the NetworkManager.
 
 %package glib-gir-devel
+License: LGPLv2+
 Summary: GObject introspection devel data for the NetworkManager
 Group: System/Libraries
 BuildArch: noarch
@@ -779,6 +795,14 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Fri May 15 2020 Mikhail Efremov <sem@altlinux.org> 1.18.6-alt1
+- Added Vcs tag.
+- Fixed license.
+- Updated to 1.18.6.
+
+* Mon Mar 09 2020 Alexey Shabalin <shaba@altlinux.org> 1.18.4-alt2
+- Rebuild with ppp-2.4.8.
+
 * Thu Oct 10 2019 Mikhail Efremov <sem@altlinux.org> 1.18.4-alt1
 - Updated to 1.18.4.
 
