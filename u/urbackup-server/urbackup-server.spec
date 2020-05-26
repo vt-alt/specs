@@ -1,7 +1,6 @@
-
 Name: urbackup-server
 Version: 2.3.8
-Release: alt1
+Release: alt1.M90P.1
 Summary: Efficient Client-Server backup system for Linux and Windows
 Group: Archiving/Backup
 License: AGPL-3.0+
@@ -17,6 +16,7 @@ BuildRequires: libcryptopp-devel
 BuildRequires: liblmdb-devel
 BuildRequires: libsqlite3-devel
 BuildRequires: liblua5.3-devel
+Requires: urbackup-common = %version-%release
 
 %description
 Efficient Client-Server Backup system for Linux and Windows
@@ -24,6 +24,13 @@ with GPT and UEFI partition. A client for Windows lets you
 backup open files and complete partition images. Backups
 are stored to disks in a efficient way (deduplication)
 on either Windows or Linux servers.
+
+%package -n urbackup-common
+Summary: Common directories and user for urbackup server and client
+Group: Archiving/Backup
+
+%description -n urbackup-common
+Common directories and user for urbackup server and client
 
 %prep
 %setup -n %name-%version
@@ -61,7 +68,7 @@ install -m 644 docs/urbackupsrv.1 %buildroot%_man1dir/%name.1
 install -m 644 logrotate_urbackupsrv  %buildroot%_sysconfdir/logrotate.d/%name
 touch %buildroot%_logdir/urbackup.log
 
-%pre
+%pre -n urbackup-common
 groupadd -r -f urbackup >/dev/null 2>&1 ||:
 useradd -g urbackup -c 'UrBackup pseudo user' \
     -d %_localstatedir/urbackup -s /dev/null -r -l -M urbackup >/dev/null 2>&1 ||:
@@ -76,7 +83,6 @@ useradd -g urbackup -c 'UrBackup pseudo user' \
 %doc AUTHORS COPYING ChangeLog README
 %attr(4710,root,urbackup) %_bindir/urbackup_snapshot_helper
 %attr(4710,root,urbackup) %_bindir/urbackup_mount_helper
-%dir %attr(0755,urbackup,urbackup) %_datadir/urbackup
 %attr(-,urbackup,urbackup) %_datadir/urbackup/*
 %_bindir/urbackupsrv
 %_man1dir/*
@@ -84,10 +90,16 @@ useradd -g urbackup -c 'UrBackup pseudo user' \
 %config(noreplace) %_sysconfdir/sysconfig/%name
 %prefix/lib/firewalld/services/%name.xml
 %ghost %_logdir/urbackup.log
-%dir %attr(0755,urbackup,urbackup) %_localstatedir/urbackup
 %attr(-,urbackup,urbackup) %_localstatedir/urbackup/dataplan_db.txt
 %attr(0644,root,root) %_unitdir/%name.service
 
+%files -n urbackup-common
+%dir %attr(0755,urbackup,urbackup) %_datadir/urbackup
+%dir %attr(0755,urbackup,urbackup) %_localstatedir/urbackup
+
 %changelog
+* Mon May 25 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.3.8-alt1.M90P.1
+- urbackup-common package introduced
+
 * Sun Jul 14 2019 Alexey Shabalin <shaba@altlinux.org> 2.3.8-alt1
 - Initial build

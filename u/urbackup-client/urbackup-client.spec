@@ -1,7 +1,7 @@
 
 Name: urbackup-client
 Version: 2.3.4
-Release: alt1
+Release: alt1.M90P.2
 Summary: Efficient Client-Server backup system for Linux and Windows
 Group: Archiving/Backup
 License: AGPL-3.0+
@@ -14,6 +14,8 @@ BuildRequires: gcc-c++
 BuildRequires: zlib-devel
 BuildRequires: libcryptopp-devel
 BuildRequires: libsqlite3-devel
+
+Requires: urbackup-common
 
 %description
 Efficient Client-Server Backup system for Linux and Windows
@@ -68,10 +70,18 @@ touch %buildroot%_logdir/urbackupclient.log
 %_sbindir/urbackupclientbackend
 %_unitdir/%name.service
 %_man1dir/*
-%_datadir/urbackup
-%_localstatedir/urbackup
+%dir %attr(0755,urbackup,urbackup) %_datadir/urbackup
+%attr(-,urbackup,urbackup) %_datadir/urbackup/*
+%dir %attr(0755,urbackup,urbackup) %_localstatedir/urbackup
+%attr(-,urbackup,urbackup) %_localstatedir/urbackup/*
 %ghost %_logdir/urbackupclient.log
 
 %changelog
+* Mon May 25 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.3.4-alt1.M90P.2
+- dep on urbackup-common added
+
+* Fri May 15 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.3.4-alt1.M90P.1
+- file conflict with urbackup-server fixed
+
 * Sun Jul 14 2019 Alexey Shabalin <shaba@altlinux.org> 2.3.4-alt1
 - Initial build
