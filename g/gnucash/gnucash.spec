@@ -5,8 +5,8 @@
 %def_with aqbanking
 
 Name: 	 gnucash
-Version: 3.10
-Release: alt1
+Version: 3.902
+Release: alt3
 
 Summary: GnuCash is an application to keep track of your finances
 Summary(ru_RU.UTF8): Программа учёта финансов GnuCash
@@ -27,13 +27,12 @@ Source7: conv_gnucash2.sh
 Source8: gnucash.appdata.xml.in
 Source9: gnucash.desktop.in
 
-Patch1: %name-alt-check-supported-gwenhywfar-version.patch
 Patch2: %name-alt-fix-rpath.patch
-Patch3: %name-glib-warnings.patch
 
 AutoReq: yes, noperl
 
 BuildRequires(pre): cmake
+BuildRequires(pre): rpm-build-ninja
 BuildRequires: gcc-c++
 BuildRequires: libgtk+3-devel
 BuildRequires: doxygen graphviz guile-devel intltool libglade-devel
@@ -135,10 +134,8 @@ Virtual package that install needed perl modules for quote's online
 fetch and update.
 
 %prep
-%setup -q
-%patch1 -p1
+%setup
 %patch2 -p1
-%patch3 -p1
 tar xf %SOURCE1
 cp %SOURCE2 doc
 cp %SOURCE3 libgnucash/core-utils
@@ -147,20 +144,22 @@ cp %SOURCE8 gnucash/gnome
 cp %SOURCE9 gnucash/gnome
 
 %build
-%cmake \
+%cmake -GNinja \
 %if_without aqbanking
        -DWITH_AQBANKING=OFF \
 %endif
+       -DCMAKE_C_FLAGS="-DGLIB_DISABLE_DEPRECATION_WARNINGS" \
+       -DCMAKE_CXX_FLAGS="-DGLIB_DISABLE_DEPRECATION_WARNINGS" \
        -DCMAKE_SKIP_RPATH=OFF \
        -DCMAKE_SKIP_INSTALL_RPATH=OFF \
        -DCMAKE_INSTALL_RPATH:DIR=%_libdir/%name \
        -DGENERATE_SWIG_WRAPPERS=ON \
-       -DGMOCK_ROOT=`pwd`/gtest/googlemock \
-       -DGTEST_ROOT=`pwd`/gtest/googletest
-%cmake_build
+       -DGMOCK_ROOT=%_builddir/%name-%version/gtest \
+       -DGTEST_ROOT=%_builddir/%name-%version/gtest
+%ninja_build -C BUILD
 
 %install
-%cmakeinstall_std
+%ninja_install -C BUILD
 
 mv %buildroot%_libdir/lib* %buildroot%_libdir/gnucash/
 
@@ -177,6 +176,9 @@ rm -f %buildroot%_datadir/gnucash/gnome \
       %buildroot%_bindir/gnc-test-env \
       %buildroot%_bindir/gnc-fq-update \
       %buildroot%_datadir/glib-2.0/schemas/gschemas.compiled
+
+rm -rf %buildroot%_datadir/guile/site/*/tests \
+       %buildroot%_libdir/guile/*/site-ccache/tests
 
 %files
 
@@ -196,7 +198,8 @@ rm -f %buildroot%_datadir/gnucash/gnome \
 %doc %_defaultdocdir/%name/
 %_bindir/*
 %config %_sysconfdir/%name
-%_libdir/%name/scm
+%_datadir/guile/site/*/%name
+%_libdir/guile/*/site-ccache/%name
 %_desktopdir/%name.desktop
 %_datadir/%name/
 %doc %_man1dir/*
@@ -211,6 +214,16 @@ rm -f %buildroot%_datadir/gnucash/gnome \
 %files quotes
 
 %changelog
+* Sun May 24 2020 Andrey Cherepanov <cas@altlinux.org> 3.902-alt3
+- Use rpm-build-ninja for build.
+
+* Sat May 23 2020 Andrey Cherepanov <cas@altlinux.org> 3.902-alt2
+- Use rpm-macros-ninja-build instead of monolite ninja-build.
+
+* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 3.902-alt1
+- New version.
+- Build using ninja.
+
 * Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 3.10-alt1
 - New version.
 - Fix License tag according to SPDX.
