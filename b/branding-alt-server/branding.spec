@@ -17,8 +17,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.0
-Release: alt2
+Version: 9.1
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -317,6 +317,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Tue May 26 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.1-alt1
+- version bump
+
 * Thu Nov 14 2019 Alexey Shabalin <shaba@altlinux.org> 9.0-alt2
 - sync spec with branding-alt-workstation
 - Package system-logo.png for Plymouth
