@@ -4,7 +4,7 @@
 
 Name: python-module-%oname
 Version: 2.0
-Release: alt2.1.2
+Release: alt2.1.3
 
 Summary: Google Commandline Flags Module
 License: BSD
@@ -27,7 +27,7 @@ BuildRequires(pre): rpm-build-python3
 
 # Automatically added by buildreq on Thu Jan 28 2016 (-bi)
 # optimized out: python-base python-devel python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-logging python-modules-unittest python-tools-2to3 python3 python3-base
-BuildRequires: python-module-setuptools python3-module-setuptools rpm-build-python3 time
+BuildRequires: python-module-setuptools python-tools-2to3 python3-module-setuptools rpm-build-python3 time
 
 %description
 Google Commandline Flags Module.
@@ -47,7 +47,7 @@ cp -fR . ../python3
 %endif
 
 %build
-%python_build_debug
+#%python_build_debug
 
 %if_with python3
 pushd ../python3
@@ -56,6 +56,13 @@ sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|' \
 	$(find ./ -name '*.py')
 %python3_build_debug
 popd
+%endif
+
+%!if_with python3
+# Set correct python2 executable in shebang and scripts
+subst 's|#!.*python$|#!%__python|' $(grep -Rl '#!.*python$' *) \
+	$(find ./ -name '*.py')
+%python_build_debug
 %endif
 
 %install
@@ -88,6 +95,9 @@ popd
 %endif
 
 %changelog
+* Mon Apr 27 2020 Pavel Vasenkov <pav@altlinux.org> 2.0-alt2.1.3
+- Set correct python2 executable in shebang and scripts
+
 * Wed May 16 2018 Andrey Bychkov <mrdrew@altlinux.org> 2.0-alt2.1.2
 - (NMU) rebuild with python3.6
 
