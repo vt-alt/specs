@@ -1,3 +1,5 @@
+%define _unpackaged_files_terminate_build 1
+
 %def_with	milter
 %def_without	llvm
 %def_with	systemd
@@ -13,7 +15,7 @@
 %define rctag %nil
 
 Name: clamav
-Version: 0.101.5
+Version: 0.102.3
 Release: alt1
 %define abiversion 9
 
@@ -51,8 +53,6 @@ Patch2: freshclam-config.patch
 
 Patch20: clamav-0.99-pkgconfig.patch
 Patch21: clamav-AC_SYS_LARGEFILE.patch
-Patch22: clamav-automake-1.16.patch
-Patch23: clamav-0.101.5-libcheck-0.13.0.patch
 
 # Package with clamd should require libclamav, not vice versa.
 # Corresponding libclamav version need to be updated before, or clamd restart may fail!
@@ -148,9 +148,7 @@ database automatically. It uses the freshclam(1) utility for this task.
 %patch2 -p1
 
 %patch20 -p1
-%patch22 -p2
 %patch21 -p0
-%patch23 -p2
 
 %build
 # fixed RPATH issue (0.97.3 tarball built with wrong libtool)
@@ -224,8 +222,7 @@ install -m644 %_sourcedir/clamav.logrotate %buildroot%_sysconfdir/logrotate.d/cl
 install -d %buildroot/var/run/clamav
 
 # install docs (Markdown and HTML)
-mkdir -p %buildroot%_defaultdocdir/clamav-manual/UserManual-{md,html}
-cp -R docs/UserManual/* %buildroot%_defaultdocdir/clamav-manual/UserManual-md
+mkdir -p %buildroot%_defaultdocdir/clamav-manual/UserManual-html
 cp -R docs/html/*       %buildroot%_defaultdocdir/clamav-manual/UserManual-html
 
 # remove non-packaged files
@@ -282,6 +279,7 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %doc virusstat*
 %doc COPYING COPYING.* README.md
 
+%_bindir/clamonacc
 %_bindir/clamdscan
 %_bindir/clamscan
 %_bindir/clamsubmit
@@ -312,7 +310,10 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %endif
 
 %files -n lib%{name}%{abiversion}
-%_libdir/lib*.so.*
+%_libdir/lib*.so.%abiversion
+%_libdir/lib*.so.%abiversion.*
+%_libdir/libclammspack.so.*
+%_libdir/libfreshclam.so.*
 
 %files freshclam
 %{?_with_ownconfdir: %dir %clamconfdir}
@@ -353,10 +354,22 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %endif
 
 %changelog
+* Wed May 27 2020 Sergey Y. Afonin <asy@altlinux.org> 0.102.3-alt1
+- 0.102.2
+  + CVE-2020-3327 - 0.102.2 only
+  + CVE-2020-3341 - from 0.101 to 0.102.2
+
+* Tue Feb 11 2020 Sergey Y. Afonin <asy@altlinux.org> 0.102.2-alt1
+- 0.102.2
+- updated config's patches
+- removed unnecessary patches
+  + clamav-0.101.5-libcheck-0.13.0.patch
+  + clamav-automake-1.16.patch
+
 * Tue Nov 26 2019 Sergey Y. Afonin <asy@altlinux.org> 0.101.5-alt1
 - 0.101.5 (CVE-2019-15961)
 - fixed tests for libcheck 0.13.0 (clamav-0.101.5-libcheck-0.13.0.patch)
-- updated %%License to SPDX syntax (needs revision of exceptions)
+- updated License tag to SPDX syntax (needs revision of exceptions)
 - removed rpm-build-licenses from BuildRequires
 
 * Mon Sep 02 2019 Sergey Y. Afonin <asy@altlinux.org> 0.101.4-alt1
