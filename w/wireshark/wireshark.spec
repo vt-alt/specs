@@ -6,8 +6,10 @@
 # as they are loaded into wireshark/tshark processes which guarantee that linkage
 %set_verify_elf_method unresolved=relaxed
 
+%define _pluginsdir %_libdir/%name/plugins/3.2
+
 Name: wireshark
-Version: 3.0.9
+Version: 3.2.4
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -45,6 +47,12 @@ BuildRequires: libmaxminddb-devel
 BuildRequires: asciidoctor
 BuildRequires: libbcg729-devel >= 1.0.4-alt1
 BuildRequires: libsbc-devel
+BuildRequires: libnettle-devel
+BuildRequires: libminizip-devel
+BuildRequires: libzstd-devel
+BuildRequires: libspeexdsp-devel
+BuildRequires: libbrotli-devel
+BuildRequires: git
 BuildRequires(pre):rpm-build-xdg
 
 %package base
@@ -113,7 +121,7 @@ extensions.
 %ifarch %e2k
 cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
 %endif
-%cmake -D BUILD_sharkd=off
+%cmake -DBUILD_sharkd=off
 %cmake_build
 
 %install
@@ -182,19 +190,19 @@ _EOF_
 %_datadir/%name
 %dir %_libdir/%name
 %dir %_libdir/%name/plugins
-%dir %_libdir/%name/plugins/3.0
+%dir %_pluginsdir
 %dir %_libdir/%name/extcap
 %_libdir/%name/extcap/*
-%_libdir/%name/plugins/3.0/*
+%_pluginsdir/*
 %_libdir/lib%name.so.*
 %_libdir/libwsutil.so.*
-%_libdir/libwscodecs.so.*
 %_libdir/libwiretap.so.*
 %_man1dir/wireshark.*
 %_miconsdir/wireshark.png
 %_niconsdir/wireshark.png
 %_liconsdir/wireshark.png
 %_iconsdir/hicolor/scalable/apps/*.svg
+%_iconsdir/hicolor/*/apps/wireshark.png
 %_xdgmimedir/packages/%name.xml
 %_datadir/appdata/wireshark.appdata.xml
 
@@ -213,12 +221,23 @@ _EOF_
 %_libdir/libwiretap.so
 %_includedir/wireshark
 %_libdir/libwireshark.so
-%_libdir/libwscodecs.so
 %_libdir/libwsutil.so
 %_pkgconfigdir/wireshark.pc
 
-
 %changelog
+* Mon May 25 2020 Anton Farygin <rider@altlinux.ru> 3.2.4-alt1
+- 3.2.4
+- fixes:
+   * the NFS dissector could crash. CVE-2020-13164
+
+* Tue Apr 14 2020 Anton Farygin <rider@altlinux.ru> 3.2.3-alt1
+- 3.2.3
+- fixes:
+   * the BACapp dissector could crash. CVE-2020-11647
+
+* Wed Apr 01 2020 Anton Farygin <rider@altlinux.ru> 3.2.2-alt1
+- 3.2.2
+
 * Thu Mar 12 2020 Anton Farygin <rider@altlinux.ru> 3.0.9-alt1
 - 3.0.9
 - fixes:
