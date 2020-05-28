@@ -1,8 +1,8 @@
 
 %define rname kaffeine
 Name: kde5-%rname
-Version: 2.0.15
-Release: alt5
+Version: 2.0.18
+Release: alt1
 %K5init
 
 Group: Video
@@ -34,11 +34,10 @@ Requires: vlc-plugin-taglib
 
 Source0: %name-%version.tar
 Patch1: alt-find-libdvbv5.patch
-Patch2: alt-qt5.11.patch
 Patch3: fix-playing-audiocd.patch
 Patch4: remove-playing-videoCD.patch
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules qt5-x11extras-devel
 BuildRequires: libXres-devel
 BuildRequires: libv4l-devel libvlc-devel
@@ -53,8 +52,7 @@ It also handles Video CDs, DVDs, and DVB cards.
 %prep
 %setup -q
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
 
 mv .gear/po ./
@@ -81,34 +79,37 @@ mv .gear/po ./
 %_K5xdgapp/org.kde.kaffeine.desktop
 
 %changelog
+* Wed May 27 2020 Sergey V Turchin <zerg@altlinux.org> 2.0.18-alt1
+- new version
+
 * Fri Nov 09 2018 Andrey Bychkov <mrdrew@altlinux.org> 2.0.15-alt5
 - remove playing videocd
 
 * Tue Oct 09 2018 Andrey Bychkov <mrdrew@altlinux.org> 2.0.15-alt4
 - fix playing audiocd
 
-* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt3%ubt
+* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt3
 - fix to build
 
-* Mon Aug 06 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt2%ubt
+* Mon Aug 06 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt2
 - update russian translation
 
-* Wed Jul 11 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt1%ubt
+* Wed Jul 11 2018 Sergey V Turchin <zerg@altlinux.org> 2.0.15-alt1
 - new version
 
-* Wed Dec 13 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.14-alt1%ubt
+* Wed Dec 13 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.14-alt1
 - new version
 
-* Thu Sep 28 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.13-alt1%ubt
+* Thu Sep 28 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.13-alt1
 - new version
 
-* Fri Aug 04 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.12-alt1%ubt
+* Fri Aug 04 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.12-alt1
 - new version
 
-* Tue Jul 11 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.10-alt1%ubt
+* Tue Jul 11 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.10-alt1
 - new version
 
-* Mon Mar 13 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.9-alt1%ubt
+* Mon Mar 13 2017 Sergey V Turchin <zerg@altlinux.org> 2.0.9-alt1
 - new version
 
 * Tue Oct 25 2016 Sergey V Turchin <zerg@altlinux.org> 2.0.5-alt0.M80P.1
