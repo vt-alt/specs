@@ -37,6 +37,7 @@
 # need libcelt >= 0.11.0
 %def_disable libcelt
 %def_enable libcodec2
+%def_enable libdav1d
 %def_enable libdc1394
 %def_enable libdrm
 %def_enable libflite
@@ -101,7 +102,7 @@
 
 Name:		ffmpeg
 Epoch:		2
-Version:	4.2.1
+Version:	4.2.3
 Release:	alt1
 
 Summary:	A command line toolbox to manipulate, convert and stream multimedia content
@@ -132,6 +133,7 @@ BuildRequires:	yasm
 %{?_enable_libcdio:BuildRequires: libcdio-devel libcdio-paranoia-devel}
 %{?_enable_libcelt:BuildRequires: libcelt-devel}
 %{?_enable_libcodec2:BuildRequires: libcodec2-devel}
+%{?_enable_libdav1d:BuildRequires: libdav1d-devel}
 %{?_enable_libdc1394:BuildRequires: libdc1394-devel libraw1394-devel}
 %{?_enable_libdrm:BuildRequires: libdrm-devel}
 %{?_enable_libfreetype:BuildRequires: libfreetype-devel}
@@ -558,6 +560,7 @@ xz Changelog
 	%{subst_enable libcdio} \
 	%{subst_enable libcelt} \
 	%{subst_enable libcodec2} \
+	%{subst_enable libdav1d} \
 	%{subst_enable libdc1394} \
 	%{subst_enable libdrm} \
 	%{subst_enable libflite} \
@@ -776,6 +779,15 @@ xz Changelog
 %endif
 
 %changelog
+* Mon May 25 2020 Anton Farygin <rider@altlinux.ru> 2:4.2.3-alt1
+- 4.2.3 (Fixes: CVE-2019-13312,CVE-2020-12284)
+
+* Thu Apr 30 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2:4.2.2-alt2
+- Built against libdav1d.
+
+* Thu Jan 09 2020 Anton Farygin <rider@altlinux.ru> 2:4.2.2-alt1
+- 4.2.2
+
 * Wed Sep 11 2019 Anton Farygin <rider@altlinux.ru> 2:4.2.1-alt1
 - 4.2.1 (Fixes: CVE-2019-15942)
 
