@@ -1,5 +1,5 @@
 Name: 	  nagwad
-Version:  0.9.5
+Version:  0.9.6
 Release:  alt1
 
 Summary:  Nagios watch daemon
@@ -11,6 +11,8 @@ Url: 	  http://git.altlinux.org/people/nbr/packages/nagwad.git
 Source:   %name-%version.tar
 
 BuildArch: noarch
+BuildRequires: discount
+
 Requires:  systemd audit
 Requires:  osec-cronjob
 Requires:  nagios-nrpe >= 3.2.1-alt4
@@ -42,6 +44,10 @@ Requires: xvt openssh-clients
 %description actions
 These are Nagstamon action commands suitable for a nagwad-node.
 
+%build
+
+markdown -f links,smarty,toc,autolink -o signal.html signal.md
+
 %install
 install -Dm 0755 scripts/nsca-shell %buildroot%_bindir/nsca-shell
 install -Dm 0755 scripts/nagwad %buildroot%_sbindir/nagwad
@@ -66,7 +72,7 @@ install -Dm 0644 unit/nagwad.service %buildroot/%_unitdir/nagwad.service
 mkdir -p %buildroot/var/log/nagwad
 
 %files
-%doc README.md
+%doc README.md signal.html signal.md
 %_bindir/nsca-shell
 %_sbindir/nagwad
 %_libexecdir/nagwad
@@ -79,13 +85,19 @@ mkdir -p %buildroot/var/log/nagwad
 /var/log/nagwad
 
 %files templates
-%doc signal.odt
+%doc README.md signal.html signal.md
 %config(noreplace) %_sysconfdir/nagios/templates/*nagwad*.cfg
 
 %files actions
 %config(noreplace) %_sysconfdir/nagstamon/actions/*.conf
 
 %changelog
+* Fri May 22 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.6-alt1
+- Use root@$ADDRESS$ for the Lock_host action.
+- Produce and install signal.html.
+- Updated the README.
+- Added signal.md (and html) --- the manual in Russian.
+
 * Thu May 07 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.5-alt1
 - Fixed quotation in NSCA shell action.
 - Fixed OSEC regular expression for Nagwad.
