@@ -1,5 +1,3 @@
-# See https://wiki.qt.io/Qt_for_Python for progress
-%def_with qt4
 %def_with bundled_libs
 %def_with glvnd
 %define oname freecad
@@ -15,10 +13,10 @@
 
 Name:    freecad
 Version: 0.18.4
-Release: alt0.1.p9
+Release: alt1.1.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
-License: GPL / LGPL
+License: LGPL-2.0+
 Group:   Graphics
 Url:     http://free-cad.sourceforge.net/
 # VCS:   https://github.com/FreeCAD/FreeCAD
@@ -41,45 +39,43 @@ Obsoletes: free-cad < %version-%release
 
 BuildRequires(pre): cmake
 BuildRequires(pre): rpm-build-xdg
-%if_with qt4
-BuildRequires(pre): libqt4-devel
-BuildRequires: libqt4-sql-sqlite
-BuildRequires: qt4-designer
-BuildRequires: qt4-assistant
-BuildRequires: libqt4-help
-BuildRequires: libqt4-assistant-devel
-BuildRequires: libpyside-qt4-devel
-%define qmake %qmake_qt4
-%define qtbindir %_qt4dir/bin
-%else
-BuildRequires(pre): qt5-base-devel
-BuildRequires: qt5-sql-sqlite3
-BuildRequires: qt5-designer
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: qt5-base-devel
 BuildRequires: qt5-assistant
-# TODO BuildRequires: libpyside-qt5-devel
-# TODO phonon-devel
-# TODO libvtk6.2-devel
+BuildRequires: qt5-designer
+BuildRequires: qt5-sql-sqlite3
+BuildRequires: qt5-svg-devel
+BuildRequires: qt5-tools-devel
+BuildRequires: qt5-tools-devel-static
+BuildRequires: qt5-webkit-devel
+BuildRequires: qt5-x11extras-devel
+BuildRequires: qt5-phonon-devel
+BuildRequires: python-module-PySide2
+BuildRequires: pyside2-tools-python2
+BuildRequires: python-module-shiboken2-devel
 %define qmake %qmake_qt5
 %define qtbindir %_qt5_bindir
-%endif
-BuildRequires: pyside-tools
 BuildRequires: python-devel swig gcc-fortran libf2c-ng-devel chrpath
 BuildRequires: boost-devel
-BuildRequires: boost-polygon-devel
+BuildRequires: boost-filesystem-devel
 BuildRequires: boost-geometry-devel
+BuildRequires: boost-polygon-devel
+BuildRequires: boost-program_options-devel
+BuildRequires: boost-python-devel
+BuildRequires: boost-signals-devel
 BuildRequires: libcoin3d-devel
 #BuildRequires: libSoQt-devel
 BuildRequires: zlib-devel
-BuildRequires: libopencv2-devel libxerces-c-devel gcc-c++ boost-filesystem-devel
-BuildRequires: java-devel-default boost-program_options-devel
-BuildRequires: boost-signals-devel libXxf86misc-devel
+BuildRequires: libopencv2-devel libxerces-c-devel gcc-c++
+BuildRequires: java-devel-default
+BuildRequires: libXxf86misc-devel
 BuildRequires: OCE-devel libgts-devel
-BuildRequires: libode-devel phonon-devel libann-devel
+BuildRequires: libode-devel libann-devel
 BuildRequires: doxygen graphviz
 BuildRequires: eigen3
-BuildRequires: python-module-pivy libnumpy-devel
-BuildRequires: boost-interprocess-devel libshiboken-devel shiboken
-BuildRequires: boost-python-devel
+#BuildRequires: python-module-pivy
+BuildRequires: libnumpy-devel
+BuildRequires: boost-interprocess-devel
 BuildRequires: gdb
 BuildRequires: libvtk%{vtkver}-devel vtk%{vtkver}-examples vtk%{vtkver}-python
 BuildRequires: libhdf5-devel libhdf5-mpi-devel
@@ -96,7 +92,7 @@ Requires: libEGL-devel libGLU-devel
 %endif
 #BuildRequires: texlive-extra-utils
 
-%py_requires pivy PySide
+%py_requires pivy
 %py_provides Fem FreeCAD FreeCADGui Mesh Part MeshPart Drawing ImportGui
 %py_provides PartGui Sketcher TestSketcherApp Robot RobotGui SketcherGui
 %py_provides ImageGui PartDesignGui _PartDesign
@@ -119,7 +115,7 @@ Group: Documentation
 #BuildArch: noarch
 Provides:  free-cad-docs = %version-%release
 Obsoletes: free-cad-docs < %version-%release
-Requires: qt4-assistant
+Requires: qt5-assistant
 
 %description docs
 FreeCAD will be a general purpose 3D CAD modeler. FreeCAD is aimed directly at
@@ -146,14 +142,16 @@ rm -rf src/3rdParty
 %patch4 -p1
 
 %build
-export PATH=$PATH:%qtbindir
+export PATH=$PATH:%_qt5_bindir
 %add_optflags -Wl,-rpath,%ldir/lib
-%cmake_insource \
+%cmake_insource -GNinja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_DATADIR=%ldir \
 	-DCMAKE_INSTALL_DOCDIR=%ldir/doc \
 	-DCMAKE_INSTALL_LIBDIR=%ldir/lib \
 	-DOPENMPI_INCLUDE_DIRS=%_libdir/openmpi/include \
+	-DFREECAD_LIBPACK_USEPYSIDE=OFF \
+	-DBUILD_QT5=ON \
 %if_without bundled_libs
 	-DFREECAD_USE_EXTERNAL_SMESH=ON \
 	-DSMESH_DIR=%_libdir \
@@ -170,10 +168,10 @@ sed -i 's,FCRevision      \"Unknown\",FCRevision      \"%{release} (Git)\",' src
 sed -i 's,FCRepositoryURL \"Unknown\",FCRepositoryURL \"git://github.com/FreeCAD/FreeCAD.git master\",' src/Build/Version.h
 
 export NPROCS=%build_parallel_jobs
-%make_build VERBOSE=1
+%ninja_build
 
 %install
-%makeinstall_std
+%ninja_install
 
 # binaries
 mkdir -p %buildroot%ldir/bin
@@ -229,6 +227,15 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Wed May 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt1.1.p9
+- Backport to p9 branch.
+
+* Mon May 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt2
+- Fix Unknown release and repository URL.
+- Build with Qt5.
+- Fix License tag according to upstream information and SPDX.
+- Build using ninja-build.
+
 * Tue Apr 14 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt0.1.p9
 - Backport new version to p9 branch.
 
