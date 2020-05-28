@@ -1,5 +1,5 @@
-%define major 0.92
-%define pre %nil
+%define major 1
+%define pre beta1
 
 %def_without gnome_vfs
 %def_without dbus
@@ -7,8 +7,8 @@
 %def_disable test
 
 Name: inkscape
-Version: %major.4
-Release: alt4
+Version: %major.0
+Release: alt1
 
 Summary: A Vector Drawing Application
 
@@ -19,13 +19,18 @@ Url: http://inkscape.org
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 #Source: http://prdownloads.sf.net/%name/%name-%version%pre.tar
-#Source-url: https://inkscape.org/en/gallery/item/3860/download/
-# Source-url: https://launchpad.net/inkscape/%major.x/%version/+download/inkscape-%version.tar.bz2
+#Source-url: https://launchpad.net/inkscape/%major.x/%version/+download/inkscape-%version.tar.bz2
+#Source-url: https://inkscape.org/gallery/item/14917/inkscape-%version%pre.tar.bz2
+#Source-url: https://gitlab.com/inkscape/inkscape/-/archive/master/inkscape-master.tar.bz2
+#Source-url: https://inkscape.org/gallery/item/18460/inkscape-%version.tar.xz
+# Source-url: https://media.inkscape.org/dl/resources/file/inkscape-%version.tar.xz
 Source: %name-%version.tar
 
 Patch: %name-dia.patch
-Patch1: inkscape-poppler-support.patch
 Patch2: inkscape-0.92.3-alt-dependencies.patch
+Patch3: inkscape-poppler-0.82.0.patch
+Patch4: inkscape-poppler-0.83.0.patch
+Patch5: inkscape-python2-compat.patch
 
 # Typical environment for GTK program
 Requires(post,postun): desktop-file-utils
@@ -33,25 +38,30 @@ BuildPreReq: desktop-file-utils
 
 %add_findreq_skiplist %_datadir/%name/extensions/*
 
-# manually removed: bzr
-# Automatically added by buildreq on Sat Aug 04 2012
-# optimized out: fontconfig fontconfig-devel glib2-devel gnome-vfs libGConf-devel libX11-devel libatk-devel libatkmm-devel libavahi-glib libcairo-devel libcairomm-devel libdbus-glib libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libglibmm-devel libgpg-error libgtk+2-devel libp11-kit libpango-devel libpangomm-devel libpng-devel libpoppler-devel libpoppler8-glib libsigc++2-devel libstdc++-devel  libxml2-devel perl-Encode perl-XML-Parser pkg-config python-base python-devel python-module-distribute python-module-peak python-module-zope python-modules xorg-xproto-devel zlib-devel
-BuildRequires: boost-devel-headers gcc-c++  intltool libImageMagick-devel libaspell-devel libgc-devel libgsl-devel libgtkmm2-devel libgtkspell-devel liblcms2-devel libpoppler-glib-devel libpopt-devel libxslt-devel perl-devel zlib-devel
+BuildRequires: boost-devel-headers cmake gcc-c++ intltool
+BuildRequires: libgc-devel libgsl-devel libpopt-devel libxslt-devel perl-devel zlib-devel libsoup-devel libaspell-devel libdbus-devel
+#BuildRequires: python2.7(xml.dom)
+
+# Checking for modules 'gtkmm-3.0>=3.22;gdkmm-3.0>=3.22;gtk+-3.0>=3.22;gdk-3.0>=3.22;gdl-3.0>=3.4'
+BuildRequires: libgtkmm3-devel >= 3.22 libgdl3-devel >= 3.4
+
 %{?_with_gnome_vfs:BuildRequires: gnome-vfs-devel}
 %{?_with_dbus: BuildRequires: libdbus-devel}
 BuildRequires: libwpg-devel librevenge-devel libcdr-devel libvisio-devel
-BuildRequires: libpng-devel libexif-devel libjpeg-devel
-BuildRequires: libpoppler-devel libpotrace-devel
+BuildRequires: libpng-devel libexif-devel libjpeg-devel libImageMagick-devel
+BuildRequires: libpoppler-devel libpoppler-glib-devel
+BuildRequires: libpotrace-devel liblcms2-devel
 %ifnarch %e2k
 # lcc has -lomp, not -lgomp
 BuildRequires: libgomp-devel
 %endif
+BuildRequires: libdouble-conversion-devel
 BuildRequires: perl-podlators
 Requires: icc-profiles
 
 # For extensions
 # https://bugzilla.altlinux.org/21626
-Requires: wmf-utils python-module-lxml
+Requires: wmf-utils python3-module-lxml
 # Recommends: skencil pstoedit
 
 # mike: work around https://bugzilla.altlinux.org/24586
@@ -76,36 +86,24 @@ Group: Graphics
 inkview is standalone viewer for Inkscape files (SVG)
 
 %prep
-%setup -n %name-%version%pre
-%patch
-%patch1 -p1
-%patch2 -p1
+%setup
+#patch3 -p1
+#patch4 -p1
+#patch5 -p1
 
 %build
-%ifarch %e2k
-# src/2geom/ord.h:54 gets misinterpreted as of lcc 1.23.12
-sed -i "s|-Werror=return-type|-Wno-error=return-type|" configure.ac build*.xml
-export ac_cv_prog_cxx_openmp=unsupported
-%endif
-%autoreconf
-sed -i "s|.*\(checkPYTHON_LIBS\)=.*|\1=-lpython%_python_version|" configure
-%configure \
-%ifarch %e2k
-        --disable-openmp        \
-%endif
-        --enable-lcms           \
-        --enable-cdr            \
-        --enable-visio          \
-        --enable-poppler-cairo  \
-        --enable-dbusapi
-%make_build
+%cmake_insource -DBUILD_SHARED_LIBS=off
+# FIXME: ppc64le (make -j132):
+# No rule to make target 'po/bn.gmo', needed by 'share/templates/default_templates.timestamp
+%make_build || %make_build -j2
 
 %install
 %makeinstall_std
 
+rm -rf %buildroot%_docdir/inkscape/
 # remove unneeded man
-#rm -rf %buildroot%_mandir/fr/
-#rm -rf %buildroot%_mandir/de/
+rm -rf %buildroot%_mandir/fr/
+rm -rf %buildroot%_mandir/de/
 rm -rf %buildroot%_mandir/el/
 rm -rf %buildroot%_mandir/ja/
 rm -rf %buildroot%_mandir/sk/
@@ -119,20 +117,36 @@ $(INKSCAPE) -z -f $< --export-png=$@
 true
 
 %files -f %name.lang
-%doc AUTHORS COPYING ChangeLog NEWS README doc
+%doc AUTHORS CONTRIBUTING.md NEWS.md COPYING README.md doc
 %_bindir/inkscape
+#_libdir/libinkscape_base.so
 %_datadir/%name/
-%_datadir/appdata/inkscape*
-%_desktopdir/inkscape.desktop
-%_iconsdir/hicolor/*/apps/%name.png
+#_datadir/appdata/inkscape*
+%_desktopdir/*.desktop
+%_iconsdir/hicolor/*/apps/*.png
 %_man1dir/inkscape*
-%_mandir/??/man1/inkscape.??.1.*
+#_mandir/??/man1/inkscape.??.1.*
+%_datadir/metainfo/org.inkscape.Inkscape.appdata.xml
 
 %files viewer
 %_bindir/inkview
 %_man1dir/inkview*
 
 %changelog
+* Wed May 06 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt1
+- new version (1.0) with rpmgs script
+
+* Tue Apr 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0-alt0.beta2.1
+- FIxed build with python2.
+
+* Wed Jan 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt0.beta2
+- drop python using (ALT bug 37290)
+- add patch against poppler >= 0.83.0 build
+
+* Thu Oct 24 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt0.beta1
+- new version (1.0) with rpmgs script
+- update buildreqs, switch to cmake
+
 * Mon Jul 01 2019 Vitaly Lipatov <lav@altlinux.ru> 0.92.4-alt4
 - fix build with poppler 0.76 and above
 

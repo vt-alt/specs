@@ -1,6 +1,6 @@
 Name: wpa_supplicant
 Version: 2.9
-Release: alt1
+Release: alt2
 
 Summary: wpa_supplicant is an implementation of the WPA Supplicant component
 License: BSD
@@ -9,12 +9,14 @@ Url: http://hostap.epitest.fi/
 
 Source0: %name-%version-%release.tar
 Source1: src-%version-%release.tar
+Source2: icons.tar
 
 Requires: dbus
 
+BuildRequires: gcc-c++
 BuildRequires: libdbus-devel libnl-devel >= 3.2.21
+BuildRequires: libxml2-devel qt5-base-devel qt5-tools
 BuildRequires: docbook-utils libncurses-devel libpcsclite-devel libreadline-devel libssl-devel
-BuildRequires: gcc-c++ inkscape libxml2-devel qt5-base-devel qt5-tools
 
 %description
 wpa_supplicant is an implementation of the WPA Supplicant component,
@@ -45,6 +47,9 @@ This package provides GUI to wpa_supplicant
 %prep
 %setup -c -a1
 cp %name/defconfig %name/.config
+# use prebuilt icons from now
+tar xf %SOURCE2 -C wpa_supplicant/wpa_gui-qt4
+sed -ri 's,^all:.+$,all:,' wpa_supplicant/wpa_gui-qt4/icons/Makefile
 
 %build
 make -C %name
@@ -106,6 +111,9 @@ tar c -C %name/wpa_gui-qt4/icons hicolor |tar x -C %buildroot%_iconsdir
 %_iconsdir/hicolor/*/*/*.png
 
 %changelog
+* Wed Dec 04 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.9-alt2
+- added prebuilt icon set and drop inkscape BR
+
 * Mon Aug 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.9-alt1
 - 2.9 released
 
