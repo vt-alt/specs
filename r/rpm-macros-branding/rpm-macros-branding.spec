@@ -1,5 +1,5 @@
 Name: rpm-macros-branding
-Version: 1.0.4
+Version: 1.0.5
 Release: alt1
 Summary: RPM helper macros to build branding packages
 License: %gpl2plus
@@ -21,6 +21,8 @@ alt-desktop \
 alt-education \
 alt-server \
 alt-server-v \
+alt-spserver \
+alt-spworkstation \
 alt-starterkit \
 alt-workstation \
 alt-tonk \
@@ -67,6 +69,9 @@ install -m 0644 branding.rpm.macros %buildroot%_rpmmacrosdir/branding
 %_rpmmacrosdir/*
 
 %changelog
+* Wed May 13 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.0.5-alt1
+- Added alt-spserver and alt-spworkstation
+
 * Mon Dec 02 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.4-alt1
 - Added server-v.
 
