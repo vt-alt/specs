@@ -1,51 +1,54 @@
 Name: timeline
-Version: 1.5.0
+Version: 2.2.0
 Release: alt1
 Group: Office
 Summary: Displaying and navigating events on a timeline
-License: GPLv3
+License: GPL-3.0 and CC-BY-SA-3.0
+Url: http://thetimelineproj.sourceforge.net/
+
 Source: %name-%version.zip
 Source1: %name.1
-Patch: timelinelib-0.17.0-fix-paths.patch
+Patch: timeline-fix-paths.patch
+
 BuildArch: noarch
-Url: http://thetimelineproj.sourceforge.net/
-%setup_python_module timelinelib
 
-Requires: python-module-wx python-module-timelinelib = %version
-
-# Automatically added by buildreq on Mon Jul 04 2011
-# optimized out: python-base python-modules python-modules-compiler python-modules-email python-modules-logging python-modules-xml
-BuildRequires: ctags python-module-markdown scons unzip
+BuildRequires(pre): rpm-build-python3
+BuildRequires: gettext
+BuildRequires: python3-devel
+BuildRequires: unzip
 
 %description
-Features
+Timeline is a cross-platform application for displaying and navigating
+events on a timeline.
 
-Organize events in hierarchical categories
-Move and resize events with the mouse
-Duplicate events
-Search events
-Go to a specific date
-Scroll and zoom with mouse wheel
-Different representation depending on zoom level
-Export to image
-Available in multiple languages
+Features:
+- Organize events in hierarchical categories
+- Move and resize events with the mouse
+- Duplicate events
+- Search events
+- Go to a specific date
+- Scroll and zoom with mouse wheel
+- Different representation depending on zoom level
+- Export to image
+- Available in multiple languages
 
-%package -n %packagename
-Group: Office
+%package -n python3-module-timelinelib
+Group: Development/Python3
 Summary: Python module for %name, %summary
-%description -n %packagename
+
+%description -n python3-module-timelinelib
 Python module for %name, %summary
 
 %prep
 %setup
-%patch -p1
-cp %SOURCE1 .
+%patch -p0
 
 cat > %name.desktop <<@@@
 [Desktop Entry]
 Icon=%name
 Name=Timeline
 Comment=Display and navigate information on a timeline
+Comment[ru]=Редактор данных на временной шкале
 Exec=%name
 Terminal=false
 Type=Application
@@ -53,57 +56,48 @@ Categories=Office;Calendar;
 StartupNotify=false
 @@@
 
-cat > %name.bin <<@@@
-#!/usr/bin/python
-
-import gettext
-import sys
-
-from timelinelib.about import APPLICATION_NAME
-from timelinelib.arguments import ApplicationArguments
-from timelinelib.gui.setup import start_wx_application
-from timelinelib.paths import LOCALE_DIR
-
-gettext.install(APPLICATION_NAME.lower(), LOCALE_DIR, unicode=True)
-
-application_arguments = ApplicationArguments()
-application_arguments.parse_from(sys.argv[1:])
-
-start_wx_application(application_arguments)
-@@@
-
 %build
-scons mo
+python3 ./tools/generate-mo-files.py
 
 %install
-mkdir -p %buildroot/%python_sitelibdir_noarch
-find %modulename -name \*.py | cpio -pd %buildroot/%python_sitelibdir_noarch/
-mkdir -p %buildroot%_datadir/%name/icons
-install icons/*.png %buildroot%_datadir/%name/icons/
-install -D -m755 %name.bin %buildroot%_bindir/%name
-install -D timeline.1 %buildroot/%_man1dir/%name.1
-install -D %name.desktop %buildroot/%_desktopdir/%name.desktop
-for D in 16 32 48; do
-  install -D icons/$D.png %buildroot%_iconsdir/hicolor/${D}x${D}/apps/%name.png
-done
-cd po
-for D in */*/*; do
-  install -D $D %buildroot%_datadir/locale/$D
-done
+install -Dpm0755 source/timeline.py %buildroot%_bindir/timeline
+
+mkdir -p %buildroot%_datadir/timeline
+cp -pr icons %buildroot%_datadir/timeline/
+ 
+mkdir -p %buildroot%python3_sitelibdir/timelinelib
+cp -pr source/timelinelib/* %buildroot%python3_sitelibdir/timelinelib/
+ 
+install -Dpm0644 icons/48.png %buildroot%_datadir/icons/hicolor/48x48/apps/timeline.png
+ 
+install -Dm0644 %name.desktop %buildroot%_desktopdir/%name.desktop
+ 
+mkdir -p %buildroot%_datadir/locale
+cp -a translations/*/ %buildroot%_datadir/locale/
+ 
+install -Dm0644 %SOURCE1 %buildroot%_man1dir/%name.1
+
+# Drop bundled python dependencies.
+rm -rf %buildroot%_datadir/timeline/dependencies
 
 %find_lang %name
 
-%files -f po/%name.lang
+%files -f %name.lang
+%doc AUTHORS README
 %_bindir/*
 %_datadir/%name
 %_iconsdir/hicolor/*/apps/*
 %_desktopdir/%name.desktop
 %_man1dir/*
 
-%files -n %packagename
-%python_sitelibdir_noarch/%modulename
+%files -n python3-module-timelinelib
+%python3_sitelibdir/timelinelib*
 
 %changelog
+* Fri May 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt1
+- New version (ALT #38517).
+- Fix License tag according to SPDX.
+
 * Wed Feb 11 2015 Fr. Br. George <george@altlinux.ru> 1.5.0-alt1
 - Autobuild version bump to 1.5.0
 
