@@ -1,7 +1,7 @@
 %define _libname libfreshwrapper-flashplayer
 
 Name: freshplayerplugin
-Version: 0.3.10
+Version: 0.3.11
 Release: alt1
 Summary: PPAPI-host NPAPI-plugin adapter
 License: MIT
@@ -13,7 +13,7 @@ Source: %name-%version.tar
 
 ExclusiveArch: %ix86 x86_64
 
-BuildRequires(pre): rpm-macros-cmake rpm-build-ubt
+BuildRequires(pre): rpm-macros-cmake
 
 # Automatically added by buildreq on Wed Oct 26 2016
 # optimized out: cmake-modules fontconfig fontconfig-devel glib2-devel libGL-devel libX11-devel libXrender-devel libavutil-devel libcairo-devel libfreetype-devel libgpg-error libjson-c libopencore-amrnb0 libopencore-amrwb0 libstdc++-devel libvdpau-devel libwayland-client libwayland-server pkg-config python-base python-modules python3 python3-base xorg-randrproto-devel xorg-renderproto-devel xorg-xproto-devel
@@ -55,13 +55,19 @@ make -C BUILD check
 %config(noreplace) %_sysconfdir/freshwrapper.conf
 
 %changelog
+* Mon Aug 05 2019 Sergey V Turchin <zerg@altlinux.org> 0.3.11-alt1
+- new version
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 0.3.10-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Mar 25 2019 Sergey V Turchin <zerg@altlinux.org> 0.3.10-alt1
 - new version
 
 * Fri Oct 26 2018 Sergey V Turchin <zerg@altlinux.org> 0.3.9-alt4
 - rebuild with new icu
 
-* Thu Sep 06 2018 Sergey V Turchin <zerg@altlinux.org> 0.3.9-alt3%ubt
+* Thu Sep 06 2018 Sergey V Turchin <zerg@altlinux.org> 0.3.9-alt3
 - rebuild with new libevent
 
 * Wed Aug 29 2018 Grigory Ustinov <grenka@altlinux.org> 0.3.9-alt2.1
