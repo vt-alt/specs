@@ -1,6 +1,6 @@
 Name: firmware-linux
 Version: 20200422
-Release: alt1
+Release: alt2
 
 Summary: Firmware files used by the Linux kernel
 License: GPL+ and GPLv2+ and MIT and Redistributable, no modification permitted
@@ -12,12 +12,12 @@ Patch: %name-%version-%release.patch
 
 BuildArch: noarch
 Provides: linux-firmware
-Provides: firmware-iwl1000 
-Provides: firmware-iwl3945 firmware-iwl4965 firmware-iwl5000 firmware-iwl5150 
-Provides: firmware-iwl6000 firmware-iwl6050 
-Obsoletes: firmware-iwl1000 
-Obsoletes: firmware-iwl3945 firmware-iwl4965 firmware-iwl5000 firmware-iwl5150 
-Obsoletes: firmware-iwl6000 firmware-iwl6050 
+Provides: firmware-iwl1000
+Provides: firmware-iwl3945 firmware-iwl4965 firmware-iwl5000 firmware-iwl5150
+Provides: firmware-iwl6000 firmware-iwl6050
+Obsoletes: firmware-iwl1000
+Obsoletes: firmware-iwl3945 firmware-iwl4965 firmware-iwl5000 firmware-iwl5150
+Obsoletes: firmware-iwl6000 firmware-iwl6050
 Provides:  firmware-carl9170-1.9.4 firmware-i2400m firmware-rt2870 firmware-rt3090
 Obsoletes: firmware-carl9170-1.9.4 firmware-i2400m firmware-rt2870 firmware-rt3090
 Provides: firmware-rt61pci firmware-rt73usb
@@ -28,6 +28,7 @@ Obsoletes: firmware-ql2100 firmware-ql2200 firmware-ql2300 firmware-ql2322 firmw
 Provides: firmware-amd-ucode
 Obsoletes: firmware-amd-ucode <= 2.0
 
+BuildRequires: hardlink
 Requires: udev
 AutoReqProv: no
 
@@ -37,8 +38,22 @@ AutoReqProv: no
 Kernel-firmware includes firmware files
 required for some devices to operate.
 
+%package netronome
+Group: System/Kernel and hardware
+Summary: firmware for Agilio SmartNICs
+
+%description netronome
+firmware for Agilio SmartNICs
+
+%package liquidio
+Group: System/Kernel and hardware
+Summary: firmware for LiquidIO Smart NICs
+
+%description liquidio
+firmware for LiquidIO II Smart NICs
+
 %prep
-%setup -n %name-%version 
+%setup -n %name-%version
 %patch -p1
 
 %build
@@ -51,13 +66,27 @@ rm -f usbdux/*dux */*.asm *spec
 %install
 mkdir -p %buildroot/lib/firmware
 cp -a * %buildroot/lib/firmware
+hardlink -cv %buildroot/lib/firmware
 rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 
 %files
 %doc WHENCE LICEN?E.*
 /lib/firmware/*
+%exclude /lib/firmware/netronome
+%exclude /lib/firmware/liquidio
+
+%files netronome
+/lib/firmware/netronome
+
+%files liquidio
+/lib/firmware/liquidio
 
 %changelog
+* Thu May 28 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 20200422-alt2
+- netronome and liquidio moved to subpackages
+- hardlinking identical files
+- minor spec cleanup
+
 * Sat Apr 25 2020 Cronbuild Service <cronbuild@altlinux.org> 20200422-alt1
 - upstream changes (GIT b2cad6a):
   + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
