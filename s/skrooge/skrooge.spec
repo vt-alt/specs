@@ -1,6 +1,6 @@
 Name: 		skrooge
 Version: 	2.22.1
-Release: 	alt1
+Release: 	alt2
 License: 	%gpl2plus
 Summary: 	Personal finances manager for KF5
 Group: 		Office
@@ -8,6 +8,7 @@ URL: 		http://skrooge.org/
 Packager: 	Andrey Cherepanov <cas@altlinux.org> 
 
 Source: 	%name-%version.tar.xz
+Source1:	%name.po
 
 BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-build-kf5
@@ -76,6 +77,7 @@ and intuitive.
 
 %prep
 %setup
+cp -f %SOURCE1 po/ru/skrooge.po
 
 %build
 %K5init no_altplace
@@ -105,6 +107,9 @@ and intuitive.
 %_datadir/%name
 
 %changelog
+* Thu May 28 2020 Andrey Cherepanov <cas@altlinux.org> 2.22.1-alt2
+- Complete Russian translation (thanks Olesya Gerasimenko).
+
 * Sun Apr 12 2020 Andrey Cherepanov <cas@altlinux.org> 2.22.1-alt1
 - new version 2.22.1
 
