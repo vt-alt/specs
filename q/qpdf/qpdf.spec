@@ -1,9 +1,9 @@
-%define soname 21
+%define soname 28
 Summary: Command-line tools and library for transforming PDF files
 Name: qpdf
-Version: 8.4.1
+Version: 10.0.1
 Release: alt1
-License: Apache 2.0
+License: Apache-2.0
 Group: System/Base
 Url: http://qpdf.sourceforge.net/
 Source0: http://downloads.sourceforge.net/sourceforge/qpdf/qpdf-%version.tar
@@ -96,6 +96,27 @@ QPDF Manual
 %doc doc/qpdf-manual.html doc/stylesheet.css
 
 %changelog
+* Mon Apr 13 2020 Anton Farygin <rider@altlinux.ru> 10.0.1-alt1
+- 10.0.1
+
+* Tue Jan 28 2020 Anton Farygin <rider@altlinux.ru> 9.1.1-alt1
+- 9.1.1
+
+* Tue Nov 19 2019 Anton Farygin <rider@altlinux.ru> 9.1.0-alt1
+- 9.1.0
+
+* Tue Oct 15 2019 Anton Farygin <rider@altlinux.ru> 9.0.2-alt1
+- 9.0.2
+
+* Sun Sep 22 2019 Anton Farygin <rider@altlinux.ru> 9.0.1-alt1
+- 9.0.1
+
+* Tue Sep 03 2019 Anton Farygin <rider@altlinux.ru> 9.0.0-alt1
+- 9.0.0
+
+* Wed May 22 2019 Anton Farygin <rider@altlinux.ru> 8.4.2-alt1
+- 8.4.2
+
 * Mon May 06 2019 Anton Farygin <rider@altlinux.ru> 8.4.1-alt1
 - 8.4.1
 
