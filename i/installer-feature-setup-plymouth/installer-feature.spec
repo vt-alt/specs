@@ -1,6 +1,6 @@
 Name: installer-feature-setup-plymouth
-Version: 0.5.5
-Release: alt2
+Version: 0.5.6
+Release: alt1
 
 Summary: Set up plymouth
 License: GPL
@@ -26,6 +26,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Thu May 28 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.5.6-alt1
+- supress dependence on install2-init-functions
+
 * Wed Apr 08 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.5-alt2
 - update requires
 
