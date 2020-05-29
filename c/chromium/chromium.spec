@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        81.0.4044.138
+Version:        83.0.4103.61
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -78,9 +78,13 @@ Patch020: 0020-ALT-Add-missing-header-on-aarch64.patch
 Patch021: 0021-GENTOO-Clang-allows-detection-of-these-builtins.patch
 Patch022: 0022-FEDORA-vtable-symbol-undefined.patch
 Patch023: 0023-FEDORA-remove-noexcept.patch
-Patch024: 0024-gcc-blink.patch
-Patch025: 0025-ALT-fix-build.patch
-Patch026: 0026-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
+Patch024: 0024-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
+Patch025: 0025-Add-missing-algorithm-header-in-crx_install_error.cc.patch
+Patch026: 0026-libstdc-fix-incomplete-type-in-AXTree-for-NodeSetSiz.patch
+Patch027: 0027-IWYU-std-numeric_limits-is-defined-in-limits.patch
+Patch028: 0028-Make-some-of-blink-custom-iterators-STL-compatible.patch
+Patch029: 0029-Include-memory-header-to-get-the-definition-of-std-u.patch
+Patch030: 0030-ServiceWorker-Avoid-double-destruction-of-ServiceWor.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -94,10 +98,10 @@ BuildRequires:  libstdc++-devel
 BuildRequires:  libstdc++-devel-static
 BuildRequires:  glibc-kernheaders
 %if_enabled clang
-BuildRequires:  clang7.0
-BuildRequires:  clang7.0-devel
-BuildRequires:  llvm7.0-devel
-BuildRequires:  lld7.0-devel
+BuildRequires:  clang10.0
+BuildRequires:  clang10.0-devel
+BuildRequires:  llvm10.0-devel
+BuildRequires:  lld10.0-devel
 %endif
 BuildRequires:  ninja-build
 BuildRequires:  gperf
@@ -152,6 +156,7 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  python
 BuildRequires:  python-modules-json
 BuildRequires:  python-modules-distutils
+BuildRequires:  python-module-pkg_resources
 BuildRequires:  node
 BuildRequires:  usbids
 BuildRequires:  xdg-utils
@@ -232,6 +237,10 @@ tar -xf %SOURCE1
 %patch024 -p1
 %patch025 -p1
 %patch026 -p1
+%patch027 -p1
+%patch028 -p1
+%patch029 -p1
+%patch030 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -243,13 +252,8 @@ for f in .rpm/blinkpy-common/*.py; do
 done
 touch third_party/blink/tools/blinkpy/__init__.py
 
-# unknown warning option '-Wno-ignored-pragma-optimize'
-# unknown warning option '-Wno-defaulted-function-deleted'
-# clang7: error: unknown argument: '-fsplit-lto-unit'
 sed -i \
-	-e '/"-Wno-ignored-pragma-optimize"/d' \
-	-e '/"-Wno-defaulted-function-deleted"/d' \
-	-e '/"-fsplit-lto-unit"/d' \
+	-e '/"-Wno-non-c-typedef-for-linkage"/d' \
 	build/config/compiler/BUILD.gn
 
 sed -i \
@@ -504,6 +508,37 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Thu May 21 2020 Alexey Gladkov <legion@altlinux.ru> 83.0.4103.61-alt1
+- New version (83.0.4103.61).
+- Security fixes:
+  - CVE-2020-6465: Use after free in reader mode.
+  - CVE-2020-6466: Use after free in media.
+  - CVE-2020-6467: Use after free in WebRTC.
+  - CVE-2020-6468: Type Confusion in V8.
+  - CVE-2020-6469: Insufficient policy enforcement in developer tools.
+  - CVE-2020-6470: Insufficient validation of untrusted input in clipboard.
+  - CVE-2020-6471: Insufficient policy enforcement in developer tools.
+  - CVE-2020-6472: Insufficient policy enforcement in developer tools.
+  - CVE-2020-6473: Insufficient policy enforcement in Blink.
+  - CVE-2020-6474: Use after free in Blink.
+  - CVE-2020-6475: Incorrect security UI in full screen.
+  - CVE-2020-6476: Insufficient policy enforcement in tab strip.
+  - CVE-2020-6477: Inappropriate implementation in installer.
+  - CVE-2020-6478: Inappropriate implementation in full screen.
+  - CVE-2020-6479: Inappropriate implementation in sharing.
+  - CVE-2020-6480: Insufficient policy enforcement in enterprise.
+  - CVE-2020-6481: Insufficient policy enforcement in URL formatting.
+  - CVE-2020-6482: Insufficient policy enforcement in developer tools.
+  - CVE-2020-6483: Insufficient policy enforcement in payments.
+  - CVE-2020-6484: Insufficient data validation in ChromeDriver.
+  - CVE-2020-6485: Insufficient data validation in media router.
+  - CVE-2020-6486: Insufficient policy enforcement in navigations.
+  - CVE-2020-6487: Insufficient policy enforcement in downloads.
+  - CVE-2020-6488: Insufficient policy enforcement in downloads.
+  - CVE-2020-6489: Inappropriate implementation in developer tools.
+  - CVE-2020-6490: Insufficient data validation in loader.
+  - CVE-2020-6491: Incorrect security UI in site information.
+
 * Wed May 13 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.4044.138-alt1
 - New version (81.0.4044.138).
 - Security fixes:
