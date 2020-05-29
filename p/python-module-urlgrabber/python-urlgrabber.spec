@@ -4,7 +4,7 @@
 
 Name: python-module-urlgrabber
 Version: 4.0.0
-Release: alt1
+Release: alt2
 
 Summary: High-level cross-protocol url-grabber
 
@@ -53,6 +53,9 @@ cp -fR . ../python3
 #find ../python3 -type f -name '*.py' -exec 2to3 -w -n '{}' +
 %endif
 
+# Set correct python2 executable in shebang and scripts
+subst 's|#!.*python$|#!%__python|' $(grep -Rl '#!.*python$' *)
+
 %build
 %python_build
 
@@ -94,6 +97,9 @@ mv %buildroot/usr/libexec/urlgrabber-ext-down %buildroot%_bindir/
 %endif
 
 %changelog
+* Fri Apr 17 2020 Pavel Vasenkov <pav@altlinux.org> 4.0.0-alt2
+- Set correct python2 executable in shebang and scripts
+
 * Wed May 08 2019 Vitaly Lipatov <lav@altlinux.ru> 4.0.0-alt1
 - new version (4.0.0) with rpmgs script
 - cleanup spec, enable python3 module build
