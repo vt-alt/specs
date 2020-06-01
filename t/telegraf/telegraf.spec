@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/telegraf
-%global commit 8de41160d4edb971978c958c78fa87a5c4a026b8
+%global commit 1b35d6c24591228787c69f3eb31d67961fa5ba5f
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,15 +9,13 @@
 %brp_strip_none %_bindir/*
 
 Name:		telegraf
-Version:	1.12.1
+Version:	1.14.3
 Release:	alt1
 Summary:	The plugin-driven server agent for collecting and reporting metrics
 
 Group:		Development/Other
 License:	MIT
 URL:		https://github.com/influxdata/telegraf
-
-Packager:	Alexey Gladkov <legion@altlinux.ru>
 
 Source0:	%name-%version.tar
 
@@ -39,24 +37,19 @@ in the community can easily add support for collecting metrics from well known s
 or Google Analytics).
 
 %prep
-%setup -q
-
-%build
 # Important!!!
 # The %builddir/.gopath created by the hands. It contains the dependencies required for your project.
 # This is necessary because the gdm cannot work with the vendor directory and always tries to update
 # all dependencies from the external servers. So, we can't use Makefile to compile.
 #
-# $ go get -d github.com/influxdata/telegraf
-# $ pushd $HOME/go/src/github.com/influxdata/telegraf
-# $ git checkout %version
-# $ dep ensure -vendor-only
-# $ popd
 # $ git rm -rf vendor
-# $ cp -r $HOME/go/src/github.com/influxdata/telegraf/vendor ./
+# $ go mod vendor -v
 # $ git add -f vendor
-# $ git commit -m "update go pkgs by dep ensure -vendor-only"
+# $ git commit -m "update go pkgs by go mod vendor"
 
+%setup -q
+
+%build
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
@@ -85,6 +78,7 @@ export GOPATH="%go_path"
 rm -rf -- %buildroot/%_datadir
 rm -f %buildroot%_bindir/stress_test_write
 rm -f %buildroot%_bindir/thrift_serialize
+rm -f %buildroot%_bindir/examples
 
 # Install config files
 install -p -D -m 640 etc/telegraf.conf %buildroot%_sysconfdir/%name/%name.conf
@@ -107,6 +101,7 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %_sbindir/useradd -r -g %name -G %name  -c 'Telegraf Agent Daemon' \
         -s /sbin/nologin  -d %_sharedstatedir/%name %name 2>/dev/null ||:
 %_sbindir/usermod -a -G proc telegraf ||:
+
 %post
 %post_service %name
 
@@ -128,6 +123,18 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Fri May 29 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.3-alt1
+- 1.14.3
+
+* Tue Apr 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.1-alt1
+- 1.14.1
+
+* Sat Apr 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.0-alt1
+- 1.14.0
+
+* Sun Dec 22 2019 Alexey Shabalin <shaba@altlinux.org> 1.13.0-alt1
+- 1.13.0
+
 * Wed Sep 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.1-alt1
 - 1.12.1
 
@@ -153,22 +160,22 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 * Thu Oct 11 2018 Alexey Shabalin <shaba@altlinux.org> 1.8.1-alt1
 - 1.8.1
 
-* Sat Apr 28 2018 Alexey Shabalin <shaba@altlinux.ru> 1.6.1-alt1%ubt
+* Sat Apr 28 2018 Alexey Shabalin <shaba@altlinux.ru> 1.6.1-alt1
 - 1.6.1
 
-* Wed Feb 14 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.2-alt2%ubt
+* Wed Feb 14 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.2-alt2
 - fix "commit"
 
-* Thu Feb 01 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.2-alt1%ubt
+* Thu Feb 01 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.2-alt1
 - 1.5.2
 
-* Mon Oct 30 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.3-alt1%ubt
+* Mon Oct 30 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.3-alt1
 - 1.4.3
 
-* Thu Oct 12 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.2-alt1%ubt
+* Thu Oct 12 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.2-alt1
 - 1.4.2
 
-* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.5-alt1%ubt
+* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.5-alt1
 - rebuild with Universal Branch Tag
 - fix run with sysv init script
 
