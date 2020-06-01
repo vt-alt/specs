@@ -1,7 +1,7 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt1
+Release: alt2
 epoch:1 
 %define kernel_need_version	5.6
 # Used when kernel-source-x.y does not currently exist in repository.
@@ -56,7 +56,7 @@ Packager: Kernel Maintainers Team <kernel@packages.altlinux.org>
 
 Patch0: %name-%version-%release.patch
 
-ExclusiveArch: aarch64
+ExclusiveArch: armh aarch64
 
 %define make_target Image
 
@@ -490,6 +490,20 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Fri May 29 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.10-alt2
+- Add armh
+- Add file config-armh based on file bcm2711_defconfig
+- Set some CONFIG in config-armh based on config-aarch64
+- CONFIG_I2C_BCM2835=y
+- CONFIG_SPI_BCM2835=y
+- CONFIG_SPI_BCM2835AUX=y
+- CONFIG_SND=y
+- CONFIG_SND_TIMER=y
+- CONFIG_SND_PCM=y
+- CONFIG_SND_BCM2835=y
+- CONFIG_BCM2835_VCHIQ_MMAL=y
+- CONFIG_BCM_VC_SM_CMA=y
+
 * Mon May 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:5.6.10-alt1
 - Update to latest mainstream release 5.6.10
 - Build with native kernel-source-5.6 instead of kernel-source-5.5
