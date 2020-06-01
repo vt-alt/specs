@@ -1,6 +1,6 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
-Version: 2.8.10
+Version: 2.8.12
 Release: alt1
 
 Group: System/Libraries
@@ -67,6 +67,16 @@ cp -v docs/man/man1/*.1 %buildroot/%_man1dir/
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 2.8.12-alt1
+- 2.8.12
+- Fixes:
+  + CVE-2020-1733
+  + CVE-2020-1735
+  + CVE-2020-1737
+  + CVE-2020-1739
+  + CVE-2020-1740
+  + CVE-2020-1746
+
 * Thu Mar 12 2020 Alexey Shabalin <shaba@altlinux.org> 2.8.10-alt1
 - 2.8.10
 - Fixes:
