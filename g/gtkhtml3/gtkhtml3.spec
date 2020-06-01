@@ -11,14 +11,12 @@
 
 Name: gtkhtml3
 Version: %ver_major.2
-Release: alt4
+Release: alt5
 
 Summary: GtkHTML is a HTML rendering/editing library
-License: GPL
+License: GPL-2.0 and LGPL-2.0
 Group: Graphical desktop/GNOME
 Url: http://projects.gnome.org/evolution/
-
-Packager: GNOME Maintainers Team <gnome@packages.altlinux.org>
 
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%origname/%ver_major/%origname-%version.tar.bz2
 Source1: lib%{name}-%ver_major.map
@@ -117,13 +115,12 @@ export LDFLAGS="$LDFLAGS -lm"
 %configure \
     %{subst_enable static} \
     %{?_enable_gtk_doc:--enable-gtk-doc} \
-    %{subst_enable gtk3}
-
+    %{subst_enable gtk3} \
+    --disable-deprecated-warning-flags
 %make_build
 
 %install
-%make_install DESTDIR=%buildroot install
-
+%makeinstall_std
 %find_lang %origname-%api_ver
 
 %files -n lib%name -f %origname-%api_ver.lang
@@ -144,6 +141,10 @@ export LDFLAGS="$LDFLAGS -lm"
 %endif
 
 %changelog
+* Sun Mar 22 2020 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt5
+- rebuilt with disabled deprecated-warning-flags
+- fixed License tag
+
 * Mon Feb 10 2014 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt4
 - explicitly link against libm
 
