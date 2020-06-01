@@ -27,7 +27,7 @@
 
 Name: plasma5-workspace
 Version: 5.18.5
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -405,6 +405,9 @@ done
 
 
 %changelog
+* Fri May 29 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt2
+- update clock widget date default format
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt1
 - new version
 
