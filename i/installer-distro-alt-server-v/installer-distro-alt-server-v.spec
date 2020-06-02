@@ -2,10 +2,10 @@
 
 Name: installer-distro-%distro
 Version: 9.0.0
-Release: alt2
+Release: alt3
 
 Summary: Installer configuration (Server V)
-License: GPL
+License: GPLv2
 Group: System/Configuration/Other
 
 Url: http://www.altlinux.org/Installer
@@ -20,7 +20,7 @@ It is derived from installer-distro-altlinux-generic.
 
 %package stage2
 Summary: Installer configuration and scripts (stage2 part)
-License: GPL
+License: GPLv2
 Group: System/Configuration/Other
 Provides: installer-%distro-stage2 = %version
 Requires: installer-stage2
@@ -39,7 +39,7 @@ The stage2 part is included into live installer system.
 
 %package stage3
 Summary: Installer configuration and scripts (stage3 part)
-License: GPL
+License: GPLv2
 Group: System/Configuration/Other
 Provides: installer-%distro-stage3 = %version
 # modules
@@ -51,6 +51,7 @@ Requires: alterator-net-eth dhcpcd
 Requires: alterator-net-bond alterator-net-bridge
 Requires: alterator-net-general
 Requires: installer-stage3
+Requires: installer-feature-create-vmbr-stage3
 Requires: installer-feature-sudo-enable-by-default-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-nfs-server-stage3
@@ -79,6 +80,9 @@ cp -a * %buildroot%install2dir/
 %files stage3
 
 %changelog
+* Thu Feb 13 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.0-alt3
+- add vmbr creation for PVE
+
 * Thu Sep 26 2019 Alexey Shabalin <shaba@altlinux.org> 9.0.0-alt2
 - add support vd* disks in vm profile
 - rename /var/lib/libvirt/images -> /var/lib/libvirt

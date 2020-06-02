@@ -17,8 +17,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.0
-Release: alt2
+Version: 9.1
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -93,7 +93,7 @@ This package contains graphics for boot process for %distro_name
 %package alterator
 Summary: Design for alterator for %distro_name
 Summary(ru_RU.UTF-8): Тема для "Центра управления системой" и QT для дистрибутива %distro_name_ru
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 BuildArch: noarch
 Provides: design-alterator-browser-%theme  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
@@ -138,7 +138,7 @@ This package contains some graphics for %distro_name design.
 BuildArch: noarch
 Summary:  %distro_name release file
 Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
-License:  GPL
+License:  GPLv2+
 Group:    System/Configuration/Other
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
 Obsoletes: %obsolete_list  branding-alt-%theme-release
@@ -317,6 +317,15 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed May 27 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.1-alt1
+- version 9.1
+
+* Tue Mar 17 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0-alt4
+- minimize buttons border
+
+* Mon Mar 16 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0-alt3
+- AWizardFace QPushButton min-width
+
 * Thu Dec 12 2019 Alexey Shabalin <shaba@altlinux.org> 9.0-alt2
 - en: Server Virtualization -> Virtualization Server
 
