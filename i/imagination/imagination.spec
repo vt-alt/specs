@@ -1,7 +1,7 @@
 %define renderer ffmpeg
 
 Name:     imagination
-Version:  3.5.1
+Version:  3.6
 Release:  alt1
 
 Summary:  Imagination is a lightweight and simple DVD slide show maker
@@ -61,6 +61,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %_datadir/doc/%name
 
 %changelog
+* Mon Jun 01 2020 Andrey Cherepanov <cas@altlinux.org> 3.6-alt1
+- new version 3.6
+
 * Tue Feb 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.5.1-alt1
 - New version 3.5.1.
 - Build with GTK+3.
