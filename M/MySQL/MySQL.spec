@@ -13,7 +13,7 @@
 
 Name: MySQL
 Version: 8.0.20
-Release: alt1
+Release: alt2
 
 Summary: A very fast and reliable SQL database engine
 Summary(ru_RU.UTF-8): Очень быстрый и надежный SQL-сервер
@@ -64,6 +64,8 @@ Patch9: mysql-8.0.18-alt-disable-run-libmysql_api_test.patch
 # Patches taken from boost 1.59
 Patch115: boost-1.58.0-pool.patch
 Patch125: boost-1.57.0-mpl-print.patch
+
+Patch200: mysql-8.0.20-oracle-fix-charset-nullptr.patch
 
 # Automatically added by buildreq on Tue Nov 20 2018 (-bi)
 # optimized out: cmake cmake-modules control elfutils glibc-kernheaders-generic glibc-kernheaders-x86 libcrypt-devel libsasl2-3 libstdc++-devel libtinfo-devel perl pkg-config python-base sh3 xz
@@ -330,6 +332,8 @@ pushd boost/boost_1_70_0
 %patch115 -p0
 %patch125 -p1
 popd
+
+%patch200 -p1
 
 # with patch4
 # Prepare commands list for completion in mysql client.
@@ -782,6 +786,10 @@ fi
 %attr(3770,root,mysql) %dir %ROOT/tmp
 
 %changelog
+* Tue May 26 2020 Nikolai Kostrigin <nickel@altlinux.org> 8.0.20-alt2
+- add add oracle-fix-charset-nullptr patch
+  + refer to https://bugs.launchpad.net/ubuntu/+source/mysql-8.0/+bug/1877504
+
 * Tue Apr 28 2020 Nikolai Kostrigin <nickel@altlinux.org> 8.0.20-alt1
 - new version
   + (fixes: CVE-2019-15601, CVE-2020-2780, CVE-2020-2804, CVE-2020-2760)
