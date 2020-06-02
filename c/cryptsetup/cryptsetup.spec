@@ -12,13 +12,13 @@
 %define default_luks_format LUKS2
 
 Name: cryptsetup
-Version: 2.2.0
+Version: 2.3.3
 Release: alt1
 
 Summary: utility to setup a encrypted disks with LUKS support
 Summary(ru_RU.UTF-8): утилита управления зашифрованными дисковыми разделами с поддержкой LUKS
 
-License: %gpllgpl2plus
+License: GPLv2+ and LGPLv2+
 Group: System/Kernel and hardware
 URL: https://gitlab.com/cryptsetup/cryptsetup/
 # git: https://gitlab.com/cryptsetup/cryptsetup.git
@@ -30,7 +30,6 @@ Patch0: %name-%version-%release.patch
 
 Requires: lib%name = %version-%release
 
-BuildRequires(pre): rpm-build-licenses
 # Automatically added by buildreq on Sun Nov 15 2009
 BuildRequires: libdevmapper-devel libpopt-devel libuuid-devel
 BuildRequires: libudev-devel
@@ -220,6 +219,15 @@ install -Dpm 755 debian/askpass %buildroot/lib/%name/askpass
 %_pkgconfigdir/*
 
 %changelog
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 2.3.3-alt1
+- 2.3.3
+
+* Mon May 11 2020 Alexey Shabalin <shaba@altlinux.org> 2.3.2-alt1
+- 2.3.2
+
+* Thu Dec 12 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.2-alt1
+- 2.2.2
+
 * Wed Aug 21 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.0-alt1
 - 2.2.0
 
