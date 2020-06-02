@@ -1,13 +1,17 @@
-%define ver_major 2.10
-%define oldver 2.0
 %define _libexecdir %_prefix/libexec
 
+%define ver_major 2.10
+%define oldver 2.0
+
+%define mypaint_ver 1.3
+%define brushes_ver 1.0
+
 Name: gimp
-Version: %ver_major.12
-Release: alt1
+Version: %ver_major.18
+Release: alt2
 
 Summary: The GNU Image Manipulation Program
-License: GPLv3, LGPL
+License: %gpl3only
 Group: Graphics
 Url: http://www.gimp.org/
 
@@ -17,16 +21,18 @@ Obsoletes: gimp2 < %version-%release
 Provides: gimp2 = %version-%release
 Conflicts: gimp2-perl create-resources <= 0.1.3-alt1
 Requires: lib%name = %version-%release
-Requires: icc-profiles mypaint-brushes
+Requires: icc-profiles mypaint-brushes%brushes_ver
 
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
+BuildRequires(pre): rpm-build-licenses
 BuildRequires: bzlib-devel gcc-c++ gtk-doc gvfs intltool libXcursor-devel libXmu-devel libXpm-devel libalsa-devel libexpat-devel
-BuildRequires: libgegl-devel libgexiv2-devel libgs-devel libgudev-devel liblcms2-devel liblzma-devel libmng-devel libmypaint-devel
-BuildRequires: libopenjpeg2.0-devel libpoppler-glib-devel librsvg-devel libtiff-devel libwebkitgtk2-devel libwebp-devel libwmf-devel
-BuildRequires: openexr-devel python-module-pycairo-devel python-module-pygtk-devel xdg-utils pkgconfig(mypaint-brushes-1.0)
-BuildRequires: libpng-devel iso-codes-devel libheif-devel libXfixes-devel
+BuildRequires: libgegl-devel libgexiv2-devel libgs-devel libgudev-devel liblcms2-devel liblzma-devel libmng-devel libopenjpeg2.0-devel
+BuildRequires: libpoppler-glib-devel librsvg-devel libtiff-devel libwebkitgtk2-devel libwebp-devel libwmf-devel
+BuildRequires: openexr-devel xdg-utils libpng-devel iso-codes-devel libheif-devel libXfixes-devel
+BuildRequires: python-module-pycairo-devel python-module-pygtk-devel
+BuildRequires: libmypaint-devel >= %mypaint_ver mypaint-brushes%brushes_ver-devel
 
 %description
 The GIMP (GNU Image Manipulation Program) is a powerful image
@@ -41,7 +47,7 @@ all with multi-level undo.
 %package -n lib%name
 Summary: GIMP libraries
 Group: System/Libraries
-License: LGPL
+License: %lgpl3only
 Obsoletes: libgimp2 < %version-%release
 Provides: libgimp2 = %version-%release
 
@@ -74,7 +80,7 @@ gtkdocize
 	--disable-gimp-console \
 	--enable-python
 
-%make V=1
+%make_build V=1
 
 %install
 %make DESTDIR=%buildroot install
@@ -112,6 +118,15 @@ find %buildroot%_libdir/%name -name \*.la -delete
 %_datadir/aclocal/*
 
 %changelog
+* Wed Mar 18 2020 Valery Inozemtsev <shrek@altlinux.ru> 2.10.18-alt2
+- rebuilt against libmypaint-1.5.1/mypaint-brushes1.0-1.3.1
+
+* Mon Mar 02 2020 Valery Inozemtsev <shrek@altlinux.ru> 2.10.18-alt1
+- 2.10.18
+
+* Fri Nov 01 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.14-alt1
+- 2.10.14
+
 * Thu Jun 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.12-alt1
 - 2.10.12
 

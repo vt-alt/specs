@@ -1,17 +1,19 @@
 %def_disable snapshot
-%define ver_base 2.0
 
-Name: mypaint-brushes
-Version: 2.0.2
+%define _name mypaint-brushes
+%define ver_base 1.0
+
+Name: %_name%ver_base
+Version: 1.3.1
 Release: alt1
 
-Summary: MyPaint brush collection
+Summary: MyPaint brush collection (v1.0)
 Group: Graphics
 License: CC0-1.0
 Url: https://github.com/mypaint/mypaint-brushes
 
 %if_disabled snapshot
-Source: %url/releases/download/v%version/%name-%version.tar.xz
+Source: %url/releases/download/v%version/%_name-%version.tar.xz
 %else
 # VCS: https://github.com/mypaint/mypaint-brushes.git
 Source: %name-%version.tar
@@ -28,7 +30,7 @@ immerse themselves in their work.
 This package provides MyPaint brush collection.
 
 %package devel
-Summary: MyPaint brush collection devel package
+Summary: MyPaint brush collection (v1.0) devel package
 Group: Graphics
 Requires: %name = %EVR
 
@@ -41,7 +43,7 @@ brushes and with not-quite-natural painting.
 This package contains pc-file for %name.
 
 %prep
-%setup
+%setup -n %_name-%version
 
 %build
 %autoreconf
@@ -55,11 +57,12 @@ This package contains pc-file for %name.
 %doc README* NEWS
 
 %files devel
-%_datadir/pkgconfig/%name-%ver_base.pc
+%_datadir/pkgconfig/%_name-%ver_base.pc
 
 %changelog
-* Tue Mar 17 2020 Yuri N. Sedunov <aris@altlinux.org> 2.0.2-alt1
-- 2.0.2
+* Wed Mar 18 2020 Yuri N. Sedunov <aris@altlinux.org> 1.3.1-alt1
+- 1.3.1
+- renamed package to mypaint-brushes1.0
 
 * Sat Apr 13 2019 Yuri N. Sedunov <aris@altlinux.org> 1.3.0-alt2
 - updated to v1.3.0-5-g2c567a1 (fixed build with automake-1.16)

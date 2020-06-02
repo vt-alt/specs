@@ -1,9 +1,8 @@
 Name: libbabl
-Version: 0.1.66
+Version: 0.1.74
 Release: alt1
-
 Summary: babl is a dynamic, any to any, pixel format translation library
-License: GPL,LGPL
+License: %lgpl3only
 Group: System/Libraries
 Url: http://www.gegl.org/babl/
 Packager: Valery Inozemtsev <crux@altlinux.ru>
@@ -11,7 +10,8 @@ Packager: Valery Inozemtsev <crux@altlinux.ru>
 Source: babl-%version.tar
 Patch: babl-%version-%release.patch
 
-BuildRequires: librsvg-utils w3m inkscape ruby ruby-module-date-time
+BuildRequires(pre): rpm-build-licenses meson
+BuildRequires: git gobject-introspection-devel liblcms2-devel librsvg-utils w3m inkscape ruby ruby-module-date-time
 
 %description
 babl is a dynamic, any to any, pixel format translation library.
@@ -32,6 +32,13 @@ Features
  * Extendable with new formats, color models, components and datatypes.
  * Reference 64bit floating point conversions for datatypes and color models.
 
+%package gir
+Summary: GObject introspection data for babl
+Group: System/Libraries
+
+%description gir
+GObject introspection data for babl
+
 %package devel
 Summary: development files of babl
 Group: Development/C
@@ -46,13 +53,13 @@ contain development files.
 %patch -p1
 
 %build
-%autoreconf
-%configure \
-	--disable-static
-%make_build
+mkdir .git
+%meson \
+	-Dwith-docs=false
+%meson_build -v
 
 %install
-%make DESTDIR=%buildroot install
+%meson_install
 
 %files
 %doc AUTHORS COPYING NEWS TODO
@@ -60,12 +67,22 @@ contain development files.
 %dir %_libdir/babl-0.1
 %_libdir/babl-0.1/*.so
 
+%files gir
+%_libdir/girepository-1.0/*.typelib
+
 %files devel
 %_includedir/babl-0.1
 %_libdir/*.so
 %_pkgconfigdir/*.pc
+%_datadir/gir-1.0/*.gir
 
 %changelog
+* Mon Mar 02 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.1.74-alt1
+- 0.1.74
+
+* Fri Nov 01 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.1.72-alt1
+- 0.1.72
+
 * Thu Jun 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 0.1.66-alt1
 - 0.1.66
 
