@@ -2,8 +2,8 @@
 %def_with qt5
 
 Name:     libgwenhywfar
-Version:  4.20.1
-Release:  alt1.1
+Version:  5.1.2
+Release:  alt1
 
 Summary:  A multi-platform helper library for other libraries
 Group:    System/Libraries
@@ -89,8 +89,8 @@ compiling programs using Gwenhywfar.
 
 %prep
 %setup -q -n %origname-%version
-%patch1 -p2
-%patch2 -p2
+%patch1 -p1
+%patch2 -p1
 
 %build
 %undefine _configure_gettext
@@ -157,13 +157,22 @@ ln -s %_datadir/ca-certificates/ca-bundle.crt %buildroot%_datadir/gwenhywfar/ca-
 %_bindir/typemaker
 %_bindir/typemaker2
 %_libdir/*.so
-%_includedir/gwenhywfar4/
+%_includedir/gwenhywfar5/
 %_pkgconfigdir/*
 %_datadir/%origname/typemaker2/*
 %_datadir/aclocal/gwenhywfar.m4
 %_libdir/cmake/*
 
 %changelog
+* Tue Feb 04 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.2-alt1
+- New version.
+
+* Thu Oct 10 2019 Andrey Cherepanov <cas@altlinux.org> 4.99.22rc6-alt0.1
+- New version.
+
+* Thu Aug 29 2019 Andrey Cherepanov <cas@altlinux.org> 4.20.2-alt1
+- New version.
+
 * Wed Aug 29 2018 Grigory Ustinov <grenka@altlinux.org> 4.20.1-alt1.1
 - NMU: Rebuild with new openssl 1.1.0.
 
