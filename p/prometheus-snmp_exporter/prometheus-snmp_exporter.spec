@@ -1,7 +1,7 @@
 
 %define oname snmp_exporter
 %global import_path github.com/prometheus/snmp_exporter
-%global commit 92a3da4467f8bc6759cf197e7442b8c43e890b13
+%global commit 9a2ff257dd2e8cdb2a4c88b18df668e2008c2cd6
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -11,12 +11,12 @@
 %brp_strip_none %_bindir/*
 
 Name: prometheus-%oname
-Version: 0.15.0
-Release: alt3
+Version: 0.18.0
+Release: alt1
 Summary: Prometheus snmp exporter
 
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -84,6 +84,9 @@ install -m0755 .gopath/src/%import_path/generator/generator %buildroot%_bindir/%
 %config(noreplace) %_sysconfdir/prometheus/snmp.yml
 
 %changelog
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 0.18.0-alt1
+- 0.18.0
+
 * Sat Sep 28 2019 Alexey Shabalin <shaba@altlinux.org> 0.15.0-alt3
 - fixed build with golang-1.13
 

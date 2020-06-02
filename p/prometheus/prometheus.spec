@@ -1,5 +1,5 @@
 %global import_path github.com/prometheus/prometheus
-%global commit e5b22494857deca4b806f74f6e3a6ee30c251763
+%global commit ecee9c8abfd118f139014cb1b174b08db3f342cf
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
@@ -8,12 +8,12 @@
 %brp_strip_none %_bindir/*
 
 Name: prometheus
-Version: 2.11.1
-Release: alt1
+Version: 2.18.1
+Release: alt2
 Summary: Prometheus monitoring system and time series database
 
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -24,7 +24,7 @@ Source5: %name.tmpfiles
 
 ExclusiveArch:  %go_arches
 BuildRequires(pre): rpm-build-golang
-BuildRequires: promu
+BuildRequires: promu yarn
 BuildRequires: /proc
 
 Requires: %name-common = %EVR
@@ -54,13 +54,29 @@ Prometheus is an open-source systems monitoring and alerting toolkit.
 This package contains the common files and settings for Prometheus.
 
 %prep
+# Build the Front-end Assets
+# $ cd web/ui/react-app
+# $ yarn --frozen-lockfile
+# $ git add -f node_modules
+# $ git commit -n --no-post-rewrite -m "add node js modules"
 %setup -q
 
 %build
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
+export GOFLAGS="-mod=vendor"
 %golang_prepare
+
+#building React app
+./scripts/build_react_app.sh
+
+#writing assets
+pushd web/ui
+go generate -x -v
+popd
+gofmt -w web/ui
+
 promu build
 
 %install
@@ -82,6 +98,7 @@ install -m0644 %SOURCE5 %buildroot%_tmpfilesdir/%name.conf
 %pre common
 %_sbindir/groupadd -r -f %name > /dev/null 2>&1 ||:
 %_sbindir/useradd -r -g %name -d %_localstatedir/%name -s /dev/null -c "Prometheus services" %name > /dev/null 2>&1 ||:
+%_sbindir/usermod -a -G proc %name ||:
 
 %post
 %post_service %name
@@ -105,6 +122,18 @@ install -m0644 %SOURCE5 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(775, root, %name) %_localstatedir/%name
 
 %changelog
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 2.18.1-alt2
+- add user prometheus to proc group
+
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 2.18.1-alt1
+- 2.18.1.
+
+* Sat Apr 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.17.1-alt1
+- 2.17.1
+
+* Wed Mar 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.16.0-alt1
+- 2.16.0 (Fixes: CVE-2019-10215)
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 2.11.1-alt1
 - 2.11.1
 
@@ -114,10 +143,10 @@ install -m0644 %SOURCE5 %buildroot%_tmpfilesdir/%name.conf
 * Fri Jan 18 2019 Alexey Shabalin <shaba@altlinux.org> 2.6.1-alt1
 - 2.6.1
 
-* Thu May 10 2018 Alexey Shabalin <shaba@altlinux.ru> 2.2.1-alt2%ubt
+* Thu May 10 2018 Alexey Shabalin <shaba@altlinux.ru> 2.2.1-alt2
 - move adduser, tmpfiles and /etc/prometheus to prometheus-common package
 - update systemd unit
 
-* Tue May 08 2018 Alexey Shabalin <shaba@altlinux.ru> 2.2.1-alt1%ubt
+* Tue May 08 2018 Alexey Shabalin <shaba@altlinux.ru> 2.2.1-alt1
 - Initial build for ALT.
 

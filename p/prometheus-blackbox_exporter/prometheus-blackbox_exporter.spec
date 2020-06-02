@@ -1,7 +1,7 @@
 
 %define oname blackbox_exporter
 %global import_path github.com/prometheus/blackbox_exporter
-%global commit 1cfb7512daa7e100abb32037996c8f805990d813
+%global commit 991f89846ae10db22a3933356a7d196642fcb9a9
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -11,12 +11,12 @@
 %brp_strip_none %_bindir/*
 
 Name: prometheus-%oname
-Version: 0.14.0
+Version: 0.16.0
 Release: alt1
 Summary: Prometheus blackbox prober exporter
 
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -72,6 +72,9 @@ install -m0644 %SOURCE4 %buildroot%_unitdir/%name.service
 %config(noreplace) %_sysconfdir/prometheus/blackbox.yml
 
 %changelog
+* Wed Mar 18 2020 Alexey Shabalin <shaba@altlinux.org> 0.16.0-alt1
+- 0.16.0
+
 * Tue Aug 13 2019 Alexey Shabalin <shaba@altlinux.org> 0.14.0-alt1
 - 0.14.0
 

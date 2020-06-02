@@ -1,7 +1,7 @@
 
 %define oname alertmanager
 %global import_path github.com/prometheus/alertmanager
-%global commit 1ace0f76b7101cccc149d7298022df36039858ca
+%global commit f74be0400a6243d10bb53812d6fa408ad71ff32d
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
@@ -10,12 +10,12 @@
 %brp_strip_none %_bindir/*
 
 Name: prometheus-%oname
-Version: 0.18.0
+Version: 0.20.0
 Release: alt1
 Summary: Prometheus Alertmanager
 
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -82,6 +82,9 @@ install -m0644 template/default.tmpl %buildroot%_sysconfdir/prometheus/alertmana
 %dir %attr(775, root, prometheus) %_localstatedir/prometheus/%oname
 
 %changelog
+* Sat Apr 18 2020 Alexey Shabalin <shaba@altlinux.org> 0.20.0-alt1
+- 0.20.0
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 0.18.0-alt1
 - 0.18.0
 

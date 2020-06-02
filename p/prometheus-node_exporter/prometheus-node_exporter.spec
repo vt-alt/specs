@@ -1,7 +1,7 @@
 
 %define oname node_exporter
 %global import_path github.com/prometheus/node_exporter
-%global commit 3db77732e925c08f675d7404a8c46466b2ece83e
+%global commit b9c96706a7425383902b6143d097cf6d7cfd1960
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -11,12 +11,12 @@
 %brp_strip_none %_bindir/*
 
 Name: prometheus-%oname
-Version: 0.18.1
+Version: 1.0.0
 Release: alt1
 Summary: Prometheus exporter for hardware and OS metrics exposed by *NIX kernels.
 
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -71,11 +71,14 @@ install -m0644 %SOURCE4 %buildroot%_unitdir/%name.service
 %config(noreplace) %_sysconfdir/sysconfig/%name
 
 %changelog
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.0-alt1
+- 1.0.0
+
 * Wed Jul 17 2019 Alexey Shabalin <shaba@altlinux.org> 0.18.1-alt1
 - 0.18.1
 
 * Fri Jan 18 2019 Alexey Shabalin <shaba@altlinux.org> 0.17.0-alt1
 - 0.17.0
 
-* Tue May 08 2018 Alexey Shabalin <shaba@altlinux.ru> 0.16.0-alt0.rc3%ubt
+* Tue May 08 2018 Alexey Shabalin <shaba@altlinux.ru> 0.16.0-alt0.rc3
 - Initial build for ALT.
