@@ -1,10 +1,10 @@
 Name: iputils
 %define timestamp 20190709
 Version: %timestamp
-Release: alt1
+Release: alt1.1.p9
 
 Summary: Utilities for IPv4/IPv6 networking
-License: %bsd, %gpl2plus, AS-IS (SUN MICROSYSTEMS license)
+License: BSD-3-Clause and GPL-2.0+ and Rdisc
 Group: Networking/Other
 Url: https://github.com/iputils/iputils
 
@@ -19,7 +19,7 @@ Requires(pre): shadow-utils
 Requires(pre): control >= 0.8.0-alt1
 Requires: /var/resolv
 
-BuildRequires(pre): rpm-build-licenses meson
+BuildRequires(pre): meson
 
 BuildRequires: libcap-devel
 BuildRequires: libsysfs-devel libssl-devel
@@ -43,7 +43,7 @@ along this path.
 %package -n ninfod
 Group: Networking/Other
 Summary: Node Information Query Daemon
-License: %bsd
+License: BSD-3-Clause
 
 %description -n ninfod
 Node Information Query (RFC4620) daemon. Responds to IPv6 Node Information
@@ -54,7 +54,7 @@ Queries.
 %patch -p1
 
 %build
-%add_optflags -fno-strict-aliasing -Wstrict-prototypes -Werror
+%add_optflags -fno-strict-aliasing -Wstrict-prototypes
 %ifarch s390 s390x
 	%add_optflags -fPIE
 %else
@@ -153,6 +153,13 @@ fi
 %_man8dir/ninfod.*
 
 %changelog
+* Sun May 31 2020 Andrey Cherepanov <cas@altlinux.org> 20190709-alt1.1.p9
+- Backport fix build to p9 branch (without -Werror).
+
+* Wed Nov 27 2019 Mikhail Efremov <sem@altlinux.org> 20190709-alt2
+- Update License tag.
+- Fix build with -Werror.
+
 * Thu Aug 22 2019 Mikhail Efremov <sem@altlinux.org> 20190709-alt1
 - 20190515 -> 20190709.
 
