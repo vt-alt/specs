@@ -11,6 +11,7 @@
 %define build_xt 0
 %define build_qsa 1
 %define build_odbc 1
+%define build_sqlite 0
 %define with_settings 0
 %define with_nas 0
 %define versioning_hack 1
@@ -24,7 +25,7 @@
 %define qsa_major 1
 %define qsa_minor 1
 %define qsa_bugfix 5
-%define rlz alt12
+%define rlz alt14
 Name: %rname%major
 Version: %major.%minor.%bugfix
 Release: %rlz
@@ -152,7 +153,10 @@ BuildRequires: libcups-devel libssl libcups-devel
 BuildRequires: libbeecrypt liblcms gcc-c++ libstdc++-devel
 BuildRequires: libmng-devel libjpeg-devel libpng-devel zlib-devel
 BuildRequires: postgresql-devel libpq-devel libMySQL-devel
-BuildRequires: sqlite-devel bison
+BuildRequires: bison
+%if %build_sqlite
+BuildRequires: sqlite-devel
+%endif
 %if %with_nas
 BuildRequires: libaudio-devel
 %endif
@@ -294,7 +298,10 @@ ODBC driver for Qt's SQL classes (QSQL)
 Group: System/Libraries
 Summary: Amount package for SQL support of Qt%major GUI toolkit
 Requires: lib%name-mysql
-Requires: lib%name-postgresql lib%name-sqlite
+Requires: lib%name-postgresql
+%if %build_sqlite
+Requires: lib%name-sqlite
+%endif
 %if %build_odbc
 Requires: lib%name-odbc
 %endif
@@ -622,14 +629,20 @@ CNFGR="\
 	-plugin-style-motif -plugin-style-sgi"
 
 CNFGR_STATIC=" -static \
-	-qt-sql-mysql -qt-sql-psql -qt-sql-sqlite \
+	-qt-sql-mysql -qt-sql-psql \
+%if %build_sqlite
+	-qt-sql-sqlite \
+%endif
 %if %build_odbc
 	 -qt-sql-odbc \
 %endif
 	-qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng \
 	"
 CNFGR_SHARED=" -shared \
-	-plugin-sql-mysql -plugin-sql-psql -plugin-sql-sqlite \
+	-plugin-sql-mysql -plugin-sql-psql \
+%if %build_sqlite
+	-plugin-sql-sqlite \
+%endif
 %if %build_odbc
 	 -plugin-sql-odbc \
 %endif
@@ -1223,8 +1236,10 @@ install -m 644 %SOURCE103 %buildroot/%_iconsdir/hicolor/48x48/apps/%rname.png
 %files -n lib%name-mysql
 %qtdir/plugins/sqldrivers/libqsqlmysql*
 
+%if %build_sqlite
 %files -n lib%name-sqlite
 %qtdir/plugins/sqldrivers/libqsqlite*
+%endif
 
 %files assistant
 %_bindir/assistant-qt3
@@ -1285,6 +1300,12 @@ install -m 644 %SOURCE103 %buildroot/%_iconsdir/hicolor/48x48/apps/%rname.png
 %_rpmmacrosdir/*
 
 %changelog
+* Wed Feb 05 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.8d-alt14
+- rebuild without sqlite support (ALT bug 37985)
+
+* Thu Nov 21 2019 Ivan A. Melnikov <iv@altlinux.org> 3.3.8d-alt13
+- (NMU) Fix build with PostgreSQL 12
+
 * Thu Nov 29 2018 Ivan A. Melnikov <iv@altlinux.org> 3.3.8d-alt12
 - (NMU) Fix build with recent postgresql-devel
 
