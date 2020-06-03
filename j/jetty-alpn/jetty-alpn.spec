@@ -1,21 +1,18 @@
 Group: Development/Java
-# BEGIN SourceDeps(oneline):
-BuildRequires(pre): rpm-macros-java
-# END SourceDeps(oneline)
-BuildRequires: /proc
-BuildRequires: jpackage-generic-compat
+BuildRequires: /proc rpm-build-java
+BuildRequires: jpackage-1.8-compat
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
-%global reltag v20170118
+%global reltag .v20181017
 
 Name:           jetty-alpn
-Version:        8.1.11
-Release:        alt1_3.v20170118jpp8
+Version:        8.1.13
+Release:        alt1_1.v20181017jpp8
 # alpn-tests also contains EPL and ASL, but is not installed
 License:        GPLv2+ with exceptions
 Summary:        Jetty implementation of ALPN API
 URL:            https://github.com/jetty-project/jetty-alpn
-Source0:        https://github.com/jetty-project/%{name}/archive/alpn-project-%{version}.%{reltag}.tar.gz
+Source0:        https://github.com/jetty-project/%{name}/archive/alpn-project-%{version}%{reltag}.tar.gz
 Patch0:         0001-Unshade-alpn-api.patch
 BuildArch:      noarch
 
@@ -43,7 +40,7 @@ BuildArch: noarch
 This package contains the API documentation for %{name}.
 
 %prep
-%setup -q -n %{name}-alpn-project-%{version}.%{reltag}
+%setup -q -n %{name}-alpn-project-%{version}%{reltag}
 
 # unshade jetty-alpn-api
 %patch0 -p1
@@ -66,6 +63,12 @@ This package contains the API documentation for %{name}.
 %files javadoc -f .mfiles-javadoc
 
 %changelog
+* Sat Jul 13 2019 Igor Vlasenko <viy@altlinux.ru> 8.1.13-alt1_1.v20181017jpp8
+- new version
+
+* Thu Jun 20 2019 Igor Vlasenko <viy@altlinux.ru> 8.1.12-alt1_2.v20180117jpp8
+- new version
+
 * Sat Nov 04 2017 Igor Vlasenko <viy@altlinux.ru> 8.1.11-alt1_3.v20170118jpp8
 - new version
 

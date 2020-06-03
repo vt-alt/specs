@@ -3,7 +3,7 @@
 %define rname konversation
 Name: kde5-%rname
 Version: 1.7.5
-Release: alt4
+Release: alt5
 %define beta %nil
 %K5init no_altplace
 
@@ -13,7 +13,7 @@ AutoReq: yes, nopython
 
 Group: Networking/IRC
 Summary: Konversation is a user friendly Internet Relay Chat client.
-License: GPLv2
+License: GPL-2.0-or-later
 Url: http://konversation.kde.org
 Packager: Sergey V Turchin <zerg@altlinux.org>
 
@@ -25,6 +25,7 @@ Provides: kde4-konversation = %version-%release
 Obsoletes: kde4-konversation < %version-%release
 
 Source0: %rname-%version.tar
+Patch1: alt-ftbfs.patch
 
 # Automatically added by buildreq on Tue Jun 30 2015 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqca-qt5 libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python3 python3-base qt5-base-devel xml-common xml-utils
@@ -47,7 +48,7 @@ and much more.
 
 %prep
 %setup -q -n %rname-%version
-
+%patch1 -p1
 
 %build
 %K5build
@@ -77,6 +78,9 @@ sed -i \
 
 
 %changelog
+* Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.5-alt5
+- fix compile with new Qt
+
 * Tue Jul 09 2019 Sergey V Turchin <zerg@altlinux.org> 1.7.5-alt4
 - build with python3
 - obsolete kde4-konversation

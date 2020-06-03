@@ -5,7 +5,7 @@
 
 Name: kde5-%rname
 Version: 18.04.3
-Release: alt2
+Release: alt3
 %K5init
 
 Group: Games/Cards
@@ -93,6 +93,9 @@ mv %buildroot/%_K5data/mime/packages/kpatience.xml \
 %_K5lib/libkcardgame.so.*
 
 %changelog
+* Mon Feb 10 2020 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt3
+- fix to build with new Qt
+
 * Mon Mar 04 2019 Sergey V Turchin <zerg@altlinux.org> 18.04.3-alt2
 - fix to build (ALT#36220)
 
