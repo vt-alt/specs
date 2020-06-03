@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        68.8.0
+Version:        68.9.0
 Release:        alt1
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -387,6 +387,20 @@ done
 %_datadir/applications/firefox-wayland.desktop
 
 %changelog
+* Wed Jun 03 2020 Andrey Cherepanov <cas@altlinux.org> 68.9.0-alt1
+- New ESR version (68.9.0).
+- Fixes:
+  + CVE-2020-12399 Timing attack on DSA signatures in NSS library
+  + CVE-2020-12405 Use-after-free in SharedWorkerService
+  + CVE-2020-12406 JavaScript Type confusion with NativeTypes
+  + CVE-2020-12410 Memory safety bugs fixed in Firefox 77 and Firefox ESR 68.9
+
+* Wed May 13 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt3
+- Disable User-Agent patch due to possible infomation leak.
+
+* Wed May 13 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt2
+- Add ALT operating system string to browser User-Agent (ALT #38475).
+
 * Tue May 05 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt1
 - New ESR version (68.8.0).
 - Fixes:
