@@ -1,12 +1,12 @@
 %set_verify_elf_method unresolved=relaxed
 
 # TODO:fix build Python bindings
-%def_disable python
+%def_enable python
 %def_with aqbanking
 
 Name: 	 gnucash
-Version: 3.902
-Release: alt3
+Version: 3.903
+Release: alt1
 
 Summary: GnuCash is an application to keep track of your finances
 Summary(ru_RU.UTF8): Программа учёта финансов GnuCash
@@ -46,6 +46,7 @@ BuildRequires: libdbi-drivers-dbd-mysql
 BuildRequires: libdbi-drivers-dbd-pgsql
 BuildRequires: swig
 BuildRequires: libexpat-devel
+BuildRequires: libffi-devel
 BuildRequires: libpcre-devel
 BuildRequires: libpixman-devel
 BuildRequires: libdrm-devel
@@ -53,14 +54,14 @@ BuildRequires: libsecret-devel
 BuildRequires: xsltproc
 BuildRequires: zlib-devel
 BuildRequires: libxslt-devel
-BuildRequires: boost-locale-devel boost-filesystem-devel
+BuildRequires: boost-locale-devel boost-filesystem-devel boost-program_options-devel
 %if_with aqbanking
 BuildRequires: aqbanking-devel
 %endif
 BuildRequires: libgmock-devel libgtest-devel
 BuildRequires: libwebkit2gtk-devel
 %if_enabled python
-BuildRequires: python-devel
+BuildRequires: python3-devel
 %endif
 BuildRequires: perl-podlators
 BuildRequires: perl-Date-Manip
@@ -194,7 +195,7 @@ rm -rf %buildroot%_datadir/guile/site/*/tests \
 
 %files program -f %name.lang
 %doc AUTHORS ChangeLog.tar.xz HACKING NEWS README*
-%doc doc/README.* doc/guile-hackers.txt
+%doc doc/README.* doc/examples
 %doc %_defaultdocdir/%name/
 %_bindir/*
 %config %_sysconfdir/%name
@@ -214,6 +215,11 @@ rm -rf %buildroot%_datadir/guile/site/*/tests \
 %files quotes
 
 %changelog
+* Tue Jun 02 2020 Andrey Cherepanov <cas@altlinux.org> 3.903-alt1
+- New version.
+- Build with python bindings.
+- Package examples.
+
 * Sun May 24 2020 Andrey Cherepanov <cas@altlinux.org> 3.902-alt3
 - Use rpm-build-ninja for build.
 
