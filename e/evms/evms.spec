@@ -7,7 +7,7 @@
 
 Name: evms
 Version: 2.5.5
-Release: alt43
+Release: alt44
 
 Summary: Enterprise Volume Management System utilities
 License: GPL
@@ -17,6 +17,7 @@ Url: http://www.sourceforge.net/projects/evms
 Source: %name-%version-%release.tar
 
 BuildRequires: glib2-devel libe2fs-devel libncurses-devel libreadline-devel libuuid-devel
+BuildRequires: libblkid-devel
 BuildRequires: libcryptsetup-devel >= 1.4.0
 
 %if_with x
@@ -168,6 +169,9 @@ EOF
 %endif
 
 %changelog
+* Wed May 20 2020 Oleg Solovyov <mcpain@altlinux.org> 2.5.5-alt44
+- restore old swapfs UUID
+
 * Wed Mar 18 2020 Michael Shigorin <mike@altlinux.org> 2.5.5-alt43
 - plugins/dos/bsd.c: fix use-after-free;
   bug/diags/patch by Andrey Sokolov (closes: #38150)
