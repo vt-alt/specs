@@ -1,35 +1,43 @@
+# coccinelle.spec
 %define _unpackaged_files_terminate_build 1
 
 Name:		coccinelle
-Version:	1.0.6
-Release:	alt2
-Summary:	Semantic patching for C source code (spatch)
+Version:	1.0.8
+Release:	alt7
+Summary:	Semantic patching for Linux (spatch)
 
 Group:		Development/C
-License:	GPLv2
+License:	GPL-2.0-only
 Url:		http://coccinelle.lip6.fr/
 
 Source:		%name-%version.tar
 Provides:	spatch
 
-#BuildRequires:	ocaml-num-devel
-# -- be more flexible (no matter whether "num" is included in core OCaml
-# as before in p8 or not as now is Sisyphus);
-# let's substitute the pkg dep by a dep on an arbitrary module from it:
-BuildPreReq: ocaml-cmx(Num)
-
+BuildRequires(pre): rpm-build-ocaml
+BuildRequires(pre): rpm-build-python3
 BuildRequires:	ocaml >= 3.12.1
 BuildRequires:	ocaml-findlib
 BuildRequires:	ocaml-ocamldoc
 BuildRequires:	ocaml-menhir
+BuildRequires:	ocaml-stdcompat-devel
 BuildRequires:	ocaml-pcre-devel
-BuildRequires:	rpm-build-python python-devel python-modules-multiprocessing
-BuildRequires:	chrpath
+BuildRequires:	ocaml-num-devel
+BuildRequires:	ocaml-parmap-devel
+BuildRequires:	python3-dev
 
-# only if vim coccigui is used
-%filter_from_requires /^python.*(pida)$/d
-# bogus internal name
-%filter_from_requires /^python.*(coccinelle)$/d
+Requires:	python3-dev
+
+# Bogus internal name
+%filter_from_requires /^python.*(coccinelle)/d
+# Bogus dependencies to OCaml
+AutoReqProv: noocaml
+# Only what's matter
+Provides: ocaml-cmi(Coccilib) = %version-%release
+Provides: ocaml-cmx(Coccilib) = %version-%release
+# No cocciguis (pida for vim, gtk output), yet
+%add_findreq_skiplist %python3_sitelibdir/coccilib/coccigui/*
+# No trac integraion
+%add_findreq_skiplist %python3_sitelibdir/coccilib/trac.py
 
 %description
 Coccinelle (French for "ladybug") is a utility for matching and transforming
@@ -85,37 +93,25 @@ BuildArch: noarch
 
 %prep
 %setup -q -n %{name}-%{version}
-sed -i '1s:^#!/usr/bin/env python$:#!/usr/bin/python%__python_version:' tools/pycocci
+sed -i '1s:^#!/usr/bin/env python$:#!/usr/bin/python3:' tools/pycocci
 
 %build
 ./autogen
-%configure
-# -unsafe-string
-export OCAMLPARAM="safe-string=0,_"
+%configure \
+	--with-python=%_bindir/python3 \
+
 make EXTLIBDIR=`ocamlc -where`/extlib
 
 %install
 make DESTDIR=%buildroot install
-rm -rf %buildroot%_libdir/coccinelle/ocaml
+
 # relocate python module
-install -d %buildroot%python_sitelibdir
-mv %buildroot%_libdir/coccinelle/python/coccilib %buildroot%python_sitelibdir/
+install -d %buildroot%python3_sitelibdir
+mv %buildroot%_libdir/coccinelle/python/coccilib %buildroot%python3_sitelibdir/
 rm -rf %buildroot%_libdir/coccinelle/python
 
-# Make "libpython*.so" findable for coccinelle even without the python-dev pkg;
-# otherwise, the embedded Python interpreter won't work
-# and *.cocci scripts with embedded Python scripts would fail. (This is checked
-# in %%check and the checkinstall subpackage.)
-# (TODO: it looks for the simple "*.so" filename in runtime, but this should be
-# fixed--in the bundled pyml probably; BTW, why not package pyml unbundled?)
-ln -s -v "$(realpath %__libpython)" \
-   -T %buildroot%_libdir/%name/"$(basename %__libpython)"
-
-# delete spgen
-rm -rf %buildroot%_bindir/spgen
-rm -rf %buildroot%_libdir/coccinelle/spgen
-rm -rf %buildroot%_mandir/man1/spgen.*
-rm -rf %buildroot%_mandir/man3
+# Somebody forgot to install this
+install ./tools/pycocci %buildroot%_bindir/pycocci
 
 %check
 %define run_tests \
@@ -129,7 +125,7 @@ done \
 %nil
 
 export COCCINELLE_HOME=%buildroot%_libdir/coccinelle
-export PYTHONPATH=%buildroot%python_sitelibdir
+export PYTHONPATH=%buildroot%python3_sitelibdir
 %global spatch %buildroot%_bindir/spatch
 %run_tests
 
@@ -143,10 +139,12 @@ cd %_docdir/%name-demos-%version
 %doc license.txt readme.txt
 %_bindir/pycocci
 %_bindir/spatch
-%_bindir/spatch.opt
+%_bindir/spgen
 %_libdir/%name/
-%python_sitelibdir/coccilib
-%_mandir/man1/*.1*
+%python3_sitelibdir/coccilib
+%_man1dir/*.1*
+%_man3dir/Coccilib.3cocci*
+/usr/share/bash-completion/completions/spatch
 
 %files demos
 %doc demos tests
@@ -154,6 +152,29 @@ cd %_docdir/%name-demos-%version
 %files checkinstall
 
 %changelog
+* Fri May 29 2020 Andrew A. Vasilyev <andy@altlinux.org> 1.0.8-alt7
+- fix changelog
+
+* Wed Apr 29 2020 Andrew A. Vasilyev <andy@altlinux.org> 1.0.8-alt6
+- merge changes from p9 branch (imz@altlinux.org)
+
+* Mon Apr 20 2020 Vitaly Chikunov <vt@altlinux.org> 1.0.8-alt5
+- spec: Fix `Cannot infer Python version'.
+
+* Sat Apr 18 2020 Vitaly Chikunov <vt@altlinux.org> 1.0.8-alt4
+- Convert to python3, add spgen, delete spatch.opt, clean up reqs.
+
+* Sat Apr 18 2020 Vitaly Chikunov <vt@altlinux.org> 1.0.8-alt3
+- Install coccinelle ocaml libs (for coccicheck).
+
+* Thu Mar 05 2020 Anton Farygin <rider@altlinux.ru> 1.0.8-alt2
+- removed unsafe-string build flag to avoid problems with ocaml-4.10
+- built with external stdcompat
+- removed chrpath from build dependencies (it is no longer required)
+
+* Mon Feb 17 2020 Vitaly Chikunov <vt@altlinux.org> 1.0.8-alt1
+- Update to 1.0.8.
+
 * Thu Dec 19 2019 Ivan Zakharyaschev <imz@altlinux.org> 1.0.6-alt2
 - Adapted BuildReqs for any OCaml (whether with "num" or without in the core),
   so that it can be built in Sisyphus/p9 and p8.
@@ -161,6 +182,9 @@ cd %_docdir/%name-demos-%version
   (with embedded Python scripts).
 - Worked-around the problem with the loading of libpython (to enable
   the built-in Python interpreter).
+
+* Wed Aug 07 2019 Vitaly Chikunov <vt@altlinux.org> 1.0.7.0.217.ged1eb8e0-alt1
+- Update to 1.0.7-217-ged1eb8e0.
 
 * Sun Jun 10 2018 Vitaly Chikunov <vt@altlinux.ru> 1.0.6-alt1
 - Initial build for ALT.
