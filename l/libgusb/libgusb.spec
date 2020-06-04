@@ -2,24 +2,25 @@
 
 %def_enable tests
 %def_enable docs
+%def_enable introspection
 %def_enable vala
 # failed to init libusb in hasher
 %def_disable check
 
 Name: libgusb
-Version: 0.3.0
+Version: 0.3.4
 Release: alt1
 
 Summary: GLib wrapper around libusb1
 Group: System/Libraries
-License: LGPLv2+
+License: LGPL-2.1
 Url: https://gitorious.org/gusb/
 
 # VCS: https://github.com/hughsie/libgusb.git
 Source: http://people.freedesktop.org/~hughsient/releases/%name-%version.tar.xz
 
 BuildRequires(pre): meson
-BuildRequires: libgio-devel >= 2.44 libusb-devel >= 1.0.19
+BuildRequires: libgio-devel >= 2.44 libusb-devel >= 1.0.22
 BuildRequires: gobject-introspection-devel
 %{?_enable_docs:BuildRequires: gtk-doc}
 %{?_enable_vala:BuildRequires: vala-tools}
@@ -74,6 +75,7 @@ applications that use GUsb library.
 	-Dusb_ids=%_datadir/misc/usb.ids \
         %{?_disable_docs:-Ddocs=false} \
         %{?_disable_tests:-Dtests=false} \
+	%{?_disable_introspection:-Dintrospection=false} \
         %{?_disable_vala:-Dvapi=false}
 %meson_build
 
@@ -94,11 +96,13 @@ applications that use GUsb library.
 %_pkgconfigdir/gusb.pc
 %{?_enable_vala:%_vapidir/gusb.*}
 
+%if_enabled introspection
 %files gir
 %_typelibdir/GUsb-%api_ver.typelib
 
 %files gir-devel
 %_girdir/GUsb-%api_ver.gir
+%endif
 
 %if_enabled docs
 %files devel-doc
@@ -106,6 +110,19 @@ applications that use GUsb library.
 %endif
 
 %changelog
+* Sun Mar 15 2020 Yuri N. Sedunov <aris@altlinux.org> 0.3.4-alt1
+- 0.3.4
+
+* Sat Feb 01 2020 Yuri N. Sedunov <aris@altlinux.org> 0.3.3-alt1
+- 0.3.3
+
+* Tue Jan 07 2020 Yuri N. Sedunov <aris@altlinux.org> 0.3.2-alt1
+- 0.3.2
+
+* Tue Nov 26 2019 Yuri N. Sedunov <aris@altlinux.org> 0.3.1-alt1
+- 0.3.1
+- updated License tag
+
 * Sat Feb 17 2018 Yuri N. Sedunov <aris@altlinux.org> 0.3.0-alt1
 - 0.3.0
 

@@ -13,7 +13,7 @@
 
 Summary: Firmware update daemon
 Name: fwupd
-Version: 1.3.6
+Version: 1.4.2
 Release: alt1
 License: GPLv2+
 Group: System/Configuration/Hardware
@@ -50,7 +50,8 @@ BuildRequires: gtk-doc
 BuildRequires: libuuid-devel
 BuildRequires: libgnutls-devel
 BuildRequires: gnutls-utils
-BuildRequires: meson
+BuildRequires: meson git
+BuildRequires: libjcat-devel
 BuildRequires: vala-tools
 BuildRequires: help2man
 BuildRequires: libxmlb-devel
@@ -59,14 +60,12 @@ BuildRequires: libtpm2-tss-devel
 BuildRequires: cmake
 BuildRequires: libgusb-gir-devel
 BuildRequires: python3 python3-module-pycairo python3-module-pygobject3 python3-module-Pillow rpm-build-python3
+BuildRequires: /proc
 
 %if_enabled dell
 BuildRequires: libsmbios-devel
 %endif
 
-%if_enabled tests
-BuildRequires: /proc
-%endif
 
 %if_enabled uefi
 BuildRequires: libpango-devel
@@ -82,6 +81,7 @@ Obsoletes: fwupdate
 
 Requires: fwupd-labels = %EVR
 Requires: bubblewrap
+Requires: libgusb >= 0.3.4
 
 %description
 fwupd is a daemon to allow session software to update device firmware.
@@ -168,19 +168,22 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 
 %files -f %name.lang
 %doc README.md AUTHORS COPYING
+%config(noreplace)%_sysconfdir/fwupd/ata.conf
 %config(noreplace)%_sysconfdir/fwupd/daemon.conf
 %config(noreplace)%_sysconfdir/fwupd/thunderbolt.conf
+%config(noreplace)%_sysconfdir/fwupd/upower.conf
 %dir %_libexecdir/fwupd
 %dir %_iconsdir/hicolor/scalable/apps
 %_libexecdir/fwupd/fwupd
-%_libexecdir/fwupd/fwupdtool
-%_libexecdir/fwupd/fwupdagent
+%_bindir/fwupdtool
+%_bindir/fwupdagent
 %_libexecdir/fwupd/fwupdoffline
-%_libexecdir/fwupd/fwupdtpmevlog
+%_bindir/fwupdtpmevlog
 %_datadir/bash-completion/completions/*
+%_datadir/fish/vendor_completions.d/fwupdmgr.fish
 %_iconsdir/hicolor/scalable/apps/org.freedesktop.fwupd.svg
 %if_enabled uefi
-%_libexecdir/fwupd/fwupdate
+%_bindir/fwupdate
 %_libdir/efi/fwupd*.efi
 %endif
 %_bindir/dfu-tool
@@ -225,11 +228,13 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %dir %_libdir/fwupd-plugins-3
 %_libdir/fwupd-plugins-3/libfu_plugin_altos.so
 %_libdir/fwupd-plugins-3/libfu_plugin_ata.so
-%_libdir/fwupd-plugins-3/libfu_plugin_csr.so
 %_libdir/fwupd-plugins-3/libfu_plugin_amt.so
 %_libdir/fwupd-plugins-3/libfu_plugin_emmc.so
+%_libdir/fwupd-plugins-3/libfu_plugin_ccgx.so
 %_libdir/fwupd-plugins-3/libfu_plugin_colorhug.so
 %_libdir/fwupd-plugins-3/libfu_plugin_coreboot.so
+%_libdir/fwupd-plugins-3/libfu_plugin_csr.so
+%_libdir/fwupd-plugins-3/libfu_plugin_cpu.so
 %if_enabled dell
 %_libdir/fwupd-plugins-3/libfu_plugin_dell.so
 %_libdir/fwupd-plugins-3/libfu_plugin_dell_esrt.so
@@ -237,6 +242,8 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_libdir/fwupd-plugins-3/libfu_plugin_dell_dock.so
 %_libdir/fwupd-plugins-3/libfu_plugin_dfu.so
 %_libdir/fwupd-plugins-3/libfu_plugin_ebitdo.so
+%_libdir/fwupd-plugins-3/libfu_plugin_ep963x.so
+%_libdir/fwupd-plugins-3/libfu_plugin_fresco_pd.so
 %_libdir/fwupd-plugins-3/libfu_plugin_tpm.so
 %_libdir/fwupd-plugins-3/libfu_plugin_tpm_eventlog.so
 %_libdir/fwupd-plugins-3/libfu_plugin_fastboot.so
@@ -247,9 +254,10 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_libdir/fwupd-plugins-3/libfu_plugin_solokey.so
 %_libdir/fwupd-plugins-3/libfu_plugin_steelseries.so
 %_libdir/fwupd-plugins-3/libfu_plugin_jabra.so
+%_libdir/fwupd-plugins-3/libfu_plugin_logind.so
 %_libdir/fwupd-plugins-3/libfu_plugin_optionrom.so
 %_libdir/fwupd-plugins-3/libfu_plugin_synaptics_rmi.so
-%_libdir/fwupd-plugins-3/libfu_plugin_vli_usbhub.so
+%_libdir/fwupd-plugins-3/libfu_plugin_vli.so
 %_libdir/fwupd-plugins-3/libfu_plugin_synaptics_cxaudio.so
 %_libdir/fwupd-plugins-3/libfu_plugin_logitech_hidpp.so
 %_libdir/fwupd-plugins-3/libfu_plugin_synaptics_prometheus.so
@@ -299,9 +307,25 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_datadir/installed-tests/fwupd/*.test
 %_datadir/installed-tests/fwupd/*.cab
 %_datadir/installed-tests/fwupd/*.sh
-%_datadir/installed-tests/fwupd/*.py*
 
 %changelog
+* Thu May 21 2020 Anton Farygin <rider@altlinux.ru> 1.4.2-alt1
+- 1.4.2
+
+* Mon Mar 30 2020 Anton Farygin <rider@altlinux.ru> 1.3.9-alt2
+- 1.3.9
+
+* Thu Mar 26 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.3.8-alt2
+- Rebuilt with libgusb 0.3.4 due to broken symbol versioning
+  of g_usb_version_string function.
+- Added explicit libgusb >= 0.3.4 dependency.
+
+* Wed Feb 19 2020 Anton Farygin <rider@altlinux.ru> 1.3.8-alt1
+- 1.3.8
+
+* Sun Feb 02 2020 Anton Farygin <rider@altlinux.ru> 1.3.7-alt1
+- 1.3.7
+
 * Fri Jan 10 2020 Anton Farygin <rider@altlinux.ru> 1.3.6-alt1
 - 1.3.6
 
