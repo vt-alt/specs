@@ -1,6 +1,6 @@
 Name:           x2goclient
-Version:        4.1.2.1
-Release:        alt3
+Version:        4.1.2.2
+Release:        alt1
 Summary:        X2Go Client application (Qt)
 
 Group:          Communications
@@ -17,9 +17,7 @@ Patch2:         x2goclient-optflags.patch
 Patch3:  	x2goclient-alt-startkde.patch
 Patch4:		x2goclient-encoding.patch
 Patch5:		x2goclient-alt-no-pam.patch
-Patch6:		alt-qt5.11.patch
 Patch7:		x2goclient-alt-select-broker-sessions.patch
-Patch8:		x2goclient-strip-home.patch
 Patch9:		x2goclient-use-utf8.patch
 
 BuildRequires(pre): libssh-devel
@@ -66,9 +64,7 @@ You can use it to connect to running sessions and start new sessions.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 %patch7 -p1
-%patch8 -p1
 %patch9 -p1
 # update russian translations
 cat %SOURCE1 >res/i18n/x2goclient_ru.ts
@@ -109,6 +105,9 @@ ln -s ../../x2go/x2goplugin-apache.conf %buildroot%_sysconfdir/httpd/conf.d/x2go
 %_man1dir/%name.1*
 
 %changelog
+* Wed Jun 03 2020 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.2-alt1
+- New version (Closes: #38558)
+
 * Wed Jan 29 2020 Oleg Solovyov <mcpain@altlinux.org> 4.1.2.1-alt3
 - Strip home from paths (Closes: #37931, #37934)
 - Send commands via SSH using UTF-8 (Closes: #37933)
