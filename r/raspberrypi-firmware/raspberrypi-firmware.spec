@@ -2,8 +2,8 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20200228
-Release: alt2
+Version: 20200527
+Release: alt1
 Url: https://github.com/raspberrypi/firmware
 License: distributable
 Group: System/Kernel and hardware
@@ -71,14 +71,21 @@ Requires: u-boot-rpi3
 
 cp -a %buildroot/%target_rpi3/bootcode.bin %buildroot/%target_rpi4
 
-echo 'enable_uart=1' > %buildroot/%target_rpi3/config.txt
-echo 'enable_uart=1' > %buildroot/%target_rpi4/config.txt
-
 %ifarch aarch64
-echo 'arm_64bit=1' >> %buildroot/%target_rpi4/config.txt
-echo 'disable_overscan=1' >> %buildroot/%target_rpi4/config.txt
-echo 'dtparam=audio=on' >> %buildroot/%target_rpi4/config.txt
+cat>%buildroot/%target_rpi4/config.txt<<EOF
+arm_64bit=1
+EOF
 %endif
+
+tee --append %buildroot/%target_rpi3/config.txt %buildroot/%target_rpi4/config.txt<<EOF
+enable_uart=1
+disable_overscan=1
+dtparam=audio=on
+EOF
+
+cat>>%buildroot/%target_rpi4/config.txt<<EOF
+dtoverlay=vc4-fkms-v3d
+EOF
 
 %files
 %target_rpi3/*
@@ -86,6 +93,16 @@ echo 'dtparam=audio=on' >> %buildroot/%target_rpi4/config.txt
 %doc %_docdir/%name
 
 %changelog
+* Tue Jun 02 2020 Dmitry Terekhin <jqt4@altlinux.org> 20200527-alt1
+- Added parameter in config.txt for RPi4:
+- dtoverlay=vc4-fkms-v3d
+- New snapshot
+
+* Thu Apr 16 2020 Anton Midyukov <antohami@altlinux.org> 20200228-alt3
+- Also added parameters in config.txt for RPi3:
+- disable_overscan=1
+- dtparam=audio=on
+
 * Wed Apr 01 2020 Dmitry Terekhin <jqt4@altlinux.org> 20200228-alt2
 - Added parameters in config.txt for RPi4:
 - disable_overscan=1
