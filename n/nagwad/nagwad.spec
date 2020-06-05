@@ -1,6 +1,6 @@
 Name: 	  nagwad
 Version:  0.9.6
-Release:  alt1
+Release:  alt2
 
 Summary:  Nagios watch daemon
 License:  GPLv3
@@ -92,6 +92,11 @@ mkdir -p %buildroot/var/log/nagwad
 %config(noreplace) %_sysconfdir/nagstamon/actions/*.conf
 
 %changelog
+* Thu May 28 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.6-alt2
+- Fixed documentation (signal.md):
+  -- replace '.cnf' with '.cfg' (thx vercha@);
+  -- added "nagstamon" package to the server list (thx nbr@).
+
 * Fri May 22 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.6-alt1
 - Use root@$ADDRESS$ for the Lock_host action.
 - Produce and install signal.html.
