@@ -1,9 +1,9 @@
 Name: 	  laptop-mode-tools
-Version:  1.72.2
+Version:  1.73.1
 Release:  alt1
 
 Summary:  Tools for power savings based on battery/AC status
-License:  GPL
+License:  GPL-2.0+
 Group:    System/Base
 URL:      http://rickysarraf.github.io/laptop-mode-tools/
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -29,7 +29,7 @@ various other power savings.
 %patch1 -p1
 
 %build
-DESTDIR=%buildroot INIT_D=%buildroot%_initdir MAN_D=%_mandir INSTALL=install ./install.sh
+DESTDIR=%buildroot INIT_D=%buildroot%_initdir MAN_D=%_mandir INSTALL=install TMPFILES_D=%_tmpfilesdir ./install.sh
 
 %preun
 %preun_service laptop-mode
@@ -53,11 +53,15 @@ DESTDIR=%buildroot INIT_D=%buildroot%_initdir MAN_D=%_mandir INSTALL=install ./i
 %_sysconfdir/power/event.d/*
 %_datadir/laptop-mode-tools
 %_libexecdir/pm-utils/sleep.d/*
-%_libexecdir/tmpfiles.d/laptop-mode.conf
+%_tmpfilesdir/laptop-mode.conf
 %_datadir/polkit-1/actions/org.linux.lmt.gui.policy
 %_man8dir/*
 
 %changelog
+* Tue Jan 14 2020 Andrey Cherepanov <cas@altlinux.org> 1.73.1-alt1
+- New version.
+- Fix License according to SPDX.
+
 * Fri Feb 09 2018 Andrey Cherepanov <cas@altlinux.org> 1.72.2-alt1
 - New version.
 

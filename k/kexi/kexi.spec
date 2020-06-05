@@ -18,7 +18,7 @@
 
 Name: kexi
 Version: 3.2.0
-Release: alt1
+Release: alt4
 %K5init no_altplace
 
 Group: Databases
@@ -39,7 +39,7 @@ Patch1: alt-ftbfs.patch
 # Automatically added by buildreq on Wed Nov 01 2017 (-bi)
 # optimized out: cmake cmake-modules elfutils gcc-c++ glib2-devel glibc-devel-static glibc-kernheaders-generic glibc-kernheaders-x86 kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-ki18n-devel kf5-kitemviews-devel kf5-kjobwidgets-devel kf5-kproperty kf5-kreport kf5-kservice-devel kf5-kwidgetsaddons-devel kf5-kxmlgui-devel kf5-solid-devel kf5-sonnet-devel libEGL-devel libGL-devel libgpg-error libpq-devel libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-printsupport libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-test libqt5-webchannel libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libssl-devel libstdc++-devel libxcbutil-keysyms mariadb-client perl pkg-config python-base python-modules python3 python3-base python3-module-yieldfrom qt5-base-common qt5-base-devel qt5-declarative-devel qt5-tools-devel rpm-build-python3 ruby ruby-stdlibs xset
 #BuildRequires: appstream extra-cmake-modules git-core gtk-update-icon-cache icon-theme-breeze kde4-marble-devel kde5-kdb-devel kf5-karchive-devel kf5-kcrash-devel kf5-kguiaddons-devel kf5-kiconthemes-devel kf5-kio-devel kf5-kparts-devel kf5-kproperty-devel kf5-kreport-devel kf5-ktexteditor-devel kf5-ktextwidgets-devel libmysqlclient-devel libmysqld-devel postgresql-devel python-module-google python3-dev python3-module-zope qt5-tools-devel-static qt5-wayland-devel qt5-webkit-devel rpm-build-ruby
-BuildRequires(pre): rpm-build-ubt rpm-build-kf5
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: icon-theme-breeze
 BuildRequires: extra-cmake-modules qt5-tools-devel-static qt5-wayland-devel
 #BuildRequires: qt5-webkit-devel
@@ -159,6 +159,11 @@ Requires: %name-common = %EVR
 %prep
 %setup
 %patch1 -p1
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -type f -name '*.cpp' -o -name '*.hpp' -o -name '*.h' |
+	xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 %K5build \
@@ -228,6 +233,15 @@ done
 %_libdir/libkexidatatable%sover.so.*
 
 %changelog
+* Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt4
+- fix to build with new Qt
+
+* Wed Sep 04 2019 Michael Shigorin <mike@altlinux.org> 3.2.0-alt3
+- E2K: strip UTF-8 BOM for lcc < 1.24
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 3.2.0-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt1
 - new version
 

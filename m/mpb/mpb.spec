@@ -1,6 +1,6 @@
 Name: mpb
 Version: 1.5
-Release: alt3
+Release: alt4
 Summary: MIT Photonic Bands
 License: GPLv2+
 Group: Sciences/Physics
@@ -31,20 +31,6 @@ especially designed for the study of photonic crystals (a.k.a. photonic
 band-gap materials), but is also applicable to many other problems in
 optics, such as waveguides and resonator systems. (For example, it can
 solve for the modes of waveguides with arbitrary cross-sections.)
-
-%package doc
-Summary: Documentation for MIT Photonic Bands (MPB)
-Group: Documentation
-BuildArch: noarch
-
-%description doc
-The MIT Photonic-Bands (MPB) package is a free program for computing the
-band structures (dispersion relations) and electromagnetic modes of
-periodic dielectric structures, on both serial and parallel computers.
-It was developed by Steven G. Johnson at MIT along with the Joannopoulos
-Ab Initio Physics group.
-
-This package contains documentation for MIT Photonic Bands (MPB).
 
 %package -n lib%name
 Summary: Shared libraries of MIT Photonic Bands (MPB)
@@ -99,13 +85,10 @@ export CPPFLAGS="%optflags"
 %makeinstall_std
 
 %files
-%doc AUTHORS ChangeLog COPYING COPYRIGHT NEWS README* TODO
+%doc AUTHORS COPYING COPYRIGHT NEWS.md README* TODO
 %_bindir/*
 %_man1dir/*
 %_datadir/%name
-
-%files doc
-%doc doc/*
 
 %files -n lib%name
 %_libdir/*.so.*
@@ -115,6 +98,9 @@ export CPPFLAGS="%optflags"
 %_libdir/*.so
 
 %changelog
+* Sat Mar 28 2020 Grigory Ustinov <grenka@altlinux.org> 1.5-alt4
+- Build new version.
+
 * Mon Dec 03 2018 Grigory Ustinov <grenka@altlinux.org> 1.5-alt3
 - Rebuilt with guile22.
 
