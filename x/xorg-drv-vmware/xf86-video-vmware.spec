@@ -1,17 +1,21 @@
 %define uname xf86-video-vmware
+
 Name: xorg-drv-vmware
 Version: 13.3.0
-Release: alt1
+Release: alt2
+Epoch: 1
+
 Summary: VMware SVGA Device video driver
 License: MIT/X11
-Epoch: 1
 Group: System/X11
+
 Url: http://cgit.freedesktop.org/xorg/driver/xf86-video-vmware
-
-PreReq: XORG_ABI_VIDEODRV = %get_xorg_abi_videodrv
-
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
+
+ExclusiveArch: x86_64 %ix86
+
+PreReq: XORG_ABI_VIDEODRV = %get_xorg_abi_videodrv
 
 BuildRequires(Pre): xorg-sdk xorg-util-macros
 BuildRequires: libXext-devel xorg-proto-devel libxatracker-devel libudev-devel
@@ -20,7 +24,7 @@ BuildRequires: libXext-devel xorg-proto-devel libxatracker-devel libudev-devel
 %summary
 
 %prep
-%setup -q
+%setup
 %patch -p1
 
 %build
@@ -32,7 +36,7 @@ BuildRequires: libXext-devel xorg-proto-devel libxatracker-devel libudev-devel
 %make_build
 
 %install
-%make DESTDIR=%buildroot install
+%makeinstall_std
 
 %files
 %dir %_x11modulesdir/drivers
@@ -40,6 +44,10 @@ BuildRequires: libXext-devel xorg-proto-devel libxatracker-devel libudev-devel
 %_man4dir/*
 
 %changelog
+* Thu Jun 13 2019 Michael Shigorin <mike@altlinux.org> 1:13.3.0-alt2
+- added ExclusiveArch:
+- minor spec cleanup
+
 * Thu May 31 2018 Valery Inozemtsev <shrek@altlinux.ru> 1:13.3.0-alt1
 - 13.3.0
 

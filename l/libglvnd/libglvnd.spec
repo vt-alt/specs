@@ -1,16 +1,17 @@
 Name: libglvnd
-Version: 1.1.1
-Release: alt1
+Version: 1.3.1
+Release: alt0.p9
 Epoch: 7
 Group: System/Libraries
 Summary: The GL Vendor-Neutral Dispatch library
-Url: https://github.com/NVIDIA/libglvnd
+Url: https://gitlab.freedesktop.org/glvnd/libglvnd
 License: MIT
 
-Provides: libGLdispatch = %epoch:%version-%release libglvnd0 = %epoch:%version-%release
-Obsoletes: libGLdispatch < %epoch:%version-%release libglvnd0 < %epoch:%version-%release
+Provides: libGLdispatch = %epoch:%version-%release
+Obsoletes: libGLdispatch < %epoch:%version-%release
 
 Source: %name-%version.tar
+Patch: %name-%version.patch
 
 BuildRequires: libXext-devel python-modules-compiler python-modules-distutils python-modules-xml xorg-glproto-devel
 
@@ -21,8 +22,7 @@ arbitrating OpenGL API calls between multiple vendors on a per-screen basis
 %package devel
 Summary: Development files for %name
 Group: Development/C
-Provides: libglvnd0-devel = %epoch:%version-%release
-Obsoletes: libglvnd0-devel < %epoch:%version-%release
+Conflicts: libGL-devel < 19.2.2
 
 %description devel
 The %name-devel package contains libraries and header files for
@@ -31,8 +31,6 @@ developing applications that use %name
 %package -n libOpenGL
 Summary: OpenGL support for libglvnd
 Group: System/Libraries
-Provides: libglvnd0-opengl = %epoch:%version-%release
-Obsoletes: libglvnd0-opengl < %epoch:%version-%release
 
 %description -n libOpenGL
 libOpenGL is the common dispatch interface for the workstation OpenGL API
@@ -43,6 +41,13 @@ Group: System/Libraries
 
 %description -n libGLES
 libGLESv2 are the common dispatch interface for the GLES API
+
+%package -n libGLES-devel
+Summary: GLES development package
+Group: Development/C
+
+%description -n libGLES-devel
+GLES development package
 
 %package -n libEGL
 Summary: EGL support for libglvnd
@@ -56,8 +61,6 @@ libEGL are the common dispatch interface for the EGL API
 Summary: GLX support for libglvnd
 Group: System/Libraries
 Requires: libGLX-mesa
-Provides: libglvnd0-glx = %epoch:%version-%release
-Obsoletes: libglvnd0-glx < %epoch:%version-%release
 
 %description -n libGLX
 libGLX are the common dispatch interface for the GLX API
@@ -73,10 +76,12 @@ libGL are the common dispatch interface for the GLX API
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 %autoreconf
-%configure
+%configure \
+	--disable-gles1
 %make_build
 
 %install
@@ -86,6 +91,7 @@ mkdir -p %buildroot{%_sysconfdir,%_datadir}/glvnd/egl_vendor.d
 mkdir -p %buildroot{%_sysconfdir,%_datadir}/egl/egl_external_platform.d
 
 rm -f %buildroot%_libdir/libGLESv1*
+rm -f %buildroot%_pkgconfigdir/glesv1*.pc
 
 %files
 %doc README.md
@@ -97,7 +103,7 @@ rm -f %buildroot%_libdir/libGLESv1*
 %_libdir/libOpenGL.so.*
 
 %files -n libGLES
-%_libdir/libGLESv2.so.*
+%_libdir/libGLES*.so.*
 
 %files -n libGLX
 %_libdir/libGLX.so.*
@@ -115,11 +121,42 @@ rm -f %buildroot%_libdir/libGLESv1*
 %_libdir/libEGL.so.*
 
 %files devel
+%_includedir/EGL
+%_includedir/GL
+%_includedir/KHR
 %_includedir/glvnd
 %_libdir/lib*.so
-%_pkgconfigdir/%name.pc
+%exclude %_libdir/libGLES*.so
+%_pkgconfigdir/*.pc
+%exclude %_pkgconfigdir/gles*.pc
+
+%files -n libGLES-devel
+%_includedir/GLES*
+%_libdir/libGLES*.so
+%_pkgconfigdir/gles*.pc
 
 %changelog
+* Wed May 20 2020 Valery Inozemtsev <shrek@altlinux.ru> 7:1.3.1-alt0.p9
+- backport to p9 branch
+
+* Tue Mar 10 2020 Valery Inozemtsev <shrek@altlinux.ru> 7:1.3.1-alt1
+- 1.3.1
+
+* Wed Feb 19 2020 Valery Inozemtsev <shrek@altlinux.ru> 7:1.3.0-alt1
+- 1.3.0
+
+* Tue Nov 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:1.2.0-alt4
+- fixed conflicts between libglvnd-devel and libGLES-devel
+
+* Mon Nov 25 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:1.2.0-alt3
+- git snapshot master.9ba775e
+
+* Wed Oct 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:1.2.0-alt2
+- update GL/gl.h to match Mesa
+
+* Thu Oct 10 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:1.2.0-alt1
+- 1.2.0
+
 * Thu Mar 14 2019 Valery Inozemtsev <shrek@altlinux.ru> 7:1.1.1-alt1
 - 1.1.1
 

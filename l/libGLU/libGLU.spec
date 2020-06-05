@@ -1,5 +1,5 @@
 Name: libGLU
-Version: 9.0.0
+Version: 9.0.1
 Release: alt1
 Epoch: 4
 License: MIT
@@ -48,6 +48,9 @@ Mesa libGLU development package
 %_pkgconfigdir/glu.pc
 
 %changelog
+* Mon Mar 30 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:9.0.1-alt1
+- 9.0.1
+
 * Mon Sep 10 2012 Valery Inozemtsev <shrek@altlinux.ru> 4:9.0.0-alt1
 - 9.0.0
 

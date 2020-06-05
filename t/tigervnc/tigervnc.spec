@@ -2,8 +2,8 @@
 %define _xorgmoduledir %_libdir/X11/modules
 
 Name: tigervnc
-Version: 1.9.0
-Release: alt4
+Version: 1.10.0
+Release: alt1
 Summary: A TigerVNC remote display system
 
 Group: Networking/Remote access
@@ -19,32 +19,42 @@ Source0: %name-%version.tar.gz
 Source1: vncserver.init
 Source2: vncserver.service
 
-Source100: xorg-server-source.tar.bz2
+Source100: xorg-server-source.tar
 Source101: tightpasswd.tar.gz
 Source200: repatch_spec.sh
-Source201: repatch_spec.unused
+Source201: tigervnc.unused
 
 ## FC patches
-Patch1: FC-cookie.patch
-Patch2: FC-libvnc-os.patch
-Patch3: FC-tigervnc11-rh692048.patch
-Patch4: FC-xserver116-rebased.patch
-Patch5: FC-inetd-nowait.patch
-Patch6: FC-manpages.patch
-Patch7: FC-getmaster.patch
-Patch8: FC-shebang.patch
-Patch9: FC-xstartup.patch
-Patch10: FC-xserver118.patch
-Patch11: FC-xorg118-QueueKeyboardEvents.patch
+Patch1: FC-xserver120.patch
+Patch2: FC-manpages.patch
+Patch3: FC-getmaster.patch
+Patch4: FC-shebang.patch
+Patch5: FC-xstartup.patch
+Patch6: FC-utilize-system-crypto-policies.patch
+Patch7: FC-passwd-crash-with-malloc-checks.patch
 
 ## Ubuntu patches
+Patch101: Ubuntu-0102-fix-spelling-error-in-manpages-to-shutup-lintian.patch
+Patch102: Ubuntu-0151-make-cmake-enable-options-mandatory-if-turned-on.patch
+Patch103: Ubuntu-0175-xtigervncviewer-WM_CLASS.patch
+Patch104: Ubuntu-0176-tigervnc-1.9-fix-crash-on-disconnect.patch
+Patch105: Ubuntu-rh_0904-Added-RH-patch-tigervnc11-rh588342.patch-which-fixes.patch
+Patch106: Ubuntu-rh_tigervnc-manpages.patch
+Patch107: Ubuntu-rh_tigervnc-cursor.patch
+Patch108: Ubuntu-rh_tigervnc-working-tls-on-fips-systems.patch
+Patch109: Ubuntu-find-fltk-libs.patch
+Patch110: Ubuntu-x0vncserver-build-make-missing-libraries-fatal-errors.patch
+Patch111: Ubuntu-fix-linking.patch
+Patch112: Ubuntu-CVE-2014-8240-849479.patch
+Patch113: Ubuntu-CVE-2014-8241-849478.patch
 
 ## ALT patches
 Patch501: tigervnc-stdinpasswd.patch
+Patch502: ALT-FC-xserver120.patch
 
-# Automatically added by buildreq on Mon Apr 25 2016
-# optimized out: cmake-modules fontconfig libGL-devel libICE-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libgpg-error libgpg-error-devel libp11-kit libstdc++-devel perl pkg-config python-base xorg-fixesproto-devel xorg-fontsproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-recordproto-devel xorg-xextproto-devel xorg-xproto-devel
-BuildRequires: ImageMagick-tools cmake doxygen flex gcc-c++ libSM-devel libXdmcp-devel libXfont2-devel libXtst-devel libdrm-devel libfltk-devel libgcrypt-devel libgnutls-devel libjpeg-devel libpam-devel libpixman-devel libssl-devel libxkbfile-devel libxshmfence-devel xorg-bigreqsproto-devel xorg-damageproto-devel xorg-dri2proto-devel xorg-dri3proto-devel xorg-glproto-devel xorg-presentproto-devel xorg-randrproto-devel xorg-renderproto-devel xorg-resourceproto-devel xorg-scrnsaverproto-devel xorg-videoproto-devel xorg-xcmiscproto-devel xorg-xtrans-devel zlib-devel
+# Automatically added by buildreq on Thu Dec 19 2019
+# optimized out: cmake-modules fontconfig glibc-kernheaders-generic glibc-kernheaders-x86 libGL-devel libICE-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libcrypt-devel libglvnd-devel libgpg-error libgpg-error-devel libsasl2-3 libstdc++-devel perl pkg-config python2-base sh4 xorg-proto-devel
+BuildRequires: ImageMagick-tools cmake doxygen flex gcc-c++ libSM-devel libXdamage-devel libXdmcp-devel libXfont2-devel libXinerama-devel libXrandr-devel libXtst-devel libdrm-devel libfltk-devel libgcrypt-devel libgnutls-devel libjpeg-devel libpam-devel libpciaccess-devel libpixman-devel libssl-devel libxkbfile-devel libxshmfence-devel xorg-xtrans-devel zlib-devel
 
 BuildRequires: libfltk-devel >= 1.3.3
 
@@ -95,28 +105,41 @@ TigerVNC extension for Xorg server
 %prep
 %setup -a101 -a100
 
-# XXX .xserver116-rebased patch is rebased, needs some handwork
-# 1,$s@xorg-server-1.17.1/@rebased/unix/xserver/@g
-
 ## FC apply patches
+#patch1 -p1 -b .xserver120-rebased
+%patch2 -p1 -b .manpages
+%patch3 -p1 -b .getmaster
+%patch4 -p1 -b .shebang
+%patch5 -p1 -b .xstartup
+%patch6 -p1 -b .utilize-system-crypto-policies
+%patch7 -p1 -b .tigervnc-passwd-crash-with-malloc-checks
+
 #%patch1 -p1 -b .cookie
 #%patch2 -p1 -b .libvnc-os
-%patch3 -p1 -b .rh692048
-%patch4 -p1 -b .xserver116-rebased
 #%patch5 -p1 -b .inetd-nowait
-%patch6 -p1 -b .manpages
-%patch7 -p1 -b .getmaster
-%patch8 -p1 -b .shebang
-%patch9 -p1 -b .xstartup
 #%patch10 -p1 -b .xserver118
 #%patch11 -p1 -b .xorg118-QueueKeyboardEvents
-
 ## Ubuntu apply patches
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+#patch104 -p1
+%patch105 -p1
+#patch106 -p1
+%patch107 -p1
+%patch108 -p1
+%patch109 -p1
+%patch110 -p1
+%patch111 -p1
+%patch112 -p1
+%patch113 -p1
 
 ## ALT apply patches
 %patch501 -p1
+%patch502 -p1
 
 %build
+
 %add_optflags -fPIC
 %cmake_insource
 %make_build
@@ -137,7 +160,6 @@ pushd unix/xserver
 	--disable-unit-tests \
 	--disable-wayland \
 	--disable-xephyr \
-	--disable-xinerama \
 	--disable-xnest \
 	--disable-xorg \
 	--disable-xvfb \
@@ -252,6 +274,11 @@ popd
 %_xorgmoduledir/extensions/*.so
 
 %changelog
+* Thu Dec 19 2019 Fr. Br. George <george@altlinux.ru> 1.10.0-alt1
+- Version up
+- Update to XServer 1.20.6
+- Update patches
+
 * Wed Jul 24 2019 Fr. Br. George <george@altlinux.ru> 1.9.0-alt4
 - Update to XServer 1.20 (ALT: #37059)
 

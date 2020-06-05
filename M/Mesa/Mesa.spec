@@ -66,7 +66,7 @@
 %endif
 
 Name: Mesa
-Version: 19.1.8
+Version: 19.2.2
 Release: alt1.p9
 Epoch: 4
 License: MIT
@@ -86,7 +86,7 @@ BuildRequires: libdrm-devel libexpat-devel python-modules libselinux-devel libxc
 BuildRequires: libXdmcp-devel libffi-devel libelf-devel libva-devel libvdpau-devel libXvMC-devel xorg-proto-devel libxshmfence-devel
 BuildRequires: libXrandr-devel libnettle-devel libelf-devel zlib-devel libwayland-client-devel libwayland-server-devel
 BuildRequires: libwayland-egl-devel python-module-libxml2 python3-module-mako python-module-argparse wayland-protocols
-BuildRequires: libclc-devel libglvnd-devel >= 0.2.0
+BuildRequires: libclc-devel libglvnd-devel
 %ifarch %radeon_arches
 BuildRequires: llvm-devel clang-devel
 %ifarch %link_static_llvm_arches
@@ -111,7 +111,7 @@ Mesa is an OpenGL compatible 3D graphics library
 %package -n libGL-devel
 Summary: Development files for Mesa Library
 Group: Development/C
-Requires: libglvnd-devel >= 0.2.0 libGLX-mesa = %epoch:%version-%release
+Requires: libglvnd-devel libGLX-mesa = %epoch:%version-%release
 
 %description -n libGL-devel
 libGL-devel contains the libraries and header files needed to
@@ -127,18 +127,10 @@ Mesa EGL library
 %package -n libEGL-devel
 Summary: Mesa libEGL development package
 Group: Development/C
-Requires: libglvnd-devel >= 0.2.0
+Requires: libglvnd-devel
 
 %description -n libEGL-devel
 Mesa libEGL development package
-
-%package -n libGLES-devel
-Summary: Mesa libGLES development package
-Group: Development/C
-Requires: libglvnd-devel >= 0.2.0
-
-%description -n libGLES-devel
-Mesa libGLES development package
 
 %package -n libgbm
 Summary: GBM buffer management library
@@ -221,16 +213,6 @@ Group: System/X11
 
 %description -n xorg-dri-armsoc
 DRI drivers for various SoCs
-
-%package -n mesa-dri-drivers
-Summary: Mesa-based DRI drivers
-Group: System/X11
-Requires: xorg-dri-swrast
-Requires: xorg-dri-radeon
-Requires: xorg-dri-nouveau
-
-%description -n mesa-dri-drivers
-Mesa-based DRI drivers.
 
 %set_verify_elf_method unresolved=relaxed
 
@@ -348,29 +330,20 @@ sed -i '/.*nouveau.*/d' xorg-dri-armsoc.list
 sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 %endif
 
-cat << __EOF__ > %buildroot%_pkgconfigdir/glesv2.pc
-prefix=/usr
-libdir=\${prefix}/lib64
-includedir=\${prefix}/include
-
-Name: glesv2
-Description: Mesa OpenGL ES 2.0 library
-Version: %version
-Libs: -L\${libdir} -lGLESv2
-Libs.private: -lpthread -pthread -lm -ldl
-Cflags: -I\${includedir}
-__EOF__
-
 # remove unpackaged files
-cd %buildroot
- rm -f .%_includedir/GL/glcorearb.h
+rm -f %buildroot%_includedir/GL/*.h
+rm -f %buildroot%_pkgconfigdir/*gl.pc
+rm -f %buildroot%_includedir/EGL/egl.h
+rm -f %buildroot%_includedir/EGL/eglext.h
+rm -f %buildroot%_includedir/EGL/eglplatform.h
+rm -fr %buildroot%_includedir/GLES*
+rm -fr %buildroot%_includedir/KHR
 %ifarch %vulkan_intel_arches
- rm -f .%_includedir/vulkan/vulkan_intel.h
+rm -f %buildroot%_includedir/vulkan/vulkan_intel.h
 %endif
 %ifarch %opencl_arches
- rm -f .%_libdir/libMesaOpenCL.so
+rm -f %buildroot%_libdir/libMesaOpenCL.so
 %endif
-cd -
 
 %define _unpackaged_files_terminate_build 1
 
@@ -380,17 +353,9 @@ cd -
 %_libdir/libglapi.so.*
 
 %files -n libGL-devel
-%dir %_includedir/GL
 %_includedir/GL/internal
-%_includedir/GL/gl.h
-%_includedir/GL/gl_mangle.h
-%_includedir/GL/glext.h
-%_includedir/GL/glx.h
-%_includedir/GL/glx_mangle.h
-%_includedir/GL/glxext.h
 %_libdir/libGLX_mesa.so
 %_libdir/libglapi.so
-%_pkgconfigdir/gl.pc
 %_pkgconfigdir/dri.pc
 
 %if_enabled egl
@@ -400,16 +365,7 @@ cd -
 
 %files -n libEGL-devel
 %_includedir/EGL
-%_includedir/KHR
 %_libdir/libEGL_mesa.so
-%_pkgconfigdir/egl.pc
-%endif
-
-%if_enabled gles2
-%files -n libGLES-devel
-%_includedir/GLES2
-%_includedir/GLES3
-%_pkgconfigdir/glesv2.pc
 %endif
 
 %files -n libgbm
@@ -504,14 +460,18 @@ cd -
 %files -n xorg-dri-armsoc -f xorg-dri-armsoc.list
 %endif
 
-%files -n mesa-dri-drivers
-
 %changelog
+* Wed May 20 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.2-alt1.p9
+- backport to p9 branch
+
 * Wed Mar 25 2020 Andrey Cherepanov <cas@altlinux.org> 4:19.1.8-alt1.p9
 - Add metapackage mesa-dri-drivers for compatibility with some legacy packages
 
-* Thu Oct 31 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.8-alt1
-- 19.1.8
+* Mon Oct 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.2-alt1
+- 19.2.2
+
+* Thu Oct 10 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.1-alt1
+- 19.2.1
 
 * Wed Sep 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.1.7-alt1
 - 19.1.7

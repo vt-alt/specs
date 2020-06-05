@@ -1,9 +1,9 @@
 Name: vdr
 Version: 2.2.0
-Release: alt6
+Release: alt8
 
 Summary: Digital satellite receiver box with advanced features
-License: GPL
+License: GPLv2
 Group: Video
 Url: http://www.tvdr.de
 
@@ -15,7 +15,7 @@ BuildRequires: libfreetype-devel libjpeg-devel libssl-devel libudev-devel
 BuildRequires: libGraphicsMagick-c++-devel libxine2-devel libzvbi-devel
 BuildRequires: libGL-devel libGLU-devel libglut-devel libX11-devel libXext-devel
 BuildRequires: libXinerama-devel libXrandr-devel libXrender-devel libXv-devel
-BuildRequires: boost-devel libupnp-devel libtntnet-devel libtntdb-devel libdbus-glib-devel perl-Date-Manip
+BuildRequires: boost-devel libtntnet-devel libtntdb-devel libdbus-glib-devel perl-Date-Manip
 BuildRequires: libcurl-devel libcxxtools-devel libpcrecpp-devel
 # vaapidevice
 BuildRequires: pkgconfig(libva) pkgconfig(libavcodec) pkgconfig(libswscale) pkgconfig(libswresample)
@@ -103,11 +103,6 @@ Summary: VDR teletext subtitles plugin
 Group: Video
 Requires: vdr = %version-%release
 
-%package plugin-upnp
-Summary: VDR UPnP/DLNA plugin
-Group: Video
-Requires: vdr = %version-%release
-
 %package plugin-vnsiserver
 Summary: VDR Network StreamingInterface
 Group: Video
@@ -183,11 +178,6 @@ layout of the On Screen Display.
 %description plugin-ttxtsubs
 Teletext subtitles plugin for the Video Disk Recorder (VDR).
 
-%description plugin-upnp
-This plugin extends the VDR with the possibility to act as an UPnP/DLNA
-Media Server. It will serve VDR's contents in the network to any UPnP-AV
-and DLNA capable devices.
-
 %description plugin-vnsiserver
 Network streaming interface for the Video Disk Recorder (VDR).
 
@@ -238,7 +228,7 @@ sed -e 's,^#PREFIX.\+$,PREFIX = %prefix,' \
 sed -i 's,^IMAGELIB.\+$,IMAGELIB = graphicsmagick,' PLUGINS/src/text2skin/Makefile
 
 %build
-(cd PLUGINS/src/xineliboutput && sh configure)
+(cd PLUGINS/src/xineliboutput && sh configure  --disable-opengl)
 
 %make_build
 
@@ -304,11 +294,6 @@ cp -a PLUGINS/src/text2skin/{README,Docs} %buildroot%docdir/text2skin
 mkdir -p %buildroot%docdir/ttxtsubs %buildroot%confdir/plugins/ttxtsubs
 cp -p PLUGINS/src/ttxtsubs/{README,TROUBLESHOOTING} %buildroot%docdir/ttxtsubs
 
-mkdir -p %buildroot%docdir/upnp %buildroot%confdir/plugins/upnp
-cp -p PLUGINS/src/upnp/README %buildroot%docdir/upnp/
-touch %buildroot%confdir/plugins/upnp/metadata.db
-rm -rf %buildroot%_defaultdocdir/vdr-upnp-*
-
 mkdir -p %buildroot%docdir/vnsiserver
 cp -p PLUGINS/src/vnsiserver/README %buildroot%docdir/vnsiserver
 cp -a PLUGINS/src/vnsiserver/vnsiserver %buildroot%confdir/plugins
@@ -349,7 +334,6 @@ mkdir -p %buildroot%_runtimedir/vdr %buildroot%_cachedir/vdr
 %find_lang --output=ttxtsubs.lang vdr-ttxtsubs
 %find_lang --output=remoteosd.lang --append vdr-svdrpservice vdr-remoteosd
 %find_lang --output=remotetimers.lang vdr-remotetimers
-%find_lang --output=upnp.lang vdr-upnp
 %find_lang --output=vnsiserver.lang vdr-vnsiserver
 %find_lang --output=wirbelscan.lang vdr-wirbelscan
 %find_lang --output=xineliboutput.lang vdr-xineliboutput
@@ -525,18 +509,6 @@ chmod 755 %buildroot%_libexecdir/rpm/vdr.filetrigger
 %dir %attr(0770,root,_vdr) %confdir/plugins/ttxtsubs
 %plugindir/libvdr-ttxtsubs.so.%version
 
-%files plugin-upnp -f upnp.lang
-%docdir/upnp
-%dir %attr(0770,root,_vdr) %confdir/plugins/upnp
-%config(noreplace) %attr(0600,_vdr,_vdr) %confdir/plugins/upnp/metadata.db
-%config(noreplace) %attr(0600,_vdr,_vdr) %confdir/plugins/upnp/channelTitle.conf
-%plugindir/libvdr-upnp.so.%version
-%plugindir/libupnp-dvb-profiler.so.%version
-%plugindir/libupnp-file-provider.so.%version
-%plugindir/libupnp-rec-provider.so.%version
-%plugindir/libupnp-vdr-provider.so.%version
-%resdir/plugins/upnp
-
 %files plugin-vnsiserver -f vnsiserver.lang
 %docdir/vnsiserver
 %dir %attr(0770,root,_vdr) %confdir/plugins/vnsiserver
@@ -573,6 +545,12 @@ chmod 755 %buildroot%_libexecdir/rpm/vdr.filetrigger
 %_libdir/xine/plugins/*/xineplug_inp_xvdr.so
 
 %changelog
+* Sun May 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.2.0-alt8
+- drop unmaintained upnp plugin
+
+* Wed Dec 11 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.2.0-alt7
+- fix build with gcc9
+
 * Sat Nov 24 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.2.0-alt6
 - fix build with kernel headers >= 4.19
 
