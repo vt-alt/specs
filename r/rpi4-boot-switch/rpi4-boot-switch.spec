@@ -6,9 +6,10 @@
 %define ftrigger2 rpi4-boot-uboot.filetrigger
 %define ftrgrname2 rpi4-boot-uboot-filetrigger
 %define firsttimename rpi4-uboot-directory-cleanup
+%define vars rpi4-boot-vars
 
 Name: rpi4-boot-switch
-Version: 0.6
+Version: 0.8
 Release: alt1
 Summary: Switch of boot mode for Raspberry Pi 4
 License: GPLv2+
@@ -24,6 +25,7 @@ Source4: README.en
 Source5: %ftrigger
 Source6: %ftrigger2
 Source7: %firsttimename
+Source8: %vars
 
 %description
 Switch of boot mode for Raspberry Pi 4
@@ -76,6 +78,7 @@ install -m 644 %SOURCE4 ./
 install -Dpm 0755 %SOURCE5 %buildroot%_rpmlibdir/%ftrigger
 install -Dpm 0755 %SOURCE6 %buildroot%_rpmlibdir/%ftrigger2
 install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
+install -Dpm 0644 %SOURCE8 %buildroot%_sbindir/%vars
 
 %files
 %doc README.ru README.en
@@ -83,6 +86,7 @@ install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
 %_sbindir/%noub
 %_sbindir/%ubfw
 %_sbindir/%uboot
+%_sbindir/%vars
 
 %files -n %ftrgrname
 %_rpmlibdir/%ftrigger
@@ -91,6 +95,15 @@ install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
 %_rpmlibdir/%ftrigger2
 
 %changelog
+* Thu Jun 04 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.8-alt1
+- Removed read-only remounting
+- Changed copying kernel, initrd, dtb to FAT
+- Added copying overlays along with dtb
+
+* Sat May 23 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.7-alt1
+- Common file for variables
+- Adapted for armh
+
 * Sun Apr 05 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.6-alt1
 - rpi4-boot-uboot*: always edit file extlinux.conf
 
