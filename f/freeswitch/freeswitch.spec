@@ -1,5 +1,5 @@
 Name: freeswitch
-Version: 1.10.2
+Version: 1.10.3
 Release: alt1
 Epoch: 1
 
@@ -529,6 +529,9 @@ fi
 %_datadir/%name/htdocs/portal
 
 %changelog
+* Thu May 28 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.3-alt1
+- 1.10.3
+
 * Mon Feb 10 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.2-alt1
 - 1.10.2
 - removed python,freetdm, avmd and mongodb modules
