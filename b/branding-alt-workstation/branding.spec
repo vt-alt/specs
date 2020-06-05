@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.0.900
+Version: 9.0.910
 Release: alt1
 Url: https://basealt.ru
 
@@ -359,6 +359,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jun 04 2020 Mikhail Efremov <sem@altlinux.org> 9.0.910-alt1
+- Bump version.
+
 * Wed Apr 29 2020 Mikhail Efremov <sem@altlinux.org> 9.0.900-alt1
 - mate-settings: Drop gksu.
 
