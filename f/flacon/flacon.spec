@@ -1,6 +1,6 @@
 Name: flacon
 Version: 6.0.0
-Release: alt1
+Release: alt2
 
 Summary: Audio File Encoder
 Summary(ru_RU.UTF-8): Конвертер аудиофайлов
@@ -11,11 +11,24 @@ Group: Sound
 Url: http://%name.github.io/
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
-Source: https://github.com/%name/%name/archive/v%version/%name-%version.tar.gz
+# https://github.com/%name/%name/archive/v%version/%name-%version.tar.gz
+Source: %name-%version.tar
 
 BuildRequires: cmake
 BuildRequires: libuchardet-devel
 BuildRequires: qt5-tools-devel
+
+Requires: faac
+Requires: flac
+Requires: lame
+Requires: mac
+Requires: mp3gain
+Requires: opus-tools
+Requires: sox-base
+Requires: ttaenc
+Requires: vorbisgain
+Requires: vorbis-tools
+Requires: wavpack
 
 Provides: %name-qt5 = %version
 Obsoletes: %name-qt5
@@ -76,6 +89,9 @@ popd
 %_man1dir/%name.1.*
 
 %changelog
+* Wed Jun 03 2020 Nazarov Denis <nenderus@altlinux.org> 6.0.0-alt2
+- Add requires on all needs packages (ALT #38570)
+
 * Sat May 30 2020 Nazarov Denis <nenderus@altlinux.org> 6.0.0-alt1
 - Version 6.0.0
 
