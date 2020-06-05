@@ -1,6 +1,6 @@
 Name: boomaga
 Version: 3.0.0
-Release: alt1
+Release: alt1.1
 Group: System/Configuration/Printing
 License: GPLv2 and LGPLv2+
 
@@ -8,6 +8,7 @@ Summary: A virtual printer for viewing a document before printing
 Url: http://boomaga.github.io/
 # Source: https://github.com/Boomaga/%name/archive/v%version/%name-%version.tar.gz
 Source: %name-%version.tar
+Patch1: boomaga-alt-workaround-for-ALT_38564.patch
 BuildRequires: cmake libcups-devel libpoppler-cpp-devel qt5-tools-devel zlib-devel
 
 Requires(pre): ghostscript
@@ -42,6 +43,7 @@ before printing. At this stage Boomaga makes it possible to:
 
 %prep
 %setup
+%patch1 -p2
 
 %build
 %cmake
@@ -87,6 +89,9 @@ lpadmin -x "Boomaga" || :
 %_datadir/%name/translations/*.qm
 
 %changelog
+* Sun May 31 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.0-alt1.1
+- FTBFS: fix build by strictly set DEF_CUPS_BACKEND_DIR (see ALT bug 38564)
+
 * Mon May 20 2019 Oleg Solovyov <mcpain@altlinux.org> 3.0.0-alt1
 - version 3.0.0 (Closes ALT#36748)
 
