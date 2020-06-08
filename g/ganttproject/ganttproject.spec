@@ -1,6 +1,6 @@
 Name: ganttproject
 Version: 2.7.2
-Release: alt2
+Release: alt4
 
 Summary: GanttProject is a tool for creating a project schedule by means of Gantt chart and resource load chart
 
@@ -8,19 +8,21 @@ License: GPLv2 with library exceptions
 Group: Office
 Url: http://www.ganttproject.biz/
 
-Source: %name-%version.tar
 Packager: Andrey Chetepanov <cas@altlinux.org> 
+
+Source: %name-%version.tar
+Source1: %name.desktop
+Source2: %name.xml
+Source3: %name.png
 
 BuildArch: noarch
 
-BuildRequires: rpm-build-java java-devel ant
+BuildRequires: rpm-build-java ant
+BuildRequires: java-1.8.0-openjdk-devel
 
 AutoProv: yes,noosgi
 
 Requires: java >= 1.8.0
-
-Requires(post): desktop-file-utils
-Requires(postun): desktop-file-utils
 
 %description
 GanttProject is a tool for creating a project schedule by means
@@ -37,7 +39,6 @@ and spreadsheet applications.
 %prep
 %setup
 cd ganttproject-builder
-ant clean
 
 %build
 
@@ -53,62 +54,29 @@ install -d %buildroot%_bindir
 ln -s %_datadir/%name/%name %buildroot%_bindir/%name 
 
 # Create the desktop entry
-mkdir -p %buildroot%_desktopdir
-cat > %buildroot%_desktopdir/%name.desktop << EOF
-[Desktop Entry]
-Name=GanttProject
-Comment=Project Management
-Exec=%name
-Icon=%name
-Terminal=false
-Type=Application
-StartupNotify=true
-Categories=Office;Development;ProjectManagement;X-MandrivaLinux-Office-TasksManagement;
-EOF
+install -Dm0755 %SOURCE1 %buildroot%_desktopdir/%name.desktop
 
 # Create the mime-type for GanttProject
-mkdir -p %buildroot%_datadir/mimelnk/application
-cat > %buildroot%_datadir/mimelnk/application/x-%name.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-MimeType=application/x-ganttproject
-Comment=GanttProject File
-Comment[es]=Archivo de GanttProject
-Icon=%name
-Type=MimeType
-Patterns=*.gan;
-X-KDE-AutoEmbed=false
-[Property::X-KDE-NativeExtension]
-Type=QString
-Value=.gan
-EOF
-
-# Associate the mime-type with GanttProject
-mkdir -p %buildroot%_datadir/application-registry
-cat > %buildroot%_datadir/application-registry/%name.applications << EOF
-ganttproject
-        command=ganttproject
-        name=GanttProject Project Managment Tool
-        can_open_multiple_files=true
-        expects_uris=non-file
-        requires_terminal=false
-        supported_uri_schemes=file,http,ftp
-        mime_types=application/x-ganttproject
-EOF
+install -Dm0644 %SOURCE2 %buildroot%_datadir/mime/packages/%name.xml
 
 # Copy the icon
-install -D ../ganttproject/data/resources/icons/ganttproject.png %buildroot%_datadir/icons/hicolor/32x32/apps/%name.png
+install -Dm0644 %SOURCE3 %buildroot%_datadir/icons/hicolor/64x64/apps/%name.png
 
 %files
 %doc ganttproject/AUTHORS ganttproject/LICENSE ganttproject/README
 %_bindir/%name
 %_datadir/%name/
-%_desktopdir/*
-%_datadir/application-registry/*
-%_datadir/mimelnk/application/*
-%_datadir/icons/hicolor/32x32/apps/*
+%_desktopdir/*.desktop
+%_datadir/mime/packages/%name.xml
+%_datadir/icons/hicolor/*/apps/%name.png
 
 %changelog
+* Mon Jun 08 2020 Andrey Cherepanov <cas@altlinux.org> 2.7.2-alt4
+- Fix open *.gan files in ganttproject (ALT #38024).
+
+* Fri Feb 21 2020 Andrey Cherepanov <cas@altlinux.org> 2.7.2-alt3
+- Open *.gan files in ganttproject (ALT #38024).
+
 * Mon Nov 07 2016 Andrey Cherepanov <cas@altlinux.org> 2.7.2-alt2
 - Require java-1.8.0 and later (ALT #32710)
 
