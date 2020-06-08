@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: lxqt-qtplugin
-Version: 0.15.0
+Version: 0.15.1
 Release: alt1
 
 Summary: LxQt platform integration plugin for Qt
@@ -35,6 +35,9 @@ BuildRequires: libfm-qt-devel
 %doc AUTHORS CHANGELOG LICENSE README.md
 
 %changelog
+* Sat Jun 06 2020 Anton Midyukov <antohami@altlinux.org> 0.15.1-alt1
+- new version 0.15.1
+
 * Sat Apr 25 2020 Anton Midyukov <antohami@altlinux.org> 0.15.0-alt1
 - new version 0.15.0
 
