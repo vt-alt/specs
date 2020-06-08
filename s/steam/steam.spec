@@ -1,6 +1,6 @@
 Name: steam
-Version: 1.0.0.61
-Release: alt5
+Version: 1.0.0.62
+Release: alt2
 
 Summary: Launcher for the Steam software distribution service
 License: Proprietary
@@ -8,7 +8,6 @@ Group: Games/Other
 
 URL: http://www.steampowered.com/
 Packager: Nazarov Denis <nenderus@altlinux.org>
-Vendor: Valve Corporation
 
 ExclusiveArch: %ix86
 
@@ -26,45 +25,45 @@ Requires: libnsl1
 Requires: libnss
 Requires: xz
 
-BuildRequires: ca-certificates
-
 %description
 Steam is a software distribution service with an online store, automated
 installation, automatic updates, achievements, SteamCloud synchronized
 savegame and screenshot functionality, and many social features.
 
 %prep
-%setup -n %name
+%setup -n %name-launcher
 %patch0 -p1
 %patch1 -p1
 
 %install
 %makeinstall_std
 %__rm -rf %buildroot%_bindir/%{name}deps
-%__install -Dp -m0644 lib/udev/rules.d/60-%name-input.rules %buildroot%_udevrulesdir/60-%name-input.rules
-%__install -Dp -m0644 lib/udev/rules.d/60-%name-vr.rules %buildroot%_udevrulesdir/60-%name-vr.rules
+%__install -Dp -m0644 subprojects/%name-devices/60-%name-input.rules %buildroot%_udevrulesdir/60-%name-input.rules
+%__install -Dp -m0644 subprojects/%name-devices/60-%name-vr.rules %buildroot%_udevrulesdir/60-%name-vr.rules
 
 %files
 %_bindir/%name
-%dir %_libdir/%name
-%_libdir/%name/*
-%_desktopdir/*
-%_docdir/*
-%_miconsdir/*
-%dir %_iconsdir/hicolor/24x24
-%dir %_iconsdir/hicolor/24x24/apps
-%_iconsdir/hicolor/24x24/apps/*
-%_niconsdir/*
-%_liconsdir/*
-%dir %_iconsdir/hicolor/256x256
-%dir %_iconsdir/hicolor/256x256/apps
-%_iconsdir/hicolor/256x256/apps/*
-%_man6dir/*
-%_pixmapsdir/*
+%dir %_libexecdir/%name
+%_libexecdir/%name/*
+%_desktopdir/%name.desktop
+%dir %_defaultdocdir/%name
+%_defaultdocdir/%name/*
+%_iconsdir/hicolor/*/apps/%name.png
+%_man6dir/%{name}*
+%_pixmapsdir/%{name}*.png
 %config %_udevrulesdir/60-%name-input.rules
 %config %_udevrulesdir/60-%name-vr.rules
 
 %changelog 
+* Fri Jun 05 2020 Nazarov Denis <nenderus@altlinux.org> 1.0.0.62-alt2
+- Remove dirs not related to steam package
+
+* Fri Apr 24 2020 Nazarov Denis <nenderus@altlinux.org> 1.0.0.62-alt1
+- Version 1.0.0.62
+
+* Mon Mar 16 2020 Nazarov Denis <nenderus@altlinux.org> 1.0.0.61-alt6
+- Remove build requires
+
 * Thu Aug 29 2019 Nazarov Denis <nenderus@altlinux.org> 1.0.0.61-alt5
 - Remove symlink on CA certificates
 
