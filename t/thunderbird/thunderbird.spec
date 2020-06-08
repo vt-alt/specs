@@ -12,8 +12,8 @@
 
 Summary:	Thunderbird is Mozilla's e-mail client
 Name:		thunderbird
-Version:	68.8.0
-Release:	alt2
+Version:	68.9.0
+Release:	alt1
 License:	MPL-2.0
 Group:		Networking/Mail
 URL:		https://www.thunderbird.net
@@ -31,15 +31,11 @@ Source6:	lightning-langpacks-%version.tar.xz
 Source7:	cbindgen-source.tar.bz2
 Source8:        thunderbird-wayland.desktop
 
-Patch6:		01_locale.patch
-Patch8:		thunderbird-timezones.patch
-Patch9:		thunderbird-install-paths.patch
 Patch11:	thunderbird-alt-allow-send-in-windows-1251.patch
 
 Patch21:        mozilla-1353817.patch
 Patch23:        build-aarch64-skia.patch
 Patch25:        Bug-1238661---fix-mozillaSignalTrampoline-to-work-.patch
-Patch26:        bug1375074-save-restore-x28.patch
 Patch29:        thunderbird-60.7.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
 Patch30:        thunderbird-68.2.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
 Patch31: 	mozilla-1512162.patch
@@ -56,9 +52,9 @@ BuildRequires(pre): browser-plugins-npapi-devel
 %ifarch %{arm} %{ix86}
 BuildRequires: gcc-c++
 %endif
-BuildRequires: clang7.0
-BuildRequires: clang7.0-devel
-BuildRequires: llvm7.0-devel
+BuildRequires: clang
+BuildRequires: clang-devel
+BuildRequires: llvm-devel
 BuildRequires: lld-devel
 BuildRequires: libstdc++-devel
 BuildRequires: rust
@@ -234,16 +230,12 @@ subst 's|<html:br/>|<html:br></html:br>|g' enigmail/lang/*/enigmail.dtd
 
 tar -xf %SOURCE2
 
-#patch6 -p1
-#patch8 -p2
-#patch9 -p2
 %patch11 -p2
 %patch21 -p2
 %patch23 -p2
 %ifarch %arm
 %patch25 -p1
 %endif
-#patch26 -p1
 %patch29 -p2
 %patch30 -p2
 %patch31 -p1
@@ -457,14 +449,11 @@ EOF
 chmod 755 %buildroot/%_bindir/thunderbird
 
 # rpm-build-thunderbird files
-mkdir -p %buildroot/%_sysconfdir/rpm/macros.d
-
-cp -a rpm-build/rpm.macros %buildroot/%_sysconfdir/rpm/macros.d/%r_name
-
-sed -i \
-	-e 's,@tbird_version@,%version,' \
-	-e 's,@tbird_release@,%release,' \
-	%buildroot/%_sysconfdir/rpm/macros.d/%r_name
+mkdir -p %buildroot%_rpmmacrosdir
+sed -e 's,@tbird_version@,%version,' \
+    -e 's,@tbird_release@,%release,' \
+    rpm-build/rpm.macros \
+    > %buildroot%_rpmmacrosdir/%r_name
 
 %if_with enigmail
 cp -a \
@@ -561,9 +550,29 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 #%%tbird_develdir
 
 %files -n rpm-build-%name
-%_sysconfdir/rpm/macros.d/%r_name
+%_rpmmacrosdir/%r_name
 
 %changelog
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 68.9.0-alt1
+- New version (68.9.0).
+- Fixes:
+  + CVE-2020-12399 Timing attack on DSA signatures in NSS library
+  + CVE-2020-12405 Use-after-free in SharedWorkerService
+  + CVE-2020-12406 JavaScript Type confusion with NativeTypes
+  + CVE-2020-12410 Memory safety bugs fixed in Thunderbird 68.9.0
+  + CVE-2020-12398 Security downgrade with IMAP STARTTLS leads to information leakage
+
+* Fri May 29 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.1-alt2
+- Build with default llvm-devel in repository.
+- Fix rpm macros placement.
+
+* Sat May 23 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.1-alt1
+- New version (68.8.1).
+- Fixes:
+  + IMAP stability improvements
+  + HTML tags in IRC topic changes were rendered incorrectly
+  + MailExtensions: Websockets could not be used
+
 * Wed May 06 2020 Andrey Cherepanov <cas@altlinux.org> 68.8.0-alt2
 - Add security fixes information to changelog.
 
