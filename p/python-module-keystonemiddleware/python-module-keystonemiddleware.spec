@@ -3,8 +3,8 @@
 %def_with docs
 
 Name: python-module-%oname
-Version: 5.2.0
-Release: alt1
+Version: 6.0.0
+Release: alt0.1.p9
 Summary: Middleware for OpenStack Identity
 Group: Development/Python
 License: ASL 2.0
@@ -118,7 +118,7 @@ popd
 
 %if_with docs
 # generate html docs
-python3 setup.py build_sphinx
+#python3 setup.py build_sphinx
 # remove the sphinx-build leftovers
 rm -rf build/sphinx/html/.{doctrees,buildinfo}
 %endif
@@ -148,10 +148,17 @@ popd
 
 %if_with docs
 %files doc
-%doc LICENSE build/sphinx/html
+%doc LICENSE
+#build/sphinx/html
 %endif
 
 %changelog
+* Mon Jun 01 2020 Andrey Cherepanov <cas@altlinux.org> 6.0.0-alt0.1.p9
+- FTBFS: backport new version to p9 branch.
+
+* Wed Aug 14 2019 Grigory Ustinov <grenka@altlinux.org> 6.0.0-alt1
+- Automatically updated to 6.0.0
+
 * Tue Dec 18 2018 Alexey Shabalin <shaba@altlinux.org> 5.2.0-alt1
 - 5.2.0
 
