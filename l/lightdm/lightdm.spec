@@ -7,16 +7,31 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt6
+Release: alt9
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
 Url: https://launchpad.net/lightdm
 
 Source: %name-%version.tar
-Patch1: %name-%version-%release.patch
 
-Requires: accountsservice
+Patch1:  %name-1.30.0-cancelling.patch
+Patch2:  %name-1.30.0-chauthtok.patch
+Patch3:  %name-1.30.0-default-session.patch
+Patch4:  %name-1.30.0-default-username.patch
+Patch5:  %name-1.30.0-login-unknown.patch
+Patch6:  %name-1.30.0-switch.patch
+Patch7:  %name-1.30.0-alt-env.patch
+Patch8:  %name-1.30.0-alt-config.patch
+Patch9:  %name-1.30.0-alt-01-Xgreeter.patch
+Patch10: %name-1.30.0-alt-02-hide-users.patch
+Patch11: %name-1.30.0-alt-03-login-unknown.patch
+Patch12: %name-1.30.0-alt-pam.patch
+Patch13: %name-1.30.0-alt-polkit.patch
+Patch14: %name-1.30.0-alt-shells.patch
+Patch15: %name-1.30.0-alt-04-systemd.patch
+Patch16: %name-1.30.0-alt-05-tmpfiles.patch
+
 Requires: dm-tool
 
 BuildRequires: gcc-c++ intltool
@@ -114,6 +129,21 @@ manager via D-Bus.
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
 
 %ifarch %e2k
 # until apx. lcc-1.23.01
@@ -148,22 +178,15 @@ rm -rf %buildroot%_sysconfdir/init
 
 mkdir -p %buildroot%_sysconfdir/%name/lightdm.conf.d
 mkdir -p %buildroot%_datadir/%name/lightdm.conf.d
-mkdir -p %buildroot%_datadir/%name/{sessions,remote-sessions}
+mkdir -p %buildroot%_datadir/%name/sessions
+mkdir -p %buildroot%_datadir/%name/remote-sessions
 mkdir -p %buildroot%_localstatedir/log/%name
 mkdir -p %buildroot%_localstatedir/cache/%name
-mkdir -p %buildroot%_localstatedir/lib/{lightdm-data,ldm}
+mkdir -p %buildroot%_localstatedir/lib/lightdm-data
 
 %if_disabled systemd
 sed -i '/pam_systemd.so/d' %buildroot%_sysconfdir/pam.d/%name-greeter
 %endif
-
-install -Dpm 644 data/%name-tmpfiles.conf %buildroot/lib/tmpfiles.d/%name.conf
-install -m644 -p -D data/%name.rules %buildroot%_datadir/polkit-1/rules.d/%name.rules
-install -m644 -p -D data/%name.service %buildroot%_unitdir/%name.service
-echo "GDK_CORE_DEVICE_EVENTS=true" > %buildroot%_localstatedir/lib/ldm/.pam_environment
-
-install -m0755 -p -D data/%name-login-unknown.control %buildroot%_controldir/%name-login-unknown
-install -m0755 -p -D data/%name-greeter-hide-users.control %buildroot%_controldir/%name-greeter-hide-users
 
 %find_lang --with-gnome %name
 
@@ -191,6 +214,7 @@ fi
 %doc NEWS
 %config %_sysconfdir/dbus-1/system.d/org.freedesktop.DisplayManager.conf
 %dir %_sysconfdir/%name
+%dir %_sysconfdir/%name/lightdm.conf.d
 %config(noreplace) %_sysconfdir/%name/*.conf
 %config(noreplace) %_sysconfdir/pam.d/*
 %_sbindir/%name
@@ -252,6 +276,18 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Thu Jun 04 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt9
+- Remove the explicit relationship to the accountsservice package
+  (closes: 38573).
+
+* Wed Apr 15 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt8
+- Fix: Restore the default (false) value of user-authority-in-system-dir
+  (related to altbug 38336).
+
+* Fri Mar 13 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt7
+- Added patches to install the ALT-specific files.
+- Split the patches.
+
 * Mon Aug 12 2019 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt6
 - Use the first available session config as default.
 
