@@ -7,7 +7,7 @@
 %def_without ffmpeg_static
 
 Name: telegram-desktop
-Version: 2.1.1
+Version: 2.1.10
 Release: alt1
 
 Summary: Telegram Desktop messaging app
@@ -81,7 +81,7 @@ BuildRequires: libopenal-devel >= 1.17.2
 BuildRequires: libva-devel libdrm-devel
 
 # libs from Telegram project
-BuildRequires: libtgvoip-devel >= 2.4.4
+BuildRequires: libtgvoip-devel >= 2.4.4-alt4
 BuildRequires: librlottie-devel >= 0.0.1
 BuildRequires: libqrcodegen-cpp-devel
 
@@ -202,6 +202,27 @@ ln -s %name %buildroot%_bindir/telegramdesktop
 %doc README.md
 
 %changelog
+* Fri Jun 05 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.10-alt1
+- new version 2.1.10 (with rpmrb script)
+
+* Thu Jun 04 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.8-alt1
+- new version 2.1.8 (with rpmrb script)
+
+* Sat May 30 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.7-alt1
+- new version 2.1.7 (with rpmrb script)
+
+* Thu May 14 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.6-alt1
+- new version 2.1.6 (with rpmrb script)
+
+* Wed May 13 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.5-alt1
+- new version 2.1.5 (with rpmrb script)
+
+* Sun May 10 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.4-alt1
+- new version 2.1.4 (with rpmrb script)
+
+* Fri May 08 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.3-alt1
+- new version 2.1.3 (with rpmrb script)
+
 * Mon May 04 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.1-alt1
 - new version 2.1.1 (with rpmrb script)
 
