@@ -1,4 +1,4 @@
-%define kernel_base_version	5.5
+%define kernel_base_version	5.6
 %define kernel_sublevel        .16
 %define kernel_extra_version	%nil
 
@@ -257,6 +257,21 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Wed Jun 03 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.6.16-alt1
+- 5.6.16
+
+* Tue May 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.6.12-alt1
+- 5.6.12
+
+* Wed May 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.6.8-alt1
+- 5.6.8
+
+* Mon Apr 13 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.6.4-alt1
+- 5.6.4
+
+* Mon Apr 13 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.6.0-alt1
+- 5.6.0
+
 * Mon Apr 13 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.5.16-alt1
 - 5.5.16
 

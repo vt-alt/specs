@@ -1,5 +1,5 @@
 %define kernel_base_version	5.4
-%define kernel_sublevel        .40
+%define kernel_sublevel        .44
 %define kernel_extra_version	%nil
 
 Name: kernel-image-lts
@@ -257,6 +257,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Wed Jun 03 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.44-alt1
+- 5.4.44
+
 * Tue May 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.40-alt1
 - 5.4.40
 
