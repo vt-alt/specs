@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
 Release: alt1
 epoch:1 
-%define kernel_base_version	5.4
-%define kernel_sublevel .23
+%define kernel_base_version	5.7
+%define kernel_sublevel .0
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -21,7 +21,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # You can change compiler version by editing this line:
 %define kgcc_version	%__gcc_version_base
 
-# Enable/disable SGML docs formatting
+# Enable/disable docs formatting
 %if "%sub_flavour" == "def" && %kgcc_version > 5
 %def_enable docs
 %else
@@ -174,6 +174,7 @@ Group: System/Kernel and hardware
 Provides:  kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Conflicts: kernel-modules-drm-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-drm-%kversion-%flavour-%krelease > %version-%release
+Requires: kernel-modules-v4l-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
 Prereq: %name = %epoch:%version-%release
@@ -594,7 +595,7 @@ console=hvc0
 %ifarch aarch64
 qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
+timeout --foreground 600 qemu-system-"$qemu_arch" -m 512 $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -684,17 +685,75 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Jun 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.0-alt1
+- v5.7.0
+
+* Wed Jun 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.16-alt1
+- v5.6.16
+
+* Wed May 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.15-alt1
+- v5.6.15
+
+* Fri May 15 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.13-alt1
+- v5.6.13
+
+* Sun May 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.12-alt1
+- v5.6.12
+
+* Wed May 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.11-alt1
+- v5.6.11
+
+* Thu Apr 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.8-alt1
+- v5.6.8
+- config changes from rider@
+
+* Fri Apr 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.19-alt1
+- v5.5.19  (Fixes: CVE-2019-19377)
+
+* Thu Apr 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.6.0-alt1
+- v5.6.0
+
+* Wed Mar 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.13-alt1
+- v5.5.13
+
+* Wed Mar 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.12-alt1
+- v5.5.12  (Fixes: CVE-2019-19769)
+
+* Sat Mar 21 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.11-alt1
+- v5.5.11
+
+* Wed Mar 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.10-alt1
+- v5.5.10
+
+* Thu Mar 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.9-alt1
+- v5.5.9  (Fixes: CVE-2020-8647, CVE-2020-8648, CVE-2020-8649)
+
+* Fri Mar 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.8-alt1
+- v5.5.8
+
+* Fri Mar 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.24-alt1
+- v5.4.24
+
+* Sat Feb 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.7-alt1
+- v5.5.7
+
 * Sat Feb 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.23-alt1
 - v5.4.23
+
+* Tue Feb 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.6-alt1
+- v5.5.6  (Fixes: CVE-2019-19076)
 
 * Tue Feb 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.22-alt1
 - v5.4.22  (Fixes: CVE-2019-19076)
 
-* Thu Feb 20 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.21-alt1
-- v5.4.21
+* Thu Feb 20 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.5-alt1
+- v5.5.5
 
-* Thu Feb 13 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.19-alt1
-- v5.4.19  (Fixes: CVE-2013-1798, CVE-2019-3016)
+* Thu Feb 13 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.3-alt1
+- v5.5.3  (Fixes: CVE-2013-1798, CVE-2019-3016)
+
+* Mon Feb 04 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.5.1-alt1
+- v5.5.1
 
 * Tue Feb 04 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.17-alt1
 - v5.4.17(Fixes:_CVE-2019-14896,_CVE-2019-14897)

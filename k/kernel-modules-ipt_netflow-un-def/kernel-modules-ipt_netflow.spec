@@ -1,10 +1,10 @@
 %define module_name	ipt_netflow
-%define module_version	2.3
+%define module_version	2.5
 
 %define module_release alt1.k
 
 %define flavour		un-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64 aarch64 ppc64le
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-un-def
 

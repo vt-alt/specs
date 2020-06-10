@@ -1,6 +1,6 @@
 %define module_name	bcmwl
 %define module_version	6.30.223.248
-%define module_release alt17
+%define module_release alt18
 
 %define flavour		un-def
 %define karch %ix86 x86_64
@@ -37,6 +37,7 @@ Patch11: bcmwl-build-kernel4.11.patch
 Patch12: bcmwl-build-kernel4.12.patch
 Patch15: bcmwl-build-kernel4.15.patch
 Patch51: bcmwl-build-kernel5.1.patch
+Patch56: bwcmwl-arch-build-kernel5.6.patch
 BuildRequires: perl sharutils
 BuildRequires(pre): rpm-build-kernel
 BuildRequires: kernel-source-%module_name = %module_version
@@ -76,6 +77,7 @@ pushd bcmwl
 %patch12 -p1
 %patch15 -p1
 %patch51 -p1
+%patch56 -p1
 popd
 
 %build

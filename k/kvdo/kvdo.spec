@@ -1,10 +1,11 @@
 Name: kvdo
-Version: 6.2.2.18
+Version: 6.2.2.117
 Release: alt1
 
 Summary: Kernel Modules for Virtual Data Optimizer
-License: GPLv2+
+License: GPL-2.0-only
 Url: http://github.com/dm-vdo/kvdo
+# 6.2.2.117 from https://github.com/rhawalsh/kvdo
 Group: System/Kernel and hardware
 Source0: %name-%version.tar
 BuildRequires(pre): rpm-build-kernel
@@ -34,6 +35,9 @@ install -pDm0644 %_sourcedir/%name-%version.tar %kernel_srcdir/kernel-source-%na
 %attr(0644,root,root) %kernel_src/kernel-source-%name-%version.tar
 
 %changelog
+* Tue Apr 07 2020 Vitaly Chikunov <vt@altlinux.org> 6.2.2.117-alt1
+- Update to 6.2.2.117 with rhawalsh patches.
+
 * Tue Oct 22 2019 Alexey Shabalin <shaba@altlinux.org> 6.2.2.18-alt1
 - Update to 6.2.2.18
 

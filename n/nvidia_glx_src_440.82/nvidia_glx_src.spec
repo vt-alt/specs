@@ -24,7 +24,7 @@
 %define nv_version 440
 %define nv_release 82
 %define nv_minor %nil
-%define pkg_rel alt206
+%define pkg_rel alt207
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -102,6 +102,7 @@ Source100: nvidia_create_xinf
 
 Patch1: alt-fix-build-kernel.patch
 Patch2: alt-ignore-dma-remap.patch
+Patch3: kernel-5.7.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -163,6 +164,7 @@ cd %tbname-%tbver%dirsuffix
 pushd kernel
 #%patch1 -p1
 %patch2 -p1
+%patch3 -p2
 rm -rf precompiled
 popd
 
@@ -357,6 +359,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 03 2020 Sergey V Turchin <zerg@altlinux.org> 440.82-alt207
+- add fix against 5.7 kernel
+
 * Thu Apr 16 2020 Sergey V Turchin <zerg@altlinux.org> 440.82-alt206
 - new version
 

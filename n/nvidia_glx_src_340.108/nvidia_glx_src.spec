@@ -14,7 +14,7 @@
 %define nv_version 340
 %define nv_release 108
 %define nv_minor %nil
-%define pkg_rel alt167
+%define pkg_rel alt168
 %def_enable egl
 %def_enable kernelsource
 %def_disable package_wfb
@@ -86,6 +86,9 @@ Patch1: buildfix_kernel_4.11.patch
 Patch2: buildfix_kernel_5.2.patch
 Patch3: buildfix_kernel_5.5.patch
 Patch4: buildfix_kernel_5.6.patch
+Patch5: xf86-video-nvidia-legacy-0001-fix-5.6-rc1.patch
+Patch6: xf86-video-nvidia-legacy-0002-fix-5.7-rc1.patch
+Patch7: xf86-video-nvidia-legacy-0003-fix-5.7-rc1-reinstate-legacy-support.patch 
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -162,10 +165,13 @@ sh %SOURCE201 -x
 cd %tbname-%tbver%dirsuffix
 
 pushd kernel/
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p2
+#%patch1 -p1
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p2
+%patch5 -p2
+%patch6 -p2
+%patch7 -p2
 rm -rf precompiled
 popd
 
@@ -312,6 +318,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 03 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt168
+- add fix against 5.7 kernel
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt167
 - add fix against 5.6 kernel
 

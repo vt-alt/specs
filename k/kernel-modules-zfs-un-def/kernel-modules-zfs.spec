@@ -1,6 +1,6 @@
 %define module_name zfs
-%define module_version 0.8.2
-%define module_release alt2
+%define module_version 0.8.4
+%define module_release alt1
 
 %define flavour un-def
 %define karch %ix86 x86_64 aarch64 ppc64le
@@ -16,7 +16,7 @@ Name: kernel-modules-%module_name-%flavour
 %define ksname %module_name
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-License: CDDL
+License:  CDDL-1.0
 Group: System/Kernel and hardware
 
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
@@ -51,6 +51,7 @@ tar xvf %kernel_src/%module_name-%module_version.tar.*
 %setup -D -T -n %module_name-%module_version
 
 %build
+%autoreconf
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
 export CC="gcc${GCC_VERSION:+-$GCC_VERSION}"
 %configure --with-config=kernel --with-linux=%_usrsrc/linux-%kversion-%flavour

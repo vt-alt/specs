@@ -27,7 +27,7 @@
 %define nv_version 390
 %define nv_release 132
 %define nv_minor %nil
-%define pkg_rel alt202
+%define pkg_rel alt203
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -103,6 +103,7 @@ Patch2: alt-ignore-dma-remap.patch
 Patch3: kernel-5.5.patch
 Patch4: kernel-5.6.patch
 Patch5: kernel-5.6-x86_64.patch
+Patch6: kernel-5.7.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -175,6 +176,7 @@ pushd kernel
 %ifarch x86_64
 %patch5 -p2
 %endif
+%patch6 -p2
 rm -rf precompiled
 popd
 
@@ -358,6 +360,9 @@ fi
 %endif
 
 %changelog
+* Wed Jun 03 2020 Sergey V Turchin <zerg@altlinux.org> 390.132-alt203
+- add fix against 5.7 kernel
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 390.132-alt202
 - add fix against 5.6 kernel
 

@@ -2,16 +2,18 @@
 %global _localstatedir %_var
 
 Name: zfs
-Version: 0.8.2
+Version: 0.8.4
 Release: alt1
 Summary: ZFS on Linux
-License: CDDL
+License: CDDL-1.0
 Group: System/Kernel and hardware
 URL: http://zfsonlinux.org/
 Conflicts: fuse-zfs
 
 Source0: %name-%version.tar
+Source1: gitrevision.h
 Patch1: zfs-0.7.13-import-by-disk-id.patch
+Patch2: zfs-0.8.4-fix-unresolved-aok.patch
 
 BuildRequires: libblkid-devel libssl-devel libudev-devel libuuid-devel python3-devel zlib-devel rpm-build-kernel
 
@@ -62,7 +64,9 @@ This package contains ZFS modules sources for Linux kernel.
 %prep
 %setup -q
 %patch1 -p1
+%patch2 -p1
 sed -i 's|datarootdir|libdir|' lib/libzfs/Makefile.am
+install -m0644 %SOURCE1 include/zfs_gitrev.h
 
 %build
 %autoreconf
@@ -75,6 +79,7 @@ sed -i 's|datarootdir|libdir|' lib/libzfs/Makefile.am
 	--enable-systemd \
 	--with-systemdunitdir=%_unitdir \
 	--with-systemdpresetdir=%_unitdir-preset \
+	--with-systemdgeneratordir=/lib/systemd/system-generators \
 	--disable-sysvinit \
 	--with-gnu-ld \
 	--disable-static
@@ -83,6 +88,9 @@ sed -i 's|datarootdir|libdir|' lib/libzfs/Makefile.am
 %install
 %make DESTDIR=%buildroot pkgdatadir=%_datadir/doc/%name-utils-%version/examples modulesloaddir=%_sysconfdir/modules-load.d install
 install -pDm0644 %SOURCE0 %kernel_srcdir/%name-%version.tar
+# add the header with git revision to tarball for kernel-source
+tar --append --file=%kernel_srcdir/%name-%version.tar -- ../%name-%version/include/zfs_gitrev.h
+
 gzip %kernel_srcdir/%name-%version.tar
 mkdir -p %buildroot/%_lib
 for f in %buildroot%_libdir/lib*.so; do
@@ -146,10 +154,14 @@ fi
 %ghost %_sysconfdir/dfs/sharetab
 %exclude %_unitdir/zfs-zed.service
 %config(noreplace) %_sysconfdir/modprobe.d/zfs.conf
+%dir %_sysconfdir/zfs/zpool.d
+%config(noreplace) %_sysconfdir/zfs/zpool.d/*
+%_sysconfdir/zfs/*.example
 %_sysconfdir/modules-load.d/%name.conf
 %_unitdir/*.service
 %_unitdir/*.target
 %_unitdir-preset/50-zfs.preset
+/lib/systemd/system-generators/zfs-mount-generator
 /lib/udev/*_id
 %_udevrulesdir/*.rules
 %exclude /sbin/zed
@@ -162,6 +174,7 @@ fi
 
 %files zed
 %dir %_sysconfdir/%name/zed.d
+%_sysconfdir/%name/zed.d/*.sh
 %_sysconfdir/%name/zed.d/zed.rc
 %_sysconfdir/%name/zed.d/zed-functions.sh
 %_unitdir/zfs-zed.service
@@ -181,6 +194,9 @@ fi
 %_usrsrc/kernel
 
 %changelog
+* Thu May 21 2020 Anton Farygin <rider@altlinux.ru> 0.8.4-alt1
+- 0.8.4
+
 * Fri Sep 27 2019 Anton Farygin <rider@altlinux.ru> 0.8.2-alt1
 - 0.8.2
 - added conflicts with fuse-zfs
