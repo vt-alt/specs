@@ -9,7 +9,7 @@
 
 Name:		bcc
 Version:	0.7.0
-Release:	alt1
+Release:	alt1.1.p9
 Summary:	BPF Compiler Collection (BCC)
 Group:		Development/Debuggers
 License:	ASL 2.0
@@ -23,11 +23,11 @@ BuildRequires:	cmake >= 2.8.7
 BuildRequires:	flex
 BuildRequires:	make
 BuildRequires:	gcc-c++
-BuildRequires:	clang-devel >= 3.7.0
-BuildRequires:	llvm-devel >= 3.7.0
-BuildRequires:	lld
-BuildRequires:	llvm-devel-static
-BuildRequires:	clang-devel-static
+BuildRequires:	clang7.0-devel >= 3.7.0
+BuildRequires:	llvm7.0-devel >= 3.7.0
+BuildRequires:	lld7.0
+BuildRequires:	llvm7.0-devel-static
+BuildRequires:	clang7.0-devel-static
 BuildRequires:	python-devel
 BuildRequires:	python-module-setuptools
 BuildRequires:	libelf-devel-static
@@ -153,6 +153,9 @@ Command line tools for BPF Compiler Collection (BCC)
 /usr/share/bcc/man/
 
 %changelog
+* Wed Jun 03 2020 Andrey Cherepanov <cas@altlinux.org> 0.7.0-alt1.1.p9
+- FTBFS: build strictly with LLVM 7.0.
+
 * Wed Jan 09 2019 Vitaly Chikunov <vt@altlinux.org> 0.7.0-alt1
 - Update to 0.7.0.
 
