@@ -1,5 +1,5 @@
 Name: libdrm
-Version: 2.4.99
+Version: 2.4.102
 Release: alt1
 Epoch: 1
 Summary: Userspace interface to kernel DRM service
@@ -11,6 +11,7 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 Source: %name-%version.tar
 Patch: %name-%version.patch
 
+BuildRequires(pre): meson
 BuildRequires: docbook-style-xsl libudev-devel libpciaccess-devel xorg-util-macros xsltproc
 
 %description
@@ -23,7 +24,6 @@ OpenGL drivers
 %package devel
 Summary: The drm Library and Header Files
 Group: Development/C
-Requires: %name = %epoch:%version-%release
 
 %description devel
 %name-devel contains the libraries and header files needed to
@@ -34,19 +34,21 @@ develop programs which make use of %name
 %patch -p1
 
 %build
-%autoreconf
-%configure \
-	--enable-udev \
+%meson \
+	-Dudev=true \
 %ifarch armh aarch64
-	--enable-etnaviv-experimental-api \
-	--enable-exynos-experimental-api \
-	--enable-omap-experimental-api \
+	-Detnaviv=true \
+	-Dexynos=true \
+	-Domap=true \
+	-Dtegra=true \
+	-Dvc4=true \
+	-Dfreedreno=true
 %endif
-	--disable-static
-%make_build
+
+%meson_build -v
 
 %install
-%make DESTDIR=%buildroot install
+%meson_install
 
 %files
 %_libdir/*.so.*
@@ -60,6 +62,15 @@ develop programs which make use of %name
 %_man7dir/*.7*
 
 %changelog
+* Wed May 27 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.102-alt1
+- 2.4.102
+
+* Fri Apr 03 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.101-alt1
+- 2.4.101
+
+* Fri Nov 01 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.100-alt1
+- 2.4.100
+
 * Mon Jul 08 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.99-alt1
 - 2.4.99
 

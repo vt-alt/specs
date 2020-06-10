@@ -5,21 +5,16 @@
 %define gallium_drivers_add() %{expand:%%global gallium_drivers %{?gallium_drivers:%gallium_drivers,}%{1}}
 %define vulkan_drivers_add() %{expand:%%global vulkan_drivers %{?vulkan_drivers:%vulkan_drivers,}%{1}}
 
-%define use_lld_arches x86_64
-%define link_static_llvm_arches x86_64
-
 %define radeon_arches %ix86 x86_64 aarch64 ppc64le mipsel
 %define vulkan_radeon_arches x86_64 ppc64le mipsel
-%define nouveau_arches %ix86 x86_64 aarch64 ppc64le mipsel
+%define nouveau_arches %ix86 x86_64 armh aarch64 ppc64le mipsel
 %define intel_arches %ix86 x86_64
 %define vulkan_intel_arches x86_64
 %define virgl_arches %ix86 x86_64 aarch64 ppc64le mipsel
 %define armsoc_arches %arm aarch64
-# OpenCL requires static clang libraries
-# which may be built as ThinLTO objects (if lld
-# supports target architecture).
-%define opencl_arches x86_64
-%define gallium_pipe_arches x86_64
+
+%define opencl_arches %ix86 x86_64 aarch64
+%define gallium_pipe_arches x86_64 aarch64
 
 #VDPAU state tracker requires at least one of the following gallium drivers: r300, r600, radeonsi, nouveau
 %define vdpau_arches %radeon_arches %nouveau_arches
@@ -42,6 +37,7 @@
 %ifarch %intel_arches
 %dri_drivers_add i915
 %dri_drivers_add i965
+%gallium_drivers_add iris
 %endif
 %ifarch %nouveau_arches
 %dri_drivers_add nouveau
@@ -57,6 +53,8 @@
 %gallium_drivers_add kmsro
 %gallium_drivers_add panfrost
 %gallium_drivers_add lima
+%gallium_drivers_add tegra
+%gallium_drivers_add v3d
 %endif
 %ifarch %vulkan_intel_arches
 %vulkan_drivers_add intel
@@ -66,8 +64,8 @@
 %endif
 
 Name: Mesa
-Version: 19.2.2
-Release: alt1.p9
+Version: 20.1.0
+Release: alt3
 Epoch: 4
 License: MIT
 Summary: OpenGL compatible 3D graphics library
@@ -82,20 +80,11 @@ Patch: %name-%version.patch
 BuildPreReq: /proc
 BuildRequires(pre): meson
 BuildRequires: gcc-c++ indent flex libXdamage-devel libXext-devel libXft-devel libXmu-devel libXi-devel libXrender-devel libXxf86vm-devel
-BuildRequires: libdrm-devel libexpat-devel python-modules libselinux-devel libxcb-devel libSM-devel libtinfo-devel libudev-devel
+BuildRequires: libdrm-devel libexpat-devel libselinux-devel libxcb-devel libSM-devel libtinfo-devel libudev-devel
 BuildRequires: libXdmcp-devel libffi-devel libelf-devel libva-devel libvdpau-devel libXvMC-devel xorg-proto-devel libxshmfence-devel
 BuildRequires: libXrandr-devel libnettle-devel libelf-devel zlib-devel libwayland-client-devel libwayland-server-devel
-BuildRequires: libwayland-egl-devel python-module-libxml2 python3-module-mako python-module-argparse wayland-protocols
-BuildRequires: libclc-devel libglvnd-devel
-%ifarch %radeon_arches
-BuildRequires: llvm-devel clang-devel
-%ifarch %link_static_llvm_arches
-BuildRequires: llvm-devel-static clang-devel-static
-%endif
-%endif
-%ifarch %use_lld_arches
-BuildRequires: lld
-%endif
+BuildRequires: libwayland-egl-devel python3-module-mako wayland-protocols libsensors-devel libzstd-devel libunwind-devel
+BuildRequires: libclc-devel libglvnd-devel >= 1.2.0 llvm-devel >= 10.0.0 clang-devel >= 10.0.0
 
 %description
 Mesa is an OpenGL compatible 3D graphics library
@@ -103,7 +92,7 @@ Mesa is an OpenGL compatible 3D graphics library
 %package -n libGLX-mesa
 Summary: OpenGL 1.3 compatible 3D graphics library for X Window server
 Group: System/Libraries
-Conflicts: libGL < 4:18.2.2-alt1
+Conflicts: libGL < 4:19.2.2-alt1
 
 %description -n libGLX-mesa
 Mesa is an OpenGL compatible 3D graphics library
@@ -111,7 +100,7 @@ Mesa is an OpenGL compatible 3D graphics library
 %package -n libGL-devel
 Summary: Development files for Mesa Library
 Group: Development/C
-Requires: libglvnd-devel libGLX-mesa = %epoch:%version-%release
+Requires: libglvnd-devel >= 1.2.0 libGLX-mesa = %epoch:%version-%release
 
 %description -n libGL-devel
 libGL-devel contains the libraries and header files needed to
@@ -127,7 +116,7 @@ Mesa EGL library
 %package -n libEGL-devel
 Summary: Mesa libEGL development package
 Group: Development/C
-Requires: libglvnd-devel
+Requires: libglvnd-devel >= 1.2.0
 
 %description -n libEGL-devel
 Mesa libEGL development package
@@ -183,6 +172,10 @@ Mesa software rendering libraries
 %package -n xorg-dri-intel
 Summary: Intel DRI driver
 Group: System/X11
+Requires: libva-driver-intel
+%ifarch x86_64
+Requires: libva-intel-media-driver
+%endif
 
 %description -n xorg-dri-intel
 DRI driver for Intel i8xx, i9xx
@@ -214,23 +207,33 @@ Group: System/X11
 %description -n xorg-dri-armsoc
 DRI drivers for various SoCs
 
+%package -n mesa-dri-drivers
+Summary: Mesa-based DRI drivers
+Group: System/X11
+Requires: xorg-dri-swrast = %epoch:%version-%release
+%ifarch %radeon_arches
+Requires: xorg-dri-radeon = %epoch:%version-%release
+%endif
+%ifarch %nouveau_arches
+Requires: xorg-dri-nouveau = %epoch:%version-%release
+%endif
+%ifarch %intel_arches
+Requires: xorg-dri-intel = %epoch:%version-%release
+%endif
+%ifarch %armsoc_arches
+Requires: xorg-dri-armsoc = %epoch:%version-%release
+%endif
+
+%description -n mesa-dri-drivers
+Mesa-based DRI drivers
+
 %set_verify_elf_method unresolved=relaxed
 
 %prep
 %setup -q
 %patch -p1
 
-mkdir -p $(pwd)/bin
-%ifarch %use_lld_arches
-ln -s %_bindir/ld.lld $(pwd)/bin/ld
-%endif
-
 %build
-%ifarch %use_lld_arches
-export PATH=$(pwd)/bin:$PATH
-# without this options every lld instance will try to consume all cpus
-%add_optflags -Wl,--no-threads -Wl,--thinlto-jobs=1
-%endif
 %meson \
 	-Dplatforms=x11,wayland,drm \
 	-Ddri-drivers='%{?dri_drivers}' \
@@ -248,11 +251,7 @@ export PATH=$(pwd)/bin:$PATH
 %endif
 %ifarch %radeon_arches
 	-Dllvm=true \
-%ifarch %link_static_llvm_arches
-	-Dshared-llvm=false \
-%else
 	-Dshared-llvm=true \
-%endif
 %endif
 	-Dshared-glapi=true \
 %if_enabled egl
@@ -270,6 +269,9 @@ export PATH=$(pwd)/bin:$PATH
 %else
 	-Dgallium-xa=false \
 %endif
+%ifarch armh
+	-Dlibunwind=false \
+%endif
 	-Dgles1=false \
 	-Dopengl=true \
 	-Dselinux=true \
@@ -280,9 +282,10 @@ export PATH=$(pwd)/bin:$PATH
 %meson_build -v
 
 %install
-export PATH=$(pwd)/bin:$PATH
 %meson_install
 
+mkdir -p %buildroot%_sysconfdir
+touch %buildroot%_sysconfdir/drirc
 rm -f %buildroot%_libdir/gallium-pipe/*.la
 
 shopt -s nullglob
@@ -324,28 +327,17 @@ d=%buildroot%_libdir
 
 %ifarch %armsoc_arches
 find %buildroot%_libdir/X11/modules/dri/ -type l | sed -ne "s|^%buildroot||p" > xorg-dri-armsoc.list
+%ifarch %gallium_pipe_arches
+find %buildroot%_libdir/gallium-pipe/ -type f | sed -ne "s|^%buildroot||p" >> xorg-dri-armsoc.list
+sed -i '/.*pipe_r[a236].*/d' xorg-dri-armsoc.list
+%endif
 sed -i '/.*swrast.*/d' xorg-dri-armsoc.list
 sed -i '/.*virtio.*/d' xorg-dri-armsoc.list
 sed -i '/.*nouveau.*/d' xorg-dri-armsoc.list
 sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 %endif
 
-# remove unpackaged files
-rm -f %buildroot%_includedir/GL/*.h
-rm -f %buildroot%_pkgconfigdir/*gl.pc
-rm -f %buildroot%_includedir/EGL/egl.h
-rm -f %buildroot%_includedir/EGL/eglext.h
-rm -f %buildroot%_includedir/EGL/eglplatform.h
-rm -fr %buildroot%_includedir/GLES*
-rm -fr %buildroot%_includedir/KHR
-%ifarch %vulkan_intel_arches
-rm -f %buildroot%_includedir/vulkan/vulkan_intel.h
-%endif
-%ifarch %opencl_arches
-rm -f %buildroot%_libdir/libMesaOpenCL.so
-%endif
-
-%define _unpackaged_files_terminate_build 1
+#define _unpackaged_files_terminate_build 1
 
 %files -n libGLX-mesa
 %doc docs/relnotes/%version.html
@@ -364,7 +356,8 @@ rm -f %buildroot%_libdir/libMesaOpenCL.so
 %_datadir/glvnd/egl_vendor.d/50_mesa.json
 
 %files -n libEGL-devel
-%_includedir/EGL
+%_includedir/EGL/eglextchromium.h
+%_includedir/EGL/eglmesaext.h
 %_libdir/libEGL_mesa.so
 %endif
 
@@ -395,6 +388,7 @@ rm -f %buildroot%_libdir/libMesaOpenCL.so
 %endif
 
 %files -n xorg-dri-swrast
+%ghost %_sysconfdir/drirc
 %_datadir/drirc.d
 %_libdir/X11/modules/dri/*swrast*_dri.so
 %_libdir/X11/modules/dri/libgallium_dri.so
@@ -419,6 +413,7 @@ rm -f %buildroot%_libdir/libMesaOpenCL.so
 %ifarch %intel_arches
 %files -n xorg-dri-intel
 %_libdir/X11/modules/dri/i9?5_dri.so
+%_libdir/X11/modules/dri/iris_dri.so
 %ifarch %vulkan_intel_arches
 %_libdir/libvulkan_intel.so
 %dir %_datadir/vulkan
@@ -460,12 +455,77 @@ rm -f %buildroot%_libdir/libMesaOpenCL.so
 %files -n xorg-dri-armsoc -f xorg-dri-armsoc.list
 %endif
 
+%files -n mesa-dri-drivers
+
 %changelog
+* Sat Jun 06 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.1.0-alt3
+- no-change rebuild for p9 branch
+
+* Wed Jun 03 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.1.0-alt2
+- fixed build on armh
+
+* Thu May 28 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.1.0-alt1
+- 20.1.0
+
 * Wed May 20 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.2-alt1.p9
 - backport to p9 branch
 
-* Wed Mar 25 2020 Andrey Cherepanov <cas@altlinux.org> 4:19.1.8-alt1.p9
-- Add metapackage mesa-dri-drivers for compatibility with some legacy packages
+* Fri May 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.7-alt1
+- 20.0.7
+- returned iris driver for Intel Gen8-11 by default
+
+* Thu Apr 30 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.6-alt1
+- 20.0.6
+
+* Thu Apr 23 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.5-alt1
+- 20.0.5
+
+* Fri Apr 03 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.4-alt1
+- 20.0.4
+
+* Thu Apr 02 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.3-alt1
+- 20.0.3
+
+* Wed Mar 25 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.2-alt2
+- rebuild with llvm 10.0.0
+- added meta package mesa-dri-drivers (closes: #38262)
+
+* Thu Mar 19 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.2-alt1
+- 20.0.2
+- used i965 driver for Intel Gen8-11 by default (closes: #38214)
+
+* Fri Mar 06 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.1-alt1
+- 20.0.1
+
+* Thu Feb 20 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.0.0-alt1
+- 20.0.0
+
+* Fri Feb 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:19.3.4-alt1
+- 19.3.4
+
+* Tue Feb 11 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:19.3.3-alt1
+- 19.3.3
+
+* Thu Dec 19 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.8-alt1
+- 19.2.8
+
+* Thu Dec 05 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.7-alt1
+- 19.2.7
+
+* Tue Nov 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.6-alt2
+- fixed conflicts between libglvnd-devel and libGLES-devel
+
+* Fri Nov 22 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.6-alt1
+- 19.2.6
+
+* Thu Nov 21 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.5-alt1
+- 19.2.5
+
+* Fri Nov 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.4-alt1
+- 19.2.4
+
+* Thu Nov 07 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.3-alt1
+- 19.2.3
 
 * Mon Oct 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 4:19.2.2-alt1
 - 19.2.2

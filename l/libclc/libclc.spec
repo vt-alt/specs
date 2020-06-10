@@ -1,6 +1,6 @@
 Name: libclc
 Version: 0.2.0
-Release: alt3
+Release: alt4
 Summary: An open source implementation of the OpenCL 1.1 library requirements
 License: BSD
 Group: System/Libraries
@@ -9,7 +9,7 @@ URL: https://libclc.llvm.org
 Source: %name-%version.tar
 
 BuildPreReq: /proc
-BuildRequires: clang libstdc++-devel llvm-devel lld
+BuildRequires: clang >= 9.0.0 libstdc++-devel llvm-devel >= 9.0.0 lld >= 9.0.0
 
 %description
 libclc is an open source, BSD licensed implementation of the library
@@ -57,7 +57,6 @@ export CFLAGS=" -D__extern_always_inline=inline"
 	--libexecdir=%_prefix/libexec/clc \
 	--pkgconfigdir=%_pkgconfigdir
 
-sed -i 's|frecord-gcc-switches|grecord-gcc-switches|g' Makefile
 %make_build
 
 %install
@@ -72,6 +71,9 @@ sed -i 's|frecord-gcc-switches|grecord-gcc-switches|g' Makefile
 %_pkgconfigdir/*.pc
 
 %changelog
+* Fri Feb 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.2.0-alt4
+- git snapshot master.9aa6f35
+
 * Sat Dec 29 2018 Valery Inozemtsev <shrek@altlinux.ru> 0.2.0-alt3
 - git snapshot master.1ecb16d
 
