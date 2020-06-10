@@ -2,7 +2,7 @@
 
 Name: mate-session
 Version: 1.22.2
-Release: alt3
+Release: alt4
 Epoch: 1
 Summary: MATE Desktop session manager
 License: GPLv2+
@@ -65,6 +65,9 @@ __EOF__
 %_man1dir/*.1*
 
 %changelog
+* Mon Jun 08 2020 Paul Wolneykien <manowar@altlinux.org> 1:1.22.2-alt4
+- Updated the README (session termination by timeout).
+
 * Wed Feb 26 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1:1.22.2-alt3
 - session termination by timeout added (manowar@)
 
