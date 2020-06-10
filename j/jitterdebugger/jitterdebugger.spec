@@ -1,5 +1,5 @@
 Name:     jitterdebugger
-Version:  0.3.0.59.gdaeff0a
+Version:  0.3.0.60.gb90ff3a
 Release:  alt1
 
 Summary:  Real time response messaurement tool
@@ -48,6 +48,9 @@ install -D man/jittersamples.1  %buildroot/%_man1dir/jittersamples.1
 %_man1dir/*.1*
 
 %changelog
+* Fri Mar 06 2020 Vitaly Chikunov <vt@altlinux.org> 0.3.0.60.gb90ff3a-alt1
+- jitterdebugger: Allow to override the affinity mask (github issue #18).
+
 * Sat Nov 30 2019 Vitaly Chikunov <vt@altlinux.org> 0.3.0.59.gdaeff0a-alt1
 - Fix gettid error.
 

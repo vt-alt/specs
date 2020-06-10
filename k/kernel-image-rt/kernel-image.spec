@@ -1,8 +1,8 @@
 %define kflavour		rt
 Name: kernel-image-%kflavour
 %define kernel_base_version	4.19
-%define kernel_sublevel		.103
-%define kernel_rt_release	rt42
+%define kernel_sublevel		.124
+%define kernel_rt_release	rt53
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 Release: alt1.%kernel_rt_release
@@ -96,7 +96,7 @@ BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: openssl-devel
 # for check
-%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
+%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static /dev/kvm}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
@@ -128,6 +128,8 @@ Provides: kernel = %kversion
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
 Prereq: mkinitrd >= 1:2.9.9-alt1
+
+AutoReqProv: no
 
 %description
 This package contains the Linux kernel %kernel_base_version%kernel_sublevel \
@@ -408,34 +410,52 @@ cp -a Documentation/* %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 KernelVer=%kversion-%flavour-%krelease
 mkdir -p test
 cd test
-msg='Booted successfully'
-%__cc %optflags -s -static -xc -o init - <<__EOF__
+cat > init.c <<__EOF__
 #include <unistd.h>
+#include <stdio.h>
+#include <err.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/reboot.h>
 int main()
 {
-	static const char msg[] = "$msg\n";
-	write(2, msg, sizeof(msg) - 1);
+	if (mkdir("/sys", 0666))
+		warn("mkdir /sys");
+	else if (mount("sysfs", "/sys", "sysfs", 0, NULL))
+		warn("mount /sys");
+	else if (access("/sys/kernel/realtime", R_OK))
+		warn("access /sys/kernel/realtime");
+	else
+		puts("Boot successful!");
 	reboot(RB_POWER_OFF);
-	pause();
 }
 __EOF__
+gcc -static -o init init.c
 echo init | cpio -H newc -o | gzip -9n > initrd.img
 qemu_arch=%_arch
-qemu_opts=""
+qemu_opts="-M accel=kvm:tcg -bios bios.bin"
 console=ttyS0
 %ifarch %ix86
-qemu_arch=i386
+  qemu_arch=i386
 %endif
 %ifarch ppc64le
-qemu_arch=ppc64
-console=hvc0
+  qemu_arch=ppc64
+  qemu_opts="-cpu power8,compat=power7"
+  console=hvc0
 %endif
 %ifarch aarch64
-qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
+  qemu_opts="-M virt,gic_version=3 -cpu max"
+  console=ttyAMA0
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
-grep -q "^$msg" boot.log &&
+time -p \
+timeout --foreground 600 \
+qemu-system-$qemu_arch $qemu_opts \
+	-nographic -no-reboot \
+	-kernel %buildroot/boot/vmlinuz-$KernelVer \
+	-initrd initrd.img \
+	-append "console=$console panic=-1" > boot.log &&
+grep -q "^Boot successful!" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
 	echo >&2 'Marker not found'
@@ -480,6 +500,31 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %endif
 
 %changelog
+* Sat May 23 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.124-alt1.rt53
+- Update to 4.19.124-rt53.
+
+* Thu May 07 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.120-alt1.rt52
+- Update to 4.19.120-rt52.
+
+* Tue May 05 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.115-alt1.rt50
+- Update to 4.19.115-rt50.
+
+* Tue Apr 28 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.115-alt1.rt49
+- Update to 4.19.115-rt49.
+
+* Fri Apr 17 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.115-alt1.rt48
+- Update to 4.19.115-rt48.
+- Add more BPF options, enable IKCONFIG, IKHEADERS.
+
+* Tue Apr 07 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.106-alt1.rt46
+- Update to 4.19.106-rt46.
+
+* Sat Mar 28 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.106-alt1.rt45
+- Update to 4.19.106-rt45.
+
+* Mon Mar 02 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.106-alt1.rt44
+- Update to 4.19.106-rt44.
+
 * Wed Feb 26 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.103-alt1.rt42
 - Update to v4.19.103-rt42.
 - Make ATA modules built-in (for qemu -hda).
