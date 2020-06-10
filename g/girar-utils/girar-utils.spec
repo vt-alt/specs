@@ -1,5 +1,5 @@
 Name:     girar-utils
-Version:  1.5.9.1
+Version:  1.5.10
 Release:  alt1
 
 Summary:  git.alt client utilities
@@ -30,6 +30,10 @@ This package contains client utilities for git.alt.
 %_mandir/man?/*
 
 %changelog
+* Fri Jun 05 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.10-alt1
+- girar-show: remove planned subtasks operation
+- girar-show: add autodetect of ssh name of build host
+
 * Wed Jun 27 2018 Grigory Ustinov <grenka@altlinux.org> 1.5.9.1-alt1
 - Fix little typo.
 
