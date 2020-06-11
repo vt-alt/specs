@@ -7,7 +7,7 @@
 Name: syncthing
 Summary: FOSS Continuous File Synchronisation
 Summary(ru_RU.UTF-8): Свободная программа непрерывной синхронизации файлов
-Version: 1.2.1
+Version: 1.5.0
 Release: alt1
 License: MPL-2.0
 Group: Networking/Other
@@ -92,7 +92,7 @@ rm build.go
 popd
 
 # set variables expected by syncthing binaries as additional LDFLAGS
-export BUILD_HOST=fedora-koji
+export BUILD_HOST=alt-linux
 export LDFLAGS="-X %goipath/lib/build.Version=v%version -X %goipath/lib/build.Stamp=$(date +%s) -X %goipath/lib/build.User=$USER -X %goipath/lib/build.Host=$BUILD_HOST"
 export BUILDTAGS="noupgrade"
 
@@ -215,6 +215,21 @@ export GO111MODULE=off
 %_bindir/stcli
 
 %changelog
+* Wed May 20 2020 Anton Midyukov <antohami@altlinux.org> 1.5.0-alt1
+- new version 1.5.0
+
+* Wed May 20 2020 Anton Midyukov <antohami@altlinux.org> 1.4.2-alt2
+- build new version 1.4.2 realy
+
+* Fri Apr 24 2020 Anton Midyukov <antohami@altlinux.org> 1.4.2-alt1
+- new version 1.4.2 (Closes: 38377)
+
+* Tue Nov 19 2019 Anton Midyukov <antohami@altlinux.org> 1.3.1-alt1
+- new version 1.3.1
+
+* Wed Sep 04 2019 Anton Midyukov <antohami@altlinux.org> 1.2.2-alt1
+- new version 1.2.2
+
 * Tue Aug 06 2019 Anton Midyukov <antohami@altlinux.org> 1.2.1-alt1
 - new version 1.2.1
 
