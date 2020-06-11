@@ -20,7 +20,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.0.910
+Version: 9.0.920
 Release: alt1
 Url: https://basealt.ru
 
@@ -359,6 +359,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed Jun 10 2020 Mikhail Efremov <sem@altlinux.org> 9.0.920-alt1
+- Use getalt.org as download link.
+
 * Thu Jun 04 2020 Mikhail Efremov <sem@altlinux.org> 9.0.910-alt1
 - Bump version.
 
