@@ -12,13 +12,13 @@ BuildRequires: /proc
 %define _localstatedir %_var
 Name:           nagstamon
 Version:        3.4.1
-Release:        alt2
+Release:        alt3
 Summary:        Nagios status monitor for the desktop
 License:        GPLv2
 Group:          Monitoring
 Url:            http://nagstamon.ifw-dresden.de/
 Source:         %name-%version.tar
-%py3_requires   secretstorage sip keyring gssapi
+%py3_requires   secretstorage sip keyring requests_gssapi gssapi
 BuildArch:      noarch
 Patch1:         %name-%version-init-translator.patch
 Patch2:         nagstamon-3.0.1-alt-default-values-in-config.patch
@@ -80,6 +80,9 @@ desktop-file-install \
 
 
 %changelog
+* Thu Jun 04 2020 Paul Wolneykien <manowar@altlinux.org> 3.4.1-alt3
+- Fix: Require python3-module-requests-gssapi (closes: 38577).
+
 * Wed Feb 12 2020 Paul Wolneykien <manowar@altlinux.org> 3.4.1-alt2
 - Fix: Require python module 'gssapi'.
 - Fix: Require python module 'keyring'.
