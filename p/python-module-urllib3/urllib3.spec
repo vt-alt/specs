@@ -2,7 +2,7 @@
 %def_disable check
 
 Name: python-module-%oname
-Version: 1.24.3
+Version: 1.25.6
 Release: alt1
 
 Epoch: 2
@@ -164,6 +164,9 @@ popd
 #python3_sitelibdir/*/test*
 
 %changelog
+* Sat Oct 05 2019 Anton Farygin <rider@altlinux.ru> 2:1.25.6-alt1
+- 1.24.3 -> 1.25.6
+
 * Mon May 06 2019 Stanislav Levin <slev@altlinux.org> 2:1.24.3-alt1
 - 1.24.2 -> 1.24.3 (fixes: CVE-2019-9740).
 

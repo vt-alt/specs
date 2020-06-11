@@ -3,13 +3,13 @@
 
 %def_disable check
 
-Name:           python-module-requests
+Name:           python3-module-%pkgname
 Version:        2.23.0
 Release:        alt1
 Summary:        HTTP library, written in Python, for human beings
-Group:          Development/Python
+Group:          Development/Python3
 
-License:        Apache-2.0
+License:        ASL 2.0
 URL:            https://pypi.io/project/requests
 Source0:        %pkgname-%version.tar
 # Explicitly use the system certificates in ca-certificates.
@@ -34,14 +34,12 @@ Patch5:         requests-2.20.0-no-py2-httpbin.patch
 
 BuildArch:      noarch
 
-%setup_python_module requests
-
-BuildRequires: python-module-chardet
-BuildRequires: python-module-setuptools
-BuildRequires: python-module-urllib3
-%{?_enable_check:BuildRequires: python-module-httpbin}
-
-%py_requires json
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-module-chardet
+BuildRequires: python3-module-setuptools
+BuildRequires: python3-module-urllib3
+%{?_enable_check:BuildRequires: python3-module-httpbin}
+%py3_requires json
 
 %description
 Most existing Python modules for sending HTTP requests are extremely verbose and
@@ -50,7 +48,7 @@ capabilities you should need, but the API is thoroughly broken. This library is
 designed to make HTTP requests easy for developers.
 
 %prep
-%setup -n requests-%version
+%setup -n %pkgname-%version
 
 %patch0 -p1
 %patch2 -p1
@@ -61,21 +59,20 @@ designed to make HTTP requests easy for developers.
 # Unbundle the certificate bundle from mozilla.
 rm -rf requests/cacert.pem
 
-
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
 
 %files
 %doc AUTHORS.rst HISTORY.md README.md
-%python_sitelibdir/*
+%python3_sitelibdir/*
 
 %changelog
 * Thu Mar 19 2020 Alexey Shabalin <shaba@altlinux.org> 2.23.0-alt1
-- new version 2.23.0
-- build python2 module only
+- 2.23.0
+- build as python3 module
 
 * Sat Oct 05 2019 Anton Farygin <rider@altlinux.ru> 2.22.0-alt1
 - 2.22.0

@@ -1,21 +1,24 @@
 %define _unpackaged_files_terminate_build 1
+%define provides_list %(echo `cat %SOURCE2`)
+
 %def_with check
 
 Name: custodia
 Version: 0.6.0
-Release: alt2
+Release: alt6
 
 Summary: A tool for managing secrets
-License: %gpl3plus
+License: GPLv3+
 Group: System/Configuration/Other
 
 Url: https://github.com/latchset/custodia
 BuildArch: noarch
 
 Source: %name-%version.tar
+Source2: provides.list
+Source3: ns_root_modules.py
 Patch: %name-%version.patch
 
-BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-build-python3
 
 %if_with check
@@ -46,12 +49,19 @@ authorization, storage and API plugins are combined and exposed.
 %package -n python3-module-%name
 Summary: Subpackage with python3 custodia modules
 Group: Development/Python
+# to break circular dependency, since IPA directly requires python3-custodia
+%filter_from_requires /^python3\(\.[[:digit:]]*\)\?(ipalib\(\..*\)\?)/d
+%filter_from_requires /^python3\(\.[[:digit:]]*\)\?(ipaclient\(\..*\)\?)/d
 # module 'requests' doesn't contain 'urllib3', but imports within
 %add_python3_req_skip requests.packages.urllib3.connection
 %add_python3_req_skip requests.packages.urllib3.connectionpool
 %py3_requires urllib3.connection
 %py3_requires urllib3.connectionpool
 %py3_provides %name
+%py3_provides %provides_list
+
+# due to file conflicts https://bugzilla.altlinux.org/show_bug.cgi?id=36781
+Conflicts: python-module-custodia
 
 %description -n python3-module-%name
 %overview
@@ -85,6 +95,13 @@ install -m 600 %_builddir/%name-%version/contrib/config/custodia/custodia.conf %
 install -m 644 %_builddir/%name-%version/contrib/config/systemd/system/custodia@.service  %buildroot%_unitdir
 install -m 644 %_builddir/%name-%version/contrib/config/systemd/system/custodia@.socket  %buildroot%_unitdir
 install -m 644 %_builddir/%name-%version/contrib/config/tmpfiles.d/custodia.conf  %buildroot%_tmpfilesdir/custodia.conf
+
+set -o pipefail
+PYTHONPATH=%buildroot%python3_sitelibdir %__python3 %SOURCE3 | \
+    sort > provides.actual.list
+set +o pipefail
+cat %SOURCE2 | sort > provides.expected.list
+diff -y provides.actual.list provides.expected.list
 
 %check
 export PIP_NO_INDEX=YES
@@ -135,6 +152,19 @@ fi
 %_bindir/custodia-cli
 
 %changelog
+* Mon Mar 16 2020 Stanislav Levin <slev@altlinux.org> 0.6.0-alt6
+- Added missing Provides.
+
+* Mon Oct 07 2019 Stanislav Levin <slev@altlinux.org> 0.6.0-alt5
+- Fixed build against urllib3 1.25+.
+- Broke circular dependency on ipaclient.
+
+* Fri Aug 09 2019 Stanislav Levin <slev@altlinux.org> 0.6.0-alt4
+- Fixed testing against Pytest 5.
+
+* Fri May 24 2019 Stanislav Levin <slev@altlinux.org> 0.6.0-alt3
+- Fixed update (closes: #36781).
+
 * Sat Mar 30 2019 Stanislav Levin <slev@altlinux.org> 0.6.0-alt2
 - Fixed FTBFS (closes: #36426).
 - Removed Python2 subpackage.

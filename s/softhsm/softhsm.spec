@@ -4,7 +4,7 @@
 Name: softhsm
 Version: 2.5.0
 
-Release: alt1
+Release: alt2
 Summary: Software version of a PKCS#11 Hardware Security Module
 License: BSD
 Group: System/Configuration/Other
@@ -12,6 +12,7 @@ Group: System/Configuration/Other
 Url: http://www.opendnssec.org/
 
 Source0: %name-%version.tar
+Patch: %name-%version-alt.patch
 
 BuildRequires: gcc-c++
 BuildRequires: libssl-devel
@@ -49,6 +50,7 @@ The devel package contains the libsofthsm include files.
 
 %prep
 %setup
+%patch -p1
 
 %build
 %autoreconf
@@ -122,6 +124,9 @@ exit 0
 %_includedir/softhsm/
 
 %changelog
+* Wed Sep 11 2019 Stanislav Levin <slev@altlinux.org> 2.5.0-alt2
+- Applied upstream fixes for FreeIPA DNSSEC.
+
 * Wed Oct 10 2018 Stanislav Levin <slev@altlinux.org> 2.5.0-alt1
 - 2.4.0 -> 2.5.0.
 

@@ -23,10 +23,12 @@
 %define _libexecdir /usr/libexec
 %define plugin_dir %_libdir/dirsrv/plugins
 %define _localstatedir %_var
+%define _runtimedir /run
 %define plugin_dir %_libdir/dirsrv/plugins
 %define etc_systemd_dir %_sysconfdir/systemd/system
 
 # versions defines
+%define apache_version 2.4.41-alt3
 %define bind_version 9.11
 %define bind_dyndb_ldap_version 11.1-alt7
 %define certmonger_version 0.79.7
@@ -41,8 +43,8 @@
 %define openldap_version 2.4.47-alt2
 
 Name: freeipa
-Version: 4.7.4
-Release: alt3
+Version: 4.8.6
+Release: alt2
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -75,7 +77,6 @@ BuildRequires: libsss_nss_idmap-devel >= %sssd_version
 BuildRequires: libunistring-devel
 BuildRequires: libsystemd-devel
 
-BuildRequires: apache2-base
 BuildRequires: 389-ds-base-devel >= %ds_version
 BuildRequires: samba-devel >= %samba_version
 BuildRequires: node-uglify-js
@@ -124,6 +125,7 @@ BuildRequires: python3-module-custodia
 BuildRequires: python3-module-dateutil
 BuildRequires: python3-module-dbus
 BuildRequires: python3-module-dns
+BuildRequires: python3-module-docker
 BuildRequires: python3-module-gssapi
 BuildRequires: python3-module-ipa_hbac
 BuildRequires: python3-module-jinja2
@@ -175,7 +177,6 @@ Requires: pki-ca >= %pki_version
 Requires: pki-kra >= %pki_version
 Requires: certmonger >= %certmonger_version
 Requires: 389-ds-base >= %ds_version
-Requires: 389-ds-base-legacy-tools >= %ds_version
 Requires: openssl
 Requires: softhsm
 Requires: libp11-kit
@@ -185,7 +186,6 @@ Requires: 389-ds-base >= %ds_version
 Requires: openldap-clients >= %openldap_version
 Requires: nss-utils
 Requires: krb5-kdc >= %krb5_version
-Requires: krb5-kinit >= %krb5_version
 Requires: libsasl2-plugin-gssapi
 Requires: fonts-font-awesome
 Requires: fonts-ttf-open-sans
@@ -222,13 +222,14 @@ Requires: %name-server-common = %EVR
 Requires: python3-module-augeas
 Requires: python3-module-gssapi
 Requires: python3-module-ipaclient = %EVR
-Requires: python3-module-ipaserver-ntp = %EVR
 Requires: python3-module-kdcproxy
 Requires: python3-module-ldap >= %python_ldap_version
 Requires: python3-module-pki-base >= %pki_version
 Requires: python3-module-sssdconfig >= %sssd_version
 Requires: python3-module-samba
 Requires: librpm
+Obsoletes: python3-module-ipaserver-ntp < %EVR
+Provides: python3-module-ipaserver-ntp = %EVR
 
 %description -n python3-module-ipaserver
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -244,8 +245,7 @@ If you are installing an IPA server, you need to install this package.
 Summary: Common files used by IPA server
 Group: System/Base
 Requires: %name-client-common = %EVR
-Requires: apache2-base
-Requires: custodia
+Requires: apache2-base >= %apache_version
 %add_python3_path %_datadir/ipa/
 %add_python3_compile_exclude %_datadir/ipa/
 
@@ -304,7 +304,6 @@ Group: System/Base
 # Requires: authselect >= 0.4-2
 Requires: libsasl2-plugin-gssapi
 Requires: curl
-Requires: sssd
 Requires: sssd-krb5
 Requires: sssd-ipa >= %sssd_version
 Requires: sssd-tools >= %sssd_version
@@ -334,6 +333,25 @@ This package provides command-line tools for IPA administrators.
 
 ###############################################################################
 
+%package client-samba
+Summary: Tools to configure Samba on IPA client
+Group: System/Base
+Requires: %name-client = %EVR
+Requires: python3-module-samba
+Requires: samba-client
+Requires: samba-winbind
+Requires: samba-common-tools
+Requires: samba
+Requires: sssd-winbind-idmap
+Requires: tdb-utils
+Requires: cifs-utils
+
+%description client-samba
+This package provides command-line tools to deploy Samba domain member
+on the machine enrolled into a FreeIPA environment
+
+###############################################################################
+
 %package client-automount
 Summary: IPA Automount for use on clients
 Group: System/Base
@@ -359,8 +377,9 @@ Summary: Python libraries used by IPA client
 Group: System/Libraries
 Requires: %name-client-common = %EVR
 Requires: python3-module-freeipa = %EVR
-Requires: python3-module-ipaclient-ntp = %EVR
 Requires: python3-module-dns
+Obsoletes: python3-module-ipaclient-ntp < %EVR
+Provides: python3-module-ipaclient-ntp = %EVR
 
 %description -n python3-module-ipaclient
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -396,6 +415,7 @@ Requires: %name-common = %EVR
 Requires: gnupg2
 Requires: keyutils
 Requires: less
+Requires: krb5-kinit >= %krb5_version
 Requires: python3-module-cffi
 Requires: python3-module-ipa_hbac
 Requires: python3-module-ldap >= %python_ldap_version
@@ -422,24 +442,6 @@ If you are using IPA with Python 3, you need to install this package.
 
 ###############################################################################
 
-%package -n python3-module-ipaserver-ntp
-Summary: Python3 IPA libraries for ntp services in IPA server
-Group: Development/Python3
-
-%description -n python3-module-ipaserver-ntp
-IPA python3 libraries for synchronization IPA server with time&data servers.
-
-###############################################################################
-
-%package -n python3-module-ipaclient-ntp
-Summary: Python3 IPA libraries for ntp services in IPA client
-Group: Development/Python3
-
-%description -n python3-module-ipaclient-ntp
-IPA python3 libraries for synchronization IPA client with time&data servers.
-
-###############################################################################
-
 %package common
 Summary: Common files used by IPA
 Group: System/Libraries
@@ -463,6 +465,8 @@ Requires: tar
 Requires: xz
 Requires: python3-module-coverage
 Requires: python3-module-sssdconfig >= %sssd_version
+Requires: openssh-clients
+Requires: sshpass
 Requires: iptables
 # Tests have a huge amount useless Provides
 %set_findprov_skiplist %python3_sitelibdir/ipatests/*
@@ -502,7 +506,7 @@ git commit -am 'with our changes'
 
 %build
 
-export PYTHON=%_bindir/python3
+export PYTHON=%__python3
 %autoreconf
 %configure --with-vendor-suffix=-%release \
 %if_without only_client
@@ -512,14 +516,10 @@ export PYTHON=%_bindir/python3
            --disable-server \
            --without-ipatests \
 %endif
-	   --with-ipaplatform=altlinux \
-	   IPA_VERSION_IS_GIT_SNAPSHOT=no \
            %linter_options
 %make_build
 
 %install
-%make python_install DESTDIR=%buildroot INSTALL="install -p"
-
 %makeinstall_std
 
 # remove files which are useful only for make uninstall
@@ -565,6 +565,9 @@ touch %buildroot%etc_systemd_dir/httpd2.service.d/ipa.conf
 
 mkdir -p %buildroot%_sysconfdir/cron.d
 
+mkdir -p %buildroot%_sysconfdir/bind
+touch %buildroot%_sysconfdir/bind/ipa-ext.conf
+
 mkdir -p %buildroot%_sharedstatedir/ipa/backup
 mkdir -p %buildroot%_sharedstatedir/ipa/gssproxy
 mkdir -p %buildroot%_sharedstatedir/ipa/sysrestore
@@ -599,12 +602,8 @@ printf '%_libdir/krb5/plugins/libkrb5/winbind_krb5_locator.so\t/dev/null\t90\n' 
 
 /bin/touch %buildroot%_sysconfdir/ipa/{default.conf,ca.crt}
 # NSS
-# old dbm format
-touch %buildroot%_sysconfdir/ipa/nssdb/cert8.db
-touch %buildroot%_sysconfdir/ipa/nssdb/key3.db
-touch %buildroot%_sysconfdir/ipa/nssdb/secmod.db
-touch %buildroot%_sysconfdir/ipa/nssdb/pwdfile.txt
 ## new sql format
+touch %buildroot%_sysconfdir/ipa/nssdb/pwdfile.txt
 touch %buildroot%_sysconfdir/ipa/nssdb/cert9.db
 touch %buildroot%_sysconfdir/ipa/nssdb/key4.db
 touch %buildroot%_sysconfdir/ipa/nssdb/pkcs11.txt
@@ -626,26 +625,32 @@ mkdir -p %buildroot%_sharedstatedir/ipa-client/sysrestore
 %if_without only_client
 
 %post server
-%post_service certmonger
-%post_service dbus
-%post_service oddjobd
+/bin/systemctl daemon-reload 2>&1 ||:
+# upgrade
+if [ $1 -gt 1 ] ; then
+    /bin/systemctl condrestart certmonger.service 2>&1 ||:
+fi
+/bin/systemctl try-reload-or-restart \
+    dbus \
+    oddjobd ||:
 
 systemd-tmpfiles --create ipa.conf >/dev/null 2>&1 ||:
 
 %preun server
-%preun_service ipa
-if [ $1 = 0 ]; then
-    /bin/systemctl reload-or-try-restart dbus ||:
-    /bin/systemctl reload-or-try-restart oddjobd ||:
+# removal
+if [ $1 -eq 0 ]; then
+    /bin/systemctl -q --no-reload disable ipa.service ||:
+    /bin/systemctl -q stop ipa.service ||:
+    /bin/systemctl try-reload-or-restart \
+        dbus \
+        oddjobd ||:
 fi
 
 %pre server
 # Stop ipa_kpasswd if it exists before upgrading so we don't have a
 # zombie process when we're done.
 if [ -e /usr/sbin/ipa_kpasswd ]; then
-# NOTE: systemd specific section
     /bin/systemctl stop ipa_kpasswd.service >/dev/null 2>&1 ||:
-# END
 fi
 
 %pre server-common
@@ -660,25 +665,34 @@ getent passwd ipaapi >/dev/null || useradd -r -g ipaapi -s /sbin/nologin -d / -c
 id -Gn apache2 | grep '\bipaapi\b' >/dev/null || usermod apache2 -a -G ipaapi ||:
 
 %post server-dns
-%post_service ipa-dnskeysyncd
-/bin/systemctl reload-or-try-restart ipa-ods-exporter.socket ||:
-%post_service ipa-ods-exporter
+# first installation
+if [ $1 -eq 1 ] ; then
+    /bin/systemctl -q preset \
+        ipa-dnskeysyncd \
+        ipa-ods-exporter.socket \
+        ipa-ods-exporter.service ||:
+fi
 
 %preun server-dns
-%preun_service ipa-dnskeysyncd
-/bin/systemctl disable ipa-ods-exporter.socket ||:
-/bin/systemctl stop ipa-ods-exporter.socket ||:
-%preun_service ipa-ods-exporter
+# removal
+# preun_service(P9) doesn't handle not *.service systemd names
+if [ $1 -eq 0 ] ; then
+    /bin/systemctl --no-reload disable --now \
+        ipa-dnskeysyncd \
+        ipa-ods-exporter.socket \
+        ipa-ods-exporter.service ||:
+fi
 
 %post server-trust-ad
-%post_service dbus
-%post_service oddjobd
-%post_service httpd2
+/bin/systemctl try-reload-or-restart \
+    dbus \
+    oddjobd ||:
 
 %preun server-trust-ad
-if [ $1 = 0 ]; then
-    /bin/systemctl reload-or-try-restart dbus ||:
-    /bin/systemctl reload-or-try-restart oddjobd ||:
+if [ $1 -eq 0 ]; then
+    /bin/systemctl try-reload-or-restart \
+        dbus \
+        oddjobd ||:
 fi
 %endif # only_client
 
@@ -703,10 +717,15 @@ if [ $1 -gt 1 ] ; then
             cp /etc/ipa/ca.crt /var/lib/ipa-client/pki/kdc-ca-bundle.pem
             cp /etc/ipa/ca.crt /var/lib/ipa-client/pki/ca-bundle.pem
         fi
+        %__python3 -c 'from ipaclient.install.client import configure_krb5_snippet; configure_krb5_snippet()' >>/var/log/ipaupgrade.log 2>&1
     fi
 
     if [ $restore -ge 2 ]; then
-        python3 -c 'from ipaclient.install.client import update_ipa_nssdb; update_ipa_nssdb()' >/var/log/ipaupgrade.log 2>&1
+        %__python3 -c 'from ipaclient.install.client import update_ipa_nssdb; update_ipa_nssdb()' >/var/log/ipaupgrade.log 2>&1
+    fi
+
+    if [ $restore -ge 2 ]; then
+        sed -E --in-place=.orig 's/^(HostKeyAlgorithms ssh-rsa,ssh-dss)$/# disabled by ipa-client update\n# \1/' /etc/openssh/ssh_config
     fi
 fi
 
@@ -780,8 +799,14 @@ fi
 %_libexecdir/ipa/ipa-pki-retrieve-key
 %_libexecdir/ipa/ipa-pki-wait-running
 %_libexecdir/ipa/ipa-otpd
+%dir %_libexecdir/ipa/custodia
+%attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-dmldap
+%attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-pki-tomcat
+%attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-pki-tomcat-wrapped
+%attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-ra-agent
 %dir %_libexecdir/ipa/oddjob
 %attr(0755,root,root) %_libexecdir/ipa/oddjob/org.freeipa.server.conncheck
+%attr(0755,root,root) %_libexecdir/ipa/oddjob/org.freeipa.server.trust-enable-agent
 %config(noreplace) %_sysconfdir/dbus-1/system.d/org.freeipa.server.conf
 %config(noreplace) %_sysconfdir/oddjobd.conf.d/ipa-server.conf
 %dir %_libexecdir/ipa/certmonger
@@ -838,13 +863,6 @@ fi
 %python3_sitelibdir/ipaserver/
 %python3_sitelibdir/ipaserver-*.egg-info/
 
-%exclude %python3_sitelibdir/ipaserver/install/servntpconf*
-%exclude %python3_sitelibdir/ipaserver/install/servntplib*
-
-%files -n python3-module-ipaserver-ntp
-%python3_sitelibdir/ipaserver/install/servntpconf*
-%python3_sitelibdir/ipaserver/install/servntplib*
-
 %files server-common
 %dir %attr(0700,root,root) %_runtimedir/ipa
 %dir %attr(0700,root,root) %_runtimedir/ipa/ccaches
@@ -855,9 +873,11 @@ fi
 %ghost %attr(644,root,root) %etc_systemd_dir/httpd2.service.d/ipa.conf
 %_datadir/ipa/wsgi.py
 %_datadir/ipa/kdcproxy.wsgi
+%_datadir/ipa/ipaca*.ini
 %_datadir/ipa/*.ldif
 %_datadir/ipa/*.uldif
 %_datadir/ipa/*.template
+%_datadir/ipa/bind.ipa-ext.conf
 %_datadir/ipa/advise/
 %_datadir/ipa/profiles/
 %dir %_datadir/ipa/html
@@ -872,9 +892,10 @@ fi
 %ghost %attr(0644,root,root) %config(noreplace) %apache2_sites_available/ipa.conf
 %ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-rewrite.conf
 %ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-kdc-proxy.conf
-%ghost %attr(0644,root,root) %config(noreplace) %apache2_extra_enabled/ipa-pki-proxy.conf
+%ghost %attr(0640,root,root) %config(noreplace) %apache2_extra_enabled/ipa-pki-proxy.conf
 %ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/kdcproxy/ipa-kdc-proxy.conf
 %ghost %attr(0644,root,root) %config(noreplace) %_datadir/ipa/html/ca.crt
+%ghost %attr(0640,root,named) %config(noreplace) %_sysconfdir/bind/ipa-ext.conf
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krb.con
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krb5.ini
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krbrealm.con
@@ -951,30 +972,25 @@ fi
 %_mandir/man1/ipa-certupdate.1*
 %_mandir/man1/ipa-join.1*
 
+%files client-samba
+%_sbindir/ipa-client-samba
+%_man1dir/ipa-client-samba.1*
+
 %files client-automount
 %_sbindir/ipa-client-automount
 %_mandir/man1/ipa-client-automount.1*
+%python3_sitelibdir/ipaclient/install/ipa_client_automount.py
 
 %files -n python3-module-ipaclient
 %python3_sitelibdir/ipaclient/
+%exclude %python3_sitelibdir/ipaclient/install/ipa_client_automount.py
 %python3_sitelibdir/ipaclient-*.egg-info/
-
-%exclude %python3_sitelibdir/ipaclient/install/clientntpconf*
-%exclude %python3_sitelibdir/ipaclient/install/clintplib*
-
-%files -n python3-module-ipaclient-ntp
-%python3_sitelibdir/ipaclient/install/clientntpconf*
-%python3_sitelibdir/ipaclient/install/clintplib*
 
 %files client-common
 %dir %attr(0755,root,root) %_sysconfdir/ipa/
 %ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/default.conf
 %ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/ca.crt
 %dir %attr(0755,root,root) %_sysconfdir/ipa/nssdb
-# old dbm format
-%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/cert8.db
-%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/key3.db
-%ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/secmod.db
 # new sql format
 %ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/cert9.db
 %ghost %attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/nssdb/key4.db
@@ -1002,6 +1018,12 @@ fi
 %python3_sitelibdir/ipaplatform-*-nspkg.pth
 
 %changelog
+* Fri Jun 05 2020 Stanislav Levin <slev@altlinux.org> 4.8.6-alt2
+- Applied upstream fixes.
+
+* Tue Apr 07 2020 Stanislav Levin <slev@altlinux.org> 4.8.6-alt1
+- 4.7.4 -> 4.8.6.
+
 * Thu Feb 06 2020 Evgeny Sinelnikov <sin@altlinux.org> 4.7.4-alt3
 - Fixed compatibility with Samba 4.11
 - Backported fix Pylint with python3: Remove subclassing from object

@@ -7,13 +7,13 @@
 %def_with check
 
 Name: gssproxy
-Version: 0.8.0
-Release: alt3
+Version: 0.8.3
+Release: alt1
 Summary: GSSAPI Proxy
 
 Group: System/Servers
 License: %mit
-Url: https://pagure.io/gssproxy
+Url: https://github.com/gssapi/gssproxy
 
 Source: %name-%version.tar
 Patch: %name-%version-alt.patch
@@ -38,13 +38,19 @@ BuildRequires: po4a
 BuildRequires: libcap-devel
 
 %if_with check
+BuildRequires: /proc
 BuildRequires: krb5-kdc
 BuildRequires: krb5-doc
 BuildRequires: nss_wrapper
 BuildRequires: socket_wrapper
 BuildRequires: openldap-clients
 BuildRequires: openldap-servers
+
+# https://pagure.io/gssproxy/issue/227
+%ifnarch %ix86 mipsel ppc64le
 BuildRequires: valgrind
+%endif
+
 BuildRequires: python3
 %endif
 
@@ -90,8 +96,8 @@ GSSAPI Proxy configuration for NFS client
 
 # https://pagure.io/gssproxy/issue/227
 %make check \
-%ifarch %ix86 mipsel
-	CHECKARGS="--valgrind-cmd=/usr/bin/env" \
+%ifarch %ix86 mipsel ppc64le
+	CHECKARGS="--valgrind-cmd=" \
 %endif
 	%nil
 
@@ -164,6 +170,15 @@ echo 'run_as_user = %gssproxy_user' >> %buildroot%_sysconfdir/gssproxy/gssproxy.
 %attr(0640,root,%gssproxy_user) %config(noreplace) %_sysconfdir/gssproxy/99-nfs-client.conf
 
 %changelog
+* Mon Apr 20 2020 Stanislav Levin <slev@altlinux.org> 0.8.3-alt1
+- 0.8.2 -> 0.8.3.
+
+* Tue May 21 2019 Stanislav Levin <slev@altlinux.org> 0.8.2-alt1
+- 0.8.1 -> 0.8.2.
+
+* Wed Apr 17 2019 Stanislav Levin <slev@altlinux.org> 0.8.1-alt1
+- 0.8.0 -> 0.8.1.
+
 * Wed Mar 06 2019 Ivan A. Melnikov <iv@altlinux.org> 0.8.0-alt3
 - Run tests without valgrind on %%ix86 and mipsel.
 
