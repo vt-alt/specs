@@ -1,7 +1,7 @@
 
 Name: phpipam
 Version: 1.40.000
-Release: alt2
+Release: alt3
 Summary: PHP-based virtual machine control tool
 Group: Networking/WWW
 License: GPLv3
@@ -117,6 +117,9 @@ rm -rf %buildroot%webserver_webappsdir/%name/functions/GoogleAuthenticator/tests
 %config(noreplace) %apache2_extra_available/%name.conf
 
 %changelog
+* Fri Jun 05 2020 Alexey Shabalin <shaba@altlinux.org> 1.40.000-alt3
+- snapshot of 1.4 branch e4ae4ce1dae77125b7878b3cdc2f72f24f841ce8
+
 * Thu Aug 15 2019 Alexey Shabalin <shaba@altlinux.org> 1.40.000-alt2
 - snapshot of 1.4 branch fc4e92dc1025aa1eaa9fa2b73adbfd72a0b1eb54
 - update PHPMailer submodule to v6.0.7
