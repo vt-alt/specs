@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -23,6 +23,7 @@ Patch1: %rname-alt-hide-group-menu-without-children.patch
 Patch2: %rname-alt-hide-scrollgroup-menu-without-children.patch
 Patch3: %rname-alt-hide-top-level-menu-without-children.patch
 Patch4: %rname-alt-contents-tree-synchronization.patch
+Patch5: %rname-alt-hide-links-on-contents-screen.patch
 
 # Automatically added by buildreq on Mon Apr 25 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libgpg-error libjson-c libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
@@ -45,6 +46,7 @@ KDE help center.
 %patch2 -p2
 %patch3 -p2
 %patch4 -p2
+%patch5 -p2
 
 %build
 %K5build \
@@ -71,6 +73,9 @@ KDE help center.
 %_datadir/qlogging-categories5/*.*categories
 
 %changelog
+* Tue Jun 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.3-alt2
+- Hidden links to empty pages on contents screen.
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
