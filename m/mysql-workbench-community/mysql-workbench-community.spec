@@ -1,5 +1,5 @@
 Name: mysql-workbench-community
-Version: 8.0.19
+Version: 8.0.20
 Release: alt1
 
 Summary: A MySQL visual database modeling tool
@@ -99,6 +99,9 @@ BuildRequires: libssh-devel >= 0.8.5
 
 # 8.0.19
 BuildRequires: libthai-devel libdatrie-devel rapidjson
+
+# 8.0.20
+BuildRequires: libbrotli-devel libgcrypt-devel
 
 %description
 MySQL Workbench is modeling tool that allows you to
@@ -220,6 +223,9 @@ popd
 %_xdgdatadir/mime-info/*.mime
 
 %changelog
+* Thu Jun 04 2020 Sergey Y. Afonin <asy@altlinux.org> 8.0.20-alt1
+- Updated to last release (ALT #38563)
+
 * Thu Mar 19 2020 Sergey Y. Afonin <asy@altlinux.org> 8.0.19-alt1
 - Updated to last release
 - Removed all -Wno-error= for x86_64 in spec file
