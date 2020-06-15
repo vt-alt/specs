@@ -6,8 +6,8 @@
 
 Name: cura
 Epoch: 1
-Version: 4.4.1
-Release: alt2
+Version: 4.6.1
+Release: alt1
 Summary: 3D printer control software
 License: LGPLv3+
 
@@ -16,9 +16,6 @@ Url: https://github.com/Ultimaker/Cura
 Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
-
-# Fedora patch
-Patch0: 0001-Force-to-open-with-X11.patch
 
 # OpenSUSE path
 # PATCH-FIX-OPENSUSE disable-code-style-check.patch code style is no distro buisiness
@@ -74,7 +71,6 @@ needs. As it's open source, our community helps enrich it even more.
 
 %prep
 %setup
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -120,6 +116,9 @@ desktop-file-validate %buildroot%_datadir/applications/%name.desktop
 %_libexecdir/%name
 
 %changelog
+* Thu May 07 2020 Anton Midyukov <antohami@altlinux.org> 1:4.6.1-alt1
+- New version 4.6.1
+
 * Tue Mar 24 2020 Anton Midyukov <antohami@altlinux.org> 1:4.4.1-alt2
 - Avoid crash caused by KDE qqc2 desktop style
 

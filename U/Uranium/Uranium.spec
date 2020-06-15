@@ -6,7 +6,7 @@
 %add_python3_compile_include %_libexecdir/uranium
 
 Name:    Uranium
-Version: 4.4.1
+Version: 4.6.1
 Release: alt1
 
 Summary:  A Python framework for building Desktop applications.
@@ -75,7 +75,10 @@ popd
 %check
 %if 0%{?with_check}
 pip3 freeze
-python3 -m pytest -v -k "not TestPolygon"
+# skipping failing tests, see:
+# * https://github.com/Ultimaker/Uranium/issues/594
+# * https://github.com/Ultimaker/Uranium/issues/603
+python3 -m pytest -v -k "not (TestSettingFunction and test_init_bad) and not TestHttpRequestManager"
 %endif
 
 %files -f uranium.lang
@@ -89,6 +92,9 @@ python3 -m pytest -v -k "not TestPolygon"
 %doc html LICENSE
 
 %changelog
+* Thu May 07 2020 Anton Midyukov <antohami@altlinux.org> 4.6.1-alt1
+- New version 4.6.1
+
 * Sat Jan 25 2020 Anton Midyukov <antohami@altlinux.org> 4.4.1-alt1
 - New version 4.4.1
 

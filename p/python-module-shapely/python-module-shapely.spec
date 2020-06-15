@@ -1,10 +1,10 @@
-%define module_name shapely
+%define _unpackaged_files_terminate_build 1
 
-%def_with python3
+%define oname shapely
 
-Name: python-module-%module_name
-Version: 1.5.17
-Release: alt1.post1.1.1.1
+Name: python-module-%oname
+Version: 1.7
+Release: alt1.b1
 
 Summary: Planar geometries, predicates, and operations
 
@@ -15,81 +15,76 @@ Url: http://pypi.python.org/pypi/Shapely
 # https://github.com/Toblerity/Shapely.git
 Source: %name-%version.tar
 
-BuildPreReq: libgeos-devel
-BuildPreReq: python-devel python-module-setuptools
-BuildPreReq: python-module-Cython libnumpy-devel
-BuildPreReq: python-module-descartes python-module-sphinx-devel
-BuildPreReq: python-module-matplotlib-sphinxext
-BuildPreReq: python-module-packaging
-BuildRequires: python-module-pytest
-%if_with python3
 BuildRequires(pre): rpm-build-python3
-BuildPreReq: python3-devel python3-module-setuptools
-BuildPreReq: python3-module-Cython libnumpy-py3-devel
-BuildPreReq: python3-module-descartes
-BuildPreReq: python3-module-packaging
+BuildRequires: libgeos-devel
+BuildRequires: python-devel python-module-setuptools
+BuildRequires: python-module-Cython libnumpy-devel
+BuildRequires: python-module-descartes python-module-sphinx-devel
+BuildRequires: python-module-matplotlib-sphinxext
+BuildRequires: python-module-packaging
+BuildRequires: python-module-pytest
+BuildRequires: python-module-numpy-testing
+BuildRequires: python3-devel python3-module-setuptools
+BuildRequires: python3-module-Cython libnumpy-py3-devel
+BuildRequires: python3-module-descartes
+BuildRequires: python3-module-packaging
 BuildRequires: python3-module-pytest
+BuildRequires: python3-module-numpy-testing
 BuildRequires: xvfb-run
-%endif
-
-%setup_python_module %module_name
 
 %description
 Planar geometries, predicates, and operations.
 
 %package examples
-Summary: Examples for %module_name
+Summary: Examples for %oname
 Group: Development/Python
 Requires: %name = %EVR
 
 %description examples
 Planar geometries, predicates, and operations.
 
-This package contains examples for %module_name.
+This package contains examples for %oname.
 
-%package -n python3-module-%module_name
+%package -n python3-module-%oname
 Summary: Planar geometries, predicates, and operations
 Group: Development/Python3
 
-%description -n python3-module-%module_name
+%description -n python3-module-%oname
 Planar geometries, predicates, and operations.
 
-%package -n python3-module-%module_name-examples
-Summary: Examples for %module_name
+%package -n python3-module-%oname-examples
+Summary: Examples for %oname
 Group: Development/Python3
-Requires: python3-module-%module_name = %EVR
+Requires: python3-module-%oname = %EVR
 
-%description -n python3-module-%module_name-examples
+%description -n python3-module-%oname-examples
 Planar geometries, predicates, and operations.
 
-This package contains examples for %module_name.
+This package contains examples for %oname.
 
 %package pickles
-Summary: Pickles for %module_name
+Summary: Pickles for %oname
 Group: Development/Python
 %add_python_req_skip figures
 
 %description pickles
 Planar geometries, predicates, and operations.
 
-This package contains pickles for %module_name.
+This package contains pickles for %oname.
 
 %package docs
-Summary: Documentation for %module_name
+Summary: Documentation for %oname
 Group: Development/Documentation
 BuildArch: noarch
 
 %description docs
 Planar geometries, predicates, and operations.
 
-This package contains documentation for %module_name.
+This package contains documentation for %oname.
 
 %prep
 %setup
-
-%if_with python3
 cp -fR . ../python3
-%endif
 
 %prepare_sphinx .
 ln -s ../objects.inv docs/
@@ -97,39 +92,36 @@ ln -s ../objects.inv docs/
 %build
 export LC_ALL=en_US.UTF-8
 %add_optflags -fno-strict-aliasing
+
 %python_build_debug
 
-%if_with python3
 pushd ../python3
 %python3_build_debug
 popd
-%endif
 
 %install
 export LC_ALL=en_US.UTF-8
-%python_install
-install -m644 %buildroot%prefix/%module_name/*.pxi \
-	%buildroot%python_sitelibdir/%module_name/
 
-%if_with python3
+%python_install
+
 pushd ../python3
 %python3_install
 popd
-install -m644 %buildroot%prefix/%module_name/*.pxi \
-	%buildroot%python3_sitelibdir/%module_name/
-%endif
 
 %make -C docs pickle
 %make -C docs html
 
-cp -fR docs/_build/pickle %buildroot%python_sitelibdir/%module_name/
+cp -fR docs/_build/pickle %buildroot%python_sitelibdir/%oname/
 
+# Tests fail on i586 due to fp math precision
+%ifnarch %ix86
 %check
 export LC_ALL=en_US.UTF-8
+
 python setup.py test
 python setup.py build_ext -i
 py.test -vv
-%if_with python3
+
 pushd ../python3
 xvfb-run python3 setup.py test
 python3 setup.py build_ext -i
@@ -151,16 +143,20 @@ popd
 %files docs
 %doc docs/_build/html/*
 
-%if_with python3
-%files -n python3-module-%module_name
+%files -n python3-module-%oname
 %python3_sitelibdir/*
 %exclude %python3_sitelibdir/*/examples
 
-%files -n python3-module-%module_name-examples
+%files -n python3-module-%oname-examples
 %python3_sitelibdir/*/examples
-%endif
 
 %changelog
+* Fri Jan 24 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7-alt1.b1
+- Updated to upstream version 1.7b1 (Closes: #37910)
+
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1.5.17-alt1.post1.1.1.1.1
+- Added missing dep on `numpy.testing`.
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.5.17-alt1.post1.1.1.1
 - (NMU) Rebuilt with python-3.6.4.
 
