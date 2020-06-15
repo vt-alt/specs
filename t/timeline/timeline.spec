@@ -1,6 +1,6 @@
 Name: timeline
 Version: 2.2.0
-Release: alt1
+Release: alt2
 Group: Office
 Summary: Displaying and navigating events on a timeline
 License: GPL-3.0 and CC-BY-SA-3.0
@@ -8,6 +8,7 @@ Url: http://thetimelineproj.sourceforge.net/
 
 Source: %name-%version.zip
 Source1: %name.1
+Source2: ru.po
 Patch: timeline-fix-paths.patch
 
 BuildArch: noarch
@@ -42,6 +43,7 @@ Python module for %name, %summary
 %prep
 %setup
 %patch -p0
+cp %SOURCE2 translations/ru.po
 
 cat > %name.desktop <<@@@
 [Desktop Entry]
@@ -94,6 +96,9 @@ rm -rf %buildroot%_datadir/timeline/dependencies
 %python3_sitelibdir/timelinelib*
 
 %changelog
+* Thu Jun 11 2020 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt2
+- Complete Russian translation (thanks Olesya Gerasimenko).
+
 * Fri May 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt1
 - New version (ALT #38517).
 - Fix License tag according to SPDX.
