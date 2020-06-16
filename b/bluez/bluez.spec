@@ -8,21 +8,22 @@
 
 Name: bluez
 Version: 5.54
-Release: alt1
+Release: alt5
 
 Summary: Bluetooth utilities
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: Networking/Other
-URL: http://www.bluez.org/
-Packager: L.A. Kostis <lakostis@altlinux.org>
 
-Conflicts: udev-extras < 169
-
+Url: http://www.bluez.org/
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
+Packager: L.A. Kostis <lakostis@altlinux.org>
+
 # fc
 Patch10: 0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
 Obsoletes: obex-data-server < 0.4.6-alt3
+Conflicts: udev-extras < 169
+Requires(post,preun): /bin/systemctl
 
 BuildRequires: glib2-devel libudev-devel libdbus-devel libreadline-devel
 BuildRequires: systemd-devel gtk-doc
@@ -77,7 +78,7 @@ https://github.com/zephyrproject-rtos/zephyr/blob/master/tests/bluetooth/tester/
 
 %build
 %autoreconf
-export CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
+export CFLAGS="$CFLAGS %(getconf LFS_CFLAGS)"
 %configure \
 	--enable-library \
 	--enable-threads \
@@ -107,16 +108,20 @@ find %buildroot%_libdir -name \*.la -delete
 %make check
 
 %post
-%post_service bluetoothd
 if [ $1 = 1 ]; then
+%post_service bluetoothd
 	chkconfig bluetoothd on
+	/bin/systemctl --user --global preset obex.service >/dev/null 2>&1 || :
 fi
 
 %preun
+if [ $1 = 0 ]; then
 %preun_service bluetoothd
+	/bin/systemctl --user --global disable obex.service >/dev/null 2>&1 || :
+fi
 
-%triggerin -- %name <= 4.37-alt1
-chkconfig bluetoothd on
+%triggerin -- %name < 5.54-alt5
+/bin/systemctl --user --global preset obex.service >/dev/null 2>&1 || :
 
 %files
 %doc AUTHORS ChangeLog README
@@ -175,6 +180,23 @@ chkconfig bluetoothd on
 %endif
 
 %changelog
+* Tue Jun 09 2020 Yuri N. Sedunov <aris@altlinux.org> 5.54-alt5
+- fixed %%post, %%preun scripts
+- used LFS_CFLAGS
+
+* Tue Jun 09 2020 Anton Midyukov <antohami@altlinux.org> 5.54-alt4
+- Disable obex.service only when uninstalling package
+- Install package bluez after installing systemd-utils
+(not avoid systemd-utils dependency)
+- Fix License tag
+
+* Mon Apr 20 2020 Michael Shigorin <mike@altlinux.org> 5.54-alt3
+- avoid systemd-utils dependency
+- minor spec cleanup
+
+* Mon Apr 20 2020 Anton Midyukov <antohami@altlinux.org> 5.54-alt2
+- Enable obex.service (closes #38279).
+
 * Sun Mar 15 2020 L.A. Kostis <lakostis@altlinux.ru> 5.54-alt1
 - 5.54;
 - remove merged patches;
