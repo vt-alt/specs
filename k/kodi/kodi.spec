@@ -1,5 +1,5 @@
 Name: kodi
-Version: 18.6
+Version: 18.7.1
 Release: alt1
 
 Summary: Kodi Media Center
@@ -169,6 +169,12 @@ mkdir %buildroot%_libdir/kodi/addons
 %_datadir/kodi/cmake
 
 %changelog
+* Tue Jun 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.7.1-alt1
+- 18.7.1 Leia released
+
+* Mon Apr 20 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 18.6-alt2
+- Fixed build with new libfmt.
+
 * Thu Mar 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.6-alt1
 - 18.6 Leia released
 
