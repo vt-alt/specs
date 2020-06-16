@@ -3,7 +3,7 @@
 
 Name: plasma5-%rname
 Version: 5.18.5
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace
 
@@ -13,7 +13,7 @@ Url: http://www.kde.org
 License: GPL-2.0-or-later
 
 Requires(pre,postun): alternatives >= 0:0.4, %openssh_askpass_dir
-Requires: openssh-askpass-common
+Requires: ssh-provider-openssh-askpass-common
 Provides: openssh-askpass-kf5 = %version-%release
 
 Source: %rname-%version.tar
@@ -88,6 +88,9 @@ EOF
 #%_K5xdgapp/org.kde.ksshaskpass.desktop
 
 %changelog
+* Thu Jun 11 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt2
+- allow to install with openssh-gostcrypto
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt1
 - new version
 
