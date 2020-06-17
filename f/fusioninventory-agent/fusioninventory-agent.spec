@@ -1,5 +1,5 @@
 Name:     fusioninventory-agent
-Version:  2.5.1
+Version:  2.5.2
 Release:  alt1
 
 Summary:  FusionInventory Agent
@@ -110,6 +110,11 @@ find %buildroot -name .packlist -delete
 %config(noreplace) %_sysconfdir/fusioninventory/agent.cfg
 %config(noreplace) %_sysconfdir/fusioninventory/conf.d
 %config(noreplace) %_sysconfdir/sysconfig/%name
+%config(noreplace) %_sysconfdir/fusioninventory/inventory-server-plugin.cfg
+%config(noreplace) %_sysconfdir/fusioninventory/proxy-server-plugin.cfg
+%config(noreplace) %_sysconfdir/fusioninventory/proxy2-server-plugin.cfg
+%config(noreplace) %_sysconfdir/fusioninventory/server-test-plugin.cfg
+%config(noreplace) %_sysconfdir/fusioninventory/ssl-server-plugin.cfg
 %_sysconfdir/cron.hourly/%name
 %_unitdir/%name.service
 %_bindir/fusioninventory*
@@ -118,6 +123,9 @@ find %buildroot -name .packlist -delete
 %dir %_localstatedir/%name
 
 %changelog
+* Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.2-alt1
+- New version.
+
 * Thu Jul 04 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.1-alt1
 - New version.
 
