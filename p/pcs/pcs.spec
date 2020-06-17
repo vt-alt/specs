@@ -1,121 +1,125 @@
-%define pyagentx_version 0.4.pcs.2
+%define        pyagentx_version 0.4.pcs.2
 
-Name: 	  pcs
-Version:  0.10.2
-Release:  alt1
-Epoch:    1
+Name: 	       pcs
+Epoch:         1
+Version:       0.10.5
+Release:       alt2
+Summary:       Pacemaker/Corosync configuration system
+License:       GPLv2+ and MIT
+Group:         Other
+Url:           https://github.com/ClusterLabs/pcs
+Vcs:           https://github.com/ClusterLabs/pcs.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary:  Pacemaker/Corosync configuration system
-License:  GPLv2
-Group:    Other
-Url: 	  https://github.com/ClusterLabs/pcs
-
-Packager: Andrey Cherepanov <cas@altlinux.org>
-
-Source:   %name-%version.tar
-Source1:  pyagentx-v%pyagentx_version.tar.gz
-Patch:    %name-%version-%release.patch
-BuildArch: noarch
+Source:        %name-%version.tar
+Source1:       pyagentx-v%pyagentx_version.tar.gz
+Source2:       pcsd
+Source3:       known-hosts
+Patch:         compat.patch
 
 %add_python3_req_skip pyagentx
+Requires:      python3-module-pcs = %version
+Requires:      python3-module-snmp = %version
+Obsoletes:     pcs-pcsd < %EVR
+Provides:      pcs-pcsd = %EVR
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires(pre): rpm-build-ruby
 BuildRequires: corosync fontconfig fonts-ttf-liberation
 BuildRequires: python3-devel python3-module-setuptools
-Requires: pacemaker
 
 %description
 Pacemaker/Corosync configuration system with remote access
-
-%package pcsd
-Summary:  Pacemaker/Corosync cli and gui for configuration system
-Requires: pcs
-Group: Other
-BuildArch: noarch
-Requires: corosync
-Requires: openssl
-#Requires: ruby-rack-handler-webrick < 2.0.0
-
-%description pcsd
 Pacemaker/Corosync gui/cli configuration system and daemon
 
-%package pcsd-tests
-Summary: tests for Pacemaker/Corosync cli and gui
-Requires: pcs-pcsd
-Group: Other
-BuildArch: noarch
 
-%description pcsd-tests
-Tests for Pacemaker/Corosync gui/cli configuration system and daemon
+%package       -n python3-module-pcs
+Summary:       Python module for pacemaker/corosync gui/cli configuration system and daemon
+Group:         Other
+BuildArch:     noarch
+Requires:      %name = %version
+Requires:      pacemaker >= 2.0.3-alt2
 
-%package snmp
-Group: Other
-Summary: Pacemaker cluster SNMP agent
-License: GPLv2, BSD 2-clause
-Requires: %name = %EVR
-Requires: pacemaker
-Requires: net-snmp
+%description   -n python3-module-pcs
+Python module for pacemaker/corosync gui/cli configuration system and daemon
 
-%description snmp
+
+%package       -n python3-module-snmp
+Group:         Other
+Summary:       Pacemaker cluster SNMP agent
+License:       GPLv2 or BSD-2-Clause
+Requires:      %name = %EVR
+Requires:      pacemaker >= 2.0.3-alt2
+Requires:      net-snmp
+Obsoletes:     pcs-snmp < %EVR
+Provides:      pcs-snmp = %EVR
+
+%description   -n python3-module-snmp
 SNMP agent that provides information about pacemaker cluster to the master
 agent (snmpd).
+
 
 %prep
 %setup
 %patch -p1
+sed -e "s,/usr/lib/pcsd/vendor/bundle/ruby,/usr/lib/ruby," -i pcsd/pcsd-ruby.service
 mkdir -p pcs/bundled/tmp
 tar xf %SOURCE1 -C pcs/bundled/tmp
+
+%build
 make BUNDLE_PYAGENTX_SRC_DIR=pcs/bundled/tmp/pyagentx-%pyagentx_version \
      PYAGENTX_LIB_DIR=%buildroot%_libexecdir/pcs/bundled
+%ruby_build --use=pcsd --alias=pcs --join=bin:lib
 
 %install
 mkdir -p %buildroot%_libexecdir/pcs
 mkdir -p %buildroot%_localstatedir/pcsd
 mkdir -p %buildroot%_logdir/pcsd
+mkdir -p %buildroot%_sysconfdir/sysconfig/
+%ruby_install
 %makeinstall_std \
      BUNDLE_PYAGENTX_SRC_DIR=pcs/bundled/tmp/pyagentx-%pyagentx_version \
      PYAGENTX_LIB_DIR=%buildroot%_libexecdir/pcs/bundled \
      BUILD_GEMS=false \
-     DEST_LIB=%buildroot%ruby_sitelibdir \
+     DEST_LIB=%buildroot%_libexecdir \
      SYSTEMCTL_OVERRIDE=true \
      DEST_SYSTEMD_SYSTEM=%buildroot%systemd_unitdir \
 
-mv %buildroot%ruby_sitelibdir/pcs %buildroot%_libexecdir/
-
-#install -Dm 0755 pcsd/pcsd %buildroot%_initdir/pcsd
 install -Dm 0644 pcsd/pcsd.logrotate %buildroot%_logrotatedir/pcsd.logrotate
+install -Dm 0755 %SOURCE2 %buildroot%_initdir/pcsd
+install -Dm 0644 %SOURCE3 %buildroot%_localstatedir/pcsd/known-hosts
 
-# Remove unnecessary stuff
-cd %buildroot/%ruby_sitelibdir/pcsd
-rm -rf *.service pcsd *.logrotate debian *~ *.orig Makefile
+%check
+%ruby_test
 
-%post pcsd
+%post
 %post_service pcsd
 
-%preun pcsd
+%preun
 %preun_service pcsd
 
-%post snmp
+%post          -n python3-module-snmp
 %post_service pcs_snmp_agent
 
-%preun snmp
+%preun         -n python3-module-snmp
 %preun_service pcs_snmp_agent
+
 
 %files
 %doc CHANGELOG.md COPYING README.md
+
+%files         -n python3-module-pcs
+%doc README.md
 %_sbindir/pcs
 %python3_sitelibdir_noarch/*
 %_man8dir/*.*
 %exclude %_man8dir/pcs_snmp_agent.*
 %_sysconfdir/bash_completion.d/pcs
 %_libexecdir/pcs/pcs_internal
-
-%files pcsd
 %_sbindir/pcsd
-%ruby_sitelibdir/pcsd/*
-%exclude %ruby_sitelibdir/pcsd/test/*
-#_initdir/pcsd
+%_initdir/pcsd
+%_libexecdir/pcsd
 %_sysconfdir/logrotate.d/pcsd
 %_sysconfdir/pam.d/pcsd
 %_sysconfdir/sysconfig/pcsd
@@ -123,11 +127,10 @@ rm -rf *.service pcsd *.logrotate debian *~ *.orig Makefile
 %dir %_localstatedir/pcsd
 %_logrotatedir/pcsd.logrotate
 %systemd_unitdir/pcsd.service
+%systemd_unitdir/pcsd-ruby.service
+%_localstatedir/pcsd/known-hosts
 
-%files pcsd-tests
-%ruby_sitelibdir/pcsd/test/*
-
-%files snmp
+%files         -n python3-module-snmp
 %config(noreplace) %_sysconfdir/sysconfig/pcs_snmp_agent
 %_libexecdir/pcs/pcs_snmp_agent
 %_libexecdir/pcs/bundled/packages/pyagentx*
@@ -135,7 +138,31 @@ rm -rf *.service pcsd *.logrotate debian *~ *.orig Makefile
 %_datadir/snmp/mibs/PCMK-PCS*-MIB.txt
 %_man8dir/pcs_snmp_agent.*
 
+
 %changelog
+* Fri Apr 03 2020 Pavel Skrylev <majioa@altlinux.org> 1:0.10.5-alt2
+- + proper patch to fix config
+- + pcsd init script
+- + joint pcs and ruby-pcsd
+
+* Wed Mar 18 2020 Pavel Skrylev <majioa@altlinux.org> 1:0.10.5-alt1
+- ^ 0.10.4 -> 0.10.5 (closes #36898)
+- fixed ! pcsd start (closes #37837)
+- fixed ! license according to SPDX and licenses in some files
+
+* Thu Mar 05 2020 Pavel Skrylev <majioa@altlinux.org> 1:0.10.4-alt1
+- updated (^) 0.10.3 -> 0.10.4
+- fixed (!) spec
+- fixed (!) lost provides, and requires
+
+* Mon Sep 09 2019 Pavel Skrylev <majioa@altlinux.org> 1:0.10.3-alt1.1
+- fixed (!) spec according to changelog rules
+
+* Sun Aug 25 2019 Pavel Skrylev <majioa@altlinux.org> 1:0.10.3-alt1
+- used (>) Ruby Policy 2.0
+- updated (^) 0.10.2 -> 0.10.3
+- fixed (!) names of subpackages according to the language they were written in
+
 * Mon Aug 12 2019 Andrey Cherepanov <cas@altlinux.org> 1:0.10.2-alt1
 - New version.
 - Remove obsolete initscript.

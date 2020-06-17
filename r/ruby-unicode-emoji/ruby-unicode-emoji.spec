@@ -1,63 +1,64 @@
-%define  pkgname unicode-emoji
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname unicode-emoji
 
-Name:    ruby-%pkgname
-Version: 1.1.0
-Release: alt1.1
+Name:          ruby-%pkgname
+Version:       2.1.0
+Release:       alt1
+Summary:       Emoji Regex in Ruby
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/janlelis/unicode-emoji
+%vcs           https://github.com/janlelis/unicode-emoji.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Emoji Regex in Ruby
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/janlelis/unicode-emoji
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-Patch:   alt-fix-datadir.patch
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
-%summary
+A small Ruby library which provides Unicode Emoji data and regexes.
+Also includes a categorized list of recommended Emoji.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%patch -p1
-%update_setup_rb
+%setup
 
 %build
-%ruby_config --datadir=%_datadir/%name
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
-%_datadir/%name
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Jul 18 2019 Pavel Skrylev <majioa@altlinux.org> 2.1.0-alt1
+- Bump to 2.1.0
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1.1
 - Rebuild with new Ruby autorequirements.
 

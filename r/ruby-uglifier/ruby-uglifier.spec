@@ -1,60 +1,68 @@
-%define  pkgname uglifier
+%define        pkgname uglifier
 
-Name:    ruby-%pkgname
-Version: 4.1.19
-Release: alt1
+Name:          ruby-%pkgname
+Version:       4.1.20
+Release:       alt1
+Summary:       Ruby wrapper for UglifyJS JavaScript compressor
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/lautis/uglifier
+%vcs           https://github.com/lautis/uglifier.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Ruby wrapper for UglifyJS JavaScript compressor.
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/lautis/uglifier
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
-%summary
+%summary.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
+UglifyJS currently is extensively tested with ES5, but also includes
+experimental ES6/ES2015+/Harmony support.
 
-BuildArch: noarch
+More stable alternatives for working with ES6 code is to first transpile to ES5
+with e.g. babel-transpiler or using Closure Compiler to directly minify ES6
+code.
 
-%description doc
-Documentation files for %{name}.
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для %gemname самоцвета
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
-%ruby_build
+%gem_build
 
 %install
-%ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
+%gem_install
 
 %check
-%ruby_test_unit -Ilib:test test
+%gem_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*.gemspec
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Jun 06 2019 Pavel Skrylev <majioa@altlinux.org> 4.1.20-alt1
+- Bump to 4.1.20
+- Use Ruby Police 2.0
+
 * Mon Sep 17 2018 Andrey Cherepanov <cas@altlinux.org> 4.1.19-alt1
 - New version.
 

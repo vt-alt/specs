@@ -2,19 +2,18 @@
 %define        gemname %pkgname
 
 Name:          ruby-google-api
-Version:       0.30.2
+Version:       0.30.5
 Release:       alt1
 Summary:       Google API Client for Ruby
 License:       Apache-2.0
 Group:         Development/Ruby
 Url:           https://developers.google.com/api-client-library/ruby/
-# VCS          https://github.com/google/google-api-ruby-client.git
+%vcs           https://github.com/google/google-api-ruby-client.git
 Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 BuildArch:     noarch
 
 Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-
 %add_findreq_skiplist %ruby_gemlibdir/*
 
 %description
@@ -26,24 +25,28 @@ features.
 
 %package       doc
 Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
 Group:         Development/Documentation
 BuildArch:     noarch
 
 %description   doc
 Documentation files for %gemname gem.
 
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
 %setup
 
 %build
-%gem_build --use=%gemname --alias=google-api
+%ruby_build --ignore=cli,web --use=%gemname --alias=google-api
 
 %install
-%gem_install
+%ruby_install
 
 %check
-%gem_test
+%ruby_test
 
 %files
 %_bindir/generate-api
@@ -54,6 +57,10 @@ Documentation files for %gemname gem.
 %ruby_gemdocdir
 
 %changelog
+* Fri Jul 12 2019 Pavel Skrylev <majioa@altlinux.org> 0.30.5-alt1
+- Bump to 0.30.5
+- Fix spec
+
 * Thu Jun 13 2019 Pavel Skrylev <majioa@altlinux.org> 0.30.2-alt1
 - Fix lost provides (closes #36888)
 

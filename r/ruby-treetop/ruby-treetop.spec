@@ -1,66 +1,83 @@
-Epoch: 1
-%define  pkgname treetop
- 
-Name: 	 ruby-%pkgname
-Version: 1.6.8
-Release: alt1.1.1
- 
-Summary: A Ruby-based text parsing and interpretation DSL
-License: MIT/Ruby
-Group:   Development/Ruby
-Url:     http://treetop.rubyforge.org/
-# VCS:   git://github.com/cjheath/treetop
+%define        pkgname treetop
 
-Packager: Andrey Cherepanov <cas@altlinux.org>
-BuildArch: noarch
- 
-Source:  %pkgname-%version.tar
- 
+Name: 	       ruby-%pkgname
+Epoch:         1
+Version:       1.6.10
+Release:       alt2
+Summary:       A Ruby-based text parsing and interpretation DSL
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/cjheath/treetop
+%vcs           https://github.com/cjheath/treetop.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
+
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: ruby-polyglot
- 
+%add_findreq_skiplist %ruby_gemslibdir/**/*
+
 %description
 Treetop is a language for describing languages. Combining the elegance
 of Ruby with cutting-edge parsing expression grammars, it helps you
 analyze syntax with revolutionary ease.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
- 
-BuildArch: noarch
- 
-%description doc
-Documentation files for %{name}.
+
+%package       -n tt
+Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n tt
+Executable file for %gemname gem.
+
+%description   -n tt -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
- 
+%setup
+
 %build
-%ruby_config
 %ruby_build
- 
+
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
- 
+
 %check
-%ruby_test_unit -Ilib:test test
- 
+%ruby_test
+
 %files
 %doc README*
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n tt
 %_bindir/tt
-%ruby_sitelibdir/*
-%rubygem_specdir/*
- 
-%files doc
-%ruby_ri_sitedir/*
- 
+%_mandir/tt*
+
+%files         doc
+%ruby_gemdocdir
+
+
 %changelog
+* Thu Aug 01 2019 Pavel Skrylev <majioa@altlinux.org> 1:1.6.10-alt2
+^ Ruby Policy 2.0
+^ v1.6.10
+
 * Mon Sep 17 2018 Andrey Cherepanov <cas@altlinux.org> 1:1.6.8-alt1.1.1
 - New version.
 

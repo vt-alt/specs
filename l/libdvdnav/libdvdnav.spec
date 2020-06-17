@@ -1,19 +1,15 @@
+%define soname 4
 Name: libdvdnav
-Version: 5.0.1
+Version: 6.1.0
 Release: alt1
 Summary: DVD Navigation library
 License: GPLv2+
 Group: System/Libraries
-URL: https://dvdnav.mplayerhq.hu/
-Packager: Valery Inozemtsev <shrek@altlinux.ru>
+URL: https://www.videolan.org/developers/libdvdnav.html
 
-Requires: libdvdcss
+Source: %name-%version.tar
 
-Source: %name-%version.tar.bz2
-Patch0: libdvdnav-5.0.1-alt-fix-doc-build.patch
-Patch1: libdvdnav-5.0.1-alt-version-script.patch
-
-BuildRequires: libdvdread-devel doxygen
+BuildRequires: libdvdread-devel
 
 %description
 %name is a library that allows easy use of sophisticated DVD
@@ -23,7 +19,8 @@ interactive DVD games.
 %package devel
 Summary: Development environment for %name
 Group: Development/C
-Requires: %name = %version-%release libdvdread-devel
+Requires: %name = %EVR
+Requires: libdvdread-devel >= 6.1.0
 
 %description devel
 %name provides support to applications wishing to make use of DVD
@@ -33,8 +30,6 @@ applications.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 %autoreconf
@@ -42,22 +37,24 @@ applications.
 	--disable-static
 
 %make_build
-%make docs
 
 %install
 %make DESTDIR=%buildroot install
+rm -rf %buildroot%_docdir/%name
 
 %files
-%doc AUTHORS README TODO
 %_libdir/*.so.*
 
 %files devel
-%doc doc/html/*
+%doc AUTHORS README TODO
 %_includedir/*
 %_libdir/*.so
 %_pkgconfigdir/*.pc
 
 %changelog
+* Fri Apr 17 2020 Anton Farygin <rider@altlinux.ru> 6.1.0-alt1
+- 6.1.0
+
 * Sat Oct 25 2014 Valery Inozemtsev <shrek@altlinux.ru> 5.0.1-alt1
 - 5.0.1
 

@@ -15,15 +15,16 @@
 %ifarch ppc64le
 %def_disable jit
 %endif
+%def_disable check
 
 %define smp %__nprocs
 
 Name: libwebkitgtk2
 Version: 2.4.11
-Release: alt7
+Release: alt10
 
 Summary: Web browser engine
-License: %bsd %lgpl2plus
+License: LGPL-2.0 and LGPL-2.1 and BSD-2-Clause
 Group: System/Libraries
 Url: http://www.webkitgtk.org/
 
@@ -36,6 +37,9 @@ Patch5: webkitgtk-2.4.11-icu59.patch
 # https://bugs.webkit.org/show_bug.cgi?id=126985
 Patch6: webkitgtk-x86-assembler-fix.patch
 Patch7: webkitgtk-2.4.10-suse-aarch64.patch
+Patch8: webkitgtk-2.4.11-alt-build.patch
+# python->python2
+Patch9: webkitgtk-2.4.11-alt-python2.patch
 
 Requires: libjavascriptcoregtk2 = %version-%release
 %{?_enable_geolocation:Requires: geoclue2}
@@ -67,7 +71,7 @@ BuildRequires: libsecret-devel
 BuildRequires: libpango-devel >= 1.30.0 libcairo-devel >= 1.10 libcairo-gobject-devel
 BuildRequires: fontconfig-devel >= 2.5 libfreetype-devel libharfbuzz-devel >= 0.9.7
 BuildRequires: libgio-devel >= 2.25.0
-BuildRequires: python-modules-json
+BuildRequires: /usr/bin/python2 python-modules-json
 BuildRequires: ruby ruby-stdlibs
 
 %if %acceleration_backend == opengl
@@ -78,9 +82,7 @@ BuildRequires: libGL-devel libXcomposite-devel libXdamage-devel
 %{?_enable_geolocation:BuildPreReq: geoclue2-devel}
 %{?_enable_spellcheck:BuildPreReq: libenchant-devel}
 %{?_enable_media_stream:BuildPreReq: farstream0.2-devel}
-
-# for check
-BuildRequires: xvfb-run python-module-pygobject3
+%{?_enable_check:BuildRequires: xvfb-run python-module-pygobject3}
 
 %description
 WebKit is an open source web browser engine.
@@ -197,6 +199,8 @@ GObject introspection devel data for the JavaScriptCore library
 %patch5
 %patch6 -p2
 %patch7 -p1
+%patch8 -b .orig
+%patch9 -p1
 
 # fix build translations
 %__subst 's|^all-local:|all-local: stamp-po|' GNUmakefile.am
@@ -216,6 +220,7 @@ rm -f Source/autotools/{compile,config.guess,config.sub,depcomp,install-sh,ltmai
 
 echo "GTK_DOC_CHECK([1.10])" >> configure.ac
 gtkdocize --copy
+export PYTHON=python2
 %autoreconf -I Source/autotools
 %configure \
 	--enable-video \
@@ -227,7 +232,8 @@ gtkdocize --copy
 	%{?_enable_media_stream:--enable-media-stream} \
 	--with-gtk=%gtk_ver \
 	--disable-webkit2 \
-	%{subst_enable jit}
+	%{subst_enable jit} \
+	PYTHON=%_bindir/python2
 
 mkdir -p DerivedSources/webkit
 mkdir -p DerivedSources/ANGLE
@@ -294,6 +300,16 @@ xvfb-run make check
 %endif
 
 %changelog
+* Sat Apr 11 2020 Yuri N. Sedunov <aris@altlinux.org> 2.4.11-alt10
+- switched to python2 for build
+
+* Wed Mar 18 2020 Yuri N. Sedunov <aris@altlinux.org> 2.4.11-alt9
+- rebuilt against icu-66 libraries
+- fixed license tag
+
+* Tue Oct 22 2019 Yuri N. Sedunov <aris@altlinux.org> 2.4.11-alt8
+- rebuilt against icu-65.1 libraries
+
 * Mon Feb 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.4.11-alt7
 - Fixed build on ppc64le architecture.
 

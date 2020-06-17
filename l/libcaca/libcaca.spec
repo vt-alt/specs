@@ -1,29 +1,27 @@
-%def_disable static
-%def_disable doc
-%def_enable ruby
+%def_disable   static
+%def_disable   doc
+%def_enable    ruby
+%def_disable   python
 
-Name: libcaca
-Version: 0.99
-Release: alt18.beta19.5
+Name:          libcaca
+Version:       0.99
+Release:       alt19.git813baea7a
+Summary:       Text mode graphics library
+Group:         System/Libraries
+License:       DWTFYWTPL
+Url:           http://sam.zoy.org/projects/libcaca/
+Vcs:           https://github.com/cacalabs/libcaca.git
 
-Summary: Text mode graphics library
-Group: System/Libraries
-License: DWTFYWTPL
-
-Url: http://sam.zoy.org/projects/libcaca/
-# http://caca.zoy.org/files/libcaca/%name-%version.beta17.tar.gz
-Source: %name-%version.tar
-
-# Automatically added by buildreq on Wed Jun 15 2016
-# optimized out: imlib2 libX11-devel libstdc++-devel libtinfo-devel perl pkg-config python-base python-modules ruby ruby-stdlibs tex-common texlive-base texlive-base-bin texlive-common texlive-fonts-recommended texlive-generic-recommended texlive-latex-base texlive-latex-recommended texlive-publishers texlive-xetex texmf-latex-xcolor xorg-kbproto-devel xorg-xproto-devel
+Source:        %name-%version.tar
 BuildRequires: gcc-c++ imake imlib2-devel libncurses-devel libslang2-devel xorg-cf-files zlib-devel
-
-%if_enabled ruby
-BuildRequires: libruby-devel
-BuildPreReq: rpm-build-ruby
+%if_enabled    ruby
+BuildRequires(pre): rpm-build-ruby
 %endif
-
-%if_enabled doc
+%if_enabled    python
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel python3-module-setuptools
+%endif
+%if_enabled    doc
 # buildreqs drowns in loops and misses all latex stuff
 BuildRequires: doxygen
 BuildRequires: texmf-latex-tabu
@@ -38,12 +36,12 @@ libcaca is the Colour AsCii Art library. It provides high level functions
 for colour text drawing, simple primitives for line, polygon and ellipse
 drawing, as well as powerful image to text conversion routines.
 
-%package devel
-Summary: Development files for libcaca
-Group: Development/C
-Requires: %name = %version-%release
+%package       devel
+Summary:       Development files for libcaca
+Group:         Development/C
+Requires:      %name = %version-%release
 
-%description devel
+%description   devel
 libcaca is the Colour AsCii Art library. It provides high level functions
 for colour text drawing, simple primitives for line, polygon and ellipse
 drawing, as well as powerful image to text conversion routines.
@@ -51,12 +49,12 @@ drawing, as well as powerful image to text conversion routines.
 This package contains the header files and static libraries needed to
 compile applications or shared objects that use libcaca.
 
-%package -n caca-utils
-Summary: Text mode graphics utilities
-Group: Graphics
-Requires: %name = %version-%release
+%package       -n caca-utils
+Summary:       Text mode graphics utilities
+Group:         Graphics
+Requires:      %name = %version-%release
 
-%description -n caca-utils
+%description   -n caca-utils
 This package contains utilities and demonstration programs for libcaca, the
 Colour AsCii Art library.
 
@@ -73,24 +71,44 @@ an old school plasma effect.
 cacademo is a simple application that shows the libcaca rendering features
 such as line and ellipses drawing, triangle filling and sprite blitting.
 
-%package -n ruby-libcaca
-Summary: Ruby bindings for libcaca
-Group: Graphics
-Requires: %name = %version-%release
-Provides: ruby-module-libcaca = %version-%release
-Obsoletes: ruby-module-libcaca
+%if_enabled    ruby
+%package       -n ruby-libcaca
+Summary:       Ruby bindings for libcaca
+Group:         Graphics
+Requires:      %name = %version-%release
+Provides:      ruby-module-libcaca
+Obsoletes:     ruby-module-libcaca
 
-%description -n ruby-libcaca
+%description   -n ruby-libcaca
 libcaca is the Colour AsCii Art library. It provides high level functions
 for colour text drawing, simple primitives for line, polygon and ellipse
 drawing, as well as powerful image to text conversion routines.
 
 This package contains Ruby bindings for libcaca.
+%endif
+
+%if_enabled    python
+%package       -n python3-module-caca
+Summary:       Python module bindings for libcaca
+Group:         Other
+BuildArch:     noarch
+Requires:      %name = %version
+
+%description   -n python3-module-caca
+libcaca is the Colour AsCii Art library. It provides high level functions
+for colour text drawing, simple primitives for line, polygon and ellipse
+drawing, as well as powerful image to text conversion routines.
+
+This package contains python3 module bindings for libcaca.
+%endif
+
 
 %prep
 %setup
+find -name '*.py' | while read f; do sed "s,/usr/bin/env python,/usr/bin/env python3," -i $f; done
 
 %build
+touch ChangeLog
 %autoreconf
 %configure \
 	--enable-slang \
@@ -107,7 +125,7 @@ This package contains Ruby bindings for libcaca.
 %install
 %makeinstall_std
 rm %buildroot%_libdir/*.la
-%if_enabled doc
+%if_enabled    doc
 rm -r %buildroot%_man3dir
 rm -f %buildroot%_docdir/libcucul-dev
 mv %buildroot%_datadir/doc/%name-dev %buildroot%_docdir/%name-%version
@@ -121,12 +139,12 @@ mv %buildroot%_datadir/doc/%name-dev %buildroot%_docdir/%name-%version
 %_bindir/caca-config
 %_includedir/*
 %_pkgconfigdir/*
-%if_enabled doc
+%if_enabled    doc
 %_docdir/%name-%version
 %endif
 %_man1dir/caca-config.1*
 
-%files -n caca-utils
+%files         -n caca-utils
 %_bindir/cacademo
 %_bindir/cacafire
 %_bindir/cacaclock
@@ -142,13 +160,22 @@ mv %buildroot%_datadir/doc/%name-dev %buildroot%_docdir/%name-%version
 %_man1dir/cacaview.1*
 %_man1dir/img2txt.1*
 
-%if_enabled ruby
-%files -n ruby-libcaca
-%ruby_sitelibdir/caca.rb
+%if_enabled    ruby
+%files         -n ruby-libcaca
+%ruby__sitelibdir/caca.rb
 %ruby_sitearchdir/caca.*
 %endif
 
+%if_enabled    python
+%doc README
+%python3_sitelibdir_noarch/*
+%endif
+
 %changelog
+* Wed Mar 18 2020 Pavel Skrylev <majioa@altlinux.org> 0.99-alt19.git813baea7a
+- ^ 0.99.beta19 -> 0.99.beta19.git813baea7a
+- ! spec
+
 * Fri Mar 30 2018 Andrey Cherepanov <cas@altlinux.org> 0.99-alt18.beta19.5
 - Rebuild with Ruby 2.5.1
 

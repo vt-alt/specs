@@ -1,61 +1,64 @@
-%define  pkgname google-auth-library-ruby
+%define        pkgname google-auth
+%define        gemname googleauth
 
-Name:    ruby-google-auth
-Epoch:   1
-Version: 0.6.7
-Release: alt1
+Name:          ruby-%pkgname
+Epoch:         1
+Version:       0.8.1
+Release:       alt1
+Summary:       Google Auth Library for Ruby
+License:       Apache-2.0
+Group:         Development/Ruby
+Url:           https://github.com/googleapis/google-auth-library-ruby
+%vcs           https://github.com/googleapis/google-auth-library-ruby.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Google Auth Library for Ruby
-License: Apache-2.0
-Group:   Development/Ruby
-Url:     https://github.com/google/google-auth-library-ruby
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
 %summary
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
-%ruby_build
+%ruby_build --use=%gemname --alias=%pkgname
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Fri Jul 12 2019 Pavel Skrylev <majioa@altlinux.org> 1:0.8.1-alt1
+- Bump to 0.8.1
+- Use Ruby Policy 2.0
+
 * Wed Nov 14 2018 Pavel Skrylev <majioa@altlinux.org> 1:0.6.7-alt1
 - rollback to 0.6.7.
 

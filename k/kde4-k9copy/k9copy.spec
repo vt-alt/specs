@@ -2,7 +2,7 @@
 %define rname k9copy
 Name: kde4-%rname
 Version: 2.3.8
-Release: alt8%ubt
+Release: alt10
 
 Group: Video
 Summary: Copy, split and shrink DVDs
@@ -10,7 +10,7 @@ Summary(ru_RU.UTF8): Копирование, разделение и умень�
 License: GPL
 Url: http://k9copy.sourceforge.net
 
-Requires: dvdauthor libdvdread dvd+rw-tools mencoder phonon-backend
+Requires: dvdauthor dvd+rw-tools mencoder phonon-backend
 Provides: %rname = %version-%release
 Obsoletes: k9copy < %version-%release
 
@@ -31,7 +31,6 @@ Patch104: alt-ffmpeg3.patch
 
 # Automatically added by buildreq on Mon Jul 20 2009 (-bi)
 #BuildRequires: gcc-c++ kde4libs-devel libXScrnSaver-devel libXau-devel libXcomposite-devel libXdamage-devel libXdmcp-devel libXpm-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libavformat-devel libmpeg2-devel libqt3-devel libswscale-devel libxine-devel libxkbfile-devel xorg-xf86vidmodeproto-devel
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: kde4libs-devel
 BuildRequires: gcc-c++ libavformat-devel libmpeg2-devel libswscale-devel libxine2-devel libdvdread-devel libdvdnav-devel
 
@@ -95,13 +94,19 @@ K9Copy - маленькая программа для копирования DVD
 
 
 %changelog
-* Thu Jun 14 2018 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt8%ubt
+* Wed Apr 22 2020 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt10
+- fix requires
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 2.3.8-alt9
+- NMU: remove %ubt from release
+
+* Thu Jun 14 2018 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt8
 - rebuild with new ffmpeg
 
-* Thu Jun 15 2017 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt7%ubt
+* Thu Jun 15 2017 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt7
 - fix to build with ffmpeg
 
-* Mon Jan 30 2017 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt6%ubt
+* Mon Jan 30 2017 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt6
 - fix for gcc6
 
 * Fri Apr 10 2015 Sergey V Turchin <zerg@altlinux.org> 2.3.8-alt5

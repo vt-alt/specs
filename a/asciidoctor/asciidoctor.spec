@@ -1,79 +1,77 @@
-%global _unpacked_files_terminate_build 1
+%define        pkgname asciidoctor
+%define        gemname asciidoctor
 
-Name:    asciidoctor
-Version: 1.5.7.1
-Release: alt1.1
+Name:          %pkgname
+Version:       2.0.10
+Release:       alt1
+Summary:       A fast text processor and publishing toolchain for converting AsciiDoc content to different formats
+License:       MIT
+Group:         Documentation
+Url:           https://github.com/asciidoctor/asciidoctor
+%vcs           https://github.com/asciidoctor/asciidoctor.git
+Packager:      Gordeev Mikhail <obirvalger@altlinux.org>
+BuildArch:     noarch
 
-Summary: A fast text processor and publishing toolchain for converting AsciiDoc content to different formats
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/asciidoctor/asciidoctor
-
-Packager: Gordeev Mikhail <obirvalger@altlinux.org>
-BuildArch: noarch
-
-Source:  %name-%version.tar
-Patch1:  asciidoctor-1.5.6.1-alt-fix-DATA_PATH.patch
-
-%filter_from_requires \!^ruby(asciidoctor/js)$!d
-
+Source:        %name-%version.tar
+Patch1:        asciidoctor-1.5.6.1-alt-fix-DATA_PATH.patch
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup nokogiri
+# BuildRequires: nokogiri
 
 %description
 Asciidoctor is a fast text processor and publishing toolchain for converting
 AsciiDoc content to HTML5, DocBook 5 (or 4.5) and other formats.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n gem-%pkgname
+Summary:       Library files for %gemname gem
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n gem-%pkgname
+Library files for %gemname gem.
+
+
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Group:         Development/Documentation
+BuildArch:     noarch
+Obsoletes:     %pkgname-doc
+Provides:      %pkgname-doc
+
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
 
 %prep
-%setup -n %name-%version
-%update_setup_rb
-%patch1 -p1
+%setup
+#%patch1 -p1
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
-
-mkdir -p %buildroot%_datadir/%name
-mv %buildroot%_datadir{,/%name}/stylesheets
-
-mkdir -p %buildroot%_man1dir
-mv %buildroot{%_mandir,%_man1dir}/%name.1
-rm %buildroot%_mandir/%name.adoc
-rm %buildroot%_datadir/locale/attributes.adoc
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
-%doc README.adoc
-%doc data/locale/attributes.adoc man/%name.adoc
-%exclude %_datadir/locale/attributes-*
-%_bindir/%name
-%_bindir/%name-safe
-%_man1dir/%name.1.xz
-%_datadir/%name/
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%doc README*
+%_bindir/%pkgname
+%_mandir/%pkgname.1.xz
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n gem-%pkgname
+%ruby_gemlibdir
+%ruby_gemspec
+
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
 
 %changelog
+* Thu Jun 20 2019 Pavel Skrylev <majioa@altlinux.org> 2.0.10-alt1
+- Use Ruby Policy 2.0
+- Bump to 2.0.10
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 1.5.7.1-alt1.1
 - Rebuild with new Ruby autorequirements.
 

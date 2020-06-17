@@ -1,63 +1,86 @@
-Name:    maruku
-Version: 0.7.3
-Release: alt1.1
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname maruku
 
-Summary: A pure-Ruby Markdown-superset interpreter
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/bhollis/maruku
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
+Name:          %pkgname
+Version:       0.7.3
+Release:       alt2
+Summary:       A pure-Ruby Markdown-superset interpreter
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/bhollis/maruku
+%vcs           https://github.com/bhollis/maruku.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
 Source:  %name-%version.tar
-Patch1:  alt-fix-data-path.patch
-Patch2:  alt-remove-two-mathml-engines.patch
-
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
-%summary
+Maruku is a Markdown-superset interpreter.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
+Maruku implements:
 
-BuildArch: noarch
+* The original Markdown syntax.
+* All the improvements in PHP Markdown Extra.
+* A new meta-data syntax.
 
-%description doc
-Documentation files for %{name}.
+
+%package       -n gem-%pkgname
+Summary:       Library for %gemname gem
+Summary(ru_RU.UTF-8): Библиотечные файлы для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname
+Library for %gemname gem.
+
+%description   -n gem-%pkgname -l ru_RU.UTF8
+Библиотечные файлы для %gemname самоцвета.
+
+
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+Provides:      %pkgname-doc
+Obsoletes:     %pkgname-doc
+
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %name-%version
-%patch1 -p1
-%patch2 -p1
-# Remove some mathml engines support to prevent unmets
-rm -f lib/maruku/ext/math/mathml_engines/{itex2mml.rb,ritex.rb}
-%update_setup_rb
+%setup
 
 %build
-%ruby_config --datadir=%_datadir/%name
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
+
+%check
+%ruby_test
 
 %files
 %doc README*
-%_bindir/*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
-%_datadir/%name
+%_bindir/maru*
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n gem-%pkgname
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Jul 18 2019 Pavel Skrylev <majioa@altlinux.org> 0.7.3-alt2
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 0.7.3-alt1.1
 - Rebuild with new Ruby autorequirements.
 

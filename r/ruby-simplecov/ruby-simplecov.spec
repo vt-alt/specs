@@ -1,22 +1,18 @@
-%define  pkgname simplecov
- 
-Name: 	 ruby-%pkgname
-Version: 0.16.1
-Release: alt1.1
- 
-Summary: Code coverage for Ruby 1.9+ with a powerful configuration library and automatic merging of coverage across test suites
-License: MIT/Ruby
-Group:   Development/Ruby
-Url:     https://github.com/colszowka/simplecov
- 
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
- 
-Source:  %pkgname-%version.tar
- 
-BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+%define        pkgname simplecov
 
+Name: 	       ruby-%pkgname
+Version:       0.17.0
+Release:       alt1
+Summary:       Code coverage for Ruby 1.9+ with a powerful configuration library and automatic merging of coverage across test suites
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/colszowka/simplecov
+%vcs           https://github.com/colszowka/simplecov.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
+Source:        %name-%version.tar
+
+BuildRequires(pre): rpm-build-ruby
 %filter_from_requires \,^ruby(\(jruby\|simplecov/railties/tasks.rake\),d
 
 %description
@@ -26,41 +22,45 @@ processing its results much easier by providing a clean API to filter,
 group, merge, format, and display those results, giving you a complete
 code coverage suite that can be set up with just a couple lines of code.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
- 
-BuildArch: noarch
- 
-%description doc
-Documentation files for %{name}.
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
- 
+%setup
+
 %build
-%ruby_config
 %ruby_build
- 
+
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
- 
+
 %check
-%ruby_test_unit -Ilib:test test
- 
+%ruby_test
+
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
- 
-%files doc
-%ruby_ri_sitedir/*
- 
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         doc
+%ruby_gemdocdir
+
+
 %changelog
+* Tue Jul 09 2019 Pavel Skrylev <majioa@altlinux.org> 0.17.0-alt1
+- Bump to 0.17.0
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 0.16.1-alt1.1
 - Rebuild with new Ruby autorequirements.
 

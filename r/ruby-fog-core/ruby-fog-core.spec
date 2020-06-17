@@ -1,61 +1,58 @@
-%define  pkgname fog-core
+%define        pkgname fog-core
 
-Name:    ruby-%pkgname
-Version: 1.45.0
-Release: alt1
-Epoch:   1
+Name:          ruby-%pkgname
+Version:       2.1.2
+Release:       alt1
+Epoch:         1
+Summary:       fog's core, shared behaviors without API and provider specifics
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/fog/fog-core
+# VCS:         https://github.com/fog/fog-core.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: fog's core, shared behaviors without API and provider specifics
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/fog/fog-core
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
 Shared classes and tests for fog providers and services.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Group:         Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
 
 %changelog
+* Wed Jun 05 2019 Pavel Skrylev <majioa@altlinux.org> 1:2.1.2-alt1
+- Bump to 2.1.2
+- Use Ruby Policy 2.0
+
 * Wed Aug 29 2018 Andrey Cherepanov <cas@altlinux.org> 1:1.45.0-alt1
 - Decrease version.
 

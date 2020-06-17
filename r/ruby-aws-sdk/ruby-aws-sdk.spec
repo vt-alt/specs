@@ -1,110 +1,186 @@
-%define  pkgname aws-sdk
+%define        pkgname aws-sdk
 
-Name: 	 ruby-%pkgname
-Version: 2.11.262
-Release: alt1
+Name: 	       ruby-%pkgname
+Version:       2.11.478
+Release:       alt1
+Summary:       The official AWS SDK for Ruby
+License:       Apache-2.0
+Group:         Development/Ruby
+Url:           https://aws.amazon.com/ru/sdk-for-ruby/
+Vcs:           https://github.com/aws/aws-sdk-ruby.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 
-Summary: The official AWS SDK for Ruby
-License: Apache-2.0
-Group:   Development/Ruby
-Url:     https://aws.amazon.com/ru/sdk-for-ruby/
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-ruby-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+BuildRequires: gem(rake)
+BuildRequires: gem(rspec) >= 3.0
+BuildRequires: gem(yard)
+BuildRequires: gem(simplecov)
+BuildRequires: gem(kramdown)
+BuildRequires: gem(benchmark-ips) >= 2.0
+BuildRequires: gem(rake-compiler)
+BuildRequires: gem(ruby-ll) >= 2.1
+BuildRequires: gem(ast)
+BuildRequires: gem(ox)
+BuildRequires: gem(nokogiri)
+BuildRequires: gem(jmespath)
+BuildRequires: ragel
+BuildRequires: /usr/bin/ruby-ll
+
+%gem_replace_version nokogiri >= 1.10
+%gem_replace_version yard >= 0.9
 
 %description
 The official AWS SDK for Ruby. Provides both resource oriented
 interfaces and API clients for AWS services.
 
-%package core
-Summary: AWS SDK for Ruby - Core
-Group:   Development/Ruby
 
-%description core
+%package       -n gem-%pkgname
+Summary:       AWS SDK for Ruby - Core
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname
+The official AWS SDK for Ruby. Provides both resource oriented
+interfaces and API clients for AWS services.
+
+
+%package       -n gem-%pkgname-core
+Summary:       AWS SDK for Ruby - Core
+Group:         Development/Ruby
+BuildArch:     noarch
+
+Obsoletes:     aws-sdk-core
+Provides:      aws-sdk-core
+Obsoletes:     ruby-aws-sdk-core
+Provides:      ruby-aws-sdk-core
+
+%description   -n gem-%pkgname-core
 Provides API clients for AWS. This gem is part of the official AWS SDK
 for Ruby.
 
-%package resources
-Summary: AWS SDK for Ruby - Resources
-Group:   Development/Ruby
-Requires: %name-core = %EVR
 
-%description resources
+%package       -n gem-%pkgname-resources
+Summary:       AWS SDK for Ruby - Resources
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-resources
 Provides resource oriented interfaces and other higher-level
 abstractions for many AWS services. This gem is part of the official AWS
 SDK for Ruby.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
+%package       -n gem-%pkgname-core-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-core-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-core-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
+%package       -n gem-%pkgname-resources-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-resources-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-resources-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-ruby-%version
-
-# Remove alterantive XML parser engines
-rm -f aws-sdk-core/lib/aws-sdk-core/xml/parser/engines/{nokogiri,oga,ox,rexml}.rb
-
-for dir in aws-sdk{,-core,-resources};do
-	pushd $dir
-	%update_setup_rb
-	popd
-done
+%setup
 
 %build
-for dir in aws-sdk{,-core,-resources};do
-	pushd $dir
-	%ruby_config
-	%ruby_build
-	popd
-done
+%ruby_build --use=ruby-aws-sdk --prefixes= \
+            --use=aws-sdk --prefixes=gem --version-replace=%version \
+            --use=aws-sdk-resources --version-replace=%version \
+            --use=aws-sdk-core --version-replace=%version
 
 %install
-for dir in aws-sdk{,-core,-resources};do
-	pushd $dir
-	%ruby_install
-	popd
-done
-%rdoc aws-sdk{,-core,-resources}/lib
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
+%ruby_install
 
 %check
-#ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/aws-sdk.rb
-%rubygem_specdir/aws-sdk*
-%exclude %rubygem_specdir/aws-sdk-core*
-%exclude %rubygem_specdir/aws-sdk-resources*
-
-%files core
+%_libexecdir/%name
 %_bindir/aws.rb
-%doc aws-sdk-core/*.json
-%doc aws-sdk-core/*.crt
-%ruby_sitelibdir/aws-sdk-core*
-%ruby_sitelibdir/seahorse*
-%rubygem_specdir/aws-sdk-core*
 
-%files resources
-%doc aws-sdk-resources/*.json
-%ruby_sitelibdir/aws-sdk-resources*
-%rubygem_specdir/aws-sdk-resources*
+%files         -n gem-%pkgname
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
+
+%files         -n gem-%pkgname-core
+%doc README*
+%ruby_gemspecdir/%gemname-core-%version.gemspec
+%ruby_gemslibdir/%gemname-core-%version
+
+%files         -n gem-%pkgname-core-doc
+%ruby_gemsdocdir/%gemname-core-%version
+
+%files         -n gem-%pkgname-resources
+%doc README*
+%ruby_gemspecdir/%gemname-resources-%version.gemspec
+%ruby_gemslibdir/%gemname-resources-%version
+
+%files         -n gem-%pkgname-resources-doc
+%ruby_gemsdocdir/%gemname-resources-%version
+
 
 %changelog
+* Mon Mar 30 2020 Pavel Skrylev <majioa@altlinux.org> 2.11.478-alt1
+- ^ 2.11.478 -> 2.11.478
+- * moving code from %%_libdir -> %%_libexecdir
+
+* Thu Mar 05 2020 Pavel Skrylev <majioa@altlinux.org> 2.11.460-alt1
+- updated (^) 2.11.354 -> 2.11.460
+- fixed (!) spec
+
+* Tue Sep 17 2019 Pavel Skrylev <majioa@altlinux.org> 2.11.354-alt1
+- updated (^) 2.11.351 -> 2.11.354
+- added (+) obsoletes/provides on ruby-aws-sdk-code for gem-aws-sdk-code
+
+* Wed Sep 11 2019 Pavel Skrylev <majioa@altlinux.org> 2.11.351-alt1
+- updated (^) 2.11.345 -> 2.11.351
+- fixed (!) spec according to changelog rules
+
+* Tue Sep 03 2019 Pavel Skrylev <majioa@altlinux.org> 2.11.345-alt1
+- updated (^) 2.11.317 -> 2.11.345
+- fixed (!) spec
+- added (+) obsoletes/provides for aws-sdk-core
+
+* Wed Aug 07 2019 Pavel Skrylev <majioa@altlinux.org> 2.11.317-alt1
+- used (^) Ruby Policy 2.0
+- updated (^) 2.11.262 -> 2.11.317
+
 * Fri Apr 26 2019 Andrey Cherepanov <cas@altlinux.org> 2.11.262-alt1
 - New version.
 

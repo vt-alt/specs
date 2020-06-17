@@ -1,9 +1,9 @@
 Name: weechat
-Version: 2.2
-Release: alt1.1
+Version: 2.6
+Release: alt1
 
 Summary: fast, light & extensible IRC client
-License: GPLv3
+License: GPL-3.0
 Group: Networking/IRC
 
 URL: http://www.weechat.org/
@@ -89,7 +89,7 @@ This package contains ruby plugin for weechat.
 
 %prep
 %setup
-%patch0 -p2
+#patch0 -p2
 
 # build plugins as plugins, not libs
 find ./src/plugins -name "Makefile*" -print0 | xargs -r0 subst 's,\(\-module\),\1 -avoid-version,' --
@@ -105,7 +105,7 @@ find ./src/plugins -name "Makefile*" -print0 | xargs -r0 subst 's,\(\-module\),\
 	--enable-ruby \
 	--enable-lua \
 	--enable-python \
-	--enable-python3 \
+	--disable-python2 \
 	--enable-gnutls \
 	--enable-aspell \
 	--enable-man \
@@ -147,7 +147,7 @@ find %buildroot -name '*.a' -delete
 #_defaultdocdir/%name
 
 %files plugin-aspell
-%_libdir/%name/plugins/aspell.so
+%_libdir/%name/plugins/spell.so
 
 %files plugin-lua
 %_libdir/%name/plugins/lua.so
@@ -165,6 +165,9 @@ find %buildroot -name '*.a' -delete
 %_libdir/%name/plugins/tcl.so
 
 %changelog
+* Mon Nov 18 2019 Alexey Gladkov <legion@altlinux.ru> 2.6-alt1
+- New version (2.6)
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 2.2-alt1.1
 - rebuild with new perl 5.28.1
 

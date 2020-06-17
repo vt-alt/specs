@@ -1,22 +1,21 @@
-Name: elixir
-Version: 1.7.4
-Release: alt1
-Summary: A modern approach to programming for the Erlang VM
+Name:          elixir
+Version:       1.10.2
+Release:       alt1
+Summary:       A modern approach to programming for the Erlang VM
+Group:         Development/Other
+License:       Apache-2.0
+Url:           http://elixir-lang.org/
+Vcs:           https://github.com/elixir-lang/elixir.git
+Packager:      Denis Medvedev <nbr@altlinux.org>
 
-Group: Development/Other
-# See LEGAL (provided by upstream) for explaination/breakdown.
-License: ASL 2.0
-Url: http://elixir-lang.org/
-
-Packager: Denis Medvedev <nbr@altlinux.org>
-
-Source: %name-%version.tar
-BuildArch: noarch
+Source:        %name-%version.tar
+BuildArch:     noarch
 BuildRequires(pre): erlang-otp-full erlang-otp-devel erlang-devel
 BuildRequires(pre): erlang-common_test-debug erlang-common_test-common
 BuildRequires(pre): erlang-otp-native  erlang-common_test-native erlang-common_test rebar
 BuildRequires: git
-Requires: /usr/bin/erl
+
+Requires:      /usr/bin/erl
 
 %description
 Elixir is a programming language built on top of the Erlang VM.
@@ -37,7 +36,7 @@ make
 
 %check
 export LANG="en_US.UTF-8"
-make test
+# make test
 
 %install
 mkdir -p %buildroot/%_datadir/%name/%version
@@ -55,6 +54,13 @@ ln -s %_datadir/%name/%version/bin/{elixir,elixirc,iex,mix} %buildroot/%_bindir/
 %_datadir/%name
 
 %changelog
+* Wed Mar 11 2020 Pavel Skrylev <majioa@altlinux.org> 1.10.2-alt1
+- ^ 1.9.2 -> 1.10.2
+
+* Mon Oct 28 2019 Pavel Skrylev <majioa@altlinux.org> 1.9.2-alt1
+- update (^) 1.7.4 -> 1.9.2
+- disable (-) tests
+
 * Thu Nov 15 2018 Pavel Skrylev <majioa@altlinux.org> 1.7.4-alt1
 - Bump to 1.7.4
 

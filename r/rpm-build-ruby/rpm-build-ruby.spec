@@ -3,7 +3,7 @@
 Name:          rpm-build-ruby
 Epoch:         1
 Version:       1.0.0
-Release:       alt7
+Release:       alt12
 Summary:       RPM helper scripts to calculate Ruby dependencies
 License:       GPLv2
 Group:         Development/Ruby
@@ -19,8 +19,8 @@ Requires:      ruby-stdlibs >= 1.9
 Requires:      libruby-devel
 Requires:      /usr/bin/rdoc
 Requires:      /usr/bin/rake
+Requires:      /usr/bin/setup.rb
 Requires:      /bin/sed
-Requires:      gem(setup)
 Requires:      gem(bundler)
 Requires:      ruby-tool-setup
 
@@ -56,6 +56,22 @@ install -p -m 0644 ruby.env %buildroot%_rpmmacrosdir/
 %_rpmmacrosdir/ruby
 
 %changelog
+* Wed Apr 08 2020 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt12
+- > /usr/bin/setup.rb instead of the gem(setup) requires
+
+* Sun Apr 05 2020 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt11
+- + default replacement for ruby's shebang line
+
+* Thu Mar 05 2020 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt10
+- fixed (!) ruby.macros
+
+* Tue Feb 18 2020 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt9
+- Fixed (!) ruby.prov (closes #36506, #37088)
+- changed (*) ruby.req output
+
+* Tue Jul 23 2019 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt8
+- Macros gem- copied to ruby-, old rules ruby-tool-setup is removed
+
 * Wed Apr 10 2019 Pavel Skrylev <majioa@altlinux.org> 1:1.0.0-alt7
 - Fix install .so target folder for gems
 

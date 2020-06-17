@@ -1,5 +1,5 @@
 Name: npm
-Version: 6.9.0
+Version: 6.13.7
 Release: alt1
 
 Summary: A package manager for node
@@ -15,7 +15,9 @@ BuildRequires(pre): rpm-macros-nodejs
 
 #BuildRequires: node >= 6.9
 #Requires:	node >= 6.9
-Requires: npm(node-gyp) = 3.8.0
+
+# Note! Change version with new npm
+Requires: npm(node-gyp) = 5.0.7
 
 BuildArch:	noarch
 
@@ -40,7 +42,8 @@ rm -rf bin/node-gyp-bin node_modules/node-gyp/ node_modules/.bin/node-gyp node_m
 
 %install
 mkdir -p %buildroot%nodejs_sitelib/%name/ %buildroot%_bindir/
-ln -s %nodejs_sitelib/%name/bin/npm-cli.js %buildroot%_bindir/%name
+ln -s %nodejs_sitelib/%name/bin/npm-cli.js %buildroot%_bindir/npm
+ln -s %nodejs_sitelib/%name/bin/npx-cli.js %buildroot%_bindir/npx
 
 # need inet
 #node cli.js install -g --prefix %buildroot%_prefix
@@ -60,9 +63,25 @@ rm -rf %buildroot%nodejs_sitelib/%name/node_modules/request/node_modules/node-uu
 
 %files -n npm
 %_bindir/npm
+%_bindir/npx
 %nodejs_sitelib/%name/
 
 %changelog
+* Thu Feb 20 2020 Vitaly Lipatov <lav@altlinux.ru> 6.13.7-alt1
+- new version 6.13.7 (with rpmrb script)
+
+* Wed Feb 19 2020 Vitaly Lipatov <lav@altlinux.ru> 6.13.6-alt2
+- pack /usr/bin/npx
+
+* Tue Feb 18 2020 Vitaly Lipatov <lav@altlinux.ru> 6.13.6-alt1
+- new version 6.13.6 (with rpmrb script)
+
+* Wed Dec 25 2019 Vitaly Lipatov <lav@altlinux.ru> 6.13.4-alt1
+- new version 6.13.4 (with rpmrb script)
+
+* Sat Oct 26 2019 Vitaly Lipatov <lav@altlinux.ru> 6.11.3-alt1
+- new version 6.11.3 (with rpmrb script)
+
 * Fri Jun 07 2019 Vitaly Lipatov <lav@altlinux.ru> 6.9.0-alt1
 - new version 6.9.0 (with rpmrb script)
 

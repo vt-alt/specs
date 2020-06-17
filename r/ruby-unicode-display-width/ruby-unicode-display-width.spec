@@ -2,13 +2,13 @@
 %define        gemname unicode-display_width
 
 Name:          ruby-unicode-display-width
-Version:       1.4.1
+Version:       1.6.0
 Release:       alt1
 Summary:       Monospace Unicode character width in Ruby
 License:       MIT
 Group:         Development/Ruby
 Url:           https://github.com/janlelis/unicode-display_width
-# VCS:         https://github.com/janlelis/unicode-display_width.git
+%vcs           https://github.com/janlelis/unicode-display_width.git
 Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 BuildArch:     noarch
 Source:        %name-%version.tar
@@ -20,34 +20,39 @@ BuildRequires(pre): rpm-build-ruby
 %summary
 
 %package       doc
-Summary:       Documentation files for %name
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
 Group:         Development/Documentation
 BuildArch:     noarch
 
 %description   doc
-Documentation files for %{name}.
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %name-%version
-#%patch -p1
-#mkdir data/%name
-#cp data/*gz data/%name
+%setup
 
 %build
-%gem_build
+%ruby_build
 
 %install
-%gem_install
+%ruby_install
 
 %files
-%ruby_gemspecdir/%gemname-%version.gemspec
-%ruby_gemslibdir/%gemname-%version
-#%_datadir/%name
+%ruby_gemspec
+%ruby_gemlibdir
 
 %files doc
-%ruby_gemsdocdir/%gemname-%version
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Aug 08 2019 Pavel Skrylev <majioa@altlinux.org> 1.6.0-alt1
+^ v1.6.0
+
 * Thu Feb 28 2019 Pavel Skrylev <majioa@altlinux.org> 1.4.1-alt1
 - Bump to 1.4.1;
 - Use Ruby Policy 2.0.

@@ -1,41 +1,82 @@
-%define orig_name rest-client
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname rest-client
 
-Summary: Simple REST client for Ruby
-Name: ruby-%orig_name
-Version: 2.0.2
-Release: alt1
-Group: Development/Ruby
-License: MIT
-URL: http://github.com/archiloque/rest-client
-Source0: %orig_name-%version.tar
+Summary:       Simple REST client for Ruby
+Name:          ruby-%pkgname
+Version:       2.1.0
+Release:       alt1
+Group:         Development/Ruby
+License:       MIT
+Url:           http://github.com/archiloque/rest-client
+%vcs           http://github.com/archiloque/rest-client.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-BuildArch: noarch
+Source:        %name-%version.tar
+BuildRequires(pre): rpm-build-ruby
 
-BuildRequires: rpm-build-ruby ruby-rake
-BuildRequires: ruby-tool-setup
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 A simple Simple HTTP and REST client for Ruby, inspired by the Sinatra
 microframework style of specifying actions: get, put, post, delete.
 
+
+%package       -n restclient
+Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n restclient
+Executable file for %gemname gem.
+
+%description   -n restclient -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
 %prep
-%setup -q -n %orig_name-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
+%ruby_build --use=%gemname --alias=restclient
 
 %install
-mkdir -p %buildroot
 %ruby_install
 
+%check
+%ruby_test
+
 %files
-%doc AUTHORS README*
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n restclient
 %_bindir/restclient
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Tue Sep 24 2019 Pavel Skrylev <majioa@altlinux.org> 2.1.0-alt1
+- update (^) 2.0.2 -> 2.1.0
+- update to (^) Ruby Policy 2.0
+
 * Fri Aug 31 2018 Andrey Cherepanov <cas@altlinux.org> 2.0.2-alt1
 - New version.
 

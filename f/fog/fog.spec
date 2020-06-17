@@ -1,19 +1,19 @@
-Name:    fog
-Version: 2.1.0
-Release: alt1
+%define        pkgname fog
 
-Summary: The Ruby cloud services library
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/fog/fog
+Name:          %pkgname
+Version:       2.2.0
+Release:       alt1
+Summary:       The Ruby cloud services library
+License:       MIT
+Group:         Development/Other
+Url:           http://fog.io
+%vcs           https://github.com/fog/fog.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %name-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+%gem_replace_version fog-brightbox ~> 1.0
 
 %description
 fog is the Ruby cloud services library, top to bottom:
@@ -24,43 +24,56 @@ fog is the Ruby cloud services library, top to bottom:
   individual cloud.
 - Mocks make testing and integrating a breeze.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n gem-%pkgname
+Summary:       Library files for %gemname gem
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n gem-%pkgname
+Library files for %gemname gem.
+
+
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Group:         Development/Documentation
+BuildArch:     noarch
+Provides:      fog-doc
+Obsoletes:     fog-doc
+
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
 
 %prep
 %setup
-rm -rf lib/fog/aws/service_mapper.rb lib/fog/ovirt*
-%update_setup_rb
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
-%doc *.md
+%doc README*
 %_bindir/%name
-%ruby_sitelibdir/*
-%rubygem_specdir/*
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n gem-%pkgname
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
+
 
 %changelog
+* Mon Jun 24 2019 Pavel Skrylev <majioa@altlinux.org> 2.2.0-alt1
+- Bump to 2.2.0
+- Use Ruby Policy 2.0
+
 * Tue Nov 13 2018 Pavel Skrylev <majioa@altlinux.org> 2.1.0-alt1
 - Bump to 2.1.0.
 

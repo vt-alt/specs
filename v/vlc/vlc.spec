@@ -5,7 +5,7 @@
 %def_enable wayland
 
 Name: vlc
-Version: 3.0.8
+Version: 3.0.10
 Release: alt1
 
 Summary: VLC media player
@@ -15,6 +15,7 @@ Group: Video
 Url: http://www.videolan.org
 Source: vlc-%version.tar
 Patch: vlc-3.0.6-alt-e2k-lcc123.patch
+Patch1: 0001-configure-fix-linking-on-RISC-V-ISA.patch
 
 BuildRequires: gcc-c++
 BuildRequires: freetype2-devel glib2-devel flex
@@ -23,8 +24,8 @@ BuildRequires: libavutil-devel libpostproc-devel libavformat-devel
 BuildRequires: libswscale-devel libmpeg2-devel libebml-devel >= 1.3.5-alt1
 BuildRequires: libmatroska-devel libcddb-devel liblive-devel aalib-devel
 BuildRequires: libtwolame-devel libssh2-devel liba52-devel libalsa-devel
-BuildRequires: libcdio-devel libdvbpsi-devel libdvdnav-devel
-BuildRequires: libdvdread-devel libflac-devel libgcrypt-devel librsvg-devel
+BuildRequires: libcdio-devel libdvbpsi-devel libdvdnav-devel >= 6.1.0
+BuildRequires: libdvdread-devel >= 6.1.0 libflac-devel libgcrypt-devel librsvg-devel
 BuildRequires: libgnutls-devel libgpg-error-devel libjpeg-devel liblirc-devel
 BuildRequires: libmad-devel libmodplug-devel libspeex-devel libspeexdsp-devel libmpcdec-devel
 BuildRequires: libncurses-devel libncursesw-devel libogg-devel libpng-devel
@@ -50,11 +51,11 @@ BuildRequires: libaom-devel libsamplerate-devel libsidplay2-devel
 %{?_enable_freerdp:BuildRequires: libfreerdp-devel}
 %{?_enable_goom:BuildRequires: libgoom-devel}
 %{?_enable_firewire:BuildRequires: libdc1394-devel libraw1394-devel libavc1394-devel}
-%{?_enable_visualization:BuildRequires: libcaca-devel libprojectM-devel}
+%{?_enable_visualization:BuildRequires: libprojectM-devel}
 %{?_enable_wayland:BuildRequires: libwayland-egl-devel wayland-protocols}
 BuildRequires: fortune-mod >= 1.0-ipl33mdk
 
-%define allplugins aa ass audiocd bluray chromaprint dbus %{?_enable_firewire:dv} dvdnav dvdread ffmpeg flac framebuffer fluidsynth freetype globalhotkeys gnutls h264 h265 jack linsys live555 matroska modplug mpeg2 mtp musepack notify ogg opus png podcast pulseaudio realrtsp schroedinger shout smb speex svg taglib theora twolame upnp v4l videocd vpx xcb xml %{?_enable_goom:goom} %{?_enable_visualization:caca projectm}
+%define allplugins aa ass audiocd bluray chromaprint dbus %{?_enable_firewire:dv} dvdnav dvdread ffmpeg flac framebuffer fluidsynth freetype globalhotkeys gnutls h264 h265 jack linsys live555 matroska modplug mpeg2 mtp musepack notify ogg opus png podcast pulseaudio realrtsp schroedinger shout smb speex svg taglib theora twolame upnp v4l videocd vpx xcb xml %{?_enable_goom:goom} %{?_enable_visualization:projectm}
 %define baseplugins ass bluray dbus dvdnav dvdread ffmpeg freetype globalhotkeys live555 matroska mpeg2 ogg pulseaudio taglib v4l xcb xml
 %define restplugins %(echo %allplugins %baseplugins |tr '[[:space:]]' '\\n'|sort |uniq -u|tr '\\n' ' ')
 %define mergedplugins alsa dvb ts
@@ -122,13 +123,13 @@ Obsoletes: vlc-interface-wxwidgets
 %package -n lib%name
 Summary: VLC media player library
 Group: System/Libraries
-License: LGPL
+License: LGPLv2
 Conflicts: %name-mini < %EVR
 
 %package -n lib%name-devel
 Summary: Development files for VLC media player
 Group: Development/C
-License: LGPL
+License: LGPLv2
 Requires: lib%name = %EVR
 
 %package plugin-aa
@@ -151,11 +152,6 @@ Summary: Bluray access plugin for VLC media player
 Group: Video
 Requires: lib%name = %EVR
 Requires: libaacs
-
-%package plugin-caca
-Summary: Colored ASCII art video output plugin for VLC media player
-Group: Video
-Requires: lib%name = %EVR
 
 %package plugin-chromaprint
 Summary: Audio fingerprinting plugin for VLC media player
@@ -472,11 +468,6 @@ This package contains AudioCD access plugin for VLC media player.
 %description plugin-bluray
 This package contains Bluray disc access plugin for VLC media player.
 
-%description plugin-caca
-This is an colored ASCII art video output plugin for VLC media player.
-To activate it, use the `--vout caca' flag or select the `caca'
-vout plugin from the preferences menu.
-
 %description plugin-chromaprint
 This package contains client-side audio fingerprinting plugin,
 based on AcoustID project chromaprint library.
@@ -649,6 +640,7 @@ sed -i 's,const ATTR_USED,const,' modules/video_filter/deinterlace/yadif.h
 # modules/demux/adaptive/PlaylistManager.cpp:638: undefined reference to `__pthread_register_cancel' ...
 %add_optflags -pthread
 %endif
+%patch1 -p1
 
 %build
 %add_optflags -I%_includedir/samba-4.0
@@ -723,7 +715,6 @@ export BUILDCC=gcc
 	--enable-dv1394 \
 %endif
 %if_enabled visualization
-	--enable-caca \
 	--enable-projectm \
 %endif
 	--disable-oss \
@@ -1370,9 +1361,6 @@ chmod 755 %buildroot%_libexecdir/rpm/vlc.filetrigger
 %vlc_plugindir/codec/liblibass_plugin.so
 
 %if_enabled visualization
-%files plugin-caca
-%vlc_plugindir/video_output/libcaca_plugin.so
-
 %files plugin-projectm
 %vlc_plugindir/visualization/libprojectm_plugin.so
 %endif
@@ -1407,6 +1395,18 @@ chmod 755 %buildroot%_libexecdir/rpm/vlc.filetrigger
 %files maxi
 
 %changelog
+* Thu Apr 30 2020 Anton Farygin <rider@altlinux.ru> 3.0.10-alt1
+- 3.0.10
+
+* Sun Apr 12 2020 Anton Farygin <rider@altlinux.ru> 3.0.9.2-alt1
+- 3.0.9.2
+
+* Thu Mar 19 2020 Anton Farygin <rider@altlinux.ru> 3.0.8-alt3
+- disabled libcaca support
+
+* Tue Mar 03 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.0.8-alt2
+- Fixed build on riscv64.
+
 * Thu Aug 15 2019 Anton Farygin <rider@altlinux.ru> 3.0.8-alt1
 - 3.0.8
 

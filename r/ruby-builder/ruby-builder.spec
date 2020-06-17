@@ -1,18 +1,17 @@
 %define pkgname builder
 
-Name: ruby-%pkgname
-Version: 3.2.3
-Release: alt1
-Summary: Provide a simple way to create XML markup and data structures
-License: MIT
-Group: Development/Ruby
-Url: https://github.com/tenderlove/builder
+Name:          ruby-%pkgname
+Version:       3.2.3
+Release:       alt2
+Summary:       Provide a simple way to create XML markup and data structures
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/tenderlove/builder
+%vcs           https://github.com/tenderlove/builder.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Source: %pkgname-%version.tar
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
 
 %description
@@ -25,40 +24,45 @@ Builder::XmlEvents:: Generate XML events (i.e. SAX-like)
 Builder::XmlMarkup:: Создание записи с XML разметкою.
 Builder::XmlEvents:: Создание событий XML (т.е. подобные SAX)
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-%description doc
-Documentation files for %name
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc -l ru_RU.UTF8
-Файлы сведений для %name
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
-# EPIC FAIL
-rm -f test/testblankslate.rb
-%ruby_test_unit -Ilib test/test*.rb
 
 %install
 %ruby_install
-%rdoc lib/
+
+%check
+%ruby_test
 
 %files
-%doc CHANGES README.md MIT-LICENSE
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%doc README.md
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/Builder*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Wed Jul 10 2019 Pavel Skrylev <majioa@altlinux.org> 3.2.3-alt2
+- Use Ruby Policy 2.0
+
 * Thu Aug 30 2018 Pavel Skrylev <majioa@altlinux.org> 3.2.3-alt1
 - new version 3.2.3
 

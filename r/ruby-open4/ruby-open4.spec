@@ -1,65 +1,69 @@
-%define orig_name open4
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname open4
 
-Summary: Manage child processes and their IO handles easily
-Name: ruby-%orig_name
-Version: 1.3.3
-Release: alt1.1
-Group: Development/Ruby
-License: BSD or Ruby
-URL: http://github.com/ahoward/open4
-Source0: %name-%version.tar
-Patch0: %name-%version-%release.patch
+Name:          ruby-%pkgname
+Version:       1.3.4
+Release:       alt1
+Summary:       Manage child processes and their IO handles easily
+License:       Ruby
+Group:         Development/Ruby
+Url:           http://github.com/ahoward/open4
+%vcs           https://github.com/ahoward/open4.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-BuildArch: noarch
-
-BuildRequires: rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: ruby-tool-rdoc
-BuildRequires: ruby-test-unit
+Source:        %name-%version.tar
+BuildRequires(pre): rpm-build-ruby
+BuildRequires: gem(test-unit)
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
+Open child process with handles on pid, stdin, stdout, and stderr: manage
+child processes and their io handles easily.
+
 This library can read and update netrc files, preserving formatting including
 comments and whitespace.
 
 
-%package doc
-Summary: Documentation for %name
-Group: Documentation
-Requires: %name = %version-%release
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation for %name
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %name-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-
-rm -f %buildroot%ruby_ri_sitedir/cache.ri
-rm -f %buildroot%ruby_ri_sitedir/created.rid
 
 %check
-#ruby_test_unit -Ilib -Itest/support test
+%ruby_test
 
 %files
-%doc LICENSE
-%ruby_sitelibdir/*
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%doc samples
-%doc test
-%doc white_box
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Fri Aug 02 2019 Pavel Skrylev <majioa@altlinux.org> 1.3.4-alt1
+^ v1.3.4
+^ Ruby Policy 2.0
+
 * Tue Sep 05 2017 Andrey Cherepanov <cas@altlinux.org> 1.3.3-alt1.1
 - Rebuild with Ruby 2.4.1
 

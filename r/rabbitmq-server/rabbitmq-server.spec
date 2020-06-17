@@ -8,7 +8,7 @@
 %add_erlang_req_modules_skiplist app_utils credit_flow gen_server2 mirrored_supervisor pmon priority_queue rand_compat supervisor2 time_compat
 
 Name: rabbitmq-server
-Version: 3.7.14
+Version: 3.8.3
 Release: alt1
 Summary: The RabbitMQ server
 License: MPLv1.1
@@ -29,6 +29,7 @@ Patch4: rabbitmq-server-0004-rabbit_prelaunch-must-use-RABBITMQ_SERVER_ERL_ARGS.
 Patch101: rabbitmq-common-0001-Use-proto_dist-from-command-line.patch
 Patch102: rabbitmq-common-0002-force-python3.patch
 Patch201: rabbitmq-server-release-0001-Don-t-use-templates.patch
+Patch202: rabbitmq-server-release-0002-Revert-Use-template-in-rabbitmq-script-wrapper-for-R.patch
 Patch301: rabbitmq-amqp1.0-common-0001-force-python3.patch
 
 URL: http://www.rabbitmq.com/
@@ -38,8 +39,6 @@ BuildRequires: erlang-devel erlang-otp-devel elixir
 BuildRequires: python3-module-simplejson
 BuildRequires: xmlto zip unzip netcat rsync
 Requires: erlang  >= 1:20.3.0
-Requires: tsung   >= 1.7.0
-
 
 %description
 RabbitMQ is an implementation of AMQP, the emerging standard for high
@@ -70,6 +69,8 @@ pushd deps/rabbit_common
 popd
 
 %patch201 -p1
+%patch202 -p1
+
 pushd deps/amqp10_common
 %patch301 -p1
 popd
@@ -109,14 +110,14 @@ install -p -D -m 0755 %SOURCE2 %buildroot%_sbindir/%{oname}-server
 install -p -D -m 0755 %SOURCE2 %buildroot%_sbindir/%{oname}-plugins
 install -p -D -m 0644 %SOURCE3 %buildroot%_logrotatedir/%name
 install -p -D -m 0644 %SOURCE4 %buildroot%_sysconfdir/%oname/%{oname}-env.conf
-install -p -D -m 0644 deps/rabbit/docs/rabbitmq.config.example %buildroot%_sysconfdir/%oname/rabbitmq.config
+install -p -D -m 0644 deps/rabbit/docs/rabbitmq.conf.example %buildroot%_sysconfdir/%oname/rabbitmq.conf
 install -p -D -m 0644 %SOURCE6 %buildroot%_unitdir/%oname.service
 install -p -D -m 0644 %SOURCE7 %buildroot%_tmpfilesdir/%oname.conf
 install -d %buildroot%_runtimedir/%oname
 
 # Make necessary symlinks
 mkdir -p %buildroot%_libexecdir/%oname
-for app in rabbitmq-defaults rabbitmq-env rabbitmq-plugins rabbitmq-server rabbitmqctl ; do
+for app in rabbitmq-defaults rabbitmq-env rabbitmq-plugins rabbitmq-server rabbitmqctl cuttlefish; do
     ln -r -s %buildroot%_erlanglibdir/rabbitmq_server-%version/sbin/${app} %buildroot%_libexecdir/%oname/${app}
 done
 
@@ -146,7 +147,7 @@ rm -rf %buildroot/usr/lib/erlang/autocomplete
 %preun_service %oname
 
 %files
-%doc LICENSE LICENSE-* deps/rabbit/docs/rabbitmq.config.example
+%doc LICENSE LICENSE-* deps/rabbit/docs/rabbitmq.conf.example
 %_sbindir/*
 %_libexecdir/%oname
 %dir %_erlanglibdir/rabbitmq_server-%version
@@ -157,8 +158,9 @@ rm -rf %buildroot/usr/lib/erlang/autocomplete
 %attr(0750, rabbitmq, rabbitmq) %dir %_localstatedir/%oname/mnesia
 %attr(0750, rabbitmq, rabbitmq) %dir %_logdir/%oname
 %attr(0750, rabbitmq, rabbitmq) %dir %_runtimedir/%oname
+%config(noreplace) %attr(0644, rabbitmq, rabbitmq) %_sysconfdir/rabbitmq/rabbitmq.conf
+%config(noreplace) %attr(0644, rabbitmq, rabbitmq) %_sysconfdir/rabbitmq/rabbitmq-env.conf
 %config(noreplace) %_logrotatedir/*
-%config(noreplace) %_sysconfdir/%oname
 %_man5dir/*
 %_man8dir/*
 %_unitdir/%oname.service
@@ -173,6 +175,13 @@ rm -rf %buildroot/usr/lib/erlang/autocomplete
 #%_datadir/%name
 
 %changelog
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 3.8.3-alt1
+- 3.8.3
+- Rename /etc/rabbitmq/rabbitmq.config to /etc/rabbitmq/rabbitmq.conf.
+
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 3.7.26-alt1
+- 3.7.26
+
 * Wed Apr 03 2019 Alexey Shabalin <shaba@altlinux.org> 3.7.14-alt1
 - 3.7.14
 

@@ -1,61 +1,66 @@
-%define  pkgname fog-aws
+%define        pkgname fog-aws
 
-Name:    ruby-%pkgname
-Version: 2.0.1
-Release: alt1
-Epoch:   1
+Name:          ruby-%pkgname
+Epoch:         1
+Version:       3.5.2
+Release:       alt1
+Summary:       Module for the 'fog' gem to support Amazon Web Services
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/fog/fog-aws
+%vcs           https://github.com/fog/fog-aws.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Module for the 'fog' gem to support Amazon Web Services http://aws.amazon.com/
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/fog/fog-aws
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
-%summary
+%summary http://aws.amazon.com/.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для %gemname самоцвета
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Mon Sep 16 2019 Pavel Skrylev <majioa@altlinux.org> 1:3.5.2-alt1
+- ^ v3.5.2
+
+* Thu Jun 06 2019 Pavel Skrylev <majioa@altlinux.org> 1:3.5.0-alt1
+- ^ v3.5.0
+- ^ Ruby Policy 2.0
+
 * Tue Sep 04 2018 Andrey Cherepanov <cas@altlinux.org> 1:2.0.1-alt1
 - Use old version for fog-core.
 

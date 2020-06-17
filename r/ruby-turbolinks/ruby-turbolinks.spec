@@ -1,22 +1,21 @@
-%define  pkgname turbolinks
+%define        pkgname turbolinks
 
-Name:    ruby-%pkgname
-Version: 2.5.4
-Release: alt2
-Epoch:   1
+Name:          ruby-%pkgname
+Epoch:         1
+Version:       5.2.1
+Release:       alt1
+Summary:       Turbolinks makes navigating your web application faster
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/turbolinks/turbolinks
+%vcs           https://github.com/turbolinks/turbolinks.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Turbolinks makes navigating your web application faster
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/turbolinks/turbolinks
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 Turbolinks(r) makes navigating your web application faster. Get the
@@ -27,41 +26,59 @@ follow a link, Turbolinks automatically fetches the page, swaps in its
 <body>, and merges its <head>, all without incurring the cost of a full
 page load.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n %pkgname
+Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n %pkgname
+Executable file for %gemname gem.
+
+%description   -n %pkgname -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Sep 19 2019 Pavel Skrylev <majioa@altlinux.org> 1:5.2.1-alt1
+- ^ v5.2.1
+- ^ Ruby Policy 2.0
+
 * Tue Sep 25 2018 Pavel Skrylev <majioa@altlinux.org> 1:2.5.4-alt2
 - Added new epoch.
 

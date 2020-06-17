@@ -1,18 +1,17 @@
 %define        pkgname psych
 
 Name:          gem-%pkgname
-Version:       3.1.0
-Release:       alt1
+Version:       3.1.1
+Release:       alt0.0.1
 Summary:       A libyaml wrapper for Ruby
 License:       MIT
 Group:         Development/Ruby
 Url:           https://github.com/ruby/psych
-# VCS:         https://github.com/ruby/psych.git
+Vcs:           https://github.com/ruby/psych.git
 Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 Source:        %name-%version.tar
 
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: gem(minitest)
 BuildRequires: gem(rake-compiler)
 BuildRequires: gem(rake-compiler-dock)
 
@@ -43,13 +42,13 @@ Documentation files for %{name}.
 %setup
 
 %build
-%gem_build
+%ruby_build --use=%gemname --version-replace=%version
 
 %install
-%gem_install
+%ruby_install
 
 %check
-%gem_test
+%ruby_test
 
 %files
 %ruby_gemspec
@@ -63,5 +62,9 @@ Documentation files for %{name}.
 %ruby_gemdocdir
 
 %changelog
+* Tue Mar 31 2020 Pavel Skrylev <majioa@altlinux.org> 3.1.1-alt0.0.1
+- ^ 3.1.0 -> 3.1.1pre
+- ! spec syntax and tags
+
 * Thu Feb 28 2019 Pavel Skrylev <majioa@altlinux.org> 3.1.0-alt1
 - Initial build for Sisyphus, packaged as a gem with usage Ruby Policy 2.0.

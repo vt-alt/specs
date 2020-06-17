@@ -24,7 +24,7 @@
 
 Name: libwebkitgtk4
 Version: %ver_major.4
-Release: alt1
+Release: alt1.1.p9
 
 Summary: Web browser engine
 Group: System/Libraries
@@ -33,6 +33,7 @@ Url: https://www.webkitgtk.org/
 
 Source: %url/releases/%_name-%version.tar.xz
 Source1: webkit2gtk.env
+Patch1: libwebkitgtk4-fix-build-with-icu-65.patch
 
 Requires: gst-plugins-base1.0 >= %gst_ver gst-plugins-good1.0 gst-plugins-bad1.0 gst-libav
 Requires: hyphen-en hyphen-ru
@@ -197,6 +198,7 @@ GObject introspection devel data for the JavaScriptCore library
 
 %prep
 %setup -n %_name-%version
+%patch1 -p2
 # Remove bundled libraries
 rm -rf Source/ThirdParty/gtest/
 rm -rf Source/ThirdParty/qunit/
@@ -313,6 +315,9 @@ install -pD -m755 %SOURCE1 %buildroot%_rpmmacrosdir/webki2gtk.env
 
 
 %changelog
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 2.24.4-alt1.1.p9
+- Fix build with icu 65.x.
+
 * Wed Aug 28 2019 Yuri N. Sedunov <aris@altlinux.org> 2.24.4-alt1
 - 2.24.4
 

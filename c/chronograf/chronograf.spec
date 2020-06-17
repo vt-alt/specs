@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/chronograf
-%global commit 038fb2a1d4f22adaecd1cd23d01a28159e0d248f
+%global commit ae637397b8e6815d5ae4fe698f5e9a6a8e88c33c
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		chronograf
-Version:	1.7.14
+Version:	1.8.1
 Release:	alt1
 Summary:	Open source framework for processing, monitoring, and alerting on time series data
 
@@ -38,15 +38,6 @@ BuildRequires: /proc
 Open source framework for processing, monitoring, and alerting on time series data.
 
 %prep
-%setup -q
-
-# add symlink to node headers
-node_ver=$(node -v | sed -e "s/v//")
-mkdir -p ui/node_modules/.node-gyp/$node_ver/include
-ln -s %_includedir/node ui/node_modules/.node-gyp/$node_ver/include/node
-echo "9" > ui/node_modules/.node-gyp/$node_ver/installVersion
-
-%build
 # Important!!!
 # The %%builddir/.gopath created by the hands. It contains the dependencies required for your project.
 # This is necessary because the gdm cannot work with the vendor directory and always tries to update
@@ -57,10 +48,24 @@ echo "9" > ui/node_modules/.node-gyp/$node_ver/installVersion
 # $ git commit -m "add go modules"
 #
 # $ cd ui && yarn --no-progress --no-emoji --verbose
-# $ rm -rf node_modules/node-sass/vendor
+# $ rm -rf node_modules/node-sass
+# $ rm -rf node_modules/node-gyp
+# $ rm -rf node_modules/deasync/bin
 # $ git add -f node_modules
 # $ git commit -m "add node js modules"
 
+%setup -q
+
+# add symlink to node headers
+node_ver=$(node -v | sed -e "s/v//")
+mkdir -p ui/node_modules/.node-gyp/$node_ver/include
+ln -s %_includedir/node ui/node_modules/.node-gyp/$node_ver/include/node
+echo "9" > ui/node_modules/.node-gyp/$node_ver/installVersion
+
+ln -sf %nodejs_sitelib/node-gyp ui/node_modules/node-gyp
+ln -sf %nodejs_sitelib/node-sass ui/node_modules/node-sass
+
+%build
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path:$PWD"
@@ -139,6 +144,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %_datadir/%name
 
 %changelog
+* Sat Apr 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.1-alt1
+- 1.8.1
+
 * Wed Sep 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.14-alt1
 - 1.7.14
 

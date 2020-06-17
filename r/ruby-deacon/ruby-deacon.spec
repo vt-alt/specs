@@ -1,23 +1,17 @@
-%define  pkgname deacon
+%define        pkgname deacon
 
-Name:    ruby-%pkgname
-Version: 1.0.0
-Release: alt1
-
-Summary: Human readable name generator plugin
-License: GPL-3.0
-Group:   Development/Ruby
-Url:     https://github.com/lzap/deacon
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
-Patch1: fix-data-share-dir.patch
-
+Name:          ruby-%pkgname
+Version:       1.0.0
+Release:       alt2
+Summary:       Human readable name generator plugin
+License:       GPLv3
+Group:         Development/Ruby
+Url:           https://github.com/lzap/deacon
+%vcs           https://github.com/lzap/deacon.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
 Out of ideas for incoming bare-metal host names in your cluster? This little gem
@@ -35,50 +29,46 @@ This gives 33,554,432 (25 bits) total of male and female name combinations.
 Built-in generator can either generate randomized succession, or generate
 combinations based on MAC adresses.
 
-%description -l ru_RU.UTF8
+%description   -l ru_RU.UTF8
 Модель генератора человекочитаемых имён
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
 
-%description doc -l ru_RU.UTF8
-Файлы сведений для %name
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%patch1 -p 1
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
-mkdir -p %buildroot%_datadir/%name
-mv %buildroot/%_datadir/*.txt %buildroot/%_datadir/%name
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
-%_datadir/%name/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
 
 %changelog
+* Sat Jul 20 2019 Pavel Skrylev <majioa@altlinux.org> 1.0.0-alt2
+- Use Ruby Policy 2.0
+
 * Fri Sep 21 2018 Pavel Skrylev <majioa@altlinux.org> 1.0.0-alt1
 - Initial gemified build for Sisyphus

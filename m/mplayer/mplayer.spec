@@ -296,7 +296,7 @@
 
 Name: %lname
 Version: 1.4
-Release: alt1
+Release: alt1.1.p9
 %ifdef svnrev
 %define pkgver svn-r%svnrev
 %else
@@ -1093,6 +1093,9 @@ install -pD -m 0644 {etc/%lname,%buildroot%_desktopdir/%gname}.desktop
 
 
 %changelog
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 1.4-alt1.1.p9
+- Rebuild with libdvdnav-6.1.0.
+
 * Sat Apr 20 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 1.4-alt1
 - 1.4 (ALT#36638).
 - built with system FFmpeg (ALT#35031).

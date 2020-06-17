@@ -1,12 +1,15 @@
-Name:          chef
-Version:       15.0.201
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname chef
+
+Name:          %pkgname
+Version:       15.2.19
 Release:       alt1
 Summary:       Clients for the chef systems integration framework
 Group:         Networking/Other
 License:       Apache-2.0
-URL:           https://www.chef.io/
-# VCS:         https://github.com/opscode/chef.git
-Packager:      Andrey Cherepanov <cas@altlinux.org>
+Url:           https://www.chef.io/
+%vcs           https://github.com/opscode/chef.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 BuildArch:     noarch
 
 Source:        %name-%version.tar
@@ -15,9 +18,11 @@ Source2:       chef-client.service
 Source3:       chef-client.default
 Source4:       chef-client.rb
 
-Requires:      chef-config
-
 BuildRequires(pre): rpm-build-ruby
+
+%gem_replace_version highline ~> 2.0
+%gem_replace_version train-core ~> 3.0
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 Chef is a systems integration framework and configuration management
@@ -33,41 +38,77 @@ This package contains the chef-client, chef-solo and knife binaries as
 well as the chef library.
 
 
-%package       config
-Summary:       Chef's default configuration and config loading
-Group:         Development/Ruby
-BuildArch:     noarch
-
-%description   config
-Chef's default configuration and config loading.
-
-
 %package       doc
-Summary:       Documentation for %name
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
 Group:         Development/Documentation
 BuildArch:     noarch
 
 %description   doc
-Documentation for %{name}.
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
 
 
-%package       config-doc
-Summary:       Documentation for %name
+%package       -n gem-%pkgname-config
+Summary:       Chef's default configuration and config loading
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-config
+Chef's default configuration and config loading.
+
+%description   -n gem-%pkgname-config -l ru_RU.UTF8
+Настройки для самоцвета %gemname.
+
+
+%package       -n gem-%pkgname-config-doc
+Summary:       Documentation files for %gemname-config gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
 Group:         Development/Documentation
 BuildArch:     noarch
 
-%description   config-doc
-%summary.
+%description   -n gem-%pkgname-config-doc
+Documentation files for %gemname-config gem.
+
+%description   -n gem-%pkgname-config-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname-config.
+
+
+%package       -n gem-%pkgname-bin
+Summary:       Chef-branded binstubs for chef-client
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-bin
+Chef-branded binstubs for chef-client.
+
+%description   -n gem-%pkgname-bin -l ru_RU.UTF8
+Исполняемые заглушки для самоцвета %gemname.
+
+
+%package       -n gem-%pkgname-bin-doc
+Summary:       Documentation files for %gemname-bin gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   -n gem-%pkgname-bin-doc
+Documentation files for %gemname-bin gem.
+
+%description   -n gem-%pkgname-bin-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname-bin.
 
 
 %prep
 %setup
 
 %build
-%gem_build --use=chef --join=lib:bin --use=chef-config --join=lib:bin
+%ruby_build --ignore=standalone_cookbook,omnibus,kitchen-tests,win32-eventlog --use=chef --join=lib:bin
 
 %install
-%gem_install
+%ruby_install
 
 # Install init scripts
 install -Dm 0755 %SOURCE1 %buildroot%_initdir/chef-client
@@ -81,9 +122,10 @@ mkdir -p %buildroot%_var/cache/chef
 mkdir -p %buildroot/run/chef
 
 %check
-%gem_test
+%ruby_test
 
 %files
+%doc README*
 %ruby_gemspecdir/chef-%version.gemspec
 %ruby_gemslibdir/chef-%version
 %_bindir/*
@@ -96,21 +138,31 @@ mkdir -p %buildroot/run/chef
 %dir %attr(0750, _chef, _chef) %_var/lib/chef
 %dir %attr(0750, _chef, _chef) %_var/cache/chef
 
-%files         config
+%files         -n gem-%pkgname-config
 %ruby_gemspecdir/chef-config-%version.gemspec
 %ruby_gemslibdir/chef-config-%version
+
+%files         -n gem-%pkgname-bin
+%ruby_gemspecdir/chef-bin-%version.gemspec
+%ruby_gemslibdir/chef-bin-%version
 
 %files         doc
 %ruby_gemsdocdir/chef-%version
 
-%files         config-doc
+%files         -n gem-%pkgname-config-doc
 %ruby_gemsdocdir/chef-config-%version
+
+%files         -n gem-%pkgname-bin-doc
+%ruby_gemsdocdir/chef-bin-%version
 
 %pre
 getent group _chef  >/dev/null || groupadd -r _chef
 getent passwd _chef >/dev/null || useradd  -r -g _chef -d %_var/lib/chef -s /sbin/nologin -c "Opscode Chef Daemon" _chef
 
 %changelog
+* Thu Aug 08 2019 Pavel Skrylev <majioa@altlinux.org> 15.2.19-alt1
+^ v15.2.19
+
 * Wed Apr 03 2019 Pavel Skrylev <majioa@altlinux.org> 15.0.201-alt1
 - Bump to 15.0.201
 

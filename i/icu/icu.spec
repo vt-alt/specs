@@ -1,8 +1,9 @@
-%define real_ver_major 64
-%define real_ver_minor 2
+%define real_ver_major 65
+%define real_ver_minor 1
 %define real_ver %{real_ver_major}.%{real_ver_minor}
 
 %def_without doc
+%def_enable check
 
 Name: icu
 Version: %(echo %real_ver_major | sed -e 's|\(.\)|\1.|').%real_ver_minor
@@ -15,7 +16,7 @@ License: X License
 Url: http://www.icu-project.org/
 
 #VCS: https://github.com/unicode-org/icu.git
-Source: http://download.icu-project.org/files/icu4c/%real_ver/icu4c-%{real_ver_major}_%{real_ver_minor}-src.tgz
+Source: https://github.com/unicode-org/%name/releases/download/release-%{real_ver_major}-%{real_ver_minor}/icu4c-%{real_ver_major}_%{real_ver_minor}-src.tgz
 Patch: icu-6.3.1-alt-e2k.patch
 
 BuildRequires(pre): rpm-build-python3
@@ -94,6 +95,10 @@ cd source
 %makeinstall_std
 cp -a samples %buildroot%_datadir/icu
 
+%check
+cd source
+%make check
+
 %files utils
 %_bindir/*
 %exclude %_bindir/icu-config
@@ -120,6 +125,9 @@ cp -a samples %buildroot%_datadir/icu
 %_datadir/icu/samples
 
 %changelog
+* Sun Oct 06 2019 Yuri N. Sedunov <aris@altlinux.org> 1:6.5.1-alt1
+- 6.5.1
+
 * Fri Apr 19 2019 Yuri N. Sedunov <aris@altlinux.org> 1:6.4.2-alt1
 - 6.4.2
 

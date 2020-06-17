@@ -2,7 +2,7 @@
 
 Name:       puppetserver
 Version:    6.5.0
-Release:    alt1
+Release:    alt2.2
 
 Summary:    Server automation framework and application
 License:    Apache-2.0
@@ -19,8 +19,16 @@ BuildPreReq: rpm-build-ruby
 
 Requires: clojure
 Requires: puppet
-Requires: ruby-puppetserver-ca-cli
-
+Requires: puppetserver-ca
+Requires: gem-multi-json
+Requires: gem-deep-merge
+Requires: gem-text
+Requires: gem-locale
+Requires: gem-fast-gettext
+Requires: gem-gettext
+Requires: gem-semantic-puppet
+Requires: gem-concurrent-ruby >= 1.1.6-alt1.1
+Conflicts: gem-oj
 
 %description
 Puppet Server is the next-generation application for managing Puppet agents.
@@ -32,6 +40,9 @@ control over the Ruby runtime.
 
 %prep
 %setup
+sed "s|gem-path: \\[.*\\]|gem-path: [$(echo $(ls /usr/lib/ruby/gems | \
+   sed -e "s,^,/usr/lib/ruby/gems/,") | sed "s/ \\+/, /")]|" \
+   -i puppetserver/config/conf.d/puppetserver.conf
 
 %install
 install -d -m 0755 %buildroot%_datadir/%name
@@ -142,6 +153,16 @@ chmod 0700 /var/lib/puppetserver/jars
 
 
 %changelog
+* Fri May 22 2020 Pavel Skrylev <majioa@altlinux.org> 6.5.0-alt2.2
+- ! max memory consumption for JVM by increasing top border an config
+  (closes #38519)
+
+* Wed May 13 2020 Pavel Skrylev <majioa@altlinux.org> 6.5.0-alt2.1
+- + explicit require dependencies to proper gem packages
+
+* Tue May 12 2020 Pavel Skrylev <majioa@altlinux.org> 6.5.0-alt2
+- ! gem paths config
+
 * Mon Aug 26 2019 Andrey Bychkov <mrdrew@altlinux.org> 6.5.0-alt1
 - Version updated to 6.5.0
 

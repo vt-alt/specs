@@ -1,43 +1,81 @@
-%define orig_name commander
+%define        pkgname commander
 
-Summary: The complete solution for Ruby command-line executable
-Name: ruby-%orig_name
-Version: 4.3.1
-Release: alt1
-Group: Development/Ruby
-License: MIT
-URL: http://visionmedia.github.com/commander
-Source0: %orig_name-%version.tar
-Patch0: %orig_name-%version-%release.patch
+Name:          ruby-%pkgname
+Version:       4.4.7
+Release:       alt1
+Summary:       The complete solution for Ruby command-line executable
+Group:         Development/Ruby
+License:       MIT
+Url:           http://visionmedia.github.com/commander
+%vcs           https://github.com/commander-rb/commander.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-BuildArch: noarch
-
-BuildRequires: rpm-build-ruby
-BuildRequires: ruby-tool-setup
+Source:        %name-%version.tar
+BuildRequires(pre): rpm-build-ruby
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
-The complete solution for Ruby command-line executable
+The complete solution for Ruby command-line executables. Commander bridges
+the gap between other terminal related libraries you know and love
+(OptionParser, HighLine), while providing many new features, and an elegant API.
+
+
+%package       -n %pkgname
+Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n %pkgname
+Executable file for %gemname gem.
+
+%description   -n %pkgname -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
 
 
 %prep
-%setup -q -n %orig_name-%version
-%patch -p1
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
+%ruby_build
 
 %install
 %ruby_install
 
+%check
+%ruby_test
+
 %files
-%doc Manifest History.rdoc
-%_bindir/commander
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n %pkgname
+%_bindir/%{pkgname}*
+
+%files         doc
+%ruby_gemdocdir
 
 
 %changelog
+* Tue Aug 06 2019 Pavel Skrylev <majioa@altlinux.org> 4.4.7-alt1
+^ 4.4.7
+^ Ruby Policy 2.0
+
 * Tue Apr 09 2019 Mikhail Gordeev <obirvalger@altlinux.org> 4.3.1-alt1
 - new version 4.3.1
 

@@ -1,15 +1,12 @@
+%define soname 8
 Name: libdvdread
-Version: 5.0.0
-Release: alt1
+Version: 6.1.1
+Release: alt0.1.p9
 Summary: A library for reading DVD-Video images
-License: GPL
+License: GPLv2
 Group: System/Libraries
-Url: https://dvdnav.mplayerhq.hu/
-Packager: Valery Inozemtsev <shrek@altlinux.ru>
-
-Source: %name-%version.tar.bz2
-
-BuildRequires: doxygen
+Url: https://www.videolan.org/developers/libdvdnav.html
+Source: %name-%version.tar
 
 %description
 libdvdread provides a simple foundation for reading DVD-Video images.
@@ -19,10 +16,19 @@ libdvdread currently uses libdl to dynamically probe for libdvdcss at
 runtime.  If libdvdcss is found, then it will be used to decrypt the
 encrypted sections of a DVD.
 
+%package -n %name%soname
+Summary: A library for reading DVD-Video images
+Group: System/Libraries
+%description -n %name%soname
+libdvdread provides a simple foundation for reading DVD-Video images.
+This allows application designers to access some of the more advanced
+features of the DVD format.
+
+
 %package devel
 Summary: Development environment for %name
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name%soname = %version-%release
 
 %description devel
 This package contains development files you can use to develop
@@ -39,17 +45,25 @@ applications reading DVD-video images
 
 %install
 %make DESTDIR=%buildroot install
+rm -rf %buildroot%_datadir/doc/libdvdread
 
-%files
-%doc AUTHORS TODO README
+%files -n %name%soname
 %_libdir/*.so.*
 
 %files devel
+%doc AUTHORS TODO README
 %_includedir/*
 %_libdir/*.so
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed Jun 03 2020 Andrey Cherepanov <cas@altlinux.org> 6.1.1-alt0.1.p9
+- Backport new version to p9 branch with save inheritance.
+
+* Fri Apr 17 2020 Anton Farygin <rider@altlinux.ru> 6.1.1-alt1
+- 6.1.1
+- added version to package name with library
+
 * Sat Oct 25 2014 Valery Inozemtsev <shrek@altlinux.ru> 5.0.0-alt1
 - 5.0.0
 

@@ -1,22 +1,21 @@
-%define  pkgname oedipus_lex
+%define        pkgname oedipus-lex
+%define        gemname oedipus_lex
 
-Name:    ruby-oedipus-lex
-Version: 2.5.0
-Release: alt1.1
+Name:          ruby-%pkgname
+Version:       2.5.1
+Release:       alt1
+Summary:       This is not your father's lexer
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/seattlerb/oedipus_lex
+%vcs           https://github.com/seattlerb/oedipus_lex.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: This is not your father's lexer
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/seattlerb/oedipus_lex
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: ruby-hoe
+BuildRequires: gem(hoe) >= 3.17
+BuildRequires: gem(rdoc) >= 4.0 gem(rdoc) < 7.0
 
 Provides: ruby-%pkgname = %EVR
 
@@ -28,42 +27,46 @@ to take it over, fix it up, extend it, and relicense it to MIT. So,
 Oedipus was written clean-room in order to bypass licensing constraints
 (and because bootstrapping is fun).
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
-rake debug_gem > %pkgname.gemspec
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Fri Jul 19 2019 Pavel Skrylev <majioa@altlinux.org> 2.5.1-alt1
+- Bump to 2.5.1
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 2.5.0-alt1.1
 - Rebuild with new Ruby autorequirements.
 

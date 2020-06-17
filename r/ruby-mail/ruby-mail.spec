@@ -1,66 +1,62 @@
-%define  pkgname mail
- 
-Name: 	 ruby-%pkgname
-Version: 2.7.1
-Release: alt1
- 
-Summary: A really Ruby Mail handler
-License: MIT/Ruby
-Group:   Development/Ruby
-Url:     https://github.com/mikel/mail
- 
-Packager: Andrey Cherepanov <cas@altlinux.org>
-BuildArch: noarch
- 
-Source:  %pkgname-%version.tar
- 
+%define        pkgname mail
+
+Name: 	       ruby-%pkgname
+Version:       2.7.1
+Release:       alt2
+Summary:       A really Ruby Mail handler
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/mikel/mail
+%vcs           https://github.com/mikel/mail.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
+
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: ruby-mime-types
-BuildRequires: ruby-treetop
- 
-%filter_from_requires /^ruby(\(ftools\|tlsmail\))/d
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 Mail is an internet library for Ruby that is designed to handle emails
 generation, parsing and sending in a simple, rubyesque manner.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
- 
-BuildArch: noarch
- 
-%description doc
-Documentation files for %{name}.
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
- 
+%setup
+
 %build
-%ruby_config
 %ruby_build
- 
+
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
- 
+
 %check
-# Require network for tests
-#ruby_test_unit -Ilib:test test
- 
+%ruby_test
+
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
- 
-%files doc
-%ruby_ri_sitedir/*
- 
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         doc
+%ruby_gemdocdir
+
 %changelog
+* Thu Aug 01 2019 Pavel Skrylev <majioa@altlinux.org> 2.7.1-alt2
+^ Ruby Policy 2.0
+
 * Sun Oct 14 2018 Andrey Cherepanov <cas@altlinux.org> 2.7.1-alt1
 - New version.
 

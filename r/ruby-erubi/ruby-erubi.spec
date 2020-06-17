@@ -1,60 +1,80 @@
-%define  pkgname erubi
+%define        pkgname erubi
 
-Name:    ruby-%pkgname
-Version: 1.7.1
-Release: alt1.1
+Name:          ruby-%pkgname
+Version:       1.8.0
+Release:       alt1
+Summary:       Small ERB Implementation
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/jeremyevans/erubi
+%vcs           https://github.com/jeremyevans/erubi.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Small ERB Implementation
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/jeremyevans/erubi
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 
 %description
-%summary
+Erubi is a ERB template engine for ruby. It is a simplified fork of Erubis,
+using the same basic algorithm, with the following differences:
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
+* Handles postfix conditionals when using escaping
+* Supports frozen_string_literal: true in templates via :freeze option
+* Works with ruby's -enable-frozen-string-literal option
+* Automatically freezes strings for template text when ruby optimizes it (on
+  ruby 2.1+)
+* Escapes ' (apostrophe) when escaping for better XSS protection
+* Has 6x faster escaping on ruby 2.3+ by using cgi/escape
+* Has 86% smaller memory footprint
+* Does no monkey patching (Erubis adds a method to Kernel)
+* Uses an immutable design (all options passed to the constructor, which returns
+  a frozen object)
+* Has simpler internals (1 file, <150 lines of code)
+* Is not dead (Erubis hasn't been updated since 2011)
+* It is not designed with Erubis API compatibility in mind, though most Erubis
+  ERB syntax works, with the following exceptions:
+* No support for debug output
 
-BuildArch: noarch
 
-%description doc
-Documentation files for %{name}.
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для %gemname самоцвета.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Wed Jul 10 2019 Pavel Skrylev <majioa@altlinux.org> 1.8.0-alt1
+- Bump to 1.8.0
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 1.7.1-alt1.1
 - Rebuild with new Ruby autorequirements.
 

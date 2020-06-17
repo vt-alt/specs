@@ -1,27 +1,27 @@
-%define  pkgname spec_helper
- 
-Name: 	 ruby-%pkgname
-Version: 1.0.1 
-Release: alt1.1
- 
-Summary: A set of shared spec helpers specific to Puppetlabs projects
-License: MIT/Ruby
-Group:   Development/Ruby
-Url:     https://github.com/puppetlabs/puppetlabs_spec_helper
- 
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
- 
-Source:  %pkgname-%version.tar
- 
+%define        pkgname spec_helper
+%define        gemname puppetlabs_spec_helper
+
+Name:          ruby-%pkgname
+Version:       2.14.1
+Release:       alt1
+Summary:       A set of shared spec helpers specific to Puppetlabs projects
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/puppetlabs/puppetlabs_spec_helper
+%vcs           https://github.com/puppetlabs/puppetlabs_spec_helper.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
+
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
 #BuildRequires: ruby-rspec-puppet
 #BuildRequires: ruby-rspec-expectations
 #BuildRequires: ruby-puppet-lint
 #BuildRequires: ruby-puppet-syntax
 #BuildRequires: ruby-mocha
- 
+%gem_replace_version puppet-lint ~> 3.0
+%add_findreq_skiplist %ruby_gemslibdir/**/*
+
 %description
 This repository is meant to provide a single source of truth for how to
 initialize different Puppet versions for spec testing.
@@ -32,42 +32,46 @@ this repository, which will in turn automatically figure out the version
 of Puppet being tested against and perform version specific
 initialization.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
- 
-BuildArch: noarch
- 
-%description doc
-Documentation files for %{name}.
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
- 
+%setup
+
 %build
-%ruby_config
-%ruby_build
- 
+%ruby_build --use=%gemname --alias=%pkgname
+
 %install
 %ruby_install
-%rdoc lib/
-rm -f %buildroot%ruby_sitelibdir/puppetlabs_spec_helper/module_spec_helper.rb
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
- 
+
 %check
-#%%ruby_test_unit -Ilib:test test
- 
+%ruby_test
+
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
- 
-%files doc
-%ruby_ri_sitedir/*
- 
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         doc
+%ruby_gemdocdir
+
+
 %changelog
+* Thu Aug 01 2019 Pavel Skrylev <majioa@altlinux.org> 2.14.1-alt1
+^ Use Ruby Policy 2.0
+^ v2.14.1
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 1.0.1-alt1.1
 - Rebuild with new Ruby autorequirements.
 - Disable tests.

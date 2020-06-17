@@ -1,20 +1,13 @@
-Name: libdmtx
-Version: 0.7.2
-Release: alt8
-Summary: Library for working with Data Matrix 2D bar-codes
+Name:          libdmtx
+Version:       0.7.5
+Release:       alt1
+Summary:       Library for working with Data Matrix 2D bar-codes
+Group:         System/Libraries
+License:       BSD-2-Clause
+Url:           https://www.openhub.net/p/libdmtx
+Vcs:           https://github.com/dmtx/libdmtx.git
 
-Group: System/Libraries
-License: LGPLv2+
-Url: http://www.libdmtx.org/
-Source0: http://downloads.sourceforge.net/%name/%name-%version.tar.bz2
-Patch0:	libdmtx-0.7.2-ruby.patch
-
-## required for tests
-BuildRequires: libSDL_image-devel libpng-devel
-
-# Automatically added by buildreq on Thu May 12 2011
-# optimized out: fontconfig libGL-devel libGLU-devel libSDL-devel pkg-config python-base python-modules ruby ruby-stdlibs zlib-devel
-BuildRequires: libImageMagick-devel libruby-devel python-devel
+Source:        %name-%version.tar
 
 %description
 libdmtx is open source software for reading and writing Data Matrix 2D
@@ -25,115 +18,51 @@ without restrictions or overhead.
 The included utility programs, dmtxread and dmtxwrite, provide the official
 interface to libdmtx from the command line, and also serve as a good reference
 for programmers who wish to write their own programs that interact with
-libdmtx. All of the software in the libdmtx package is distributed under
-the LGPLv2 and can be used freely under these terms.
+libdmtx.
 
-%package devel
-Summary: Development files for %name
-Group: Development/C
-Requires: %name = %version-%release
 
-%description devel
+%package       devel
+Summary:       Development files for %name
+Group:         Development/C
+Requires:      %name = %version-%release
+
+%description   devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
-%package utils
-Summary: Utilities for reading and writing Data Matrix barcodes
-Group: Graphics
-Requires: %name = %version-%release
-
-%description utils
-The included utility programs, dmtxread and dmtxwrite, provide the
-official interface to %name from the command line, and also serve as
-a good reference for programmers who wish to write their own programs
-that interact with %name.
-
-%package -n     python-module-dmtx
-Summary: Python bindings for %name
-Group: System/Libraries
-Requires: %name = %version-%release
-
-%description -n python-module-dmtx
-The python-%name package contains bindings for using %name from Python.
-
-%package -n     ruby-libdmtx
-Summary: Ruby bindings for %name
-Group: System/Libraries
-Requires: %name = %version-%release
-
-%description -n ruby-libdmtx
-The ruby-%name package contains bindings for using %name from Ruby.
-
-%package -n vala-libdmtx
-Summary: Vala bindings for %name
-Group: System/Libraries
-Requires: %name = %version-%release
-Buildarch: noarch
-
-%description -n vala-libdmtx
-The vala-%name package contains bindings for using %name from Vala.
 
 %prep
 %setup
 
-# fix permissions
-%patch0 -p0
-
-
 %build
-%configure --disable-static --disable-php --enable-python --enable-ruby --enable-vala
-#  --enable-java           enable Java bindings
-#    --enable-net            enable .NET bindings
-
-# Don't use rpath!
-sed -i 's@setup.py install@setup.py install --skip-build --root=$(DESTDIR)@' wrapper/python/Makefile
-
-#sed -i 's@^\(RUBY[A-Z]*DIR.*\)site@\1vendor@' wrapper/ruby/Makefile
-
-for d in python ruby; do echo "check:" >> wrapper/$d/Makefile; done
-
-%make_build CFLAGS="-I`pwd` -fPIC" LDFLAGS=-L`pwd`/.libs LOCAL_LIBS="-L`pwd`/.libs -ldmtx"
+%autoreconf
+%configure
+%make_build
 
 %install
 %make install DESTDIR=%buildroot INSTALL_ROOT=%buildroot
 
 %check
-make check
-pushd test
-for t in simple unit
-do
-    ./${t}_test/${t}_test
-done
-popd
+# make check
 
 %files
-%doc AUTHORS COPYING.LESSER ChangeLog KNOWNBUG NEWS README README.linux TODO
+%doc AUTHORS LICENSE ChangeLog KNOWNBUG NEWS README README.linux TODO
 %_libdir/%name.so.*
 
-%files devel
+%files         devel
 %doc
 %_includedir/*
 %_libdir/%name.so
 %_libdir/pkgconfig/%name.pc
 %_mandir/man3/%name.3*
-
-%files utils
-%_bindir/dmtx*
-%_mandir/man1/dmtx*.1*
-
-%files -n python-module-dmtx
-%doc wrapper/python/README
-%python_sitelibdir/*
-
-%files -n ruby-libdmtx
-%doc wrapper/ruby/README
-%ruby_sitearchdir/*.so
-
-%files -n vala-libdmtx
-%doc wrapper/vala/README
-%_datadir/vala/vapi/libdmtx.vapi
+%_libdir/%name.a
 
 %changelog
+* Thu Apr 02 2020 Pavel Skrylev <majioa@altlinux.org> 0.7.5-alt1
+- > another library source on github
+- ^ 0.7.2 -> 0.7.5
+- - support for ruby, python, vala, and mtdx utils
+
 * Thu Mar 07 2019 Anton Farygin <rider@altlinux.ru> 0.7.2-alt8
 - removed php-5 bindings
 

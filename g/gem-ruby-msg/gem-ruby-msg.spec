@@ -1,82 +1,79 @@
-%define  pkgname ruby-msg
+%define        pkgname ruby-msg
 
-Name:    gem-%pkgname
-Version: 1.5.2
-Release: alt1
+Name:          gem-%pkgname
+Version:       1.5.2
+Release:       alt2
+Summary:       A library for reading and converting Outlook msg and pst files (mapi message stores)
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/aquasync/ruby-msg
+%vcs           https://github.com/aquasync/ruby-msg.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: A library for reading and converting Outlook msg and pst files (mapi message stores)
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/aquasync/ruby-msg
-# VCS:   https://github.com/aquasync/ruby-msg.git
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
 
 %description
 %summary
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n mapitool
+Summary:       Executable file mapitool for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
-
-%package -n mapitool
-Summary: The command line utility of the library %{pkgname}.
-Group: Documentation
-
-BuildArch: noarch
-
-Requires: ruby-gem(%pkgname) = %version
-
-%description -n mapitool
+%description   -n mapitool
 The command line utility, which is allowing to convert individual msg or pst
 files to .eml, or to convert a batch to an mbox format file. See mapitool help
 for details.
 
+
+%description   -n mapitool -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
 %prep
-%setup -n %pkgname-%version
-# NOTE patch sources to avoid Encoding::CompatibilityError see http://linuxdata.ru/questions/q54.html
-sed 's/part.to_s(opts)/part.to_s(opts).encode("UTF-8", :invalid=>:replace, :undef => :replace, :replace => "")/' -i lib/mapi/mime.rb
-# NOTE fix data dir for ALT
-sed "s|SUPPORT_DIR = File.dirname(__FILE__) + '/../..'|SUPPORT_DIR = '%_datadir/%name'|" -i lib/mapi/property_set.rb
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-mkdir -p %buildroot%_datadir/%name/data
-mv %buildroot%_datadir/*yaml %buildroot%_datadir/%name/data/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-#rake test
+%ruby_test
 
 %files
 %doc README*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n mapitool
+%_bindir/mapitool
 
-%files -n mapitool
-%_bindir/*
-%_datadir/%name/*
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Jul 18 2019 Pavel Skrylev <majioa@altlinux.org> 1.5.2-alt2
+- Use Ruby Policy 2.0
+
 * Wed Dec 19 2018 Pavel Skrylev <majioa@altlinux.org> 1.5.2-alt1
 - Initial build for Sisyphus bumped to 1.5.2

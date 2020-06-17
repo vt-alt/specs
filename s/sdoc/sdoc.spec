@@ -1,61 +1,83 @@
-Name:    sdoc
-Version: 1.0.0
-Release: alt1.1
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname sdoc
 
-Summary: rdoc generator html with javascript search index
-License: MIT
-Group:   Development/Ruby
-Url:     https://github.com/zzak/sdoc
+Name:          %pkgname
+Version:       1.0.0
+Release:       alt2
+Summary:       rdoc generator html with javascript search index
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/zzak/sdoc
+%vcs           https://github.com/zzak/sdoc.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %name-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 SDoc is an HTML template built on top of the RDoc documentation
 generator for Ruby code.
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n gem-%pkgname
+Summary:       Library for %gemname gem
+Summary(ru_RU.UTF-8): Библиотечные файлы для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n gem-%pkgname
+Library for %gemname gem.
+
+%description   -n gem-%pkgname -l ru_RU.UTF8
+Библиотечные файлы для %gemname самоцвета.
+
+
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+Provides:      %pkgname-doc
+Obsoletes:     %pkgname-doc
+
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %name-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%_bindir/%name
-%_bindir/%name-merge
-%ruby_sitelibdir/*
-%rubygem_specdir/*
+%_bindir/%{pkgname}*
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n gem-%pkgname
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
+
 
 %changelog
+* Thu Jul 18 2019 Pavel Skrylev <majioa@altlinux.org> 1.0.0-alt2
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 1.0.0-alt1.1
 - Rebuild with new Ruby autorequirements.
 

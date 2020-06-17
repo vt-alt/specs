@@ -1,16 +1,14 @@
 %define        pkgname        puppet
 %define        confdir        ext/redhat
-%define        core_version   6.8.0
-%define        dm_version     1.0.1
 
 Name:          %pkgname
-Version:       %core_version
-Release:       alt1
+Version:       6.15.0
+Release:       alt3
 Summary:       A network tool for managing many disparate systems
 Group:         System/Servers
-License:       ASL 2.0
-URL:           https://puppet.com/
-# VCS:         https://github.com/puppetlabs/puppet.git
+License:       Apache-2.0
+Url:           https://puppet.com/
+Vcs:           https://github.com/puppetlabs/puppet.git
 BuildArch:     noarch
 
 Source:        %name-%version.tar
@@ -18,15 +16,16 @@ Source1:       client.init
 Source2:       puppet.service
 Source3:       puppet-nm-dispatcher
 
+Patch1: puppet-Adjust-default-paths.patch
+Patch2: puppet-fix-locale-loading.patch
+Patch3: puppet-alt-aptrpm-osfamily.patch
+
 BuildRequires(pre): rpm-build-ruby
 BuildRequires: gem(yard)
 
 %gem_replace_version CFPropertyList ~> 3.0
-%gem_replace_version fast_gettext ~> 1.7
 %add_findreq_skiplist %ruby_gemslibdir/*
-
-Requires: shadow-change
-
+Requires:      shadow-change
 
 %description
 Puppet lets you centrally manage every important aspect of your
@@ -35,29 +34,7 @@ all the separate elements normally aggregated in different files,
 like users, cron jobs, and hosts, along with obviously discrete
 elements like packages, services, and files.
 
-
-%package       -n gem-deep-merge
-Version:       %dm_version
-Summary:       Deep merge hash
-Group:         Development/Ruby
-BuildArch:     noarch
-
-%description   -n gem-deep-merge
-%summary.
-
-
-%package       -n gem-deep-merge-doc
-Version:       %dm_version
-Summary:       Documentation for gem-deep-merge gem
-Group:         Development/Documentation
-BuildArch:     noarch
-
-%description   -n gem-deep-merge-doc
-%summary.
-
-
 %package       -n gem-%pkgname
-Version:       %core_version
 Summary:       Core library code for %gemname gem
 Group:         Development/Documentation
 BuildArch:     noarch
@@ -65,9 +42,7 @@ BuildArch:     noarch
 %description   -n gem-%pkgname
 %summary.
 
-
 %package       -n gem-%pkgname-doc
-Version:       %core_version
 Summary:       Documentation for %gemname gem
 Group:         Development/Documentation
 BuildArch:     noarch
@@ -75,15 +50,17 @@ BuildArch:     noarch
 %description   -n gem-%pkgname-doc
 %summary.
 
-
 %prep
 %setup -n %name-%version
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
-%gem_build
+%ruby_build --ignore=full_catalog,acceptance
 
 %install
-%gem_install
+%ruby_install
 
 # SysVInit files
 install -Dp -m0644 %confdir/client.sysconfig %buildroot%_sysconfdir/sysconfig/puppet
@@ -97,7 +74,7 @@ install -Dp -m0644 conf/fileserver.conf %buildroot%_sysconfdir/puppet/fileserver
 
 # Create other configuration directories
 mkdir -p %buildroot%_sysconfdir/puppet/ssl/{public_keys,certificate_requests,certs,ca/requests,ca/private,ca/signed,private,private_keys}
-mkdir -p %buildroot%_sysconfdir/puppet/{code,modules,environments/production/manifests}
+mkdir -p %buildroot%_sysconfdir/puppet/code/environments/production/manifests
 
 # Setup tmpfiles.d config
 mkdir -p %buildroot%_tmpfilesdir
@@ -105,10 +82,11 @@ echo "D /run/%name 0755 _%name %name -" > \
     %buildroot%_tmpfilesdir/%name.conf
 
 # Create puppet modules directory for puppet module tool
-mkdir -p %buildroot%_sysconfdir/%name/modules
+mkdir -p %buildroot%_sysconfdir/%name/code/modules
+touch %buildroot%_sysconfdir/puppet/code/modules/.dir
 
 # Create service directory
-mkdir -p %buildroot{%_localstatedir,%_logdir,%_var/run}/puppet
+mkdir -p %buildroot{%_cachedir,%_logdir,/run}/puppet
 
 # Install NetworkManager dispatcher
 install -Dpv %SOURCE3 \
@@ -122,11 +100,21 @@ cat >> %buildroot%_sysconfdir/puppet/puppet.conf << END.
 #storeconfigs_backend = puppetdb
 #report = true
 #reports = puppetdb
+#
+#[agent]
+#server = puppet
 END.
+
+# link to gem library code base
+ln -s %ruby_gemlibdir %buildroot%_datadir/%pkgname
+
+# Create locale and modules directories
+mkdir -p %buildroot%_datadir/puppet-{locale,modules}
+touch %buildroot%_datadir/puppet-{locale,modules}/.dir
 
 %pre
 %_sbindir/groupadd -r -f puppet
-%_sbindir/useradd -r -n -g puppet -d %_localstatedir/puppet -s /dev/null -c Puppet _puppet >/dev/null 2>&1 ||:
+%_sbindir/useradd -r -n -g puppet -d %_cachedir/puppet -s /dev/null -c Puppet _puppet >/dev/null 2>&1 ||:
 
 %post
 %post_service puppet
@@ -151,23 +139,25 @@ END.
 %attr(0755,_puppet,puppet) %dir %_sysconfdir/puppet/ssl/ca/signed
 %attr(0750,_puppet,puppet) %dir %_sysconfdir/puppet/ssl/private
 %attr(0750,_puppet,puppet) %dir %_sysconfdir/puppet/ssl/private_keys
-%dir %_sysconfdir/puppet/environments
-%dir %_sysconfdir/puppet/environments/production
-%dir %_sysconfdir/puppet/environments/production/manifests
+%dir %_sysconfdir/puppet/code/environments
+%dir %_sysconfdir/puppet/code/environments/production
+%dir %_sysconfdir/puppet/code/environments/production/manifests
 %dir %_sysconfdir/puppet/code
-%dir %_sysconfdir/puppet/modules
+%_sysconfdir/puppet/code
 %config(noreplace) %_sysconfdir/puppet/puppet.conf
 %config(noreplace) %_sysconfdir/sysconfig/puppet
 %config(noreplace) %_sysconfdir/logrotate.d/puppet
 %config(noreplace) %_sysconfdir/puppet/fileserver.conf
 %_sysconfdir/NetworkManager/dispatcher.d/98-%{name}
-%attr(1770,_puppet,puppet) %dir %_localstatedir/puppet
-%_localstatedir/puppet/
+%_datadir/puppet
+%_datadir/puppet-locale
+%_datadir/puppet-modules
+%attr(1770,_puppet,puppet) %dir %_cachedir/puppet
+%_cachedir/puppet/
 %attr(1770,_puppet,puppet) %dir %_logdir/puppet
-%attr(1770,_puppet,puppet) %dir %_var/run/puppet
+%attr(1770,_puppet,puppet) %dir /run/puppet
 %doc %_man8dir/*
 %doc %_man5dir/puppet.conf.5*
-
 
 %files         -n gem-%pkgname
 %ruby_gemspec
@@ -176,15 +166,47 @@ END.
 %files         -n gem-%pkgname-doc
 %ruby_gemdocdir
 
-%files         -n gem-deep-merge
-%ruby_gemspecdir/deep_merge-%dm_version.gemspec
-%ruby_gemslibdir/deep_merge-%dm_version
-
-%files         -n gem-deep-merge-doc
-%ruby_gemsdocdir/deep_merge-%dm_version
-
-
 %changelog
+* Fri May 22 2020 Andrey Cherepanov <cas@altlinux.org> 6.15.0-alt3
+- Move environments/production/manifests to /etc/puppet/code (ALT #38520).
+
+* Mon May 11 2020 Andrey Cherepanov <cas@altlinux.org> 6.15.0-alt2
+- Apply useful part of old patch as actual patches and get patch from Debian.
+- Modules are placed into /etc/puppet/code/modules instead of /etc/puppet/modules.
+- Fix retrieving metainfo folders (ALT #38422).
+- Make system-wide directories /usr/share/puppet-modules and /usr/share/puppet-locale.
+
+* Wed Apr 29 2020 Andrey Cherepanov <cas@altlinux.org> 6.15.0-alt1
+- New version.
+
+* Tue Mar 10 2020 Andrey Cherepanov <cas@altlinux.org> 6.14.0-alt1
+- New version.
+
+* Tue Feb 18 2020 Andrey Cherepanov <cas@altlinux.org> 6.13.0-alt1
+- New version.
+
+* Tue Jan 21 2020 Andrey Cherepanov <cas@altlinux.org> 6.12.0-alt1
+- New version.
+
+* Fri Dec 06 2019 Pavel Skrylev <majioa@altlinux.org> 6.11.1-alt1
+- updated (^) 6.10.1 -> 6.11.1
+- removed (-) deep_merge gem out of spec
+- fixed (!) version in spec
+
+* Sun Oct 27 2019 Andrey Cherepanov <cas@altlinux.org> 6.10.1-alt1
+- New version.
+
+* Tue Oct 01 2019 Andrey Cherepanov <cas@altlinux.org> 6.10.0-alt1
+- New version.
+
+* Mon Sep 09 2019 Pavel Skrylev <majioa@altlinux.org> 6.9.0-alt0.2
+- fixed (!) spec according the changelog policy
+
+* Mon Aug 19 2019 Pavel Skrylev <majioa@altlinux.org> 6.9.0-alt0.1
+- updated (^) 6.8.0 -> 6.9.0
+- added (+) links to required dirs in spec
+- fixed (!) spec
+
 * Fri Aug 16 2019 Andrey Cherepanov <cas@altlinux.org> 6.8.0-alt1
 - New version.
 

@@ -1,42 +1,87 @@
-%define  pkgname sinatra
-%define  sdir    %ruby_sitelibdir/%pkgname
+%define        pkgname sinatra
 
-Name: 	 ruby-%pkgname
-Version: 2.0.4
-Release: alt1
-Epoch:   1
+Name: 	       ruby-%pkgname
+Version:       2.0.5
+Release:       alt1
+Epoch:         1
+Summary:       Classy web-development dressed in a DSL
+License:       MIT
+Group:         Development/Ruby
+Url:           http://www.sinatrarb.com/
+%vcs           https://github.com/sinatra/sinatra.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Classy web-development dressed in a DSL
-License: MIT/Ruby
-Group:   Development/Ruby
-Url:     https://github.com/sinatra/sinatra
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-
+BuildRequires: gem(rack-test)
+BuildRequires: gem(rspec) >= 3.6
+BuildRequires: gem(haml)
+BuildRequires: gem(erubi)
+BuildRequires: gem(erubis)
+BuildRequires: gem(slim)
+BuildRequires: gem(less)
+BuildRequires: gem(sass)
+BuildRequires: gem(builder)
+BuildRequires: gem(liquid)
+BuildRequires: gem(redcarpet)
+BuildRequires: gem(RedCloth) >= 4.2.9
+BuildRequires: gem(asciidoctor)
+BuildRequires: gem(radius)
+BuildRequires: gem(coffee-script)
+BuildRequires: gem(nokogiri)
+BuildRequires: gem(creole)
+BuildRequires: gem(wikicloth)
+BuildRequires: gem(markaby)
+BuildRequires: gem(rake) >= 11
 %filter_from_requires \,^ruby(rack/show_exceptions)$,d
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
-%summary
+Sinatra is a DSL for quickly creating web applications in Ruby with minimal
+effort.
 
-%package -n ruby-rack-protection
-Summary: This gem protects against typical web attacks
-Group:   Development/Ruby
 
-%description -n ruby-rack-protection
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
+%package       -n ruby-rack-protection
+Summary:       This gem protects against typical web attacks
+Group:         Development/Ruby
+
+%description   -n ruby-rack-protection
 This gem protects against typical web attacks. Should work for all Rack
 apps, including Rails.
 
-%package contrib
-Summary: Collection of common Sinatra extensions, semi-officially supported
-Group:   Development/Ruby
 
-%description contrib
+%package       -n ruby-rack-protection-doc
+Summary:       Documentation files for ruby-rack-protection gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета ruby-rack-protection
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   -n ruby-rack-protection-doc
+Documentation files for ruby-rack-protection gem.
+
+%description   -n ruby-rack-protection-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета ruby-rack-protection.
+
+
+%package       contrib
+Summary:       Collection of common Sinatra extensions, semi-officially supported
+Group:         Development/Ruby
+
+%description   contrib
 Collection of common Sinatra extensions, semi-officially supported:
 - sinatra/capture: Let's you capture the content of blocks in templates.
 - sinatra/config_file: Allows loading configuration from yaml files.
@@ -60,90 +105,62 @@ Collection of common Sinatra extensions, semi-officially supported:
   available as #logger helper method in your routes and views.
 - sinatra/required_params: Ensure if required query parameters exist
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       contrib-doc
+Summary:       Documentation files for %gemname-contrib gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname-contrib
+Group:         Development/Documentation
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   contrib-doc
+Documentation files for %gemname-contrib gem.
+
+%description   contrib-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname-contrib.
+
 
 %prep
-%setup -n %pkgname-%version
-for dir in . rack-protection sinatra-contrib; do
-	pushd "$dir"
-	%update_setup_rb
-	popd
-done
+%setup
 
 %build
-for dir in . rack-protection sinatra-contrib; do
-	pushd "$dir"
-	%ruby_config
-	%ruby_build
-	popd
-done
+%ruby_build
 
 %install
-for dir in . rack-protection sinatra-contrib; do
-	pushd "$dir"
-	%ruby_install
-	%rdoc lib/
-	popd
-done
-
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Rack/cdesc-Rack.ri,Rack/Builder/cdesc-Builder.ri,Object/cdesc-Object.ri,cache.ri,created.rid}
+%ruby_install
 
 %check
-%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
 %doc README*
-%sdir.rb
-%sdir
-%exclude %sdir/capture*
-%exclude %sdir/config_file*
-%exclude %sdir/content_for*
-%exclude %sdir/cookies*
-%exclude %sdir/engine_tracking*
-%exclude %sdir/json*
-#exclude %sdir/link_header*
-#exclude %sdir/multi_route*
-#exclude %sdir/namespace*
-#exclude %sdir/respond_with*
-#exclude %sdir/custom_logger*
-#exclude %sdir/required_params*
-%rubygem_specdir/%pkgname-%{version}*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files -n ruby-rack-protection
-%doc rack-protection/*.md
-%ruby_sitelibdir/rack-protection.rb
-%ruby_sitelibdir/rack/protection*
-%rubygem_specdir/rack-protection*
+%files         doc
+%ruby_gemdocdir
 
+%files         -n ruby-rack-protection
+%doc rack-protection/README*
+%ruby_gemspecdir/rack-protection-%version.gemspec
+%ruby_gemslibdir/rack-protection-%version
 
-%files contrib
-%doc sinatra-contrib/*.md
-%sdir/capture*
-%sdir/config_file*
-%sdir/content_for*
-%sdir/cookies*
-%sdir/engine_tracking*
-%sdir/json*
-#sdir/link_header*
-#sdir/multi_route*
-#sdir/namespace*
-#sdir/respond_with*
-#sdir/custom_logger*
-#sdir/required_params*
-%rubygem_specdir/sinatra-contrib*
+%files         -n ruby-rack-protection-doc
+%ruby_gemsdocdir/rack-protection-%version
 
-%files doc
-%ruby_ri_sitedir/*
+%files         contrib
+%doc sinatra-contrib/README*
+%ruby_gemspecdir/%pkgname-contrib-%version.gemspec
+%ruby_gemslibdir/%pkgname-contrib-%version
+
+%files         contrib-doc
+%ruby_gemsdocdir/%pkgname-contrib-%version
+
 
 %changelog
+* Wed Jul 10 2019 Pavel Skrylev <majioa@altlinux.org> 1:2.0.5-alt1
+- Bump to 2.0.5
+- Use Ruby Policy 2.0
+
 * Mon Nov 12 2018 Alexey Shabalin <shaba@altlinux.org> 1:2.0.4-alt1
 - 2.0.4
 

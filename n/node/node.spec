@@ -1,19 +1,21 @@
 # check deps/npm/package.json for it
-%define npmver 6.9.0
+%define npmver 6.14.5
 # separate build npm
 %def_without npm
 # in other case, note: we will npm-@npmver-@release package! fix release if npmver is unchanged
 
-%define major 10.16
+%define major 14.3
 
 #we need ABI virtual provides where SONAMEs aren't enough/not present so deps
 #break when binary compatibility is broken
-%global nodejs_abi %major
+%global nodejs_abi 14
+
+%global napi 6
 
 # TODO: really we have no configure option to build with shared libv8
 # V8 presently breaks ABI at least every x.y release while never bumping SONAME,
 # so we need to be more explicit until spot fixes that
-%global v8_abi 6.9
+%global v8_abi 7.9
 %def_without systemv8
 
 # supports only openssl >= 1.0.2
@@ -21,17 +23,26 @@
 %define openssl_version 1.0.2n
 %def_with systemssl
 
-%global libuv_abi 1.28.0
+%global libuv_abi 1.37.0
 %def_with systemuv
 
-%global libicu_abi 6.4
+# use 5.6 as c8
+%global libicu_abi 5.6
 %def_with systemicu
 # TODO: node has to use icu:: for ICU names
 #add_optflags -DU_USING_ICU_NAMESPACE=1
 
+%global libnghttp2_abi 1.40.0
 %def_with systemnghttp2
 
+# to use internal llhttp
+%def_without systemhttp-parser
+
 %def_disable check
+
+# https://nodejs.org/api/n-api.html
+# https://github.com/nodejs/abi-stable-node
+%def_with nodejs_abi
 
 %define oversion %version
 
@@ -52,15 +63,13 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 Source: %name-%version.tar
 Source7: nodejs_native.req.files
 
-Patch: node-disable-external-libs.patch
-
 BuildRequires(pre): rpm-macros-nodejs
 BuildRequires(pre): rpm-build-intro >= 2.1.5
 
-BuildRequires: python-devel gcc-c++ zlib-devel
+BuildRequires: python3-devel gcc-c++ zlib-devel
 
 BuildRequires: gyp
-BuildRequires: python-modules-json python-module-simplejson
+BuildRequires: python3-module-simplejson
 
 %if_with systemv8
 %define libv8_package libv8-nodejs
@@ -82,10 +91,12 @@ BuildRequires: libicu-devel >= %libicu_abi
 %endif
 
 %if_with systemnghttp2
-BuildRequires: libnghttp2-devel
+BuildRequires: libnghttp2-devel >= %libnghttp2_abi
 %endif
 
-BuildRequires: libhttp-parser-devel
+%if_with systemhttp-parser
+BuildRequires: libhttp-parser-devel >= 2.9.2-alt2
+%endif
 BuildRequires: libcares-devel >= 1.11.0
 
 BuildRequires: curl
@@ -97,11 +108,18 @@ Obsoletes: node.js < %version-%release
 
 Provides: nodejs(abi) = %{nodejs_abi}
 Provides: nodejs(v8-abi) = %{v8_abi}
+Provides: nodejs(napi) = %{napi}
 
-# use no more than system_memory/3000 build procs (see https://bugzilla.altlinux.org/show_bug.cgi?id=35112)
-%_tune_parallel_build_by_procsize 3000
+Provides: bundled(llhttp) = 2.0.4
 
-%add_python_req_skip TestCommon
+# /usr/bin/ld.default: failed to set dynamic section sizes: memory exhausted
+%ifarch %ix86
+%define optflags_debug -g0
+%endif
+
+# use no more than system_memory/1400 build procs (see https://bugzilla.altlinux.org/show_bug.cgi?id=35112)
+%_tune_parallel_build_by_procsize 1400
+
 %add_findreq_skiplist %{_datadir}/node/sources/*
 
 %description
@@ -112,8 +130,9 @@ network programs.
 %package devel
 Summary:        Devel package for Node.js
 Group:          Development/Other
-License:        GPL
-BuildArch:      noarch
+License:        MIT license
+# arch depended info in .gypi
+#BuildArch:      noarch
 Provides:	nodejs-devel = %version-%release
 Requires:	%name = %version
 Requires:       gcc-c++ zlib-devel libcares-devel
@@ -143,6 +162,7 @@ BuildArch: noarch
 %description doc
 Documentation files for %name.
 
+# https://bugzilla.altlinux.org/show_bug.cgi?id=38130
 %if_with npm
 %package -n npm
 Version:	%npmver
@@ -152,7 +172,10 @@ License:	MIT License
 Requires:	node
 BuildArch:	noarch
 AutoReq:	yes,nopython
+# https://bugzilla.altlinux.org/show_bug.cgi?id=38130
+#%if_with nodejs_abi
 Requires:	nodejs(abi) = %{nodejs_abi}
+#%endif
 
 %description -n npm
 npm is a package manager for node. You can use it to install and publish your
@@ -161,7 +184,6 @@ node programs. It manages dependencies and does other cool stuff.
 
 %prep
 %setup
-%patch -p2
 
 %if_with systemv8
 # hack against https://bugzilla.altlinux.org/show_bug.cgi?id=32573#c3
@@ -175,16 +197,22 @@ rm -rf deps/icu-small/
 
 %if_with systemuv
 rm -rf deps/uv/
+%__subst "s|deps/uv/uv.gyp ||" Makefile
+%__subst "s|.*../uv/uv.gyp:libuv.*||" deps/uvwasi/uvwasi.gyp
 %endif
 
 %if_with systemnghttp2
 rm -rf deps/nghttp2/
 %endif
 
+# disable external libs
 # TODO:
 # deps/gtest
 rm -rf tools/gyp
-rm -rf deps/zlib deps/openssl deps/cares deps/http-parser
+rm -rf deps/zlib deps/openssl deps/cares
+# make no sense for a first build
+%__subst "s|deps/zlib/zlib.gyp||" Makefile
+
 
 %if_without npm
 #true
@@ -195,19 +223,30 @@ ln -s %_libexecdir/node_modules/npm deps/npm
 
 # use rpm's cflags
 %__subst "s|'cflags': \[\],|'cflags': ['%optflags'],|" ./configure.py
+# fix cflags wrap in outputted config.json
+%__subst "s|indent=2|indent=2,width=160|" ./configure.py
 # TODO: move to upstream?
 %ifarch mipsel
 %__subst "s|'libraries': \[\],|'libraries': ['-latomic'],|" ./configure.py
 %endif
 
+# override detected dir (detection via process.execPath does not work without /proc) with corect path
+%__subst "s|path.resolve(prefixDir, 'lib', 'node')|'%nodejs_sitelib'|" lib/internal/modules/cjs/loader.js
+
 %build
+# hack against
+# gyp: Error importing pymod_do_mainmodule (GN-scraper): No module named GN-scraper while loading dependencies of /tmp/.private/lav/RPM/BUILD/node-12.14.1/node.gyp
+export PYTHONPATH=$(pwd)/tools/v8_gypfiles
+
 ./configure \
     --prefix=%_prefix \
     --shared-zlib \
 %if_with systemicu
     --with-intl=system-icu \
 %endif
+%if_with systemhttp-parser
     --shared-http-parser \
+%endif
     --shared-cares \
 %if_with systemssl
     --shared-openssl \
@@ -238,10 +277,6 @@ ln -s %_libexecdir/node_modules/npm deps/npm
 mkdir -p %buildroot%nodejs_sitelib/
 
 %makeinstall_std
-install -d %buildroot%_sysconfdir/profile.d
-echo 'export NODE_PATH="%{_libexecdir}/node_modules;%{_libexecdir}/node_altmodules"' >%buildroot%_sysconfdir/profile.d/node.sh
-echo 'setenv NODE_PATH %{_libexecdir}/node_modules;%{_libexecdir}/node_altmodules' >%buildroot%_sysconfdir/profile.d/node.csh
-chmod 0755 %buildroot%_sysconfdir/profile.d/*
 
 %if_without systemuv
 #install development headers
@@ -258,6 +293,7 @@ cp -p common.gypi %{buildroot}%{_datadir}/node
 #tar -xf %{SOURCE0} --directory=%{buildroot}%{_datadir}/node/sources
 %endif
 
+%if_with nodejs_abi
 # ensure Requires are added to every native module that match the Provides from
 # the nodejs build in the buildroot
 install -Dpm0755 %{SOURCE7} %buildroot%_rpmlibdir/nodejs_native.req.files
@@ -267,6 +303,7 @@ echo 'nodejs(abi) = %nodejs_abi'
 echo 'nodejs(v8-abi) = %v8_abi'
 EOF
 chmod 0755 %buildroot%_rpmlibdir/nodejs_native.req
+%endif
 
 rm -rf %buildroot/usr/lib/dtrace/
 rm -rf %buildroot/usr/share/doc/node/gdbinit
@@ -277,13 +314,21 @@ rm -rf %buildroot/usr/share/doc/node/lldbinit
 # drop tapset file
 rm -rf %buildroot%_datadir/systemtap/tapset
 
+# pack node include tarball required to gyp building
+#mkdir -p %name-v%version/include/
+#cp -rp %buildroot%_includedir/%name %name-v%version/include/
+#mkdir -p %buildroot%_datadir/node/
+#tar -zcf %buildroot%_datadir/%name/%name-v%version-headers.tar.gz %name-v%version
+
+#ln -s node_modules %buildroot%_prefix/lib/node
+
 %files
 %doc AUTHORS CHANGELOG.md LICENSE README.md
 %_bindir/node
 %dir %nodejs_sitelib
+#_prefix/lib/node
 #%_datadir/systemtap/tapset/node.stp
 %_man1dir/*
-%_sysconfdir/profile.d/*
 
 %files doc
 %doc README.md
@@ -291,7 +336,7 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 
 %files devel
 %dir %_includedir/node/
-#dir %_datadir/node/
+#%_datadir/%name/%name-v%version-headers.tar.gz
 %if_without systemuv
 %_includedir/node/uv*
 %endif
@@ -299,6 +344,7 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %_includedir/node/v8*
 %endif
 %_includedir/node/node*
+%_includedir/node/js_native_api*
 # deps/cares
 #_includedir/node/ares*
 %_includedir/node/common.gypi
@@ -307,7 +353,10 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 # deps/http_parser
 #_includedir/node/nameser.h
 #_datadir/node/common.gypi
+%if_with nodejs_abi
+%_rpmlibdir/nodejs_native.req
 %_rpmlibdir/nodejs_native.req.files
+%endif
 #%_datadir/node/sources
 
 %if_with npm
@@ -318,6 +367,73 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Fri May 22 2020 Vitaly Lipatov <lav@altlinux.ru> 14.3.0-alt1
+- new version 14.3.0 (with rpmrb script)
+- npm >= 6.14.5
+
+* Thu May 07 2020 Vitaly Lipatov <lav@altlinux.ru> 14.2.0-alt1
+- new version 14.2.0 (with rpmrb script)
+- set node ABI to 14
+- libuv >= 1.37.0
+
+* Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 13.12.0-alt1
+- new version 13.12.0 (with rpmrb script)
+- npm >= 6.14.4
+- libuv >= 1.35.0
+
+* Thu Mar 19 2020 Vitaly Lipatov <lav@altlinux.ru> 13.11.0-alt1
+- new version 13.11.0
+
+* Tue Mar 10 2020 Vitaly Lipatov <lav@altlinux.ru> 13.10.1-alt1
+- new version 13.10.1
+- set node ABI to 13
+
+* Tue Mar 03 2020 Vitaly Lipatov <lav@altlinux.ru> 13.9.0-alt3
+- use direct /usr/lib/node_modules instead of detected prefix/lib/node
+
+* Fri Feb 28 2020 Vitaly Lipatov <lav@altlinux.ru> 13.9.0-alt2
+- drop profile with broken obsoleted NODE_PATH
+- add /usr/lib/node symlink to /usr/lib/node_modules
+
+* Thu Feb 20 2020 Vitaly Lipatov <lav@altlinux.ru> 13.9.0-alt1
+- new version 13.9.0 (security fixes)
+- set libicu >= 5.6
+
+* Tue Feb 11 2020 Vitaly Lipatov <lav@altlinux.ru> 13.8.0-alt1
+- new version 13.8.0 (with rpmrb script)
+- CVE-2019-15606, CVE-2019-15605, CVE-2019-15604
+
+* Mon Jan 20 2020 Vitaly Lipatov <lav@altlinux.ru> 13.6.0-alt2
+- make node-devel as arch
+- drop tarball with node include headers (see ALT bug 36349)
+- add fixes for ix86 build
+
+* Thu Jan 16 2020 Vitaly Lipatov <lav@altlinux.ru> 13.6.0-alt1
+- new version 13.6.0 (with rpmrb script)
+- libuv >= 1.34.0
+- switch to python3
+
+* Thu Jan 16 2020 Vitaly Lipatov <lav@altlinux.ru> 12.14.1-alt1
+- new version 12.14.1 (with rpmrb script)
+- build without system http-parser (use bundled llhttp 2.0.1)
+
+* Thu Jan 16 2020 Pavel Skrylev <majioa@altlinux.org> 10.18.0-alt2
+- added (+) tarball for node include headers to devel package
+
+* Thu Dec 26 2019 Vitaly Lipatov <lav@altlinux.ru> 10.18.0-alt1
+- new version 10.18.0 (with rpmrb script)
+- npm >= 6.13.4 (security fix)
+
+* Sat Oct 26 2019 Vitaly Lipatov <lav@altlinux.ru> 10.17.0-alt1
+- new version 10.17.0 (with rpmrb script)
+- npm >= 6.11.3
+
+* Fri Aug 30 2019 Vitaly Lipatov <lav@altlinux.ru> 10.16.3-alt1
+- new version 10.16.3 (with rpmrb script)
+- libnghttp2 >= 1.39.2
+- CVE-2019-9511, CVE-2019-9511, CVE-2019-9513, CVE-2019-9514
+- CVE-2019-9515, CVE-2019-9516, CVE-2019-9517, CVE-2019-9518
+
 * Thu Jun 06 2019 Vitaly Lipatov <lav@altlinux.ru> 10.16.0-alt1
 - new version 10.16.0 (with rpmrb script)
 - 2019-05-28, Version 10.16.0 'Dubnium' (LTS), @BethGriggs

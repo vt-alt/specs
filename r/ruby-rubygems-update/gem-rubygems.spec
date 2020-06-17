@@ -1,13 +1,13 @@
 %define        pkgname rubygems-update
 
 Name:          ruby-%pkgname
-Version:       3.0.3
+Version:       3.0.4
 Release:       alt1
-Summary:       Library packaging and distribution for Ruby.
+Summary:       Library packaging and distribution for Ruby
 License:       MIT
 Group:         Development/Ruby
 Url:           https://rubygems.org/
-# VCS:         https://github.com/rubygems/rubygems.git
+%vcs           https://github.com/rubygems/rubygems.git
 Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
 BuildArch:     noarch
 
@@ -28,48 +28,61 @@ allows you to publish a Gem that can be shared and used by other developers.
 See our guide on publishing a Gem at guides.rubygems.org
 
 
-%package       doc
-Summary:       Documentation files for %gemname gem
-Group:         Development/Documentation
-BuildArch:     noarch
-
-%description   doc
-Documentation files for %gemname gem
-
-
 %package       -n update_rubygems
 Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
 Group:         Development/Ruby
 BuildArch:     noarch
 
 %description   -n update_rubygems
 Executable file for %gemname gem
 
+%description   -n update_rubygems -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
 %setup
 
 %build
-%gem_build
+%ruby_build --srclibdir=lib --ignore=bar
 
 %install
-%gem_install
+%ruby_install
 
 %check
-%gem_test
+%ruby_test
 
 %files
 %doc README*
 %ruby_gemspec
 %ruby_gemlibdir
 
-%files         doc
-%ruby_gemdocdir
-
 %files         -n update_rubygems
 %_bindir/*
 
+%files         doc
+%ruby_gemdocdir
+
+
 %changelog
+* Tue Jul 23 2019 Pavel Skrylev <majioa@altlinux.org> 3.0.4-alt1
+- Bump to 3.0.4
+- Fix spec to confirm setup.rb
+
 * Thu Apr 04 2019 Pavel Skrylev <majioa@altlinux.org> 3.0.3-alt1
 - Bump to 3.0.3
 - Use Ruby Policy 2.0

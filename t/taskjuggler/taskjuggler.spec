@@ -1,24 +1,22 @@
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname taskjuggler
 
-Name:          taskjuggler
+Name:          %pkgname
 Version:       3.6.0
-Release:       alt1.1
-Summary:       Project management tool
-
+Release:       alt2
+Summary:       TaskJuggler - Project Management beyond Gantt chart drawing
 Group:         Office
 License:       GPLv2
 URL:           http://www.taskjuggler.org
-Source0:       http://www.taskjuggler.org/download/%{name}-%{version}.tar.bz2
+%vcs           https://github.com/taskjuggler/TaskJuggler.git
+BuildArch:     noarch
 
-Patch:         %name-%version-%release.patch
-
-BuildArch: noarch
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
-BuildRequires: ruby-term-ansicolor
-BuildRequires: ruby-mail
+BuildRequires: gem(term-ansicolor)
+BuildRequires: gem(mail)
 
-%filter_from_requires /^ruby(prawn)/d
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 TaskJuggler is a modern and powerful project management tool. Its new
@@ -31,33 +29,63 @@ completion of the project. It assists you during project scoping,
 resource assignment, cost and revenue planning, and risk and
 communication management.
 
+
+%package       -n gem-%pkgname
+Summary:       Library for %gemname gem
+Summary(ru_RU.UTF-8): Библиотечные файлы для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
+
+%description   -n gem-%pkgname
+Library for %gemname gem.
+
+%description   -n gem-%pkgname -l ru_RU.UTF8
+Библиотечные файлы для %gemname самоцвета.
+
+
+%package       -n gem-%pkgname-doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+Provides:      %pkgname-doc
+Obsoletes:     %pkgname-doc
+
+%description   -n gem-%pkgname-doc
+Documentation files for %gemname gem.
+
+%description   -n gem-%pkgname-doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
+
 %prep
-%setup -q
-%patch -p1
-%update_setup_rb
+%setup
 
 %build
-%ruby_config --datadir=%_datadir/%name
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
 
 %check
-%ruby_test_unit -Ilib:test test ||:
+%ruby_test
 
 %files
-%doc README.rdoc TODO
-%_bindir/*
-%ruby_sitelibdir/*
-%rubygem_specdir/*
-%ruby_ri_sitedir/*
-%_datadir/%name/*
+%doc README*
+#%_bindir/tj3*
+#%_mandir/*
+
+%files         -n gem-%pkgname
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n gem-%pkgname-doc
+%ruby_gemdocdir
 
 %changelog
+* Thu Jul 18 2019 Pavel Skrylev <majioa@altlinux.org> 3.6.0-alt2
+- Use Ruby Policy 2.0
+
 * Wed Jul 11 2018 Andrey Cherepanov <cas@altlinux.org> 3.6.0-alt1.1
 - Rebuild with new Ruby autorequirements.
 

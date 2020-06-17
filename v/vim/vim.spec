@@ -3,7 +3,7 @@
 
 # {{{ Perl/Python/Ruby/Tcl/MzScheme support
 %def_enable perlinterp
-%def_enable pythoninterp
+%def_disable pythoninterp
 %def_enable python3interp
 %def_enable rubyinterp
 %def_enable tclinterp
@@ -51,8 +51,8 @@
 %define vimspell_version	50.1
 
 Name: vim
-%define branch 8.1
-Version: %branch.1517
+%define branch 8.2
+Version: %branch.0011
 Release: alt1
 Epoch: 4
 
@@ -570,6 +570,7 @@ common_opts="--with-features=huge \
 
 interp_opts="%{subst_enable perlinterp} \
 	%{subst_enable pythoninterp} \
+	%{subst_enable python3interp} \
 	%{subst_enable rubyinterp} \
 	%{subst_enable tclinterp} \
 	%{subst_enable mzschemeinterp} \
@@ -583,6 +584,7 @@ cd src/shadow
 	--with-features=big \
 	--disable-perlinterp \
 	--disable-pythoninterp \
+	--disable-python3interp \
 	--disable-rubyinterp \
 	--disable-tclinterp \
 	--disable-mzschemeinterp \
@@ -1065,6 +1067,17 @@ fi
 
 # {{{ changelog
 %changelog
+* Mon Dec 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:8.2.0011-alt1
+- Updated to 8.2.0011.
+- Enabled python3 support (ALT#37460).
+- Disabled python2 support.
+
+* Mon Oct 07 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:8.1.2120-alt1
+- Updated to 8.1.2120.
+
+* Tue Sep 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:8.1.2047-alt1
+- Updated to 8.1.2047.
+
 * Tue Jun 11 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4:8.1.1517-alt1
 - Updated to 8.1.1517 (fixes: CVE-2019-12735) (ALT#36882).
 

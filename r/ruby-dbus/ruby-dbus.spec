@@ -1,15 +1,16 @@
 %define        pkgname ruby-dbus
+%define        gemname ruby-dbus
 
-Name:          ruby-dbus
+Name:          %pkgname
 Version:       0.15.0
-Release:       alt2
+Release:       alt3
 Summary:       Ruby D-BUS library
 Group:         Development/Ruby
 License:       LGPLv2.1
 Url:           https://trac.luon.net/ruby-dbus/
-# VCS          https://github.com/mvidner/ruby-dbus.git
+%vcs           https://github.com/mvidner/ruby-dbus.git
 BuildArch:     noarch
-Source:        %pkgname-%version.tar
+Source:        %name-%version.tar
 
 BuildRequires(pre): rpm-build-ruby
 
@@ -17,22 +18,28 @@ BuildRequires(pre): rpm-build-ruby
 Ruby D-Bus provides an implementation of the D-Bus protocol such that
 the D-Bus system can be used in the Ruby programming language.
 
+
 %package       doc
-Summary:       Documentation files for %name
-Group:         Documentation
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
 BuildArch:     noarch
 
 %description   doc
-Documentation files for %name.
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -q -n %pkgname-%version
+%setup
 
 %build
-%gem_build --use=ruby-dbus --alias=dbus
+%ruby_build --use=ruby-dbus --alias=dbus
 
 %install
-%gem_install
+%ruby_install
 
 %files
 %ruby_gemspec
@@ -43,6 +50,9 @@ Documentation files for %name.
 %ruby_gemdocdir
 
 %changelog
+* Wed Jul 10 2019 Pavel Skrylev <majioa@altlinux.org> 0.15.0-alt3
+- Fix spec due to new rpm-build-ruby.
+
 * Fri Mar 22 2019 Pavel Skrylev <majioa@altlinux.org> 0.15.0-alt2
 - Use setup gem's dependency detection
 

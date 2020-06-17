@@ -1,5 +1,5 @@
 %global import_path github.com/containous/traefik
-%global commit c443902a0f01da4cb844bcc8421816f105e4894dc
+%global commit fb3839e09602895615fefc3934090cb013dea4f5
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name: traefik
-Version: 2.0.2
+Version: 2.0.7
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -20,10 +20,10 @@ Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
 ExclusiveArch:  %go_arches
-BuildRequires(pre): rpm-build-golang
+BuildRequires(pre): rpm-build-golang rpm-macros-nodejs
 BuildRequires: go-bindata
 BuildRequires: npm yarn
-BuildRequires: node node-devel
+BuildRequires: node node-devel node-gyp node-sass
 
 %description
 Traefik listens to your service registry/orchestrator API and instantly
@@ -46,7 +46,8 @@ Documentation: http://docs.traefik.io/
 # $ cd webui
 # $ git rm -r node_modules
 # $ npm install
-# $ rm -rf node_modules/node-sass/vendor
+# $ rm -rf node_modules/node-sass
+# $ rm -rf node_modules/node-gyp
 # $ git add -f node_modules
 # $ git commit -n --no-post-rewrite -m "add node js modules"
 
@@ -64,6 +65,8 @@ mkdir -p webui/node_modules/.node-gyp/$node_ver/include
 ln -s %_includedir/node webui/node_modules/.node-gyp/$node_ver/include/node
 echo "9" > webui/node_modules/.node-gyp/$node_ver/installVersion
 
+ln -sf %nodejs_sitelib/node-gyp webui/node_modules/node-gyp
+ln -sf %nodejs_sitelib/node-sass webui/node_modules/node-sass
 
 %build
 export BUILDDIR="$PWD/.gopath"
@@ -135,6 +138,9 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Sun Mar 15 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.7-alt1
+- 2.0.7
+
 * Thu Oct 10 2019 Alexey Shabalin <shaba@altlinux.org> 2.0.2-alt1
 - 2.0.2
 - update systemd unit for allow write to logfile

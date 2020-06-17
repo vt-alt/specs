@@ -1,18 +1,16 @@
 Name: dvdbackup
 Version: 0.4.2
-Release: alt1
+Release: alt3
 
 Summary: DVD-copy tool
 License: GPL
-#Group: Video
-Group:		Archiving/Cd burning
-Packager:	Vlasenko Igor <viy@altlinux.ru>
-URL:		http://dvdbackup.sourceforge.net
-Source0:	%{name}-%{version}.tar
-Source1:	http://ftp.debian.org/debian/pool/main/d/dvdbackup/dvdbackup_0.4.2-4.debian.tar.gz
+Group: Archiving/Cd burning
 
-Requires:       libdvdread
-BuildRequires:  libdvdread-devel >= 0.9.6
+Url: http://dvdbackup.sourceforge.net
+Source0: %name-%version.tar
+Source1: http://ftp.debian.org/debian/pool/main/d/dvdbackup/dvdbackup_0.4.2-4.debian.tar.gz
+Packager: Vlasenko Igor <viy@altlinux.ru>
+BuildRequires: libdvdread-devel >= 0.9.6
 
 Summary(ru_RU.UTF-8): Утилита для копирования содержимого DVD на жесткий диск
 
@@ -20,28 +18,38 @@ Summary(ru_RU.UTF-8): Утилита для копирования содерж�
 Copy DVD-content on hard disc.
 
 %description -l ru_RU.UTF-8
-Утилита копирования содержимого DVD диска на жесткий диск. 
+Утилита копирования содержимого DVD диска на жесткий диск.
 Поддерживает как выборочное копирование, так и полное.
 
 %prep
-%setup -q -a1
+%setup -a1
 for patch in `cat debian/patches/series`; do
     patch -p1 < debian/patches/$patch
 done
+cp -at . -- /usr/share/gnu-config/config.sub /usr/share/gnu-config/config.guess
 
 %build
-./configure 
-make
+%configure 
+%make_build
 
 %install
-install -pD -m755 src/%name $RPM_BUILD_ROOT%_bindir/%name
+%makeinstall_std
+%find_lang %name
+rm -rf %buildroot%_defaultdocdir/%name
 
-%files
-#doc %name/README %name/INSTALL
+%files -f %name.lang
 %doc README INSTALL
-%{_bindir}/%{name}
+%_bindir/%name
+%_man1dir/%name.*
 
 %changelog
+* Wed Apr 22 2020 Anton Farygin <rider@altlinux.ru> 0.4.2-alt3
+- update from debian to fix build with libdvdread 6.1.1
+
+* Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 0.4.2-alt2
+- fixed build on new arches
+- spec fixup/cleanup
+
 * Sat Nov 18 2017 Igor Vlasenko <viy@altlinux.ru> 0.4.2-alt1
 - new version
 

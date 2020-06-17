@@ -1,23 +1,22 @@
-%define  pkgname tilt
+# vim: set ft=spec: -*- rpm-spec -*-
+%define        pkgname tilt
 
-Name: 	 ruby-%pkgname
-Version: 2.0.9
-Release: alt1
+Name: 	       ruby-%pkgname
+Version:       2.0.10
+Release:       alt1
+Summary:       Generic interface to multiple Ruby template engines
+License:       MIT
+Group:         Development/Ruby
+Url:           https://github.com/rtomayko/tilt
+%vcs           https://github.com/rtomayko/tilt.git
+Packager:      Ruby Maintainers Team <ruby@packages.altlinux.org>
+BuildArch:     noarch
 
-Summary: Generic interface to multiple Ruby template engines
-License: MIT
-Group:   Development/Ruby
-Url:     http://github.com/rtomayko/tilt
-
-Packager:  Ruby Maintainers Team <ruby@packages.altlinux.org>
-BuildArch: noarch
-
-Source:  %pkgname-%version.tar
-
+Source:        %name-%version.tar
 BuildRequires(pre): rpm-build-ruby
-BuildRequires: ruby-tool-setup
+BuildRequires: gem(ronn)
 
-%filter_from_requires /^ruby(\(asciidoctor\|erubi\|erubis\|haml\|less\|sass\|builder\|liquid\|rdiscount\|redcarpet\|bluecloth\|kramdown\|pandoc-ruby\|rdoc.*\|maruku\|commonmarker\|redcloth\|radius\|markaby\|nokogiri\|coffee_script\|livescript\|typescript-node\|creole\|wikicloth\|yajl\|fastercsv\|prawn\|babel\/transpiler\))/d
+%add_findreq_skiplist %ruby_gemslibdir/**/*
 
 %description
 Tilt is a thin interface over a bunch of different Ruby template engines in an
@@ -34,48 +33,66 @@ feature is relevant to the engine):
 * Template file caching and reloading
 * Fast, method-based template source compilation
 
-%package doc
-Summary: Documentation files for %name
-Group: Documentation
 
-BuildArch: noarch
+%package       -n %pkgname
+Summary:       Executable file for %gemname gem
+Summary(ru_RU.UTF-8): Исполнямка для самоцвета %gemname
+Group:         Development/Ruby
+BuildArch:     noarch
 
-%description doc
-Documentation files for %{name}.
+%description   -n %pkgname
+Executable file for %gemname gem.
+
+%description   -n %pkgname -l ru_RU.UTF8
+Исполнямка для %gemname самоцвета.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
+Group:         Development/Documentation
+BuildArch:     noarch
+
+%description   doc
+Documentation files for %gemname gem.
+
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
+
 
 %prep
-%setup -n %pkgname-%version
-%update_setup_rb
+%setup
 
 %build
-%ruby_config
 %ruby_build
 
 %install
 %ruby_install
-%rdoc lib/
-# Remove unnecessary files
-rm -f %buildroot%ruby_ri_sitedir/{Object/cdesc-Object.ri,cache.ri,created.rid}
-
-# Move man page to appropriate place
-mkdir -p %buildroot%_man1dir
-mv %buildroot%_mandir/%pkgname.1.ronn %buildroot%_man1dir/%pkgname.1
-rm -f %buildroot%_mandir/index.txt
 
 %check
-#%%ruby_test_unit -Ilib:test test
+%ruby_test
 
 %files
-%doc *.md
-%_bindir/%pkgname
-%ruby_sitelibdir/*
-%rubygem_specdir/*
-%_man1dir/%pkgname.1*
+%doc README*
+%ruby_gemspec
+%ruby_gemlibdir
 
-%files doc
-%ruby_ri_sitedir/*
+%files         -n %pkgname
+%_bindir/%{pkgname}*
+%_mandir/%pkgname.1*
+
+%files         doc
+%ruby_gemdocdir
+
 
 %changelog
+* Tue Sep 24 2019 Pavel Skrylev <majioa@altlinux.org> 2.0.10-alt1
+- updated to (^) v2.0.10
+- fixed (!) spec
+
+* Tue Jul 23 2019 Pavel Skrylev <majioa@altlinux.org> 2.0.9-alt2
+- updated to (^) Ruby Policy 2.0
+
 * Wed Dec 05 2018 Andrey Cherepanov <cas@altlinux.org> 2.0.9-alt1
 - New version.
 
