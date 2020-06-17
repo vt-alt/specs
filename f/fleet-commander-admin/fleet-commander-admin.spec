@@ -2,11 +2,11 @@
 
 %define _localstatedir %_var
 %define _libexecdir    /usr/libexec
-%def_with check
+%def_without check
 
 Name: fleet-commander-admin
-Version: 0.14.1
-Release: alt1
+Version: 0.15.1
+Release: alt0.M90P.1
 
 Summary: Fleet Commander
 License: LGPLv2+ or MIT or BSD
@@ -25,7 +25,7 @@ BuildRequires: python3(gi)
 BuildRequires: python3(libvirt)
 BuildRequires: python3(pexpect)
 BuildRequires: python3(samba)
-BuildRequires: spice-html5
+BuildRequires: spice-html5 < 0.2.2
 BuildRequires: iproute2
 
 %if_with check
@@ -37,6 +37,7 @@ BuildRequires: python3(dbusmock)
 BuildRequires: python3(ipalib)
 BuildRequires: python3(six)
 BuildRequires: python3(sqlite3)
+BuildRequires: samba-common
 %endif
 
 # don't generate Python2 auto requires
@@ -44,9 +45,10 @@ BuildRequires: python3(sqlite3)
 %add_python3_compile_exclude %_datadir/fleet-commander-admin/python/
 
 Requires: cockpit
-Requires: realmd
-Requires: spice-html5
 Requires: python3-module-freeipa-desktop-profile-client
+Requires: realmd
+Requires: samba-common
+Requires: spice-html5 < 0.2.2
 
 %description
 Fleet Commander is an application that allows you to manage the desktop
@@ -157,14 +159,24 @@ ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js
 %files -n fleet-commander-logger
 %doc README
 %attr(755, root, root) %_libexecdir/fleet-commander-logger
+%attr(755, root, root) %_libexecdir/firefox-bookmark-fclogger
 %dir %_datadir/fleet-commander-logger
 %_datadir/fleet-commander-logger/fc-chromium-policies.json
 %dir %_datadir/fleet-commander-logger/python
 %attr(644, root, root) %_datadir/fleet-commander-logger/python/*.py
 %_xdgconfigdir/autostart/fleet-commander-logger.desktop
 %_udevrulesdir/81-fleet-commander-logger.rules
+%_libdir/mozilla/native-messaging-hosts/firefox_bookmark_fclogger.json
+%_datadir/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/{c73e87a7-b5a1-4b6f-b10b-0bd70241a64d}.xpi
 
 %changelog
+* Fri Jun 05 2020 Stanislav Levin <slev@altlinux.org> 0.15.1-alt0.M90P.1
+- Backported 0.15.1 to P9 from Sisyphus.
+
+* Mon Apr 27 2020 Stanislav Levin <slev@altlinux.org> 0.15.1-alt1
+- 0.14.1 -> 0.15.1.
+- Applied upstream fixes.
+
 * Thu Nov 28 2019 Stanislav Levin <slev@altlinux.org> 0.14.1-alt1
 - 0.14.0 -> 0.14.1.
 
