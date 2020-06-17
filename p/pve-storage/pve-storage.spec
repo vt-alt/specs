@@ -1,7 +1,7 @@
 Name: pve-storage
 Summary: PVE storage management library
 Version: 6.0.9
-Release: alt1
+Release: alt2
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
@@ -14,6 +14,7 @@ Requires: multipath-tools ceph >= 12.2.1 zfs-utils
 
 Source: pve-storage.tar.xz
 Patch: pve-storage-alt.patch
+Patch1: pve-storage-linstor-drbd.patch
 
 BuildRequires: librados2-perl pve-common pve-cluster pve-doc-generator pve-access-control xmlto
 BuildRequires: perl(File/chdir.pm) perl(Net/DBus.pm)
@@ -24,6 +25,7 @@ This package contains the storage management library used by PVE
 %prep
 %setup -q -n %name
 %patch -p1
+%patch1 -p1
 
 %install
 %make DESTDIR=%buildroot install
@@ -42,6 +44,9 @@ __EOF__
 %_man1dir/pvesm.1*
 
 %changelog
+* Thu Jun 04 2020 Andrew A. Vasilyev <andy@altlinux.org> 6.0.9-alt2
+- add Linstor plugin support for DRBD
+
 * Tue Nov 26 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.9-alt1
 - 6.0-9
 
