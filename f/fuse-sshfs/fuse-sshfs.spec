@@ -1,16 +1,19 @@
 Name: fuse-sshfs
-Version: 2.5
-Release: alt1
+Version: 3.7.0
+Release: alt2
 
 Summary: SSH filesystem using FUSE
-License: GPLv2
+License: GPL-2.0-or-later
 Group: System/Kernel and hardware
-Url: http://fuse.sourceforge.net/sshfs.html
+Url: https://github.com/libfuse/sshfs
 
-Source: http://dl.sourceforge.net/sourceforge/fuse/sshfs-fuse-%version.tar
+# repacked https://github.com/libfuse/sshfs/releases/download/sshfs-%version/sshfs-%version.tar.xz
+Source: sshfs-%version.tar
+Source1: sshfs.watch
+Patch1: alt-find-rst2man.patch
 
-Requires: fuse >= 2.3
-Requires: openssh-clients
+BuildRequires: libfuse3-devel >= 3.1.0 meson python3-module-docutils
+Requires: ssh-provider-openssh-clients
 
 Provides: sshfs-fuse = %version sshfs = %version
 Obsoletes: sshfs-fuse < %version sshfs < %version
@@ -35,22 +38,39 @@ that codebase, so he rewrote it. Features of this implementation are:
 * Reconnect on failure
 
 %prep
-%setup -q -n sshfs-fuse-%version
+%setup -q -n sshfs-%version
+%patch1 -p1
 
 %build
-%autoreconf
-%configure --disable-sshnodelay
-%make
+%meson
+%meson_build
 
 %install
-%makeinstall
+%meson_install
 
 %files
-%doc AUTHORS FAQ.txt NEWS README
+%doc AUTHORS README.rst
 %_bindir/sshfs
+%_sbindir/mount.sshfs
+%_sbindir/mount.fuse.sshfs
 %_man1dir/sshfs.*
 
 %changelog
+* Thu Jun 11 2020 Sergey V Turchin <zerg@altlinux.org> 3.7.0-alt2
+- fix build manpage
+- allow to install with openssh-gostcrypto
+
+* Fri Feb 07 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.7.0-alt1
+- Updated 3.7.0.
+
+* Fri Nov 15 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.6.0-alt1
+- Updated to 3.6.0.
+- Packed watch file in the sourcerpm.
+
+* Thu Sep 12 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.5.2-alt1
+- 3.5.2.
+- Refreshed Url for new upstream.
+
 * Thu Oct  9 2014 Terechkov Evgenii <evg@altlinux.org> 2.5-alt1
 - 2.4 -> 2.5
 
