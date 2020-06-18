@@ -1,6 +1,6 @@
 Name:    netplan
-Version: 0.97
-Release: alt2
+Version: 0.98
+Release: alt1
 
 Summary: Backend-agnostic network configuration in YAML
 License: GPL-3.0
@@ -24,11 +24,16 @@ Requires:       iproute2
 
 Source:  %name-%version.tar
 
+Patch1: alt-wpa_supplicant-path.patch
+Patch2: alt-make-echo-expand-metachars.patch
+
 %description
 %summary
 
 %prep
 %setup -n %name-%version
+%patch1 -p1
+%patch2 -p1
 
 %build
 %make_build
@@ -50,6 +55,10 @@ mkdir -p %buildroot%_sysconfdir/%name
 %_man8dir/%{name}*
 
 %changelog
+* Thu Mar 19 2020 Mikhail Gordeev <obirvalger@altlinux.org> 0.98-alt1
+- new version 0.98
+- (ALT#37740) fix path to wpa_supplicant
+
 * Thu Aug 15 2019 Mikhail Gordeev <obirvalger@altlinux.org> 0.97-alt2
 - Remove Requires to systemd and systemd-networkd, it could use NetworkManager
 
