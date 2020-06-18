@@ -1,7 +1,7 @@
 %define _localstatedir %_var
 
 Name: bird
-Version: 1.6.7
+Version: 1.6.8
 Release: alt1
 Summary: BIRD Internet Routing Daemon
 
@@ -124,6 +124,9 @@ install -pD -m644 %SOURCE4 %buildroot%_unitdir/%{name}6.service
 %_sbindir/%{name}cl6
 
 %changelog
+* Thu Jun 11 2020 Anton Farygin <rider@altlinux.ru> 1.6.8-alt1
+- 1.6.8
+
 * Thu Sep 12 2019 Anton Farygin <rider@altlinux.ru> 1.6.7-alt1
 - 1.6.7 (Fixes: CVE-2019-16159)
 
