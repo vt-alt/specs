@@ -18,17 +18,17 @@
 %define libmltxx libmlt++%mltxx_sover
 
 Name: mlt
-Version: 6.18.0
+Version: 6.20.0
 Release: alt1
 
 Summary: Multimedia framework designed for television broadcasting
-License: GPLv3
+License: GPL-3.0-or-later
 Group: Video
 Url: https://www.mltframework.org/
 
 Packager: Maxim Ivanov <redbaron@altlinux.org>
 
-Source: %name-%version.tar.gz
+Source: %name-%version.tar
 Source1: mlt++-config.h
 # FC
 # SuSE
@@ -46,12 +46,13 @@ Patch103: alt-libav.patch
 #BuildRequires: frei0r-devel ladspa_sdk libSDL_image-devel libalsa-devel libavdevice-devel libavformat-devel libexif-devel libfftw3-devel libjack-devel libpulseaudio-devel libsamplerate-devel libsox-devel libswfdec-devel libswscale-devel libxml2-devel python-module-google python3-dev qt5-svg-devel rpm-build-ruby swig
 BuildRequires(pre): rpm-build-kf5 rpm-build-python3 libavformat-devel
 BuildRequires: qt5-svg-devel
-BuildRequires: frei0r-devel libSDL2_image-devel libalsa-devel libexif-devel
+BuildRequires: frei0r-devel libSDL2-devel libSDL2_image-devel libalsa-devel libexif-devel
 BuildRequires: libavfilter-devel libswscale-devel libavdevice-devel libavformat-devel
 %if %is_ffmpeg
 BuildRequires: libswresample-devel
 %endif
 BuildRequires: libfftw3-devel libjack-devel libpulseaudio-devel libsamplerate-devel libsox-devel
+BuildRequires: librubberband-devel libvorbis-devel
 BuildRequires: libxml2-devel swig ladspa_sdk
 %if_enabled libvidstab
 BuildRequires: libvidstab-devel
@@ -217,6 +218,9 @@ install -pm 0755 src/swig/python/_%name.so %buildroot/%python3_sitelibdir/
 %_pkgconfigdir/mlt++.pc
 
 %changelog
+* Thu Jun 11 2020 Sergey V Turchin <zerg@altlinux.org> 6.20.0-alt1
+- new version
+
 * Fri Jan 24 2020 Sergey V Turchin <zerg@altlinux.org> 6.18.0-alt1
 - new version
 
