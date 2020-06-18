@@ -4,16 +4,21 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 0.8.2
-Release: alt1.1
+Version: 0.13.0
+Release: alt1
+
 Summary: AMQP implementation using asyncio
+
 License: BSD
 Group: Development/Python
 Url: https://pypi.python.org/pypi/aioamqp/
+
 Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
 
 # https://github.com/Polyconseil/aioamqp.git
-Source0: https://pypi.python.org/packages/79/6b/255c936283f73151c6767b1b5ff5542c94019848c53083ea7522c99e8985/aioamqp-%{version}.tar.gz
+# Source-url: https://pypi.io/packages/source/a/%oname/%oname-%version.tar.gz
+Source: %name-%version.tar
+
 BuildArch: noarch
 
 %if_with python2
@@ -23,6 +28,7 @@ BuildArch: noarch
 %endif
 %if_with python3
 BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-module-pamqp
 #BuildPreReq: python3-devel python3-module-setuptools
 #BuildPreReq: python3-module-asyncio python3-module-nose
 #BuildPreReq: python3-module-coverage pylint-py3
@@ -58,7 +64,7 @@ Built on top on Python's asynchronous I/O support introduced in PEP
 highly concurrent applications.
 
 %prep
-%setup -q -n aioamqp-%{version}
+%setup
 
 %if_with python3
 cp -fR . ../python3
@@ -109,6 +115,9 @@ popd
 %endif
 
 %changelog
+* Sat Jun 01 2019 Vitaly Lipatov <lav@altlinux.ru> 0.13.0-alt1
+- new version 0.13.0 (with rpmrb script)
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.8.2-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

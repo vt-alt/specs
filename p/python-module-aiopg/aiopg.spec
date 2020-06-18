@@ -1,3 +1,6 @@
+# BEGIN SourceDeps(oneline):
+BuildRequires: python3(sqlalchemy)
+# END SourceDeps(oneline)
 %define oname aiopg
 
 %def_without python2
@@ -5,7 +8,7 @@
 
 Name: python-module-%oname
 Version: 0.16.0
-Release: alt1
+Release: alt1.1
 Summary: aiopg is a library for accessing a PostgreSQL database from the asyncio
 License: BSD
 Group: Development/Python
@@ -111,6 +114,9 @@ popd
 %endif
 
 %changelog
+* Fri Apr 03 2020 Igor Vlasenko <viy@altlinux.ru> 0.16.0-alt1.1
+- NMU: applied logoved fixes
+
 * Sat Apr 20 2019 Anton Midyukov <antohami@altlinux.org> 0.16.0-alt1
 - New version 0.16.0
 

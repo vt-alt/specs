@@ -4,17 +4,22 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 0.2.0
-Release: alt2.1
+Version: 0.5.1
+Release: alt1
+
 Summary: asyncio client for kafka
+
 License: ASLv2.0
 Group: Development/Python
 Url: https://pypi.python.org/pypi/aiokafka/
 
 # https://github.com/aio-libs/aiokafka.git
-Source0: https://pypi.python.org/packages/d4/ff/f440264776a1dc0d869d66197a0b74903206880c1c5d32c99ae5c9f9a337/%{oname}-%{version}.tar.gz
-Patch1: %oname-%version-alt-deps.patch
-BuildArch: noarch
+# Source-url: https://pypi.io/packages/source/a/%oname/%oname-%version.tar.gz
+Source: %name-%version.tar
+
+# due _crecords
+#BuildArch: noarch
+BuildRequires: zlib-devel
 
 %if_with python2
 BuildRequires: python-dev python-module-setuptools
@@ -46,8 +51,8 @@ Group: Development/Python3
 Kafka integration with asyncio.
 
 %prep
-%setup -q -n %{oname}-%{version}
-%patch1 -p2
+%setup
+subst "s|kafka-python==|kafka-python>=|" setup.py
 
 %if_with python3
 cp -fR . ../python3
@@ -104,6 +109,9 @@ popd
 %endif
 
 %changelog
+* Sat Jun 01 2019 Vitaly Lipatov <lav@altlinux.ru> 0.5.1-alt1
+- new version 0.5.1 (with rpmrb script)
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.2.0-alt2.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 
