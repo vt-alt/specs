@@ -1,11 +1,11 @@
 %define libname libpci
 
 Name: pciutils
-Version: 3.6.2
-Release: alt2
+Version: 3.7.0
+Release: alt1
 
 Summary: Linux PCI utilities
-License: GPL
+License: GPLv2
 Group: System/Kernel and hardware
 
 Url: http://mj.ucw.cz/sw/pciutils/
@@ -94,23 +94,32 @@ mv %buildroot%_sbindir %buildroot%_bindir
 %_man7dir/pcilib*
 
 %changelog
+* Mon Jun 15 2020 Anton Farygin <rider@altlinux.ru> 3.7.0-alt1
+- 3.7.0
+
+* Thu Mar 12 2020 Anton Farygin <rider@altlinux.ru> 3.6.4-alt1
+- 3.6.4
+
+* Wed Jan 29 2020 Anton Farygin <rider@altlinux.ru> 3.6.3-alt1
+- 3.6.3
+
 * Sat Mar 30 2019 Michael Shigorin <mike@altlinux.org> 3.6.2-alt2
 - enable parallel build
 - drop %%ubt
 
-* Fri Sep 21 2018 Anton Farygin <rider@altlinux.ru> 3.6.2-alt1%ubt
+* Fri Sep 21 2018 Anton Farygin <rider@altlinux.ru> 3.6.2-alt1
 - 3.6.2
 
-* Wed Jul 18 2018 Anton Farygin <rider@altlinux.ru> 3.6.1-alt1%ubt
+* Wed Jul 18 2018 Anton Farygin <rider@altlinux.ru> 3.6.1-alt1
 - 3.6.1
 
-* Mon Nov 27 2017 Anton Farygin <rider@altlinux.ru> 3.5.6-alt1%ubt
+* Mon Nov 27 2017 Anton Farygin <rider@altlinux.ru> 3.5.6-alt1
 - new version
 
-* Tue Jul 11 2017 Anton Farygin <rider@altlinux.ru> 3.5.5-alt1%ubt
+* Tue Jul 11 2017 Anton Farygin <rider@altlinux.ru> 3.5.5-alt1
 - new version
 
-* Tue Mar 14 2017 Anton Farygin <rider@altlinux.ru> 3.5.4-alt1%ubt
+* Tue Mar 14 2017 Anton Farygin <rider@altlinux.ru> 3.5.4-alt1
 - new version
 
 * Fri Oct 21 2016 Anton Farygin <rider@altlinux.ru> 3.5.2-alt1
