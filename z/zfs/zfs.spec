@@ -3,7 +3,7 @@
 
 Name: zfs
 Version: 0.8.4
-Release: alt1
+Release: alt2
 Summary: ZFS on Linux
 License: CDDL-1.0
 Group: System/Kernel and hardware
@@ -25,6 +25,7 @@ Summary: Native OpenZFS management utilities for Linux
 Group: System/Kernel and hardware
 Provides: spl-utils = %version-%release splat = %version-%release
 Obsoletes: spl-utils < %version-%release
+Conflicts: fuse-zfs
 
 %description utils
 This package provides the zpool and zfs commands that are used to
@@ -194,6 +195,9 @@ fi
 %_usrsrc/kernel
 
 %changelog
+* Thu Jun 18 2020 Anton Farygin <rider@altlinux.ru> 0.8.4-alt2
+- zfs-utils: added conflict with fuze-zfs package
+
 * Thu May 21 2020 Anton Farygin <rider@altlinux.ru> 0.8.4-alt1
 - 0.8.4
 
