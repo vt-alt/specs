@@ -18,7 +18,7 @@
 
 
 Name: dpdk
-Version: 18.11.5
+Version: 18.11.8
 Release: alt1
 Url: http://dpdk.org
 Packager: Lenar Shakirov <snejok@altlinux.ru>
@@ -322,8 +322,11 @@ sed -i -e 's:-%machine_tmpl-:-%machine-:g' %buildroot/%_sysconfdir/profile.d/dpd
 %endif
 
 %changelog
+* Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 18.11.8-alt1
+- Update to LTS release 18.11.8 (Fixes: CVE-2020-10722, CVE-2020-10723, CVE-2020-10724)
+
 * Fri Dec 27 2019 Alexey Shabalin <shaba@altlinux.org> 18.11.5-alt1
-- Update to LTS release 18.11.5
+- Update to LTS release 18.11.5 (Fixes: CVE-2019-14818)
 - Rename testbbdev to dpdk-test-bbdev
 - Fixed broken symlinks in %%pmddir
 
