@@ -28,7 +28,7 @@
 %def_with systemd
 
 Name: lxc
-Version: 4.0.1
+Version: 4.0.2
 Release: alt1
 
 Url: https://linuxcontainers.org/
@@ -224,8 +224,11 @@ groupadd -r -f vmusers ||:
 %_man8dir/pam_cgfs.8*
 
 %changelog
+* Wed Apr 29 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.0.2-alt1
+- Updated to 4.0.2.
+
 * Tue Apr 14 2020 Alexey Shabalin <shaba@altlinux.org> 4.0.1-alt1
-- Updated to 4.0.0.
+- Updated to 4.0.1.
 - drop requires bridge-utils
 
 * Thu Apr 02 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 4.0.0-alt2
@@ -453,7 +456,7 @@ groupadd -r -f vmusers ||:
 * Thu Jul 23 2009 Denis Pynkin <dans@altlinux.ru> 0.6.2-alt1
 - Initial spec for ALT Linux
 
-* Mon Mar 24 2009 Daniel Lezcano <daniel.lezcano@free.fr> - Version 0.6.1
+* Tue Mar 24 2009 Daniel Lezcano <daniel.lezcano@free.fr> - Version 0.6.1
 - Removed capability setting, let the user to do that through "lxc-setcap"
 
 * Mon Feb 16 2009 Daniel Lezcano <daniel.lezcano@free.fr> - Version 0.6.0
