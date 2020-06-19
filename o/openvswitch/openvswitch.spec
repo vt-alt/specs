@@ -2,11 +2,14 @@
 %def_without ksrc
 %def_without xenserver
 %def_with debugtools
+# According to the "ExclusiveArch:" from the dpdk.
+%ifarch x86_64 %ix86 aarch64 ppc64le
 %def_with dpdk
+%endif
 
 Name: openvswitch
-Version: 2.11.1
-Release: alt1
+Version: 2.12.0
+Release: alt3.M90P.1
 
 Summary: An open source, production quality, multilayer virtual switch
 License: ASL 2.0 and LGPLv2+ and SISSL
@@ -27,10 +30,16 @@ Source12: %name.tmpfiles
 
 Patch1: openvswitch-2.0_alt_fix_function.patch
 Patch2: openvswitch-2.5.0-fix-link.patch
-Patch3: openvswitch-2.9.2-alt-systemd-unit.patch
+Patch3: openvswitch-2.12.0-alt-systemd-unit.patch
+Patch4: python3-dict-change.patch
+
+Patch101: python3.patch
+Patch102: 0001-ovs-check-dead-ifs-unshadow-pid-variable.patch
+Patch103: ovn-detrace-python3.patch
 
 Obsoletes: %name-controller <= %name-%version
 Obsoletes: %name-ovsdbmonitor <= %name-%version
+Obsoletes: bash-completion-%name
 
 # util-linux-2.32-alt2
 Requires: pam0(runuser)
@@ -112,7 +121,7 @@ License: ASL 2.0
 Group: Networking/Other
 Requires: %name = %EVR
 # libreswan
-Requires: python-module-%name = %EVR
+Requires: python3-module-%name = %EVR
 
 %description ipsec
 This package provides IPsec tunneling support for OVS tunnels.
@@ -168,8 +177,8 @@ License: ASL 2.0
 Group: Networking/Other
 Requires: %name = %EVR
 Requires: %name-ovn-common = %EVR
-Requires: python-module-%name = %EVR
- 
+Requires: python3-module-%name = %EVR
+
 %description ovn-docker
 Docker network plugins for OVN.
 
@@ -191,21 +200,16 @@ License: Python-2.0
 %description -n python3-module-%name
 Python3 bindings for the Open vSwitch database
 
-%package -n bash-completion-%name
-Summary: Bash completion for %name utils
-Group: Shells
-BuildArch: noarch
-Requires: bash-completion
-Requires: %name = %EVR
-
-%description -n bash-completion-%name
-Bash completion for %name.
-
 %prep
 %setup
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
 
 %if_with ksrc
 # it's not datapath/linux due to shared configure script; thx led@
@@ -220,6 +224,8 @@ popd
 %endif
 
 %build
+export PYTHON=%__python3
+#export PYTHON2=no
 %autoreconf
 %configure \
 	--disable-static \
@@ -228,7 +234,7 @@ popd
 %if_with dpdk
 	--with-dpdk=$(dirname %_libdir/dpdk/*/.config) \
 %endif
-	--with-rundir=%_runtimedir/%name \
+	--with-rundir=/run/%name \
 	--with-logdir=%_logdir/%name \
 	--with-dbdir=%_localstatedir/%name \
 	--with-pkidir=%_localstatedir/%name/pki
@@ -241,6 +247,8 @@ make rhel/usr_lib_systemd_system_ovs-vswitchd.service
 LC_CTYPE=en_US.UTF-8 LC_COLLATE=en_US.UTF-8 make check
 
 %install
+export PYTHON=%__python3
+#export PYTHON2=no
 %makeinstall_std
 
 %if_with ksrc
@@ -250,7 +258,6 @@ install -pm0644 ../kernel-source-%name-%version.tar %buildroot%ksrcdir/
 
 install -dm0755 %buildroot%_sysconfdir/%name
 install -pDm0755 %SOURCE1 %buildroot%_initdir/%name
-install -dm0755 %buildroot%_runtimedir/%name
 install -dm0750 %buildroot%_logdir/%name
 install -dm0755 %buildroot%_sysconfdir/%name
 
@@ -269,6 +276,10 @@ for service in openvswitch ovsdb-server ovs-vswitchd ovs-delete-transient-ports 
             rhel/usr_lib_systemd_system_${service}.service \
             %buildroot%_unitdir/${service}.service
 done
+
+install -p -D -m 0755 \
+        rhel/usr_share_openvswitch_scripts_ovs-systemd-reload \
+        %buildroot%_datadir/%name/scripts/ovs-systemd-reload
 
 #etcnet
 install -pDm644 %SOURCE3 %buildroot%_sysconfdir/net/options.d/01-openvswitch
@@ -305,8 +316,8 @@ install -pDm644 \
                %buildroot%_libdir/xsconsole/plugins-base/XSFeatureVSwitch.py
 %endif
 
-install -d -m 0755 %buildroot%python_sitelibdir_noarch
-cp -a %buildroot%_datadir/%name/python/ovstest %buildroot%python_sitelibdir_noarch
+install -d -m 0755 %buildroot%python3_sitelibdir_noarch
+cp -a %buildroot%_datadir/%name/python/ovstest %buildroot%python3_sitelibdir_noarch
 
 pushd python
 export CPPFLAGS="-I ../include"
@@ -314,8 +325,6 @@ export LDFLAGS="-L %buildroot%_libdir"
 %python_build
 %python_install
 
-export CPPFLAGS="-I ../include"
-export LDFLAGS="-L %buildroot%_libdir"
 %python3_build
 %python3_install
 popd
@@ -326,14 +335,18 @@ touch %buildroot%_sysconfdir/%name/conf.db
 touch %buildroot%_sysconfdir/%name/system-id.conf
 mkdir -p %buildroot%_logdir/%name
 
+# move completions to datadir
+mkdir -p %buildroot%_datadir/bash-completion/completions
+mv %buildroot%_sysconfdir/bash_completion.d/* %buildroot%_datadir/bash-completion/completions/
+
 # remove unpackaged files
 rm -f %buildroot%_bindir/ovs-benchmark \
     %buildroot%_bindir/ovs-parse-backtrace \
     %buildroot%_sbindir/ovs-vlan-bug-workaround \
     %buildroot%_man1dir/ovs-benchmark.1* \
     %buildroot%_man8dir/ovs-parse-backtrace.8* \
-    %buildroot%_man8dir/ovs-vlan-bug-workaround.8* \
-    %buildroot%_datadir/openvswitch/scripts/ovs-save
+    %buildroot%_man8dir/ovs-vlan-bug-workaround.8*
+
 %pre common
 %_sbindir/groupadd -r -f %name
 %_sbindir/useradd -r -n -g %name -d / -s /sbin/nologin -c 'openvswitch server daemon' %name >/dev/null 2>&1 ||:
@@ -379,11 +392,12 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_man8dir/ovs-vswitchd.8*
 
 %_datadir/%name/vswitch.ovsschema
+%_datadir/%name/scripts/ovs-check-dead-ifs
 %_datadir/%name/scripts/ovs-lib
+%_datadir/%name/scripts/ovs-save
 %_datadir/%name/scripts/ovs-ctl
-# exclude python2 script
-%exclude %_datadir/%name/scripts/ovs-check-dead-ifs
 %_datadir/%name/scripts/ovs-kmod-ctl
+%_datadir/%name/scripts/ovs-systemd-reload
 %dir %_sysconfdir/openvswitch
 %config(noreplace) %ghost %_sysconfdir/openvswitch/conf.db
 %config(noreplace) %ghost %_sysconfdir/openvswitch/system-id.conf
@@ -392,32 +406,26 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %config(noreplace) %_sysconfdir/logrotate.d/openvswitch
 %config(noreplace) %_sysconfdir/net/options.d/01-openvswitch
 %_sysconfdir/net/scripts/*
+%_datadir/bash-completion/completions/*
 
 %if_with debugtools
 %files debugtools
-%_bindir/ovs-test
-%_bindir/ovs-vlan-test
-%_bindir/ovs-l3ping
 %_bindir/ovs-pcap
 %_bindir/ovs-tcpdump
 %_bindir/ovs-tcpundump
-%_sbindir/ovs-bugtool
-%_man8dir/ovs-bugtool.8*
-%_man8dir/ovs-l3ping.8*
-%_man8dir/ovs-test.8*
-%_man8dir/ovs-vlan-test.8*
 %_man1dir/ovs-pcap.1*
 %_man8dir/ovs-tcpdump.8*
 %_man1dir/ovs-tcpundump.1*
-%_datadir/%name/bugtool-plugins/
-%_datadir/%name/scripts/ovs-bugtool*
-%python_sitelibdir_noarch/ovstest
+%python3_sitelibdir_noarch/ovstest
+#python2 only tools
+#%_sbindir/ovs-bugtool
+#%_datadir/%name/bugtool-plugins/
+#%_datadir/%name/scripts/ovs-bugtool*
 %endif
 
 %files common
 %_logdir/%name
 %_localstatedir/%name
-%_runtimedir/%name
 %_libdir/*.so.*
 %_bindir/ovs-appctl
 
@@ -425,7 +433,6 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_bindir/ovs-pki
 %_bindir/ovsdb-client
 %_man1dir/ovsdb-client.1*
-%_man1dir/ovn-detrace.1*
 %_man8dir/ovs-appctl.8*
 %_man8dir/ovs-ofctl.8*
 %_man8dir/ovs-pki.8*
@@ -460,9 +467,11 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %_bindir/ovn-detrace
 %_datadir/openvswitch/scripts/ovn-ctl
 %_datadir/openvswitch/scripts/ovndb-servers.ocf
-%_datadir/openvswitch/scripts/ovn-bugtool-nbctl-show
-%_datadir/openvswitch/scripts/ovn-bugtool-sbctl-lflow-list
-%_datadir/openvswitch/scripts/ovn-bugtool-sbctl-show
+# python2 only tools
+#%_datadir/openvswitch/scripts/ovn-bugtool-nbctl-show
+#%_datadir/openvswitch/scripts/ovn-bugtool-sbctl-lflow-list
+#%_datadir/openvswitch/scripts/ovn-bugtool-sbctl-show
+%_man1dir/ovn-detrace.1*
 %_man8dir/ovn-ctl.8*
 %_man8dir/ovn-nbctl.8*
 %_man8dir/ovn-trace.8*
@@ -494,15 +503,33 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %files -n python3-module-openvswitch
 %python3_sitelibdir/*
 
-%files -n bash-completion-%name
-%_sysconfdir/bash_completion.d/*
-
 %if_with ksrc
 %files -n kernel-source-%name
 %ksrcdir/*
 %endif
 
 %changelog
+* Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt3.M90P.1
+- backport to p9
+- revert python2 package
+
+* Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt4
+- Add support vlan for ovsport (ALT #38578)
+- Add --may-exist option for ovsbond
+
+* Sun Mar 08 2020 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt3
+- Fixed build with python3.8.
+
+* Sun Mar 08 2020 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt2
+- fixed reload services with systemd
+
+* Fri Nov 01 2019 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt1
+- 2.12.0
+- switch use from /var/run to /run
+- drop python2 support
+- move bash completions to main package
+- Build openvswitch with dpdk only for list of supported architectures(arei@)
+
 * Wed Jun 05 2019 Alexey Shabalin <shaba@altlinux.org> 2.11.1-alt1
 - 2.11.1
 
