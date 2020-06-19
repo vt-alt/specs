@@ -1,5 +1,5 @@
 Name: kernel-image-old-def
-Release: alt1
+Release: alt2
 epoch:1 
 %define kernel_base_version	4.19
 %define kernel_sublevel .128
@@ -689,6 +689,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging
 
 %changelog
+* Tue Jun 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.128-alt2
+- kiosk mode by mcpain@ added
+
 * Thu Jun 11 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.128-alt1
 - v4.19.128
 
