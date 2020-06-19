@@ -3,7 +3,7 @@
 
 Name: plasma5-nm
 Version: 5.18.5
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -70,7 +70,7 @@ Requires: %name-connect-iodine
 Requires: %name-connect-l2tp
 Requires: %name-connect-pptp
 Requires: %name-connect-sstp
-Requires: %name-connect-ssh
+#Requires: %name-connect-ssh
 Provides: kf5-plasma-nm-maxi = %EVR
 Obsoletes: kf5-plasma-nm-maxi < %EVR
 %description maxi
@@ -283,6 +283,9 @@ install -m0644 -p -D %SOURCE10 %buildroot/%_K5data/plasma/updates/01-plasma-nm.j
 %_K5srv/plasmanetworkmanagement_sshui.desktop
 
 %changelog
+* Thu Jun 18 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt2
+- don't require ssh module
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt1
 - new version
 
