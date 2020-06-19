@@ -6,8 +6,8 @@
 %define appname trik-studio
 
 Name: trikStudio
-Version: 2020.1
-Release: alt3
+Version: 2020.3
+Release: alt1
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
 License: Apache-2.0
@@ -172,6 +172,9 @@ popd
 %endif
 
 %changelog
+* Tue Jun 09 2020 Valery Sinelnikov <greh@altlinux.org> 2020.3-alt1
+- Update to 2020.3
+
 * Thu Apr 30 2020 Valery Sinelnikov <greh@altlinux.org> 2020.1-alt3
 - Changing the path of the language catalog with translation for the gamepad
 
