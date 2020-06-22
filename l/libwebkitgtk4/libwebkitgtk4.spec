@@ -11,9 +11,14 @@
 %define _name webkitgtk
 
 %def_disable gtkdoc
-%def_enable gold
 %def_enable x11
 %def_enable wayland
+%ifarch armh
+%def_disable gold
+%else
+%def_enable gold
+%endif
+
 # since 2.19.x in some build environments
 # while build webki2gtk-dep typelibs this error appears
 # FATAL: Could not allocate gigacage memory with maxAlignment = ..
@@ -24,7 +29,7 @@
 
 Name: libwebkitgtk4
 Version: %ver_major.4
-Release: alt1.1.p9
+Release: alt1.2.p9
 
 Summary: Web browser engine
 Group: System/Libraries
@@ -210,8 +215,10 @@ subst 's|Q\(unused-arguments\)|W\1|' Source/cmake/WebKitCompilerFlags.cmake
 %define optflags_debug -g1
 %add_optflags -Wl,--no-keep-memory
 %{?_disable_gold: %add_optflags -Wl,--reduce-memory-overheads}
-%ifarch %ix86
+%ifarch armh %ix86
 %add_optflags -D_FILE_OFFSET_BITS=64
+%endif
+%ifarch %ix86
 # since 2.24.1 sse2 required for %%ix86
 %add_optflags -msse2 -mfpmath=sse
 %endif
@@ -315,6 +322,9 @@ install -pD -m755 %SOURCE1 %buildroot%_rpmmacrosdir/webki2gtk.env
 
 
 %changelog
+* Fri Jun 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.24.4-alt1.2.p9
+- fixed packaging on armh
+
 * Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 2.24.4-alt1.1.p9
 - Fix build with icu 65.x.
 
