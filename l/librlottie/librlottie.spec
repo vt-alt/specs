@@ -1,19 +1,21 @@
+# See also https://github.com/EasyCoding/rlottie/blob/master/rlottie.spec
 # TODO: external rapidjson
-# see soname version in CMakeLists.txt
+# see soname version (player version) in CMakeLists.txt
 %define soname 0.0.1
 Name: librlottie
-Version: 0.0.3gitd08a03b
-Release: alt1
+Version: 0.1
+Release: alt2
 
-Summary: A platform independent standalone library that plays Lottie Animation
+Summary: Platform independent standalone library that plays Lottie Animation
 
 Group: Networking/Instant messaging
-License: Unlicense
+License: LGPLv2+ and BSD and MIT
 
-Url: https://github.com/john-preston/rlottie
+Url: http://www.tizen.org/
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# Source-git: https://github.com/john-preston/rlottie.git
+#Source-git: https://github.com/john-preston/rlottie.git
+# Source-url: https://github.com/Samsung/rlottie/archive/v%version.tar.gz
 Source: %name-%version.tar
 
 BuildRequires: gcc-c++ cmake
@@ -44,6 +46,7 @@ developing applications that use %name.
 
 %prep
 %setup
+%__subst "s|VERSION 0.0.1|VERSION %version.0|" CMakeLists.txt
 
 %build
 %cmake_insource
@@ -67,6 +70,13 @@ developing applications that use %name.
 %_pkgconfigdir/rlottie.pc
 
 %changelog
+* Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 0.1-alt2
+- update with correct internal version
+
+* Thu Jun 18 2020 Vitaly Lipatov <lav@altlinux.ru> 0.1-alt1
+- new version (0.1) with rpmgs script
+- swith to build from upstream tarball
+
 * Fri Aug 09 2019 Vitaly Lipatov <lav@altlinux.ru> 0.0.3gitd08a03b-alt1
 - build d08a03b6508b390af20491f2dbeee3453594afc8
 
