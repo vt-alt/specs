@@ -6,7 +6,7 @@
 
 Name: ispell-ru-lebedev
 Version: 0.99g5
-Release: alt13
+Release: alt14
 
 Packager: Sergey Kurakin <kurakin@altlinux.org>
 
@@ -700,6 +700,10 @@ cat > %buildroot%_altdir/aspell-ru-lebedev << EOF
 %aspelldir/ru.multi	%aspelldir/ru-lebedev-ie.multi	10
 %aspelldir/russian.alias	%aspelldir/russian-lebedev-ie.alias	%aspelldir/ru-lebedev-ie.multi
 EOF
+cat > %buildroot%_altdir/aspell-ru-lebedev-dat << EOF
+/usr/share/aspell/ru.dat	/usr/share/aspell/ru-lebedev.dat	50
+/usr/share/aspell/ru_phonet.dat	/usr/share/aspell/ru-lebedev_phonet.dat	/usr/share/aspell/ru-lebedev.dat
+EOF
 
 mkdir -p %buildroot%_docdir/%name
 install -pm644 LICENSE LICENSE.phonet README README.ru \
@@ -731,6 +735,7 @@ done
 %_altdir/aspell-ru-lebedev
 %aspelldir/*
 %_datadir/aspell/*
+%_altdir/aspell-ru-lebedev-dat
 
 %files -n hunspell-ru-lebedev
 %_docdir/hunspell-ru-lebedev
@@ -778,6 +783,10 @@ done
 
 
 %changelog
+* Sat Jun 01 2019 Igor Vlasenko <viy@altlinux.ru> 0.99g5-alt14
+- added alternatives for %_datadir/aspell/ru.dat(+_phonetic)
+- (closes: #36827)
+
 * Wed Jan 16 2019 Dmitry V. Levin <ldv@altlinux.org> 0.99g5-alt13
 - Added an auxiliary subpackage for better intersubpackage dependencies.
 - vim-spell-ru-lebedev: turned into a full replacement of vim-spell-ru.
