@@ -1,13 +1,13 @@
 %define _unpackaged_files_terminate_build 1
 
-# clang 4.0.1 is not supported, only missing clang 3.9
 %def_with ClangCodeModel
+%define llvm_version 10.0
 
 %add_findreq_skiplist  %_datadir/qtcreator/*
 %add_findprov_skiplist %_datadir/qtcreator/*
 
 Name:    qt-creator
-Version: 4.12.1
+Version: 4.12.3
 Release: alt0.1.p9
 
 Summary: Cross-platform IDE for Qt
@@ -46,12 +46,12 @@ BuildRequires: qt5-x11extras-devel >= 5.9.0
 BuildRequires: qt5-xmlpatterns-devel >= 5.9.0
 BuildRequires: qt5-tools-devel >= 5.9.0
 %if_with ClangCodeModel
-BuildRequires: llvm10.0-devel
-BuildRequires: llvm10.0-devel-static
-BuildRequires: clang10.0-devel
-BuildRequires: clang10.0-devel-static
-BuildRequires: clang10.0
-BuildRequires: lld10.0
+BuildRequires: llvm%llvm_version-devel
+BuildRequires: llvm%llvm_version-devel-static
+BuildRequires: clang%llvm_version-devel
+BuildRequires: clang%llvm_version-devel-static
+BuildRequires: clang%llvm_version
+BuildRequires: lld%llvm_version
 %endif
 
 Requires: qt5-quickcontrols
@@ -155,6 +155,18 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 %_datadir/qtcreator/*
 
 %changelog
+* Fri Jun 19 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.3-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Thu Jun 18 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.3-alt1
+- New version.
+
+* Wed Jun 03 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.2-alt1
+- New version.
+
+* Thu May 28 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.1-alt2
+- Build with LLVM 10.0.
+
 * Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.1-alt0.1.p9
 - Backport new version to p9 branch.
 - Build with ClangCodeModel plugin again (using LLVM 10.0).
