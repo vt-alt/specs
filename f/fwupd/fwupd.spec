@@ -13,7 +13,7 @@
 
 Summary: Firmware update daemon
 Name: fwupd
-Version: 1.4.2
+Version: 1.4.4
 Release: alt1
 License: GPLv2+
 Group: System/Configuration/Hardware
@@ -309,6 +309,9 @@ mkdir -p --mode=0700 %buildroot%_localstatedir/fwupd/gnupg
 %_datadir/installed-tests/fwupd/*.sh
 
 %changelog
+* Sat Jun 13 2020 Anton Farygin <rider@altlinux.ru> 1.4.4-alt1
+- 1.4.4
+
 * Thu May 21 2020 Anton Farygin <rider@altlinux.ru> 1.4.2-alt1
 - 1.4.2
 
