@@ -1,6 +1,6 @@
 
 %global import_path github.com/containernetworking/plugins
-%global commit 485be65581341430f9106a194a98f0f2412245fb
+%global commit ad10b6fa91aacd720f1f9ab94341a97a82a24965
 #%%global shortcommit %(c=%commit; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -15,11 +15,11 @@
 %define cni_etc_dir %_sysconfdir/cni
 
 Name: cni-plugins
-Version: 0.8.2
+Version: 0.8.6
 Release: alt1
 Summary: Container Network Interface plugins
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 ExclusiveArch: %go_arches
@@ -59,6 +59,15 @@ install -m0755 bin/* %buildroot%cni_dir/
 %cni_dir/*
 
 %changelog
+* Fri May 15 2020 Alexey Shabalin <shaba@altlinux.org> 0.8.6-alt1
+- new version 0.8.6
+
+* Sat Mar 14 2020 Alexey Shabalin <shaba@altlinux.org> 0.8.5-alt1
+- 0.8.5
+
+* Fri Dec 13 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.3-alt1
+- 0.8.3
+
 * Tue Sep 10 2019 Alexey Shabalin <shaba@altlinux.org> 0.8.2-alt1
 - 0.8.2
 
@@ -71,9 +80,9 @@ install -m0755 bin/* %buildroot%cni_dir/
 * Sat Feb 23 2019 Alexey Shabalin <shaba@altlinux.org> 0.7.4-alt1
 - 0.7.4
 
-* Wed Jun 13 2018 Alexey Shabalin <shaba@altlinux.ru> 0.7.1-alt2%ubt
+* Wed Jun 13 2018 Alexey Shabalin <shaba@altlinux.ru> 0.7.1-alt2
 - rebuild for aarch64
 
-* Sat May 12 2018 Alexey Shabalin <shaba@altlinux.ru> 0.7.1-alt1%ubt
+* Sat May 12 2018 Alexey Shabalin <shaba@altlinux.ru> 0.7.1-alt1
 - Initial package
 
