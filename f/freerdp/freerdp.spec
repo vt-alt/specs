@@ -6,7 +6,7 @@
 %def_without gss
 
 Name: freerdp
-Version: 2.1.1
+Version: 2.1.2
 Release: alt1
 
 Group: Networking/Remote access
@@ -339,6 +339,25 @@ patchelf --set-rpath %_libdir/freerdp2 %buildroot%_bindir/freerdp-proxy
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Tue Jun 23 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.2-alt1
+- New version.
+- Fixes:
+  + CVE-2020-4033 Out of bound read in RLEDECOMPRESS
+  + CVE-2020-4031 Use-After-Free in gdi_SelectObject
+  + CVE-2020-4032 Integer casting vulnerability in `update_recv_secondary_order`
+  + CVE-2020-4030 OOB read in `TrioParse`
+  + CVE-2020-11099 OOB Read in license_read_new_or_upgrade_license_packet
+  + CVE-2020-11098 Out-of-bound read in glyph_cache_put
+  + CVE-2020-11097 OOB read in ntlm_av_pair_get
+  + CVE-2020-11095 Global OOB read in update_recv_primary_order
+  + CVE-2020-11096 Global OOB read in update_read_cache_bitmap_v3_order
+  + Gateway RPC fixes for windows
+  + Fixed resource fee race resulting in double free in USB redirection
+  + Fixed wayland client crashes
+  + Fixed X11 client mouse mapping issues (X11 mapping on/off)
+  + Some proxy related improvements (capture module)
+  + Code cleanup (use getlogin_r, ...)
+
 * Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.1-alt1
 - New version.
 - Fixes:
