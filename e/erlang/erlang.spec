@@ -53,7 +53,7 @@ Name: erlang
 Epoch: 1
 %define subver 3.6
 Version: %ver.%subver
-Release: alt1
+Release: alt2
 Summary: A programming language developed by Ericsson
 License: %asl
 Group: Development/Erlang
@@ -618,7 +618,7 @@ sed -i '/^include .*\/make\/otp_release_targets.mk/iMAKEFLAGS += -j1' \
 	lib/{{os_mon,snmp}/mibs,public_key/asn1,megaco/src/binary}/Makefile*
 sed -i '/^bootstrap_setup_target:/s|:| $(BOOTSTRAP_ROOT)/bootstrap/target:|' Makefile.in
 subst "s/^.*ERL_COMPILE_FLAGS.*\+debug_info/#\0/g" make/otp.mk.in
-sed -i 's,armv7hl,armh,' erts/configure.in
+sed -i 's,armv7hl,armh,' erts/aclocal.m4
 
 %build
 %define _optlevel 2
@@ -1239,6 +1239,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Mon Jun 22 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:21.3.6-alt2
+- fixed packaging on so-called armh
+
 * Wed Apr 24 2019 Alexey Shabalin <shaba@altlinux.org> 1:21.3.6-alt1
 - new version 21.3.6
 
