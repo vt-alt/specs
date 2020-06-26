@@ -1,6 +1,6 @@
 Name: dvdstyler
-Version: 3.0.4
-Release: alt4
+Version: 3.1.2
+Release: alt2
 Summary: %name is a crossplatform DVD Authoring System
 Summary(ru_RU.UTF-8): %name - это программа для создания DVD дисков
 License: GPL
@@ -11,16 +11,14 @@ Source: http://prdownloads.sourceforge.net/dvdstyler/DVDStyler-%version.tar
 Source2: %name.desktop
 Source4: %name-16x16.png
 Source5: %name-32x32.png
-Patch0: %name-ffmpeg-4.patch
 
-BuildRequires: gcc-c++ compat-libwxGTK3.0-gtk2-devel libmjpegtools-devel netpbm
+BuildRequires: gcc-c++ libwxGTK3.1-devel libmjpegtools-devel netpbm
 BuildRequires: libwxsvg-devel libexif-devel
 BuildRequires: libjpeg-devel libudev-devel libgnomeui-devel
 BuildRequires: libavcodec-devel libavformat-devel libavutil-devel
 BuildRequires: libavfilter-devel libswscale-devel ffmpeg
 BuildRequires: dvdauthor mjpegtools genisoimage dvd+rw-tools
 BuildRequires: cdrecord-classic dvdrecord xmlto zip bison flex mpgtx
-BuildRequires(pre): rpm-build-ubt
 
 Requires: mjpegtools dvdauthor dvd+rw-tools genisoimage dvdisaster ffmpeg
 
@@ -53,7 +51,6 @@ The main %name features are:
 
 %prep
 %setup -n DVDStyler-%version
-%patch0 -p2
 
 rm -f ./configure configure.in
 
@@ -95,6 +92,21 @@ install -p -m 644 data/%name.png %buildroot%_liconsdir/%name.png
 
 
 %changelog
+* Wed Apr 29 2020 Anton Farygin <rider@altlinux.ru> 3.1.2-alt2
+- build with gtk3
+
+* Wed Aug 28 2019 Anton Farygin <rider@altlinux.ru> 3.1.2-alt1
+- 3.1.2
+
+* Tue Jul 23 2019 Anton Farygin <rider@altlinux.ru> 3.1.1-alt1
+- 3.1.1
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 3.1-alt2
+- NMU: remove rpm-build-ubt from BR:
+
+* Thu Jun 06 2019 Anton Farygin <rider@altlinux.ru> 3.1-alt1
+- up to 3.1
+
 * Tue Mar 26 2019 Vitaly Lipatov <lav@altlinux.ru> 3.0.4-alt4
 - NMU: libnetpbm-devel no more needed as dependency
 

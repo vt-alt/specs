@@ -2,7 +2,7 @@
 %define soname 3
 
 Name: wxsvg
-Version: 1.5.18
+Version: 1.5.22
 Release: alt2
 Epoch: 1
 
@@ -15,7 +15,7 @@ Source: %name-%version.tar
 Patch: %name-1.5.14-alt.patch
 
 BuildRequires: gcc-c++ libart_lgpl-devel libpango-devel
-BuildRequires: compat-libwxGTK3.0-gtk2-devel libavformat-devel libswscale-devel
+BuildRequires: libwxGTK3.1-devel libavformat-devel libswscale-devel
 BuildRequires: libexpat-devel libexif-devel
 
 %description
@@ -78,6 +78,18 @@ Development shared library for wxSVG
 %_pkgconfigdir/*
 
 %changelog
+* Wed Apr 29 2020 Anton Farygin <rider@altlinux.ru> 1:1.5.22-alt2
+- built with gtk3
+
+* Wed Feb 12 2020 Anton Farygin <rider@altlinux.ru> 1:1.5.22-alt1
+- 1.5.22
+
+* Wed Aug 28 2019 Anton Farygin <rider@altlinux.ru> 1:1.5.20-alt1
+- 1.5.20
+
+* Tue Jul 23 2019 Anton Farygin <rider@altlinux.ru> 1:1.5.19-alt1
+- 1.5.19
+
 * Tue Jun 18 2019 Michael Shigorin <mike@altlinux.org> 1:1.5.18-alt2
 - explicit -std=c++11
 - minor spec cleanup/fixup

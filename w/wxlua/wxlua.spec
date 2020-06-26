@@ -1,13 +1,13 @@
 %define luaver 5.1
 Name: wxlua
-Version: 2.8.12.3
-Release: alt7.git.e43a6d9
+Version: 3.0.0.8
+Release: alt1
 Summary: Lua IDE with a GUI debugger and binding generator
 License: wxWidgets License
 Group: Development/Other
 Url: http://wxlua.sourceforge.net/
 
-# https://github.com/pkulchenko/wxlua/tree/wxwidgets311
+# https://github.com/pkulchenko/wxlua/
 Source: %name-%version.tar
 
 BuildRequires: lua%luaver lua%luaver-devel
@@ -15,6 +15,9 @@ BuildRequires: lua%luaver lua%luaver-devel
 # Automatically added by buildreq on Thu Oct 05 2017 (-bi)
 # optimized out: at-spi2-atk cmake-modules elfutils fontconfig glibc-kernheaders-x86 libX11-devel libat-spi2-core libcairo-gobject libgdk-pixbuf libgpg-error libgst-plugins1.0 libstdc++-devel libwayland-client libwayland-cursor libwayland-egl libwayland-server lua5.3 perl python-base python-module-mpl_toolkits python-modules xorg-xproto-devel
 BuildRequires: cmake desktop-file-utils gcc-c++ glibc-kernheaders-generic libGL-devel libwxGTK3.1-devel libwxstedit-devel
+
+Provides: lib%name = %version
+Obsoletes: lib%name < 3
 
 %description
 wxLua is a set of bindings to the C++ wxWidgets cross-platform GUI library for
@@ -26,25 +29,26 @@ printing, clipboard access... and much more.
 Additionally, wxLua can be used in your C++ programs to embed a Lua interpreter
 with the wxWidgets API.
 
-This package contains Integrated Development Environments (IDE, written in
-wxLua) with a GUI debugger, a binding generator and wxWidgets bindings usable
-as a module.
+%package apps
+Group: Development/Other
+Summary: set of apps demonstrating wxLua
+Requires: %name = %version-%release
 
-%package -n lib%name
-Group: System/Libraries
-Summary: set of Lua bindings to the C++ wxWidgets cross-platform GUI library
-
-%description -n lib%name
+%description apps
 wxLua is a set of bindings to the C++ wxWidgets cross-platform GUI library for
 the Lua programming language. Nearly all of the functionality of wxWidgets is
 exposed to Lua, meaning that your programs can have windows, dialogs, menus,
 toolbars, controls, image loading and saving, drawing, sockets, streams,
 printing, clipboard access... and much more.
 
+This package contains Integrated Development Environments (IDE, written in
+wxLua) with a GUI debugger, a binding generator and wxWidgets bindings usable
+as a module.
+
 %package -n lib%name-devel
 Group: Development/C++
 Summary: Development files of lib%name
-Requires: lib%name = %version-%release
+Requires: %name-apps = %version-%release
 
 %description -n lib%name-devel
 wxLua is a set of bindings to the C++ wxWidgets cross-platform GUI library for
@@ -73,10 +77,6 @@ applications with %name.
 rm -rf modules/{lua-*,wxstedit}/*
 sed -r -i 's|LIBRARY DESTINATION .*$|LIBRARY DESTINATION %_lib|' \
 	CMakeLists.txt
-# Build for ZBS, hence add some patches and tricks from
-#   https://github.com/pkulchenko/ZeroBraneStudio/blob/master/build/build-win32.sh#L300
-sed -i 's/\(m_wxlState = wxLuaState(wxlState.GetLuaState(), wxLUASTATE_GETSTATE|wxLUASTATE_ROOTSTATE);\)/\/\/ removed by ZBS build process \/\/ \1/' modules/wxlua/wxlcallb.cpp
-sed -i 's/LUA_VERSION_NUM < 502/0/' modules/wxlua/wxlcallb.cpp
 
 # prepare external wxstedit
 mkdir -p modules/wxstedit
@@ -89,21 +89,22 @@ make -C bindings \
 	LUA=%_bindir/lua%luaver
 
 # Build for ZBS, hence add some patches and tricks from
-#   https://github.com/pkulchenko/ZeroBraneStudio/blob/master/build/build-win32.sh#L316
+#   https://github.com/pkulchenko/ZeroBraneStudio/blob/master/build/build-linux.sh#L300
+# possible option:	-DBUILD_SHARED_LIBS=FALSE
 %cmake \
 	-DwxLua_LUA_LIBRARY_USE_BUILTIN=FALSE \
 	-DwxStEdit_ROOT_DIR=$PWD/modules/wxstedit \
 	-DCMAKE_CXX_FLAGS="-DLUA_COMPAT_MODULE" \
-	-DwxWidgets_COMPONENTS="stc;gl;html;aui;adv;core;net;base" \
-	-DwxLuaBind_COMPONENTS="stc;gl;html;aui;adv;core;net;base" \
+	-DwxWidgets_COMPONENTS="xrc;xml;stc;gl;html;aui;adv;core;net;base" \
+	-DwxLuaBind_COMPONENTS="xrc;xml;stc;gl;html;aui;adv;core;net;base" \
 
-%make_build -C BUILD
+%cmake_build
 if [ -x /usr/bin/doxygen ]; then
-	%make_build -C BUILD wxLua_doxygen
+	%cmake_build wxLua_doxygen
 fi
 
 %install
-%makeinstall_std -C BUILD
+%cmakeinstall_std
 
 mkdir -p \
 	%buildroot%_desktopdir/ \
@@ -117,20 +118,21 @@ desktop-file-install --dir %buildroot%_desktopdir \
 	--remove-category=Application \
 	--add-category=IDE \
 	%buildroot%_desktopdir/%name.desktop
-rm -rf docs2distribute
+rm -rf docs2distribute{,-apps} ; mkdir docs2distribute-apps
 mv %buildroot%_datadir/%name/doc docs2distribute
-mv %buildroot%_datadir/%name/samples docs2distribute/
+mv %buildroot%_datadir/%name/samples docs2distribute-apps/
 
 %files
+%_libdir/lua/%luaver/*.so
+%doc docs2distribute/*
+
+%files apps
 %_bindir/*
+%_libdir/*.so
 %_desktopdir/*.desktop
 %_iconsdir/hicolor/scalable/apps/*
 %_datadir/%name
-%doc docs2distribute/*
-
-%files -n lib%name
-%_libdir/*.so
-%_libdir/lua/%luaver/*.so
+%doc docs2distribute-apps/*
 
 %files -n lib%name-devel
 %_includedir/%name
@@ -142,6 +144,10 @@ mv %buildroot%_datadir/%name/samples docs2distribute/
 %endif
 
 %changelog
+* Sun Apr 26 2020 Ildar Mulyukov <ildar@altlinux.ru> 3.0.0.8-alt1
+- redistributed files among packages
+- new version, compatible with wxWidgets 3.1.3
+
 * Mon Jun 24 2019 Ildar Mulyukov <ildar@altlinux.ru> 2.8.12.3-alt7.git.e43a6d9
 - new version, compatible with wxWidgets 3.1.2 (closes: 36870)
 

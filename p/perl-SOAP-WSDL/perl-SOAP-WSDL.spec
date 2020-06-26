@@ -2,7 +2,7 @@
 %define module SOAP-WSDL
 
 Name: perl-%module
-Version: 3.003
+Version: 3.004
 Release: alt1
 
 Packager: Victor Forsyuk <force@altlinux.org>
@@ -12,7 +12,7 @@ License: Perl
 Group: Development/Perl
 
 Url: %CPAN %module
-Source: http://www.cpan.org/authors/id/S/SW/SWALTERS/SOAP-WSDL-%{version}.tar.gz
+Source0: http://www.cpan.org/authors/id/S/SW/SWALTERS/%{module}-%{version}.tar.gz
 
 # Patches from debian
 Patch5: SOAP-WSDL-2.00.10-debian-use_test_xml.patch
@@ -31,7 +31,7 @@ BuildRequires: perl-podlators
 SOAP-WSDL provides a SOAP client with WSDL support.
 
 %prep
-%setup -n %module-%version
+%setup -q -n %{module}-%{version}
 %patch5 -p1
 
 %build
@@ -41,11 +41,15 @@ SOAP-WSDL provides a SOAP client with WSDL support.
 %perl_vendor_install
 
 %files
-#%_bindir/*
-#%_man1dir/*
+%doc README Changes LICENSE TODO example
+%exclude %_bindir/wsdl2perl.pl*
+%exclude %_man1dir/wsdl2perl.pl*
 %perl_vendor_privlib/SOAP/*
 
 %changelog
+* Mon Feb 24 2020 Igor Vlasenko <viy@altlinux.ru> 3.004-alt1
+- automated CPAN update
+
 * Sun Oct 11 2015 Igor Vlasenko <viy@altlinux.ru> 3.003-alt1
 - automated CPAN update
 

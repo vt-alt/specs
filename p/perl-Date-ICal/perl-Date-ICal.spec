@@ -15,7 +15,7 @@
 
 Name: perl-Date-ICal
 Version: 2.678
-Release: alt1
+Release: alt2
 
 Summary: Perl extension for ICalendar date objects
 
@@ -27,6 +27,8 @@ Packager: Vladimir A. Svyatoshenko <svyt@altlinux.ru>
 
 BuildArch: noarch
 Source: http://www.cpan.org/authors/id/R/RB/RBOW/Date-ICal-2.678.tar.gz
+# Pass 4-digit years to timegm() to fix tests after year 2019, CPAN RT#124548
+Patch0:         Date-ICal-2.678-4_digit_year.patch
 
 # Automatically added by buildreq on Thu Jul 03 2008
 BuildRequires: perl-Date-Leapyear perl-Log-Agent perl-Storable perl-devel
@@ -39,6 +41,9 @@ See http://dates.rcbowen.com/unified.txt for details
 
 %prep
 %setup -q -n %m_distro-%version
+%patch0 -p1
+chmod a-x lib/Date/ICal.pm
+
 %build
 %perl_vendor_build
 
@@ -49,6 +54,9 @@ See http://dates.rcbowen.com/unified.txt for details
 %perl_vendor_privlib/Date*
 
 %changelog
+* Thu Apr 09 2020 Igor Vlasenko <viy@altlinux.ru> 2.678-alt2
+- fixed build
+
 * Mon Sep 19 2011 Igor Vlasenko <viy@altlinux.ru> 2.678-alt1
 - automated CPAN update
 

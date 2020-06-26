@@ -1,8 +1,8 @@
 %define module OLE-Storage_Lite
 
 Name: perl-%module
-Version: 0.19
-Release: alt2
+Version: 0.20
+Release: alt1
 
 Packager: Victor Forsiuk <force@altlinux.org>
 
@@ -11,7 +11,7 @@ License: Perl
 Group: Development/Perl
 
 Url: %CPAN %module
-Source: http://www.cpan.org/modules/by-module/OLE/%module-%version.tar.gz
+Source0: http://www.cpan.org/authors/id/J/JM/JMCNAMARA/%{module}-%{version}.tar.gz
 
 # Automatically added by buildreq on Mon Nov 29 2010
 BuildRequires: perl-devel
@@ -23,7 +23,7 @@ This module allows you to read and write an OLE-Structured file. The module
 will work on the majority of Windows, UNIX and Macintosh platforms.
 
 %prep
-%setup -n %module-%version
+%setup -q -n %{module}-%{version}
 
 %build
 %perl_vendor_build
@@ -32,10 +32,14 @@ will work on the majority of Windows, UNIX and Macintosh platforms.
 %perl_vendor_install
 
 %files
+%doc README Changes
 %perl_vendor_privlib/OLE
 %doc sample/*
 
 %changelog
+* Wed Jan 08 2020 Igor Vlasenko <viy@altlinux.ru> 0.20-alt1
+- automated CPAN update
+
 * Mon Nov 29 2010 Victor Forsiuk <force@altlinux.org> 0.19-alt2
 - Fix build after perl 5.12 upgrade.
 

@@ -1,6 +1,6 @@
 Name:    codelite
-Version: 13.0
-Release: alt2
+Version: 14.0
+Release: alt1
 
 Summary: CodeLite is a powerful open-source, cross platform code editor for C/C++
 
@@ -45,6 +45,7 @@ cmake . -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
 
 mkdir -p %buildroot%_datadir/mime/packages/
 cp -p %name.xml %buildroot%_datadir/mime/packages/
+rm -f %buildroot%_bindir/codelite_open_helper.py
 
 %find_lang %name
 
@@ -58,7 +59,26 @@ cp -p %name.xml %buildroot%_datadir/mime/packages/
 %_libdir/%name
 %_mandir/man1/%{name}*
 
+# Fix post-install unowned files
+%dir %_iconsdir/hicolor/128x128
+%dir %_iconsdir/hicolor/128x128/apps
+%dir %_iconsdir/hicolor/128x128@2x
+%dir %_iconsdir/hicolor/128x128@2x/apps
+%dir %_iconsdir/hicolor/256x256
+%dir %_iconsdir/hicolor/256x256/apps
+%dir %_iconsdir/hicolor/256x256@2x
+%dir %_iconsdir/hicolor/256x256@2x/apps
+%dir %_iconsdir/hicolor/32x32@2x
+%dir %_iconsdir/hicolor/32x32@2x/apps
+%dir %_iconsdir/hicolor/64x64
+%dir %_iconsdir/hicolor/64x64/apps
+%dir %_iconsdir/hicolor/64x64@2x
+%dir %_iconsdir/hicolor/64x64@2x/apps
+
 %changelog
+* Mon Apr 27 2020 Grigory Ustinov <grenka@altlinux.org> 14.0-alt1
+- Automatically updated to 14.0.
+
 * Tue Aug 20 2019 Anton Midyukov <antohami@altlinux.org> 13.0-alt2
 - add_optflags (pkg-config --cflags pango) (Fix FTBFS)
 

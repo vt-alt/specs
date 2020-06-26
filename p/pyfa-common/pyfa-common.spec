@@ -1,6 +1,6 @@
 Name: pyfa-common
 Version: 0.8.0
-Release: alt4.1
+Release: alt4.2
 
 Summary: Common files for Python fitting assistant
 
@@ -18,7 +18,7 @@ BuildRequires: python-module-setuptools
 #BuildRequires: python-module-pygtk-libglade
 BuildRequires: python-modules-sqlite3
 
-Provides: pyfa <= 0.4.2
+Provides: pyfa = 0.4.2
 Obsoletes: pyfa <= 0.4.2
 
 %add_python_compile_include %_datadir/pyfa/model
@@ -51,6 +51,9 @@ cp *.py %buildroot%_datadir/pyfa/model
 %_datadir/pyfa/model
 
 %changelog
+* Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 0.8.0-alt4.2
+- NMU: fix provides
+
 * Sat Oct 22 2011 Vitaly Kuznetsov <vitty@altlinux.ru> 0.8.0-alt4.1
 - Rebuild with Python-2.7
 

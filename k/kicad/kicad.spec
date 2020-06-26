@@ -6,25 +6,27 @@
 Name: kicad
 Summary: An open source software for the creation of electronic schematic diagrams
 Summary(ru_RU.UTF-8): Программа с открытым исходным кодом для проектирования электронных схем
-Version: 5.1.4
-Release: alt1
+Version: 5.1.6
+Release: alt1.rc1
 Epoch: 1
 Packager: Anton Midyukov <antohami@altlinux.org>
-
-Source: %name-%version.tar
-Patch: fix_python_sitepackages_path.patch
-Patch1: %name-5.1.0-nostrip.patch
-License: GPLv2+
+License: AGPL-3-or-later
 Group: Engineering
 Url: https://code.launchpad.net/kicad
 #Url: https://github.com/KiCad/kicad-source-mirror.git
 
+Source: %name-%version.tar
+Source1: pcbnew.py
+Patch1: kicad-5.1.0-nostrip.patch
+Patch2: fix-python3.patch
+
 BuildRequires(pre): cmake rpm-macros-cmake
-#BuildRequires(pre): rpm-build-python3
-#BuildRequires: python-module-wx4.0-devel
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-dev
+BuildRequires: python3-module-wx
 BuildRequires: boost-devel boost-asio-devel boost-asio-devel boost-context-devel boost-filesystem-devel boost-geometry-devel boost-interprocess-devel boost-locale-devel boost-program_options-devel
 BuildRequires: ccmake gcc-c++
-BuildRequires: libwxGTK3.1-devel
+BuildRequires: libwxGTK3.0-devel
 BuildRequires: libGLEW-devel libcairo-devel libssl-devel swig pkgconfig(gobject-2.0) libpcre-devel libpixman-devel pkgconfig(harfbuzz) pkgconfig(expat) pkgconfig(libdrm) pkgconfig(xdmcp) pkgconfig(xdamage) pkgconfig(xxf86vm) libcurl-devel
 BuildRequires: doxygen
 BuildRequires: dos2unix
@@ -43,6 +45,8 @@ Requires: kicad-footprints >= %majver
 Requires: kicad-templates >= %majver
 Requires: %name-doc >= %epoch:%majver
 Requires: %name-i18n >= %majver
+
+%add_python3_path %_datadir/%name
 
 %description
 Kicad is an open source (GPL) software for the creation of electronic
@@ -83,7 +87,7 @@ Summary(ru_RU.UTF-8): Программа с открытым исходным к
 Group: Sciences/Computer science
 BuildArch: noarch
 Requires: icon-theme-hicolor
-%add_python_req_skip pcbnew
+Requires: %name = %EVR
 
 %description data
 Kicad is an open source (GPL) software for the creation of electronic
@@ -112,25 +116,30 @@ gost_landscape.kicad_wks или gost_portrait.kicad_wks в диалоговом 
 
 %prep
 %setup -n %name-%version
-#patch -p1
 %patch1 -p1
+%patch2 -p1
 
 %build    
 %cmake \
-    -DKICAD_SCRIPTING=OFF \
-    -DKICAD_SCRIPTING_MODULES=OFF \
-    -DKICAD_SCRIPTING_WXPYTHON=OFF \
-    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=OFF \
-    -DKICAD_SCRIPTING_PYTHON3=OFF \
-    -DKICAD_SCRIPTING_ACTION_MENU=OFF \
+    -DKICAD_SCRIPTING=ON \
+    -DKICAD_SCRIPTING_MODULES=ON \
+    -DKICAD_SCRIPTING_WXPYTHON=ON \
+    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
+    -DKICAD_SCRIPTING_PYTHON3=ON \
+    -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_SPICE=ON \
     -DKICAD_VERSION_EXTRA=%release \
     -DCMAKE_BUILD_TYPE=Release \
+    -DPYTHON_SITE_PACKAGE_PATH=%python3_sitelibdir
 
 %cmake_build
 
 %install
 %cmakeinstall_std
+
+# !!!Fix me
+# Needed swig4
+install -m 755 %SOURCE1 %buildroot%python3_sitelibdir/pcbnew.py
 
 #fix line ending
 dos2unix %buildroot%_desktopdir/*.desktop
@@ -149,7 +158,9 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_desktopdir/*.desktop
 %_libdir/*.so*
 %_libdir/%name/
-#python_sitelibdir/*
+%python3_sitelibdir/_pcbnew.so
+%python3_sitelibdir/pcbnew.py
+%python3_sitelibdir/__pycache__/pcbnew*
 
 %files data
 %doc %_docdir/%name
@@ -160,6 +171,12 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_datadir/mime/packages/*
 
 %changelog
+* Mon Apr 20 2020 Anton Midyukov <antohami@altlinux.org> 1:5.1.6-alt1.rc1
+- new version 5.1.6-rc1
+- enable wxpython scripts support
+- build with wxGTK3.0
+- fixed License tag
+
 * Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 1:5.1.4-alt1
 - new version 5.1.4
 

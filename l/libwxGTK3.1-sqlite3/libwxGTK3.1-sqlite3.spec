@@ -4,7 +4,7 @@
 
 Name: libwxGTK%wxversion-sqlite3
 Version: 4.0.3
-Release: alt1.1
+Release: alt1.2
 
 Summary: C++ wrapper around the SQLite 3.x database
 
@@ -61,6 +61,12 @@ that use %name.
 #rm -rfv sqlite3
 
 %build
+%ifarch %e2k
+# lcc-1.23 lacks some gcc5 builtins (mcst#3588)
+cc --version | grep -q '^lcc:1.23' && export CFLAGS+="-D__INTEL_COMPILER=1"
+# -std=c++03 by default as of lcc 1.23.20
+%add_optflags -std=c++11
+%endif
 %autoreconf
 %configure --disable-static
 %make_build
@@ -95,6 +101,9 @@ wxsqlite3.pc.in > %buildroot%_pkgconfigdir/%oname-%wxversion.pc
 #doc docs/html
 
 %changelog
+* Mon Oct 07 2019 Michael Shigorin <mike@altlinux.org> 4.0.3-alt1.2
+- E2K: avoid lcc-unsupported builtins; explicit -std=c++11
+
 * Sun Aug 05 2018 Anton Midyukov <antohami@altlinux.org> 4.0.3-alt1.1
 - Rebuilt with libwxGTK3.1-3.1.1
 
