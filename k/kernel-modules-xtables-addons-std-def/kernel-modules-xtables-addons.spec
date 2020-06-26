@@ -1,5 +1,5 @@
 %define module_name	xtables-addons
-%define module_version	3.7
+%define module_version	3.9
 %define module_release	alt1
 
 %define flavour		std-def
@@ -74,10 +74,13 @@ rm -f %buildroot/%module_dir/xt_TEE.ko
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
 
-* Tue Dec  3 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt1 
+* Tue Mar 10 2020 Anton Farygin <rider@altlinux.ru> 3.9-alt1
+- 3.7 -> 3.9
+
+* Tue Dec  3 2019 Anton Farygin <rider@altlinux.ru> 3.7-alt1 
 - 3.6 -> 3.7
 
-* Wed Nov 27 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt1
+* Wed Nov 27 2019 Anton Farygin <rider@altlinux.ru> 3.6-alt1
 - 3.5 -> 3.6
 
 * Wed Sep 11 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt1
