@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-openvpn-server
-Version: 0.8.6
+Version: 0.8.7
 Release: alt1
 License: %gpl2plus
 Group: System/Configuration/Other
@@ -43,6 +43,9 @@ Alterator module for openvpn server configuration
 %_alterator_backend3dir/*
 
 %changelog
+* Tue Jun 09 2020 Slava Aseev <ptrnine@altlinux.org> 0.8.7-alt1
+- Add ability to disable NCP
+
 * Fri Feb 28 2020 Slava Aseev <ptrnine@altlinux.org> 0.8.6-alt1
 - Add ability to select cipher, tls-cipher and digest
 
