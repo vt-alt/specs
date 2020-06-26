@@ -1,9 +1,9 @@
 Name: guile-evms
-Version: 0.5
-Release: alt10
+Version: 0.6
+Release: alt1
 
 Summary: Guile bindings for EVMS
-License: GPL
+License: GPLv2
 Group: Development/Scheme
 
 BuildRequires: guile-devel >= 2.0 libblkid-devel libe2fs-devel libevms-devel swig >= 3.0.12-alt2
@@ -16,6 +16,8 @@ http://evms.sourceforge.net
 
 %define guile_sodir %(guile-config info extensiondir)
 %define guile_godir %(guile-config info siteccachedir)
+
+%set_gcc_version 8
 
 %prep
 %setup
@@ -31,6 +33,16 @@ make install DESTDIR=%buildroot
 %guile_godir/evms.go
 
 %changelog
+* Tue Jun 23 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.6-alt1
+- disallow reassign /boot/efi on another fat partition
+- do not propose /mnt/disk as default mountpoint for fat/ntfs
+
+* Thu Dec 05 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.5-alt12
+- fixed crash in alterator-vm (closes: #37572)
+
+* Tue Dec 03 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.5-alt11
+- fix FTBFS with gcc9
+
 * Thu Jul 11 2019 Alexey Shabalin <shaba@altlinux.org> 0.5-alt10
 - Add /var/lib/docker,/var/lib/lxd,/var/lib/libvirt/images to well-known-mountpoints
 
