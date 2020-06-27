@@ -1,8 +1,8 @@
 %define oname %name-backends
 
 Name: sane
-Version: 1.0.28
-Release: alt3
+Version: 1.0.30
+Release: alt2
 
 Summary: This package contains the SANE docs and utils
 Summary(ru_RU.UTF-8): Документация и утилиты для SANE
@@ -13,12 +13,14 @@ Url: http://www.sane-project.org/
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-Source: https://gitlab.com/sane-project/backends/uploads/9e718daff347826f4cfe21126c8d5091/sane-backends-%version.tar
+# Source-url: https://gitlab.com/sane-project/backends/-/archive/%version/backends-%version.tar.bz2
+Source: %oname-%version.tar
 #Source1: %name-%version.ru.po
 Source2: %name.xinetd
 
 Patch3: sane-1.0.19-hp-psc.patch
 Patch4: sane-backends-1.0.18-epson-1270.patch
+Patch5: sane-backends-1.0.30-avision-av186plus-av188.patch
 
 # Mandriva patches
 Patch201: sane-backends-1.0.18-plustek-s12.patch
@@ -148,6 +150,7 @@ This package contains SANE static libraries.
 %setup -n %oname-%version
 %patch3
 %patch4
+%patch5 -p2
 
 # Mandriva patches
 %patch201 -p1 -b .plusteks12
@@ -258,6 +261,15 @@ rm -f %buildroot%_libdir/%name/*.la
 %_pkgconfigdir/%oname.pc
 
 %changelog
+* Fri Jun 26 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.30-alt2
+- add ID information for Avision AV186+ and AV188 sheetfed USB scanners
+
+* Fri May 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.30-alt1
+- new version (1.0.30) with rpmgs script
+
+* Fri Feb 14 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.29-alt1
+- new version (1.0.29) with rpmgs script
+
 * Fri Nov 01 2019 Michael Shigorin <mike@altlinux.org> 1.0.28-alt3
 - E2K: strip UTF-8 BOM for lcc < 1.24
 - minor spec cleanup
