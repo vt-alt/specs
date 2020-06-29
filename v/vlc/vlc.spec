@@ -5,7 +5,7 @@
 %def_enable wayland
 
 Name: vlc
-Version: 3.0.10
+Version: 3.0.11
 Release: alt1
 
 Summary: VLC media player
@@ -1395,6 +1395,12 @@ chmod 755 %buildroot%_libexecdir/rpm/vlc.filetrigger
 %files maxi
 
 %changelog
+* Fri Jun 26 2020 Anton Farygin <rider@altlinux.ru> 3.0.11-alt1
+- 3.0.11
+- fixes:
+  * CVE-2020-13428 - a remote user could create a specifically
+    crafted file that could trigger a buffer overflow in VLC's H26X packetizer
+
 * Thu Apr 30 2020 Anton Farygin <rider@altlinux.ru> 3.0.10-alt1
 - 3.0.10
 
