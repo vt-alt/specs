@@ -1,7 +1,7 @@
 
 Name: opennebula-context
 Summary: OpenNebula Contextualization Package
-Version: 5.8.0
+Version: 5.10.0
 Release: alt1
 License: Apache
 Group: System/Servers
@@ -46,6 +46,8 @@ To get support check the OpenNebula web page:
 
 install -p -D -m 755 src/etc/one-context.d/loc-05-grow-rootfs \
 			%buildroot%_sysconfdir/one-context.d/loc-05-grow-rootfs
+install -p -D -m 755 src/etc/one-context.d/loc-09-timezone \
+			%buildroot%_sysconfdir/one-context.d/loc-09-timezone
 install -p -D -m 755 src/etc/one-context.d/loc-10-network##arch.one \
 			%buildroot%_sysconfdir/one-context.d/loc-10-network
 install -p -D -m 755 src/etc/one-context.d/loc-10-network-pci##one \
@@ -66,6 +68,10 @@ install -p -D -m 755 src/etc/one-context.d/loc-20-set-username-password \
 			%buildroot%_sysconfdir/one-context.d/loc-20-set-username-password
 install -p -D -m 755 src/etc/one-context.d/loc-22-ssh_public_key \
 			%buildroot%_sysconfdir/one-context.d/loc-22-ssh_public_key
+install -p -D -m 755 src/etc/one-context.d/loc-30-console##one \
+			%buildroot%_sysconfdir/one-context.d/loc-30-console
+install -p -D -m 755 src/etc/one-context.d/loc-35-securetty \
+			%buildroot%_sysconfdir/one-context.d/loc-35-securetty
 install -p -D -m 755 src/etc/one-context.d/net-15-hostname \
 			%buildroot%_sysconfdir/one-context.d/net-15-hostname
 install -p -D -m 755 src/etc/one-context.d/net-97-start-script \
@@ -113,6 +119,9 @@ systemctl daemon-reload >/dev/null 2>&1 || :
 %_unitdir/*
 
 %changelog
+* Mon Feb 03 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt1
+- 5.10.0
+
 * Mon Aug 19 2019 Mikhail Gordeev <obirvalger@altlinux.org> 5.8.0-alt1
 - 5.8.0
 
