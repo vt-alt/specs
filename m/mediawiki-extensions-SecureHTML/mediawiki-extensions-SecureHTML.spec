@@ -2,7 +2,7 @@
 
 Name: mediawiki-extensions-%oname
 Version: 3.0
-Release: alt1
+Release: alt2
 
 Summary: This MediaWiki extension provides a secure way to include raw HTML code on a page
 
@@ -18,7 +18,7 @@ BuildPreReq: rpm-build-mediawiki >= 0.3
 
 Requires: mediawiki-common >= 1.30
 
-Requires: mediawiki-extensions-StubManager
+#Requires: mediawiki-extensions-StubManager
 
 # Source-url: https://github.com/wikimedia/mediawiki-extensions-SecureHTML/archive/v%version.tar.gz
 Source: %oname-%version.tar
@@ -37,6 +37,9 @@ but allows an editor to add a protected template on an unprotected, editable pag
 %files -f %oname.files
 
 %changelog
+* Thu Oct 31 2019 Vitaly Lipatov <lav@altlinux.ru> 3.0-alt2
+- drop StubManager require 
+
 * Mon May 14 2018 Vitaly Lipatov <lav@altlinux.ru> 3.0-alt1
 - new version (3.0) with rpmgs script
 

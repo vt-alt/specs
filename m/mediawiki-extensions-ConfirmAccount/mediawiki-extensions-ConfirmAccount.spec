@@ -1,10 +1,10 @@
 %define oname ConfirmAccount
-%define mwversion 1.31
-%define revision 5d98110
+%define mwversion 1.34
+%define revision 3ffa446
 %setup_mediawiki_ext %mwversion %oname
 
 Name: mediawiki-extensions-ConfirmAccount
-Version: 1.31
+Version: 1.34
 Release: alt1.%revision
 
 Summary: This extension disables direct account creation and requires submission and approval.
@@ -37,6 +37,9 @@ such as if you wanted Sysops/Bureaucrats to be able to directly make them.
 %files -f %oname.files
 
 %changelog
+* Sun Dec 22 2019 Vitaly Lipatov <lav@altlinux.ru> 1.34-alt1.3ffa446
+- new version 1.34 (with rpmrb script)
+
 * Tue Jul 31 2018 Vitaly Lipatov <lav@altlinux.ru> 1.31-alt1.5d98110
 - new version (1.31) with rpmgs script
 

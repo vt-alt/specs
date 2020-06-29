@@ -1,8 +1,8 @@
 %define webappdir %webserver_webappsdir/mediawiki
-%define major 1.32
+%define major 1.34
 
 Name: mediawiki
-Version: %major.2
+Version: %major.1
 Release: alt1
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
@@ -25,7 +25,7 @@ Source6: AdminSettings.sample
 Source7: 99-read-user-configs.php
 
 Patch: %name-1.31-alt.patch
-Patch1: %name-1.32-config-path.patch
+Patch1: %name-1.33-config-path.patch
 
 BuildRequires(pre): rpm-macros-apache2
 BuildRequires(pre): rpm-build-licenses
@@ -63,6 +63,8 @@ Requires: webserver-common
 Requires: php7-libs >= 7.0.0
 Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader
 Requires: diffutils
+Requires: php7-opcache
+Requires: pear-Mail >= 1.4.1
 
 AutoProv:no
 AutoReq:yes,nomingw32,nomingw64,noerlang,noruby
@@ -129,6 +131,12 @@ Obsoletes: mediawiki-extensions-OATHAuth
 Provides: mediawiki-extensions-ReplaceText
 Obsoletes: mediawiki-extensions-ReplaceText
 
+# since 1.33
+Obsoletes: mediawiki-extensions-StubManager
+
+# since 1.34
+Provides: mediawiki-extensions-Scribunto
+
 %description -n %name-common
 %summary
 
@@ -178,6 +186,8 @@ Requires: %name-common = %version-%release
 %patch -p2
 %patch1 -p2
 
+%__subst "s|/usr/bin/python|/usr/bin/python3|" extensions/ConfirmEdit/*.py
+
 %install
 mkdir -p %buildroot%_mediawikidir/
 
@@ -194,8 +204,13 @@ rm -rf %buildroot%_mediawikidir/tests/
 rm -rf %buildroot%_mediawikidir/{*.php5,*.phtml}
 rm -rf %buildroot%_mediawikidir/{COPYING,CREDITS,FAQ,HISTORY,README*,RELEASE-NOTES-*,UPGRADE}
 rm -rf %buildroot%_mediawikidir/resources/lib/oojs-ui/update-oojs-ui.sh
+
 rm -fr %buildroot%_mediawikidir/includes/zhtable
+rm -rf %buildroot%_mediawikidir/maintenance/language/zhtable
+
 rm -rf %buildroot%_mediawikidir/vendor/zordius/lightncandy/build/
+
+rm -rf %buildroot%_mediawikidir//extensions/Scribunto/includes/engines/LuaStandalone/binaries/
 
 find %buildroot%_mediawikidir/ \
   \( -name .htaccess -or -name \*.cmi \) \
@@ -321,6 +336,25 @@ exit 0
 
 
 %changelog
+* Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.1-alt1
+- new version 1.34.1 (with rpmrb script)
+- security fixes T232932, T246602
+
+* Wed Jan 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.0-alt2
+- add pear-Mail requires
+- add php7-opcache requires (ALT bug 31471)
+
+* Sun Dec 22 2019 Vitaly Lipatov <lav@altlinux.ru> 1.34.0-alt1
+- new version 1.34.0 (with rpmrb script)
+- CVE-2019-19709
+
+* Sat Oct 12 2019 Vitaly Lipatov <lav@altlinux.ru> 1.33.1-alt1
+- new version 1.33.1 (with rpmrb script)
+- CVE-2019-16738
+
+* Thu Sep 26 2019 Vitaly Lipatov <lav@altlinux.ru> 1.33.0-alt1
+- new version 1.33.0 (with rpmrb script)
+
 * Thu Jun 06 2019 Vitaly Lipatov <lav@altlinux.ru> 1.32.2-alt1
 - new version 1.32.2 (with rpmrb script)
 - CVE-2019-12468, CVE-2019-12473, CVE-2019-12471

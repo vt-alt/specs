@@ -1,6 +1,6 @@
 %define pear_name Mail
 Name: pear-%pear_name
-Version: 1.3.0
+Version: 1.4.1
 Release: alt1
 
 Summary: Class that provides multiple interfaces for sending emails
@@ -16,6 +16,8 @@ Source: http://pear.php.net/get/%pear_name-%version.tar
 BuildArch: noarch
 Requires: pear-core
 BuildRequires: pear-core rpm-build-pear
+
+Requires: pear-Net_SMTP >= 1.4.1
 
 %description
 PEAR's Mail package defines an interface for implementing mailers
@@ -48,6 +50,10 @@ provides a RFC822 email address list validation utility class.
 %pear_dir/.pkgxml/Mail.xml
 
 %changelog
+* Tue Jan 28 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.1-alt1
+- new version 1.4.1 (with rpmrb script)
+- add requires to pear-Net_SMTP
+
 * Fri Apr 22 2016 Vitaly Lipatov <lav@altlinux.ru> 1.3.0-alt1
 - new version 1.3.0 (with rpmrb script)
 

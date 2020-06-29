@@ -1,7 +1,10 @@
 %define oname RandomPages
 
+%define mwversion 1.34
+%setup_mediawiki_ext %mwversion %oname
+
 Name: mediawiki-extensions-%oname
-Version: 0.3
+Version: 0.5
 Release: alt1
 
 Summary: RandomPages adds a new MediaWiki wiki parser for get random pages
@@ -14,12 +17,12 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 BuildArch: noarch
 
-BuildPreReq: rpm-build-mediawiki >= 0.3
+BuildRequires(pre): rpm-build-mediawiki >= 0.6
 
-Requires: mediawiki-common >= 1.15.1-alt4
+Requires: mediawiki-common >= %mwversion
 
-# http://gitorious.org/randompages
-Source: http://www.locknet.ro/files/%oname-%version.tar
+# Source-url: https://github.com/wikimedia/mediawiki-extensions-RandomPages/archive/%MWREL.zip
+Source: %name-%version.tar
 
 %description
 RandomPages adds a new MediaWiki wiki parser tag: <randompages />
@@ -30,7 +33,7 @@ Available options:
 * levels int, levels of CSS applyed to each entry, defaluts to 5
 
 %prep
-%setup -n %oname-%version
+%setup
 
 %install
 %mediawiki_ext_install 50 %oname
@@ -38,6 +41,9 @@ Available options:
 %files -f %oname.files
 
 %changelog
+* Fri May 01 2020 Vitaly Lipatov <lav@altlinux.ru> 0.5-alt1
+- new version (0.5) with rpmgs script - for 1.34
+
 * Tue Jun 13 2017 Vitaly Lipatov <lav@altlinux.ru> 0.3-alt1
 - update version
 
