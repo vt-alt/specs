@@ -7,7 +7,7 @@
 
 Name: kf5-%rname
 Version: 5.70.0
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: System/Libraries
@@ -165,6 +165,9 @@ Sip files for python3-module-%rname
 %endif
 
 %changelog
+* Thu Jun 25 2020 Ivan Razzhivin <underwit@altlinux.org> 5.70.0-alt2
+- fix kprocess patch
+
 * Tue May 12 2020 Sergey V Turchin <zerg@altlinux.org> 5.70.0-alt1
 - new version
 
