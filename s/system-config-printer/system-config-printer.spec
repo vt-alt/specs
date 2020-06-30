@@ -1,6 +1,6 @@
 Name:    system-config-printer
 Version: 1.5.11
-Release: alt6
+Release: alt7
 
 Summary: A printer administration tool
 Group:   System/Configuration/Printing
@@ -28,7 +28,6 @@ BuildRequires: xmlto
 
 Requires: %name-lib = %EVR
 
-%filter_from_requires /PackageKit/d
 %add_python3_path /usr/share/system-config-printer
 
 
@@ -88,6 +87,7 @@ mv %buildroot%_datadir/{metainfo,appdata}
 exit 0
 
 %files lib
+%_bindir/scp-dbus-service
 %_datadir/dbus-1/interfaces/*.xml
 %_datadir/dbus-1/services/*.service
 %_datadir/%name
@@ -100,7 +100,8 @@ exit 0
 
 %files -f system-config-printer.lang
 %doc README.md COPYING
-%_bindir/*
+%_bindir/install-printerdriver
+%_bindir/system-config-printer*
 %_datadir/appdata/%name.appdata.xml
 %_desktopdir/*.desktop
 %_sysconfdir/xdg/autostart/*.desktop
@@ -113,6 +114,10 @@ exit 0
 
 
 %changelog
+* Thu Jun 25 2020 Sergey V Turchin <zerg@altlinux.org> 1.5.11-alt7
+- fix requires python-packagekit to work install-printerdriver (Closes: 38638)
+- package bin/scp-dbus-service to -lib subpackage (Closes: 38639)
+
 * Mon Jun 17 2019 Pavel Moseev <mars@altlinux.org> 1.5.11-alt6
 - fix translation in troubleshoot menu
 
