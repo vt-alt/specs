@@ -1,5 +1,5 @@
 
-%global commit 45f6d6dfeefafeec04300edfc19f2771de7bcb5c
+%global commit 122d4c67ab5d304725677834d5d8361ac00c0620
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 %define oneadmin_home /var/lib/one
@@ -8,7 +8,7 @@
 
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
-Version: 5.10.4
+Version: 5.10.5
 Release: alt3
 License: Apache-2.0
 Group: System/Servers
@@ -185,7 +185,7 @@ Conflicts: %name-node-xen
 Requires: %name-common = %EVR
 Requires: openssh-server
 Requires: openssh-clients
-Requires: libvirt-kvm
+Requires: libvirt-kvm libvirt-client polkit
 Requires: qemu-kvm
 Requires: qemu-img
 Requires: nfs-utils
@@ -221,9 +221,10 @@ Group: System/Servers
 #Requires: ruby ruby-stdlibs
 Requires: %name-common = %EVR
 Requires: %name-node-kvm = %EVR
-Requires: libvirt-lxc
+Requires: libvirt-lxc lxcfs
 Requires: kpartx
-Requires: lxd >= 3.0
+Requires: lxd3.0 >= 3.0
+Conflicts: lxd >= 3.1.0
 %ifarch aarch64 ppc64 ppc64le x86_64
 Requires: rbd-nbd
 %endif
@@ -686,6 +687,18 @@ fi
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Wed Jun 24 2020 Andrew A. Vasilyev <andy@altlinux.org> 5.10.5-alt3
+- revert ac0a19b24a35cd22b2428ed83e845a4b5bd474a8 (not build for 32-bit arm)
+
+* Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt2
+- backport patches from upstream/one-5.10 branch
+- fixed requires on lxd3.0 (lxd-4 not supported)
+- add requires lxcfs to node-lxd package
+
+* Mon May 11 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt1
+- 5.10.5
+- add requires libvirt-client and polkit to opennebula-node-kvm package
+
 * Fri Apr 10 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.4-alt3
 - update sudoers config for allow use LXD
 - update Requires for node-lxd package

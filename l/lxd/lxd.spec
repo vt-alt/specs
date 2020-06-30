@@ -10,7 +10,7 @@
 %define lxduser lxd
 
 Name:		lxd
-Version:	4.0.0
+Version:	4.0.1
 Release:	alt1
 Summary:	LXD -- REST API, command line tool and OpenStack integration plugin for LXC.
 
@@ -22,7 +22,6 @@ Packager:	Denis Pynkin <dans@altlinux.ru>
 
 Source0:	%name-%version.tar
 Patch:		%name-%version-%release.patch
-Source2:	lxd-image-update.cron
 Source3:	lxd.default
 Source4:	lxd.dnsmasq
 
@@ -113,9 +112,6 @@ done
 # lxc-bridge
 mkdir -p -- %buildroot%_libexecdir/lxd
 
-# Crontab entry for images update
-%__install -D %SOURCE2 %buildroot%_sysconfdir/cron.hourly/lxd-image-update
-
 # configuration
 %__install -D %SOURCE3 %buildroot%_sysconfdir/sysconfig/lxd
 # configuration for dnsmasq called in lxd-bridge
@@ -162,8 +158,6 @@ help2man %buildroot%_bindir/lxd-benchmark -n "The container lightervisor - bench
 
 %_datadir/bash-completion/completions/*
 
-%_sysconfdir/cron.hourly/*
-
 %config(noreplace) %_sysconfdir/sysconfig/*
 %dir %_sysconfdir/lxd
 %config(noreplace) %_sysconfdir/lxd/dnsmasq.conf
@@ -177,6 +171,9 @@ help2man %buildroot%_bindir/lxd-benchmark -n "The container lightervisor - bench
 %exclude %go_path/src/%import_path/go.sum
 
 %changelog
+* Sun May 17 2020 Alexey Shabalin <shaba@altlinux.org> 4.0.1-alt1
+- New LTS version.
+
 * Tue Apr 14 2020 Alexey Shabalin <shaba@altlinux.org> 4.0.0-alt1
 - New version.
 
