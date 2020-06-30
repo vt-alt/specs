@@ -3,7 +3,7 @@
 Name: wireguard-tools
 
 Version: 1.0.20200513
-Release: alt1
+Release: alt2
 
 Summary: Tools for WireGuard: fast, modern, secure VPN tunnel
 Summary(ru_RU.UTF-8): Утилиты для WireGuard, быстрого, современного, защищенного VPN-туннеля
@@ -13,6 +13,7 @@ Url: https://www.wireguard.com/
 #Git: https://git.zx2c4.com/wireguard-tools/
 
 Source0: %name-%version.tar
+Patch1: wireguard-tools-1.0.20200513-completion-exit-early-with-bash-less-than-4.patch
 
 Obsoletes: bash-completion-wireguard < %EVR
 Conflicts: bash-completion-wireguard < %EVR
@@ -60,6 +61,7 @@ state-of-the-art cryptography.
 
 %prep
 %setup
+%patch1 -p1
 sed -i 's|%_bindir|%_sbindir|g' src/systemd/wg-quick@.service
 
 %build
@@ -97,6 +99,10 @@ popd
 %doc contrib/*
 
 %changelog
+* Fri Jun 26 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200513-alt2
+- Avoid completion scripts report errors on terminal start when bash version
+  is less than 4
+
 * Thu May 14 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.20200513-alt1
 - New version
   + add upstream wg-quick.target to package
