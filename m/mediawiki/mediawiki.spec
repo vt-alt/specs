@@ -3,7 +3,7 @@
 
 Name: mediawiki
 Version: %major.1
-Release: alt1
+Release: alt2
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
 
@@ -136,6 +136,7 @@ Obsoletes: mediawiki-extensions-StubManager
 
 # since 1.34
 Provides: mediawiki-extensions-Scribunto
+Obsoletes: mediawiki-extensions-Scribunto
 
 %description -n %name-common
 %summary
@@ -336,6 +337,9 @@ exit 0
 
 
 %changelog
+* Tue Jun 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.1-alt2
+- add Obsoletes: mediawiki-extensions-Scribunto (ALT bug 38653)
+
 * Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.1-alt1
 - new version 1.34.1 (with rpmrb script)
 - security fixes T232932, T246602
