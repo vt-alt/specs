@@ -1,14 +1,15 @@
 Name:           grub-customizer
 Version:        5.1.0
-Release:        alt1
+Release:        alt2
 Summary:        Grub Customizer is a graphical interface to configure the grub2/burg settings
 
-License:        GPLv3
+License:        GPL-3.0
 Group: 		System/Configuration/Boot and Init
 URL:            https://launchpad.net/grub-customizer
 
 Source0:        https://launchpad.net/grub-customizer/4.0/%{version}/+download/%{name}_%{version}.tar.gz
 Source1:	%name.watch
+Patch1:		grub-customizer-alt-desktop-l10n.patch
 
 BuildRequires(pre): cmake
 BuildRequires:  ctest
@@ -19,7 +20,9 @@ BuildRequires:  libssl-devel
 BuildRequires:  libarchive-devel
 BuildRequires:  desktop-file-utils
 
-Requires:       grub2
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le
+
+Requires:       grub-common
 Requires:       hwinfo
 
 %description
@@ -35,6 +38,7 @@ proxies (script output filter), if required.
 
 %prep
 %setup -q
+%patch1 -p2
 
 %build
 %add_optflags -fpermissive -std=c++11
@@ -70,6 +74,10 @@ install -m 0644 grub.cfg %buildroot%_sysconfdir/%name/grub.cfg
 %_datadir/polkit-1/actions/net.launchpad.danielrichter2007.pkexec.grub-customizer.policy
 
 %changelog
+* Sun Jun 21 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt2
+- Russian localization for desktop file.
+- Fix License tag accordidng to SPDX.
+
 * Mon Oct 15 2018 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
 - New version.
 
