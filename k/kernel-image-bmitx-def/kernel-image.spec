@@ -1,5 +1,5 @@
 %define kernel_base_version	4.9
-%define kernel_sublevel        .208
+%define kernel_sublevel        .227
 %define kernel_extra_version	%nil
 
 Name: kernel-image-bmitx-def
@@ -16,7 +16,7 @@ Release: alt1
 
 # Build options
 # You can change compiler version by editing this line:
-%define kgcc_version	8
+%define kgcc_version	7
 
 ## Don't edit below this line ##################################
 
@@ -34,6 +34,7 @@ License: GPL
 Group: System/Kernel and hardware
 Url: http://www.kernel.org/
 
+Source: %name-%version.tar
 Patch0: %name-%version-%release.patch
 
 ExclusiveArch: aarch64
@@ -44,7 +45,6 @@ BuildRequires(pre): rpm-build-kernel
 BuildRequires: bc flex kmod lzma-utils
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version
-BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
 BuildRequires: libssl-devel
 
 %if_enabled ccache
@@ -99,10 +99,7 @@ and specify %kbuild_dir as the kernel source
 directory.
 
 %prep
-%setup -cT -n kernel-image-%flavour-%kversion-%krelease
-rm -rf kernel-source-%kernel_base_version
-tar -xf %kernel_src/kernel-source-%kernel_base_version.tar
-%setup -D -T -n kernel-image-%flavour-%kversion-%krelease/kernel-source-%kernel_base_version
+%setup
 %patch0 -p1
 
 # this file should be usable both with make and sh (for broken modules
@@ -254,6 +251,29 @@ rm -f /boot/dtb
 ln -s /lib/devicetree/%kversion-%flavour-%krelease /boot/dtb
 
 %changelog
+* Mon Jun 15 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.227-alt1
+- Merged with the latest linux-stable/v4.9.227
+- Enabled more WiFi drivers
+
+* Sat May 23 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.216-alt2
+- Fixed monitor wakeup from the idle state and switching between virtual
+  consoles. Mali drivers still breaks power management.
+
+* Mon Apr 13 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.216-alt1
+- Updates from Baikal SDK-M-4.2
+  WARNING: the kernel depends on firmware from the same version of SDK.
+- Merged with linux-stable v4.9.216
+- Build preemptible kernel
+- Enabled more drivers (GPUs, web cameras, virtio, HD audio, etc)
+
+* Sun Apr 12 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.208-alt3
+- Merged with linux-stable v4.9.208 to make tracking changes (by Baikal
+  Electronics) easier
+
+* Tue Mar 03 2020 Dmitry Terekhin <jqt4@altlinux.org> 4.9.208-alt2
+- build the module mali_kbase.ko
+- this is kernel part for graphical acceleration on Mali T628
+
 * Mon Feb 17 2020 Dmitry Terekhin <jqt4@altlinux.org> 4.9.208-alt1
 - updated from https://share.baikalelectronics.ru/index.php/s/FPrYNPEAebKzCLC
 
