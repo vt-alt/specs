@@ -3,7 +3,7 @@
 %def_enable system_asio
 
 Name: galera
-Version: 26.4.2
+Version: 26.4.5
 Release: alt1
 Summary: Synchronous multi-master wsrep provider (replication engine)
 Group: System/Servers
@@ -19,6 +19,8 @@ Source4: garbd.conf
 
 # git submodules
 Source100: wsrep.tar
+
+ExcludeArch: %arm
 
 BuildRequires: gcc-c++ scons
 %{?_enable_boost:BuildRequires: boost-devel boost-program_options-devel}
@@ -78,7 +80,6 @@ install -D -m 644 %SOURCE4 %buildroot%_sysconfdir/garbd/garbd.conf
 install -D -m 755 garb/garbd %buildroot%_sbindir/garbd
 install -D -m 644 libgalera_smm.so %buildroot%_libdir/galera/libgalera_smm.so
 install -D -m 644 COPYING %buildroot%_docdir/galera/COPYING
-install -D -m 644 chromium/LICENSE %buildroot%_docdir/galera/LICENSE.chromium
 install -D -m 644 asio/LICENSE_1_0.txt %buildroot%_docdir/galera/LICENSE.asio
 install -D -m 644 www.evanjones.ca/LICENSE %buildroot%_docdir/galera/LICENSE.crc32
 install -D -m 644 scripts/packages/README %buildroot%_docdir/galera/README
@@ -106,11 +107,16 @@ install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README
 %doc %_docdir/galera/COPYING
 %doc %_docdir/galera/LICENSE.asio
 %doc %_docdir/galera/LICENSE.crc32
-%doc %_docdir/galera/LICENSE.chromium
 %doc %_docdir/galera/README
 %doc %_docdir/galera/README-MySQL
 
 %changelog
+* Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 26.4.5-alt1
+- 26.4.5
+
+* Mon Dec 16 2019 Alexey Shabalin <shaba@altlinux.org> 26.4.3-alt1
+- 26.4.3
+
 * Fri Aug 09 2019 Alexey Shabalin <shaba@altlinux.org> 26.4.2-alt1
 - 26.4.2
 
@@ -123,20 +129,20 @@ install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README
 * Wed Nov 28 2018 Alexey Shabalin <shaba@altlinux.org> 25.3.24-alt1
 - 25.3.24
 
-* Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 25.3.23-alt2%ubt
+* Fri Aug 31 2018 Alexey Shabalin <shaba@altlinux.org> 25.3.23-alt2
 - rebuild with openssl-1.1
 - build with system asio-devel
 
-* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 25.3.23-alt1%ubt
+* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 25.3.23-alt1
 - 25.3.23
 
-* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 25.3.22-alt2%ubt
+* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 25.3.22-alt2
 - NMU: rebuilt with boost-1.67.0
 
-* Tue Nov 07 2017 Alexey Shabalin <shaba@altlinux.ru> 25.3.22-alt1%ubt
+* Tue Nov 07 2017 Alexey Shabalin <shaba@altlinux.ru> 25.3.22-alt1
 - 25.3.22
 
-* Fri May 05 2017 Alexey Shabalin <shaba@altlinux.ru> 25.3.20-alt1%ubt
+* Fri May 05 2017 Alexey Shabalin <shaba@altlinux.ru> 25.3.20-alt1
 - 25.3.20
 
 * Mon Dec 26 2016 Alexey Shabalin <shaba@altlinux.ru> 25.3.19-alt1

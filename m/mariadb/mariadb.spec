@@ -10,7 +10,6 @@
 %def_with server
 %def_with libs
 %def_with devel
-%def_with common
 %def_with client
 %def_with bench
 %def_with mariabackup
@@ -50,7 +49,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.4.12
+Version: 10.4.13
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -117,7 +116,7 @@ Patch32: mariadb-basedir.patch
 Patch33: mariadb-covscan-signexpr.patch
 #Patch34: mariadb-covscan-stroverflow.patch
 
-Patch101: rocksdb-5.4.13-alt-add-libatomic-if-needed.patch
+Patch101: rocksdb-6.8.0-alt-add-libatomic-if-needed.patch
 Patch102: mariadb-10.4.7-alt-link-with-latomic-if-needed.patch
 
 Requires: %name-server = %EVR
@@ -215,10 +214,8 @@ Requires: %name-server = %EVR
 Conflicts: %name-server < %EVR
 Conflicts: MySQL-server-perl
 Conflicts: mytop
-%if_with galera
 Provides: %name-galera-server-perl = %EVR
 Obsoletes: %name-galera-server-perl < %EVR
-%endif
 BuildArch: noarch
 
 %description server-perl
@@ -600,17 +597,6 @@ popd
 # but the server subpackage obtains /usr/sbin/mysql_install_db autoreq
 ln -sf {../bin,%buildroot%_sbindir}/mysql_install_db
 
-# move pkgconfig file to arch dep path
-mkdir -p %buildroot%_pkgconfigdir
-mv %buildroot%_datadir/pkgconfig/mariadb.pc %buildroot%_pkgconfigdir/
-
-
-%if "%_lib" == "lib64"
-    if [ -f %buildroot%_prefix/lib/pkgconfig/libmariadb.pc ]; then
-        mv %buildroot%_prefix/lib/pkgconfig/libmariadb.pc %buildroot%_pkgconfigdir/
-    fi
-%endif
-
 
 # Populate chroot with data to some extent.
 install -pD -m644 %buildroot%_datadir/mysql/charsets/* \
@@ -775,6 +761,9 @@ fi
 %exclude %prefix/%plugindir/caching_sha2_password.so
 %exclude %prefix/%plugindir/sha256_password.so
 
+%config(noreplace) %_sysconfdir/security/user_map.conf
+%_pam_modules_dir/pam_user_map.so
+
 %attr(3770,root,mysql) %dir %_logdir/mysql
 %dir %_docdir/%name-%version
 %_docdir/%name-%version/README.*
@@ -879,16 +868,12 @@ fi
 %prefix/%plugindir/ha_cassandra.so
 %endif
 
-%if_with common
 %files common
 %_datadir/mysql
 %if_with mroonga
 %exclude %_datadir/mysql/mroonga
 %endif
-%if_with galera
 %exclude %_datadir/mysql/wsrep_notify
-%endif
-%endif
 
 %files server-control
 %config %_controldir/*
@@ -1018,6 +1003,15 @@ fi
 %endif
 
 %changelog
+* Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 10.4.13-alt1
+- 10.4.13
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-2752
+  + CVE-2020-2812
+  + CVE-2020-2814
+  + CVE-2020-2760
+  + CVE-2020-13249
+
 * Sun Feb 09 2020 Alexey Shabalin <shaba@altlinux.org> 10.4.12-alt1
 - 10.4.12
 - Fixes for the following security vulnerabilities:
