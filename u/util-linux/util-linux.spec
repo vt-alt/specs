@@ -5,7 +5,7 @@
 Summary: A collection of basic system utilities
 Name: util-linux
 Version: 2.33.2
-Release: alt1
+Release: alt2
 License: GPL-2.0 and GPL-2.0-or-later and LGPL-2.1-or-later and BSD-3-Clause and BSD-4-Clause-UC and Public-Domain
 Group: System/Base
 URL: ftp://ftp.kernel.org/pub/linux/utils/util-linux
@@ -47,7 +47,7 @@ BuildRequires: libcap-ng-devel
 %{?_enable_login:BuildRequires: libpam-devel}
 %{?_enable_runuser:BuildRequires: libpam-devel}
 
-%ifnarch %e2k
+%ifnarch %arm %e2k
 BuildRequires: klibc-devel
 %endif
 
@@ -107,6 +107,9 @@ Patch61: util-linux-2.33.1-add-new-e2k-subarches.patch
 
 # 33152 - logger without systemd support
 Patch70: util-linux-2.29.2-alt-logger_man.patch
+
+Patch71: 0011-setarch-make-verify_arch_domain-extendable.patch
+Patch72: 0012-setarch-add-arm-and-aarch64-architectures-to-transit.patch
 
 %description
 The util-linux package contains a large variety of low-level system
@@ -468,6 +471,9 @@ cp -r -- %SOURCE8 %SOURCE9 %SOURCE10 %SOURCE11 %SOURCE12 .
 %patch70 -p1
 %endif
 
+%patch71 -p2
+%patch72 -p2
+
 echo %version > .tarball-version
 
 mkdir -p rpm
@@ -534,7 +540,7 @@ automake --add-missing --force-missing
 %endif
 
 # build nologin
-%ifarch %e2k
+%ifarch %arm %e2k
 %__cc -static \
 	-Wall -Wextra -Werror nologin.c -o nologin
 %else
@@ -961,6 +967,11 @@ fi
 %doc Documentation/*.txt NEWS AUTHORS README* Documentation/licenses/* Documentation/TODO
 
 %changelog
+* Thu Jun 25 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.33.2-alt2
+- backported:
+  + Build nologin with glibc on armh.
+  + setarch: add arm and aarch64 architectures.
+
 * Thu Apr 11 2019 Alexey Gladkov <legion@altlinux.ru> 2.33.2-alt1
 - New version (2.33.2).
 - Obsolete util-linux-initramfs.
