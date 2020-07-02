@@ -1,5 +1,5 @@
 Name: alterator-quota
-Version: 1.5.1
+Version: 1.5.2
 Release: alt1
 
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
@@ -40,6 +40,9 @@ alterator module for managing filesystem quotas
 %_bindir/*
 
 %changelog
+* Tue Jun 30 2020 Sergey V Turchin <zerg@altlinux.org> 1.5.2-alt1
+- allow to work with root filesystem
+
 * Thu Jul 03 2014 Mikhail Efremov <sem@altlinux.org> 1.5.1-alt1
 - alterator-quota: Show first mountpoint only.
 
