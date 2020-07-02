@@ -1,4 +1,4 @@
-%define		svn 9314
+%define		svn 9421
 
 %define		rel alt1
 
@@ -9,7 +9,7 @@ Summary(uk_UA.UTF8): Потужний інтерфейс для MPlayer/MPV (QT4
 License:	GPLv2
 Group:		Video
 Url:		http://smplayer.sourceforge.net
-Version:	20.4.2
+Version:	20.6.0
 Release:	%rel.%svn
 Packager:	Motsyo Gennadi <drool@altlinux.ru>
 Source0:	http://downloads.sourceforge.net/smplayer/%name-%version.tar.bz2
@@ -159,6 +159,9 @@ export OPTFLAGS="%optflags"
 %endif
 
 %changelog
+* Sun Jun 21 2020 Motsyo Gennadi <drool@altlinux.ru> 20.6.0-alt1.9421
+- 20.6.0 (svn9421)
+
 * Tue Apr 21 2020 Motsyo Gennadi <drool@altlinux.ru> 20.4.2-alt1.9314
 - 20.4.2 (svn9314) (ALTBug #38354)
 
