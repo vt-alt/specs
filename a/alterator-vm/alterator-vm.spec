@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.11
+Version: 0.4.12
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,10 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Fri Jun 19 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.12-alt1
+- Don't encrypt last unencrypted disk
+- Remove redundnant buttons when creating partition on already created LV
+
 * Wed Feb 05 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.11-alt1
 - Detect and show encrypted volumes on unpartitioned disks
 
