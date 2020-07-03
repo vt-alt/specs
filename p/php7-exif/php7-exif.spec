@@ -49,7 +49,7 @@ install -D -m 644 %SOURCE2 %buildroot/%php7_extconf/%php7_extension/params
 # 063+ Warning: exif_read_data(bug76557.jpg): Process tag(x3030=UndefinedTa): Illegal pointer offset(x30303030 < xF70732CE) in /usr/src/RPM/BUILD/php7-exif-7.3.10/tests/bug76557.php on line 2
 # 063- Warning: exif_read_data(bug76557.jpg): Process tag(x3030=UndefinedTa): Illegal pointer offset(x30303030 + x30303030 = x60606060 > x00EE) in %sbug76557.php on line %d
 
-%ifnarch %ix86
+%ifnarch %ix86 armh
 ln -s %php7_extdir/* modules/
 NO_INTERACTION=1 make test
 %endif
