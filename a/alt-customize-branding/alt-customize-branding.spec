@@ -1,7 +1,7 @@
 %define rname alt-customize-branding
 
 Name: %rname
-Version: 1.0.8
+Version: 1.0.9
 Release: alt1
 %K5init altplace
 
@@ -11,6 +11,8 @@ Summary: Customize branding tool
 License: GPL-3.0-or-later
 Url: https://www.basealt.ru/
 Source: %rname-%version.tar
+
+ExcludeArch: armh
 
 BuildRequires(pre): rpm-build-kf5
 
@@ -124,6 +126,9 @@ fi
 #%%doc README
 
 %changelog
+* Fri Jun 26 2020 Pavel Moseev <mars@altlinux.org>  1.0.9-alt1
+- fix logo duplication (closes: #38585)
+
 * Thu Jun 04 2020 Pavel Moseev <mars@altlinux.org>  1.0.8-alt1
 - fix form cleaning
 
