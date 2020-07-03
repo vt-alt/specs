@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.0
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -46,6 +46,13 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Mon Jun 29 2020 Elena Mishina <lepata@altlinux.org> 9.0-alt2
+- system-management add FreeIPA, sambadc server, autostart/save sessions
+- starting-os add qtvirtualkeyboard
+- server-network add alterator
+- restrictions add altha, kiosk
+- functionl add openvpn-gost, openssh-gost
+
 * Thu Apr 09 2020 Elena Mishina <lepata@altlinux.org> 9.0-alt1
 - update to ALT Kworkstation 9.0
 
