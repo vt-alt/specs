@@ -30,7 +30,7 @@
 
 Name:           chromium
 Version:        83.0.4103.61
-Release:        alt1
+Release:        alt2
 
 Summary:        An open source web browser developed by Google
 License:        BSD-3-Clause and LGPL-2.1+
@@ -52,7 +52,7 @@ Obsoletes:      chromium-browser < %version
 Obsoletes:      chromium-stable <= %version
 
 # Unsupported target_cpu
-ExcludeArch: ppc64le
+ExcludeArch: ppc64le armh
 
 ### Start Patches
 Patch001: 0001-OPENSUSE-enables-reading-of-the-master-preference.patch
@@ -508,6 +508,12 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Mon Jun 29 2020 Andrey Cherepanov <cas@altlinux.org> 83.0.4103.61-alt2
+- Prevent ignored null byte warning in Flash plugin version detection.
+- Add default parameters to system-wide variable $CHROMIUM_FLAGS.
+- Use Chromium name in GenericName in desktop file (ALT #36815).
+- Exclude armh from build.
+
 * Thu May 21 2020 Alexey Gladkov <legion@altlinux.ru> 83.0.4103.61-alt1
 - New version (83.0.4103.61).
 - Security fixes:
