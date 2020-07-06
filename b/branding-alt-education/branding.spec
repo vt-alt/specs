@@ -5,7 +5,6 @@
 %define codename FalcoRusticolus
 %define status %nil
 %define status_en %nil
-%define distro_name ALT Education 9.0%status_en
 %define flavour %brand-%theme
 
 %define gtk_theme Breeze
@@ -19,8 +18,8 @@
 %define design_graphics_abi_bugfix 0
 
 Name: branding-%flavour
-Version: 9.0
-Release: alt3
+Version: 9.1
+Release: alt1
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -38,9 +37,10 @@ Source: branding.tar
 
 Group: Graphics
 Summary: System/Base
-License: GPLv2+
+License: GPL-2.0+
 
-%define distro_name_ru Альт Образование 9.0%status
+%define distro_name ALT Education %version%status_en
+%define distro_name_ru Альт Образование %version%status
 
 %description
 Distro-specific packages with design and texts for %distro_name.
@@ -52,7 +52,7 @@ Distro-specific packages with design and texts for %distro_name.
 Group:   System/Configuration/Boot and Init
 Summary: Graphical boot logo for grub2, lilo and syslinux
 Summary(ru_RU.UTF-8): Тема для экрана выбора вариантов загрузки (lilo и syslinux) 
-License: GPLv2+
+License: GPL-2.0
 
 Requires(pre):    coreutils
 Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
@@ -295,7 +295,7 @@ Menu for %distro_name
 %package system-settings
 BuildArch: noarch
 Summary: Some system settings for %distro_name
-License: GPLv2+
+License: GPL-2.0
 Group: System/Base
 # Really we need lightdm only, but it can pull another greeter.
 Requires: lightdm-gtk-greeter
@@ -465,6 +465,22 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Tue Jun 30 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt1
+- 9.1
+- Return idle3 to menu and complete its localization.
+
+* Mon Jun 22 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt0.3
+- 9.1rc1.
+- menu: add localization to some menu items, hide idle3.
+
+* Wed Jun 03 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt0.2
+- 9.1beta.
+- bootsplash: adjust bar to fit discrete step and complete fill.
+
+* Mon May 25 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt0.1
+- 9.1alpha.
+- Fix License tag according to SPDX.
+
 * Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 9.0-alt3
 - Add OpenDocument templates for KDE5.
 
