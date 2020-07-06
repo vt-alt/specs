@@ -1,9 +1,10 @@
 %define modulename acme
 
 %def_with python3
+%def_without python2
 
 Name: python-module-acme
-Version: 0.32.0
+Version: 1.5.0
 Release: alt1
 
 Summary: Python library for the ACME protocol
@@ -17,6 +18,7 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # Source-url: https://pypi.io/packages/source/a/%modulename/%modulename-%version.tar.gz
 Source: %modulename-%version.tar
 
+%if_with python2
 BuildRequires: python-devel python-module-setuptools
 #BuildRequires: python-sphinx
 #BuildRequires: python-sphinxcontrib-programoutput
@@ -42,6 +44,7 @@ Requires: python-module-idna >= 2.0.0
 Requires: python-module-cffi >= 1.7
 Requires: python-module-requests >= 2.10
 Requires: python-module-josepy >= 1.0.0
+%endif
 
 %if_with python3
 BuildRequires(pre): rpm-build-python3
@@ -145,7 +148,9 @@ Documentation for the ACME python libraries
 %setup -n %modulename-%version
 
 %build
+%if_with python2
 %python_build
+%endif
 %if_with python3
 %python3_build
 %endif
@@ -154,14 +159,18 @@ Documentation for the ACME python libraries
 %if_with python3
 # Do python3 first so bin ends up from py2
 %python3_install
+#  it is better do not to require argparse on python >= 2.7.
+%__subst "s|^argparse$||" \
+    %buildroot%python3_sitelibdir/%modulename-%{version}*.egg-info/requires.txt
 %endif
 
+%if_with python2
 %python_install
-
-#  it is better to not to require argparse on python >= 2.7.
+#  it is better do not to require argparse on python >= 2.7.
 %__subst "s|^argparse$||" \
-    %buildroot%python_sitelibdir/%modulename-%{version}*.egg-info/requires.txt \
-    %buildroot%python3_sitelibdir/%modulename-%{version}*.egg-info/requires.txt
+    %buildroot%python2_sitelibdir/%modulename-%{version}*.egg-info/requires.txt
+%endif
+
 
 %check
 #__python setup.py test
@@ -169,10 +178,12 @@ Documentation for the ACME python libraries
 #__python3 setup.py test
 #endif
 
+%if_with python2
 %files
 %doc LICENSE.txt
 %python_sitelibdir/%modulename/
 %python_sitelibdir/%modulename-%{version}*.egg-info
+%endif
 
 %if_with python3
 %files -n python3-module-acme
@@ -187,6 +198,40 @@ Documentation for the ACME python libraries
 #%doc docs/_build/html
 
 %changelog
+* Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-alt1
+- new version 1.5.0 (with rpmrb script)
+
+* Fri May 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.0-alt1
+- new version 1.4.0 (with rpmrb script)
+
+* Thu Mar 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.3.0-alt1
+- new version 1.3.0 (with rpmrb script)
+
+* Fri Feb 14 2020 Vitaly Lipatov <lav@altlinux.ru> 1.2.0-alt1
+- new version 1.2.0 (with rpmrb script)
+
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1.1.0-alt1
+- new version 1.1.0 (with rpmrb script)
+- disable python2 module build
+
+* Sat Oct 26 2019 Vitaly Lipatov <lav@altlinux.ru> 0.39.0-alt1
+- new version 0.39.0 (with rpmrb script)
+
+* Tue Sep 17 2019 Vitaly Lipatov <lav@altlinux.ru> 0.38.0-alt1
+- new version 0.38.0 (with rpmrb script)
+
+* Fri Aug 30 2019 Vitaly Lipatov <lav@altlinux.ru> 0.37.2-alt1
+- new version 0.37.2 (with rpmrb script)
+
+* Fri Aug 16 2019 Vitaly Lipatov <lav@altlinux.ru> 0.37.1-alt1
+- new version 0.37.1 (with rpmrb script)
+
+* Fri Jun 28 2019 Vitaly Lipatov <lav@altlinux.ru> 0.35.1-alt1
+- new version 0.35.1 (with rpmrb script)
+
+* Tue May 14 2019 Vitaly Lipatov <lav@altlinux.ru> 0.34.2-alt1
+- new version 0.34.2 (with rpmrb script)
+
 * Wed Mar 13 2019 Vitaly Lipatov <lav@altlinux.ru> 0.32.0-alt1
 - new version 0.32.0 (with rpmrb script)
 

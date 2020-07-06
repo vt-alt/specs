@@ -1,10 +1,11 @@
-# TODO: augeas botocore
+# TODO: botocore
 
 %def_with plugins
+%def_without dns_route53
 
 Name: certbot
-Version: 0.32.0
-Release: alt1
+Version: 1.5.0
+Release: alt2
 
 Summary: A free, automated certificate authority client
 
@@ -19,22 +20,24 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 Source: %name-%version.tar
 
 BuildArch: noarch
-BuildRequires: python-devel python-module-distribute
+BuildRequires: python3-devel python3-module-setuptools
+BuildRequires(pre): rpm-build-python3 rpm-build-intro
 
-#Requires: python-module-%name = %version-%release
-Provides: python-module-%name = %EVR
-Obsoletes: python-module-%name < %EVR
+%define acme_version %version
 
-Requires: python-module-zope.component
-Requires: python-module-zope.interface >= 4.1.0
-Requires: python-module-pyasn1 >= 0.1.8
-Requires: python-module-cffi >= 1.4.2
+Requires: python3-module-zope.component
+Requires: python3-module-zope.interface >= 4.1.0
+Requires: python3-module-pyasn1 >= 0.1.8
+Requires: python3-module-cffi >= 1.4.2
 # missed by autoreq
-Requires: python-module-future
-Requires: python-module-setuptools >= 13
+Requires: python3-module-future
+
+#Provides: python-module-%name = %EVR
+#Obsoletes: python-module-%name < %EVR
+
 # Due Prior to Python 2.7.9 the stdlib SSL module did not allow a user to configure
 # See /usr/lib/python2.7/site-packages/acme/client.py
-Requires: python-base >= 2.7.9
+#Requires: python-base >= 2.7.9
 
 # Required for documentation
 #BuildRequires: python-sphinx
@@ -42,43 +45,51 @@ Requires: python-base >= 2.7.9
 #BuildRequires: python-repoze-sphinx-autointerface
 #BuildRequires: python-sphinxcontrib-programoutput
 
-BuildRequires: python-module-acme >= %version
+%py3_use acme >= %acme_version
+%py3_use cryptography >= 1.2.3
+%py3_use distro >= 1.0.1
+%py3_use josepy >= 1.1.0
+%py3_use parsedatetime >= 1.3
 
 Provides: letsencrypt = %version
 Obsoletes: letsencrypt
 
 %define certbotdir %_datadir/%name
 #add_python_req_skip certbot
-%py_provides certbot
+%py3_provides certbot
 
-%add_python_lib_path %certbotdir/certbot/
-%add_python_lib_path %certbotdir/certbot_nginx/
-%add_python_lib_path %certbotdir/certbot_apache/
-%add_python_lib_path %certbotdir/certbot_dns-rfc2136/
-%add_python_lib_path %certbotdir/certbot_dns-route53/
-%add_python_lib_path %certbotdir/certbot_postfix/
+# https://lists.altlinux.org/pipermail/devel/2012-March/193598.html
+# https://lists.altlinux.org/pipermail/devel/2019-October/208661.html
+%add_python3_path %certbotdir
+%allow_python3_import_path %certbotdir
+
+#add_python3_lib_path %certbotdir/certbot_nginx
+#add_python3_lib_path %certbotdir/certbot_apache
+#add_python3_lib_path %certbotdir/certbot_dns-rfc2136
+#add_python3_lib_path %certbotdir/certbot_dns-route53
+#add_python3_lib_path %certbotdir/certbot_postfix
 
 %description
 Let's Encrypt is a free, automated certificate authority that aims
 to lower the barriers to entry for encrypting all HTTP traffic on the internet.
 
 # TODO: move to /usr/share/%name
-%package -n python-module-%name
+%package -n python3-module-%name
 Group: Networking/Other
-Requires: python-module-configargparse >= 0.10.0
+Requires: python3-module-configargparse >= 0.10.0
 # already in core python
 #Requires: python-module-argparse
-Requires: python-module-psutil >= 2.1.0
-Requires: python-module-acme >= %version
+Requires: python3-module-psutil >= 2.1.0
+Requires: python3-module-acme >= %acme_version
 #Recommends: letsencrypt-doc
-Summary: Python 2 libraries used by %name
+Summary: Python 3 libraries used by %name
 
-Provides: python-module-letsencrypt = %version
-Obsoletes: python-module-letsencrypt
+Provides: python3-module-letsencrypt = %version
+#Obsoletes: python-module-letsencrypt
 
 
-%description -n python-module-%name
-The python2 libraries to interface with letsencrypt.
+%description -n python3-module-%name
+The python2 libraries to interface with %name.
 
 # TODO
 %if_with plugins
@@ -87,6 +98,8 @@ Group: Networking/Other
 Summary: Certbot Apache plugin
 AutoProv: no
 Requires: %name = %EVR
+# ALT bug 37004
+Requires: python3-module-augeas
 
 %description apache
 Certbot Apache plugin.
@@ -134,33 +147,37 @@ Certbot dns_route53 plugin.
 %setup
 
 %build
-%python_build
+cd certbot
+%python3_build
 
-cd certbot-apache
-%python_build
+cd ../certbot-apache
+%python3_build
 cd ../certbot-nginx
-%python_build
-cd ../certbot-postfix
-%python_build
+%python3_build
+#cd ../certbot-postfix
+#python_build
 cd ../certbot-dns-route53
-%python_build
+%python3_build
 cd ../certbot-dns-rfc2136
-%python_build
+%python3_build
 
 
 %install
-%python_install --install-purelib=%certbotdir
+cd certbot
+%python3_install --install-purelib=%certbotdir
 
-cd certbot-apache
-%python_install --install-purelib=%certbotdir
+cd ../certbot-apache
+%python3_install --install-purelib=%certbotdir
 cd ../certbot-nginx
-%python_install --install-purelib=%certbotdir
-cd ../certbot-postfix
-%python_install --install-purelib=%certbotdir
+%python3_install --install-purelib=%certbotdir
+#cd ../certbot-postfix
+#python_install --install-purelib=%certbotdir
+%if_with dns_route53
 cd ../certbot-dns-route53
-%python_install --install-purelib=%certbotdir
+%python3_install --install-purelib=%certbotdir
+%endif
 cd ../certbot-dns-rfc2136
-%python_install --install-purelib=%certbotdir
+%python3_install --install-purelib=%certbotdir
 cd -
 
 # TODO: remove compat dirs
@@ -174,6 +191,10 @@ ln -s letsencrypt %buildroot%_logdir/%name
 ln -s %name %buildroot%_bindir/letsencrypt
 
 rm -rfv %buildroot%certbotdir/certbot*/tests/
+rm -rfv %buildroot%certbotdir/certbot/*/*_test*
+rm -rfv %buildroot%certbotdir/certbot/*_test*
+rm -rfv %buildroot%certbotdir/*/*_test*
+rm -rfv %buildroot%certbotdir/certbot/certbot_compatibility_test/
 
 #  it is better do not require argparse on python >= 2.7.
 #__subst "s|^argparse$||" %buildroot%python_sitelibdir/%name-%{version}*.egg-info/requires.txt
@@ -217,23 +238,62 @@ site.addsitedir("%certbotdir")|' %buildroot%_bindir/%name
 %certbotdir/certbot_apache/
 %certbotdir/certbot_apache-%{version}*.egg-info
 
-%files postfix
-%doc LICENSE.txt
-%certbotdir/certbot_postfix/
-%certbotdir/certbot_postfix-*.egg-info
+#files postfix
+#doc LICENSE.txt
+#certbotdir/certbot_postfix/
+#certbotdir/certbot_postfix-*.egg-info
 
 %files dns_rfc2136
 %doc LICENSE.txt
 %certbotdir/certbot_dns_rfc2136/
 %certbotdir/certbot_dns_rfc2136-%{version}*.egg-info
 
+%if_with dns_route53
 %files dns_route53
 %doc LICENSE.txt
 %certbotdir/certbot_dns_route53/
 %certbotdir/certbot_dns_route53-%{version}*.egg-info
 %endif
+%endif
 
 %changelog
+* Tue Jun 23 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-alt2
+- build without dns-route53 (AWS Route 53) plugin
+
+* Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-alt1
+- new version 1.5.0 (with rpmrb script)
+
+* Fri May 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.0-alt1
+- new version 1.4.0 (with rpmrb script)
+
+* Thu Mar 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.3.0-alt1
+- new version 1.3.0 (with rpmrb script)
+
+* Fri Feb 14 2020 Vitaly Lipatov <lav@altlinux.ru> 1.2.0-alt1
+- new version 1.2.0 (with rpmrb script)
+
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1.1.0-alt1
+- new version 1.1.0 (with rpmrb script)
+
+* Sat Oct 26 2019 Vitaly Lipatov <lav@altlinux.ru> 0.39.0-alt1
+- new version 0.39.0 (with rpmrb script)
+
+* Tue Sep 17 2019 Vitaly Lipatov <lav@altlinux.ru> 0.38.0-alt1
+- new version 0.38.0 (with rpmrb script)
+- switch to python3
+
+* Fri Aug 30 2019 Vitaly Lipatov <lav@altlinux.ru> 0.37.2-alt1
+- new version 0.37.2 (with rpmrb script)
+
+* Fri Aug 16 2019 Vitaly Lipatov <lav@altlinux.ru> 0.37.1-alt1
+- new version 0.37.1 (with rpmrb script)
+
+* Fri Jun 28 2019 Vitaly Lipatov <lav@altlinux.ru> 0.35.1-alt1
+- new version 0.35.1 (with rpmrb script)
+
+* Tue May 14 2019 Vitaly Lipatov <lav@altlinux.ru> 0.34.2-alt1
+- new version 0.34.2 (with rpmrb script)
+
 * Wed Mar 13 2019 Vitaly Lipatov <lav@altlinux.ru> 0.32.0-alt1
 - new version 0.32.0 (with rpmrb script)
 
