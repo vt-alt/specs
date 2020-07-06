@@ -2,7 +2,7 @@
 
 Name: bird
 Version: 1.6.8
-Release: alt1
+Release: alt2
 Summary: BIRD Internet Routing Daemon
 
 Group: Networking/Other
@@ -124,6 +124,9 @@ install -pD -m644 %SOURCE4 %buildroot%_unitdir/%{name}6.service
 %_sbindir/%{name}cl6
 
 %changelog
+* Fri Jun 26 2020 Slava Aseev <ptrnine@altlinux.org> 1.6.8-alt2
+- fixed bad header length test in OSPF (adapted from bird2)
+
 * Thu Jun 11 2020 Anton Farygin <rider@altlinux.ru> 1.6.8-alt1
 - 1.6.8
 
