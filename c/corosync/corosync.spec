@@ -10,7 +10,7 @@
 %define _localstatedir %_var
 
 Name: corosync
-Version: 3.0.3.0.18.g89b0d
+Version: 3.0.4
 Release: alt2
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
 License: BSD
@@ -201,6 +201,12 @@ ln -r -s \
 %endif
 
 %changelog
+* Thu May 14 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.4-alt2
+- update systemd units
+
+* Fri May 01 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.4-alt1
+- 3.0.4
+
 * Sat Apr 04 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.3.0.18.g89b0d-alt2
 - package empty %%_sysconfdir/corosync/corosync.conf as %%ghost
 
