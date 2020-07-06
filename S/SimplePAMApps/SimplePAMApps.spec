@@ -1,6 +1,6 @@
 Name: SimplePAMApps
 Version: 0.60
-Release: alt35
+Release: alt36
 
 %def_with login
 %def_with su
@@ -31,6 +31,7 @@ Patch11: %name-0.60-alt-openpam.patch
 Patch12: %name-0.60-alt-audit.patch
 Patch13: %name-0.60-alt-utmp_do_close_session.patch
 Patch14: %name-0.60-alt-su-make_process_killable.patch
+Patch15: %name-0.60-alt-login-do-not-set-PAM_RUSER-and-PAM_RHOST.patch
 
 BuildPreReq: libpam-devel libaudit-devel
 
@@ -79,6 +80,7 @@ is that of the local superuser (UID=0).
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p2
 find -type f -print0 |
 	xargs -r0 fgrep -lZ PAM_DATA_QUIET -- |
 	xargs -r0 sed -i s/PAM_DATA_QUIET/PAM_DATA_SILENT/ --
@@ -152,6 +154,9 @@ fi
 %endif #with su
 
 %changelog
+* Fri Jul 03 2020 Dmitry V. Levin <ldv@altlinux.org> 0.60-alt36
+- login: do not set PAM_RUSER and PAM_RHOST unnecessarily (closes: #38655).
+
 * Mon Jan 16 2017 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.60-alt35
 - Fixed build with gcc 6 (dropped useless rcsid).
 
