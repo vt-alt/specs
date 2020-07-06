@@ -24,6 +24,7 @@
 %def_without seastar
 %def_with cephfs_shell
 %def_without amqp_endpoint
+%def_without kafka_endpoint
 %def_with grafana
 
 %if_with python3
@@ -41,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.9
+Version: 14.2.10
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -75,6 +76,7 @@ Source27: zstd.tar
 Source28: c-ares.tar
 Source29: dmclock.tar
 Source30: seastar.tar
+Source31: seastar-fmt.tar
 
 Patch: %name-%version.patch
 BuildRequires(pre): rpm-build-python3
@@ -93,6 +95,7 @@ BuildRequires: libssl-devel libudev-devel libxfs-devel libbtrfs-devel libnl-deve
 %{?_with_libzfs:BuildRequires: libzfs-devel}
 BuildRequires: yasm
 %{?_with_amqp_endpoint:BuildRequires: librabbitmq-c-devel}
+%{?_with_kafka_endpoint:BuildRequires: librdkafka-devel}
 BuildRequires: zlib-devel bzlib-devel liblz4-devel libzstd-devel libsnappy-devel
 BuildRequires: libxml2-devel
 BuildRequires: libuuid-devel
@@ -767,6 +770,7 @@ tar -xf %SOURCE26 -C src/xxHash
 tar -xf %SOURCE28 -C src/c-ares
 tar -xf %SOURCE29 -C src/dmclock
 tar -xf %SOURCE30 -C src/seastar
+tar -xf %SOURCE31 -C src/seastar/fmt
 
 %patch -p1
 
@@ -861,6 +865,11 @@ cmake .. \
     -DWITH_RADOSGW_AMQP_ENDPOINT=ON \
 %else
     -DWITH_RADOSGW_AMQP_ENDPOINT=OFF \
+%endif
+%if_with kafka_endpoint
+    -DWITH_RADOSGW_KAFKA_ENDPOINT=ON \
+%else
+    -DWITH_RADOSGW_KAFKA_ENDPOINT=OFF \
 %endif
 %if_with blustore
     -DWITH_BLUESTORE=ON \
@@ -1527,6 +1536,11 @@ fi
 %endif
 
 %changelog
+* Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.10-alt1
+- 14.2.10
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-10753 HTTP header injection via CORS ExposeHeader tag
+
 * Wed Apr 15 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.9-alt1
 - 14.2.9
 - Fixes for the following security vulnerabilities:
