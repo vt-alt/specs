@@ -1,5 +1,5 @@
 Name: installed-db-office-server
-Version: 1.4.6
+Version: 1.4.7
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
 License: GPL
@@ -104,6 +104,9 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Thu Jul 02 2020 Andrey Cherepanov <cas@altlinux.org> 1.4.7-alt1
+- Fix set admin password for nextcloud.
+
 * Wed Oct 09 2019 Andrey Cherepanov <cas@altlinux.org> 1.4.6-alt1
 - Remove 95-office-server-postinstall as sp package is unsupported.
 
