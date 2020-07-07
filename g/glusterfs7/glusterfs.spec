@@ -1,6 +1,6 @@
 # TODO: --enable-bd-xlator
 
-%define major 7.4
+%define major 7.6
 %define somajor 7
 #define _localstatedir /var
 %def_enable epoll
@@ -613,7 +613,7 @@ rm -fv %buildroot%glusterlibdir/cloudsync-plugins/{cloudsyncs3.so,cloudsynccvlt.
 # Events
 %files gfevents
 %config(noreplace) %_sysconfdir/glusterfs/eventsconfig.json
-%dir %attr(0755,-,-) %_sharedstatedir/glusterd/events/
+%dir %attr(0755,root,root) %_sharedstatedir/glusterd/events/
 %_libexecdir/glusterfs/gfevents/
 %_libexecdir/glusterfs/peer_eventsapi.py*
 %_sbindir/glustereventsd
@@ -666,6 +666,9 @@ rm -fv %buildroot%glusterlibdir/cloudsync-plugins/{cloudsyncs3.so,cloudsynccvlt.
 %endif
 
 %changelog
+* Fri May 29 2020 Vitaly Lipatov <lav@altlinux.ru> 7.6-alt1
+- new version 7.6 (with rpmrb script)
+
 * Thu Mar 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.4-alt1
 - new version 7.4 (with rpmrb script)
 
