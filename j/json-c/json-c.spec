@@ -2,7 +2,7 @@
 
 Name: json-c
 Version: 0.13.1
-Release: alt1
+Release: alt2
 
 Summary: JSON implementation in C
 License: MIT
@@ -74,6 +74,10 @@ mv %buildroot%_libdir/*.so.* %buildroot/%_lib/
 %_pkgconfigdir/*.pc
 
 %changelog
+* Sat Jul 04 2020 Alexey Shabalin <shaba@altlinux.org> 0.13.1-alt2
+- Update to json-c-0.13 branch (ee9f67c81a3c2a44557f0cc16dc136c140293252)
+- Fixes: CVE-2020-12762
+
 * Mon Dec 31 2018 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.13.1-alt1
 - Updated to 0.13.1.
 
