@@ -1,5 +1,5 @@
 Name: installer-feature-cleanup-kernel-stage3
-Version: 0.1
+Version: 0.2
 Release: alt1
 
 Summary: Purge kernels except running
@@ -27,5 +27,8 @@ install -pm755 98-cleanup-kernel.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Tue Jun 23 2020 Anton Midyukov <antohami@altlinux.org> 0.2-alt1
+- Use 'rpm -e' instead 'apt-get remove'
+
 * Sun Jun 07 2020 Anton Midyukov <antohami@altlinux.org> 0.1-alt1
 - Initial build
