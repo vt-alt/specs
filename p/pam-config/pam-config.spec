@@ -1,88 +1,80 @@
 Name: pam-config
-Version: 1.7.0
-Release: alt1
+Version: 1.9.0
+Release: alt3
 
-Summary: Systemwide PAM config files
+Summary: Systemwide PAM config files for Linux-PAM
 License: GPLv2+
 Group: System/Base
 BuildArch: noarch
 
 Source0: %name-%version.tar
-Source1: %name-deps.sh
 
 Source2: pam_mktemp.control
 Source3: system-auth.control
+Source4: system-auth-chooser.in
+Source5: system-policy.control
+Source6: system-auth.filetrigger
+Source7: system-policy.filetrigger
 
 %define _pamdir %_sysconfdir/pam.d
 
-# All pam dependencies now provided/required by subpackages.
-AutoReqProv: nopam
-
-PreReq: %name-control = %version-%release
+Requires(pre,postun): %name-control = %version-%release
 Requires: libpasswdqc >= 0:1.1.0-alt0.2
-Requires: glibc-crypt_blowfish >= 1.2
+Requires: libcrypt >= 4.4.4
+Requires: pam_tcb >= 1.1.0.1
 Provides: %_pamdir, /etc/security
 Provides: pam-common = %version-%release
-Obsoletes: pam-common
+Obsoletes: pam-common < %version-%release
+Provides: pam0-config = %version-%release
+Obsoletes: pam0-config < %version-%release
+# Compatibility.
+Provides: pam(system-auth), pam(system-auth-use_first_pass), pam(other)
+# These requirements are optional.
+%filter_from_requires /^PAM(pam_\(ccreds\|krb5\|ldap\|pkcs11\|winbind\)\.so)/d
 
 # due to %_pamdir/other
 Conflicts: pam < 0:0.75-alt21
 # due to pam_mktemp.so
 Conflicts: openssh-server < 0:4.6p1
 
-BuildPreReq: rpm-build >= 0:4.0.4-alt98.15
+BuildPreReq: rpm-macros-pam
 
 %package control
 Summary: Control rules for the systemwide PAM config files
 Group: System/Base
-
-%package -n pam0-config
-Summary: Systemwide PAM config files for Linux-PAM
-Group: System/Base
-PreReq: %name = %version-%release
-# This is quite low-level code; synced with rpm-build-4.0.4-alt98.15.
-Requires: %([ -x "%SOURCE1" ] && RPM_LIB=%_lib RPM_LIBDIR=%_libdir PAM_SO_SUFFIX= PAM_NAME_SUFFIX=0 RPM_BUILD_ROOT=%buildroot %SOURCE1 %SOURCE0 req || echo unknown)
-Provides: %([ -x "%SOURCE1" ] && PAM_SO_SUFFIX= PAM_NAME_SUFFIX=0 RPM_BUILD_ROOT=%buildroot %SOURCE1 %SOURCE0 prov || echo unknown)
-# Compatibility.
-Provides: pam(system-auth), pam(system-auth-use_first_pass), pam(other)
-
-%package -n pam2-config
-Summary: Systemwide PAM config files for OpenPAM
-Group: System/Base
-PreReq: %name = %version-%release
-# This is quite low-level code; synced with rpm-build-4.0.4-alt98.15.
-Requires: %([ -x "%SOURCE1" ] && RPM_LIB=%_lib RPM_LIBDIR=%_libdir PAM_SO_SUFFIX=.2 PAM_NAME_SUFFIX=2 RPM_BUILD_ROOT=%buildroot %SOURCE1 %SOURCE0 req || echo unknown)
-Provides: %([ -x "%SOURCE1" ] && PAM_SO_SUFFIX=.2 PAM_NAME_SUFFIX=2 RPM_BUILD_ROOT=%buildroot %SOURCE1 %SOURCE0 prov || echo unknown)
 
 %description
 PAM (Pluggable Authentication Modules) is a system security tool
 which allows system administrators to set authentication policy
 without having to recompile programs which do authentication.
 
-This package contains systemwide PAM config files.
-This package also contains common files and directories
-shared by various PAM implementations.
+This package contains systemwide config files for Linux-PAM.
 
 %description control
 This package contains control rules for systemwide PAM config files.
 See control(8) for details.
 
-%description -n pam0-config
-PAM (Pluggable Authentication Modules) is a system security tool
-which allows system administrators to set authentication policy
-without having to recompile programs which do authentication.
-
-This package contains systemwide config files for Linux-PAM.
-
-%description -n pam2-config
-PAM (Pluggable Authentication Modules) is a system security tool
-which allows system administrators to set authentication policy
-without having to recompile programs which do authentication.
-
-This package contains systemwide config files for OpenPAM.
-
 %prep
 %setup
+
+%build
+template='%_sourcedir/system-auth-chooser.in'
+for only in system-auth-*-only; do
+	target="${only%%-only}"
+	method="${target##*-}"
+	[ "$method" != 'local' ] || continue
+	base="${target%%-$method}"
+	{
+		echo '#%%PAM-1.0'
+		for type in auth account password session; do
+			grep -q "^$type" "$only" || continue
+			sed -e "s/@TYPE@/$type/" \
+			    -e "s/@BASE@/$base/" \
+			    -e "s/@METHOD@/$method/" \
+			    "$template"
+		done
+	} > "$target"
+done
 
 %install
 mkdir -p %buildroot{%_pamdir,%_controldir,/etc/security}
@@ -90,13 +82,17 @@ mkdir -p %buildroot{%_pamdir,%_controldir,/etc/security}
 cp -a * %buildroot%_pamdir/
 chmod 644 %buildroot%_pamdir/*
 
-for f in pam_mktemp system-auth; do
+for f in pam_mktemp system-auth system-policy; do
 	install -pm755 %_sourcedir/$f.control %buildroot%_controldir/$f
+done
+
+for f in system-auth system-policy; do
+	install -Dm0755 %_sourcedir/$f.filetrigger %buildroot%_rpmlibdir/$f.filetrigger
 done
 
 %pre
 %pre_control pam_mktemp
-for f in %_pamdir/system-auth %_pamdir/system-auth-use_first_pass; do
+for f in %_pamdir/system-auth %_pamdir/system-auth-use_first_pass %_pamdir/system-policy; do
 	if [ -f "$f" -a ! -L "$f" ]; then
 		mv -f "$f" "$f-local" &&
 		ln -f "$f-local" "$f-local.rpmsave" &&
@@ -105,10 +101,13 @@ for f in %_pamdir/system-auth %_pamdir/system-auth-use_first_pass; do
 	fi
 done
 %pre_control system-auth
+if [ -f "%_pamdir/system-policy" ]; then
+	%pre_control system-policy
+fi
 
 %post
 cd %_pamdir
-for f in system-auth system-auth-use_first_pass; do
+for f in system-auth system-auth-use_first_pass system-policy; do
 	if [ -f "/var/run/$f-local.update" -a -f "$f-local.rpmsave" ]; then
 		[ -f "$f-local.rpmnew" ] ||
 			ln -f "$f-local" "$f-local.rpmnew" ||:
@@ -118,15 +117,30 @@ for f in system-auth system-auth-use_first_pass; do
 			rm -f "$f-local.rpmnew" ||:
 	fi
 done
-if [ ! -f system-auth ]; then
-	if [ -f system-auth.rpmsave ]; then
-		cp -af system-auth.rpmsave system-auth
-	elif [ -f system-auth.rpmnew ]; then
-		cp -af system-auth.rpmnew system-auth
+for f in system-auth system-policy; do
+	if [ ! -f "$f" ]; then
+		if [ -f "$f.rpmsave" ]; then
+			cp -af "$f.rpmsave" "$f"
+		elif [ -f "$f.rpmnew" ]; then
+			cp -af "$f.rpmnew" "$f"
+		fi
 	fi
-fi
-%post_control -s enabled pam_mktemp
+done
 %post_control -s local system-auth
+if [ $1 -ge 2 ]; then
+	status_dir='/var/run/control'
+	status_file="$status_dir/system-policy"
+	[ -f "$status_file" ] || {
+		mkdir -p "$status_dir"
+		if [ "$(/usr/sbin/control system-auth)" = "local" ]; then
+			echo local
+		else
+			echo remote
+		fi > "$status_file"
+	}
+fi
+%post_control -s local system-policy
+%post_control -s enabled pam_mktemp
 
 %triggerpostun -- pam <= 0:0.75-alt8
 [ $2 -gt 0 ] || exit 0
@@ -142,24 +156,52 @@ fi
 %files
 %dir %_pamdir
 %config %_pamdir/other
+%config(noreplace) %_pamdir/system-auth-common
 %config(noreplace) %_pamdir/*-local
+%config(noreplace) %_pamdir/*-only
 %config(noreplace) %_pamdir/*-ldap
 %config(noreplace) %_pamdir/*-krb5
 %config(noreplace) %_pamdir/*-krb5_ccreds
 %config(noreplace) %_pamdir/*-multi
 %config(noreplace) %_pamdir/*-pkcs11
 %config(noreplace) %_pamdir/*-winbind
+%config(noreplace) %_pamdir/*-remote
 %config(noreplace) %_pamdir/common-login*
 %_pamdir/system-auth
 %_pamdir/system-auth-use_first_pass
+%_pamdir/system-policy
+%_rpmlibdir/system-auth.filetrigger
+%_rpmlibdir/system-policy.filetrigger
 /etc/security
 
 %files control
 %config %_controldir/*
 
-%files -n pam0-config
-
 %changelog
+* Wed May 27 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.9.0-alt3
+- Fix an error in system-policy.filetrigger in 1.9.0-alt1.
+
+* Mon May 25 2020 Dmitry V. Levin <ldv@altlinux.org> 1.9.0-alt2
+- Fix an error in %%post introduced in 1.9.0-alt1.
+
+* Sat May 16 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.9.0-alt1
+- Added configurable substack system-policy.
+- Added filetriggers for system-auth and system-policy methods
+  to avoid unknown state during upgrade and uninstall.
+- system-auth-winbind-only: use default ccache.
+- Split system-auth{,-use_first_pass}-{krb5,krb5_ccreds,ldap,winbind} (by ldv@)
+  All five methods rewrited using pam_localuser as a chooser:
+  if pam_localuser concludes the authenticating user is local, then use local
+  method for authentication, otherwise use the corresponding non-local method.
+
+* Wed May 13 2020 Dmitry V. Levin <ldv@altlinux.org> 1.8.0-alt1
+- Removed prefix=$2y$ count=8 from pam_tcb options (closes: #36279).
+- system-auth-local: split into system-auth-local-only
+  and system-auth-common.
+- system-auth-use_first_pass-local: likewise, split into
+  system-auth-use_first_pass-local-only and system-auth-common.
+- Merged pam0-config subpackage into pam-config.
+
 * Tue Feb 03 2015 Dmitry V. Levin <ldv@altlinux.org> 1.7.0-alt1
 - Added winbind authentication support (by cas@).
 

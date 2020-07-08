@@ -1,23 +1,37 @@
+%define _unpackaged_files_terminate_build 1
+# Suppress warning emerging from mentioning this macro in changelog
+%define _sysconfigdir /etc
+
+# Enable cmake RPATH for unit tests
+%global _cmake_skip_rpath %nil
+
 Name: libnss-role
-Version: 0.4.1
-Release: alt1
+Version: 0.5.0
+Release: alt3
 
 Summary: NSS API library and admin tools for roles and privilegies
 
 License: LGPLv2.1
-URL: https://github.com/Etersoft/libnss-role
+URL: https://github.com/altlinux/libnss-role
 Group: System/Libraries
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# https://github.com/Etersoft/libnss-role.git
+# https://github.com/altlinux/libnss-role.git
 Source: %name-%version.tar
 
 Requires(pre): chrooted >= 0.3.5-alt1 chrooted-resolv sed
 Requires(postun): chrooted >= 0.3.5-alt1 sed
 
-BuildRequires: glibc-devel scons
-BuildRequires: libpam-devel
+BuildRequires: glibc-devel
+BuildRequires: cmake
+BuildRequires: ctest
+BuildRequires: libcmocka
+BuildRequires: libcmocka-devel
+BuildRequires: libpam0
+BuildRequires: libpam0-devel
+
+Requires: libpam0
 
 %description
 NSS API library and admin tools for roles and privilegies.
@@ -35,12 +49,22 @@ NSS API library for roles and privilegies.
 %setup
 
 %build
-scons
+%cmake \
+	-DNSS_LIBDIR=/%_lib \
+	-DROLE_LIBDIR=%_libdir \
+	-DMANDIR=%_man8dir \
+	-DCMAKE_INSTALL_PREFIX:PATH=%_prefix
+%cmake_build
+
+%check
+cd BUILD
+%make_build test
+
+./checkver %version
 
 %install
-scons install DESTDIR=%buildroot LIBDIR=%_libdir LIBSYSDIR=/%_lib
-mkdir -p %buildroot%_sysconfdir
-install -m644 role.default %buildroot%_sysconfdir/role
+%cmakeinstall_std
+mkdir -p %buildroot%_sysconfdir/role.d
 
 %post
 if [ "$1" = "1" ]; then
@@ -60,11 +84,13 @@ fi
 update_chrooted all
 
 %files
-%config(noreplace) %_sysconfdir/role
+%config(noreplace) %verify(not md5 size mtime) %_sysconfdir/role
+%dir %_sysconfdir/role.d
 %_sysconfdir/pam.d/role*
 /%_lib/libnss_*.so.*
-%_sbindir/*
-%_bindir/*
+%_sbindir/roleadd
+%_sbindir/roledel
+%_bindir/rolelst
 %_libdir/*.so.*
 %_man8dir/*
 
@@ -73,6 +99,21 @@ update_chrooted all
 %_includedir/role/
 
 %changelog
+* Wed May 13 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.5.0-alt3
+- Fix roleadd installation
+- Correct show of project version
+
+* Wed Apr 15 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.5.0-alt2
+- Fix install role.d directory (replace mkdir from check section to install)
+
+* Wed Apr 15 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.5.0-alt1
+- Add support /etc/role.d directory as addition installable configuration
+- Replace build system to cmake
+- Add unit testing
+
+* Sat Apr 04 2020 Igor Vlasenko <viy@altlinux.ru> 0.4.1-alt1.1
+- NMU: fixed SConstruct
+
 * Tue Aug 06 2019 Evgeny Sinelnikov <sin@altlinux.org> 0.4.1-alt1
 - Fix double memory free with crash before writing (Closes: 37077)
 
@@ -125,7 +166,7 @@ update_chrooted all
 * Tue Nov 02 2010 Pavel Shilovsky <piastry@altlinux.org> 0.2.6-alt1
 - Bug fixing
 
-* Sat Oct 24 2010 Pavel Shilovsky <piastry@altlinux.org> 0.2.5-alt1
+* Sun Oct 24 2010 Pavel Shilovsky <piastry@altlinux.org> 0.2.5-alt1
 - Add new parsing rules
 - Update mans
 - Code style and bug fixing

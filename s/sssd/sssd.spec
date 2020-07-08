@@ -4,10 +4,11 @@
 %def_without secrets
 %def_disable local_provider
 %def_with check
+%def_with samba
 
 Name: sssd
 Version: 2.2.3
-Release: alt1.1
+Release: alt3
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -16,6 +17,8 @@ Source: %name-%version.tar
 Source2: %name.init
 Source3: system-auth-sss.pam
 Source4: system-auth-use_first_pass-sss.pam
+Source5: system-auth-sss-only.pam
+Source6: system-auth-use_first_pass-sss-only.pam
 
 Patch: %name-%version-alt.patch
 
@@ -124,6 +127,7 @@ Group: Networking/Other
 License: LGPLv3+
 Provides: libnss_sss
 Provides: pam_sss
+Requires: pam-config >= 1.9.0
 
 %description client
 Provides the libraries needed by the PAM and NSS stacks to connect to the SSSD
@@ -221,6 +225,7 @@ Group: System/Servers
 License: GPLv3+
 Requires: %name-krb5-common = %version-%release
 Requires: %name-pac = %version-%release
+Requires: %name-winbind-idmap = %version-%release
 
 %description ad
 Provides the Active Directory back end that the SSSD can utilize to fetch
@@ -459,6 +464,7 @@ Provides python3 module for calculating the murmur hash version 3
     --disable-rpath \
     --disable-static \
     %{subst_with kcm} \
+    %{subst_with samba} \
     %{subst_with secrets} \
     --without-python2-bindings \
     #
@@ -492,6 +498,8 @@ touch %buildroot%mcpath/initgroups
 install -D -m755 %SOURCE2 %buildroot%_initdir/%name
 install -D -m644 %SOURCE3 %buildroot%_pamdir/system-auth-sss
 install -D -m644 %SOURCE4 %buildroot%_pamdir/system-auth-use_first_pass-sss
+install -D -m644 %SOURCE5 %buildroot%_pamdir/system-auth-sss-only
+install -D -m644 %SOURCE6 %buildroot%_pamdir/system-auth-use_first_pass-sss-only
 
 # Remove .la files created by libtool
 find %buildroot -name "*.la" -exec rm -f {} \;
@@ -680,7 +688,7 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %_datadir/%name/sssd.api.d/sssd-proxy.conf
 
 %files client
-%config(noreplace) %_pamdir/*-sss
+%config(noreplace) %_pamdir/*-sss*
 /%_lib/libnss_sss.so.2
 /%_lib/security/pam_sss.so
 %_libdir/krb5/plugins/libkrb5/sssd_krb5_locator_plugin.so
@@ -820,6 +828,17 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Sun May 17 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.2.3-alt3
+- Rewrite PAM rules for sss system-auth method with new pam-config-1.9.0 scheme
+  using pam_localuser.so to separate configuration for local and remote users.
+- Added dependency sssd-client to pam-config-1.9.0 supported configurable
+  session substack system-policy.
+- Added dependency sssd-ad to winbind-idmap for compatibility installation.
+
+* Wed Apr 29 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.2.3-alt2
+- Updated sss system-auth method with pam_auth_common substack
+- Added requires to pam-config-1.8.0 supported pam_auth_common substack
+
 * Tue Apr 28 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.2.3-alt1.1
 - Rebuild with libldb-2.0.10
 

@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.6
+Version: 5.1.7
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Sat May 09 2020 Evgeny Sinelnikov <sin@altlinux.org> 5.1.7-alt1
+- Add Native NetworkManager control mode support (closes: #38455)
+
 * Fri Mar 06 2020 Mikhail Efremov <sem@altlinux.org> 5.1.6-alt1
 - Fix is_bridge() in case of empty type.
 - Set interface type to "bri" for any bridge.

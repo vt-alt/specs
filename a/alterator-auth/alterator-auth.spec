@@ -1,10 +1,10 @@
 %define _hooksdir %_sysconfdir/hooks/hostname.d
 
 Name: alterator-auth
-Version: 0.41
-Release: alt1.3.p9
+Version: 0.43.6
+Release: alt1
 
-%filter_from_requires /^samba-common$/d;/systemd-services/d
+%filter_from_requires /^samba-common$/d;/systemd-services/d;/^gpupdate$/d
 
 Source:%name-%version.tar
 
@@ -62,6 +62,7 @@ Requires: krb5-kinit
 Requires: pam_mount
 Requires: libnss-role
 Requires: alterator-datetime
+Requires: sssd-dbus
 
 Provides:  task-auth-ad = %EVR
 Obsoletes: task-auth-ad < %EVR
@@ -131,15 +132,40 @@ install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
 %files -n task-auth-freeipa
 
 %changelog
+* Sat Jul 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.6-alt1
+- Add ad_gpo_access_control default as permissive for sssd.conf
+
+* Wed Jul 01 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.5-alt1
+- Add ad_gpo_ignore_unreadable and cache_credentials defaults for sssd.conf
+
+* Fri Jun 19 2020 Andrey Cherepanov <cas@altlinux.org> 0.43.4-alt2
+- Add changelog from p9 allows copy from sisyphus to p9.
+
 * Tue Jun 09 2020 Andrey Cherepanov <cas@altlinux.org> 0.41-alt1.3.p9
 - Place dns source immediately after files instead of disabling avahi-daemon service (ALT #37082).
 
-* Fri Jun 05 2020 Andrey Cherepanov <cas@altlinux.org> 0.41-alt1.2.p9
+* Tue Jun 09 2020 Andrey Cherepanov <cas@altlinux.org> 0.43.4-alt1
+- Place dns source immediately after files instead of disabling avahi-daemon service (ALT #37082).
+
+* Fri Jun 05 2020 Andrey Cherepanov <cas@altlinux.org> 0.43.3-alt1
 - Disable avahi-daemon if login to .local domain is requested (ALT #37082).
 
-* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 0.41-alt1.1.p9
-- Hide user list in Lightdm for domain login (for Active Directory, FreeIPA and ALT Domain).
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 0.43.2-alt1
+- join_ipa_domain(): adapt dm and delete obsoleted fix for nsswitch.conf.
+
+* Tue Jun 02 2020 Andrey Cherepanov <cas@altlinux.org> 0.43.1-alt1
+- Fix hide user list for new version of lightdm.
 - Do not remove local DNS from resolvconf.
+
+* Mon Jun 01 2020 Andrey Cherepanov <cas@altlinux.org> 0.43-alt1
+- Hide user list in Lightdm for domain login.
+
+* Sat Apr 18 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.42-alt1
+- task-auth-ad-sssd now depends on sssd-dbus allowing AD domain users
+  to access D-Bus services like `systemctl` and etc.
+- system-auth now display correctly message in case of wrong password or
+  preauth failed.
+- Add Enable Group Policy checkbox in credential dialog during join to AD.
 
 * Wed Sep 11 2019 Andrey Cherepanov <cas@altlinux.org> 0.41-alt1
 - Suppress error message during LDAP server check.

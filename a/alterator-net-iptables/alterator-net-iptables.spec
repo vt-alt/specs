@@ -1,6 +1,6 @@
 Name: alterator-net-iptables
-Version: 4.19.7
-Release: alt3
+Version: 4.19.8
+Release: alt1
 
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
 
@@ -69,6 +69,9 @@ touch -- %buildroot%_logdir/%name
 %_logdir/alterator-net-iptables
 
 %changelog
+* Wed May 20 2020 Georgy A Bystrenin <gkot@altlinux.org> 4.19.8-alt1
+- net-iptables: Add host mode support (Closes: #38505)
+
 * Mon Jun 10 2019 Fr. Br. George <george@altlinux.ru> 4.19.7-alt3
 - Add default values to net-iptables.conf (Closes: #34291)
 
