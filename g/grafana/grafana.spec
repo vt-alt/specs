@@ -1,5 +1,5 @@
 %global import_path github.com/grafana/grafana
-%global commit ef5b586d7d9e561b78c8aaa098c4e9f1e3a78d62
+%global commit efbcbb838b4318eaf04161bc9216c74d0155efba
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -12,7 +12,7 @@
 
 
 Name:		grafana
-Version:	7.0.1
+Version:	7.0.5
 Release:	alt1
 Summary:	Metrics dashboard and graph editor
 
@@ -51,7 +51,13 @@ for Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
 # $ rm -rf node_modules/node-gyp
 # $ git add -f node_modules
 # $ git add -f packages/grafana-*/node_modules
+# $ git add -f plugins-bundled/internal/input-datasource/node_modules
 # $ git commit -n --no-post-rewrite -m "add node js modules"
+#
+# Go vendors modules
+# $ go mod vendor -v
+# $ git add -f vendor
+# $ git commit -n --no-post-rewrite -m "update go modules by go mod vendor"
 
 %setup -q
 %patch -p1
@@ -193,6 +199,12 @@ fi
 %_datadir/%name
 
 %changelog
+* Sat Jul 04 2020 Alexey Shabalin <shaba@altlinux.org> 7.0.5-alt1
+- 7.0.5
+
+* Thu Jun 04 2020 Alexey Shabalin <shaba@altlinux.org> 7.0.3-alt1
+- 7.0.3 (Fixes: CVE-2020-13379)
+
 * Fri May 29 2020 Alexey Shabalin <shaba@altlinux.org> 7.0.1-alt1
 - 7.0.1
 
