@@ -1,7 +1,7 @@
 %define rname alt-app-starter
 
 Name: %rname
-Version: 1.1.8
+Version: 1.2.4
 Release: alt1
 %K5init altplace
 
@@ -62,6 +62,24 @@ install -m 0644 translations/*.qm %buildroot/%_qt5_translationdir/
 %_K5xdgapp/*.desktop
 
 %changelog
+* Tue Jun 23 2020 Pavel Moseev <mars@altlinux.org>  1.2.4-alt1
+- add choosing application from list and folder
+
+* Fri Jun 19 2020 Pavel Moseev <mars@altlinux.org>  1.2.3-alt1
+- clean code
+
+* Fri Jun 19 2020 Pavel Moseev <mars@altlinux.org>  1.2.2-alt1
+- add saving history of entered commands
+
+* Mon Jun 08 2020 Pavel Moseev <mars@altlinux.org>  1.2.1-alt1
+- clean code
+
+* Thu Jun 04 2020 Pavel Moseev <mars@altlinux.org>  1.2.0-alt1
+- new version
+
+* Mon Jun 01 2020 Pavel Moseev <mars@altlinux.org>  1.1.9-alt1
+- clean code
+
 * Tue Apr 28 2020 Pavel Moseev <mars@altlinux.org>  1.1.8-alt1
 - fix process priority change
 
