@@ -1,18 +1,16 @@
 Name: xfce4-eyes-plugin
-Version: 4.5.0
+Version: 4.5.1
 Release: alt1
 
 Summary: Eyes plugin for Xfce Desktop
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-eyes-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# git://git.xfce.org/panel-plugins/xfce4-eyes-plugin
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-eyes-plugin.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel libxfce4util-devel
@@ -44,7 +42,7 @@ Scary!
 %find_lang %name
 
 %files -f %name.lang
-%doc README AUTHORS
+%doc README.md AUTHORS
 %_libdir/xfce4/panel/plugins/*
 %_datadir/xfce4/eyes/
 %_datadir/xfce4/panel/plugins/*.desktop
@@ -53,6 +51,12 @@ Scary!
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Fri Jul 03 2020 Mikhail Efremov <sem@altlinux.org> 4.5.1-alt1
+- Added Vcs tag.
+- Updated url.
+- Don't use rpm-build-licenses.
+- Updated to 4.5.1.
+
 * Wed Aug 22 2018 Mikhail Efremov <sem@altlinux.org> 4.5.0-alt1
 - Update url.
 - Enable debug (minimum level).
