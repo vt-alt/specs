@@ -7,12 +7,13 @@
 %define ftrgrname2 rpi4-boot-uboot-filetrigger
 %define firsttimename rpi4-uboot-directory-cleanup
 %define vars rpi4-boot-vars
+%define rpicommon rpi4-boot-common
 
 Name: rpi4-boot-switch
-Version: 0.9
+Version: 0.10
 Release: alt1
 Summary: Switch of boot mode for Raspberry Pi 4
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: System/Configuration/Other
 Packager: Dmitry Terekhin <jqt4@altlinux.org>
 Url: https://git.altlinux.org/people/jqt4/packages/rpi4-boot-switch.git
@@ -26,6 +27,7 @@ Source5: %ftrigger
 Source6: %ftrigger2
 Source7: %firsttimename
 Source8: %vars
+Source9: %rpicommon
 
 %description
 Switch of boot mode for Raspberry Pi 4
@@ -79,6 +81,7 @@ install -Dpm 0755 %SOURCE5 %buildroot%_rpmlibdir/%ftrigger
 install -Dpm 0755 %SOURCE6 %buildroot%_rpmlibdir/%ftrigger2
 install -Dpm 0755 %SOURCE7 %buildroot%_sysconfdir/firsttime.d/%firsttimename
 install -Dpm 0644 %SOURCE8 %buildroot%_sbindir/%vars
+install -Dpm 0644 %SOURCE9 %buildroot%_sbindir/%rpicommon
 
 %files
 %doc README.ru README.en
@@ -87,6 +90,7 @@ install -Dpm 0644 %SOURCE8 %buildroot%_sbindir/%vars
 %_sbindir/%ubfw
 %_sbindir/%uboot
 %_sbindir/%vars
+%_sbindir/%rpicommon
 
 %files -n %ftrgrname
 %_rpmlibdir/%ftrigger
@@ -95,6 +99,12 @@ install -Dpm 0644 %SOURCE8 %buildroot%_sbindir/%vars
 %_rpmlibdir/%ftrigger2
 
 %changelog
+* Sun Jun 28 2020 Anton Midyukov <antohami@altlinux.org> 0.10-alt1
+- Initiate allocation of common code in rpi4-boot-common
+- Copy dtb for RasPi3 also
+- Do not add devicetree to config.txt
+- Do not backup config.txt every time
+
 * Tue Jun 09 2020 Dmitry Terekhin <jqt4@altlinux.org> 0.9-alt1
 - rpi4-boot-nouboot: removed cma=192M option from kernel cmd line
 
