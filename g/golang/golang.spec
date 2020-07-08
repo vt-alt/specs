@@ -38,8 +38,8 @@
 %def_disable check
 
 Name:    golang
-Version: 1.14.3
-Release: alt2
+Version: 1.14.4
+Release: alt1
 Summary: The Go Programming Language
 Group:   Development/Other
 License: BSD
@@ -293,6 +293,9 @@ mkdir -p -- \
 
 
 %changelog
+* Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.4-alt1
+- New version (1.14.4).
+
 * Sun May 17 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.3-alt2
 - merge chanlog with p9
 
