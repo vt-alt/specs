@@ -3,8 +3,8 @@
 
 Name: gpsd
 Summary: Service daemon for mediating access to a GPS
-Version: 3.19
-Release: alt3
+Version: 3.20
+Release: alt5
 License: BSD-2-Clause
 Group: System/Servers
 Url: http://www.catb.org/gpsd
@@ -13,12 +13,14 @@ Packager: Anton V. Boyarshinov <boyarsh@altlinux.ru>
 Source: %name-%version.tar
 Requires: libgps%abiversion = %version-%release
 
-BuildRequires: asciidoc docbook-dtds docbook-style-xsl scons gcc-c++ libXaw-devel libXext-devel libXpm-devel libdbus-glib-devel xorg-cf-files xsltproc
+Patch0: gpsd-3.20-SConstruct.patch
+
+BuildRequires: asciidoc docbook-dtds docbook-style-xsl scons gcc-c++ libXaw-devel libXext-devel libXpm-devel libdbus-glib-devel xorg-cf-files xsltproc libgtk+3-devel
 
 BuildRequires: python3-dev python3-module-pycairo python3-module-pygobject3 python3-module-anyjson python3-module-serial
 
 %if_with libQgpsmm
-BuildRequires: libqt4-devel
+BuildRequires: qt5-base-devel
 %endif
 
 BuildRequires: libbluez-devel
@@ -73,6 +75,7 @@ Development files for libgps
 Summary: Clients for gpsd with an X interface
 Group: Sciences/Geosciences
 Requires: libgps%abiversion = %version-%release
+Requires: python3-module-gps = %version-%release
 
 %description -n gpsd-clients
 xgpsspeed is a speedometer that uses position information from the GPS.
@@ -92,6 +95,8 @@ Python bindings to libgps
 
 %prep
 %setup
+
+%patch0 -p2
 
 # don't set RPATH
 #sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
@@ -115,13 +120,19 @@ scons \
     libdir=%_libdir \
     python_libdir=%python3_sitelibdir \
     target_python=%__python3 \
+    %if_with libQgpsmm
+	qt=yes \
+	qt_versioned=5 \
+    %else
+	 qt=no \
+    %endif
     debug=yes
 
 %install
 DESTDIR=%buildroot scons install udev-install
 
 %files
-%doc README INSTALL COPYING
+%doc README.adoc INSTALL.adoc COPYING
 %_sbindir/gpsd
 %_sbindir/gpsdctl
 %_unitdir/gpsd.service
@@ -134,11 +145,13 @@ DESTDIR=%buildroot scons install udev-install
 %_man5dir/*
 
 %files -n libgps%abiversion
-%_libdir/libgps*.so.*
+%_libdir/libgps*.so.%abiversion
+%_libdir/libgps*.so.%abiversion.*
 
 %if_with libQgpsmm
 %files -n libQgpsmm%abiversion
-%_libdir/libQgps*.so.*
+%_libdir/libQgps*.so.%abiversion
+%_libdir/libQgps*.so.%abiversion.*
 %endif
 
 %files -n libgps-devel
@@ -160,6 +173,24 @@ DESTDIR=%buildroot scons install udev-install
 %python3_sitelibdir/*.egg-info
 
 %changelog
+* Wed Jun 24 2020 Sergey Y. Afonin <asy@altlinux.org> 3.20-alt5
+- added python3-module-gps to Requires of gpsd-clients subpackage
+
+* Wed Jun 24 2020 Sergey Y. Afonin <asy@altlinux.org> 3.20-alt4
+- updated gpsd-3.20-SConstruct.patch: sync all checks
+  for target_python for xgps with upstream
+
+* Wed Jun 24 2020 Sergey Y. Afonin <asy@altlinux.org> 3.20-alt3
+- fixed check for aiogps for target_python
+  (based on upstream's commit e876f4558)
+
+* Sat May 02 2020 Sergey Y. Afonin <asy@altlinux.org> 3.20-alt2
+- built with Qt5 (thanks to zerg@altlinux)
+
+* Thu Jan 02 2020 Sergey Y. Afonin <asy@altlinux.org> 3.20-alt1
+- 3.20
+- added libgtk+3-devel to BuildRequires (is needed for xgps)
+
 * Thu Dec 12 2019 Grigory Ustinov <grenka@altlinux.org> 3.19-alt3
 - NMU: Fix license.
 
