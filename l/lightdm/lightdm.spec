@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt9
+Release: alt10
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -31,6 +31,7 @@ Patch13: %name-1.30.0-alt-polkit.patch
 Patch14: %name-1.30.0-alt-shells.patch
 Patch15: %name-1.30.0-alt-04-systemd.patch
 Patch16: %name-1.30.0-alt-05-tmpfiles.patch
+Patch17: %name-1.30.0-alt-i18n.patch
 
 Requires: dm-tool
 
@@ -144,6 +145,7 @@ manager via D-Bus.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 %ifarch %e2k
 # until apx. lcc-1.23.01
@@ -276,6 +278,10 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Wed Jul 01 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt10
+- Added patch to read the locale configuration from /etc/sysconfig/i18n
+  (closes: 38640).
+
 * Thu Jun 04 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt9
 - Remove the explicit relationship to the accountsservice package
   (closes: 38573).
