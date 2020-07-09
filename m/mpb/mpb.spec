@@ -1,6 +1,6 @@
 Name: mpb
 Version: 1.5
-Release: alt4
+Release: alt5
 Summary: MIT Photonic Bands
 License: GPLv2+
 Group: Sciences/Physics
@@ -16,6 +16,8 @@ BuildRequires: gcc-fortran libctl-devel libfftw3-devel libhdf5-devel
 BuildRequires: liblapack-devel libnlopt-devel guile-devel
 
 Requires: lib%name = %EVR
+# ALT 38587
+Requires: libctl-devel
 
 %description
 The MIT Photonic-Bands (MPB) package is a free program for computing the
@@ -98,6 +100,9 @@ export CPPFLAGS="%optflags"
 %_libdir/*.so
 
 %changelog
+* Mon Jun 29 2020 Grigory Ustinov <grenka@altlinux.org> 1.5-alt5
+- Add explicit BR on libctl-devel (Closes: #38587).
+
 * Sat Mar 28 2020 Grigory Ustinov <grenka@altlinux.org> 1.5-alt4
 - Build new version.
 
