@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 %global import_path k8s.io/helm
 Name:     helm
-Version:  2.11.0
+Version:  3.1.2
 Release:  alt1
 
 Summary:  The Kubernetes Package Manager
@@ -20,18 +20,11 @@ BuildRequires: golang
 Helm is a tool for managing Kubernetes charts. Charts are packages of
 pre-configured Kubernetes resources.
 
-%package -n tiller
-Summary: The server side of helm
-Group:    Development/Tools
-
-%description -n tiller
-%summary.
-
 %prep
 %setup
 
 %build
-export BUILDDIR="$PWD/.go"
+export BUILDDIR="$PWD/.build"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
 export LDFLAGS="\
@@ -42,42 +35,32 @@ export LDFLAGS="\
     $LDFLAGS \
 "
 
-#%%golang_prepare
+%golang_prepare
 
 pushd "$BUILDDIR"/src/%import_path
-%golang_build cmd/helm cmd/tiller
+%golang_build cmd/helm
 popd
 "$BUILDDIR"/bin/helm completion bash > helm-bash-completion
 "$BUILDDIR"/bin/helm completion zsh > helm-zsh-completion
 
 %install
-export BUILDDIR="$PWD/.go"
+export BUILDDIR="$PWD/.build"
 export IGNORE_SOURCES=1
 
 %golang_install
 
 install -Dm 644 helm-zsh-completion %buildroot/%_datadir/zsh/site-functions/_%name
 install -Dm 644 helm-bash-completion %buildroot/%_sysconfdir/bash_completion.d/%name
-for man_dir in docs/man/man*; do
-    n="${man_dir#docs/man/man}"
-    for man_file in "$man_dir"/*."$n"; do
-        install -Dm 644 "$man_file" -t %buildroot/%_mandir/"man$n"
-        # install -Dm 644 "$man_file" -t %buildroot/%_mandir/"man$n"/"$(basename "$m")"
-    done
-done
-rm -r docs/man
 
 %files
 %doc README.md
-%doc docs
-%doc %_man1dir/%{name}*
 %_bindir/%name
 %_datadir/zsh/site-functions/_%name
 %_sysconfdir/bash_completion.d/%name
 
-%files -n tiller
-%_bindir/tiller
-
 %changelog
+* Fri Mar 20 2020 Mikhail Gordeev <obirvalger@altlinux.org> 3.1.2-alt1
+- new version 3.1.2
+
 * Wed Oct 03 2018 Mikhail Gordeev <obirvalger@altlinux.org> 2.11.0-alt1
 - Initial build for Sisyphus
