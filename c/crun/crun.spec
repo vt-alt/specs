@@ -1,9 +1,9 @@
 %global _unpackaged_files_terminate_build 1
-%define git_commit e79e4de4ac16da0ce48777afb72c6241de870525
+%define git_commit ebc56fc9bcce4b3208bb0079636c80545122bf58
 
 Summary: OCI runtime written in C
 Name: crun
-Version: 0.13
+Version: 0.14
 Release: alt1
 Group: Development/Other
 License: GPLv3+
@@ -55,6 +55,9 @@ rm -f %buildroot%_libdir/*.a
 %_man1dir/*
 
 %changelog
+* Sat Jul 04 2020 Alexey Shabalin <shaba@altlinux.org> 0.14-alt1
+- 0.14
+
 * Fri Mar 13 2020 Alexey Shabalin <shaba@altlinux.org> 0.13-alt1
 - 0.13
 
