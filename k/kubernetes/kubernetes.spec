@@ -10,12 +10,12 @@
 %brp_strip_none %_bindir/*
 
 Name: kubernetes
-Version: 1.16.4
+Version: 1.18.5
 Release: alt1
 Summary: Container cluster management
 
 Group: System/Configuration/Other
-License: ASL 2.0
+License: Apache-2.0
 Url: https://%import_path
 Source: %name-%version.tar
 
@@ -75,7 +75,6 @@ Requires: rsync
 %package master
 Summary: Kubernetes services for master host
 Group: System/Configuration/Other
-BuildArch: noarch
 Requires: %name-client = %EVR
 # if node is installed with node, version and release must be the same
 Conflicts: %name-node < %EVR
@@ -87,7 +86,6 @@ Kubernetes services for master host.
 %package node
 Summary: Kubernetes services for node host
 Group: System/Configuration/Other
-BuildArch: noarch
 Requires: docker-ce
 Requires: conntrack-tools
 Requires: ethtool
@@ -105,7 +103,6 @@ Kubernetes services for node host.
 %package kubelet
 Summary: Kubernetes kubelet daemon
 Group: System/Configuration/Other
-BuildArch: noarch
 Requires: %name-common = %EVR
 # if master is installed with node, version and release must be the same
 Conflicts: %name-master < %EVR
@@ -130,7 +127,6 @@ Kubernetes tool for standing up clusters.
 %package client
 Summary: Kubernetes client tools
 Group: System/Configuration/Other
-BuildArch: noarch
 Requires: %name-common = %EVR
 
 %description client
@@ -152,10 +148,10 @@ export KUBE_GIT_VERSION="v%version"
 pushd .gopath/src/%import_path
 export KUBE_EXTRA_GOPATH=$(pwd)/Godeps/_workspace
 
-GOMAXPROCS=10 make WHAT="cmd/hyperkube cmd/kubeadm"
+GOMAXPROCS=10 make WHAT="${BINS[*]}"
 
 # convert md to man
-./hack/generate-docs.sh || true
+./hack/update-generated-docs.sh || true
 pushd docs
 pushd admin
 cp kube-apiserver.md kube-controller-manager.md kube-proxy.md kube-scheduler.md kubelet.md ..
@@ -180,18 +176,28 @@ output_path="_output/local/bin/linux/%go_hostarch"
 
 install -m 755 -d %buildroot%_bindir
 
-echo "+++ INSTALLING hyperkube"
-install -p -m 755 -t %buildroot%_bindir ${output_path}/hyperkube
-
 echo "+++ INSTALLING kubeadm"
 install -p -m 755 -t %buildroot%_bindir ${output_path}/kubeadm
 install -d -m 755 %buildroot%_sysconfdir/systemd/system/kubelet.service.d
 install -p -m 644 -t %buildroot/%_sysconfdir/systemd/system/kubelet.service.d %SOURCE4
 
-for bin in kube-apiserver kube-controller-manager kube-scheduler kube-proxy kubelet kubectl ; do
-  echo "+++ SYMLINKING ${bin} to hyperkube"
-  ln -sr %buildroot%_bindir/hyperkube %buildroot%_bindir/${bin}
-done
+echo "+++ INSTALLING kubelet and kubelet"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kubelet
+
+echo "+++ INSTALLING kubelet and kubectl"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kubectl
+
+echo "+++ INSTALLING kubelet and kube-apiserver"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kube-apiserver
+
+echo "+++ INSTALLING kubelet and kube-controller-manager"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kube-controller-manager
+
+echo "+++ INSTALLING kubelet and kube-scheduler"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kube-scheduler
+
+echo "+++ INSTALLING kubelet and kube-proxy"
+install -p -m 755 -t %buildroot%_bindir ${output_path}/kube-proxy
 
 # install the bash completion
 install -d -m 0755 %buildroot%_datadir/bash-completion/completions/
@@ -256,7 +262,6 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %files common
 %dir %_sysconfdir/%name
 %config(noreplace) %_sysconfdir/%name/config
-%_bindir/hyperkube
 %_tmpfilesdir/%name.conf
 
 %files master
@@ -305,6 +310,15 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Thu Jul 02 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.18.5-alt1
+- 1.18.5
+
+* Thu Apr 02 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.18.0-alt1
+- 1.18.0
+
+* Tue Dec 31 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.17.0-alt1
+- 1.17.0
+
 * Fri Dec 20 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.16.4-alt1
 - 1.16.4
 
