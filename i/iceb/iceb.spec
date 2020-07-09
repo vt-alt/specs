@@ -1,7 +1,7 @@
 %define oname iceB
 
 Name:    iceb
-Version: 19.4
+Version: 19.14
 Release: alt1
 
 Summary: Free financial accounting system (console)
@@ -9,40 +9,46 @@ Summary: Free financial accounting system (console)
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Group:   Office
-License: GPL
+License: GPL-2.0
 Url:     http://iceb.net.ua
 
 Source:  %name-%version.tar
 Source1: %name.watch
+Patch2:  %name-fix-mariadb-link-library.patch
 
 BuildRequires(pre): cmake
-BuildRequires: gcc-c++ glib2-devel libMySQL-devel libncursesw-devel
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: gcc-c++
+BuildRequires: glib2-devel
+BuildRequires: libmariadb-devel
+BuildRequires: libncursesw-devel
+BuildRequires: libpcre-devel
 
 %description
 Free financial accounting system.
 
 %prep
 %setup -q -c
+%patch2 -p2
 
 %build
-%cmake
-%cmake_build
+%cmake -GNinja
+%ninja_build -C BUILD
 
 %install
+%ninja_install -C BUILD
+
 install -d %buildroot%_bindir
 find BUILD/buhg -perm 0755 -a -type f -exec cp '{}' %buildroot%_bindir ';'
 #find BUILD/additionally/other -perm 0755 -a -type f -exec cp '{}' %buildroot%_bindir ';'
 
-install -d %buildroot%_datadir/%oname/%name
-cp buhg/alx/*.alx %buildroot%_datadir/%oname/%name
-
-install -d %buildroot%_datadir/%oname/doc
-cp buhg/doc/*.txt %buildroot%_datadir/%oname/doc
-
 install -d %buildroot%_desktopdir
-cp desktop/applications/*.desktop %buildroot%_desktopdir
+cp -a desktop/applications/*.desktop %buildroot%_desktopdir
 install -d %buildroot%_pixmapsdir
-cp desktop/pixmaps/*.png %buildroot%_pixmapsdir
+cp -a desktop/pixmaps/*.png %buildroot%_pixmapsdir
+
+# Remove terminfo
+rm -rf %buildroot/lib/terminfo
 
 %files
 %doc CHANGES COPYING READMI.TXT
@@ -50,8 +56,45 @@ cp desktop/pixmaps/*.png %buildroot%_pixmapsdir
 %_datadir/%oname
 %_desktopdir/*.desktop
 %_pixmapsdir/*.png
+%_sysconfdir/cups/iceb.*
+%_libexecdir/cups/filter/iceb_ps
 
 %changelog
+* Wed Jul 01 2020 Andrey Cherepanov <cas@altlinux.org> 19.14-alt1
+- new version 19.14
+- build using ninja
+- package cups filter
+- fix License tag according to SPDX
+
+* Fri May 01 2020 Cronbuild Service <cronbuild@altlinux.org> 19.13-alt1
+- new version 19.13
+
+* Mon Mar 09 2020 Cronbuild Service <cronbuild@altlinux.org> 19.12-alt1
+- new version 19.12
+
+* Wed Jan 29 2020 Cronbuild Service <cronbuild@altlinux.org> 19.11-alt1
+- new version 19.11
+
+* Tue Dec 24 2019 Cronbuild Service <cronbuild@altlinux.org> 19.10-alt1
+- new version 19.10
+
+* Tue Oct 29 2019 Andrey Cherepanov <cas@altlinux.org> 19.9-alt1
+- new version 19.9
+
+* Sat Sep 07 2019 Andrey Cherepanov <cas@altlinux.org> 19.8-alt1
+- new version 19.8
+
+* Tue Aug 13 2019 Andrey Cherepanov <cas@altlinux.org> 19.7-alt1
+- new version 19.7
+- fix path of MariaDB includes and its library name
+- add development requires (libmariadb-devel and libpcre-devel)
+
+* Sat Jun 22 2019 Cronbuild Service <cronbuild@altlinux.org> 19.6-alt1
+- new version 19.6
+
+* Thu Jun 06 2019 Cronbuild Service <cronbuild@altlinux.org> 19.5-alt1
+- new version 19.5
+
 * Sun Feb 03 2019 Cronbuild Service <cronbuild@altlinux.org> 19.4-alt1
 - new version 19.4
 
