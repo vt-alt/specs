@@ -18,7 +18,7 @@
 
 Name: branding-%flavour
 Version: 9.1
-Release: alt1
+Release: alt3
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -39,8 +39,8 @@ Group: Graphics
 Summary: System/Base
 License: GPLv2+
 
-%define distro_name ALT Server 9.0%status_en
-%define distro_name_ru Альт Сервер 9.0%status
+%define distro_name ALT Server 9.1%status_en
+%define distro_name_ru Альт Сервер 9.1%status
 
 %description
 Distro-specific packages with design and texts for %distro_name.
@@ -317,6 +317,12 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jul  9 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.1-alt3
+- product version fixed
+
+* Tue Jun 23 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.1-alt2
+- reduced black border for focused buttons
+
 * Tue May 26 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 9.1-alt1
 - version bump
 
