@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 19.12.3
+Version: 19.12.4
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -160,7 +160,9 @@ KDE printing support applications.
 Summary: Set of image scanning support applications
 Group: Graphics
 Requires: kde5-runtime
-Requires: kde5-skanlite hplip-sane libsane-gphoto2 sane
+#Requires: kde5-skanlite
+Requires: xsane
+Requires: hplip-sane libsane-gphoto2 sane
 %description -n kde5-scanning
 KDE image scanning support applications.
 
@@ -195,6 +197,9 @@ Requires: kde5-kaddressbook
 %files -n kde5-pim
 
 %changelog
+* Mon Jul 06 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.4-alt1
+- use xsane for scanning
+
 * Mon Apr 20 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - clear pim requires
 
