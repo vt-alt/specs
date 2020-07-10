@@ -1,6 +1,6 @@
 Name: pam-config
 Version: 1.9.0
-Release: alt3
+Release: alt4
 
 Summary: Systemwide PAM config files for Linux-PAM
 License: GPLv2+
@@ -15,6 +15,7 @@ Source4: system-auth-chooser.in
 Source5: system-policy.control
 Source6: system-auth.filetrigger
 Source7: system-policy.filetrigger
+Source8: pam_access.control
 
 %define _pamdir %_sysconfdir/pam.d
 
@@ -82,7 +83,7 @@ mkdir -p %buildroot{%_pamdir,%_controldir,/etc/security}
 cp -a * %buildroot%_pamdir/
 chmod 644 %buildroot%_pamdir/*
 
-for f in pam_mktemp system-auth system-policy; do
+for f in pam_access pam_mktemp system-auth system-policy; do
 	install -pm755 %_sourcedir/$f.control %buildroot%_controldir/$f
 done
 
@@ -92,6 +93,7 @@ done
 
 %pre
 %pre_control pam_mktemp
+%pre_control pam_access
 for f in %_pamdir/system-auth %_pamdir/system-auth-use_first_pass %_pamdir/system-policy; do
 	if [ -f "$f" -a ! -L "$f" ]; then
 		mv -f "$f" "$f-local" &&
@@ -141,6 +143,7 @@ if [ $1 -ge 2 ]; then
 fi
 %post_control -s local system-policy
 %post_control -s enabled pam_mktemp
+%post_control -s disabled pam_access
 
 %triggerpostun -- pam <= 0:0.75-alt8
 [ $2 -gt 0 ] || exit 0
@@ -178,6 +181,9 @@ fi
 %config %_controldir/*
 
 %changelog
+* Wed Jul 08 2020 Ivan Razzhivin <underwit@altlinux.org> 1.9.0-alt4
+- add pam_access control
+
 * Wed May 27 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.9.0-alt3
 - Fix an error in system-policy.filetrigger in 1.9.0-alt1.
 

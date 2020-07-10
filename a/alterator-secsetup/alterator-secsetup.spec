@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.13
+Version: 1.14
 Release: alt1
 
 Source: %name-%version.tar
@@ -39,6 +39,10 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Tue Jul 07 2020 Ivan Razzhivin <underwit@altlinux.org> 1.14-alt1
+- add the ability to enable/disable pam_access.so
+- update translation
+
 * Tue Mar 31 2020 Ivan Razzhivin <underwit@altlinux.org> 1.13-alt1
 - set right path to the help
 
