@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.4
-%define kernel_sublevel .48
+%define kernel_sublevel .51
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -61,7 +61,7 @@ ExclusiveArch: i586
 %if "%sub_flavour" == "debug"
 ExclusiveArch: i586 x86_64 ppc64le
 %else
-ExclusiveArch: i586 x86_64 ppc64le aarch64
+ExclusiveArch: i586 x86_64 ppc64le aarch64 armh
 %endif
 %endif
 
@@ -71,6 +71,9 @@ ExclusiveArch: i586 x86_64 ppc64le aarch64
 %endif
 %ifarch aarch64
 %define make_target Image
+%endif
+%ifarch %arm
+%define make_target zImage
 %endif
 
 %define image_path arch/%base_arch/boot/%make_target
@@ -91,6 +94,9 @@ ExclusiveArch: i586 x86_64 ppc64le aarch64
 %endif
 %ifarch ppc64le
 %define qemu_pkg ppc
+%endif
+%ifarch %arm
+%define qemu_pkg arm
 %endif
 
 ExclusiveOS: Linux
@@ -413,7 +419,7 @@ scripts/kconfig/merge_config.sh -m $CONFIGS
 #%make_build include/linux/version.h
 %make_build %make_target
 %make_build modules
-%ifarch aarch64
+%ifarch aarch64 %arm
 %make_build dtbs
 %endif
 
@@ -438,7 +444,7 @@ install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 make modules_install INSTALL_MOD_PATH=%buildroot
 
-%ifarch aarch64
+%ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
 find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
 %endif
@@ -600,6 +606,11 @@ console=hvc0
 %ifarch aarch64
 qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
 %endif
+%ifarch %arm
+qemu_arch=arm
+qemu_opts="-machine virt"
+console=ttyAMA0
+%endif
 timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
@@ -626,7 +637,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
 %ghost %modules_dir/modules.builtin.bin
-%ifarch aarch64
+%ifarch aarch64 %arm
 /lib/devicetree/%kversion-%flavour-%krelease
 %endif
 
@@ -651,10 +662,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-drm-%flavour
 %modules_dir/kernel/drivers/gpu/drm
+%dir %modules_dir/kernel/drivers/media/rc
+%modules_dir/kernel/drivers/media/rc/rc-core.*
 %exclude %modules_dir/kernel/drivers/gpu/drm/nouveau
 %exclude %modules_dir/kernel/drivers/gpu/drm/radeon
 %exclude %modules_dir/kernel/drivers/gpu/drm/mgag200
-%ifnarch aarch64
+%ifnarch aarch64 armh
 %exclude %modules_dir/kernel/drivers/gpu/drm/sis
 %exclude %modules_dir/kernel/drivers/gpu/drm/savage
 %exclude %modules_dir/kernel/drivers/gpu/drm/tdfx
@@ -665,7 +678,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-drm-ancient-%flavour
 %modules_dir/kernel/drivers/gpu/drm/mgag200
-%ifnarch aarch64
+%ifnarch aarch64 armh
 %modules_dir/kernel/drivers/gpu/drm/sis
 %modules_dir/kernel/drivers/gpu/drm/savage
 %modules_dir/kernel/drivers/gpu/drm/tdfx
@@ -690,6 +703,21 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Jul 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.51-alt1
+- v5.4.51
+
+* Thu Jul 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.50-alt1
+- v5.4.50
+
+* Sat Jun 27 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:5.4.49-alt2
+- Added armh support.
+- Updated and cleaned up aarch64 and ppc64le configs.
+- Built with numa balancing support (disabled by default).
+- Disabled CONFIG_PAGE_OWNER.
+
+* Thu Jun 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.49-alt1
+- v5.4.49
+
 * Tue Jun 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.48-alt1
 - v5.4.48
 
