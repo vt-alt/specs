@@ -1,5 +1,5 @@
 Name: slirp4netns
-Version: 0.3.0
+Version: 0.4.2
 Release: alt1
 Summary:  User-mode networking for unprivileged network namespaces 
 
@@ -9,7 +9,7 @@ Url: https://github.com/rootless-containers/slirp4netns
 Source: %name-%version.tar
 Patch: %name-%version-alt.patch
 
-BuildRequires: libglib2-devel
+BuildRequires: libglib2-devel libcap-devel libseccomp-devel
 
 %description
 Starting with Linux 3.8, unprivileged users can create
@@ -41,5 +41,8 @@ namespace to the usermode TCP/IP stack ("slirp").
 
 
 %changelog
+* Sat Dec  7 2019 Terechkov Evgenii <evg@altlinux.org> 0.4.2-alt1
+- 0.4.2
+
 * Sat Jun  8 2019 Terechkov Evgenii <evg@altlinux.org> 0.3.0-alt1
 - Initial build for ALT Linux Sisyphus
