@@ -1,5 +1,5 @@
 Name: alterator-kiosk
-Version: 1.3
+Version: 1.4
 Release: alt1
 
 Source: %name-%version.tar
@@ -40,6 +40,9 @@ install -Dm 0644 %SOURCE2 %buildroot%_unitdir/kiosk.service
 %_bindir/activate-kiosk.sh
 
 %changelog
+* Wed Jul 08 2020 Ivan Razzhivin <underwit@altlinux.org> 1.4-alt1
+- remove kiosk mode
+
 * Mon Jun 22 2020 Oleg Solovyov <mcpain@altlinux.org> 1.3-alt1
 - KDE: fix profiles
 - enable service when committing changes

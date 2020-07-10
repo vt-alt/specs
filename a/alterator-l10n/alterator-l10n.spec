@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.64
+Version: 2.9.65
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,11 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Wed Jul 08 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.65-alt1
+- alterator-kiosk add russian translation
+- alterator-kiosk update help
+- alterator-secsetup update translation
+
 * Tue Jun 09 2020 Slava Aseev <ptrnine@altlinux.org> 2.9.64-alt1
 - Update Russian translations and help for alterator-openvpn-server
   and alterator-net-openvpn
