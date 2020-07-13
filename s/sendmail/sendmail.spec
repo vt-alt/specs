@@ -1,6 +1,6 @@
 Name: sendmail
 
-%define tarbolversion 8.16.0.48
+%define tarbolversion 8.16.1
 
 Version: %tarbolversion
 Release: alt1
@@ -497,6 +497,11 @@ EOF
 %doc docs/LICENSE
 
 %changelog
+* Tue Jul 07 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.1-alt1
+- New version
+- removed _FFR_RFC7505 and _FFR_AUTH_FAIL_LOG_USER from site.config.m4:
+  this is released features in 8.16.1
+
 * Thu May 21 2020 Sergey Y. Afonin <asy@altlinux.org> 8.16.0.48-alt1
 - New version
 - moved "Conflicts: postfix, meta1, exim-common" to submit subpackage
