@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.7
-%define kernel_sublevel .7
+%define kernel_sublevel .8
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -419,7 +419,7 @@ scripts/kconfig/merge_config.sh -m $CONFIGS
 #%make_build include/linux/version.h
 %make_build %make_target
 %make_build modules
-%ifarch aarch64
+%ifarch aarch64 %arm
 %make_build dtbs
 %endif
 
@@ -445,7 +445,7 @@ install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 make modules_install INSTALL_MOD_PATH=%buildroot
 find %buildroot -name '*.ko' | xargs gzip
 
-%ifarch aarch64
+%ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
 find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
 %endif
@@ -635,7 +635,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
 %ghost %modules_dir/modules.builtin.bin
-%ifarch aarch64
+%ifarch aarch64 %arm
 /lib/devicetree/%kversion-%flavour-%krelease
 %endif
 
@@ -702,6 +702,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Jul 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.8-alt1
+- v5.7.8
+
 * Thu Jul 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.7-alt1
 - v5.7.7
 
