@@ -1,6 +1,6 @@
 %define mversion	6
 %define dversion	%mversion.9.11
-%define drelease	21
+%define drelease	23
 %define qlev		Q16
 %define mgkdir		ImageMagick
 %define soname		6
@@ -16,7 +16,7 @@
 
 Name: ImageMagick
 Version: %dversion.%drelease
-Release: alt2
+Release: alt1
 
 Summary: An X application for displaying and manipulating images
 License: ImageMagick
@@ -75,7 +75,8 @@ Requires: lib%name%mversion-common = %EVR
 %package -n lib%name%mversion-common
 Summary: Common files for %name
 Group: System/Libraries
-Conflicts: libImageMagick <= 6.9.4.7
+Conflicts: libImageMagick <= 6.9.10.86
+Conflicts: ImageMagick-tools <= 6.9.10.86
 
 %description -n lib%name%mversion-common
 Common files for lib%{name}.
@@ -262,6 +263,11 @@ mv %buildroot%_docdir/%name-6 %buildroot%_docdir/%name-%dversion
 %endif
 
 %changelog
+* Thu Jul 09 2020 Anton Farygin <rider@altlinux.ru> 6.9.11.23-alt1
+- new version 6.9.11.23
+- add conflict to libImageMagick-common with
+  ImageMagick-tools <= 6.9.10.86 (closes: #38689)
+
 * Fri Jun 26 2020 Anton Farygin <rider@altlinux.ru> 6.9.11.21-alt2
 - add conflict to libImageMagick-common with libImageMagick from p8 branch
 
