@@ -1,8 +1,8 @@
 %define distro alt-server-v
 
 Name: installer-distro-%distro
-Version: 9.0.0
-Release: alt3
+Version: 9.0.1
+Release: alt1
 
 Summary: Installer configuration (Server V)
 License: GPLv2
@@ -45,7 +45,6 @@ Provides: installer-%distro-stage3 = %version
 # modules
 Requires: alterator-users
 Requires: alterator-root
-Requires: alterator-grub
 Requires: alterator-luks
 Requires: alterator-net-eth dhcpcd
 Requires: alterator-net-bond alterator-net-bridge
@@ -80,6 +79,11 @@ cp -a * %buildroot%install2dir/
 %files stage3
 
 %changelog
+* Mon Jul 06 2020 Alexey Shabalin <shaba@altlinux.org> 9.0.1-alt1
+- update title for /var/lib/vz (ALT #38193)
+- drop Generic server (large /srv) profile in vm
+- switch from alterator-grub to installer-feature-bootloader in m-p
+
 * Thu Feb 13 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.0-alt3
 - add vmbr creation for PVE
 
