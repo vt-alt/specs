@@ -3,13 +3,14 @@
 %define _libexecdir /usr/libexec
 
 %def_enable dbus
+%def_disable applet
 
 %define sover 0
 %define libusbguard libusbguard%sover
 
 Name: usbguard
-Version: 0.7.4
-Release: alt2
+Version: 0.7.8
+Release: alt1
 
 Group: System/Servers
 Summary: A tool for implementing USB device usage policy
@@ -24,8 +25,6 @@ Requires: %name-common = %EVR
 
 Source0: %name-%version.tar
 Source1: usbguard-daemon.conf
-
-Patch1: alt-linking.patch
 
 # Automatically added by buildreq on Fri Aug 04 2017 (-bi)
 # optimized out: elfutils gcc-c++ glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 libcap-ng libdbus-devel libdbus-glib libgpg-error libgpg-error-devel libqt4-devel libqt5-core libqt5-gui libqt5-svg libqt5-widgets libqt5-xml libstdc++-devel perl pkg-config python-base python-modules python3 python3-base qt5-base-common qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-utils xz
@@ -100,15 +99,16 @@ a D-Bus interface to the USBGuard daemon component.
 
 %prep
 %setup
-%patch1 -p1
 mv .gear/ThirdParty/* src/ThirdParty/
 %autoreconf
 
+%if_enabled applet
 # systray want to show icon
 for f in src/GUI.Qt/*.cpp; do
     sed -i '/systray->setIcon(/s/QIcon(/QPixmap(/' $f
     sed -i '/QSystemTrayIcon(/s/QIcon(/QPixmap(/' $f
 done
+%endif
 
 %build
 %configure \
@@ -118,7 +118,9 @@ done
     --with-bundled-catch \
     --with-bundled-pegtl \
     --enable-systemd \
+%if_enabled applet
     --with-gui-qt=qt5 \
+%endif
 %if_enabled dbus
     --with-dbus \
     --with-polkit \
@@ -150,10 +152,6 @@ install -p -m 644 %SOURCE1 %buildroot%_sysconfdir/usbguard/usbguard-daemon.conf
 %config(noreplace) %attr(0600,root,root) %_sysconfdir/usbguard/usbguard-daemon.conf
 %config(noreplace) %attr(0600,root,root) %_sysconfdir/usbguard/rules.conf
 %_unitdir/usbguard.service
-#%_man8dir/usbguard-daemon.*
-#%_man5dir/usbguard-daemon.conf.*
-#%_man5dir/usbguard-rules.conf.*
-#%_man1dir/usbguard.*
 #%_datadir/bash-completion/completions/usbguard
 
 %files -n %libusbguard
@@ -168,26 +166,32 @@ install -p -m 644 %SOURCE1 %buildroot%_sysconfdir/usbguard/usbguard-daemon.conf
 %files utils
 %_bindir/usbguard-rule-parser
 
+%if_enabled applet
 %files applet
 %_bindir/usbguard-applet-qt
-#%_man1dir/usbguard-applet-qt.*
 %_datadir/applications/usbguard-applet-qt.desktop
 %_iconsdir/*/*/apps/usbguard-icon.*
+%endif
 
 %if_enabled dbus
 %files dbus
 %_sbindir/usbguard-dbus
-%_datadir/dbus-1/system-services/org.usbguard.service
-%_datadir/dbus-1/system.d/org.usbguard.conf
-%_datadir/polkit-1/actions/org.usbguard.policy
+%_datadir/dbus-1/system-services/org.usbguard1.service
+%_datadir/dbus-1/system.d/org.usbguard1.conf
+%_datadir/polkit-1/actions/org.usbguard1.policy
 %_unitdir/usbguard-dbus.service
-#%_man8dir/usbguard-dbus.*
 %endif
 
 %changelog
+* Tue Jul 07 2020 Sergey V Turchin <zerg@altlinux.org> 0.7.8-alt1
+- new version
+
+* Thu Feb 06 2020 Sergey V Turchin <zerg@altlinux.org> 0.7.6-alt1
+- new version
+
 * Tue Mar 26 2019 Alexey Shabalin <shaba@altlinux.org> 0.7.4-alt2
 - rebuild with new protobuf
-- do not use %%ubt macros
+- do not use %%ubt macro
 
 * Wed Aug 08 2018 Sergey V Turchin <zerg@altlinux.org> 0.7.4-alt1
 - new version
