@@ -1,8 +1,8 @@
 %def_enable translation
 
 Name: nvidia-settings
-Version: 440.59
-Release: alt2
+Version: 440.100
+Release: alt1
 
 Group: System/Configuration/Hardware
 Summary: Tool for configuring the NVIDIA driver
@@ -125,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Fri Jul 10 2020 Sergey V Turchin <zerg@altlinux.org> 440.100-alt1
+- new version
+
 * Thu Apr 23 2020 Ivan Razzhivin <underwit@altlinux.org> 440.59-alt2
 - fix russian translation
 
