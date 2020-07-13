@@ -1,6 +1,6 @@
 Name: dolphin-emu
 Version: 5.0
-Release: alt12
+Release: alt13
 
 Summary: The Gamecube / Wii Emulator
 License: GPLv2
@@ -9,15 +9,21 @@ Group: Emulators
 Url: https://ru.%name.org/
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 aarch64
 
-Source: https://github.com/%name/dolphin/archive/%version/dolphin-%version.tar.gz
-Patch0: %name-git-alt.patch
-Patch1: %name-gcc-alt.patch
-Patch2: %name-gcc8-alt.patch
-Patch3: %name-soundtouch-alt.patch
+# https://github.com/%name/dolphin/archive/%version/dolphin-%version.tar.gz
+Source: dolphin-%version.tar
+Patch0: %name-alt-gcc.patch
+Patch1: %name-alt-gcc8.patch
+Patch2: %name-alt-git.patch
+Patch3: %name-alt-soundtouch.patch
 
+BuildPreReq: bzlib-devel
+BuildPreReq: libbrotli-devel
+BuildPreReq: libexpat-devel
+BuildPreReq: libpcre-devel
 BuildPreReq: libswresample-devel
+BuildPreReq: libuuid-devel
 
 BuildRequires: cmake
 BuildRequires: compat-libwxGTK3.1-gtk2-devel
@@ -32,7 +38,6 @@ BuildRequires: libXinerama-devel
 BuildRequires: libXmu-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXxf86vm-devel
-BuildRequires: libalsa-devel
 BuildRequires: libao-devel
 BuildRequires: libavformat-devel
 BuildRequires: libbluez-devel
@@ -68,7 +73,6 @@ you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 %__mkdir_p %_target_platform
 pushd %_target_platform
 
-%add_optflags %(pkg-config --cflags pango)
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX:PATH=%prefix \
 	-DCMAKE_C_FLAGS:STRING='%optflags' \
@@ -96,6 +100,11 @@ popd
 %_man6dir/%{name}*
 
 %changelog
+* Fri Jul 03 2020 Nazarov Denis <nenderus@altlinux.org> 5.0-alt13
+- Don't gzip sources to sppedup rpmbuild -bp
+- Update BuildRequires and BuidPreReq
+- Build for aarch64
+
 * Mon Aug 19 2019 Anton Midyukov <antohami@altlinux.org> 5.0-alt12
 - add_optflags (pkg-config --cflags pango) (Fix FTBFS)
 
