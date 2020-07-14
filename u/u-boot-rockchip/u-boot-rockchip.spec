@@ -1,20 +1,19 @@
 Name: u-boot-rockchip
-Version: 2019.10
+Version: 2020.04
 Release: alt1
 
 Summary: Das U-Boot
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 ExclusiveArch: aarch64
 
 Source: %name-%version-%release.tar
 
-BuildRequires: bc ccache dtc >= 1.4 flex
-BuildRequires: python-devel swig
-BuildRequires: python2.7(multiprocessing)
-BuildRequires: python2.7(elftools.elf.elffile)
 BuildRequires: atf-rockchip >= 2.0
+BuildRequires: bc ccache dtc >= 1.4 flex
+BuildRequires: python3-dev swig
+BuildRequires: python3(elftools.elf.elffile)
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
@@ -31,6 +30,7 @@ sed -E '/^CONFIG_DEFAULT_FDT_FILE=/ s,=.+$,="rk3399-sapphire-excavator.dtb",' \
 	< configs/evb-rk3399_defconfig > configs/rk3399-sapphire-excavator_defconfig
 
 %build
+export PYTHON=python3
 export BL31=%_datadir/atf/rk3399/bl31.elf
 
 buildit()
@@ -60,6 +60,12 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
+- 2020.04 released
+
+* Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
+- 2020.01 released
+
 * Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
 - 2019.10 released
 

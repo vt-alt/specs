@@ -1,9 +1,9 @@
 Name: u-boot-sunxi
-Version: 2019.10
+Version: 2020.04
 Release: alt1
 
 Summary: Das U-Boot
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 Url: http://linux-sunxi.org/U-Boot
 
@@ -20,9 +20,8 @@ Obsoletes: u-boot-sunxi64
 %define ATF %nil
 %endif
 
-BuildRequires: bc ccache dtc >= 1.4 flex
-BuildRequires: python-devel swig
-BuildRequires: python2.7(multiprocessing) %ATF
+BuildRequires: %ATF bc ccache dtc >= 1.4 flex
+BuildRequires: python3-dev swig
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
@@ -36,6 +35,7 @@ See http://linux-sunxi.org/Bootable_SD_card#Bootloader for details.
 %setup
 
 %build
+export PYTHON=python3
 %ifarch aarch64
 boards=$(grep -lr MACH_SUN50I configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
 %else
@@ -64,6 +64,12 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
+- 2020.04 released
+
+* Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
+- 2020.01 released
+
 * Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
 - 2019.10 released
 

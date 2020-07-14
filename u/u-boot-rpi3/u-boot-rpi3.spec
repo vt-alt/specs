@@ -1,5 +1,5 @@
 Name: u-boot-rpi3
-Version: 2020.01
+Version: 2020.04
 Release: alt1
 
 Summary: Das U-Boot
@@ -48,6 +48,9 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
+- 2020.04 released
+
 * Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
 - 2020.01 released
 

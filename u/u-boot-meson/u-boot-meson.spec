@@ -1,9 +1,9 @@
 Name: u-boot-meson
-Version: 2019.10
+Version: 2020.04
 Release: alt1
 
 Summary: Das U-Boot
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 ExclusiveArch: aarch64
@@ -40,9 +40,16 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %doc board/amlogic/p200/README.*
 %doc board/amlogic/p212/README.*
 %doc board/amlogic/q200/README.*
+%doc board/amlogic/w400/README.*
 %_datadir/u-boot/*
 
 %changelog
+* Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
+- 2020.04 released
+
+* Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
+- 2020.01 released
+
 * Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
 - 2019.10 released
 
