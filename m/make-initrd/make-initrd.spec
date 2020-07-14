@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.5.0
+Version: 2.7.0
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -171,6 +171,7 @@ fi
 %_datadir/%myname
 %_man1dir/*
 /lib/initrd
+/usr/libexec/%myname
 %exclude %_datadir/%myname/features/devmapper
 %exclude %_datadir/%myname/features/lvm
 %exclude %_datadir/%myname/features/luks
@@ -179,7 +180,7 @@ fi
 %exclude %_datadir/%myname/features/plymouth
 %exclude %_datadir/%myname/features/mdadm
 %exclude %_datadir/%myname/features/ucode
-%doc docs/*.md
+%doc Documentation/*.md
 
 %files devmapper
 %_datadir/%myname/features/devmapper
@@ -208,6 +209,35 @@ fi
 %endif
 
 %changelog
+* Fri May 29 2020 Alexey Gladkov <legion@altlinux.ru> 2.7.0-alt1
+- New feature:
+  + Add sysfs-dma feature to detect dependence on dma by sysfs
+  + Add pipeline as an alternative way to search for root
+  + Add fsck feature to check filesystem before mount
+- Feature changes:
+  + virtio-pci: Feature renamed to sysfs-virtio-pci
+  + network: Fix cmdline params hack
+  + network: preserve iface macaddress
+  + nfsroot: Use network feature
+- Runtime changes:
+  + Export information about configured devices
+  + Allow to put the rootdelay on pause
+- Misc:
+  + Move docs to Documentation
+  + Improve documentation
+  + Add utility for inspecting bug reports
+  + Guess root device based on bug report
+
+* Sun Apr 05 2020 Alexey Gladkov <legion@altlinux.ru> 2.6.0-alt1
+- Utilities:
+  + make-initrd: Allow to guess modules for any directory
+- Misc:
+  + Do not use /boot directly
+  + Add timestamps to messages
+  + Add modules.builtin.modinfo into the initramfs
+  + Simplify MOUNTPOINTS processing
+  + Allow to use MOUNTPOINTS not only for mount points
+
 * Fri Mar 06 2020 Alexey Gladkov <legion@altlinux.ru> 2.5.0-alt1
 - Feature changes:
   + kbd: Reimplement feature
