@@ -9,9 +9,9 @@
 
 Name: rabbitmq-server
 Version: 3.8.3
-Release: alt1
+Release: alt2
 Summary: The RabbitMQ server
-License: MPLv1.1
+License: MPL-1.1
 BuildArch: noarch
 Group: System/Servers
 Source: %name-%version.tar
@@ -40,6 +40,9 @@ BuildRequires: python3-module-simplejson
 BuildRequires: xmlto zip unzip netcat rsync
 Requires: erlang  >= 1:20.3.0
 
+%filter_from_requires /^erlang_\(mod\|lib\|app\)(\(lager\|glc\|gr_\|gre\|prometheus\|ranch\|observer\|ra_\|ra)\|jose\|jsx\|cow\|aten\|recon\|stdout_formatter\|sysmon_handler\|credentials_obfuscation\|accept\|base64url\|gen_batch_server\|goldrush\|error_logger_lager_h\|syslog\)/d
+%filter_from_provides /^erlang_\(mod\|lib\|app\)(\(lager\|glc\|gr_\|gre\|prometheus\|ranch\|observer\|ra_\|ra)\|jose\|jsx\|cow\|aten\|recon\|stdout_formatter\|sysmon_handler\|credentials_obfuscation\|accept\|base64url\|gen_batch_server\|goldrush\|error_logger_lager_h\|syslog\)/d
+
 %description
 RabbitMQ is an implementation of AMQP, the emerging standard for high
 performance enterprise messaging. The RabbitMQ server is a robust and
@@ -47,7 +50,6 @@ scalable implementation of an AMQP broker.
 
 %package -n %name-devel
 Summary: %name header files
-License: MPLv1.1
 Group: Development/Erlang
 
 %description -n %name-devel
@@ -175,6 +177,10 @@ rm -rf %buildroot/usr/lib/erlang/autocomplete
 #%_datadir/%name
 
 %changelog
+* Wed Jun 10 2020 Andrey Cherepanov <cas@altlinux.org> 3.8.3-alt2
+- Remove provides from bundled modules (ALT #36925).
+- Fix License tag according to SPDX.
+
 * Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 3.8.3-alt1
 - 3.8.3
 - Rename /etc/rabbitmq/rabbitmq.config to /etc/rabbitmq/rabbitmq.conf.
