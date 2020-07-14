@@ -4,16 +4,15 @@
 
 Name: mpv
 Version: 0.29.1
-Release: alt4
+Release: alt8
 
 Summary: mpv is a free and open-source general-purpose video player based on MPlayer and mplayer2.
-Summary(ru_RU.UTF8): MPV - это медиапроигрыватель с открытыми исходниками, основанный на проектах MPlayer и mplayer2.
 License: GPLv2+
 Group: Video
 
-URL: http://mpv.io/
+Url: http://mpv.io/
 Source: %name-%version.tar
-Patch0: %name-%version-alt.patch
+Patch: %name-%version-alt.patch
 
 Packager: %packager
 
@@ -23,11 +22,15 @@ BuildRequires(pre): rpm-macros-luajit
 # Automatically added by buildreq on Fri Feb 14 2014
 BuildRequires: libGL-devel libXext-devel libalsa-devel libass-devel libavformat-devel libavresample-devel libjpeg-devel libswscale-devel patool perl-Encode perl-Math-BigRat python-module-docutils time zlib-devel libva-devel
 
-BuildRequires: libpulseaudio-devel libenca-devel libXScrnSaver-devel libXv-devel libXinerama-devel libXrandr-devel libdvdnav-devel libbluray-devel libavfilter-devel libsmbclient-devel libswresample-devel libwayland-client-devel libwayland-cursor-devel libxkbcommon-devel libEGL-devel libwayland-egl-devel libdrm-devel libv4l-devel libarchive-devel liblcms2-devel
+BuildRequires: libpulseaudio-devel libXScrnSaver-devel libXv-devel libXinerama-devel libXrandr-devel libdvdnav-devel libbluray-devel libavfilter-devel libsmbclient-devel libswresample-devel libwayland-client-devel libwayland-cursor-devel libxkbcommon-devel libEGL-devel libwayland-egl-devel libdrm-devel libv4l-devel libarchive-devel liblcms2-devel libjack-devel
+
+BuildRequires: libenca-devel libuchardet-devel
 
 %if_enabled lua
 BuildRequires: liblua5.3-devel libluajit-devel
 %endif
+
+Summary(ru_RU.UTF-8): MPV - это медиапроигрыватель с открытыми исходниками, основанный на проектах MPlayer и mplayer2.
 
 %description
 mpv is a movie player based on MPlayer and mplayer2.
@@ -82,6 +85,7 @@ chmod ugo+rx waf
 --enable-libsmbclient \
 --enable-libmpv-shared \
 --enable-tv \
+--enable-jack \
 #
 
 %build
@@ -89,6 +93,9 @@ chmod ugo+rx waf
 
 %install
 ./waf install --destdir=%buildroot
+
+rm -rfv %buildroot/share/
+rm -rfv %buildroot%_iconsdir/hicolor/symbolic/
 
 %files
 %dir %_sysconfdir/%name
@@ -98,6 +105,7 @@ chmod ugo+rx waf
 %_miconsdir/%name.png
 %_niconsdir/%name.png
 %_iconsdir/hicolor/64x64/apps/%name.png
+%_iconsdir/hicolor/scalable/apps/%name.svg
 %_desktopdir/%name.desktop
 %doc Copyright README.md RELEASE_NOTES etc/input.conf etc/mplayer-input.conf etc/mpv.conf etc/restore-old-bindings.conf
 
@@ -113,6 +121,21 @@ chmod ugo+rx waf
 %_libdir/libmpv.so.*
 
 %changelog
+* Tue Mar 31 2020 Vitaly Lipatov <lav@altlinux.ru> 0.29.1-alt8
+- NMU: add BR: libuchardet to fix auto guess of subtitle encoding
+- NMU: fix unpacked files
+
+* Sun Mar  1 2020 Terechkov Evgenii <evg@altlinux.org> 0.29.1-alt7
+- Fix FTBFS (replace bin/python -> bin/python2 in waf.py)
+
+* Fri Oct 11 2019 Terechkov Evgenii <evg@altlinux.org> 0.29.1-alt6
+- Build with JACK support (ALT#37324)
+
+* Sat Jun 29 2019 Michael Shigorin <mike@altlinux.org> 0.29.1-alt5
+- Fix build with older libEGL, see upstream issue #5599
+  (commit taken from NetBSD)
+- Minor spec cleanup
+
 * Fri Apr 12 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.29.1-alt4
 - Use %%luajit_arches macro to disable lua support on architectures
   unsupported by luajit.
