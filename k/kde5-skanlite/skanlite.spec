@@ -3,15 +3,15 @@
 
 %define rname skanlite
 
-%_K5if_ver_gteq %ubt_id M90
-%def_enable obsolete_kde4
-%else
+%_K5if_ver_lt %ubt_id M90
 %def_disable obsolete_kde4
+%else
+%def_enable obsolete_kde4
 %endif
 
 Name: kde5-%rname
-Version: 2.1.0
-Release: alt3
+Version: 2.2.0
+Release: alt1
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Graphics
@@ -26,6 +26,7 @@ Obsoletes: skanlite < %version-%release
 %endif
 
 Source: %rname-%version.tar
+Patch1: alt-ftbfs.patch
 
 # Automatically added by buildreq on Mon Feb 01 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ kf5-kdoctools-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 python3-base xml-common xml-utils zlib-devel
@@ -47,6 +48,7 @@ with auto-generated names and format.
 
 %prep
 %setup -n %rname-%version
+%patch1 -p1
 
 %build
 %K5build
@@ -61,6 +63,9 @@ with auto-generated names and format.
 %_K5xdgapp/org.kde.skanlite.desktop
 
 %changelog
+* Tue Jul 14 2020 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt1
+- new version
+
 * Thu Jun 27 2019 Sergey V Turchin <zerg@altlinux.org> 2.1.0-alt3
 - obsolete skanlite
 
