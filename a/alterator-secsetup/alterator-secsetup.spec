@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.14
+Version: 1.15
 Release: alt1
 
 Source: %name-%version.tar
@@ -39,6 +39,9 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Mon Jul 13 2020 Slava Aseev <ptrnine@altlinux.org> 1.15-alt1
+- Set 'default' hash prefix instead of 'bcrypt_2y' if gost_yescrypt disabled
+
 * Tue Jul 07 2020 Ivan Razzhivin <underwit@altlinux.org> 1.14-alt1
 - add the ability to enable/disable pam_access.so
 - update translation

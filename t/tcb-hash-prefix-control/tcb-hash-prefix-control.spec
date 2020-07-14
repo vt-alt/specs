@@ -1,5 +1,5 @@
 Name: tcb-hash-prefix-control
-Version: 1.0
+Version: 1.1
 Release: alt1
 
 Summary: Password hashing facilities control
@@ -20,6 +20,9 @@ install -pD -m755 %SOURCE0 %buildroot%_controldir/tcb-hash-prefix
 %config %_controldir/*
 
 %changelog
+* Mon Jul 13 2020 Slava Aseev <ptrnine@altlinux.org> 1.1-alt1
+- Fix with the new pam-config, allow adding hash prefixes
+
 * Mon Feb 03 2020 Slava Aseev <ptrnine@altlinux.org> 1.0-alt1
 - Initial build for ALT
 
