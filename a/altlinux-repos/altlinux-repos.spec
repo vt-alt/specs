@@ -1,6 +1,6 @@
 Name: altlinux-repos
 Version: 0.9
-Release: alt5
+Release: alt7
 
 Summary: A set of ALT repos desktop files
 License: GPL
@@ -27,6 +27,13 @@ cp -a mirrors repositories %buildroot%_sysconfdir/apt/
 %_sysconfdir/apt/repositories
 
 %changelog
+* Wed Jul 08 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.9-alt7
+- Dropped desktop file for armh port of p9.
+
+* Thu Jun 18 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.9-alt6
+- Added p9 repo for dcdy and msu mirrors.
+- Dropped desktop file for armh port of sisyphus.
+
 * Thu Apr 09 2020 Andrey Cherepanov <cas@altlinux.org> 0.9-alt5
 - Use altlinux-repos/repositories/cert8.desktop from c8 for c8.
 
