@@ -1,9 +1,9 @@
 Name: connector
-Version: 1.8.8
+Version: 1.9.6
 Release: alt1
 
 Summary: Remote desktop chooser
-License: GPL
+License: GPL-2.0
 Group: Networking/Remote access
 
 Url: http://myconnector.ru
@@ -11,10 +11,18 @@ Source0: %name-%version.tar.gz
 Packager: Korneechev Evgeniy <ekorneechev@altlinux.org>
 
 BuildArch: noarch
-Requires: python3 python3-module-pygobject3 libgtk+3 libgtk+3-gir
-Requires: remmina remmina-plugins tigervnc xfreerdp
-Requires: control xdg-utils
-Requires: python3-module-keyring >= 12.0.0 python3-module-secretstorage
+Requires: control
+Requires: libgtk+3
+Requires: libgtk+3-gir
+Requires: python3-module-pygobject3
+Requires: python3-module-keyring >= 12.0.0
+Requires: python3-module-secretstorage
+Requires: remmina
+Requires: remmina-plugins
+Requires: tigervnc
+Requires: xdg-utils
+Requires: xfreerdp
+Requires: zenity
 
 %define basedir %_datadir/%name
 
@@ -23,6 +31,17 @@ This is an aggregator program to connnect to various servers
 using all of the popular remote desktop protocols
 (RDP, VNC, Citrix, VMware, etc).
 
+%package kiosk
+Summary: Mode "KIOSK" for connector
+Group: Networking/Remote access
+
+Requires: connector = %EVR
+Requires: xinitrc
+Requires: xterm
+
+%description kiosk
+Files for connector mode "KIOSK"
+
 %prep
 %setup
 
@@ -30,30 +49,80 @@ using all of the popular remote desktop protocols
 install -pDm755 %name %buildroot%_bindir/%name
 install -pDm644 %name.desktop %buildroot%_desktopdir/%name.desktop
 mkdir -p %buildroot%basedir/data/
-install -p *.png *.glade %buildroot%basedir/data/
+install -p *.png *.ui %buildroot%basedir/data/
 install -p *.py %buildroot%basedir/
 install -pm755 %name-check-* %buildroot%basedir/
 install -pDm644 %name.man %buildroot%_man1dir/%name.1
 %find_lang --with-man %name
-install -pDm644 kiosk.access %buildroot%_sysconfdir/%name/kiosk.access
 install -pDm644 %name.xml %buildroot%_datadir/mime/packages/%name.xml
 mkdir -p %buildroot%_iconsdir
 cp -r icons/hicolor %buildroot%_iconsdir/
+mkdir -p %buildroot%basedir/kiosk/
+install -p kiosk/*.{py,ui} %buildroot%basedir/kiosk/
+install -pm755 kiosk/connector* %buildroot%basedir/kiosk/
+install -pDm600 kiosk/kiosk.conf %buildroot%_sysconfdir/%name/kiosk.conf
+install -pDm644 kiosk/%name-kiosk.man %buildroot%_man1dir/%name-kiosk.1
 
-%files -f %name.lang
+%files
 %_bindir/%name
 %_desktopdir/%name.desktop
 %dir %basedir
 %basedir/data
 %basedir/*.py
 %basedir/%name-check-*
-%_man1dir/*
-%dir %_sysconfdir/%name
-%config(noreplace) %_sysconfdir/%name/kiosk.access
+%_man1dir/%name.*
 %_datadir/mime/packages/%name.xml
 %_iconsdir/hicolor/*/apps/%name.png
 
+%files kiosk
+%dir %basedir/kiosk
+%basedir/kiosk/*
+%dir %_sysconfdir/%name
+%config(noreplace) %_sysconfdir/%name/kiosk.conf
+%_man1dir/%name-kiosk.*
+
 %changelog
+* Mon Jul 06 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.6-alt1
+- kiosk:
+ + added SDDM support
+ + 'root' is not allowed to use the mode
+
+* Tue Jun 23 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.5-alt1
+- kiosk fixes
+
+* Wed Jun 17 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.4-alt1
+- kiosk:
+ + fixed disable from cmdline
+ + fixed webkiosk for firefox < 71
+
+* Tue Jun 09 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.3-alt1
+- new stable version
+
+* Tue Jun 02 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.0.rc2-alt1
+- kiosk:
+ + Added disabling the mode before its enabling
+ + Dropped chromium from deps
+ + Added --disable-kiosk to connector cmdline
+- Updated man (added key 'quit')
+
+* Thu May 28 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.0.rc1-alt1
+- Removed the button 'Logout'
+- Disabled TRAY by default
+- kiosk:
+ + Updated WEB-kiosk (incognito and endless cycle)
+ + Added ability to disable 'Ctrl' in the WEB-kiosk
+ + Added ability to set a username, enable its autologin and create it
+ + The connection file is copied to homedir.
+ + Added manual
+- UI fixes for BlueMenta theme
+
+* Fri Feb 14 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.9.0.rc0-alt1
+- kiosk remaking (like a wiki altlinux.org/kiosk):
+ + Added subpackage connector-kiosk
+ + root available only
+ + WEB-kiosk through chromium
+ + The connection file is selected from filesystem (not from list connections)
+
 * Tue Feb 4 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 1.8.8-alt1
 - FreeRDP:
  + Added escaping special characters in a password
