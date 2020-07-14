@@ -14,10 +14,11 @@
 # TypeError: inline_all_toctrees() takes exactly 5 arguments (6 given)
 %def_with sphinx
 
+%def_with srs2
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.0.13
+Version: 3.2.2
 Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
@@ -51,7 +52,7 @@ Source22: %name.cyrus-conf
 
 Patch1: cyrus-imapd-3.0.11-setproctitle.c.patch
 
-PreReq: e2fsprogs /sbin/chkconfig /sbin/service cert-sh-functions
+Requires(pre): e2fsprogs /sbin/chkconfig /sbin/service cert-sh-functions
 Requires: su, tzdata
 Provides: MDA imap IMAPD POP3D
 
@@ -62,6 +63,10 @@ BuildRequires: valgrind-devel
 
 BuildRequires: control flex gcc-c++ transfig libdb4-devel zlib-devel libldap-devel libuuid-devel
 BuildRequires: libsasl2-devel libssl-devel libnl-devel libsensors3-devel libpcre-devel libkrb5-devel
+
+%if_with srs2
+BuildRequires: libsrs2-devel
+%endif
 
 %if_with snmp
 BuildRequires: libnet-snmp-devel
@@ -172,14 +177,21 @@ echo %version > VERSION
 
 %patch1 -p1
 
-# hack to really enable pcre
-sed "s|pcreposix\.h|pcre/pcreposix.h|g" -i configure.ac
-sed 's|if test "$ac_cv_header_pcreposix_h" = "yes"|ac_cv_header_pcreposix_h="yes"; if test "$ac_cv_header_pcreposix_h" = "yes"|' -i configure.ac
+##
+## hack to really enable pcre
+##
 %add_optflags -I%_includedir/pcre
-sed "s|pcre\.h|pcre/pcre.h|" -i  lib/util.h		#  include <pcre.h>
-sed "s|pcreposix\.h|pcre/pcreposix.h|" -i  lib/util.h	#  include <pcreposix.h>
+# --
+#sed "s|pcre\.h|pcre/pcre.h|"           -i  lib/util.h	#  include <pcre.h>
+#sed "s|pcreposix\.h|pcre/pcreposix.h|" -i  lib/util.h	#  include <pcreposix.h>
+# or
+sed "s|@SSL_CPPFLAGS@|@SSL_CPPFLAGS@ -I%_includedir/pcre|" -i perl/imap/Makefile.PL.in
+# --
 sed "s|@ZLIB@|@ZLIB@ -lpcreposix|" -i perl/imap/Makefile.PL.in
 sed "s|@ZLIB@|@ZLIB@ -lpcreposix|" -i perl/sieve/managesieve/Makefile.PL.in
+# end hack
+
+sed "s|AC_CANONICAL_SYSTEM|AC_CANONICAL_SYSTEM\nAC_SYS_LARGEFILE|" -i configure.ac
 
 %if_with unit_tests
 # Suite: command
@@ -199,7 +211,7 @@ autoreconf -v -i
 
 %add_optflags -lcrypto -lsasl2 -lssl -DUSE_SETPROCTITLE
 
-%configure \
+CFLAGS="-Wl,-z,noexecstack" %configure \
   --with-extraident="%release" \
   \
   --sbindir=%_cyrexecdir \
@@ -213,6 +225,7 @@ autoreconf -v -i
   --enable-calalarmd \
   --enable-replication \
   --enable-backup \
+  %{?_with_srs2: --enable-srs} \
   \
   %{?_with_unit_tests: --enable-unit-tests} \
   \
@@ -320,7 +333,7 @@ mv -f %buildroot%_man8dir/httpd.8 %buildroot%_man8dir/cyrus-httpd.8
 # Move utilites from /usr/libexec/cyrus to /usr/bin
 # mupdate-loadgen.pl convert-sieve.pl
 for i in arbitronsort.pl cyradm \
-	 mknewsgroups config2header config2man masssievec
+	 mknewsgroups config2header masssievec
 do
     mv %buildroot%_cyrexecdir/$i %buildroot/%_bindir/
 done
@@ -341,6 +354,9 @@ fi
 rm -f %buildroot%_cyrexecdir/not-mkdep
 find %buildroot -name "perllocal.pod" -exec rm -f {} \;
 find %buildroot -name ".packlist" -exec rm -f {} \;
+# scripts for building installed but not needed
+rm -f %buildroot%_cyrexecdir/git-version.sh
+rm -f %buildroot%_cyrexecdir/jenkins-build.sh
 
 # Create file wich contains information about compiled db backends
 for conf in DUPLICATE MBOX SEEN SUBS TLS
@@ -488,6 +504,10 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Sun Jun 28 2020 Sergey Y. Afonin <asy@altlinux.org> 3.2.2-alt1
+- 3.2.2
+- built with libsrs2
+
 * Wed Jan 01 2020 Sergey Y. Afonin <asy@altlinux.org> 3.0.13-alt1
 - 3.0.13 (fixes: CVE-2019-19783)
 
