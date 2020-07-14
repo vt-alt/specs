@@ -1,6 +1,6 @@
 Name:           pcsc-tools
-Version:        1.5.4
-Release:        alt1
+Version:        1.5.7
+Release:        alt2
 Summary:        Tools to be used with smart cards and PC/SC
 
 Group:          System/Configuration/Hardware
@@ -61,6 +61,18 @@ desktop-file-install --mode=644 \
 %doc %_man1dir/gscriptor.*
 
 %changelog
+* Fri Jul 10 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.7-alt2
+- Remove strict requirements of python2-base.
+
+* Thu Jul 09 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.7-alt1
+- New version.
+
+* Tue Mar 10 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.6-alt1
+- New version.
+
+* Mon Jan 06 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.5-alt1
+- New version.
+
 * Fri Dec 14 2018 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt1
 - New version.
 
