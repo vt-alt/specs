@@ -1,7 +1,7 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
 Version: 6.0.7
-Release: alt3
+Release: alt4
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -19,6 +19,7 @@ Patch0: %name.patch
 Patch1: pve-access-control.patch
 Patch2: pve-cluster-install_vzdump_cron_config.patch
 Patch3: pve-cluster-get_guest_config_property.patch
+Patch4: pve-cluster-upstream-prevent-deadlock.patch
 
 Source3: %name.filetrigger
 
@@ -47,6 +48,7 @@ control function used by PVE.
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 grep '/var/run' * -rl | while read f; do
     sed -i 's|/var/run|/run|' $f
@@ -178,6 +180,9 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Wed Jul 08 2020 Anton Farygin <rider@altlinux.ru> 6.0.7-alt4
+- add upstream patch to prevent deadlock in pmxcfs
+
 * Thu Oct 17 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt3
 - pve-cluster 6.0-7
 
