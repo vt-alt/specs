@@ -1,5 +1,5 @@
 Name: tavolga-image-tools
-Version: 3.2
+Version: 3.3
 Release: alt1
 Summary: Helpers for building images for Tavolga Terminal
 License: BSD-3-Clause
@@ -29,6 +29,9 @@ install -Dpm 0755 %SOURCE2 %buildroot%_bindir/build-recovery-tar
 %_datadir/%name
 
 %changelog
+* Tue Jul 14 2020 Ivan A. Melnikov <iv@altlinux.org> 3.3-alt1
+- avoid 'alt' duplication in dialogues
+
 * Wed Mar 18 2020 Ivan A. Melnikov <iv@altlinux.org> 3.2-alt1
 - try to update the system date if it's in the past
 
