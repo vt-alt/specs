@@ -1,6 +1,6 @@
 %define _unpackaged_files_terminate_build 1
 
-%define major 3.0.5.33220
+%define major 3.0.6.33328
 %define minor 0
 %define pkgname Firebird
 %define pkgversion %major-%minor
@@ -18,12 +18,12 @@ Url: https://www.firebirdsql.org/
 Source: %name-%version.tar
 Source1: %name.init
 
-Patch1: %name-%version-fedora-obsolete-syslogd.target.patch
-Patch2: %name-%version-fedora-no-copy-from-icu.patch
-Patch3: %name-%version-fedora-honour-buildflags.patch
-Patch4: %name-%version-fedora-cloop-honour-build-flags.patch
-Patch5: %name-%version-fedora-add-pkgconfig-files.patch
-Patch6: %name-%version-fedora-Provide-sized-global-delete-operators-when-compiled.patch
+Patch1: %name-3.0.5.33220.0-fedora-obsolete-syslogd.target.patch
+Patch2: %name-3.0.5.33220.0-fedora-no-copy-from-icu.patch
+Patch3: %name-3.0.5.33220.0-fedora-honour-buildflags.patch
+Patch4: %name-3.0.5.33220.0-fedora-cloop-honour-build-flags.patch
+Patch5: %name-3.0.5.33220.0-fedora-add-pkgconfig-files.patch
+Patch6: %name-3.0.5.33220.0-fedora-Provide-sized-global-delete-operators-when-compiled.patch
 
 Requires: libfbclient = %EVR
 
@@ -354,6 +354,9 @@ fi
 %_datadir/%name/examples/*
 
 %changelog
+* Fri Jul 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.6.33328.0-alt1
+- Updated to upstream version 3.0.6.33328-0.
+
 * Fri Apr 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.5.33220.0-alt1
 - Updated to upstream version 3.0.5.33220-0.
 
