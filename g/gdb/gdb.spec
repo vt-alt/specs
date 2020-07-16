@@ -11,7 +11,7 @@
 
 Name: gdb
 Version: 8.2.50.20180917
-Release: alt4
+Release: alt4.1
 
 Summary: A GNU source-level debugger for C, C++ and other languages
 License: GPLv3+
@@ -760,6 +760,7 @@ done
 	--with-separate-debug-dir=/usr/lib/debug \\\
 	--with-auto-load-dir='$debugdir:%_libdir/gdb/auto-load:$datadir/auto-load' \\\
 	--enable-gdb-build-warnings=,-Wno-unused \\\
+	--enable-ubsan=no \\\
 	--disable-werror \\\
 	--disable-sim \\\
 	--disable-rpath \\\
@@ -854,7 +855,10 @@ fi
 
 %files -n gdbserver
 %_bindir/gdbserver
+# no ipa_obj for arm* and mips*
+%ifnarch %arm %mips
 %_libdir/libinproctrace.so
+%endif
 %endif
 
 %files light
@@ -872,6 +876,9 @@ fi
 %_libdir/lib*.a
 
 %changelog
+* Tue Jul 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 8.2.50.20180917-alt4.1
+- ubsan renders gdb unusable on arm and adds no benefit in general, disable it
+
 * Thu Jun 27 2019 Ivan Zakharyaschev <imz@altlinux.org> 8.2.50.20180917-alt4
 - %%pre: corrected the old symlink path in 8.2.50.20180917-alt3.
 
