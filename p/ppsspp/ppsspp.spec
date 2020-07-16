@@ -1,13 +1,13 @@
 %define armips_commit 7885552b208493a6a0f21663770c446c3ba65576
 %define discord_rpc_commit 3d3ae7129d17643bc706da0a2eea85aafd10ab3a
-%define glslang_commit f9d08a25fbe17e0677a89d398f4d7f232339c3f9
-%define ppsspp_ffmpeg_commit 90701640c7f458461310b54e7d4041230e2d5d5a
-%define ppsspp_lang_commit bfc3a511f60e84de4d49170e2c442ac36b09cdfd
+%define glslang_commit d0850f875ec392a130ccf00018dab458b546f27c
+%define ppsspp_ffmpeg_commit 55147e5f33f5ae4904f75ec082af809267122b94
+%define ppsspp_lang_commit 1c64b8fbd3cb6bd87935eb53f302f7de6f86e209
 %define spirv_cross_commit a1f7c8dc8ea2f94443951ee27003bffa562c1f13
 
 Name: ppsspp
-Version: 1.9.4
-Release: alt2
+Version: 1.10.3
+Release: alt1
 
 Summary: PlayStation Portable Emulator
 License: GPL-2.0-or-later
@@ -16,20 +16,26 @@ Group: Emulators
 Url: https://www.%name.org
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
-ExclusiveArch: %ix86 x86_64 aarch64
+ExcludeArch: ppc64le armh
 
-Source0: https://github.com/hrydgard/%name/archive/v%version/%name-%version.tar.gz
-Source1: https://github.com/Kingcom/armips/archive/%armips_commit/armips-%armips_commit.tar.gz
-Source2: https://github.com/discord/discord-rpc/archive/%discord_rpc_commit/discord-rpc-%discord_rpc_commit.tar.gz
-Source3: https://github.com/hrydgard/glslang/archive/%glslang_commit/glslang-%glslang_commit.tar.gz
-Source4: https://github.com/hrydgard/ppsspp-ffmpeg/archive/%ppsspp_ffmpeg_commit/ppsspp-ffmpeg-%ppsspp_ffmpeg_commit.tar.gz
-Source5: https://github.com/hrydgard/ppsspp-lang/archive/%ppsspp_lang_commit/ppsspp-lang-%ppsspp_lang_commit.tar.gz
-Source6: https://github.com/KhronosGroup/SPIRV-Cross/archive/%spirv_cross_commit/SPIRV-Cross-%spirv_cross_commit.tar.gz
+# https://github.com/hrydgard/%name/archive/v%version/%name-%version.tar.gz
+Source0: %name-%version.tar
+# https://github.com/Kingcom/armips/archive/%armips_commit/armips-%armips_commit.tar.gz
+Source1: armips-%armips_commit.tar
+# https://github.com/discord/discord-rpc/archive/%discord_rpc_commit/discord-rpc-%discord_rpc_commit.tar.gz
+Source2: discord-rpc-%discord_rpc_commit.tar
+# https://github.com/hrydgard/glslang/archive/%glslang_commit/glslang-%glslang_commit.tar.gz
+Source3: glslang-%glslang_commit.tar
+# https://github.com/hrydgard/ppsspp-ffmpeg/archive/%ppsspp_ffmpeg_commit/ppsspp-ffmpeg-%ppsspp_ffmpeg_commit.tar.gz
+Source4: ppsspp-ffmpeg-%ppsspp_ffmpeg_commit.tar
+# https://github.com/hrydgard/ppsspp-lang/archive/%ppsspp_lang_commit/ppsspp-lang-%ppsspp_lang_commit.tar.gz
+Source5: ppsspp-lang-%ppsspp_lang_commit.tar
+# https://github.com/KhronosGroup/SPIRV-Cross/archive/%spirv_cross_commit/SPIRV-Cross-%spirv_cross_commit.tar.gz
+Source6: SPIRV-Cross-%spirv_cross_commit.tar
 Source7: %name.desktop
 Source8: %name-qt.desktop
 
 Patch0: %name-alt-git.patch
-Patch1: %name-alt-libpng.patch
 
 BuildRequires: cmake
 BuildRequires: libGLEW-devel
@@ -37,8 +43,7 @@ BuildRequires: libSDL2-devel
 BuildRequires: libpng-devel
 BuildRequires: libsnappy-devel
 BuildRequires: libzip-devel
-BuildRequires: python3
-BuildRequires: qt5-base-devel
+BuildRequires: qt5-multimedia-devel
 BuildRequires: rapidjson
 
 Requires: %name-common = %EVR
@@ -83,7 +88,6 @@ This build using the Qt frontend.
 %__mv -Tf ../SPIRV-Cross-%spirv_cross_commit ext/SPIRV-Cross
 
 %patch0 -p1
-%patch1 -p1
 
 echo "// This is a generated file.
 
@@ -177,6 +181,24 @@ CPLUS_INCLUDE_PATH=%_includedir/libzip %make_build -C %_target_platform-qt
 %_desktopdir/%name-qt.desktop
 
 %changelog
+* Mon Jul 13 2020 Nazarov Denis <nenderus@altlinux.org> 1.10.3-alt1
+- Version 1.10.3
+
+* Tue Jul 07 2020 Nazarov Denis <nenderus@altlinux.org> 1.10.2-alt1
+- Version 1.10.2
+
+* Sat Jul 04 2020 Nazarov Denis <nenderus@altlinux.org> 1.10.1-alt1
+- Version 1.10.1
+
+* Sat Jun 27 2020 Nazarov Denis <nenderus@altlinux.org> 1.10-alt1
+- Version 1.10
+
+* Tue Jun 02 2020 Nazarov Denis <nenderus@altlinux.org> 1.9.4-alt4
+- Don't gzip sources to speedup rpmbuild -bp
+
+* Tue Jun 02 2020 Nazarov Denis <nenderus@altlinux.org> 1.9.4-alt3
+- Build also ARMv7hf and MIPS Little Endian
+
 * Fri May 29 2020 Nazarov Denis <nenderus@altlinux.org> 1.9.4-alt2
 - Add ppsspp-ffmpeg 3dparty library
 - Don't use system ffmpeg
