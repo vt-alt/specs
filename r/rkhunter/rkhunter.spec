@@ -2,7 +2,7 @@
 #
 Name: rkhunter
 Version: 1.4.2
-Release: alt3
+Release: alt4
 
 Summary: Rootkit scans for rootkits, backdoors and local exploits
 License: GPLv2
@@ -216,6 +216,9 @@ rm -f %db_dir/%hash_list.{asc,*saved.*}
 
 
 %changelog
+* Mon Jul 13 2020 Pavel Vasenkov <pav@altlinux.org> 1.4.2-alt4
+- Fix STARTUP_PATHS configuration option
+
 * Wed Apr 13 2016 Hihin Ruslan <ruslandh@altlinux.ru> 1.4.2-alt3
 - Fix /etc/logrotate/rkhunter
 
