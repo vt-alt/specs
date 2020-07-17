@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.32
+Version: 1.0.34
 Release: alt1
 Summary: ProcessOne SIP server component in Erlang
 Group: Development/Erlang
@@ -48,6 +48,9 @@ ProcessOne SIP server component in Erlang.
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Jul 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.34-alt1
+- Updated to upstream version 1.0.34.
+
 * Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.32-alt1
 - Updated to upstream version 1.0.32.
 

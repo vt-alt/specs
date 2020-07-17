@@ -11,7 +11,7 @@
 %def_enable tools
 
 Name: ejabberd
-Version: 20.03
+Version: 20.04
 Release: alt1
 Summary: Fault-tolerant distributed Jabber server written in Erlang
 License: GPL-2.0 with OpenSSL-exception
@@ -24,6 +24,8 @@ BuildArch: noarch
 Source: %name-%version.tar
 
 Source1: %name-%version-alt.tar
+
+Source2: %name.watch
 
 # Use ejabberd as an example for PAM service name
 Patch4: ejabberd-fedora-enable-systemd-notification-if-available.patch
@@ -213,6 +215,9 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %attr(1770,root,ejabberd) %dir %_lockdir/ejabberd
 
 %changelog
+* Wed Jul 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 20.04-alt1
+- Updated to upstream version 20.04.
+
 * Tue Mar 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 20.03-alt1
 - Updated to upstream version 20.03.
 

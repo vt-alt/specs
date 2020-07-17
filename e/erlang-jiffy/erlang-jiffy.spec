@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.1
+Version: 1.0.4
 Release: alt1
 Summary: JSON NIFs for Erlang
 Group: Development/Erlang
@@ -50,6 +50,9 @@ rm -rf c_src/double-conversion
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Jul 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.4-alt1
+- Updated to upstream version 1.0.4.
+
 * Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.1-alt1
 - Updated to upstream version 1.0.1.
 
