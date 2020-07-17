@@ -20,9 +20,11 @@
 %def_disable kdrive
 %endif
 
+%def_enable systemd
+
 Name: xorg-server
 Version: 1.20.8
-Release: alt1
+Release: alt3
 Epoch: 2
 License: MIT/X11
 Summary: Xserver - X Window System display server
@@ -63,6 +65,7 @@ BuildRequires: libwayland-client-devel wayland-protocols
 %if_enabled xephyr
 BuildRequires: libxcbutil-devel libxcbutil-image-devel libxcbutil-icccm-devel libxcbutil-keysyms-devel libxcb-render-util-devel
 %endif
+%{?_enable_systemd:BuildRequires: libdbus-devel libudev-devel}
 
 %description
 X  is  the  generic name for the X Window System display server.  It is
@@ -212,7 +215,8 @@ drivers, input drivers, or other X modules should install this package.
 	%{subst_enable kdrive} \
 	%{subst_enable ipv6} \
 	--enable-docs \
-	--disable-static
+	--disable-static \
+	%{?_enable_systemd:--enable-systemd-logind}
 %make_build
 
 %install
@@ -308,6 +312,12 @@ install -pD -m644 xorg-sdk.rpmmacros %buildroot%_rpmmacrosdir/xorg-sdk
 %_rpmmacrosdir/xorg-sdk
 
 %changelog
+* Wed Jul 15 2020 Sergey V Turchin <zerg@altlinux.org> 2:1.20.8-alt3
+- autobind GPUs to the screen
+
+* Tue May 05 2020 Yuri N. Sedunov <aris@altlinux.org> 2:1.20.8-alt2
+- enabled systemd-logind integration
+
 * Mon Mar 30 2020 Valery Inozemtsev <shrek@altlinux.ru> 2:1.20.8-alt1
 - 1.20.8
 
