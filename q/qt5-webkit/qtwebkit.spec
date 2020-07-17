@@ -7,7 +7,7 @@
 
 Name: qt5-webkit
 Version: 5.212.0
-Release: alt16
+Release: alt17
 
 Group: System/Libraries
 Summary: Qt5 - QtWebKit components
@@ -17,6 +17,7 @@ Source: %qt_module-everywhere-src-%version.tar
 
 # FC
 Patch2: qtwebkit-5.212.0_cmake_cmp0071.patch
+Patch3: qtwebkit-5.212.0-add-riscv64.patch
 # ALT
 Patch10: alt-flags.patch
 
@@ -90,6 +91,7 @@ Requires: libqt5-core = %_qt5_version
 %prep
 %setup -n %qt_module-everywhere-src-%version
 %patch2 -p1
+%patch3 -p1
 #
 %patch10 -p1
 syncqt.pl-qt5 Source -version %version
@@ -105,6 +107,9 @@ syncqt.pl-qt5 Source -version %version
 #echo 'QMAKE_LIBS_OPENGL += -lpthread' >> Source/api.pri
 
 %build
+%ifarch riscv64
+export LDFLAGS="${LDFLAGS:-} -Wl,--no-as-needed -latomic"
+%endif
 %remove_optflags '-g'
 %add_optflags -g1 -fpermissive
 export LDFLAGS="$LDFLAGS -Wl,--no-keep-memory"
@@ -198,6 +203,9 @@ done
 %_pkgconfigdir/Qt*.pc
 
 %changelog
+* Tue Mar 17 2020 Nikita Ermakov <arei@altlinux.org> 5.212.0-alt17
+- add riscv64 support
+
 * Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 5.212.0-alt16
 - update from 5.212 branch
 

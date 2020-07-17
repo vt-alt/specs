@@ -2,7 +2,7 @@
 %global qt_module qtnetworkauth
 
 Name: qt5-networkauth
-Version: 5.12.8
+Version: 5.12.9
 Release: alt1
 
 Group: System/Libraries
@@ -90,6 +90,9 @@ Requires: libqt5-core = %_qt5_version
 %_qt5_examplesdir/*
 
 %changelog
+* Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
+- new version
+
 * Thu Apr 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt1
 - new version
 

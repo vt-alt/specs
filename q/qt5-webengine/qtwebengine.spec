@@ -29,8 +29,8 @@
 %endif
 
 Name: qt5-webengine
-Version: 5.12.8
-Release: alt1
+Version: 5.12.9
+Release: alt2
 
 Group: System/Libraries
 Summary: Qt5 - QtWebEngine components
@@ -221,7 +221,7 @@ done
 
 # generate qtwebengine-3rdparty.qdoc, it is missing from the tarball
 pushd src/3rdparty
-python chromium/tools/licenses.py \
+%__python chromium/tools/licenses.py \
   --file-template ../../tools/about_credits.tmpl \
   --entry-template ../../tools/about_credits_entry.tmpl \
   credits >../webengine/doc/src/qtwebengine-3rdparty.qdoc
@@ -233,6 +233,8 @@ cp -p src/3rdparty/chromium/LICENSE LICENSE.Chromium
 # fix find system ninja
 mkdir -p bin
 ln -s %_bindir/ninja-build bin/ninja
+# fix find system python
+ln -s %__python bin/python
 
 %build
 %add_optflags %optflags_shared -Wno-error=return-type
@@ -243,8 +245,14 @@ mkdir -p %_target_platform/lib
 ln -s ../src/core/Release/lib/libv8.so %_target_platform/lib/libv8.so
 %endif
 NUM_PROCS="%__nprocs"
-[ -n "$NUM_PROCS" -a "$NUM_PROCS" != "1"  ] || NUM_PROCS=6
-[ -n "$NUM_PROCS" -a "$NUM_PROCS" -le "20" ] || NUM_PROCS=20
+cat /proc/meminfo | grep ^Mem
+ulimit -a | grep mem
+MEM_PER_PROC=10000000
+MAX_MEM=`grep ^MemTotal: /proc/meminfo | sed -e 's|^\(.*\)[[:space:]].*|\1|' -e 's|.*[[:space:]]||'`
+NUM_PROCS="$(($MAX_MEM / $MEM_PER_PROC))"
+[ "$NUM_PROCS" -ge 2  ] || NUM_PROCS=2
+[ "$NUM_PROCS" -le 32  ] || NUM_PROCS=32
+
 export NPROCS=$NUM_PROCS
 export STRIP=strip
 export NINJAFLAGS="-v -j $NUM_PROCS"
@@ -364,6 +372,12 @@ done
 %_qt5_archdatadir/mkspecs/modules/qt_*.pri
 
 %changelog
+* Fri Jul 10 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt2
+- tune build for p9
+
+* Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
+- new version
+
 * Thu Apr 09 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt1
 - new version
 

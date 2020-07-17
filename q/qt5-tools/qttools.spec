@@ -1,13 +1,13 @@
 
 %global qt_module qttools
-%def_disable bootstrap
+%def_enable bootstrap
 %def_disable qtconfig
 
 %define kf5_bindir %prefix/lib/kf5/bin
 
 Name: qt5-tools
-Version: 5.12.8
-Release: alt2
+Version: 5.12.9
+Release: alt1
 %define major %{expand:%(X='%version'; echo ${X%%%%.*})}
 %define minor %{expand:%(X=%version; X=${X%%.*}; echo ${X#*.})}
 %define bugfix %{expand:%(X='%version'; echo ${X##*.})}
@@ -346,6 +346,9 @@ fi
 %_qt5_libdir/libQt5Help.so.*
 
 %changelog
+* Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
+- new version
+
 * Thu Apr 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt2
 - build docs
 

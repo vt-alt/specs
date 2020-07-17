@@ -18,6 +18,7 @@
 %def_disable sql_sqlite2
 %def_enable pulse
 %def_disable journald
+%def_enable vulkan
 
 %define platform linux-g++
 %define graphicssystem raster
@@ -33,8 +34,8 @@
 %define gname  qt5
 Name: qt5-base
 %define major  5
-Version: 5.12.8
-Release: alt3
+Version: 5.12.9
+Release: alt1
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -67,6 +68,8 @@ Patch1008: alt-mkspecs-features.patch
 Patch1009: alt-false-detect-groupswitchmodifier.patch
 Patch1010: alt-glx-check-version.patch
 Patch1011: alt-kernel-requires.patch
+# Upstream
+Patch2000: Add-RISC-V-detection.patch
 
 # macros
 %define _qt5 %gname
@@ -84,7 +87,8 @@ BuildRequires: gcc-c++ libcups-devel libdbus-devel libicu-devel libjpeg-devel li
 BuildRequires: libproxy-devel libssl-devel liblksctp-devel
 BuildRequires: libpcre2-devel libudev-devel libEGL-devel libdrm-devel libgbm-devel zlib-devel libgtk+3-devel
 BuildRequires: libmtdev-devel libinput-devel libts-devel
-BuildRequires: pkgconfig(gl) pkgconfig(glesv2) pkgconfig(egl) pkgconfig(vulkan)
+BuildRequires: pkgconfig(gl) pkgconfig(glesv2) pkgconfig(egl)
+%{?_enable_vulkan:BuildRequires: pkgconfig(vulkan)}
 BuildRequires: libSM-devel libICE-devel
 BuildRequires: libX11-devel libXi-devel libxkbcommon-devel libxkbcommon-x11-devel
 BuildRequires: libxcb-render-util-devel libxcbutil-icccm-devel libxcbutil-image-devel libxcbutil-keysyms-devel
@@ -393,6 +397,8 @@ EGL integration library for the Qt%major toolkit
 %patch1009 -p1
 %patch1010 -p2
 %patch1011 -p1
+#
+%patch2000 -p1
 
 # install optflags
 %add_optflags %optflags_shared
@@ -552,7 +558,7 @@ translationdir=%_qt5_translationdir
 
 Name: Qt%major
 Description: Qt%major Configuration
-Version: 5.12.8
+Version: 5.12.9
 __EOF__
 
 # rpm macros
@@ -814,6 +820,12 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
+- new version
+
+* Thu May 28 2020 Nikita Ermakov <arei@altlinux.org> 5.12.8-alt4
+- add RISC-V detection
+
 * Wed May 06 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt3
 - reduce kernel version requires for OVZ kernel
 

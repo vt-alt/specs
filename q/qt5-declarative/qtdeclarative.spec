@@ -1,10 +1,10 @@
 
 %global qt_module qtdeclarative
-%def_disable bootstrap
+%def_enable bootstrap
 
 Name: qt5-declarative
-Version: 5.12.8
-Release: alt2
+Version: 5.12.9
+Release: alt1
 
 Group: System/Libraries
 Summary: Qt5 - QtDeclarative component
@@ -17,6 +17,7 @@ Source1: qml
 Source2: qml.env
 Source3: find-provides.sh
 Source4: find-requires.sh
+Patch1: Link-with-libatomic-on-riscv32-64.patch
 
 %include %SOURCE1
 %qml_req_skipall 0
@@ -132,6 +133,7 @@ QML modules by some Alt Linux Team Policy compatible way.
 mv rpm-build-qml src/
 mkdir bin_add
 ln -s %__python3 bin_add/python
+%patch1 -p1
 
 %build
 export PATH=$PWD/bin_add:$PATH
@@ -256,6 +258,12 @@ cat %SOURCE2 >> %buildroot%_rpmmacrosdir/qml.env
 %_bindir/rpmbqml-qmlinfo
 
 %changelog
+* Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
+- new version
+
+* Sat May 30 2020 Nikita Ermakov <arei@altlinux.org> 5.12.8-alt3
+- link with libatomic on riscv32/64
+
 * Thu Apr 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.8-alt2
 - build docs
 
