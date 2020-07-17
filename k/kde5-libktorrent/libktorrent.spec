@@ -3,14 +3,14 @@
 %define libkf5torrent libkf5torrent%sover
 
 Name: kde5-libktorrent
-Version: 2.1.1
+Version: 2.2.0
 Release: alt1
 %K5init
 
 Group: System/Libraries
 Summary: BitTorrent library for KDE
 Url: http://ktorrent.org/
-License: GPLv2
+License: GPL-2.0-only
 
 Source: libktorrent-%version.tar
 
@@ -73,6 +73,9 @@ This package contains the development files for %name.
 %_K5link/lib*.so
 
 %changelog
+* Fri Jul 17 2020 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt1
+- new version
+
 * Thu Sep 19 2019 Sergey V Turchin <zerg@altlinux.org> 2.1.1-alt1
 - new version
 
