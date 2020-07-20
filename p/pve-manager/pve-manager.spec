@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
 Version: 6.0.7
-Release: alt9
+Release: alt10
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -9,7 +9,7 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
 ExclusiveArch: x86_64 aarch64
 Requires: cstream lzop pve-vncterm pve-novnc pve-spiceterm pve-xtermjs pve-docs
-Requires: perl-LWP-Protocol-https pve-cluster
+Requires: perl-LWP-Protocol-https pve-cluster schedutils
 
 Source0: pve-manager.tar.xz
 Source1: pve-container.tar.xz
@@ -215,7 +215,7 @@ install -m0644 %SOURCE5 pve-i18n/ru.po
 %build
 for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit pve-mini-journalreader/src; do
     pushd $d
-    %make
+    %make PACKAGE="pve-manager" VERSION="6.0-7" PVERELEASE="6.0" REPOID="28984024"
     popd
 done
 
@@ -584,6 +584,9 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Fri Jul 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt10
+- fixed pvecfg.pm (closes: #38725)
+
 * Wed Jan 22 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt9
 - qemu-server: fixed qxl display
 
