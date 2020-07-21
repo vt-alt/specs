@@ -5,6 +5,7 @@
 %def_enable agent
 %def_enable ccm
 %def_enable cisco_quirks
+%def_enable cmd
 %def_enable ctr
 %def_enable curl
 %def_enable dhcp
@@ -43,7 +44,7 @@
 %def_disable manager
 %def_disable medsrv
 %def_disable mysql
-%def_disable nm
+%def_enable nm
 %def_disable sqlite
 %def_disable static
 %def_disable uci
@@ -62,8 +63,8 @@
 %define beta %nil
 
 Name: strongswan
-Version: 5.8.1
-Release: alt1
+Version: 5.8.4
+Release: alt5
 
 Summary: strongSwan IPsec implementation
 License: GPLv2+
@@ -80,12 +81,17 @@ Packager: Michael Shigorin <mike@altlinux.org>
 # Automatically added by buildreq on Mon Jul 02 2012
 # optimized out: pkg-config
 BuildRequires: flex gperf libcap-devel libcurl-devel libgmp-devel libldap-devel libpam-devel libssl-devel libxml2-devel
+BuildRequires: pkgconfig(systemd)
+
+%if_enabled nm
+BuildRequires: libnm-devel
+%endif
 
 Provides: libstrongswan = %version-%release
 Obsoletes: libstrongswan < 4.3
 
 %define pkgdocdir %_docdir/%name-%version
-%add_verify_elf_skiplist %_libdir/%name/ipsec/plugins/*
+%add_verify_elf_skiplist %_libdir/ipsec/plugins/*.so
 
 %description
 strongSwan is a free implementation of IPsec & IKE for Linux. IPsec is the
@@ -109,6 +115,14 @@ BuildArch: noarch
 This package contains testing scripts and configuration snippets
 of strongSwan documentation
 
+%package charon-nm
+Summary: NetworkManager plugin for Strongswan
+Group: System/Servers
+
+%description charon-nm
+NetworkManager plugin integrates a subset of Strongswan capabilities
+to NetworkManager.
+
 %prep
 %setup -n %name-%version%beta
 
@@ -117,9 +131,11 @@ of strongSwan documentation
 %configure \
 	--sysconfdir=%_sysconfdir/%name \
 	--libexecdir=%_libdir/%name \
+	--bindir=%_libexecdir/%name \
 	%{subst_enable addrblock} \
 	%{subst_enable agent} \
 	%{subst_enable ccm} \
+	%{subst_enable cmd} \
 	%{subst_enable ctr} \
 	%{subst_enable curl} \
 	%{subst_enable dhcp} \
@@ -212,21 +228,63 @@ find . \( -name '.*.swp' -o -name '#*#' -o -name '*~' \) -print -delete
 %config(noreplace) %_sysconfdir/%name/ipsec.secrets
 %config(noreplace) %_initdir/ipsec
 %_unitdir/ipsec.service
+%_unitdir/strongswan-starter.service
 %_datadir/%name/
-%_libdir/%name/
+%dir %_libdir/%name/
+%dir %_libdir/%name/ipsec/
+%_libdir/%name/ipsec/charon
+%_libdir/%name/ipsec/_copyright
+%_libdir/%name/ipsec/scepclient
+%_libdir/%name/ipsec/starter
+%_libdir/%name/ipsec/stroke
+%_libdir/%name/ipsec/_updown
+%_libdir/%name/ipsec/xfrmi
 %_libdir/ipsec/
-%_sbindir/*
-%_bindir/*
-%_mandir/*/*
+%_sbindir/charon-cmd
+%_sbindir/ipsec
+%_sbindir/swanctl
+%_libexecdir/%name/pki
+%_libexecdir/%name/pt-tls-client
+%_man1dir/pt-tls-client.*
+%_man5dir/*
+%_man8dir/*
 
 %files testing
 %pkgdocdir/testing/
+
+%files charon-nm
+%_datadir/dbus-1/system.d/nm-strongswan-service.conf
+%_libdir/%name/ipsec/charon-nm
+
 
 # TODO:
 # - libstrongswan{,-devel} subpackages
 # - review configurables (see also fedora-proposed spec)
 
 %changelog
+* Thu Jul 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.8.4-alt5
+- don't package pki manpages
+
+* Thu Jul 16 2020 Sergey V Turchin <zerg@altlinux.org> 5.8.4-alt4
+- fix conflict with pki-tools (Closes: 32705)
+- package strongswan-starter unit
+
+* Tue Jul 07 2020 Vitaly Lipatov <lav@altlinux.ru> 5.8.4-alt3
+- build charon-nm subpackage with NetworkManager support
+
+* Tue Jul 07 2020 Vitaly Lipatov <lav@altlinux.ru> 5.8.4-alt2
+- enable charon-cmd build
+- fix elf skiplist for plugins
+
+* Sun Mar 29 2020 Michael Shigorin <mike@altlinux.org> 5.8.4-alt1
+- new version (watch file uupdate)
+
+* Wed Mar 25 2020 Michael Shigorin <mike@altlinux.org> 5.8.3-alt1
+- new version (watch file uupdate)
+
+* Wed Dec 18 2019 Michael Shigorin <mike@altlinux.org> 5.8.2-alt1
+- new version (watch file uupdate)
+
 * Wed Sep 04 2019 Michael Shigorin <mike@altlinux.org> 5.8.1-alt1
 - new version (watch file uupdate)
 
