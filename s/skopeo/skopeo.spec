@@ -1,7 +1,15 @@
 %global import_path github.com/containers/skopeo
+
+%global __find_debuginfo_files %nil
+%global _unpackaged_files_terminate_build 1
+
+%set_verify_elf_method unresolved=no
+%add_debuginfo_skiplist %go_root %_bindir
+%brp_strip_none %_bindir/*
+
 Name: skopeo
-Version: 0.1.41
-Release: alt2
+Version: 1.0.0
+Release: alt1
 
 Summary: skopeo is a command line utility that performs various operations on container images and image repositories
 License: Apache-2.0
@@ -27,9 +35,12 @@ Source13: containers-mounts.conf.5.md
 Source14: containers-certs.d.5.md
 Source15: containers.conf
 Source16: containers.conf.5.md
+Source17: containers-auth.json.5.md
+Source18: containers-registries.conf.d.5.md
 
 Patch1: alt-change-registries-order.patch
 
+ExclusiveArch: %go_arches
 BuildRequires(pre): rpm-build-golang
 BuildRequires: golang go-md2man
 BuildRequires: glib2-devel libgpgme-devel libbtrfs-devel
@@ -100,6 +111,8 @@ go-md2man -in %SOURCE12 -out %buildroot%_man5dir/containers-policy.json.5
 go-md2man -in %SOURCE13 -out %buildroot%_man5dir/containers-mounts.conf.5
 go-md2man -in %SOURCE14 -out %buildroot%_man5dir/containers-certs.d.5
 go-md2man -in %SOURCE16 -out %buildroot%_man5dir/containers.conf.5
+go-md2man -in %SOURCE17 -out %buildroot%_man5dir/containers-auth.json.5
+go-md2man -in %SOURCE18 -out %buildroot%_man5dir/containers-registries.conf.d.5
 
 mkdir -p %buildroot%_datadir/containers
 install -m0644 %SOURCE3 %buildroot%_datadir/containers/mounts.conf
@@ -118,6 +131,12 @@ install -m0644 %SOURCE15 %buildroot%_datadir/containers/containers.conf
 %doc *.md
 
 %changelog
+* Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.0-alt1
+- new version 1.0.0
+
+* Wed May 13 2020 Mikhail Gordeev <obirvalger@altlinux.org> 0.2.0-alt1
+- new version 0.2.0
+
 * Mon Mar 23 2020 Mikhail Gordeev <obirvalger@altlinux.org> 0.1.41-alt2
 - Change registries search order
 

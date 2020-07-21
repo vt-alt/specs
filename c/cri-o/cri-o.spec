@@ -5,7 +5,7 @@
 
 %global provider_prefix %provider/%project/%repo
 %global import_path %provider_prefix
-%global commit b7316701c17ebc7901d10a716f15e66008c52525
+%global commit 7f261aeebffed079b4475dde8b9d602b01973d33
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -19,11 +19,11 @@
 %define _libexecdir /usr/libexec
 
 Name: cri-o
-Version: 1.15.2
+Version: 1.18.2
 Release: alt1
 Summary: Kubernetes Container Runtime Interface for OCI-based containers
 Group: Development/Other
-License: ASL 2.0
+License: Apache-2.0
 URL: https://%provider_prefix
 ExclusiveArch: %go_arches
 
@@ -36,6 +36,7 @@ Requires: conntrack-tools
 Requires: iproute2
 Requires: iptables
 Requires: socat
+Requires: conmon
 
 BuildRequires(pre): rpm-build-golang
 BuildRequires: glib2-devel
@@ -58,11 +59,10 @@ Provides: cri-runtime
 
 sed -i 's/\/local//' contrib/systemd/crio.service
 sed -i 's/\/local//' contrib/systemd/crio-wipe.service
-sed -i -e 's|/usr/bin/mkdir|/bin/mkdir|; s|/usr/bin/touch|/bin/touch|; s|/usr/bin/rm|/bin/rm|' contrib/systemd/crio-shutdown.service
+sed -i -e 's|/usr/bin/mkdir|/bin/mkdir|; s|/usr/bin/touch|/bin/touch|; s|/usr/bin/rm|/bin/rm|; s|/usr/bin/bash|/bin/bash|' \
+        contrib/systemd/crio-shutdown.service
 sed -i 's/\/local//' docs/crio.8.md
 sed -i 's/\/local//' docs/crio.conf.5.md
-sed -i 's/\/local//' lib/config/config_unix.go
-sed -i 's/\/local//' lib/config/testdata/config.toml
 
 sed -i 's/install.config: crio.conf/install.config:/' Makefile
 sed -i 's/install.bin: binaries/install.bin:/' Makefile
@@ -78,9 +78,8 @@ export GOPATH="$BUILDDIR:%go_path"
 
 %golang_prepare
 
-export VERSION=%version
-export COMMIT=%commit
-export GIT_COMMIT=%commit
+export COMMIT_NO=%commit
+export GIT_TREE_STATE=clean
 export BRANCH=altlinux
 export GOFLAGS="-mod=vendor"
 
@@ -95,7 +94,7 @@ cd .build/src/%import_path
       --root "/var/lib/containers/storage" \
       --runroot "/var/run/containers/storage" \
       --listen "/var/run/crio/crio.sock" \
-      --conmon "%_libexecdir/crio/conmon" \
+      --conmon "%_bindir/conmon" \
       --cni-plugin-dir "%_libexecdir/cni" \
       --storage-opt "overlay.override_kernel_check=1" \
       config > ./crio.conf
@@ -117,9 +116,11 @@ install -p -m 644 contrib/sysconfig/crio %buildroot%_sysconfdir/sysconfig/crio
 
 %files
 %_bindir/crio
-%_libexecdir/crio
-%_man5dir/crio.conf.5*
-%_man8dir/crio.8*
+%_bindir/crio-status
+%_bindir/pinns
+%_man5dir/crio.conf.*
+%_man8dir/crio.*
+%_man8dir/crio-status.*
 %dir %_sysconfdir/crio
 %config(noreplace) %_sysconfdir/crio/crio.conf
 %config(noreplace) %_sysconfdir/sysconfig/crio
@@ -128,7 +129,22 @@ install -p -m 644 contrib/sysconfig/crio %buildroot%_sysconfdir/sysconfig/crio
 %config(noreplace) %_sysconfdir/crictl.yaml
 %_unitdir/*.service
 %_datadir/oci-umount
+%_datadir/bash-completion/completions/*
+%_datadir/fish/completions/*
+%_datadir/zsh/site-functions/*
 
 %changelog
+* Sat Jul 04 2020 Alexey Shabalin <shaba@altlinux.org> 1.18.2-alt1
+- new version 1.18.2
+
+* Fri May 15 2020 Alexey Shabalin <shaba@altlinux.org> 1.18.1-alt1
+- new version 1.18.1
+
+* Wed May 06 2020 Alexey Shabalin <shaba@altlinux.org> 1.18.0-alt1
+- 1.18.0
+
+* Tue Apr 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.17.4-alt1
+- 1.17.4
+
 * Thu Sep 19 2019 Alexey Shabalin <shaba@altlinux.org> 1.15.2-alt1
 - initial build
