@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.2.1
+Version: 3.2.2
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,9 @@ __EOF__
 
 
 %changelog
+* Tue Jul 21 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.2-alt1
+- allow user to change font size (Closes: 38713)
+
 * Wed May 06 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.1-alt1
 - fix wizard buttons tooltip translation
 
