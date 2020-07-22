@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.0
-Release: alt2
+Release: alt3
 
 Summary: %Variant documentation
 License: %fdl
@@ -46,6 +46,11 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Tue Jul 21 2020 Elena Mishina <lepata@altlinux.org> 9.0-alt3
+- update restrictions section
+- update screenshots
+- fix some typos
+
 * Mon Jun 29 2020 Elena Mishina <lepata@altlinux.org> 9.0-alt2
 - system-management add FreeIPA, sambadc server, autostart/save sessions
 - starting-os add qtvirtualkeyboard
