@@ -13,7 +13,7 @@
 
 Name: pki-core
 Version: 10.7.4
-Release: alt2
+Release: alt3
 
 Summary: Certificate System - PKI Core Components
 License: %gpl2only
@@ -158,7 +158,6 @@ Provides: pki-native-tools = %EVR
 Provides: pki-java-tools = %EVR
 Obsoletes: pki-native-tools < %EVR
 Obsoletes: pki-java-tools < %EVR
-Conflicts: strongswan
 
 %description -n pki-tools
 This package contains Dogtag PKI executables that can be used to help make
@@ -720,6 +719,9 @@ fi
 %_javadir/pki/pki-console-theme.jar
 
 %changelog
+* Fri Jul 17 2020 Stanislav Levin <slev@altlinux.org> 10.7.4-alt3
+- Removed Conflict against strongswan.
+
 * Fri Nov 08 2019 Stanislav Levin <slev@altlinux.org> 10.7.4-alt2
 - Fixed build against Pylint-2.4.2.
 
