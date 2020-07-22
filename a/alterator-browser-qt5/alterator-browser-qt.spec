@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.2.2
+Version: 3.2.3
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,9 @@ __EOF__
 
 
 %changelog
+* Tue Jul 21 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.3-alt1
+- use only first screen size for fullscreen mode
+
 * Tue Jul 21 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.2-alt1
 - allow user to change font size (Closes: 38713)
 
