@@ -1,12 +1,13 @@
 %define debug_level 1
 
 Name: seabios
-Version: 1.12.1
-Release: alt1
+Version: 1.13.0
+Release: alt2
 Summary: Open-source legacy BIOS implementation
 
 Group: Emulators
 BuildArch: noarch
+ExclusiveArch: x86_64
 License: LGPLv3
 Url: http://www.seabios.org
 
@@ -30,10 +31,10 @@ Source18: config.seabios-256k
 Source19: config.vga.virtio
 Source20: config.vga.bochs-display
 Source21: config.vga.ramfb
+Source22: config.vga.ati
 
 BuildRequires: python3
 BuildRequires: acpica
-BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
 Conflicts: qemu-common < 1.6.0-alt1
 
 %description
@@ -74,8 +75,6 @@ build_bios() {
 		EXTRAVERSION="-%{release}" \
 		PYTHON=python3 \
 		HOSTCC=gcc \
-        CC="x86_64-linux-gnu-gcc -B/usr/lib/x86_64-linux-gnu/bin" \
-		CROSS_PREFIX=x86_64-linux-gnu- \
 		$4
 
 	cp out/$2 binaries/$3
@@ -88,7 +87,7 @@ build_bios %SOURCE17 bios.bin bios.bin
 build_bios %SOURCE18 bios.bin bios-256k.bin
 
 # seavgabios
-for config in %SOURCE10 %SOURCE11 %SOURCE12 %SOURCE13 %SOURCE14 %SOURCE19 %SOURCE20 %SOURCE21 ; do
+for config in %SOURCE10 %SOURCE11 %SOURCE12 %SOURCE13 %SOURCE14 %SOURCE19 %SOURCE20 %SOURCE21 %SOURCE22 ; do
 	name=${config#*config.vga.}
 	build_bios ${config} vgabios.bin vgabios-${name}.bin out/vgabios.bin
 done
@@ -114,29 +113,36 @@ ln -r -s %buildroot%_datadir/seavgabios/vgabios-isavga.bin %buildroot%_datadir/s
 %_datadir/seavgabios/vgabios*.bin
 
 %changelog
+* Mon Jul 20 2020 Alexey Shabalin <shaba@altlinux.org> 1.13.0-alt2
+- disable cross build
+
+* Fri Dec 13 2019 Alexey Shabalin <shaba@altlinux.org> 1.13.0-alt1
+- 1.13.0
+- build vgabios-ati
+
 * Tue Apr 02 2019 Alexey Shabalin <shaba@altlinux.org> 1.12.1-alt1
 - 1.12.1
 
 * Wed Nov 28 2018 Alexey Shabalin <shaba@altlinux.org> 1.12.0-alt1
 - 1.12.0
 
-* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.11.2-alt1%ubt
+* Fri Aug 24 2018 Alexey Shabalin <shaba@altlinux.org> 1.11.2-alt1
 - 1.11.2
 - fixed VGA VID and DID for vmware and virtio
 - added VGA DISPLAY_BOCHS and RAMFB
 
-* Mon Apr 02 2018 Alexey Shabalin <shaba@altlinux.ru> 1.11.1-alt1%ubt
+* Mon Apr 02 2018 Alexey Shabalin <shaba@altlinux.ru> 1.11.1-alt1
 - 1.11.1
 - Build with Python 3
 
-* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 1.11.0-alt1%ubt
+* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 1.11.0-alt1
 - 1.11.0
 - Add patches from RHEL
 
-* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 1.10.3-alt1%ubt
+* Wed Dec 13 2017 Alexey Shabalin <shaba@altlinux.ru> 1.10.3-alt1
 - 1.10.3
 
-* Thu Apr 27 2017 Alexey Shabalin <shaba@altlinux.ru> 1.10.2-alt1%ubt
+* Thu Apr 27 2017 Alexey Shabalin <shaba@altlinux.ru> 1.10.2-alt1
 - rebuild with ubt macros
 
 * Fri Apr 21 2017 Alexey Shabalin <shaba@altlinux.ru> 1.10.2-alt1

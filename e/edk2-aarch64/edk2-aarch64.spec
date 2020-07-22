@@ -1,10 +1,10 @@
 %define TOOL_CHAIN_TAG GCC49
-%define openssl_ver 1.1.0j
+%define openssl_ver 1.1.1d
 
 # More subpackages to come once licensing issues are fixed
 Name: edk2-aarch64
-Version: 20190501
-Release: alt2
+Version: 20191122
+Release: alt1
 Summary: AARCH64 Virtual Machine Firmware
 
 #Vcs-Git: https://github.com/tianocore/edk2.git
@@ -16,7 +16,7 @@ Source4: Logo.bmp
 
 Patch1: %name-%version.patch
 
-License: BSD
+License: BSD-2-Clause and OpenSSL
 Group: Emulators
 Url: http://www.tianocore.org
 ExclusiveArch: aarch64
@@ -85,8 +85,8 @@ CC_FLAGS="${CC_FLAGS} -D TPM2_ENABLE"
 
 # ovmf features
 OVMF_FLAGS="${CC_FLAGS}"
-OVMF_FLAGS="${OVMF_FLAGS} -D TLS_ENABLE"
-OVMF_FLAGS="${OVMF_FLAGS} -D HTTP_BOOT_ENABLE"
+OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_TLS_ENABLE"
+OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_HTTP_BOOT_ENABLE"
 OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_IP6_ENABLE"
 OVMF_FLAGS="${OVMF_FLAGS} -D FD_SIZE_2MB"
 
@@ -135,6 +135,9 @@ ln -r -s %buildroot%_datadir/AAVMF %buildroot%_datadir/edk2/aarch64
 %_datadir/edk2/aarch64
 
 %changelog
+* Wed Dec 18 2019 Alexey Shabalin <shaba@altlinux.org> 20191122-alt1
+- edk2-stable201911
+
 * Wed Jul 31 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt2
 - build as edk2-aarch64 package
 

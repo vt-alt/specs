@@ -1,10 +1,10 @@
 
 Name: libslirp
-Version: 4.0.0.0.16.g7646
+Version: 4.3.0
 Release: alt1
 Summary: A general purpose TCP-IP emulator
 Group: System/Libraries
-License: BSD and MIT
+License: BSD-3-Clause
 Url: https://gitlab.freedesktop.org/slirp/%name
 Source: %name-%version.tar
 
@@ -26,6 +26,7 @@ developing applications that use %name.
 
 %prep
 %setup
+echo "%version" > .tarball-version
 
 %build
 %meson
@@ -44,5 +45,11 @@ developing applications that use %name.
 %_pkgconfigdir/slirp.pc
 
 %changelog
+* Fri May 08 2020 Alexey Shabalin <shaba@altlinux.org> 4.3.0-alt1
+- new version 4.3.0 (Fixes: CVE-2020-1983)
+
+* Fri Mar 20 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.0-alt1
+- 4.2.0
+
 * Sun Aug 18 2019 Alexey Shabalin <shaba@altlinux.org> 4.0.0.0.16.g7646-alt1
 - Initial package master snapshot

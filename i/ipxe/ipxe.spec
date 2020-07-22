@@ -1,4 +1,6 @@
 
+%def_enable efi_ia32
+
 %define formats rom
 # PCI IDs (vendor,product) of the ROMS we want for QEMU
 #
@@ -12,12 +14,12 @@
 #    vmxnet3: 0x15ad 0x07b0
 
 %define qemuroms 10222000 10ec8029 8086100e 10ec8139 1af41000 80861209 808610d3 15ad07b0
-%define date 20180825
-%define hash 133f4c47
+%define date 20190817
+%define hash 0b3000bb
 
 Name: ipxe
 Version: %date
-Release: alt2.git%{hash}
+Release: alt1.git%{hash}
 Epoch: 1
 
 Summary: PXE boot firmware
@@ -34,7 +36,7 @@ Source: %name-%version.tar
 Patch: %name-%version.patch
 
 Requires: ipxe-bootimgs
-BuildRequires: mkisofs mtools syslinux binutils-devel edk2-tools
+BuildRequires: genisoimage mtools syslinux binutils-devel edk2-tools
 BuildRequires: liblzma-devel
 
 %description
@@ -128,17 +130,25 @@ make_ipxe ISOLINUX_BIN=/usr/lib/syslinux/isolinux.bin \
 mkdir bin-combined
 for rom in %qemuroms; do
   make_ipxe CONFIG=qemu bin/${rom}.rom
+%if_enabled efi_ia32
   make_ipxe CONFIG=qemu bin-i386-efi/${rom}.efidrv
+%endif
   make_ipxe CONFIG=qemu bin-x86_64-efi/${rom}.efidrv
   vid="0x${rom%%????}"
   did="0x${rom#????}"
   EfiRom -f "$vid" -i "$did" --pci23 \
          -b  bin/${rom}.rom \
+%if_enabled efi_ia32
          -ec bin-i386-efi/${rom}.efidrv \
+%endif
          -ec bin-x86_64-efi/${rom}.efidrv \
          -o  bin-combined/${rom}.rom
 
   EfiRom -d  bin-combined/${rom}.rom
+  # truncate to at least 256KiB
+  truncate -s \>256K bin-combined/${rom}.rom
+  # verify rom fits in 256KiB
+  test $(stat -c '%%s' bin-combined/${rom}.rom) -le $((256 * 1024))
 done
 
 %install
@@ -210,6 +220,9 @@ pxe_link 15ad07b0 vmxnet3
 %_datadir/%name.efi/efi-*.rom
 
 %changelog
+* Thu Sep 12 2019 Alexey Shabalin <shaba@altlinux.org> 1:20190817-alt1.git0b3000bb
+- update to latest upstream snapshot
+
 * Tue Dec 11 2018 Alexey Shabalin <shaba@altlinux.org> 1:20180825-alt2.git133f4c47
 - disable cross build
 

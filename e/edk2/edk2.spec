@@ -1,10 +1,10 @@
 %define TOOL_CHAIN_TAG GCC49
-%define openssl_ver 1.1.0j
+%define openssl_ver 1.1.1d
 
 # More subpackages to come once licensing issues are fixed
 Name: edk2
-Version: 20190501
-Release: alt2
+Version: 20200229
+Release: alt1
 Summary: EFI Development Kit II
 
 #Vcs-Git: https://github.com/tianocore/edk2.git
@@ -16,7 +16,7 @@ Source4: Logo.bmp
 
 Patch1: %name-%version.patch
 
-License: BSD
+License: BSD-2-Clause
 Group: Emulators
 Url: http://www.tianocore.org
 
@@ -34,7 +34,7 @@ and ROMs using the GNU tools.
 %package ovmf
 Summary: Open Virtual Machine Firmware
 Group: Emulators
-License: BSD License (no advertising) with restrictions on use and redistribution
+License: BSD-2-Clause and OpenSSL
 BuildArch: noarch
 Provides: edk2-ovmf-x86_64 = %EVR
 Requires: ipxe-roms-qemu
@@ -47,7 +47,7 @@ Open Virtual Machine Firmware
 %package ovmf-ia32
 Summary: Open Virtual Machine Firmware
 Group: Emulators
-License: BSD and OpenSSL
+License: BSD-2-Clause and OpenSSL
 BuildArch: noarch
 
 %description ovmf-ia32
@@ -99,7 +99,7 @@ mkdir -p ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3
 tar -xf %SOURCE3 --strip-components 1 --directory ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3
 
 %build
-
+export PYTHON_COMMAND=%__python3
 source ./edksetup.sh
 
 # compiler
@@ -115,9 +115,8 @@ CC_FLAGS="${CC_FLAGS} -D TPM2_ENABLE"
 
 # ovmf features
 OVMF_FLAGS="${CC_FLAGS}"
-OVMF_FLAGS="${OVMF_FLAGS} -D TLS_ENABLE"
-OVMF_FLAGS="${OVMF_FLAGS} -D HTTP_BOOT_ENABLE"
-OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_IP6_ENABLE"
+OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_TLS_ENABLE"
+OVMF_FLAGS="${OVMF_FLAGS} -D NETWORK_HTTP_BOOT_ENABLE"
 OVMF_FLAGS="${OVMF_FLAGS} -D FD_SIZE_2MB"
 
 # ovmf + secure boot features
@@ -170,7 +169,7 @@ cp Build/OvmfIa32/*/FV/OVMF_CODE.fd ovmf-ia32/OVMF_CODE.secboot.fd
 %install
 
 # shell
-install -pm0644 -D Build/Shell/RELEASE_%TOOL_CHAIN_TAG/X64/Shell.efi \
+install -pm0644 -D Build/Shell/RELEASE_%TOOL_CHAIN_TAG/X64/ShellPkg/Application/Shell/Shell/OUTPUT/Shell.efi \
 	%buildroot%_libdir/efi/shell.efi
 
 #install OVMF
@@ -196,6 +195,12 @@ cp -a ovmf-ia32 %buildroot%_datadir/edk2
 %_libdir/efi/shell.efi
 
 %changelog
+* Sat May 16 2020 Alexey Shabalin <shaba@altlinux.org> 20200229-alt1
+- edk2-stable202002 (Fixes: CVE-2019-14575, CVE-2019-14559, CVE-2019-14587, CVE-2019-14558, CVE-2019-14586, CVE-2019-14563)
+
+* Wed Dec 18 2019 Alexey Shabalin <shaba@altlinux.org> 20191122-alt1
+- edk2-stable201911 (Fixes: CVE-2019-14553, CVE-2019-13224, CVE-2019-13225)
+
 * Wed Jul 31 2019 Alexey Shabalin <shaba@altlinux.org> 20190501-alt2
 - build ovmf and efi-shell only
 

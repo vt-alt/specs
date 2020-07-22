@@ -118,8 +118,8 @@
 # }}}
 
 Name: qemu
-Version: 4.2.0
-Release: alt2
+Version: 4.2.1
+Release: alt1
 
 Summary: QEMU CPU Emulator
 License: BSD-2-Clause AND BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later AND MIT
@@ -1068,6 +1068,12 @@ fi
 %_bindir/ivshmem-server
 
 %changelog
+* Mon Jul 06 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt1
+- 4.2.1 (Fixes: CVE-2020-1983, CVE-2020-10761, CVE-2020-1711, CVE-2020-13800, CVE-2020-11869, CVE-2020-13361)
+
+* Sun Apr  5 2020 Nikita Ermakov <arei@altlinux.org> 4.2.0-alt3
+- Fix FP context saving in RISC-V target.
+
 * Thu Feb 27 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.0-alt2
 - Arithmetic error in EDID generation fixed (boyarsh@)
 
