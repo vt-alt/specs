@@ -2,11 +2,11 @@
 %define abiversion 0
 
 Name: iperf3
-Version: 3.7
-Release: alt2
+Version: 3.8.1
+Release: alt1
 
 Summary: A TCP, UDP, and SCTP network bandwidth measurement tool
-License: %bsd
+License: BSD-3-Clause and MIT
 Group: Monitoring
 
 Url: http://software.es.net/iperf
@@ -16,8 +16,6 @@ Source2: iperf3.init
 Source3: iperf3.service
 
 Patch0: iperf3-3.7-idle-tcp-DoS.patch
-
-BuildRequires: rpm-build-licenses
 
 Requires: lib%name-%abiversion = %version-%release
 
@@ -69,7 +67,7 @@ autoheader
 automake --foreign --add-missing --copy
 autoconf
 
-%configure --disable-profiling
+%configure
 %make_build
 
 %install
@@ -104,6 +102,19 @@ install -pDm0644 %SOURCE3 %buildroot/%_unitdir/%name.service
 %_libdir/lib%native.so
 
 %changelog
+* Wed Jul 22 2020 Sergey Y. Afonin <asy@altlinux.org> 3.8.1-alt1
+- New version
+- Removed Vcs tag (unsupported in p8 branch)
+- Removed --disable-profiling (disabled by default in 3.8)
+
+* Fri Apr 10 2020 Vitaly Chikunov <vt@altlinux.org> 3.7-alt4
+- Further systemd iperf3.service hardening
+
+* Mon Dec 09 2019 Vitaly Chikunov <vt@altlinux.org> 3.7-alt3
+- Fix systemd iperf3.service type making it forking
+- Systemd iperf3.service hardening
+- Update package License
+
 * Sat Aug 31 2019 Sergey Y. Afonin <asy@altlinux.org> 3.7-alt2
 - added hack for fix DoS by arbitrary connection to tcp port
   (https://github.com/esnet/iperf/issues/788)
