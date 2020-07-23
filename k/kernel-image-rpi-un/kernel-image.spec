@@ -1,12 +1,12 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt1
+Release: alt2
 epoch:1 
-%define kernel_need_version	5.6
+%define kernel_need_version	5.7
 # Used when kernel-source-x.y does not currently exist in repository.
-%define kernel_base_version	5.6
-%define kernel_sublevel .16
+%define kernel_base_version	5.7
+%define kernel_sublevel .8
 %define kernel_extra_version	%nil
 # kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
@@ -490,6 +490,13 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Jul 22 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.7.8-alt2
+- CONFIG_DEBUG_INFO is off, because p9 packages is huge
+
+* Sat Jul 18 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.7.8-alt1
+- Updated to 5.7.8 (still RPi-specific)
+- CONFIG_DEBUG_INFO=y
+
 * Mon Jun 08 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.6.16-alt1
 - Updated to 5.6.16
 - Build for armh is off
