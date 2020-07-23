@@ -9,7 +9,7 @@
 
 Name: openvswitch
 Version: 2.12.0
-Release: alt3.M90P.1
+Release: alt4.M90P.1
 
 Summary: An open source, production quality, multilayer virtual switch
 License: ASL 2.0 and LGPLv2+ and SISSL
@@ -18,14 +18,6 @@ Group: Networking/Other
 Url: http://openvswitch.org
 Source0: %url/releases/%name-%version.tar
 Source1: %name.init
-Source3: 01-%name
-Source4: create-ovsbr
-Source5: create-ovsbond
-Source6: create-ovsport
-Source7: destroy-ovsbr
-Source8: destroy-ovsbond
-Source9: destroy-ovsport
-Source10: setup-ovsbr
 Source12: %name.tmpfiles
 
 Patch1: openvswitch-2.0_alt_fix_function.patch
@@ -40,6 +32,8 @@ Patch103: ovn-detrace-python3.patch
 Obsoletes: %name-controller <= %name-%version
 Obsoletes: %name-ovsdbmonitor <= %name-%version
 Obsoletes: bash-completion-%name
+# force apt to update openvswith with etcnet
+Conflicts: etcnet <= 0.9.18
 
 # util-linux-2.32-alt2
 Requires: pam0(runuser)
@@ -281,16 +275,6 @@ install -p -D -m 0755 \
         rhel/usr_share_openvswitch_scripts_ovs-systemd-reload \
         %buildroot%_datadir/%name/scripts/ovs-systemd-reload
 
-#etcnet
-install -pDm644 %SOURCE3 %buildroot%_sysconfdir/net/options.d/01-openvswitch
-install -pDm755 %SOURCE4 %buildroot%_sysconfdir/net/scripts/create-ovsbr
-install -pDm755 %SOURCE5 %buildroot%_sysconfdir/net/scripts/create-ovsbond
-install -pDm755 %SOURCE6 %buildroot%_sysconfdir/net/scripts/create-ovsport
-install -pDm755 %SOURCE7 %buildroot%_sysconfdir/net/scripts/destroy-ovsbr
-install -pDm755 %SOURCE8 %buildroot%_sysconfdir/net/scripts/destroy-ovsbond
-install -pDm755 %SOURCE9 %buildroot%_sysconfdir/net/scripts/destroy-ovsport
-install -pDm755 %SOURCE10 %buildroot%_sysconfdir/net/scripts/setup-ovsbr
-
 install -pDm644 %SOURCE12 %buildroot%_tmpfilesdir/%name.conf
 
 # FIXME
@@ -404,8 +388,6 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %config(noreplace) %_sysconfdir/sysconfig/%name
 %config(noreplace) %_sysconfdir/openvswitch/default.conf
 %config(noreplace) %_sysconfdir/logrotate.d/openvswitch
-%config(noreplace) %_sysconfdir/net/options.d/01-openvswitch
-%_sysconfdir/net/scripts/*
 %_datadir/bash-completion/completions/*
 
 %if_with debugtools
@@ -509,6 +491,9 @@ rm -f %buildroot%_bindir/ovs-benchmark \
 %endif
 
 %changelog
+* Fri Jul 10 2020 Anton Farygin <rider@altlinux.ru> 2.12.0-alt4.M90P.1
+- openvswitch support for etcnet has been moved to etcnet package
+
 * Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.12.0-alt3.M90P.1
 - backport to p9
 - revert python2 package

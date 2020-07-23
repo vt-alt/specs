@@ -1,6 +1,6 @@
 Name:		etcnet
-Version:	0.9.18
-Release:	alt4
+Version:	0.9.19
+Release:	alt1
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -18,6 +18,7 @@ BuildArch:	noarch
 Conflicts:	net-scripts
 Conflicts:	ethtool < 0:3-alt4, ifplugd < 0.28-alt2, ipset < 4.1-alt2
 Conflicts:	systemd < 1:210-alt7
+Conflicts:	openvswitch <= 2.12.0-alt4
 Provides:	network-config-subsystem
 
 %description
@@ -140,6 +141,10 @@ fi
 %files full
 
 %changelog
+* Fri Jul 10 2020 Anton Farygin <rider@altlinux.ru> 0.9.19-alt1
+- added openvswitch support from the our openvswitch package
+- fixed OVS_OPTIONS and OVS_EXTRA usage for interfaces with TYPE=ovsbr
+
 * Tue Sep 24 2019 Alexey Shabalin <shaba@altlinux.org> 0.9.18-alt4
 - drop syslog from Should-Start in LSB header sysvinit script (Closes: #37237)
 
