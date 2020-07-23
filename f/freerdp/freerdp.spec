@@ -6,8 +6,8 @@
 %def_without gss
 
 Name: freerdp
-Version: 2.1.2
-Release: alt2
+Version: 2.2.0
+Release: alt1
 
 Group: Networking/Remote access
 Summary: Remote Desktop Protocol functionality
@@ -16,7 +16,6 @@ URL: http://www.freerdp.com
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source: %name-%version.tar
-Patch1: freerdp-fix-connect-to-windows7.patch
 
 Requires: xfreerdp = %EVR
 Requires: wlfreerdp = %EVR
@@ -195,7 +194,6 @@ the RDP protocol.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 %cmake \
@@ -341,6 +339,11 @@ patchelf --set-rpath %_libdir/freerdp2 %buildroot%_bindir/freerdp-proxy
 %_pkgconfigdir/freerdp*.pc
 
 %changelog
+* Tue Jul 21 2020 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt1
+- New version.
+- Fixes:
+  + CVE-2020-15103 - Integer overflow due to missing input sanitation in rdpegfx channel
+
 * Wed Jul 01 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.2-alt2
 - Fix connect to Windows 7 (see https://github.com/FreeRDP/FreeRDP/issues/6299).
 
