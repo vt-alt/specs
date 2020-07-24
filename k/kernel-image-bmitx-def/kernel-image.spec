@@ -1,5 +1,5 @@
 %define kernel_base_version	4.9
-%define kernel_sublevel        .227
+%define kernel_sublevel        .229
 %define kernel_extra_version	%nil
 
 Name: kernel-image-bmitx-def
@@ -251,6 +251,9 @@ rm -f /boot/dtb
 ln -s /lib/devicetree/%kversion-%flavour-%krelease /boot/dtb
 
 %changelog
+* Wed Jul 22 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.229-alt1
+- Baikal SDK-M-4.3: HDMI audio support, video stability improvements
+
 * Mon Jun 15 2020 Alexey Sheplyakov <asheplyakov@altlinux.org> 4.9.227-alt1
 - Merged with the latest linux-stable/v4.9.227
 - Enabled more WiFi drivers
