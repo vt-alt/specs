@@ -2,7 +2,7 @@
 %define _libexecdir  /usr/libexec
 %define _localstatedir %_var
 
-%ifnarch s390 %arm alpha armel armhf hppa m68k mips mips64el mipsel sh4 %e2k
+%ifnarch %arm %mips %e2k riscv64
 %def_enable dma_coherent
 %else
 %def_disable dma_coherent
@@ -10,7 +10,7 @@
 
 
 Name: rdma-core
-Version: 24.0
+Version: 30.0
 Release: alt2
 Summary: RDMA core userspace libraries and daemons
 Group: System/Base
@@ -19,7 +19,7 @@ Group: System/Base
 #  providers/ipathverbs/ Dual licensed using a BSD license with an extra patent clause
 #  providers/rxe/ Incorporates code from ipathverbs and contains the patent clause
 #  providers/hfi1verbs Uses the 3 Clause BSD license
-License: GPLv2 or BSD
+License: GPL-2.0-only OR BSD-2-Clause
 Url: https://github.com/linux-rdma/rdma-core
 Source: %name-%version.tar
 Patch: %name-%version.patch
@@ -31,11 +31,8 @@ BuildRequires: libudev-devel
 BuildRequires: pkgconfig(libnl-3.0)
 BuildRequires: pkgconfig(libnl-route-3.0)
 BuildRequires: libsystemd-devel
-BuildRequires: python-modules
-# need haskell :(
-%ifarch %ix86 x86_64
+BuildRequires: /usr/bin/rst2man
 BuildRequires: pandoc
-%endif
 Conflicts: infiniband-diags < 2.0.0
 
 %define docdir %_docdir/%name-%version
@@ -48,19 +45,24 @@ scripts, and the rdma-ndd utility.
 %package devel
 Summary: RDMA core development libraries and headers
 Group: Development/C
-Requires: %name = %version-%release
-Requires: libibverbs = %version-%release
-Provides: libibverbs-devel = %version-%release
-Obsoletes: libibverbs-devel < %version-%release
-Requires: libibumad = %version-%release
-Provides: libibumad-devel = %version-%release
-Obsoletes: libibumad-devel < %version-%release
-Requires: librdmacm = %version-%release
-Provides: librdmacm-devel = %version-%release
-Obsoletes: librdmacm-devel < %version-%release
-Requires: ibacm = %version-%release
-Provides: ibacm-devel = %version-%release
-Obsoletes: ibacm-devel < %version-%release
+Requires: %name = %EVR
+Requires: libibverbs = %EVR
+Provides: libibverbs-devel = %EVR
+Obsoletes: libibverbs-devel < %EVR
+Requires: libibumad = %EVR
+Provides: libibumad-devel = %EVR
+Obsoletes: libibumad-devel < %EVR
+Requires: librdmacm = %EVR
+Provides: librdmacm-devel = %EVR
+Obsoletes: librdmacm-devel < %EVR
+Requires: ibacm = %EVR
+Provides: ibacm-devel = %EVR
+Obsoletes: ibacm-devel < %EVR
+Requires: libibmad = %EVR
+Provides: libibmad-devel = %EVR
+Obsoletes: libibmad-devel < %EVR
+Provides: libibnetdisc-devel = %EVR
+Obsoletes: libibnetdisc-devel < %EVR
 
 %description devel
 RDMA core development libraries and headers.
@@ -68,24 +70,20 @@ RDMA core development libraries and headers.
 %package -n libibverbs
 Summary: A library and drivers for direct userspace use of RDMA (InfiniBand/iWARP/RoCE) hardware
 Group: System/Libraries
-Provides: libcxgb3 = %version-%release
-Obsoletes: libcxgb3 < %version-%release
-Provides: libcxgb4 = %version-%release
-Obsoletes: libcxgb4 < %version-%release
-Provides: libipathverbs = %version-%release
-Obsoletes: libipathverbs < %version-%release
+Provides: libcxgb4 = %EVR
+Obsoletes: libcxgb4 < %EVR
+Provides: libipathverbs = %EVR
+Obsoletes: libipathverbs < %EVR
 %if_enabled dma_coherent
-Provides: libmlx4 = %version-%release
-Obsoletes: libmlx4 < %version-%release
+Provides: libmlx4 = %EVR
+Obsoletes: libmlx4 < %EVR
 %ifnarch s390x
-Provides: libmlx5 = %version-%release
-Obsoletes: libmlx5 < %version-%release
+Provides: libmlx5 = %EVR
+Obsoletes: libmlx5 < %EVR
 %endif
 %endif
-Provides: libmthca = %version-%release
-Obsoletes: libmthca < %version-%release
-Provides: libnes = %version-%release
-Obsoletes: libnes < %version-%release
+Provides: libmthca = %EVR
+Obsoletes: libmthca < %EVR
 
 %description -n libibverbs
 libibverbs is a library that allows userspace processes to use RDMA
@@ -96,7 +94,6 @@ fast path operations.
 
 Device-specific plug-in ibverbs userspace drivers are included:
 
-- libcxgb3: Chelsio T3 iWARP HCA
 - libcxgb4: Chelsio T4 iWARP HCA
 - libhfi1: Intel Omni-Path HFI
 - libhns: HiSilicon Hip06 SoC
@@ -105,16 +102,16 @@ Device-specific plug-in ibverbs userspace drivers are included:
 - libmlx4: Mellanox ConnectX-3 InfiniBand HCA (except arm, s390)
 - libmlx5: Mellanox Connect-IB/X-4+ InfiniBand HCA (except arm, s390, s390x)
 - libmthca: Mellanox InfiniBand HCA
-- libnes: NetEffect RNIC
 - libocrdma: Emulex OneConnect RDMA/RoCE Device
 - libqedr: QLogic QL4xxx RoCE HCA
 - librxe: A software implementation of the RoCE protocol
+- libsiw: A software implementation of the iWarp protocol
 - libvmw_pvrdma: VMware paravirtual RDMA device
 
 %package -n libibverbs-utils
 Summary: Examples for the libibverbs library
 Group: System/Base
-Requires: libibverbs = %version-%release
+Requires: libibverbs = %EVR
 
 %description -n libibverbs-utils
 Useful libibverbs example programs such as ibv_devinfo, which
@@ -123,7 +120,7 @@ displays information about RDMA devices.
 %package -n ibacm
 Summary: InfiniBand Communication Manager Assistant
 Group: Networking/Other
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n ibacm
 The ibacm daemon helps reduce the load of managing path record lookups on
@@ -138,7 +135,7 @@ library knows how to talk directly to the ibacm daemon to retrieve data.
 %package -n iwpmd
 Summary: iWarp Port Mapper userspace daemon
 Group: Networking/Other
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n iwpmd
 iwpmd provides a userspace service for iWarp drivers to claim
@@ -153,6 +150,24 @@ libibumad provides the userspace management datagram (umad) library
 functions, which sit on top of the umad modules in the kernel. These
 are used by the IB diagnostic and management tools, including OpenSM.
 
+%package -n libibmad
+Summary: library to encode, decode, and dump IB MAD packets
+Group: System/Libraries
+Conflicts: libinfiniband-diags =< 2.2.0-alt1 
+
+%description -n libibmad
+libibmad is a convenience library to encode, decode, and dump IB MAD packets.
+It is implemented on top of libibumad.
+
+%package -n libibnetdisc
+Summary: Infiniband Net Discovery runtime library
+Group: System/Libraries
+Conflicts: libinfiniband-diags =< 2.2.0-alt1 
+
+%description -n libibnetdisc
+This package contains the Infiniband Net Discovery runtime library needed
+mainly by infiniband-diags.
+
 %package -n librdmacm
 Summary: Userspace RDMA Connection Manager
 Group: System/Libraries
@@ -163,17 +178,37 @@ librdmacm provides a userspace RDMA Communication Management API.
 %package -n librdmacm-utils
 Summary: Examples for the librdmacm library
 Group: System/Base
-Requires: librdmacm = %version-%release
+Requires: librdmacm = %EVR
 
 %description -n librdmacm-utils
 Example test programs for the librdmacm library.
+
+%package -n infiniband-diags
+Summary: OpenFabrics InfiniBand Diagnostic Tools
+Group: System/Base
+Provides: openib-diags = %version
+Obsoletes: openib-diags
+Conflicts: libinfiniband-diags =< 2.2.0-alt1 
+
+%description -n infiniband-diags
+This package provides IB diagnostic programs and scripts needed to
+diagnose an IB subnet.
+
+%package -n infiniband-diags-compat
+Group: System/Base
+Summary: OpenFabrics Alliance InfiniBand Diagnostic Tools
+
+%description -n infiniband-diags-compat
+Deprecated scripts and utilities which provide duplicated functionality, most
+often at a reduced performance. These are maintained for the time being for
+compatibility reasons.
 
 %package -n srp_daemon
 Summary: Tools for using the InfiniBand SRP protocol devices
 Group: Networking/Other
 Obsoletes: srptools <= 1.0.3
-Provides: srptools = %version-%release
-Requires: %name = %version-%release
+Provides: srptools = %EVR
+Requires: %name = %EVR
 
 %description -n srp_daemon
 In conjunction with the kernel ib_srp driver, srp_daemon allows you to
@@ -203,7 +238,9 @@ discover and use SCSI devices via the SCSI RDMA Protocol over InfiniBand.
     -DCMAKE_INSTALL_INITDDIR:PATH=%_initdir \
     -DCMAKE_INSTALL_RUNDIR:PATH=%_runtimedir \
     -DCMAKE_INSTALL_DOCDIR:PATH=%docdir \
-    -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%_udevrulesdir
+    -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%_udevrulesdir \
+    -DCMAKE_INSTALL_PERLDIR:PATH=%perl_vendor_privlib \
+    -DENABLE_IBDIAGS_COMPAT:BOOL=True \
 
 %ninja_build
 
@@ -295,13 +332,11 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %_libexecdir/rdma-init-kernel
 %_libexecdir/rdma-set-sriov-vf
 %_libexecdir/truescale-serdes.cmds
-%_bindir/rxe_cfg
 %_sbindir/rdma-ndd
 %_unitdir/rdma-ndd.service
 %_initdir/rdma-ndd
 %_man7dir/rxe*
 %_man8dir/rdma-ndd.*
-%_man8dir/rxe*
 
 %files devel
 %docdir/MAINTAINERS
@@ -316,6 +351,7 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %_man3dir/umad*
 %_man3dir/*_to_ibv_rate.*
 %_man7dir/rdma_cm.*
+%_man3dir/ibnd_*
 %if_enabled dma_coherent
 %_man3dir/efadv*
 %_man7dir/efadv*
@@ -346,10 +382,10 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %config(noreplace) %_sysconfdir/rdma/ibacm_opts.cfg
 %_bindir/ib_acme
 %_sbindir/ibacm
-%_man1dir/ibacm.*
 %_man1dir/ib_acme.*
 %_man7dir/ibacm.*
 %_man7dir/ibacm_prov.*
+%_man8dir/ibacm.*
 %_unitdir/ibacm.service
 %_unitdir/ibacm.socket
 %_initdir/ibacm
@@ -369,6 +405,12 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 
 %files -n libibumad
 %_libdir/libibumad*.so.*
+
+%files -n libibmad
+%_libdir/libibmad*.so.*
+
+%files -n libibnetdisc
+%_libdir/libibnetdisc*.so.*
 
 %files -n librdmacm
 %_libdir/librdmacm*.so.*
@@ -405,6 +447,114 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %_man1dir/udaddy.*
 %_man1dir/udpong.*
 
+%files -n infiniband-diags-compat
+%_sbindir/ibcheckerrs
+%_man8dir/ibcheckerrs*
+%_sbindir/ibchecknet
+%_man8dir/ibchecknet*
+%_sbindir/ibchecknode
+%_man8dir/ibchecknode*
+%_sbindir/ibcheckport
+%_man8dir/ibcheckport.*
+%_sbindir/ibcheckportwidth
+%_man8dir/ibcheckportwidth*
+%_sbindir/ibcheckportstate
+%_man8dir/ibcheckportstate*
+%_sbindir/ibcheckwidth
+%_man8dir/ibcheckwidth*
+%_sbindir/ibcheckstate
+%_man8dir/ibcheckstate*
+%_sbindir/ibcheckerrors
+%_man8dir/ibcheckerrors*
+%_sbindir/ibdatacounts
+%_man8dir/ibdatacounts*
+%_sbindir/ibdatacounters
+%_man8dir/ibdatacounters*
+%_sbindir/ibdiscover.pl
+%_man8dir/ibdiscover*
+%_sbindir/ibswportwatch.pl
+%_man8dir/ibswportwatch*
+%_sbindir/ibqueryerrors.pl
+%_sbindir/iblinkinfo.pl
+%_sbindir/ibprintca.pl
+%_man8dir/ibprintca*
+%_sbindir/ibprintswitch.pl
+%_man8dir/ibprintswitch*
+%_sbindir/ibprintrt.pl
+%_man8dir/ibprintrt*
+%_sbindir/set_nodedesc.sh
+
+%files -n infiniband-diags
+%_sbindir/ibaddr
+%_man8dir/ibaddr*
+%_sbindir/ibnetdiscover
+%_man8dir/ibnetdiscover*
+%_sbindir/ibping
+%_man8dir/ibping*
+%_sbindir/ibportstate
+%_man8dir/ibportstate*
+%_sbindir/ibroute
+%_man8dir/ibroute.*
+%_sbindir/ibstat
+%_man8dir/ibstat.*
+%_sbindir/ibsysstat
+%_man8dir/ibsysstat*
+%_sbindir/ibtracert
+%_man8dir/ibtracert*
+%_sbindir/perfquery
+%_man8dir/perfquery*
+%_sbindir/sminfo
+%_man8dir/sminfo*
+%_sbindir/smpdump
+%_man8dir/smpdump*
+%_sbindir/smpquery
+%_man8dir/smpquery*
+%_sbindir/saquery
+%_man8dir/saquery*
+%_sbindir/vendstat
+%_man8dir/vendstat*
+%_sbindir/iblinkinfo
+%_man8dir/iblinkinfo*
+%_sbindir/ibqueryerrors
+%_man8dir/ibqueryerrors*
+%_sbindir/ibcacheedit
+%_man8dir/ibcacheedit*
+%_sbindir/ibccquery
+%_man8dir/ibccquery*
+%_sbindir/ibccconfig
+%_man8dir/ibccconfig*
+%_sbindir/dump_fts
+%_man8dir/dump_fts*
+%_sbindir/ibhosts
+%_man8dir/ibhosts*
+%_sbindir/ibswitches
+%_man8dir/ibswitches*
+%_sbindir/ibnodes
+%_man8dir/ibnodes*
+%_sbindir/ibrouters
+%_man8dir/ibrouters*
+%_sbindir/ibfindnodesusing.pl
+%_man8dir/ibfindnodesusing*
+%_sbindir/ibidsverify.pl
+%_man8dir/ibidsverify*
+%_sbindir/check_lft_balance.pl
+%_man8dir/check_lft_balance*
+%_sbindir/dump_lfts.sh
+%_man8dir/dump_lfts*
+%_sbindir/dump_mfts.sh
+%_man8dir/dump_mfts*
+%_sbindir/ibclearerrors
+%_man8dir/ibclearerrors*
+%_sbindir/ibclearcounters
+%_man8dir/ibclearcounters*
+%_sbindir/ibstatus
+%_man8dir/ibstatus*
+%_man8dir/infiniband-diags*
+%perl_vendor_privlib/IBswcountlimits.pm
+%config(noreplace) %_sysconfdir/infiniband-diags/error_thresholds
+%config(noreplace) %_sysconfdir/infiniband-diags/ibdiag.conf
+
+
 %files -n srp_daemon
 %config(noreplace) %_sysconfdir/srp_daemon.conf
 %config(noreplace) %_sysconfdir/rdma/modules/srp_daemon.conf
@@ -417,13 +567,32 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %_sbindir/srp_daemon
 %_sbindir/run_srp_daemon
 %_udevrulesdir/60-srp_daemon.rules
-%_man1dir/ibsrpdm.1*
-%_man1dir/srp_daemon.1*
-%_man5dir/srp_daemon.service.5*
-%_man5dir/srp_daemon_port@.service.5*
+%_man5dir/srp_daemon.service.*
+%_man5dir/srp_daemon_port@.service.*
+%_man8dir/ibsrpdm.*
+%_man8dir/srp_daemon.*
 %docdir/ibsrpdm.md
 
 %changelog
+* Wed Jul 22 2020 Alexey Shabalin <shaba@altlinux.org> 30.0-alt2
+- not provides and obsoletes of libinfiniband-diags
+
+* Thu Jul 02 2020 Alexey Shabalin <shaba@altlinux.org> 30.0-alt1
+- 30.0
+
+* Sat Apr 18 2020 Alexey Shabalin <shaba@altlinux.org> 29.0-alt1
+- 29.0
+
+* Fri Feb 21 2020 Alexey Shabalin <shaba@altlinux.org> 28.0-alt1
+- 28.0
+
+* Sun Dec 15 2019 Alexey Shabalin <shaba@altlinux.org> 27.0-alt1
+- 27.0
+- merged infiniband-diags project
+
+* Wed Jul 03 2019 Nikita Ermakov <arei@altlinux.org> 24.0-alt3
+- fix build on riscv64
+
 * Fri Jun 14 2019 Rustem Bapin <rbapin@altlinux.org> 24.0-alt2
 - move efa* in %files under dma_coherent define for fix build on mipsel
 
