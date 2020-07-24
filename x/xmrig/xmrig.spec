@@ -1,5 +1,5 @@
 Name:		xmrig
-Version:	5.10.0
+Version:	6.3.0
 Release:	alt1.1
 Summary:	RandomX and CryptoNight CPU miner
 Url:		https://github.com/xmrig/xmrig
@@ -7,12 +7,12 @@ Group:		Office
 License:	GPLv3
 Source0:	%name.tar.xz
 
-Patch0:		%name-2.99.4-minimum_donate_0.diff
+Patch0:		%name-6.3.0-minimum_donate_0.diff
 Patch1:		%name-5.10.0-Wno-class-memaccess_alt_rm.diff
 
 BuildRequires:	cmake gcc-c++ libmicrohttpd-devel libssl-devel-static libstdc++-devel-static libuv-devel libkrb5-devel zlib-devel
 
-ExcludeArch:	ppc64le aarch64
+ExcludeArch:	ppc64le aarch64 armh
 
 %description
 XMRig is high performance RandomX and CryptoNight CPU miner, with the official full
@@ -43,6 +43,15 @@ install -Dp -m 0755 ./%name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Sun Jul 19 2020 Motsyo Gennadi <drool@altlinux.ru> 6.3.0-alt1.1
+- add ExcludeArch for armh
+
+* Sun Jul 19 2020 Motsyo Gennadi <drool@altlinux.ru> 6.3.0-alt1
+- 6.3.0
+
+* Thu May 07 2020 Motsyo Gennadi <drool@altlinux.ru> 5.11.1-alt1
+- 5.11.1
+
 * Sun Apr 12 2020 Motsyo Gennadi <drool@altlinux.ru> 5.10.0-alt1.1
 - add ExcludeArch for aarch64
 
