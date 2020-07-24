@@ -1,12 +1,12 @@
 %def_with nghttp2
 
 Name: curl
-Version: 7.65.0
+Version: 7.71.0
 Release: alt1
 
 Summary: Gets a file from a FTP, GOPHER or HTTP server
 Summary(ru_RU.UTF-8): Утилиты и библиотеки для передачи файлов
-License: MPL or MIT
+License: MITX
 Group: Networking/File transfer
 Url: http://curl.haxx.se
 
@@ -16,7 +16,8 @@ Patch0: curl-%version-alt.patch
 
 Requires: lib%name = %version-%release
 
-BuildRequires: glibc-devel-static groff-base libidn2-devel libssh2-devel libssl-devel libkrb5-devel zlib-devel python-modules python-modules-logging python-modules-xml libpsl-devel libldap-devel libbrotli-devel
+BuildRequires: glibc-devel-static groff-base libidn2-devel libssh2-devel libssl-devel libkrb5-devel
+BuildRequires: zlib-devel libpsl-devel libldap-devel libbrotli-devel
 
 %{?_with_nghttp2:BuildRequires: libnghttp2-devel}
 
@@ -104,6 +105,7 @@ applications that utilize lib%name.
 %patch0 -p1
 
 %build
+./maketgz %version only
 ./buildconf
 %configure \
 	--with-ssl \
@@ -149,6 +151,40 @@ applications that utilize lib%name.
 %_libdir/*.a
 
 %changelog
+* Wed Jun 24 2020 Anton Farygin <rider@altlinux.ru> 7.71.0-alt1
+- 7.71.0
+- fixes:
+  * CVE-2020-8177: curl overwrite local file with -J
+  * CVE-2020-8169: Partial password leak over DNS on HTTP redirect
+
+* Wed Apr 29 2020 Anton Farygin <rider@altlinux.ru> 7.70.0-alt1
+- 7.70.0
+- removed DEV from version string (with maketgz script)
+
+* Wed Mar 11 2020 Anton Farygin <rider@altlinux.ru> 7.69.1-alt1
+- 7.69.1
+
+* Wed Mar 11 2020 Anton Farygin <rider@altlinux.ru> 7.69.0-alt1
+- 7.69.0
+
+* Fri Jan 10 2020 Anton Farygin <rider@altlinux.ru> 7.68.0-alt1
+- 7.68.0
+
+* Mon Nov 11 2019 Anton Farygin <rider@altlinux.ru> 7.67.0-alt1
+- 7.67.0
+
+* Wed Sep 11 2019 Anton Farygin <rider@altlinux.ru> 7.66.0-alt1
+- 7.66.0
+- fixes:
+ * CVE-2019-5481: FTP-KRB double-free 
+ * CVE-2019-5482: TFTP small blocksize heap buffer overflow
+
+* Tue Jul 23 2019 Anton Farygin <rider@altlinux.ru> 7.65.3-alt1
+- 7.65.3
+
+* Wed Jun 05 2019 Anton Farygin <rider@altlinux.ru> 7.65.1-alt1
+- 7.65.1
+
 * Wed May 22 2019 Anton Farygin <rider@altlinux.ru> 7.65.0-alt1
 - 7.65.0
 - fixes:
