@@ -11,7 +11,7 @@
 
 Name: nagios-%realname
 Version: 3.2.1
-Release: alt5
+Release: alt6
 
 Summary: NRPE -- Nagios(R) Remote Plug-ins Execution daemon.
 Summary(ru_RU.UTF-8): NRPE -- Сервер выполнения команд Nagios(R) на удаленном хосте.
@@ -129,6 +129,11 @@ done
 
 mkdir -p %buildroot%nagios_confdir/nrpe-commands
 
+%pre
+%_sbindir/groupadd -r -f %nagios_grp &>/dev/null ||:
+%_sbindir/useradd -r -n -g %nagios_grp -d %_localstatedir/nagios \
+    -s /bin/false -c 'Nagios(R) account' %nagios_usr &>/dev/null ||:
+
 %post
 %post_service %realname
 
@@ -154,6 +159,9 @@ mkdir -p %buildroot%nagios_confdir/nrpe-commands
 %doc %plugin_docdir/*
 
 %changelog
+* Tue Jul 21 2020 Paul Wolneykien <manowar@altlinux.org> 3.2.1-alt6
+- Fix: Add missing %nagios_grp group and %nagios_usr user.
+
 * Thu May 07 2020 Paul Wolneykien <manowar@altlinux.org> 3.2.1-alt5
 - Remove check_timed_logs.pl: use package nagios-plugins-timed-logs
   instead.
