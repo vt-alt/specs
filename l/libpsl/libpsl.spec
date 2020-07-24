@@ -2,18 +2,16 @@
 %def_disable builtin
 
 Name: libpsl
-Version: 0.21.0
+Version: 0.21.1
 Release: alt1
 
 Summary: C library for the Public Suffix List
-License: %mit
+License: MIT
 Group: System/Libraries
 URL: https://github.com/rockdaboot/libpsl
-# https://github.com/rockdaboot/libpsl.git
+Vcs: https://github.com/rockdaboot/libpsl.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 %if_disabled bootstrap
 BuildRequires: glib2-devel libgio-devel
@@ -155,6 +153,15 @@ make check
 %_man1dir/psl-make-dafsa.1*
 
 %changelog
+* Tue Jul 21 2020 Mikhail Efremov <sem@altlinux.org> 0.21.1-alt1
+- Add Vcs tag.
+- Don't use rpm-build-licenses.
+- 0.21.0 -> 0.21.1.
+
+* Tue Sep 03 2019 Mikhail Efremov <sem@altlinux.org> 0.21.0-alt2
+- Patch from upstream:
+  + gtk-doc: do not include tree_index.sgml.
+
 * Wed Apr 17 2019 Mikhail Efremov <sem@altlinux.org> 0.21.0-alt1
 - BR: python -> python3.
 - psl-make-dafsa: Use python3.
