@@ -1,7 +1,7 @@
 %define installdir %webserver_webappsdir/%name
 
 Name: glpi
-Version: 9.4.5
+Version: 9.4.6
 Release: alt1
 
 Summary: IT and asset management software
@@ -64,7 +64,7 @@ install -pD -m0644 %_sourcedir/README.ALT README.ALT
 find %buildroot%installdir -name .htaccess -delete
 
 # remove files
-find %buildroot%installdir -name remove.txt -delete
+find %buildroot%installdir/files -type f -delete
 find $RPM_BUILD_ROOT \( -name 'Thumbs.db' -o -name 'Thumbs.db.gz' \) -print -delete
 
 %post
@@ -97,6 +97,7 @@ fi
 %installdir/bin
 %installdir/config
 %installdir/css
+%installdir/css_compiled
 %installdir/files
 %installdir/front
 %installdir/inc
@@ -126,6 +127,10 @@ fi
 %files php7
 
 %changelog
+* Sun Jun 07 2020 Pavel Zilke <zidex at altlinux dot org> 9.4.6-alt1
+- New version 9.4.6
+- This is a security release, upgrading is highly recommended
+
 * Sun Dec 29 2019 Pavel Zilke <zidex at altlinux dot org> 9.4.5-alt1
 - New version 9.4.5
 
