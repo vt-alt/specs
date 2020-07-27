@@ -3,7 +3,7 @@ Name: snr
 License: MIT
 Group: System/Base
 Url: https://github.com/mikhailnov/snr
-Version: 1.6
+Version: 1.7
 Release: alt1
 Source0: %name-%version.tar
 BuildArch: noarch
@@ -36,6 +36,10 @@ Simple wrapper to quickly run systemd-nspawn containers with support to:
 
 
 %changelog
+
+* Wed Jul 15 2020 Mikhail Novosyolov <mikhailnov@altlinux.org> 1.7-alt1
+- Version 1.7:
+  - Fixed setting environmental variables by scripts in /etc/profile.d/
 
 * Mon Mar 09 2020 Mikhail Novosyolov <mikhailnov@altlinux.org> 1.6-alt1
 - Version 1.6:
