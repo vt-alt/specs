@@ -9,7 +9,7 @@
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
 Version: 5.10.5
-Release: alt3
+Release: alt4
 License: Apache-2.0
 Group: System/Servers
 Url: https://opennebula.org
@@ -687,6 +687,9 @@ fi
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Fri Jul 24 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt4
+- adopt check enable support-tab in yaml files patch for 5.10
+
 * Wed Jun 24 2020 Andrew A. Vasilyev <andy@altlinux.org> 5.10.5-alt3
 - revert ac0a19b24a35cd22b2428ed83e845a4b5bd474a8 (not build for 32-bit arm)
 
