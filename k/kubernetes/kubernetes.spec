@@ -1,6 +1,6 @@
 
 %global import_path github.com/kubernetes/kubernetes
-%global commit 67d2fcf276fcd9cf743ad4be9a9ef5828adc082f
+%global commit dff82dc0de47299ab66c83c626e08b245ab19037
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -10,7 +10,7 @@
 %brp_strip_none %_bindir/*
 
 Name: kubernetes
-Version: 1.18.5
+Version: 1.18.6
 Release: alt1
 Summary: Container cluster management
 
@@ -310,6 +310,9 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_datadir/bash-completion/completions/kubectl
 
 %changelog
+* Fri Jul 24 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.18.6-alt1
+- 1.18.6
+
 * Thu Jul 02 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.18.5-alt1
 - 1.18.5
 
