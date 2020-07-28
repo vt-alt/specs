@@ -6,8 +6,8 @@
 
 %define prog_name            postgresql
 %define postgresql_major     11
-%define postgresql_minor     5
-%define postgresql_altrel    5
+%define postgresql_minor     8
+%define postgresql_altrel    2
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -592,7 +592,6 @@ fi
 %_libdir/pgsql/moddatetime.so
 %_datadir/%PGSQL/extension/moddatetime-*.sql
 %_datadir/%PGSQL/extension/moddatetime.control
-%_libdir/pgsql/online_analyze.so
 %_libdir/pgsql/pageinspect.so
 %_datadir/%PGSQL/extension/pageinspect-*.sql
 %_datadir/%PGSQL/extension/pageinspect.control
@@ -628,7 +627,6 @@ fi
 %_libdir/pgsql/pgxml.so
 %_datadir/%PGSQL/extension/xml2-*.sql
 %_datadir/%PGSQL/extension/xml2.control
-%_libdir/pgsql/plantuner.so
 %_libdir/pgsql/postgres_fdw.so
 %_datadir/%PGSQL/extension/postgres_fdw-*.sql
 %_datadir/%PGSQL/extension/postgres_fdw.control
@@ -700,6 +698,8 @@ fi
 %_libdir/%PGSQL/*_and_*.so
 %_libdir/%PGSQL/euc2004_sjis2004.so
 %_libdir/%PGSQL/libpqwalreceiver.so
+%_libdir/%PGSQL/online_analyze.so
+%_libdir/%PGSQL/plantuner.so
 %dir %_datadir/%PGSQL
 %_datadir/%PGSQL/errcodes.txt
 %dir %_datadir/%PGSQL/timezone
@@ -790,6 +790,17 @@ fi
 %endif
 
 %changelog
+* Fri Jul 17 2020 Alexei Takaseev <taf@altlinux.org> 11.8-alt2
+- Move online_analyze.so and plantuner.so from -contrib
+  to -server subpackage
+
+* Tue Jul 14 2020 Alexei Takaseev <taf@altlinux.org> 11.8-alt1
+- 11.8
+
+* Tue Jul 14 2020 Alexei Takaseev <taf@altlinux.org> 11.7-alt1
+- 11.7
+- Re-applay patch from 1C
+
 * Fri May 22 2020 Alexei Takaseev <taf@altlinux.org> 11.5-alt5
 - Replace all 1C patches by 00001-1C-FULL.patch
 
