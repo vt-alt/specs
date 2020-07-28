@@ -11,7 +11,7 @@
 
 Name: rdma-core
 Version: 30.0
-Release: alt2
+Release: alt3
 Summary: RDMA core userspace libraries and daemons
 Group: System/Base
 
@@ -63,6 +63,8 @@ Provides: libibmad-devel = %EVR
 Obsoletes: libibmad-devel < %EVR
 Provides: libibnetdisc-devel = %EVR
 Obsoletes: libibnetdisc-devel < %EVR
+Provides: libinfiniband-diags-devel = %EVR
+Obsoletes: libinfiniband-diags-devel < %EVR
 
 %description devel
 RDMA core development libraries and headers.
@@ -574,6 +576,9 @@ cp -r kernel-headers/rdma %buildroot%_includedir/
 %docdir/ibsrpdm.md
 
 %changelog
+* Mon Jul 27 2020 Alexey Shabalin <shaba@altlinux.org> 30.0-alt3
+- add provides and obsoletes libinfiniband-diags-devel to devel package
+
 * Wed Jul 22 2020 Alexey Shabalin <shaba@altlinux.org> 30.0-alt2
 - not provides and obsoletes of libinfiniband-diags
 

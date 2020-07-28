@@ -1,6 +1,5 @@
-%global commit      941bf389b87686ca2be8d6a8fcf0b2ee22955ecc
+%global commit      45e11fb8aded640515312c3124e21608876fb0ab
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-
 %def_enable dc
 %def_disable fw_mgr
 %def_enable xml2
@@ -9,7 +8,7 @@
 %def_enable openssl
 
 Name: mstflint
-Version: 4.11.0
+Version: 4.14.0
 Release: alt1
 
 Summary: Mellanox firmware burning application
@@ -20,15 +19,21 @@ Group: System/Base
 # VCS-git: https://github.com/Mellanox/mstflint.git
 Source: %name-%version.tar
 Patch: %name-%version.patch
+BuildRequires(pre): rpm-build-python3
 BuildRequires: autoconf-archive
 BuildRequires: gcc-c++
 %{?_enable_dc:BuildRequires: zlib-devel}
 %{?_enable_fw_mgr:BuildRequires: libcurl-devel liblzma-devel zlib-devel boost-devel}
 %{?_enable_xml2:BuildRequires: libxml2-devel}
-%{?_enable_inband:BuildRequires: libinfiniband-diags-devel}
+%{?_enable_inband:BuildRequires: rdma-core-devel}
 %{?_enable_cs:BuildRequires: libssl-devel}
 %{?_enable_openssl:BuildRequires: libssl-devel}
 BuildRequires: libmuparser-devel libsqlite3-devel
+AutoReq: yes, nopython
+%add_python_compile_exclude %_libdir/%name/python_tools
+%add_python3_compile_exclude %_libdir/%name/python_tools
+%add_python3_path %_libdir/%name/python_tools
+
 
 %description
 This package contains a tool for burning updated firmware on to
@@ -66,6 +71,12 @@ rm -rf %buildroot%_includedir
 %_man1dir/*
 
 %changelog
+* Sun Apr 12 2020 Alexey Shabalin <shaba@altlinux.org> 4.14.0-alt1
+- 4.14.0-1
+
+* Fri Oct 18 2019 Alexey Shabalin <shaba@altlinux.org> 4.13.1-alt1
+- v4.13.1-1
+
 * Mon Feb 11 2019 Alexey Shabalin <shaba@altlinux.org> 4.11.0-alt1
 - 4.11.0-2
 

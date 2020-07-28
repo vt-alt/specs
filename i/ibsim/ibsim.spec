@@ -1,18 +1,20 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: ibsim
 Summary: InfiniBand fabric simulator for management
-Version: 0.7
+Version: 0.9
 Release: alt1
-License: %gpl2only
+License: GPLv2 or BSD
 Group: Monitoring
-Url: http://openfabrics.org
+Url: https://github.com/linux-rdma/ibsim
 
-# http://git.openfabrics.org/?p=~halr/ibsim.git;a=summary
+# https://github.com/linux-rdma/ibsim.git
 Source: %name-%version.tar
 
 Patch1: %name-%version-alt.patch
 
 BuildRequires(pre): rpm-build-licenses
-BuildRequires: libinfiniband-diags-devel
+BuildRequires: rdma-core-devel
 
 %description
 %name provides simulation of infiniband fabric for using with
@@ -35,6 +37,12 @@ OFA OpenSM, diagnostic and management tools.
 %_bindir/*
 
 %changelog
+* Thu Jun 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9-alt1
+- Updated to version 0.9.
+
+* Wed Feb 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.8-alt1
+- Updated to version 0.8.
+
 * Mon May 14 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7-alt1
 - Updated to version 0.7.
 
