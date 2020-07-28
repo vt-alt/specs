@@ -1,18 +1,16 @@
 Name: xfce4-timer-plugin
-Version: 1.7.0
+Version: 1.7.1
 Release: alt1
 
 Summary: Timer plugin for Xfce
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-timer-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# git.alt:packages/xfce4-timer-plugin.git
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-timer-plugin.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4util-devel libxfce4ui-gtk3-devel libxfce4panel-gtk3-devel
@@ -50,6 +48,12 @@ of them can be run at a time.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Fri Jul 24 2020 Mikhail Efremov <sem@altlinux.org> 1.7.1-alt1
+- Added Vcs tag.
+- Don't use rpm-build-licenses.
+- Updatde url,
+- Updated to 1.7.1.
+
 * Thu Aug 23 2018 Mikhail Efremov <sem@altlinux.org> 1.7.0-alt1
 - Update url.
 - Explicitly set debug level minimum.
