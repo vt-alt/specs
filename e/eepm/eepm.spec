@@ -1,5 +1,5 @@
 Name: eepm
-Version: 3.1.4
+Version: 3.2.4
 Release: alt1
 
 Summary: Etersoft EPM package manager
@@ -54,6 +54,10 @@ cat <<EOF >%buildroot%_sysconfdir/eepm/eepm.conf
 #quiet==--quiet
 EOF
 
+cat <<EOF >%buildroot%_sysconfdir/eepm/serv.conf
+# EEPM config (will insource in serv shell script)
+EOF
+
 mkdir -p %buildroot%_sysconfdir/eepm/repack.d/
 cp repack.d/*.sh %buildroot%_sysconfdir/eepm/repack.d/
 chmod 0755 %buildroot%_sysconfdir/eepm/repack.d/*.sh
@@ -78,6 +82,7 @@ rm -f %buildroot%_bindir/distr_info
 %dir %_sysconfdir/eepm/
 %dir %_sysconfdir/eepm/repack.d/
 %config(noreplace) %_sysconfdir/eepm/eepm.conf
+%config(noreplace) %_sysconfdir/eepm/serv.conf
 %config(noreplace) %_sysconfdir/eepm/repack.d/*.sh
 %_bindir/epm*
 %_bindir/eepm
@@ -93,6 +98,51 @@ rm -f %buildroot%_bindir/distr_info
 %_sysconfdir/bash_completion.d/cerv
 
 %changelog
+* Fri Jul 24 2020 Andrey Cherepanov <cas@altlinux.org> 3.2.4-alt1
+- fix repack rules for mssql-server: remove libcrypto-devel and fix path to sysctl
+
+* Sat Jul 04 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.3-alt1
+- epm-download: force download remote package on ALTtoo
+- epm-assure: don't use direct epm call to package install
+- epm-upgrade: add missed task number arg
+- epm-sh-functions: disable broken eget output
+- epm-Install: ignore failed update by force param
+
+* Mon Jun 22 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.2-alt1
+- filelist: fix grep by contents
+
+* Mon May 18 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.1-alt1
+- epm query_file: return error if file is missed
+- add zoom repack rule
+
+* Mon Mar 09 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.0-alt1
+- epm: use packagekit name for PackageKit
+- serv: add /etc/eepm/serv.conf support
+- addrepo/removerepo: add dry-run support
+- use dnf by default on Fedora based system
+- epm: improve help
+- implement epm repo [list|add|remove|fix]
+- implement serv cat
+- add epm repo clean|save|restore (just skeleton)
+
+* Wed Feb 19 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.7-alt1
+- epm repofix: replace sources.list only on ALT
+- serv log: run without follow (-f) by default
+- epm addrepo: fix add url
+- epm-repofix: add initial support for repofix etersoft
+- epm repofix: unified subst rules (fix for p9)
+
+* Sun Feb 16 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- removerepo: fix tasks remove
+- rewrite removerepo
+- epm remove: fix remove status
+
+* Wed Feb 12 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.5-alt1
+- epm-install: fix double run rpm installing on ALT
+- epm-remove: don't use hilevel command if --nodeps
+- epm-remove: change to a writable dir (/tmp) before remove
+- epm-restore: temp. implementation of python requires translation to spec
+
 * Wed Feb 05 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.4-alt1
 - epm-repack: alien will use rpmbuild, assure we have it
 - epm-repack: repack only selected packages with abs paths (eterbug #14411)
