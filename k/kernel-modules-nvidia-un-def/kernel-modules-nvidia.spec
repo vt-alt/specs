@@ -7,10 +7,10 @@
 %define modesetmodule_name	nvidia-modeset
 %define uvmmodule_name		nvidia-uvm
 %define drmmodule_name		nvidia-drm
-%define package_version	440.100
+%define package_version	450.57
 %define module_version	%package_version
 %ifarch %ix86
-%define module_version	390.132
+%define module_version	390.138
 %endif
 %define module_release	alt1
 %define flavour		un-def
@@ -53,7 +53,7 @@
 %endif
 %define legacy5_src %(echo %legacy5 | tr -d .)
 %nvIF_ver_lt %xorg_ver 1.21
-%define legacy6 390.132
+%define legacy6 390.138
 %else
 %define legacy6 %nil
 %endif
@@ -271,6 +271,9 @@ fi
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Fri Jul 24 2020 Sergey V Turchin <zerg at altlinux dot org> 450.57-alt1
+- new releases (450.57, 390.138)
 
 * Fri Jul 17 2020 Sergey V Turchin <zerg at altlinux dot org> 440.100-alt1
 - new release (440.100)

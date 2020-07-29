@@ -1,7 +1,7 @@
 %def_enable translation
 
 Name: nvidia-settings
-Version: 440.100
+Version: 450.57
 Release: alt1
 
 Group: System/Configuration/Hardware
@@ -64,7 +64,7 @@ Development files for %name
 %patch4 -p2
 %if_enabled translation
 mkdir -p po/msg
-%patch100 -p1
+#%patch100 -p1
 install -p -m644 %SOURCE100 src/gtk+-2.x/gettext.h
 install -p -m644 %SOURCE101 po/msg/ru.po
 %endif
@@ -125,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt1
+- new version
+
 * Fri Jul 10 2020 Sergey V Turchin <zerg@altlinux.org> 440.100-alt1
 - new version
 

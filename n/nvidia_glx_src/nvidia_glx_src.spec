@@ -18,7 +18,7 @@
 %endif
 
 Name: nvidia_glx_src
-Version: 440.100
+Version: 450.57
 Release: alt1
 
 Source0: null
@@ -39,15 +39,12 @@ License: NVIDIA
 %description
 Sources for nvidia_glx package
 
-#TODO libnvidia-ptxjitcompiler.so
-#TODO libnvidia-compiler.so
-#TODO libnvidia-ml.so (?)
-
 %package -n ocl-nvidia
 Group: System/Libraries
 #BuildArch: noarch
 Summary: nvidia library
-Requires: libnvidia-opencl libnvidia-compiler
+Requires: libnvidia-opencl
+Requires: libnvidia-compiler
 Requires: libnvidia-ptxjitcompiler
 Requires: libnvidia-ml
 %description -n ocl-nvidia
@@ -90,24 +87,16 @@ Requires: ocl-icd
 %description -n libnvidia-opencl
 nvidia OpenCL library
 
-%package -n libnvidia-fatbinaryloader
-Group: System/Libraries
-Summary: nvidia library
-Provides: libnvidia-fatbinaryloader = %version-%release
-%description -n libnvidia-fatbinaryloader
-nvidia library
-
 %package -n libnvcuvid
 Group: System/Libraries
 Summary: nvidia library
-Provides: libnvidia-fatbinaryloader = %version-%release
+Provides: libnvidia-nvcuvid = %version-%release
 %description -n libnvcuvid
 nvidia library
 
 %package -n libnvidia-encode
 Group: System/Libraries
 Summary: nvidia library
-Provides: libnvidia-fatbinaryloader = %version-%release
 %description -n libnvidia-encode
 nvidia library
 
@@ -128,7 +117,6 @@ popd
 # install libraries
 mkdir -p %buildroot/%_libdir/
 install -m 0644 %subd/libcuda.so.%version %buildroot/%_libdir/
-install -m 0644 %subd/libnvidia-fatbinaryloader.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-opencl.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-compiler.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-ptxjitcompiler.so.%version %buildroot/%_libdir/
@@ -151,9 +139,6 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_libdir/libnvidia-ml.so.%version
 %_libdir/libnvidia-ml.so.%{nvidia_ml_sover}
 
-%files -n libnvidia-fatbinaryloader
-%_libdir/libnvidia-fatbinaryloader.so.%version
-
 %files -n libcuda
 %_libdir/libcuda.so.%{nvidia_cuda_sover}
 %_libdir/libcuda.so.%version
@@ -172,6 +157,9 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_libdir/libnvidia-encode.so.%version
 
 %changelog
+* Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt1
+- new version
+
 * Fri Jul 17 2020 Sergey V Turchin <zerg@altlinux.org> 440.100-alt1
 - new version
 
