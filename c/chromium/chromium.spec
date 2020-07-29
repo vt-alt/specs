@@ -29,8 +29,8 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        83.0.4103.61
-Release:        alt2
+Version:        84.0.4147.89
+Release:        alt1
 
 Summary:        An open source web browser developed by Google
 License:        BSD-3-Clause and LGPL-2.1+
@@ -79,12 +79,15 @@ Patch021: 0021-GENTOO-Clang-allows-detection-of-these-builtins.patch
 Patch022: 0022-FEDORA-vtable-symbol-undefined.patch
 Patch023: 0023-FEDORA-remove-noexcept.patch
 Patch024: 0024-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch
-Patch025: 0025-Add-missing-algorithm-header-in-crx_install_error.cc.patch
-Patch026: 0026-libstdc-fix-incomplete-type-in-AXTree-for-NodeSetSiz.patch
-Patch027: 0027-IWYU-std-numeric_limits-is-defined-in-limits.patch
-Patch028: 0028-Make-some-of-blink-custom-iterators-STL-compatible.patch
-Patch029: 0029-Include-memory-header-to-get-the-definition-of-std-u.patch
-Patch030: 0030-ServiceWorker-Avoid-double-destruction-of-ServiceWor.patch
+Patch025: 0025-IWYU-add-a-bunch-of-missing-cstring-includes.patch
+Patch026: 0026-ListContainerHelper-Include-cstring-for-memcpy.patch
+Patch027: 0027-Make-blink-AXObject-AncestorsIterator-STL-compatible.patch
+Patch028: 0028-libstdc-std-vector-must-have-non-const-value_type.patch
+Patch029: 0029-GCC-fix-DCHECK_EQ-in-NGInlineNode-SegmentScriptRuns.patch
+Patch030: 0030-GENTOO-Chromium-compiled-with-system-ffmpeg-4.3.patch
+Patch031: 0031-Avoid-calling-DeleteForCurrentDocument-from-destruct.patch
+Patch032: 0032-Remove-NotifyError-calls-and-just-send-a-normal-mess.patch
+Patch033: 0033-Force-mp3-files-to-have-a-start-time-of-zero.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -151,6 +154,7 @@ BuildRequires:  pkgconfig(xrandr)
 BuildRequires:  pkgconfig(xrender)
 BuildRequires:  pkgconfig(xscrnsaver)
 BuildRequires:  pkgconfig(xt)
+BuildRequires:  pkgconfig(xcb-proto)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  python
@@ -241,6 +245,9 @@ tar -xf %SOURCE1
 %patch028 -p1
 %patch029 -p1
 %patch030 -p1
+%patch031 -p1
+%patch032 -p1
+%patch033 -p1
 ### Finish apply patches
 
 echo > "third_party/adobe/flash/flapper_version.h"
@@ -273,10 +280,14 @@ ln -s %_bindir/python2 .rpm/depot_tools/python
 export CC="clang"
 export CXX="clang++"
 export AR="llvm-ar"
+export NM="llvm-nm"
+export READELF="llvm-readelf"
 %else
 export CC="gcc"
 export CXX="g++"
 export AR="ar"
+export NM="nm"
+export READELF="readelf"
 %endif
 
 bits=$(getconf LONG_BIT)
@@ -288,8 +299,8 @@ export CHROMIUM_RPATH="%_libdir/%name"
 CHROMIUM_GN_DEFINES=
 gn_arg() { CHROMIUM_GN_DEFINES="$CHROMIUM_GN_DEFINES $*"; }
 
-#gn_arg custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
-#gn_arg host_toolchain=\"//build/toolchain/linux/unbundle:default\"
+gn_arg custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
+gn_arg host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 gn_arg is_official_build=true
 gn_arg is_desktop_linux=true
 gn_arg use_custom_libcxx=false
@@ -311,7 +322,6 @@ gn_arg ffmpeg_branding=\"ChromeOS\"
 gn_arg proprietary_codecs=true
 gn_arg enable_hangout_services_extension=true
 gn_arg fieldtrial_testing_like_official_build=true
-gn_arg linux_use_bundled_binutils=false
 gn_arg treat_warnings_as_errors=false
 gn_arg fatal_linker_warnings=false
 gn_arg system_libdir=\"%_lib\"
@@ -508,6 +518,37 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Wed Jul 15 2020 Alexey Gladkov <legion@altlinux.ru> 84.0.4147.89-alt1
+- New version (84.0.4147.89).
+- Fix compilation with system ffmpeg 4.3 (ALT#38716)
+- Security fixes:
+  - CVE-2020-6510: Heap buffer overflow in background fetch.
+  - CVE-2020-6511: Side-channel information leakage in content security policy.
+  - CVE-2020-6512: Type Confusion in V8.
+  - CVE-2020-6513: Heap buffer overflow in PDFium.
+  - CVE-2020-6514: Inappropriate implementation in WebRTC.
+  - CVE-2020-6515: Use after free in tab strip.
+  - CVE-2020-6516: Policy bypass in CORS.
+  - CVE-2020-6517: Heap buffer overflow in history.
+  - CVE-2020-6518: Use after free in developer tools.
+  - CVE-2020-6519: Policy bypass in CSP.
+  - CVE-2020-6520: Heap buffer overflow in Skia.
+  - CVE-2020-6521: Side-channel information leakage in autofill.
+  - CVE-2020-6522: Inappropriate implementation in external protocol handlers.
+  - CVE-2020-6523: Out of bounds write in Skia.
+  - CVE-2020-6524: Heap buffer overflow in WebAudio.
+  - CVE-2020-6525: Heap buffer overflow in Skia.
+  - CVE-2020-6526: Inappropriate implementation in iframe sandbox.
+  - CVE-2020-6527: Insufficient policy enforcement in CSP.
+  - CVE-2020-6528: Incorrect security UI in basic auth.
+  - CVE-2020-6529: Inappropriate implementation in WebRTC.
+  - CVE-2020-6530: Out of bounds memory access in developer tools.
+  - CVE-2020-6531: Side-channel information leakage in scroll to text.
+  - CVE-2020-6533: Type Confusion in V8.
+  - CVE-2020-6534: Heap buffer overflow in WebRTC.
+  - CVE-2020-6535: Insufficient data validation in WebUI.
+  - CVE-2020-6536: Incorrect security UI in PWAs.
+
 * Mon Jun 29 2020 Andrey Cherepanov <cas@altlinux.org> 83.0.4103.61-alt2
 - Prevent ignored null byte warning in Flash plugin version detection.
 - Add default parameters to system-wide variable $CHROMIUM_FLAGS.
