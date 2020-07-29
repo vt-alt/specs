@@ -8,7 +8,7 @@
 
 Name: sssd
 Version: 2.2.3
-Release: alt3
+Release: alt4
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -828,6 +828,9 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Thu Jul 23 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.2.3-alt4
+- Rebuild with libldb-2.0.12
+
 * Sun May 17 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.2.3-alt3
 - Rewrite PAM rules for sss system-auth method with new pam-config-1.9.0 scheme
   using pam_localuser.so to separate configuration for local and remote users.

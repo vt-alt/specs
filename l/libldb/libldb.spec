@@ -8,8 +8,8 @@
 %endif
 
 Name: libldb
-Version: 2.0.10
-Release: alt1
+Version: 2.0.12
+Release: alt2
 Summary: A schema-less, ldap like, API and database
 License: LGPLv3+
 Group: System/Libraries
@@ -19,6 +19,7 @@ Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
 Patch: ldb-samba-modules.patch
 Patch1: ldb-alt-fix-python-ldflags.patch
 Patch2: ldb-skip-test_guid_indexed_v1_db-on-mips64el-ppc64le-mipsel.patch
+Patch3: ldb-skip-ldb_lmdb_free_list_test-on-ppc64le.patch
 
 BuildRequires: libpopt-devel libldap-devel xsltproc docbook-style-xsl docbook-dtds
 BuildRequires: libcmocka-devel >= 1.1.3
@@ -84,6 +85,9 @@ Development files for the Python3 bindings for the LDB library
 %patch -p2
 %patch1 -p1
 %patch2 -p1
+%ifarch ppc64le
+%patch3 -p2
+%endif
 
 %build
 %undefine _configure_gettext
@@ -172,6 +176,15 @@ make test
 %_pkgconfigdir/pyldb-util.cpython-*.pc
 
 %changelog
+* Thu Jul 23 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.12-alt2
+- Disable ldb_lmdb_free_list_test on ppc64le (Samba#14404)
+
+* Tue Jul 07 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.12-alt1
+- Update to the 2.0.11 for latest samba-4.11.11 security release
+
+* Tue Jun 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.11-alt1
+- Update to the 2.0.11 for latest samba-4.11.10 release
+
 * Tue Apr 28 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.10-alt1
 - Update to the 2.0.10 for latest samba-4.11.8 release
 

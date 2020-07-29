@@ -59,8 +59,8 @@
 %endif
 
 Name:    samba
-Version: 4.11.9
-Release: alt2
+Version: 4.11.11
+Release: alt1
 
 Group:   System/Servers
 Summary: The Samba4 CIFS and AD client and server suite
@@ -154,14 +154,14 @@ BuildRequires: python3-module-tdb
 %endif
 
 %if_without ldb
-%define ldb_version 2.0.10
+%define ldb_version 2.0.12
 BuildRequires: libldb-devel = %ldb_version
 BuildRequires: python3-module-pyldb-devel
 %endif
 %{?_with_testsuite:BuildRequires: ldb-tools}
 %{?_with_systemd:BuildRequires: libsystemd-devel}
 %{?_enable_avahi:BuildRequires: libavahi-devel}
-%{?_enable_glusterfs:BuildRequires: glusterfs3-devel >= 3.4.0.16}
+%{?_enable_glusterfs:BuildRequires: libglusterfs-api-devel}
 %{?_with_libcephfs:BuildRequires: ceph-devel}
 
 %description
@@ -1814,6 +1814,20 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Tue Jul 07 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.11-alt1
+- Update to latest stable security release of the Samba 4.11
+- Security fixes:
+  + CVE-2020-10730: NULL pointer de-reference and use-after-free in Samba AD DC
+                    LDAP Server with ASQ, VLV and paged_results
+  + CVE-2020-10745: Parsing and packing of NBT and DNS packets can consume excessive CPU
+  + CVE-2020-10760: LDAP Use-after-free in Samba AD DC Global Catalog with paged_results and VLV
+  + CVE-2020-14303: Empty UDP packet DoS in Samba AD DC nbtd
+
+* Tue Jun 30 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.10-alt1
+- Update to latest stable bugfix release of the Samba 4.11
+- Build with ldb 2.0.11, LMDB databases can grow without bounds.
+- Fix glusterfs build requires (Closes: 38038)
+
 * Wed May 27 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.9-alt2
 - Apply patches from fedora:
   + Add use the new des_crypt56_gnutls() and remove builtin DES crypto
