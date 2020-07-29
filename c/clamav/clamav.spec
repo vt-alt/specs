@@ -15,7 +15,7 @@
 %define rctag %nil
 
 Name: clamav
-Version: 0.102.3
+Version: 0.102.4
 Release: alt1
 %define abiversion 9
 
@@ -354,8 +354,14 @@ subst "s/^[0-9]*/$RNDM/" %_sysconfdir/cron.d/clamav-freshclam
 %endif
 
 %changelog
+* Tue Jul 28 2020 Sergey Y. Afonin <asy@altlinux.org> 0.102.4-alt1
+- 0.102.4
+  + CVE-2020-3350
+  + CVE-2020-3327
+  + CVE-2020-3481
+
 * Wed May 27 2020 Sergey Y. Afonin <asy@altlinux.org> 0.102.3-alt1
-- 0.102.2
+- 0.102.3
   + CVE-2020-3327 - 0.102.2 only
   + CVE-2020-3341 - from 0.101 to 0.102.2
 
