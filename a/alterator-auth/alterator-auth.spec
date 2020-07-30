@@ -1,7 +1,7 @@
 %define _hooksdir %_sysconfdir/hooks/hostname.d
 
 Name: alterator-auth
-Version: 0.43.6
+Version: 0.43.7
 Release: alt1
 
 %filter_from_requires /^samba-common$/d;/systemd-services/d;/^gpupdate$/d
@@ -63,6 +63,7 @@ Requires: pam_mount
 Requires: libnss-role
 Requires: alterator-datetime
 Requires: sssd-dbus
+Requires: alterator-roles-common
 
 Provides:  task-auth-ad = %EVR
 Obsoletes: task-auth-ad < %EVR
@@ -79,6 +80,7 @@ Requires: sssd-krb5
 Requires: krb5-kinit
 Requires: pam_mount
 Requires: libnss-role
+Requires: alterator-roles-common
 
 Provides:  task-auth-ldap = %EVR
 Obsoletes: task-auth-ldap < %EVR
@@ -95,9 +97,19 @@ Requires: krb5-kinit
 Requires: pam_mount
 Requires: libnss-role
 Requires: alterator-datetime
+Requires: alterator-roles-common
 
 %description -n task-auth-freeipa
 Metapackage to authenticate in FreeIPA domain.
+
+%package -n alterator-roles-common
+Summary: Common package with default roles and privileges
+Group: System/Configuration/Other
+Requires: libnss-role >= 0.5.1
+
+%description -n alterator-roles-common
+Common package with default roles and privileges.
+Contains basic roles: users, power and localadmins.
 
 %prep
 %setup -q
@@ -110,8 +122,26 @@ export GUILE_LOAD_PATH=/usr/share/alterator/lookout
 %makeinstall
 install -Dpm644 etc/user-groups %buildroot%_sysconfdir/alterator/auth/user-groups
 install -Dpm644 etc/admin-groups %buildroot%_sysconfdir/alterator/auth/admin-groups
+install -Dpm644 etc/role.d/users.role %buildroot%_sysconfdir/role.d/users.role
+install -Dpm644 etc/role.d/powerusers.role %buildroot%_sysconfdir/role.d/powerusers.role
+install -Dpm644 etc/role.d/localadmins.role %buildroot%_sysconfdir/role.d/localadmins.role
 install -Dpm755 sbin/system-auth %buildroot/%_sbindir/system-auth
 install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
+
+%pre -n alterator-roles-common
+%_sbindir/groupadd -r -f -g 98 everyone 2> /dev/null ||:
+#_sbindir/groupadd -r -f -g 99 nobody 2> /dev/null ||:
+#_sbindir/groupadd -r -f -g 100 users 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 101 localadmins 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 102 powerusers 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 103 guests 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 104 accountops 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 105 serverops 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 106 printops 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 107 backupops 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 108 replicators 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 109 networkops 2> /dev/null ||:
+%_sbindir/groupadd -r -f -g 110 remote 2> /dev/null ||:
 
 %files
 %config(noreplace) %_sysconfdir/alterator/auth/user-groups
@@ -123,6 +153,11 @@ install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
 %_hooksdir/90-auth
 %_alterator_backend3dir/*
 
+%files -n alterator-roles-common
+%config(noreplace) %_sysconfdir/role.d/users.role
+%config(noreplace) %_sysconfdir/role.d/powerusers.role
+%config(noreplace) %_sysconfdir/role.d/localadmins.role
+
 %files -n task-auth-ad-winbind
 
 %files -n task-auth-ad-sssd
@@ -132,6 +167,23 @@ install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
 %files -n task-auth-freeipa
 
 %changelog
+* Wed Jul 15 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.7-alt1
+- Add default libnss-role roles for users, powerusers and localadmins in separated
+  package: alterator-roles-common - common files for alterator-roles (not implemented yet).
+- user-groups and admin-groups saved temporary for compatibility.
+- Create aditional groups during alterator-roles-common install:
+ + everyone (with prefered guid 98)
+ + localadmins (with prefered guid 101)
+ + powerusers (with prefered guid 102)
+ + guests (with prefered guid 103)
+ + accountops (with prefered guid 104)
+ + serverops (with prefered guid 105)
+ + printops (with prefered guid 106)
+ + backupops (with prefered guid 107)
+ + replicators (with prefered guid 108)
+ + networkops (with prefered guid 109)
+ + remote (with prefered guid 110)
+
 * Sat Jul 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.6-alt1
 - Add ad_gpo_access_control default as permissive for sssd.conf
 

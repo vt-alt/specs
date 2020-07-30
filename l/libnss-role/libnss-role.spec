@@ -6,8 +6,8 @@
 %global _cmake_skip_rpath %nil
 
 Name: libnss-role
-Version: 0.5.0
-Release: alt3
+Version: 0.5.1
+Release: alt1
 
 Summary: NSS API library and admin tools for roles and privilegies
 
@@ -99,6 +99,10 @@ update_chrooted all
 %_includedir/role/
 
 %changelog
+* Wed Jul 15 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.5.1-alt1
+- Validate that each used filename in the role directory ends with .role
+  extension. Not validated files skips.
+
 * Wed May 13 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.5.0-alt3
 - Fix roleadd installation
 - Correct show of project version
