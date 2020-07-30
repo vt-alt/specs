@@ -3,13 +3,13 @@
 %define fullname MidnightCommander
 
 Name: mc
-Version: 4.8.24
+Version: 4.8.25
 Release: alt1
 
 # '-gitYYYYMMDD' or ''
-%define ver_date '-git20200215'
+%define ver_date ''
 
-License: %gpl3plus
+License: GPL-3.0-or-later
 Summary: An user-friendly file manager and visual shell
 Group: File tools
 Url: http://midnight-commander.org/
@@ -41,8 +41,6 @@ Patch102: mc-4.8.20-alt-forceexec.patch
 
 # http://www.midnight-commander.org/ticket/34
 Patch103: mc-4.8.24-alt-extfs-udar.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 Conflicts: %name-data
 Conflicts: %name-locales
@@ -206,6 +204,10 @@ install -pD -m644 %SOURCE5 %buildroot%_niconsdir/%fullname.png
 %files full
 
 %changelog
+* Tue Jul 28 2020 Sergey Y. Afonin <asy@altlinux.org> 4.8.25-alt1
+- 4.8.25 (ALT #38737, ALT #38454)
+- updated License tag to SPDX syntax
+
 * Sat Feb 29 2020 Sergey Y. Afonin <asy@altlinux.org> 4.8.24-alt1
 - 4.8.24 (updated to 20200215 git snapshot, ALT #37545)
 
