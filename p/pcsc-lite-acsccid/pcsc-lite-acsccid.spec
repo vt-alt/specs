@@ -1,5 +1,5 @@
 Name: pcsc-lite-acsccid
-Version: 1.1.6
+Version: 1.1.8
 Release: alt1
 
 Summary: PCSC Driver for ACS CCID Based Smart Card Readers
@@ -43,6 +43,12 @@ sed 's:GROUP="pcscd":GROUP="scard":' <src/92_pcscd_acsccid.rules >%buildroot/lib
 %_libdir/pcsc/drivers/*
 
 %changelog
+* Fri Jan 10 2020 Andrey Cherepanov <cas@altlinux.org> 1.1.8-alt1
+- New version.
+
+* Sat Jul 27 2019 Andrey Cherepanov <cas@altlinux.org> 1.1.7-alt1
+- New version.
+
 * Wed Oct 31 2018 Andrey Cherepanov <cas@altlinux.org> 1.1.6-alt1
 - New version.
 
