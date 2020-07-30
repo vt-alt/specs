@@ -1,5 +1,5 @@
 Name: alterator-quota
-Version: 1.5.2
+Version: 1.6.0
 Release: alt1
 
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
@@ -20,6 +20,8 @@ Requires: alterator-sh-functions >= 0.10-alt1
 Conflicts: alterator-fbi < 2.10-alt5
 
 BuildPreReq: alterator >= 3.9-alt3
+# check dependencies
+BuildRequires: /proc
 
 %description
 alterator module for managing filesystem quotas
@@ -33,6 +35,9 @@ alterator module for managing filesystem quotas
 %install
 %makeinstall
 
+%check
+./runtests
+
 %files
 %_alterator_backend3dir/*
 %_datadir/alterator/applications/*
@@ -40,6 +45,10 @@ alterator module for managing filesystem quotas
 %_bindir/*
 
 %changelog
+* Tue Jul 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.6.0-alt1
+- implemented enabling/disabling quota for selected filesystem (Closes: #38669).
+- added basic tests for backends.
+
 * Tue Jun 30 2020 Sergey V Turchin <zerg@altlinux.org> 1.5.2-alt1
 - allow to work with root filesystem
 

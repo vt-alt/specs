@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.65
+Version: 2.9.66
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -114,6 +114,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Tue Jul 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.9.66-alt1
+- Updated l10n for alterator-quota.
+
 * Wed Jul 08 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.65-alt1
 - alterator-kiosk add russian translation
 - alterator-kiosk update help
