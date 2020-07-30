@@ -1,10 +1,10 @@
 Name: mrtg
-Version: 2.17.3
+Version: 2.17.7
 Release: alt1
 
 Summary: Multi Router Traffic Grapher
 Group: Monitoring
-License: GPL
+License: GPL-2.0+
 Url: http://oss.oetiker.ch/mrtg/
 
 Packager: Ilya Mashkin <oddity@altlinux.ru>
@@ -25,15 +25,6 @@ BuildRequires: perl-Pod-Parser
 The Multi Router Traffic Grapher (MRTG) is a tool to monitor the traffic
 load on network-links. MRTG generates HTML pages containing GIF or PNG
 images which provide a LIVE visual representation of this traffic.
-
-%description -l ru_RU.KOI8-R
-MRTG - инструмент для мониторинга загрузки сетевых интерфейсов, генерирующий
-HTML-страницы с графикой, предоставляющие "живую" визуализацию трафика.
-
-%description -l uk_UA.KOI8-U
-MRTG - ╕нструмент для мон╕торингу завантаження мережевих ╕нтерфейс╕в,
-який генеру╓ HTML-стор╕нки ╕з граф╕кою, що надають "живу" в╕зуал╕зац╕ю
-траф╕ку.
 
 %package contrib
 Summary: Multi Router Traffic Grapher - contribs
@@ -139,6 +130,11 @@ fi
 %_libmrtg/contrib/*
 
 %changelog
+* Fri Jul 24 2020 Andrey Cherepanov <cas@altlinux.org> 2.17.7-alt1
+- NMU: 2.17.7 (ALT #38128)
+- Fix changelog dates and remove descriptions in KOI8.
+- Fix License tag according to SPDX.
+
 * Sun Dec 18 2011 Ilya Mashkin <oddity@altlinux.ru> 2.17.3-alt1
 - 2.17.3
 
@@ -264,7 +260,7 @@ fi
 - docs images symlinked around
 - "no-one's" files in mrtg dirs are searched and overtaken after install
 
-* Thu Jul 05 2002 Michael Shigorin <mike@altlinux.ru> 2.9.18-alt2
+* Fri Jul 05 2002 Michael Shigorin <mike@altlinux.ru> 2.9.18-alt2
 - spec cleanup
 - package split (most scripts to mrtg-contrib)
 - put two "must have" scripts to %_libmrtg/helpers (cpu, iptables)
