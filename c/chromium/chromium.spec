@@ -1,4 +1,3 @@
-%def_disable nacl
 %def_enable  clang
 %def_disable shared_libraries
 %def_enable  widevine
@@ -29,7 +28,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        84.0.4147.89
+Version:        84.0.4147.105
 Release:        alt1
 
 Summary:        An open source web browser developed by Google
@@ -333,7 +332,7 @@ gn_arg closure_compile=false
 gn_arg is_debug=false
 gn_arg symbol_level=0
 
-gn_arg enable_nacl=%{is_enabled nacl}
+gn_arg enable_nacl=false
 gn_arg is_component_ffmpeg=%{is_enabled shared_libraries}
 gn_arg is_component_build=%{is_enabled shared_libraries}
 gn_arg enable_widevine=%{is_enabled widevine}
@@ -432,13 +431,6 @@ done
 # Remove garbage
 find -name '*.TOC' -delete
 
-# NaCl
-%if_enabled nacl
-cp -at %buildroot%_libdir/%name -- \
- nacl_helper \
- nacl_helper_bootstrap \
- nacl_irt_*.nexe
-%endif
 popd
 
 # Icons
@@ -518,6 +510,16 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Tue Jul 28 2020 Alexey Gladkov <legion@altlinux.ru> 84.0.4147.105-alt1
+- New version (84.0.4147.105).
+- Security fixes:
+  - CVE-2020-6532: Use after free in SCTP.
+  - CVE-2020-6537: Type Confusion in V8.
+  - CVE-2020-6538: Inappropriate implementation in WebView.
+  - CVE-2020-6539: Use after free in CSS.
+  - CVE-2020-6540: Heap buffer overflow in Skia.
+  - CVE-2020-6541: Use after free in WebUSB.
+
 * Wed Jul 15 2020 Alexey Gladkov <legion@altlinux.ru> 84.0.4147.89-alt1
 - New version (84.0.4147.89).
 - Fix compilation with system ffmpeg 4.3 (ALT#38716)
