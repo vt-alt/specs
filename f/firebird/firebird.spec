@@ -8,7 +8,7 @@
 
 Name: firebird
 Version: %major.%minor
-Release: alt1
+Release: alt2
 Summary: Firebird SQL Database, fork of InterBase
 Group: Databases
 License: IPL
@@ -17,6 +17,7 @@ Url: https://www.firebirdsql.org/
 # https://github.com/FirebirdSQL/firebird.git
 Source: %name-%version.tar
 Source1: %name.init
+Source2: %name.tmpfiles.conf.in
 
 Patch1: %name-3.0.5.33220.0-fedora-obsolete-syslogd.target.patch
 Patch2: %name-3.0.5.33220.0-fedora-no-copy-from-icu.patch
@@ -194,17 +195,19 @@ mkdir -p %buildroot%_initdir
 mkdir -p %buildroot%fbroot/intl
 mkdir -p %buildroot%_datadir/%name
 mkdir -p %buildroot%_sysconfdir/profile.d
-mkdir -p %buildroot%_runtimedir/%name
 mkdir -p %buildroot%_localstatedir/%name/backup
 mkdir -p %buildroot%_logdir/%name/
 mkdir -p %buildroot%_unitdir
 mkdir -p %buildroot%_pkgconfigdir
+mkdir -p %buildroot%_tmpfilesdir
 
 cp -a src/misc/upgrade %buildroot%_datadir/%name
 
 install -m 0644 gen/install/misc/firebird-superserver.service %buildroot%_unitdir/
 install -m 0644 gen/install/misc/firebird-classic@.service %buildroot%_unitdir/
 install -m 0644 gen/install/misc/firebird-classic.socket %buildroot%_unitdir/
+
+sed -e "s|@runtimedir@|%_runtimedir|g" -e "s|@name@|%name|g" %SOURCE2 > %buildroot%_tmpfilesdir/%name.conf
 
 cp -v gen/install/misc/*.pc %buildroot%_pkgconfigdir
 
@@ -310,7 +313,7 @@ fi
 %_libdir/libfbclient.so.*
 
 %files server
-%dir %attr(2775,root,%name) %_runtimedir/%name
+%attr(0664,root,root) %_tmpfilesdir/%name.conf
 %dir %attr(2775,root,%name) %_localstatedir/%name
 %dir %attr(2775,root,%name) %_localstatedir/%name/secdb
 %dir %attr(2775,root,%name) %_localstatedir/%name/system
@@ -354,6 +357,9 @@ fi
 %_datadir/%name/examples/*
 
 %changelog
+* Mon Jul 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.6.33328.0-alt2
+- Fixed runtime directory creation (Closes: #38722).
+
 * Fri Jul 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.6.33328.0-alt1
 - Updated to upstream version 3.0.6.33328-0.
 
