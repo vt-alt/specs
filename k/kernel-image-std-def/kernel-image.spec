@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.4
-%define kernel_sublevel .51
+%define kernel_sublevel .54
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -46,6 +46,7 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 %define old_kbuild_dir	%_prefix/src/linux-%kversion-%flavour
 
 %brp_strip_none /boot/*
+%add_verify_elf_skiplist %modules_dir/*
 
 Summary: The Linux kernel (the core of the Linux operating system)
 License: GPL-2.0-only
@@ -703,6 +704,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Jul 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.54-alt1
+- v5.4.54
+
+* Fri Jul 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.53-alt1
+- v5.4.53
+
 * Thu Jul 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.51-alt1
 - v5.4.51
 
