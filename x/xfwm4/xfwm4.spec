@@ -1,5 +1,5 @@
 Name: xfwm4
-Version: 4.14.2
+Version: 4.14.3
 Release: alt1
 
 %def_enable epoxy
@@ -21,7 +21,7 @@ BuildPreReq: libxfce4ui-gtk3-devel libxfconf-devel
 BuildRequires: gnome-doc-utils xml-utils xsltproc
 BuildRequires: intltool libSM-devel libXcomposite-devel libXdamage-devel libXext-devel libXrandr-devel libglade-devel
 BuildRequires: libstartup-notification-devel libwnck3-devel xorg-cf-files
-BuildRequires: libXinerama-devel libXpresent-devel
+BuildRequires: libXinerama-devel libXpresent-devel libXres-devel
 # For svg support in the glib-compile-resources
 BuildRequires: librsvg
 %{?_enable_epoxy:BuildRequires: libepoxy-devel}
@@ -77,6 +77,10 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Mon Jul 27 2020 Mikhail Efremov <sem@altlinux.org> 4.14.3-alt1
+- Added libXres-devel to BR.
+- Updated to 4.14.3.
+
 * Sun May 03 2020 Mikhail Efremov <sem@altlinux.org> 4.14.2-alt1
 - Updated Vcs tag.
 - Updated to 4.14.2.
