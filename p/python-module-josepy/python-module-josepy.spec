@@ -4,11 +4,11 @@
 
 Name: python-module-%oname
 Version: 1.1.0
-Release: alt1
+Release: alt2
 
 Summary: JOSE protocol implementation in Python using cryptography
 
-License: Apache 2.0
+License: Apache-2.0
 Group: Development/Python
 Url: https://github.com/certbot/josepy
 
@@ -96,15 +96,19 @@ rm -rf %buildroot%_bindir/
 %files -n python3-module-%oname
 %doc README*
 %python3_sitelibdir/*
-%exclude %python3_sitelibdir/*/test*
-%exclude %python3_sitelibdir/*/*/test*
+%exclude %python3_sitelibdir/*/*test*
+%exclude %python3_sitelibdir/*/*/*test*
 
 %files -n python3-module-%oname-tests
-%python3_sitelibdir/*/test*
-%python3_sitelibdir/*/*/test*
+%python3_sitelibdir/*/*test*
+%python3_sitelibdir/*/*/*test*
 %endif
 
 %changelog
+* Thu Jul 23 2020 Anton Farygin <rider@altlinux.ru> 1.1.0-alt2
+- moved tests from python3-module-%oname package
+- fix for License tag according to SPDX
+
 * Sat Jun 09 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.0-alt1
 - new version 1.1.0 (with rpmrb script)
 
