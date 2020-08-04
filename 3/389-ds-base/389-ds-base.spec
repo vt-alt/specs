@@ -11,7 +11,7 @@
 %def_with cockpit
 
 Name: 389-ds-base
-Version: 1.4.1.10
+Version: 1.4.1.18
 Release: alt1
 
 Summary: 389 Directory Server (base)
@@ -55,8 +55,9 @@ BuildRequires: python3(ldap)
 BuildRequires: python3(packaging)
 BuildRequires: python3(six)
 
-%if_with cockpit
 BuildRequires: rsync
+
+%if_with cockpit
 BuildRequires: npm
 %endif
 
@@ -180,9 +181,11 @@ A cockpit UI Plugin for configuring and administering the 389 Directory Server
 %setup
 %patch -p1
 
+%if_with cockpit
 # node modules are intended for building Cockpit plugin
 # and are not utilized in runtime
 tar -xzf %SOURCE1 -C "./src/cockpit/389-console"
+%endif
 
 grep -qsF 'sysctldir = @prefixdir@/lib/sysctl.d' Makefile.am || exit 1
 sed -i 's|sysctldir = .*|sysctldir = %_sysctldir|' Makefile.am
@@ -207,6 +210,10 @@ ldap/servers/slapd/ldaputil.c
 %ifarch mipsel
 export LDFLAGS='-latomic'
 %endif
+%ifarch %e2k
+# 1.4.1.8: asm crc32
+%add_optflags -U__SSE4_2__
+%endif
 
 %autoreconf
 
@@ -229,7 +236,7 @@ export LDFLAGS='-latomic'
         %{?_with_check:--enable-cmocka } \
         %nil
 
-%make
+%make_build
 
 %if_with cockpit
 # cockpit plugin
@@ -283,6 +290,11 @@ cp man/man3/* %buildroot%_man3dir
 
 # Fix path to systemctl in scripts
 sed -i 's|%_bindir/systemctl|/bin/systemctl|' %buildroot%_sbindir/*-dirsrv
+
+%if_without cockpit
+# ends up unpackaged otherwise thus breaking build
+rm -f %buildroot%_datadir/metainfo/389-console/org.port389.cockpit_console.metainfo.xml
+%endif
 
 %pre
 %define _dirsrv_user dirsrv
@@ -358,7 +370,12 @@ if [ $1 -eq 0 ]; then
     /bin/systemctl stop %pkgname@*.service
 fi
 %preun_service %pkgname-snmp
+
+%ifnarch %e2k
+# FIXME: got no 389-admin/console/dsgw and no idm-console-framework just yet
 %files -n 389-ds
+%endif
+
 %files
 %doc LICENSE LICENSE.GPLv3+ LICENSE.openssl README.md
 %dir %_sysconfdir/%pkgname
@@ -584,12 +601,28 @@ fi
 %_datadir/cockpit/389-console/*.js
 %_datadir/cockpit/389-console/*.js.map
 %_datadir/cockpit/389-console/css/
-%_datadir/cockpit/389-console/fonts/
-%_datadir/cockpit/389-console/images/
-%_datadir/cockpit/389-console/static/
 %endif
 
 %changelog
+* Fri Apr 17 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.18-alt1
+- 1.4.1.16 -> 1.4.1.18.
+
+* Mon Mar 23 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.16-alt1
+- 1.4.1.13 -> 1.4.1.16.
+
+* Tue Jan 14 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.13-alt1
+- 1.4.1.12 -> 1.4.1.13.
+
+* Mon Dec 09 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.12-alt1
+- 1.4.1.10 -> 1.4.1.12.
+
+* Sun Nov 17 2019 Michael Shigorin <mike@altlinux.org> 1.4.1.10-alt2
+- Fixed cockpit knob.
+- Enabled parallel build.
+- E2K:
+  + disable SSE4.2 (crc32 assembly code needs porting);
+  + disable 389-ds metapackage for now (deps lacking).
+
 * Thu Nov 14 2019 Stanislav Levin <slev@altlinux.org> 1.4.1.10-alt1
 - 1.4.1.9 -> 1.4.1.10 (fixes: CVE-2019-14824).
 
