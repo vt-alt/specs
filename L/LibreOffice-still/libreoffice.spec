@@ -7,6 +7,7 @@
 %define num_proc 8
 %def_without fetch
 %def_without lto
+%def_with dconf
 
 # enable kde5 UI
 %def_enable kde5
@@ -33,7 +34,7 @@ Version: %hversion.%urelease
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
 
-Release: alt2
+Release: alt4
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -99,7 +100,7 @@ BuildRequires: libgtk+3-gir-devel
 # 5.2.0
 #BuildRequires: libCoinMP-devel
 # 5.3.0
-BuildRequires: libzmf-devel libstaroffice-devel libepoxy-devel libmysqlcppconn-devel libmysqlclient-devel libtelepathy-devel
+BuildRequires: libzmf-devel libstaroffice-devel libepoxy-devel libmysqlcppconn-devel libmysqlclient-devel
 # 5.3.3
 BuildRequires: doxygen e2fsprogs
 # 5.4.0
@@ -132,6 +133,10 @@ BuildRequires: fontforge
 
 %if_without python
 BuildRequires: python3-dev
+%endif
+
+%if_with dconf
+BuildRequires: libdconf-devel
 %endif
 
 %description
@@ -413,6 +418,9 @@ export CXXFLAGS="$CFLAGS"
 %if_with python
 	--enable-python=internal \
 %endif
+%if_with dconf
+	--enable-dconf \
+%endif
 %if_with fetch
 	--enable-fetch-external
 %else
@@ -637,6 +645,12 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Mon Jul 27 2020 Andrey Bychkov <mrdrew@altlinux.org> 6.3.6.2-alt4
+- Rebuild with dconf enabled (Closes: 38753).
+
+* Wed May 27 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.6.2-alt3
+- Remove deprecated libtelepathy-devel.
+
 * Thu May 14 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.6.2-alt2
 - Put libreoffice- prefix to icons and desktop files (ALT #38480).
 
