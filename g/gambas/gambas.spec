@@ -2,18 +2,19 @@
 %def_enable     opengl
 # jit.h is only available prior to llvm 3.6 and gb.jit can only be compiled with those versions.
 %def_with   	jit
+%def_without sqlite2
 %define prov3() \
 Provides:  gambas3-%{*} = %EVR \
 Obsoletes: gambas3-%{*} < %EVR \
 %nil
 
 Name:		gambas
-Version:	3.14.0
+Version:	3.15.1
 Release:	alt1
 
 Summary:	IDE based on a basic interpreter with object extensions
 Group:		Development/Tools
-License:	GPLv2+
+License:	GPL-2.0+
 
 URL:		http://gambas.sourceforge.net/
 Source0:	%name-%version.tar
@@ -66,7 +67,6 @@ BuildRequires:	libSDL2_image-devel
 BuildRequires:	libSDL2_mixer-devel
 BuildRequires:	libSDL2_ttf-devel
 BuildRequires:	libsqlite3-devel
-BuildRequires:	libsqlite-devel
 BuildRequires:	libssl-devel
 BuildRequires:	libtool
 BuildRequires:	libunixODBC-devel
@@ -100,7 +100,8 @@ Patch4:		%name-3.12.0-use-libv4l1.patch
 Patch5:		%name-3.11.4-alt-libpoppler-bool-type-fix.patch
 Patch6:		%name-3.11.4-alt-postgre-bool-type-fix.patch
 Patch7:		%name-alt-mysql8-bool-type-fix.patch
-Patch10: 	%name-alt-postgresql12.patch
+Patch8:    	gambas3-3.13.0-poppler-0.73.0.patch
+Patch9:	        gambas3-3.14.1-gst1.patch
 
 Provides:       gambas3 = %EVR
 Obsoletes:      gambas3 < %EVR
@@ -127,7 +128,6 @@ Requires:      %name-gb-db-form = %version-%release
 Requires:      %name-gb-db-mysql = %version-%release
 Requires:      %name-gb-db-odbc = %version-%release
 Requires:      %name-gb-db-postgresql = %version-%release
-Requires:      %name-gb-db-sqlite2 = %version-%release
 Requires:      %name-gb-db-sqlite3 = %version-%release
 Requires:      %name-gb-dbus = %version-%release
 Requires:      %name-gb-db = %version-%release
@@ -206,6 +206,7 @@ Requires:      %name-gb-qt5-webkit = %version-%release
 Requires:      %name-gb-qt5-ext = %version-%release
 Requires:      %name-gb-form-terminal = %version-%release
 Requires:      %name-gb-term = %version-%release
+Requires:      %name-gb-test = %version-%release
 Requires:      %name-gb-form-print = %version-%release
 
 %description
@@ -283,6 +284,7 @@ Requires:	%name-gb-net-curl = %version-%release
 %if_with jit
 Requires:	%name-gb-jit = %version-%release
 %endif
+Requires:       %name-gb-test = %version-%release
 Requires:	%name-gb-form-print = %version-%release
 
 %description ide
@@ -409,15 +411,6 @@ Requires:	%name-runtime = %version-%release
 
 %description gb-db-postgresql
 This component allows you to access PostgreSQL databases.
-
-%package gb-db-sqlite2
-Summary:	Gambas3 component package for db.sqlite2
-Group:		Development/Tools
-Requires:	%name-runtime = %version-%release
-%prov3 gb-db-sqlite2
-
-%description gb-db-sqlite2
-This component allows you to access SQLite 2 databases.
 
 %package gb-db-sqlite3
 Summary:	Gambas3 component package for db.sqlite3
@@ -1105,8 +1098,14 @@ Requires:	%name-runtime = %version-%release
 This package contains the Gambas3 component for making the GUI of
 terminal applications.
 
-%description gb-form-terminal
-This package contains the Gambas3 component for terminal in form.
+%package gb-test
+Summary:	Gambas3 component package for tests
+Group:		Development/Tools
+Requires:	%name-runtime = %version-%release
+%prov3 gb-test
+
+%description gb-test
+This package contains the Gambas3 component for tests.
 
 %package gb-form-print
 Summary:	Gambas3 component package for print form
@@ -1125,7 +1124,8 @@ This package contains the Gambas3 component for print form.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
-%patch10 -p1
+%patch8 -p1
+%patch9 -p1
 
 # We used to patch these out, but this is simpler.
 for i in `find . |grep acinclude.m4`; do
@@ -1199,6 +1199,9 @@ rm -rf %buildroot%_libdir/gambas3/gb.la %buildroot%_libdir/gambas3/gb.so*
 # No need for the static libs
 rm -rf %buildroot%_libdir/gambas3/*.a
 
+# Remove man page for gbh3
+rm -f %buildroot%_man1dir/gbh3.1* 
+
 # Mime types.
 mkdir -p %buildroot%_datadir/mime/packages/
 install -m 0644 -p app/mime/application-x-gambasscript.xml %buildroot%_xdgmimedir/packages/
@@ -1236,12 +1239,17 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %appdir/icons/application-x-gambas3.png
 %_xdgmimedir/packages/application-x-gambas3.xml
 %appdir/icons/application-x-gambasserverpage.png
+%_man1dir/gbr3.1*
+%_man1dir/gbx3.1*
 
 %files devel
 %doc COPYING
 %_bindir/gbc3
 %_bindir/gba3
 %_bindir/gbi3
+%_man1dir/gbc3.1*
+%_man1dir/gba3.1*
+%_man1dir/gbi3.1*
 
 %files scripter
 %_bindir/gbs3
@@ -1249,11 +1257,14 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %_bindir/gbw3
 %appdir/icons/application-x-gambasscript.png
 %_xdgmimedir/packages/application-x-gambasscript.xml
+%_man1dir/gbs3.1*
+%_man1dir/gbw3.1*
 
 %files ide
 %_bindir/gambas
 %_bindir/gambas3
 %_bindir/gambas3.gambas
+%_man1dir/gambas3.1*
 
 %files gb-args
 %_libdir/gambas3/gb.args.*
@@ -1313,10 +1324,6 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %files gb-db-postgresql
 %_libdir/gambas3/gb.db.postgresql.*
 %appdir/info/gb.db.postgresql.*
-
-%files gb-db-sqlite2
-%_libdir/gambas3/gb.db.sqlite2.*
-%appdir/info/gb.db.sqlite2.*
 
 %files gb-db-sqlite3
 %_libdir/gambas3/gb.db.sqlite3.*
@@ -1678,11 +1685,39 @@ install -m 0644 -p main/mime/application-x-gambas3.xml %buildroot%_xdgmimedir/pa
 %_libdir/gambas3/gb.term.*
 %appdir/info/gb.term.*
 
+%files gb-test
+%_libdir/gambas3/gb.test.*
+%appdir/info/gb.test.*
+
 %files gb-form-print
 %_libdir/gambas3/gb.form.print.*
 %appdir/info/gb.form.print.*
 
 %changelog
+* Sat Aug 01 2020 Andrey Cherepanov <cas@altlinux.org> 3.15.1-alt1
+- New version.
+
+* Sun Jul 05 2020 Andrey Cherepanov <cas@altlinux.org> 3.15.0-alt1
+- New version.
+- New component gambas-gb-test.
+
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 3.14.3-alt2
+- Fix build (use patches for new poppler).
+- Remove diplicate description.
+- Do not build gambas-gb-db-sqlite2 because sqlite2 is deprecated.
+
+* Fri Jan 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.14.3-alt1
+- new version 3.14.3
+
+* Fri Jan 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.14.2-alt2
+- NMU: build without sqlite2
+
+* Mon Dec 02 2019 Andrey Cherepanov <cas@altlinux.org> 3.14.2-alt1
+- New version.
+
+* Tue Nov 05 2019 Andrey Cherepanov <cas@altlinux.org> 3.14.1-alt1
+- New version.
+
 * Mon Oct 07 2019 Andrey Cherepanov <cas@altlinux.org> 3.14.0-alt1
 - New version.
 - Fix build with PostgreSQL 12.
