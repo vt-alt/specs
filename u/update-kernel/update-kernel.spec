@@ -1,5 +1,5 @@
 Name: update-kernel
-Version: 0.9.18
+Version: 0.9.19
 Release: alt1
 
 Summary: Update kernel and modules
@@ -42,6 +42,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Mon Aug 03 2020 Sergey Novikov <sotor@altlinux.org> 0.9.19-alt1
+- update-kernel: fix incorrect comparison of versions of duplicate modules
+  (closes: #38772)
+
 * Wed Feb 12 2020 Vitaly Chikunov <vt@altlinux.org> 0.9.18-alt1
 - Support for single word kernel flavours (closes: #36835).
 - Update license tag to be more specific.
