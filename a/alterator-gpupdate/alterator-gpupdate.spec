@@ -1,5 +1,5 @@
 Name: alterator-gpupdate
-Version: 1.2
+Version: 1.3
 Release: alt1
 
 Source:%name-%version.tar
@@ -7,10 +7,9 @@ Source:%name-%version.tar
 Summary: Alterator module for group policy settings
 License: GPL
 Group: System/Configuration/Other
-BuildArch: noarch
 
 Requires: alterator >= 4.7-alt4
-Requires: alterator-l10n >= 2.9.62
+Requires: alterator-l10n >= 2.9.67
 Requires: gpupdate
 
 BuildPreReq: alterator >= 5.0 alterator-lookout
@@ -37,9 +36,14 @@ export GUILE_LOAD_PATH=/usr/share/alterator/lookout
 %files
 %_alterator_datadir/applications/*
 %_alterator_datadir/ui/*/
+%_alterator_libdir/ui/gpupdate/*.go
 %_alterator_backend3dir/*
 
 %changelog
+* Mon Aug 03 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.3-alt1
+- Add support of alterator web interface aka ajax support
+- Remove BuildArch is noarch due ajax part of module
+
 * Wed Apr 22 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.2-alt1
 - Add predefined profile name for ad-domain-controller
 - Improve popup information after group policy management apply

@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.66
+Version: 2.9.67
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -56,6 +56,7 @@ Conflicts: alterator-snort                < 0.2.0-alt1
 Conflicts: alterator-hotstandby           < 0.3.3-alt1
 Conflicts: alterator-printers	          < 6.0-alt8
 Conflicts: alterator-drweb	          < 0.99.4-alt1
+Conflicts: alterator-gpupdate             < 1.3-alt1
 
 %description
 translations for all alterator modules
@@ -114,6 +115,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Mon Aug 03 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.9.67-alt1
+- Update alterator-gpupdate l10n for ajax compatibilty.
+
 * Tue Jul 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.9.66-alt1
 - Updated l10n for alterator-quota.
 
