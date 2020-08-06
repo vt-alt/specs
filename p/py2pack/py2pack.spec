@@ -1,40 +1,28 @@
-%define oldname python-py2pack
+%define oname py2pack
 
-#doesn't support python3 at this time
-%global with_python3 0
+Name:       py2pack
+Version:    0.8.4
+Release:    alt2
 
-%define mod_name py2pack
+Summary:    Generate distribution packages from Python packages on PyPI
+License:    GPL-2.0+
+Group:      Development/Python3
+Url:        http://github.com/saschpe/py2pack
+Packager:   Andrey Cherepanov <cas@altlinux.org>
 
-Name: py2pack
-Version: 0.6.4
-Release: alt1
+BuildArch:  noarch
 
-Summary: Generate distribution packages from Python packages on PyPI
+Source:     %name-%version.tar
+Patch1:     py2pack-alt-spec-support.patch
+Patch2:     py2pack-alt-spec-default.patch
 
-Url: http://github.com/saschpe/py2pack
-License: GPLv2
-Group: Development/Python
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-module-jinja2 python3-module-six
+BuildRequires: python3-module-cssselect python3-module-lxml
+BuildRequires: python3-module-requests
+BuildRequires: python3-module-pbr
 
-Packager: Vitaly Lipatov <lav@altlinux.ru>
-
-# FIXME: some troubles with pypi sources
-# NOSource-url: https://files.pythonhosted.org/packages/source/p/py2pack/%name-%version.tar.gz
-# Source-url: https://github.com/openSUSE/py2pack/archive/%version.tar.gz
-Source: %name-%version.tar
-
-BuildArch: noarch
-# from requirements.txt
-BuildRequires: python-module-setuptools python-module-jinja2 python-module-six
-# setup_requires=["cssselect", "lxml", "requests"], from setup.py
-BuildRequires: python-module-cssselect python-module-lxml python-module-requests
-
-Requires: python-module-py2pack = %version-%release
-
-%if 0%{?with_python3}
-BuildRequires: python3-dev-devel
-BuildRequires: python3-module-jinja2 python-module-jinja2-tests
-%endif # with_python3
-Source44: import.info
+Requires: python3-module-py2pack = %version-%release
 
 %description
 This script allows to generate RPM spec or DEB dsc files from Python modules.
@@ -42,77 +30,51 @@ It allows to list Python modules or search for them on the Python Package Index
 (PyPI). Conveniently, it can fetch tarballs and change logs making it an
 universal tool to package Python modules.
 
-%package -n python-module-py2pack
-Summary: General purpose template engine
-Group: Development/Python
-
-%description -n python-module-py2pack
-This script allows to generate RPM spec or DEB dsc files from Python modules.
-It allows to list Python modules or search for them on the Python Package Index
-(PyPI). Conveniently, it can fetch tarballs and change logs making it an
-universal tool to package Python modules.
-
-%if 0%{?with_python3}
 %package -n python3-module-py2pack
 Summary: General purpose template engine
-Group: Development/Python
-#Requires: python3-module-argparse
-#Requires: python3-module-jinja2 python3-module-jinja2-tests
+Group: Development/Python3
+%py3_requires pbr
 
 %description -n python3-module-py2pack
 This script allows to generate RPM spec or DEB dsc files from Python modules.
 It allows to list Python modules or search for them on the Python Package Index
 (PyPI). Conveniently, it can fetch tarballs and change logs making it an
 universal tool to package Python modules.
-%endif #with_python3
 
 %prep
-%setup -n %mod_name-%version
-%__subst "s|man/man1|share/man/man1|g" setup.py
-
-%if 0%{?with_python3}
-rm -rf %_builddir/python3-%oldname-%version-%release
-cp -a . %_builddir/python3-%oldname-%version-%release
-find %_builddir/python3-%oldname-%version-%release -name '*.py' | xargs sed -i '1s|^#!python|#!%__python3|'
-%endif # with_python3
-
-find -name '*.py' | xargs sed -i '1s|^#!python|#!%__python|'
+%setup -n %oname-%version
+%patch1 -p1
+%patch2 -p1
 
 %build
-%python_build
-
-%if 0%{?with_python3}
-pushd %_builddir/python3-%oldname-%version-%release
-%python_build
-popd
-%endif # with_python3
+export PBR_VERSION=%version
+%python3_build
 
 %install
-%python_install
-
-%if 0%{?with_python3}
-pushd %_builddir/python3-%oldname-%version-%release
+export PBR_VERSION=%version
 %python3_install
-popd
-%endif # with_python3
 
 %files
-%_bindir/%mod_name
-%_man1dir/%mod_name.*
+%_bindir/%oname
 
-%files -n python-module-py2pack
-%_docdir/%name
-%python_sitelibdir_noarch/%{mod_name}*
-
-%if 0%{?with_python3}
 %files -n python3-module-py2pack
-%_docdir/%oldname
-%_man1dir/%mod_name.*
-%_bindir/%mod_name
-%python3_sitelibdir_noarch/%{mod_name}*
-%endif # with_python3
+%python3_sitelibdir/%{oname}*
 
 %changelog
+* Fri Jul 31 2020 Andrey Cherepanov <cas@altlinux.org> 0.8.4-alt2
+- Require python3(pbr) for correct version show.
+- Add ALT spec template (ALT #38761).
+- Use alt.spec template by default.
+
+* Fri Jul 24 2020 Andrey Cherepanov <cas@altlinux.org> 0.8.4-alt1
+- New version (ALT #38757).
+- Fix License tag according to SPDX.
+- Build from upstream tag.
+- Change maintainer.
+
+* Fri Jan 31 2020 Andrey Bychkov <mrdrew@altlinux.org> 0.6.4-alt2
+- Porting on Python3.
+
 * Sat Aug 27 2016 Vitaly Lipatov <lav@altlinux.ru> 0.6.4-alt1
 - new version 0.6.4 (with rpmrb script) from github sources
 
