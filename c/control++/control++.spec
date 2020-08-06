@@ -2,7 +2,7 @@
 
 Name: control++
 Version: 0.19.0
-Release: alt1
+Release: alt1.M90P.1
 
 Summary: System configuration tool
 License: GPLv3
@@ -16,8 +16,6 @@ Source: %name-%version.tar
 
 BuildRequires: gcc-c++
 BuildRequires: libcontrol++-devel >= %libcontrolppver
-
-ExcludeArch: aarch64
 
 %description
 control++ is a simple system configuration tool
@@ -59,6 +57,9 @@ cp readme.txt %buildroot%_defaultdocdir/%name/
 %_defaultdocdir/%name
 
 %changelog
+* Fri Jul 31 2020 Alexey Appolonov <alexey@altlinux.org> 0.19.0-alt1.M90P.1
+- Build for all main CPU architectures.
+
 * Tue Apr 23 2019 Alexey Appolonov <alexey@altlinux.org> 0.19.0-alt1
 - Ability to perform exclusive mode setting for a unit ('micro mode');
 - Ability to check compliance of micro modes;
