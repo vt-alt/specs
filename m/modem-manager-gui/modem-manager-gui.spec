@@ -2,8 +2,8 @@ Name:          modem-manager-gui
 Summary:       Graphical interface for ModemManager
 Summary(de):   Grafische Oberfläche für ModemManager
 Summary(ru):   Графический интерфейс для ModemManager
-Version:       0.0.19.1
-Release:       alt2
+Version:       0.0.20
+Release:       alt1
 
 Group:	       System/Configuration/Networking	
 License:       GPLv3
@@ -14,7 +14,6 @@ Packager:      Andrey Cherepanov <cas@altlinux.org>
 # The original download link is a PHP script which points to this file:
 Source0:       http://download.tuxfamily.org/gsf/source/%{name}-%{version}.tar.gz
 Source1:       %name.watch
-Patch1:        %name-68fb09c.patch
 
 BuildRequires: meson
 BuildRequires: pkgconfig
@@ -72,7 +71,6 @@ Funktionen:
 
 %prep
 %setup -q
-%patch1 -p1
 
 %build
 %meson
@@ -103,6 +101,9 @@ mv %buildroot%_datadir/metainfo/%name.appdata.xml %buildroot%_datadir/appdata
 %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Mon Aug 03 2020 Andrey Cherepanov <cas@altlinux.org> 0.0.20-alt1
+- New version.
+
 * Mon Apr 01 2019 Andrey Cherepanov <cas@altlinux.org> 0.0.19.1-alt2
 - Fix help pages format errors by upstream commit 68fb09c (ALT #36473).
 
