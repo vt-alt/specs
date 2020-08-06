@@ -1,14 +1,14 @@
 %def_with bootstrap
 
 Name:           solaar
-Version:        0.9.2.0.225.gitd021d87
+Version:        1.0.3
 Release:        alt1
 
 Group:          System/Configuration/Hardware
 Summary:        Device manager for Logitech Unifying Receiver
-URL:            http://pwr.github.io/Solaar/
+URL:            https://pwr-solaar.github.io/Solaar/
 BuildArch:      noarch
-License:        GPLv2
+License:        GPL-2.0
 
 Packager:	Andrey Cherepanov <cas@altlinux.org>
 
@@ -22,8 +22,8 @@ Requires:  	unifying-receiver-udev
 %add_python3_req_skip gi.repository.GObject gi.repository.Gdk
 %endif
 
-# libaptindicator is not package in ALT Linux
-%add_typelib_req_skiplist typelib(AppIndicator3)
+# typelib(AyatanaAppIndicator3) is not package in ALT Linux
+%add_typelib_req_skiplist typelib(AyatanaAppIndicator3)
 
 Source0:        https://github.com/pwr/Solaar/archive/%{version}.tar.gz
 
@@ -54,21 +54,34 @@ Logitech's Unifying Receiver peripherals.
 
 %install
 %python3_install
+install -Dm0644 share/autostart/solaar.desktop %buildroot%_sysconfdir/xdg/autostart/solaar.desktop
+install -Dm0644 rules.d/42-logitech-unify-permissions.rules %buildroot%_sysconfdir/udev/rules.d/42-logitech-unify-permissions.rules
 
 %files
-%doc COPYING COPYRIGHT share/README
+%doc COPYRIGHT share/README
+%config(noreplace) %_sysconfdir/xdg/autostart/solaar.desktop
+%_sysconfdir/udev/rules.d/*.rules
 %_bindir/solaar
-%_bindir/solaar-cli
 %python3_sitelibdir/*
 %_datadir/solaar/
 %_desktopdir/solaar.desktop
 %_iconsdir/hicolor/scalable/apps/solaar.svg
-%config(noreplace) %_sysconfdir/xdg/autostart/solaar.desktop
 
 %files doc
 %doc docs
 
 %changelog
+* Thu Aug 06 2020 Andrey Cherepanov <cas@altlinux.org> 1.0.3-alt1
+- New version.
+- Package udev rules.
+- Fix License tag according to SPDX.
+
+* Wed May 27 2020 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt1
+- New version.
+
+* Tue May 12 2020 Andrey Cherepanov <cas@altlinux.org> 1.0.1-alt1
+- New version.
+
 * Mon Apr 22 2019 Grigory Ustinov <grenka@altlinux.org> 0.9.2.0.225.gitd021d87-alt1
 - Build from recent commit for pyhon3.7 compatibility.
 
