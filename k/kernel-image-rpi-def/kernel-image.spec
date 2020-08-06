@@ -1,7 +1,7 @@
 %def_disable check
 
 Name: kernel-image-rpi-def
-Release: alt2
+Release: alt3
 epoch:1 
 %define kernel_need_version	5.4
 # Used when kernel-source-x.y does not currently exist in repository.
@@ -56,7 +56,7 @@ Packager: Kernel Maintainers Team <kernel@packages.altlinux.org>
 
 Patch0: %name-%version-%release.patch
 
-ExclusiveArch: aarch64
+ExclusiveArch: armh aarch64
 
 %define make_target Image
 
@@ -490,6 +490,10 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Aug 05 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.51-alt3
+- Add armh
+- Add file config-armh
+
 * Wed Jul 22 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.51-alt2
 - CONFIG_DEBUG_INFO is off, because p9 packages is huge
 
