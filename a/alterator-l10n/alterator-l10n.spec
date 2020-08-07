@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.67
+Version: 2.9.69
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,13 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Thu Aug 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.9.69-alt1
+- Updated l10n for alterator-quota.
+
+* Tue Aug 04 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.68-alt1
+- fix translation for alterator-secsetup
+- update help for alterator-secsetup
+
 * Mon Aug 03 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.9.67-alt1
 - Update alterator-gpupdate l10n for ajax compatibilty.
 
