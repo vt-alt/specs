@@ -1,6 +1,6 @@
 Name: pam_mktemp
 Version: 1.1.1
-Release: alt3
+Release: alt4
 
 Summary: Pluggable private /tmp space support for interactive (shell) sessions
 License: BSD-style
@@ -62,6 +62,9 @@ mkdir -p -m755 /tmp/.private
 %doc LICENSE README
 
 %changelog
+* Tue Aug 04 2020 Slava Aseev <ptrnine@altlinux.org> 1.1.1-alt4
+- Replace deprecated types and functions from SELinux
+
 * Mon Sep 05 2011 Dmitry V. Levin <ldv@altlinux.org> 1.1.1-alt3
 - Fixed regression introduced in the previous release (closes: #26235).
 
