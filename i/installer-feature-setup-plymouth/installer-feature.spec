@@ -1,5 +1,5 @@
 Name: installer-feature-setup-plymouth
-Version: 0.5.6
+Version: 0.5.7
 Release: alt1
 
 Summary: Set up plymouth
@@ -26,6 +26,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Wed Aug 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.5.7-alt1
+- don't try setup plymouth if no plymouth in $destdir
+
 * Thu May 28 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.5.6-alt1
 - supress dependence on install2-init-functions
 
