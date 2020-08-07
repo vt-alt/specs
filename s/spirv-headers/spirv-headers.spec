@@ -1,10 +1,10 @@
 %define build_type RelWithDebInfo
-%define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
-%define git 059a495
+%define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_LIBDIR=%_datadir
+%define git %nil
 
 Name: spirv-headers
-Version: 1.4.1
-Release: alt0.1.g%{git}
+Version: 1.5.3
+Release: alt0.1
 
 Summary: machine-readable files for the SPIR-V Registry
 Group: Development/C++
@@ -15,7 +15,7 @@ BuildArch: noarch
 URL: https://github.com/KhronosGroup/SPIRV-Headers
 Packager: L.A. Kostis <lakostis@altlinux.org>
 
-Source: %name-%version-%git.tar
+Source: %name-%version.tar
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
@@ -29,7 +29,7 @@ This repository contains machine-readable files for the SPIR-V Registry. This in
 * A tool to build the headers from the JSON grammar.
 
 %prep
-%setup -n %name-%version-%git
+%setup -n %name-%version
 
 %build
 %_cmake
@@ -39,9 +39,15 @@ This repository contains machine-readable files for the SPIR-V Registry. This in
 %files
 %doc *.md example
 %dir %_includedir/spirv
+%dir %_datadir/cmake/SPIRV-Headers
 %_includedir/spirv/*
+%_datadir/cmake/SPIRV-Headers/*
 
 %changelog
+* Thu Jun 04 2020 L.A. Kostis <lakostis@altlinux.ru> 1.5.3-alt0.1
+- Updated to 1.5.3.
+- Added cmake files.
+
 * Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 1.4.1-alt0.1.g059a495
 - Updated to GIT 059a495.
 

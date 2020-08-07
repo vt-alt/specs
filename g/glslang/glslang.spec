@@ -2,7 +2,7 @@
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: glslang
-Version: 7.12.3352
+Version: 8.13.3743
 Release: alt1
 
 Summary: OpenGL and OpenGL ES shader front end and validator
@@ -10,7 +10,7 @@ Group: Development/C++
 License: BSD
 
 Url: https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
-Packager: Nazarov Denis <nenderus@altlinux.org>
+Packager: L.A. Kostis <lakostis@altlinux.org>
 
 Source: https://github.com/KhronosGroup/%name/archive/%version/%name-%version.tar.gz
 Patch0: %{name}-alt-soname.patch
@@ -18,7 +18,7 @@ Patch1: %{name}-alt-shared-opt.patch
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: python3-devel libspirv-tools-devel = 2019.4
+BuildRequires: python3-devel libspirv-tools-devel = 2020.3
 
 %description
 glslang is the official reference compiler front end for the OpenGL
@@ -55,10 +55,14 @@ Requires: %name = %EVR
 
 %build
 %_cmake \
-  -DBUILD_SHARED_LIBS:BOOL=TRUE \
-  -DCMAKE_INSTALL_LIBDIR=%_libdir
+  -DCMAKE_INSTALL_LIBDIR=%_lib \
+  -DBUILD_SHARED_LIBS:BOOL=TRUE
 %cmake_build
 %cmakeinstall_std
+pushd %buildroot%_includedir
+rm -rf SPIRV
+ln -s glslang/SPIRV SPIRV
+popd
 
 %files
 %doc README-spirv-remap.txt
@@ -70,10 +74,16 @@ Requires: %name = %EVR
 %files devel
 %doc README.md
 %_libdir/lib*.so
+%_libdir/cmake/*
 %_includedir/%name
 %_includedir/SPIRV
 
 %changelog
+* Thu Jun 04 2020 L.A. Kostis <lakostis@altlinux.ru> 8.13.3743-alt1
+- stable release April 27, 2020 (8.13.3743).
+- update -alt patches.
+- added cmake files.
+
 * Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 7.12.3352-alt1
 - stable release August 20, 2019 (7.12.3352).
 - added strict dependency to spirv-tools.

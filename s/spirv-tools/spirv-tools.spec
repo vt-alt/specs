@@ -4,23 +4,24 @@
 %define _cmake %cmake -GNinja -DCMAKE_BUILD_TYPE:STRING="%build_type" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: spirv-tools
-Version: 2019.4
+Version: 2020.3
 Release: alt1
 
 Summary: API and commands for processing SPIR-V modules
 Group: Development/C++
-License: Apache 2.0
+License: Apache-2.0
 
 Url: https://www.khronos.org/registry/spir-v/
-Packager: Nazarov Denis <nenderus@altlinux.org>
+Packager: L.A. Kostis <lakostis@altlinux.org>
 
 Source: https://github.com/KhronosGroup/SPIRV-Tools/archive/v%version/SPIRV-Tools-%version.tar.gz
 Patch0: %name-soname-alt.patch
+Patch1: %name-alt-cmake-path.patch
 
 BuildRequires(pre): cmake ninja-build
 BuildRequires: gcc-c++
 BuildRequires: python3-devel
-BuildRequires: spirv-headers >= 1.4.1
+BuildRequires: spirv-headers >= 1.5.3
 
 %description
 The package includes an assembler, binary module parser,
@@ -49,11 +50,15 @@ integration into other code bases directly.
 %prep
 %setup -n SPIRV-Tools-%version
 %patch0 -p2
+%patch1 -p2
 
 %build
 %_cmake \
   -DSPIRV_BUILD_COMPRESSION:BOOL=OFF \
   -DSPIRV-Headers_SOURCE_DIR=%_prefix \
+%ifarch %e2k
+  -DSPIRV_WERROR=OFF \
+%endif
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DBUILD_SHARED_LIBS:BOOL=TRUE
 
@@ -64,7 +69,7 @@ ninja \
 
 %install
 pushd BUILD
-cmake -DCMAKE_INSTALL_PREFIX=%buildroot%prefix ../
+cmake -DCMAKE_INSTALL_PREFIX=%buildroot%prefix -DSHARE_INSTALL_PREFIX=%buildroot%_datadir ../
 popd
 ninja -C BUILD install
 
@@ -82,8 +87,17 @@ ninja -C BUILD install
 %_pkgconfigdir/SPIRV-Tools.pc
 %_pkgconfigdir/SPIRV-Tools-shared.pc
 %_includedir/%name
+%_datadir/cmake/SPIRV-Tools*
 
 %changelog
+* Thu Jun 04 2020 L.A. Kostis <lakostis@altlinux.ru> 2020.3-alt1
+- Updated to v2020.3.
+- Added cmake files.
+- Change packager.
+
+* Sat Apr 11 2020 Michael Shigorin <mike@altlinux.org> 2019.4-alt2
+- E2K: disable -Werror (hex_float.h:766 triggers ftbfs with -Werror=conversion)
+
 * Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 2019.4-alt1
 - Updated to 2019.4.
 - Update all -alt patches.

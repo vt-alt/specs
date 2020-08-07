@@ -2,12 +2,12 @@
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: vulkan
-Version: 1.1.121
+Version: 1.2.141
 Release: alt1.1
 Summary: Khronos group Vulkan API SDK
 
 Group: System/Libraries
-License: ASL 2.0
+License: Apache-2.0
 Url: http://www.khronos.org/
 
 # https://github.com/KhronosGroup/Vulkan-Loader
@@ -25,8 +25,9 @@ BuildRequires: libImageMagick-devel libpciaccess-devel libsystemd-devel
 BuildRequires: python3-devel libxcb-devel libXau-devel libXdmcp-devel libX11-devel libXrandr-devel
 BuildRequires: wayland-devel libwayland-server-devel libwayland-client-devel libwayland-cursor-devel libwayland-egl-devel
 # strict requires due internal dependency
-BuildRequires: glslang-devel = 7.12.3352
-BuildRequires: libspirv-tools-devel = 2019.4
+BuildRequires: glslang-devel = 8.13.3743
+BuildRequires: libspirv-tools-devel = 2020.3
+BuildRequires: spirv-headers >= 1.5.3
 
 # textrel due asm optimisation in loader code
 %ifarch i586
@@ -104,6 +105,11 @@ sed -i 's/inttypes.h/cinttypes/' layers/*.{cpp,h}
 popd
 
 %build
+%ifarch %e2k
+# lcc 1.24.11 considers parameter_validation_utils.cpp partially meaningless
+# and vk_mem_alloc.h somewhat pointless and overdeclaring
+%add_optflags -Wno-error=ignored-qualifiers -Wno-error=type-limits -Wno-error=unused-variable
+%endif
 # vulkan-headers first
 pushd %_builddir/vulkan-headers
 %_cmake
@@ -119,7 +125,9 @@ pushd %_builddir/vulkan-"$dir"
            -DSPIRV_TOOLS_OPT_SEARCH_PATH=%_libdir \
 	   -DVULKAN_HEADERS_INSTALL_DIR=%buildroot \
 	   -DGLSLANG_INSTALL_DIR=%_prefix \
-	   -DVulkanHeaders_INCLUDE_DIR=%buildroot%_includedir
+	   -DSPIRV_HEADERS_INSTALL_DIR=%_prefix \
+	   -DVulkanHeaders_INCLUDE_DIR=%buildroot%_includedir \
+	   -DVulkanRegistry_DIR=%buildroot%_datadir
 %cmake_build
 %cmakeinstall_std
 popd
@@ -180,6 +188,14 @@ chrpath -d %buildroot%_bindir/vulkaninfo
 %dir %_datadir/vulkan/implicit_layer.d
 
 %changelog
+* Tue Jul 14 2020 L.A. Kostis <lakostis@altlinux.ru> 1.2.141-alt1.1
+- Applied fix for e2k (by @mike):
+  + E2K: ftbfs workaround (selective -Wno-error).
+
+* Fri Jun 05 2020 L.A. Kostis <lakostis@altlinux.ru> 1.2.141-alt1
+- Updated to v1.2.141.
+- Update buildrequires.
+
 * Thu Aug 29 2019 L.A. Kostis <lakostis@altlinux.ru> 1.1.121-alt1.1
 - Fix python3 requires.
 
