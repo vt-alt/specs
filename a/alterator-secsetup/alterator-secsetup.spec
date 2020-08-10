@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.15
+Version: 1.16
 Release: alt1
 
 Source: %name-%version.tar
@@ -39,6 +39,9 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Mon Aug 03 2020 Ivan Razzhivin <underwit@altlinux.org> 1.16-alt1
+- fix checkbox label
+
 * Mon Jul 13 2020 Slava Aseev <ptrnine@altlinux.org> 1.15-alt1
 - Set 'default' hash prefix instead of 'bcrypt_2y' if gost_yescrypt disabled
 
