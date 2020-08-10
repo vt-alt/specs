@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: guitarix
-Version: 0.40.0
+Version: 0.41.0
 Release: alt1
 Summary: Mono amplifier to JACK
 Group: Sound
@@ -11,9 +11,6 @@ Url: https://sourceforge.net/projects/guitarix
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
 Source1: %name.appdata.xml
-
-# Fix backported from upstream commit 2609ca14
-Patch0: %name-format-string.patch
 
 BuildRequires: gcc-c++
 BuildRequires: faust-devel
@@ -96,7 +93,6 @@ guitarix, but can also be used by any other ladspa host.
 
 %prep
 %setup
-%patch0 -p1
 
 # fix shebang
 find . -type f -print0 |
@@ -168,6 +164,9 @@ install -p -m644 %SOURCE1 %buildroot%_datadir/metainfo
 %_libdir/lv2/*
 
 %changelog
+* Sat Aug 08 2020 Anton Midyukov <antohami@altlinux.org> 0.41.0-alt1
+- new version 0.41.0
+
 * Wed Jun 24 2020 Anton Midyukov <antohami@altlinux.org> 0.40.0-alt1
 - new version 0.40.0
 - switch to Gtk+3
