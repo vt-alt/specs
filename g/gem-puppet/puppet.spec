@@ -1,11 +1,11 @@
 %define        pkgname        puppet
 %define        confdir        ext/redhat
 
-Name:          %pkgname
-Version:       6.15.0
-Release:       alt3
+Name:          gem-%pkgname
+Version:       6.17.0
+Release:       alt1
 Summary:       A network tool for managing many disparate systems
-Group:         System/Servers
+Group:         Development/Ruby
 License:       Apache-2.0
 Url:           https://puppet.com/
 Vcs:           https://github.com/puppetlabs/puppet.git
@@ -25,7 +25,7 @@ BuildRequires: gem(yard)
 
 %gem_replace_version CFPropertyList ~> 3.0
 %add_findreq_skiplist %ruby_gemslibdir/*
-Requires:      shadow-change
+%add_findprov_skiplist %ruby_gemslibdir/**/*
 
 %description
 Puppet lets you centrally manage every important aspect of your
@@ -34,24 +34,33 @@ all the separate elements normally aggregated in different files,
 like users, cron jobs, and hosts, along with obviously discrete
 elements like packages, services, and files.
 
-%package       -n gem-%pkgname
-Summary:       Core library code for %gemname gem
+
+%package       -n %pkgname
+Summary:       Executable for a network tool for managing many disparate systems
+Group:         System/Servers
+BuildArch:     noarch
+
+Requires:      shadow-change
+
+%description   -n %pkgname
+%summary.
+
+
+%package       doc
+Summary:       Documentation files for %gemname gem
+Summary(ru_RU.UTF-8): Файлы сведений для самоцвета %gemname
 Group:         Development/Documentation
 BuildArch:     noarch
 
-%description   -n gem-%pkgname
-%summary.
+%description   doc
+Documentation files for %gemname gem.
 
-%package       -n gem-%pkgname-doc
-Summary:       Documentation for %gemname gem
-Group:         Development/Documentation
-BuildArch:     noarch
+%description   doc -l ru_RU.UTF8
+Файлы сведений для самоцвета %gemname.
 
-%description   -n gem-%pkgname-doc
-%summary.
 
 %prep
-%setup -n %name-%version
+%setup
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -78,11 +87,11 @@ mkdir -p %buildroot%_sysconfdir/puppet/code/environments/production/manifests
 
 # Setup tmpfiles.d config
 mkdir -p %buildroot%_tmpfilesdir
-echo "D /run/%name 0755 _%name %name -" > \
-    %buildroot%_tmpfilesdir/%name.conf
+echo "D /run/%pkgname 0755 _%pkgname %pkgname -" > \
+    %buildroot%_tmpfilesdir/%pkgname.conf
 
 # Create puppet modules directory for puppet module tool
-mkdir -p %buildroot%_sysconfdir/%name/code/modules
+mkdir -p %buildroot%_sysconfdir/%pkgname/code/modules
 touch %buildroot%_sysconfdir/puppet/code/modules/.dir
 
 # Create service directory
@@ -112,22 +121,30 @@ ln -s %ruby_gemlibdir %buildroot%_datadir/%pkgname
 mkdir -p %buildroot%_datadir/puppet-{locale,modules}
 touch %buildroot%_datadir/puppet-{locale,modules}/.dir
 
-%pre
-%_sbindir/groupadd -r -f puppet
-%_sbindir/useradd -r -n -g puppet -d %_cachedir/puppet -s /dev/null -c Puppet _puppet >/dev/null 2>&1 ||:
+%pre           -n %pkgname
+[ ! -d %_sysconfdir/puppetlabs/puppet/ssl ] || (
+   cp -rf %_sysconfdir/puppetlabs/puppet/ssl %_sysconfdir/puppet &&
+   rm -rf %_sysconfdir/puppetlabs/puppet/ssl)
+getent group foreman >/dev/null || %_sbindir/groupadd -r foreman
+getent group puppet >/dev/null || %_sbindir/groupadd -r puppet
+%_sbindir/useradd -r -n -G puppet,foreman -d %_cachedir/puppet -s /dev/null -c Puppet _puppet >/dev/null 2>&1 ||:
 
-%post
+%post          -n %pkgname
 %post_service puppet
 
-%preun
+%preun         -n %pkgname
 %preun_service puppet
 
 %files
+%ruby_gemspec
+%ruby_gemlibdir
+
+%files         -n %pkgname
 %_bindir/puppet
 %_initdir/puppet
 %_unitdir/puppet.service
 %_unitdir/puppetagent.service
-%config(noreplace) %_tmpfilesdir/%name.conf
+%config(noreplace) %_tmpfilesdir/%pkgname.conf
 %dir %_sysconfdir/puppet
 %attr(0771,_puppet,puppet) %dir %_sysconfdir/puppet/ssl
 %attr(0755,_puppet,puppet) %dir %_sysconfdir/puppet/ssl/public_keys
@@ -159,14 +176,25 @@ touch %buildroot%_datadir/puppet-{locale,modules}/.dir
 %doc %_man8dir/*
 %doc %_man5dir/puppet.conf.5*
 
-%files         -n gem-%pkgname
-%ruby_gemspec
-%ruby_gemlibdir
 
-%files         -n gem-%pkgname-doc
+%files         doc
 %ruby_gemdocdir
 
 %changelog
+* Sun Jul 19 2020 Andrey Cherepanov <cas@altlinux.org> 6.17.0-alt1
+- New version.
+
+* Mon Jul 13 2020 Pavel Skrylev <majioa@altlinux.org> 6.16.0-alt1.2
+- ! groups creation proc in post section
+
+* Thu Jul 09 2020 Pavel Skrylev <majioa@altlinux.org> 6.16.0-alt1.1
+- + puppet user to foreman group
+- ! spec tags
+- ! lost keys placement from an elder versions of puppet to newer ones
+
+* Sat May 30 2020 Andrey Cherepanov <cas@altlinux.org> 6.16.0-alt1
+- New version.
+
 * Fri May 22 2020 Andrey Cherepanov <cas@altlinux.org> 6.15.0-alt3
 - Move environments/production/manifests to /etc/puppet/code (ALT #38520).
 
