@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: osec
-Version: 1.2.9
-Release: alt1
+Version: 1.3.0
+Release: alt0.M90P.1
 
 Summary: Lightweight file permission checker
 License: GPL3
@@ -10,6 +10,8 @@ Group: System/Base
 Url: https://github.com/legionus/osec
 
 Source: %name-%version.tar
+Patch0: %name-%version-allchanges.patch
+Patch1: %name-%version-timerunit.patch
 
 Requires(pre): shadow-utils
 
@@ -25,7 +27,7 @@ BuildRequires: flex bison help2man libcdb-devel libcap-devel libattr-devel perl-
 BuildRequires: libgcrypt-devel
 
 %package cronjob
-Summary: General cron framework for osec
+Summary: General scheduling framework for osec
 Provides: %name-cron
 Requires: %name = %EVR
 Requires: %name-reporter
@@ -49,7 +51,8 @@ by traversing filesystem and making human readable reports about changes
 and found files/directories with suspicious ownership or permissions.
 
 %description cronjob
-This package contains a general framework for osec pipelines.
+This package contains a general cron framework for osec and
+a systemd timerunit.
 
 %description mailreport
 This package contains a set of reporters to use with osec:
@@ -60,6 +63,8 @@ add name of rpm packages for files in report.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 %autoreconf
@@ -67,7 +72,7 @@ add name of rpm packages for files in report.
 %make_build
 
 %install
-%makeinstall
+%makeinstall unitdir=%buildroot%_unitdir
 
 cd %buildroot
 #cron job file
@@ -106,6 +111,7 @@ rm -f %osec_statedir/osec.db.*
 %attr(770,root,%osec_group) %osec_statedir
 %defattr(600,root,root,700)
 %config(noreplace) /etc/osec
+%config(noreplace) %_unitdir/osec.*
 
 %files mailreport
 %_bindir/osec_mailer
@@ -113,6 +119,21 @@ rm -f %osec_statedir/osec.db.*
 %_bindir/osec_rpm_reporter
 
 %changelog
+* Wed Aug 05 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.0-alt0.M90P.1
+- Build version 1.3.0-alt1 for the p9 branch.
+- Summarize more types of changes in the report (patch).
+- Fixed extra space in the reported string (patch).
+- Added systemd timer unit for OSEC (patch).
+
+* Mon Jun 15 2020 Alexey Gladkov <legion@altlinux.ru> 1.3.0-alt1
+- New version (1.3.0);
+- Database creation is more error tolerant (ALT#38408, ALT#33207):
+   - if osec failed to get the owner and user group by id, a numeric value will be used (ALT#33018).
+   - if osec failed to read the file to calculate the checksum, an empty value will be used.
+   - if osec failed to read symlink an empty value will be used.
+- The mtime field includes nanoseconds.
+- The basepath field has been added to the database.
+
 * Tue May 14 2019 Alexey Gladkov <legion@altlinux.ru> 1.2.9-alt1
 - New version (1.2.9);
 
