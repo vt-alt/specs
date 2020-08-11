@@ -1,7 +1,7 @@
 %define allowed_arch armh aarch64 %ix86 x86_64 mips mipsel mips64 mips64el riscv32 riscv64 ppc64
 
 Name: u-boot-qemu
-Version: 2020.04
+Version: 2020.07
 Release: alt1
 
 Summary: Das U-Boot
@@ -71,6 +71,9 @@ install -pm0644 -D u-boot.bin %buildroot%_datadir/u-boot/%qemu/u-boot.bin
 %_datadir/u-boot/*
 
 %changelog
+* Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
+- 2020.07 released
+
 * Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
 - 2020.04 released
 

@@ -1,5 +1,5 @@
 Name: u-boot-rockchip
-Version: 2020.04
+Version: 2020.07
 Release: alt1
 
 Summary: Das U-Boot
@@ -10,7 +10,7 @@ ExclusiveArch: aarch64
 
 Source: %name-%version-%release.tar
 
-BuildRequires: atf-rockchip >= 2.0
+BuildRequires: atf-rockchip >= 2.3
 BuildRequires: bc ccache dtc >= 1.4 flex
 BuildRequires: python3-dev swig
 BuildRequires: python3(elftools.elf.elffile)
@@ -23,7 +23,7 @@ This package supports various Rockchip RK3399 based boards.
 
 %prep
 %setup
-fgrep -lr CONFIG_ROCKCHIP_RK3399 configs |xargs sed -i \
+egrep -lr 'CONFIG_ROCKCHIP_(PX30|RK3328|RK3399)' configs |xargs sed -i \
 	-e '/^CONFIG_DEFAULT_FDT_FILE/ s,rockchip/,,' \
 	-e '/^CONFIG_BAUDRATE/ s,1500000,115200,'
 sed -E '/^CONFIG_DEFAULT_FDT_FILE=/ s,=.+$,="rk3399-sapphire-excavator.dtb",' \
@@ -31,24 +31,22 @@ sed -E '/^CONFIG_DEFAULT_FDT_FILE=/ s,=.+$,="rk3399-sapphire-excavator.dtb",' \
 
 %build
 export PYTHON=python3
-export BL31=%_datadir/atf/rk3399/bl31.elf
 
 buildit()
 {
   mkdir build
+  BL31=%_datadir/atf/$1/bl31.elf \
   %make_build O=build ${board}_defconfig all
   install -pm0644 -D build/u-boot.itb out/${board}/u-boot.itb
-  grep -q ^CONFIG_TPL= build/.config && {
-    build/tools/mkimage -n rk3399 -T rksd -d build/tpl/u-boot-tpl-dtb.bin out/${board}/idbspl.img
-    cat build/spl/u-boot-spl-dtb.bin >> out/${board}/idbspl.img
-  } || {
-    build/tools/mkimage -n rk3399 -T rksd -d build/spl/u-boot-spl.bin out/${board}/idbspl.img
-  }
+  install -pm0644 build/idbloader.img out/${board}/
+  install -pm0644 build/u-boot-rockchip.bin out/${board}/
   rm -rf build
 }
 
-boards=$(fgrep -lr CONFIG_ROCKCHIP_RK3399 configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
-for board in $boards; do buildit; done
+for soc in PX30 RK3328 RK3399; do
+boards=$(fgrep -lr CONFIG_ROCKCHIP_${soc} configs |sed 's,^configs/\(.\+\)_defconfig,\1,')
+for board in $boards; do buildit ${soc,,[A-Z]}; done
+done
 
 %install
 mkdir -p %buildroot%_datadir/u-boot
@@ -56,10 +54,13 @@ cd out
 find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 
 %files
-%doc README doc/README.rockchip
+%doc README doc/README.rockchip doc/board/rockchip
 %_datadir/u-boot/*
 
 %changelog
+* Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
+- 2020.07 released
+
 * Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
 - 2020.04 released
 

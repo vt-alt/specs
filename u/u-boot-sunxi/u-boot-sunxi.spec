@@ -1,5 +1,5 @@
 Name: u-boot-sunxi
-Version: 2020.04
+Version: 2020.07
 Release: alt1
 
 Summary: Das U-Boot
@@ -64,6 +64,9 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
+- 2020.07 released
+
 * Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
 - 2020.04 released
 

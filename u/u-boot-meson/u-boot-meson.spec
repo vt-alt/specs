@@ -1,5 +1,5 @@
 Name: u-boot-meson
-Version: 2020.04
+Version: 2020.07
 Release: alt1
 
 Summary: Das U-Boot
@@ -36,14 +36,13 @@ cd out
 find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 
 %files
-%doc README
-%doc board/amlogic/p200/README.*
-%doc board/amlogic/p212/README.*
-%doc board/amlogic/q200/README.*
-%doc board/amlogic/w400/README.*
+%doc README doc/board/amlogic/*
 %_datadir/u-boot/*
 
 %changelog
+* Sun Jul 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
+- 2020.07 released
+
 * Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
 - 2020.04 released
 

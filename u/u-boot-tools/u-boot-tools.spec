@@ -1,9 +1,9 @@
 Name: u-boot-tools
-Version: 2019.07
+Version: 2020.07
 Release: alt1
 
 Summary: Das U-Boot
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 ExclusiveArch: armh aarch64 %ix86 x86_64
@@ -13,7 +13,7 @@ Obsoletes: uboot-tools
 
 Source: %name-%version-%release.tar
 
-BuildRequires: flex libssl-devel libSDL-devel
+BuildRequires: flex libssl-devel
 
 %def_without sandbox
 
@@ -27,9 +27,7 @@ This package contains sandboxed U-Boot and tools.
 %setup
 
 %build
-echo CONFIG_HOST_32BIT=y >> configs/sandbox_defconfig
-echo CONFIG_TOOLS_DEBUG=y >> configs/sandbox_defconfig 
-%make_build sandbox_defconfig %{?_with_sandbox:all}%{!?_with_sandbox:tools}
+%make_build sandbox_defconfig %{?_with_sandbox:all NO_SDL=1}%{!?_with_sandbox:tools}
 
 %install
 mkdir -p %buildroot%_bindir
@@ -39,6 +37,18 @@ install -pm0755 tools/{dumpimage,fdtgrep,gen_eth_addr,mkimage,mkenvimage} %{?_wi
 %_bindir/*
 
 %changelog
+* Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
+- 2020.07 released
+
+* Tue Apr 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.04-alt1
+- 2020.04 released
+
+* Thu Jan 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.01-alt1
+- 2020.01 released
+
+* Tue Oct 08 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.10-alt1
+- 2019.10 released
+
 * Fri Jul 19 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.07-alt1
 - 2019.07 released
 
