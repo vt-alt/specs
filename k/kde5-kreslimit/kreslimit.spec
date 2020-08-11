@@ -1,6 +1,6 @@
 %define rname kreslimit
 Name: kde5-kreslimit
-Version: 1.1.0
+Version: 1.2.0
 Release: alt1
 
 %K5init altplace
@@ -14,7 +14,7 @@ Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: boost-devel extra-cmake-modules gcc-c++
-BuildRequires: kf5-ki18n-devel kf5-kcmutils-devel
+BuildRequires: kf5-ki18n-devel kf5-kcmutils-devel kf5-kio-devel
 BuildRequires: kf5-kconfigwidgets-devel kf5-kservice-devel
 
 Provides: kreslimit = %EVR
@@ -44,6 +44,10 @@ Resource limit for launched applications
 
 
 %changelog
+* Fri Aug 07 2020 Ivan Razzhivin <underwit@altlinux.org> 1.2.0-alt1
+- select application from list
+- add tooltip
+
 * Thu Jun 25 2020 Ivan Razzhivin <underwit@altlinux.org> 1.1.0-alt1
 - update translation
 - remove unit size column
