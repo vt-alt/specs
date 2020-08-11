@@ -1,5 +1,5 @@
-%define rust_ver 1.40.0
-%define rust_rel alt1
+%define rust_ver 1.41.1
+%define rust_rel alt0.1.p9
 %define cargo_ver %rust_ver
 %define cargo_rel %rust_rel
 
@@ -14,15 +14,21 @@ License: Apache 2.0, MIT
 URL: http://www.rust-lang.org/
 
 Source: https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
+Source2: compiler-builtins-0.1.25.tar.gz
 
 Patch1: rust-gdb.patch
+Patch2: rust-1.41.0-compiler_builtins.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
 
 %def_without  bootstrap
 %def_with  bundled_llvm
+%ifarch armh
+%define abisuff eabihf
+%else
 %define abisuff %nil
+%endif
 
 %if_without bundled_llvm
 
@@ -38,7 +44,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.39.0
+%define r_ver 1.40.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -56,7 +62,6 @@ Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux
 %endif
 %ifarch armh
 %define r_src %SOURCE5
-%define abisuff eabihf
 %endif
 %ifarch ppc64le
 %define r_src %SOURCE6
@@ -83,6 +88,8 @@ Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux
 %ifarch ppc64le
 %define r_arch powerpc64le
 %endif
+
+%global rustflags -Clink-arg=-Wl,-z,relro,-z,now
 
 # Since 1.12.0: striping debuginfo damages *.so files
 %add_debuginfo_skiplist %_libdir %_bindir
@@ -192,6 +199,10 @@ data to provide information about the Rust standard library.
 %setup -n %{name}c-%rust_ver-src
 
 %patch1 -p2
+%patch2 -p0
+tar xf %SOURCE2
+rm -rf vendor/compiler_builtins
+mv compiler_builtins vendor/
 
 %if_with bootstrap
 tar xf %r_src
@@ -211,6 +222,8 @@ sed -i 's/Path::new("lib")/Path::new("%_lib")/' src/bootstrap/builder.rs
 %endif
 
 %build
+export RUST_BACKTRACE=1
+export RUSTFLAGS="%rustflags"
 cat > config.toml <<EOF
 [build]
 cargo = "%cargo"
@@ -227,6 +240,8 @@ libdir = "%_lib"
 channel = "stable"
 codegen-units = 1
 codegen-tests = false
+backtrace = true
+jemalloc = false
 rpath = false
 debug = false
 deny-warnings = false
@@ -235,24 +250,21 @@ EOF
 %if_without bundled_llvm
 cat >> config.toml <<EOF
 [target.%r_arch-unknown-linux-gnu%abisuff]
-llvm-config = "./llvm-config-filtered"
+llvm-config = "/usr/bin/llvm-config"
 EOF
-
-cat > llvm-config-filtered <<EOF
-#!/bin/sh
-/usr/bin/llvm-config \$@ | sed -E 's/-Wcovered-switch-default|-Wstring-conversion|-fcolor-diagnostics|-Werror=unguarded-availability-new//g'
-EOF
-
-chmod +x llvm-config-filtered
-
-export LLVM_LINK_SHARED=1
 %endif
+export LIBGIT2_SYS_USE_PKG_CONFIG=1
+export LIBSSH2_SYS_USE_PKG_CONFIG=1
+export PKG_CONFIG_ALLOW_CROSS=1
 
 python2.7 x.py build
 python2.7 x.py doc
 
 %install
+export RUSTFLAGS="%rustflags"
+
 DESTDIR=%buildroot python2.7 x.py install
+rm -f -- %buildroot/%_libdir/lib*.so.old
 
 %check
 #python2.7 x.py test --no-fail-fast || :
@@ -267,7 +279,7 @@ rm -rf %rustdir
 %doc COPYRIGHT LICENSE-APACHE LICENSE-MIT README.md
 %_bindir/rustc
 %_bindir/rustdoc
-%_libdir/lib*
+%_libdir/lib*.so
 %dir %_libdir/rustlib
 %dir %_libdir/rustlib/etc
 %dir %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff
@@ -325,6 +337,13 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Fri Jul 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.41.1-alt0.1.p9
+- Backport to p9 branch with fix packaging on armh.
+
+* Wed Apr 08 2020 Vladimir Lettiev <crux@altlinux.org> 1:1.41.1-alt1
+- 1.41.1
+- Fixed i586 build
+
 * Sun Dec 22 2019 Vladimir Lettiev <crux@altlinux.org> 1:1.40.0-alt1
 - 1.40.0
 
