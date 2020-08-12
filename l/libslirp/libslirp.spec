@@ -1,6 +1,6 @@
 
 Name: libslirp
-Version: 4.3.0
+Version: 4.3.1
 Release: alt1
 Summary: A general purpose TCP-IP emulator
 Group: System/Libraries
@@ -45,6 +45,9 @@ echo "%version" > .tarball-version
 %_pkgconfigdir/slirp.pc
 
 %changelog
+* Fri Aug 07 2020 Alexey Shabalin <shaba@altlinux.org> 4.3.1-alt1
+- new version 4.3.1 (Fixes: CVE-2020-10756)
+
 * Fri May 08 2020 Alexey Shabalin <shaba@altlinux.org> 4.3.0-alt1
 - new version 4.3.0 (Fixes: CVE-2020-1983)
 
