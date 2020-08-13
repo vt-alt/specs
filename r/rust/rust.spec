@@ -1,5 +1,5 @@
-%define rust_ver 1.41.1
-%define rust_rel alt0.1.p9
+%define rust_ver 1.42.0
+%define rust_rel alt1.1.p9
 %define cargo_ver %rust_ver
 %define cargo_rel %rust_rel
 
@@ -14,10 +14,8 @@ License: Apache 2.0, MIT
 URL: http://www.rust-lang.org/
 
 Source: https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
-Source2: compiler-builtins-0.1.25.tar.gz
 
 Patch1: rust-gdb.patch
-Patch2: rust-1.41.0-compiler_builtins.patch
 
 BuildPreReq: /proc
 BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
@@ -44,7 +42,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.40.0
+%define r_ver 1.41.1
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -199,10 +197,6 @@ data to provide information about the Rust standard library.
 %setup -n %{name}c-%rust_ver-src
 
 %patch1 -p2
-%patch2 -p0
-tar xf %SOURCE2
-rm -rf vendor/compiler_builtins
-mv compiler_builtins vendor/
 
 %if_with bootstrap
 tar xf %r_src
@@ -337,8 +331,17 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Mon Aug 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.42.0-alt1.1.p9
+- Backport new version to p9 branch.
+
 * Fri Jul 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.41.1-alt0.1.p9
 - Backport to p9 branch with fix packaging on armh.
+
+* Fri Jun 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:1.42.0-alt2
+- fixed packaging on armh
+
+* Thu Apr 09 2020 Vladimir Lettiev <crux@altlinux.org> 1:1.42.0-alt1
+- 1.42.0 (Closes: #38338)
 
 * Wed Apr 08 2020 Vladimir Lettiev <crux@altlinux.org> 1:1.41.1-alt1
 - 1.41.1
