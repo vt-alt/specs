@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.7
+Version: 1.0.9
 Release: alt1
 Summary: Library for ejabberd for PAM authentication support
 Group: Development/Erlang
@@ -43,6 +43,9 @@ An Erlang library for ejabberd that helps with PAM authentication.
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.9-alt1
+- Updated to upstream version 1.0.9.
+
 * Tue Mar 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.7-alt1
 - Updated to upstream version 1.0.7.
 

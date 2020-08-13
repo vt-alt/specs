@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.7
+Version: 1.0.10
 Release: alt1
 Summary: Index tree for MQTT topic filters
 Group: Development/Erlang
@@ -14,6 +14,8 @@ Url: https://github.com/processone/mqtree
 
 # https://github.com/processone/mqtree.git
 Source: %name-%version.tar
+
+Patch1: %name-alt-remove-unneeded-deps.patch
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
@@ -26,6 +28,7 @@ topic filters for efficient matching.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %rebar_compile
@@ -42,6 +45,9 @@ topic filters for efficient matching.
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.10-alt1
+- Updated to upstream version 1.0.10.
+
 * Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.7-alt1
 - Updated to upstream version 1.0.7.
 

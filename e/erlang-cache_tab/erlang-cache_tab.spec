@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.22
+Version: 1.0.25
 Release: alt1
 Summary: In-memory cache Erlang / Elixir library
 Group: Development/Erlang
@@ -14,6 +14,9 @@ Url: https://github.com/processone/cache_tab
 
 # https://github.com/processone/cache_tab.git
 Source: %name-%version.tar
+
+# Upstream check didn't work for some reason, just revert it
+Patch1: %name-alt-erlang-compat.patch
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
@@ -25,6 +28,7 @@ In-memory cache Erlang / Elixir library.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %rebar_compile
@@ -41,6 +45,9 @@ In-memory cache Erlang / Elixir library.
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.25-alt1
+- Updated to upstream version 1.0.25.
+
 * Mon Mar 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.22-alt1
 - Updated to upstream version 1.0.22.
 

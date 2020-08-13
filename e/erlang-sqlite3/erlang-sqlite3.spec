@@ -5,8 +5,8 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.1.6
-Release: alt4
+Version: 1.1.8
+Release: alt1
 Summary: Sqlite gen_server port for Erlang. Creates, reads and writes to sqlite database.
 Group: Development/Erlang
 License: ErlPL-1.1
@@ -42,6 +42,9 @@ rm -rf sqlite3_amalgamation
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.8-alt1
+- Updated to upstream version 1.1.8.
+
 * Tue Mar 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.6-alt4
 - Fixed build with rebar2.
 
