@@ -6,7 +6,7 @@
 %define _pseudouser_group    _teamd
 
 Name: libteam
-Version: 1.30
+Version: 1.31
 Release: alt1
 
 Summary: Library for controlling team network device
@@ -186,6 +186,9 @@ install -pm 0644 team/capi.py %buildroot%python3_sitelibdir/team/
 %endif
 
 %changelog
+* Mon Aug 03 2020 Mikhail Efremov <sem@altlinux.org> 1.31-alt1
+- 1.30 -> 1.31.
+
 * Thu Jan 09 2020 Mikhail Efremov <sem@altlinux.org> 1.30-alt1
 - Use Vcs tag.
 - Don't use rpm-build-licenses.
