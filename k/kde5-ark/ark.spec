@@ -5,7 +5,7 @@
 
 Name: kde5-%rname
 Version: 19.12.3
-Release: alt1
+Release: alt2
 %K5init altplace
 
 Group: Archiving/Compression
@@ -16,6 +16,7 @@ License: GPLv2+ / LGPLv2+
 Requires: unrar p7zip unzip zip
 
 Source: %rname-%version.tar
+Patch0: CVE-2020-16116.patch
 Patch1: alt-clizip-priority.patch
 
 # Automatically added by buildreq on Wed Aug 05 2015 (-bi)
@@ -60,6 +61,7 @@ KF5 library
 
 %prep
 %setup -n %rname-%version
+%patch0 -p1
 %patch1 -p1
 
 %build
@@ -103,6 +105,9 @@ mv %buildroot/%_K5xdgmime/kerfuffle{,5}.xml
 %_K5lib/libkerfuffle.so.*
 
 %changelog
+* Wed Aug 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt2
+- security (fixes: CVE-2020-16116)
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
