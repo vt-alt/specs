@@ -18,17 +18,15 @@
 
 
 Name: dpdk
-Version: 18.11.8
+Version: 18.11.9
 Release: alt1
 Url: http://dpdk.org
-Packager: Lenar Shakirov <snejok@altlinux.ru>
-
+License: BSD-3-Clause AND GPL-2.0-only AND LGPL-2.1-only
 Source: %name-%version.tar
 
 Patch0: dpdk-16.11-move-to-libdir.patch
 Patch1: dpdk-18.02-aarch64-link-fix.patch
-Patch3: dpdk-alt-pci.ids.patch
-Patch4: dpdk-18.11-fix-redefinition.patch
+Patch4: dpdk-18.11.9-fix-redefinition.patch
 Patch5: dpdk-18.08-fix-build-on-ppc64le.patch
 
 # fedora patches
@@ -38,12 +36,7 @@ Summary: Set of libraries and drivers for fast packet processing
 Group: System/Libraries
 
 Provides: lib%{name} = %EVR
-#
-# Note that, while this is dual licensed, all code that is included with this
-# Pakcage are BSD licensed. The only files that aren't licensed via BSD is the
-# kni kernel module which is dual LGPLv2/BSD, and thats not built for fedora.
-#
-License: BSD and LGPLv2 and GPLv2
+
 
 #
 # The DPDK is designed to optimize througput of network traffic using, among
@@ -140,8 +133,7 @@ as L2 and L3 forwarding.
 %setup
 %patch0 -p2
 %patch1 -p2
-%patch3 -p2
-#%patch4 -p2
+%patch4 -p1
 %patch5 -p2
 
 %patch102 -p1
@@ -322,6 +314,9 @@ sed -i -e 's:-%machine_tmpl-:-%machine-:g' %buildroot/%_sysconfdir/profile.d/dpd
 %endif
 
 %changelog
+* Thu Aug 13 2020 Alexey Shabalin <shaba@altlinux.org> 18.11.9-alt1
+- Update to LTS release 18.11.9
+
 * Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 18.11.8-alt1
 - Update to LTS release 18.11.8 (Fixes: CVE-2020-10722, CVE-2020-10723, CVE-2020-10724)
 
