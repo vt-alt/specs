@@ -1,6 +1,6 @@
 %define dotnetmajor 3.1
-%define corerelease 3.1.0
-%define sdkrelease 3.1.100
+%define corerelease 3.1.6
+%define sdkrelease 3.1.106
 %define _dotnet_archlist aarch64 x86_64
 %ifarch x86_64
 %define _dotnet_arch x64
@@ -14,8 +14,8 @@
 %define _dotnet_rid linux-%_dotnet_arch
 
 Name: dotnet-common
-Version: 3.1.0
-Release: alt2
+Version: 3.1.6
+Release: alt1
 
 Summary: Common dir and files for the .NET Core runtime and libraries
 
@@ -103,6 +103,9 @@ install -D -m644 macros %buildroot%_rpmmacrosdir/dotnet
 %_rpmmacrosdir/dotnet
 
 %changelog
+* Mon Aug 03 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- .NET Core 3.1.6 release
+
 * Mon Dec 30 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt2
 - make rpm-macros-dotnet available on all arches
 

@@ -5,7 +5,7 @@
 %define pre %nil
 
 Name: dotnet-corefx
-Version: 3.1.0
+Version: 3.1.6
 Release: alt1
 
 Summary: .NET Core foundational libraries, called CoreFX
@@ -139,6 +139,9 @@ chmod 0755 %buildroot%_rpmlibdir/%name.filetrigger
 %_dotnet_shared/System.Security.Cryptography.Native.OpenSsl.a
 
 %changelog
+* Tue Aug 04 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- new version 3.1.6 (with rpmrb script)
+
 * Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - new version (3.1.0) with rpmgs script
 

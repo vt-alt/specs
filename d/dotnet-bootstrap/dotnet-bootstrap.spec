@@ -1,10 +1,10 @@
 %define _unpackaged_files_terminate_build 1
 
-%define sdkversion 3.1.100
-%define coreversion 3.1.0
+%define sdkversion 3.1.106
+%define coreversion 3.1.6
 
 Name: dotnet-bootstrap
-Version: 3.1.0
+Version: 3.1.6
 Release: alt1
 
 Summary: .NET Core SDK binaries
@@ -18,9 +18,10 @@ Group: Development/Other
 #%define downloadversion 2.1.403
 # from https://www.microsoft.com/net/download/dotnet-core/3.1
 
-# Source-url: https://download.visualstudio.microsoft.com/download/pr/d731f991-8e68-4c7c-8ea0-fad5605b077a/49497b5420eecbd905158d86d738af64/dotnet-sdk-3.1.100-linux-x64.tar.gz
+# Source-url: https://download.visualstudio.microsoft.com/download/pr/03bf81cd-0275-4998-8a24-dc359fc5fed3/7450f821f9cd33c205378e1a0a5b2cb2/dotnet-sdk-3.1.106-linux-x64.tar.gz
 Source: %name-%version.tar
-# Source2-url: https://download.visualstudio.microsoft.com/download/pr/5a4c8f96-1c73-401c-a6de-8e100403188a/0ce6ab39747e2508366d498f9c0a0669/dotnet-sdk-3.1.100-linux-arm64.tar.gz
+
+# Source2-url: https://download.visualstudio.microsoft.com/download/pr/026fec12-345b-4c61-8731-1c0184594fc3/1738a6c43d2739dc6c2a9ec5caf0c41f/dotnet-sdk-3.1.106-linux-arm64.tar.gz
 Source2: %name-aarch64-%version.tar
 
 ExclusiveArch: x86_64 aarch64
@@ -104,10 +105,10 @@ strip \
 %files
 %dir %_libdir/%name/
 %dir %_libdir/%name/templates/
-%_libdir/%name/templates/%coreversion/
+%_libdir/%name/templates/3.1.7/
 %dir %_libdir/%name/packs/
 %dir %_libdir/%name/packs/Microsoft.AspNetCore.App.Ref
-%_libdir/%name/packs/Microsoft.AspNetCore.App.Ref/%coreversion/
+%_libdir/%name/packs/Microsoft.AspNetCore.App.Ref/3.1.3/
 %ifarch aarch64
 %dir %_libdir/%name/packs/Microsoft.NETCore.App.Host.linux-arm64/
 %_libdir/%name/packs/Microsoft.NETCore.App.Host.linux-arm64/%coreversion/
@@ -116,7 +117,7 @@ strip \
 %_libdir/%name/packs/Microsoft.NETCore.App.Host.linux-x64/%coreversion/
 %endif
 %dir %_libdir/%name/packs/Microsoft.NETCore.App.Ref/
-%_libdir/%name/packs/Microsoft.NETCore.App.Ref/%coreversion/
+%_libdir/%name/packs/Microsoft.NETCore.App.Ref/3.1.0/
 %dir %_libdir/%name/packs/NETStandard.Library.Ref/
 %_libdir/%name/packs/NETStandard.Library.Ref/2.1.0/
 %dir %_libdir/%name/host/
@@ -138,6 +139,12 @@ strip \
 %_libdir/%name/dotnet
 
 %changelog
+* Sun Aug 02 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- new version 3.1.6 (with rpmrb script) (ALT bug 38744)
+- .NET Core 3.1.6 - July 14, 2020
+- CVE-2020-1108: .NET Core Denial of Service Vulnerability
+- CVE-2020-1147: NET Core Remote Code Execution Vulnerability
+
 * Mon Dec 16 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - new version (3.1.0) with rpmgs script
 - .NET Core 3.1.0 - December 3, 2019

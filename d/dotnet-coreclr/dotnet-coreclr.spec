@@ -7,7 +7,7 @@
 %define pre %nil
 
 Name: dotnet-coreclr
-Version: 3.1.0
+Version: 3.1.6
 Release: alt1
 
 Summary: .NET Core runtime, called CoreCLR, and the base library, called mscorlib
@@ -72,6 +72,9 @@ cross platform applications that work on Linux, Mac and Windows.
 
 # TODO: CMake Error: CMake can not determine linker language for target: System.Globalization.Native
 #__subst "s|__isMSBuildOnNETCoreSupported=0|__isMSBuildOnNETCoreSupported=1|" build.sh
+
+# c8 hack
+%__subst "s|VERSION 3....|VERSION 3.4.3|" CMakeLists.txt tests/CMakeLists.txt
 
 %build
 export DotNetCoreSdkDir=%bootstrapdir
@@ -146,6 +149,15 @@ chmod 0755 %buildroot%_rpmlibdir/%name.filetrigger
 %_rpmlibdir/%name.filetrigger
 
 %changelog
+* Mon Aug 03 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- new version 3.1.6 (with rpmrb script) (ALT bug 38744)
+- .NET Core 3.1.6 - July 14, 2020
+- CVE-2020-1108: .NET Core Denial of Service Vulnerability
+- CVE-2020-1147: NET Core Remote Code Execution Vulnerability
+
+* Sun Feb 16 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt2
+- downgrade required cmake version to 3.4.3
+
 * Mon Dec 16 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - new version (3.1.0) with rpmgs script
 

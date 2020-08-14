@@ -1,5 +1,6 @@
 %define _unpackaged_files_terminate_build 1
 
+%define _dotnet_asppackrelease 3.1.3
 %define _dotnet_aspnetcore_app %_dotnetdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/
 %define _dotnet_aspnetcore_all %_dotnetdir/shared/Microsoft.AspNetCore.All/%_dotnet_corerelease/
 
@@ -8,7 +9,7 @@
 %define pre %nil
 
 Name: dotnet-aspnetcore
-Version: 3.1.0
+Version: 3.1.6
 Release: alt1
 
 Summary: ASP.NET Core is a cross-platform .NET framework for building modern cloud-based web application
@@ -77,8 +78,8 @@ cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/*.dll %
 cp -a %bootstrapdir/shared/Microsoft.AspNetCore.App/%_dotnet_corerelease/*.json %buildroot%_dotnet_aspnetcore_app
 
 # TODO: subpackage targeting-packs
-mkdir -p %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
-cp -a %bootstrapdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/* %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
+mkdir -p %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/
+cp -a %bootstrapdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/* %buildroot%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/
 
 %endif
 
@@ -100,9 +101,12 @@ cp -a %bootstrapdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/* %b
 
 %dir %_dotnetdir/packs/
 %dir %_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/
-%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_corerelease/
+%_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/
 
 %changelog
+* Sat Aug 08 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- ASP.NET Core 3.1.6
+
 * Tue Dec 17 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt1
 - ASP.NET Core 3.1.0
 

@@ -5,8 +5,8 @@
 %define pre %nil
 
 Name: dotnet
-Version: 3.1.0
-Release: alt2
+Version: 3.1.6
+Release: alt1
 
 Summary: Installer packages for the .NET Core runtime and libraries
 
@@ -120,6 +120,9 @@ ln -sr %buildroot%_dotnetdir/dotnet %buildroot%_bindir/dotnet
 %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/nethost.h
 
 %changelog
+* Mon Aug 03 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- new version 3.1.6 (with rpmrb script)
+
 * Wed Jan 15 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.0-alt2
 - fix global runtime location for framework-depended applications
 

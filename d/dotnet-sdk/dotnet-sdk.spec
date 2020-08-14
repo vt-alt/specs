@@ -1,10 +1,16 @@
 %define _unpackaged_files_terminate_build 1
 
+# CHECKME
+%define _dotnet_templatesrelease 3.1.7
+
+# FIXME
+%define _dotnet_corerelease 3.1.6
+
 # TODO: build from sources
 %define major 3.1
 Name: dotnet-sdk
-Version: %major.100
-Release: alt5
+Version: %major.106
+Release: alt1
 
 Summary: SDK for the .NET Core runtime and libraries
 
@@ -19,15 +25,15 @@ BuildRequires: rpm-build-intro
 
 %define _dotnet_sdkrelease %version
 
-BuildRequires(pre): rpm-macros-dotnet = %major.0
+BuildRequires(pre): rpm-macros-dotnet = %major.6
 
 BuildRequires: dotnet-bootstrap-sdk = %_dotnet_sdkrelease
-BuildRequires: dotnet
+BuildRequires: dotnet >= %_dotnet_corerelease
 
 # SDK unusable without dotnet CLI
-Requires: dotnet = %major.0
+Requires: dotnet = %_dotnet_corerelease
 
-Requires: dotnet-common = %major.0
+Requires: dotnet-common = %_dotnet_corerelease
 
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
@@ -53,8 +59,8 @@ mkdir -p %buildroot%_dotnetdir/packs/
 cp -a %_libdir/dotnet-bootstrap/packs/NETStandard.Library.Ref/ %buildroot%_dotnetdir/packs/
 cp -a %_libdir/dotnet-bootstrap/packs/Microsoft.NETCore.App.Ref/ %buildroot%_dotnetdir/packs/
 
-mkdir -p %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
-cp -a %_libdir/dotnet-bootstrap/templates/%_dotnet_corerelease/* %buildroot%_dotnetdir/templates/%_dotnet_corerelease/
+mkdir -p %buildroot%_dotnetdir/templates/%_dotnet_templatesrelease/
+cp -a %_libdir/dotnet-bootstrap/templates/%_dotnet_templatesrelease/* %buildroot%_dotnetdir/templates/%_dotnet_templatesrelease/
 
 # apphost used as executable, f.i. dotnet tool install --global paket will install it in $HOME/.dotnet/tools as paket
 rm -f %buildroot%_dotnet_sdk/AppHostTemplate/apphost
@@ -79,14 +85,17 @@ ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet
 
 # TODO: standalone package
 %dir %_dotnetdir/templates/
-%dir %_dotnetdir/templates/%_dotnet_corerelease/
-%_dotnetdir/templates/%_dotnet_corerelease/*.nupkg
+%dir %_dotnetdir/templates/%_dotnet_templatesrelease/
+%_dotnetdir/templates/%_dotnet_templatesrelease/*.nupkg
 
 %_libdir/dotnet/sdk/NuGetFallbackFolder/
 %dir %_cachedir/dotnet/
 %attr(2775,root,dotnet) %dir %_cachedir/dotnet/NuGetFallbackFolder/
 
 %changelog
+* Wed Aug 05 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.106-alt1
+- .NET Core SDK 3.1.106 Release
+
 * Thu Feb 20 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.100-alt5
 - revert apphost copying
 
