@@ -2,7 +2,7 @@
 %def_disable gstreamer
 
 Name: tumbler
-Version: 0.2.8
+Version: 0.2.9
 Release: alt1
 
 Summary: A thumbnail D-Bus service
@@ -14,6 +14,7 @@ Packager: Xfce Team <xfce@packages.altlinux.org>
 
 Requires: lib%name = %version-%release
 
+Vcs: https://gitlab.xfce.org/xfce/tumbler.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
@@ -86,6 +87,10 @@ Development files and headers for %name
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed Aug 12 2020 Mikhail Efremov <sem@altlinux.org> 0.2.9-alt1
+- Added Vcs tag.
+- Updated to 0.2.9.
+
 * Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 0.2.8-alt1
 - Don't use rpm-build-licenses.
 - Updated to 0.2.8.
