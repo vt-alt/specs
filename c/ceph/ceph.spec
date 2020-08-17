@@ -42,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.10
+Version: 14.2.11
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -450,6 +450,8 @@ Summary: Ceph Object Storage Daemon
 Group: System/Base
 Requires: ceph-base = %EVR
 Requires: sudo
+Requires: /usr/sbin/smartctl
+Requires: /usr/sbin/nvme
 Requires: python3-module-ceph_volume = %EVR
 %description osd
 ceph-osd is the object storage daemon for the Ceph distributed file
@@ -1291,11 +1293,15 @@ fi
 %_mandir/man8/rbd-nbd.8*
 
 %files radosgw
+%_bindir/ceph-diff-sorted
 %_bindir/radosgw
 %_bindir/radosgw-es
 %_bindir/radosgw-token
 %_bindir/radosgw-object-expirer
+%_bindir/rgw-orphan-list
+%_mandir/man8/ceph-diff-sorted.8*
 %_mandir/man8/radosgw.8*
+%_mandir/man8/rgw-orphan-list.8*
 %_logdir/radosgw
 %dir %_localstatedir/ceph/radosgw
 %_unitdir/ceph-radosgw@.service
@@ -1536,6 +1542,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 13 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.11-alt1
+- 14.2.11
+
 * Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.10-alt1
 - 14.2.10
 - Fixes for the following security vulnerabilities:
