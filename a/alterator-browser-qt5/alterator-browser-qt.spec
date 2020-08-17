@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.2.3
+Version: 3.2.5
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,12 @@ __EOF__
 
 
 %changelog
+* Fri Aug 14 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.5-alt1
+- fix compile with Qt 5.15
+
+* Wed Jul 22 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.4-alt1
+- fix compile with Qt 5.9
+
 * Tue Jul 21 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.3-alt1
 - use only first screen size for fullscreen mode
 
