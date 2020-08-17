@@ -10,10 +10,10 @@
 
 Name: cyrus-sasl2
 Version: 2.1.27
-Release: alt2
+Release: alt2.1
 
 Summary: SASL2 is the Simple Authentication and Security Layer
-License: Freely Distributable
+License: ALT-Cyrus
 Group: System/Libraries
 
 URL: http://www.cyrusimap.org/
@@ -93,6 +93,17 @@ This plugin implements the SASL2 KERBEROS_V5 mechanism, allowing
 authentication via kerberos version four.
 This OPTIONS is EXPERIMENTAL!
 
+%if_enabled ldap
+%package -n libsasl2-plugin-ldapdb
+Summary: SASL LDAP auxprop+canonuser implementation plugin
+Group: System/Libraries
+Requires: libsasl2-%abiversion = %version-%release
+
+%description -n libsasl2-plugin-ldapdb
+SASL LDAP auxprop+canonuser implementation plugin
+%endif
+
+
 %if_enabled sql
 %package -n libsasl2-plugin-sql
 Summary: SASL2 MySQL and PostgreSQL mechanism plugin
@@ -157,8 +168,8 @@ automake -a -c -f
 		--with-saslauthd=%_var/run/saslauthd \
 		--with-rc4 \
 %if_enabled ldap
-		--with-ldapauxprop=%_prefix \
 		--with-ldap=%_prefix \
+		--enable-ldapdb \
 %endif
 %if_enabled sql
 		--with-mysql=%_prefix \
@@ -294,12 +305,21 @@ ls -l %buildroot%_man3dir/*
 %files -n libsasl2-plugin-gssapi
 %_libdir/sasl2-%abiversion/libgssapiv2.so*
 
+%if_enabled ldap
+%files -n libsasl2-plugin-ldapdb
+%_libdir/sasl2-%abiversion/libldapdb.so*
+%endif
+
 %if_enabled sql
 %files -n libsasl2-plugin-sql
 %_libdir/sasl2-%abiversion/libsql.so*
 %endif
 
 %changelog
+* Wed Aug 05 2020 Alexei Takaseev <taf@altlinux.org> 2.1.27-alt2.1
+- Build with ldapdb plugin
+- Fix License:
+
 * Thu Apr 25 2019 Sergey Y. Afonin <asy@altlinux.ru> 2.1.27-alt2
 - changed --sysconfdir to --with-configdir
   (fixed client's configs location; was broken since 2.1.27-alt1)
