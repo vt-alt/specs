@@ -13,7 +13,7 @@
 %endif
 
 Name: bacula9
-Version: 9.6.3
+Version: 9.6.5
 Release: alt1
 
 License: AGPL-3.0
@@ -504,7 +504,7 @@ mv %buildroot%_sysconfdir/bacula/bconsole.conf %buildroot%_datadir/bacula/sample
 
 %if_enabled bat
 rm -f %buildroot%_sbindir/bat
-install -m755 src/qt-console/.libs/bat %buildroot%_bindir/bat
+install -m755 src/qt-console/.libs/bat %buildroot%_sbindir/bat
 install -pD -m644 icons/bat16x16.png %buildroot%_miconsdir/bat.png
 install -pD -m644 icons/bat32x32.png %buildroot%_niconsdir/bat.png
 install -pD -m644 icons/bat48x48.png %buildroot%_liconsdir/bat.png
@@ -517,7 +517,6 @@ mv %buildroot%_defaultdocdir/bacula/*.{html,png} %buildroot%_defaultdocdir/bacul
 convert %SOURCE17 bacula-tray-monitor.png
 rm -f %buildroot%_sbindir/bacula-tray-monitor
 install -m755 src/qt-console/tray-monitor/.libs/bacula-tray-monitor %buildroot%_sbindir/bacula-tray-monitor
-install -pD -m644 src/qt-console/tray-monitor/tray-monitor.conf %buildroot%_sysconfdir/bacula/tray-monitor.conf
 install -pD -m644 manpages/bacula-tray-monitor.1 %buildroot%_man1dir/bacula-tray-monitor.1
 install -pD -m644 bacula-tray-monitor.png %buildroot%_pixmapsdir/bacula-tray-monitor.png
 install -pD -m644 scripts/bacula-tray-monitor.desktop %buildroot%_desktopdir/bacula-tray-monitor.desktop
@@ -704,7 +703,7 @@ fi
 %files bat
 %attr (0644,root,root) %_datadir/bacula/sample-configs/bat.conf
 %doc %_defaultdocdir/bacula/html
-%attr (0755,root,root) %_bindir/bat
+%attr (0755,root,root) %_sbindir/bat
 %_man1dir/bat.1*
 %_miconsdir/bat.png
 %_liconsdir/bat.png
@@ -712,7 +711,7 @@ fi
 %_desktopdir/bat.desktop
 
 %files traymonitor
-%config(noreplace) %attr(640,root,root) %{_sysconfdir}/bacula/tray-monitor.conf
+%config(noreplace) %attr(640,root,root) %{_sysconfdir}/bacula/bacula-tray-monitor.conf
 %_desktopdir/bacula-tray-monitor.desktop
 %_pixmapsdir/bacula-tray-monitor.png
 %_man1dir/bacula-tray-monitor.1*
@@ -885,6 +884,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.5-alt1
+- Updated to upstream version 9.6.5.
+
 * Fri Apr 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.3-alt1
 - Updated to upstream version 9.6.3.
 
