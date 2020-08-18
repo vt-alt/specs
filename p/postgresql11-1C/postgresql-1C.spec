@@ -6,8 +6,8 @@
 
 %define prog_name            postgresql
 %define postgresql_major     11
-%define postgresql_minor     8
-%define postgresql_altrel    2
+%define postgresql_minor     9
+%define postgresql_altrel    1
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -790,6 +790,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 12 2020 Alexei Takaseev <taf@altlinux.org> 11.9-alt1
+- 11.9 (Fixes CVE-2020-14349, CVE-2020-14350)
+
 * Fri Jul 17 2020 Alexei Takaseev <taf@altlinux.org> 11.8-alt2
 - Move online_analyze.so and plantuner.so from -contrib
   to -server subpackage
