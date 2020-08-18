@@ -17,7 +17,7 @@
 %endif
 
 Name: libvpx6
-Version: 1.8.0
+Version: 1.8.2
 Release: alt1
 Summary: VP8 video codec
 Group: Video
@@ -40,11 +40,20 @@ on which the Theora codec was based
 %package -n libvpx-devel
 Summary: VP8 Libraries and Header Files
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n libvpx-devel
 %name-devel contains the libraries and header files needed to
 develop programs which make use of %name
+
+%package -n libvpx-utils
+Summary: VP8 utilities and tools
+Group: Video
+Requires: %name = %EVR
+
+%description -n libvpx-utils
+A selection of utilities and tools for VP8, including a sample encoder
+and decoder.
 
 %prep
 %setup
@@ -63,8 +72,10 @@ export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 	--enable-pic \
 	--target=%platform \
 	--enable-shared \
+	%ifnarch x86_64
 	--disable-avx \
 	--disable-avx2 \
+	%endif
 	--disable-install-srcs \
 	--enable-vp9-decoder \
 	--enable-vp9-encoder \
@@ -85,7 +96,18 @@ export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 %_libdir/*.so
 %_pkgconfigdir/*.pc
 
+%files -n libvpx-utils
+%_bindir/*
+
 %changelog
+* Mon Dec 23 2019 Anton Farygin <rider@altlinux.ru> 1.8.2-alt1
+- 1.8.2
+
+* Tue Jul 30 2019 Anton Farygin <rider@altlinux.ru> 1.8.1-alt1
+- 1.8.1
+- enabled AVX/AVX2 on x86_64
+- added libvpx-utils package with sample encoder/decoder
+
 * Thu Feb 21 2019 Anton Farygin <rider@altlinux.ru> 1.8.0-alt1
 - 1.8.0
 
