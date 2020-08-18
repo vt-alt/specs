@@ -1,5 +1,5 @@
 Name: apt-indicator
-Version: 0.3.16
+Version: 0.3.19
 Release: alt1
 
 Summary: Applet for indication that newer packages are available
@@ -74,6 +74,15 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Tue Aug 18 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.19-alt1
+- don't show version in about dialog
+
+* Mon Aug 17 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.18-alt1
+- fix compile with Qt < 5.14
+
+* Fri Aug 14 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.17-alt1
+- fix compile with Qt 5.15
+
 * Tue Mar 10 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.16-alt1
 - fix compiler warnings and fail to work
 
