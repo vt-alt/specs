@@ -4,20 +4,20 @@
 %def_with parallelism
 %def_without fetch
 %def_without lto
+%def_with dconf
 
 # enable kde5 UI
 %def_enable kde5
 
 %ifarch mipsel
 %def_without java
-%def_disable qt5
 %else
 %def_with java
+%endif
 %if_enabled kde5
 %def_enable qt5
 %else
 %def_disable qt5
-%endif
 %endif
 %def_disable mergelibs
 
@@ -29,7 +29,7 @@ Version: %hversion.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt3
+Release: alt6
 Summary: LibreOffice Productivity Suite
 License: LGPL
 Group: Office
@@ -76,9 +76,11 @@ Patch405: alt-005-mysql8-transition.patch
 
 # Based on upstream commit 56ffe3c0a1261
 Patch406: 0001-Switch-mdds-to-1.5.0-and-liborcus-to-0.15.0.patch
-
 Patch407: 0001-Fix-build-with-poppler-0.82.patch
 Patch408: 0001-Fix-build-with-poppler-0.83.patch
+Patch409: 0001-Fix-build-with-poppler-0.86.0.patch
+
+Patch500: alt-010-mips-fix-linking-with-libatomic.patch
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %lodir/share/config/webcast/*
@@ -86,9 +88,9 @@ Patch408: 0001-Fix-build-with-poppler-0.83.patch
 
 # Automatically added by buildreq on Wed Feb 13 2019
 # optimized out: ant-lib apache-commons-logging at-spi2-atk bash4 boost-devel boost-devel-headers cppunit dconf fontconfig fontconfig-devel gcc-c++ glib-networking glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gobject-introspection gobject-introspection-devel gstreamer1.0-devel hamcrest-core icu-utils java java-headless javapackages-tools javazi kf5-kconfig-devel kf5-kcoreaddons-devel libGL-devel libICE-devel libSM-devel libX11-devel libXext-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libat-spi2-core libatk-devel libatk-gir-devel libboost_numpy3-1.67.0 libboost_python3-1.67.0 libcairo-devel libcairo-gobject libcairo-gobject-devel libclucene-contribs-lib libclucene-core libclucene-shared libcrypt-devel libcurl-devel libe-book libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgdk-pixbuf-gir-devel libgio-devel libglvnd-devel libgpg-error libgpg-error-devel libgraphite2-devel libgst-plugins1.0 libgtk+3-devel libharfbuzz-devel libharfbuzz-icu libicu-devel libltdl7-devel libnspr-devel libnss-devel libpango-devel libpango-gir-devel libpng-devel libpoppler-devel libpq-devel libqt5-core libqt5-gui libqt5-network libqt5-widgets libqt5-x11extras librasqal-devel librevenge-devel libsasl2-3 libstdc++-devel libwayland-client libwayland-client-devel libwayland-cursor libwayland-egl libxcb-devel libxml2-devel libxmlsec1-devel libxmlsec1-nss libxslt-devel pentaho-libxml perl pkg-config python-base python-modules python-modules-compiler python-modules-distutils python3 python3-base python3-module-lxml qt5-base-devel raptor2-devel sac sh4 termutils wayland-devel xml-common xml-utils xorg-proto-devel xz zlib-devel
-BuildRequires: boost-filesystem-devel boost-locale-devel boost-signals-devel bsh cppunit-devel doxygen flex fontforge fonts-ttf-liberation git-core gperf graphviz gst-plugins1.0-devel imake libGConf libabw-devel libavahi-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-devel libe-book-devel libepoxy-devel libepubgen-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgpgme-devel libgtk+2-devel libgtk+3-gir-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmysqlclient-devel libmythes-devel libneon-devel libnumbertext-devel libodfgen-devel liborcus-devel libpagemaker-devel libpoppler-cpp-devel libqxp-devel libredland-devel libsane-devel libssl-devel libstaroffice-devel libunixODBC-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxmlsec1-nss-devel libzmf-devel mdds-devel pentaho-reporting-flow-engine postgresql-devel unzip xorg-cf-files xsltproc zip
+BuildRequires: boost-filesystem-devel boost-locale-devel boost-signals-devel cppunit-devel doxygen flex fontforge fonts-ttf-liberation git-core gperf graphviz gst-plugins1.0-devel imake libGConf libabw-devel libavahi-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-devel libe-book-devel libepoxy-devel libepubgen-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgpgme-devel libgtk+2-devel libgtk+3-gir-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmysqlclient-devel libmythes-devel libneon-devel libnumbertext-devel libodfgen-devel libpagemaker-devel libpoppler-cpp-devel libqxp-devel libredland-devel libsane-devel libssl-devel libstaroffice-devel libunixODBC-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxmlsec1-nss-devel libzmf-devel mdds-devel postgresql-devel unzip xorg-cf-files xsltproc zip
 %if_with java
-BuildRequires: java-devel junit ant
+BuildRequires: java-devel junit ant bsh pentaho-reporting-flow-engine 
 %endif
 
 %if_enabled qt5
@@ -101,6 +103,10 @@ BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-kwindowsystem-devel
 
 %if_without python
 BuildRequires: python3-dev
+%endif
+
+%if_with dconf
+BuildRequires: libdconf-devel
 %endif
 
 %description
@@ -272,6 +278,9 @@ echo Direct build
 %patch406 -p1
 %patch407 -p1
 %patch408 -p1
+%patch409 -p1
+
+%patch500 -p2
 
 # Hack in proper LibreOffice PATH in libreofficekit
 sed -i 's@/libreoffice/@/LibreOffice/@g' libreofficekit/Library_libreofficekitgtk.mk
@@ -316,7 +325,7 @@ test -r %conffile && . %conffile ||:
 export CC=%_target_platform-gcc
 export CXX=%_target_platform-g++
 %ifarch mipsel
-export CFLAGS="-Os --param ggc-min-expand=20 --param ggc-min-heapsize=32768 -g0"
+export CFLAGS="-Os --param ggc-min-expand=20 --param ggc-min-heapsize=32768 -g1"
 export CXXFLAGS="$CFLAGS"
 %endif
 
@@ -353,6 +362,7 @@ export CXXFLAGS="$CFLAGS"
 	--enable-release-build \
 	--with-help \
   \
+	--without-system-orcus \
 	%{subst_enable kde5} \
 	%{subst_enable qt5} \
 	--enable-gtk \
@@ -373,6 +383,9 @@ export CXXFLAGS="$CFLAGS"
 %endif
 %if_with python
 	--enable-python=internal \
+%endif
+%if_with dconf
+    --enable-dconf \
 %endif
 %if_with fetch
 	--enable-fetch-external
@@ -487,6 +500,9 @@ install sysui/desktop/mimetypes/*.mime %buildroot%_datadir/mime-info/
 install sysui/desktop/mimetypes/*.desktop %buildroot%_datadir/mimelnk/application/
 install sysui/desktop/mimetypes/*.applications %buildroot%_datadir/application-registry/
 
+# Install mime package bundle for LibreOffice MIME types
+install -Dm0644 workdir/CustomTarget/sysui/share/output/usr/share/mime/packages/libreoffice%hversion.xml %buildroot%_datadir/mime/packages/libreoffice%hversion.xml
+
 # Config file
 install -D libreoffice.config %buildroot%conffile
 
@@ -539,6 +555,7 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %exclude %lodir/share/extensions/package.txt
 
 %files mimetypes
+%_datadir/mime/packages/libreoffice%hversion.xml
 %_datadir/mime-info/*
 %_datadir/mimelnk/application/*
 %_datadir/application-registry/*
@@ -562,6 +579,21 @@ install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
 %_includedir/LibreOfficeKit
 
 %changelog
+* Fri Aug 07 2020 Andrey Cherepanov <cas@altlinux.org> 6.3.0.3-alt6
+- Use bundled liborcus-0.14.
+- Install mime package bundle for LibreOffice MIME types.
+
+* Fri Jul 24 2020 Andrey Bychkov <mrdrew@altlinux.org> 6.3.0.3-alt5
+- Rebuild with dconf enabled (Closes: 38752).
+
+* Mon Jun 01 2020 Ivan A. Melnikov <iv@altlinux.org> 6.3.0.3-alt4
+- Fix build with poppler 0.86.0 (see
+  https://bugs.documentfoundation.org/show_bug.cgi?id=131353).
+- Get rid of java BRs in no-java build.
+- Fix build on mipsel:
+  + fix linking with libatomic;
+  + adjust building options.
+
 * Tue Feb 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.3.0.3-alt3
 - Rebuilt with new poppler and boost.
 

@@ -26,15 +26,15 @@
 %def_disable mergelibs
 
 Name: LibreOffice-still
-%define hversion 6.3
-%define urelease 6.2
+%define hversion 6.4
+%define urelease 5.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
 
-Release: alt4
+Release: alt2
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -78,16 +78,14 @@ Patch1: FC-0001-don-t-suppress-crashes.patch
 Patch401: alt-001-MOZILLA_CERTIFICATE_FOLDER.patch
 Patch402: alt-002-tmpdir.patch
 Patch404: alt-004-shortint.patch
-Patch405: alt-005-mysql8-transition.patch
-# Based on upstream commit 56ffe3c0a1261
-Patch406: 0001-Switch-mdds-to-1.5.0-and-liborcus-to-0.15.0.patch
 Patch410: alt-006-unversioned-desktop-files.patch
+Patch411: alt-007-libqrcodegen-include-path.patch
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %lodir/share/config/webcast/*
 %add_findreq_skiplist %lodir/sdk/examples/python/toolpanel/toolpanel.py 
 
-BuildRequires: ant apache-commons-httpclient apache-commons-lang bsh cppunit-devel flex fonts-ttf-liberation gcc-c++ git-core gperf gst-plugins1.0-devel hunspell-en imake libGConf-devel libGLEW-devel libabw-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-glib-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgtk+2-devel libgtk+3-devel libharfbuzz-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmythes-devel libneon-devel libnss-devel libodfgen-devel liborcus-devel libredland-devel libsane-devel libvigra-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxslt-devel mdds-devel pentaho-reporting-flow-engine perl-Archive-Zip postgresql-devel python3-dev unzip xorg-cf-files zip
+BuildRequires: ant apache-commons-httpclient apache-commons-lang bsh cppunit-devel flex fonts-ttf-liberation gcc-c++ git-core gperf gst-plugins1.0-devel hunspell-en imake libGConf-devel libGLEW-devel libabw-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-glib-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgtk+2-devel libgtk+3-devel libharfbuzz-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmythes-devel libneon-devel libnss-devel libodfgen-devel libredland-devel libsane-devel libvigra-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxslt-devel mdds-devel pentaho-reporting-flow-engine perl-Archive-Zip postgresql-devel python3-dev unzip xorg-cf-files zip
 BuildRequires: python2.7(distutils) libunixODBC-devel libX11-devel libXext-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libssl-devel
 
 # 4.4
@@ -111,25 +109,27 @@ BuildRequires: libepubgen-devel libqxp-devel boost-locale-devel boost-filesystem
 %if_enabled qt5
 BuildRequires: qt5-base-devel
 %endif
-
 # 6.1.0
 BuildRequires: libnumbertext-devel
-
 # 6.1.1
 BuildRequires: python3-module-setuptools
-
 # 6.1.3.1 kde5 UI
 %if_enabled kde5
 BuildRequires: qt5-base-devel qt5-x11extras-devel
 BuildRequires: kf5-kconfig-devel kf5-kcoreaddons-devel
 BuildRequires: kf5-ki18n-devel kf5-kio-devel kf5-kwindowsystem-devel
+BuildRequires: kf5-kdelibs4support
 %endif
-
 # 6.1.5.2
 #BuildRequires: libpoppler-devel
-
 # 6.3.5.2
 BuildRequires: fontforge
+# 6.4.5.2
+BuildRequires: liborcus-devel >= 0.15.0
+BuildRequires: libqrcodegen-cpp-devel
+BuildRequires: libxcbutil-icccm-devel
+BuildRequires: libeot-devel
+BuildRequires: libgraphite2-devel
 
 %if_without python
 BuildRequires: python3-dev
@@ -170,16 +170,6 @@ Requires: %name-common = %EVR
 %description integrated
 Wrapper scripts, icons and desktop files for running %name
 
-%package gtk2
-Summary: GTK2 Extensions for %name
-Group:  Office
-Requires: %uname = %EVR
-Requires: %name-common = %EVR
-Obsoletes: LibreOffice4-gnome
-Conflicts: LibreOffice-gnome
-%description gtk2
-GTK2 extensions for %name
-
 %package gtk3
 Summary: GTK3 Extensions for %name
 Group:  Office
@@ -219,7 +209,7 @@ KDE5 extensions for %name
 %package -n libreofficekit-still
 Summary: A library providing access to LibreOffice functionality
 Group: Graphical desktop/GNOME
-License: MPLv2.0
+License: MPL-2.0
 Conflicts: libreofficekit
 %description -n libreofficekit-still
 LibreOfficeKit can be used to access LibreOffice functionality
@@ -229,11 +219,10 @@ through C/C++, without any need to use UNO.
 Summary: Development files for libreofficekit
 Group: Development/GNOME and GTK+
 Conflicts: libreofficekit-devel
-License: MPLv2.0
+License: MPL-2.0
 %description -n libreofficekit-still-devel
 The libreofficekit-devel package contains libraries and header files for
 developing applications that use libreofficekit.
-
 
 %package extensions
 Summary: Additional extensions for %name
@@ -314,9 +303,8 @@ echo Direct build
 %patch401 -p0
 %patch402 -p1
 %patch404 -p1
-%patch405 -p2
-%patch406 -p1
 %patch410 -p1
+%patch411 -p1
 
 # Hack in proper LibreOffice PATH in libreofficekit
 sed -i 's@/libreoffice/@/LibreOffice/@g' libreofficekit/Library_libreofficekitgtk.mk
@@ -400,13 +388,11 @@ export CXXFLAGS="$CFLAGS"
 	--with-help \
   \
         %{subst_enable qt5} \
-	--enable-gtk \
 	--enable-gtk3 \
 	--enable-cipher-openssl-backend \
 %if_enabled kde5
         --enable-kde5 \
 %endif
-	--disable-gstreamer-0-10 \
 %if_with lto
   	--enable-lto \
 %endif
@@ -421,14 +407,13 @@ export CXXFLAGS="$CFLAGS"
 %if_with dconf
 	--enable-dconf \
 %endif
+	--enable-eot \
 %if_with fetch
 	--enable-fetch-external
 %else
 	--with-system-libs \
 	--disable-fetch-external
 %endif
-
-# TODO  --enable-vlc --enable-eot
 
 %if_with forky
 # Make forky
@@ -484,9 +469,6 @@ for l in %with_lang; do
 	cat %buildroot/gid_*_$ll | sort -u > $l.lang
 done
 
-# Create gnome plugin list
-find %buildroot%lodir -name "*_gtk[^3]*" | sed 's@^%buildroot@@' > files.gtk2
-
 # Create gtk3 plugin list
 find %buildroot%lodir -name "*_gtk3*" ! -name "*_kde5*" | sed 's@^%buildroot@@' > files.gtk3
 
@@ -497,7 +479,7 @@ find %buildroot%lodir -name "*qt5*"   | sed 's@^%buildroot@@' > files.qt5
 find %buildroot%lodir -name "*_kde5*" -o -name "libkde5*" | sed 's@^%buildroot@@' > files.kde5
 
 # Generate base filelist by removing files from  separated packages
-{ cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk2 files.gtk3 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
+{ cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk3 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
 
 # Return Oxygen icon theme from LibreOffice 5.3 (see https://bugs.documentfoundation.org/show_bug.cgi?id=110353 for details)
 install -D %SOURCE400 %buildroot%lodir/share/config/images_oxygen.zip
@@ -538,12 +520,15 @@ install sysui/desktop/mimetypes/*.mime %buildroot%_datadir/mime-info/
 install sysui/desktop/mimetypes/*.desktop %buildroot%_datadir/mimelnk/application/
 install sysui/desktop/mimetypes/*.applications %buildroot%_datadir/application-registry/
 
+# Install mime package bundle for LibreOffice MIME types
+install -Dm0644 workdir/CustomTarget/sysui/share/output/usr/share/mime/packages/libreoffice%hversion.xml %buildroot%_datadir/mime/packages/libreoffice%hversion.xml
+
 # Config file
 install -D libreoffice.config %buildroot%conffile
 
 # Typelib/GIR stuff
-install -D workdir/CustomTarget/sysui/share/output/girepository-1.0/LOKDocView-0.1.typelib %buildroot%_typelibdir/LOKDocView-0.1.typelib
-install -D workdir/CustomTarget/sysui/share/output/usr/share/gir-1.0/LOKDocView-0.1.gir %buildroot%_girdir/LOKDocView-0.1.gir
+#install -D workdir/CustomTarget/sysui/share/output/girepository-1.0/LOKDocView-0.1.typelib %buildroot%_typelibdir/LOKDocView-0.1.typelib
+#install -D workdir/CustomTarget/sysui/share/output/usr/share/gir-1.0/LOKDocView-0.1.gir %buildroot%_girdir/LOKDocView-0.1.gir
 mv %buildroot%lodir/program/liblibreofficekitgtk.so %buildroot%_libdir/
 mkdir -p %buildroot%_includedir/LibreOfficeKit
 install -p include/LibreOfficeKit/* %{buildroot}%{_includedir}/LibreOfficeKit
@@ -604,8 +589,6 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_iconsdir/*/*/apps/*
 %exclude %_iconsdir/*/*/apps/libreoffice-*.*g
 
-%files gtk2 -f files.gtk2
-
 %files gtk3 -f files.gtk3
 
 %if_enabled qt5
@@ -622,6 +605,7 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %exclude %lodir/share/extensions/package.txt
 
 %files mimetypes
+%_datadir/mime/packages/libreoffice%hversion.xml
 %_datadir/mime-info/*
 %_datadir/mimelnk/application/*
 %_datadir/application-registry/*
@@ -637,14 +621,25 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %langpack -h -l tt -n Tatar
 
 %files -n libreofficekit-still
-%_typelibdir/LOKDocView-*.typelib
+#_typelibdir/LOKDocView-*.typelib
 %_libdir/liblibreofficekitgtk.so
 
 %files -n libreofficekit-still-devel
-%_girdir/LOKDocView-*.gir
+#_girdir/LOKDocView-*.gir
 %_includedir/LibreOfficeKit
 
 %changelog
+* Fri Aug 14 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.5.2-alt2
+- Remove deprecated package LibreOffice-still-gtk2.
+
+* Fri Aug 07 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.5.2-alt1
+- New version 6.4.5.2 (Still).
+- Fixed:
+  + CVE-2020-12801 Crash-recovered MSOffice encrypted documents defaulted to not to using encryption on next save
+  + CVE-2020-12802 remote graphics contained in docx format retrieved in 'stealth mode'
+  + CVE-2020-12803 XForms submissions could overwrite local files
+- Install mime package bundle for LibreOffice MIME types.
+
 * Mon Jul 27 2020 Andrey Bychkov <mrdrew@altlinux.org> 6.3.6.2-alt4
 - Rebuild with dconf enabled (Closes: 38753).
 

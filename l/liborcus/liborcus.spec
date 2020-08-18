@@ -1,17 +1,15 @@
 %def_without python
 Name: liborcus
-Version: 0.14.1
-Release: alt2
+Version: 0.15.4
+Release: alt1
 Summary: Standalone file import filter library for spreadsheet documents
 
 Group: System/Libraries
-License: MIT
-Url: http://gitorious.org/orcus
+License: MPL-2.0
+Url: https://gitlab.com/orcus/orcus
 Source: orcus-%version.tar.gz
 
-Patch1: %name-upstream-mdds-1.5.patch
-
-%define libver 0.14
+%define libver 0.15
 
 # Automatically added by buildreq on Thu Jul 25 2013
 # optimized out: boost-devel boost-intrusive-devel libstdc++-devel pkg-config
@@ -46,7 +44,6 @@ Python3 bindings for Orcus
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 sed -i 's|liborcus_@ORCUS_API_VERSION@_la_LIBADD = |& ../parser/liborcus-parser-@ORCUS_API_VERSION@.la|' src/liborcus/Makefile.am
@@ -99,6 +96,9 @@ ln -s %name-%libver.pc %buildroot%_pkgconfigdir/%name.pc
 %endif
 
 %changelog
+* Thu Aug 06 2020 Andrey Cherepanov <cas@altlinux.org> 0.15.4-alt1
+- NMU: New version needed by LibreOffice 6.4
+
 * Mon Dec 16 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.14.1-alt2
 - Rebuilt with boost-1.71.0 and mdds-1.5.0.
 
