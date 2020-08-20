@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.3.13
+Version: 1.4.1
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -8,7 +8,7 @@ Group: Development/Other
 
 Url: http://altlinux.org/m-p
 Source: %name-%version.tar
-Packager: Michael Shigorin <mike@altlinux.org>
+Packager: Anton Midyukov <antohami@altlinux.org>
 
 BuildArch: noarch
 BuildRequires: rsync
@@ -128,6 +128,33 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Mon Aug 17 2020 Anton Midyukov <antohami@altlinux.org> 1.4.1-alt1
+- Revert commit for support multiple kernel in iso image.
+
+* Mon Aug 17 2020 Anton Midyukov <antohami@altlinux.org> 1.4.0-alt1
+- New official maintainer antohami@ (blessed by mike@)
+- Added grub config file generator for iso images
+  (thanks shaba@)
+- Expanded support for USB controllers and SD card readers
+- Added support for booting on single-board Raspberry Pi 3 and 4
+  in EFI mode (u-boot or edk2)
+- Added grub-efi bootloader support for rootfs images
+- Merged with branches for Workstation, Education,
+  Simply Linux, Server, Server-V distributions
+- Added a starterkit build profile with a real-time kernel (live)
+- Added riscv64 platform support (thanks arei@)
+- rootfs: support headless boot via alterator-setup-vnc (thanks arei@)
+
+* Mon Nov 18 2019 Michael Shigorin <mike@altlinux.org> 1.3.15-alt1
+- autoinstall fix (sin@)
+- Baikal-M support, @ARM, elogind removal, other tweaks (antohami@)
+- factored out archdep-filter, pulled in check-pkg-list (me)
+
+* Mon Oct 21 2019 Michael Shigorin <mike@altlinux.org> 1.3.14-alt1
+- make bails out on single image build error, see also make -k (iv@)
+- mipsel support (iv@, antohami@)
+- regular-vm.mk, refactoring, cleanups (antohami@)
+
 * Mon Sep 16 2019 Michael Shigorin <mike@altlinux.org> 1.3.13-alt1
 - recovery.tar support (iv@)
 - mixin/mixin deps, aarch64 EFI, mcom02 & jetson nano support,
