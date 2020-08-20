@@ -3,7 +3,7 @@
 
 %set_verify_elf_method textrel=relaxed 
 Name: deadbeef
-Version: 1.8.2
+Version: 1.8.4
 Release: alt1
 Summary: DeaDBeeF is an audio player
 Url: https://github.com/Alexey-Yakovenko/deadbeef
@@ -11,13 +11,11 @@ Source: %name-%version.tar
 Group: Sound
 License: zlib, GPLv2, LGPLv2.1
 
-Patch6: deadbeef-0.5.4-alt-categories-desktop-file.patch
-Patch8: deadbeef-0.7.1-arm.patch
-
 BuildRequires: /usr/bin/yasm gcc-c++ intltool glib2-devel libX11-devel libatk-devel libcairo-devel libcddb-devel libcdio-devel libcdparanoia-devel libcurl-devel libfaad-devel libflac-devel libgdk-pixbuf-devel libgtk+2-devel libjpeg-devel libmad-devel libmpg123-devel libogg-devel libpango-devel libpng-devel libsndfile-devel libvorbis-devel libwavpack-devel perl(Exporter.pm) perl(FindBin.pm) perl(IO/Handle.pm) perl(IPC/Open2.pm) perl(IPC/Open3.pm) perl(Locale/Country.pm) perl(Locale/Language.pm) perl(base.pm) pkgconfig(alsa) pkgconfig(dbus-1) pkgconfig(gio-2.0) pkgconfig(gtk+-3.0) pkgconfig(imlib2) pkgconfig(jansson) pkgconfig(libavcodec) pkgconfig(libavformat) pkgconfig(libavutil) pkgconfig(libpulse-simple) pkgconfig(libzip) pkgconfig(samplerate) swig zlib-devel
 BuildRequires: libopusfile-devel
 
-Requires: %name-out-alsa %name-gtk3
+Requires: %name-out-alsa = %EVR
+Requires: %name-gtk3 = %EVR
 
 Obsoletes: %name-medialib
 
@@ -34,15 +32,29 @@ Summary: DeaDBeeF is an audio player
 Group: Sound
 BuildArch: noarch
 # Out
-Requires: %name-out-pulseaudio
+Requires: %name-out-pulseaudio = %EVR
 # In
-Requires: %name-in-flac %name-in-mp3 %name-in-psf %name-in-ffmpeg %name-in-oggvorbis %name-in-ape %name-in-musepack %name-in-aac %name-in-wavpack %name-in-sndfile
+Requires: %name-in-flac = %EVR
+Requires: %name-in-mp3 = %EVR
+Requires: %name-in-psf = %EVR
+Requires: %name-in-ffmpeg = %EVR
+Requires: %name-in-oggvorbis = %EVR
+Requires: %name-in-ape = %EVR
+Requires: %name-in-musepack = %EVR
+Requires: %name-in-aac = %EVR
+Requires: %name-in-wavpack = %EVR
+Requires: %name-in-sndfile = %EVR
 
 # DSP
 #Requires: %name-dsp-supereq %name-dsp-libsrc
 
 # General
-Requires: %name-artwork %name-hotkeys %name-notify %name-gtk3 %name-shellexec %name-m3u
+Requires: %name-artwork = %EVR
+Requires: %name-hotkeys = %EVR
+Requires: %name-notify = %EVR
+Requires: %name-gtk3 = %EVR
+Requires: %name-shellexec = %EVR
+Requires: %name-m3u = %EVR
 
 %description -n %name-incomplete
 Virtual package for incomplete installation DeaDBeeF
@@ -51,7 +63,6 @@ Virtual package for incomplete installation DeaDBeeF
 %package -n %name-full
 Summary: DeaDBeeF is an audio player
 Group: Sound
-BuildArch: noarch
 # Out
 Requires: %name-out-pulseaudio = %EVR
 Requires: %name-out-oss = %EVR
@@ -97,6 +108,9 @@ Requires: %name-dsp-libsrc = %EVR
 Requires: %name-dsp-mono2stereo = %EVR
 Requires: %name-vfs_zip = %EVR
 Requires: %name-rg_scanner = %EVR
+%ifnarch %ix86
+Requires: %name-ddb_soundtouch = %EVR
+%endif
 
 %description -n %name-full
 Virtual package for full installation DeaDBeeF (exclude %name-devel,
@@ -379,6 +393,14 @@ Requires: %name = %EVR
 DeaDBeeF SuperEQ Plugin
 equalizer plugin using SuperEQ library by Naoki Shibata
 
+%package -n %name-ddb_soundtouch
+Summary: DeaDBeeF Soundtouch Audio Processing Plugin
+Group: Sound
+Requires: %name = %EVR
+
+%description -n %name-ddb_soundtouch
+DeaDBeeF Soundtouch Audio Processing Plugin
+
 %package -n %name-dsp-mono2stereo
 Summary: DeaDBeeF Mono to stereo Plugin
 Group: Sound
@@ -510,8 +532,6 @@ ReplayGain-Scanner plugin for DeaDBeeF
 
 %prep
 %setup
-%patch6 -p2
-%patch8 -p1
 
 sed -i '/m4/ d' Makefile.am
 
@@ -522,6 +542,10 @@ sed -i '/m4/ d' Makefile.am
         --enable-notify \
         --docdir=%_docdir/%name-%version \
         --disable-static \
+%ifarch %ix86
+        --disable-soundtouch \
+%endif
+        --disable-rpath \
         --enable-src=yes \
         --enable-m3u=yes \
         --enable-ffmpeg=yes \
@@ -681,6 +705,11 @@ rm -rf %buildroot/%_libdir/%name/*.la
 %files -n %name-rg_scanner
 %_libdir/%name/rg_scanner.so
 
+%ifnarch %ix86
+%files -n %name-ddb_soundtouch
+%_libdir/%name/ddb_soundtouch.so
+%endif
+
 # Development
 %files -n %name-devel
 %dir %_includedir/%name
@@ -691,6 +720,13 @@ rm -rf %buildroot/%_libdir/%name/*.la
 %files -n %name-incomplete
 
 %changelog
+* Thu Jul 16 2020 Anton Midyukov <antohami@altlinux.org> 1.8.4-alt1
+- new version 1.8.4
+- new general plugin ddb_soundtouch
+
+* Mon May 18 2020 Anton Midyukov <antohami@altlinux.org> 1.8.3-alt1
+- new version 1.8.3
+
 * Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 1.8.2-alt1
 - new version 1.8.2
 - added plugin opus
