@@ -1,5 +1,5 @@
 Name: alterator-limits
-Version: 0.1
+Version: 0.2
 Release: alt1
 
 Source: %name-%version.tar
@@ -32,6 +32,9 @@ touch %buildroot%limitsdir/95-alterator-limits.conf
 %config(noreplace) %limitsdir/95-alterator-limits.conf
 
 %changelog
+* Thu Aug 20 2020 Oleg Solovyov <mcpain@altlinux.org> 0.2-alt1
+- Use dynamic limits in spinbox (Closes: 38801)
+
 * Fri Jul 24 2020 Oleg Solovyov <mcpain@altlinux.org> 0.1-alt1
 - initial build for ALT
 
