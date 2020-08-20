@@ -1,7 +1,7 @@
 %def_disable check
 
 Name: kernel-image-rpi-un
-Release: alt2
+Release: alt3
 epoch:1 
 %define kernel_need_version	5.7
 # Used when kernel-source-x.y does not currently exist in repository.
@@ -490,6 +490,11 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Aug 18 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.7.8-alt3
+- CONFIG_VIRTIO_NET=y add network support in QEmu
+- add ACPI support
+- set all VIRTIO as modules
+
 * Wed Jul 22 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.7.8-alt2
 - CONFIG_DEBUG_INFO is off, because p9 packages is huge
 
