@@ -1,17 +1,18 @@
-Name: firejail
-Version: 0.9.52
-Release: alt1
-Summary: Linux namepaces sandbox program
+%define _unpackaged_files_terminate_build 1
 
+Name: firejail
+Version: 0.9.62.4
+Release: alt1
+Summary: Linux namespaces sandbox program
 License: GPLv2+
 Group: Development/Tools
-Source: %name-%version.tar
-Url: http://github.com/netblue30/firejail
+Url: https://firejail.wordpress.com/
 
-Packager: Anton Midyukov <antohami@altlinux.org>
+# https://github.com/netblue30/firejail.git
+Source: %name-%version.tar
 
 %description
-Firejail  is  a  SUID sandbox program that reduces the risk of security
+Firejail is a SUID sandbox program that reduces the risk of security
 breaches by restricting the running environment of untrusted applications
 using Linux namespaces. It includes a sandbox profile for Mozilla Firefox.
 
@@ -24,6 +25,7 @@ using Linux namespaces. It includes a sandbox profile for Mozilla Firefox.
 
 %install
 %makeinstall_std
+
 %find_lang %name
 
 %files -f %name.lang
@@ -36,15 +38,21 @@ using Linux namespaces. It includes a sandbox profile for Mozilla Firefox.
 %_datadir/bash-completion/completions/firecfg
 %_datadir/bash-completion/completions/firemon
 %exclude %_docdir/%name
-%_man1dir/%name.1.*
-%_man1dir/firecfg.1.*
-%_man1dir/firemon.1.*
-%_man5dir/%name-login.5.*
-%_man5dir/%name-profile.5.*
+%_man1dir/%name.1*
+%_man1dir/firecfg.1*
+%_man1dir/firemon.1*
+%_man5dir/%name-login.5*
+%_man5dir/%name-profile.5*
+%_man5dir/%name-users.5*
 %config %_sysconfdir/%name
 
-
 %changelog
+* Wed Aug 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9.62.4-alt1
+- Updated to upstream version 0.9.62.4 (Fixes: CVE-2020-17367, CVE-2020-17368).
+
+* Fri Apr 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9.62-alt1
+- Updated to upstream version 0.9.62.
+
 * Wed Jan 10 2018 Anton Midyukov <antohami@altlinux.org> 0.9.52-alt1
 - new version 0.9.52
 
