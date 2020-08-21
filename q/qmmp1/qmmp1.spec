@@ -5,8 +5,9 @@
 
 %define rname qmmp
 Name: qmmp1
-Version: 1.3.4
+Version: 1.4.1
 Release: alt1
+%K5init no_altplace
 
 Group: Sound
 Summary: Qmmp - Qt-based multimedia player
@@ -30,7 +31,7 @@ Patch5: alt-def-id3v1-encoding.patch
 # Automatically added by buildreq on Tue Apr 26 2016 (-bi)
 # optimized out: cmake-modules elfutils gcc-c++ glib2-devel libEGL-devel libGL-devel libX11-devel libavcodec-devel libavutil-devel libcdio-devel libcdio-paranoia libgpg-error libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libopus-devel libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-widgets libqt5-x11extras libqt5-xml libsndfile-devel libstdc++-devel perl pkg-config python-base python-modules python3 python3-base qt5-base-devel qt5-tools rpm-build-python3 ruby ruby-stdlibs xorg-kbproto-devel xorg-xproto-devel
 #BuildRequires: cmake doxygen libalsa-devel libavformat-devel libbs2b-devel libcddb-devel libcdio-paranoia-devel libcurl-devel libenca-devel libfaad-devel libflac-devel libgme-devel libjack-devel libmad-devel libmms-devel libmodplug-devel libmpcdec-devel libopusfile-devel libprojectM-devel libpulseaudio-devel libsamplerate-devel libsidplayfp-devel libtag-devel libvorbis-devel libwavpack-devel libwildmidi-devel python-module-google python3-dev qt5-tools-devel qt5-x11extras-devel rpm-build-ruby
-BuildRequires(pre): kde-common-devel rpm-build-ubt rpm-build-wlskins
+BuildRequires(pre): rpm-build-kf5 rpm-build-wlskins
 BuildRequires: cmake doxygen qt5-tools-devel qt5-x11extras-devel
 BuildRequires: libmms-devel libprojectM-devel libtag-devel
 BuildRequires: libalsa-devel libjack-devel libpulseaudio-devel qt5-multimedia-devel
@@ -240,14 +241,15 @@ Qmmp Shared library
 %patch5 -p1
 
 %build
-%Kbuild \
+%K5build \
     -DQMMP_DEFAULT_OUTPUT=pulse \
     -DQMMP_DEFAULT_UI=qsui \
     #
 cd doc && doxygen Doxyfile
 
 %install
-%Kinstall
+%K5install
+%K5install_move data solid
 
 mkdir -p %buildroot/%_datadir/%rname
 ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/skins
@@ -258,6 +260,7 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %_libdir/%{rname}-?.*/
 %_desktopdir/%{rname}*.desktop
 %_datadir/%rname/
+%_K5data/solid/actions/*qmmp*.desktop
 %_iconsdir/hicolor/*/apps/%{rname}*.*
 %_datadir/metainfo/*qmmp*.appdata.xml
 
@@ -272,9 +275,12 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %files devel
 %_includedir/%{rname}*
 %_pkgconfigdir/%{rname}*.pc
-%_libdir/lib*.so
+%_K5link/lib*.so
 
 %changelog
+* Thu Aug 20 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.1-alt1
+- new version
+
 * Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 1.3.4-alt1
 - new version
 
@@ -287,37 +293,37 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 * Tue Nov 13 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.4-alt1
 - new version
 
-* Fri Sep 21 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.3-alt2%ubt
+* Fri Sep 21 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.3-alt2
 - resolve conflicts with current qmmp
 
-* Wed Sep 19 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.3-alt1%ubt
+* Wed Sep 19 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.3-alt1
 - new version
 
-* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.2-alt1%ubt
+* Fri Jun 15 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.2-alt1
 - new version
 
-* Fri Jan 12 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt2%ubt
+* Fri Jan 12 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt2
 - rebuild with new libcdio
 
-* Mon Nov 27 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1%ubt
+* Mon Nov 27 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1
 - new version
 
-* Thu Oct 26 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.12-alt1%ubt
+* Thu Oct 26 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.12-alt1
 - new version
 
-* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.10-alt2%ubt
+* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.10-alt2
 - build without libsidplayfp
 
-* Mon Sep 18 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.10-alt1%ubt
+* Mon Sep 18 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.10-alt1
 - new version
 
-* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.9-alt1%ubt
+* Tue Jun 06 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.9-alt1
 - new version
 
-* Mon Feb 13 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.7-alt1%ubt
+* Mon Feb 13 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.7-alt1
 - new version
 
-* Fri Jan 27 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.6-alt1%ubt
+* Fri Jan 27 2017 Sergey V Turchin <zerg@altlinux.org> 1.1.6-alt1
 - new version
 
 * Tue Oct 04 2016 Sergey V Turchin <zerg@altlinux.org> 1.1.4-alt1
