@@ -2,7 +2,7 @@
 %define abiversion 0
 
 Name: iperf3
-Version: 3.8.1
+Version: 3.9
 Release: alt1
 
 Summary: A TCP, UDP, and SCTP network bandwidth measurement tool
@@ -102,6 +102,9 @@ install -pDm0644 %SOURCE3 %buildroot/%_unitdir/%name.service
 %_libdir/lib%native.so
 
 %changelog
+* Wed Aug 19 2020 Sergey Y. Afonin <asy@altlinux.org> 3.9-alt1
+- New version
+
 * Wed Jul 22 2020 Sergey Y. Afonin <asy@altlinux.org> 3.8.1-alt1
 - New version
 - Removed Vcs tag (unsupported in p8 branch)
