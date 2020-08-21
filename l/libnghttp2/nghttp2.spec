@@ -1,5 +1,5 @@
 Name: libnghttp2
-Version: 1.40.0
+Version: 1.41.0
 Release: alt1
 
 Summary: HTTP/2.0 C Library
@@ -68,6 +68,10 @@ Requires: %name = %version-%release
 %exclude %_datadir/nghttp2/fetch-ocsp-response
 
 %changelog
+* Sat Jun 20 2020 Vladimir Lettiev <crux@altlinux.org> 1.41.0-alt1
+- 1.40.1 (Closes: #38626)
+- Security fix: CVE-2020-11080
+
 * Fri Jan 17 2020 Vladimir Lettiev <crux@altlinux.org> 1.40.0-alt1
 - 1.40.0 (Closes: #37840)
 
