@@ -1,5 +1,5 @@
 Name: installer-scripts-remount-stage2
-Version: 0.5.17
+Version: 0.5.19
 Release: alt1
 
 Summary: Shared installer scripts: remount
@@ -48,6 +48,12 @@ __EOF__
 %attr(0755,root,root) %_datadir/install2/initinstall.d/85-start-multipath.sh
 
 %changelog
+* Mon Jul 27 2020 Anton Midyukov <antohami@altlinux.org> 0.5.19-alt1
+- mount_chroot: Fix getting options from /tmp/fstab for /
+
+* Fri Jul 17 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.18-alt1
+- mount_chroot: remount with same mount options as mounted before
+
 * Wed Apr 15 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.17-alt1
 - start_luks: Remount only empty password containers
 

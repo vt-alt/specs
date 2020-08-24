@@ -1,5 +1,5 @@
 Name: guile-evms
-Version: 0.6
+Version: 0.6.1
 Release: alt1
 
 Summary: Guile bindings for EVMS
@@ -33,6 +33,9 @@ make install DESTDIR=%buildroot
 %guile_godir/evms.go
 
 %changelog
+* Tue Jul 21 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.6.1-alt1
+- always mount volume with associated mount options
+
 * Tue Jun 23 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.6-alt1
 - disallow reassign /boot/efi on another fat partition
 - do not propose /mnt/disk as default mountpoint for fat/ntfs

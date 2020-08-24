@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt27
+Release: alt28
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -525,6 +525,9 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Fri Jul 17 2020 Oleg Solovyov <mcpain@altlinux.org> 2.02-alt28
+- apply subvol option substitution into GRUB_CMDLINE_LINUX_DEFAULT
+
 * Thu May 21 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt27
 - add fedora-efi-chainloader-truncate-relocation patch (closes: #37112)
 

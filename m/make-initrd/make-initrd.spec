@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.7.0
+Version: 2.8.3
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -10,6 +10,8 @@ Group: System/Base
 
 Packager: Alexey Gladkov <legion@altlinux.ru>
 
+BuildRequires: autoconf
+BuildRequires: udev
 BuildRequires: help2man
 BuildRequires: libkmod-devel
 BuildRequires: zlib-devel
@@ -21,11 +23,15 @@ BuildRequires: libelf-devel
 Provides: make-initrd(crc32c) = 1
 
 Provides: mkinitrd = 2:%version-%release
+
 Provides: make-initrd2 = %version-%release
 Obsoletes: make-initrd2
 
+Provides: kinit-utils = %version-%release
+Obsoletes: kinit-utils
+
 Requires: sh libshell make sed module-init-tools coreutils findutils grep glibc-utils
-Requires: chrooted-resolv service util-linux which file
+Requires: chrooted-resolv service util-linux which
 
 # Feature qemu
 Requires: pciutils
@@ -38,12 +44,6 @@ Requires: libkmod >= 8-alt1
 
 # make bug-report
 Requires: tar
-
-# ipconfig -q: kinit-utils-1.5.15-alt3
-# run-init -e: kinit-utils-1.5.17-alt2
-# ipconfig -D: kinit-utils-1.5.25-alt2
-# halt, replace, showenv moved from kinit-utils-1.5.25-alt5
-Requires: kinit-utils >= 1.5.25-alt5
 
 # Move /dev from initrd to the real system.
 # 167: udevadm info --run
@@ -150,7 +150,14 @@ CPU microcode autoloading module for %name
 %setup -q
 
 %build
-%make_build
+./autogen.sh
+%configure \
+	--libexecdir=%_prefix/libexec \
+	--with-bootdir=/boot \
+	--with-runtimedir=/lib/initrd \
+	--with-kbddir=/lib/kbd \
+	#
+make
 
 %install
 %make_install DESTDIR=%buildroot install
@@ -171,7 +178,7 @@ fi
 %_datadir/%myname
 %_man1dir/*
 /lib/initrd
-/usr/libexec/%myname
+%_prefix/libexec/%myname
 %exclude %_datadir/%myname/features/devmapper
 %exclude %_datadir/%myname/features/lvm
 %exclude %_datadir/%myname/features/luks
@@ -180,6 +187,7 @@ fi
 %exclude %_datadir/%myname/features/plymouth
 %exclude %_datadir/%myname/features/mdadm
 %exclude %_datadir/%myname/features/ucode
+%exclude %_datadir/%myname/guess/ucode
 %doc Documentation/*.md
 
 %files devmapper
@@ -206,9 +214,55 @@ fi
 %ifarch %ix86 x86_64
 %files ucode
 %_datadir/%myname/features/ucode
+%_datadir/%myname/guess/ucode
 %endif
 
 %changelog
+* Sun Jul 19 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.3-alt1
+- Misc:
+  + Guess root: Show device name only
+  + tests: Add test for btrfs with subvol
+
+* Mon Jul 13 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.2-alt1
+- Feature changes:
+  + add-modules: Put MODULES_PRELOAD into the modules-preudev (thx Gleb F-Malinovskiy)
+  + add-modules: Fix kmodule.deps.d execution (ALT#38696)
+- Utilities:
+  + bug-report: Fix device list
+  + depinfo: Do not stop on error (ALT#38698)
+  + depinfo: Add option to read names from the file
+- Misc:
+  + Change the priority of directories when copying to an image
+
+* Tue Jul 07 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.1-alt2
+- Moved the guess/ucode directory to the appropriate package (ALT#38684).
+
+* Sun Jul 05 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.1-alt1
+- Feature changes:
+  + fsck: Always add fsck utilities
+- Utilities:
+  + make-initrd: Fix --boot=DIR option
+
+* Fri Jul 03 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.0-alt1
+- Feature changes:
+  + guestfs: Add findfs utility
+  + guestfs: Use patterns for utilities
+  + guestfs: Add gdisk and sgdisk
+  + btrfs: Add all devices in the btrfs
+  + network: Add service network-up
+- Utilities:
+  + Add md_run utility from kinit-utils
+  + Add nfsmount utility from kinit-utils
+  + Add resume utility from kinit-utils
+  + Add runas utility
+- Misc:
+  + Use autoconf
+  + Replace build system
+  + Add PUT_FEATURE_PROGS_WILDCARD
+  + Refactor features rules
+  + Drop bootsplash feature
+  + Do not show module dependencies in the guessed config
+
 * Fri May 29 2020 Alexey Gladkov <legion@altlinux.ru> 2.7.0-alt1
 - New feature:
   + Add sysfs-dma feature to detect dependence on dma by sysfs
