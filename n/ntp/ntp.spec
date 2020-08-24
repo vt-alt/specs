@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: ntp
-Version: 4.2.8p14
-Release: alt2
+Version: 4.2.8p15
+Release: alt1
 %define srcname %name-%version%{?patchlevel:%patchlevel}
 
 Summary: The Network Time Protocol (NTP)
@@ -350,6 +350,9 @@ fi
 %ghost %ROOT/%_lib/libresolv.so.2
 
 %changelog
+* Wed Aug 19 2020 Sergey Y. Afonin <asy@altlinux.org> 4.2.8p15-alt1
+- 4.2.8p15
+
 * Sat Apr 04 2020 Sergey Y. Afonin <asy@altlinux.org> 4.2.8p14-alt2
 - updated License tag to SPDX syntax, changed to GPL-3.0-or-later
 - added ntp-4.2.8p14-MD5-to-SHA1-default.patch (ALT #38300)
