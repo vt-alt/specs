@@ -18,8 +18,8 @@
 %def_disable	unit_tests
 
 Name: syslog-ng
-Version: 3.24.1
-Release: alt2
+Version: 3.28.1
+Release: alt1
 
 Summary: syslog-ng daemon
 Group: System/Kernel and hardware
@@ -162,11 +162,11 @@ Group: System/Libraries
 %description journal
 This module provides systemd journal support for %{name}.
 
-%package snmp
+%package afsnmp
 Summary: SNMP support for %{name}
 Group: System/Libraries
 
-%description snmp
+%description afsnmp
 This module provides SNMP support for %{name}.
 
 %package redis
@@ -365,6 +365,10 @@ fi
 %_bindir/dqtool
 %_bindir/persist-tool
 
+%_bindir/slogencrypt
+%_bindir/slogkey
+%_bindir/slogverify
+
 %dir %_libdir/%name
 # basic plugin set
 %_libdir/%name/libaffile.so
@@ -390,7 +394,6 @@ fi
 %_libdir/%name/libdisk-buffer.so
 # added in 3.12.1-alt1
 %_libdir/%name/libmap-value-pairs.so
-%_libdir/%name/libsnmptrapd-parser.so
 %_libdir/%name/libstardate.so
 %_libdir/%name/libtags-parser.so
 %_libdir/%name/libtfgetent.so
@@ -405,6 +408,9 @@ fi
 %_libdir/%name/loggen/libloggen_ssl_plugin.so
 # added in 3.24.1-alt1
 %_libdir/%name/libtimestamp.so
+# added in 3.28.1-alt1
+%_libdir/%name/libazure-auth-header.so
+%_libdir/%name/libsecure-logging.so
 
 %_libdir/lib%name-*.so.*
 %_libdir/libevtlog-*.so.*
@@ -420,6 +426,7 @@ fi
 %exclude %_man1dir/%name-debun*
 %_man1dir/*
 %_man5dir/*
+%_man7dir/*
 %_man8dir/*
 
 %dir %_localstatedir/%name
@@ -471,8 +478,8 @@ fi
 %endif
 
 %if_enabled snmp
-%files snmp
-%_libdir/%name/libsnmpdest.so
+%files afsnmp
+%_libdir/%name/libafsnmp.so
 %endif
 
 %if_enabled redis
@@ -513,6 +520,10 @@ fi
 %_libdir/libsyslog-ng-native-connector.a
 
 %changelog
+* Thu Aug 20 2020 Sergey Y. Afonin <asy@altlinux.org> 3.28.1-alt1
+- 3.28.1
+- syslog-ng-snmp replaced by syslog-ng-afsnmp
+
 * Sun Oct 20 2019 Sergey Y. Afonin <asy@altlinux.org> 3.24.1-alt2
 - added conf.d.example/00-redefine-source-sys.conf: redefinition
   "source sys" for kernels before 3.5 (for 2.6.32-ovz-el formally)
