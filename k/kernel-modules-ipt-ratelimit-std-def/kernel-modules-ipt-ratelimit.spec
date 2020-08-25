@@ -1,5 +1,5 @@
 %define module_name             ipt-ratelimit
-%define module_version          0.3.1
+%define module_version          0.3.2
 %define module_release 		alt1
 
 %define flavour		std-def
@@ -55,6 +55,9 @@ install -pD -m600 xt_ratelimit.ko %buildroot%module_dir/xt_ratelimit.ko
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Wed Aug 19 2020 Alexei Takaseev <taf@altlinux.org> 0.3.2-alt1
+- 0.3.2
 
 * Thu Aug 17 2017 Dmitry V. Levin <ldv@altlinux.org> 0.3-alt2
 - Unpackaged %%module_dir/.

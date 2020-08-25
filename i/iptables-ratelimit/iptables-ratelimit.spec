@@ -1,5 +1,5 @@
 Name: iptables-ratelimit
-Version: 0.3.1
+Version: 0.3.2
 Release: alt1
 Summary: ipt-ratelimit module implements traffic policing
 Group: System/Libraries
@@ -54,6 +54,9 @@ install -pDm0644 ../%name-%version.tar.bz2 %kernel_srcdir/%name-%version.tar.bz2
 %attr(0644,root,root) %kernel_src/%name-%version.tar.bz2
 
 %changelog
+* Wed Aug 19 2020 Alexei Takaseev <taf@altlinux.org> 0.3.2-alt1
+- 0.3.2
+
 * Tue May 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.3.1-alt1
 - updated to 0.3.1
 
