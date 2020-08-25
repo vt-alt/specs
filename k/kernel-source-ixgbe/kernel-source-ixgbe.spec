@@ -1,5 +1,5 @@
 %define module_name ixgbe
-%define module_version 5.6.3
+%define module_version 5.8.1
 
 %define module_source %module_name.tar
 
@@ -33,5 +33,16 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Wed Aug 19 2020 Alexei Takaseev <taf@altlinux.org> 5.8.1-alt1
+- 5.8.1
+
+* Thu May 21 2020 Alexei Takaseev <taf@altlinux.org> 5.7.1-alt1
+- 5.7.1
+- Added support for 5.6 kernel version
+
+* Wed May 13 2020 Alexei Takaseev <taf@altlinux.org> 5.6.4-alt1
+- 5.6.4
+- Fix build with kernel >= 5.4
+
 * Sat Nov 16 2019 Alexei Takaseev <taf@altlinux.org> 5.6.3-alt1
 - initial build
