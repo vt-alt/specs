@@ -1,9 +1,9 @@
 Name:		apache2-mod_http2
-Version:	1.15.7
+Version:	1.15.14
 Release:	alt1
 Summary:	module implementing HTTP/2 for Apache 2
 Group:		System/Servers
-License:	ASL 2.0
+License:	Apache-2.0
 URL:		https://icing.github.io/mod_h2/
 Source0:	%name-%version.tar
 Source1:	%name.watch
@@ -43,6 +43,15 @@ echo "LoadModule proxy_http2_module modules/mod_proxy_http2.so" > %buildroot%apa
 %apache2_moduledir/mod_proxy_http2.so
 
 %changelog
+* Tue Aug 18 2020 Anton Farygin <rider@altlinux.ru> 1.15.14-alt1
+- 1.15.14
+
+* Thu Jul 23 2020 Anton Farygin <rider@altlinux.ru> 1.15.13-alt1
+- 1.15.13
+
+* Thu Jun 04 2020 Anton Farygin <rider@altlinux.ru> 1.15.10-alt1
+- 1.15.10
+
 * Tue Apr 07 2020 Anton Farygin <rider@altlinux.ru> 1.15.7-alt1
 - 1.15.7
 
