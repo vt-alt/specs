@@ -5,14 +5,16 @@
 %add_python_req_skip ADM_resize ADM_image
 
 Name: avidemux-qt
-Version: 2.7.3
+Version: 2.7.6
 Release: alt1
 
 Group: Video
 Summary: Avidemux is a graphical AVI files editor
 Summary(ru_RU.UTF-8): Avidemux -- это редактор AVI-файлов с графическим интерфейсом
 Url: http://avidemux.org/
-License: GPL
+License: GPL-2.0-only
+
+ExcludeArch: armh
 
 Provides: avidemux3 = %version-%release
 Provides: avidemux2 = %version-%release
@@ -43,7 +45,6 @@ Patch100: avidemux-2.5.1-opencore-check.patch
 # Automatically added by buildreq on Mon Aug 24 2015 (-bi)
 # optimized out: cmake-modules elfutils glibc-devel-static libEGL-devel libGL-devel libX11-devel libXext-devel libXv-devel libalsa-devel libgpg-error libjack-devel libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libqt5-core libqt5-gui libqt5-script libqt5-widgets libqt5-xml libstdc++-devel libvorbis-devel libxcb-devel makeinfo perl-Encode perl-Pod-Escapes perl-Pod-Simple perl-Pod-Usage pkg-config python-base python3 python3-base qt5-base-devel rpm-build-gir rsync ruby ruby-stdlibs xorg-videoproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
 #BuildRequires: bzlib-devel cmake gcc-c++ git-core libSDL-devel libXvMC-devel libaften-devel libarts-devel libdca-devel libfaad-devel liblame-devel liblzma-devel liblzo2-devel libopencore-amrnb-devel libopencore-amrwb-devel libpulseaudio-devel libsamplerate-devel libsqlite3-devel libva-devel libvdpau-devel libvpx-devel libx264-devel libx265-devel libxvid-devel nss-ldapd perl-podlators python-module-google qt5-script-devel qt5-tools rpm-build-python3 rpm-build-ruby texi2html xsltproc yasm zlib-devel-static
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: bzlib-devel cmake gcc-c++ yasm glibc-devel libGL-devel libGLU-devel libSDL2-devel python-devel
 BuildRequires: libdca-devel libfaad-devel libjack-devel liblame-devel libtwolame-devel libopus-devel
 #BuildRequires: libaften-devel
@@ -200,37 +201,47 @@ ln -s avidemux3_qt5 %buildroot/%_bindir/%rname
 %exclude %_includedir/avidemux
 
 %changelog
+* Tue Aug 25 2020 Sergey V Turchin <zerg@altlinux.org> 2.7.6-alt1
+- new version
+
+* Mon Jun 29 2020 Sergey V Turchin <zerg@altlinux.org> 2.7.4-alt1
+- new version
+- don't build on armh
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 2.7.3-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Mar 26 2019 Sergey V Turchin <zerg@altlinux.org> 2.7.3-alt1
 - new version (ALT#36355)
 
 * Fri Feb 22 2019 Sergey V Turchin <zerg@altlinux.org> 2.7.1-alt2
 - fix compile with gcc-8
 
-* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 2.7.1-alt1%ubt
+* Tue Aug 21 2018 Sergey V Turchin <zerg@altlinux.org> 2.7.1-alt1
 - new version
 - build on all arches
 
-* Thu Jun 14 2018 Anton Farygin <rider@altlinux.ru> 2.7.0-alt2%ubt
+* Thu Jun 14 2018 Anton Farygin <rider@altlinux.ru> 2.7.0-alt2
 - rebuilt with libva-2.1 
 - build only on x86
 
-* Tue Feb 27 2018 Sergey V Turchin <zerg@altlinux.org> 2.7.0-alt1%ubt
+* Tue Feb 27 2018 Sergey V Turchin <zerg@altlinux.org> 2.7.0-alt1
 - new version
 
-* Tue Oct 10 2017 Anton Farygin <rider@altlinux.ru> 2.6.20-alt4%ubt
+* Tue Oct 10 2017 Anton Farygin <rider@altlinux.ru> 2.6.20-alt4
 - rebuilt for new x264
 
-* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt3%ubt
+* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt3
 - fix find x264
 
-* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt2%ubt
+* Tue Sep 19 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt2
 - fix compile flags
 - fix find x264
 
-* Wed Aug 09 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt1%ubt
+* Wed Aug 09 2017 Sergey V Turchin <zerg@altlinux.org> 2.6.20-alt1
 - new version
 
-* Tue May 30 2017 Anton Farygin <rider@altlinux.ru> 2.6.15-alt1%ubt
+* Tue May 30 2017 Anton Farygin <rider@altlinux.ru> 2.6.15-alt1
 - rebuild with new x265
 
 * Wed Nov 30 2016 Sergey V Turchin <zerg@altlinux.org> 2.6.15-alt0.M80P.1
