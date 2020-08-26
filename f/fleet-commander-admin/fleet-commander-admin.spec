@@ -6,7 +6,7 @@
 
 Name: fleet-commander-admin
 Version: 0.15.1
-Release: alt0.M90P.1
+Release: alt1.M90P.1
 
 Summary: Fleet Commander
 License: LGPLv2+ or MIT or BSD
@@ -170,6 +170,12 @@ ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js
 %_datadir/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/{c73e87a7-b5a1-4b6f-b10b-0bd70241a64d}.xpi
 
 %changelog
+* Thu Aug 13 2020 Andrey Bychkov <mrdrew@altlinux.org> 0.15.1-alt1.M90P.1
+- Firefox profile directory detection fixed (fc logger);
+- Fixed crash firefox_bookmark when removing bookmarks;
+- Snapshot option compatibility fixed;
+- FC-logger: ScreenSaverInhibitor improved (thanks to ptrnine@).
+
 * Fri Jun 05 2020 Stanislav Levin <slev@altlinux.org> 0.15.1-alt0.M90P.1
 - Backported 0.15.1 to P9 from Sisyphus.
 
