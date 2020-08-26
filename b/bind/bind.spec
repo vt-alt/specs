@@ -1,6 +1,6 @@
 Name: bind
-Version: 9.11.19
-%define src_version 9.11.19
+Version: 9.11.22
+%define src_version 9.11.22
 Release: alt1
 
 Summary: ISC BIND - DNS server
@@ -46,6 +46,7 @@ Patch0007: 0007-alt-nofile.patch
 Patch0008: 0008-alt-ads-remove.patch
 Patch0009: 0009-Minimize-linux-capabilities.patch
 Patch0010: 0010-Link-libirs-with-libdns-libisc-and-libisccfg.patch
+Patch0011: 0011-ALT-Make-it-possible-to-retain-Linux-capabilities-of.patch
 
 # root directory for chrooted environment.
 %define _chrootdir %_localstatedir/bind
@@ -67,7 +68,7 @@ Provides: bind-chroot(%_chrootdir)
 Obsoletes: bind-chroot, bind-debug, bind-slave, caching-nameserver
 # Because of /etc/syslog.d/ feature.
 Conflicts: syslogd < 1.4.1-alt11
-Requires(pre): bind-control >= 1.2
+Requires(pre): bind-control >= 1.3
 
 # due to %_chrootdir/dev/log
 BuildPreReq: coreutils
@@ -167,16 +168,7 @@ rather than the DNS protocol.
 %setup
 
 # NB: there must be at least one patch :)
-%patch0001 -p2
-%patch0002 -p2
-%patch0003 -p2
-%patch0004 -p2
-%patch0005 -p2
-%patch0006 -p2
-%patch0007 -p2
-%patch0008 -p2
-#%%patch0009 -p2
-%patch0010 -p2
+%autopatch -p2
 
 install -D -pm644 %_sourcedir/rfc1912.txt doc/rfc/rfc1912.txt
 install -pm644 %_sourcedir/bind.README.bind-devel README.bind-devel
@@ -300,7 +292,7 @@ rm -v %buildroot%docdir/*/{Makefile*,README-SGML,*.xml}
 /usr/sbin/groupadd -r -f named
 /usr/sbin/useradd -r -g named -d %_chrootdir -s /dev/null -n -c "Domain Name Server" named >/dev/null 2>&1 ||:
 [ -f %_initdir/named -a ! -L %_initdir/named ] && /sbin/chkconfig --del named ||:
-%pre_control bind-chroot bind-debug bind-slave
+%pre_control bind-chroot bind-debug bind-slave bind-caps
 
 %preun
 %preun_service bind
@@ -317,7 +309,7 @@ if grep -qs '^SYSLOGD_OPTIONS=.*-a %_chrootdir/dev/log' "$SYSLOGD_CONFIG"; then
 fi
 
 %post_control -s enabled bind-chroot
-%post_control -s disabled bind-debug bind-slave
+%post_control -s disabled bind-debug bind-slave bind-caps
 %post_service bind
 
 %pre -n lwresd
@@ -330,10 +322,11 @@ fi
 %preun -n lwresd
 %preun_service lwresd
 
-%triggerun -- bind < 9.10.4
+%triggerun -- bind < 9.11.19-alt3
 F=/etc/sysconfig/bind
 if [ $2 -gt 0 -a -f $F ]; then
 	grep -q '^#\?CHROOT=' $F || echo '#CHROOT="-t /"' >> $F
+	grep -q '^#\?RETAIN_CAPS=' $F || echo '#RETAIN_CAPS="-r"' >> $F
 fi
 
 %files -n libbind
@@ -434,6 +427,18 @@ fi
 %exclude %docdir/COPYRIGHT
 
 %changelog
+* Fri Aug 21 2020 Stanislav Levin <slev@altlinux.org> 9.11.22-alt1
+- 9.11.20 -> 9.11.22 (fixes: CVE-2020-8622, CVE-2020-8623, CVE-2020-8624).
+
+* Mon Jun 29 2020 Stanislav Levin <slev@altlinux.org> 9.11.20-alt1
+- 9.11.19 -> 9.11.20 (fixes: CVE-2020-8619).
+
+* Fri May 29 2020 Stanislav Levin <slev@altlinux.org> 9.11.19-alt3
+- Placed Linux capabilities dropping under control(1).
+
+* Fri May 29 2020 Stanislav Levin <slev@altlinux.org> 9.11.19-alt2
+- Re-applied the lost patch.
+
 * Tue May 19 2020 Stanislav Levin <slev@altlinux.org> 9.11.19-alt1
 - 9.11.18 -> 9.11.19 (fixes: CVE-2020-8616, CVE-2020-8617).
 
