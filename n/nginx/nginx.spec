@@ -4,7 +4,7 @@
 #============================================================================
 Name: nginx
 Summary: Fast HTTP server
-Version: 1.16.1
+Version: 1.18.0
 Release: alt1
 License: BSD
 Group: System/Servers
@@ -352,6 +352,9 @@ sed -i 's/\(types_hash_bucket_size[[:space:]]*\)[[:space:]]32[[:space:]]*;[[:spa
 %modpath/ngx_http_xslt_filter_module.so
 
 %changelog
+* Fri May 15 2020 Anton Farygin <rider@altlinux.ru> 1.18.0-alt1
+- 1.18.0
+
 * Sun Sep 01 2019 Anton Farygin <rider@altlinux.ru> 1.16.1-alt1
 - 1.16.1
 
