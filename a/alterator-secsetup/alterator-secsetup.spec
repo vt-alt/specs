@@ -1,5 +1,5 @@
 Name: alterator-secsetup
-Version: 1.16
+Version: 1.18
 Release: alt1
 
 Source: %name-%version.tar
@@ -39,6 +39,12 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %config(noreplace) %_sysctldir/*
 
 %changelog
+* Tue Aug 25 2020 Ivan Razzhivin <underwit@altlinux.org> 1.18-alt1
+- fix translation
+
+* Mon Aug 24 2020 Ivan Razzhivin <underwit@altlinux.org> 1.17-alt1
+- change capital case to lowercase
+
 * Mon Aug 03 2020 Ivan Razzhivin <underwit@altlinux.org> 1.16-alt1
 - fix checkbox label
 
