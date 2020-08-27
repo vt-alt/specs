@@ -1,6 +1,6 @@
 Summary: Tool to manage your infrastructure
 Name: salt
-Version: 3000.2
+Version: 3001.1
 Release: alt1
 Url: http://saltstack.org
 #VCS: https://github.com/saltstack/salt
@@ -19,12 +19,11 @@ Source4: salt-master.init
 Source5: salt-minion.init
 Source6: salt-syndic.init
 
-Patch1: salt-alt-and-python3.patch
+Patch1: salt-alt-supported-names.patch
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-setuptools perl-podlators
 BuildRequires: python3-module-nose libzeromq-devel
-BuildRequires: python3-module-zmq-devel python3-module-pycrypto
 BuildRequires: python3-module-msgpack python3-module-yaml
 BuildRequires: python3-module-distro
 
@@ -52,7 +51,7 @@ Summary: Management component for salt, a parallel remote execution system
 Group: Development/Python
 Obsoletes: python-module-salt 
 Requires: python3-module-yaml python3-module-msgpack 
-Requires: python3-module-m2crypto
+Requires: python3-module-pycryptodomex
 
 %description  -n python3-module-salt
 Salt is a distributed remote execution system used to execute commands
@@ -240,6 +239,10 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %_man1dir/salt-proxy.1.*
 
 %changelog
+* Tue Aug 25 2020 Andrey Cherepanov <cas@altlinux.org> 3001.1-alt1
+- New version.
+- Use python3-module-pycryptodomex instead of python3-module-pycrypto.
+
 * Fri May 08 2020 Andrey Cherepanov <cas@altlinux.org> 3000.2-alt1
 - New version.
 - Remove local copy documentation mention in service files.
