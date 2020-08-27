@@ -8,8 +8,8 @@
 %define libvncclient libvncclient%sover
 Name: libvncserver
 %define libname %name
-Version: 0.9.12
-Release: alt2
+Version: 0.9.13
+Release: alt1
 
 Group: System/Libraries
 Summary: An easy API to write one's own VNC server
@@ -22,7 +22,6 @@ Requires: %libvncserver %libvncclient
 Source: http://downloads.sourceforge.net/libvncserver/%tname-%version.tar.gz
 # SuSE
 Patch20: redef-keysym.patch
-Patch21: cmake-libdir.patch
 
 # Automatically added by buildreq on Thu Apr 21 2011 (-bi)
 # optimized out: elfutils libX11-devel libgfortran-devel libstdc++-devel xorg-xproto-devel
@@ -98,7 +97,6 @@ Conflicts: libvncserver < %EVR
 %prep
 %setup -n %tname-%version
 %patch20 -p1
-%patch21 -p1
 
 # set so version
 sed -i 's|^set.*VERSION_SO[[:space:]].*|set(VERSION_SO "%sover")|' CMakeLists.txt
@@ -115,12 +113,12 @@ sed -i 's|@CMAKE_INSTALL_PREFIX@/lib$|@LIB_INSTALL_DIR@|' *.pc.cmakein
 %files
 
 %files -n %libvncserver
-%doc AUTHORS ChangeLog NEWS README* TODO
+%doc AUTHORS ChangeLog NEWS* README* TODO*
 %_libdir/libvncserver.so.%sover
 %_libdir/libvncserver.so.%sover.*
 
 %files -n %libvncclient
-%doc AUTHORS ChangeLog NEWS README* TODO
+%doc AUTHORS ChangeLog NEWS* README* TODO*
 %_libdir/libvncclient.so.%sover
 %_libdir/libvncclient.so.%sover.*
 
@@ -136,6 +134,13 @@ sed -i 's|@CMAKE_INSTALL_PREFIX@/lib$|@LIB_INSTALL_DIR@|' *.pc.cmakein
 
 
 %changelog
+* Tue Aug 25 2020 Sergey V Turchin <zerg@altlinux.org> 0.9.13-alt1
+- new version
+- security (fixes: CVE-2018-21247, CVE-2019-20839, CVE-2019-20840,
+	CVE-2020-14396, CVE-2020-14397, CVE-2020-14398, CVE-2020-14399,
+	CVE-2020-14400, CVE-2020-14401, CVE-2020-14402, CVE-2020-14403,
+	CVE-2020-14404, CVE-2020-14405)
+
 * Fri Aug 30 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.12-alt2
 - fix changelog
 
