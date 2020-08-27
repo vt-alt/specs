@@ -1,9 +1,9 @@
 
-%define sover 5
+%define sover 7
 %define libopenh264 libopenh264_%sover
 Name: openh264
-Version: 2.0.0
-Release: alt3
+Version: 2.1.1
+Release: alt1
 
 Summary: H.264 codec library
 Group: System/Libraries
@@ -22,7 +22,7 @@ It is suitable for use in real time applications such as WebRTC.
 Summary: Development files for %name
 Group: Development/C++
 Requires: %libopenh264
-
+Conflicts: libopenh264-devel
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
@@ -31,7 +31,6 @@ developing applications that use %name.
 Summary: Static H.264 codec library
 Group: Development/C++
 Requires: %name-devel
-
 %description devel-static
 This package provides %name static library.
 
@@ -57,6 +56,10 @@ sed -i -e 's|^PREFIX=.*$|PREFIX=%{_prefix}|' Makefile
 sed -i -e 's|^LIBDIR_NAME=.*$|LIBDIR_NAME=%{_lib}|' Makefile
 sed -i -e 's|^SHAREDLIB_DIR=.*$|SHAREDLIB_DIR=%{_libdir}|' Makefile
 
+[ `grep '^SHAREDLIB_MAJORVERSION=.*$' Makefile | sed 's|.*=||'` == '6' ] \
+ && sed -i 's|^SHAREDLIB_MAJORVERSION=.*$|SHAREDLIB_MAJORVERSION=%sover|' Makefile \
+ ||:
+
 %build
 %make_build
 
@@ -77,6 +80,12 @@ sed -i -e 's|^SHAREDLIB_DIR=.*$|SHAREDLIB_DIR=%{_libdir}|' Makefile
 %_libdir/lib*.a
 
 %changelog
+* Mon Aug 24 2020 Sergey V Turchin <zerg@altlinux.org> 2.1.1-alt1
+- new version
+
+* Tue Dec 10 2019 Sergey V Turchin <zerg@altlinux.org> 2.0.0-alt4
+- add conflict devel subpackage with libopenh264-devel
+
 * Fri Oct 25 2019 Sergey V Turchin <zerg@altlinux.org> 2.0.0-alt3
 - rename according Shared Libs Policy
 
