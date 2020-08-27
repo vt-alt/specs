@@ -3,7 +3,7 @@
 %define rname konversation
 Name: kde5-%rname
 Version: 1.7.5
-Release: alt5
+Release: alt6
 %define beta %nil
 %K5init no_altplace
 
@@ -78,6 +78,9 @@ sed -i \
 
 
 %changelog
+* Wed Aug 26 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.5-alt6
+- fix compile with Qt 5.15
+
 * Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.5-alt5
 - fix compile with new Qt
 
