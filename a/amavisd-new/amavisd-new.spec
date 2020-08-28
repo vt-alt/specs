@@ -1,10 +1,10 @@
 Name: amavisd-new
-Version: 2.6.6
-Release: alt3.qa1
+Version: 2.11.1
+Release: alt1
 Epoch: 1
 
 Summary: A Mail Virus Scanner
-License: GPL
+License: BSD-2-Clause and GPL-2.0
 Group: Networking/Mail
 Url: http://www.ijs.si/software/amavisd/
 Packager: Alexey Shabalin <shaba@altlinux.ru>
@@ -19,7 +19,7 @@ Source8: %name.cron
 Source10: amavisd-av-control
 Source11: amavisd-spam-control
 Source12: amavisd-new.tmpfiles.conf
-Patch: amavisd-perl5.18.patch
+
 Patch1: amavisd-skipsomedeps.patch
 
 BuildArch: noarch
@@ -35,16 +35,23 @@ Requires: perl-IO-Zlib
 Requires: perl-MailTools
 Requires: perl-Mail-DKIM >= 0.31
 
-BuildRequires: perl-BerkeleyDB perl-IO-stringy perl-Unix-Syslog perl-Compress-Zlib perl-MIME-tools perl-Net-Server
+BuildRequires: perl-BerkeleyDB
+BuildRequires: perl-IO-stringy
+BuildRequires: perl-Unix-Syslog
+BuildRequires: perl-Compress-Zlib
+BuildRequires: perl-MIME-tools
+BuildRequires: perl-Net-Server
+BuildRequires: perl-Net-LibIDN
+BuildRequires: perl-Digest-SHA
 
 %description
-Amavisd-new is a high-performance interface between mailer (MTA) and 
-content checkers: virus scanners, and/or SpamAssassin. It is written 
-in Perl for maintainability, without paying a significant price for speed.
-It talks to MTA via (E)SMTP or LMTP, or by using helper programs. 
-Best with Postfix, fine with dual-sendmail setup and Exim v4, works 
-with sendmail/milter, or with any MTA as a SMTP relay. For Courier and 
-qmail MTA there is a patch in the distributed package.
+Amavisd-new is a high-performance interface between mailer (MTA) and content
+checkers: virus scanners, and/or SpamAssassin. It is written in Perl for
+maintainability, without paying a significant price for speed.  It talks to MTA
+via (E)SMTP or LMTP, or by using helper programs.  Best with Postfix, fine with
+dual-sendmail setup and Exim v4, works with sendmail/milter, or with any MTA as
+a SMTP relay. For Courier and qmail MTA there is a patch in the distributed
+package.
 
 %package utils
 Summary: Utils package for amavisd-new.
@@ -172,8 +179,8 @@ Requires: %name
 Requires: p0f
 
 %description p0f
-This package contains require p0f and perl script p0f-analyzer.pl. If you use p0f,
-you will need to install %name-p0f.
+This package contains require p0f and perl script p0f-analyzer.pl. If you use
+p0f, you will need to install %name-p0f.
 
 %package complete
 Summary: Package contein all subpackages amavisd-new.
@@ -197,7 +204,6 @@ All subpackages Amavisd-new.
 
 %prep
 %setup -q
-%patch -p2
 %patch1 -p2
 
 %install
@@ -219,7 +225,6 @@ mkdir -p \
 install -m 755 %SOURCE1 %buildroot%_initdir/amavisd
 install -m 640 amavisd.conf %buildroot%_sysconfdir/amavis/amavisd.conf-old
 install -m 640 amavisd.conf-default %buildroot%_sysconfdir/amavis/amavisd.conf-default
-install -m 640 amavisd.conf-sample %buildroot%_sysconfdir/amavis/amavisd.conf-sample
 install -m 700 %SOURCE8 %buildroot%_sysconfdir/cron.daily/%name
 install -m 755 amavisd %buildroot%_sbindir/amavisd
 install -m 755 amavisd-agent %buildroot%_bindir/amavisd-agent
@@ -292,6 +297,11 @@ install -m 644 %SOURCE12 %buildroot%_tmpfilesdir/amavisd.conf
 %files complete
 
 %changelog
+* Tue Aug 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.11.1-alt1
+- New version (ALT #27110).
+- Fix /var/run/amavis permissions (ALT #37488).
+- Fix License tag according to SPDX.
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1:2.6.6-alt3.qa1
 - NMU: applied repocop patch
 
