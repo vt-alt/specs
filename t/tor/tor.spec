@@ -10,14 +10,13 @@
 %define _tor_root %_localstatedir/%name
 
 Name: tor
-Version: 0.4.0.5
+Version: 0.4.3.6
 Release: alt1
 
 Summary: Anonymizing overlay network for TCP (The onion router)
 Group: System/Servers
-License: BSD-like
+License: BSD-3-Clause
 Url: http://tor.eff.org/
-Packager: Sviatoslav Sviridov <svd@altlinux.ru>
 
 Source0: http://tor.eff.org/dist/%name-%version.tar
 Source1: %name.init
@@ -27,6 +26,10 @@ Source3: %name.tmpfiles
 # Automatically added by buildreq on Fri Jun 24 2011
 # optimized out: fontconfig fonts-type1-urw ghostscript-classic libcom_err-devel libkrb5-devel tex-common texlive-base texlive-base-bin texlive-common texlive-latex-base texlive-latex-recommended
 BuildRequires: ghostscript-common libevent-devel libssl-devel texlive-fonts-recommended texlive-generic-recommended transfig zlib-devel
+BuildRequires: libcap-devel libsystemd-devel liblzma-devel libzstd-devel
+%ifarch %ix86 x86_64 aarch64
+BuildRequires: libseccomp-devel
+%endif
 
 %description
 Tor is a connection-based low-latency anonymous communication system.
@@ -142,6 +145,35 @@ fi
 %_var/cache/%name
 
 %changelog
+* Thu Jul 9 2020 Vladimir Didenko <cow@altlinux.ru> 0.4.3.6-alt1
+- new version (fixes CVE-2020-15572)
+
+* Fri May 15 2020 Vladimir Didenko <cow@altlinux.ru> 0.4.3.5-alt1
+- new version
+
+* Wed Mar 18 2020 Vladimir Didenko <cow@altlinux.ru> 0.4.2.7-alt1
+- new version (fixes CVE-2020-10592)
+
+* Sat Feb 22 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 0.4.2.6-alt2
+- build against libcap, libsystemd, liblzma and libzstd
+- build against libseccomp on ix86, x86_64 and aarch64
+- spec:
+  + update license field according to SPDX format
+  + remove packager field
+
+* Thu Jan 30 2020 Vladimir Didenko <cow@altlinux.ru> 0.4.2.6-alt1
+- new version
+
+* Tue Dec 10 2019 Vladimir Didenko <cow@altlinux.ru> 0.4.2.5-alt1
+- new version
+- fix license name
+
+* Thu Sep 19 2019 Vladimir Didenko <cow@altlinux.ru> 0.4.1.6-alt1
+- new version
+
+* Thu Sep 5 2019 Vladimir Didenko <cow@altlinux.ru> 0.4.1.5-alt1
+- new version
+
 * Mon May 6 2019 Vladimir Didenko <cow@altlinux.ru> 0.4.0.5-alt1
 - new version
 
