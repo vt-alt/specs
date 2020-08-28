@@ -1,6 +1,7 @@
+%def_with doc
 Name: libmodbus
-Version: 3.1.4
-Release: alt1
+Version: 3.1.6
+Release: alt2
 
 Summary: A Modbus library in C, which supports RTU communication over a serial line or a TCP link
 
@@ -10,10 +11,14 @@ Group: System/Libraries
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-Source: https://github.com/downloads/stephane/libmodbus/%name-%version.tar
+# Source-url: https://libmodbus.org/releases/libmodbus-%version.tar.gz
+Source: %name-%version.tar
 
 # Automatically added by buildreq on Tue Mar 30 2010
-BuildRequires: gcc-c++ xmlto asciidoc-a2x
+BuildRequires: gcc-c++
+%if_with doc
+BuildRequires: xmlto asciidoc-a2x
+%endif
 
 %description
 A Modbus library for Linux (and OSX) wrote in C and which supports
@@ -35,17 +40,22 @@ of %name library.
 
 %build
 %autoreconf
-%configure --with-documentation
+%configure \
+%if_without doc
+    --without-documentation \
+%endif
+    %nil
 %make_build
 
 %install
 #mkdir -p -m755 %buildroot/
 %makeinstall_std
+rm -rfv %buildroot%_docdir/%name/
 #mkdir -p -m755 %buildroot%_datadir/libmodbus/
 #ls -lRh %buildroot/
 
 %files
-%doc AUTHORS MIGRATION NEWS COPYING* README.md TODO
+%doc AUTHORS MIGRATION NEWS COPYING* README.md
 %_libdir/libmodbus.so.*
 
 %files devel
@@ -56,10 +66,18 @@ of %name library.
 %_includedir/modbus/modbus-rtu.h
 %_includedir/modbus/modbus-tcp.h
 %_includedir/modbus/modbus-version.h
+%if_with doc
 %_man3dir/*
 %_man7dir/*
+%endif
 
 %changelog
+* Sat Aug 22 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt2
+- really pack 3.1.6 (ALT bug 38837)
+
+* Mon Oct 21 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
+- new version 3.1.6 (with rpmrb script) (ALT bug 37365)
+
 * Mon Nov 21 2016 Terechkov Evgenii <evg@altlinux.org> 3.1.4-alt1
 - 3.1.4 (ALT#30848)
 
