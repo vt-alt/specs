@@ -5,7 +5,7 @@
 
 Name: kernel-source-%module_name
 Version: %module_version
-Release: alt13
+Release: alt14
 
 Group: Development/Kernel
 Summary: Linux %module_name modules sources
@@ -43,6 +43,9 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt14
+- update for kernel 5.8
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 5.1.1.8-alt13
 - fix against kernel 5.6
 
