@@ -12,7 +12,7 @@
 
 Name: falkon
 Version: 3.1.0
-Release: alt1
+Release: alt3
 %K5init no_altplace
 
 Summary: A very fast open source browser based on WebKit core
@@ -21,6 +21,7 @@ Group: Networking/WWW
 Url: https://www.falkon.org/
 
 Source: %name-%version.tar
+Patch1: alt-qt515.patch
 # Automatically added by buildreq on Thu Apr 07 2016
 # optimized out: fontconfig gcc-c++ libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-positioning libqt5-qml libqt5-quick libqt5-quickwidgets libqt5-sql libqt5-webchannel libqt5-webenginecore libqt5-webenginewidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcb-devel pkg-config python-base python-modules qt5-base-devel qt5-declarative-devel qt5-location-devel qt5-tools qt5-webchannel-devel
 BuildRequires(pre): rpm-build-kf5
@@ -32,7 +33,7 @@ BuildRequires: libgnome-keyring-devel
 
 %description
 Falkon is a new and very fast World Wide Web Browser
-which uses Qt Framework and its QtWebKit rendering core.
+which uses Qt Framework and its QtWebEngine rendering core.
 It is a lightweight browser with some advanced functions
 like integrated AdBlock, Search Engines Manager, Theming
 support, Speed Dial and SSL Certificate manager.
@@ -58,6 +59,7 @@ Provides: %name = %version-%release
 Provides: %name-kde = %version-%release
 Provides:  qupzilla-kde5 = %version-%release
 Obsoletes: qupzilla-kde5 < %version-%release
+Obsoletes: rekonq < 2.5
 %description kde5
 Falkon KDE integration.
 
@@ -82,6 +84,7 @@ Summary: %name library
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %K5build
@@ -125,6 +128,12 @@ __EOF__
 %_K5lib/libFalkonPrivate.so.%sover.*
 
 %changelog
+* Fri Aug 28 2020 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt3
+- fix to build with qt-5.15
+
+* Thu Sep 19 2019 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt2
+- obsolete rekonq
+
 * Thu Mar 28 2019 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt1
 - new version
 - obsolete qupzilla
