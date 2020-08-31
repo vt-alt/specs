@@ -26,7 +26,7 @@
 Name: kde5-%rname
 %define lname lib%name
 Version: 6.4.0
-Release: alt1
+Release: alt4
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Summary: digiKam is an advanced digital photo management application for linux
@@ -85,6 +85,8 @@ Source10: mysql_install_db
 Patch100: alt-libraw-aarch64.patch
 Patch101: alt-exiv2-req.patch
 Patch102: alt-own-mysql-install-db.patch
+Patch103: debian-opencv-4.2-compat.patch
+Patch104: alt-qt5.15.patch
 
 %description
 DigiKam is an advanced digital photo management application for KDE.
@@ -165,6 +167,8 @@ Development files for %label.
 %patch100 -p1
 %patch101 -p1
 %patch102 -p1
+%patch103 -p2
+%patch104 -p1
 
 # change double to qreal for casting on arm
 #find -type f -name \*.cpp | \
@@ -196,6 +200,10 @@ while read f ; do
     sed -i 's|${DATA_INSTALL_DIR}/digikam|${KDE_INSTALL_DATADIR_KF5}/digikam|' $f
 %endif
 done
+
+%ifarch armh
+sed -i '/set(HAVE_OPENGL TRUE)/ s,TRUE,FALSE,' CMakeLists.txt
+%endif
 
 %build
 %K5build \
@@ -297,6 +305,15 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %_K5lib/libdigikamgui.so.*
 
 %changelog
+* Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 6.4.0-alt4
+- fix to build with Qt-5.15
+
+* Thu Jul 02 2020 Sergey V Turchin <zerg@altlinux.org> 6.4.0-alt3
+- fix build on armh
+
+* Tue Apr 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.4.0-alt2
+- Rebuilt with opencv-4.3.0.
+
 * Tue Nov 12 2019 Sergey V Turchin <zerg@altlinux.org> 6.4.0-alt1
 - new version
 
