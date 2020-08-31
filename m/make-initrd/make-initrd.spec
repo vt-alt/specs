@@ -1,7 +1,7 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.8.3
+Version: 2.9.0
 Release: alt1
 
 Summary: Creates an initramfs image
@@ -30,8 +30,8 @@ Obsoletes: make-initrd2
 Provides: kinit-utils = %version-%release
 Obsoletes: kinit-utils
 
-Requires: sh libshell make sed module-init-tools coreutils findutils grep glibc-utils
-Requires: chrooted-resolv service util-linux which
+Requires: bash libshell make sed module-init-tools coreutils findutils grep glibc-utils
+Requires: chrooted-resolv service util-linux
 
 # Feature qemu
 Requires: pciutils
@@ -218,6 +218,16 @@ fi
 %endif
 
 %changelog
+* Mon Jul 27 2020 Alexey Gladkov <legion@altlinux.ru> 2.9.0-alt1
+- Feature changes:
+  + guestfs: Add mke2fs utility
+- Utilites:
+  + create-initrd: Use bash array to calculate list of files and directories
+- Misc:
+  + Use bash for scripting
+  + Show only actually included features
+  + Refactor feature dependencies
+
 * Sun Jul 19 2020 Alexey Gladkov <legion@altlinux.ru> 2.8.3-alt1
 - Misc:
   + Guess root: Show device name only
