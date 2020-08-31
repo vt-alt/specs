@@ -1,23 +1,28 @@
+%define _unpackaged_files_terminate_build 1
+
 %define rname kreport
 
 %define kreport_sover 4
 %define libkreport libkreport3%kreport_sover
 
 Name:    kf5-kreport
+Summary: Framework for creation and generation of reports
 Version: 3.2.0
-Release: alt1
+Release: alt3
+Group:   Development/KDE and QT
+License: LGPLv2+
+Url:     https://community.kde.org/KReport
+
 %K5init
 
-Group: Development/KDE and QT
-Summary: Framework for creation and generation of reports
-Url:     https://community.kde.org/KReport
 # git://anongit.kde.org/kreport.git
-License: LGPLv2+
-
-Source: %rname-%version.tar
+Source: %name-%version.tar
+# FC
 Patch1: kf5-kreport-3.0.2-fedora-pkgconfig.patch
+# SuSE
+Patch10: Fix-kexi-build-with-GCC-10.patch
 
-BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
+BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules
 BuildRequires: qt5-base-devel qt5-declarative-devel
 #qt5-webkit-devel
@@ -47,13 +52,14 @@ developing applications that use %name.
 %package -n %libkreport
 Group: System/Libraries
 Summary: %name library
-Requires: %name-common = %version-%release
+Requires: %name-common = %EVR
 %description -n %libkreport
 %name library
 
 %prep
-%setup -qn %rname-%version
+%setup
 %patch1 -p1
+%patch10 -p1
 
 %build
 %K5build \
@@ -84,19 +90,25 @@ Requires: %name-common = %version-%release
 %_K5lib/libKReport3.so.*
 
 %changelog
+* Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt3
+- add fix to build kexi with new gcc
+
+* Mon Jul 08 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.2.0-alt2
+- Spec and build dependencies cleanup.
+
 * Fri Jun 21 2019 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt1
 - new version
 
 * Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 3.1.0-alt3
-- NMU: remove %ubt from release
+- NMU: remove %%ubt from release
 
-* Tue Sep 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 3.1.0-alt2%ubt
+* Tue Sep 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 3.1.0-alt2
 - Rebuilt for aarch64.
 
-* Wed Mar 21 2018 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt1%ubt
+* Wed Mar 21 2018 Sergey V Turchin <zerg@altlinux.org> 3.1.0-alt1
 - new version
 
-* Thu Nov 16 2017 Sergey V Turchin <zerg@altlinux.org> 3.0.2-alt2%ubt
+* Thu Nov 16 2017 Sergey V Turchin <zerg@altlinux.org> 3.0.2-alt2
 - split library to separate package
 
 * Thu Aug 31 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.2-alt1

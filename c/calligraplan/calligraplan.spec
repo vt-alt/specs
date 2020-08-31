@@ -17,14 +17,14 @@
 %define libplanworkfactory libplanworkfactory%sover
 
 Name: calligraplan
-Version: 3.2.0
+Version: 3.2.2
 Release: alt1
 Epoch: 0
 %K5init
 
 Group: Office
 Summary: A project planner
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later
 Url: https://www.calligra.org/plan/
 Provides: koffice-kplato = %koffice_ver
 Obsoletes: koffice-kplato < %koffice_ver
@@ -81,7 +81,6 @@ Header files and libraries needed for %name development
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-Obsoletes: libkplatokernel%sover < %EVR
 %description -n %libplankernel
 %name library
 
@@ -89,7 +88,6 @@ Obsoletes: libkplatokernel%sover < %EVR
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-Obsoletes: libkplatomodels%sover < %EVR
 %description -n %libplanmodels
 %name library
 
@@ -97,7 +95,6 @@ Obsoletes: libkplatomodels%sover < %EVR
 Summary: %name library
 Group: System/Libraries
 Requires: %oname-common = %EVR
-Obsoletes: libkplatoui%sover < %EVR
 %description -n %libplanui
 %name library
 
@@ -199,9 +196,8 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %_K5lib/libkdeinit5_calligraplan.so
 %_K5lib/libkdeinit5_calligraplanwork.so
 %_K5plug/calligraplan/parts/calligraplanpart.so
-%_K5plug/calligraplan/formatfilters/planicalexport.so
-%_K5plug/calligraplan/formatfilters/planplannerimport.so
-%_K5plug/calligraplan/schedulers/libplantjscheduler.so
+%_K5plug/calligraplan/formatfilters/plan*.so
+%_K5plug/calligraplan/schedulers/*plan*.so
 %_K5plug/calligraplanworkpart.so
 %_datadir/calligraplan/
 %_datadir/calligraplanwork/
@@ -216,57 +212,43 @@ rm -frv %buildroot/%_datadir/locale/x-test/
 %files -n %libplankernel
 %_K5lib/libplankernel.so.%sover
 %_K5lib/libplankernel.so.*
-
 %files -n %libplanmodels
 %_K5lib/libplanmodels.so.%sover
 %_K5lib/libplanmodels.so.*
-
 %files -n %libplanui
 %_K5lib/libplanui.so.%sover
 %_K5lib/libplanui.so.*
-
 %files -n %libplankundo2
 %_K5lib/libplankundo2.so.%sover
 %_K5lib/libplankundo2.so.*
-
 %files -n %libplanmain
 %_K5lib/libplanmain.so.%sover
 %_K5lib/libplanmain.so.*
-
 %files -n %libplanodf
 %_K5lib/libplanodf.so.%sover
 %_K5lib/libplanodf.so.*
-
 %files -n %libplanplugin
 %_K5lib/libplanplugin.so.%sover
 %_K5lib/libplanplugin.so.*
-
 %files -n %libplanprivate
 %_K5lib/libplanprivate.so.%sover
 %_K5lib/libplanprivate.so.*
-
 %files -n %libplanstore
 %_K5lib/libplanstore.so.%sover
 %_K5lib/libplanstore.so.*
-
 %files -n %libplanwidgets
 %_K5lib/libplanwidgets.so.%sover
 %_K5lib/libplanwidgets.so.*
-
 %files -n %libplanwidgetutils
 %_K5lib/libplanwidgetutils.so.%sover
 %_K5lib/libplanwidgetutils.so.*
-
 %files -n %libplanworkfactory
 %_K5lib/libplanworkfactory.so.%sover
 %_K5lib/libplanworkfactory.so.*
 
 %changelog
-* Thu Nov 14 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.2.0-alt1
-- 3.1.0 -> 3.2.0
-
-* Thu Nov 14 2019 Oleg Solovyov <mcpain@altlinux.org> 0:3.1.0-alt8
-- Fixed build
+* Wed Aug 26 2020 Sergey V Turchin <zerg@altlinux.org> 0:3.2.2-alt1
+- new version
 
 * Fri Aug 23 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt7
 - fix build with new kcalcore
