@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.4.1
+Version: 1.4.2
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,16 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Tue Sep 01 2020 Anton Midyukov <antohami@altlinux.org> 1.4.2-alt1
+- x11: Added missing xorg-dri-armsoc for armh
+- oem: Added rootfs-installer-features
+- server-v: Added more commits by andy@, shaba@
+- Set default timeout 60 seconds for syslinux and grub
+- Set default item to install2 for syslinux and grub
+- main.mk: Added vm/, ve/ targets into everything target
+- Extended e2k support in distributions (thanks mike@)
+- education: fix build and install
+
 * Mon Aug 17 2020 Anton Midyukov <antohami@altlinux.org> 1.4.1-alt1
 - Revert commit for support multiple kernel in iso image.
 
