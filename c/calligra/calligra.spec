@@ -7,8 +7,8 @@
 %def_disable plan
 
 Name: calligra
-Version: 3.1.0
-Release: alt9
+Version: 3.2.1
+Release: alt1
 Epoch: 0
 %K5init no_altplace
 %define libname lib%name
@@ -32,19 +32,6 @@ Requires: %name-plan
 Requires: %name-okular-generators
 
 Source: http://download.kde.org/stable/calligra/%version/calligra-%version.tar
-# Upstream patches
-Patch1: 0001-Fix-build-with-Qt-5.11-missing-headers.patch
-Patch2: 0001-Missing-include-for-QFrame.patch
-Patch3: 0001-Fix-compilation-with-Qt-5.13.patch
-#
-Patch10: 0010-poppler071.patch
-Patch11: 0011-poppler071.patch
-Patch12: 0012-poppler071.patch
-Patch13: 0013-poppler071.patch
-Patch14: 0014-poppler071.patch
-Patch15: 0015-poppler071.patch
-Patch16: 0016-poppler074.patch
-Patch17: 0017-poppler074.patch
 # ALT
 Patch103: alt-disable-products.patch
 
@@ -194,17 +181,7 @@ Requires: %name-common = %EVR
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
+#
 %patch103 -p1
 
 %build
@@ -281,13 +258,11 @@ done
 %_K5plug/calligra/shapes/calligra_shape_music.so
 %_K5plug/calligra/shapes/calligra_shape_picture.so
 %_K5plug/calligra/shapes/calligra_shape_plugin.so
-%_K5plug/calligra/shapes/calligra_shape_spreadsheet.so
 %_K5plug/calligra/shapes/calligra_shape_text.so
 %_K5plug/calligra/shapes/calligra_shape_vector.so
 %_K5plug/calligra/shapes/calligra_shape_video.so
 %_K5plug/calligra/shapefiltereffects/calligra_filtereffects.so
 %_K5plug/calligraimagethumbnail.so
-%_K5xdgmime/msooxml-all.xml
 %_K5xdgmime/calligra_svm.xml
 %_K5icon/*/*/*/*
 %_K5srv/calligra_odg_thumbnail.desktop
@@ -313,7 +288,6 @@ done
 %_K5plug/calligra/formatfilters/calligra_filter_*kspread*.so
 %_K5plug/calligra/formatfilters/calligra_filter_xls*.so
 %_K5plug/calligrasheets/extensions/sheetssolver.so
-%_K5plug/calligra/deferred/calligra_shape_spreadsheet-deferred.so
 %_datadir/calligrasheets/
 %_K5xmlgui/calligrasheets/
 %_K5srv/sheets_*_thumbnail.desktop
@@ -327,6 +301,8 @@ done
 %files stage
 %config(noreplace) %_K5xdgconf/calligrastagerc
 %doc stage/AUTHORS stage/CHANGES
+%_K5bin/calligrastage
+%_K5lib/libkdeinit5_calligrastage.so
 %_K5plug/calligra/*/*stage*.*
 %_K5plug/calligra/textinlineobjects/kprvariables.so
 %_K5plug/calligrastage/pageeffects/kpr_pageeffect_*.so
@@ -335,11 +311,14 @@ done
 %_K5plug/calligra/formatfilters/calligra_filter_pptx2odp.so
 %_K5plug/calligra/formatfilters/calligra_filter_key2odp.so
 %_K5plug/calligrastage/tools/calligrastagetoolanimation.so
+%_K5xdgapp/org.kde.calligrastage.desktop
 %_datadir/calligrastage/
 %_K5xmlgui/calligrastage/
 %_K5tmpl/Presentation.*
 %_K5tmpl/.source/Presentation.*
 %_K5srv/stage_*_thumbnail.desktop
+%_K5srv/ServiceMenus/calligra/stage_*.desktop
+%_datadir/metainfo/org.kde.calligrastage.appdata.xml
 
 %files karbon
 %config(noreplace) %_K5xdgconf/karbonrc
@@ -353,6 +332,7 @@ done
 %_K5plug/calligra/formatfilters/calligra_filter_karbon2svg.so
 %_K5plug/calligra/formatfilters/calligra_filter_karbon2wmf.so
 %_K5plug/calligra/formatfilters/calligra_filter_svg2karbon.so
+%_K5plug/calligra/formatfilters/calligra_filter_pdf2odg.so
 %_K5plug/calligra/parts/karbonpart.so
 %_K5plug/calligra/tools/karbon_tools.so
 %_datadir/karbon/
@@ -434,6 +414,12 @@ done
 %exclude %_K5lib/libkookularGenerator_odt.so*
 
 %changelog
+* Wed Aug 26 2020 Sergey V Turchin <zerg@altlinux.org> 0:3.2.1-alt1
+- new version
+
+* Fri Jan 17 2020 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt10
+- fix compile with new Poppler
+
 * Wed Sep 18 2019 Sergey V Turchin <zerg@altlinux.org> 0:3.1.0-alt9
 - fix compile with new Qt
 
