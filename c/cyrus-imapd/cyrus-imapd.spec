@@ -18,11 +18,11 @@
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.2.2
+Version: 3.2.3
 Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
-License: CMU License
+License: ALT-Cyrus
 Group: System/Servers
 
 # fresh sources available at https://github.com/cyrusimap/cyrus-imapd
@@ -504,6 +504,11 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Tue Sep 01 2020 Sergey Y. Afonin <asy@altlinux.org> 3.2.3-alt1
+- 3.2.3 (fixed XFER between versions
+  https://github.com/cyrusimap/cyrus-imapd/issues/3123)
+- updated License tag to SPDX syntax (but non SPDX ALT-Cyrus used)
+
 * Sun Jun 28 2020 Sergey Y. Afonin <asy@altlinux.org> 3.2.2-alt1
 - 3.2.2
 - built with libsrs2
