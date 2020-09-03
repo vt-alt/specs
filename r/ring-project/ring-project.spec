@@ -28,7 +28,7 @@
 %define libringclient libringclient%ringclient_sover
 
 Name: ring-project
-Version: 20190215
+Version: 20190814
 Release: alt1
 
 Group: Networking/Instant messaging
@@ -36,7 +36,7 @@ Summary: SIP and IAX2 compatible softphone
 Url: http://ring.cx/
 License: GPLv3
 
-PreReq(post,preun): alternatives >= 0.2
+Requires(post,preun): alternatives >= 0.2
 #Conflicts: sflphone sflphone-common
 #Requires: %name-common >= %EVR
 
@@ -54,7 +54,7 @@ BuildRequires: doxygen graphviz gtk-doc
 BuildRequires: qt5-tools-devel
 BuildRequires: chrpath
 BuildRequires: libalsa-devel libdbus-c++-devel libgnutls-devel libgsm-devel
-BuildRequires: libavdevice-devel libavformat-devel libswscale-devel libavutil-devel libavcodec-devel libavfilter-devel
+BuildRequires: libavutil-devel libavcodec-devel libavformat-devel libavdevice-devel libavfilter-devel libswscale-devel libswresample-devel
 BuildRequires: libssl-devel libgpg-error-devel libgcrypt-devel
 #BuildRequires: libssl-devel-static
 BuildRequires: libnettle-devel libpcre-devel libpulseaudio-devel libsamplerate-devel libsndfile-devel libvpx-devel
@@ -91,6 +91,7 @@ the shell.
 Summary: Ring client written in GTK+
 Group: Networking/Instant messaging
 Requires: ring-daemon
+Provides: jami-client-gnome = %version-%release
 %description -n ring-client-gnome
 Ring-client-gnome is a Ring client written in GTK+. It uses libRingClient to
 communicate with the Ring daemon and for all of the underlying models and their
@@ -144,7 +145,7 @@ developing applications that use %name.
 %prep
 %setup -qn %name-%version
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 %patch3 -p1
 
 # don't build internal vpx
@@ -218,23 +219,24 @@ chrpath --delete %buildroot/%_libdir/ring/dring
 
 # install alternatives
 mkdir -p %buildroot/%_bindir/
-rm -f %buildroot/%_bindir/ring{,.cx}
-ln -s /bin/true %buildroot/%_bindir/ring.cx
-ln -s ring.cx %buildroot/%_bindir/ring
+rm -rf %buildroot/%_bindir/jami
+ln -s /bin/true %buildroot/%_bindir/jami
+ln -s jami %buildroot/%_bindir/ring
+ln -s jami %buildroot/%_bindir/ring.cx
 #
-echo >%buildroot/%_bindir/ring-client-dummy <<__EOF__
+echo >%buildroot/%_bindir/jami-client-dummy <<__EOF__
 #!/bin/sh
-echo "Ring not found" >&2
+echo "Jami not found" >&2
 exit 1
 __EOF__
-chmod 0755 %buildroot/%_bindir/ring-client-dummy
+chmod 0755 %buildroot/%_bindir/jami-client-dummy
 #
 install -d %buildroot/%_sysconfdir/alternatives/packages.d
 cat > %buildroot/%_sysconfdir/alternatives/packages.d/%name <<__EOF__
-%_bindir/ring.cx       %_bindir/ring-client-dummy      1
+%_bindir/jami       %_bindir/jami-client-dummy      1
 __EOF__
-cat > %buildroot/%_sysconfdir/alternatives/packages.d/ring-client-gnome <<__EOF__
-%_bindir/ring.cx       %_bindir/gnome-ring      10
+cat > %buildroot/%_sysconfdir/alternatives/packages.d/jami-client-gnome <<__EOF__
+%_bindir/jami       %_bindir/jami-gnome      10
 __EOF__
 
 %if "%_lib" == "lib64"
@@ -244,7 +246,7 @@ mv %buildroot/usr/lib/* %buildroot/%_libdir/
 %endif
 
 %find_lang lrc --with-qt
-%find_lang ring-client-gnome
+%find_lang jami-client-gnome
 
 %files common
 %_iconsdir/hicolor/*/apps/jami.*
@@ -252,20 +254,22 @@ mv %buildroot/usr/lib/* %buildroot/%_libdir/
 %files -n ring-daemon
 %doc daemon/AUTHORS daemon/COPYING daemon/README
 %config %_sysconfdir/alternatives/packages.d/%name
-%ghost %_bindir/ring
+%ghost %_bindir/jami
+%_bindir/ring
 %_bindir/ring.cx
-%_bindir/ring-client-dummy
+%_bindir/jami-client-dummy
 %_libdir/ring/
 %_datadir/dbus-1/services/cx.ring.*
 %_datadir/ring/
 
-%files -n ring-client-gnome -f ring-client-gnome.lang
-%config %_sysconfdir/alternatives/packages.d/ring-client-gnome
-%_bindir/gnome-ring
-%_datadir/gnome-ring
-%_desktopdir/gnome-ring.desktop
-%_datadir/sounds/gnome-ring/
-%_datadir/glib-2.0/schemas/cx.ring.*.gschema.xml
+%files -n ring-client-gnome -f jami-client-gnome.lang
+%config %_sysconfdir/alternatives/packages.d/jami-client-gnome
+%_bindir/jami-gnome
+%_datadir/jami-gnome
+%_desktopdir/jami-gnome.desktop
+%_datadir/sounds/jami-gnome/
+%_datadir/glib-2.0/schemas/net.jami.*.gschema.xml
+%_datadir/metainfo/jami-gnome.appdata.xml
 
 %files -n %libring
 %doc daemon/AUTHORS daemon/COPYING daemon/README
@@ -289,6 +293,12 @@ mv %buildroot/usr/lib/* %buildroot/%_libdir/
 #%_libdir/libring.a
 
 %changelog
+* Fri Aug 16 2019 Sergey V Turchin <zerg@altlinux.org> 20190814-alt1
+- new version
+
+* Mon Jun 24 2019 Sergey V Turchin <zerg@altlinux.org> 20190622-alt1
+- new version
+
 * Mon Feb 18 2019 Sergey V Turchin <zerg@altlinux.org> 20190215-alt1
 - new version
 
@@ -307,26 +317,26 @@ mv %buildroot/usr/lib/* %buildroot/%_libdir/
 * Fri Nov 23 2018 Sergey V Turchin <zerg@altlinux.org> 20180826-alt2
 - fix requires (ALT#33594)
 
-* Thu Aug 30 2018 Sergey V Turchin <zerg@altlinux.org> 20180826-alt1%ubt
+* Thu Aug 30 2018 Sergey V Turchin <zerg@altlinux.org> 20180826-alt1
 - new version
 
-* Thu Jul 19 2018 Sergey V Turchin <zerg@altlinux.org> 20180712-alt1%ubt.1
+* Thu Jul 19 2018 Sergey V Turchin <zerg@altlinux.org> 20180712-alt1.1
 - fix build requires
 
-* Tue Jul 17 2018 Sergey V Turchin <zerg@altlinux.org> 20180712-alt1%ubt
+* Tue Jul 17 2018 Sergey V Turchin <zerg@altlinux.org> 20180712-alt1
 - using all-in-one tarball
 
-* Mon Jul 09 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.0.0-alt3%ubt
+* Mon Jul 09 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.0.0-alt3
 - fix build on arm
 
-* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 4.0.0-alt2%ubt
+* Thu Jul 05 2018 Sergey V Turchin <zerg@altlinux.org> 4.0.0-alt2
 - fix to build with new ffmpeg
 
-* Tue Jul 25 2017 Sergey V Turchin <zerg@altlinux.org> 4.0.0-alt1%ubt
+* Tue Jul 25 2017 Sergey V Turchin <zerg@altlinux.org> 4.0.0-alt1
 - new version
 - add dummy client alternative
 
-* Wed Feb 22 2017 Sergey V Turchin <zerg@altlinux.org> 3.0.0-alt0.1%ubt
+* Wed Feb 22 2017 Sergey V Turchin <zerg@altlinux.org> 3.0.0-alt0.1
 - new beta
 
 * Thu May 12 2016 Sergey V Turchin <zerg@altlinux.org> 2.3.0-alt0.3
