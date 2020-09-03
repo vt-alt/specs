@@ -2,14 +2,14 @@
 %def_without check
 %def_disable static
 
-%define major 1.12
+%define major 1.13
 
 Name: sofia-sip
-Version: 1.12.11
-Release: alt2.1.qa1
+Version: 1.13.1
+Release: alt0.d10a3d268c
 
 Summary: Sofia SIP User-Agent library 
-License: LGPL v2.1+
+License: LGPLv2.1
 Group: System/Libraries
 Url: http://sofia-sip.sourceforge.net/
 
@@ -84,12 +84,19 @@ Command line utilities for Sofia SIP UA library.
 %autoreconf
 %configure --disable-sctp %{subst_enable static}
 make all %{?_with_doxygen: doxygen} %{?_with_check: check}
+%if_with doxygen
+pushd utils
+doxygen
+popd
+%endif
 
 %install
 %make_install DESTDIR=%buildroot install
 
 %if_with doxygen
 cp -pr libsofia-sip-ua/docs/html manual
+mkdir -p %buildroot/%_man1dir
+install -pm0644 man/man1/* %buildroot/%_man1dir/
 %endif
 
 %files -n libsofia-sip
@@ -133,6 +140,9 @@ cp -pr libsofia-sip-ua/docs/html manual
 %_man1dir/*
 
 %changelog
+* Mon Aug 31 2020 Anton Farygin <rider@altlinux.ru> 1.13.1-alt0.d10a3d268c
+- 1.13.1
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1.12.11-alt2.1.qa1
 - NMU: applied repocop patch
 

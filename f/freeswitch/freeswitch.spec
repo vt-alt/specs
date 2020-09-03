@@ -1,10 +1,10 @@
 Name: freeswitch
-Version: 1.10.3
+Version: 1.10.5
 Release: alt1
 Epoch: 1
 
 Summary: FreeSWITCH open source telephony platform
-License: MPL
+License: MPL-1.1
 Group: System/Servers
 Url: http://www.freeswitch.org/
 
@@ -26,7 +26,7 @@ BuildRequires: libilbc1-devel >= 0.0.2-alt3 libjs-devel flite-devel
 BuildRequires: libtiff-devel libldap-devel libsoundtouch-devel libldns-devel
 BuildRequires: libpcap-devel perl-devel
 BuildRequires: libcelt-devel libmpg123-devel liblame-devel libshout2-devel
-BuildRequires: libopenr2.3-devel
+BuildRequires: libopenr2.3-devel libspandsp3-devel libsofia-sip-devel
 BuildRequires: libnet-snmp-devel libnl-devel libsensors3-devel zlib-devel
 BuildRequires: libuuid-devel postgresql-devel
 BuildRequires: java-common java-1.8.0-openjdk-devel /proc libavformat-devel libavutil-devel libavresample-devel libswscale-devel
@@ -529,6 +529,9 @@ fi
 %_datadir/%name/htdocs/portal
 
 %changelog
+* Mon Aug 31 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.5-alt1
+- 1.10.5
+
 * Thu May 28 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.3-alt1
 - 1.10.3
 
