@@ -1,5 +1,5 @@
 Name: installer-feature-create-vmbr
-Version: 1.1
+Version: 1.2
 Release: alt1
 
 Summary: Create empty vmbr0 bridge after PVE install
@@ -28,10 +28,13 @@ Create empty vmbr0 bridge after PVE installation
 %makeinstall
 
 %files stage3
-# _datadir/install2/postinstall.d/*
+%_datadir/install2/postinstall.d/*
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Fri Aug 28 2020 Andrew A. Vasilyev <andy@altlinux.org> 1.2-alt1
+- Add postinstall.d/01-hosts-for-pve.sh
+
 * Mon Jul 06 2020 Alexey Shabalin <shaba@altlinux.org> 1.1-alt1
 - Cleanup default server etcnet options
 
