@@ -1,7 +1,7 @@
 %define rname kstars
 
 Name: kde5-%rname
-Version: 3.3.6
+Version: 3.4.3
 Release: alt1
 Epoch: 1
 %K5init
@@ -9,7 +9,7 @@ Epoch: 1
 Group: Education
 Summary: Desktop Planetarium
 Url: http://www.kde.org
-License: GPLv2+ / LGPLv2+
+License: GPL-2.0-or-later AND GPL-3.0-or-later
 
 Requires: indi
 
@@ -67,6 +67,9 @@ planets, the Sun and Moon, and thousands of comets and asteroids.
 %_K5cfg/kstars.kcfg
 
 %changelog
+* Thu Sep 03 2020 Sergey V Turchin <zerg@altlinux.org> 1:3.4.3-alt1
+- new version
+
 * Tue Sep 10 2019 Sergey V Turchin <zerg@altlinux.org> 1:3.3.6-alt1
 - new version
 
