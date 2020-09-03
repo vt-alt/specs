@@ -1,7 +1,7 @@
 # obsoleted koffice version
 %define koffice_ver 4:2.3.70
 
-%define sover 18
+%define sover 19
 %define libkritacommand libkritacommand%sover
 %define libkritaimpex libkritaimpex%sover
 %define libkritalibkis libkritalibkis%sover
@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.2.7.1
+Version: 4.3.0
 Release: alt1
 %K5init no_altplace
 
@@ -64,7 +64,8 @@ BuildRequires: zlib-devel libssl-devel
 BuildRequires: extra-cmake-modules
 BuildRequires: qt5-multimedia-devel qt5-svg-devel qt5-wayland-devel qt5-x11extras-devel
 BuildRequires: python3-devel python3-module-PyQt5-devel python3-module-sip-devel
-BuildRequires: boost-devel eigen3 libfftw3-devel libgomp-devel libgsl-devel
+BuildRequires: eigen3 libfftw3-devel libgomp-devel libgsl-devel
+BuildRequires: boost-devel boost-geometry-devel
 #BuildRequires: libgif-devel
 BuildRequires: libquazip-qt5-devel
 #BuildRequires: libquadmath-devel
@@ -283,8 +284,14 @@ Requires: %name-common = %EVR
 
 sed -i 's|sip_bin:.*|sip_bin:%_bindir/sip3")|' cmake/modules/FindSIP.py
 sed -i 's|default_sip_dir:.*|default_sip_dir:%_datadir\/sip3")|' cmake/modules/FindSIP.py
+%ifarch %arm
+sed -i 's,HAVE_OCIO,0,' plugins/dockers/CMakeLists.txt
+%endif
 
 %build
+%ifarch %arm
+%add_optflags -DHAS_ONLY_OPENGL_ES=1
+%endif
 %K5build \
     -DRELEASE_BUILD=ON \
     -DFOUNDATION_BUILD=OFF \
@@ -426,6 +433,12 @@ done
 %_libdir/libkritametadata.so.*
 
 %changelog
+* Mon Aug 31 2020 Sergey V Turchin <zerg@altlinux.org> 4.3.0-alt1
+- new version
+
+* Fri Dec 27 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.8.2-alt1
+- new version
+
 * Tue Oct 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.7.1-alt1
 - new version
 
