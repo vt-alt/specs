@@ -1,11 +1,11 @@
 %define vendorzone ru.
 
 Name: chrony
-Version: 3.4
+Version: 3.5.1
 Release: alt1
 
 Summary: Chrony clock synchronization program
-License: GPLv2 only
+License: GPLv2
 Group: System/Configuration/Other
 
 Url: http://chrony.tuxfamily.org
@@ -65,6 +65,7 @@ sed -i -e 's/OPTIONS/CHRONYD_ARGS/' examples/chronyd.service
 	--with-hwclockfile=%_sysconfdir/adjtime \
 	--enable-ntp-signd \
 	--enable-scfilter \
+	--with-ntp-era=$(date -d '1970-01-01 00:00:00+00:00' +'%s') \
 	--with-sendmail=%_sbindir/sendmail
 
 %make_build all docs 
@@ -131,6 +132,18 @@ touch %buildroot%_localstatedir/lib/%name/{drift,rtc}
 %_man8dir/*
 
 %changelog
+* Wed Aug 26 2020 Anton Farygin <rider@altlinux.ru> 3.5.1-alt1
+- 3.5.1 (fixes: CVE-2020-14367)
+
+* Wed Apr 01 2020 Anton Farygin <rider@altlinux.ru> 3.5-alt3
+- set ntp era (fixed FTBFS, thanks to glebfm for the investigation)
+
+* Wed Oct 16 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt2
+- fixed help in chrony control script (closes: #37340)
+
+* Tue May 21 2019 Anton Farygin <rider@altlinux.ru> 3.5-alt1
+- 3.5
+
 * Mon Oct 01 2018 Anton Farygin <rider@altlinux.ru> 3.4-alt1
 - 3.4
 - enabled tests
