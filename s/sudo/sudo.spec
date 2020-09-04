@@ -1,10 +1,10 @@
 Name: sudo
-Version: 1.8.28
+Version: 1.8.31p2
 Release: alt1
 Epoch: 1
 
 Summary: Allows command execution as another user
-License: BSD-style
+License: ISC
 Group: System/Base
 Url: http://www.courtesan.com/sudo/
 
@@ -116,7 +116,11 @@ fi
 %post_control -s wheelonly sudo
 %post_control -s strict sudoers
 if [ ! -f "/var/run/control/sudoreplay" ]; then
-    echo wheelonly > "/var/run/control/sudoreplay"
+    if [ "$1" -gt 1 ]; then
+        %pre_control sudowheel
+    else
+        echo wheelonly > "/var/run/control/sudoreplay"
+    fi
 fi
 %post_control -s wheelonly sudoreplay
 if [ ! -f "/var/run/control/sudowheel" ]; then
@@ -182,6 +186,9 @@ fi
 %_man8dir/sudo_plugin.8*
 
 %changelog
+* Sun Aug 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:1.8.31p2-alt1
+- Update to latest release (Fixes: CVE-2019-18634)
+
 * Tue Oct 15 2019 Evgeny Sinelnikov <sin@altlinux.org> 1:1.8.28-alt1
 - Update to autumn security release (closes: 37334)
 - Code execution with euid==0 in rare box configurations (fixes: CVE-2019-14287)
