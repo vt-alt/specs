@@ -1,7 +1,7 @@
 Name: easypaint
 Epoch: 1
 Version: 0.1.1
-Release: alt3.1
+Release: alt4
 Summary: Easy graphic editing program
 License: MIT
 Group: Graphics
@@ -11,6 +11,7 @@ Source: %name-%version.tar
 Source1: %name.desktop
 Patch: easypaint-0.1.1-fix-link-to-tracker.patch
 Patch1: 0001-Added-system-translation-preload-for-qt5.patch
+Patch2: easypaint-0.1.1-fix-build-with-qt-5.15.patch
 
 BuildRequires: gcc-c++ qt5-base-devel qt5-tools
 BuildRequires: ImageMagick-tools
@@ -22,6 +23,7 @@ BuildRequires: ImageMagick-tools
 %setup
 %patch -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 pushd sources
@@ -52,6 +54,9 @@ done
 %_miconsdir/*
 
 %changelog
+* Mon Aug 31 2020 Grigory Ustinov <grenka@altlinux.org> 1:0.1.1-alt4
+- Fixed FTBFS.
+
 * Wed Dec 18 2019 Anton Midyukov <antohami@altlinux.org> 1:0.1.1-alt3.1
 - Fix link to tracker again (Closes: 37477)
 
