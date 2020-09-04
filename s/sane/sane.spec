@@ -1,8 +1,8 @@
 %define oname %name-backends
 
 Name: sane
-Version: 1.0.30
-Release: alt2
+Version: 1.0.31
+Release: alt1
 
 Summary: This package contains the SANE docs and utils
 Summary(ru_RU.UTF-8): Документация и утилиты для SANE
@@ -44,6 +44,10 @@ BuildRequires: gcc-c++
 # optimized out: ghostscript-classic glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gnu-config gnustep-base-devel libdb4-devel libgpg-error libgphoto2-6 libgphoto2_port-12 libnet-snmp35 libnl-devel libpng-devel libssl-devel libstdc++-devel net-snmp-config netpbm pkg-config python-base python-modules python3 python3-base python3-dev python3-module-mpl_toolkits python3-module-paste python3-module-zope ruby ruby-stdlibs sh4 sssd-client
 BuildRequires: libavahi-devel libgphoto2-devel libieee1284-devel libjpeg-devel libnet-snmp-devel libsystemd-devel libtiff-devel libusb-devel libv4l-devel
 
+# The pixma backend requires libxml2
+BuildRequires: libxml2-devel
+
+BuildRequires: rpm-build-python3 python3
 
 %package -n %name-server
 Summary: SANE as network server
@@ -173,6 +177,7 @@ find -type f -print0 -name '*.cpp' -o -name '*.cc' -o -name '*.h' |
 
 %build
 sed -i "s|m4_esyscmd_s(\[git describe --dirty\])|%version|" configure.ac
+sed -i "s|python |%__python3 |" backend/Makefile.am
 %autoreconf
 %configure --enable-translations --with-gphoto2 \
 	--with-usb \
@@ -261,6 +266,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %_pkgconfigdir/%oname.pc
 
 %changelog
+* Wed Sep 02 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.31-alt1
+- new version 1.0.31 (with rpmrb script)
+
 * Fri Jun 26 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.30-alt2
 - add ID information for Avision AV186+ and AV188 sheetfed USB scanners
 
