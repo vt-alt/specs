@@ -2,14 +2,15 @@
 %define sover 5
 %define libname libzip%sover
 %define utilsname libzip-utils
+
 Name: libzip
-Version: 1.5.2
+Version: 1.7.3
 Release: alt1
 
 Group: System/Libraries
 Summary: C library for reading, creating, and modifying zip archives
-License: BSD
 Url: http://www.nih.at/libzip/
+License: BSD
 
 Source: %name-%version.tar
 
@@ -77,12 +78,16 @@ sed -i '/^ADD_SUBDIRECTORY(regress)$/d' CMakeLists.txt
 %files devel
 %_libdir/*.so
 %_libdir/pkgconfig/*.pc
-#%_libdir/%name/include
-%_includedir/%name/
+%_libdir/cmake/libzip/
+%_includedir/libzip/
+%_includedir/zipconf.h
 %_man3dir/*zip*
 %_man3dir/*ZIP*
 
 %changelog
+* Wed Sep 02 2020 Sergey V Turchin <zerg@altlinux.org> 1.7.3-alt1
+- new version
+
 * Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 1.5.2-alt1
 - new version
 
