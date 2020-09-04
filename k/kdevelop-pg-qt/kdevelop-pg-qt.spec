@@ -1,6 +1,6 @@
 Name: kdevelop-pg-qt
-Version: 2.1.0
-Release: alt2
+Version: 2.2.1
+Release: alt1
 Obsoletes: kdevelop-unstable-pg-qt
 
 Group: Development/Other
@@ -39,6 +39,9 @@ is ideal to be used in Qt-/KDE-based applications like KDevelop.
 %_libdir/cmake/*
 
 %changelog
+* Thu Sep 03 2020 Sergey V Turchin <zerg@altlinux.org> 2.2.1-alt1
+- New version
+
 * Mon Aug 13 2018 Fr. Br. George <george@altlinux.ru> 2.1.0-alt2
 - Fix provides
 
