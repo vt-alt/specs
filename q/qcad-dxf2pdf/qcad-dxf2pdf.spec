@@ -1,5 +1,5 @@
 Name: qcad-dxf2pdf
-Version: 1.1
+Version: 1.2
 Release: alt1
 
 Summary: Command-line converter from DXF to PDF using qcad
@@ -34,6 +34,10 @@ sed -i -e 's|@SCRIPTDIR@|%scriptdir|'\
 %_man1dir/dxf2pdf.*
 
 %changelog
+* Sat Jul 25 2020 Vladislav Zavjalov <slazav@altlinux.org> 1.2-alt1
+- use -allow-multiple-instances switch to avoid connecting to a
+  running qcad program
+
 * Fri Jul 03 2020 Vladislav Zavjalov <slazav@altlinux.org> 1.1-alt1
 - fix error message in case of wrong argument number
 
