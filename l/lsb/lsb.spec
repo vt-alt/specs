@@ -17,15 +17,25 @@
 %define lsb_arch aarch64
 %define lib_suffix ()(64bit)
 %endif
+%ifarch armh
+%define lsb_arch armh
+%define lib_suffix %nil
+%endif
+%ifarch mipsel
+%define lsb_arch mipsel
+%define lib_suffix %nil
+%endif
 
 Name: lsb
-Summary: The skeleton package defining packages needed for LSB compliance
 Version: 4.0
-Release: alt8
-License: GPL
+Release: alt12
+
+Summary: The skeleton package defining packages needed for LSB compliance
+
+License: GPLv2
 Url: http://www.linuxbase.org/
 Group: System/Base
-Packager: Andriy Stepanov <stanv@altlinux.ru>
+
 Source1: README.alt
 
 # 20.4 Installation and Removal of Init Scripts
@@ -37,7 +47,7 @@ Source12: remove_initd
 # XXX:
 Source21: lsbinstall
 
-Exclusivearch: %ix86 x86_64 %e2k aarch64
+ExclusiveArch: %ix86 x86_64 %e2k aarch64 armh mipsel
 
 Requires: lsb-core = %version
 Requires: lsb-cxx = %version
@@ -274,6 +284,9 @@ Requires: ld-linux-x86-64.so.2%lib_suffix
 # see %install section Requires: /lib64/ld-lsb.so.3
 Requires: ld-linux.so.2%lib_suffix
 %endif
+%ifarch mipsel
+Requires: ld.so.1%lib_suffix
+%endif
 
 %description core
 This is the Core module of the Linux Standard Base (LSB), ISO/IEC 23360
@@ -463,8 +476,8 @@ Requires: perl-bignum
 # Submodule Python
 # http://dev.linuxfoundation.org/navigator/browse/module.php?cmd=display_module&module=LSB_Python
 # http://dev.linuxfoundation.org/navigator/browse/intlang.php?cmd=list-modules&ILid=2
-Requires: /usr/bin/python
-Requires: python-base >= 2.4.2
+Requires: %__python
+#Requires: python2-base >= 2.4.2
 Requires: python-modules
 %description languages
 The languages requirements for LSB compliance.
@@ -587,6 +600,9 @@ ln -sf "/lib64/ld-linux-x86-64.so.2" "%buildroot/lib64/ld-lsb-x86-64.so.3"
 %ifarch %e2k
 ln -sf "/lib64/ld-linux.so.2" "%buildroot/lib64/ld-lsb.so.3"
 %endif
+%ifarch mipsel
+ln -sf "/lib/ld.so.1" "%buildroot/lib/ld-lsb-mipsel.so.3"
+%endif
 
 touch %buildroot%_sysconfdir/lsb-release.d/core-%compat_version-%lsb_arch
 touch %buildroot%_sysconfdir/lsb-release.d/core-%compat_version-noarch
@@ -635,6 +651,9 @@ touch %buildroot%_sysconfdir/lsb-release.d/trialuse-%version-noarch
 %ifarch %e2k
 /lib64/ld-lsb.so.3
 %endif
+%ifarch mipsel
+/lib/ld-lsb-mipsel.so.3
+%endif
 %prefix/lib/lsb/install_initd
 %prefix/lib/lsb/remove_initd
 %prefix/lib/lsb/lsbinstall
@@ -671,6 +690,21 @@ touch %buildroot%_sysconfdir/lsb-release.d/trialuse-%version-noarch
 %_sysconfdir/lsb-release.d/trialuse-%version-noarch
 
 %changelog
+* Wed Sep 02 2020 Anton Midyukov <antohami@altlinux.org> 4.0-alt12
+- added armh
+
+* Tue Feb 11 2020 Vitaly Lipatov <lav@altlinux.ru> 4.0-alt11
+- remove obsoleted packager line
+- use __python instead of /usr/bin/python2
+- drop python2-base require
+
+* Tue Feb 11 2020 Vitaly Lipatov <lav@altlinux.ru> 4.0-alt10
+- fix licence name
+- require python2
+
+* Wed Oct 02 2019 Ivan A. Melnikov <iv@altlinux.org> 4.0-alt9
+- mipsel support
+
 * Mon Sep 30 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 4.0-alt8
 - added aarch64
 
