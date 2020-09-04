@@ -1,6 +1,6 @@
 Name: file
 Version: 4.26
-Release: alt13
+Release: alt14
 
 Summary: A utility for determining file types
 License: BSD-style
@@ -123,6 +123,11 @@ make -k check
 %python_sitelibdir/*
 
 %changelog
+* Fri Aug 28 2020 Dmitry V. Levin <ldv@altlinux.org> 4.26-alt14
+- Removed (by Vitaly Chikunov) weak magic for:
+  - Sun disk label (to fix generation of debuginfo for kernel modules);
+  - CLIPPER instruction on VAX (to fix misdetection of manpages).
+
 * Wed Mar 22 2017 Dmitry V. Levin <ldv@altlinux.org> 4.26-alt13
 - Backported readelf fix (by sem@; fixes: CVE-2014-9653).
 - Backported magic for lrzip, lz4, zstd, and snappy.

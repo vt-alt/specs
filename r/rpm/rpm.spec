@@ -4,9 +4,11 @@
 %def_enable plugins
 %def_disable rpmbuild
 %def_with xz
+%def_with zstd
 %def_with beecrypt
 %def_with memcached
 %def_enable default_priority_distbranch
+%def_with profile
 
 %define rpmhome /usr/lib/rpm
 
@@ -18,7 +20,7 @@
 Summary: The RPM package management system
 Name: rpm
 Version: 4.13.0.1
-Release: alt13
+Release: alt24
 Group: System/Configuration/Packaging
 Url: http://www.rpm.org/
 # http://git.altlinux.org/gears/r/rpm.git
@@ -68,6 +70,9 @@ BuildRequires: libcap-devel
 BuildRequires: libacl-devel
 %if_with xz
 BuildRequires: liblzma-devel >= 4.999.8
+%endif
+%if_with zstd
+BuildRequires: libzstd-devel
 %endif
 %if_with libarchive
 BuildRequires: libarchive-devel
@@ -259,6 +264,7 @@ Summary: Run tests for %name immediately when this package is installed
 Group: Other
 BuildArch: noarch
 Requires: %name
+Requires: rpminstall-tests-archcompat-checkinstall
 Requires: rpminstall-tests-checkinstall
 
 %description checkinstall
@@ -300,6 +306,31 @@ done;
 	#
 
 %make_build
+
+rpmquery -a --provides |fgrep '= set:' |sort >P
+rpmquery -a --requires |fgrep '= set:' |sort >R
+join -o 1.3,2.3 P R |shuf >setcmp-data
+time ./setcmp <setcmp-data >/dev/null
+rm lib/set.lo lib/librpm.la
+set_c_cflags="$(sed -n 's/^CFLAGS = //p' lib/Makefile) -W -Wno-override-init %{!?_enable_debug:-O3} -fno-builtin-memcmp"
+%make_build -C lib set.lo librpm.la CFLAGS="$set_c_cflags"
+
+%if_with profile
+time ./setcmp <setcmp-data >/dev/null
+rm lib/set.lo lib/librpm.la
+%make_build -C lib set.lo librpm.la CFLAGS="$set_c_cflags -fprofile-generate"
+./setcmp <setcmp-data >/dev/null
+%ifnarch %e2k
+ls -l lib/.libs/set.gcda
+%else
+mv eprof.sum* lib
+%endif
+rm lib/set.lo lib/librpm.la
+%make_build -C lib set.lo CFLAGS="$set_c_cflags -fprofile-use"
+%endif #with profile
+
+%make_build
+time ./setcmp <setcmp-data >/dev/null
 
 pushd python
 %python_build
@@ -385,6 +416,10 @@ ls -A tests/rpmtests.dir 2>/dev/null ||:
 #[ ! -L %%_rpmlibdir/noarch-alt-%%_target_os ] || rm -f %%_rpmlibdir/noarch-alt-%%_target_os ||:
 
 %post
+if [ -f %_localstatedir/PackageKit/disable-rpm-triggers ]; then
+        exit 0
+fi
+
 #chgrp %%name %%_localstatedir/%%name/[A-Z]*
 [ -n "$DURING_INSTALL" -o -n "$BTE_INSTALL" ] ||
         %_rpmlibdir/pdeath_execute $PPID %_rpmlibdir/postupdate
@@ -540,6 +575,60 @@ touch /var/lib/rpm/delay-posttrans-filetriggers
 %_includedir/rpm
 
 %changelog
+* Sat Aug 29 2020 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt24
+  [Restored some patches from 4.0.4-alt94]
+- rpmrc.c: recognize new Intel CPUs (Dmitry V. Levin)
+- rpmrc.c: classify SSE2-capable Intel CPUs as "pentium4" (Alexey Tourbin)
+  [Restored a patch from 4.0.4-alt98.26]
+- rpmrc.c (is_pentiumN): Added models with nonzero extended model
+  (Dmitry V. Levin; reported by Alexander Sharapov).
+  (Closes: #38708)
+
+* Fri Jul 03 2020 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt23
+- Fixed a bug in ARM hardfloat detection (armv?h* archs), introduced
+  in 4.13.0.1-alt22, which would prevent normal installation of armh
+  packages on such machines. (Note that rpm-build-4.0.4-alt141 is still
+  ignorant of armv?h* arches, so the only way to build packages installable
+  on such machines is with --target armh.)
+
+* Sun Jun 28 2020 Ivan Zakharyaschev <imz@altlinux.org> 4.13.0.1-alt22
+- Improved machine detection & configuration for:
+  + x86_64 on Darwin, armv5tl, Transmeta Crusoe as i686, parisc as hppa (on linux)
+    (cherry-picked from upstream);
+  + armv8[h]l (further refined by me on the base of changes from upstream and
+    Peter Robinson).
+  (Accompanying macros have been added, too.)
+
+* Fri May 29 2020 Andrew Savchenko <bircoph@altlinux.org> 4.13.0.1-alt21
+- Add support for >= gcc10.
+- E2K: Add lcc to the generic devel exceptions list.
+
+* Tue Apr 07 2020 Alexey Tourbin <at@altlinux.ru> 4.13.0.1-alt20
+- find-package, shebang.req: introduced RPM_FINDPACKAGE_MANDATORY=1.
+  When an interpreter is invoked by name, as in "#!/usr/bin/env python32",
+  and is missing, this will now force the dependency on /usr/bin/python32.
+
+* Thu Mar 19 2020 Alexey Tourbin <at@altlinux.ru> 4.13.0.1-alt19
+- Backported support for zstd compressed payload (by Jeff Johnson and others),
+  so that rpm2cpio can handle Fedora 31 packages.
+
+* Tue Mar 10 2020 Andrew Savchenko <bircoph@altlinux.org> 4.13.0.1-alt18
+- Fix CANONCOLOR and library suffix on E2K architectures.
+
+* Wed Dec 18 2019 Dmitry V. Levin <ldv@altlinux.org> 4.13.0.1-alt17
+- runScript: introduced %%_rpmscript_werror macro.
+
+* Mon Dec 16 2019 Andrew Savchenko <bircoph@altlinux.org> 4.13.0.1-alt16
+- Fix %%_arch macro on E2K architectures, see bug:
+  https://bugzilla.altlinux.org/37616
+
+* Mon Nov 25 2019 Andrew Savchenko <bircoph@altlinux.org> 4.13.0.1-alt15
+- Support rpmsetcmp profiling on E2K.
+
+* Sat Nov 23 2019 Dmitry V. Levin <ldv@altlinux.org> 4.13.0.1-alt14
+- Added triggers circumvention for packagekit offline update (by Aleksei Nikiforov).
+- Imported rpmsetcmp optimization from rpm-build.
+
 * Wed Oct 02 2019 Dmitry V. Levin <ldv@altlinux.org> 4.13.0.1-alt13
 - posttrans-filetriggers: Remove RPM_INSTALL_* variables (closes: #37275).
 

@@ -5,7 +5,7 @@
 
 Name: rpm-build
 Version: 4.0.4
-Release: alt139
+Release: alt151
 
 %define ifdef() %if %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define get_dep() %(rpm -q --qf '%%{NAME} >= %%|SERIAL?{%%{SERIAL}:}|%%{VERSION}-%%{RELEASE}' %1 2>/dev/null || echo '%1 >= unknown')
@@ -210,6 +210,7 @@ BuildArch: noarch
 Requires: %name
 # rpminstall-tests-checkinstall first uses rpm-build to build packages,
 # then tests how rpm installs them. Useful for testing rpm-build, too.
+Requires: rpminstall-tests-archcompat-checkinstall
 Requires: rpminstall-tests-checkinstall
 
 %description checkinstall
@@ -356,6 +357,7 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %rpmattr %_rpmlibdir/find-provides
 %rpmattr %_rpmlibdir/find-requires
 %rpmattr %_rpmlibdir/find-debuginfo-files
+%rpmattr %_rpmlibdir/process-debuginfo
 %rpmattr %_rpmlibdir/find-scriptlet-requires
 %rpmattr %_rpmlibdir/fixup-*
 %rpmattr %_rpmlibdir/files.*
@@ -406,6 +408,57 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %files checkinstall
 
 %changelog
+* Fri Aug 28 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt151
+- debuginfo: Do not try to use eu-elfcompress if it does not exist.
+- debuginfo: Fix adding non-existent files into debuginfo package.
+
+* Mon Aug 24 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt150
+- Removed obsolete ldconfig, update menu, and install info macros.
+- Implemented canonicalization of symlink destinations.
+- Backported:
+  + added a warning on absolute symlinks;
+  + disabled calculation of digests for ghost files.
+
+* Mon Aug 24 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt149
+- find-debuginfo-files: Fix processing of root directory (closes: #38842).
+
+* Sat Aug 22 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt148
+- debuginfo: Warn if stripped ELFs are found.
+- debuginfo: Implement %%_stripped_files_terminate_build.
+- debuginfo: Try to uncompress if debugedit failed to extract sources.
+
+* Fri Aug 21 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt147
+- debuginfo: Show warnings if .debug sections are absent.
+
+* Thu Jul 09 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt146
+- brp-debuginfo: Re-enable processing of kernel modules.
+- debuginfo.req: Fix 'vmlinux' processing error on ppc64le.
+- process-debuginfo: Do not call eu-elfcompress if it doesn't exist.
+
+* Wed Jul 08 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt145
+- brp-debuginfo: fixed regression (in handling of packages containing
+  ELF relocatable objects) introduced in 4.0.4-alt142.
+
+* Tue Jul 07 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt144
+- debuginfo: Fix processing of hard-linked binaries.
+
+* Mon Jul 06 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt143
+- debuginfo: Improve search for vmlinux binary.
+
+* Sun Jul 05 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt142
+- Generate debuginfo for kernel packages.
+- Process debuginfo in parallel using process-debuginfo script.
+- debugedit -n to avoid recomputing build-id.
+
+* Sun Jun 28 2020 Ivan Zakharyaschev <imz@altlinux.org> 4.0.4-alt141
+- Added /usr/lib/rpm/armv8l-alt-linux/macros for builds on armv8l machines;
+  added armv8l to the %%arm list and optflags for it for builds targeting it.
+  (Fixes 4.0.4-alt108:
+  - installplatform, rpmrc.in: made armv8l compatible with armh.)
+
+* Fri May 29 2020 Andrew Savchenko <bircoph@altlinux.org> 4.0.4-alt140
+- Export FCFLAGS as modern FFLAGS replacement for gfortran.
+
 * Tue Apr 21 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt139
 - ldd.in: made preloading of PIE objects work again.
 - Set the value of SOURCE_DATE_EPOCH environment variable (if any)
