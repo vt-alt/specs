@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-grub
-Version: 0.14
+Version: 0.15
 Release: alt1
 
 Summary: alterator module to setup grub bootloader
@@ -53,6 +53,10 @@ alterator module to setup grub bootloader
 %_bindir/*
 
 %changelog
+* Wed Sep 02 2020 Paul Wolneykien <manowar@altlinux.org> 0.15-alt1
+- Handle "setpass" X-Alterator-URI parameter allowing to pre-check
+  the password reset checkbox.
+
 * Fri Feb 07 2020 Anton Midyukov <antohami@altlinux.org> 0.14-alt1
 - backend: added variant removable device for EFI (needed Secure Boot disabled)
 
