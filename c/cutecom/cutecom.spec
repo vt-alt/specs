@@ -1,6 +1,6 @@
 Name:     cutecom
 Version:  0.51.0
-Release:  alt1
+Release:  alt2
 
 Summary:  A graphical serial terminal
 Summary(pl): Graficzny terminal szeregowy
@@ -11,6 +11,9 @@ Url:      https://gitlab.com/cutecom/cutecom
 
 Source:   %name-%version.tar
 Patch:    cutecom-0.40.0-mga-fixinstall.patch
+
+# Upstream patch
+Patch1:   0001-Fix-build-with-Qt-5.15-hopefully.patch 
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: cmake gcc-c++
@@ -42,6 +45,7 @@ Cutecom - графический последовательный термина
 %prep
 %setup
 %patch -p1
+%patch1 -p1
 
 %build
 %cmake
@@ -69,6 +73,9 @@ pandoc -f markdown -t html README.md -o README.html
 %_iconsdir/hicolor/scalable/apps/cutecom.svg
 
 %changelog
+* Sun Aug 16 2020 Anton Midyukov <antohami@altlinux.org> 0.51.0-alt2
+- Fix build with qt5 5.15
+
 * Fri Mar 13 2020 Anton Midyukov <antohami@altlinux.org> 0.51.0-alt1
 - 0.51.0
 - switch to git
