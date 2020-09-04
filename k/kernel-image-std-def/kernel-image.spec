@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.4
-%define kernel_sublevel .56
+%define kernel_sublevel .62
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -704,6 +704,21 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Sep 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.62-alt1
+- v5.4.62
+
+* Thu Aug 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.61-alt1
+- v5.4.61
+
+* Mon Aug 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.60-alt1
+- v5.4.60  (Fixes: CVE-2019-19448, CVE-2019-19770, CVE-2020-14331)
+
+* Fri Aug 07 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.57-alt1
+- v5.4.57
+
+* Thu Aug 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.56-alt2
+- CONFIG_SCSI_HISI_SAS enabled
+
 * Wed Aug 05 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.56-alt1
 - v5.4.56
 
