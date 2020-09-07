@@ -1,6 +1,6 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
-Version: 0.9.13.1
+Version: 0.9.14
 Release: alt1
 
 Summary: An open source remote desktop protocol (RDP) server
@@ -30,6 +30,9 @@ Patch10: lfs.diff
 Patch12: xrdp-alt-startwm.patch
 Patch13: alt-add-russian-keyboard.patch
 Patch14: xrdp-alt-add-comment-about-windows_xp.patch
+# https://github.com/neutrinolabs/xrdp/pull/1659
+Patch15: xrdp-fix-sprintf-truncation.patch
+Patch16: xrdp-alt-ppc64le-support.patch
 
 BuildPreReq: rpm-build-intro rpm-macros-intro-conflicts
 BuildRequires: libjpeg-devel
@@ -91,6 +94,8 @@ tar xf %SOURCE6
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
+%patch16 -p1
 
 cp %SOURCE3 %name-init
 
@@ -105,6 +110,7 @@ echo '#!/bin/bash -l
 . %_sysconfdir/xrdp/startwm.sh' > sesman/startwm-bash.sh
 
 %build
+%add_optflags -Wno-error=int-to-pointer-cast
 ./bootstrap
 for dir in xorgxrdp librfxcodec libpainter; do
 	pushd $dir
@@ -236,6 +242,9 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Thu Sep 03 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt1
+- New version.
+
 * Wed Jul 01 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.13.1-alt1
 - New version.
 
