@@ -1,26 +1,34 @@
+# Unpackaged files in buildroot should terminate build
+%define _unpackaged_files_terminate_build 1
+
 %define _libexecdir %_prefix/libexec
+
 Name: lmms
-Version: 1.2.0
-Release: alt2.20190117
+Version: 1.2.2
+Release: alt2
 
 Summary: Linux MultiMedia Studio
-License: GPL
+License: GPL-2.0-or-later
 Group: Sound
-Url: http://lmms.sourceforge.net
 
+Url: http://lmms.sourceforge.net
 # https://github.com/LMMS/lmms.git
 Source: %name-%version.tar
 Source4: %name-16x16.png
 Source5: %name-32x32.png
 Source6: %name-48x48.png
-Patch1: %name-%version-no_werror.patch
-Patch2: %name-%version-vst-nowine.patch
+Patch1: %name-1.2.0-no_werror.patch
+Patch2: %name-1.2.0-vst-nowine.patch
 
-BuildPreReq: rpm-build-lmms libfltk-devel rpm-macros-cmake
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: rpm-build-lmms libfltk-devel 
 BuildRequires: gcc-c++ cmake
 
 BuildRequires: desktop-file-utils
 BuildRequires: libfluidsynth-devel
+%ifnarch %e2k riscv64
+BuildRequires: libsoundio-devel
+%endif
 BuildRequires: qt5-base-devel
 BuildRequires: liblame-devel
 BuildRequires: qt5-tools-devel
@@ -58,7 +66,7 @@ samples, using effects, playing live with keyboard and much more...
 %package devel
 Summary:	Development package for %name
 Group:		Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description devel
 Development files and headers for %name
@@ -68,27 +76,38 @@ Development files and headers for %name
 %patch1 -p1
 mv qt5-x11embed/* src/3rdparty/qt5-x11embed
 mv rpmalloc/* src/3rdparty/rpmalloc/rpmalloc/
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -type f -name '*.cpp' | xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 %cmake \
     -DWANT_QT5=ON \
+    -DCMAKE_INSTALL_LIBDIR=%_lib \
 %ifarch %ix86
     -DWANT_VST:BOOL=ON \
 %else
     -DWANT_VST:BOOL=OFF \
 %endif
-    -DCMAKE_INSTALL_LIBDIR=%_lib \
-    -Wno-dev \
-    -DWANT_VST_NOWINE:BOOL=ON
+    -DWANT_SDL:BOOL=ON \
+    -DWANT_PORTAUDIO:BOOL=ON \
+    -DWANT_CAPS:BOOL=ON \
+    -DWANT_TAP:BOOL=ON \
+    -DWANT_SWH:BOOL=ON \
+    -DWANT_CALF:BOOL=ON \
+    -DWANT_VST_NOWINE:BOOL=ON \
+    -DWANT_CARLA:BOOL=OFF
+
 %cmake_build VERBOSE=1
 
 %install
 %cmakeinstall_std
 
-# remove unneeded static helper library from install
-rm %buildroot%_libdir/libqx11embedcontainer.a
-
 rm -fr %buildroot%_datadir/bash-completion/completions/lmms
+
+# remove static library
+rm -f %buildroot%_libdir/*.a
 
 %find_lang %name
 
@@ -107,6 +126,18 @@ rm -fr %buildroot%_datadir/bash-completion/completions/lmms
 %_includedir/%name
 
 %changelog
+* Fri Jul 17 2020 Anton Midyukov <antohami@altlinux.org> 1.2.2-alt2
+- Build without libsoundio on e2k, riscv64
+
+* Thu Jul 16 2020 Anton Midyukov <antohami@altlinux.org> 1.2.2-alt1
+- Version 1.2.2
+
+* Mon Nov 18 2019 Anton Midyukov <antohami@altlinux.org> 1.2.1-alt1
+- Version 1.2.1
+
+* Sun Jul 28 2019 Michael Shigorin <mike@altlinux.org> 1.2.0-alt3.20190117
+- E2K: strip UTF-8 BOM for lcc < 1.24
+
 * Fri Jan 18 2019 Anton Midyukov <antohami@altlinux.org> 1.2.0-alt2.20190117
 - new snapshot
 - build with qt5
