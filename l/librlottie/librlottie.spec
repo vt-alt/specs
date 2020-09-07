@@ -3,7 +3,7 @@
 # see soname version (player version) in CMakeLists.txt
 %define soname 0.0.1
 Name: librlottie
-Version: 0.1
+Version: 0.1.1
 Release: alt2
 
 Summary: Platform independent standalone library that plays Lottie Animation
@@ -16,6 +16,7 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 #Source-git: https://github.com/john-preston/rlottie.git
 # Source-url: https://github.com/Samsung/rlottie/archive/v%version.tar.gz
+# Source-url: https://github.com/desktop-app/rlottie/archive/e0ea6af518345c4a46195c4951e023e621a9eb8f.zip
 Source: %name-%version.tar
 
 BuildRequires: gcc-c++ cmake
@@ -47,6 +48,7 @@ developing applications that use %name.
 %prep
 %setup
 %__subst "s|VERSION 0.0.1|VERSION %version.0|" CMakeLists.txt
+%__subst "s|-Werror||" CMakeLists.txt
 
 %build
 %cmake_insource
@@ -70,6 +72,10 @@ developing applications that use %name.
 %_pkgconfigdir/rlottie.pc
 
 %changelog
+* Thu Aug 20 2020 Vitaly Lipatov <lav@altlinux.ru> 0.1.1-alt2
+- new version (0.1.1) with rpmgs script
+- build from fork tag e0ea6af518345c4a46195c4951e023e621a9eb8f (Telegram 2.3.0)
+
 * Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 0.1-alt2
 - update with correct internal version
 

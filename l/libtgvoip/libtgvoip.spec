@@ -6,7 +6,7 @@
 
 Name: libtgvoip
 Version: 2.4.4
-Release: alt4.d2e6342
+Release: alt5.6e82b6e4
 
 Summary: VoIP library for Telegram clients
 
@@ -29,6 +29,8 @@ Patch1: libtgvoip-system-json11.patch
 %ifarch %ix86
 %add_optflags -msse2
 %endif
+
+%add_optflags -DTGVOIP_USE_DESKTOP_DSP_BUNDLED
 
 BuildRequires: gcc-c++
 BuildRequires: libssl-devel
@@ -87,6 +89,10 @@ rm -vf json11.*
 %_pkgconfigdir/tgvoip.pc
 
 %changelog
+* Thu Aug 20 2020 Vitaly Lipatov <lav@altlinux.ru> 2.4.4-alt5.6e82b6e4
+- update to 6e82b6e45664c1f80b9039256c99bebc76d34672
+- still use bundled webrtc (TGVOIP_USE_DESKTOP_DSP_BUNDLED)
+
 * Thu Jun 04 2020 Vitaly Lipatov <lav@altlinux.ru> 2.4.4-alt4.d2e6342
 - update to the latest repo commit d2e63429ec94ee178a62b55be01f1cca98e9de83
   from https://github.com/telegramdesktop/libtgvoip

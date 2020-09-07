@@ -7,7 +7,7 @@
 %def_without ffmpeg_static
 
 Name: telegram-desktop
-Version: 2.2.0
+Version: 2.3.0
 Release: alt1
 
 Summary: Telegram Desktop messaging app
@@ -80,9 +80,11 @@ BuildRequires: libopenal-devel >= 1.17.2
 # used by qt imageformats: libwebp-devel
 BuildRequires: libva-devel libdrm-devel
 
-# libs from Telegram project
-BuildRequires: libtgvoip-devel >= 2.4.4-alt4
-BuildRequires: librlottie-devel >= 0.0.1
+BuildRequires: libtgvoip-devel >= 2.4.4-alt5
+BuildRequires: libopus-devel
+
+# uses forked version, tag e0ea6af518345c4a46195c4951e023e621a9eb8f
+BuildRequires: librlottie-devel >= 0.1.1
 BuildRequires: libqrcodegen-cpp-devel
 
 # C++ sugar
@@ -92,6 +94,9 @@ BuildRequires: libexpected-devel
 BuildRequires: librange-v3-devel >= 0.10.0
 
 BuildRequires: libdbusmenu-qt5-devel
+
+# need for /usr/lib64/cmake/Qt5XkbCommonSupport/Qt5XkbCommonSupportConfig.cmake
+BuildRequires: libxkbcommon-devel
 
 # FIXME: libva need only for linking, extra deps?
 
@@ -161,15 +166,14 @@ export CCACHE_SLOPPINESS=pch_defines,time_macros
     -DDESKTOP_APP_USE_PACKAGED_FONTS:BOOL=ON \
     -DDESKTOP_APP_DISABLE_SPELLCHECK:BOOL=OFF \
     -DTDESKTOP_DISABLE_GTK_INTEGRATION:BOOL=OFF \
-    -DDESKTOP_APP_USE_PACKAGED_RLOTTIE:BOOL=ON \
+    -DDESKTOP_APP_DISABLE_WEBRTC_INTEGRATION:BOOL=ON \
     -DDESKTOP_APP_USE_GLIBC_WRAPS:BOOL=OFF \
     -DDESKTOP_APP_DISABLE_CRASH_REPORTS:BOOL=ON \
-    -DTDESKTOP_USE_PACKAGED_TGVOIP:BOOL=ON \
-    -DDESKTOP_APP_USE_PACKAGED_QRCODE:BOOL=ON \
     -DTDESKTOP_DISABLE_REGISTER_CUSTOM_SCHEME:BOOL=ON \
     -DTDESKTOP_DISABLE_DESKTOP_FILE_GENERATION:BOOL=ON \
     -DTDESKTOP_FORCE_GTK_FILE_DIALOG:BOOL=ON \
     %nil
+#    -DTDESKTOP_USE_PACKAGED_TGVOIP:BOOL=ON \
 # check later: -DDESKTOP_APP_ENABLE_IPO_OPTIMIZATIONS:BOOL=ON
 
 %make_build
@@ -202,6 +206,11 @@ ln -s %name %buildroot%_bindir/telegramdesktop
 %doc README.md
 
 %changelog
+* Thu Aug 20 2020 Vitaly Lipatov <lav@altlinux.ru> 2.3.0-alt1
+- new version 2.3.0 (with rpmrb script)
+- build with bundled libtgvoip
+- temp. disable webrtc integration
+
 * Thu Jul 30 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.0-alt1
 - new version 2.2.0 (with rpmrb script)
 
