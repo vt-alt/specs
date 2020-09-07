@@ -1,20 +1,18 @@
 %define rname mscore
-%define mversion 3.2
+%define mversion 3.5
 
 Name: musescore
-Version: 3.2.3
+Version: 3.5
 Release: alt1
 
 Summary: Music notation and composition software
 
-License: GPL2
+License: GPLv2
 Group: Sound
 Url: https://musescore.org
 
 # https://github.com/musescore/MuseScore
 Source: %name-%version.tar
-# Grabbed from https://github.com/OpenMandrivaAssociation/musescore
-Patch: musescore-3.0.2-dont-copy-qtwebengine.patch
 
 BuildPreReq: chrpath rpm-build-xdg
 
@@ -25,7 +23,7 @@ BuildRequires: qt5-designer qt5-base-devel libpulseaudio-devel libfreetype-devel
 BuildRequires: liblame-devel qt5-tools-devel qt5-webkit-devel qt5-declarative-devel
 BuildRequires: qt5-script-devel qt5-xmlpatterns-devel qt5-quick1-devel qt5-svg-devel
 BuildRequires: qt5-tools-devel-static zlib-devel libvorbis-devel libportmidi-devel
-BuildRequires: qt5-webengine-devel
+BuildRequires: qt5-webengine-devel qt5-quickcontrols2-devel
 
 %description
 Music notation and composition software
@@ -43,7 +41,6 @@ Music notation and composition software
 
 %prep
 %setup
-%patch -p1
 
 # Remove -lporttime on RPM-based systems where PortTime is part of PortMidi
 sed -i 's/ -lporttime//' mscore/CMakeLists.txt
@@ -58,6 +55,7 @@ cmake \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     -DBUILD_SCRIPTGEN=FALSE \
     -DUSE_SYSTEM_FREETYPE=ON \
+    -DBUILD_WEBENGINE=OFF \
     ..
 
 make lrelease
@@ -87,13 +85,41 @@ chrpath -d %buildroot%_bindir/mscore
 %_bindir/*
 %_datadir/metainfo/org.musescore.MuseScore.appdata.xml
 %_desktopdir/mscore.desktop
+%_datadir/metainfo
 %_datadir/mscore-%mversion
 %_man1dir/*
 %_xdgmimedir/packages/musescore.xml
-%_iconsdir/hicolor/*/mimetypes/*
-%_iconsdir/hicolor/*/apps/*
+%_iconsdir/hicolor/16x16/apps/mscore.png
+%_iconsdir/hicolor/32x32/apps/mscore.png
+%_iconsdir/hicolor/48x48/apps/mscore.png
+%_iconsdir/hicolor/24x24
+%_iconsdir/hicolor/64x64
+%_iconsdir/hicolor/96x96
+%_iconsdir/hicolor/128x128
+%_iconsdir/hicolor/512x512
+%_iconsdir/hicolor/48x48/mimetypes
+%_iconsdir/hicolor/scalable
 
 %changelog
+* Wed Aug 26 2020 Grigory Ustinov <grenka@altlinux.org> 3.5-alt1
+- Automatically updated to 3.5.
+
+* Mon Feb 10 2020 Grigory Ustinov <grenka@altlinux.org> 3.4.2-alt1
+- new version 3.4.2
+
+* Wed Feb 05 2020 Grigory Ustinov <grenka@altlinux.org> 3.4.1-alt1
+- Build new version 3.4.1.
+- Fix license.
+
+* Thu Dec 26 2019 Grigory Ustinov <grenka@altlinux.org> 3.3.4-alt1
+- Build new version 3.3.4.
+
+* Fri Nov 15 2019 Grigory Ustinov <grenka@altlinux.org> 3.3.2-alt1
+- Build new version.
+
+* Wed Nov 06 2019 Grigory Ustinov <grenka@altlinux.org> 3.3-alt1
+- Build new version.
+
 * Mon Jul 08 2019 Grigory Ustinov <grenka@altlinux.org> 3.2.3-alt1
 - Build new version.
 
@@ -140,13 +166,3 @@ chrpath -d %buildroot%_bindir/mscore
 
 * Mon Jun 09 2008 Vitaly Lipatov <lav@altlinux.ru> 0.9.2-alt1
 - initial build for ALT Linux Sisyphus
-
-* Sun Feb 10 2008 - Carlos Goncalves <cgoncalves@opensuse.org>
-- updated to version 0.9.1
-
-* Tue Jul 31 2007 - Carlos Goncalves <cgoncalves@opensuse.org>
-- updated to version 0.6.1
- * This is a bugfix release fixing the midi import crash and adding some small usability enhancements.
-
-* Sun Jul 29 2007 - Carlos Goncalves <cgoncalves@opensuse.org>
-- initial package
