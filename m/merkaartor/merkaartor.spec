@@ -1,21 +1,23 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: merkaartor
-Version: 0.18.3
+Version: 0.18.4
 Release: alt3
 
 Summary: an OpenStreetMap editor
-License: LGPL
+License: GPLv2
 Group: Sciences/Geosciences
 Url: https://github.com/openstreetmap/merkaartor
 
+# https://github.com/openstreetmap/merkaartor.git
 Source: %name-%version.tar
-Patch1: %name-%version-fedora-no-git-version.patch
-Patch2: %name-%version-alt-qtwebkit-support.patch
+Patch1: %name-0.18.3-fedora-no-git-version.patch
+Patch2: %name-%version-upstream-qt5-compat.patch
 
 BuildRequires: boost-devel gcc-c++ glibc-devel-static
 BuildRequires: libgdal-devel libproj-devel libexiv2-devel zlib-devel libsqlite3-devel
-BuildRequires: qt5-base-devel qt5-webkit-devel qt5-svg-devel qt5-tools-devel
+BuildRequires: qt5-base-devel qt5-svg-devel qt5-tools-devel
+BuildRequires: qt5-webengine-devel
 BuildRequires: libqtsingleapplication-qt5-devel
 
 %description
@@ -32,13 +34,14 @@ editing environment for free geographical data.
 rm -rf 3rdparty
 
 %build
+%add_optflags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1
 %add_optflags -I%_includedir/qt5/QtSolutions
 
-#lupdate-qt5 Merkaartor.pro
 lrelease-qt5 Merkaartor.pro
 qmake-qt5 \
 	CONFIG+=release CONFIG+=force_debug_info \
 	PREFIX=%_prefix \
+	USEWEBENGINE=1 \
 	SYSTEM_QTSA=1 \
 	TRANSDIR_MERKAARTOR=%_datadir/%name/translations/ \
 	-after QMAKE_CFLAGS+='%optflags' \
@@ -54,10 +57,25 @@ qmake-qt5 \
 %_bindir/merkaartor
 %_datadir/%name/
 %_libdir/%name/
-%_desktopdir/%name.desktop
-%_iconsdir/hicolor/*/apps/%name.png
+%_desktopdir/*.desktop
+%_iconsdir/hicolor/*/apps/*.png
 
 %changelog
+* Fri Sep 04 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.4-alt3
+- Fixed build with qt < 5.15.0.
+
+* Fri Aug 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.18.4-alt2
+- Fixed build with qt-5.15.0.
+
+* Thu Jul 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.18.4-alt1
+- Updated to upstream version 0.18.4.
+
+* Wed Nov 06 2019 Grigory Ustinov <grenka@altlinux.org> 0.18.3-alt5
+- NMU: Rebuild with gdal 3.0.1.
+
+* Sun Oct 06 2019 Vladislav Zavjalov <slazav@altlinux.org> 0.18.3-alt4
+- Fix build with libproj 6.2.0 (use DACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Fri Mar 29 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.18.3-alt3
 - Fixed build with new version of qt5-webkit.
 - Rebuilt with system libraries instead of bundled ones.
