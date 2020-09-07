@@ -1,6 +1,6 @@
 Name: scribus
-Version: 1.5.5
-Release: alt9.c2aae6886
+Version: 1.5.6
+Release: alt1.git742765f
 Epoch: 1
 
 Summary: DeskTop Publishing application written in Qt
@@ -168,6 +168,9 @@ popd
 %exclude %_docdir/%name/it
 
 %changelog
+* Sun Mar 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.6-alt1.git742765f
+- build git 742765feb112c0ae570b5f34054254c51aafdda7
+
 * Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.5-alt9.c2aae6886
 - update to c2aae688620fa3e75781b2ca4502408d22c1d343 fix build with poppler 0.84)
 - switch to python3
