@@ -6,13 +6,13 @@
 
 %def_without selinux
 %def_with check
-%def_with perl
+%def_without perl
 %def_without debug
 %def_with cockpit
 
 Name: 389-ds-base
 Version: 1.4.1.18
-Release: alt1
+Release: alt2
 
 Summary: 389 Directory Server (base)
 License: GPLv3+
@@ -36,7 +36,7 @@ BuildRequires: gcc-c++
 %if_with debug
 BuildRequires: libasan5
 %endif
-BuildRequires: libdb4-devel
+BuildRequires: libdb5.3-devel
 BuildRequires: libevent-devel
 BuildRequires: libicu-devel
 BuildRequires: libkrb5-devel
@@ -79,6 +79,11 @@ BuildRequires: perl-NetAddr-IP
 %add_findprov_skiplist %_datadir/%pkgname/script-templates/*
 %add_findreq_skiplist %_datadir/%pkgname/script-templates/* %_sbindir/*-%pkgname
 
+%if_without perl
+%add_findprov_skiplist %_bindir/logconv.pl
+%add_findreq_skiplist %_bindir/logconv.pl
+%endif
+
 # use Python3 everywhere
 %add_python3_path %_datadir/gdb/auto-load/
 %add_python3_compile_exclude %_datadir/gdb/auto-load/
@@ -102,13 +107,10 @@ the LDAP server and command line utilities for server administration.
 Summary: 389 Directory, Administration, and Console Suite
 Group: System/Servers
 Requires: 389-ds-base
-Requires: 389-admin
 Requires: idm-console-framework
 Requires: 389-console
 Requires: 389-ds-console
 Requires: 389-ds-console-doc
-Requires: 389-admin-console
-Requires: 389-admin-console-doc
 Requires: 389-dsgw
 
 %description -n 389-ds
@@ -289,11 +291,18 @@ mkdir -p %buildroot%_man3dir
 cp man/man3/* %buildroot%_man3dir
 
 # Fix path to systemctl in scripts
+%if_with perl
 sed -i 's|%_bindir/systemctl|/bin/systemctl|' %buildroot%_sbindir/*-dirsrv
+%endif
 
 %if_without cockpit
 # ends up unpackaged otherwise thus breaking build
 rm -f %buildroot%_datadir/metainfo/389-console/org.port389.cockpit_console.metainfo.xml
+%endif
+
+%if_without perl
+# repl-monitor depends on repl-monitor.pl which is not installed without perl
+rm -f %buildroot%_bindir/repl-monitor
 %endif
 
 %pre
@@ -405,21 +414,24 @@ fi
 %_bindir/pwdhash
 %_bindir/readnsstate
 
+%_sbindir/ldap-agent
+%_sbindir/ns-slapd
+
+%if_with perl
 %_sbindir/bak2db
 %_sbindir/db2bak
 %_sbindir/db2index
 %_sbindir/db2ldif
 %_sbindir/dbverify
-%_sbindir/ldap-agent
 %_sbindir/ldif2db
 %_sbindir/ldif2ldap
-%_sbindir/ns-slapd
 %_sbindir/restart-dirsrv
 %_sbindir/start-dirsrv
 %_sbindir/status-dirsrv
 %_sbindir/stop-dirsrv
 %_sbindir/upgradedb
 %_sbindir/vlvindex
+%endif
 
 %dir %_libexecdir/%pkgname
 %_libexecdir/%pkgname/ds_systemd_ask_password_acl
@@ -485,12 +497,14 @@ fi
 %_libdir/libldaputil.so.*
 
 %files legacy-tools
+%config(noreplace)%_sysconfdir/%pkgname/config/template-initconfig
 %_bindir/infadd
 %_bindir/ldif
 %_bindir/migratecred
 %_bindir/mmldif
 %_bindir/rsearch
 
+%if_with perl
 %_sbindir/dbmon.sh
 %_sbindir/dn2rdn
 %_sbindir/monitor
@@ -498,15 +512,22 @@ fi
 %_sbindir/saveconfig
 %_sbindir/suffix2instance
 %_sbindir/upgradednformat
+%endif
 
 %_libexecdir/%pkgname/ds_selinux_enabled
 %_libexecdir/%pkgname/ds_selinux_port_query
 
+%_man1dir/cl-dump.1.*
+%_man1dir/cl-dump.pl.1.*
+%_man1dir/dbgen.pl.1.*
+%_man1dir/repl-monitor.1.*
+%_man1dir/repl-monitor.pl.1.*
 %_man1dir/infadd.1.*
 %_man1dir/ldif.1.*
 %_man1dir/migratecred.1.*
 %_man1dir/mmldif.1.*
 %_man1dir/rsearch.1.*
+%_man5dir/template-initconfig.5.*
 %_man8dir/dbmon.sh.8.*
 %_man8dir/dn2rdn.8.*
 %_man8dir/monitor.8.*
@@ -514,10 +535,27 @@ fi
 %_man8dir/saveconfig.8.*
 %_man8dir/suffix2instance.8.*
 %_man8dir/upgradednformat.8.*
+%_man8dir/bak2db.pl.8.*
+%_man8dir/cleanallruv.pl.8.*
+%_man8dir/db2bak.pl.8.*
+%_man8dir/db2index.pl.8.*
+%_man8dir/db2ldif.pl.8.*
+%_man8dir/fixup-linkedattrs.pl.8.*
+%_man8dir/fixup-memberof.pl.8.*
+%_man8dir/ldif2db.pl.8.*
+%_man8dir/migrate-ds.pl.8.*
+%_man8dir/ns-accountstatus.pl.8.*
+%_man8dir/ns-activate.pl.8.*
+%_man8dir/ns-inactivate.pl.8.*
+%_man8dir/ns-newpwpolicy.pl.8.*
+%_man8dir/remove-ds.pl.8.*
+%_man8dir/schema-reload.pl.8.*
+%_man8dir/setup-ds.pl.8.*
+%_man8dir/syntax-validate.pl.8.*
+%_man8dir/usn-tombstone-cleanup.pl.8.*
+%_man8dir/verify-db.pl.8.*
 
 %if_with perl
-%config(noreplace)%_sysconfdir/%pkgname/config/template-initconfig
-%_man5dir/template-initconfig.5.*
 %dir %_datadir/%pkgname/properties
 %_datadir/%pkgname/properties/ns-slapd.properties
 %_datadir/%pkgname/properties/*.res
@@ -550,31 +588,6 @@ fi
 %_sbindir/usn-tombstone-cleanup.pl
 %_sbindir/verify-db.pl
 
-%_man1dir/dbgen.pl.1.*
-%_man1dir/repl-monitor.1.*
-%_man1dir/repl-monitor.pl.1.*
-%_man1dir/cl-dump.1.*
-%_man1dir/cl-dump.pl.1.*
-%_man8dir/bak2db.pl.8.*
-%_man8dir/cleanallruv.pl.8.*
-%_man8dir/db2bak.pl.8.*
-%_man8dir/db2index.pl.8.*
-%_man8dir/db2ldif.pl.8.*
-%_man8dir/fixup-linkedattrs.pl.8.*
-%_man8dir/fixup-memberof.pl.8.*
-%_man8dir/ldif2db.pl.8.*
-%_man8dir/migrate-ds.pl.8.*
-%_man8dir/ns-accountstatus.pl.8.*
-%_man8dir/ns-activate.pl.8.*
-%_man8dir/ns-inactivate.pl.8.*
-%_man8dir/ns-newpwpolicy.pl.8.*
-%_man8dir/remove-ds.pl.8.*
-%_man8dir/schema-reload.pl.8.*
-%_man8dir/setup-ds.pl.8.*
-%_man8dir/syntax-validate.pl.8.*
-%_man8dir/usn-tombstone-cleanup.pl.8.*
-%_man8dir/verify-db.pl.8.*
-
 %_libdir/%pkgname/perl/
 %endif
 
@@ -604,6 +617,10 @@ fi
 %endif
 
 %changelog
+* Fri Aug 21 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.1.18-alt2
+- Rebuilt with libdb5.3 instead of libdb4.
+- Disabled some legacy perl bindings.
+
 * Fri Apr 17 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.18-alt1
 - 1.4.1.16 -> 1.4.1.18.
 
