@@ -1,6 +1,6 @@
 Name: amavisd-new
 Version: 2.11.1
-Release: alt1
+Release: alt2
 Epoch: 1
 
 Summary: A Mail Virus Scanner
@@ -34,6 +34,7 @@ Requires: perl-IO-stringy
 Requires: perl-IO-Zlib
 Requires: perl-MailTools
 Requires: perl-Mail-DKIM >= 0.31
+Requires: perl-IO-Socket-INET6
 
 BuildRequires: perl-BerkeleyDB
 BuildRequires: perl-IO-stringy
@@ -297,6 +298,9 @@ install -m 644 %SOURCE12 %buildroot%_tmpfilesdir/amavisd.conf
 %files complete
 
 %changelog
+* Wed Sep 02 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.11.1-alt2
+- Requires perl-IO-Socket-INET6 (ALT #38859).
+
 * Tue Aug 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.11.1-alt1
 - New version (ALT #27110).
 - Fix /var/run/amavis permissions (ALT #37488).
