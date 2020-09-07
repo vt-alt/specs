@@ -1,13 +1,12 @@
 Name: nextcloud-client
-Version: 2.5.2
-Release: alt1
+Version: 2.6.4
+Release: alt2
 
 Group: Networking/File transfer
 Summary: Nextcloud Desktop Client
 License: GPLv2
 Url: https://github.com/nextcloud/desktop
 
-BuildRequires(pre): rpm-build-ubt
 
 Provides: mirall = %version-%release
 Obsoletes: mirall <= %version-%release
@@ -25,6 +24,7 @@ Patch5: alt-move-deleted-to-trash.patch
 BuildRequires: kde-common-devel rpm-build-kf5
 BuildRequires: doxygen extra-cmake-modules graphviz kf5-kio-devel libqtkeychain-qt5-devel libsqlite3-devel libssl-devel python3-dev qt5-tools-devel qt5-webkit-devel zlib-devel
 BuildRequires: libqt5-webenginewidgets qt5-webengine-devel libgio-devel glib2-devel qt5-svg-devel
+BuildRequires: kf5-kwindowsystem-devel
 
 %description
 The Nextcloud Desktop Client is a tool to synchronize files from Nextcloud Server with your computer.
@@ -83,22 +83,37 @@ ln -s nextcloud/libocsync.so.%version libocsync.so.0; cd ../..
 %_K5srv/*nextcloud*.desktop
 
 %changelog
+* Mon Apr 20 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.6.4-alt2
+- fixed kde5 build
+
+* Mon Apr 20 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.6.4-alt1
+- new version
+
+* Fri Feb 14 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.6.2-alt1
+- new version (ALT#38086)
+
+* Tue Dec 24 2019 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.6.1-alt1
+- new version (ALT#37647)
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.5.2-alt2
+- NMU: remove rpm-build-ubt from BR:
+
 * Mon Mar 25 2019 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.5.2-alt1
 - new version (ALT#36361)
 
 * Mon Sep 03 2018 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.5.0_beta2-alt1
 - new version
 
-* Wed Jan 17 2018 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt4%ubt
+* Wed Jan 17 2018 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt4.M80P.1
 - move remote-deleted files to trash (patch from owncloud-client 2.3.4-alt2)
 
-* Wed Nov 22 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt3%ubt
+* Wed Nov 22 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt3.M80P.1
 - updated "client_theming" (beta1->release)
 
-* Wed Oct 18 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt2%ubt
+* Wed Oct 18 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt2.M80P.1
 - fixed URL of docs
 
-* Wed Oct 18 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt1%ubt
+* Wed Oct 18 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.3-alt1.M80P.1
 - new version (beta1)
 
 * Fri Sep 22 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 2.3.2-alt3.M80P.1
