@@ -2,7 +2,7 @@
 
 Name: libfreetype
 Version: 2.10.1
-Release: alt1
+Release: alt1.1.p9
 Summary: A free and portable font rendering engine
 License: FTL or GPLv2+
 Group: System/Libraries
@@ -12,6 +12,8 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 PreReq: libharfbuzz
 Provides: freetype2 = %version
 Obsoletes: freetype2 < %version
+Provides: freetype = %version
+Obsoletes: freetype < %version
 
 Source0: http://download.savannah.gnu.org/releases/freetype/freetype-%version.tar.xz
 Source2: http://download.savannah.gnu.org/releases/freetype/freetype-doc-%version.tar.xz
@@ -44,6 +46,8 @@ Requires: %name = %version-%release
 Requires: libharfbuzz-devel
 Provides: freetype2-devel = %version
 Obsoletes: freetype2-devel < %version
+Provides: freetype-devel = %version
+Obsoletes: freetype-devel < %version
 
 %description devel
 This package contains the header files and development libraries needed
@@ -55,6 +59,8 @@ Group: Development/C
 Requires: %name-devel = %version-%release
 Provides: freetype2-devel-static = %version
 Obsoletes: freetype2-devel-static < %version
+Provides: freetype-devel-static = %version
+Obsoletes: freetype-devel-static < %version
 
 %description devel-static
 This package contains the FreeType2 static library.
@@ -65,7 +71,6 @@ Group: Development/C
 Requires: %name = %version-%release
 Provides: freetype2-demos = %version
 Obsoletes: freetype2-demos < %version
-Conflicts: freetype
 
 %description demos
 The FreeType engine is a free and portable TrueType font rendering
@@ -157,6 +162,9 @@ mv %buildroot%develdocdir/{FTL.TXT,LICENSE.TXT,CHANGES.bz2} %buildroot%docdir/
 %_bindir/ft*
 
 %changelog
+* Sat Sep 05 2020 Andrey Cherepanov <cas@altlinux.org> 2.10.1-alt1.1.p9
+- Provides freetype for Zoom compatibility.
+
 * Wed Sep 11 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.10.1-alt1
 - 2.10.1
 
