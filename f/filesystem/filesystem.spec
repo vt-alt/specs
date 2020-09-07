@@ -1,5 +1,5 @@
 Name: filesystem
-Version: 2.3.17
+Version: 2.3.18
 Release: alt1
 
 Summary: The basic directory layout for a GNU/Linux system
@@ -71,6 +71,9 @@ done < %_sourcedir/%name-link.list
 %files -f list
 
 %changelog
+* Fri Sep 04 2020 Alexey Shabalin <shaba@altlinux.org> 2.3.18-alt1
+- Added /etc/keys directory (by Mikhail Efremov).
+
 * Tue Aug 28 2018 Dmitry V. Levin <ldv@altlinux.org> 2.3.17-alt1
 - Moved /etc/syslog.d from syslog-common to filesystem.
 - Made /lib/modules readable and executable by everybody (closes: #5969).
