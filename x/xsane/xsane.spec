@@ -1,6 +1,6 @@
 Name: xsane
 Version: 0.999
-Release: alt5
+Release: alt6
 
 Summary: XSane is a graphical frontend for scanners. It uses the library SANE
 Summary(ru_RU.UTF-8): Xsane -- это графическая программа для сканирования, использующая библиотеку SANE
@@ -13,7 +13,7 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 Source: http://www.xsane.org/download/%name-%version.tar
 Source1: %name-16x16.xpm
-#Source3: %name-%version.ru.po
+Source3: %name-%version.ru.po
 Patch: %name-0.99-debian.patch
 Patch1: %name-0.996-ubuntu.patch
 Patch2: %name-0.998-alt-libpng15.patch
@@ -70,6 +70,7 @@ Summary(ru_RU.UTF-8): Документация для XSANE
 Group: Graphics
 BuildArch: noarch
 Requires: %name = %version-%release
+Requires: sane-doc
 
 %description doc
 Documentation for XSANE
@@ -84,17 +85,18 @@ Documentation for XSANE
 %patch2 -p2
 %patch3 -p1
 %patch4 -p2
-#cp -f %%SOURCE3 po/ru.po
+cp -f %SOURCE3 po/ru.po
+#__subst "s|\"/usr/local/share/sane/|\"%_docdir/sane/|" doc/sane-backends-doc.html
 
 # Set browser by default
 %__subst 's|BROWSER "netscape|BROWSER "url_handler.sh|g' src/xsane.h
 
 %build
 %configure --enable-gtk2 --enable-gimp --enable-lcms
-%make_build xsanedocdir=%_docdir/%name-doc-%version
+%make_build xsanedocdir=%_docdir/%name
 
 %install
-%makeinstall_std xsanedocdir=%_docdir/%name-doc-%version
+%makeinstall_std xsanedocdir=%_docdir/%name
 
 install -d %buildroot/%_libdir/gimp/2.0/plug-ins
 ln -s %_bindir/%name %buildroot/%_libdir/gimp/2.0/plug-ins/%name
@@ -104,6 +106,11 @@ install -p -m644 -D src/%name-32x32.xpm %buildroot%_niconsdir/%name.xpm
 install -p -m644 -D src/%name-48x48.xpm %buildroot%_liconsdir/%name.xpm
 
 install -p -m644 -D %name.desktop %buildroot%_desktopdir/%name.desktop
+
+# use modern backends list from SANE project
+rm -f %buildroot/%_docdir/%name/sane-backends-doc.html
+ln -s %_docdir/sane-backends/sane-backends.html %buildroot/%_docdir/%name/sane-backends-doc.html
+
 
 %find_lang %name
 
@@ -120,12 +127,16 @@ install -p -m644 -D %name.desktop %buildroot%_desktopdir/%name.desktop
 #%doc %name.*
 
 %files doc
-%_docdir/%name-doc-%version
+%_docdir/%name/
 
 %files gimp2
 %_libdir/gimp/2.0/plug-ins/%name
 
 %changelog
+* Thu Sep 03 2020 Vitaly Lipatov <lav@altlinux.ru> 0.999-alt6
+- fix xsane documentation dir
+- add updated ru.po (RM 14250)
+
 * Wed Nov 07 2018 Ivan Razzhivin <underwit@altlinux.org> 0.999-alt5
 - fix broken icon
 

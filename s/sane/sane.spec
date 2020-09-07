@@ -2,7 +2,7 @@
 
 Name: sane
 Version: 1.0.31
-Release: alt1
+Release: alt2
 
 Summary: This package contains the SANE docs and utils
 Summary(ru_RU.UTF-8): Документация и утилиты для SANE
@@ -54,6 +54,19 @@ Summary: SANE as network server
 Group: System/Libraries
 License: LGPL
 Requires: lib%name = %version-%release
+
+%package doc
+Summary: Documentation for SANE
+Summary(ru_RU.UTF-8): Документация для SANE
+Group: Graphics
+BuildArch: noarch
+
+%description doc
+Documentation for SANE
+
+%description doc -l ru_RU.UTF-8
+Документация для SANE
+
 
 %package -n lib%name
 Summary: SANE shared libraries
@@ -191,8 +204,8 @@ sed -i "s|python |%__python3 |" backend/Makefile.am
 	--with-lockdir=%_lockdir/%name \
 	--enable-shared \
 	--disable-static
+
 %make_build
-#make -C doc sane.ps.gz
 
 %install
 %makeinstall_std
@@ -220,7 +233,6 @@ rm -f %buildroot%_libdir/%name/*.la
 %useradd -d /var/empty -s /dev/null -G scanner _saned || :
 
 %files
-%_docdir/%name-*
 %_bindir/sane-find-scanner
 %_bindir/scanimage
 %_bindir/gamma4scanimage
@@ -235,6 +247,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %config(noreplace) %_sysconfdir/sane.d/saned.conf
 %_sbindir/saned
 %_man8dir/saned*
+
+%files doc
+%_docdir/sane-backends/
 
 %files -n lib%name -f %oname.lang
 %_libdir/*.so.1
@@ -266,6 +281,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %_pkgconfigdir/%oname.pc
 
 %changelog
+* Fri Sep 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.31-alt2
+- separate doc to doc subpackage
+
 * Wed Sep 02 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.31-alt1
 - new version 1.0.31 (with rpmrb script)
 
