@@ -14,7 +14,7 @@
 %define nv_version 340
 %define nv_release 108
 %define nv_minor %nil
-%define pkg_rel alt168
+%define pkg_rel alt169
 %def_enable egl
 %def_enable kernelsource
 %def_disable package_wfb
@@ -89,6 +89,7 @@ Patch4: buildfix_kernel_5.6.patch
 Patch5: xf86-video-nvidia-legacy-0001-fix-5.6-rc1.patch
 Patch6: xf86-video-nvidia-legacy-0002-fix-5.7-rc1.patch
 Patch7: xf86-video-nvidia-legacy-0003-fix-5.7-rc1-reinstate-legacy-support.patch 
+Patch8: xf86-video-nvidia-legacy-0004-fix-5.8.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -172,7 +173,9 @@ pushd kernel/
 %patch5 -p2
 %patch6 -p2
 %patch7 -p2
+%patch8 -p2
 rm -rf precompiled
+touch .nv-kernel.o.cmd
 popd
 
 
@@ -255,6 +258,7 @@ fi
 %__rm -rf kernel-source-%module_name-%module_version/
 %__mkdir_p %buildroot/%_usrsrc/kernel/sources/ kernel-source-%module_name-%module_version/
 %__cp -ar kernel/* kernel-source-%module_name-%module_version/
+%__install -m 0644 kernel/.nv* kernel-source-%module_name-%module_version/
 %__cp LICENSE kernel-source-%module_name-%module_version/
 tar -c kernel-source-%module_name-%module_version | bzip2 -c > \
     %buildroot%_usrsrc/kernel/sources/kernel-source-%module_name-%module_version.tar.bz2
@@ -318,6 +322,9 @@ fi
 %endif
 
 %changelog
+* Thu Sep 03 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt169
+- add fix against 5.8 kernel
+
 * Wed Jun 03 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt168
 - add fix against 5.7 kernel
 
