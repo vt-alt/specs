@@ -1,8 +1,8 @@
-%def_enable Werror
+%def_disable Werror
 
 Name:     qrab
 Version:  0.4
-Release:  alt1
+Release:  alt2
 
 Summary:  yet another QR code reader
 License:  GPLv3
@@ -43,5 +43,8 @@ cd -
 %_pixmapsdir/qrab.png
 
 %changelog
+* Thu Aug 27 2020 Grigory Ustinov <grenka@altlinux.org> 0.4-alt2
+- Fixed FTBFS.
+
 * Tue Dec 19 2017 Grigory Ustinov <grenka@altlinux.org> 0.4-alt1
 - Initial build for Sisyphus.
