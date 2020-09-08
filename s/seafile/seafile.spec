@@ -1,5 +1,5 @@
 Name: seafile
-Version: 7.0.6
+Version: 7.0.9
 Release: alt1
 
 Summary: Full-fledged cloud storage platform
@@ -94,7 +94,7 @@ developing applications that use lib%name.
 cp %SOURCE1 .
 # remove buildroot from .pc file
 %__subst 's/(DESTDIR)//' lib/libseafile.pc.in
-%__subst 's@#!/usr/bin/env python@#!%__python3@' app/seaf-cli
+#%__subst 's@#!/usr/bin/env python@#!%__python3@' app/seaf-cli
 
 %build
 %autoreconf
@@ -125,6 +125,15 @@ cp %SOURCE1 .
 %_pkgconfigdir/lib%name.pc
 
 %changelog
+* Fri Aug 21 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.9-alt1
+- new version 7.0.9 (with rpmrb script)
+
+* Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.8-alt1
+- new version 7.0.8 (with rpmrb script)
+
+* Tue May 12 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.7-alt1
+- new version 7.0.7 (with rpmrb script)
+
 * Wed Feb 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.6-alt1
 - new version 7.0.6 (with rpmrb script)
 
