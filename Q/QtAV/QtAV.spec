@@ -1,27 +1,27 @@
 # TODO
 %define _qt5_mkspecs %_libdir/qt5/mkspecs
-
 %define libname libqtav
+
 Name: QtAV
-Version: 1.12.0
-Release: alt3
+Version: 1.13.0
+Release: alt1
 
 Summary: A cross-platform multimedia framework based on Qt and FFmpeg
 License: LGPL v2.1
 Group: System/Libraries
-Url: http://qtav.org/
 
+Url: http://qtav.org/
 # Source-git: https://github.com/wang-bin/QtAV.git
 Source: %name-%version.tar
+Patch1: alt-qt5.15.patch
 
 BuildRequires(pre): rpm-macros-qt5
-
 BuildRequires: gcc-c++
 
 # Automatically added by buildreq on Mon Dec 12 2016
 # optimized out: fontconfig gcc-c++ libGL-devel libX11-devel libXext-devel libavcodec-devel libavutil-devel libcdio-paranoia libdc1394-22 libgpg-error libjson-c libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-gui libqt5-network libqt5-opengl libqt5-qml libqt5-quick libqt5-sql libqt5-svg libqt5-widgets libraw1394-11 libstdc++-devel python-base python-modules python3 python3-base qt5-base-devel qt5-declarative-devel qt5-script-devel qt5-xmlpatterns-devel xorg-videoproto-devel xorg-xextproto-devel xorg-xproto-devel
 BuildRequires: libXv-devel libass-devel libuchardet-devel libva-devel
-BuildRequires: qt5-base-devel qt5-multimedia-devel qt5-phonon-devel qt5-websockets-devel qt5-quick1-devel qt5-declarative-devel qt5-svg-devel
+BuildRequires: qt5-base-devel qt5-multimedia-devel qt5-phonon-devel qt5-websockets-devel qt5-declarative-devel qt5-svg-devel
 BuildRequires: libavdevice-devel libavfilter-devel libavformat-devel libswscale-devel
 BuildRequires: libopenal-devel libpulseaudio-devel libswresample-devel
 
@@ -79,6 +79,12 @@ Development files for %name qml.
 
 %prep
 %setup
+%patch1 -p1
+%ifarch %e2k
+# strip UTF-8 BOM for lcc < 1.24
+find -type f -name '*.cpp' -o -name '*.hpp' -o -name '*.h' |
+	xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
+%endif
 
 %build
 # broken build with gnu++14 (gcc6's default)
@@ -91,8 +97,8 @@ Development files for %name qml.
 %installqt5
 # drop Player / QML Player
 rm -rf %buildroot/{%_desktopdir,%_docdir,%_iconsdir,%_qt5_prefix/bin,%_bindir}
-
-rm -f examples/simpletranscode/Makefile
+rm -f examples/*/Makefile
+rm -f examples/Makefile
 
 %files -n %libname
 %doc README.md
@@ -118,6 +124,12 @@ rm -f examples/simpletranscode/Makefile
 %doc doc/UseQtAVinYourProjects.md
 
 %changelog
+* Mon Sep 07 2020 Sergey V Turchin <zerg@altlinux.org> 1.13.0-alt1
+- new version
+
+* Sun Sep 01 2019 Michael Shigorin <mike@altlinux.org> 1.12.0-alt5
+- E2K: strip UTF-8 BOM for lcc < 1.24
+
 * Tue Feb 26 2019 Vitaly Lipatov <lav@altlinux.ru> 1.12.0-alt3
 - rebuild with libass9
 
