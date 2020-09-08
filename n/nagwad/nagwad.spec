@@ -1,5 +1,5 @@
 Name: 	  nagwad
-Version:  0.9.6
+Version:  0.9.12
 Release:  alt2
 
 Summary:  Nagios watch daemon
@@ -51,18 +51,17 @@ markdown -f links,smarty,toc,autolink -o signal.html signal.md
 %install
 install -Dm 0755 scripts/nsca-shell %buildroot%_bindir/nsca-shell
 install -Dm 0755 scripts/nagwad %buildroot%_sbindir/nagwad
-install -Dm 0755 scripts/nagwad.sh  %buildroot%_libexecdir/nagwad/nagwad.sh
-install -Dm 0755 scripts/nrpe/check_authdata %buildroot/%_libexecdir/nagios/plugins/check_authdata
-install -Dm 0755 scripts/nrpe/check_devices %buildroot/%_libexecdir/nagios/plugins/check_devices
-install -Dm 0755 scripts/nrpe/check_login %buildroot/%_libexecdir/nagios/plugins/check_login
+install -Dm 0755 scripts/nrpe/check_nagwad %buildroot/%_libexecdir/nagios/plugins/check_nagwad
 install -Dm 0755 scripts/nrpe/check_osec %buildroot/%_libexecdir/nagios/plugins/check_osec
 
 install -Dm 0644 conf/audit/rules.d/50-nagwad.rules %buildroot%_sysconfdir/audit/rules.d/50-nagwad.rules
 install -Dm 0644 conf/nagios/templates/50-nagwad.cfg %buildroot%_sysconfdir/nagios/templates/50-nagwad.cfg
-install -Dm 0644 conf/nagwad/authdata/authdata.regexp %buildroot%_sysconfdir/nagwad/authdata/authdata.regexp
-install -Dm 0644 conf/nagwad/device/device.regexp %buildroot%_sysconfdir/nagwad/device/device.regexp
-install -Dm 0644 conf/nagwad/login/login.regexp %buildroot%_sysconfdir/nagwad/login/login.regexp
-install -Dm 0644 conf/nagwad/osec/osec.regexp %buildroot%_sysconfdir/nagwad/osec/osec.regexp
+install -Dm 0644 conf/nagwad/audit.regexp %buildroot%_sysconfdir/nagwad/audit.regexp
+install -Dm 0644 conf/nagwad/authdata.regexp %buildroot%_sysconfdir/nagwad/authdata.regexp
+install -Dm 0644 conf/nagwad/device.regexp %buildroot%_sysconfdir/nagwad/device.regexp
+install -Dm 0644 conf/nagwad/login.regexp %buildroot%_sysconfdir/nagwad/login.regexp
+install -Dm 0644 conf/nagwad/osec.regexp %buildroot%_sysconfdir/nagwad/osec.regexp
+install -Dm 0644 conf/nagwad/print.regexp %buildroot%_sysconfdir/nagwad/print.regexp
 install -Dm 0644 conf/nagios/nrpe/nagwad.cfg %buildroot%_sysconfdir/nagios/nrpe-commands/nagwad.cfg
 install -Dm 0644 conf/nagstamon/actions/action_Lock_host.conf %buildroot%_sysconfdir/nagstamon/actions/action_Lock_host.conf
 install -Dm 0644 conf/nagstamon/actions/action_NSCA_shell.conf %buildroot%_sysconfdir/nagstamon/actions/action_NSCA_shell.conf
@@ -71,16 +70,38 @@ install -Dm 0644 unit/nagwad.service %buildroot/%_unitdir/nagwad.service
 
 mkdir -p %buildroot/var/log/nagwad
 
+%pre
+
+if [ -e %_sysconfdir/nagwad/audit/audit.regexp ]; then
+    cp -nv %_sysconfdir/nagwad/audit/audit.regexp \
+       %_sysconfdir/nagwad/audit.regexp ||:
+fi
+if [ -e %_sysconfdir/nagwad/authdata/authdata.regexp ]; then
+    cp -nv %_sysconfdir/nagwad/authdata/authdata.regexp \
+       %_sysconfdir/nagwad/authdata.regexp ||:
+fi
+if [ -e %_sysconfdir/nagwad/device/device.regexp ]; then
+    cp -nv %_sysconfdir/nagwad/device/device.regexp \
+       %_sysconfdir/nagwad/device.regexp ||:
+fi
+if [ -e %_sysconfdir/nagwad/login/login.regexp ]; then
+    cp -nv %_sysconfdir/nagwad/login/login.regexp \
+       %_sysconfdir/nagwad/login.regexp ||:
+fi
+if [ -e %_sysconfdir/nagwad/osec/osec.regexp ]; then
+    cp -nv %_sysconfdir/nagwad/osec/osec.regexp \
+       %_sysconfdir/nagwad/osec.regexp ||:
+fi
+
 %files
 %doc README.md signal.html signal.md
 %_bindir/nsca-shell
 %_sbindir/nagwad
-%_libexecdir/nagwad
 %_unitdir/nagwad.*
 %_libexecdir/nagios/plugins/*
 %_sysconfdir/nagwad
 %config(noreplace) %_sysconfdir/audit/rules.d/*nagwad*.rules
-%config(noreplace) %_sysconfdir/nagwad/*/*.regexp
+%config(noreplace) %_sysconfdir/nagwad/*.regexp
 %config(noreplace) %_sysconfdir/nagios/nrpe-commands/nagwad.cfg
 /var/log/nagwad
 
@@ -92,6 +113,36 @@ mkdir -p %buildroot/var/log/nagwad
 %config(noreplace) %_sysconfdir/nagstamon/actions/*.conf
 
 %changelog
+* Thu Aug 27 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.12-alt2
+- Fix: Copy the old configuration files instead of moving them.
+
+* Mon Aug 24 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.12-alt1
+- Fixed the 'device' NRPE command.
+- Fix: Really add print.regexp.
+
+* Wed Aug 19 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.11-alt1
+- Fixed locale in nagwad messages.
+- Filter out "add_rule" events from auditd related to user and
+  group changes but react to update and remove.
+- Fixed missing while..done loop in the main process.
+
+* Fri Jul 31 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.10-alt1
+- Fix: Remove parentheses from the audit service description.
+
+* Fri Jul 31 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.9-alt1
+- Added print.regexp filter for CUPS operations.
+
+* Thu Jul 23 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.8-alt1
+- Configure audit to look for exec / open attempts to restricted
+  files.
+- Restore the "check_audit" NRPE check from v0.8-alt4.
+
+* Tue Jul 21 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.7-alt1
+- Fix/improve: Explicitly check for the signal file directory.
+- Use universal "check_nagwad" script for typical nagwad NRPE checks.
+- Make the nagwad.sh a simple service (ranamed to /usr/sbin/nagwad).
+- Handle /etc/nagwad/*.regexp files automatically.
+
 * Thu May 28 2020 Paul Wolneykien <manowar@altlinux.org> 0.9.6-alt2
 - Fixed documentation (signal.md):
   -- replace '.cnf' with '.cfg' (thx vercha@);
