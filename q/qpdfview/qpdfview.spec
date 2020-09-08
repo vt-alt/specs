@@ -1,12 +1,13 @@
 Name: qpdfview
 Version: 0.4.18
-Release: alt2
+Release: alt3
 Summary: Tabbed PDF viewer using the poppler library
-License: GPLv2
+License: GPL-2.0-or-later
 Group: Office
 Url: https://launchpad.net/qpdfview
 
 Source: %name-%version.tar
+Patch: qpdfview-0.4.18-fix-build-with-qt5-5.15.patch
 
 BuildRequires: qt5-tools-devel
 BuildRequires: pkgconfig(poppler-qt5)
@@ -26,6 +27,7 @@ qpdfview is a tabbed PDF viewer using the poppler library.
 
 %prep
 %setup
+%patch -p2
 
 %build
 lrelease-qt5 qpdfview.pro
@@ -60,6 +62,10 @@ ln -s %_iconsdir/hicolor/scalable/apps/%name.svg \
 %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Sat Aug 15 2020 Anton Midyukov <antohami@altlinux.org> 0.4.18-alt3
+- Fix build with qt5 5.15
+- Fix License Tag
+
 * Tue Sep 10 2019 Anton Midyukov <antohami@altlinux.org> 0.4.18-alt2
 - Version 0.4.18
 
