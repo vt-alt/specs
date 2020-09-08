@@ -2,7 +2,7 @@
 
 Name: veyon
 Version: 4.2.5
-Release: alt3
+Release: alt4
 Group: Education
 License: GPLv2
 Url: https://veyon.io/
@@ -18,6 +18,7 @@ Source3: x11vnc.tar
 
 Patch1: Unbundle-some-libraries-and-fix-build-alt.patch
 Patch2: Fix-launch-of-Veyon-in-alt.patch
+Patch3: alt-qt5.15.patch
 
 BuildRequires: rpm-build-kf5
 BuildRequires: extra-cmake-modules
@@ -81,6 +82,7 @@ Veyon доступен на разных языках и предоставля�
 %setup -a1 -a2 -a3
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %cmake
@@ -102,6 +104,9 @@ Veyon доступен на разных языках и предоставля�
 %_datadir/%name
 
 %changelog
+* Wed Sep 02 2020 Sergey V Turchin <zerg@altlinux.org> 4.2.5-alt4
+- fix compile with Qt 5.15
+
 * Tue Apr 21 2020 Pavel Moseev <mars@altlinux.org> 4.2.5-alt3
 - Fix launch of Veyon in ALT Workstation x86_64 (closes: #37950)
 
