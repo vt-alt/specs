@@ -1,10 +1,10 @@
 %define _unpackaged_files_terminate_build 1
 
-%def_enable webkit
+%def_disable webkit
 
 Name: psi-plus
-Version: 1.2.109
-Release: alt2
+Version: 1.4.912
+Release: alt1
 
 Summary: Psi+ Jabber client
 Summary(ru_RU.UTF-8): Jabber-клиент Psi+
@@ -16,30 +16,32 @@ Url: https://www.psi-plus.com/
 # https://github.com/psi-plus/psi-plus-snapshots/archive/%version.tar.gz
 Source: %name-snapshots-%version.tar
 
-Patch0: %name-qca2-alt.patch
 Patch1: %name-disable-sm-alt.patch
 Patch2: %name-doubleclick-alt.patch
 Patch3: %name-events-alt.patch
-Patch4: %name-alt-qt-version-detection.patch
-Patch5: %name-alt-qt-5.11-support.patch
-Patch6: %name-alt-qt-5.11-window-close-bug.patch
+Patch4: %name-disable-omemo-alt.patch
 
 Requires: qt5-translations
 Requires: qca-qt5-ossl
 Requires: qca-qt5-gnupg
 
+BuildRequires: cmake
 BuildRequires: gcc-c++
 BuildRequires: glibc-devel-static
 BuildRequires: libXScrnSaver-devel
 BuildRequires: libaspell-devel
 BuildRequires: libidn-devel
+BuildRequires: libhunspell-devel
 BuildRequires: libqca-qt5-devel
 BuildRequires: libtidy-devel >= 1.2.0
 BuildRequires: libotr-devel
 BuildRequires: qt5-multimedia-devel
 BuildRequires: qt5-phonon-devel
+BuildRequires: qt5-svg-devel
 %if_enabled webkit
 BuildRequires: libqt5-webkit qt5-webkit-devel
+%else
+BuildRequires: qt5-webengine-devel
 %endif
 BuildRequires: qt5-x11extras-devel
 BuildRequires: zlib-devel
@@ -280,18 +282,6 @@ You can select or deselect a contact for history removal from the context menu o
 Данный плагин предназначен для удаления истории переписки с отмеченными контактами при выходе из Psi+.
 Отметить контакт или удалить отметку можно из контекстного меню контакта, либо через окно с настройками плагина.
 
-# Http upload plugin
-%package plugin-httpupload
-Summary: Http upload support for %name
-Group: Networking/Instant messaging
-Requires: %name = %EVR
-
-%description plugin-httpupload
-This plugin allows uploading images and other files via XEP-0363.
-
-%description plugin-httpupload -l ru_RU.UTF-8
-
-
 # ICQ die plugin
 %package plugin-icqdie
 Summary: ICQ die support for %name
@@ -425,15 +415,6 @@ Deniability
 The messages you send do not have digital signatures that are checkable by a third party. Anyone can forge messages after a conversation to make them look like they came from you. However, during a conversation, your correspondent is assured the messages he sees are authentic and unmodified.
 Perfect forward secrecy
 If you lose control of your private keys, no previous conversation is compromised.
-
-# Pstop plugin
-%package plugin-pstop
-Summary: Pstop support for %name
-Group: Networking/Instant messaging
-Requires: %name = %EVR
-
-%description plugin-pstop
-Pstop support for %name
 
 # QIP X-Statuses plugin
 %package plugin-qipxstatuses
@@ -655,59 +636,16 @@ Each element can contain a regular expression to check for matches with JID, fro
 
 %prep
 %setup -n %name-snapshots-%version
-%patch0 -p1
 #%patch1 -p2
-%patch2 -p2
+%patch2 -p1
 %patch3 -p2
 %patch4 -p2
-%patch5 -p2
-%patch6 -p2
 
 rm -rf src/libpsi/tools/zip/minizip
 
 %build
-%configure \
-	%{subst_enable webkit} \
-	--debug \
-	--no-separate-debug-info \
-	--qtselect=5
-
-%make_build
-
 for plugin in \
-	src/plugins/generic/attentionplugin \
-	src/plugins/generic/autoreplyplugin \
-	src/plugins/generic/birthdayreminderplugin \
-	src/plugins/generic/chessplugin \
-	src/plugins/generic/cleanerplugin \
-	src/plugins/generic/clientswitcherplugin \
-	src/plugins/generic/conferenceloggerplugin \
-	src/plugins/generic/contentdownloaderplugin \
-	src/plugins/generic/enummessagesplugin \
-	src/plugins/generic/extendedmenuplugin \
-	src/plugins/generic/extendedoptionsplugin \
-	src/plugins/generic/gnupgplugin \
-	src/plugins/generic/gomokugameplugin \
-	src/plugins/generic/historykeeperplugin \
-	src/plugins/generic/httpuploadplugin \
-	src/plugins/generic/icqdieplugin \
-	src/plugins/generic/imageplugin \
-	src/plugins/generic/imagepreviewplugin \
-	src/plugins/generic/jabberdiskplugin \
-	src/plugins/generic/juickplugin \
-	src/plugins/generic/messagefilterplugin \
-	src/plugins/generic/otrplugin \
-	src/plugins/generic/pepchangenotifyplugin \
-	src/plugins/dev/pstoplugin \
-	src/plugins/generic/qipxstatusesplugin \
-	src/plugins/dev/redirectorplugin \
-	src/plugins/generic/screenshotplugin \
-	src/plugins/generic/skinsplugin \
-	src/plugins/generic/stopspamplugin \
-	src/plugins/generic/storagenotesplugin \
-	src/plugins/generic/translateplugin \
-	src/plugins/generic/videostatusplugin \
-	src/plugins/generic/watcherplugin ; do
+	src/plugins/dev/redirectorplugin ; do
 
 	pushd $plugin
 	%qmake_qt5 $(basename $plugin).pro
@@ -715,81 +653,38 @@ for plugin in \
 	popd
 done
 
+%cmake \
+    -DBUILD_PLUGINS="ALL" \
+    -DENABLE_PLUGINS=ON \
+    -DBUILD_DEV_PLUGINS=ON
+%cmake_build
+
 %install
-%makeinstall INSTALL_ROOT=%buildroot
-mkdir -p %buildroot%_datadir/%name/themes
-cp -fr themes %buildroot%_datadir/%name/themes/
-
-mkdir -p %buildroot%_libdir/%name/plugins
-
-# Pstop plugin
-install -pDm644 src/plugins/dev/pstoplugin/libpstoplugin.so %buildroot%_libdir/%name/plugins
-
-# Redirector plugin
-install -pDm644 src/plugins/dev/redirectorplugin/libredirectplugin.so %buildroot%_libdir/%name/plugins
+%cmakeinstall_std
 
 # Generic plugins
-pushd src/plugins/generic
-for i in attentionplugin/libattentionplugin.so \
-	 autoreplyplugin/libautoreplyplugin.so \
-	 birthdayreminderplugin/libbirthdayreminderplugin.so \
-	 chessplugin/libchessplugin.so \
-	 cleanerplugin/libcleanerplugin.so \
-	 clientswitcherplugin/libclientswitcherplugin.so \
-	 conferenceloggerplugin/libconferenceloggerplugin.so \
-	 contentdownloaderplugin/libcontentdownloaderplugin.so \
-	 enummessagesplugin/libenummessagesplugin.so \
-	 extendedmenuplugin/libextendedmenuplugin.so \
-	 extendedoptionsplugin/libextendedoptionsplugin.so \
-	 gomokugameplugin/libgomokugameplugin.so \
-	 historykeeperplugin/libhistorykeeperplugin.so \
-	 httpuploadplugin/libhttpuploadplugin.so \
-	 icqdieplugin/libicqdieplugin.so \
-	 imageplugin/libimageplugin.so \
-	 imagepreviewplugin/libimagepreviewplugin.so \
-	 jabberdiskplugin/libjabberdiskplugin.so \
-	 juickplugin/libjuickplugin.so \
-	 messagefilterplugin/libmessagefilterplugin.so \
-	 otrplugin/libotrplugin.so \
-	 pepchangenotifyplugin/libpepchangenotifyplugin.so \
-	 qipxstatusesplugin/libqipxstatusesplugin.so \
-	 screenshotplugin/libscreenshotplugin.so \
-	 skinsplugin/libskinsplugin.so \
-	 stopspamplugin/libstopspamplugin.so \
-	 storagenotesplugin/libstoragenotesplugin.so \
-	 translateplugin/libtranslateplugin.so \
-	 videostatusplugin/libvideostatusplugin.so \
-	 watcherplugin/libwatcherplugin.so; do
-	install -pDm644 $i %buildroot%_libdir/%name/plugins
-done
+pushd src/plugins/dev
+install -pDm644 redirectorplugin/libredirectplugin.so %buildroot%_libdir/%name/plugins
 popd
 
-rm %buildroot%_datadir/%name/{COPYING,README}
-rm -r %buildroot%_datadir/%name/plugins/include
-rm -f %buildroot%_datadir/%name/plugins/*.pri
+rm %buildroot%_datadir/%name/{COPYING,README.html}
+rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
 
 %files
-%doc COPYING ChangeLog INSTALL README TODO
+%doc COPYING INSTALL README.html TODO
 %_bindir/%name
 %dir %_libdir/%name
 %dir %_libdir/%name/plugins
 %_desktopdir/%name.desktop
-%_miconsdir/%name.png
-%_niconsdir/%name.png
-%_liconsdir/%name.png
-%dir %_iconsdir/hicolor/64x64
-%dir %_iconsdir/hicolor/64x64/apps
-%_iconsdir/hicolor/64x64/apps/%name.png
-%dir %_iconsdir/hicolor/128x128
-%dir %_iconsdir/hicolor/128x128/apps
-%_iconsdir/hicolor/128x128/apps/%name.png
 %dir %_datadir/%name
 %_datadir/%name/client_icons.txt
 %_datadir/%name/certs
 %_datadir/%name/iconsets
+%_datadir/%name/skins
 %_datadir/%name/sound
 %_datadir/%name/themes
-%_datadir/appdata/psi-plus.appdata.xml
+%_pixmapsdir/%name.png
+%_iconsdir/hicolor/*/apps/*.png
 
 # Attention plugin
 %files plugin-attention
@@ -843,10 +738,6 @@ rm -f %buildroot%_datadir/%name/plugins/*.pri
 %files plugin-historykeeper
 %_libdir/%name/plugins/libhistorykeeperplugin.so
 
-# Http upload plugin
-%files plugin-httpupload
-%_libdir/%name/plugins/libhttpuploadplugin.so
-
 # ICQ die plugin
 %files plugin-icqdie
 %_libdir/%name/plugins/libicqdieplugin.so
@@ -878,10 +769,6 @@ rm -f %buildroot%_datadir/%name/plugins/*.pri
 # PEP change notify plugin
 %files plugin-pepchangenotify
 %_libdir/%name/plugins/libpepchangenotifyplugin.so
-
-# Pstop plugin
-%files plugin-pstop
-%_libdir/%name/plugins/libpstoplugin.so
 
 # QIP X-Statuses plugin
 %files plugin-qipxstatuses
@@ -920,6 +807,10 @@ rm -f %buildroot%_datadir/%name/plugins/*.pri
 %_libdir/%name/plugins/libwatcherplugin.so
 
 %changelog
+* Wed Oct 16 2019 Oleg Solovyov <mcpain@altlinux.org> 1.4.912-alt1
+- Version 1.4.912
+- disabled QtWebKit (Closes: #37381)
+
 * Tue Oct 02 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.109-alt2
 - NMU: rebuilt for debuginfo.
 - Fixed main window blanking issue which appears on closing main window in a specific way.
