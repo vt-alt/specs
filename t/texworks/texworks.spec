@@ -1,11 +1,11 @@
 Name: texworks
-Version: 0.6.3
-Release: alt1
+Version: 0.6.5
+Release: alt2
 
 Summary: A simple IDE for authoring TeX documents
 Summary(ru_RU.UTF-8): Простой редактор для документов TeX
 
-License: GPL
+License: GPL-2.0
 Group: Publishing
 Url: http://tug.org/texworks/
 
@@ -19,6 +19,7 @@ Source1: texworks-alt-icons.tar
 Source2: TeXworks-manual-r1029.pdf
 
 Patch1: %name-0.6.3-desktop.patch
+Patch2: 0001-QtPDF-Fix-compilation-with-Qt-5.15.patch
 
 %description
 TeXworks is an environment for authoring TeX (LaTeX, ConTeXt, etc)
@@ -53,6 +54,7 @@ User manual for TeXworks editor.
 %prep
 %setup -a1
 %patch1 -p2
+%patch2 -p1
 
 %build
 %cmake_insource -DDESIRED_QT_VERSION=5
@@ -71,8 +73,10 @@ install -m 644 -D %SOURCE2 %buildroot/%_docdir/%name
 %_miconsdir/*
 %_niconsdir/*
 %_liconsdir/*
-%_pixmapsdir/*
-%_datadir/metainfo/*
+%_iconsdir/hicolor/64x64
+%_iconsdir/hicolor/128x128
+%_iconsdir/hicolor/512x512
+%_datadir/metainfo
 %_man1dir/*
 %_docdir/%name
 %exclude %_docdir/%name/TeXworks-manual-*.pdf
@@ -81,6 +85,15 @@ install -m 644 -D %SOURCE2 %buildroot/%_docdir/%name
 %_docdir/%name/TeXworks-manual-*.pdf
 
 %changelog
+* Thu Aug 27 2020 Grigory Ustinov <grenka@altlinux.org> 0.6.5-alt2
+- Fix license.
+
+* Thu Mar 26 2020 Grigory Ustinov <grenka@altlinux.org> 0.6.5-alt1
+- Build new version.
+
+* Mon Mar 16 2020 Grigory Ustinov <grenka@altlinux.org> 0.6.4-alt1
+- Build new version.
+
 * Wed Apr 17 2019 Grigory Ustinov <grenka@altlinux.org> 0.6.3-alt1
 - Build new version.
 
