@@ -1,19 +1,24 @@
+%define _unpackaged_files_terminate_build 1
+
 %define svn_release svn312
-%define our_release alt2
+%define our_release alt3
 
 Name: structuresynth
 Version: 1.5.0
 Release: %our_release.%svn_release
 
 Summary: Application for generating 3D structures by specifying a design grammar
-License: %gpl3only / %lgpl21only
+License: %gpl3only or %lgpl21only
 Group: Graphics
 
 Url: http://structuresynth.sourceforge.net
 
+ExcludeArch: armh
+
 Source: %name-%version.tar
 
 Patch1: %name-%version-alt-gcc6.patch
+Patch2: %name-%version-alt-qt-compat.patch
 
 BuildRequires(pre): rpm-macros-branch rpm-build-licenses rpm-build-python3
 BuildRequires: qt5-base-devel gcc-c++ ImageMagick-tools python-tools-2to3
@@ -37,6 +42,7 @@ system.
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
 rm -rf Examples/DontDeploy
 2to3 -w Misc/Blender_Importer_2.py
 
@@ -65,7 +71,8 @@ install -pDm0644 structuresynth48x48.png %buildroot%_liconsdir/structuresynth.pn
 install -pDm0644 images/fileicons/StructureSynth-256.png %buildroot%_iconsdir/hicolor/128x128/structuresynth.png
 
 %files 
-%doc LICENSE.README bugs.txt changelog.txt notes.txt roadmap.txt 
+%doc LICENSE.README LICENSE.GPL3 LICENSE.LGPL
+%doc bugs.txt changelog.txt notes.txt roadmap.txt 
 %_bindir/*
 %_datadir/%name/
 %_desktopdir/*
@@ -74,6 +81,9 @@ install -pDm0644 images/fileicons/StructureSynth-256.png %buildroot%_iconsdir/hi
 %_iconsdir/hicolor/128x128/*
 
 %changelog
+* Fri Aug 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.5.0-alt3.svn312
+- Fixed build with qt-5.15.0.
+
 * Mon Oct 02 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.5.0-alt2.svn312
 - Fixed build with gcc-6.
 
