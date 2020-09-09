@@ -1,8 +1,10 @@
 %define _unpackaged_files_terminate_build 1
 
+%def_disable webkit
+
 Name: psi
-Version: 1.3
-Release: alt4
+Version: 1.4
+Release: alt1
 Group: Networking/Instant messaging
 Summary: Psi Jabber client
 Summary(ru_RU.UTF-8): Jabber клиент Psi
@@ -28,7 +30,12 @@ BuildRequires: cmake gcc-c++ libXScrnSaver-devel libaspell-devel libcom_err-deve
 BuildRequires: libotr-devel libhunspell-devel
 BuildRequires: libtidy-devel >= 1.2.0
 BuildRequires: libidn-devel zlib-devel
-BuildRequires: qt5-base-devel qt5-multimedia-devel qt5-svg-devel qt5-tools qt5-webkit-devel qt5-x11extras-devel
+BuildRequires: qt5-base-devel qt5-multimedia-devel qt5-svg-devel qt5-tools qt5-x11extras-devel
+%if_enabled webkit
+BuildRequires: qt5-webkit-devel
+%else
+BuildRequires: qt5-webengine-devel
+%endif
 BuildRequires: libminizip-devel
 
 Conflicts: qssl < 2.0 psi0.11
@@ -279,6 +286,10 @@ rm -f %buildroot%_libdir/%name/plugins/libripperccplugin.so
 %_libdir/%name/plugins/libwatcherplugin.so
 
 %changelog
+* Wed Nov 21 2018 Oleg Solovyov <mcpain@altlinux.org> 1.4-alt1
+- Updated to version 1.4
+- disabled QtWebKit (Closes: #37380)
+
 * Wed Oct 03 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3-alt4
 - NMU: fixed main window blanking issue which appears on closing main window in a specific way.
 
