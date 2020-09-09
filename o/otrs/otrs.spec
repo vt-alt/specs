@@ -2,17 +2,21 @@
 %define otrs_user otrs
 
 Name: otrs
-Version: 6.0.23
+Version: 6.0.29
 Release: alt1
 
 Summary: Open source Ticket Request System
 Group: Networking/WWW
-License: %gpl3only
+License: GPL-3.0-only
 Url: http://www.otrs.org/
+
+Source0: https://ftp.otrs.org/pub/otrs/%name-%version.tar.bz2
+Source1: README.ALT.rus
+Source2: otrs-hold.conf
+Source3: apache2.conf
 
 BuildArch: noarch
 
-BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-macros-webserver-common rpm-macros-apache2 >= 3.9
 
 Requires: webserver-common perl-CGI perl-DBI perl-DBD-mysql
@@ -21,7 +25,7 @@ Requires: webserver-common perl-CGI perl-DBI perl-DBD-mysql
 Requires: perl-DateTime perl-Template
 
 # is needed (found in /var/log/httpd2/error_log)
-Requires: perl-Unicode-Collate
+Requires: perl-Unicode-Collate perl-Moo
 
 # hard requires by otrs.CheckModules.pl
 Requires: perl-Archive-Tar perl-Archive-Zip perl-TimeDate perl-Net-DNS perl-YAML-LibYAML
@@ -29,10 +33,8 @@ Requires: perl-Archive-Tar perl-Archive-Zip perl-TimeDate perl-Net-DNS perl-YAML
 # some of soft requires by otrs.CheckModules.pl
 Requires: perl-Crypt-Eksblowfish perl-Crypt-SSLeay perl-JSON-XS perl-Mail-IMAPClient perl-IO-Socket-SSL perl-Text-CSV_XS perl-XML-LibXSLT perl-XML-Parser
 
-Source0: %name-%version.tar.gz
-Source1: README.ALT.rus
-Source2: otrs-hold.conf
-Source3: apache2.conf
+# is needed for DBUpdate-to-6.pl
+Requires: perl-CPAN-Meta
 
 %add_findreq_skiplist */bin/*
 %add_findreq_skiplist */Kernel/*
@@ -158,6 +160,11 @@ cd %installdir/bin/
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/addon.d/A.%name.conf
 
 %changelog
+* Fri Aug 21 2020 Sergey Y. Afonin <asy@altlinux.org> 6.0.29-alt1
+- New version
+- updated License tag to SPDX syntax
+- updated README.ALT.rus
+
 * Fri Oct 25 2019 Sergey Y. Afonin <asy@altlinux.org> 6.0.23-alt1
 - New version (ALT #37331)
 - changed License (GAGPLv3 to GPLv3)
