@@ -34,7 +34,7 @@ Version: %hversion.%urelease
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
 
-Release: alt1
+Release: alt2
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -470,13 +470,13 @@ for l in %with_lang; do
 done
 
 # Create gtk3 plugin list
-find %buildroot%lodir -name "*_gtk3*" ! -name "*_kde5*" | sed 's@^%buildroot@@' > files.gtk3
+find %buildroot%lodir -name "*_gtk3*" ! -name "*_kf5*" | sed 's@^%buildroot@@' > files.gtk3
 
 # Create qt5 plugin list
 find %buildroot%lodir -name "*qt5*"   | sed 's@^%buildroot@@' > files.qt5
 
 # Create kde5 plugin list
-find %buildroot%lodir -name "*_kde5*" -o -name "libkde5*" | sed 's@^%buildroot@@' > files.kde5
+find %buildroot%lodir -name "*_kf5*" -o -name "libkf5*" | sed 's@^%buildroot@@' > files.kde5
 
 # Generate base filelist by removing files from  separated packages
 { cat %buildroot/gid_* | sort -u ; cat *.lang files.gtk3 files.kde5 files.qt5; echo %lodir/program/liblibreofficekitgtk.so; } | sort | uniq -u | grep -v '~$' | egrep -v '/share/extensions/.|%lodir/sdk/.' > files.nolang
@@ -629,6 +629,9 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Sat Sep 05 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.6.2-alt2
+- Package KDE5-specific libraries to LibreOffice-still-kde5.
+
 * Fri Aug 21 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.6.2-alt1
 - New version 6.4.6.2 (Still).
 
