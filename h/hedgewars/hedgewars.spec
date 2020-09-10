@@ -1,6 +1,6 @@
 Name:       hedgewars
 Version:    0.9.25
-Release:    alt2
+Release:    alt2.1
 
 Summary:    Game with heavily armed fighting hedgehogs
 Summary(ru_RU.UTF-8): Игра в битвы тяжело-вооружённых воющих ёжиков
@@ -13,6 +13,7 @@ Packager:   Grigory Ustinov <grenka@altlinux.org>
 
 Source:     %name-%version.tar
 Patch:      fix_non_inline_ShiftWorld.patch
+Patch1:     alt-qt5.15.patch
 
 Requires:   %name-data = %EVR
 Requires:   fonts-ttf-wqy-zenhei fonts-ttf-dejavu
@@ -84,6 +85,7 @@ This package contains all the data files for %name.
 %prep
 %setup
 %patch -p2
+%patch1 -p1
 
 # Make sure that we don't use bundled libraries
 rm -r misc/liblua
@@ -131,6 +133,9 @@ chrpath --delete %buildroot%_bindir/hwengine
 %_datadir/%name
 
 %changelog
+* Fri Sep 04 2020 Sergey V Turchin <zerg at altlinux dot org> 0.9.25-alt2.1
+- Fix compile with Qt-5.15
+
 * Mon Apr 15 2019 Grigory Ustinov <grenka@altlinux.org> 0.9.25-alt2
 - Reloaded upstream tarball (after several fixes they uploaded new one on
   previous place)
