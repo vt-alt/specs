@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.3.4
+Version: 0.4.0
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPL-2.0-or-later
@@ -40,6 +40,10 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Tue Sep 01 2020 Anton Midyukov <antohami@altlinux.org> 0.4.0-alt1
+- Restructure code in the socs.d (Thanks arei@)
+- Many fixes.
+
 * Wed May 27 2020 Anton Midyukov <antohami@altlinux.org> 0.3.4-alt1
 - Added support Raspberry Pi 4 on armh 
 
