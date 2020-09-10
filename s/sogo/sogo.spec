@@ -1,14 +1,14 @@
 %def_without openchange
 %define sogo_user _sogo
 
-Summary:      SOGo is a very fast and scalable modern collaboration suite (groupware)
-Name:         sogo
-Version:      4.3.2
-Release:      alt1
+Summary: SOGo is a very fast and scalable modern collaboration suite (groupware)
+Name:    sogo
+Version: 5.0.0
+Release: alt1
 
-License:      GPL-2.0+ and LGPL-2.1+
-URL:          https://sogo.nu/
-# VCS:        https://github.com/inverse-inc/sogo
+License: GPL-2.0+ and LGPL-2.1+
+URL:     https://sogo.nu/
+# VCS:   https://github.com/inverse-inc/sogo
 # Do not forget to update angular submodule and 
 # update CSS as describe in https://sogo.nu/files/docs/SOGoDevelopersGuide.pdf
 #  git submodule init
@@ -17,23 +17,23 @@ URL:          https://sogo.nu/
 #  npm install
 #  ./node_modules/grunt/bin/grunt build
 
-Group:        Communications
-Packager:     Andrey Cherepanov <cas@altlinux.org>
+Group:   Communications
+Packager:Andrey Cherepanov <cas@altlinux.org>
 
-Source:       SOGo-%version.tar
-Source1:      sogo.init
-Source2:      angular-material.tar
+Source: SOGo-%version.tar
+Source1: sogo.init
+Source2: angular-material.tar
 Patch1: sogo-alt-fix-enter-letters-in-address-field.patch
 Patch2: sogo-alt-fixes.patch
 Patch3: sogo-angular-css-update.patch
 Patch4: sogo-alt-fix-timeZoneWithAbbreviation.patch
+Patch5: sogo-alt-libzip-includes.patch
 
-Requires:      stmpclean
-Requires:      tzdata
-Requires:      zip
-Conflicts:     sogo2
-Provides:      sogo3 = %EVR
-Obsoletes:     sogo3 < %EVR
+Requires: stmpclean
+Requires: tzdata
+Conflicts: sogo2
+Provides: sogo3 = %EVR
+Obsoletes: sogo3 < %EVR
 
 %filter_from_requires /^\/usr\/%_lib\/samba-dc\/lib/d
 %{!?sogo_major_version: %global sogo_major_version %(/bin/echo %version | /bin/cut -f 1 -d .)}
@@ -56,10 +56,12 @@ BuildRequires: libmemcached-devel
 BuildRequires: libnanomsg-devel
 BuildRequires: libobjc-devel
 BuildRequires: libssl-devel
+BuildRequires: libsodium-devel
 BuildRequires: libwbxml-devel
 %if_with openchange
 BuildRequires: openchange-devel
 %endif
+BuildRequires: libzip-devel
 BuildRequires: zlib-devel
 BuildRequires: python3-module-samba
 
@@ -133,24 +135,24 @@ See http://altlinux.org/SOGo for more information about deployment and
 configuration.
 
 %package tool
-Summary:      Command-line toolsuite for SOGo
-Group:        Communications
-Requires:     %name = %EVR
-Provides:     sogo3-tool = %EVR
+Summary: Command-line toolsuite for SOGo
+Group:   Communications
+Requires:%name = %EVR
+Provides:sogo3-tool = %EVR
 Obsoletes:    sogo3-tool < %EVR
 
 %description tool
 Administrative tool for SOGo that provides the following internal
 commands:
-- backup          - backup user folders
-- restore         - restore user folders
+- backup     - backup user folders
+- restore    - restore user folders
 - remove-doubles  - remove duplicate contacts from the user addressbooks
 - check-doubles   - list user addressbooks with duplicate contacts
 
 %package slapd-sockd
-Summary:      SOGo backend for slapd and back-sock
-Group:        Communications
-Provides:     sogo3-slapd-sockd = %EVR
+Summary: SOGo backend for slapd and back-sock
+Group:   Communications
+Provides:sogo3-slapd-sockd = %EVR
 Obsoletes:    sogo3-slapd-sockd < %EVR
 
 %description slapd-sockd
@@ -158,9 +160,9 @@ SOGo backend for slapd and back-sock, enabling access to private
 addressbooks via LDAP.
 
 %package ealarms-notify
-Summary:      SOGo utility for executing email alarms
-Group:        Communications
-Provides:     sogo3-ealarms-notify = %EVR
+Summary: SOGo utility for executing email alarms
+Group:   Communications
+Provides:sogo3-ealarms-notify = %EVR
 Obsoletes:    sogo3-ealarms-notify < %EVR
 
 %description ealarms-notify
@@ -168,30 +170,30 @@ SOGo utility executed each minute via a cronjob for executing email
 alarms.
 
 %package activesync
-Summary:      SOGo module to handle ActiveSync requests
-Group:        Communications
-Requires:     %name = %EVR
-Provides:     sogo3-activesync = %EVR
+Summary: SOGo module to handle ActiveSync requests
+Group:   Communications
+Requires:%name = %EVR
+Provides:sogo3-activesync = %EVR
 Obsoletes:    sogo3-activesync < %EVR
 
 %description activesync
 SOGo module to handle ActiveSync requests
 
 %package devel
-Summary:      Development headers and libraries for SOGo
-Group:        Development/Objective-C
-Provides:     sogo3-devel = %EVR
+Summary: Development headers and libraries for SOGo
+Group:   Development/Objective-C
+Provides:sogo3-devel = %EVR
 Obsoletes:    sogo3-devel < %EVR
 
 %description devel
 Development headers and libraries for SOGo. Needed to create modules.
 
 %package -n sope-gdl1-contentstore
-Summary:      Storage backend for folder abstraction.
-Group:        Development/Objective-C
-Requires:     sope-gdl1
+Summary: Storage backend for folder abstraction.
+Group:   Development/Objective-C
+Requires:sope-gdl1
 Conflicts:    sope-gdl1-contentstore-sogo2
-Provides:     sope-gdl1-contentstore-sogo3 = %EVR
+Provides:sope-gdl1-contentstore-sogo3 = %EVR
 Obsoletes:    sope-gdl1-contentstore-sogo3 < %EVR
 
 %description -n sope-gdl1-contentstore
@@ -202,11 +204,11 @@ SOPE is a framework for developing web applications and services. The
 name "SOPE" (SKYRiX Object Publishing Environment) is inspired by ZOPE.
 
 %package -n sope-gdl1-contentstore-devel
-Summary:      Development files for the GNUstep database libraries
-Group:        Development/Objective-C
-Requires:     sope-gdl1
+Summary: Development files for the GNUstep database libraries
+Group:   Development/Objective-C
+Requires:sope-gdl1
 Conflicts:    sope-gdl1-contentstore-devel
-Provides:     sope-gdl1-contentstore-sogo3-devel = %EVR
+Provides:sope-gdl1-contentstore-sogo3-devel = %EVR
 Obsoletes:    sope-gdl1-contentstore-sogo3-devel < %EVR
 
 %description -n sope-gdl1-contentstore-devel
@@ -217,20 +219,20 @@ SOPE is a framework for developing web applications and services. The
 name "SOPE" (SKYRiX Object Publishing Environment) is inspired by ZOPE.
 
 %package -n sope-cards
-Summary:      SOPE versit parsing library for iCal and VCard formats
-Group:        Development/Objective-C
+Summary: SOPE versit parsing library for iCal and VCard formats
+Group:   Development/Objective-C
 Conflicts:    sope-cards-sogo2
-Provides:     sope-cards-sogo3 = %EVR
+Provides:sope-cards-sogo3 = %EVR
 Obsoletes:    sope-cards-sogo3 < %EVR
 
 %description -n sope-cards
 SOPE versit parsing library for iCal and VCard formats
 
 %package -n sope-cards-devel
-Summary:      SOPE versit parsing library for iCal and VCard formats
-Group:        Development/Objective-C
-Requires:     sope-cards
-Provides:     sope-cards-sogo3-devel = %EVR
+Summary: SOPE versit parsing library for iCal and VCard formats
+Group:   Development/Objective-C
+Requires:sope-cards
+Provides:sope-cards-sogo3-devel = %EVR
 Obsoletes:    sope-cards-sogo3-devel < %EVR
 
 %description -n sope-cards-devel
@@ -238,10 +240,10 @@ SOPE versit parsing library for iCal and VCard formats
 
 %if_with openchange
 %package openchange-backend
-Summary:      SOGo backend for OpenChange
-Group:        Communications
-Requires:     samba-DC-libs
-Provides:     sogo3-openchange-backend = %EVR
+Summary: SOGo backend for OpenChange
+Group:   Communications
+Requires:samba-DC-libs
+Provides:sogo3-openchange-backend = %EVR
 Obsoletes:    sogo3-openchange-backend < %EVR
 
 %description openchange-backend
@@ -255,15 +257,16 @@ tar xf %SOURCE2
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
-# Set correct python2 executable in shebang                                                                                                                                                    
+# Set correct python2 executable in shebang
 subst 's|#!.*python$|#!%__python|' $(grep -Rl '#!.*python$' *)
 
 %build
 . /usr/share/GNUstep/Makefiles/GNUstep.sh
 ./configure \
-            --enable-saml2
-#           --enable-ldap-config
+       --enable-saml2
+#      --enable-ldap-config
 
 %make_build CC="cc" LDFLAGS="$ldflags" messages=yes
 
@@ -434,6 +437,13 @@ fi
 %preun_service sogo
 
 %changelog
+* Sat Sep 05 2020 Andrey Cherepanov <cas@altlinux.org> 5.0.0-alt1
+- New version.
+- Remove extra spaces in spec file.
+- Add libsodium-devel and libzip-devel to build requirements.
+
+* Fri Sep 04 2020 Andrey Cherepanov <cas@altlinux.org> 5.0.0-alt1
+
 * Thu May 07 2020 Andrey Cherepanov <cas@altlinux.org> 4.3.2-alt1
 - New version.
 - Build afrom upstream tag and separate patch files.
