@@ -1,13 +1,16 @@
 Name: tutka
 Version: 1.1.3
-Release: alt1
+Release: alt3
 
 Summary: tracker style MIDI sequencer
 License: %gpl2plus
 Group: Sound
 Url: http://www.nongnu.org/tutka/
 
-Source0: %name-%version.tar.bz2
+Source: %name-%version.tar.bz2
+
+Patch1: tutka-1.1.3-disable-werror.patch
+Patch2: tutka-1.1.3-fix-build-with-Qt5-5.13.patch
 
 BuildPreReq: rpm-build-licenses
 BuildRequires: gcc-c++ libalsa-devel libgtk+2-devel libgnomeui-devel libxml2-devel libglade-devel
@@ -22,6 +25,8 @@ GNU GPL.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
 
 %build
 qmake-qt5
@@ -44,6 +49,12 @@ qmake-qt5
 %_iconsdir/hicolor/512x512/apps/%name.png
 
 %changelog
+* Tue Sep 08 2020 Grigory Ustinov <grenka@altlinux.org> 1.1.3-alt3
+- Fixed segfault. [thx to zerg@] (Closes: #38894).
+
+* Thu Aug 27 2020 Grigory Ustinov <grenka@altlinux.org> 1.1.3-alt2
+- Fixed FTBFS.
+
 * Thu Aug 08 2019 Grigory Ustinov <grenka@altlinux.org> 1.1.3-alt1
 - Build new version.
 
