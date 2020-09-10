@@ -1,5 +1,5 @@
 Name: megasync
-Version: 4.0.2.0
+Version: 4.3.1.0
 Release: alt1
 
 Summary: Easy automated syncing between your computers and your MEGA Cloud Drive
@@ -23,7 +23,9 @@ BuildPreReq: rpm-macros-qt5
 
 BuildRequires: cmake
 
-BuildRequires: libmegasdk-devel >= 3.2 libmegasdk-devel-qt5
+BuildRequires: zlib-devel
+
+BuildRequires: libmegasdk-devel >= 3.6 libmegasdk-devel-qt5
 
 # Automatically added by buildreq on Sat Jun 13 2015
 # optimized out: fontconfig glib2-devel glibc-devel-static libGL-devel libX11-devel libatk-devel libavcodec-devel libavutil-devel libcairo-devel libcloog-isl4 libdc1394-22 libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libjson-c libopencore-amrnb0 libopencore-amrwb0 libp11-kit libpango-devel libqt5-core libqt5-gui libqt5-network libqt5-opengl libqt5-sql libqt5-svg libqt5-widgets libqt5-xml libraw1394-11 libsodium-devel libstdc++-devel libswscale-devel libvpx-devel libwayland-client libwayland-server python3-base qt5-base-devel qt5-declarative-devel qt5-script-devel qt5-tools xorg-scrnsaverproto-devel xorg-xproto-devel
@@ -40,8 +42,9 @@ of the official sync client of MEGA: https://mega.nz/sync
 
 %prep
 %setup
-%patch -p0
-#__subst "s|.*-Werror.*||g" CMakeLists.txt
+#patch -p0
+%__subst "s|-lcrypto|-lcrypto -lz|g" src/MEGASync/platform/platform.pri
+
 mkdir -p src/MEGASync/mega/bindings/qt/
 cp -a %_datadir/libmegasdk/qt5/*.* src/MEGASync/mega/bindings/qt/
 cp %SOURCE1 src/MEGASync/mega/bindings/qt/sdk.pri
@@ -81,6 +84,12 @@ cp -a icons/hicolor/ %buildroot%_iconsdir/
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 4.3.1.0-alt1
+- new version 4.3.1.0 (with rpmrb script)
+
+* Sun Mar 08 2020 Vitaly Lipatov <lav@altlinux.ru> 4.3.0.8-alt1
+- new version 4.3.0.8
+
 * Wed Apr 10 2019 Fr. Br. George <george@altlinux.ru> 4.0.2.0-alt1
 - Autobuild version bump to 4.0.2.0
 
