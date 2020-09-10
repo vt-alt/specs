@@ -1,6 +1,6 @@
 Name: alterator-lookout
-Version: 2.6
-Release: alt4
+Version: 2.7
+Release: alt1
 
 Source:%name-%version.tar
 
@@ -54,6 +54,15 @@ export GUILE_LOAD_PATH="lookout"
 %_alterator_datadir/ui/*
 
 %changelog
+* Wed Aug 26 2020 Paul Wolneykien <manowar@altlinux.org> 2.7-alt1
+- Allow to set mode change handler with (frame-bind
+  "document:expert_mode" "change" ...)
+- Try to reset the mode chane handler on frame replace.
+
+* Thu Aug 20 2020 Paul Wolneykien <manowar@altlinux.org> 2.6.1-alt1
+- Define 'form-update-cookie' and 'form-cookie' wrappers around
+  globals.
+
 * Wed Dec 20 2017 Paul Wolneykien <manowar@altlinux.org> 2.6-alt4
 - Use registered fluids with shift/reset-based call/cc (patch).
 

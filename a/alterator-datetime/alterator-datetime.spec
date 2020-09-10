@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.5.0
+Version: 4.6.0
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -18,6 +18,8 @@ Requires: alterator >= 5.2-alt1 alterator-sh-functions >= 0.6-alt5
 Requires: alterator-service-functions >= 2.0.0-alt1
 Requires: alterator-l10n >= 1.5-alt5
 Requires: ntp-server glibc-timezones
+Requires: alterator-lookout >= 2.7
+Requires: alterator-standalone >= 7.4
 Conflicts: alterator-browser-qt < 2.9.93
 Conflicts: alterator-fbi < 5.17-alt3
 Conflicts: alterator-lookout < 1.6-alt3
@@ -69,6 +71,9 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Fri Sep 04 2020 Ivan Razzhivin <underwit@altlinux.org> 4.6.0-alt1
+- add the ability to select the clock source
+
 * Wed May 13 2020 Mikhail Efremov <sem@altlinux.org> 4.5.0-alt1
 - Check that supported ntp service is installed (closes: #38168).
 - datetime-functions: Add numeric TZ to list_zone() output

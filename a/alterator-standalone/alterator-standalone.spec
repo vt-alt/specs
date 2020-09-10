@@ -1,5 +1,5 @@
 Name: alterator-standalone
-Version: 7.3
+Version: 7.4
 Release: alt1
 
 Summary: System Management center
@@ -80,6 +80,12 @@ install -Dpm644 acc.desktop %buildroot/%_desktopdir/acc.desktop
 %_bindir/*
 
 %changelog
+* Wed Aug 26 2020 Paul Wolneykien <manowar@altlinux.org> 7.4-alt1
+- Allow to set mode change handler with 'frame:mode-onchange-set!'
+  global variable.
+- Store the expert mode flag in the global variable 'expert_mode'.
+- Disable auto compilation of .scm files.
+
 * Thu Dec 28 2017 Paul Wolneykien <manowar@altlinux.org> 7.3-alt1
 - Fix: Load lookout AJAX module instead of the default (HTTP).
 
