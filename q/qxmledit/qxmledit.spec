@@ -1,7 +1,7 @@
 %define Name QXmlEdit
 Name: qxmledit
-Version: 0.9.12
-Release: alt1
+Version: 0.9.13
+Release: alt3
 
 Summary: Simple XML editor and XSD viewer
 
@@ -11,10 +11,11 @@ URL: https://github.com/lbellonda/%name
 
 # Source-url: https://github.com/lbellonda/qxmledit/archive/%version.tar.gz
 Source: %name-%version.tar
+Patch0: add-translation-units.patch
 
 Provides: %Name = %version-%release
 
-BuildRequires: gcc-c++ qt5-base-devel qt5-scxml-devel qt5-xmlpatterns-devel qt5-svg-devel rpm-macros-qt5
+BuildRequires: gcc-c++ qt5-base-devel qt5-scxml-devel qt5-xmlpatterns-devel qt5-svg-devel rpm-macros-qt5 qt5-tools
 
 # ../include/qwt3d_openglhelper.h
 BuildRequires: libGLU-devel
@@ -45,8 +46,13 @@ Main features:
 
 %prep
 %setup
+%patch0 -p1
 
 %build
+lrelease-qt5 src/QXmlEdit.pro
+lrelease-qt5 src/QXmlEditWidget.pro
+lrelease-qt5 src/sessions/QXmlEditSessions.pro
+
 %qmake_qt5 "CONFIG+=release staticlib" %Name.pro
 %make_build \
 	QXMLEDIT_INST_DATA_DIR=%_datadir/%name \
@@ -79,6 +85,15 @@ mv %buildroot%_datadir/%name/%Name.desktop %buildroot%_desktopdir/%Name.desktop
 
 
 %changelog
+* Tue Oct 28 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 0.9.13-alt3
+- add russian translations
+
+* Wed Oct 17 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 0.9.13-alt2
+- build translations
+
+* Wed Oct 16 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 0.9.13-alt1
+- new version 0.9.13 (with rpmrb script)
+
 * Fri Mar 01 2019 Vitaly Lipatov <lav@altlinux.ru> 0.9.12-alt1
 - new version (0.9.12) with rpmgs script
 - move source code to the subdir
