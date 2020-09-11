@@ -1,19 +1,18 @@
 Name: httptunnel
-Version: 3.0.5
-Release: alt2.qa1
+Version: 3.3
+Release: alt1
 
 Url: http://www.nocrew.org/software/httptunnel.html
 
-Summary: bidirectional virtual data over HTTP-proxy
-License: GPL
+Summary: Bidirectional virtual data over HTTP-proxy
+License: GPL-2.0
 Group: Networking/Other
 
-Packager: Denis Smirnov <mithraen@altlinux.ru>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
+# Use debian repackage tarball, it doesn't include non-free documentation files
+# from http://ftp.de.debian.org/debian/pool/main/h/httptunnel/httptunnel_%{version}+dfsg.orig.tar.gz
 Source: %name-%version.tar
-
-Patch1: %name-%version.bind.patch
-Patch2: %name-%version.debug.patch
 
 %description
 httptunnel creates a bidirectional virtual data path tunnelled in HTTP
@@ -26,8 +25,6 @@ the firewall.
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
 
 %build
 %configure
@@ -37,11 +34,15 @@ the firewall.
 %makeinstall
 
 %files
+%doc AUTHORS ChangeLog DISCLAIMER FAQ HACKING NEWS README TODO
 %_bindir/*
 %_man1dir/*
-%doc AUTHORS COPYING ChangeLog DISCLAIMER FAQ HACKING NEWS README TODO
 
 %changelog
+* Fri Sep 04 2020 Andrey Cherepanov <cas@altlinux.org> 3.3-alt1
+- New version (ALT #38889).
+- Fix License tag according to SPDX.
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 3.0.5-alt2.qa1
 - NMU: rebuilt for debuginfo.
 
