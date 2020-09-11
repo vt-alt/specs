@@ -1,10 +1,10 @@
+%define _unpackaged_files_terminate_build 1
 # TODO: fix dest on x86_64
 # TODO: Move mpl-data to share?
 # TODO: gtk3 knob too?
 %define oname matplotlib
 %define major 2.2
 
-%def_disable docs
 %def_with python3
 %def_with qt4
 %def_with qt5
@@ -12,7 +12,7 @@
 
 Name: python-module-%oname
 Version: %major.3
-Release: alt3
+Release: alt6
 
 Summary: Matlab(TM) style python plotting package
 
@@ -27,6 +27,7 @@ Source1: setup.cfg
 
 Patch1: %oname-alt-deps-detection.patch
 Patch2: %oname-alt-version.patch
+Patch3: %oname-2.2.3-remove-unused-matplotlib.testing-import.patch
 
 %setup_python_module pylab
 
@@ -40,13 +41,9 @@ BuildRequires: python-module-pycairo python-module-pygobject3 python-modules-tki
 %{?_with_wx:BuildRequires: python-module-wx}
 Requires: %name-gtk3
 
-%if_with docs
-BuildRequires(pre): rpm-macros-sphinx
-BuildRequires: python-module-html5lib 
-%endif #docs
-
 %if_with python3
 BuildRequires(pre): rpm-build-python3 python3-devel 
+BuildRequires: libnumpy-py3-devel
 BuildRequires: python3-module-setuptools
 BuildRequires: python3-module-numpy-testing python3-module-pycairo python3-module-pygobject3 python3-modules-tkinter python3-module-cycler python3-module-pyparsing python3-module-pytz python3-module-dateutil
 %{?_with_qt4:BuildRequires: python3-module-PyQt4}
@@ -56,7 +53,6 @@ BuildRequires: python3-module-numpy-testing python3-module-pycairo python3-modul
 # hack for unknown deps
 %add_python_req_skip AppKit Foundation PyObjCTools numarray paint _Py
 %add_python_req_skip _winreg builtins
-#py_provides backend_agg
 %py_requires functools32
 %py_requires numpy pytz six subprocess32 backports.functools_lru_cache
 
@@ -77,11 +73,6 @@ Requires: python3-module-%oname-gtk3
 Requires: python3-module-mpl_toolkits = %EVR
 %add_python3_req_skip AppKit Foundation PyObjCTools numarray paint _Py
 %add_python3_req_skip _winreg builtins distutils
-#add_python3_req_skip IPython.display  #needed matplotlib.backends.backend_nbagg
-#py3_provides backend_agg
-#py3_provides matplotlib.externals.six.moves
-#py3_provides matplotlib.externals.six.moves.urllib.parse
-#py3_provides matplotlib.externals.six.moves.urllib.request
 
 %description -n python3-module-%oname
 matplotlib is a pure python 2D plotting library with a Matlab(TM)
@@ -110,14 +101,6 @@ Requires: python3-module-%oname = %version-%release
 %description -n python3-module-%oname-nbagg
 Interactive figures in the IPython notebook.
 
-%package -n python3-module-%oname-tests
-Summary: Tests for %oname (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-tests
-Tests for %oname.
-
 %package -n python3-module-%oname-fltk
 Summary: fltk backend for %oname (Python 3)
 Group: Development/Python3
@@ -131,8 +114,6 @@ Summary: qt5 backend for %oname (Python 3)
 Group: Development/Python3
 Requires: python3-module-%oname = %version-%release
 %py3_requires PyQt5
-#fix me!!!
-Requires: python3-module-%oname-qt4 = %version-%release
 
 %description -n python3-module-%oname-qt5
 qt5 backend for %oname.
@@ -149,25 +130,6 @@ Requires: python3-module-%oname-qt5 = %version-%release
 %description -n python3-module-%oname-qt4
 qt4 backend for %oname.
 
-%package -n python3-module-%oname-qt
-Summary: qt backend for %oname (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-qt
-qt backend for %oname.
-
-%package -n python3-module-%oname-gtk
-Summary: gtk backend for %oname (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-Requires: typelib(Gtk) = 2.0
-Requires: python3-module-%oname-cairo = %version-%release
-%add_python3_req_skip gtk pango
-
-%description -n python3-module-%oname-gtk
-gtk backend for %oname.
-
 %package -n python3-module-%oname-gtk3
 Summary: gtk3 backend for %oname (Python 3)
 Group: Development/Python3
@@ -177,14 +139,6 @@ Requires: python3-module-pygobject3
 
 %description -n python3-module-%oname-gtk3
 gtk3 backend for %oname.
-
-%package -n python3-module-%oname-wx
-Summary: wx backend for %oname (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-wx
-ex backend for %oname.
 
 %package -n python3-module-%oname-tk
 Summary: tk backend for %oname (Python 3)
@@ -210,77 +164,13 @@ Group: Development/Python3
 %description -n python3-module-mpl_toolkits
 mpl_toolkits extension for %oname.
 
-%package -n python3-module-mpl_toolkits-tests
-Summary: Tests for mpl_toolkits
-Group: Development/Python3
-Requires: python3-module-mpl_toolkits = %version-%release
-
-%description -n python3-module-mpl_toolkits-tests
-Tests for mpl_toolkits.
 %endif #python3
-
-%package tests
-Summary: Tests for %oname
-Group: Development/Python
-Requires: %name = %version-%release
-
-%description tests
-Tests for %oname.
-
-%package examples
-Summary: Example files for %oname
-Group: Development/Python
-BuildArch: noarch
-Requires: %name = %version-%release
-
-%description examples
-Example files for %oname.
-
-%package other-docs
-Summary: Some addition documentation for %oname
-Group: Development/Documentation
-BuildArch: noarch
-
-%description other-docs
-Some addition documentation for %oname.
-
-%package doc-html
-Summary: Documentation for %oname in HTML
-Group: Development/Documentation
-
-%description doc-html
-Documentation for %oname in HTML.
-
-%package doc-pdf
-Summary: Documentation for %oname in PDF
-Group: Development/Documentation
-
-%description doc-pdf
-Documentation for %oname in PDF.
-
-%package pickles
-Summary: Pickles for %oname
-Group: Development/Python
-AutoReqProv: yes,nopython
-
-%description pickles
-Pickles for %oname.
-
-%package fltk
-Summary: fltk backend for %oname
-Group: Development/Python
-Requires: %name = %version-%release
-
-%description fltk
-fltk backend for %oname.
 
 %package qt5
 Summary: qt5 backend for %oname
 Group: Development/Python
 Requires: %name = %version-%release
 %py_requires PyQt5
-#fix me!!!
-Requires: %name-qt5 = %version-%release
 
 %description qt5
 qt5 backend for %oname.
@@ -296,14 +186,6 @@ Requires: %name-qt5 = %version-%release
 
 %description qt4
 qt4 backend for %oname.
-
-%package qt
-Summary: qt backend for %oname
-Group: Development/Python
-Requires: %name = %version-%release
-
-%description qt
-qt backend for %oname.
 
 %package cairo
 Summary: Cairo backend for %oname
@@ -322,15 +204,6 @@ Requires: %name = %version-%release
 
 %description nbagg
 Interactive figures in the IPython notebook.
-
-%package gtk
-Summary: gtk backend for %oname
-Group: Development/Python
-Requires: %name-cairo = %version-%release
-Requires: typelib(Gtk) = 2.0
-
-%description gtk
-gtk backend for %oname.
 
 %package gtk3
 Summary: gtk3 backend for %oname
@@ -374,26 +247,15 @@ Group: Development/Python
 %description -n python-module-mpl_toolkits
 mpl_toolkits extension for %oname.
 
-%package -n python-module-mpl_toolkits-tests
-Summary: Tests for mpl_toolkits
-Group: Development/Python
-Requires: python-module-mpl_toolkits
-
-%description -n python-module-mpl_toolkits-tests
-Tests for mpl_toolkits.
-
 %prep
 %setup
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 sed -i -e "s|@VERSION@|%version|g" setup.py setupext.py
 subst "s,/usr/lib/,%_libdir/,g" setupext.py
 
 sed -i "s|@TOP@|$PWD|" doc/conf.py \
-
-%if_enabled docs
-%prepare_sphinx .
-%endif
 
 install -p -m644 %SOURCE1 .
 
@@ -407,7 +269,6 @@ popd
 echo -e "[versioneer]\nparentdir_prefix=python-module-matplotlib-" >> setup.cfg
 
 %build
-#export XDG_RUNTIME_DIR=%_xdgdatadir
 %add_optflags -fno-strict-aliasing -fpermissive
 %if_with python3
 pushd ../python3-module-matplotlib-%version
@@ -427,22 +288,20 @@ sed -i 's|^\(wxagg\).*|\1 = False|' setup.cfg
 %python_build_debug
 
 %install
-#export XDG_RUNTIME_DIR=%_xdgdatadir
 %if_with python3
 pushd ../python3-module-matplotlib-%version
 %python3_install
-
 cp -fR lib/mpl_toolkits %buildroot%python3_sitelibdir/
+
+# don't package tests
+rm -r %buildroot%python3_sitelibdir/%oname/testing
+rm -r %buildroot%python3_sitelibdir/mpl_toolkits/tests
 
 subst "s|WXAgg|GTK3Cairo|g" \
 	%buildroot%python3_sitelibdir/%oname/mpl-data/matplotlibrc
 
 export PYTHONPATH=%buildroot%python3_sitelibdir
 
-# TODO: breaks something?
-# matplotlib can use system fonts, so drop these copies (thanks, PLD)
-#rm -f %buildroot%python3_sitelibdir/matplotlib/mpl-data/Vera*.ttf
-
 sed -i 's|^\(backend\).*|\1 : GTK3Cairo|' \
 	%buildroot%python3_sitelibdir/%oname/mpl-data/matplotlibrc
 
@@ -450,54 +309,19 @@ sed -i 's|^\(backend\).*|\1 : GTK3Cairo|' \
 
 %define reduce_fonts cmex10.ttf cmmi10.ttf cmr10.ttf cmsy10.ttf
 
-#pushd %buildroot%python3_sitelibdir/%oname/mpl-data/fonts/ttf
-#for i in %reduce_fonts
-#do
-#	rm -f $i
-#	ln -s %_datadir/fonts/ttf/reduce/$i .
-#done
-#for i in Vera*.ttf
-#do
-#	rm -f $i
-#	ln -s /usr/share/fonts/ttf/TrueType-vera/$i .
-#done
-#popd
-
 popd
 %endif #python3
 
 %python_install
-
 cp -fR lib/mpl_toolkits %buildroot%python_sitelibdir/
+
+# don't package tests
+rm -r %buildroot%python_sitelibdir/%oname/testing
+rm -r %buildroot%python_sitelibdir/mpl_toolkits/tests
 
 # Use gtk by default
 subst "s|WXAgg|GTK3Cairo|g" \
 	%buildroot%python_sitelibdir/%oname/mpl-data/matplotlibrc
-
-export PYTHONPATH=%buildroot%python_sitelibdir
-
-# doc
-
-%if_enabled docs
-pushd doc
-./make.py html
-./make.py latex
-sphinx-build -b pickle -d build/doctrees . build/pickle
-popd
-%endif #docs
-
-install -d %buildroot%_docdir/%name/pdf
-cp -fR examples %buildroot%_docdir/%name/
-
-%if_enabled docs
-cp -fR doc/build/html %buildroot%_docdir/%name/
-cp -fR doc/build/pickle %buildroot%python_sitelibdir/%oname/
-cp -fR doc/build/latex/*.pdf %buildroot%_docdir/%name/pdf/
-%endif #docs
-
-# TODO: breaks something?
-# matplotlib can use system fonts, so drop these copies (thanks, PLD)
-#rm -f %buildroot%python_sitelibdir/matplotlib/mpl-data/Vera*.ttf
 
 sed -i 's|^\(backend\).*|\1 : GTK3Cairo|' \
 	%buildroot%python_sitelibdir/%oname/mpl-data/matplotlibrc
@@ -505,22 +329,6 @@ sed -i 's|^\(backend\).*|\1 : GTK3Cairo|' \
 # fonts
 
 %define reduce_fonts cmex10.ttf cmmi10.ttf cmr10.ttf cmsy10.ttf
-
-#pushd %buildroot%python_sitelibdir/%oname/mpl-data/fonts/ttf
-#for i in %reduce_fonts
-#do
-#	rm -f $i
-#	ln -s %_datadir/fonts/ttf/reduce/$i .
-#done
-#for i in Vera*.ttf
-#do
-#	rm -f $i
-#	ln -s /usr/share/fonts/ttf/TrueType-vera/$i .
-#done
-#popd
-
-#find %buildroot%python3_sitelibdir/ -type f -exec sed -i 's|%_bindir/python|%_bind../python3-module-matplotlib-%version|' -- '{}' +
-#find %buildroot%python3_sitelibdir/ -type f -exec sed -i 's|%_bindir/env python|%_bind../python3-module-matplotlib-%version|' -- '{}' +
 
 %pre
 rm -f %python_sitelibdir/%oname/mpl-data/fonts/ttf/Vera*.ttf
@@ -530,7 +338,6 @@ do
 done
 
 %files
-%doc %dir %_docdir/%name
 %doc README.rst
 %python_sitelibdir/*.py*
 %python_sitelibdir/*.egg-info
@@ -538,14 +345,10 @@ done
 %python_sitelibdir/matplotlib-*-nspkg.pth
 %python_sitelibdir/matplotlib/*.py*
 %python_sitelibdir/matplotlib/*.so
-#python_sitelibdir/matplotlib/numerix/
 %python_sitelibdir/mpl_toolkits/
 %python_sitelibdir/matplotlib/projections/
 %python_sitelibdir/matplotlib/mpl-data/
 %python_sitelibdir/matplotlib/cbook/
-#%python_sitelibdir/matplotlib/config/
-#python_sitelibdir/enthought/
-#python_sitelibdir/matplotlib/backends/Matplotlib.nib/
 %python_sitelibdir/matplotlib/backends/
 %exclude %python_sitelibdir/matplotlib/backends/backend_gtk*
 %exclude %python_sitelibdir/matplotlib/backends/backend_gdk*
@@ -559,15 +362,12 @@ done
 %exclude %python_sitelibdir/matplotlib/backends/qt*_compat.*
 %exclude %python_sitelibdir/matplotlib/backends/backend_macosx.*
 %exclude %python_sitelibdir/matplotlib/backends/backend_nbagg*
-#exclude %python_sitelibdir/matplotlib/backends/windowing.*
 %exclude %python_sitelibdir/matplotlib/backends/qt_editor
 %python_sitelibdir/matplotlib/tri
 %python_sitelibdir/matplotlib/compat
 %python_sitelibdir/matplotlib/axes
 %python_sitelibdir/matplotlib/style
-#python_sitelibdir/matplotlib/externals
 %exclude %python_sitelibdir/mpl_toolkits
-%python_sitelibdir/%oname/testing
 
 %files cairo
 %python_sitelibdir/matplotlib/backends/backend_cairo*
@@ -575,21 +375,8 @@ done
 %files nbagg
 %python_sitelibdir/matplotlib/backends/backend_nbagg*
 
-#files fltk
-#python_sitelibdir/matplotlib/backends/backend_fltk*
-
-#files gtk
-#python_sitelibdir//matplotlib/backends/backend_gtk.py*
-#python_sitelibdir//matplotlib/backends/backend_gdk.py*
-#python_sitelibdir//matplotlib/backends/backend_gtkagg.py*
-#python_sitelibdir//matplotlib/backends/backend_gtkcairo.py*
-
 %files gtk3
 %python_sitelibdir/matplotlib/backends/backend_gtk3*
-
-#files qt
-#python_sitelibdir/matplotlib/backends/backend_qt.*
-#python_sitelibdir/matplotlib/backends/backend_qtagg*
 
 %if_with wx
 %files wx
@@ -606,73 +393,37 @@ done
 %if_with qt5
 %files qt5
 %python_sitelibdir/matplotlib/backends/backend_qt5*
+%python_sitelibdir/matplotlib/backends/qt_editor
+%python_sitelibdir/matplotlib/backends/qt*_compat.*
 %endif
 
 %if_with qt4
 %files qt4
 %python_sitelibdir/matplotlib/backends/backend_qt4*
-%python_sitelibdir/matplotlib/backends/qt*_compat.*
-%python_sitelibdir/matplotlib/backends/qt_editor
-%endif
-
-%files examples
-%doc %dir %_docdir/%name
-%doc %_docdir/%name/examples
-
-%if_enabled docs
-#files other-docs
-#doc %dir %_docdir/%name
-#doc %_docdir/%name/py4science
-#doc %_docdir/%name/sample_data
-
-%files doc-html
-%doc %dir %_docdir/%name
-%doc %_docdir/%name/html
-
-%pre doc-pdf
-rm -fR %_docdir/%name/pdf
-
-%files doc-pdf
-%doc %dir %_docdir/%name
-%doc %_docdir/%name/pdf
-
-%files pickles
-%python_sitelibdir/%oname/pickle
 %endif
 
 %files sphinxext
 %python_sitelibdir/%oname/sphinxext
-#exclude %python_sitelibdir/%oname/sphinxext/test*
 
 %files -n python-module-mpl_toolkits
 %python_sitelibdir/mpl_toolkits
-%exclude %python_sitelibdir/mpl_toolkits/tests
 #needed fix NameError: name 'gtk_git' is not defined
-
-%files -n python-module-mpl_toolkits-tests
-%python_sitelibdir/mpl_toolkits/tests
 
 %if_with python3
 %files -n python3-module-%oname
 %doc README.rst
 %python3_sitelibdir/*.py*
-#exclude %python3_sitelibdir/six.py*
 %python3_sitelibdir/__pycache__/*
-#exclude %python3_sitelibdir/__pycache__/six.*
 %python3_sitelibdir/*.egg-info
 %dir %python3_sitelibdir/matplotlib/
 %python3_sitelibdir/matplotlib-*-nspkg.pth
 %python3_sitelibdir/matplotlib/*.py*
 %python3_sitelibdir/matplotlib/*.so
 %python3_sitelibdir/matplotlib/__pycache__
-#python_sitelibdir/matplotlib/numerix/
 %python3_sitelibdir/mpl_toolkits/
 %python3_sitelibdir/matplotlib/projections/
 %python3_sitelibdir/matplotlib/mpl-data/
 %python3_sitelibdir/matplotlib/cbook/
-#%python3_sitelibdir/matplotlib/config/
-#%python3_sitelibdir/enthought/
-#python3_sitelibdir/matplotlib/backends/Matplotlib.nib/
 %python3_sitelibdir/matplotlib/backends/
 %exclude %python3_sitelibdir/matplotlib/backends/backend_gtk*
 %exclude %python3_sitelibdir/matplotlib/backends/backend_gdk*
@@ -686,7 +437,6 @@ rm -fR %_docdir/%name/pdf
 %exclude %python3_sitelibdir/matplotlib/backends/qt*_compat.*
 %exclude %python3_sitelibdir/matplotlib/backends/backend_macosx.*
 %exclude %python3_sitelibdir/matplotlib/backends/backend_nbagg*
-#exclude %python3_sitelibdir/matplotlib/backends/__pycache__/backend_fltk*
 %exclude %python3_sitelibdir/matplotlib/backends/__pycache__/backend_gtk*
 %exclude %python3_sitelibdir/matplotlib/backends/__pycache__/backend_gdk*
 %exclude %python3_sitelibdir/matplotlib/backends/__pycache__/backend_cairo*
@@ -705,7 +455,6 @@ rm -fR %_docdir/%name/pdf
 %python3_sitelibdir/matplotlib/style
 #python3_sitelibdir/matplotlib/externals
 %exclude %python3_sitelibdir/mpl_toolkits
-%python3_sitelibdir/%oname/testing
 
 %files -n python3-module-%oname-cairo
 %python3_sitelibdir/matplotlib/backends/backend_cairo*
@@ -715,35 +464,9 @@ rm -fR %_docdir/%name/pdf
 %python3_sitelibdir/matplotlib/backends/backend_nbagg*
 %python3_sitelibdir/matplotlib/backends/__pycache__/backend_nbagg*
 
-#files -n python3-module-%oname-fltk
-#python3_sitelibdir/matplotlib/backends/backend_fltk*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_fltk*
-
-#files -n python3-module-%oname-gtk
-#python3_sitelibdir//matplotlib/backends/backend_gtk.*
-#python3_sitelibdir//matplotlib/backends/backend_gdk.*
-#python3_sitelibdir//matplotlib/backends/backend_gtkagg.*
-#python3_sitelibdir//matplotlib/backends/backend_gtkcairo.*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_gtk.*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_gdk.*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_gtkagg.*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_gtkcairo.*
-
 %files -n python3-module-%oname-gtk3
 %python3_sitelibdir/matplotlib/backends/backend_gtk3*
 %python3_sitelibdir/matplotlib/backends/__pycache__/backend_gtk3*
-
-#files -n python3-module-%oname-qt
-#python3_sitelibdir/matplotlib/backends/backend_qt.*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_qt.*
-#python3_sitelibdir/matplotlib/backends/backend_qtagg*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_qtagg*
-
-#files -n python3-module-%oname-wx
-#python3_sitelibdir/matplotlib/backends/backend_wx*
-#python3_sitelibdir/matplotlib/backends/__pycache__/backend_wx*
-#python3_sitelibdir/matplotlib/backends/wx*
-#python3_sitelibdir/matplotlib/backends/__pycache__/wx*
 
 %files -n python3-module-%oname-tk
 %python3_sitelibdir/matplotlib/backends/backend_tk*
@@ -755,28 +478,32 @@ rm -fR %_docdir/%name/pdf
 %files -n python3-module-%oname-qt5
 %python3_sitelibdir/matplotlib/backends/backend_qt5*
 %python3_sitelibdir/matplotlib/backends/__pycache__/backend_qt5*
-
-%files -n python3-module-%oname-qt4
-%python3_sitelibdir/matplotlib/backends/backend_qt4*
-%python3_sitelibdir/matplotlib/backends/__pycache__/backend_qt4*
 %python3_sitelibdir/matplotlib/backends/qt*_compat.*
 %python3_sitelibdir/matplotlib/backends/__pycache__/qt*_compat.*
 %python3_sitelibdir/matplotlib/backends/qt_editor
 
+%files -n python3-module-%oname-qt4
+%python3_sitelibdir/matplotlib/backends/backend_qt4*
+%python3_sitelibdir/matplotlib/backends/__pycache__/backend_qt4*
+
 %files -n python3-module-%oname-sphinxext
 %python3_sitelibdir/%oname/sphinxext
-#exclude %python3_sitelibdir/%oname/sphinxext/test*
-#exclude %python3_sitelibdir/%oname/sphinxext/*/test*
 
 %files -n python3-module-mpl_toolkits
 %python3_sitelibdir/mpl_toolkits
-%exclude %python3_sitelibdir/mpl_toolkits/tests
 
-%files -n python3-module-mpl_toolkits-tests
-%python3_sitelibdir/mpl_toolkits/tests
 %endif
 
 %changelog
+* Mon Mar 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt6
+- Fixed build with numpy.
+
+* Wed Feb 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt5
+- Updated interpackage dependencies (Closes: #38030).
+
+* Tue Oct 01 2019 Stanislav Levin <slev@altlinux.org> 2.2.3-alt4
+- Dropped runtime dependency on Pytest.
+
 * Mon Feb 04 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.3-alt3
 - Drop requirement on dvipng for python3-module-matplotlib.
 

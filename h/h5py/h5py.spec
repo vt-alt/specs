@@ -1,6 +1,8 @@
 %define hdf5dir %_libdir/hdf5-seq
 
-%def_with python3
+%ifarch ppc64le
+%def_without check
+%endif
 
 %define descr \
 HDF5 for Python (h5py) is a general-purpose Python interface to the \
@@ -21,30 +23,45 @@ for example, datasets on disk are represented by a proxy class that \
 supports slicing, and has dtype and shape attributes. HDF5 groups are \
 presented using a dictionary metaphor, indexed by name.
 
-Name: h5py
-Version: 2.9.0
-Release: alt1
-Summary: Python interface to the Hierarchical Data Format library, version 5
-License: MIT
-Group: Development/Python
-Url: http://www.h5py.org/
+Name:       h5py
+Version:    2.9.0
+Release:    alt4
 
-# https://github.com/h5py/h5py.git
-Source: %name-%version.tar
-Patch1: %name-%version-alt.patch
+Summary:    Python interface to the Hierarchical Data Format library, version 5
+License:    MIT
+Group:      Development/Python
+Url:        http://www.h5py.org/
 
-BuildRequires: python-devel libnumpy-devel libhdf5-devel
-BuildRequires: libsz2-devel python-module-Cython python-module-Pyrex
-BuildRequires: python-module-sphinx-devel python-module-Pygments
-BuildRequires: python-module-setuptools python-module-six
-BuildRequires: python-module-pkgconfig python-module-unittest2
-%if_with python3
+#           https://github.com/h5py/h5py.git
+Source:     %name-%version.tar
+Patch1:     %name-%version-alt.patch
+
+# for all
+BuildRequires: libhdf5-devel
+BuildRequires: libsz2-devel
+
+# for py2
+BuildRequires(pre): rpm-build-python
+BuildRequires: libnumpy-devel
+BuildRequires: python-module-Cython
+BuildRequires: python-module-pkgconfig
+BuildRequires: python-module-six
+BuildRequires: python-module-sphinx-devel
+# for test
+BuildRequires: python-module-numpy-testing
+BuildRequires: python-module-unittest2
+
+#for py3
 BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-devel libnumpy-py3-devel
-BuildRequires: python3-module-setuptools
-BuildRequires: python3-module-Cython python3-module-six
+BuildRequires: libnumpy-py3-devel
+BuildRequires: python3-module-Cython
 BuildRequires: python3-module-pkgconfig
-%endif
+BuildRequires: python3-module-six
+BuildRequires: python3-module-sphinx-devel
+# for test
+BuildRequires: python3-module-numpy-testing
+BuildRequires: python3-module-unittest2
+
 
 %description
 %descr
@@ -52,14 +69,12 @@ BuildRequires: python3-module-pkgconfig
 %package -n python-module-%name
 Summary: Python interface to the Hierarchical Data Format library, version 5
 Group: Development/Python
-%setup_python_module %name
 %py_requires multiprocessing
 %py_requires h5py.tests
 
 %description -n python-module-%name
 %descr
 
-%if_with python3
 %package -n python3-module-%name
 Summary: Python interface to the Hierarchical Data Format library, version 5
 Group: Development/Python3
@@ -67,7 +82,6 @@ Group: Development/Python3
 
 %description -n python3-module-%name
 %descr
-%endif
 
 %package -n python-module-%name-doc
 Summary: Documentation for Python interface to the HDF5
@@ -98,7 +112,6 @@ Requires: python-module-%name = %version-%release
 
 This package contains tests for H5PY.
 
-%if_with python3
 %package -n python3-module-%name-tests
 Summary: Tests for Python interface to the HDF5
 Group: Development/Python3
@@ -108,15 +121,12 @@ Requires: python3-module-%name = %version-%release
 %descr
 
 This package contains tests for H5PY.
-%endif
 
 %prep
 %setup
 %patch1 -p1
 
-%if_with python3
 cp -fR . ../python3
-%endif
 
 sed -i 's|@PYVER@|%_python_version|g' docs/Makefile
 
@@ -126,26 +136,23 @@ ln -s ../objects.inv docs_api/
 
 %build
 %add_optflags -fno-strict-aliasing
-python setup.py configure --hdf5=%hdf5dir
-python api_gen.py
+
+%__python setup.py configure --hdf5=%hdf5dir
+%__python api_gen.py
 %python_build_debug
 
-%if_with python3
 pushd ../python3
 python3 setup.py configure --hdf5=%hdf5dir
 python3 api_gen.py
 %python3_build_debug
 popd
-%endif
 
 %install
 %python_install
 
-%if_with python3
 pushd ../python3
 %python3_install
 popd
-%endif
 
 export PYTHONPATH=%buildroot%python_sitelibdir
 pushd docs
@@ -162,19 +169,16 @@ install -d %buildroot%_docdir/%name
 cp -fR docs/_build/html %buildroot%_docdir/%name/html
 cp -fR docs_api/_build/html %buildroot%_docdir/%name/api
 cp -fR lzf %buildroot%_docdir/%name/
-#install -m644 docs/build/latex/*.pdf %buildroot%_docdir/%name/pdf
 
 # pickles
-
 cp -fR docs/_build/pickle %buildroot%python_sitelibdir/%name/
 
 %check
-python setup.py test
-%if_with python3
+%__python setup.py test
+
 pushd ../python3
-python3 setup.py test
+%__python3 setup.py test
 popd
-%endif
 
 %files -n python-module-%name
 %doc licenses *.rst
@@ -194,7 +198,6 @@ popd
 %dir %python_sitelibdir/%name
 %python_sitelibdir/%name/pickle
 
-%if_with python3
 %files -n python3-module-%name
 %doc licenses *.rst
 %python3_sitelibdir/*
@@ -202,9 +205,19 @@ popd
 
 %files -n python3-module-%name-tests
 %python3_sitelibdir/*/tests
-%endif
+
 
 %changelog
+* Thu Feb 13 2020 Andrey Bychkov <mrdrew@altlinux.org> 2.9.0-alt4
+- Enabled tests (disabled to ppc64le only)
+- cleanup build requires.
+
+* Tue Feb 11 2020 Andrey Bychkov <mrdrew@altlinux.org> 2.9.0-alt3
+- Fixed build requires.
+
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 2.9.0-alt2
+- Added missing dep on `numpy.testing`.
+
 * Wed Mar 27 2019 Grigory Ustinov <grenka@altlinux.org> 2.9.0-alt1
 - Build new version.
 

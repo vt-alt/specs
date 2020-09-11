@@ -5,15 +5,15 @@
 %def_without unittests
 
 Name: ngsolve
-Version: 6.2.1810
+Version: 6.2.2004
 Release: alt1
 Summary: NGSolve Finite Element Library
 License: GPL or LGPL
 Group: Sciences/Mathematics
-Url: http://sourceforge.net/projects/ngsolve/
+Url: https://github.com/NGSolve/ngsolve
+
 #Git: https://github.com/NGSolve/ngsolve.git
 Source: %name-%version.tar
-Patch1: %name-6.2.1810-alt-fix-gcc8-explicit-non-void-return.patch
 
 BuildRequires(pre): rpm-build-python3
 
@@ -69,7 +69,7 @@ This package contains shared libraries of NGSolve.
 %package -n lib%name-devel
 Summary: Development files of NGSolve
 Group: Development/C++
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 #BuildArch: noarch
 
 %description -n lib%name-devel
@@ -80,7 +80,7 @@ This package contains development files of NGSolve.
 %package -n python3-module-%name
 Summary: Python module of NGSolve
 Group: Development/Python
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Provides: python3(ngsolve.bla) python3(ngsolve.comp) python3(ngsolve.fem) python3(ngsolve.la) python3(ngsolve.ngstd) python3(ngsolve.solve)
 Conflicts: python3-module-%name-openmpi
 
@@ -92,7 +92,7 @@ This package contains Python module of NGSolve.
 %package demos
 Summary: Demos for NGSolve
 Group: Development/Documentation
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 %add_python_req_skip fem
 
 %description demos
@@ -131,7 +131,7 @@ This package contains shared libraries of NGSolve.
 %package -n lib%name-openmpi-devel
 Summary: Development files of NGSolve
 Group: Development/C++
-Requires: lib%name-openmpi = %version-%release
+Requires: lib%name-openmpi = %EVR
 #BuildArch: noarch
 
 %description -n lib%name-openmpi-devel
@@ -142,7 +142,7 @@ This package contains development files of NGSolve.
 %package -n python3-module-%name-openmpi
 Summary: Python module of NGSolve
 Group: Development/Python
-Requires: lib%name-openmpi = %version-%release
+Requires: lib%name-openmpi = %EVR
 Provides: python3(ngsolve.bla) python3(ngsolve.comp) python3(ngsolve.fem) python3(ngsolve.la) python3(ngsolve.ngstd) python3(ngsolve.solve)
 Conflicts: python3-module-%name
 
@@ -155,7 +155,6 @@ This package contains Python module of NGSolve.
 
 %prep
 %setup
-%patch1 -p0
 
 %build
 
@@ -296,6 +295,12 @@ popd
 
 
 %changelog
+* Tue May 12 2020 Nikolai Kostrigin <nickel@altlinux.org> 6.2.2004-alt1
+- New version
+
+* Thu Jan 23 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.1910-alt1
+- Updated to new version (Closes: #37907)
+
 * Fri Mar 15 2019 Nikolai Kostrigin <nickel@altlinux.org> 6.2.1810-alt1
 - New version
   + Fix build with gcc8 [-Werror=return-type]
@@ -305,7 +310,7 @@ popd
 - Remove %%ubt
 - Change default *.cmake config files path to %%_libdir/cmake
 
-* Sat Jun 09 2018 Nikolai Kostrigin <nickel@altlinux.org> 6.2-alt1.1804%ubt
+* Sat Jun 09 2018 Nikolai Kostrigin <nickel@altlinux.org> 6.2-alt1.1804
 - New version
 
 * Tue Jun 05 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 6.1-alt1.dev.git20150323.qa1.3

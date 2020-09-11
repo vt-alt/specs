@@ -10,7 +10,7 @@
 Summary: The Geospatial Data Abstraction Library (GDAL)
 Name: gdal
 Version: 2.2.3
-Release: alt3.1
+Release: alt3.1.M90P.1
 Group: Sciences/Geosciences
 
 License: MIT
@@ -32,10 +32,12 @@ BuildRequires: doxygen gcc-c++ libMySQL-devel libcfitsio-devel libcurl-devel lib
 
 BuildRequires: chrpath libnetcdf-devel
 BuildRequires: perl-Encode
+BuildRequires: python-devel python-module-setuptools
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel libnumpy-py3-devel python3-module-genshi
 BuildRequires: python3-module-xlwt
+BuildRequires: /usr/bin/2to3
 %endif
 
 Requires: libproj
@@ -259,6 +261,9 @@ sed -i 's|__bool__ = __nonzero__||' \
 %endif
 
 %changelog
+* Fri Aug 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.1
+- Fixed build dependencies.
+
 * Thu Apr 25 2019 Vitaly Lipatov <lav@altlinux.ru> 2.2.3-alt3.1
 - drop unneeded python3-module-BeautifulSoup req
 

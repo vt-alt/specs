@@ -4,7 +4,7 @@
 
 Name: python3-module-%oname
 Version: 1.0.2
-Release: alt2
+Release: alt3
 Summary: Wavelet Transforms in Python
 License: BSD
 Group: Development/Python3
@@ -16,6 +16,8 @@ Source: %name-%version.tar
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools
 BuildRequires: python3-module-Cython
+BuildRequires: python3-module-nose
+BuildRequires: python3-module-numpy-testing
 BuildRequires: libnumpy-py3-devel
 
 # circumvent build failures due to relying on headers from libnumpy-devel
@@ -77,6 +79,9 @@ PYTHONPATH=%buildroot%python3_sitelibdir nosetests3 --tests %name-%version/pywt/
 %python3_sitelibdir/*/tests
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1.0.2-alt3
+- Added missing dep on `numpy.testing`.
+
 * Thu Apr 11 2019 Grigory Ustinov <grenka@altlinux.org> 1.0.2-alt2
 - Rebuild for python3.7.
 

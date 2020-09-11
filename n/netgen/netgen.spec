@@ -11,12 +11,12 @@
 %set_verify_elf_method unresolved=relaxed
 
 Name: netgen
-Version: 6.2.1810
+Version: 6.2.2004
 Release: alt1
 Summary: Automatic 3d tetrahedral mesh generator
 License: LGPLv2
 Group: Sciences/Mathematics
-Url: https://sourceforge.net/projects/netgen-mesher/
+Url: https://github.com/NGSolve/netgen
 #Git: https://github.com/NGSolve/netgen.git
 
 Source: %name-%version.tar
@@ -24,8 +24,6 @@ Source1: netgen.png
 Source2: netgen.desktop
 Source3: netgen-parallel.desktop
 
-# Don't try to install pybind files
-Patch1: netgen-6.2-alt-dont-install-pybind-files.patch
 # Rename shared libaries (the original names are often way too generic), add library version
 Patch2: netgen-6.2-alt-libs-rename-and-versions.patch
 # Set a default NETGENDIR appropriate for packaging
@@ -42,7 +40,8 @@ Patch7: 0007-Add-missing-USE_JPEG-propagation.patch
 Patch8: 0008-Add-missing-ldl.patch
 # Only include immintrin.h on x86 arches
 Patch9: 0009-immintrin.patch
-Patch10: netgen-6.2.1808-alt-fix-gcc8-explicit-non-void-return.patch
+# Use system pybind11
+Patch10: netgen-6.2-alt-unbundle-pybind11.patch
 
 BuildRequires(pre): rpm-build-tcl
 BuildRequires(pre): rpm-build-python3
@@ -69,7 +68,7 @@ BuildRequires: %mpiimpl-devel
 BuildRequires: tcl-togl-devel 
 %endif
 
-Requires: lib%name = %version-%release tcl-tix
+Requires: lib%name = %EVR tcl-tix
 
 ExclusiveArch: x86_64
 
@@ -98,7 +97,7 @@ This package contains shared library of NETGEN.
 %package -n python3-module-%name
 Summary: Python bindings of NETGEN
 Group: Development/Python3
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 Provides: python3(netgen.libngpy._NgOCC) python3(netgen.libngpy._csg) python3(netgen.libngpy._geom2d) python3(netgen.libngpy._meshing) python3(netgen.libngpy._stl)
 Conflicts: python3-module-%name-openmpi
 
@@ -111,7 +110,7 @@ This package contains Python bindings of NETGEN.
 Summary: Development files of NETGEN
 Group: Development/C++
 #BuildArch: noarch
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description -n lib%name-devel
 %base_description
@@ -158,7 +157,7 @@ This package contains shared library of NETGEN.
 Summary: Development files of NETGEN
 Group: Development/C++
 #BuildArch: noarch
-Requires: lib%name-openmpi = %version-%release
+Requires: lib%name-openmpi = %EVR
 
 %description -n lib%name-openmpi-devel
 %base_description
@@ -168,7 +167,7 @@ This package contains development files of NETGEN.
 %package -n python3-module-%name-openmpi
 Summary: Python bindings of NETGEN
 Group: Development/Python3
-Requires: lib%name-openmpi = %version-%release
+Requires: lib%name-openmpi = %EVR
 Provides: python3(netgen.libngpy._NgOCC) python3(netgen.libngpy._csg) python3(netgen.libngpy._geom2d) python3(netgen.libngpy._meshing) python3(netgen.libngpy._stl)
 Conflicts: python3-module-%name
 
@@ -183,7 +182,6 @@ This package contains Python bindings of NETGEN.
 %prep
 %setup
 
-%patch1 -p1
 #%%patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -194,7 +192,7 @@ This package contains Python bindings of NETGEN.
 %patch7 -p1
 #%%patch8 -p1
 %patch9 -p1
-%patch10 -p0
+%patch10 -p1
 
 %if_with shared_togl
 # Remove bundled togl
@@ -375,6 +373,12 @@ rm -rf %buildroot%_datadir/%name/doc
 %endif #openmpi
 
 %changelog
+* Tue May 12 2020 Nikolai Kostrigin <nickel@altlinux.org> 6.2.2004-alt1
+- New version
+
+* Thu Jan 23 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.1910-alt1
+- Updated to new version
+
 * Fri Mar 15 2019 Nikolai Kostrigin <nickel@altlinux.org> 6.2.1810-alt1
 - New version
 
@@ -386,7 +390,7 @@ rm -rf %buildroot%_datadir/%name/doc
 - Remove %%ubt
 - Change default *.cmake config files path to %%_libdir/cmake
 
-* Fri Jun 08 2018 Nikolai Kostrigin <nickel@altlinux.org> 6.2-alt1.1804%ubt
+* Fri Jun 08 2018 Nikolai Kostrigin <nickel@altlinux.org> 6.2-alt1.1804
 - New version
 
 * Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 6.1-alt1.dev.git20150306.qa5.1

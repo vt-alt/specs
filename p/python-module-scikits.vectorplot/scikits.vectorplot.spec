@@ -6,7 +6,7 @@
 Name: python-module-%oname
 Epoch: 1
 Version: 0.2
-Release: alt2.git20150130.1.1.1
+Release: alt2.git20150130.1.1.1.1
 Summary: Vector fields plotting algorithms
 License: BSD
 Group: Development/Python
@@ -18,11 +18,13 @@ Source: %name-%version.tar
 
 BuildPreReq: python-devel python-module-setuptools
 BuildPreReq: python-module-Cython libnumpy-devel
+BuildPreReq: python-module-numpy-testing
 BuildPreReq: python-module-matplotlib python-module-nose
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildPreReq: python3-devel python3-module-setuptools
 BuildPreReq: python3-module-Cython libnumpy-py3-devel
+BuildPreReq: python3-module-numpy-testing
 BuildPreReq: python3-module-matplotlib python3-module-nose
 BuildPreReq: python-tools-2to3
 %endif
@@ -91,6 +93,9 @@ popd
 %endif
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1:0.2-alt2.git20150130.1.1.1.1
+- Added missing dep on `numpy.testing`.
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.2-alt2.git20150130.1.1.1
 - (NMU) Rebuilt with python-3.6.4.
 

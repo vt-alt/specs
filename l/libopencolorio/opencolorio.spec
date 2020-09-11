@@ -1,15 +1,14 @@
 %define _unpackaged_files_terminate_build 1
 
-# TODO: build with openimageio support
-%def_without openimageio
+%def_with openimageio
 
 # TODO: build docs, build and run tests
 
 %define oname opencolorio
 
 Name:           lib%oname
-Version:        1.1.0
-Release:        alt1
+Version:        1.1.1
+Release:        alt4
 Summary:        Enables color transforms and image display across graphics apps
 Group:          System/Libraries
 
@@ -20,24 +19,21 @@ URL:            https://opencolorio.org/
 Source:         %name-%version.tar
 
 # patches from Fedora
-Patch0:         OpenColorIO-gcc.patch
-Patch1:         OpenColorIO-setuptools.patch
+
+# Work with system libraries instead of bundled.
 
 # Fix build against yaml-cpp 0.6.0+
 # This patch is fine for our case (building against system yaml-cpp)
 # but probably a bit too simple-minded to upstream as-is. See
 # https://github.com/imageworks/OpenColorIO/issues/517
-Patch2:         ocio-1.1.0-yamlcpp060.patch
+Patch1:         ocio-1.1.0-yamlcpp060.patch
+Patch2:         ocio-glext_h.patch
 
-# Fix build of Python bindings with GCC 8
-# https://github.com/imageworks/OpenColorIO/pull/518
-Patch3:         ocio-1.1.0-gcc8.patch
+Patch3:         ocio-1.1.1-upstream-typo-fix.patch
 
 # Utilities
 BuildRequires:  cmake gcc-c++
 BuildRequires:  help2man
-BuildRequires:  python-module-markupsafe
-BuildRequires:  python-module-setuptools
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
@@ -48,7 +44,6 @@ BuildRequires:  libopenimageio-devel
 BuildRequires:  openexr-devel
 
 # Libraries
-BuildRequires:  python-devel
 BuildRequires:  libGL-devel libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  libfreeglut-devel
@@ -89,7 +84,6 @@ Development libraries and headers for %oname.
 
 %prep
 %setup
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -99,20 +93,28 @@ rm -f ext/lcms*
 rm -f ext/tinyxml*
 rm -f ext/yaml*
 
+%ifarch %e2k
+# lcc: Lut3DOp.cpp is too sloppy code for my -Werror!
+sed -i 's, -Werror,,' src/core/CMakeLists.txt src/pyglue/CMakeLists.txt
+%add_optflags -std=c++11
+%endif
+
 %build
 %cmake_insource \
-       -DOCIO_BUILD_STATIC=OFF \
-       -DOCIO_BUILD_DOCS=OFF \
-       -DOCIO_BUILD_TESTS=OFF \
-       -DOCIO_PYGLUE_SONAME=OFF \
-       -DUSE_EXTERNAL_YAML=TRUE \
-       -DUSE_EXTERNAL_TINYXML=TRUE \
-       -DUSE_EXTERNAL_LCMS=TRUE \
-       -DUSE_EXTERNAL_SETUPTOOLS=TRUE \
-%ifnarch x86_64
-       -DOCIO_USE_SSE=OFF \
+	-DOCIO_BUILD_STATIC=OFF \
+	-DOCIO_BUILD_DOCS=OFF \
+	-DOCIO_BUILD_PYGLUE=OFF \
+	-DOCIO_BUILD_TESTS=OFF \
+	-DUSE_EXTERNAL_YAML=TRUE \
+	-DUSE_EXTERNAL_TINYXML=TRUE \
+	-DUSE_EXTERNAL_LCMS=TRUE \
+%ifnarch x86_64 %e2k
+	-DOCIO_USE_SSE=OFF \
 %endif
-       -DOpenGL_GL_PREFERENCE=GLVND \
+%ifnarch %e2k
+	-DOpenGL_GL_PREFERENCE=GLVND \
+%endif
+	%nil
 
 # LD_LIBRARY_PATH is needed for proper doc generation
 LD_LIBRARY_PATH=$(pwd)/src/core %make_build
@@ -123,11 +125,20 @@ LD_LIBRARY_PATH=$(pwd)/src/core %makeinstall_std
 # Generate man pages
 mkdir -p %buildroot%_man1dir
 LD_LIBRARY_PATH=$(pwd)/src/core help2man -N -s 1 --version-string=%version \
-         -o %buildroot%_man1dir/ociocheck.1 \
-         src/apps/ociocheck/ociocheck
+	-o %buildroot%_man1dir/ociocheck.1 \
+	src/apps/ociocheck/ociocheck
 LD_LIBRARY_PATH=$(pwd)/src/core help2man -N -s 1 --version-string=%version \
-         -o %buildroot%_man1dir/ociobakelut.1 \
-         src/apps/ociobakelut/ociobakelut
+	-o %buildroot%_man1dir/ociobakelut.1 \
+	src/apps/ociobakelut/ociobakelut
+
+%if_with openimageio
+LD_LIBRARY_PATH=$(pwd)/src/core help2man -N -s 1 --version-string=%version \
+	-o %buildroot%_man1dir/ocioconvert.1 \
+	src/apps/ocioconvert/ocioconvert
+LD_LIBRARY_PATH=$(pwd)/src/core help2man -N -s 1 --version-string=%version \
+	-o %buildroot%_man1dir/ociolutimage.1 \
+	src/apps/ociolutimage/ociolutimage
+%endif
 
 # Fix location of cmake files.
 mkdir -p %buildroot%_datadir/cmake/Modules
@@ -139,7 +150,6 @@ find %buildroot -name "*.cmake" -exec mv {} %buildroot%_datadir/cmake/Modules/ \
 %_libdir/*.so.*
 %dir %_datadir/ocio
 %_datadir/ocio/setup_ocio.sh
-%python_sitelibdir/*.so
 
 %files -n %oname-tools
 %_bindir/*
@@ -148,11 +158,28 @@ find %buildroot -name "*.cmake" -exec mv {} %buildroot%_datadir/cmake/Modules/ \
 %files devel
 %_datadir/cmake/Modules/*
 %_includedir/OpenColorIO/
-%_includedir/PyOpenColorIO/
 %_libdir/*.so
 %_pkgconfigdir/*.pc
 
 %changelog
+* Tue Apr 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.1-alt4
+- Rebuilt with openimageio support.
+
+* Tue Apr 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.1-alt3
+- Bootstrapped rebuild.
+
+* Mon Jul 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.1-alt2
+- Rebuilt with openimageio support.
+
+* Sat Jul 13 2019 Michael Shigorin <mike@altlinux.org> 1.1.1-alt1.1
+- E2K:
+  + explicit -std=c++11
+  + avoid unwarranted -Werror
+  + build without libglvnd for now
+
+* Mon May 27 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.1-alt1
+- Updated to upstream version 1.1.1.
+
 * Mon Oct 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.0-alt1
 - Initial build for ALT.
 

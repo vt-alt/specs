@@ -4,7 +4,7 @@
 
 Name: python-module-%oname
 Version: 0.1.2
-Release: alt1.1.1
+Release: alt1.1.1.1
 Summary: Hidden alignment conditional random field, discriminative string edit distance
 License: BSD
 Group: Development/Python
@@ -15,12 +15,14 @@ Source: %name-%version.tar
 
 BuildPreReq: python-devel python-module-setuptools
 BuildPreReq: python-module-Cython libnumpy-devel
+BuildPreReq: python-module-numpy-testing
 BuildPreReq: python-module-pylbfgs
 BuildRequires: python-module-pytest
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildPreReq: python3-devel python3-module-setuptools
 BuildPreReq: python3-module-Cython libnumpy-py3-devel
+BuildPreReq: python3-module-numpy-testing
 BuildPreReq: python3-module-pylbfgs
 BuildRequires: python3-module-pytest
 %endif
@@ -101,6 +103,9 @@ popd
 %endif
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 0.1.2-alt1.1.1.1
+- Added missing dep on `numpy.testing`.
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.1.2-alt1.1.1
 - (NMU) Rebuilt with python-3.6.4.
 

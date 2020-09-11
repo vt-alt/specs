@@ -1,7 +1,7 @@
 %define oname geo
 Name: python-module-%oname
 Version: 1.0.0
-Release: alt1.svn20080909.5
+Release: alt1.svn20080909.6
 Summary: Enthought Geophysics Tool Suite
 
 Group: Development/Python
@@ -14,6 +14,7 @@ BuildRequires: python-devel, python-module-setuptools
 BuildRequires: python-module-scipy gcc-c++ libnumpy-devel
 BuildRequires: python-module-sphinx python-module-Pygments
 BuildRequires: python-module-weave
+BuildRequires: python-module-numpy-testing
 
 
 %description
@@ -48,6 +49,9 @@ find . -name '*.py' -type f -print0 | xargs -0 sed -i \
 %doc doc/*
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1.0.0-alt1.svn20080909.6
+- Added missing dep on `numpy.testing`.
+
 * Wed Aug 09 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.0-alt1.svn20080909.5
 - Fixed build.
 

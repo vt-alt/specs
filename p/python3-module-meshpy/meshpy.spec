@@ -1,14 +1,14 @@
 %define oname meshpy
 
 %def_with python3
-%def_with docs
+%def_without docs
 
-Name: python-module-%oname
+Name: python3-module-%oname
 Version: 2018.2.1
-Release: alt1
+Release: alt2
 Summary: Triangular and Tetrahedral Mesh Generator in Python
 License: MIT
-Group: Development/Python
+Group: Development/Python3
 Url: http://mathema.tician.de/software/meshpy
 Packager: Python Development Team <python@packages.altlinux.org>
 
@@ -17,21 +17,11 @@ Source: %oname-%version.tar
 # git://github.com/inducer/bpl-subset
 Source1: bpl-subset.tar
 
-
 BuildRequires: gcc-c++
-BuildRequires(pre): rpm-build-python
-BuildRequires: python-module-setuptools
-BuildRequires: python-module-matplotlib
-BuildRequires: python-module-numpy-testing
-BuildRequires: boost-python-devel
-BuildRequires: python-module-pybind11
-
-%if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-setuptools
 BuildRequires: boost-python3-devel
 BuildRequires: python3-module-pybind11
-%endif
 
 %if_with docs
 BuildRequires: python-module-epydoc python-module-html5lib
@@ -43,33 +33,10 @@ Python. Meshes of this type are chiefly used in finite-element
 simulation codes, but also have many other applications ranging from
 computer graphics to robotics.
 
-%package -n python3-module-%oname
-Summary: Triangular and Tetrahedral Mesh Generator in Python
-Group: Development/Python3
-
-%description -n python3-module-%oname
-MeshPy offers quality triangular and tetrahedral mesh generation for
-Python. Meshes of this type are chiefly used in finite-element
-simulation codes, but also have many other applications ranging from
-computer graphics to robotics.
-
-%package -n python3-module-%oname-tests
-Summary: Tests for MeshPy
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-tests
-MeshPy offers quality triangular and tetrahedral mesh generation for
-Python. Meshes of this type are chiefly used in finite-element
-simulation codes, but also have many other applications ranging from
-computer graphics to robotics.
-
-This package contains tests for MeshPy.
-
 %package tests
 Summary: Tests for MeshPy
-Group: Development/Python
-Requires: %name = %version-%release
+Group: Development/Python3
+Requires: %name = %EVR
 
 %description tests
 MeshPy offers quality triangular and tetrahedral mesh generation for
@@ -79,12 +46,12 @@ computer graphics to robotics.
 
 This package contains tests for MeshPy.
 
-%package docs
+%package -n python-module-meshpy-docs
 Summary: Documentation for MeshPy
 Group: Development/Documentation
 BuildArch: noarch
 
-%description docs
+%description -n python-module-meshpy-docs
 MeshPy offers quality triangular and tetrahedral mesh generation for
 Python. Meshes of this type are chiefly used in finite-element
 simulation codes, but also have many other applications ranging from
@@ -95,71 +62,44 @@ This package contains documentation for MeshPy.
 %prep
 %setup
 
+sed -i 's/python/python3/g' configure.py
+
 rm -fR bpl-subset
 tar -xf %SOURCE1
 
-%if_with python3
-rm -rf ../python3
-cp -fR . ../python3
-#sed -i 's|boost_python|boost_python3|' ../python3/setup.py
-%endif
-
 %build
 ./configure.py
-%python_build_debug
-
-%if_with python3
-pushd ../python3
-./configure.py
 %python3_build_debug
-popd
-%endif
 
-%if_without docs
+%if_with docs
 export PYTHONPATH=$PWD
 %make doc
 %endif
 
 %install
-%python_install
-
-touch test/__init__.py
-rm -f test/clean.sh
-cp -fR test %buildroot%python_sitelibdir/%oname/
-
-%if_with python3
-pushd ../python3
 %python3_install
 touch test/__init__.py
 rm -f test/clean.sh
 cp -fR test %buildroot%python3_sitelibdir/%oname/
-popd
-%endif
 
 %files
-%doc LICENSE README.rst
-%python_sitelibdir/*
-%exclude %python_sitelibdir/%oname/test
-
-%files tests
-%python_sitelibdir/%oname/test
-
-%if_with docs
-%files docs
-%doc doc/*.rst
-%endif
-
-%if_with python3
-%files -n python3-module-%oname
 %doc LICENSE README.rst
 %python3_sitelibdir/*
 %exclude %python3_sitelibdir/%oname/test
 
-%files -n python3-module-%oname-tests
+%files tests
 %python3_sitelibdir/%oname/test
+
+%if_with docs
+%files -n python-module-meshpy-docs
+%doc doc/*.rst
 %endif
 
 %changelog
+* Mon Dec 23 2019 Anton Midyukov <antohami@altlinux.org> 2018.2.1-alt2
+- build python 3 module only
+- disable build docs (needed python 2)
+
 * Mon Feb 11 2019 Anton Midyukov <antohami@altlinux.org> 2018.2.1-alt1
 - Version 2018.2.1
 

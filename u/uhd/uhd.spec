@@ -6,18 +6,22 @@
 
 # NEON support is by default disabled on ARMs
 # building with --with=neon will enable auto detection
+%ifarch %arm
+%def_without neon
+%else
 %def_with neon
+%endif
 
 %ifarch %arm aarch64
 %if ! %{with neon}
-%global have_neon -DHAVE_ARM_NEON_H=0
+%global have_neon -DNEON_SIMD_ENABLE:BOOL=OFF
 %endif
 %endif
 
 Name: uhd
 Url: https://github.com/EttusResearch/uhd
 Version: 3.15.0.0
-Release: alt1
+Release: alt4
 License: GPLv3+
 Group: Engineering
 Summary: Universal Hardware Driver for Ettus Research products
@@ -30,11 +34,12 @@ Source1: %name-limits.conf
 Source2: images.tar
 
 Patch: uhd-0.14.1.1-python3-fix.patch
+Patch2: %name-%version-alt-boost-1.73.0-compat.patch
 
 BuildRequires(pre): rpm-macros-cmake rpm-build-python3
 BuildRequires: ctest cmake
 BuildRequires: boost-interprocess-devel gcc-c++ boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-program_options-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-polygon-devel boost-program_options-devel boost-python3-devel boost-signals-devel boost-wave-devel libusb-devel libncurses++-devel libncurses-devel libncursesw-devel libtic-devel libtinfo-devel libgps-devel libudev-devel
-BuildRequires: libnumpy-devel
+BuildRequires: libnumpy-py3-devel
 BuildRequires: python3-module-setuptools
 BuildRequires: python3-module-Cheetah
 BuildRequires: python3-module-docutils doxygen libpcap-devel
@@ -93,6 +98,7 @@ Python 3 API for %name
 sed -i 's|/usr/bin/env python|%__python3|' host/python/setup.py.in
 
 %patch -p1
+%patch2 -p1
 
 # fix python shebangs
 find . -type f -name "*.py" -exec sed -i '/^#!/ s|.*|#!%__python3|' {} \;
@@ -195,6 +201,15 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %buildroot%_bindir/chdr_log
 %python3_sitelibdir/%name/
 
 %changelog
+* Mon Sep 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.15.0.0-alt4
+- Rebuilt without neon on armh.
+
+* Thu Jun 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.15.0.0-alt3
+- Rebuilt with boost-1.73.0.
+
+* Mon Mar 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.15.0.0-alt2
+- Fixed build with numpy.
+
 * Sat Jan 11 2020 Anton Midyukov <antohami@altlinux.org> 3.15.0.0-alt1
 - New version 3.15.0.0
 

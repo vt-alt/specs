@@ -9,15 +9,15 @@
 
 Name: python3-module-%oname
 Version: 0.15.0
-Release: alt1
+Release: alt3
+
 Summary: Image processing routines for SciPy
 License: BSD
 Group: Development/Python3
-Url: https://pypi.org/project/scikit-image/
 
+Url: https://pypi.org/project/scikit-image/
 # https://github.com/scikit-image/scikit-image.git
 Source: %name-%version.tar
-
 Patch1: %oname-alt-build.patch
 
 BuildRequires(pre): rpm-macros-sphinx3
@@ -31,9 +31,8 @@ BuildRequires: python3-module-Pillow
 # for tests
 BuildRequires: xvfb-run
 BuildRequires: python3-module-wavelets python3-module-imageio
-
-# circumvent build failures due to relying on headers from libnumpy-devel
-BuildRequires: libnumpy-devel
+# for docs
+BuildRequires: python3-module-sphinx
 
 %py3_provides skimage
 %py3_requires numpy scipy networkx matplotlib
@@ -133,6 +132,12 @@ rm -f requirements.txt
 %endif
 
 %changelog
+* Mon Mar 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.15.0-alt3
+- Fixed build with numpy.
+
+* Sat Mar 14 2020 Michael Shigorin <mike@altlinux.org> 0.15.0-alt2
+- Explicit BR: python3-module-sphinx
+
 * Mon Apr 08 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.15.0-alt1
 - Updated to latest upstream release.
 - Disabled build for python-2.

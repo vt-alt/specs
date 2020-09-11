@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: blender
-Version: 2.82
-Release: alt1.a
+Version: 2.83.4
+Release: alt1
 
 Summary: 3D modeling, animation, rendering and post-production
 License: GPL-3.0-or-later
@@ -23,7 +23,6 @@ Source4: tools-%version.tar
 Patch11: 0001-blender_thumbnailer.patch
 Patch12: 0002-install_in_usr_share.patch
 Patch13: 0004-do_not_use_version_number_in_system_path.patch
-Patch14: blender-2.82-fedora-fix_appdata_validation.patch
 
 Patch21: blender-2.66-alt-pcre.patch
 Patch22: blender-2.77-alt-enable-localization.patch
@@ -31,6 +30,7 @@ Patch23: blender-2.77-alt-usertempdir.patch
 Patch24: blender-2.80-alt-include-deduplication-check-skip.patch
 Patch25: blender-2.80-alt-use-system-glog.patch
 Patch26: blender-2.82-alt-link-fix.patch
+Patch27: blender-2.83.1-alt-remove-python2-dependency.patch
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: boost-filesystem-devel boost-locale-devel
@@ -51,8 +51,6 @@ BuildRequires: libglog-devel libgflags-devel eigen3-devel
 BuildRequires: libXxf86vm-devel libXrender-devel
 BuildRequires: tbb-devel
 BuildRequires: libfreetype-devel
-# TODO: when libnumpy-py3-devel is fixed, remove dependency to libnumpy-devel
-BuildRequires: libnumpy-devel
 # Remove following dependency when libopenjpeg2.0-devel is fixed
 BuildRequires: openjpeg-tools2.0
 
@@ -114,15 +112,13 @@ scripting, rendering, compositing, post-production and game creation
 %patch12 -p1
 %patch13 -p1
 
-# fedora
-%patch14 -p1
-
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
+%patch27 -p1
 
 %ifnarch %ix86 x86_64
 sed -i 's,-fuse-ld=gold,,' build_files/cmake/platform/platform_unix.cmake
@@ -199,6 +195,21 @@ install -m644 release/freedesktop/*.appdata.xml %buildroot%_datadir/metainfo/
 %_man1dir/*.1*
 
 %changelog
+* Thu Aug 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.83.4-alt1
+- Updated to upstream version 2.83.4.
+
+* Mon Jul 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.83.3-alt1
+- Updated to upstream version 2.83.3.
+
+* Fri Jul 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.83.1-alt2
+- Removed dependency to python2-base.
+
+* Thu Jul 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.83.1-alt1
+- Updated to upstream version 2.83.1.
+
+* Mon Jun 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.83-alt1
+- Updated to upstream version 2.83.
+
 * Wed Apr 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.82-alt1.a
 - Updated to upstream version 2.82a.
 

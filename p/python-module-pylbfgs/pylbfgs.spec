@@ -5,29 +5,26 @@
 
 Name: python-module-%oname
 Version: 0.2.0.12
-Release: alt1
+Release: alt2
 Summary: LBFGS and OWL-QN optimization algorithms
 License: MIT
 Group: Development/Python
 Url: https://pypi.python.org/pypi/PyLBFGS
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
 
 Source0: https://pypi.python.org/packages/ff/82/5bd1a652ee8d061593f07ba54eb62e72a6a04f60e9fc4273033f5a021d0c/PyLBFGS-%{version}.tar.gz
 
-#BuildPreReq: python-devel python-module-setuptools
-#BuildPreReq: python-module-nose libnumpy-devel
+BuildRequires: python-devel python-module-setuptools
+BuildRequires: python-module-nose libnumpy-devel
+BuildRequires: python-module-numpy-testing python-module-html5lib
 %if_with python3
 BuildRequires(pre): rpm-build-python3
-#BuildPreReq: python3-devel python3-module-setuptools
-#BuildPreReq: python3-module-nose libnumpy-py3-devel
+BuildRequires: python3-devel python3-module-setuptools
+BuildRequires: python3-module-nose libnumpy-py3-devel
+BuildRequires: python3-module-numpy-testing
 %endif
 
 %py_provides %oname lbfgs
 %py_requires numpy
-
-# Automatically added by buildreq on Thu Jan 28 2016 (-bi)
-# optimized out: elfutils python-base python-devel python-module-PyStemmer python-module-Pygments python-module-babel python-module-cssselect python-module-docutils python-module-genshi python-module-jinja2 python-module-matplotlib python-module-numpy python-module-pyparsing python-module-pytest python-module-pytz python-module-setuptools python-module-snowballstemmer python-module-sphinx python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-hotshot python-modules-logging python-modules-multiprocessing python-modules-unittest python-modules-xml python3 python3-base python3-module-numpy python3-module-pytest python3-module-setuptools xz
-BuildRequires: libnumpy-devel python-module-html5lib python-module-nose python-module-numpy-testing python-module-setuptools python3-devel python3-module-nose python3-module-numpy-testing python3-module-setuptools rpm-build-python3 time
 
 %description
 This is a Python wrapper around Naoaki Okazaki (chokkan)'s liblbfgs
@@ -105,6 +102,9 @@ popd
 %endif
 
 %changelog
+* Mon Mar 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.2.0.12-alt2
+- Fixed build with numpy.
+
 * Thu Apr 04 2019 Grigory Ustinov <grenka@altlinux.org> 0.2.0.12-alt1
 - Build new version with python3.7.
 

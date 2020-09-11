@@ -1,7 +1,7 @@
 %define oname lmoments3
 Name: python-module-%oname
 Version: 0.3.1
-Release: alt1.git20140925.1
+Release: alt1.git20140925.2
 Summary: Estimate linear moments for statistical distribution functions
 License: GPLv3
 Group: Development/Python
@@ -14,6 +14,7 @@ BuildArch: noarch
 
 BuildPreReq: python-devel python-module-setuptools
 BuildPreReq: python-module-numpy python-module-scipy
+BuildPreReq: python-module-numpy-testing
 BuildPreReq: python-module-nose
 
 %py_provides %oname
@@ -43,6 +44,9 @@ nosetests -v
 %python_sitelibdir/*
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 0.3.1-alt1.git20140925.2
+- Added missing dep on `numpy.testing`.
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.3.1-alt1.git20140925.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

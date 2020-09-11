@@ -5,7 +5,7 @@
 
 Name: python-module-%oname
 Version: 1.0.0
-Release: alt1.1
+Release: alt1.1.1
 Summary: Bootstrap confidence interval estimation routines for SciPy
 License: BSD
 Group: Development/Python
@@ -16,6 +16,7 @@ Source: %name-%version.tar
 
 BuildRequires: python-devel python-module-setuptools
 BuildRequires: python-module-numpy python-module-scipy
+BuildRequires: python-module-numpy-testing
 BuildRequires: python-module-nose python-module-pandas
 BuildRequires: python-modules-multiprocessing
 BuildRequires: python2.7(pyerf)
@@ -23,6 +24,7 @@ BuildRequires: python2.7(pyerf)
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools
 BuildRequires: python3-module-numpy python3-module-scipy
+BuildRequires: python3-module-numpy-testing
 BuildRequires: python3-module-nose python3-module-pandas
 BuildRequires: python3(pyerf)
 %endif
@@ -148,6 +150,9 @@ popd
 %endif
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1.0.0-alt1.1.1
+- Added missing dep on `numpy.testing`.
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 1.0.0-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

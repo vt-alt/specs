@@ -1,3 +1,5 @@
+%define _unpackaged_files_terminate_build 1
+
 %define oname numpy
 %define majver 1.15
 %def_without latex
@@ -13,7 +15,7 @@
 
 Name: python-module-%oname
 Version: %majver.4
-Release: alt1
+Release: alt5
 Epoch: 1
 
 Summary: NumPy: array processing for numbers, strings, records, and objects
@@ -31,8 +33,8 @@ Source: %oname-%version.tar
 Source1: %oname.pc
 Source2: site.cfg
 Source3: sphinx-theme.tar
+Patch0: numpy-1.15.4-Remove-strict-dependency-on-testing-package.patch
 
-Requires: %name-testing = %EVR
 Requires: lib%oname = %EVR
 Conflicts: libsyfi-devel < 0.6.1-alt3.hg20090822
 Conflicts: lib%oname-devel < %version-%release
@@ -44,7 +46,7 @@ BuildRequires: python-devel
 BuildRequires: python-module-setuptools
 BuildRequires: doxygen gcc-c++ gcc-fortran liblapack-devel
 BuildRequires: swig
-BuildRequires: python-module-Cython python-module-Pyrex
+BuildRequires: python-module-Cython
 BuildRequires: python-module-alabaster python-module-html5lib python-module-matplotlib-sphinxext python-module-notebook python-module-numpydoc python-module-objects.inv
 %if_with python3
 BuildRequires(pre): rpm-build-python3
@@ -77,7 +79,6 @@ basic linear algebra and random number generation.
 %package -n python3-module-%oname
 Summary: NumPy: array processing for numbers, strings, records, and objects (Python 3)
 Group: Development/Python3
-Requires: python3-module-%oname-testing = %EVR
 Requires: lib%oname-py3 = %EVR
 %py3_provides %oname.addons
 Provides: python3-module-numpy-addons = %EVR
@@ -131,7 +132,6 @@ This package contains tests NumPy.
 %package -n lib%oname-py3
 Summary: Shared libraries of NumPy (Python 3)
 Group: System/Libraries
-%add_python3_req_skip numscons
 %if "%_lib" == "lib64"
 Provides: libnpymath3.so.%py3somver()(64bit)
 %else
@@ -154,8 +154,6 @@ Group: Development/Python3
 Requires: lib%oname-py3 = %EVR
 Requires: python3-module-%oname = %EVR
 Requires: python3-devel
-# numpydoc
-%add_python3_req_skip numscons
 
 %description -n lib%oname-py3-devel
 NumPy is a general-purpose array-processing package designed to
@@ -219,7 +217,6 @@ This package contains tests NumPy.
 %package -n lib%oname
 Summary: Shared libraries of NumPy
 Group: System/Libraries
-%add_python_req_skip numscons
 %if "%_lib" == "lib64"
 Provides: libnpymath.so.%somver()(64bit)
 %else
@@ -244,9 +241,6 @@ Requires: %name = %EVR
 Requires: python-module-numpydoc
 Requires: %name-addons = %EVR
 Requires: python-devel
-%py_requires SCons
-# numpydoc
-%add_python_req_skip numscons
 
 %description -n lib%oname-devel
 NumPy is a general-purpose array-processing package designed to
@@ -309,6 +303,7 @@ This package contains documentation for NumPy in PDF format.
 
 %prep
 %setup
+%patch0 -p1
 
 install -m644 %SOURCE1 %SOURCE2 .
 tar xf %SOURCE3
@@ -320,7 +315,7 @@ sed -i 's|@PYSUFF@||' site.cfg
 
 sed -i 's|^prefix.*|prefix=%python_sitelibdir/%oname/core|' \
 	%oname/core/npymath.ini.in
-sed -i 's|^includedir.*|includedir=%_includedir/%oname|' \
+sed -i 's|^includedir.*|includedir=%_includedir/python%_python_version/%oname|' \
 	%oname/core/npymath.ini.in
 
 %if_with python3
@@ -340,7 +335,7 @@ sed -i 's|pyrexc|pyrexc3|' numpy/distutils/command/build_src.py
 
 sed -i 's|^prefix.*|prefix=%python3_sitelibdir/%oname/core|' \
 	%oname/core/npymath.ini.in
-sed -i 's|^includedir.*|includedir=%_includedir/%oname-py3|' \
+sed -i 's|^includedir.*|includedir=%_includedir/python%_python3_version/%oname|' \
 	%oname/core/npymath.ini.in
 
 popd
@@ -360,7 +355,7 @@ ln -s ../objects.inv doc/source/objects.inv
 %if_with python3
 pushd ../python3
 INCS="-I%_includedir/suitesparse -I$PWD/numpy/core/include/numpy"
-INCS="$INCS -I$PWD/numpy/core/include -I%buildroot%_includedir/numpy-py3"
+INCS="$INCS -I$PWD/numpy/core/include -I%buildroot%_includedir/python%_python3_version/%oname"
 INCS="$INCS -I%buildroot%_includedir"
 DEFS="-DHAVE_FREXPF -DHAVE_FREXPL -DHAVE_FREXP -DHAVE_LDEXP -DHAVE_LDEXPL"
 DEFS="$DEFS -DHAVE_EXPM1 -DHAVE_LOG1P -DHAVE_LDEXPF"
@@ -374,17 +369,17 @@ DEFS="$DEFS -DNPY_ENABLE_SEPARATE_COMPILATION"
 
 # private headers
 
-install -d %buildroot%_includedir
+install -d %buildroot%_includedir/python%_python3_version
 mv %buildroot%python3_sitelibdir/%oname/core/include/%oname \
-	%buildroot%_includedir/%oname-py3
+	%buildroot%_includedir/python%_python3_version/%oname
 
 install -d %buildroot%python3_sitelibdir/%oname/core/include
-ln -s %_includedir/%oname-py3 \
+ln -s %_includedir/python%_python3_version/%oname \
 	%buildroot%python3_sitelibdir/%oname/core/include/
 #cp -a %oname/numarray/include/%oname/*.h \
-#	%buildroot%_includedir/%oname-py3/
+#	%buildroot%_includedir/python%_python3_version/%oname/
 cp build/src.*/%oname/core/include/%oname/{*.h,*.c} \
-	%buildroot%_includedir/%oname-py3/
+	%buildroot%_includedir/python%_python3_version/%oname/
 install -d %buildroot%python3_sitelibdir/%oname/core/lib/npy-pkg-config
 cp -fR build/src.*/%oname/core/lib/npy-pkg-config/* \
 	%buildroot%python3_sitelibdir/%oname/core/lib/npy-pkg-config/
@@ -392,7 +387,6 @@ cp -fR build/src.*/%oname/core/lib/npy-pkg-config/* \
 # pkg-config
 
 sed -i 's|@VERSION@|%version|' %oname.pc
-sed -i 's|include/numpy|include/numpy-py3|' %oname.pc
 install -d %buildroot%_pkgconfigdir
 install -m644 %oname.pc %buildroot%_pkgconfigdir/%oname-py3.pc
 
@@ -417,7 +411,7 @@ unset CXXFLAGS
 unset FFLAGS
 echo optflags = "%optflags"
 INCS="-I%_includedir/suitesparse -I$PWD/numpy/core/include/numpy"
-INCS="$INCS -I$PWD/numpy/core/include -I%buildroot%_includedir/numpy"
+INCS="$INCS -I$PWD/numpy/core/include -I%buildroot%_includedir/python%_python_version/%oname"
 INCS="$INCS -I%buildroot%_includedir"
 DEFS="-DHAVE_FREXPF -DHAVE_FREXPL -DHAVE_FREXP -DHAVE_LDEXP -DHAVE_LDEXPL"
 DEFS="$DEFS -DHAVE_EXPM1 -DHAVE_LOG1P -DHAVE_LDEXPF"
@@ -431,16 +425,17 @@ DEFS="$DEFS -DNPY_ENABLE_SEPARATE_COMPILATION"
 
 # private headers
 
+install -d %buildroot%_includedir/python%_python_version
 mv %buildroot%python_sitelibdir/%oname/core/include/%oname \
-	%buildroot%_includedir/
+	%buildroot%_includedir/python%_python_version/%oname
 
 install -d %buildroot%python_sitelibdir/%oname/core/include
-ln -s %_includedir/%oname \
+ln -s %_includedir/python%_python_version/%oname \
 	%buildroot%python_sitelibdir/%oname/core/include/
 #cp -a %oname/numarray/include/%oname/*.h \
-#	%buildroot%_includedir/%oname/
+#	%_includedir/python%_python_version/%oname/
 cp build/src.*/%oname/core/include/%oname/{*.h,*.c} \
-	%buildroot%_includedir/%oname/
+	%buildroot%_includedir/python%_python_version/%oname/
 install -d %buildroot%python_sitelibdir/%oname/core/lib/npy-pkg-config
 cp -fR build/src.*/%oname/core/lib/npy-pkg-config/* \
 	%buildroot%python_sitelibdir/%oname/core/lib/npy-pkg-config/
@@ -620,14 +615,12 @@ install -p -m644 %oname/core/code_generators/numpy_api.py \
 install -p -m644 %oname/core/code_generators/genapi.py \
 	%buildroot%python_sitelibdir/%oname
 install -p -m644 %oname/core/src/private/npy_config.h \
-	%buildroot%_includedir/%oname
+	%buildroot%_includedir/python%_python_version/%oname/
 
 # delete unnecessary files
 
 rm -f \
 	$(find %buildroot%python_sitelibdir/%oname/ -name setup.py) \
-	$(find %buildroot%python_sitelibdir/%oname/ -name setupscons.py) \
-	%buildroot%python_sitelibdir/%oname/core/scons_support.py \
 	%buildroot%python_sitelibdir/%oname/f2py/docs/usersguide/setup_example.py
 
 ln -s f2py%_python_version %buildroot%_bindir/f2py
@@ -644,22 +637,13 @@ install -p -m644 %oname/core/code_generators/numpy_api.py \
 install -p -m644 %oname/core/code_generators/genapi.py \
 	%buildroot%python3_sitelibdir/%oname
 install -p -m644 %oname/core/src/private/npy_config.h \
-	%buildroot%_includedir/%oname-py3
+	%buildroot%_includedir/python%_python3_version/%oname
 
 # delete unnecessary files
 
 rm -f \
 	$(find %buildroot%python3_sitelibdir/%oname/ -name setup.py) \
-	$(find %buildroot%python3_sitelibdir/%oname/ -name setupscons.py) \
-	%buildroot%python3_sitelibdir/%oname/core/scons_support.py \
 	%buildroot%python3_sitelibdir/%oname/f2py/docs/usersguide/setup_example.py
-
-#fixes
-
-for i in %buildroot%_includedir/%oname-py3/*
-do
-	sed -i 's|numpy/|numpy-py3/|' $i
-done
 %endif
 
 %find_lang %name
@@ -683,6 +667,9 @@ fi
 %exclude %_bindir/f2py3
 %endif
 %python_sitelibdir/%oname
+%exclude %python_sitelibdir/%oname/conftest.py*
+%exclude %python_sitelibdir/%oname/f2py/f2py_testing.py*
+%exclude %python_sitelibdir/%oname/ma/timer_comparison.py*
 %exclude %python_sitelibdir/%oname/testing
 %exclude %python_sitelibdir/%oname/tests
 %exclude %python_sitelibdir/%oname/*/test*
@@ -733,6 +720,12 @@ fi
 #_bindir/py3_*
 %_bindir/f2py3
 %python3_sitelibdir/%oname
+%exclude %python3_sitelibdir/%oname/conftest.py
+%exclude %python3_sitelibdir/%oname/__pycache__/conftest.*
+%exclude %python3_sitelibdir/%oname/f2py/f2py_testing.py
+%exclude %python3_sitelibdir/%oname/f2py/__pycache__/f2py_testing.*
+%exclude %python3_sitelibdir/%oname/ma/timer_comparison.py
+%exclude %python3_sitelibdir/%oname/ma/__pycache__/timer_comparison.*
 %exclude %python3_sitelibdir/%oname/testing
 %exclude %python3_sitelibdir/%oname/tests
 %exclude %python3_sitelibdir/%oname/*/test*
@@ -794,10 +787,13 @@ fi
 
 %files testing
 %python_sitelibdir/%oname/testing
+%python_sitelibdir/%oname/conftest.py*
 
 %if_with python3
 %files -n python3-module-%oname-testing
 %python3_sitelibdir/%oname/testing
+%python3_sitelibdir/%oname/conftest.py
+%python3_sitelibdir/%oname/__pycache__/conftest.*
 %endif
 
 %files tests
@@ -806,6 +802,8 @@ fi
 %exclude %python_sitelibdir/%oname/testing/tests
 %python_sitelibdir/%oname/f2py/tests/src/array_from_pyobj
 %if_with tests
+%python_sitelibdir/%oname/f2py/f2py_testing.py*
+%python_sitelibdir/%oname/ma/timer_comparison.py*
 %python_sitelibdir/f2py_ext*
 #python_sitelibdir/f2py_f90_ext*
 %python_sitelibdir/gen_ext*
@@ -823,6 +821,10 @@ fi
 %exclude %python3_sitelibdir/%oname/testing/tests
 %python3_sitelibdir/%oname/f2py/tests/src/array_from_pyobj
 %if_with tests
+%python3_sitelibdir/%oname/f2py/f2py_testing.py
+%python3_sitelibdir/%oname/f2py/__pycache__/f2py_testing.*
+%python3_sitelibdir/%oname/ma/timer_comparison.py
+%python3_sitelibdir/%oname/ma/__pycache__/timer_comparison.*
 %python3_sitelibdir/f2py_ext*
 #python_sitelibdir/f2py_f90_ext*
 %python3_sitelibdir/gen_ext*
@@ -851,7 +853,7 @@ fi
 %exclude %_pkgconfigdir/%oname-py3.pc
 %endif
 %python_sitelibdir/%oname/core/lib/libnpymath.so
-%_includedir/%oname
+%_includedir/python%_python_version/%oname
 %if_with tests
 %python_sitelibdir/%oname/random/mtrand/*.h
 %python_sitelibdir/%oname/random/mtrand/*.c
@@ -884,7 +886,7 @@ fi
 %_libdir/libnpymath3.so
 %python3_sitelibdir/%oname/core/lib/libnpymath3.so
 %_pkgconfigdir/%oname-py3.pc
-%_includedir/%oname-py3
+%_includedir/python%_python3_version/%oname
 %if_with tests
 %python3_sitelibdir/%oname/random/mtrand/*.h
 %python3_sitelibdir/%oname/random/mtrand/*.c
@@ -935,6 +937,18 @@ fi
 %endif
 
 %changelog
+* Wed Mar 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:1.15.4-alt5
+- Moved include directories (Closes: #38013).
+
+* Tue Feb 11 2020 Andrey Bychkov <mrdrew@altlinux.org> 1:1.15.4-alt4
+- Fixed build requires.
+
+* Fri Sep 13 2019 Vladimir Didenko <cow@altlinux.org> 1:1.15.4-alt3
+- Remove dependency on scons (it is not required anymore)
+
+* Tue Jun 11 2019 Stanislav Levin <slev@altlinux.org> 1:1.15.4-alt2
+- Dropped dependency on testing/test packages in the main one.
+
 * Tue Dec 25 2018 Mikhail Gordeev <obirvalger@altlinux.org> 1:1.15.4-alt1
 - Update to upstream version 1.15.4
 - Remove runnig 2to3 on generators

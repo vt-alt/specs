@@ -4,7 +4,7 @@
 
 Name: python-module-%oname
 Version: 1.1.0
-Release: alt1.1
+Release: alt2
 Summary: Kalman filtering and optimal estimation library
 License: MIT
 Group: Development/Python
@@ -22,12 +22,14 @@ BuildRequires: python-module-mock
 BuildRequires: python-module-nose
 BuildRequires: python-module-pygobject3
 BuildRequires: python-module-alabaster python-module-docutils python-module-html5lib python-module-objects.inv python2.7(numpydoc) xvfb-run
+BuildRequires: python-module-numpy-testing
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools
 BuildRequires: python3-module-scipy python3-module-matplotlib
 BuildRequires: python3-module-mock
 BuildRequires: python3-module-nose python3-module-pytz
+BuildRequires: python3-module-numpy-testing
 BuildRequires: python3-module-pygobject3 python3-module-pycairo
 BuildRequires: python3-module-html5lib python3-module-pbr python3-module-unittest2
 %endif
@@ -152,6 +154,9 @@ popd
 %endif
 
 %changelog
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1.1.0-alt2
+- Added missing dep on `numpy.testing`.
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 1.1.0-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

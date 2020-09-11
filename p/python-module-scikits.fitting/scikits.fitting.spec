@@ -5,28 +5,32 @@
 
 Name: python-module-%oname
 Epoch: 1
-Version: 0.6
-Release: alt2
+Version: 0.7
+Release: alt3
 Summary: Framework for fitting functions to data with SciPy
 License: BSD
 Group: Development/Python
 Url: https://pypi.python.org/pypi/scikits.fitting/
 
 # https://github.com/ludwigschwardt/scikits.fitting.git
+# Source-url: https://pypi.io/packages/source/s/%oname/%oname-%version.tar.gz
 Source: %name-%version.tar
 
 BuildRequires: python-devel python-module-setuptools
 BuildRequires: python-module-scipy libnumpy-devel
+BuildRequires: python-module-numpy-testing
 BuildRequires: python-module-matplotlib python-module-nose
+
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel python3-module-setuptools
 BuildRequires: python3-module-scipy libnumpy-py3-devel
+BuildRequires: python3-module-numpy-testing
 BuildRequires: python3-module-matplotlib python3-module-nose
 %endif
 
 %py_provides %oname
-%py_requires %mname numpy scipy matplotlib scikits.delaunay
+%py_requires %mname numpy scipy matplotlib
 
 %description
 A framework for fitting functions to data with SciPy which unifies the
@@ -167,6 +171,16 @@ popd
 %endif
 
 %changelog
+* Thu Apr 02 2020 Andrey Bychkov <mrdrew@altlinux.org> 1:0.7-alt3
+- Requires fixed.
+
+* Wed Jun 12 2019 Stanislav Levin <slev@altlinux.org> 1:0.7-alt2
+- Added missing dep on `numpy.testing`.
+
+* Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 1:0.7-alt1
+- new version 0.7 (with rpmrb script)
+- switch to build from tarball
+
 * Wed Mar 07 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.6-alt2
 - Reintroduced common packages python-module-scikits and python3-module-scikits.
 
