@@ -29,7 +29,7 @@
 
 Name:           chromium
 Version:        84.0.4147.105
-Release:        alt1
+Release:        alt1.1.p9
 
 Summary:        An open source web browser developed by Google
 License:        BSD-3-Clause and LGPL-2.1+
@@ -237,7 +237,7 @@ tar -xf %SOURCE1
 %patch021 -p1
 %patch022 -p1
 %patch023 -p1
-%patch024 -p1
+#patch024 -p1
 %patch025 -p1
 %patch026 -p1
 %patch027 -p1
@@ -510,6 +510,9 @@ printf '%_bindir/%name\t%_libdir/%name/%name-gnome\t15\n'   > %buildroot%_altdir
 %_altdir/%name-gnome
 
 %changelog
+* Fri Sep 04 2020 Andrey Cherepanov <cas@altlinux.org> 84.0.4147.105-alt1.1.p9
+- Disable 0024-Enable-VAVDA-VAVEA-and-VAJDA-on-linux-with-VAAPI-onl.patch.
+
 * Tue Jul 28 2020 Alexey Gladkov <legion@altlinux.ru> 84.0.4147.105-alt1
 - New version (84.0.4147.105).
 - Security fixes:
