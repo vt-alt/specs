@@ -1,15 +1,15 @@
 Name: wsjtx
-Version: 2.1.0
+Version: 2.2.2
 Release: alt1
 Summary: WSJT-X implements communication protocols or "modes" called JT4, JT9, JT65, and WSPR
-License: GPLv3
+License: GPL-3.0
 Group: Engineering
 Url: http://physics.princeton.edu/pulsar/k1jt/wsjtx.html
 Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
 # Source-url: http://physics.princeton.edu/pulsar/k1jt/%name-%version.tgz
-Patch0: wsjtx-2.0.0-compile-fix.patch
+Patch0: wsjtx-2.2.2-compile-fix.patch
 Patch1: %name-1.9-alt-cmake.patch
 
 Buildrequires(pre): rpm-macros-cmake
@@ -134,6 +134,12 @@ mv %buildroot%_docdir/%name %buildroot%_docdir/WSJT-X
 %_docdir/WSJT-X
 
 %changelog
+* Sun Aug 16 2020 Anton Midyukov <antohami@altlinux.org> 2.2.2-alt1
+- new version (2.2.2) with rpmgs script
+
+* Sun Jan 12 2020 Anton Midyukov <antohami@altlinux.org> 2.1.2-alt1
+- new version (2.1.2) with rpmgs script
+
 * Thu Oct 24 2019 Anton Midyukov <antohami@altlinux.org> 2.1.0-alt1
 - new version (2.1.0) with rpmgs script
 
