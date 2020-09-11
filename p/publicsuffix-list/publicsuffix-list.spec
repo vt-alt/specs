@@ -1,7 +1,7 @@
 %def_enable dafsa
 
 Name: publicsuffix-list
-Version: 20200720
+Version: 20200909
 Release: alt1
 Summary: Cross-vendor public domain suffix database
 License: MPL-2.0
@@ -66,6 +66,9 @@ install -pDm644 public_suffix_list.dafsa %buildroot%_datadir/publicsuffix/public
 %endif
 
 %changelog
+* Thu Sep 10 2020 Mikhail Efremov <sem@altlinux.org> 20200909-alt1
+- New snapshot.
+
 * Tue Jul 21 2020 Mikhail Efremov <sem@altlinux.org> 20200720-alt1
 - New snapshot.
 
