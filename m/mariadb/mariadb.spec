@@ -49,7 +49,7 @@
 %def_with jemalloc
 
 Name: mariadb
-Version: 10.4.13
+Version: 10.4.14
 Release: alt1
 
 Summary: A very fast and reliable SQL database engine
@@ -180,7 +180,8 @@ Group: Databases
 Requires: %name-common = %EVR
 Requires: %name-server = %EVR
 # wsrep requirements
-Requires: libgalera_smm rsync lsof
+Requires: libgalera_smm >= 26.4.4
+Requires: rsync lsof
 # obsoletion of mariadb-galera-server
 Provides: %name-galera-server = %EVR
 Obsoletes: %name-galera-server < %EVR
@@ -521,9 +522,8 @@ export DONT_GPRINTIFY=1
 rm -f %buildroot%_sysconfdir/init.d/mysql
 rm -f %buildroot%_sbindir/rcmysql
 rm -rf %buildroot{%_libdir/libmysqld.a,%_defaultdocdir/*}
-rm -rf %buildroot%_unitdir/*
+rm -rf %buildroot{%_unitdir,%_tmpfilesdir,/lib/sysusers.d}
 
-mkdir -p %buildroot%_var/run/mysqld
 mkdir -p %buildroot/var/lib/mysql/db/{mysql,test}
 
 # Install various helper scripts.
@@ -550,7 +550,7 @@ install -pD -m644 %SOURCE27 %buildroot%_sysconfdir/my.cnf.d/mysql-clients.cnf
 install -pD -m644 %SOURCE28 %buildroot%_sysconfdir/my.cnf.server/server-chroot.cnf
 install -pD -m644 %SOURCE29 %buildroot%_sysconfdir/my.cnf.server/server-no-chroot.cnf
 
-install -pD -m644 %SOURCE20 %buildroot%_tmpfilesdir/mysql.conf
+install -pD -m644 %SOURCE20 %buildroot%_tmpfilesdir/%name.conf
 install -pD -m644 %SOURCE21 %buildroot%_unitdir/mysqld.service
 install -pD -m644 %SOURCE22 %buildroot%_sysconfdir/systemd/system/mysqld.service.d/user.conf
 install -pD -m644 %SOURCE23 %buildroot%_sysconfdir/systemd/system/mysqld.service.d/notify.conf
@@ -669,8 +669,6 @@ rm -f %buildroot%_bindir/mariadb-service-convert
 rm -f %buildroot%_bindir/mysqld_safe_helper
 rm -f %buildroot%_bindir/mariadbd-safe-helper
 rm -f %buildroot%_bindir/test-connect-t
-rm -f %buildroot/lib/sysusers.d/sysusers.conf
-rm -f %buildroot/lib/tmpfiles.d/tmpfiles.conf
 rm -f %buildroot%_libdir/libmariadbd.a
 rm -f %buildroot%_libdir/libmysqlclient.a
 rm -f %buildroot%_libdir/libmysqlclient_r.a
@@ -718,7 +716,7 @@ fi
 %config(noreplace) %_sysconfdir/my.cnf
 %config(noreplace) %_sysconfdir/my.cnf.d/server.cnf
 %config(noreplace) %_sysconfdir/my.cnf.server/*.cnf
-%_tmpfilesdir/mysql.conf
+%_tmpfilesdir/%name.conf
 %_unitdir/mysqld.service
 %_unitdir/mariadb.service
 %config(noreplace) %_sysconfdir/systemd/system/mysqld.service.d/*.conf
@@ -1003,6 +1001,9 @@ fi
 %endif
 
 %changelog
+* Wed Sep 09 2020 Alexey Shabalin <shaba@altlinux.org> 10.4.14-alt1
+- 10.4.14
+
 * Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 10.4.13-alt1
 - 10.4.13
 - Fixes for the following security vulnerabilities:
