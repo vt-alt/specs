@@ -6,7 +6,7 @@
 
 Name:    qgis3
 Version: 3.8.2
-Release: alt1
+Release: alt1.1
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -23,6 +23,7 @@ Source4: qgis-server-README
 Source5: qgis.xml
 Source6: %rname-mimelnk.tar
 
+Patch0: alt-qt5.15.patch
 # Fix detection problem for GRASS libraries
 Patch1: %rname-ignore-bundled-modules.patch
 Patch3: %rname-fix-unresolved-variable.patch
@@ -152,6 +153,7 @@ Please refer to %name-server-README for details!
 
 %prep
 %setup -n %rname-%version
+%patch0 -p1
 #patch1 -p1
 #%%patch3 -p1
 
@@ -369,6 +371,9 @@ rm -rf %buildroot%_datadir/%rname/FindQGIS.cmake \
 %endif
 
 %changelog
+* Thu Sep 10 2020 Sergey V Turchin <zerg@altlinux.org> 3.8.2-alt1.1
+- fix to build with Qt-5.15
+
 * Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.2-alt1
 - New version.
 
