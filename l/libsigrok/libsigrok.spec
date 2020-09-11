@@ -1,5 +1,5 @@
 Name: libsigrok
-Version: 0.5.1
+Version: 0.5.2
 Release: alt1
 
 Summary: sigrok -- signal analysis software suite
@@ -100,6 +100,9 @@ install -pm0644 contrib/61-libsigrok-uaccess.rules %buildroot%_udevrulesdir/
 %_pkgconfigdir/libsigrokcxx.pc
 
 %changelog
+* Wed Jul 15 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.5.2-alt1
+- 0.5.2 released
+
 * Tue Oct 30 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.5.1-alt1
 - 0.5.1 released
 
