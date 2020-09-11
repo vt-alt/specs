@@ -13,7 +13,7 @@
 
 Name:    freecad
 Version: 0.18.4
-Release: alt1.1.p9
+Release: alt1.2.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: LGPL-2.0+
@@ -33,6 +33,11 @@ Patch2: %name-build-with-external-smesh.patch
 # branch releases/FreeCAD-0-17
 #Patch3: upstream.patch
 Patch4: %name-desktop-ru.patch
+
+Patch6: %name-%version-upstream-qt-5.15-compat-1.patch
+Patch7: %name-%version-upstream-qt-5.15-compat-2.patch
+Patch8: %name-%version-upstream-qt-5.15-compat-3.patch
+Patch9: %name-%version-upstream-qt-5.15-compat-4.patch
 
 Provides:  free-cad = %version-%release
 Obsoletes: free-cad < %version-%release
@@ -140,6 +145,10 @@ rm -rf src/3rdParty
 
 #patch3 -p1
 %patch4 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 export PATH=$PATH:%_qt5_bindir
@@ -227,6 +236,12 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Wed Sep 09 2020 Sergey V Turchin <zerg@altlinux.org> 1:0.18.4-alt1.2.p9
+- Backport to p9 branch.
+
+* Wed Aug 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.18.4-alt5
+- Fixed build with qt-5.15.
+
 * Wed May 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt1.1.p9
 - Backport to p9 branch.
 
