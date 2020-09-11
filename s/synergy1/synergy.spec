@@ -2,12 +2,13 @@
 
 Summary:	Mouse and keyboard sharing utility
 Name:		synergy1
-Version:	1.11.1
+Version:	1.12.0
 Release:	alt1
 License:	GPLv2
 Group:		Accessibility
 URL:		http://synergy-project.org/
 Source0:	%oname-%version.tar
+Source1:	googletest.tar.gz
 Patch0:		%oname-%version-alt.patch
 
 Packager:	Evgeny Sinelnikov <sin@altlinux.org>
@@ -34,6 +35,7 @@ display.
 %prep
 %setup -q -n %oname-%version
 %patch0 -p1
+tar -xf %SOURCE1
 
 %build
 %cmake
@@ -59,6 +61,9 @@ install -D -m0644 doc/synergyc.man %buildroot/%_man1dir/synergyc.1
 %_man1dir/synergyc*
 
 %changelog
+* Sat Sep 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.12.0-alt1
+- Update to new release
+
 * Sat Aug 01 2020 Evgeny Sinelnikov <sin@altlinux.org> 1.11.1-alt1
 - Initial build of Synergy 1 as separate package
 
