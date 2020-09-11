@@ -1,7 +1,7 @@
 # NOTE: do not use clean_spec or rpmcs for this spec
 
 Name: rpm-build-altlinux-compat
-Version: 2.1.13
+Version: 2.2.0
 Release: alt1
 
 Summary: ALT Linux compatibility and extensions in rpm build
@@ -26,7 +26,7 @@ BuildArchitectures: noarch
 # see eterbug #10699 https://bugs.etersoft.ru/show_bug.cgi?id=10699
 #BuildPreReq: altlinux-release
 %else
-# Provide includes macros
+# Provide included macros (see macros.rpm-build dir)
 Provides: rpm-build-python rpm-build-perl rpm-macros-ttf rpm-build-licenses rpm-macros-cmake
 # FreeBSD
 %if %_vendor == "portbld" || %_vendor == "any"
@@ -61,6 +61,7 @@ Group: Development/Other
 Requires: %_rpmmacrosdir
 # we will use distr_vendor from it
 Requires: rpm-build-compat = %version-%release
+Provides: rpm-macros-intro = %version-%release
 
 %description -n rpm-build-intro
 This package contains new macros introduced for
@@ -74,6 +75,7 @@ Summary: Conflicts macros for ALT Linux rpm build
 Group: Development/Other
 Requires: %_rpmmacrosdir
 Requires: rpm-build-intro = %version-%release
+Provides: rpm-macros-intro-conflicts = %version-%release
 
 %description -n rpm-macros-intro-conflicts
 This package contains conflicts macros for
@@ -86,6 +88,7 @@ package to build requires.
 Summary: ALT Linux compatibility macros for backport purposes
 Group: Development/Other
 Requires: %_rpmmacrosdir
+Provides: rpm-macros-compat = %version-%release
 
 %description -n rpm-build-compat
 This package contains ALT Linux compatibility layer
@@ -128,6 +131,15 @@ Command rpmbph from etersoft-build-utils will do it automatically.
 %endif
 
 %changelog
+* Wed Sep 09 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.0-alt1
+- fix remove_repo_info macro
+- provide all packages as rpm-macros-*
+
+* Tue Sep 08 2020 Vitaly Lipatov <lav@altlinux.ru> 2.1.14-alt1
+- remove_repo_info: add .DS_Store removing
+- install.sh: get arch info from distr_vendor (adds support for non x86 arches)
+- install.sh: add _distro_name, _distro_version
+
 * Thu May 02 2019 Vitaly Lipatov <lav@altlinux.ru> 2.1.13-alt1
 - NPROCS: divide by 4 only if we have more than 42G
 
