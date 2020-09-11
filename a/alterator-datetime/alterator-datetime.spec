@@ -4,7 +4,7 @@
 
 Name: alterator-datetime
 Version: 4.6.0
-Release: alt1
+Release: alt2
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
 
@@ -18,8 +18,8 @@ Requires: alterator >= 5.2-alt1 alterator-sh-functions >= 0.6-alt5
 Requires: alterator-service-functions >= 2.0.0-alt1
 Requires: alterator-l10n >= 1.5-alt5
 Requires: ntp-server glibc-timezones
-Requires: alterator-lookout >= 2.7
-Requires: alterator-standalone >= 7.4
+Conflicts: alterator-lookout < 2.7
+Conflicts: alterator-standalone < 7.4
 Conflicts: alterator-browser-qt < 2.9.93
 Conflicts: alterator-fbi < 5.17-alt3
 Conflicts: alterator-lookout < 1.6-alt3
@@ -71,6 +71,9 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Fri Sep 11 2020 Sergey V Turchin <zerg@altlinux.org> 4.6.0-alt2
+- fix requires (closes: 38921)
+
 * Fri Sep 04 2020 Ivan Razzhivin <underwit@altlinux.org> 4.6.0-alt1
 - add the ability to select the clock source
 
