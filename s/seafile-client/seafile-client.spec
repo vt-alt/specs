@@ -1,5 +1,5 @@
 Name: seafile-client
-Version: 7.0.8
+Version: 7.0.9
 Release: alt1
 
 Summary: Seafile gui client on QT bassed
@@ -16,6 +16,7 @@ Source: %name-%version.tar
 Source1: seafile.desktop
 
 Patch: seafile-client-no-return-error.patch
+Patch2: 86ebea086c6b78738b3140c922c909331d2b9a94.patch
 
 Requires: seafile >= %version
 
@@ -41,6 +42,7 @@ Seafile is a full-fledged document collaboration platform.
 %prep
 %setup
 %patch -p2
+%patch2 -p1
 cp %SOURCE1 data/
 
 %build
@@ -61,6 +63,9 @@ ln -s seafile-applet %buildroot%_bindir/%name
 %_pixmapsdir/*
 
 %changelog
+* Fri Aug 21 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.9-alt1
+- new version 7.0.9 (with rpmrb script)
+
 * Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 7.0.8-alt1
 - new version 7.0.8 (with rpmrb script)
 
