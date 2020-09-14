@@ -1,6 +1,6 @@
 Name:    alterator-net-domain
-Version: 0.7.0
-Release: alt8
+Version: 0.7.1
+Release: alt1
 Source:  %name-%version.tar
 
 Summary: Alterator module to provision system network domain
@@ -45,6 +45,9 @@ and FreeIPA domain.
 %_bindir/*-sh-functions
 
 %changelog
+* Fri Sep 11 2020 Andrey Cherepanov <cas@altlinux.org> 0.7.1-alt1
+- Add note for Active Directory domain name (ALT #38917).
+
 * Fri Aug 16 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.7.0-alt8
 - samba-DC is samba-dc now
 
