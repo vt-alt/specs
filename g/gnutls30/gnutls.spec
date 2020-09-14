@@ -3,14 +3,14 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.14
+Version: 3.6.15
 Release: alt1
 
 Summary: A TLS protocol implementation
 # The libgnutls library is LGPLv2.1+, utilities and remaining libraries are GPLv3+
 License: LGPLv2.1+ and GPLv3+
 Group: System/Libraries
-Url: http://gnutls.org/
+Url: https://gnutls.org/
 # ftp://ftp.gnutls.org/pub/gnutls/gnutls-%version.tar.bz2
 Source: gnutls-%version.tar
 
@@ -323,6 +323,10 @@ make -k check
 %endif
 
 %changelog
+* Wed Sep 09 2020 Mikhail Efremov <sem@altlinux.org> 3.6.15-alt1
+- Updated Url tag.
+- Updated to 3.6.15 (fixes: CVE-2020-24659).
+
 * Sat Jun 06 2020 Mikhail Efremov <sem@altlinux.org> 3.6.14-alt1
 - Updated to 3.6.14 (fixes: CVE-2020-13777).
 
