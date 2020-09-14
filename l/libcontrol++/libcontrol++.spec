@@ -1,70 +1,85 @@
 Name: libcontrol++
-Version: 0.21.0
+Version: 0.24.1
 Release: alt1
 
 Summary: control++ common classes and functions library
 License: GPLv3
-Group: Development/Other
+Group: Development/C++
 Url: https://www.altlinux.org/Control++
 
 Packager: Alexey Appolonov <alexey@altlinux.org>
 
 # http://git.altlinux.org/people/alexey/packages/?p=libcontrolplusplus.git
-Source: %name-%version.tar
+Source: %{name}-%{version}.tar
 
 BuildRequires: gcc-c++
 BuildRequires: libacl-devel
 
-%define libcontrol++_desc \
-libcontrol++ provides common classes and functions,\
-that can be used in other app\
-(such as ini-parser or file-operations).
-
 %description
-control++ is a simple system configuration tool
-that allows administrator to change system ulimits,
-set permission modes and, in perspective,
-perform other administrative operations.
+libcontrol++ provides useful classes and functions, that can be used
+not only in control++ but in other applications as well.
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# libcontrol++-devel
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-%package -n libcontrol++-devel
-Summary: libcontrol++ headers
+%package -n %{name}-devel
+Summary: %{name} headers
 Group: Development/Other
-Requires: libcontrol++
+Requires: %{name}
 Requires: libacl-devel
 BuildArch: noarch
 
-%description -n libcontrol++-devel
-Development package for libcontrol++.
-%libcontrol++_desc
+%description -n %{name}-devel
+Development package for %{name}.
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 %prep
 %setup
 
 %build
-mkdir -p bin/Release
-mkdir -p obj/Release
-%make_build -C libcontrol++/ release
+%make_build
 
 %install
-mkdir -p %buildroot%_libdir
-mkdir -p %buildroot%_includedir/libcontrol++
+mkdir -p %{buildroot}%{_libdir}
+mkdir -p %{buildroot}%{_includedir}/%{name}
 # Executables
-cp libcontrol++/bin/Release/libcontrol++.so %buildroot%_libdir
+cp bin/%{name}.so %{buildroot}%{_libdir}
 # Includes
-cp libcontrol++/src/*.h %buildroot%_includedir/libcontrol++
+cp src/*.h %{buildroot}%{_includedir}/%{name}
 
 %files
-%_libdir/*.so
+%{_libdir}/*.so
 
-%files -n libcontrol++-devel
-%_includedir/libcontrol++/
+%files -n %{name}-devel
+%{_includedir}/%{name}/
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 %changelog
+* Wed Jul 15 2020 Alexey Appolonov <alexey@altlinux.org> 0.24.1-alt1
+- Corrected functions 'StripPath' and 'GetWordFromLine';
+- Corrected behaviour of 'TPrinter' class in case when winsize cannot be
+  properly defined.
+
+* Sat Nov 23 2019 Alexey Appolonov <alexey@altlinux.org> 0.24.0-alt1
+- Some of the classes and functions have been relocated, some of the headers
+  are gone and the new headers have been added;
+- Enhanced trimming functions;
+- Minor improvement of TPrinter.
+
+* Wed Sep 18 2019 Alexey Appolonov <alexey@altlinux.org> 0.23.0-alt1
+- New abilities of TPrinter (switching off any activity of TPrinter object,
+  restoring 'silent' flag).
+
+* Sat Aug 24 2019 Alexey Appolonov <alexey@altlinux.org> 0.22.0-alt1
+- Ability to store only the pointer to TFileMode attributes, and not copy
+  the data (performance gain up to 100%%);
+- New abilities of TPrinter (printing various special messages,
+  handling indentation levels, etc.);
+- All the printing inside TPrinter is done through one and only point
+  of 'cout'-reference;
+- Small fixes and optimizations.
+
 * Tue Apr 23 2019 Alexey Appolonov <alexey@altlinux.org> 0.21.0-alt1
 - Enhanced TConf class;
 - Ability to give instant feedback for an operation.

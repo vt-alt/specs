@@ -1,8 +1,12 @@
-%define libcontrolppver 0.21
+%define libcontrolppver 0.24
+%define statedir %{_localstatedir}/%{name}
+%define ulim_statedir %{statedir}/ulimits
+%define perm_statedir %{statedir}/permissions
+%define testsdir %{statedir}/tests
 
 Name: control++
-Version: 0.19.0
-Release: alt1.M90P.1
+Version: 0.20.3
+Release: alt0.M90P.1
 
 Summary: System configuration tool
 License: GPLv3
@@ -12,53 +16,101 @@ Url: https://www.altlinux.org/Control++
 Packager: Alexey Appolonov <alexey@altlinux.org>
 
 # http://git.altlinux.org/people/alexey/packages/?p=controlplusplus.git
-Source: %name-%version.tar
+Source: %{name}-%{version}.tar
 
 BuildRequires: gcc-c++
-BuildRequires: libcontrol++-devel >= %libcontrolppver
+BuildRequires: libcontrol++-devel >= %{libcontrolppver}
+
+Requires: libcontrol++
 
 %description
-control++ is a simple system configuration tool
-that allows administrator to change system ulimits,
-set permission modes and, in perspective,
+%{name} is a simple system configuration tool that allows administrator
+to change system ulimits, set permission modes and, in perspective,
 perform other administrative operations.
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+%package -n %{name}-checkinstall
+Summary: Tests and test data for %{name}
+Group: Other
+
+Requires: %{name}
+Requires: python3
+Requires: python3-module-ax
+
+%description -n %{name}-checkinstall
+Tests and test data for %{name}.
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 %prep
 %setup
 
 %build
-mkdir -p bin/Release
-mkdir -p obj/Release
-%make_build -C control++/ release
+%make_build
 
 %install
-mkdir -p %buildroot%_bindir
-mkdir -p %buildroot%_docdir/%name
-mkdir -p %buildroot%_sysconfdir/%name
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_defaultdocdir}/%{name}
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}
+mkdir -p %{buildroot}%{ulim_statedir}
+mkdir -p %{buildroot}%{perm_statedir}
+mkdir -p %{buildroot}%{testsdir}
+mkdir -p %{buildroot}/run/%{name}
 # Executables
-cp control++/bin/Release/%name %buildroot%_bindir
+cp bin/%{name} %{buildroot}%{_bindir}
 # Configuration
-cp -r samples/* %buildroot%_sysconfdir/%name
-# Dirs for generated files
-mkdir -p %buildroot%_localstatedir/%name/ulimits
-mkdir %buildroot%_localstatedir/%name/permissions
+cp -r samples/* %{buildroot}%{_sysconfdir}/%{name}
 # Documentation
-cp COPYING %buildroot%_defaultdocdir/%name/
-cp usage.txt %buildroot%_defaultdocdir/%name/
-cp readme.txt %buildroot%_defaultdocdir/%name/
+cp COPYING %{buildroot}%{_defaultdocdir}/%{name}
+cp usage.txt %{buildroot}%{_defaultdocdir}/%{name}
+cp readme.txt %{buildroot}%{_defaultdocdir}/%{name}
+# Tests
+cp -r tests/* %{buildroot}%{testsdir}
+
+%post -n %{name}-checkinstall
+%{testsdir}/run --targets all
 
 %files
-%_bindir/%name
-%_sysconfdir/%name
-%config(noreplace) %_sysconfdir/%name/%name.conf
-%_localstatedir/%name
-%_defaultdocdir/%name
+%{_bindir}/%{name}
+%{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
+%dir %{statedir}
+%dir %{ulim_statedir}
+%dir %{perm_statedir}
+%{_defaultdocdir}/%{name}
+
+%files -n %{name}-checkinstall
+%{testsdir}/*
+%dir /run/%{name}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 %changelog
+* Wed Sep 09 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.3-alt0.M90P.1
+- Port of a new version.
+
+* Tue Sep 08 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.3-alt1
+- Modified testing procedures that reduce traces of them been running.
+
+* Fri Sep 04 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.2-alt1
+- Polished tests.
+
 * Fri Jul 31 2020 Alexey Appolonov <alexey@altlinux.org> 0.19.0-alt1.M90P.1
 - Build for all main CPU architectures.
+
+* Sun Nov 24 2019 Alexey Appolonov <alexey@altlinux.org> 0.20.1-alt1
+- Corrected flow of printing procedures;
+- Tests for a black/white lists mode settings.
+
+* Sat Aug 24 2019 Alexey Appolonov <alexey@altlinux.org> 0.20.0-alt1
+- Recursive formation of the modes for directories is optimized
+  (performance gain up to 100%%);
+- Most of the printing is done with the use of new and previously existed
+  abilities of TPrinter class.
+
+* Wed Jul 24 2019 Alexey Appolonov <alexey@altlinux.org> 0.19.0-alt2
+- Enhanced manual.
 
 * Tue Apr 23 2019 Alexey Appolonov <alexey@altlinux.org> 0.19.0-alt1
 - Ability to perform exclusive mode setting for a unit ('micro mode');
