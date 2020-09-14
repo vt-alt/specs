@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt28
+Release: alt29
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -273,7 +273,7 @@ build_efi_image() {
 		gzio iso9660 loadenv loopback mdraid09 mdraid1x png jpeg \
 		extcmd keystatus procfs cryptodisk gcry_rijndael gcry_sha1 \
 		gcry_sha256 luks gcry_sha512 gcry_serpent gcry_twofish \
-		crypto pbkdf2 password_pbkdf2 echo regexp \
+		crypto pbkdf2 password_pbkdf2 echo regexp tftp \
 		"$@"
 }
 
@@ -525,6 +525,10 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Wed Aug 19 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29
+- spec: add tftp module into EFI image (closes: #38681)
+- sort kernels by mtime instead of ctime (ptrnine@)
+
 * Fri Jul 17 2020 Oleg Solovyov <mcpain@altlinux.org> 2.02-alt28
 - apply subvol option substitution into GRUB_CMDLINE_LINUX_DEFAULT
 
