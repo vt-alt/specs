@@ -1,12 +1,12 @@
 Name: altlinux-repolist-utils
-Version: 0.004
+Version: 0.006
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: map src/bin names and files in ALTLinux repos using src.list/bin.list
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: %name-%version.tar
 Url: http://www.altlinux.org/Sisyphus/Tools/Repolist
 
@@ -14,6 +14,15 @@ BuildRequires: rpm-build-perl perl(Source/Shared/FindLocalMirror/ALTLinux.pm)
 
 %description
 %summary
+
+%define module ALTLinux-RepoList
+
+%package -n perl-%module
+Summary: %module - Perl extension for quering ALTLinux repository list files
+Group: Development/Perl
+
+%description  -n perl-%module
+%module - Perl extension for quering ALTLinux repository list files
 
 %prep
 %setup
@@ -23,15 +32,29 @@ BuildRequires: rpm-build-perl perl(Source/Shared/FindLocalMirror/ALTLinux.pm)
 %install
 mkdir -p %buildroot%_bindir
 cp -a altlinux-repolist-*-to-* %buildroot%_bindir/
-mkdir -p %buildroot%perl_vendor_privlib/ALTLinux/
-install -m 644 *.pm %buildroot%perl_vendor_privlib/ALTLinux/
+mkdir -p %buildroot%perl_vendor_privlib/ALTLinux/RepoList/
+install -m 644 ALTLinux/*.pm %buildroot%perl_vendor_privlib/ALTLinux/
+install -m 644 ALTLinux/RepoList/*.pm %buildroot%perl_vendor_privlib/ALTLinux/RepoList/
 
 %files
 %doc README
 %_bindir/*
-%perl_vendor_privlib/ALTLinux/*.pm
+
+%files -n perl-%module
+%perl_vendor_privlib/ALTLinux/*
 
 %changelog
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.006-alt1
+- extended API
+- support of zme'd list
+
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.005-alt2
+- support of both compressed and uncompressed lists
+
+* Tue Sep 08 2020 Igor Vlasenko <viy@altlinux.ru> 0.005-alt1
+- support of compressed lists
+- added perl module subpackage
+
 * Fri Feb 22 2019 Igor Vlasenko <viy@altlinux.ru> 0.004-alt1
 - use symlinks (closes: #36157)
 

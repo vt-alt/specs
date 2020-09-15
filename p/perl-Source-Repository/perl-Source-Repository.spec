@@ -1,18 +1,18 @@
 %define module Source-Repository
 
 Name: perl-%module
-Version: 0.406
+Version: 0.408
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module - Perl extension for converting SRPM and spec files
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar
 Url: http://search.cpan.org/dist/%module
 
-BuildRequires: perl-devel perl(RPM/Header.pm) perl(RPM/Vercmp.pm) perl-String-ShellQuote perl-Source-Package perl(Source/Shared/Resource/Verbose.pm) perl(Source/Shared/Utils/GlobList.pm) perl(JSON/XS.pm)  perl(Source/Shared/Utils/Downloader.pm)
+BuildRequires: perl-devel perl(RPM/Header.pm) perl(RPM/Vercmp.pm) perl-String-ShellQuote perl-Source-Package perl(Source/Shared/Resource/Verbose.pm) perl(Source/Shared/Utils/GlobList.pm) perl(JSON/XS.pm)  perl(Source/Shared/Utils/Downloader.pm) perl(ALTLinux/RepoList.pm)
 
 %description
 %summary
@@ -33,6 +33,12 @@ BuildRequires: perl-devel perl(RPM/Header.pm) perl(RPM/Vercmp.pm) perl-String-Sh
 %perl_vendor_privlib/Source*
 
 %changelog
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.408-alt1
+- use ALTLinux::RepoList 0.006
+
+* Wed Sep 09 2020 Igor Vlasenko <viy@altlinux.ru> 0.407-alt1
+- use ALTLinux::RepoList
+
 * Sun Feb 10 2019 Igor Vlasenko <viy@altlinux.ru> 0.406-alt1
 - use Source::Shared::Utils::Downloader
 
