@@ -3,14 +3,14 @@
 
 Name: repocop-unittest-lintian-noncollectors
 Version: 0.16.%lintianver
-Release: alt6
+Release: alt8
 BuildArch: noarch
 Packager: Igor Vlasenko <viy@altlinux.ru>
 
 Summary: port of lintian integration tests for repocop test platform.
 Group: Development/Other
 License: GPLv2+
-Url: http://repocop.altlinux.org 
+Url: http://repocop.altlinux.org
 Requires: repocop > 0.55
 
 Source: %name-%version.tar
@@ -57,6 +57,13 @@ done
 %_datadir/repocop/fixscripts/*
 
 %changelog
+* Fri Sep 11 2020 Igor Vlasenko <viy@altlinux.ru> 0.16.1.23.48-alt8
+- bugfix release
+
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.16.1.23.48-alt7
+- removed known false positives in aspell-package-not-arch-all
+- (closes: #38840)
+
 * Tue Apr 23 2013 Igor Vlasenko <viy@altlinux.ru> 0.16.1.23.48-alt6
 - extended arch-dep-package-consists-of-usr-share.pl range
 
