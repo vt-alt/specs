@@ -3,7 +3,7 @@
 
 Name:     otter-browser
 Version:  1.0.01
-Release:  alt1
+Release:  alt1.1
 
 Summary:  Otter Browser aims to recreate the best aspects of the classic Opera (12.x) UI using Qt5
 License:  GPL-3.0
@@ -13,6 +13,7 @@ Url:      https://github.com/OtterBrowser/otter-browser
 Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source:   %name-%version.tar
+Patch1: alt-qt5.15.patch
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: gcc-c++ cmake
@@ -35,6 +36,7 @@ BuildRequires: pkgconfig(hunspell)
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %cmake
@@ -52,6 +54,9 @@ BuildRequires: pkgconfig(hunspell)
 %doc CHANGELOG CONTRIBUTING.md COPYING README.md
 
 %changelog
+* Wed Sep 09 2020 Sergey V Turchin <zerg@altlinux.org> 1.0.01-alt1.1
+- fix to build with Qt-5.15
+
 * Wed Jan 02 2019 Anton Midyukov <antohami@altlinux.org> 1.0.01-alt1
 - new version 1.0.01
 
