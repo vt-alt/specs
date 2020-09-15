@@ -1,6 +1,6 @@
 %define rname kreslimit
 Name: kde5-kreslimit
-Version: 1.2.0
+Version: 1.2.1
 Release: alt1
 
 %K5init altplace
@@ -44,6 +44,11 @@ Resource limit for launched applications
 
 
 %changelog
+* Wed Sep 09 2020 Ivan Razzhivin <underwit@altlinux.org> 1.2.1-alt1
+- the application fills the parent window
+- remove multiple items
+- set default memory size after adding application
+
 * Fri Aug 07 2020 Ivan Razzhivin <underwit@altlinux.org> 1.2.0-alt1
 - select application from list
 - add tooltip
