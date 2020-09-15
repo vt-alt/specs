@@ -1,25 +1,33 @@
 Name: gpac
-Version: v0.7.1.0.284.gite64a7d229
+Epoch: 1
+Version: 1.0.0
 Release: alt1
 
 Summary: GPAC is a multimedia framework covering MPEG-4, VRML/X3D and SVG.
-License: LGPL
+License: LGPL-2.1+
 Group: Video
 Url: http://gpac.sourceforge.net/
 Packager: Michael A. Kangin <prividen@altlinux.org>
 
 Source: %name-%version.tar
+Patch: gpac-1.0.0-not-deb.patch
 
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
-BuildRequires: libalsa-devel libjack-devel libpulseaudio-devel
-BuildRequires: libdirectfb-devel libxvid-devel libavcodec-devel
-BuildRequires: subversion libfreetype-devel 
-BuildRequires: libXv-devel libXext-devel libSDL-devel libGL-devel libGLU-devel 
-BuildRequires: libssl-devel gcc-c++ 
-BuildRequires: libjpeg-devel libopenjpeg-devel libpng-devel libmad-devel libfaad-devel
-BuildRequires: liba52-devel libvorbis-devel libtheora-devel
-BuildRequires: libxmlrpc-devel libwxGTK3.1-devel
+# optimized out: fontconfig glibc-kernheaders-generic
+# glibc-kernheaders-x86 libGLU-devel libX11-devel libXext-devel libavcodec-devel
+# libavformat-devel libavutil-devel libcairo-gobject libcdio-paranoia libdc1394-22
+# libfreetype-devel libgdk-pixbuf libglvnd-devel libgpg-error libogg-devel
+# libopencore-amrnb0 libopencore-amrwb0 libp11-kit librabbitmq-c libraw1394-11
+# libstdc++-devel libx265-192 pkg-config python2-base sh4 xorg-proto-devel
+# zlib-devel
+BuildRequires: gcc-c++ git-core libSDL-devel libXv-devel
+BuildRequires: liba52-devel libalsa-devel libavdevice-devel libavfilter-devel
+BuildRequires: libdirectfb-devel libfaad-devel libjack-devel libjpeg-devel
+BuildRequires: libmad-devel libopenjpeg-devel libpng-devel libpulseaudio-devel
+BuildRequires: libssl-devel libswresample-devel libswscale-devel libtheora-devel
+BuildRequires: libvorbis-devel libxvid-devel
+BuildRequires: chrpath
 
 %description
 GPAC is a multimedia framework for MPEG-4, VRML/X3D and SVG/SMIL.
@@ -57,7 +65,7 @@ This is a base GPAC library
 %package -n mp4box
 Summary: The GPAC multimedia packager
 Group: Video
-Requires: lib%name = %version-%release
+Requires: lib%name = %EVR
 
 %description -n mp4box
 MP4Box can be used for performing many manipulations on multimedia files
@@ -74,38 +82,77 @@ like AVI, MPG, TS, but mostly on ISO media files (e.g. MP4, 3GP), e.g.:
   playback on different devices (e.g. phones, PDA) or for different
   software (e.g. iTunes).
 
+%package -n lib%name-devel
+Summary: Development headers and library for %name
+Group: Development/C
+Requires: lib%name = %EVR
 
+%description -n lib%name-devel
+Development headers and libraries for %name.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
-%configure --enable-pic --libdir=`echo %_libdir|sed -e 's/\/usr\///'`
+%configure --prefix="%_prefix" \
+    --libdir="%_lib" \
+    --mandir="%_mandir" \
+    --enable-pic \
+    --enable-depth \
+    --use-js=no \
+    --use-ffmpeg=system \
+    --use-ogg=system \
+    --use-openjpeg=system \
+    --use-theora=system \
+    --use-vorbis=system \
+    --disable-amr-nb \
+    --disable-amr-wb \
+    --enable-jack \
+    --enable-joystick \
+    --enable-pulseaudio
 %make_build
 
 %install
-%make_install install DESTDIR="%buildroot" STRIP=/bin/true
-install -m 644 doc/man/mp42ts* %buildroot%_man1dir/
+%make_install install DESTDIR="%buildroot"
+
+# Remove useless directories
+rm -rf %buildroot/%_includedir/win32
+rm -rf %buildroot/%_includedir/wince
+
+chrpath -d %buildroot%_bindir/MP4Client
+chrpath -d %buildroot%_bindir/MP4Box
+chrpath -d %buildroot%_bindir/gpac
 
 %files
+%doc Changelog COPYING README.md
+%_bindir/%name
 %_bindir/MP4Client
-%_bindir/MP42TS
 %_man1dir/mp4client*
-%_man1dir/mp42ts*
 %_datadir/%name
 %_libdir/%name
+%_desktopdir/%name.desktop
+# TODO: pacakage pixmapsdir (problem with symlinks)
 
 %files -n lib%name
+%doc Changelog COPYING README.md
 %_libdir/lib%name.so*
 %_man1dir/gpac*
-%doc AUTHORS BUGS Changelog COPYING README.md TODO
 
 %files -n mp4box
 %_bindir/MP4Box
 %_man1dir/mp4box*
 
+%files -n lib%name-devel
+%_includedir/%name
 
 %changelog
+* Tue Sep 01 2020 Grigory Ustinov <grenka@altlinux.org> 1:1.0.0-alt1
+- Updated to 1.0.0.
+- Fixed license.
+- Added devel subpackage.
+- Cleaned up BR's.
+
 * Wed Dec 19 2018 Grigory Ustinov <grenka@altlinux.org> v0.7.1.0.284.gite64a7d229-alt1
 - Build new version (with openssl1.1).
 
