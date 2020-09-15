@@ -5,7 +5,7 @@
 
 Name:     qtpass
 Version:  1.2.3
-Release:  alt1
+Release:  alt1.1
 
 Summary: a multi-platform GUI for pass, the standard unix password manager
 Summary(ru_RU.UTF-8): кросс-платформенный интерфейс к менеджеру паролей pass
@@ -22,6 +22,7 @@ Patch0:  %real_name-%version-%release.patch
 
 Patch1:  %name-1.1.6-alt-desktop.patch
 Patch2:  %name-1.2.0-alt-tests.patch
+Patch3: alt-qt5.15.patch
 
 Source1: %name-16.png
 Source2: %name-32.png
@@ -69,6 +70,7 @@ QtPass -  кроссплатформенный графический интер
 
 %patch1
 #%%patch2
+%patch3 -p1
 
 
 mv -- LICENSE LICENSE.orig
@@ -101,6 +103,9 @@ install -D -m0644 -- qtpass.appdata.xml %buildroot%_datadir/appdata/%name.appdat
 %_datadir/appdata/%name.appdata.xml
 
 %changelog
+* Fri Sep 11 2020 Sergey V Turchin <zerg@altlinux.org> 1.2.3-alt1.1
+- Fix compile with Qt-5.15
+
 * Mon Jun 11 2018 Nikolay A. Fetisov <naf@altlinux.org> 1.2.3-alt1
 - New version
 
