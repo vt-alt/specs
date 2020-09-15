@@ -1,10 +1,10 @@
 Name:     qlcplus
 Version:  5.0.0
-Release:  alt0.alpha3
+Release:  alt1.alpha3
 
 Summary:  Q Light Controller Plus
 
-License:  ASL 2.0
+License:  Apache-2.0
 Group:    Other
 Url:      https://github.com/mcallegari/qlcplus
 
@@ -24,6 +24,8 @@ commercial softwares.
 %prep
 %setup
 sed -i '95s/lib/%_lib/' variables.pri
+# deprecated is not prohibitted (thx gentoo)
+sed -i -e "s/QMAKE_CXXFLAGS += -Werror/#&/g" variables.pri
 
 %build
 qmake-qt5
@@ -50,5 +52,9 @@ INSTALL_ROOT=%buildroot make install
 %_sysconfdir/udev/rules.d/*
 
 %changelog
+* Wed Sep 09 2020 Grigory Ustinov <grenka@altlinux.org> 5.0.0-alt1.alpha3
+- Build again without Werror flag (Closes: #36799).
+- Fix license.
+
 * Mon May 27 2019 Grigory Ustinov <grenka@altlinux.org> 5.0.0-alt0.alpha3
 - Initial build for Sisyphus (Closes: #36799).
