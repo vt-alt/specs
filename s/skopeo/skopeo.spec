@@ -1,14 +1,10 @@
 %global import_path github.com/containers/skopeo
+%global commit 67abbb3cefbdc876447583d5ea45e76bf441eba7
 
-%global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
-%set_verify_elf_method unresolved=no
-%add_debuginfo_skiplist %go_root %_bindir
-%brp_strip_none %_bindir/*
-
 Name: skopeo
-Version: 1.0.0
+Version: 1.1.1
 Release: alt1
 
 Summary: skopeo is a command line utility that performs various operations on container images and image repositories
@@ -24,21 +20,21 @@ Source: %name-%version.tar
 Source1: storage.conf
 Source2: containers-storage.conf.5.md
 Source3: mounts.conf
+Source4: containers-registries.conf.5.md
 Source5: registries.conf
+Source6: containers-policy.json.5.md
 Source7: seccomp.json
-Source8: containers-transports.5.md
+Source8: containers-mounts.conf.5.md
 Source9: containers-signature.5.md
-Source10: containers-registries.d.5.md
-Source11: containers-registries.conf.5.md
-Source12: containers-policy.json.5.md
-Source13: containers-mounts.conf.5.md
-Source14: containers-certs.d.5.md
-Source15: containers.conf
-Source16: containers.conf.5.md
-Source17: containers-auth.json.5.md
-Source18: containers-registries.conf.d.5.md
+Source10: containers-transports.5.md
+Source11: containers-certs.d.5.md
+Source12: containers-registries.d.5.md
+Source13: containers.conf
+Source14: containers.conf.5.md
+Source15: containers-auth.json.5.md
+Source16: containers-registries.conf.d.5.md
 
-Patch1: alt-change-registries-order.patch
+Patch100: 0001--buildmodepie-is-not-supported-for-some-arch.patch
 
 ExclusiveArch: %go_arches
 BuildRequires(pre): rpm-build-golang
@@ -70,54 +66,56 @@ Summary: Configuration files for working with image signatures
 
 %prep
 %setup
-cp %SOURCE5 .
-%patch1 -p1
+%patch100 -p1
 
 %build
-export BUILDDIR="$PWD/.build"
+export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
+export GOFLAGS="-mod=vendor"
+export GIT_COMMIT=%commit
 
 %golang_prepare
 
-cd .build/src/%import_path
-%golang_build cmd/%name
+pushd .gopath/src/%import_path
+#%%golang_build cmd/%name
+%make_build binary-local
+
+for doc in $(find docs -name '*.1.md'); do
+    go-md2man -in "$doc" -out "docs/$(basename "${doc%%.md}")"
+done
+
+popd
 
 %install
-export BUILDDIR="$PWD/.build"
-export IGNORE_SOURCES=1
+export BUILDDIR="$PWD/.gopath"
+export GOPATH="%go_path"
+# export IGNORE_SOURCES=1
+#%%golang_install
+pushd .gopath/src/%import_path
+%make DESTDIR=%buildroot install
+popd
 
-%golang_install
-
-mkdir -p %buildroot%_man1dir
-for doc in $(find docs -name '*.1.md'); do
-    go-md2man -in "$doc" -out "%buildroot%_man1dir/$(basename "${doc%%.md}")"
-done
-install -Dm 644 completions/bash/%name %buildroot/%_sysconfdir/bash_completion.d/%name
-
-# containers-common files
-install -Dm 644 default-policy.json %buildroot%_sysconfdir/containers/policy.json
-install -Dm 644 default.yaml %buildroot%_sysconfdir/containers/registries.d/default.yaml
-
-install -Dm 644 %SOURCE1 %buildroot%_sysconfdir/containers/storage.conf
+install -dp %buildroot%_sysconfdir/containers/{certs.d,oci/hooks.d}
+install -m0644 %SOURCE1 %buildroot%_sysconfdir/containers/storage.conf
+install -m0644 %SOURCE5 %buildroot%_sysconfdir/containers/registries.conf
 mkdir -p %buildroot%_man5dir
 go-md2man -in %SOURCE2 -out %buildroot%_man5dir/containers-storage.conf.5
-install -p -m 644 registries.conf %buildroot%_sysconfdir/containers/
-go-md2man -in %SOURCE8 -out %buildroot%_man5dir/containers-transports.5
+go-md2man -in %SOURCE4 -out %buildroot%_man5dir/containers-registries.conf.5
+go-md2man -in %SOURCE6 -out %buildroot%_man5dir/containers-policy.json.5
+go-md2man -in %SOURCE8 -out %buildroot%_man5dir/containers-mounts.conf.5
 go-md2man -in %SOURCE9 -out %buildroot%_man5dir/containers-signature.5
-go-md2man -in %SOURCE10 -out %buildroot%_man5dir/containers-registries.d.5
-go-md2man -in %SOURCE11 -out %buildroot%_man5dir/containers-registries.conf.5
-go-md2man -in %SOURCE12 -out %buildroot%_man5dir/containers-policy.json.5
-go-md2man -in %SOURCE13 -out %buildroot%_man5dir/containers-mounts.conf.5
-go-md2man -in %SOURCE14 -out %buildroot%_man5dir/containers-certs.d.5
-go-md2man -in %SOURCE16 -out %buildroot%_man5dir/containers.conf.5
-go-md2man -in %SOURCE17 -out %buildroot%_man5dir/containers-auth.json.5
-go-md2man -in %SOURCE18 -out %buildroot%_man5dir/containers-registries.conf.d.5
+go-md2man -in %SOURCE10 -out %buildroot%_man5dir/containers-transports.5
+go-md2man -in %SOURCE11 -out %buildroot%_man5dir/containers-certs.d.5
+go-md2man -in %SOURCE12 -out %buildroot%_man5dir/containers-registries.d.5
+go-md2man -in %SOURCE14 -out %buildroot%_man5dir/containers.conf.5
+go-md2man -in %SOURCE15 -out %buildroot%_man5dir/containers-auth.json.5
+go-md2man -in %SOURCE16 -out %buildroot%_man5dir/containers-registries.conf.d.5
 
 mkdir -p %buildroot%_datadir/containers
 install -m0644 %SOURCE3 %buildroot%_datadir/containers/mounts.conf
 install -m0644 %SOURCE7 %buildroot%_datadir/containers/seccomp.json
-install -m0644 %SOURCE15 %buildroot%_datadir/containers/containers.conf
+install -m0644 %SOURCE13 %buildroot%_datadir/containers/containers.conf
 
 %files -n containers-common
 %config(noreplace) %_sysconfdir/containers
@@ -126,11 +124,14 @@ install -m0644 %SOURCE15 %buildroot%_datadir/containers/containers.conf
 
 %files
 %_bindir/*
-%_sysconfdir/bash_completion.d/%name
+%_datadir/bash-completion/completions/%name
 %_man1dir/%{name}*
 %doc *.md
 
 %changelog
+* Wed Sep 09 2020 Alexey Shabalin <shaba@altlinux.org> 1.1.1-alt1
+- new version 1.1.1
+
 * Thu Jun 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.0-alt1
 - new version 1.0.0
 
