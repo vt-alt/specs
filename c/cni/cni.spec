@@ -11,7 +11,7 @@
 %brp_strip_none %_bindir/*
 
 Name: cni
-Version: 0.7.1
+Version: 0.8.0
 Release: alt1
 Summary: Container Network Interface - networking for Linux containers
 Group: Development/Other
@@ -72,6 +72,9 @@ rm -f %buildroot%_bindir/{noop,sleep}
 %_bindir/*
 
 %changelog
+* Thu Sep 10 2020 Alexey Shabalin <shaba@altlinux.org> 0.8.0-alt1
+- 0.8.0
+
 * Thu Jul 18 2019 Alexey Shabalin <shaba@altlinux.org> 0.7.1-alt1
 - 0.7.1
 
