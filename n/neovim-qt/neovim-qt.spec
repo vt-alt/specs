@@ -1,6 +1,6 @@
 Name: neovim-qt
 Version: 0.2.16.1
-Release: alt1.1
+Release: alt2
 
 Summary: Neovim client library and GUI, in Qt5.
 
@@ -16,6 +16,8 @@ BuildRequires: qt5-base-devel
 BuildRequires: libmsgpack-devel
 BuildRequires: nvim
 BuildRequires: qt5-svg-devel
+
+Requires: neovim
 
 ExcludeArch: aarch64 armh
 
@@ -45,6 +47,9 @@ Neovim client library and GUI, in Qt5.
 %_iconsdir/hicolor/*/*/*.png
 
 %changelog
+* Mon Sep 14 2020 Vladimir Didenko <cow@altlinux.org> 0.2.16.1-alt2
+- Add neovim to dependencies (closes: #38933)
+
 * Mon Jun 22 2020 Vladimir Didenko <cow@altlinux.org> 0.2.16.1-alt1.1
 - Don't build on armh
 
