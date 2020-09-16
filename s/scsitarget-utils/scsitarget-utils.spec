@@ -1,6 +1,6 @@
 
 %def_with rdma
-%def_with glfs
+%def_without glfs
 %ifarch %ix86 %arm %mips32 ppc
 %def_without rbd
 %else
@@ -9,7 +9,7 @@
 
 Name: scsitarget-utils
 Version: 1.0.78
-Release: alt1
+Release: alt2
 
 Summary: The SCSI target daemon and utility programs
 
@@ -40,7 +40,7 @@ BuildRequires: systemd-devel
 BuildRequires: perl-Config-General
 %{?_with_rdma:BuildRequires: libibverbs-devel librdmacm-devel}
 %{?_with_rbd:BuildRequires: ceph-devel}
-%{?_with_glfs:BuildRequires: glusterfs3-devel}
+%{?_with_glfs:BuildRequires: libglusterfs-devel}
 
 Requires: lsof
 Requires: sg3_utils
@@ -111,6 +111,9 @@ pushd usr
 	sbindir=%_sbindir \
 	libdir=%_libdir/tgt
 
+# create and pack in any case
+mkdir -p %buildroot%_libdir/tgt/backing-store
+
 %post
 %post_service tgt
 
@@ -142,13 +145,16 @@ pushd usr
 %doc doc/README.rbd
 %endif
 
-%if glfs
+%if_with glfs
 %files gluster
 %_libdir/tgt/backing-store/bs_glfs.so
 %doc doc/README.glfs
 %endif
 
 %changelog
+* Thu Feb 06 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.78-alt2
+- NMU: disable build with glusterfs (use pre 4.0 obsoleted glfs_pread)
+
 * Tue Jun 04 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.78-alt1
 - 1.0.78
 - obsoletes for iscsitarget
