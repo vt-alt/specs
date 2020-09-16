@@ -1,5 +1,5 @@
 Name: kde5-telepathy
-Version: 19.12.0
+Version: 19.12.1
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -29,7 +29,7 @@ Requires: kde5-ktp-filetransfer-handler
 Requires: kde5-ktp-kded-module
 Requires: kde5-ktp-send-file
 Requires: kde5-ktp-text-ui
-Requires: kde5-ktp-call-ui
+#Requires: kde5-ktp-call-ui
 #
 Requires: kde5-signon-kwallet-extension
 Requires: kde5-kaccounts-providers
@@ -42,6 +42,9 @@ BuildRequires(pre): rpm-build-ubt
 %files
 
 %changelog
+* Mon Sep 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
+- don't require kde5-ktp-call-ui
+
 * Fri Mar 27 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.0-alt1
 - don't require telepathy-haze
 
