@@ -1,5 +1,5 @@
 Name: alterator-nagios-secondary
-Version: 1.0.3
+Version: 1.0.4
 Release: alt1
 
 Url: http://www.altlinux.org/Alterator
@@ -58,6 +58,9 @@ mkdir -p %buildroot%_sysconfdir/nagios/extinfo/secondary
 %_libexecdir/nagios/plugins/*
 
 %changelog
+* Fri Jul 31 2020 Paul Wolneykien <manowar@altlinux.org> 1.0.4-alt1
+- Fixed string argument for the "secondary" listbox.
+
 * Wed Apr 15 2020 Paul Wolneykien <manowar@altlinux.org> 1.0.3-alt1
 - Added "check-host-alerts" command.
 - Added check-nagios-alerts wrapper.
