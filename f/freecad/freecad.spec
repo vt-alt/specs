@@ -13,7 +13,7 @@
 
 Name:    freecad
 Version: 0.18.4
-Release: alt1.2.p9
+Release: alt4.1.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: LGPL-2.0+
@@ -97,7 +97,7 @@ Requires: libEGL-devel libGLU-devel
 %endif
 #BuildRequires: texlive-extra-utils
 
-%py_requires pivy
+%py_requires pivy matplotlib.backends.backend_qt4
 %py_provides Fem FreeCAD FreeCADGui Mesh Part MeshPart Drawing ImportGui
 %py_provides PartGui Sketcher TestSketcherApp Robot RobotGui SketcherGui
 %py_provides ImageGui PartDesignGui _PartDesign
@@ -145,6 +145,7 @@ rm -rf src/3rdParty
 
 #patch3 -p1
 %patch4 -p1
+#patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
@@ -236,14 +237,20 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Tue Sep 15 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt4.1.p9
+- Backport fixes to p9 branch.
+
+* Fri Sep 11 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt5
+- Require python-module-matplotlib-qt4 for workbench (ALT #38925).
+
 * Wed Sep 09 2020 Sergey V Turchin <zerg@altlinux.org> 1:0.18.4-alt1.2.p9
 - Backport to p9 branch.
 
-* Wed Aug 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.18.4-alt5
+* Wed Aug 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.18.4-alt4
 - Fixed build with qt-5.15.
 
-* Wed May 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt1.1.p9
-- Backport to p9 branch.
+* Wed Jun 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.18.4-alt3
+- Rebuilt with boost-1.73.0.
 
 * Mon May 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt2
 - Fix Unknown release and repository URL.
