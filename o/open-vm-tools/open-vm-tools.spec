@@ -8,22 +8,23 @@
 %def_enable multimon
 %def_without dnet
 %def_enable resolutionkms
+%def_enable servicediscovery
 
 %def_without gtk2
 %def_without gtkmm
 %def_with gtk3
 %def_with gtkmm3
 
-%global majorversion    11.0
+%global majorversion    11.1
 %global minorversion    5
-%global toolsbuild      15389592
+%global toolsbuild      16036546
 %global toolsversion    %majorversion.%minorversion
 %global toolsdaemon     vmtoolsd
 %global vgauthdaemon    vgauthd
 
 Name: open-vm-tools
 Version: %toolsversion
-Release: alt3
+Release: alt1
 Summary: Open Virtual Machine Tools for virtual machines hosted on VMware
 Group: System/Kernel and hardware
 License: GPLv2
@@ -40,9 +41,8 @@ Source6: %name-%vgauthdaemon.tmpfile
 Source99: 99-vmware-scsi-udev.rules
 
 Patch100: add-altlinux-open-vm-tools.patch
-Patch101: gcc9-drop-obsolete-G_INLINE_FUNC.patch
 
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64
 
 # Need for vgauth
 %{?_enable_xmlsec1:Requires: libxmlsec1-openssl >= 1.2.24-alt2}
@@ -108,7 +108,6 @@ machines.
 %prep
 %setup
 #%%patch100 -p1
-%patch101 -p2
 
 rm -rf autom4te.cache
 rm -f configure
@@ -132,6 +131,7 @@ export CXXFLAGS="$RPM_OPT_FLAGS -std=gnu++11"
     %{subst_with gtk3} \
     %{subst_with gtkmm3} \
     %{subst_enable resolutionkms} \
+    %{subst_enable servicediscovery} \
     --disable-static
 # sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %make_build
@@ -164,9 +164,6 @@ rm -f docs/api/build/html/FreeSans.ttf
 
 # Remove mount.vmhgfs & symlink
 rm -fr %buildroot%_sbindir %buildroot/sbin/mount.vmhgfs
-
-# Move vm-support to /usr/bin
-mv %buildroot%_sysconfdir/vmware-tools/vm-support %buildroot%_bindir
 
 # Systemd unit files
 install -p -m 644 -D %SOURCE1 %buildroot%_unitdir/%toolsdaemon.service
@@ -262,6 +259,9 @@ fi
 %_unitdir/%toolsdaemon.service
 %_initdir/%toolsdaemon
 %_udevrulesdir/*.rules
+%if_enabled servicediscovery
+%_libdir/%name/serviceDiscovery
+%endif
 
 %files desktop
 %_sysconfdir/xdg/autostart/*.desktop
@@ -291,6 +291,14 @@ fi
 
 
 %changelog
+* Tue Sep 08 2020 Andrew A. Vasilyev <andy@altlinux.org> 11.1.5-alt1
+- 11.1.5
+
+* Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 11.1.0-alt1
+- 11.1.0
+- build for aarch64
+- enable servicediscovery
+
 * Fri Mar 06 2020 Alexey Shabalin <shaba@altlinux.org> 11.0.5-alt3
 - readd detect ALT Distro
 
