@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.14
-Release: alt1
+Release: alt2
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -19,6 +19,7 @@ Source3: %name-init-alt
 Source4: libpainter.tar
 Source5: librfxcodec.tar
 Source6: xorgxrdp.tar
+Source7: xrdp-sesman.pam
 
 # patches from Debian
 Patch2: asm-xorgxrdp.diff
@@ -150,8 +151,8 @@ rm -f %buildroot/%_libdir/xrdp/xrdp_control.sh
 install -D -m755 %name-init %buildroot%_initdir/%name
 rm -rf %buildroot%_sysconfdir/init.d
 
-# install sesman pam config /etc/pam.d/xrdp-sesman.unix
-install -Dp -m 644 instfiles/pam.d/xrdp-sesman.unix %buildroot%_sysconfdir/pam.d/xrdp-sesman
+# install sesman pam config 
+install -Dp -m 644 %SOURCE7 %buildroot%_sysconfdir/pam.d/xrdp-sesman
 
 # install xrdp systemd units
 install -Dp -m 644 instfiles/xrdp.service %buildroot/lib/systemd/system/xrdp.service
@@ -209,7 +210,7 @@ fi
 %preun_service %{name}-sesman
 
 %files
-%config %_sysconfdir/pam.d/xrdp-sesman
+%config(noreplace) %_sysconfdir/pam.d/xrdp-sesman
 %dir %_sysconfdir/xrdp/
 %_sysconfdir/xrdp/km*.ini
 %_sysconfdir/xrdp/*.sh
@@ -242,6 +243,9 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Mon Sep 14 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt2
+- Use system-auth pam rules instead of local unix users.
+
 * Thu Sep 03 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt1
 - New version.
 
