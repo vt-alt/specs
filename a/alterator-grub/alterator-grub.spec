@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-grub
-Version: 0.15
+Version: 0.15.1
 Release: alt1
 
 Summary: alterator module to setup grub bootloader
@@ -53,6 +53,9 @@ alterator module to setup grub bootloader
 %_bindir/*
 
 %changelog
+* Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 0.15.1-alt1
+- Fix: Show the password input fields if checkbox is preset.
+
 * Wed Sep 02 2020 Paul Wolneykien <manowar@altlinux.org> 0.15-alt1
 - Handle "setpass" X-Alterator-URI parameter allowing to pre-check
   the password reset checkbox.
