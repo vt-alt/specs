@@ -1,6 +1,6 @@
 Name:     settings-s
-Version:  0.2
-Release:  alt4
+Version:  0.3
+Release:  alt0.M90P.2
 
 Summary:  settings for custom distro
 License:  GPLv2
@@ -18,50 +18,104 @@ Requires:  checker
 These are settings for custom distro.
 
 %package -n integ
-Summary: integrity checker settings
+Summary: integrity checker script and settings
 Group: System/Configuration/Other
+Requires: systemd
+Requires: osec-controls
+Requires: osec-cronjob >= 1.3.0-alt0.M90P.2
 
 %description -n integ
 Integrity check setup only
+
+%package -n installer-integ-stage2
+Summary: Run integrity check after install
+Group: System/Configuration/Other
+
+%description -n installer-integ-stage2
+Run integrity check after install (installer files).
+
+%package -n installer-integ-stage3
+Summary: Run integrity check after install
+Group: System/Configuration/Other
+Requires: integ = %version-%release
+Requires: osec-controls
+
+%description -n installer-integ-stage3
+Run integrity check after install (chroot files).
 
 %prep
 %setup
 
 %install
-mkdir -p %buildroot/usr/share/install2/postinstall.d/
+mkdir -p %buildroot%_datadir/install2/postinstall.d
 mkdir -p %buildroot/sbin
-mkdir -p %buildroot/lib/systemd/system
-mkdir -p %buildroot/etc/firsttime.d/
+mkdir -p %buildroot%_unitdir
+mkdir -p %buildroot/%_sysconfdir/firsttime.d
 mkdir -p %buildroot/lib/systemd/system-preset
 
-install -Dm 0700 65-integalert.sh %buildroot/etc/firsttime.d/
-install -Dm 0600 65-integrity.preset %buildroot/lib/systemd/system-preset/
-install -Dm 0700 65-integalert.sh %buildroot/etc/firsttime.d/
-install -Dm 0700 65-settings.sh  %buildroot/usr/share/install2/postinstall.d/
-install -Dm 0644 integalert.service %buildroot/lib/systemd/system/
-install -Dm 0700 integalert %buildroot/sbin
+install -Dm 0644 65-integrity.preset %buildroot/lib/systemd/system-preset/
+install -Dm 0755 65-settings.sh  %buildroot%_datadir/install2/postinstall.d/
+install -Dm 0755 90-integrity-init.sh  %buildroot%_datadir/install2/postinstall.d/
+install -Dm 0644 integalert.service %buildroot%_unitdir/
+install -Dm 0700 integalert %buildroot/sbin/
 
 
+%post -n integ
+if [ $1 -ge 2 ]; then
+    if systemctl -q is-enabled integalert.service; then
+        systemctl daemon-reload
+        systemctl -q preset integalert.service
+    fi
+fi
 
 %files
-/usr/share/install2/postinstall.d/65-settings.sh
+%_datadir/install2/postinstall.d/65-settings.sh
+
+%files -n installer-integ-stage2
+%_datadir/install2/postinstall.d/90-integrity-init.sh
+
+%files -n installer-integ-stage3
 
 %files -n integ
-/etc/firsttime.d/65-integalert.sh
-/lib/systemd/system/integalert.service
+%_unitdir/integalert.service
 /lib/systemd/system-preset/65-integrity.preset
 /sbin/integalert
 
-%post
-
-%post -n integ
-if [ "$(systemctl is-enabled integalert)" == "enabled" ] ;
- then
-    systemctl disable integalert
-    systemctl enable integalert
- fi
 
 %changelog
+* Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 0.3-alt0.M90P.2
+- Setup OSEC for full journal output after integrity database
+  initialization after install.
+- Update: Make integ inself require osec-controls.
+- Moved postinstall.d/90-integrity-init.sh to the new stage2 package.
+- Require osec-cronjob >= 1.3.0-alt0.M90P.2 (for READ_ONLY option).
+- Don't modify the main pipe.conf file after 'integ' package
+  installation.
+- Always create /var/log/lastosec_logs.
+- Don't display a warning in "fix" mode.
+- Run osec using 'integalert' and 'integalert_fix' sub-configs.
+- Initialize OSEC after install, don't initialize it at first boot.
+- Setup osec.cron for read-only use and full journal output after
+  install.
+
+* Mon Sep 07 2020 Denis Medvedev <nbr@altlinux.org> 0.3-alt3
+- added missing requires, set control of osec to journal
+(essential).
+
+* Mon Sep 07 2020 Denis Medvedev <nbr@altlinux.org> 0.3-alt2
+- revert direct execution of osec from integalert,
+lastosec data is needed too.
+
+* Sat Sep 05 2020 Alexey Shabalin <shaba@altlinux.org> 0.3-alt1
+- update systemd unit
+- not requires plymouth
+- improve failure output
+- direct execute osec for check integrity in integalert
+
+* Mon Oct 28 2019 Denis Medvedev <nbr@altlinux.org> 0.2-alt5
+- reenable service (to switch from required to wanted from sysinit)
+only when it is an upgrade, not on initial install.
+
 * Fri Oct 11 2019 Denis Medvedev <nbr@altlinux.org> 0.2-alt4
 - force systemd reconfigure dependencies, fix archiving of osec messages
 

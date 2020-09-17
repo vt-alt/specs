@@ -1,13 +1,12 @@
 %define distro cliff
 Name: installer-distro-%distro
-Version: 8.1
-Release: alt2
+Version: 8.2
+Release: alt0.M90P.1
 
-Summary: Installer files for Cliff distro
 License: GPL
 Group: System/Configuration/Other
-BuildArch: noarch
 BuildRequires: alterator-officer
+Summary: Installer files for Cliff distro
 
 Source: %name-%version.tar
 
@@ -28,6 +27,7 @@ Requires: alterator-vm
 Requires: alterator-notes
 Requires: alterator-officer
 Requires: x-cursor-theme-jimmac
+Requires: installer-integ-stage2
 
 %description stage2
 Cliff Installer stage2.
@@ -47,7 +47,10 @@ Requires: alterator-net-general
 Requires: alterator-net-bond alterator-net-bridge
 Requires: installer-feature-nfs-server-stage3
 Requires: installer-feature-powerbutton-stage3
+Requires: installer-integ-stage3
+%ifnarch armh e2k
 Requires: alterator-grub
+%endif
 Requires: alterator-luks
 
 %description stage3
@@ -74,6 +77,24 @@ cp -a steps.d/* %buildroot%install2dir/steps
 %files stage3
 
 %changelog
+* Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 8.2-alt0.M90P.1
+- Build version 8.2-alt1 for the p9 branch.
+- Require installer-integ packages in stage2 and stage3.
+
+* Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 8.2-alt1
+- Moved postinstall.d/90-integrity-init.sh to the settings-s package.
+- Added initinstall script to pre-select password check-box in grub.
+
+* Tue Sep 08 2020 Denis Medvedev <nbr@altlinux.org> 8.1-alt5
+- Packet is made arch, not requiring alterator-grub on armh
+and e2k
+
+* Mon Sep 07 2020 Denis Medvedev <nbr@altlinux.org> 8.1-alt4
+- added setting proper control for osec needed for integalert
+
+* Fri Sep 04 2020 Denis Medvedev <nbr@altlinux.org> 8.1-alt3
+- moved part of integrity initialization to installer.
+
 * Wed Feb 26 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.1-alt2
 - build for sisyphus
 

@@ -2,7 +2,7 @@
 
 Name: osec
 Version: 1.3.0
-Release: alt0.M90P.1
+Release: alt0.M90P.3
 
 Summary: Lightweight file permission checker
 License: GPL3
@@ -12,6 +12,7 @@ Url: https://github.com/legionus/osec
 Source: %name-%version.tar
 Patch0: %name-%version-allchanges.patch
 Patch1: %name-%version-timerunit.patch
+Patch2: %name-%version-readonly.patch
 
 Requires(pre): shadow-utils
 
@@ -65,6 +66,7 @@ add name of rpm packages for files in report.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %autoreconf
@@ -119,6 +121,12 @@ rm -f %osec_statedir/osec.db.*
 %_bindir/osec_rpm_reporter
 
 %changelog
+* Thu Sep 17 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.0-alt0.M90P.3
+- Added note about the possible values for READ_ONLY.
+
+* Tue Sep 08 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.0-alt0.M90P.2
+- Handle READ_ONLY configuration option to run osec in read-only mode (patch).
+
 * Wed Aug 05 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.0-alt0.M90P.1
 - Build version 1.3.0-alt1 for the p9 branch.
 - Summarize more types of changes in the report (patch).
