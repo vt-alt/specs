@@ -1,6 +1,6 @@
 Name: libX11
 Version: 1.6.7
-Release: alt1
+Release: alt2
 Epoch: 3
 Summary: X11 Library
 License: MIT/X11
@@ -88,6 +88,9 @@ rm -f %buildroot%_libdir/X11/locale/common/*.la
 %_datadir/X11/locale
 
 %changelog
+* Thu Sep 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 3:1.6.7-alt2
+- fixes: CVE-2020-14363
+
 * Wed Oct 10 2018 Valery Inozemtsev <shrek@altlinux.ru> 3:1.6.7-alt1
 - 1.6.7
 
