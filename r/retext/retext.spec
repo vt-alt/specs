@@ -1,8 +1,8 @@
 %def_without tests
 
 Name:           retext
-Version:        7.0.4
-Release:        alt1
+Version:        7.1.0
+Release:        alt2
 License:        GPLv3+
 Summary:        Text editor for Markdown and reStructuredText
 Summary(de):    Texteditor für Markdown und reStructuredText
@@ -26,6 +26,8 @@ BuildRequires:  librsvg-utils
 BuildRequires:  ImageMagick-tools
 BuildRequires:  qt5-tools-devel
 BuildRequires:  python-module-PyQt5-devel
+
+Requires: python3-module-Pygments
 
 %if_with tests
 BuildRequires:  libappstream-glib
@@ -87,6 +89,12 @@ python3 setup.py test
 %python3_sitelibdir/*egg-info
 
 %changelog
+* Tue Sep 15 2020 Andrey Cherepanov <cas@altlinux.org> 7.1.0-alt2
+- Requires python3-module-Pygments.
+
+* Sat Apr 04 2020 Andrey Cherepanov <cas@altlinux.org> 7.1.0-alt1
+- New version.
+
 * Mon Sep 24 2018 Andrey Cherepanov <cas@altlinux.org> 7.0.4-alt1
 - New version.
 
