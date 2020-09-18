@@ -1,6 +1,6 @@
 Name: nheko
 Version: 0.6.2
-Release: alt2
+Release: alt2.1
 
 Summary: Desktop client (QT) for the Matrix protocol
 
@@ -9,6 +9,7 @@ License: GPLv3
 Url: https://github.com/mujx/nheko
 
 Source: %name-%version.tar
+Patch1: alt-qt-5.15.patch
 
 BuildRequires: cmake gcc-c++
 BuildRequires: qt5-tools-devel qt5-multimedia-devel qt5-svg-devel
@@ -24,6 +25,7 @@ and less like an IRC client.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %cmake -DUSE_BUNDLED_BOOST=OFF  \
@@ -48,6 +50,9 @@ and less like an IRC client.
 %_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Tue Sep 15 2020 Sergey V Turchin <zerg@altlinux.org> 0.6.2-alt2.1
+- fix to build with Qt 5.15
+
 * Wed Dec 05 2018 Paul Wolneykien <manowar@altlinux.org> 0.6.2-alt2
 - Adjust nprocs for git.alt (<= 16).
 
