@@ -7,8 +7,8 @@
 %add_findprov_skiplist %_datadir/qtcreator/*
 
 Name:    qt-creator
-Version: 4.12.4
-Release: alt0.1.p9
+Version: 4.13.1
+Release: alt1
 
 Summary: Cross-platform IDE for Qt
 License: GPL-3.0 with Qt-GPL-exception-1.0 and MIT and LGPL-2.0 and LGPL-2.1 and LGPL-3.0 and BSD-3-Clause and BSL-1.0 and ALT-Public-Domain
@@ -53,6 +53,7 @@ BuildRequires: clang%llvm_version-devel-static
 BuildRequires: clang%llvm_version
 BuildRequires: lld%llvm_version
 %endif
+BuildRequires: libsystemd-devel
 
 Requires: qt5-quickcontrols
 # Add Qt5 build environment to build Qt project
@@ -120,7 +121,10 @@ export LLVM_INSTALL_DIR="%_prefix"
 %remove_optflags -frecord-gcc-switches
 %endif
 
-%qmake_qt5 -r IDE_LIBRARY_BASENAME=%_lib CONFIG+="disable_external_rpath" QMAKE_STRIP= \
+%qmake_qt5 -r IDE_LIBRARY_BASENAME=%_lib \
+	CONFIG+="disable_external_rpath" \
+	QMAKE_STRIP= \
+	CONFIG+="journald" \
 %if_with ClangCodeModel
 	-spec linux-clang \
 	QMAKE_LFLAGS+="-fuse-ld=lld" \
@@ -155,14 +159,24 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 %_datadir/qtcreator/*
 
 %changelog
+* Thu Sep 17 2020 Andrey Cherepanov <cas@altlinux.org> 4.13.1-alt1
+- New version.
+
+* Mon Sep 14 2020 Andrey Cherepanov <cas@altlinux.org> 4.13.0-alt3
+- Update Russian translations from upstream.
+
+* Tue Sep 08 2020 Andrey Cherepanov <cas@altlinux.org> 4.13.0-alt2
+- Add changelog entry from p9 branch.
+
+* Thu Sep 03 2020 Andrey Cherepanov <cas@altlinux.org> 4.13.0-alt1
+- New version.
+- Enable journald support.
+
 * Thu Jul 09 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.4-alt0.1.p9
 - Backport new version to p9 branch.
 
 * Thu Jul 09 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.4-alt1
 - New version.
-
-* Fri Jun 19 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.3-alt0.1.p9
-- Backport new version to p9 branch.
 
 * Thu Jun 18 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.3-alt1
 - New version.
@@ -173,16 +187,8 @@ rm -f %buildroot%_datadir/qtcreator/debugger/cdbbridge.py
 * Thu May 28 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.1-alt2
 - Build with LLVM 10.0.
 
-* Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.1-alt0.1.p9
-- Backport new version to p9 branch.
-- Build with ClangCodeModel plugin again (using LLVM 10.0).
-
 * Wed May 20 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.1-alt1
 - New version.
-
-* Tue Apr 28 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.0-alt0.1.p9
-- Backport new version to p9 branch.
-- Build without ClangCodeModel plugin.
 
 * Tue Apr 28 2020 Andrey Cherepanov <cas@altlinux.org> 4.12.0-alt1
 - New stable version.
