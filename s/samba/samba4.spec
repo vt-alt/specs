@@ -59,7 +59,7 @@
 %endif
 
 Name:    samba
-Version: 4.11.11
+Version: 4.11.13
 Release: alt1
 
 Group:   System/Servers
@@ -378,6 +378,7 @@ Summary: The winbind client library
 Group: System/Libraries
 Provides: libwbclient-DC = %version-%release
 Obsoletes: libwbclient-DC < 4.10
+Obsoletes: libwbclient-sssd
 
 %description -n libwbclient
 The libwbclient package contains the winbind client library from the Samba suite.
@@ -524,9 +525,6 @@ Requires: %name-libs = %version-%release
 Provides: %dcname-winbind = %version-%release
 Obsoletes: %dcname-winbind < 4.10
 %if_with libwbclient
-# There are working configurations exists where samba-winbind could be
-# using with sssd. Also it could be already installed from installation DVD.
-## Conflicts: libwbclient-sssd
 Requires: libwbclient
 %endif
 
@@ -735,7 +733,6 @@ cp -a ../%rname-%version ../%rname-%version-separate-heimdal-server
 %define _samba_mod_libdir  %_libdir/samba
 %define _samba_dc_libdir  %_libdir/samba-dc
 %define _samba_dc_mod_libdir  %_libdir/samba-dc
-%define _wbclient_libdir %_samba_mod_libdir/wbclient
 %define _samba_piddir /var/run
 %define _samba_sockets_dir /var/run/samba
 
@@ -912,26 +909,12 @@ mkdir -p %buildroot%_initdir
 mkdir -p %buildroot%_unitdir
 mkdir -p %buildroot%_sysconfdir/{pam.d,logrotate.d,security,sysconfig}
 
-
-# Move libwbclient.so* into private directory, it cannot be just libdir/samba
-# because samba uses rpath with this directory.
-install -d -m 0755 %buildroot%_wbclient_libdir
-mv %buildroot%_libdir/libwbclient.so* %buildroot%_wbclient_libdir
-if [ ! -f %buildroot%_wbclient_libdir/libwbclient.so.%libwbc_alternatives_version ]
+if [ ! -f %buildroot%_libdir/libwbclient.so.%libwbc_alternatives_version ]
 then
     echo "Expected libwbclient version not found, please check if version has changed."
     exit -1
 fi
-ln -s ../..%_wbclient_libdir/libwbclient.so.%libwbc_alternatives_version %buildroot%_libdir/
-ln -s ../..%_wbclient_libdir/libwbclient.so.0 %buildroot%_libdir/
-ln -s ../..%_wbclient_libdir/libwbclient.so %buildroot%_libdir/
 
-# Add alternatives for libwbclient
-mkdir -p %buildroot%_altdir
-printf '%_libdir/libwbclient.so.%libwbc_alternatives_version\t%_wbclient_libdir/libwbclient.so.%libwbc_alternatives_version\t10\n' > %buildroot%_altdir/libwbclient-samba
-printf '%_libdir/libwbclient.so.0\t%_wbclient_libdir/libwbclient.so.0\t10\n' >> %buildroot%_altdir/libwbclient-samba
-
-printf '%_libdir/libwbclient.so\t%_wbclient_libdir/libwbclient.so\t10\n' > %buildroot%_altdir/libwbclient-devel-samba
 mkdir -p %buildroot/lib/tmpfiles.d
 
 # Install other stuff
@@ -1605,18 +1588,14 @@ TDB_NO_FSYNC=1 %make_build test
 
 %if_with libwbclient
 %files -n libwbclient
-%ghost %_libdir/libwbclient.so.*
-%_wbclient_libdir/libwbclient.so.*
+%_libdir/libwbclient.so.*
 %_samba_mod_libdir/libwinbind-client-samba4.so
 %_samba_mod_libdir/libreplace-samba4.so
-%_altdir/libwbclient-samba
 
 %files -n libwbclient-devel
 %_includedir/samba-4.0/wbclient.h
-%ghost %_libdir/libwbclient.so
-%_wbclient_libdir/libwbclient.so
+%_libdir/libwbclient.so
 %_pkgconfigdir/wbclient.pc
-%_altdir/libwbclient-devel-samba
 %endif
 
 %if_with libnetapi
@@ -1814,6 +1793,20 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Sat Sep 19 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.13-alt1
+- Update to latest stable security release of the Samba 4.11
+- Security fixes:
+  + CVE-2020-1472: Unauthenticated domain takeover via netlogon ("ZeroLogon")
+    https://www.samba.org/samba/security/CVE-2020-1472.html
+
+* Wed Aug 26 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.12-alt1
+- Update to latest stable security release of the Samba 4.11
+
+* Sun Aug 02 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.11-alt2
+- Update to latest fixes from testing
+- Remove derecated libwbclient install as alternative with libwbclient-sssd
+- Fix pygpo double memory free stackframe in py_ads_get_gpo_list()
+
 * Tue Jul 07 2020 Evgeny Sinelikov <sin@altlinux.org> 4.11.11-alt1
 - Update to latest stable security release of the Samba 4.11
 - Security fixes:
