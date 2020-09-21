@@ -6,10 +6,10 @@
 
 Name: qca-qt5
 %define major 2
-%define minor 2
-%define bugfix 0
+%define minor 3
+%define bugfix 1
 Version: %major.%minor.%bugfix
-Release: alt0.1%ubt
+Release: alt1
 
 Group: Networking/Instant messaging
 Summary: QCA - Qt Cryptographic Architecture
@@ -22,7 +22,6 @@ Source: %name-%version.tar
 # ALT
 Patch10: qca-2.0.3-alt-paths.patch
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: cmake gcc-c++ glibc-devel ca-certificates
 BuildRequires: qt5-base-devel
 BuildRequires: zlib-devel bzlib-devel libgmp-devel
@@ -219,6 +218,7 @@ export QC_CERTSTORE_PATH="%_datadir/ca-certificates/ca-bundle.crt"
     -DQCA_GPG_EXECUTABLE=gpg \
     -DQT4_BUILD=OFF \
     -DQCA_SUFFIX=qt5 \
+    -DQCA_MAN_INSTALL_DIR=%_mandir \
     #
 
 %install
@@ -236,7 +236,7 @@ done
 %files
 %_bindir/*
 %_qt5_bindir/*
-#%_man1dir/*
+%_man1dir/*
 
 %files -n lib%name
 %_libdir/libqca-qt5.so.*
@@ -272,20 +272,26 @@ done
 #%_qt5_headerdir/Qca-qt5/QtCrypto
 
 %changelog
-* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt0.1%ubt
+* Fri Sep 18 2020 Sergey V Turchin <zerg@altlinux.org> 2.3.1-alt1
+- new version
+
+* Mon Jun 17 2019 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt0.2
+- dont use ubt macro
+
+* Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 2.2.0-alt0.1
 - 2.2.0 snapshot
 - disable botan
 
-* Wed Apr 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.1.3-alt3%ubt.1
+* Wed Apr 11 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.1.3-alt3.1
 - (NMU) rebuilt with new libbotan.
 
-* Tue Mar 27 2018 Sergey V Turchin <zerg@altlinux.org> 2.1.3-alt3%ubt
+* Tue Mar 27 2018 Sergey V Turchin <zerg@altlinux.org> 2.1.3-alt3
 - build botan plugin only on i86
 
 * Thu Mar 15 2018 Igor Vlasenko <viy@altlinux.ru> 2.1.3-alt2
 - NMU: added URL
 
-* Wed Nov 08 2017 Sergey V Turchin <zerg@altlinux.org> 2.1.3-alt1%ubt
+* Wed Nov 08 2017 Sergey V Turchin <zerg@altlinux.org> 2.1.3-alt1
 - new version
 - package botan module
 
