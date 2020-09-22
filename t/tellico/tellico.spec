@@ -1,17 +1,14 @@
 Name: 	 tellico
-Version: 3.3
+Version: 3.3.3
 Release: alt1
 
 Summary: A collection manager for KDE
-License: GPLv2+
+License: GPL-2.0+
 Group:   Graphical desktop/KDE
 Url:     http://tellico-project.org/
-# VCS:	 git://anongit.kde.org/tellico
+# VCS:	 https://invent.kde.org/office/tellico.git
 
 Source:  %name-%version.tar
-Source2: FindKSane.cmake
-Patch1:  tellico-fix-missing-qt-constant.patch
-
 ExclusiveArch: %ix86 x86_64
 
 BuildRequires(pre): rpm-build-kf5
@@ -60,9 +57,6 @@ video games, coins, stamps, trading cards, comic books, and wines.
 
 %prep
 %setup -q
-# See https://bugzilla.altlinux.org/show_bug.cgi?id=30814
-#cp %SOURCE2 cmake/modules/FindKSane.cmake
-%patch1 -p1
 
 %build
 %K5init no_altplace
@@ -93,6 +87,16 @@ find %buildroot -type f -print0 |
 %_datadir/metainfo/org.kde.tellico.appdata.xml
 
 %changelog
+* Thu Sep 17 2020 Andrey Cherepanov <cas@altlinux.org> 3.3.3-alt1
+- New version.
+
+* Sat Aug 22 2020 Andrey Cherepanov <cas@altlinux.org> 3.3.2-alt1
+- New version.
+
+* Mon Jun 01 2020 Andrey Cherepanov <cas@altlinux.org> 3.3.1-alt1
+- New version.
+- Fix License tag according to SPDX.
+
 * Sun Apr 26 2020 Andrey Cherepanov <cas@altlinux.org> 3.3-alt1
 - New version.
 
