@@ -1,7 +1,7 @@
 
 Name: telepathy-logger-qt5
-Version: 17.08.0
-Release: alt4
+Version: 17.09.0
+Release: alt1
 %define sover 5
 %define libname libtelepathy-logger-qt%sover
 
@@ -61,6 +61,9 @@ export QTDIR=%_qt5_prefix
 %_libdir/lib*.so
 
 %changelog
+* Thu Sep 17 2020 Sergey V Turchin <zerg@altlinux.org> 17.09.0-alt1
+- new version
+
 * Wed Dec 25 2019 Sergey V Turchin <zerg@altlinux.org> 17.08.0-alt4
 - update from master branch
 
