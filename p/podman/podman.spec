@@ -1,20 +1,20 @@
-%global import_path github.com/containers/libpod
+%global _unpackaged_files_terminate_build 1
+%global import_path github.com/containers/podman
+%global commit 27362ba1ad8879ea71610fa68a651a1651e0180f
+
 Name:     podman
-Version:  1.9.2
+Version:  2.0.6
 Release:  alt1
 
 Summary:  Manage pods, containers, and container images
 License:  Apache-2.0
 Group:    System/Configuration/Other
-# https://github.com/containers/libpod
+# https://github.com/containers/podman.git
 Url:      https://podman.io/
-
-Packager: Mikhail Gordeev <obirvalger@altlinux.org>
 
 Source:   %name-%version.tar
 
-Patch2: makefile_not_create_link_docs.patch
-
+ExclusiveArch: %go_arches
 BuildRequires(pre): rpm-build-golang
 BuildRequires: golang go-md2man
 BuildRequires: libseccomp-devel glib2-devel libgpgme-devel libbtrfs-devel
@@ -25,9 +25,12 @@ BuildRequires: /proc
 Requires: conmon >= 2.0.16
 Requires: iptables
 Requires: nftables
+Requires: containers-common
+Requires: oci-runtime
 Requires: crun
+Requires: runc
 Requires: slirp4netns
-Requires: cni cni-plugins >= 0.8.6 containers-common
+Requires: cni cni-plugins >= 0.8.6
 
 %description
 %summary.
@@ -35,6 +38,7 @@ Requires: cni cni-plugins >= 0.8.6 containers-common
 %package docker
 Summary:  Emulate Docker CLI using podman
 Group:    System/Configuration/Other
+BuildArch: noarch
 Conflicts: docker-ce
 
 %description docker
@@ -56,16 +60,40 @@ connections as well.
 
 %prep
 %setup
-%patch2 -p1
 
 %build
+export BUILDDIR="$PWD/.gopath"
+export IMPORT_PATH="%import_path"
+export GOPATH="$BUILDDIR:%go_path"
+export GOFLAGS="-mod=vendor"
+export RELEASE_VERSION=v%version
+export RELEASE_NUMBER=%version
+export GIT_COMMIT=%commit
+
+%golang_prepare
+
+pushd .gopath/src/%import_path
 %make_build PREFIX=%_prefix TMPFILESDIR=%_tmpfilesdir SYSTEMDDIR=%_unitdir
+popd
 
 %install
-sed -s 's/^runtime[ =].*"runc/runtime = "crun/' libpod.conf  -i
+export BUILDDIR="$PWD/.gopath"
+export IMPORT_PATH="%import_path"
+export GOPATH="$BUILDDIR:%go_path:$PWD"
+export RELEASE_VERSION=v%version
+export RELEASE_NUMBER=%version
+export GIT_COMMIT=%commit
 
-%makeinstall_std PREFIX=%_prefix TMPFILESDIR=%_tmpfilesdir SYSTEMDDIR=%_unitdir \
-    install.completions install.config install.docker PREFIX=/usr
+pushd .gopath/src/%import_path
+%make DESTDIR=%buildroot PREFIX=%_prefix TMPFILESDIR=%_tmpfilesdir SYSTEMDDIR=%_unitdir \
+    install.bin-nobuild \
+    install.remote-nobuild \
+    install.man-nobuild \
+    install.cni \
+    install.completions \
+    install.systemd \
+    install.docker
+popd
 
 # install /etc/modules-load.d/podman.conf
 echo br_netfilter > %name.conf
@@ -74,15 +102,14 @@ install -p -m 644 %name.conf %buildroot%_sysconfdir/modules-load.d/
 
 %files
 %_bindir/%name
-%_datadir/containers/libpod.conf
 %_datadir/bash-completion/completions/%name
 %_datadir/zsh/site-functions/_%name
 %_unitdir/*
 %_prefix/lib/systemd/user/*
 %config(noreplace) %_sysconfdir/cni/net.d/87-podman-bridge.conflist
 %config(noreplace) %_sysconfdir/modules-load.d/%name.conf
-%_tmpfilesdir/%name.conf
 %_man1dir/*
+%exclude %_man1dir/%name-remote*
 %exclude %_man1dir/docker*
 %_man5dir/*
 %doc *.md
@@ -90,7 +117,6 @@ install -p -m 644 %name.conf %buildroot%_sysconfdir/modules-load.d/
 %files remote
 %_bindir/%name-remote
 %_man1dir/%name-remote*
-%_man5dir/%name-remote*
 
 %files docker
 %_bindir/docker
@@ -98,6 +124,9 @@ install -p -m 644 %name.conf %buildroot%_sysconfdir/modules-load.d/
 %_tmpfilesdir/%name-docker.conf
 
 %changelog
+* Wed Sep 09 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.6-alt1
+- new version 2.0.6
+
 * Fri May 15 2020 Alexey Shabalin <shaba@altlinux.org> 1.9.2-alt1
 - new version 1.9.2
 
