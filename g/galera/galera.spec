@@ -4,7 +4,7 @@
 
 Name: galera
 Version: 26.4.5
-Release: alt1
+Release: alt2
 Summary: Synchronous multi-master wsrep provider (replication engine)
 Group: System/Servers
 License: GPLv2
@@ -74,7 +74,7 @@ scons %{?_smp_mflags} \
 %install
 install -D -m 755 %SOURCE1 %buildroot%_initdir/garbd
 install -D -m 644 %SOURCE2 %buildroot%_unitdir/garbd.service
-mkdir -p %buildroot%_runtimedir/garbd
+mkdir -p %buildroot{%_localstatedir,%_logdir}/garbd
 install -D -m 644 %SOURCE3 %buildroot%_tmpfilesdir/garbd.conf
 install -D -m 644 %SOURCE4 %buildroot%_sysconfdir/garbd/garbd.conf
 install -D -m 755 garb/garbd %buildroot%_sbindir/garbd
@@ -84,6 +84,10 @@ install -D -m 644 asio/LICENSE_1_0.txt %buildroot%_docdir/galera/LICENSE.asio
 install -D -m 644 www.evanjones.ca/LICENSE %buildroot%_docdir/galera/LICENSE.crc32
 install -D -m 644 scripts/packages/README %buildroot%_docdir/galera/README
 install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README-MySQL
+
+%pre garbd
+groupadd -r -f _garbd
+useradd -r -g _garbd -c "Galera Arbitrator Daemon" -d %_localstatedir/garbd -s /dev/null -M -N _garbd >/dev/null 2>&1 ||:
 
 %post garbd
 %post_service garbd
@@ -99,11 +103,12 @@ install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README
 %dir %_sysconfdir/garbd
 %config(noreplace) %_sysconfdir/garbd/garbd.conf
 %dir %_docdir/galera
+%attr(0750,_garbd,_garbd) %dir %_localstatedir/garbd
+%attr(3770,root,_garbd) %dir %_logdir/garbd
 %_sbindir/garbd
 %_unitdir/garbd.service
 %_initdir/garbd
 %_tmpfilesdir/garbd.conf
-%_runtimedir/garbd
 %doc %_docdir/galera/COPYING
 %doc %_docdir/galera/LICENSE.asio
 %doc %_docdir/galera/LICENSE.crc32
@@ -111,6 +116,12 @@ install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README
 %doc %_docdir/galera/README-MySQL
 
 %changelog
+* Wed Sep 09 2020 Alexey Shabalin <shaba@altlinux.org> 26.4.5-alt2
+- run daemon garbd as _garbd user
+- add /var/log/garbd dir with perm (ALT #37919)
+- update default config
+- /var/run -> /run, /var/lock -> /run/lock
+
 * Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 26.4.5-alt1
 - 26.4.5
 
