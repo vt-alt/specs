@@ -6,10 +6,6 @@
 %{expand: %(sed 's,^%%,%%global ,' /usr/lib/rpm/macros.d/ubt)}
 %define ubt_id %__ubt_branch_id
 
-%define tbname         NVIDIA-Linux-x86
-%ifarch x86_64
-%define tbname         NVIDIA-Linux-x86_64
-%endif
 %define virtual_pkg_name NVIDIA_GLX
 %define bin_pkg_name     nvidia_glx
 %define module_name    nvidia
@@ -20,7 +16,7 @@
 %define nv_version 450
 %define nv_release 57
 %define nv_minor %nil
-%define pkg_rel alt226
+%define pkg_rel alt227
 %define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -84,7 +80,7 @@ Source3: nvidia-clean-driver
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: libsysfs-devel
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64
 
 
 Group: %myGroup
@@ -123,9 +119,9 @@ This is common package for NVIDIA drivers.
 
 
 %prep
-%setup -T -c -n %tbname-%tbver%dirsuffix
+%setup -T -c -n %name-%tbver%dirsuffix
 cd %_builddir
-cd %tbname-%tbver%dirsuffix
+cd %name-%tbver%dirsuffix
 tar xvf %SOURCE0
 pushd set_gl_nvidia*
 cp settings.h.in settings.h
@@ -311,6 +307,9 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Mon Sep 14 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt227
+- add aarch64 support
+
 * Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt226
 - new version
 

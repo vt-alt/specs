@@ -9,12 +9,12 @@
 %define drmmodule_name		nvidia-drm
 %define package_version	450.57
 %define module_version	%package_version
-%ifarch %ix86
+%ifarch %ix86 armh
 %define module_version	390.138
 %endif
-%define module_release	alt1
+%define module_release	alt2
 %define flavour		un-def
-%define karch %ix86 x86_64
+%define karch %ix86 x86_64 aarch64
 
 %setup_kernel_module %flavour
 %define module_srcver	%(echo %module_version | tr -d .)
@@ -22,44 +22,52 @@
 %if "%xorg_ver" == ""
 %define xorg_ver %{get_version xorg-x11-server}
 %endif
+%define legacy1 %nil
 %nvIF_ver_lt %xorg_ver 1.6
 %define legacy1 71.86.13
-%else
-%define legacy1 %nil
 %endif
 %define legacy1_src %(echo %legacy1 | tr -d .)
+
+%define legacy2 %nil
 %nvIF_ver_lt %xorg_ver 1.13
 %define legacy2 96.43.23
-%else
-%define legacy2 %nil
 %endif
 %define legacy2_src %(echo %legacy2 | tr -d .)
+
+%define legacy3 %nil
 %nvIF_ver_lt %xorg_ver 1.16
 %define legacy3 173.14.39
-%else
-%define legacy3 %nil
 %endif
 %define legacy3_src %(echo %legacy3 | tr -d .)
+
+%define legacy4 %nil
 %nvIF_ver_lt %xorg_ver 1.20
 %define legacy4 304.137
-%else
-%define legacy4 %nil
 %endif
 %define legacy4_src %(echo %legacy4 | tr -d .)
+
+%define legacy5 %nil
 %nvIF_ver_lt %xorg_ver 1.21
 %define legacy5 340.108
-%else
-%define legacy5 %nil
 %endif
 %define legacy5_src %(echo %legacy5 | tr -d .)
+
+%define legacy6 %nil
 %nvIF_ver_lt %xorg_ver 1.21
 %define legacy6 390.138
-%else
-%define legacy6 %nil
 %endif
 %define legacy6_src %(echo %legacy6 | tr -d .)
-%ifarch %ix86
+
+%ifarch %ix86 armh
 %define legacy6 %nil
+%endif
+%ifarch aarch64
+%define legacy6 %nil
+%define legacy5 %nil
+%define legacy4 %nil
+%define legacy3 %nil
+%define legacy2 %nil
+%define legacy1 %nil
 %endif
 %define mod_ver_list %module_version %legacy1 %legacy2 %legacy3 %legacy4 %legacy5 %legacy6
 
@@ -271,6 +279,9 @@ fi
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Wed Sep 16 2020 Sergey V Turchin <zerg at altlinux dot org> 450.57-alt2
+- build for aarch64
 
 * Fri Jul 24 2020 Sergey V Turchin <zerg at altlinux dot org> 450.57-alt1
 - new releases (450.57, 390.138)

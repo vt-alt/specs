@@ -7,6 +7,9 @@
 %define ubt_id %__ubt_branch_id
 
 %define tbname         NVIDIA-Linux-x86_64
+%ifarch aarch64
+%define tbname         NVIDIA-Linux-aarch64
+%endif
 %define bin_pkg_name     nvidia_glx
 %define module_name    nvidia
 %define dirsuffix %nil
@@ -24,7 +27,7 @@
 %define nv_version 450
 %define nv_release 57
 %define nv_minor %nil
-%define pkg_rel alt209
+%define pkg_rel alt210
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -96,6 +99,7 @@ Release: %pkg_rel
 
 Source0: null
 Source201: ftp://download.nvidia.com/XFree86/Linux-x86_64/%tbver/NVIDIA-Linux-x86_64-%tbver.run
+Source202: ftp://download.nvidia.com/XFree86/Linux-aarch64/%tbver/NVIDIA-Linux-aarch64-%tbver.run
 
 Source2: nvidia.xinf
 Source100: nvidia_create_xinf
@@ -109,7 +113,7 @@ BuildRequires: kernel-build-tools rpm-macros-alternatives
 BuildRequires: libXext-devel libEGL-devel
 BuildRequires: libwayland-client-devel libwayland-server-devel
 BuildRequires: libGLdispatch libGLX
-ExclusiveArch: x86_64 %ix86
+ExclusiveArch: x86_64 %ix86 aarch64
 
 
 Group: %myGroup
@@ -158,7 +162,11 @@ nvidia library
 %setup -T -c -n %tbname-%tbver%dirsuffix
 rm -rf %_builddir/%tbname-%tbver%dirsuffix
 cd %_builddir
+%ifarch aarch64
+sh %SOURCE202 -x
+%else
 sh %SOURCE201 -x
+%endif
 cd %tbname-%tbver%dirsuffix
 
 pushd kernel
@@ -218,7 +226,7 @@ soname()
 %__ln_s %nv_lib_dir/nvidia.xinf %buildroot/%xinf_dir/nvidia-%version.xinf
 %__install -m 0644 %SOURCE2 %buildroot/%nv_lib_dir/nvidia.xinf
 
-%ifarch x86_64
+%ifarch x86_64 aarch64
 %__install -m 0644 %subd/nvidia_drv.so %buildroot/%nv_lib_dir/
 %endif
 
@@ -227,7 +235,7 @@ soname()
 %__install -m 0644 %subd/libnvidia-wfb.so.%tbver %buildroot/%nv_lib_dir/libwfb.so
 %endif
 
-%ifarch x86_64
+%ifarch x86_64 aarch64
 %__install -m 0644 %subd/libglxserver_nvidia.so.%tbver %buildroot/%nv_lib_dir/libglxserver_nvidia.so
 %endif
 
@@ -250,7 +258,7 @@ soname()
 %__install -m 0644 %subd/libGLX_nvidia.so.%tbver    %buildroot/%nv_lib_dir/libGLX_nvidia.so
 
 %__install -m 0644 %subd/libvdpau_nvidia.so.%tbver %buildroot/%nv_lib_dir/libvdpau_nvidia.so
-%ifarch x86_64
+%ifarch x86_64 aarch64
 %__install -m 0644 %subd/libnvidia-cfg.so.%tbver %buildroot/%nv_lib_dir/libnvidia-cfg.so
 %endif
 /sbin/ldconfig -n %buildroot/%nv_lib_dir
@@ -318,7 +326,7 @@ fi
 %_altdir/%name
 %_bindir/nvidia-bug-report-%version.sh
 %dir %nv_lib_dir
-%ifarch x86_64
+%ifarch x86_64 aarch64
 %nv_lib_dir/nvidia_drv.*
 %nv_lib_dir/libglx*
 %nv_lib_dir/libnvidia-cfg.so*
@@ -359,6 +367,9 @@ fi
 %endif
 
 %changelog
+* Mon Sep 14 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt210
+- add aarch64 driver
+
 * Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt209
 - new version
 
