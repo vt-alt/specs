@@ -1,5 +1,5 @@
 Name: sisyphus_check
-Version: 0.8.52
+Version: 0.8.52.1
 Release: alt1
 
 Summary: package checker for Sisyphus
@@ -32,6 +32,11 @@ cp -a -- sisyphus_check.d %buildroot%_sysconfdir/%name/check.d
 %_bindir/*
 
 %changelog
+* Thu Sep 17 2020 Dmitry V. Levin <ldv@altlinux.org> 0.8.52.1-alt1
+- 010-check-gpg: use alt-rpmkeys-checksig to fix rpm > 4.0.4 support.
+  No dependence on /usr/bin/alt-rpmkeys-checksig is added because most
+  users, including hasher, invoke sisyphus_check with --no-check-gpg.
+
 * Wed Sep 25 2019 Dmitry V. Levin <ldv@altlinux.org> 0.8.52-alt1
 - 130-check-fhs: allow hasher-provides-dev-kvm package to provide /dev/kvm.
 

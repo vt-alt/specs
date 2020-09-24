@@ -1,6 +1,6 @@
 Name: alt-gpgkeys
-Version: 0.7.171
-Release: alt2
+Version: 0.8.0
+Release: alt1
 
 Summary: ALT GnuPG keys
 License: GPL-2.0-or-later
@@ -12,6 +12,7 @@ Source0: options
 Source1: keys.tar
 Source2: alt-gpgkey-check
 Source3: alt-gpgkey-strip
+Source4: alt-rpmkeys-checksig
 
 Conflicts: gnupg < 0:1.2.0
 BuildPreReq: gnupg, libshell
@@ -20,18 +21,37 @@ BuildPreReq: gnupg, libshell
 This package contains ALT Linux Team GnuPG keyring.
 
 %package utils
-Summary: utilities to manipulate %name
+Summary: Utilities to manipulate %name
 License: GPL-2.0-or-later
 Group: System/Configuration/Packaging
 Requires: %name = %version-%release
 
 %description utils
-utilities to manipulate %name
+This package contains utilities to manipulate %name.
+
+%package -n alt-rpmkeys
+Summary: ALT GnuPG keys imported into RPM database
+License: GPL-2.0-or-later
+Group: System/Configuration/Packaging
+Requires: %name = %version-%release
+
+%description -n alt-rpmkeys
+This package contains ALT Linux Team GnuPG keys imported into RPM database.
+
+%package -n alt-rpmkeys-utils
+Summary: Utilities to manipulate alt-rpmkeys
+License: GPL-2.0-or-later
+Group: System/Configuration/Packaging
+Requires: alt-rpmkeys = %version-%release
+
+%description -n alt-rpmkeys-utils
+This package contains utilities to manipulate alt-rpmkeys.
 
 %prep
 %setup -qcT -n %name -a 1
-install -pm755 %_sourcedir/{alt-gpgkey-check,alt-gpgkey-strip} .
+install -pm755 %_sourcedir/{alt-gpgkey-check,alt-gpgkey-strip,alt-rpmkeys-checksig} .
 mkdir -m700 home
+mkdir -m700 rpmdb
 
 %build
 gpg --homedir home </dev/null ||:
@@ -41,26 +61,58 @@ for f in keys/*; do
 done
 install -pm600 %_sourcedir/options home/gpg.conf
 gpg --homedir home --list-keys
+gpg --homedir home --export --armor > all.gpg
+rpmkeys --dbpath "$PWD/rpmdb" --import all.gpg
 
 %install
-%define keydir %_prefix/lib/%name
+%define gpgkeydir %_prefix/lib/%name
 cd home
-mkdir -p %buildroot%keydir
+mkdir -p %buildroot%gpgkeydir
 install -pm644 gpg.conf pubring.gpg secring.gpg \
-	%buildroot%keydir/
-
+	%buildroot%gpgkeydir/
 cd ..
+
+%define rpmkeydir %_prefix/lib/alt-rpmkeys
+cd rpmdb
+mkdir -p %buildroot%rpmkeydir
+cp -p Packages Name %buildroot%rpmkeydir/
+chmod -R a-w %buildroot%rpmkeydir/
+cd ..
+
 mkdir -p %buildroot%_bindir
-install -pm755 alt-gpgkey-check alt-gpgkey-strip \
+install -pm755 alt-gpgkey-check alt-gpgkey-strip alt-rpmkeys-checksig \
 	%buildroot%_bindir/
 
+%define _unpackaged_files_terminate_build 1
+
 %files
-%keydir
+%gpgkeydir/
 
 %files utils
-%_bindir/*
+%_bindir/alt-gpgkey*
+
+%files -n alt-rpmkeys
+%rpmkeydir/
+
+%files -n alt-rpmkeys-utils
+%_bindir/alt-rpmkey*
 
 %changelog
+* Fri Aug 14 2020 Dmitry V. Levin <ldv@altlinux.org> 0.8.0-alt1
+- Added alt-rpmkeys and alt-rpmkeys-utils packages.
+
+* Thu Aug 06 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.175-alt1
+- Replaced key: gkot@ (21C4D4CB -> 6AD47E1A; closes: #38728).
+
+* Fri Jul 17 2020 Dmitry V. Levin <ldv@altlinux.org> 0.7.174-alt1
+- Replaced key: vseleznv@ (2AD3A84B -> F21EB107; closes: #38432).
+
+* Thu Jun 04 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.173-alt1
+- Updated key: darktemplar@ (D4C6316F; closes: #35057).
+
+* Tue Jun 02 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.172-alt1
+- Updated expired key: underwit@ (1FA66FA3; closes: #38571).
+
 * Mon Apr 13 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.7.171-alt2
 - Fixed previous changelog entry.
 
