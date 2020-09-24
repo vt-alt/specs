@@ -10,18 +10,17 @@ Group: System/Servers
 License: PHP
 Url: http://www.php.net/
 
-Prereq: php7 = %php7_version
-Prereq: php7 >= %php7_version-%php7_release
-Prereq: apache2-httpd-prefork-like
+Requires: php7 = %php7_version
+Requires: php7 >= %php7_version-%php7_release
+Requires: apache2-httpd-prefork-like
 Requires(post): apache2-httpd-prefork-like
 Requires(post): apache2-base
 
 Conflicts: apache2-mod_php5
 Provides: php-engine = %php7_version-%php7_release
 
-Source0: %{name}-control.tar
-Source3: php.ini
-Source4: %name-browscap.ini
+Source1: php.ini
+Source2: %name-browscap.ini
 
 Patch0: apache2-mod_php7-7.1.0.patch
 Patch1: php-alt-namespace.patch
@@ -44,18 +43,9 @@ understand and process the embedded PHP language in web pages.
 This package contains PHP version 5. You'll also need to install the
 Apache2 web server.
 
-%package control
-Summary: Control facility and profiles for %name
-Group: System/Servers
-Requires: %name = %version-%release
-Requires: php-base >= 2.6
-
-%description control
-Control facility and profiles for %name to easily switch
-between predefined php.ini profiles
 
 %prep
-%setup -c
+%setup -T -c
 %php7_sapi_prepare apache2handler
 %patch0 -p1 -b .fix
 %patch1 -p1 -b .fix1
@@ -78,8 +68,6 @@ mkdir -p \
 	%buildroot/%apache2_mods_start \
 	%buildroot/%apache2_moduledir \
 	%buildroot/%php7_sysconfdir/%php7_sapi/php.d \
-	%buildroot/%php7_sysconfdir/%php7_sapi/control.d \
-	%buildroot/%_sysconfdir/control.d/facilities \
 	%buildroot/%_rpmlibdir
 
 cp .libs/%so_file %buildroot/%apache2_moduledir
@@ -102,22 +90,17 @@ EOF
 
 cat > %buildroot/%_rpmlibdir/%name.filetrigger << EOF
 #!/bin/sh
-LC_ALL=C sed 's|^%php7_sysconfdir/%php7_sapi/control.d||' |
-	egrep -qs '^%php7_sysconfdir/%php7_sapi|^%php7_extdir' || exit 0
 %apache2_sbindir/a2chkconfig >/dev/null
 %php7_sapi_postin
 %post_apache2conf
 EOF
 chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
 
-install -m 644 %SOURCE3 %buildroot/%php7_sysconfdir/%php7_sapi/php.ini
-install -m 644 %SOURCE4 %buildroot/%php7_sysconfdir/%php7_sapi/browscap.ini
-install -m 755 php.control %buildroot/%_sysconfdir/control.d/facilities/%name
-install -m 644 modes/* %buildroot/%php7_sysconfdir/%php7_sapi/control.d/
+install -m 644 %SOURCE1 %buildroot/%php7_sysconfdir/%php7_sapi/php.ini
+install -m 644 %SOURCE2 %buildroot/%php7_sysconfdir/%php7_sapi/browscap.ini
 
 for f in \
-	%buildroot/%php7_sysconfdir/%php7_sapi/php.ini \
-	%buildroot/%_sysconfdir/control.d/facilities/%name
+	%buildroot/%php7_sysconfdir/%php7_sapi/php.ini
 do
   subst 's,@SAPI@,%php7_sapi,g' "$f"
   subst 's,@PHP_VERSION@,%_php7_version,g' "$f"
@@ -149,10 +132,6 @@ fi
 %_rpmlibdir/%name.filetrigger
 %doc CREDITS
 
-%files control
-%config %_sysconfdir/control.d/facilities/*
-%dir %php7_sysconfdir/%php7_sapi/control.d/
-%config(noreplace) %php7_sysconfdir/%php7_sapi/control.d/*
 
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
