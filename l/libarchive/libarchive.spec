@@ -4,7 +4,7 @@
 %define libarchive libarchive%sover
 
 Name: libarchive
-Version: 3.4.0
+Version: 3.4.3
 Release: alt1
 
 Group: System/Libraries
@@ -114,6 +114,9 @@ developing applications that use %name.
 %_pkgconfigdir/*.pc
 
 %changelog
+* Wed Sep 23 2020 Sergey V Turchin <zerg@altlinux.org> 3.4.3-alt1
+- new version
+
 * Thu Aug 22 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.4.0-alt1
 - Updated to upstream version 3.4.0.
 - Fixes:
