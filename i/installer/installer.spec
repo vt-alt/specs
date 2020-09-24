@@ -1,6 +1,6 @@
 Name: installer
 Version: 1.10.4
-Release: alt1
+Release: alt2
 
 Summary: Installer common parts
 License: GPLv2+
@@ -23,6 +23,7 @@ Obsoletes: %name-stage2 < %version-%release
 Requires: alterator-preinstall >= 0.7-alt1
 # scripts/install2
 Requires: alterator-wizardface alterator-backend-x11 >= 0.21-alt2 xinit xinitrc xorg-server xorg-drv-video
+Requires: glibc-locales
 # scripts/postinstall
 Requires: eject
 # initinstall.d/10-vt.sh
@@ -110,6 +111,9 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Thu Sep 17 2020 Michael Shigorin <mike@altlinux.org> 1.10.4-alt2
+- installer-common-stage2: explicit R: glibc-locales (opens: #38955)
+
 * Mon Aug 24 2020 Anton Midyukov <antohami@altlinux.org> 1.10.4-alt1
 - preinstall: Added parameter for parsing in cmdline: cma=*
 
