@@ -1,15 +1,16 @@
-%define rname alt-app-starter
+%define _unpackaged_files_terminate_build 1
 
-Name: %rname
-Version: 1.2.8
+Name: alt-app-starter
+Version: 1.3.0
 Release: alt1
-%K5init altplace
-
 Group: Graphical desktop/KDE
 Summary: The tool to run programs as another user
 License: GPLv2
+URL: http://git.altlinux.org/gears/a/alt-app-starter.git
 
-Source: %rname-%version.tar
+%K5init altplace
+
+Source: %name-%version.tar
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules
@@ -17,8 +18,10 @@ BuildRequires: gcc-c++
 BuildRequires: kf5-kdesu-devel
 BuildRequires: kf5-kio-devel
 BuildRequires: kf5-kpty-devel
-BuildRequires: qt5-tools
+BuildRequires: kf5-kcoreaddons-devel
 BuildRequires: qt5-base-devel
+BuildRequires: qt5-tools-devel
+BuildRequires: boost-devel-headers
 Requires: /usr/bin/xvt
 
 %description
@@ -26,27 +29,28 @@ Alt-App-Starter is the tool to quickly run programs as another user.
 This tool was designed to work with KDE.
 
 %prep
-%setup -n %rname-%version
+%setup
 
 %build
-%K5build 
-lrelease-qt5 translations/alt-app-starter_ru.ts
+%K5build
 
 %install
 %K5install
 
-# translations
-mkdir -p %buildroot/%_qt5_translationdir/
-install -m 0644 translations/*.qm %buildroot/%_qt5_translationdir/
+%find_lang --with-qt --all-name %name
 
-%find_lang --with-qt --all-name %rname
-
-%files -f %rname.lang
+%files -f %name.lang
 %doc COPYING*
 %_K5bin/*
 %_K5xdgapp/*.desktop
 
 %changelog
+* Wed Sep 23 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.0-alt1
+- Code cleanup and minor bugfixes.
+
+* Wed Jul 15 2020 Pavel Moseev <mars@altlinux.org>  1.2.9-alt1
+- cleanup and optimize code
+
 * Mon Jul 13 2020 Pavel Moseev <mars@altlinux.org>  1.2.8-alt1
 - fix priority setting from current user
 - update translation
