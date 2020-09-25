@@ -1,6 +1,6 @@
 Name: dump
 Version: 0.4b44
-Release: alt1.1
+Release: alt2
 
 Summary: Programs for backing up and restoring ext2/ext3 filesystems
 License: BSD
@@ -44,6 +44,7 @@ backup) and tar (an archiving program).
 %patch3 -p2
 
 subst s,termcap,tinfo,g ./configure.in
+sed -i '/^#include <sys.un.h>/ a#include <sys/sysmacros.h>' restore/tape.c
 
 %build
 #autoconf
@@ -89,6 +90,9 @@ popd
 %doc COPYRIGHT
 
 %changelog
+* Tue Apr 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.4b44-alt2
+- fixed build with glibc >=2.26
+
 * Tue Jul 17 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 0.4b44-alt1.1
 - Fixed build
 
