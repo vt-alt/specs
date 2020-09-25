@@ -6,7 +6,7 @@
 
 Name: cura
 Epoch: 1
-Version: 4.6.1
+Version: 4.7.1
 Release: alt1
 Summary: 3D printer control software
 License: LGPLv3+
@@ -98,8 +98,9 @@ dos2unix docs/How_to_use_the_flame_graph_profiler.md
 
 %check
 %if 0%{?with_check}
-python3 -m pip freeze
-python3 -m pytest -v -k "not TestCollidesWithAreas"
+%__python3 -m pip freeze
+%__python3 -m pytest -v
+#-k "not TestCollidesWithAreas"
 %endif
 
 desktop-file-validate %buildroot%_datadir/applications/%name.desktop
@@ -116,6 +117,9 @@ desktop-file-validate %buildroot%_datadir/applications/%name.desktop
 %_libexecdir/%name
 
 %changelog
+* Fri Sep 18 2020 Anton Midyukov <antohami@altlinux.org> 1:4.7.1-alt1
+- New version 4.7.1
+
 * Thu May 07 2020 Anton Midyukov <antohami@altlinux.org> 1:4.6.1-alt1
 - New version 4.6.1
 
