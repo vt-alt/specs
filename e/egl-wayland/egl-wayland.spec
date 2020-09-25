@@ -3,17 +3,18 @@
 %define libnvidia_egl_wayland libnvidia-egl-wayland%sover
 
 Name: egl-wayland
-Version: 1.1.4
+Version: 1.1.5
 Release: alt1
 Epoch: 1
 
 Group: System/Libraries
 Summary: Wayland EGL External Platform library
-Url: https://github.com/NVIDIA/%name
+Url: https://github.com/NVIDIA/egl-wayland
 License: MIT
 
 Source0: %name-%version.tar
 Source1: 10_nvidia_wayland.json
+Patch1: alt-ftbfs.patch
 
 # Automatically added by buildreq on Fri Jul 12 2019 (-bi)
 # optimized out: elfutils glibc-devel-static glibc-kernheaders-generic glibc-kernheaders-x86 libX11-devel libstdc++-devel libwayland-client libwayland-client-devel libwayland-server perl pkg-config python-base python-modules python3 python3-base python3-dev rpm-build-python3 sh4 wayland-devel xorg-proto-devel
@@ -41,6 +42,7 @@ Wayland EGL External Platform library development package
 
 %prep
 %setup -q
+%patch1 -p1
 %autoreconf
 
 %build
@@ -64,6 +66,15 @@ install -pm 0644 %SOURCE1 %buildroot/%_datadir/egl/egl_external_platform.d/
 %_datadir/wayland-eglstream/
 
 %changelog
+* Tue Sep 22 2020 Sergey V Turchin <zerg@altlinux.org> 1:1.1.5-alt1
+- new version
+
+* Tue Nov 26 2019 Sergey V Turchin <zerg@altlinux.org> 1:1.1.4-alt3
+- upstream tag 1.1.4 updated
+
+* Tue Nov 05 2019 Sergey V Turchin <zerg@altlinux.org> 1:1.1.4-alt2
+- fix to build with new Mesa
+
 * Wed Oct 09 2019 Sergey V Turchin <zerg@altlinux.org> 1:1.1.4-alt1
 - new version
 
