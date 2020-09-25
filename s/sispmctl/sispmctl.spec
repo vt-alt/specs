@@ -1,9 +1,9 @@
 Name: sispmctl
-Version: 3.1
-Release: alt2.qa1
+Version: 4.8
+Release: alt1
 
 Summary: GEMBIRD Silver Shield PM Control
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 Url: http://sispmctl.sourceforge.net
@@ -26,30 +26,66 @@ Add users who need to control the device to _sispm group.
 %setup
 
 %build
+%autoreconf
 %configure --enable-webless
 %make_build
 
 %install
 %makeinstall
 install -pDm644 %SOURCE1 %buildroot%_udevrulesdir/74-sispmctl.rules
-
-%files
-%_bindir/*
-%_man1dir/*
-%config(noreplace) %_udevrulesdir/74-sispmctl.rules
-%doc AUTHORS ChangeLog README
+rm -rf %buildroot%_defaultdocdir/%name
 
 %pre
 %_sbindir/groupadd -r -f _sispm >/dev/null 2>&1
 
+%files
+%_bindir/*
+%_man1dir/*
+%_libdir/*.so.*
+%config(noreplace) %_udevrulesdir/74-sispmctl.rules
+%doc AUTHORS ChangeLog README.md
+%doc examples/
+
 # TODO:
 # - consider web part
 
+# THANKS:
+# - darktemplar@ for explaining me a silly lapse with the shared library
+
 %changelog
+* Sat Sep 12 2020 Michael Shigorin <mike@altlinux.org> 4.8-alt1
+- new version (watch file uupdate)
+- %%autoreconf to get rid of rpath
+- shared library subpackage
+
+* Mon Apr 13 2020 Michael Shigorin <mike@altlinux.org> 4.7-alt1
+- new version (watch file uupdate)
+
+* Fri Apr 03 2020 Michael Shigorin <mike@altlinux.org> 4.6-alt1
+- new version (watch file uupdate)
+
+* Thu Mar 12 2020 Michael Shigorin <mike@altlinux.org> 4.5-alt1
+- new version (watch file uupdate)
+
+* Mon Mar 09 2020 Michael Shigorin <mike@altlinux.org> 4.4-alt1
+- new version (watch file uupdate)
+
+* Sun Mar 08 2020 Michael Shigorin <mike@altlinux.org> 4.3-alt1
+- new version (watch file uupdate)
+
+* Fri Sep 27 2019 Michael Shigorin <mike@altlinux.org> 4.2-alt1
+- new version (watch file uupdate)
+
+* Sun Nov 18 2018 Michael Shigorin <mike@altlinux.org> 4.1-alt1
+- new version (watch file uupdate)
+
 * Thu Jul 12 2018 Igor Vlasenko <viy@altlinux.ru> 3.1-alt2.qa1
 - NMU (by repocop). See http://www.altlinux.org/Tools/Repocop
 - applied repocop fixes:
   * udev-files-in-etc for sispmctl
+
+* Sat Feb 20 2016 Michael Shigorin <mike@altlinux.org> 4.0-alt1
+- new version (watch file uupdate)
 
 * Wed May 09 2012 Michael Shigorin <mike@altlinux.org> 3.1-alt2
 - added watch file
