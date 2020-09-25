@@ -1,29 +1,31 @@
 %define _unpackaged_files_terminate_build 1
 
-%define ver_major 2.18
-%define ver_minor 2
+%define ver_major 2.20
+%define ver_minor 0
 %define _lily_dir %_datadir/%name/%version
 %define _texmf %_datadir/texmf
 
 Name: lilypond
 Version: %ver_major.%ver_minor
-Release: alt2
-
+Release: alt4
 Group: Publishing
 Summary: A program for printing sheet music
 License: GPLv3
 Url: http://www.lilypond.org
 
-Source: %name-%version.tar.gz
+Source: %name-%version.tar
 Source1: russian-lirycs-test.ly
+Patch1: lilypond-2.20.0-fix-CVE-2020-17353.patch
 
-Requires: ghostscript
-
+BuildRequires(pre): rpm-build-vim
 BuildRequires: gcc-c++ emacs emacs-devel flex fontconfig-devel fontforge guile18-devel
 BuildRequires: help2man libfreetype-devel libpango-devel makeinfo python-devel texlive
+BuildRequires: texlive-collection-basic
+
+Requires: texlive-collection-basic
 
 %package -n emacs-mode-%name
-Summary: Major mode for editing GNU LilyPond music scores 
+Summary: Major mode for editing GNU LilyPond music scores
 Group: Editors
 BuildArch: noarch
 Requires: %name = %EVR
@@ -33,6 +35,12 @@ Summary: The Emacs Lisp sources for bytecode included in emacs-mode-%name
 Group: Development/Other
 BuildArch: noarch
 Requires: emacs-mode-%name = %EVR
+
+%package -n vim-plugin-%name
+Summary: Vim plugin for editing GNU LilyPond music scores
+Group: Editors
+BuildArch: noarch
+Requires: %name = %EVR
 
 %description
 LilyPond is a music typesetter. It produces beautiful sheet music using
@@ -51,34 +59,46 @@ included in the emacs-mode-%name package, that extends the Emacs editor.
 You need to install emacs-mode-%name-el only if you intend to modify any of the
 emacs-mode-%name code or see some Lisp examples.
 
+%description -n vim-plugin-%name
+vim-plugin-%name provides syntax coloring, completion and compilation.
+
 %prep
 %setup
+%patch1 -p1
 subst 's|package_infodir = $(infodir)/$(package)|package_infodir = $(infodir)|' config.make.in
 
 %build
 %configure \
-	--with-ncsb-dir=/usr/share/fonts/type1/urw \
-	--disable-documentation
+	PYTHON=python2 \
+	--with-texgyre-dir=/usr/share/texmf-dist/fonts/opentype/public/tex-gyre/ \
+	--disable-documentation \
+	%nil
 
 %make_build
 
 %install
-%makeinstall_std
+%makeinstall_std \
+	vimdir=%vim_runtime_dir
 help2man %buildroot%_bindir/lilypond > %buildroot%_man1dir/lilypond.1
 
 # install russian-lirycs-test.ly
-%__install -m644 %SOURCE1 .
+install -m644 %SOURCE1 .
 
-# Install Emacs-mode files 
-%__mkdir_p %buildroot/%_emacs_sitestart_dir
-%__mv %buildroot%_emacslispdir/%name-init.el %buildroot%_emacs_sitestart_dir/
+# Install Emacs-mode files
+mkdir -p %buildroot/%_emacs_sitestart_dir
+mv %buildroot%_emacslispdir/%name-init.el %buildroot%_emacs_sitestart_dir/
 for i in %buildroot%_emacslispdir/%{name}*.el; do
 %byte_compile_file $i
 done
 
+# Do not map keys
+sed -i '/^".*<\(S-\)\?F[[:digit:]]\+>/,/^"/{/^[^"]/s/^/" /}' %buildroot%vim_runtime_dir/ftplugin/lilypond.vim
+# Guard
+! grep ^map %buildroot%vim_runtime_dir/ftplugin/lilypond.vim ||exit 1
+
 #FIXME:msp:
 # These files cannot pass verify-info check;
-%__rm -f %buildroot%_infodir/lilypond* %buildroot%_infodir/music*
+rm -f %buildroot%_infodir/lilypond* %buildroot%_infodir/music*
 
 %find_lang %name
 
@@ -98,7 +118,29 @@ done
 %files -n emacs-mode-%name-el
 %_emacslispdir/%{name}*.el
 
+%files -n vim-plugin-%name
+%vim_runtime_dir/compiler/*
+%vim_runtime_dir/ftdetect/*
+%vim_runtime_dir/ftplugin/*
+%vim_runtime_dir/indent/*
+%vim_runtime_dir/syntax/*
+
 %changelog
+* Thu Sep 24 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.20.0-alt4
+- Fixed changelog according to vulnerability policy.
+
+* Sun Aug 16 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.20.0-alt3
+- Applied CVE fix (Fixes: CVE-2020-17353).
+
+* Sun Aug 09 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.20.0-alt2
+- Added vim-plugin-lilypond subpackage.
+
+* Tue Jul 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.20.0-alt1
+- Updated to stable upstream version 2.20.0.
+
+* Tue Feb 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.18.2-alt3
+- Fixed build.
+
 * Fri Mar 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.18.2-alt2
 - Rebuilt with guile18 (Closes: #36005)
 
@@ -118,7 +160,7 @@ done
 - New version: 2.18.0
 
 * Sat Dec 07 2013 Michael Pozhidaev <msp@altlinux.ru> 2.16.0-alt0.2
-- %autoreconf added to fix compilation errors
+- %%autoreconf added to fix compilation errors
 
 * Sat Oct 06 2012 Michael Pozhidaev <msp@altlinux.ru> 2.16.0-alt0.1
 - New version
@@ -210,7 +252,7 @@ done
 - 1.6.6
 
 * Tue May 28 2002 Yuri N. Sedunov <aris@altlinux.ru> 1.4.13-alt1
-- 1.4.13 
+- 1.4.13
 
 * Thu Apr 18 2002 Yuri N. Sedunov <aris@altlinux.ru> 1.4.12-alt3
 - rebuild with new autotrace
@@ -219,7 +261,7 @@ done
 - emacs-mode-%%{name}* packages.
 - new buildrequires
 
-* Sun Mar 12 2002 Yuri N. Sedunov <aris@altlinux.ru> 1.4.12-alt1
+* Tue Mar 12 2002 Yuri N. Sedunov <aris@altlinux.ru> 1.4.12-alt1
 - 1.4.12
 - stepmake patch removed, not needed more.
 - makedocs patch. (fix building docs with python2.2)
@@ -230,7 +272,7 @@ done
 * Fri Nov 30 2001 Yuri N. Sedunov <aris@altlinux.ru> 1.4.9-alt1
 - Updated to 1.4.9
 
-* Thu Nov 16 2001 Yuri N. Sedunov <aris@altlinux.ru> 1.4.8-alt3
+* Fri Nov 16 2001 Yuri N. Sedunov <aris@altlinux.ru> 1.4.8-alt3
 - Spec cleanup.
 
 * Thu Nov 15 2001 Yuri N. Sedunov <aris@altlinux.ru> 1.4.8-alt2
