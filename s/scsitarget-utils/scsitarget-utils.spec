@@ -1,6 +1,6 @@
 
 %def_with rdma
-%def_without glfs
+%def_with glfs
 %ifarch %ix86 %arm %mips32 ppc
 %def_without rbd
 %else
@@ -8,8 +8,8 @@
 %endif
 
 Name: scsitarget-utils
-Version: 1.0.78
-Release: alt2
+Version: 1.0.79
+Release: alt1
 
 Summary: The SCSI target daemon and utility programs
 
@@ -31,6 +31,7 @@ Source6: tgt.init
 # fedora patches
 Patch1: 0002-remove-check-for-xsltproc.patch
 Patch2: 0003-default-config.patch
+Patch3: tgt-1.0.79-Adapt-to-glusterfs-api-7.6.3.patch
 
 BuildRequires: libxslt docbook-style-xsl xsltproc
 BuildRequires: glibc-devel
@@ -40,7 +41,7 @@ BuildRequires: systemd-devel
 BuildRequires: perl-Config-General
 %{?_with_rdma:BuildRequires: libibverbs-devel librdmacm-devel}
 %{?_with_rbd:BuildRequires: ceph-devel}
-%{?_with_glfs:BuildRequires: libglusterfs-devel}
+%{?_with_glfs:BuildRequires: libglusterfs-devel >= 7.6}
 
 Requires: lsof
 Requires: sg3_utils
@@ -76,6 +77,7 @@ Adds support for the Gluster glfs backstore to scsi-target-utils.
 # %%patch10 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %__subst 's|-g -O2 -Wall|%optflags|' Makefile
@@ -131,6 +133,7 @@ mkdir -p %buildroot%_libdir/tgt/backing-store
 %_man8dir/*
 %_unitdir/tgt.service
 %_initdir/tgt
+%dir %_libdir/tgt
 %dir %_libdir/tgt/backing-store
 %dir %_sysconfdir/tgt
 %dir %_sysconfdir/tgt/conf.d
@@ -152,6 +155,10 @@ mkdir -p %buildroot%_libdir/tgt/backing-store
 %endif
 
 %changelog
+* Thu Sep 17 2020 Andrew A. Vasilyev <andy@altlinux.org> 1.0.79-alt1
+- 1.0.79
+- enable build with glusterfs
+
 * Thu Feb 06 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.78-alt2
 - NMU: disable build with glusterfs (use pre 4.0 obsoleted glfs_pread)
 
