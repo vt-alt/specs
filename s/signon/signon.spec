@@ -8,7 +8,7 @@
 
 Name: signon
 Version: 8.60
-Release: alt1
+Release: alt3
 
 Group: System/Servers
 Summary: Accounts framework for Linux and POSIX based platforms
@@ -20,6 +20,7 @@ Requires: dbus
 # https://drive.google.com/drive/#folders/0B8fX9XOwH_g4alFsYV8tZTI4VjQ
 # https://groups.google.com/forum/#!topic/accounts-sso-announce/
 Source: signon-%version.tar
+Patch0: 01-Port_away_from_QHash__unite.patch
 # FC
 Patch1: signon-8.57-no_static.patch
 # ALT
@@ -79,6 +80,7 @@ Requires: %name-common = %version-%release
 
 %prep
 %setup -n signon-%version
+%patch0 -p1
 %patch1 -p1 -b .no_static
 %patch10 -p1
 
@@ -93,12 +95,11 @@ done
 export PATH=%_qt5_bindir:$PATH
 %qmake_qt5 \
     signon.pro \
-    CONFIG+=release \
+    CONFIG+="release nostrip enable-p2p" \
     PREFIX=%_prefix \
     QMF_INSTALL_ROOT=%_prefix \
     LIBDIR=%_libdir \
     LIBEXECDIR=%_libexecdir \
-    CONFIG+=enable-p2p \
     #
 %make_build
 
@@ -146,6 +147,12 @@ mkdir -p %buildroot/%_libdir/signon/extensions/
 %_libdir/libsignon-qt5.so.*
 
 %changelog
+* Tue Sep 22 2020 Sergey V Turchin <zerg@altlinux.org> 8.60-alt3
+- add upstream fix against deprecated QHash::unite
+
+* Tue Sep 22 2020 Sergey V Turchin <zerg@altlinux.org> 8.60-alt2
+- fix to build with debuginfo
+
 * Mon Sep 30 2019 Sergey V Turchin <zerg@altlinux.org> 8.60-alt1
 - new version
 
