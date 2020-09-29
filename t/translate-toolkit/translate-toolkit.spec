@@ -1,8 +1,8 @@
 %define modname translate
 
 Name: translate-toolkit
-Version: 2.3.1
-Release: alt1
+Version: 3.0.0
+Release: alt2
 
 Summary: Tools and API for translation and localization engineering.
 
@@ -11,16 +11,26 @@ Group: Development/Python
 Url: http://toolkit.translatehouse.org/
 
 Source: %name-%version.tar
+Patch: %name-%version-%release.patch
 BuildArch: noarch
 
 BuildRequires(pre): rpm-build-licenses
-BuildPreReq: rpm-build-python
-BuildRequires: python-devel python-module-distribute
-BuildRequires: python-module-sphinx python-modules-wsgiref python-modules-sqlite3 python-module-BeautifulSoup4
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel
+BuildRequires: python3-module-BeautifulSoup4
+BuildRequires: python3-module-sphinx
+BuildRequires: python3-module-Levenshtein
 
-Requires: python-module-diff-match-patch python-module-translate
+Requires: python3-module-%modname = %version-%release
 
-%setup_python_module %modname
+# it is not really required for the work
+%add_python3_req_skip setuptools
+# Remove garbage dependency
+%filter_from_requires /python-module-setuptools/d
+
+# these modules used in tools and marked deprecated by upstream
+%add_python3_req_skip l20n.format.parser
+%add_python3_req_skip l20n.format.serializer
 
 %description
 The Translate Toolkit is created by localizers for localizers. It contains
@@ -32,11 +42,12 @@ Some of the tools include:
 * Quality checking tools
 * Tools for counting, grepping, terminology extraction, and pseudo-localization
 
-%package -n python-module-%modname
+%package -n python3-module-%modname
 Summary: Module for building localization tools
 Group: Development/Python
+Obsoletes: python-module-%modname
 
-%description -n python-module-%modname
+%description -n python3-module-%modname
 Features of the API include:
 
 * Support for multiple file formats
@@ -53,9 +64,10 @@ Documentation for Translate Toolkit
 
 %prep
 %setup -n %name-%version
+%patch -p1
 
 %build
-%python_build
+%python3_build
 pushd docs
 %make man
 gzip -9 _build/man/*.1
@@ -64,27 +76,47 @@ find _build -name '.?*' -exec rm '{}' \+
 popd
 
 %install
-%python_install
+%python3_install
 
 install -d %buildroot%_man1dir
 install -pm 644 docs/_build/man/*.gz %buildroot%_man1dir
-rm -fr %buildroot%python_sitelibdir/%modname/docs/
+rm -fr %buildroot%python3_sitelibdir/%modname/docs/
+
+# mercurial is an optional dependency. Code could work without it
+%filter_from_requires /mercurial/d
 
 %files
 %doc docs/{features,history,license}.rst
 %{_bindir}/*
 %_man1dir/*
 
-%files -n python-module-%modname
-# Don't pack PyLuceneIndexer since it requires absent PyLucene for work
-%exclude %python_sitelibdir/%modname/search/indexing/PyLuceneIndexer*
-%python_sitelibdir/%modname
-%python_sitelibdir/*.egg-info
+%files -n python3-module-%modname
+%python3_sitelibdir/%modname
+%python3_sitelibdir/*.egg-info
 
 %files -n %name-doc
 %doc docs/_build/html
 
 %changelog
+* Tue Sep 15 2020 Vladimir Didenko <cow@altlinux.ru> 3.0.0-alt2
+- Don't require mercurial (closes: #38939)
+
+* Tue Jun 23 2020 Vladimir Didenko <cow@altlinux.ru> 3.0.0-alt1
+- New version
+
+* Tue May 12 2020 Vladimir Didenko <cow@altlinux.ru> 2.5.1-alt1
+- New version
+
+* Tue Feb 4 2020 Vladimir Didenko <cow@altlinux.ru> 2.5.0-alt1
+- New version
+
+* Tue Sep 24 2019 Vladimir Didenko <cow@altlinux.ru> 2.4.0-alt2
+- Remove garbage dependency on python-module-setuptools
+
+* Tue Sep 24 2019 Vladimir Didenko <cow@altlinux.ru> 2.4.0-alt1
+- New version
+- Switch to Python 3
+
 * Tue Mar 19 2019 Vladimir Didenko <cow@altlinux.ru> 2.3.1-alt1
 - New version
 

@@ -1,6 +1,6 @@
 Name: phply
 Version: 1.2.5
-Release: alt1
+Release: alt2
 
 Summary: Lexer and parser for PHP source implemented using PLY
 
@@ -36,6 +36,9 @@ Python 2 module for phply. phply is a parser for the PHP programming language wr
 %package -n python3-module-%name
 Summary: Lexer and parser for PHP source implemented using PLY
 Group: Development/Python3
+%py3_provides phply.phpast
+%py3_provides phply.phplex
+%py3_provides phply.phpparse
 
 %description -n python3-module-%name
 Python 3 module for phply. phply is a parser for the PHP programming language written using PLY, a Lex/YACC-style parser generator toolkit for Python.
@@ -79,6 +82,9 @@ popd
 %python3_sitelibdir/*.egg-*
 
 %changelog
+* Mon Sep 23 2019 Anton Farygin <rider@altlinux.ru> 1.2.5-alt2
+- added missing python3 provides for modules
+
 * Tue Mar 19 2019 Vladimir Didenko <cow@altlinux.ru> 1.2.5-alt1
 - new version
 
