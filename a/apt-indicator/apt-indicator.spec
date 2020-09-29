@@ -1,6 +1,6 @@
 Name: apt-indicator
 Version: 0.3.19
-Release: alt1
+Release: alt2
 
 Summary: Applet for indication that newer packages are available
 License: GPL
@@ -28,6 +28,9 @@ made notifications for users that newer packages are available.
 
 %prep
 %setup -q -n %name-%version
+%ifarch %e2k
+%remove_optflags -Wno-error
+%endif
 %qmake_qt5 "CONFIG += release debug_info"
 
 %build
@@ -74,6 +77,14 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Fri Sep 18 2020 Ivan Zakharyaschev <imz@altlinux.org> 0.3.19-alt2
+- Just added some compiler flags (which don't change anything):
+  + to adapt the C++ standard for the upcoming APT API (increased to C++17);
+  + to be sure that APT API has not been used wrongly and will not be.
+    (Namely, to be sure that if a method override was intended, it would
+    actually be overriding and not hiding a virtual method and that it
+    would be marked "override" for future.)
+
 * Tue Aug 18 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.19-alt1
 - don't show version in about dialog
 
