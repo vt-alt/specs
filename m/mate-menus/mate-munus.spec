@@ -1,6 +1,6 @@
 Name: mate-menus
 Version: 1.22.1
-Release: alt1
+Release: alt1.M90P.1
 Epoch: 1
 Summary: Displays menus for MATE Desktop
 License: GPLv2+ and LGPLv2+
@@ -11,9 +11,10 @@ Packager: Valery Inozemtsev <shrek@altlinux.ru>
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
-Conflicts: altlinux-freedesktop-menu-mate
-
 BuildRequires: mate-common gobject-introspection-devel
+Conflicts: altlinux-freedesktop-menu-mate
+Obsoletes: altlinux-freedesktop-menu-mate
+Provides: altlinux-freedesktop-menu-mate
 
 %description
 Displays menus for MATE Desktop
@@ -68,6 +69,9 @@ Development files for mate-menus
 %_datadir/gir-1.0/MateMenu-2.0.gir
 
 %changelog
+* Fri Sep 25 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1:1.22.1-alt1.M90P.1
+- Obsolests on altlinux-freedesktop-mate-menus added (blocks dist-upgrade)
+
 * Tue Oct 15 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:1.22.1-alt1
 - 1.22.1
 
