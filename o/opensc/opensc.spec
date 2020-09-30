@@ -1,20 +1,21 @@
 %def_disable static
 
 Name: opensc
-Version: 0.19.0
-Release: alt3
+Version: 0.20.0
+Release: alt1
 
 Group: System/Configuration/Hardware
 Summary: OpenSC library - for accessing SmartCard devices using PC/SC Lite
 Url: https://github.com/OpenSC/OpenSC/wiki
-License: LGPL
+License: LGPL-2.1+
 
 Requires: lib%name = %version-%release
 
 Source: %name-%version.tar
-Patch:  %name-%version-alt.patch
+Patch1: opensc-0.20.0-no-common.patch
 
-BuildRequires: db2latex-xsl docbook-dtds docbook-style-xsl libXt-devel libassuan-devel libltdl7-devel libpcsclite-devel libreadline-devel libssl-devel xsltproc zlib-devel
+BuildRequires: db2latex-xsl docbook-dtds docbook-style-xsl libXt-devel libassuan-devel
+BuildRequires: libltdl7-devel libpcsclite-devel libreadline-devel libssl-devel xsltproc zlib-devel
 
 %package -n lib%name
 Group: System/Libraries
@@ -65,7 +66,7 @@ OpenSC module for PAM.
 
 %prep
 %setup
-%patch -p1
+%patch1 -p1
 
 %build
 %autoreconf
@@ -83,14 +84,14 @@ PCSC_SONAME="$(objdump -p "%_libdir/libpcsclite.so"| awk '/SONAME/ {print $2}')"
 
 %install
 %makeinstall_std
-
-mkdir -p %buildroot/%_sysconfdir/
-install -p -m644 etc/opensc.conf %buildroot/%_sysconfdir/opensc.conf
+install -Dpm644 etc/opensc.conf %buildroot/%_sysconfdir/opensc.conf
+rm -f %buildroot%_datadir/doc/opensc/opensc.conf
 
 %files
 %doc NEWS README.md
 %exclude %_datadir/doc/%name/NEWS
 %_desktopdir/*.desktop
+%_sysconfdir/xdg/autostart/pkcs11-register.desktop
 %config %_sysconfdir/bash_completion.d/*
 %_bindir/*
 %doc %_mandir/*/*
@@ -116,6 +117,20 @@ install -p -m644 etc/opensc.conf %buildroot/%_sysconfdir/opensc.conf
 %endif
 
 %changelog
+* Mon Apr 27 2020 Andrey Cherepanov <cas@altlinux.org> 0.20.0-alt1
+- New version.
+- Fixes:
+  + CVE-2019-6502 (#1586)
+  + CVE-2019-15946 (a3fc769)
+  + CVE-2019-15945 (412a614)
+  + CVE-2019-19480 (6ce6152284c47ba9b1d4fe8ff9d2e6a3f5ee02c7)
+  + CVE-2019-19481 (b75c002cfb1fd61cd20ec938ff4937d7b1a94278)
+  + CVE-2019-19479 (c3f23b836e5a1766c36617fe1da30d22f7b63de2)
+- Fix License tag according to SPDX.
+
+* Tue Aug 27 2019 Paul Wolneykien <manowar@altlinux.org> 0.19.0-alt4
+- Added patch closing a small memory leak issue (fixes CVE-2019-6502).
+
 * Mon Dec 10 2018 Paul Wolneykien <manowar@altlinux.org> 0.19.0-alt3
 - New release version 0.19.0.
 
