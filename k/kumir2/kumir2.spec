@@ -2,18 +2,19 @@
 
 Name: kumir2
 Version: 2.1.0
-Release: alt7.gita3631abb
+Release: alt9.git4aa5e175
 
 Summary: New version of Kumir - simple programming language and IDE for teaching programming
 Summary(ru_RU.UTF-8): Новая версия системы Кумир - простого учебного языка программирования и среды разработки
 
-License: GPL
+License: GPL-2.0
 Group: Education
 URL:  https://www.niisi.ru/kumir/
 #VCS: https://github.com/a-a-maly/kumir2/
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
-BuildRequires(pre): cmake
+BuildRequires(pre): cmake rpm-build-python3
+BuildRequires(pre): rpm-build-ninja
 BuildRequires: gcc-c++
 BuildRequires: qt5-base-devel >= 5.3
 BuildRequires: qt5-svg-devel
@@ -26,6 +27,8 @@ BuildRequires: boost-devel
 
 Source: %name-%version.tar
 Patch1: kumir2-alt-fix-LIB_BASENAME.patch
+Patch2: port-to-python3.patch
+Patch3: kumir2-alt-qt5.15.patch
 
 %description
 Implementation of Kumir programming language, designed by academician
@@ -62,18 +65,26 @@ Development files for Kumir.
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 sed -i "s/^Categories=.*$/Categories=Education;Qt;ComputerScience;/" *.desktop
 # Remove bundled boost
 rm -rf src/3rdparty/boost*
 
 %build
 export PATH=%_qt5_bindir:$PATH
-%cmake  -DUSE_QT=5 \
-	-DLIB_BASENAME=%_lib
-%cmake_build
+%cmake  -GNinja \
+	-DUSE_QT=5 \
+	-DLIB_BASENAME=%_lib \
+	-DPROVIDED_VERSION_INFO=TRUE \
+	-DGIT_HASH=4aa5e175 \
+	-DGIT_TIMESTAMP=20200922 \
+	-DGIT_TAG=2.1.0-rc10 \
+	-DGIT_BRANCH=master
+%ninja_build -C BUILD
 
 %install
-%cmakeinstall_std
+%ninja_install -C BUILD
 
 %files
 %_bindir/*
@@ -93,6 +104,14 @@ export PATH=%_qt5_bindir:$PATH
 %endif
 
 %changelog
+* Tue Sep 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt9.git4aa5e175
+- New snapshot.
+- Fix License according to SPDX.
+- Build using Ninja.
+
+* Tue Mar 24 2020 Andrey Bychkov <mrdrew@altlinux.org> 2.1.0-alt8.gita3631abb
+- Porting to python3.
+
 * Tue Oct 01 2019 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt7.gita3631abb
 - New snapshot.
 - Build with Qt5.
