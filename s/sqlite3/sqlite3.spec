@@ -1,23 +1,20 @@
 %def_disable static
 
 Name: sqlite3
-Version: 3.29.0
+Version: 3.33.0
 Release: alt1
 Summary: An Embeddable SQL Database Engine
 License: Public Domain
 Group: Development/Databases
 URL: http://www.sqlite.org/
 
-Requires: lib%name = %version-%release
-
 Source0: sqlite-%version.tar
 
 Patch1: 0001-FEDORA-no-malloc-usable-size.patch
 Patch2: 0002-FEDORA-percentile-test.patch
 Patch3: 0003-FEDORA-ALT-datetest-2.2c.patch
-Patch4: 0004-DEBIAN-fix-division-by-zero-in-the-query-planner.patch
-Patch5: 0005-ALT-tcl.patch
-Patch6: 0006-ALT-build-dependencies.patch
+Patch4: 0004-ALT-TEA-Policy.patch
+Patch5: 0005-ALT-build-dependencies.patch
 
 BuildRequires(Pre): tcl-devel
 BuildRequires: libreadline-devel
@@ -63,12 +60,13 @@ SQLite is a C library that implements an SQL database engine.
 Programs that link with the SQLite library can have SQL database
 access without running a separate RDBMS process.
 
-%package tcl
+%package -n tcl-sqlite3
 Summary: An Embeddable SQL Database Engine (TCL bindings)
 Group: Development/Tcl
-Requires: lib%name = %version-%release
+Provides: sqlite3-tcl
+Obsoletes: sqlite3-tcl
 
-%description tcl
+%description -n tcl-sqlite3
 SQLite is a C library that implements an SQL database engine.
 Programs that link with the SQLite library can have SQL database
 access without running a separate RDBMS process.
@@ -101,26 +99,25 @@ embedded controllers.
 
 %prep
 %setup -q -n sqlite-%version
-%patch1 -p2
-%patch2 -p2
-%patch3 -p2
-%patch4 -p2
-%patch5 -p2
-%patch6 -p2
+%autopatch -p2
 
 %build
 export TCLLIBDIR=%_tcllibdir
 export TCLDATADIR=%_tcldatadir/%name
 export CFLAGS="%optflags \
-	-DSQLITE_CORE=1 \
-	-DSQLITE_ENABLE_API_ARMOR=1 \
-	-DSQLITE_ENABLE_COLUMN_METADATA=1 \
-	-DSQLITE_ENABLE_DBSTAT_VTAB=1 \
-	-DSQLITE_ENABLE_DESERIALIZE=1 \
-	-DSQLITE_ENABLE_FTS3=1 \
-	-DSQLITE_ENABLE_JSON1=1 \
-	-DSQLITE_ENABLE_UNLOCK_NOTIFY=1 \
-	-DSQLITE_SECURE_DELETE=1 \
+	-DSQLITE_CORE \
+	-DSQLITE_ENABLE_API_ARMOR \
+	-DSQLITE_ENABLE_COLUMN_METADATA \
+	-DSQLITE_ENABLE_DBSTAT_VTAB \
+	-DSQLITE_ENABLE_DESERIALIZE \
+	-DSQLITE_ENABLE_FTS3 \
+	-DSQLITE_ENABLE_FTS3_PARENTHESIS \
+	-DSQLITE_ENABLE_FTS4 \
+	-DSQLITE_ENABLE_FTS5 \
+	-DSQLITE_ENABLE_JSON1 \
+	-DSQLITE_ENABLE_RTREE \
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY \
+	-DSQLITE_SECURE_DELETE \
 	-fno-strict-aliasing "
 %ifarch %e2k
 # FIXME: lcc-1.23 lacks some gcc5 builtins
@@ -130,22 +127,30 @@ autoreconf -i
 %configure \
 	%{subst_enable static} \
 	--disable-amalgamation \
+	--enable-fst3 \
+	--enable-fst4 \
 	--enable-fts5 \
+	--enable-json1 \
 	--enable-load-extension \
 	--enable-readline \
+	--enable-rtree \
 	--enable-threadsafe \
 	#
 
 %make_build all
+make sqlite3_analyzer sqldiff
 
 %check
-subst 's|-DSQLITE_ENABLE_FTS3=1||' Makefile
+sed -Ei 's@-DSQLITE_ENABLE_FTS[34](\s|$)@@g' Makefile
 %make test
 
 %install
 %make_install install tcl_install DESTDIR=%buildroot
 
 install -pD -m644 %name.1 %buildroot%_man1dir/%name.1
+
+install -pD -m755 sqlite3_analyzer %buildroot%_bindir/sqlite3_analyzer
+install -pD -m755 sqldiff %buildroot%_bindir/sqldiff
 
 install -pD -m755 lemon %buildroot%_bindir/lemon
 install -pD -m644 lempar.c %buildroot%_datadir/lemon/lempar.c
@@ -160,6 +165,8 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 
 %files
 %_bindir/%name
+%_bindir/sqlite3_analyzer
+%_bindir/sqldiff
 %_man1dir/%name.*
 
 %files -n lib%name
@@ -178,7 +185,7 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 %_libdir/lib%name.a
 %endif # static
 
-%files tcl
+%files -n tcl-sqlite3
 %_tcllibdir/libtcl%name.so*
 %_tcllibdir/sqlite3
 
@@ -192,6 +199,46 @@ install -pD -m644 doc/lemon.html %buildroot%_docdir/lemon/lemon.html
 %_datadir/lemon
 
 %changelog
+* Sat Aug 15 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.33.0-alt1
+- 3.33.0.
+
+* Sun Jun 21 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.32.3-alt1
+- 3.32.3.
+
+* Mon Jun 08 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.32.2-alt1
+- 3.32.2.
+- Applied Debian patch (fixes CVE-2020-13871).
+
+* Wed May 27 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.32.1-alt1
+- 3.32.1.
+
+* Sun May 24 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.32.0-alt1
+- 3.32.0.
+
+* Tue May 19 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.31.1-alt1
+- Updated to 3.31.1.
+- Backported fix for problems in the constant propagation optimization.
+- Backported CVE fixes (fixes CVE-2020-9327 and CVE-2020-11655).
+
+* Thu Jan 23 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.31.0-alt1
+- 3.31.0 (Fixes: CVE-2019-19923, CVE-2019-19924, CVE-2019-19925,
+  CVE-2019-19926).
+
+* Sun Dec 01 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.30.1-alt3
+- Enabled fts4 module (need for fossil 2.10).
+- Enabled fts3_parenthesis.
+
+* Wed Oct 23 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.30.1-alt2
+- Built and packed sqlite3_analyzer and sqldiff.
+
+* Sat Oct 12 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.30.1-alt1
+- 3.30.1.
+
+* Sat Oct 05 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.30.0-alt1
+- 3.30.0.
+- Enabled R*Tree module.
+- Renamed sqlite3-tcl to tcl-sqlite3.
+
 * Tue Sep 03 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.29.0-alt1
 - 3.29.0.
 - Fixed loading of sqlite3 Tcl extension (pointed nbr@).

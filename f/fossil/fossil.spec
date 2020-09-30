@@ -1,14 +1,16 @@
 %def_enable Werror
 Name: fossil
-Version: 2.9
-Release: alt2
+Version: 2.12.1
+Release: alt1
 
 Summary: A distributed SCM with bug tracking and wiki
 License: %bsdstyle
 Group: Development/Other
 
 Url: http://www.fossil-scm.org/
+# repacked https://www.fossil-scm.org/home/uv/fossil-src-%version.tar.gz
 Source: %name-%version.tar
+# git://git.altlinux.org/gears/f/fossil.git
 Patch: %name-%version-%release.patch
 
 BuildRequires(pre): rpm-build-licenses
@@ -61,6 +63,18 @@ install -pDm644 fossil.1 %buildroot%_man1dir/fossil.1
 #doc www
 
 %changelog
+* Sat Aug 22 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.12.1-alt1
+- Updated to 2.12.1 (fixes OVE-20200822-0001).
+
+* Wed Aug 19 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.12-alt1
+- Updated to 2.12.
+
+* Sat Jun 20 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.11.1-alt1
+- Updated to 2.11.1.
+
+* Sun Dec 01 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.10-alt1
+- Updated to 2.10.
+
 * Wed Jul 17 2019 Michael Shigorin <mike@altlinux.org> 2.9-alt2
 - Fixed build on new arches.
 
