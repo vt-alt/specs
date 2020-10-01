@@ -4,8 +4,8 @@
 %def_disable check
 
 Name: libextractor
-Version: 1.9
-Release: alt2
+Version: 1.10
+Release: alt1
 
 Summary: libextractor is a simple library for keyword extraction
 
@@ -18,7 +18,6 @@ Source: ftp://ftp.gnu.org/gnu/%name/%name-%version.tar.gz
 %else
 Source: %name-%version.tar
 %endif
-Patch: %name-1.9-up-exiv2-0.27.patch
 
 %define flac_ver 1.3
 
@@ -27,7 +26,6 @@ BuildRequires: libgsf-devel libltdl7-devel libgtk+3-devel
 BuildRequires: libmpeg2-devel libtiff-devel libmp4v2-devel libqt4-devel librpm-devel
 BuildRequires: libopus-devel libvorbis-devel libflac-devel
 BuildRequires: iso-codes-devel libgif-devel libarchive-devel libtidy-devel
-# requires libjpeg-8 API (jpeg_mem_src()) -- plugin disabled
 BuildRequires: libjpeg-devel gst-plugins1.0-devel
 %if_enabled ffmpeg
 BuildRequires: libavcodec-devel libavutil-devel
@@ -63,7 +61,6 @@ This package contains the files needed to build packages that depend on %name.
 
 %prep
 %setup
-%patch -p1
 
 %build
 %autoreconf
@@ -103,6 +100,9 @@ export LIBEXTRACTOR_PREFIX=%buildroot%_libdir
 %_man3dir/*
 
 %changelog
+* Fri Jul 03 2020 Yuri N. Sedunov <aris@altlinux.org> 1.10-alt1
+- 1.10
+
 * Sun Aug 11 2019 Yuri N. Sedunov <aris@altlinux.org> 1.9-alt2
 - rebuilt against libexiv2.so.27
 
