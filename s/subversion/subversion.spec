@@ -62,12 +62,12 @@
 %define modname dav_svn_module
 
 Name:     subversion
-Version:  1.9.2
-Release:  alt3.3
+Version:  1.14.0
+Release:  alt1
 
 Summary:  A version control system
 Group:    Development/Other
-License:  Apache
+License:  Apache-2.0
 Url:      http://subversion.apache.org/
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -95,12 +95,10 @@ Patch16: %name-1.6.0-gentoo-java-headers.patch
 Patch17: %name-1.6.6-deb-ssh-no-controlmaster.patch
 
 # Patches from Fedora
-Patch20: subversion-1.9.2-rpath.patch
-Patch21: subversion-1.8.0-pie.patch
+Patch20: subversion-1.13.0-rpath.patch
+Patch21: subversion-1.13.0-pie.patch
 Patch22: subversion-1.8.0-rubybind.patch
 Patch23: subversion-1.8.5-swigplWall.patch
-Patch25: subversion-1.8.13-swigpython.patch
-Patch26: subversion-1.8.11-ruby22-fixes.rb
 
 Requires: lib%name = %version-%release
 
@@ -116,24 +114,27 @@ BuildRequires: libneon-devel libkeyutils-devel
 
 BuildRequires: libserf-devel
 BuildRequires: libsasl2-devel
+BuildRequires: libsecret-devel
+BuildRequires: liblz4-devel
+BuildRequires: libutf8proc-devel
+BuildRequires: patchelf
+BuildRequires: python3-base
 
 # since 1.6.0 subversion requires sqlite
 # if sqlite_external is enabled subversion will be linked with system's sqlite
 # else subversion will use sqlite-amalgamation ($SOURCE9)
 %{?_enable_sqlite_external:BuildRequires: libsqlite3-devel >= 3.4.0}
-
-%{?_enable_static:BuildPreReq: glibc-devel-static}
-
+%{?_enable_static:BuildRequires(pre): glibc-devel-static}
 %{?_with_gnome_keyring:BuildRequires: libdbus-devel libgnome-keyring-devel}
-%{?_with_kwallet:BuildRequires: gcc-c++ libdbus-devel kde4libs-devel}
-%{?_with_swig_py:BuildPreReq: swig python-devel}
-%{?_with_swig_pl:BuildPreReq: swig perl-devel perl(PerlIO.pm)}
-%{?_with_swig_rb:BuildPreReq: swig libruby-devel}
-%{?_with_javahl:BuildPreReq: gcc-c++ junit java-devel-default /proc}
-%{?_with_dav:BuildPreReq: apache2-devel}
+%{?_with_kwallet:BuildRequires: gcc-c++ libdbus-devel kf5-kdelibs4support qt5-base-devel kf5-kwallet-devel kf5-ki18n-devel kf5-kcoreaddons-devel}
+%{?_with_swig_py:BuildRequires(pre): swig rpm-build-python3 python3-devel py3c-devel}
+%{?_with_swig_pl:BuildRequires(pre): swig perl-devel perl(PerlIO.pm)}
+%{?_with_swig_rb:BuildRequires(pre): swig libruby-devel}
+%{?_with_javahl:BuildRequires(pre): gcc-c++ junit java-devel-default /proc}
+%{?_with_dav:BuildRequires(pre): apache2-devel}
 
 # For tests
-BuildRequires: python-modules-sqlite3
+BuildRequires: python3-modules-sqlite3
 
 %add_findprov_lib_path %_libdir/libsvn_swig
 
@@ -188,7 +189,7 @@ released under an Apache/BSD-style source license.  See the status page
 for current progress.
 
 %package -n lib%name-auth-kwallet
-Summary: KDE4 KWallet auth module
+Summary: KDE5 KWallet auth module
 Group: Development/Other
 Requires: lib%name = %version-%release
 
@@ -198,7 +199,7 @@ a compelling replacement for CVS in the open community.  The software is
 released under an Apache/BSD-style source license.  See the status page
 for current progress.
 
-This package contains the KDE4 KWallet auth module.
+This package contains the KDE5 KWallet auth module.
 
 %package -n lib%name-auth-gnome-keyring
 Summary: Gnome Keyring auth module
@@ -214,12 +215,12 @@ for current progress.
 This package contains the Gnome Keyring auth module.
 
 %if_with swig_py
-%package python
+%package python3
 Summary: Pyhton bindings for Subversion
 Group: Development/Other
 Requires: lib%name = %version-%release
 
-%description python
+%description python3
 The goal of the Subversion project is to build a revision system that is
 a compelling replacement for CVS in the open community.  The software is
 released under an Apache/BSD-style source license.  See the status page
@@ -350,19 +351,21 @@ install -pD -m644 %SOURCE11 sqlite-amalgamation/sqlite3.c
 
 %patch4 -p1
 %patch5 -p2
-%patch6 -p2
+#patch6 -p2
 %patch16 -p1
-%patch17 -p1
+%patch17 -p2
 %patch20 -p1
-%patch21 -p1
+%patch21 -p2
 %patch22 -p1
 %patch23 -p1
-%patch25 -p1
-%patch26 -p0
 
 %build
 %add_optflags %optflags_shared
-
+%if_with kwallet
+export KDE_CONFIG=%_libexecdir/kf5/bin/kf5-config
+%add_optflags -L%_libdir/kf5/devel
+%endif
+export PYTHON=%__python3
 LIBTOOL_M4=%{_datadir}/libtool/aclocal ./autogen.sh
 %autoreconf
 %configure \
@@ -385,7 +388,7 @@ LIBTOOL_M4=%{_datadir}/libtool/aclocal ./autogen.sh
 %make_build
 
 %if_with swig_py
-%make_build libdir=%_libdir/libsvn_swig swig_pydir=%python_sitelibdir/libsvn swig_pydir_extra=%python_sitelibdir/svn swig-py
+%make_build libdir=%_libdir/libsvn_swig swig_pydir=%python3_sitelibdir/libsvn swig_pydir_extra=%python3_sitelibdir/svn swig-py
 %endif
 
 %if_with swig_pl
@@ -427,8 +430,8 @@ make javahl
 doxygen doc/doxygen.conf
 %endif
 
-sed -i 's:#!/usr/bin/env python2:#!/usr/bin/env python:' tools/hook-scripts/mailer/mailer.py
-sed -i 's:/usr/bin/env python2$:/usr/bin/env python:' tools/hook-scripts/*.py
+# Add shebang for python3 executable
+subst 's|#!.*python$|#!%__python3|' $(grep -Rl '#!.*python$' *)
 
 %check
 # Running tests
@@ -509,13 +512,13 @@ mkdir -p %buildroot%_libdir/libsvn_swig
 
 %if_with swig_py
 %make_install DESTDIR=%buildroot libdir=%_libdir/libsvn_swig swig_py_libdir=%_libdir/libsvn_swig \
-    swig_pydir=%python_sitelibdir/libsvn swig_pydir_extra=%python_sitelibdir/svn install-swig-py
+    swig_pydir=%python3_sitelibdir/libsvn swig_pydir_extra=%python3_sitelibdir/svn install-swig-py
 rm -f %buildroot%_libdir/libsvn_swig/libsvn_swig_py*.la
-cp -r %_builddir/%buildsubdir/subversion/bindings/swig/python/svn %buildroot%python_sitelibdir
+cp -r %_builddir/%buildsubdir/subversion/bindings/swig/python/svn %buildroot%python3_sitelibdir
 %endif
 
 %if_with swig_pl
-%make_install DESTDIR=%buildroot PREFIX=%_prefix libdir=%_libdir/libsvn_swig swig_pl_libdir=%_libdir/libsvn_swig install-swig-pl
+%make_install DESTDIR=%buildroot PREFIX=%_prefix INSTALLSITEARCH=%perl_vendor_archlib libdir=%_libdir/libsvn_swig swig_pl_libdir=%_libdir/libsvn_swig install-swig-pl
 rm -f %buildroot%_libdir/libsvn_swig/libsvn_swig_pl*.la
 %endif
 
@@ -584,6 +587,14 @@ install -pm644 -- %SOURCE10 %buildroot%apache2_mods_start/100-%module_name.conf
 # Installing bash-completion file
 mkdir -p %buildroot/etc/bash_completion.d
 install -pm644 tools/client-side/bash_completion %buildroot/etc/bash_completion.d/svn
+
+# Remove alsolute pathes from RPATH in Perl libraries
+%if_with swig_pl
+patchelf --set-rpath %_libdir/libsvn_swig %buildroot%perl_vendor_archlib/auto/SVN/*/*.so
+%endif
+
+# Remove wrong pkgconfig files
+rm -fr %buildroot%_datadir/pkgconfig
 
 %find_lang %name
 
@@ -689,10 +700,10 @@ fi
 %endif
 
 %if_with swig_py
-%files python
+%files python3
 %_libdir/libsvn_swig/libsvn_swig_py*.so.*
-%python_sitelibdir/svn
-%python_sitelibdir/libsvn
+%python3_sitelibdir/svn
+%python3_sitelibdir/libsvn
 %endif
 
 %if_with swig_pl
@@ -762,6 +773,15 @@ fi
 %endif
 
 %changelog
+* Sat May 30 2020 Andrey Cherepanov <cas@altlinux.org> 1.14.0-alt1
+- New version.
+- Build subversion-python3, support for Python 2.x is removed.
+
+* Sun Mar 29 2020 Andrey Cherepanov <cas@altlinux.org> 1.13.0-alt1
+- New version (ALT #36518).
+- Build with KWallet from KDE5.
+- Fix License tag according to SPDX.
+
 * Thu Jan 24 2019 Igor Vlasenko <viy@altlinux.ru> 1.9.2-alt3.3
 - rebuild with new perl 5.28.1
 

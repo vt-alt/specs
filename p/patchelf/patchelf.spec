@@ -1,12 +1,12 @@
 Name: patchelf
-Version: 0.9
-Release: alt3
+Version: 0.10
+Release: alt1
 Summary: A utility for patching ELF binaries
 
 Group: Development/Tools
 License: GPLv3+
 Url: http://nixos.org/patchelf.html
-# repacked http://releases.nixos.org/patchelf/patchelf-%version/%name-%version.tar.gz
+# repacked https://nixos.org/releases/patchelf/patchelf-%version/%name-%version.tar.gz
 Source: %name-%version.tar
 
 # Automatically added by buildreq on Mon Nov 07 2016
@@ -48,6 +48,9 @@ rm -rf %buildroot/usr/share/doc/%name
 %_mandir/man1/patchelf.1*
 
 %changelog
+* Fri Aug 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.10-alt1
+- Updated to 0.10.
+
 * Sun Jun 24 2018 Igor Vlasenko <viy@altlinux.ru> 0.9-alt3
 - NMU: build for aarch64
 
