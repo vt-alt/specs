@@ -1,20 +1,21 @@
 %def_disable static
 
 Name: xapian-core
-Version: 1.4.5
-Release: alt3
+Version: 1.4.15
+Release: alt1
 
 Summary: The Xapian Probabilistic Information Retrieval Library
+
 License: GPL
 Group: Databases
-
 Url: http://www.xapian.org
-Source0: http://www.oligarchy.co.uk/xapian/%version/%{name}-%{version}.tar.xz
+
+Source: http://www.oligarchy.co.uk/xapian/%version/%{name}-%{version}.tar
 Source100: %name.watch
+
 Packager: Michael Shigorin <mike@altlinux.org>
 
-# Automatically added by buildreq on Wed May 05 2010
-BuildRequires: gcc-c++ libblkid libe2fs libpasswdqc libss libtic libuuid-devel libzio pam0_userpass python-base zlib-devel
+BuildRequires: gcc-c++ zlib-devel libuuid-devel
 
 %description
 Xapian is an Open Source Probabilistic Information Retrieval Library.
@@ -142,6 +143,10 @@ rm -f %buildroot%_libdir/libxapian.a
 #   I use watch file and it's more convenient to do that with srpms
 
 %changelog
+* Mon Mar 23 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.15-alt1
+- new version 1.4.15 (with rpmrb script)
+- update buildreqs
+
 * Mon Oct 15 2018 Michael Shigorin <mike@altlinux.org> 1.4.5-alt3
 - drop BR: libwrap (was weird anyways)
 
