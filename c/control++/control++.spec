@@ -1,4 +1,5 @@
 %define libcontrolppver 0.24
+%define confdir %{_sysconfdir}/%{name}
 %define statedir %{_localstatedir}/%{name}
 %define ulim_statedir %{statedir}/ulimits
 %define perm_statedir %{statedir}/permissions
@@ -6,7 +7,7 @@
 
 Name: control++
 Version: 0.20.3
-Release: alt0.M90P.1
+Release: alt1.M90P.1
 
 Summary: System configuration tool
 License: GPLv3
@@ -22,6 +23,8 @@ BuildRequires: gcc-c++
 BuildRequires: libcontrol++-devel >= %{libcontrolppver}
 
 Requires: libcontrol++
+# Fulfilling a requirement of a testing routine used for a particular distro
+Requires: %{name}-wl
 
 %description
 %{name} is a simple system configuration tool that allows administrator
@@ -30,11 +33,26 @@ perform other administrative operations.
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+%package -n %{name}-wl
+Summary: Files that can help to configure whitelist permission mode
+Group: System/Configuration/Other
+
+Requires(pre): %{name}
+
+%description -n %{name}-wl
+Files that can help to configure whitelist permission mode:
+1) A sample of a permission mode with an extensive real-life 'whitelist'
+section;
+2) A shell script that can generate a list of all executable files of the host
+system (to be used with the sample described above).
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 %package -n %{name}-checkinstall
 Summary: Tests and test data for %{name}
 Group: Other
 
-Requires: %{name}
+Requires(pre): %{name}
 Requires: python3
 Requires: python3-module-ax
 
@@ -52,7 +70,7 @@ Tests and test data for %{name}.
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_defaultdocdir}/%{name}
-mkdir -p %{buildroot}%{_sysconfdir}/%{name}
+mkdir -p %{buildroot}%{confdir}
 mkdir -p %{buildroot}%{ulim_statedir}
 mkdir -p %{buildroot}%{perm_statedir}
 mkdir -p %{buildroot}%{testsdir}
@@ -60,7 +78,7 @@ mkdir -p %{buildroot}/run/%{name}
 # Executables
 cp bin/%{name} %{buildroot}%{_bindir}
 # Configuration
-cp -r samples/* %{buildroot}%{_sysconfdir}/%{name}
+cp -r samples/* %{buildroot}%{confdir}
 # Documentation
 cp COPYING %{buildroot}%{_defaultdocdir}/%{name}
 cp usage.txt %{buildroot}%{_defaultdocdir}/%{name}
@@ -73,12 +91,18 @@ cp -r tests/* %{buildroot}%{testsdir}
 
 %files
 %{_bindir}/%{name}
-%{_sysconfdir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
+%{confdir}
+%exclude %{confdir}/wl.sh
+%exclude %{confdir}/permissions/wl
+%config(noreplace) %{confdir}/%{name}.conf
 %dir %{statedir}
 %dir %{ulim_statedir}
 %dir %{perm_statedir}
 %{_defaultdocdir}/%{name}
+
+%files -n %{name}-wl
+%{confdir}/wl.sh
+%{confdir}/permissions/wl
 
 %files -n %{name}-checkinstall
 %{testsdir}/*
@@ -87,6 +111,13 @@ cp -r tests/* %{buildroot}%{testsdir}
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 %changelog
+* Thu Sep 24 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.3-alt1.M90P.1
+- Port of a new release.
+
+* Thu Sep 24 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.3-alt2
+- New bin package 'control++-wl' that contains files that can help to configure
+  whitelist permission mode.
+
 * Wed Sep 09 2020 Alexey Appolonov <alexey@altlinux.org> 0.20.3-alt0.M90P.1
 - Port of a new version.
 
