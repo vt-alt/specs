@@ -1,8 +1,8 @@
 %define testname systemd-but-no-native-init
 
 Name: repocop-unittest-%testname
-Version: 0.03
-Release: alt2
+Version: 0.04
+Release: alt1
 BuildArch: noarch
 Packager: Igor Vlasenko <viy@altlinux.ru>
 Requires: repocop > 0.55
@@ -54,8 +54,7 @@ cat $REPOCOP_TEST_TMPDIR/pre | while read -r pkgid service; do
     esac
 done
 
-#for i in `sort -u $REPOCOP_TEST_TMPDIR/msg-info`; do repocop-test-info -k $i "The package have native systemd file(s) but no  SysV init scripts."; done
-for i in `sort -u $REPOCOP_TEST_TMPDIR/msg-warn`; do repocop-test-warn -k $i "The package have native systemd file(s) but no  SysV init scripts."; done
+for i in `sort -u $REPOCOP_TEST_TMPDIR/msg-info`; do repocop-test-info -k $i "The package have native systemd file(s) but no  SysV init scripts."; done
 rm $REPOCOP_TEST_TMPDIR/*
 EOF
 
@@ -73,6 +72,9 @@ done
 #%_datadir/repocop/fixscripts/*.pl
 
 %changelog
+* Sun Sep 27 2020 Igor Vlasenko <viy@altlinux.ru> 0.04-alt1
+- sysVinit is deprecating, set as info
+
 * Sat Feb 07 2015 Igor Vlasenko <viy@altlinux.ru> 0.03-alt2
 - ignore wpa_supplicant
 
