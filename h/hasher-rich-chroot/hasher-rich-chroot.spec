@@ -1,5 +1,5 @@
 Name: hasher-rich-chroot
-Version: 0.04
+Version: 0.05
 Release: alt1
 
 Summary: hasher chroot environment for productive work 
@@ -17,6 +17,7 @@ Requires: mc less unzip elfutils rpm-utils
 #terminfo-extra, т.к. я использую screen-256color-bce-s; даже внутрь
 #хешерницы, т.к. иначе hsh-shell не работает нормально.
 Requires: terminfo-extra
+Requires: vim-console
 # vim alternative
 Requires: nano
 
@@ -61,6 +62,9 @@ install -m 755 hsh-*  %buildroot%_bindir/
 %_bindir/hsh-install-rich-chroot
 
 %changelog
+* Sun Sep 27 2020 Igor Vlasenko <viy@altlinux.ru> 0.05-alt1
+- updated requires in hasher-rich-chroot
+
 * Wed Feb 06 2019 Igor Vlasenko <viy@altlinux.ru> 0.04-alt1
 - added nano as vim-console alternative
 
