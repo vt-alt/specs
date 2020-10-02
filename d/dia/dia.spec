@@ -6,7 +6,7 @@
 %define major 0.97
 Name: dia
 Version: %major.4
-Release: alt0.7
+Release: alt0.7.1
 
 Summary: A gtk+ based diagram creation program
 Summary(ru_RU.UTF-8): Программа для создания диаграмм, основанная на GTK+
@@ -28,6 +28,7 @@ Source2: ru.po
 #Patch: %name-%version-%release.patch
 Patch: alt-dia-fix-help.patch
 Patch2: alt-dia-improve-translation.patch
+Patch3: CVE-2019-19451-adapted-fix.patch
 
 BuildRequires: dblatex docbook-style-xsl docbook-utils gcc-c++ intltool libart_lgpl-devel libgtk+2-devel libxslt-devel
 BuildRequires: python-devel python-module-PyXML python-module-pygtk python-modules-email python-modules-encodings xsltproc
@@ -62,6 +63,7 @@ PostScript(TM), SVG, CGM или PNG.
 #patch -p1
 %patch -p1
 %patch2 -p1
+%patch3 -p1
 
 cp -f %SOURCE2 po/ru.po
 
@@ -107,6 +109,9 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_mandir/fr/man1/*
 
 %changelog
+* Fri Oct 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.97.4-alt0.7.1
+- Applied security fix from upstream (Fixes: CVE-2019-19451).
+
 * Mon Jan 21 2019 Ivan Razzhivin <underwit@altlinux.org> 0.97.4-alt0.7
 - improve translation
 
