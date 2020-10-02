@@ -7,7 +7,7 @@
 %def_without instagib
 
 Name: teeworlds
-Version: 0.7.3.1
+Version: 0.7.5
 Release: alt1
 Summary: Cute little buggers with guns
 License: distributable
@@ -78,11 +78,7 @@ Requires: %name-server = %EVR
 %endif
 
 %prep
-%setup -a3
-
-pushd datasrc/languages ; tar xf %SOURCE1 --strip-components=1 ; popd
-pushd datasrc/maps      ; tar xf %SOURCE2 --strip-components=1 ; popd
-
+%setup -a1 -a2 -a3
 rm -rf src/engine/external/{wavpack,zlib,pnglite}
 
 %build
@@ -206,6 +202,12 @@ install -pDm644 altlinux/server-ictf.cfg %buildroot%_sysconfdir/%name/server-ict
 %_datadir/teeworlds
 
 %changelog
+* Fri Jun 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.5-alt1
+- Updated to upstream version 0.7.5.
+
+* Wed Apr 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.4-alt1
+- Updated to upstream version 0.7.4.
+
 * Fri May 24 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.3.1-alt1
 - Updated to upstream version 0.7.3.1.
 
