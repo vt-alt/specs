@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		chronograf
-Version:	1.8.1
+Version:	1.8.6
 Release:	alt1
 Summary:	Open source framework for processing, monitoring, and alerting on time series data
 
@@ -26,7 +26,7 @@ Source103: %name.service
 Source104: %name.tmpfiles
 
 ExclusiveArch:  %go_arches
-BuildRequires(pre): rpm-build-golang
+BuildRequires(pre): rpm-build-golang rpm-build-nodejs
 BuildRequires: go-bindata
 BuildRequires: npm yarn
 BuildRequires: node node-devel
@@ -51,6 +51,7 @@ Open source framework for processing, monitoring, and alerting on time series da
 # $ rm -rf node_modules/node-sass
 # $ rm -rf node_modules/node-gyp
 # $ rm -rf node_modules/deasync/bin
+# $ rm -rf node_modules/deasync/build
 # $ git add -f node_modules
 # $ git commit -m "add node js modules"
 
@@ -94,7 +95,7 @@ export BUILDDIR="$PWD/.gopath"
 #export GOPATH="%go_path"
 export IMPORT_PATH="%import_path"
 #export GOPATH="$BUILDDIR:%go_path:$PWD"
-export GO111MODULE=off
+export GOFLAGS="-mod=vendor"
 
 pushd .gopath/src/%import_path
 install -p -D -m 755 chronograf %buildroot%_bindir/%name
@@ -144,6 +145,9 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %_datadir/%name
 
 %changelog
+* Sun Sep 06 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.6-alt1
+- 1.8.6
+
 * Sat Apr 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.1-alt1
 - 1.8.1
 
@@ -153,13 +157,13 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 * Mon Jan 21 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.7-alt1
 - 1.7.7
 
-* Mon Oct 30 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.10.0-alt1%ubt
+* Mon Oct 30 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.10.0-alt1
 - 1.3.10.0
 
-* Mon Aug 28 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.7.0-alt1%ubt
+* Mon Aug 28 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.7.0-alt1
 - 1.3.7.0
 
-* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.5.0-alt1%ubt
+* Tue Aug 08 2017 Alexey Shabalin <shaba@altlinux.ru> 1.3.5.0-alt1
 - rebuild with Universal Branch Tag
 - fix run with sysv init script
 

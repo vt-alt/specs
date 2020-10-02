@@ -11,7 +11,7 @@
 
 Name: libreoffice-online
 Version: 6.2.3.2
-Release: alt2
+Release: alt4
 Summary: LibreOffice Online WebSocket Daemon
 License: MPL-2.0
 Group: Office
@@ -35,10 +35,12 @@ Patch8: alt-use-hash-directory.patch
 Patch9: alt-gcc-compat.patch
 Patch10: alt-python2-compat.patch
 Patch11: alt-32bit-build.patch
+Patch12: alt-fix-build-poco-1.10.1.patch
 
 Requires: LibreOffice python3 fonts-ttf-core
 
 BuildRequires(pre): rpm-build-python3
+BuildRequires: gcc-c++
 BuildRequires: libtool automake npm libcap-utils fontconfig
 BuildRequires: libpoco-devel libpng-devel libcap-devel cppunit-devel
 BuildRequires: pam-devel libpcre-devel
@@ -85,6 +87,7 @@ Apache 2.x web-server default configuration for %name.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 
 %build
 %add_optflags -D_FILE_OFFSET_BITS=64
@@ -193,6 +196,12 @@ a2enmod headers
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/sites-available/%name.conf
 
 %changelog
+* Fri Jul 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.3.2-alt4
+- Updated build dependencies.
+
+* Thu Mar 05 2020 Alexei Takaseev <taf@altlinux.org> 6.2.3.2-alt3
+- Fix build with poco 1.10.1
+
 * Wed Mar 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.2.3.2-alt2
 - Fixed build on p9 for ppc64le.
 

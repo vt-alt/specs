@@ -1,10 +1,10 @@
 # check deps/npm/package.json for it
-%define npmver 6.14.5
+%define npmver 6.14.8
 # separate build npm
 %def_without npm
 # in other case, note: we will npm-@npmver-@release package! fix release if npmver is unchanged
 
-%define major 14.3
+%define major 14.11
 
 #we need ABI virtual provides where SONAMEs aren't enough/not present so deps
 #break when binary compatibility is broken
@@ -23,16 +23,18 @@
 %define openssl_version 1.0.2n
 %def_with systemssl
 
-%global libuv_abi 1.37.0
+%global libuv_abi 1.39.0
 %def_with systemuv
 
-# use 5.6 as c8
-%global libicu_abi 5.6
+%global libicu_abi 6.7
+# rpm-build-info gives _distro_version
+%if %_vendor == "alt" && (%_distro_version == "Sisyphus")
 %def_with systemicu
 # TODO: node has to use icu:: for ICU names
 #add_optflags -DU_USING_ICU_NAMESPACE=1
+%endif
 
-%global libnghttp2_abi 1.40.0
+%global libnghttp2_abi 1.41.0
 %def_with systemnghttp2
 
 # to use internal llhttp
@@ -48,7 +50,7 @@
 
 Name: node
 Version: %major.0
-Release: alt1
+Release: alt2
 
 Summary: Evented I/O for V8 Javascript
 
@@ -64,7 +66,7 @@ Source: %name-%version.tar
 Source7: nodejs_native.req.files
 
 BuildRequires(pre): rpm-macros-nodejs
-BuildRequires(pre): rpm-build-intro >= 2.1.5
+BuildRequires(pre): rpm-build-intro >= 2.1.14
 
 BuildRequires: python3-devel gcc-c++ zlib-devel
 
@@ -100,6 +102,11 @@ BuildRequires: libhttp-parser-devel >= 2.9.2-alt2
 BuildRequires: libcares-devel >= 1.11.0
 
 BuildRequires: curl
+
+%if_without npm
+Requires: npm >= %npmver
+%endif
+
 Provides: nodejs(engine) = %version
 Provides: nodejs = %version-%release
 Provides: node.js = %version-%release
@@ -110,7 +117,7 @@ Provides: nodejs(abi) = %{nodejs_abi}
 Provides: nodejs(v8-abi) = %{v8_abi}
 Provides: nodejs(napi) = %{napi}
 
-Provides: bundled(llhttp) = 2.0.4
+Provides: bundled(llhttp) = 2.1.2
 
 # /usr/bin/ld.default: failed to set dynamic section sizes: memory exhausted
 %ifarch %ix86
@@ -350,6 +357,7 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %_includedir/node/common.gypi
 %_includedir/node/config.gypi
 %_includedir/node/libplatform/
+%_includedir/node/cppgc/
 # deps/http_parser
 #_includedir/node/nameser.h
 #_datadir/node/common.gypi
@@ -367,6 +375,34 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Fri Sep 18 2020 Vitaly Lipatov <lav@altlinux.ru> 14.11.0-alt2
+- set libicu >= 6.7 (missed since 14.6.0), use packaged icu only on Sisyphus
+
+* Wed Sep 16 2020 Vitaly Lipatov <lav@altlinux.ru> 14.11.0-alt1
+- new version 14.11.0 (with rpmrb script)
+- CVE-2020-8251: Denial of Service by resource exhaustion CWE-400 due to unfinished HTTP/1.1 requests (Critical)
+- CVE-2020-8201: HTTP Request Smuggling due to CR-to-Hyphen conversion (High)
+
+* Wed Sep 02 2020 Vitaly Lipatov <lav@altlinux.ru> 14.9.0-alt1
+- new version 14.9.0 (with rpmrb script)
+- libuv >= 1.39.0
+- npm >= 6.14.8
+
+* Sat Aug 01 2020 Vitaly Lipatov <lav@altlinux.ru> 14.7.0-alt1
+- new version 14.7.0 (with rpmrb script)
+- npm >= 6.14.7
+
+* Sat Aug 01 2020 Vitaly Lipatov <lav@altlinux.ru> 14.6.0-alt1
+- new version 14.6.0 (with rpmrb script)
+- libuv >= 1.38.1
+- npm >= 6.14.6
+
+* Fri Jun 19 2020 Vitaly Lipatov <lav@altlinux.ru> 14.4.0-alt1
+- new version 14.4.0 (with rpmrb script)
+- set libicu >= 6.5
+- set libnghttp2 >= 1.41.0
+- CVE-2020-8172, CVE-2020-11080, CVE-2020-8174
+
 * Fri May 22 2020 Vitaly Lipatov <lav@altlinux.ru> 14.3.0-alt1
 - new version 14.3.0 (with rpmrb script)
 - npm >= 6.14.5
