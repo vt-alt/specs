@@ -2,12 +2,13 @@
 
 Name: birdtray
 Version: 1.8.1
-Release: alt1
+Release: alt2
 Summary: Birdtray is a free system tray notification for new mail for Thunderbird
 License: GPLv3 
 Group: Networking/Mail
 Url: https://github.com/gyunaev/birdtray
-Source: %name-%version.tar.gz
+Source: %name-%version.tar
+Patch1: alt-qt5.15.patch
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: gcc-c++
@@ -34,6 +35,7 @@ possibly by the time you read these words.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%buildroot/%prefix
@@ -55,6 +57,9 @@ sed -i '/Exec=birdtray/i\Comment=Birdtray' %buildroot%_desktopdir/com.ulduzsoft.
 %_desktopdir/com.ulduzsoft.Birdtray.desktop
 
 %changelog
+* Tue Sep 29 2020 Sergey V Turchin <zerg@altlinux.org> 1.8.1-alt2
+- Fix to build with Qt-5.15
+
 * Fri Jul 24 2020 Mikhail Chernonog <snowmix@altlinux.org> 1.8.1-alt1
 - 1.7.0 -> 1.8.1
 
