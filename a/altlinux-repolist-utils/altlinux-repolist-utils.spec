@@ -1,5 +1,5 @@
 Name: altlinux-repolist-utils
-Version: 0.006
+Version: 0.007
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -44,6 +44,9 @@ install -m 644 ALTLinux/RepoList/*.pm %buildroot%perl_vendor_privlib/ALTLinux/Re
 %perl_vendor_privlib/ALTLinux/*
 
 %changelog
+* Tue Sep 22 2020 Igor Vlasenko <viy@altlinux.ru> 0.007-alt1
+- fixed false warning
+
 * Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 0.006-alt1
 - extended API
 - support of zme'd list
