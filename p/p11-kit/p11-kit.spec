@@ -10,7 +10,7 @@
 
 Name: p11-kit
 Version: 0.23.15
-Release: alt1
+Release: alt2
 
 Summary: Utilities for PKCS#11 modules
 Group: Security/Networking
@@ -32,6 +32,7 @@ Patch1: lib%name-0.23.8-alt-lfs.patch
 Requires: %_datadir/pki/ca-trust-source/ca-bundle.trust.p11-kit
 Requires: %name-trust = %version-%release
 
+BuildRequires(pre): rpm-macros-alternatives
 BuildRequires: libtasn1-devel libffi-devel
 %if %hash_impl == freebl
 BuildRequires: libnss-devel
@@ -228,6 +229,9 @@ rm -r -- "$TEST_DIR"
 
 %files checkinstall
 %changelog
+* Thu Jun 04 2020 Andrew Savchenko <bircoph@altlinux.org> 0.23.15-alt2
+- Add rpm-macros-alternatives build dependency for %%_altdir.
+
 * Tue Apr 02 2019 Mikhail Efremov <sem@altlinux.org> 0.23.15-alt1
 - Changes from upstream:
   + modules: Fix index used in call to p11_dict_remove().

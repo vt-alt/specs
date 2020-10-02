@@ -5,7 +5,7 @@
 
 Name: jss
 Version: 4.6.2
-Release: alt2
+Release: alt2.1
 
 Summary: Java Security Services (JSS)
 License: MPLv1.1 or GPLv2+ or LGPLv2+
@@ -123,6 +123,10 @@ cp -p *.txt %buildroot%_javadocdir/%name-%version
 %_javadocdir/%name-%version
 
 %changelog
+* Sat Sep 19 2020 Andrey Cherepanov <cas@altlinux.org> 4.6.2-alt2.1
+- NMU: Fix build with nss-3.52.
+- NMU: Fix bigus timestamp in changelog.
+
 * Thu Nov 07 2019 Stanislav Levin <slev@altlinux.org> 4.6.2-alt2
 - Fixed NPE during FreeIPA installations (RHBZ: 1766451).
 
@@ -219,7 +223,7 @@ cp -p *.txt %buildroot%_javadocdir/%name-%version
 
 * Thu Mar 15 2007  Rob Crittenden <rcritten@redhat.com> 4.2.4-2
 - Added RPM_OPT_FLAGS to XCFLAGS
-
 - Added link to Sun JCE information
-* Mon Feb 27 2007 Rob Crittenden <rcritten@redhat.com> 4.2.4-1
+
+* Tue Feb 27 2007 Rob Crittenden <rcritten@redhat.com> 4.2.4-1
 - Initial build

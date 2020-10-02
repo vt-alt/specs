@@ -1,8 +1,6 @@
-%define nspr_version 4.25-alt1
-
 Summary:	Netscape Network Security Services(NSS)
 Name:		nss
-Version:	3.51.0
+Version:	3.56.0
 Release:	alt1
 License:	MPL-2.0
 Group:		System/Libraries
@@ -15,23 +13,14 @@ Source2:	nss-config.in
 Source4:	nss-db-%version.tar
 Source5:	setup-nsssysinit.sh
 Source6:	system-pkcs11.txt
-Source7:	nss-pem-%version.tar
-
-Patch0:		nss_with_system_nspr.patch
-Patch2:		nss-no-rpath.patch
-Patch3:		nss-use-sqlite.patch
-Patch4:		nss-use-mozsqlite.patch
-Patch5:		nss-fix-objdir.patch
-Patch6:		nss-no-tests.patch
-
-# Fedora patches
-Patch10:	nss-enable-pem.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  chrpath zlib-devel libsqlite3-devel
 BuildRequires:  rpm-macros-alternatives
-BuildRequires:  libnspr-devel >= %nspr_version
-Requires:       libnspr       >= %nspr_version
+BuildRequires:  python3
+BuildRequires:  gyp
+BuildRequires:  ninja-build
+BuildRequires:  libnspr-devel
 
 %description
 Network Security Services (NSS) is a set of libraries designed
@@ -47,6 +36,12 @@ Group:		System/Libraries
 
 Provides:	%name = %version-%release
 
+Provides:	%name-sysinit
+Provides:	%name-system-init
+
+Provides:	lib%name-sysinit = %version-%release
+Obsoletes:	lib%name-sysinit
+
 %description -n lib%name
 Network Security Services (NSS) is a set of libraries designed
 to support cross-platform development of security-enabled server
@@ -54,21 +49,6 @@ applications. Applications built with NSS can support SSL v2
 and v3, TLS, PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME,
 X.509 v3 certificates, and other security standards.  See:
 http://www.mozilla.org/projects/security/pki/nss/overview.html
-
-%package -n lib%name-sysinit
-Summary:	System NSS Initilization
-Group:		System/Libraries
-Requires:	lib%name = %version-%release
-
-Provides:	%name-sysinit
-Provides:	%name-system-init
-
-%description -n lib%name-sysinit
-Default Operating System module that manages applications loading
-NSS globally on the system. This module loads the system defined
-PKCS #11 modules for NSS and chains with other NSS modules to load
-any system or user configured modules.
-
 
 %package -n lib%name-devel
 Summary:	NSS development kit
@@ -86,7 +66,8 @@ Summary:	NSS static libraries
 Group:		Development/C
 Requires:	lib%name-devel = %version-%release
 
-Provides:	%name-devel-static = %version-%release
+Provides:	%name-devel-static        = %version-%release
+Provides:	%name-pkcs11-devel-static = %version-%release
 
 %description -n lib%name-devel-static
 NSS development kit (static libs)
@@ -112,68 +93,53 @@ Provides:	%name-tools
 %description -n %name-utils
 Netscape Network Security Services Utilities
 
-
 %prep
 %setup -q
-%setup -q -T -D -a7
-%patch2 -p0
-%patch5 -p2
-%patch6 -p2
-
-%patch10 -p0
-
-:>nss/coreconf/Werror.mk
-
-pushd nss/tests/ssl
-# Create versions of sslcov.txt and sslstress.txt that disable tests
-# for SSL2 and EXPORT ciphers.
-cat sslcov.txt| sed -r "s/^([^#].*EXPORT|^[^#].*SSL2)/#disabled \1/" > sslcov.noSSL2orExport.txt
-cat sslstress.txt| sed -r "s/^([^#].*EXPORT|^[^#].*SSL2)/#disabled \1/" > sslstress.noSSL2orExport.txt
-popd
 
 %build
-export BUILD_OPT=1 
-export NS_USE_GCC=1
-export CC_IS_GCC=1
-export NSS_NO_SSL2_NO_EXPORT=1
-export NSS_ENABLE_ECC=1
-export NSS_ENABLE_WERROR=0
-export NSS_USE_SYSTEM_SQLITE=1
-export USE_SYSTEM_ZLIB=1
-export PKG_CONFIG_ALLOW_SYSTEM_LIBS=1
-export PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1
-export NSPR_INCLUDE_DIR=/usr/include/nspr
-export NSPR_LIB_DIR=%_libdir
+mkdir -p bin
+export PATH="$PWD/bin:$PATH"
 
-# Generate symbolic info for debuggers
-export XCFLAGS=$RPM_OPT_FLAGS
+ln -s %_bindir/python3 bin/python
 
 %{?_is_lp64:export USE_64=1}
 
-make -C nss/coreconf
-make -C nss/coreconf platform 2>/dev/null |grep '^Linux' >destdir
-make -C nss/lib/dbm
-make -C nss
+cd nss
+./build.sh \
+	--gcc \
+	--opt \
+	--system-nspr \
+	--system-sqlite \
+	--enable-legacy-db \
+	--enable-libpkix \
+	--disable-tests
 
 %install
 mkdir -p %buildroot{%_bindir,%_libdir/pkgconfig,%_includedir}
 
 # Get some variables
-DESTDIR="$(head -1 destdir)"
+DESTDIR="$PWD/dist/Release"
 NSPR_VERSION="$(nspr-config --version)"
 nss_h="nss/lib/nss/nss.h"
 NSS_VMAJOR="$(sed -ne 's,^#define[[:space:]]\+NSS_VMAJOR[[:space:]]\+,,p' "$nss_h")"
 NSS_VMINOR="$(sed -ne 's,^#define[[:space:]]\+NSS_VMINOR[[:space:]]\+,,p' "$nss_h")"
 NSS_VPATCH="$(sed -ne 's,^#define[[:space:]]\+NSS_VPATCH[[:space:]]\+,,p' "$nss_h")"
 
-# Install NSS libraries 
+# Install NSS libraries
 cd dist
 cp -aL "$DESTDIR"/bin/* %buildroot%_bindir
 cp -aL "$DESTDIR"/lib/* %buildroot%_libdir
+rm -f -- %buildroot%_libdir/*.TOC
 
 # Install NSS headers
-cd public
-cp -aL nss %buildroot%_includedir
+cp -aL public/nss %buildroot%_includedir
+
+# Copy some freebl include files we also want
+mkdir -p -- %buildroot/%_includedir/%name/private
+
+for n in blapi.h alghmac.h cmac.h; do
+    cp -aL private/nss/$n %buildroot/%_includedir/%name/private/$n
+done
 
 # Install NSS utils
 sed -e "s,@libdir@,%_libdir,g" \
@@ -182,7 +148,7 @@ sed -e "s,@libdir@,%_libdir,g" \
     -e "s,@includedir@,%_includedir/nss,g" \
     -e "s,@NSPR_VERSION@,$NSPR_VERSION,g" \
     -e "s,@NSS_VERSION@,%version,g" \
-	%SOURCE1 > %buildroot/%_libdir/pkgconfig/nss.pc
+    %SOURCE1 > %buildroot/%_libdir/pkgconfig/nss.pc
 
 sed -e "s,@libdir@,%_libdir,g" \
     -e "s,@prefix@,%_prefix,g" \
@@ -196,7 +162,7 @@ sed -e "s,@libdir@,%_libdir,g" \
 chmod 755 %buildroot/%_bindir/nss-config
 
 # Add real RPATH
-find "%buildroot%_bindir" "%buildroot%_libdir" -type f | 
+find "%buildroot%_bindir" "%buildroot%_libdir" -type f |
 while read f; do
   file "$f" | grep -qs ELF || continue
   if chrpath -l "$f" | fgrep -qs "RPATH="; then
@@ -230,15 +196,7 @@ EOF
 %files -n %name-utils
 %_bindir/*
 %exclude %_bindir/setup-nsssysinit.sh
-# Remove tests and samples
 %exclude %_bindir/%name-config
-%exclude %_bindir/bltest
-%exclude %_bindir/dbtest
-%exclude %_bindir/mangle
-%exclude %_bindir/ocspclnt
-%exclude %_bindir/oidcalc
-%exclude %_bindir/sdrtest
-%exclude %_bindir/shlibsign
 
 %files -n lib%name
 %_altdir/libnssckbi-%name
@@ -249,10 +207,6 @@ EOF
 %config(noreplace) %_sysconfdir/pki/nssdb/cert8.db
 %config(noreplace) %_sysconfdir/pki/nssdb/key3.db
 %config(noreplace) %_sysconfdir/pki/nssdb/secmod.db
-%exclude %_libdir/libnsssysinit.so
-
-%files -n lib%name-sysinit
-%_libdir/libnsssysinit.so
 %config(noreplace) %_sysconfdir/pki/nssdb/cert9.db
 %config(noreplace) %_sysconfdir/pki/nssdb/key4.db
 %config(noreplace) %_sysconfdir/pki/nssdb/pkcs11.txt
@@ -272,6 +226,50 @@ EOF
 # https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_Releases
 # https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_{version}_release_notes
 %changelog
+* Tue Sep 08 2020 Alexey Gladkov <legion@altlinux.ru> 3.56.0-alt1
+- New version (3.56).
+
+* Thu Jul 30 2020 Alexey Gladkov <legion@altlinux.ru> 3.55.0-alt1
+- New version (3.55).
+- Security fixes:
+  + CVE-2020-6829, CVE-2020-12400: Replace P384 and P521 with new, verifiable implementations from Fiat-Crypto and ECCKiila.
+  + CVE-2020-12401: Remove unnecessary scalar padding.
+  + CVE-2020-12403: Explicitly disable multi-part ChaCha20 (which was not functioning correctly) and more strictly enforce tag length.
+
+* Mon Jun 29 2020 Alexey Gladkov <legion@altlinux.ru> 3.54.0-alt1
+- New version (3.54).
+- Merge libnss and libnss-sysinit.
+- Certificate Authority Changes:
+  + Add CN = certSIGN Root CA G2
+  + Add CN = e-Szigno Root CA 2017
+  + Add CN = Microsoft ECC Root Certificate Authority 2017
+  + Add CN = Microsoft RSA Root Certificate Authority 2017
+  + Remove CN = AddTrust Class 1 CA Root
+  + Remove CN = AddTrust External CA Root
+  + Remove CN = LuxTrust Global Root 2
+  + Remove CN = Staat der Nederlanden Root CA - G2
+  + Remove CN = Symantec Class 2 Public Primary Certification Authority - G4
+  + Remove CN = Symantec Class 1 Public Primary Certification Authority - G4
+  + Remove CN = VeriSign Class 3 Public Primary Certification Authority - G3
+
+* Wed Jun 24 2020 Alexey Gladkov <legion@altlinux.ru> 3.53.0-alt4
+- Enable an RFC3280 compliant certificate path validation library (ALT#38636).
+
+* Wed Jun 10 2020 Alexey Gladkov <legion@altlinux.ru> 3.53.0-alt3
+- Fix build with nss headers and -Werror=strict-prototypes (ALT#38597).
+
+* Mon Jun 08 2020 Alexey Gladkov <legion@altlinux.ru> 3.53.0-alt2
+- Enable NSS legacy DBM type (ALT#38590).
+
+* Thu Jun 04 2020 Alexey Gladkov <legion@altlinux.ru> 3.53.0-alt1
+- New version (3.53).
+- Security fixes:
+  + CVE-2020-12399 - Force a fixed length for DSA exponentiation
+
+* Wed May 06 2020 Alexey Gladkov <legion@altlinux.ru> 3.52.0-alt1
+- New version (3.52).
+- Stop pulling in nss-pem automatically, packages that need it should depend on it.
+
 * Sat Mar 14 2020 Alexey Gladkov <legion@altlinux.ru> 3.51.0-alt1
 - New version (3.51).
 
