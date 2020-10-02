@@ -2,7 +2,7 @@
 
 Name: sane
 Version: 1.0.31
-Release: alt2
+Release: alt3
 
 Summary: This package contains the SANE docs and utils
 Summary(ru_RU.UTF-8): Документация и утилиты для SANE
@@ -21,6 +21,7 @@ Source2: %name.xinetd
 Patch3: sane-1.0.19-hp-psc.patch
 Patch4: sane-backends-1.0.18-epson-1270.patch
 Patch5: sane-backends-1.0.30-avision-av186plus-av188.patch
+Patch6: sane-backends-1.0.31-revert-gt68xx-restore-cancel-stop_scan.patch
 
 # Mandriva patches
 Patch201: sane-backends-1.0.18-plustek-s12.patch
@@ -168,6 +169,7 @@ This package contains SANE static libraries.
 %patch3
 %patch4
 %patch5 -p2
+%patch6 -p1
 
 # Mandriva patches
 %patch201 -p1 -b .plusteks12
@@ -281,6 +283,9 @@ rm -f %buildroot%_libdir/%name/*.la
 %_pkgconfigdir/%oname.pc
 
 %changelog
+* Wed Sep 23 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0.31-alt3
+- fix scanner non operational after first scan in gt68xx (closes: #37739)
+
 * Fri Sep 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.31-alt2
 - separate doc to doc subpackage
 
