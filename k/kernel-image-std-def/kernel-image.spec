@@ -1,8 +1,8 @@
 Name: kernel-image-std-def
-Release: alt1
+Release: alt1.1
 epoch:1 
 %define kernel_base_version	5.4
-%define kernel_sublevel .62
+%define kernel_sublevel .68
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -428,7 +428,7 @@ echo "Kernel built $KernelVer"
 
 %if_enabled docs
 # psdocs, pdfdocs don't work yet
-%make_build htmldocs
+%make_build SPHINXOPTS="-j $([ %__nprocs -ge 8 ] && echo 8 || echo %__nprocs)" htmldocs
 %endif
 
 %install
@@ -443,7 +443,7 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 %endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
-make modules_install INSTALL_MOD_PATH=%buildroot
+%make_build modules_install INSTALL_MOD_PATH=%buildroot
 
 %ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
@@ -549,7 +549,7 @@ ln -s %kbuild_dir %buildroot%modules_dir/build
 ln -s "$(relative %kbuild_dir %old_kbuild_dir)" %buildroot%old_kbuild_dir
 
 # Provide kernel headers for userspace
-make headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
+%make_build headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
 
 #provide symlink to autoconf.h for back compat
 pushd %buildroot%old_kbuild_dir/include/linux
@@ -612,7 +612,7 @@ qemu_arch=arm
 qemu_opts="-machine virt"
 console=ttyAMA0
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
+timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console no_timer_check" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -704,6 +704,33 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Sep 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.68-alt1.1
+- SD card usage on Raspberry Pi 3 fixed
+
+* Mon Sep 28 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.68-alt1
+- v5.4.68
+
+* Thu Sep 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt3
+- memory sanitize patch added
+
+* Thu Sep 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt2
+- lost baikal-m patches added
+
+* Wed Sep 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt1
+- v5.4.67
+
+* Tue Sep 22 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.66-alt1
+- v5.4.66
+
+* Fri Sep 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.65-alt2
+- baikal-m drivers and configuration from asheplyakov@ merged
+
+* Wed Sep 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.65-alt1
+- v5.4.65
+
+* Thu Sep 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.64-alt1
+- v5.4.64  (Fixes: CVE-2020-12888, CVE-2020-14386)
+
 * Thu Sep 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.62-alt1
 - v5.4.62
 
