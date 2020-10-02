@@ -1,3 +1,5 @@
+%define _unpackaged_files_terminate_build 1
+
 # see http://lists.altlinux.org/pipermail/devel/2012-February/193243.html
 %def_disable python
 
@@ -8,14 +10,14 @@
 %def_enable mh
 
 %define use_chrpath 0
-%define snapshot    0
+%define snapshot    1
 
 Name: mailutils
 
-%define baseversion 3.6
+%define baseversion 3.10
 
 %if %snapshot
-%define snapshotdate 20170306
+%define snapshotdate 20200913
 Version: %baseversion
 Release: alt0.%snapshotdate.1
 %define srcdir %name-%snapshotdate
@@ -25,11 +27,9 @@ Release: alt1
 %define srcdir %name-%version
 %endif
 
-Packager: Sergey Y. Afonin <asy@altlinux.ru>
-
 Summary: GNU Mailutils
 
-License: %gpl3plus
+License: GPL-3.0-or-later
 
 %if %snapshot
 Source0:        %name-%version-%snapshotdate.tar.gz
@@ -43,15 +43,13 @@ Group: Networking/Mail
 Patch1: mailutils-2.0.90-pkg-config-hack.diff
 
 # errata patches
-Patch10: 4e66a6a9e5f5696d60f7df875175f2e0ad8f7376.diff
+#Patch10:
 
 Conflicts: mailx
 
 Provides: /bin/mail
 
 %add_findreq_skiplist */usr/bin/guimb
-
-BuildRequires(pre): rpm-build-licenses
 
 Requires: libmailutils = %{version}-%{release}
 Requires: libreadline
@@ -61,27 +59,32 @@ Requires: libreadline
 BuildRequires: bzlib-devel flex gcc-c++ glibc-devel libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libpam-devel libreadline-devel libtokyocabinet-devel python-devel zlib-devel
 
 BuildRequires: /dev/pts
-BuildRequires: emacs-X11
 BuildRequires: makeinfo
 
 BuildRequires: libltdl7-devel
-
 BuildRequires: perl-podlators
+
+%if_enabled mh
+BuildRequires: emacs-X11
+%endif
 
 %if %use_chrpath
 BuildRequires: chrpath
 %endif
 
 %description
-GNU Mailutils contains a series of useful mail clients, servers, and
-libraries. These are the primary mail utilities of the GNU system.
-This package provides a replacement for /bin/mail(x) conforming to
-the UNIX98 specification for mailx. It provides also a mail delivery
-agent maidag, and other tools including guimb, dotlock, movemail, frm.
+GNU Mailutils is a rich and powerful protocol-independent mail
+framework. It contains a series of useful mail libraries, clients,
+and servers. These are the primary mail utilities for the GNU system.
+The central library is capable of handling electronic mail in various
+mailbox formats and protocols, both local and remote.  Specifically,
+this project contains a POP3 server, an IMAP4 server, and a Sieve mail
+filter. It also provides a POSIX `mailx' client, and a collection of
+other handy tools.
 
 %package -n libmailutils
 Summary: GNU Mailutils: mailbox access library.
-License: %lgpl3plus
+License: LGPL-3.0-or-later
 Group: System/Libraries
 Obsoletes: libmailutils-sieve
 
@@ -93,7 +96,7 @@ handling, and sending mail via SMTP and /sbin/sendmail.
 
 %package -n libmailutils-devel
 Summary: GNU Mailutils: mailbox access development.
-License: %lgpl3plus
+License: LGPL-3.0-or-later
 Requires: libmailutils
 Group: Development/Other
 
@@ -102,7 +105,7 @@ GNU Mailutils: mailbox access development.
 
 %package -n libmailutils-devel-static
 Summary: GNU Mailutils: mailbox access static library development.
-License: %lgpl3plus
+License: LGPL-3.0-or-later
 Requires: libmailutils-devel
 Group: Development/Other
 
@@ -111,7 +114,7 @@ GNU Mailutils: mailbox access static library development.
 
 %package doc
 Summary: GNU Mailutils: documentation.
-License: %fdl
+License: GFDL-1.2
 Group: Development/Documentation
 BuildArch: noarch
 
@@ -121,7 +124,7 @@ the GNU Mailutils.
 
 %package pop3d
 Summary: GNU Mailutils: POP3 daemon.
-License: %gpl3plus
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Conflicts: courier-imap
 Group: System/Servers
@@ -132,7 +135,7 @@ mailboxes.
 
 %package imap4d
 Summary: GNU Mailutils: IMAP4 daemon.
-License: %gpl3plus
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Group: System/Servers
 
@@ -142,7 +145,7 @@ mailboxes.
 
 %package sieve
 Summary: GNU Mailutils: mail filtering language Sieve.
-License: %lgpl3plus
+License: LGPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Group: Networking/Mail
 
@@ -153,7 +156,7 @@ and Sieve to Scheme translator and filter.
 
 %package comsatd
 Summary: GNU Mailutils: Comsat daemon.
-License: %gpl3plus
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Group: System/Servers
 
@@ -162,23 +165,22 @@ GNU Comsatd is the server which receives reports of incoming mail and
 notifies users, wishing to get this service. It can be started either
 from `inetd.conf' or as a standalone daemon.
 
-%package maidag
-Summary: GNU Mailutils: General-purpose Mail Delivery Agent.
-License: %gpl3plus
+%package delivery-agents
+Summary: GNU Mailutils: General-purpose Mail Delivery Agents.
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
-Group: System/Servers
+Group: Networking/Mail
+Provides: mailutils-maidag = %{version}-%{release}
+Obsoletes: mailutils-maidag < %{version}-%{release}
 
-%description maidag
-The name `maidag' stands for Mail Delivery Agent. It is a
-general-purpose MDA offering a rich set of features. It can operate
-both in traditional mode, reading the message from its standard input,
-and in LMTP mode. Maidag is able to deliver mail to any mailbox
-format, supported by GNU Mailutils.
+%description delivery-agents
+This subpackage replaced old maidag subpackage and contais three
+utilites: mda, lmtpd and putmail
 
 %if_enabled guile
 %package guile
 Summary: GNU Mailutils: Guile bindings.
-License: %gpl3plus
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Requires: guile >= 1.8
 Group: System/Libraries
@@ -191,7 +193,7 @@ Guile bindings for GNU Mailutils.
 
 %package locales
 Summary: National Language files for mailutils
-License: %gpl3plus
+License: GPL-3.0-or-later
 Group: Networking/Mail
 BuildArch: noarch
 
@@ -201,7 +203,7 @@ National Language files for mailutils
 %if_enabled mh
 %package mh
 Summary: GNU Mailutils: The Message Handling System.
-License: %gpl3plus
+License: GPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Requires: emacs-base
 Group: Networking/Mail
@@ -213,7 +215,7 @@ The GNU MH (Message Handling System).
 %if_enabled python
 %package -n libmailutils-python
 Summary: GNU Mailutils: libraries for integration with Python
-License: %lgpl3plus
+License: LGPL-3.0-or-later
 Requires: libmailutils = %{version}-%{release}
 Group: System/Libraries
 
@@ -222,7 +224,7 @@ The libraries for integration with Python
 
 %package -n python-module-mailutils
 Summary: A Python interface to Mailutils framework
-License: %gpl3plus
+License: GPL-3.0-or-later
 Group: Networking/Mail
 BuildArch: noarch
 Requires: python-module-mailutils-api = %version-%release
@@ -232,7 +234,7 @@ This package contains Python bindings for GNU Mailutils.
 
 %package -n python-module-mailutils-api
 Summary: A Python interface to Mailutils framework, arch specific part
-License: %gpl3plus
+License: GPL-3.0-or-later
 Group: Networking/Mail
 Requires: libmailutils = %version-%release
 Conflicts: python-module-mailutils < %version-%release
@@ -252,9 +254,16 @@ python-module-mailutils.
 #patch1 -p0
 
 # errata patches
-%patch10 -p1
+#patch10 -p1
 
 gzip ChangeLog
+
+# https://lists.altlinux.org/pipermail/devel/2020-September/212028.html
+%ifnarch %ix86 x86_64
+sed -i "s|m4_include..strin.at..|dnl m4_include([strin.at])|"   libmailutils/tests/testsuite.at
+sed -i "s|m4_include..strout.at..|dnl m4_include([strout.at])|" libmailutils/tests/testsuite.at
+sed -i "s|m4_include..strerr.at..|dnl m4_include([strerr.at])|" libmailutils/tests/testsuite.at
+%endif
 
 # some includes for info-documentation are absent in 2.9.91
 pushd doc/texinfo
@@ -304,6 +313,10 @@ cp -f po/Makefile.in.in~ po/Makefile.in.in
 %make V=1
 
 %check
+
+NAME=`whoami`
+sed -i "s|SENDER: gray@nonexistent.net|SENDER: $NAME@nonexistent.net|" \
+  $RPM_BUILD_DIR/%name-%version-%snapshotdate/sieve/tests/moderator.at
 
 #make check MH=/dev/null || { cat mh/tests/testsuite.log; exit 1; }
 %make check
@@ -357,6 +370,7 @@ done
 %_bindir/mimeview
 %_bindir/movemail
 %_bindir/readmsg
+%_bindir/decodemail
 %_mandir/*/mail*
 
 %dir %_libexecdir/mailutils
@@ -420,8 +434,10 @@ done
 %files comsatd
 %_sbindir/comsatd
 
-%files maidag
-%_sbindir/maidag
+%files delivery-agents
+%_sbindir/mda
+%_sbindir/lmtpd
+%_bindir/putmail
 
 %files sieve
 %_bindir/sieve
@@ -464,6 +480,13 @@ done
 %endif
 
 %changelog
+* Sun Sep 27 2020 Sergey Y. Afonin <asy@altlinux.org> 3.10-alt0.20200913.1
+- New version (CVE-2019-18862 fixed in 3.8)
+- Updated %%description
+- Updated License tags to SPDX syntax
+- Require emacs-X11 for build only when mh subpackage is enabled (ALT #38371)
+- Disabled standard streams tests for non x86 architectures
+
 * Mon Mar 04 2019 Sergey Y. Afonin <asy@altlinux.ru> 3.6-alt1
 - New version
 - Removed libmailutils-sieve from Requires of subpackages
