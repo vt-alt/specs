@@ -1,23 +1,23 @@
-%define daterev 20200413
-%define gitsnapshot 7f77b8c1e27f3d102b1f665d2a3c500598245c3b
+%define daterev 20200730
+%define gitsnapshot baf5bf29fa68c908e7033e58465562d22ec97a07
 
 Name: openttd
-Version: 1.10.1
+Version: 1.10.3
 Release: alt1
 
-Summary: An open source clone of the Microprose game "Transport Tycoon Deluxe".
+Summary: An open source clone of the Microprose game "Transport Tycoon Deluxe"
 License: GPLv2
 Group: Games/Strategy
-URL: https://www.openttd.org/
+
+Url: http://www.openttd.org
+Source: %name-%version.tar
+Source1: %name.watch
+Patch: %name-%version-alt.patch
+
 Requires: TiMidity++
 Requires: fonts-ttf-dejavu
 Requires: %name-data = %EVR
 Requires: openttd-3rd-party >= 0.6.0
-
-Source: %name-%version.tar
-Source1: %name.watch
-
-Patch0: %name-%version-alt.patch
 
 BuildRequires: libSDL2-devel libpng-devel libfreetype-devel fontconfig-devel gcc-c++ liblzo2-devel liblzma-devel libxdg-basedir-devel libfluidsynth-devel
 
@@ -32,11 +32,15 @@ Group: Games/Strategy
 Requires: %name-3rd-party
 
 %description data
-Data files for %name
+Data files for %name.
 
 %prep
 %setup
-%patch0 -p1
+%patch -p1
+%ifarch %e2k
+# unsupported as of lcc 1.24.11 (mcst#5095)
+sed -i 's,-flifetime-dse=1,,' config.lib
+%endif
 
 %build
 echo "%version	%daterev	0	%gitsnapshot	1	1" >.ottdrev
@@ -47,27 +51,25 @@ echo "%version	%daterev	0	%gitsnapshot	1	1" >.ottdrev
     --with-png \
     --with-freetype \
     --with-fontconfig \
-#
+    #
     
-%make_build WITH_SDL=1 UNIX=1 RELEASE=%version INSTALL=1 WITH_NETWORK=1 ISTAG=1 ISSTABLETAG=1 \
-    USE_HOMEDIR=1 VERBOSE=1 PERSONAL_DIR=.%name \
+%make_build WITH_SDL=1 UNIX=1 INSTALL=1 WITH_NETWORK=1 ISTAG=1 ISSTABLETAG=1 \
+    USE_HOMEDIR=1 VERBOSE=1 RELEASE=%version PERSONAL_DIR=.%name \
     PREFIX=%_prefix DATA_DIR=share/games/%name \
-	
+    #
+
 %install
-mkdir -p %buildroot%_prefix/games
-mkdir -p %buildroot%_datadir/games/%name/gm
-mkdir -p %buildroot%_datadir/games/%name/lang
-mkdir -p %buildroot%_datadir/games/%name/ai
+mkdir -p %buildroot%_gamesbindir
+mkdir -p %buildroot%_gamesdatadir/%name/{gm,lang,ai}
 mkdir -p %buildroot%_man6dir
 
-install -m755 -s bin/%name %buildroot%_prefix/games/%name
-cp -a bin/baseset %buildroot%_datadir/games/%name
-cp -a bin/ai/*.nut %buildroot%_datadir/games/%name/ai/
-cp -a bin/lang/*.lng %buildroot%_datadir/games/%name/lang
-chmod -x %buildroot%_datadir/games/%name/baseset/*
+install -m755 -s bin/%name %buildroot%_gamesbindir/%name
+cp -a bin/baseset %buildroot%_gamesdatadir/%name/
+cp -a bin/ai/*.nut %buildroot%_gamesdatadir/%name/ai/
+cp -a bin/lang/*.lng %buildroot%_gamesdatadir/%name/lang/
+chmod -x %buildroot%_gamesdatadir/%name/baseset/*
 
-#menu
-
+# menu
 install -dm 755 %buildroot%_datadir/applications
 install -m644 media/%name.desktop %buildroot%_datadir/applications/%name.desktop
 
@@ -77,13 +79,12 @@ install -pD -m644 media/%name.32.png %buildroot%_niconsdir/%name.png
 install -pD -m644 media/%name.48.png %buildroot%_liconsdir/%name.png
 install -pD -m644 docs/%name.6 %buildroot%_man6dir/
 
-
 %files
-%_prefix/games/%name
+%_gamesbindir/%name
 
 %files data
 %doc docs/* bin/scripts README.md known-bugs.txt changelog.txt COPYING.md
-%_datadir/games/%name
+%_gamesdatadir/%name
 %_datadir/applications/%name.desktop
 %_niconsdir/%name.png
 %_miconsdir/%name.png
@@ -91,6 +92,16 @@ install -pD -m644 docs/%name.6 %buildroot%_man6dir/
 %_man6dir/*
 
 %changelog
+* Sat Sep 19 2020 Anton Farygin <rider@altlinux.ru> 1.10.3-alt1
+- 1.10.3
+
+* Wed Jun 24 2020 Michael Shigorin <mike@altlinux.org> 1.10.2-alt2
+- E2K: avoid lcc-unsupported option
+- minor spec cleanup (according to ALT specfile conventions)
+
+* Mon Jun 15 2020 Anton Farygin <rider@altlinux.ru> 1.10.2-alt1
+- 1.10.2
+
 * Thu Apr 16 2020 Anton Farygin <rider@altlinux.ru> 1.10.1-alt1
 - 1.10.1
 
