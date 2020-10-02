@@ -4,7 +4,7 @@
 %define _vstring %(echo %{version} |tr -d ".")
 
 Name: shotcut
-Version: 20.02.02
+Version: 20.09.27
 Release: alt1
 Summary: A free, open source, cross-platform video editor
 Summary(ru_RU.UTF-8): Свободный кросс-платфоорменный видеоредактор
@@ -12,6 +12,9 @@ License: GPL-3.0+
 Group: Video
 Url: http://www.shotcut.org/
 Packager: Anton Midyukov <antohami@altlinux.org>
+
+ExcludeArch: armh
+
 Source: %name-%version.tar
 # Melt patch /usr/bin/melt
 Patch: mlt_path.patch
@@ -152,6 +155,9 @@ done
 %_datadir/%name
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 20.09.27-alt1
+- new version
+
 * Mon Feb 17 2020 Fr. Br. George <george@altlinux.ru> 20.02.02-alt1
 - new version 20.02.02
 
