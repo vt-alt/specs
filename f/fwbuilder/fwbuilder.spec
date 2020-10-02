@@ -1,7 +1,7 @@
+
 Name: fwbuilder
 Version: 6.0.0
-Release: alt1.beta.68.a880
-
+Release: alt1.beta.106.a5e1
 Summary: Firewall Builder
 License: GPLv2+
 Group: Security/Networking
@@ -66,6 +66,9 @@ install -pm644 doc/transfer_secuwall.1 %buildroot%_man1dir/
 %_man1dir/*
 
 %changelog
+* Tue Sep 08 2020 Alexey Shabalin <shaba@altlinux.org> 6.0.0-alt1.beta.106.a5e1
+- master snapshot a5e14a966447c63bcf7b52a0202149e76bd5ed4a
+
 * Sat Aug 31 2019 Alexey Shabalin <shaba@altlinux.org> 6.0.0-alt1.beta.68.a880
 - master snapshot a8802a3bc96d7f9228e670c29d7d87127afcacce
 - merge all subpackages to main package
