@@ -1,5 +1,5 @@
 Name: flameshot
-Version: 0.6.0.0.53.git7ee9a3f
+Version: 0.8.0
 Release: alt1
 
 Summary: Powerful yet simple to use screenshot software
@@ -9,11 +9,10 @@ Group: Graphics
 Url: https://github.com/lupoDharkael/flameshot
 
 Source: %name-%version.tar
-Patch: flameshot-0.6.0-fix-autostart-icon.patch
 
 Packager: Anton Shevtsov <x09@altlinux.org>
 
-BuildRequires: qt5-base-devel qt5-tools qt5-svg-devel
+BuildRequires: qt5-base-devel qt5-tools-devel qt5-svg-devel cmake
 
 %description
 Powerful and simple to use screenshot software with built-in
@@ -21,36 +20,37 @@ editor with advanced features.
 
 %prep
 %setup
-%patch -p1
 %ifarch %e2k
 # strip UTF-8 BOM for lcc < 1.24
 find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
 %endif
 
 %build
-%qmake_qt5 PREFIX=%_prefix
-%make_build
+%cmake \
+    -DCMAKE_BUILD_TYPE=Release
+%cmake_build
 
 %install
-%install_qt5
-
-%check
-%make_build check
+%cmake_install DESTDIR=%buildroot install
 
 %files
 %doc LICENSE README.md
 %_bindir/%name
 %_datadir/applications/%name.desktop
 %_datadir/bash-completion/completions/%name
-%_datadir/dbus-1/interfaces/org.dharkael.Flameshot.xml
-%_datadir/dbus-1/services/org.dharkael.Flameshot.service
+%_datadir/zsh/site-functions/_%name
+%_datadir/dbus-1/interfaces/org.flameshot.Flameshot.xml
+%_datadir/dbus-1/services/org.flameshot.Flameshot.service
 %_datadir/%name
 %_iconsdir/hicolor/128x128/apps/%name.png
 %_iconsdir/hicolor/48x48/apps/%name.png
 %_iconsdir/hicolor/scalable/apps/%name.svg
-%_datadir/metainfo/%name.appdata.xml
+%_datadir/metainfo/%name.metainfo.xml
 
 %changelog
+* Mon Sep 21 2020 Grigory Ustinov <grenka@altlinux.org> 0.8.0-alt1
+- Automatically updated to 0.8.0.
+
 * Mon Jun 03 2019 Grigory Ustinov <grenka@altlinux.org> 0.6.0.0.53.git7ee9a3f-alt1
 - Build from new commit.
 - Fix problem with disabled tray icon (Closes: #36299).
