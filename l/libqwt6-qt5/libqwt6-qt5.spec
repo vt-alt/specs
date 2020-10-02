@@ -1,8 +1,8 @@
 %define oname libqwt
 %define ver_major 6.1
 Name: %{oname}6-qt5
-Version: %ver_major.4
-Release: alt2
+Version: %ver_major.5
+Release: alt1
 
 Summary: 2D plotting widget extension to the Qt5 GUI
 
@@ -14,7 +14,7 @@ Url: http://sourceforge.net/projects/qwt
 Source: http://sourceforge.net/projects/qwt/files/qwt/%version/qwt-%version.tar.bz2
 #Source: qwt-%version.tar
 Patch0: qwt-6.1.1-pkgconfig.patch
-Patch1: qwt-6.1.2-qt_install_paths.patch
+Patch1: qwt-6.1.5-qt_install_paths.patch
 Patch2: qwt-6.1.3-no_rpath.patch
 Patch3: qwt-qt5.patch
 
@@ -62,7 +62,7 @@ echo 'QMAKE_CXXFLAGS += %optflags' >> $f
 done
 
 %build
-%qmake_qt5 QWT_CONFIG+=QwtMathML QWT_CONFIG+=QwtPkgConfig
+%qmake_qt5 QWT_CONFIG+=QwtMathML QWT_CONFIG+=QwtPkgConfig CONFIG+=nostrip
 %make_build
 
 %install
@@ -82,6 +82,10 @@ rm -fr %buildroot%_datadir/qt5/features
 %_libdir/pkgconfig/*.pc
 
 %changelog
+* Sat Sep 19 2020 Sergey Y. Afonin <asy@altlinux.org> 6.1.5-alt1
+- 6.1.5 (ALT #38963)
+- added CONFIG+=nostrip
+
 * Mon Aug 12 2019 Anton Midyukov <antohami@altlinux.org> 6.1.4-alt2
 - Fix install PATHs
 - Add pkgconfig
