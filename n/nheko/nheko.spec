@@ -1,6 +1,6 @@
 Name: nheko
 Version: 0.6.2
-Release: alt2.1
+Release: alt2.2
 
 Summary: Desktop client (QT) for the Matrix protocol
 
@@ -50,6 +50,9 @@ and less like an IRC client.
 %_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 0.6.2-alt2.2
+- fix to build with Qt 5.15
+
 * Tue Sep 15 2020 Sergey V Turchin <zerg@altlinux.org> 0.6.2-alt2.1
 - fix to build with Qt 5.15
 
