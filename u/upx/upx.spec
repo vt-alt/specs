@@ -1,5 +1,5 @@
 Name: upx
-Version: 3.95
+Version: 3.96
 Release: alt1
 
 Summary: The Ultimate Packer for eXecutables
@@ -38,6 +38,9 @@ install -pD -m644 doc/upx.1 %buildroot%_man1dir/upx.1
 %_man1dir/upx*
 
 %changelog
+* Thu Oct 01 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.96-alt1
+- Updated to upstream version 3.96 (Fixes: CVE-2019-20805).
+
 * Thu Feb 07 2019 Fr. Br. George <george@altlinux.ru> 3.95-alt1
 - Autobuild version bump to 3.95
 
