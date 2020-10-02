@@ -1,6 +1,6 @@
 Name: ghostscript
 Version: 9.27
-Release: alt1
+Release: alt1.M90P.1
 
 %define ijsver	0.35
 %global origver %version
@@ -54,6 +54,12 @@ Patch122: Ubuntu-CVE-2019-3839-2.patch
 ## ALT patches
 Patch500: ghostscript-alt-ijs-version.patch
 Patch501: alt-urw-fonts-naming.patch
+Patch502: upstream-fix-CVE-2019-10216.patch
+Patch503: upstream-fix-CVE-2019-14811-CVE-2019-14812-CVE-2019-14813.patch
+# required for CVE-2019-14817
+Patch504: 0001-PDF-interpreter-Decode-ToUnicode-entries-of-the-form.patch
+Patch505: upstream-fix-CVE-2019-14817.patch
+Patch506: upstream-fix-CVE-2019-14869.patch
 
 #compatibility requires
 Requires: %name-classic = %version-%release
@@ -223,6 +229,11 @@ rm -rf expat freetype icclib jasper jpeg lcms lcms2 libpng openjpeg zlib cups/li
 ## ALT apply patches
 %patch500 -p1
 %patch501 -p1
+%patch502 -p1
+%patch503 -p1
+%patch504 -p1
+%patch505 -p1
+%patch506 -p1
 
 %build
 export CFLAGS=-DA4
@@ -350,6 +361,10 @@ cp -a examples %buildroot%_docdir/%name-%version
 %_includedir/ijs
 
 %changelog
+* Thu Oct 01 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.27-alt1.M90P.1
+- Applied security fixes from upstream (Fixes: CVE-2019-10216, CVE-2019-14811,
+  CVE-2019-14812, CVE-2019-14813, CVE-2019-14817, CVE-2019-14869).
+
 * Mon May 06 2019 Fr. Br. George <george@altlinux.ru> 9.27-alt1
 - Autobuild version bump to 9.27
 - Update patchset
