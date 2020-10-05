@@ -1,7 +1,7 @@
 %define Name QXmlEdit
 Name: qxmledit
-Version: 0.9.13
-Release: alt3
+Version: 0.9.16
+Release: alt1
 
 Summary: Simple XML editor and XSD viewer
 
@@ -85,6 +85,9 @@ mv %buildroot%_datadir/%name/%Name.desktop %buildroot%_desktopdir/%Name.desktop
 
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 0.9.16-alt1
+- new version
+
 * Tue Oct 28 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 0.9.13-alt3
 - add russian translations
 
