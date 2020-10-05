@@ -1,8 +1,5 @@
-#define testname spec-has-obsolete-macroses
-%define install_all_tests 1
-
 Name: repocop-unittest-altlinux-python
-Version: 0.14
+Version: 0.19
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -10,12 +7,14 @@ Url: http://repocop.altlinux.org
 
 Summary: repocop package checks for conformance with Python Packaging Policy.
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: %name-%version.tar
 
 Requires: repocop > 0.40
 Requires: repocop-collector-specfile
 Requires: repocop-collector-repocop-hint
+
+BuildRequires: perl(RPM/Source/Editor.pm)
 
 %description
 set of ALTLinux-specific integration tests for repocop test platform.
@@ -27,36 +26,48 @@ The tests checks packages for conformance with Python Packaging Policy.
 %build
 
 %install
-%if %install_all_tests
-for i in *.posttest; do
+for i in altlinux-*.posttest; do
     testname=`echo $i | sed -e s,.posttest\$,,`
     install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/pkgtests/$testname/posttest
+done
+for i in specfile-*.posttest; do
+    testname=`echo $i | sed -e s,.posttest\$,,`
+    install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/srctests/$testname/posttest
 done
 
 install -d -m 755 %buildroot%_datadir/repocop/fixscripts/
 install -m 644 *.pl %buildroot%_datadir/repocop/fixscripts/
-%else 
-    testnames="altlinux-python-test-is-packaged altlinux-python-python3-requires-python altlinux-python-python-requires-python3"
-    for testname in $testnames; do
-    install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/pkgtests/$testname/posttest
-    done
-%endif
 
 install -pD -m 755 repocop-helper-altlinux-python-filelist-pattern-filter \
     %buildroot%_datadir/repocop/pkgtests/altlinux-python-test-is-packaged/repocop-helper-altlinux-python-filelist-pattern-filter
 
-
+install -pD -m 755 repocop-helper-specfile-python2-in-spec \
+    %buildroot%_datadir/repocop/srctests/specfile-python2-in-spec/repocop-helper-specfile-python2-in-spec
 
 
 
 %files
 #doc README ChangeLog
 %_datadir/repocop/pkgtests/*
-%if %install_all_tests
+%_datadir/repocop/srctests/*
 %_datadir/repocop/fixscripts/*
-%endif
 
 %changelog
+* Wed Sep 16 2020 Igor Vlasenko <viy@altlinux.ru> 0.19-alt1
+- packaged srctests properly
+
+* Mon Sep 14 2020 Igor Vlasenko <viy@altlinux.ru> 0.18-alt1
+- updated altlinux-python-python2-in-spec
+
+* Sat Jul 25 2020 Igor Vlasenko <viy@altlinux.ru> 0.17-alt1
+- fixes in altlinux-python-python2-in-spec patchgenerator
+
+* Wed Jul 22 2020 Igor Vlasenko <viy@altlinux.ru> 0.16-alt1
+- added altlinux-python-python2-in-spec patchgenerator
+
+* Fri Jul 03 2020 Igor Vlasenko <viy@altlinux.ru> 0.15-alt1
+- added altlinux-python-python2-in-spec posttest
+
 * Thu Jul 14 2016 Igor Vlasenko <viy@altlinux.ru> 0.14-alt1
 - added exception for python-module-pygobject3-common-devel
 
