@@ -9,7 +9,7 @@
 %define _pluginsdir %_libdir/%name/plugins/3.2
 
 Name: wireshark
-Version: 3.2.6
+Version: 3.2.7
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -34,7 +34,7 @@ BuildRequires: libnghttp2-devel
 %endif
 BuildRequires: liblz4-devel
 BuildRequires: libxml2-devel
-BuildRequires: libspandsp6-devel
+BuildRequires: libspandsp3-devel
 BuildRequires: libsnappy-devel
 BuildRequires: libcares-devel
 BuildRequires: libsmi-devel
@@ -225,6 +225,13 @@ _EOF_
 %_pkgconfigdir/wireshark.pc
 
 %changelog
+* Wed Sep 30 2020 Anton Farygin <rider@altlinux.ru> 3.2.7-alt1
+- 3.2.7
+- fixes:
+   * BLIP dissector crash. CVE-2020-25866
+   * TCP dissector crash. CVE-2020-25862
+   * MIME Multipart dissector crash. CVE-2020-25863
+
 * Fri Aug 21 2020 Anton Farygin <rider@altlinux.ru> 3.2.6-alt1
 - 3.2.6
 
