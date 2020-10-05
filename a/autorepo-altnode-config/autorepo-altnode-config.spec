@@ -1,13 +1,13 @@
 %define _unpackaged_files_terminate_build 1
 Name: autorepo-altnode-config
-Version: 0.15
+Version: 0.16
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: automated packaging node common configs
 Group: System/Configuration/Other
-License: GPL2+
+License: GPLv2+
 # TODO: change to appropriate page when ready
 # Url: https://www.altlinux.org/Autorepo
 Url: https://watch.altlinux.org
@@ -120,6 +120,9 @@ fi
 %_sysconfdir/autorepo/apt/sources.list.*
 
 %changelog
+* Thu Oct 01 2020 Igor Vlasenko <viy@altlinux.ru> 0.16-alt1
+- added armh and lowercase sisyphus
+
 * Thu Jul 04 2019 Igor Vlasenko <viy@altlinux.ru> 0.15-alt1
 - added aarch64 and ppc64le
 
