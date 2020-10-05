@@ -1,6 +1,6 @@
 Name: libetpan
 Version: 1.9.4
-Release: alt1
+Release: alt2
 
 Summary: This mail library  provide a portable, efficient middleware for different kinds of mail access
 License: %bsdstyle
@@ -12,6 +12,7 @@ Url: https://www.etpan.org/libetpan.html
 Source: %name-%version.tar
 Source1: libetpan-config
 Patch: %name-%version-%release.patch
+Patch2: CVE-2020-15953.patch
 
 %def_with gnutls
 %def_without openssl
@@ -52,6 +53,7 @@ program which use lib%name.
 %prep
 %setup
 %patch -p1
+%patch2 -p1
 ln -s README.md README
 
 %build
@@ -83,6 +85,9 @@ install -Dm0755 %SOURCE1 %buildroot%_bindir/%name-config
 %_libdir/%name.so
 
 %changelog
+* Thu Oct 01 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.9.4-alt2
+- Applied security fixes from upstream (Fixes: CVE-2020-15953).
+
 * Tue Nov 05 2019 Mikhail Efremov <sem@altlinux.org> 1.9.4-alt1
 - Updated to 1.9.4.
 
