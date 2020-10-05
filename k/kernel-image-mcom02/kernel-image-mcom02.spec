@@ -1,10 +1,12 @@
 %define kernel_base_version	4.4
-%define kernel_sublevel		.189
-%define kernel_extra_version	.1
+%define kernel_sublevel 	.189
+%define kernel_extra_version	.9
 
 Name: kernel-image-mcom02
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 Release: alt1
+
+Provides: kernel-modules-dm-secdel-mcom02 = %version-%release
 
 %define kernel_extra_version_numeric 1.0.0
 
@@ -34,18 +36,18 @@ License: GPL
 Group: System/Kernel and hardware
 Url: http://www.kernel.org/
 
-Patch0: %name-%version-%release.patch
+Patch0: mainline-%version.patch
+Patch1: mcom-%version.patch
 
 ExclusiveArch: armh
 
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
-BuildRequires: bc flex lzma-utils
+BuildRequires: bc flex kmod lzma-utils
 BuildRequires: libdb4-devel
 BuildRequires: gcc%kgcc_version
 BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
-BuildRequires: module-init-tools >= 3.16
 
 %if_enabled ccache
 BuildRequires: ccache
@@ -55,10 +57,7 @@ BuildRequires: ccache
 BuildRequires: ccache
 %endif
 
-Requires: bootloader-utils >= 0.4.24-alt1
-Requires: module-init-tools >= 3.16-alt2
-Requires: startup >= 0.9.8.30-alt1
-
+Requires: bootloader-utils >= 0.5.2-alt3
 Provides: kernel = %kversion
 
 %description
@@ -107,6 +106,7 @@ rm -rf kernel-source-%kernel_base_version
 tar -xf %kernel_src/kernel-source-%kernel_base_version.tar
 %setup -D -T -n kernel-image-%flavour-%kversion-%krelease/kernel-source-%kernel_base_version
 %patch0 -p1
+%patch1 -p1
 
 # this file should be usable both with make and sh (for broken modules
 # which do not use the kernel makefile system)
@@ -169,39 +169,41 @@ KbuildFiles="
 	Makefile
 	Module.symvers
 	arch/%base_arch/Makefile
-	scripts/pnmtologo
-	scripts/mod/modpost
+	arch/%base_arch/kernel/module.lds
+	scripts/Kbuild.include
+	scripts/Makefile
+	scripts/Makefile.*
+	scripts/basic/fixdep
+	scripts/basic/hash
+	scripts/bin2c
+	scripts/checkconfig.pl
+	scripts/checkincludes.pl
+	scripts/checkversion.pl
+	scripts/conmakehash
+	scripts/depmod.sh
+	scripts/extract-ikconfig
+	scripts/gcc-goto.sh
+	scripts/gcc-plugins/*.so
+	scripts/gcc-version.sh
+	scripts/genksyms/genksyms
+	scripts/kallsyms
+	scripts/kconfig/conf
+	scripts/ld-version.sh
+	scripts/link-vmlinux.sh
+	scripts/makelst
+	scripts/mkcompile_h
 	scripts/mkmakefile
 	scripts/mkversion
 	scripts/mod/mk_elfconfig
-	scripts/kconfig/conf
-	scripts/mkcompile_h
-	scripts/makelst
-	scripts/Makefile.kasan
-	scripts/Makefile.modpost
-	scripts/Makefile.modinst
-	scripts/Makefile.lib
-	scripts/Makefile.host
-	scripts/Makefile.clean
-	scripts/Makefile.build
-	scripts/Makefile.extrawarn
-	scripts/Makefile
-	scripts/Kbuild.include
-	scripts/kallsyms
-	scripts/genksyms/genksyms
-	scripts/basic/fixdep
-	scripts/basic/hash
-	scripts/extract-ikconfig
-	scripts/conmakehash
-	scripts/checkversion.pl
-	scripts/checkincludes.pl
-	scripts/checkconfig.pl
-	scripts/bin2c
-	scripts/recordmcount.pl
-	scripts/gcc-version.sh
-	scripts/gcc-goto.sh
+	scripts/mod/modpost
 	scripts/module-common.lds
-	scripts/depmod.sh
+	scripts/pnmtologo
+	scripts/recordmcount
+	scripts/recordmcount.c
+	scripts/recordmcount.h
+	scripts/recordmcount.pl
+	scripts/subarch.include
+	tools/objtool/objtool
 	.config
 	.kernelrelease
 	gcc_version.inc
@@ -228,6 +230,7 @@ rm -f %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 
 %set_verify_elf_method none
+%add_debuginfo_skiplist /boot %modules_dir
 
 %files
 /boot/vmlinuz-%kversion-%flavour-%krelease
@@ -251,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Sep 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt1
+- Update for release v4.4.189.9
+
 * Thu Jul 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.1-alt1
 - Update for release v4.4.189.1
 

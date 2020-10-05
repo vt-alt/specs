@@ -1,5 +1,5 @@
 Name: u-boot-mcom02
-Version: 2019.01.0.11
+Version: 2019.01.0.12
 Release: alt1
 
 Summary: Das U-Boot
@@ -82,8 +82,11 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_sysconfdir/udev/rules.d/10-persistent-mtd.rules
 
 %changelog
+* Mon Sep 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.01.0.12-alt1
+- Update for 2019.01.0.12
+
 * Thu Jul 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2019.01.0.11-alt1
-- Update for 2019.01.0.11-alt1
+- Update for 2019.01.0.11
 
 * Mon Jul 08 2019 RnD Center ELVEES <rnd_elvees@altlinux.org> 2019.01.0.6-alt1
 - Update for 2019.01.0.6-alt1
