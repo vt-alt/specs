@@ -1,16 +1,15 @@
 %filter_from_requires /^repocop-unittest-build-logs/d
 
-#BuildRequires: 
 Name: autorepo-altnode-repocop
-Version: 0.25
+Version: 0.26
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: scripts for an automated repocop node
 Group: Other
-License: GPL2+
-#Url: 
+License: GPLv2+
+Url: http://repocop.altlinux.org
 Source: %name-%version.tar
 
 BuildRequires: perl(Pod/Text.pm) repocop-resource-html repocop > 0.79
@@ -55,6 +54,9 @@ install -m 755 repocop-* $RPM_BUILD_ROOT%_bindir
 %_bindir/repocop-tasktest-*
 
 %changelog
+* Fri Sep 18 2020 Igor Vlasenko <viy@altlinux.ru> 0.26-alt1
+- added metadata fix support
+
 * Fri Jul 27 2018 Igor Vlasenko <viy@altlinux.ru> 0.25-alt1
 - repocop for tasks added (tasktest scripts)
 
