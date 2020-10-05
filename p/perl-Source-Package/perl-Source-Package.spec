@@ -1,14 +1,14 @@
 %define module Source-Package
 
 Name: perl-%module
-Version: 0.179
+Version: 0.180
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: %module - Perl extension for converting SRPM and spec files
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: %module-%version.tar
 #Url: http://search.cpan.org/dist/%module
 #Url: https://www.altlinux.org/Packaging_Automation/MassProcessing
@@ -36,6 +36,9 @@ Conflicts: perl-Source-Repository < 0.388
 %perl_vendor_privlib/Source*
 
 %changelog
+* Thu Oct 01 2020 Igor Vlasenko <viy@altlinux.ru> 0.180-alt1
+- new version
+
 * Tue Oct 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.179-alt1
 - new version
 
