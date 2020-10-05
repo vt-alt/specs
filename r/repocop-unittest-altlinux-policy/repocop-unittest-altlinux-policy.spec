@@ -1,5 +1,5 @@
 Name: repocop-unittest-altlinux-policy
-Version: 0.43
+Version: 0.45
 Release: alt1
 BuildArch: noarch
 Packager: Igor Vlasenko <viy@altlinux.ru>
@@ -20,6 +20,9 @@ Requires: repocop-collector-specfile
 Requires: repocop-collector-description > 0.02
 Requires: repocop > 0.79
 
+BuildRequires: perl(RPM/Source/Editor.pm) perl(RPM/Source/SpecConst.pm)
+
+
 %description
 The test warns packages that contain rpm macros, but are not named
 appropriately.
@@ -32,18 +35,42 @@ appropriately.
 %install
 for i in *.posttest; do
     testname=`echo $i | sed -e s,.posttest\$,,`
-    install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/pkgtests/$testname/posttest
+    case $testname in
+	specfile-*)
+	    install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/srctests/$testname/posttest
+	    ;;
+	*)
+	    install -pD -m 755 $testname.posttest %buildroot%_datadir/repocop/pkgtests/$testname/posttest
+    esac
 done
 
 for i in *.pl; do
     install -pD -m 644 $i %buildroot%_datadir/repocop/fixscripts/$i
 done
 
+for i in repocop-helper-*; do
+    testname=`echo $i | sed -e s,^repocop-helper-,,`
+    case $testname in
+	specfile-*)
+	    install -pD -m 755 $i %buildroot%_datadir/repocop/srctests/$testname/repocop-helper-$testname
+	    ;;
+	*)
+	    install -pD -m 755 $i %buildroot%_datadir/repocop/pkgtests/$testname/repocop-helper-$testname
+    esac
+done
+
 %files
 %_datadir/repocop/pkgtests/*
+%_datadir/repocop/srctests/*
 %_datadir/repocop/fixscripts/*
 
 %changelog
+* Thu Sep 17 2020 Igor Vlasenko <viy@altlinux.ru> 0.45-alt1
+- specfile-useradd-n tuned
+
+* Wed Sep 16 2020 Igor Vlasenko <viy@altlinux.ru> 0.44-alt1
+- added specfile-useradd-n test
+
 * Fri Jun 14 2019 Igor Vlasenko <viy@altlinux.ru> 0.43-alt1
 - added specfile-macros-ubt-is-deprecated
 
