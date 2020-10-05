@@ -1,12 +1,12 @@
 Name: repocop-report-prometheus
-Version: 0.35
+Version: 0.36
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: repocop report script that dumps test results to prometeus1 format
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Url: http://repocop.altlinux.org
 
 Requires: repocop > 0.80
@@ -27,12 +27,22 @@ Repocop is a repository unit tests platform.
 %package -n repocop-report-prometheus2
 Summary: repocop report script that dumps test results to prometheus2 format
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Requires: repocop > 0.80
 Obsoletes: repocop-report-heroku < 0.4
 Obsoletes: repocop-report-prometeus2 < 0.31
 
 %description -n repocop-report-prometheus2
+Repocop is a repository unit tests platform.
+%summary
+
+%package -n repocop-report-broken-metadata
+Summary: repocop report script that finds broken metadata in rpm db
+Group: Development/Other
+License: GPLv2+ or Artistic-2.0
+Requires: repocop > 0.80
+
+%description -n repocop-report-broken-metadata
 Repocop is a repository unit tests platform.
 %summary
 
@@ -44,7 +54,7 @@ rm -f *.spec
 
 %install
 mkdir -p %buildroot/%_bindir
-install -m 755 repocop-report-prometheus* %buildroot/%_bindir/
+install -m 755 repocop-report-prometheus2* repocop-report-prometheus-* repocop-report-broken-metadata %buildroot/%_bindir/
 
 %files
 #doc README ChangeLog
@@ -54,7 +64,13 @@ install -m 755 repocop-report-prometheus* %buildroot/%_bindir/
 %files -n repocop-report-prometheus2
 %_bindir/repocop-report-prometheus2*
 
+%files -n repocop-report-broken-metadata
+%_bindir/repocop-report-broken-metadata
+
 %changelog
+* Thu Sep 17 2020 Igor Vlasenko <viy@altlinux.ru> 0.36-alt1
+- added repocop-report-broken-metadata
+
 * Wed Sep 11 2019 Igor Vlasenko <viy@altlinux.ru> 0.35-alt1
 - ported for repocop 0.81+
 
