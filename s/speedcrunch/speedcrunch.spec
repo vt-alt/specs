@@ -1,6 +1,6 @@
 Name: speedcrunch
 Version: 0.12
-Release: alt1
+Release: alt2
 Summary: A fast power user calculator
 Group: Office
 License: GPLv2
@@ -51,6 +51,9 @@ cd ../doc/legacy && doxygen Doxyfile
 %_liconsdir/%name.png
 
 %changelog
+* Fri Sep 11 2020 Motsyo Gennadi <drool@altlinux.ru> 0.12-alt2
+- bugfixes from upstream
+
 * Sun Sep 24 2017 Motsyo Gennadi <drool@altlinux.ru> 0.12-alt1
 - 0.12
 
