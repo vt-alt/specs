@@ -1,12 +1,12 @@
 Name: repocop
-Version: 0.81
+Version: 0.83
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: Repocop is a repository unit tests platform.
 Group: Development/Other
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Url: http://repocop.altlinux.org
 
 Source: %name-%version.tar
@@ -160,6 +160,12 @@ done
 %_man1dir/repocop-report-html.*
 
 %changelog
+* Fri Sep 18 2020 Igor Vlasenko <viy@altlinux.ru> 0.83-alt1
+- new version
+
+* Sat Jul 25 2020 Igor Vlasenko <viy@altlinux.ru> 0.82-alt1
+- new version
+
 * Wed Sep 11 2019 Igor Vlasenko <viy@altlinux.ru> 0.81-alt1
 - new version
 
