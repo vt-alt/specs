@@ -1,6 +1,6 @@
 Name: scribus
 Version: 1.5.6
-Release: alt1.git742765f
+Release: alt1.git742765f.1
 Epoch: 1
 
 Summary: DeskTop Publishing application written in Qt
@@ -13,6 +13,7 @@ Packager: Paul Wolneykien <manowar@altlinux.ru>
 
 # Source-url: https://github.com/scribusproject/scribus/archive/master.zip
 Source: %name-%version.tar
+Patch1: alt-qt5.15.patch
 
 BuildRequires: cmake zlib-devel libssl-devel
 BuildRequires: libpoppler-devel libpoppler-cpp-devel
@@ -101,6 +102,7 @@ BuildArch: noarch
 
 %prep
 %setup
+%patch1 -p1
 
 %ifarch %e2k
 # until lcc-1.24: strip UTF-8 BOM
@@ -168,6 +170,9 @@ popd
 %exclude %_docdir/%name/it
 
 %changelog
+* Wed Sep 30 2020 Sergey V Turchin <zerg@altlinux.org> 1:1.5.6-alt1.git742765f.1
+- fix to build with Qt-5.15
+
 * Sun Mar 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1:1.5.6-alt1.git742765f
 - build git 742765feb112c0ae570b5f34054254c51aafdda7
 
