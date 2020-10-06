@@ -1,7 +1,7 @@
 %def_enable translation
 
 Name: nvidia-settings
-Version: 450.57
+Version: 450.80.02
 Release: alt1
 
 Group: System/Configuration/Hardware
@@ -125,6 +125,9 @@ install -m 0644 src/libXNVCtrl/*.h %buildroot/%_includedir/NVCtrl/
 %_libdir/*.a
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt1
+- new version
+
 * Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt1
 - new version
 

@@ -14,9 +14,9 @@
 # version-release
 
 %define nv_version 450
-%define nv_release 57
-%define nv_minor %nil
-%define pkg_rel alt227
+%define nv_release 80
+%define nv_minor 02
+%define pkg_rel alt228
 %define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -307,6 +307,9 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt228
+- new version
+
 * Mon Sep 14 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt227
 - add aarch64 support
 

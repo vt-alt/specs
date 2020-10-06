@@ -18,11 +18,11 @@
 %endif
 
 Name: nvidia_glx_src
-Version: 450.57
+Version: 450.80.02
 Release: alt1
 
 Source0: null
-Source201: ftp://download.nvidia.com/XFree86/Linux-x86/%version/NVIDIA-Linux-x86_64-%version.run
+Source201: http://http.download.nvidia.com/XFree86/Linux-x86_64/%version/NVIDIA-Linux-x86_64-%version.run
 
 BuildRequires: kernel-build-tools rpm-macros-alternatives
 BuildRequires: libXext-devel libEGL-devel
@@ -157,6 +157,9 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_libdir/libnvidia-encode.so.%version
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt1
+- new version
+
 * Fri Jul 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.57-alt1
 - new version
 
