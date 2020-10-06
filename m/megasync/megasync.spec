@@ -1,6 +1,6 @@
 Name: megasync
 Version: 4.3.1.0
-Release: alt1
+Release: alt2
 
 Summary: Easy automated syncing between your computers and your MEGA Cloud Drive
 
@@ -15,6 +15,7 @@ Source: v%{version}_Linux.tar.gz
 Source1: qt5sdk.pri
 
 Patch: MEGASync-4.0.2.0-createForeignFileNode.patch
+Patch1: alt-qt5.15.patch
 
 # TODO: due google_breakpad
 ExclusiveArch: %ix86 x86_64
@@ -43,6 +44,7 @@ of the official sync client of MEGA: https://mega.nz/sync
 %prep
 %setup
 #patch -p0
+%patch1 -p1
 %__subst "s|-lcrypto|-lcrypto -lz|g" src/MEGASync/platform/platform.pri
 
 mkdir -p src/MEGASync/mega/bindings/qt/
@@ -84,6 +86,9 @@ cp -a icons/hicolor/ %buildroot%_iconsdir/
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 4.3.1.0-alt2
+- fix compile with Qt-5.15
+
 * Sun Mar 29 2020 Vitaly Lipatov <lav@altlinux.ru> 4.3.1.0-alt1
 - new version 4.3.1.0 (with rpmrb script)
 
