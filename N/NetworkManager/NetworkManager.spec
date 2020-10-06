@@ -65,7 +65,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager
-Version: 1.18.8
+Version: 1.18.10
 Release: alt1%git_hash
 License: GPLv2+ and LGPLv2+
 Group: System/Configuration/Networking
@@ -795,6 +795,10 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Wed Sep 30 2020 Mikhail Efremov <sem@altlinux.org> 1.18.10-alt1
+- systemd: Drop duplicate string in NetworkManager.service.
+- Updated to 1.18.10.
+
 * Wed Jun 10 2020 Mikhail Efremov <sem@altlinux.org> 1.18.8-alt1
 - Fixed build with libnss-3.53.0.
 - Updated to 1.18.8.
