@@ -2,6 +2,7 @@
 
 %define _localstatedir %_var
 %add_findreq_skiplist %_x11sysconfdir/xinit.d/*
+%add_findreq_skiplist /lib/kernel/install.d/*
 %add_findreq_skiplist %_unitdir/local.service
 %add_findreq_skiplist %_unitdir/rc-local.service
 %add_findreq_skiplist %_unitdir/quotaon.service
@@ -65,8 +66,8 @@
 
 Name: systemd
 Epoch: 1
-Version: %ver_major.8
-Release: alt2
+Version: %ver_major.9
+Release: alt1
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
 Group: System/Configuration/Boot and Init
@@ -178,6 +179,7 @@ Requires: libseccomp >= 2.3.1
 # Requires: selinux-policy >= 3.8.5
 Requires: %name-utils = %EVR
 Requires: %name-services = %EVR
+%{?_enable_efi:Requires: %name-boot-efi = %EVR}
 Requires: pam_%name = %EVR
 
 Requires: libnss-myhostname = %EVR
@@ -458,6 +460,13 @@ Obsoletes: systemd-journal-gateway < %EVR
 
 %description journal-remote
 This service provides access to the journal via HTTP and JSON.
+
+%package boot-efi
+Group: System/Kernel and hardware
+Summary: systemd-boot and bootctl utils
+
+%description boot-efi
+systemd-boot and bootctl utils.
 
 %package coredump
 Group: System/Servers
@@ -1172,15 +1181,6 @@ fi
 /bin/systemd-notify
 /sbin/systemd-tty-ask-password-agent
 
-%if_enabled efi
-%_bindir/bootctl
-%if_enabled gnuefi
-%dir /lib/systemd/boot
-%dir /lib/systemd/boot/efi
-/lib/systemd/boot/efi/*
-%endif
-%endif
-
 %if_enabled pstore
 /etc/systemd/pstore.conf
 /lib/systemd/systemd-pstore
@@ -1212,7 +1212,6 @@ fi
 %_mandir/*/*cryptsetup*
 %_man8dir/systemd-veritysetup*
 %endif
-/lib/systemd/systemd-bless-boot
 /lib/systemd/systemd-boot-check-no-failures
 /lib/systemd/systemd-fsck
 /lib/systemd/systemd-growfs
@@ -1263,6 +1262,11 @@ fi
 %if_enabled libcurl
 %exclude %_unitdir/systemd-journal-upload*
 %endif
+%if_enabled efi
+%exclude %_unitdir/systemd-boot-system-token.service
+%exclude %_unitdir/*/systemd-boot-system-token.service
+%exclude %_unitdir/systemd-bless-boot.service
+%endif
 %if_enabled coredump
 %exclude %_unitdir/systemd-coredump*
 %exclude %_unitdir/*/systemd-coredump*
@@ -1286,7 +1290,6 @@ fi
 %exclude %_unitdir/systemd-sysusers.service
 %exclude %_unitdir/systemd-portabled.service
 
-%_man1dir/bootctl.*
 %_man1dir/busctl.*
 %_mandir/*/systemd-ask-password*
 %_man1dir/systemd-cat.*
@@ -1305,7 +1308,6 @@ fi
 %_mandir/*/systemd-tty-ask-password*
 %_man1dir/systemd.*
 %_mandir/*/*journald*
-%_man5dir/loader*
 %_man5dir/localtime*
 %_man5dir/os-release*
 %_man5dir/*sleep.conf*
@@ -1328,8 +1330,14 @@ fi
 %_man5dir/systemd.unit*
 %_mandir/*/*vconsole*
 
-%_man8dir/systemd-bless*
-%_man8dir/systemd-boot*
+%_man7dir/*
+%exclude %_man7dir/hwdb*
+%exclude %_man7dir/udev*
+%if_enabled efi
+%exclude %_man7dir/systemd-boot*
+%exclude %_man7dir/sd-boot*
+%endif
+
 %_man8dir/systemd-debug-generator*
 %_man8dir/systemd-fsck*
 %_man8dir/systemd-fstab-generator*
@@ -1367,6 +1375,9 @@ fi
 
 /usr/lib/systemd
 /lib/systemd/system-generators
+%if_enabled efi
+%exclude /lib/systemd/system-generators/systemd-bless-boot-generator
+%endif
 
 %dir /lib/systemd/system-preset
 /lib/systemd/system-preset/85-display-manager.preset
@@ -1374,15 +1385,11 @@ fi
 /lib/systemd/system-preset/90-systemd.preset
 /lib/systemd/system-preset/99-default-disable.preset
 
-
 /lib/udev/rules.d/70-uaccess.rules
 /lib/udev/rules.d/71-seat.rules
 /lib/udev/rules.d/73-seat-late.rules
 /lib/udev/rules.d/90-vconsole.rules
 /lib/udev/rules.d/99-systemd.rules
-%_man7dir/*
-%exclude %_man7dir/hwdb*
-%exclude %_man7dir/udev*
 
 %dir %_datadir/systemd
 %_datadir/systemd/kbd-model-map
@@ -1404,9 +1411,14 @@ fi
 %_defaultdocdir/%name-%version
 %_logdir/README
 # may be need adapt for ALTLinux?
-%exclude /usr/lib/kernel
-%exclude %_bindir/kernel-install
-%exclude %_man8dir/kernel-install.*
+/sbin/kernel-install
+%_man8dir/kernel-install.*
+%dir %_sysconfdir/kernel
+%dir %_sysconfdir/kernel/install.d
+%dir /lib/kernel
+%dir /lib/kernel/install.d
+/lib/kernel/install.d/*
+%exclude /lib/kernel/install.d/50-depmod.install
 
 %files -n libsystemd
 /%_lib/libsystemd.so.*
@@ -1659,8 +1671,8 @@ fi
 %endif
 %_mandir/*/*nspawn*
 %_mandir/*/*machine*
+%_mandir/*/*import*
 %exclude %_man3dir/*machine*
-%_man8dir/systemd-importd.*
 %exclude %_man8dir/*mymachines.*
 %exclude %_man8dir/systemd-machine-id-*
 
@@ -1724,6 +1736,27 @@ fi
 /lib/systemd/systemd-journal-upload
 %_unitdir/systemd-journal-upload.service
 %_man8dir/systemd-journal-upload*
+%endif
+%endif
+
+%if_enabled efi
+%files boot-efi
+%_bindir/bootctl
+/lib/systemd/systemd-bless-boot
+/lib/systemd/system-generators/systemd-bless-boot-generator
+%_unitdir/systemd-boot-system-token.service
+%_unitdir/sysinit.target.wants/systemd-boot-system-token.service
+%_unitdir/systemd-bless-boot.service
+%_man1dir/bootctl.*
+%_man5dir/loader*
+%_man7dir/systemd-boot*
+%_man7dir/sd-boot*
+%_man8dir/systemd-bless*
+%_man8dir/systemd-boot*
+%if_enabled gnuefi
+%dir /lib/systemd/boot
+%dir /lib/systemd/boot/efi
+/lib/systemd/boot/efi/*
 %endif
 %endif
 
@@ -1830,6 +1863,12 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
+* Sat Oct 03 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.9-alt1
+- 243.9 (Fixes: CVE-2020-13776)
+- kernelinstalldir path /usr/lib/kernel/install.d -> /lib/kernel/install.d
+- install kernel-install script to /sbin
+- move systemd-boot and bootctl utils to systemd-boot-efi package
+
 * Fri Apr 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1:243.8-alt2
 - add resolve files, located at /run to the list of tracked by altlinux-libresolv files
 
