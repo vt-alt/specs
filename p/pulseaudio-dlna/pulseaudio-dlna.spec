@@ -1,19 +1,20 @@
 Name: pulseaudio-dlna
-Version: 0.5.2
-Release: alt1
+Version: 0.6.0
+Release: alt1.20190209
 Summary: A lightweight streaming server which brings DLNA/UPNP and Chromecast
 
 License: GPLv3
-Group: Development/Python
+Group: Sound
 Url: https://github.com/masmu/pulseaudio-dlna
 Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
 BuildArch: noarch
 
-BuildPreReq: python-devel python-module-setuptools
-Requires: python-module-protobuf >= 2.5.0
-Requires: python-module-psutil >= 1.2.1
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-dev python3-module-setuptools
+
+%add_python3_req_skip BaseHTTPServer SocketServer urlparse
 
 %description
 This is pulseaudio-dlna. A lightweight streaming server which brings DLNA / UPNP
@@ -28,19 +29,26 @@ UPNP renderers in your network will show up as pulseaudio sinks.
 %setup
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
+
+rm %buildroot%python3_sitelibdir/*.egg-info/requires.txt
 
 %files
 %_bindir/*
 %doc LICENSE
 %doc README.*
-%python_sitelibdir/pulseaudio_dlna
-%python_sitelibdir/*.egg-info
+%python3_sitelibdir/pulseaudio_dlna
+%python3_sitelibdir/*.egg-info
 %_man1dir/%name.1.*
 
 %changelog
+* Sat Sep 26 2020 Anton Midyukov <antohami@altlinux.org> 0.6.0-alt1.20190209
+- New snapshot (future 0.6.0)
+- switch to python3
+- change Group: Sound
+
 * Mon Sep 19 2016 Anton Midyukov <antohami@altlinux.org> 0.5.2-alt1
 - Initial build for ALT Linux Sisyphus.
