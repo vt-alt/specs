@@ -1,20 +1,21 @@
 Name: scantailor-advanced
-Version: 1.0.16
-Release: alt1
+Version: 1.0.17
+Release: alt0.git3d1e74e
 
 Summary: Scan processing software
 License: GPL
 Group: Graphics
 Url: https://github.com/4lex4/scantailor-advanced/
 
-# Source-url: https://github.com/4lex4/scantailor-advanced/archive/v%version.tar.gz
+#Source-url: https://github.com/4lex4/scantailor-advanced/archive/v%version.tar.gz
+# Source-url: https://github.com/4lex4/scantailor-advanced/archive/master.zip
 Source: %name-%version.tar
 Source1: %name.desktop
 
 # Automatically added by buildreq on Fri Apr 10 2009
 BuildRequires: boost-devel-headers boost-intrusive-devel cmake gcc-c++
 BuildRequires: zlib-devel libXft-devel libXmu-devel libXpm-devel libjpeg-devel libtiff-devel libpng-devel
-BuildRequires: qt5-base-devel qt5-tools-devel libqt5-core libqt5-network libqt5-gui qt5-imageformats
+BuildRequires: qt5-base-devel qt5-tools-devel qt5-svg-devel libqt5-core libqt5-network libqt5-gui qt5-imageformats
 
 %description
 scantailor-advanced is a book scan processing software.
@@ -39,11 +40,11 @@ GUI интерфейс. Наиболее известными аналогами
 
 %build
 #cp resources/appicon.svg %name.svg
-%cmake_insource
-%make_build
+%cmake
+%cmake_build
 
 %install
-%makeinstall_std
+%cmakeinstall_std
 mv %buildroot%_bindir/scantailor %buildroot%_bindir/%name
 mv %buildroot%_iconsdir/hicolor/scalable/apps/ScanTailor.svg %buildroot%_iconsdir/hicolor/scalable/apps/%name.svg
 #mkdir -p %buildroot%_bindir
@@ -63,6 +64,9 @@ install -pm644 -D %SOURCE1 %buildroot%_desktopdir/%name.desktop
 %_iconsdir/hicolor/scalable/apps/%name.svg
 
 %changelog
+* Sat Sep 05 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.17-alt0.git3d1e74e
+- build git 3d1e74e
+
 * Fri Apr 05 2019 Vitaly Lipatov <lav@altlinux.ru> 1.0.16-alt1
 - initial build for ALT Sisyphus
 
