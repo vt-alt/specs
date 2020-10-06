@@ -1,22 +1,20 @@
 Name:		karbowanecwallet
-Version:	1.3.1
+Version:	1.4.7
 Release:	alt2
-Summary:	Karbowanec KRB wallet
+Summary:	Karbowanec (Karbo) KRB wallet
 Url:		https://karbo.io/
 Group:		Office
 License:	MIT
-# ExclusiveArch:	%%ix86 x86_64
 Source0:	%name.tar.xz
 Source1:	cryptonote.tar.xz
-Source2:	libqrencode.tar.xz
-Source3:	karbowanec.png
+Source2:	karbowanec.png
 
-Patch0:		%name-1.2.6-alt_lang_dir.patch
-Patch1:     %name-g++8.patch
+Patch0:		%name-1.4.4-alt_lang_dir.patch
+Patch1:		%name-g++8.patch
 
-BuildRequires: boost-asio-devel boost-devel-headers boost-devel-static cmake qt5-base-devel
-BuildRequires: /usr/bin/convert
-ExclusiveArch: x86_64
+BuildRequires:	boost-asio-devel boost-devel-headers boost-devel-static cmake qt5-base-devel qt5-tools-devel git-core libssl-devel
+BuildRequires:	/usr/bin/convert
+ExclusiveArch: x86_64 armh aarch64
 
 %description
   Karbowanec (Karbo) is Ukrainian decentralized, privacy oriented peer-to-peer
@@ -26,12 +24,13 @@ ExclusiveArch: x86_64
 %prep
 %setup -n %name
 tar -xf %SOURCE1
-tar -xf %SOURCE2
+mv ./git ./.git
+mv ./cryptonote/git ./cryptonote/.git
 %patch0 -p1
-%patch1 -p2
+# #%patch1 -p2
 
 %build
-subst 's|Categories=Office;Finance;|Categories=Qt;Office;Finance;|g' ./src/%name.desktop
+subst 's|Categories=Office;Finance;|Categories=Qt;Office;Finance;|g' ./src/%name.desktop.in
 mkdir ./build
 cd ./build
 cmake ../. \
@@ -46,9 +45,9 @@ make DESTDIR=%buildroot install
 
 # Icons
 %__mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
-convert -resize 48x48 %SOURCE3 %buildroot%_liconsdir/karbowanec.png
-convert -resize 32x32 %SOURCE3 %buildroot%_niconsdir/karbowanec.png
-convert -resize 16x16 %SOURCE3 %buildroot%_miconsdir/karbowanec.png
+convert -resize 48x48 %SOURCE2 %buildroot%_liconsdir/karbowanec.png
+convert -resize 32x32 %SOURCE2 %buildroot%_niconsdir/karbowanec.png
+convert -resize 16x16 %SOURCE2 %buildroot%_miconsdir/karbowanec.png
 
 %files
 %_bindir/*
@@ -60,6 +59,27 @@ convert -resize 16x16 %SOURCE3 %buildroot%_miconsdir/karbowanec.png
 %_liconsdir/karbowanec.png
 
 %changelog
+* Sat Sep 19 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.7-alt2
+- ExclusiveArch x86_64 armh aarch64
+
+* Sat Sep 19 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.7-alt1
+- 1.4.7
+
+* Mon Aug 24 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.6-alt3
+- cleanup spec for build...
+
+* Mon Aug 24 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.6-alt2
+- fix buildrequires for Sisyphus
+
+* Sun Aug 23 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.6-alt1
+- 1.4.6
+
+* Sat Jul 11 2020 Motsyo Gennadi <drool@altlinux.ru> 1.4.4-alt1
+- 1.4.4
+
+* Sat Oct 05 2019 Motsyo Gennadi <drool@altlinux.ru> 1.3.6-alt1
+- 1.3.6
+
 * Fri Feb 15 2019 Andrey Bychkov <mrdrew@altlinux.org> 1.3.1-alt2
 - no return statement in the non-void function fixed (according g++8)
 
