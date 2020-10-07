@@ -1,10 +1,10 @@
 %define _hooksdir %_sysconfdir/hooks/hostname.d
 
 Name: alterator-auth
-Version: 0.43.7
-Release: alt1
+Version: 0.43.9
+Release: alt2
 
-%filter_from_requires /^samba-common$/d;/systemd-services/d;/^gpupdate$/d
+%filter_from_requires /^samba-common$/d;/systemd-services/d;/^gpupdate$/d;/gpupdate-setup/d
 
 Source:%name-%version.tar
 
@@ -64,6 +64,7 @@ Requires: libnss-role
 Requires: alterator-datetime
 Requires: sssd-dbus
 Requires: alterator-roles-common
+Requires: samba-winbind-clients
 
 Provides:  task-auth-ad = %EVR
 Obsoletes: task-auth-ad < %EVR
@@ -167,6 +168,19 @@ install -Dpm755 hooks/auth %buildroot/%_hooksdir/90-auth
 %files -n task-auth-freeipa
 
 %changelog
+* Wed Oct 07 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.9-alt2
+- Avoid dependency to gpupdate-setup due gpupdate mechanism is not mandatory.
+
+* Wed Sep 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.9-alt1
+- Enable Winbind with SSSD idmap for Active Directory secure channel.
+- Synchronize SSSD and Winbind configuaration during join to AD.
+
+* Sat Sep 12 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.8-alt2
+- Add requires samba-winbind-clients to task-auth-ad-sssd metapackage
+
+* Thu Sep 10 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.8-alt1
+- Improve gpupdate enable/disable process
+
 * Wed Jul 15 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.43.7-alt1
 - Add default libnss-role roles for users, powerusers and localadmins in separated
   package: alterator-roles-common - common files for alterator-roles (not implemented yet).

@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: gpupdate
-Version: 0.7.0
-Release: alt1
+Version: 0.8.1
+Release: alt3
 
 Summary: GPT applier
 License: GPLv3+
@@ -13,6 +13,7 @@ BuildArch: noarch
 Requires: control
 
 BuildRequires: rpm-build-python3
+BuildRequires: python-tools-i18n
 Requires: python3-module-rpm
 Requires: python3-module-dbus
 Requires: oddjob-%name >= 0.2.0
@@ -38,6 +39,11 @@ mkdir -p \
 cp -r gpoa \
 	%buildroot%python3_sitelibdir/
 
+# Generate translations
+pymsgfmt \
+	-o %buildroot%python3_sitelibdir/gpoa/locale/ru_RU/LC_MESSAGES/gpoa.mo \
+	%buildroot%python3_sitelibdir/gpoa/locale/ru_RU/LC_MESSAGES/gpoa.po
+
 mkdir -p \
 	%buildroot%_bindir/ \
 	%buildroot%_sbindir/ \
@@ -48,7 +54,7 @@ ln -s %python3_sitelibdir/gpoa/gpoa \
 	%buildroot%_sbindir/gpoa
 ln -s %python3_sitelibdir/gpoa/gpupdate \
 	%buildroot%_bindir/gpupdate
-cp dist/gpupdate-setup \
+ln -s %python3_sitelibdir/gpoa/gpupdate-setup \
 	%buildroot%_sbindir/gpupdate-setup
 
 mkdir -p %buildroot%_datadir/%name
@@ -61,6 +67,7 @@ touch %buildroot%_sysconfdir/%name/environment
 install -Dm0644 dist/%name.service %buildroot%_unitdir/%name.service
 install -Dm0644 dist/%name.service %buildroot/usr/lib/systemd/user/%name-user.service
 install -Dm0644 dist/system-policy-%name %buildroot%_sysconfdir/pam.d/system-policy-%name
+install -Dm0644 dist/%name.ini %buildroot%_sysconfdir/%name/%name.ini
 install -Dm0644 doc/gpoa.1 %buildroot/%_man1dir/gpoa.1
 install -Dm0644 doc/gpupdate.1 %buildroot/%_man1dir/gpupdate.1
 
@@ -70,12 +77,23 @@ install -Dm0644 doc/gpupdate.1 %buildroot/%_man1dir/gpupdate.1
 %post
 %post_service gpupdate
 
+# Remove storage in case we've lost compatibility between versions.
+# The storage will be regenerated on GPOA start.
+%define active_policy %_sysconfdir/local-policy/active
+%triggerpostun -- %name < 0.8.0
+rm -f %_cachedir/%name/registry.sqlite
+if test -L %active_policy; then
+	sed -i "s|^\s*local-policy\s*=.*|local-policy = $(readlink -f %active_policy)|" \
+		%_sysconfdir/%name/%name.ini
+fi
+
 %files
 %_sbindir/gpoa
 %_sbindir/gpupdate-setup
 %_bindir/gpupdate
 %attr(755,root,root) %python3_sitelibdir/gpoa/gpoa
 %attr(755,root,root) %python3_sitelibdir/gpoa/gpupdate
+%attr(755,root,root) %python3_sitelibdir/gpoa/gpupdate-setup
 %python3_sitelibdir/gpoa
 %_datadir/%name
 %_unitdir/%name.service
@@ -84,6 +102,7 @@ install -Dm0644 doc/gpupdate.1 %buildroot/%_man1dir/gpupdate.1
 /usr/lib/systemd/user/%name-user.service
 %dir %_sysconfdir/%name
 %config(noreplace) %_sysconfdir/%name/environment
+%config(noreplace) %_sysconfdir/%name/%name.ini
 %config(noreplace) %_sysconfdir/pam.d/system-policy-%name
 %dir %attr(0700, root, root) %_cachedir/%name
 %dir %attr(0700, root, root) %_cachedir/%name/creds
@@ -93,6 +112,24 @@ install -Dm0644 doc/gpupdate.1 %buildroot/%_man1dir/gpupdate.1
 %exclude %python3_sitelibdir/gpoa/test
 
 %changelog
+* Wed Oct 07 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.8.1-alt3
+- Fixed compatibility upgrade trigger condition
+
+* Wed Oct 07 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.8.1-alt2
+- Fixed compatibility upgrade trigger from 0.7 releases for update
+  active local-policy in new gpupdate.ini configuartion file
+
+* Fri Sep 11 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.8.1-alt1
+- Workaround for control names with special symbols
+- Improved logging on Kerberos errors
+
+* Fri Sep 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.8.0-alt1
+- Improve gpo applier logging
+- Add new configuration file /etc/gpupdate/gpupdate.ini
+- Fix folders applier regression
+- kinit move to samba backend
+- Replace gpupdate-setup utility with new implementation
+
 * Wed Jul 01 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.7.0-alt1
 - Add multiple appliers, part of which marks as experimental yet
 

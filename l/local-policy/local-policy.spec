@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: local-policy
-Version: 0.4.2
+Version: 0.4.6
 Release: alt1
 
 Summary: ALT Local policies
@@ -12,6 +12,7 @@ Url: http://git.altlinux.org/people/sin/packages/local-policy.git
 BuildArch: noarch
 
 Requires: control
+Requires: control-sshd-permit-root-login
 
 Source0: %name-%version.tar
 
@@ -33,11 +34,16 @@ for i in sshd-gssapi-auth \
          sssd-ad-gpo-access-control \
          sssd-ad-gpo-ignore-unreadable \
          sssd-cache-credentials \
-         autofs-browse-mode
+         autofs-browse-mode \
+         smb-conf-idmap-backend \
+         smb-conf-idmap-range
 do
         install -pD -m755 "controls/$i" \
                 "%buildroot%_sysconfdir/control.d/facilities/$i"
 done
+
+install -pD -m755 "controls/functions-local-policy" \
+        "%buildroot%_sysconfdir/control.d/"
 
 mkdir -p "%buildroot%_datadir/%name"
 cp -r policies/* "%buildroot%_datadir/%name"
@@ -49,10 +55,30 @@ mkdir -p "%buildroot%_sysconfdir/%name"
 %files
 %dir %_sysconfdir/%name
 %_sysconfdir/control.d/facilities/*
+%_sysconfdir/control.d/functions-local-policy
 %dir %_datadir/%name
 %_datadir/%name/*
 
 %changelog
+* Mon Oct 05 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.6-alt1
+- Fix control_subst_with_file_check regression and improve default
+  variants of controls facilities use it
+
+* Wed Sep 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.5-alt1
+- Revert winbind service enabling by default on server and workstation
+  due it depends on samba configuration and could be unconsistent
+- Add smb-conf-idmap-backend and smb-conf-idmap-range controls
+
+* Sat Sep 12 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.4-alt2
+- Add requires to control with OpenSSH server PermitRootLogin configuration
+
+* Sat Sep 12 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.4-alt1
+- Add winbind service enabled by default on server and workstation
+
+* Sun Sep 06 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.3-alt1
+- Fixed controls in case appropriate configs are missing
+- Add check default sssd-ad options and create it if not exists
+
 * Sat Jul 04 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.4.2-alt1
 - Add sssd-ad-gpo-access-control control
 
