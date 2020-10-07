@@ -1,6 +1,6 @@
 Name: shutter
-Version: 0.94.2
-Release: alt3
+Version: 0.94.3
+Release: alt1
 
 Summary: Shutter is a feature-rich screenshot program
 License: GPLv3+
@@ -95,6 +95,9 @@ cp -a share %buildroot/usr
 %_iconsdir/HighContrast/scalable/apps/shutter*
 
 %changelog
+* Tue Oct 06 2020 Grigory Ustinov <grenka@altlinux.org> 0.94.3-alt1
+- Build new version (Closes: #39038).
+
 * Thu Dec 27 2018 Andrey Bychkov <mrdrew@altlinux.org> 0.94.2-alt3
 - Translation fixed
 
