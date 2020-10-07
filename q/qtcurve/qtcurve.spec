@@ -1,24 +1,31 @@
 %def_disable qt4
 %def_enable qt5
+%define git_rev 7d856c17
 
 Name:    qtcurve
-Version: 1.9.1
-Release: alt2
-Epoch:  1
+Version: 1.9.0
+Release: alt1.git%git_rev
+Epoch:   2
 
 Summary: A set of widget styles for GTK+ and Qt widget toolkits
-License: LGPLv2 or LGPLv3
+License: LGPL-2.1+
 Group:   Graphical desktop/Other
-Url:     git://anongit.kde.org/qtcurve.git
-#VCS:    https://github.com/QtCurve/qtcurve
+Url:     https://github.com/KDE/qtcurve
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source: %name-%version.tar
 Patch1: qtcurve-1.8.18-no_env.patch
+Patch2: maint.patch
+Patch3: qtcurve-1.9.0-build_testing.patch
+Patch4: qtcurve-1.9.0-gcc9.patch
+Patch5: qtcurve-1.9.0-libreoffice-crashfix.patch
+Patch6: qtcurve-1.9.0-no-X-buildfix.patch
+Patch7: qtcurve-1.9.0-qt-5.15.patch
 
-BuildRequires(pre): kde-common-devel rpm-macros-qt3 rpm-macros-qt4 rpm-macros-cmake
-BuildPreReq: gcc-c++ libgtk+2-devel
+BuildRequires(pre): kde-common-devel rpm-macros-qt3 rpm-macros-qt4 cmake
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: gcc-c++ libgtk+2-devel
 %if_enabled qt4
 BuildRequires: kde4libs-devel
 BuildRequires: kde4base-workspace-devel
@@ -106,15 +113,21 @@ This is a set of widget styles for KF5
 %prep
 %setup
 %patch1 -p1
-chmod +x tools/gen-version.sh
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 %build
-%cmake -DDENABLE_QT5:BOOL=%{?_enable_qt5:ON}%{!?_enable_qt5:OFF} \
-       -DQTC_QT4_ENABLE_KDE:BOOL=OFF
-%cmake_build
+%cmake  -GNinja \
+	-DENABLE_QT5:BOOL=%{?_enable_qt5:ON}%{!?_enable_qt5:OFF} \
+	-DQTC_QT4_ENABLE_KDE:BOOL=OFF
+%ninja_build -C BUILD
 
 %install
-%cmakeinstall_std
+%ninja_install -C BUILD
 
 # unpackaged files
 rm -fv %buildroot%_libdir/libqtcurve-{cairo,utils}.so
@@ -150,6 +163,16 @@ mv %buildroot%_datadir/kstyle/themes/qtcurve.themerc %buildroot%_K5data/kstyle/t
 %endif
 
 %changelog
+* Mon Sep 28 2020 Andrey Cherepanov <cas@altlinux.org> 2:1.9.0-alt1.git7d856c17
+- New version from https://github.com/KDE/qtcurve.
+- Fix project URL and License.
+- Apply all fixes from https://github.com/KDE/qtcurve/tree/1.9.
+- Build using Ninja.
+- Apply patches from Gentoo.
+
+* Thu Nov 28 2019 Ivan A. Melnikov <iv@altlinux.org> 1:1.9.1-alt3
+- Fix build with gcc9 (upstream patch for https://bugs.kde.org/408286).
+
 * Thu Mar 28 2019 Andrey Cherepanov <cas@altlinux.org> 1:1.9.1-alt2
 - Drop qt4 support due to kde4libs missing.
 
@@ -605,7 +628,7 @@ mv %buildroot%_datadir/kstyle/themes/qtcurve.themerc %buildroot%_K5data/kstyle/t
 * Fri Oct 13 2006 Valery Inozemtsev <shrek@altlinux.ru> 0.44.2-alt1
 - 0.44.2
 
-* Wed Oct 10 2006 Valery Inozemtsev <shrek@altlinux.ru> 0.44.1-alt1
+* Tue Oct 10 2006 Valery Inozemtsev <shrek@altlinux.ru> 0.44.1-alt1
 - 0.44.1
 
 * Tue Oct 10 2006 Valery Inozemtsev <shrek@altlinux.ru> 0.44-alt1
