@@ -1,6 +1,6 @@
 Name: qpxtool
 Version: 0.8.0
-Release: alt1
+Release: alt2
 
 Summary: QPxTool - CD/DVD quality check utility with QT GUI
 License: GPLv2
@@ -10,6 +10,7 @@ Url: http://qpxtool.sourceforge.net
 Source: http://dl.sf.net/%name/%name-%version.tar.bz2
 Source100: qpxtool.watch
 Patch: qpxtool-0.8.0-alt-werror.patch
+Patch1: alt-qt5.15.patch
 Packager: Michael Shigorin <mike@altlinux.org>
 
 BuildRequires: gcc-c++ extra-cmake-modules qt5-base-devel qt5-tools-devel libpng-devel
@@ -53,9 +54,10 @@ This package contains the include files for %name
 %prep
 %setup
 %patch -p1
-sed -i 's,lrelease,&-qt5,' configure
+%patch1 -p1
 
 %build
+export PATH="%_qt5_bindir:$PATH"
 # NB: not autoconf but hand-made configure script
 ./configure \
 	--prefix=%_prefix \
@@ -67,6 +69,7 @@ sed -i 's,lrelease,&-qt5,' configure
 %make_build
 
 %install
+export PATH="%_qt5_bindir:$PATH"
 %makeinstall_std
 
 %files
@@ -93,6 +96,9 @@ sed -i 's,lrelease,&-qt5,' configure
 %_libdir/lib*.so
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 0.8.0-alt2
+- fix compile with Qt-5,15
+
 * Sun Feb 09 2020 Michael Shigorin <mike@altlinux.org> 0.8.0-alt1
 - 0.8.0 built against qt5 (thx Boris Pek for heads-up)
 - dropped patches
