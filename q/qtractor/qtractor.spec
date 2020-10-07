@@ -1,115 +1,102 @@
 # BEGIN SourceDeps(oneline):
-BuildRequires(pre): rpm-macros-fedora-compat
-BuildRequires: /usr/bin/desktop-file-validate libX11-devel libXext-devel lv2-devel pkgconfig(ogg) pkgconfig(zlib)
+BuildRequires: /usr/bin/desktop-file-install gcc-c++ libX11-devel libXext-devel pkgconfig(aubio) pkgconfig(lv2) pkgconfig(ogg) pkgconfig(samplerate) pkgconfig(xcb) pkgconfig(zlib)
 # END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
-%ifarch %{ix86}
-%global without_sse %{!?_without_sse:0}%{?_without_sse:1}
-%endif
-%ifarch ia64 x86_64
-%global without_sse 0
-%endif
-%ifnarch %{ix86} ia64 x86_64
-%global without_sse 1
-%endif
+Name:		qtractor
+Version:	0.9.17
+Release:	alt1_1
+Summary:	An Audio/MIDI multi-track sequencer
+License:	GPLv2+
+Group:		Sound
+URL:		http://qtractor.sourceforge.io/
+Source0:	http://www.rncbc.org/archive/%{name}-%{version}.tar.gz
+Patch0:		qtractor-0.9.6-mga-qmake-strip.patch
 
-Summary:       Audio/MIDI multi-track sequencer
-Name:          qtractor
-Version:       0.9.2
-Release:       alt1_1
-License:       GPLv2+
-Group:         Sound
-URL:           http://qtractor.sourceforge.net/
-Source0:       http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt5Xml)
+BuildRequires:	pkgconfig(Qt5X11Extras)
+BuildRequires:	pkgconfig(gtk+-2.0)
+BuildRequires:	pkgconfig(jack)
+BuildRequires:	pkgconfig(sndfile)
+BuildRequires:	pkgconfig(mad)
+BuildRequires:	pkgconfig(rubberband)
+BuildRequires:	pkgconfig(liblo)
+BuildRequires:	pkgconfig(lilv-0)
+BuildRequires:	pkgconfig(dssi)
+BuildRequires:	pkgconfig(suil-0)
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(vorbis)
+BuildRequires:	ladspa_sdk
+BuildRequires:	qt5-designer qt5-tools
 
-Source20:      qmake-qt5.sh
-
-Patch3:        qtractor-0.6.4-secondary.patch
-
-BuildRequires: libalsa-devel
-BuildRequires: desktop-file-utils
-BuildRequires: dssi-devel
-BuildRequires: gcc-c++
-# for plugin GUI support:
-BuildRequires: gtk-builder-convert gtk-demo libgail-devel libgtk+2-devel libgtk+2-gir-devel
-BuildRequires: libjack-devel
-BuildRequires: ladspa_sdk
-BuildRequires: liblo-devel
-BuildRequires: libmad-devel
-BuildRequires: libsamplerate-devel
-BuildRequires: libsndfile-devel
-BuildRequires: libvorbis-devel
-BuildRequires: qt5-base-devel
-BuildRequires: qt5-designer qt5-tools
-BuildRequires: qt5-x11extras-devel
-BuildRequires: librubberband-devel
-BuildRequires: libsuil-devel
-BuildRequires: liblilv-devel
-BuildRequires: autoconf
-BuildRequires: automake
-
-Requires:      icon-theme-hicolor
+Requires:	dssi dssi-examples
+Requires:	ladspa_sdk
 Source44: import.info
 
 %description
-Qtractor is an Audio/MIDI multi-track sequencer application written in C++ 
-around the Qt4 toolkit using Qt Designer. The initial target platform will be
-Linux, where the Jack Audio Connection Kit (JACK) for audio, and the Advanced
-Linux Sound Architecture (ALSA) for MIDI, are the main infrastructures to 
-evolve as a fairly-featured Linux Desktop Audio Workstation GUI, specially 
-dedicated to the personal home-studio.
+Qtractor is an Audio/MIDI multi-track sequencer application
+written in C++ around the Qt4 or Qt5 toolkit using Qt Designer.
+
+The initial target platform will be Linux, where the Jack Audio
+Connection Kit (JACK) for audio, and the Advanced Linux Sound
+Architecture (ALSA) for MIDI, are the main infrastructures to
+evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+specially dedicated to the personal home-studio.
 
 %prep
-%setup -q -n %{name}-%{version}
-#patch3 -p1 -b .second
+%setup -q
+%patch0 -p1
 
-# configure hard-codes prepending searches of /usr (already implicit, causes problems),
-# and /usr/local (not needed here), so force it's non-use -- rex
-sed -i.ac_with_paths -e "s|^ac_with_paths=.*|ac_with_paths=|g" configure configure.ac
-
-# Fix odd permissions
-chmod -x src/qtractorMmcEvent.*
 
 %build
-autoreconf
+%configure
 
-CFLAGS="%{optflags}"; export CFLAGS
-CXXFLAGS="%{optflags}"; export CXXFLAGS
-LDFLAGS="%{?__global_ldflags}"; export LDFLAGS
-
-# force use of custom/local qmake, to inject proper build flags (above)
-install -m755 -D %{SOURCE20} bin/qmake-qt5
-PATH=`pwd`/bin:%{_qt5_bindir}:$PATH; export PATH
-
-%configure \
-   --enable-lilv --enable-suil \
-%if %{without_sse}
-   --enable-sse=no
-%endif
-
-%make_build QMAKE=`pwd`/bin/qmake-qt5
-
+%make_build
 
 %install
-make install DESTDIR=%{buildroot}
-%find_lang %{name} --with-qt
+%makeinstall_std
 
-%check
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+desktop-file-install \
+	--remove-key="X-SuSE-translate" \
+	--remove-key="Version" \
+	--set-key=Exec --set-value="%{name}" \
+	--dir %{buildroot}%{_datadir}/applications \
+	%{buildroot}%{_datadir}/applications/%{name}.desktop
 
-%files -f %{name}.lang
-%doc AUTHORS ChangeLog README TODO
-%doc --no-dereference COPYING
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/*/*/*
-%{_datadir}/mime/packages/%{name}.xml
+%files
+%doc AUTHORS ChangeLog README TODO TRANSLATORS
 %{_bindir}/%{name}
-%{_bindir}/%{name}_plugin_scan
-%{_datadir}/man/man1/%{name}*
+%{_libdir}/%{name}/
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/mime/packages/%{name}.xml
 %{_datadir}/metainfo/%{name}.appdata.xml
+%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+%{_iconsdir}/hicolor/32x32/mimetypes/*.png
+%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
+%{_iconsdir}/hicolor/scalable/mimetypes/application-x-%{name}-*.svg
+%{_mandir}/man1/%{name}*.1*
+%lang(fr) %{_mandir}/fr/man1/%{name}*.1*
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/translations
+%lang(cs) %{_datadir}/%{name}/translations/%{name}_cs.qm
+%lang(de) %{_datadir}/%{name}/translations/%{name}_de.qm
+%lang(es) %{_datadir}/%{name}/translations/%{name}_es.qm
+%lang(fr) %{_datadir}/%{name}/translations/%{name}_fr.qm
+%lang(it) %{_datadir}/%{name}/translations/%{name}_it.qm
+%lang(ja) %{_datadir}/%{name}/translations/%{name}_ja.qm
+%lang(pt) %{_datadir}/%{name}/translations/%{name}_pt.qm
+%lang(ru) %{_datadir}/%{name}/translations/%{name}_ru.qm
+
 
 %changelog
+* Fri Sep 18 2020 Igor Vlasenko <viy@altlinux.ru> 0.9.17-alt1_1
+- new version
+
+* Thu Oct 17 2019 Igor Vlasenko <viy@altlinux.ru> 0.9.10-alt1_1
+- update to new release by fcimport
+
 * Mon Oct 08 2018 Igor Vlasenko <viy@altlinux.ru> 0.9.2-alt1_1
 - new version
 
