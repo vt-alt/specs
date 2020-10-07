@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.74
+Version: 2.9.75
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Tue Sep 22 2020 Oleg Solovyov <mcpain@altlinux.org> 2.9.75-alt1
+- alterator-vm: update translations
+
 * Fri Sep 11 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.74-alt1
 - Update localization of alterator-net-domain.
 

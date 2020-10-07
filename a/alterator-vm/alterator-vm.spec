@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.12
+Version: 0.4.14
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,12 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Tue Sep 22 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.14-alt1
+- Fixed disk groups when there are no objects on disks
+
+* Thu Aug 06 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.13-alt1
+- Make possible to clear selected disks
+
 * Fri Jun 19 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.12-alt1
 - Don't encrypt last unencrypted disk
 - Remove redundnant buttons when creating partition on already created LV
