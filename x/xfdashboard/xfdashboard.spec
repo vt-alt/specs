@@ -1,13 +1,13 @@
 Name: xfdashboard
-Version: 0.7.7
+Version: 0.7.8
 Release: alt1
 
 Summary: A Gnome shell like dashboard for Xfce
 License: GPL-2.0+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/applications/xfdashboard/start
+Url: https://docs.xfce.org/apps/xfdashboard/start
 
-# Upstream: git://git.xfce.org/apps/xfdashboard
+Vcs: https://gitlab.xfce.org/apps/xfdashboard.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
@@ -67,12 +67,17 @@ This package contains development files required to build
 %files -f %name.lang
 %_bindir/%{name}*
 %_libdir/%name/
+%exclude %_libdir/%name/plugins/*.la
 %_xdgconfigdir/autostart/*.desktop
 %_datadir/appdata/*.xml
 %_desktopdir/*.desktop
 %_iconsdir/hicolor/*/*/*.*
 %_datadir/themes/%{name}*/
 %_datadir/%name/
+
+# Don't package example-search-provider plugin:
+# it is just a skeleton for creating new search provider plugins.
+%exclude %_libdir/%name/plugins/example-search-provider.so
 
 %files -n lib%name
 %_libdir/*.so.*
@@ -83,6 +88,13 @@ This package contains development files required to build
 %_libdir/*.so
 
 %changelog
+* Wed Sep 23 2020 Mikhail Efremov <sem@altlinux.org> 0.7.8-alt1
+- Don't package example-search-provider plugin.
+- Don't package plugins *.la files.
+- Added Vcs tag.
+- Updated Url tag.
+- Updated to 0.7.8.
+
 * Tue Dec 03 2019 Mikhail Efremov <sem@altlinux.org> 0.7.7-alt1
 - Don't use rpm-build-licenses
 - Updated to 0.7.7.
