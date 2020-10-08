@@ -7,7 +7,7 @@
 
 Name: trikStudio
 Version: 2020.3
-Release: alt1
+Release: alt2
 Summary: Intuitive programming environment robots
 Summary(ru_RU.UTF-8): Интуитивно-понятная среда программирования роботов
 License: Apache-2.0
@@ -18,6 +18,7 @@ Packager: Evgeny Sinelnikov <sin@altlinux.org>
 Source: %name-%version.tar
 Patch: %name-%version-alt.patch
 Patch1: gamepad.patch
+Patch2: alt-ftbfs.patch
 
 BuildRequires: gcc-c++ qt5-base-devel qt5-svg-devel qt5-script-devel qt5-multimedia-devel libusb-devel libudev-devel libgmock-devel
 BuildRequires: libqscintilla2-qt5-devel zlib-devel libquazip-qt5-devel python3-dev libhidapi-devel libusb-devel
@@ -97,6 +98,13 @@ popd
 pushd qrgui/thirdparty
 tar -xf qt-solutions.tar.bz2
 popd
+%patch2 -p1
+
+if pushd plugins/robots/thirdparty/trikRuntime/trikRuntime/PythonQt/PythonQt ; then
+	[ -e generated_cpp_5.15 ] \
+	    || ln -s generated_cpp_5.14 generated_cpp_5.15
+    popd
+fi
 
 %build
 %qmake_qt5 -r \
@@ -113,6 +121,10 @@ popd
 %make_build
 
 %install
+for N in Kernel Network Hal Control ScriptRunner ; do
+    [ -e bin/release/libtrik${N}.la ] || ln -sf libtrik${N}.so bin/release/libtrik${N}.la ||:
+    [ -e bin/release/trik${N}.pc ] || echo > bin/release/trik${N}.pc ||:
+done
 %make_install INSTALL_ROOT=%buildroot install
 mv %buildroot%_libdir/*.so* %buildroot%_libdir/%name
 mv %buildroot%_bindir/trik-studio %buildroot%_libdir/%name/
@@ -172,6 +184,9 @@ popd
 %endif
 
 %changelog
+* Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 2020.3-alt2
+- build with Qt-5.15
+
 * Tue Jun 09 2020 Valery Sinelnikov <greh@altlinux.org> 2020.3-alt1
 - Update to 2020.3
 
