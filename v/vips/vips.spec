@@ -1,22 +1,31 @@
+%def_enable introspection
+%def_enable gtk_doc
 %def_disable static
 
 Name: vips
-Version: 8.4.5
-Release: alt3
+Version: 8.10.1
+Release: alt1
 
 Summary: Large image processing library
+
 License: LGPLv2.1
 Group: Graphics
+Url: https://libvips.github.io/libvips/
 
-Url: http://www.vips.ecs.soton.ac.uk
-Source0: %name-%version.tar.gz
+# Source0-url: https://github.com/libvips/libvips/archive/v%version.tar.gz
+Source0: %name-%version.tar
 Source100: vips.watch
 
-BuildPreReq: libxml2-devel
-# Automatically added by buildreq on Sat Oct 08 2011
-# optimized out: fontconfig fontconfig-devel glib2-devel ilmbase-devel libX11-devel libfreetype-devel libstdc++-devel libxml2-devel pkg-config python-base python-modules xorg-xproto-devel zlib-devel
-BuildRequires: gcc-c++ gtk-doc imake libICE-devel libImageMagick-devel libcfitsio-devel libexif-devel libfftw3-devel libjpeg-devel liblcms2-devel libmatio-devel liborc-devel libpango-devel libpng-devel libtiff-devel openexr-devel python-devel xorg-cf-files
-BuildRequires: libwebp-devel libopenslide-devel
+BuildRequires: rpm-build-python3
+BuildRequires: libxml2-devel libexpat-devel
+BuildRequires: gcc-c++ libImageMagick-devel libcfitsio-devel libexif-devel libfftw3-devel
+BuildRequires: liblcms2-devel libmatio-devel liborc-devel libpango-devel openexr-devel
+BuildRequires: libjpeg-devel libpng-devel libtiff-devel libgif-devel libimagequant-devel
+BuildRequires: libwebp-devel libopenslide-devel librsvg-devel libpoppler-glib-devel
+
+%{?_enable_gtk_doc:BuildRequires: gtk-doc}
+%{?_enable_introspection:BuildRequires: gobject-introspection-devel libgdk-pixbuf-gir-devel}
+
 
 %define majorver %(echo %version |cut -d. -f1,2)
 
@@ -44,14 +53,24 @@ Summary: VIPS development kit documentation
 Group: Development/C
 BuildArch: noarch
 
-%if_enabled static
 %package -n lib%name-devel-static
 Summary: VIPS static libraries
 Group: Development/C
 Requires: lib%name-devel = %version-%release
 Provides: %name-devel-static = %version-%release
 Obsoletes: %name-devel-static < 7.16.3-alt3
-%endif
+
+%package -n lib%name-gir
+Summary: GObject introspection data for VIPS
+Group: System/Libraries
+Requires: %name = %EVR
+
+%package -n lib%name-gir-devel
+Summary: GObject introspection devel data for VIPS
+Group: Development/Other
+BuildArch: noarch
+Requires: lib%name-devel = %EVR
+Requires: lib%name-gir = %EVR
 
 %description -n lib%name
 Shared libraries for VIPS.
@@ -62,33 +81,42 @@ Development libraries and header files for VIPS.
 %description -n lib%name-devel-doc
 This package contains development documentation for VIPS.
 
-%if_enabled static
 %description -n lib%name-devel-static
 Static libraries for developing statically linked VIPS applications.
-%endif
+
+%description -n lib%name-gir
+GObject introspection data for VIPS.
+
+%description -n lib%name-gir-devel
+GObject introspection devel data for VIPS.
 
 %prep
 %setup
-
+%__subst "s|/usr/bin/python$|%__python3|" tools/vipsprofile
 # Avoid setting RPATH to /usr/lib64 on 64-bit builds
 # The DIE_RPATH_DIE trick breaks the build wrt gobject-introspection
-sed -i 's|sys_lib_dlsearch_path_spec="|sys_lib_dlsearch_path_spec="/%{_lib} %{_libdir} |' configure
+#sed -i 's|sys_lib_dlsearch_path_spec="|sys_lib_dlsearch_path_spec="/%{_lib} %{_libdir} |' configure
 
 %build
-#autoreconf
-%configure %{subst_enable static}
+gtkdocize --copy --docdir doc --flavour no-tmpl
+glib-gettextize --force --copy
+%autoreconf
+%configure %{subst_enable static} \
+           %{subst_enable introspection} \
+           %{?_enable_gtk_doc --enable-gtk-doc}
 %make_build
 
 %install
 %makeinstall_std
 %find_lang vips%majorver
 find %buildroot \( -name '*.la' -o -name '*.a' \) -exec rm -f {} ';'
+# remove unneeded wrapper
+rm -fv %buildroot%_bindir/vips%majorver
 
 %files -f vips%{majorver}.lang
 %_bindir/*
 %_man1dir/*
 #_docdir/vips
-%exclude %python_sitelibdir
 
 %files -n lib%name
 %_libdir/lib*.so.*
@@ -98,13 +126,22 @@ find %buildroot \( -name '*.la' -o -name '*.a' \) -exec rm -f {} ';'
 %_libdir/lib*.so
 %_pkgconfigdir/*.pc
 
+%if_enabled gtk_doc
 %files -n lib%name-devel-doc
 %_datadir/gtk-doc/html/*
-#_man3dir/*
+%endif
 
 %if_enabled static
 %files -n lib%name-devel-static
 %_libdir/lib*.a
+%endif
+
+%if_enabled introspection
+%files -n lib%name-gir
+%_typelibdir/*.typelib
+
+%files -n lib%name-gir-devel
+%_girdir/*.gir
 %endif
 
 # TODO:
@@ -112,6 +149,20 @@ find %buildroot \( -name '*.la' -o -name '*.a' \) -exec rm -f {} ';'
 # - package python bindings
 
 %changelog
+* Sat Sep 05 2020 Vitaly Lipatov <lav@altlinux.ru> 8.10.1-alt1
+- new version 8.10.1 (with rpmrb script)
+
+* Thu May 28 2020 Vitaly Lipatov <lav@altlinux.ru> 8.9.2-alt1
+- new version 8.9.2 (with rpmrb script)
+
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 8.9.0-alt2
+- enable build with poppler-glib, rsvg, libgif, libimagequant
+
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 8.9.0-alt1
+- NMU: new version 8.9.0 (with rpmrb script)
+- update source url, update watch file
+- pack gir subpackages
+
 * Tue May 29 2018 Anton Farygin <rider@altlinux.ru> 8.4.5-alt3
 - rebuilt for ImageMagick
 

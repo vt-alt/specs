@@ -1,19 +1,19 @@
 Name: nip2
-Version: 8.4.0
+Version: 8.7.1
 Release: alt1
 
 Packager: Victor Forsiuk <force@altlinux.org>
 
 Summary: An image processing system
+
 License: GPLv2+
 Group: Graphics
+Url: https://github.com/libvips/nip2
 
-Url: http://www.vips.ecs.soton.ac.uk
-Source0: %{name}-%{version}.tar.gz
-Source1: %name.xpm
-Source100: nip2.watch
+# Source-url: https://github.com/libvips/nip2/archive/v%version.tar.gz
+Source: %name-%version.tar
 
-Requires: vips >= 7.8.6
+Requires: vips >= 8
 Provides: nip = %version
 Obsoletes: nip <= 7.8.11
 
@@ -39,37 +39,39 @@ Documentation for %name.
 %setup
 
 %build
-#autoreconf
+glib-gettextize --force --copy > /dev/null
+%autoreconf
+
 %configure
 %make_build
 
 %install
 %makeinstall_std
 
-install -pDm644 %SOURCE1 %buildroot%_niconsdir/nip2.xpm
-install -pDm644 nip2.desktop %buildroot%_desktopdir/nip2.desktop
-
 # copy the formatted PS and HTML docs into the install area
-cp -a doc/html doc/pdf %buildroot%_docdir/%name/
+#cp -a doc/html doc/pdf %buildroot%_docdir/%name/
 
 %files
 %_bindir/nip2
-#_bindir/run-nip2.sh
 %_man1dir/*
-%_datadir/nip2
+%_datadir/nip2/
 %_desktopdir/*.desktop
-%_niconsdir/*
+#_niconsdir/*
 %_datadir/mime/packages/nip2.xml
 %_datadir/mime/image/x-vips.xml
 %_datadir/appdata/*.appdata.xml
 
-%files doc
-%_docdir/%name
+#files doc
+#_docdir/%name
 
 # TODO:
 # - look into uninstalled /usr/share/mime/*
 
 %changelog
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 8.7.1-alt1
+- NMU: new version 8.7.1 (with rpmrb script)
+- rebuild with new libvips 8
+
 * Sat Sep 24 2016 Michael Shigorin <mike@altlinux.org> 8.4.0-alt1
 - new version (watch file uupdate)
 
