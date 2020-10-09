@@ -1,12 +1,12 @@
 %define _unpackaged_files_terminate_build 1
 
-%def_with python
+%def_with python3
 # dane_ta_usage requires openssl >= 1.1.0
 %def_without dane_ta_usage
 
 Name: ldns
-Version: 1.7.0
-Release: alt2%ubt
+Version: 1.7.1
+Release: alt1.git.e99accb9
 License: BSD
 Url: http://www.nlnetlabs.nl/%name/
 Group: System/Libraries
@@ -15,10 +15,9 @@ Summary: Lowlevel DNS(SEC) library with API
 # https://github.com/NLnetLabs/ldns.git
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ libssl-devel doxygen perl libpcap-devel
-%if_with python
-BuildRequires:  python-devel, swig
+%if_with python3
+BuildRequires: python3-devel swig
 %endif
 
 %description
@@ -41,7 +40,7 @@ more information than with dig.
 %package -n lib%name
 Summary: Lowlevel DNS(SEC) library with API
 Group: System/Libraries
-Provides: %name = %version-%release
+Provides: %name = %EVR
 
 %description -n lib%name
 libldns is a library with the aim to simplify DNS programing in C. All
@@ -62,7 +61,8 @@ packets.
 %package -n lib%name-devel
 Summary: Development package that includes the ldns header files
 Group: Development/C
-Requires: lib%name = %version-%release libssl-devel
+Requires: lib%name = %EVR
+Requires: libssl-devel
 
 %description -n lib%name-devel
 The devel package contains the ldns library and the include files
@@ -74,12 +74,12 @@ Group: Development/C
 %description -n lib%name-examples
 Examples for library
 
-%if_with python
-%package -n python-module-%name
+%if_with python3
+%package -n python3-module-%name
 Summary: Python extensions for ldns
-Group: Development/Python
+Group: Development/Python3
 
-%description -n python-module-%name
+%description -n python3-module-%name
 Python extensions for ldns
 %endif
 
@@ -90,15 +90,16 @@ Python extensions for ldns
 %autoreconf
 %configure --disable-rpath --with-drill --with-examples \
 	--enable-rrtype-ninfo --enable-rrtype-rkey --enable-rrtype-cds --enable-rrtype-uri --enable-rrtype-ta \
-%if_with python
+%if_with python3
 	--with-pyldns \
+	PYTHON=$(which python3) \
 %endif
 %if_without dane_ta_usage
 	--disable-dane-ta-usage \
 %endif
 
 %make_build
-%make  doc
+%make doc
 
 %install
 %make DESTDIR=%buildroot install
@@ -112,7 +113,8 @@ rm -rf doc/.svn
 #remove double set of man pages
 rm -rf doc/man
 # remove .la files
-rm -rf %buildroot%python_sitelibdir/*.la
+rm -rf %buildroot%python3_sitelibdir/*.la
+rm -rf %buildroot%python3_sitelibdir/*.a
 
 install -pD -m644 packaging/libldns.pc %buildroot%_pkgconfigdir/libldns.pc
 install -pD -m644 libdns.vim %buildroot%_sysconfdir/vim/libldns
@@ -150,16 +152,28 @@ install -pD -m644 libdns.vim %buildroot%_sysconfdir/vim/libldns
 %exclude %_bindir/ldns-config
 %exclude %_man1dir/ldns-config*
 
-%if_with python
-%files -n python-module-%name
-%python_sitelibdir/*
+%if_with python3
+%files -n python3-module-%name
+%python3_sitelibdir/*.py
+%python3_sitelibdir/*.so*
+%python3_sitelibdir/__pycache__/*
 %endif
 
 %changelog
-* Tue Sep 04 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7.0-alt2%ubt
+* Thu Feb 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7.1-alt1.git.e99accb9
+- Updated to current upstream snapshot
+- Switched to python-3
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.7.0-alt4
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.7.0-alt3
+- NMU: remove %%ubt from release
+
+* Tue Sep 04 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7.0-alt2
 - Rebuilt with openssl 1.1.
 
-* Wed Sep 13 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7.0-alt1%ubt
+* Wed Sep 13 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7.0-alt1
 - Updated to upstream release version 1.7.0.
 - Added %%ubt macro to release.
 
