@@ -1,14 +1,18 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: rzip
 Version: 2.1
-Release: alt2
+Release: alt3
 License: GPL
 Summary: A large-file compression program 
 Summary(ru_RU.UTF-8): Программа для сжатия очень больших файлов
 Group: Archiving/Compression
-Source0: http://rzip.samba.org/ftp/rzip/%name-%version.tar.gz
+URL: https://rzip.samba.org
 
-URL: http://rzip.samba.org
+# http://rzip.samba.org/ftp/rzip/%name-%version.tar.gz
+Source: %name-%version.tar
 
+Patch1: rzip-2.1-CVE-2017-8364.patch
 
 BuildRequires: bzlib-devel
 
@@ -22,20 +26,20 @@ rzip - это программа для сжатия, специально пр�
 поддерживая "трубы" (pipes) и прочее.
 
 %prep
-%setup -q 
+%setup
+%patch1 -p1
 
 %build
-%configure 	--prefix=%_prefix
+%configure
 
-%make
+%make_build
+
 %install
-
-%__mkdir_p %buildroot%_bindir
-%__mkdir_p %buildroot%_man1dir
+mkdir -p %buildroot%_bindir
+mkdir -p %buildroot%_man1dir
 
 install -m 755 %name %buildroot%_bindir/
 install -m 644 %name.1 %buildroot%_man1dir/
-
 
 %files
 %doc COPYING
@@ -43,6 +47,9 @@ install -m 644 %name.1 %buildroot%_man1dir/
 %_man1dir/rzip.1*
 
 %changelog
+* Thu Aug 22 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.1-alt3
+- Applied security fix from Gentoo (Fixes: CVE-2017-8364)
+
 * Wed Sep 20 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 2.1-alt2
 - Updated spec to allow any man page compression.
 - Converted summary and description to UTF-8.
