@@ -1,6 +1,6 @@
 Name: xdg-utils
 Version: 1.1.3
-Release: alt5
+Release: alt7
 
 Summary: A set of command line tools that assist applications with a variety of desktop integration tasks
 
@@ -25,11 +25,11 @@ Patch12: xdg-open-fix-open-url-in-lxde.patch
 Patch13: xdg-desktop-menu-dummy.patch
 Patch14: xdg-email-detect-thunderbird-kde5.patch
 Patch15: xdg-email-detect-thunderbird-mate.patch
+Patch16: xdg-su-xvt.patch
 
 BuildArch: noarch
 
 # Automatically added by buildreq on Wed Apr 25 2007
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: xmlto w3m
 
 AutoReq: no
@@ -80,6 +80,7 @@ popd
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 
 %build
 %autoreconf
@@ -104,13 +105,19 @@ popd
 %doc ChangeLog README LICENSE RELEASE_NOTES TODO
 
 %changelog
+* Wed Oct 07 2020 Sergey V Turchin <zerg@altlinux.org> 1.1.3-alt7
+- xdg-su: add fallback to xvt if no xterm found
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.1.3-alt6
+- NMU: remove rpm-build-ubt from BR:
+
 * Tue Nov 06 2018 Sergey V Turchin <zerg@altlinux.org> 1.1.3-alt5
 - fix detect thunderbird for MATE
 
 * Tue Nov 06 2018 Sergey V Turchin <zerg@altlinux.org> 1.1.3-alt4
 - fix detect thunderbird for KDE
 
-* Wed Jul 18 2018 Sergey V Turchin <zerg@altlinux.org> 1.1.3-alt3%ubt
+* Wed Jul 18 2018 Sergey V Turchin <zerg@altlinux.org> 1.1.3-alt3
 - fix wrong xdg-desktop-menu-dummy.menu
 
 * Fri Jul 06 2018 Anton Midyukov <antohami@altlinux.org> 1.1.3-alt2
