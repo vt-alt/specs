@@ -6,7 +6,7 @@
 
 Name: audit
 Version: 2.8.5
-Release: alt4.git.e4021a9
+Release: alt5.git.e4021a9
 Summary: User space tools for Linux kernel 2.6+ auditing
 License: GPL
 Group: Monitoring
@@ -101,6 +101,8 @@ sed -i 's@RETVAL=1@&\nstart-stop-daemon -p "/var/run/auditd.pid" -u root -K -n a
 %configure \
 	--sbindir=/sbin \
 	--libdir=%_libdir \
+	--with-aarch64 \
+	--with-arm \
 %if_with bootstrap
 	--without-python \
 	--without-python3 \
@@ -226,6 +228,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 06 2020 Anton Farygin <rider@altlinux.ru> 2.8.5-alt5.git.e4021a9
+- enabled ELF mapping for arm and aarch64 processors
+
 * Mon Jan 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.8.5-alt4.git.e4021a9
 - Ported fix from different branch.
 
