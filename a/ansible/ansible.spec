@@ -1,22 +1,30 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
-Version: 2.8.12
+Version: 2.9.13
 Release: alt1
 
-Group: System/Libraries
+Group:   System/Configuration/Other
 License: GPLv3
 Source0: %name-%version.tar
+Source1: hacking.tar
 
-Patch0:%name-%version-alt.patch
+Patch0: %name-alt.patch
 
 Url: http://www.ansible.com
 
-Packager: Evgenii Terechkov <evg@altlinux.org>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 BuildArch: noarch
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-six
-BuildRequires: python3-module-setuptools asciidoc-a2x python3-module-jinja2 python3-module-yaml python-modules-json python3-module-packaging python3-module-docutils
+BuildRequires: python3-module-setuptools
+BuildRequires: asciidoc-a2x
+BuildRequires: python3-module-jinja2
+BuildRequires: python3-module-yaml
+BuildRequires: python-modules-json
+BuildRequires: python3-module-packaging
+BuildRequires: python3-module-docutils
+BuildRequires: python3-module-straight-plugin
 
 Requires: ca-certificates >= 2015.10.29
 %py3_requires yaml
@@ -44,6 +52,8 @@ are transferred to managed machines automatically.
 
 %prep
 %setup
+# Restore non-exported hacking subdirectory
+tar xf %SOURCE1
 %patch0 -p1
 
 %build
@@ -58,6 +68,10 @@ mkdir -p %buildroot/%_man1dir
 make PYTHON=python3 docs
 cp -v docs/man/man1/*.1 %buildroot/%_man1dir/
 
+# Fix shebangs
+grep -Rl '^#!.*python$' %buildroot | xargs subst 's|^#!.*python$|#!%__python3|'
+find %buildroot%python3_sitelibdir/ansible_test/_data -name \*.ps1 -delete
+
 %files
 %_bindir/%{name}*
 %config(noreplace) %_sysconfdir/%name
@@ -67,6 +81,24 @@ cp -v docs/man/man1/*.1 %buildroot/%_man1dir/
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Fri Oct 02 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.13-alt1
+- New version.
+- Fixes:
+  + CVE-2020-14332
+  + CVE-2020-1736
+  + CVE-2020-14330
+  + CVE-2019-14846
+  + CVE-2020-14365
+
+* Wed Jul 08 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.10-alt1
+- 2.9.10
+- Fixes:
+  + CVE-2020-10691
+  + CVE-2019-14858
+  + CVE-2019-10156
+  + CVE-2019-10206
+- Change maintainer and group
+
 * Sun May 31 2020 Alexey Shabalin <shaba@altlinux.org> 2.8.12-alt1
 - 2.8.12
 - Fixes:
