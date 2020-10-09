@@ -4,7 +4,7 @@
 
 %global provider_prefix %{provider}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          0a012df867a2d525f62a146d8ebdf2e6ab8a5ad5
+%global commit          d736ef14f0288d6993a1845745d6756cfc9ddd5a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -16,10 +16,10 @@
 
 Name:           runc
 Version:        1.0.0
-Release:        alt8.rc7
+Release:        alt14.rc92
 Summary:        CLI for running Open Containers
 Group:          Development/Other
-License:        Apache 2.0
+License:        Apache-2.0
 URL:            https://%provider_prefix
 ExclusiveArch:  %go_arches
 
@@ -65,6 +65,27 @@ EOF
 /lib/tmpfiles.d/runc.conf
 
 %changelog
+* Tue Sep 29 2020 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt14.rc92
+- New version
+
+* Fri Jul 3 2020 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt13.rc91
+- New version
+
+* Mon Feb 17 2020 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt12.rc10
+- New version
+- Fixes CVE-2019-19921
+
+* Tue Dec 10 2019 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt11.rc9
+- Print user friendly error on cgroups v2
+- Fix license name
+
+* Thu Oct 10 2019 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt10.rc9
+- New version
+- fixes: CVE-2019-16884
+
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt9.rc8
+- New version
+
 * Wed Apr 10 2019 Vladimir Didenko <cow@altlinux.ru> 1.0.0-alt8.rc7
 - New version
 

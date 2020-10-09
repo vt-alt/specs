@@ -1,5 +1,5 @@
 %global import_path github.com/containerd/containerd
-%global commit bb71b10fd8f58240ca47fbb579b9d1028eea7c84
+%global commit 814b7956fafc7a0980ea07e950f983d0837e5578
 %global abbrev %(c=%{commit}; echo ${c:0:8})
 
 %global __find_debuginfo_files %nil
@@ -10,12 +10,12 @@
 %brp_strip_none %_bindir/*
 
 Name:		containerd
-Version:	1.2.5
+Version:	1.3.7
 Release:	alt1
 Summary:	A daemon to control runC
 
 Group:		Development/Other
-License:	Apache 2.0
+License:	Apache-2.0
 URL:		https://%import_path
 
 Packager:	Alexey Gladkov <legion@altlinux.ru>
@@ -61,9 +61,13 @@ mkdir -p -- \
 	%buildroot/%_unitdir \
 	%buildroot/%_sysconfdir/sysconfig/limits.d
 
-cp -a -- bin/%name    %buildroot/%_bindir/%name
-cp -a -- bin/%name-shim    %buildroot/%_bindir/%name-shim
-cp -a -- bin/ctr    %buildroot/%_bindir/%name-ctr
+cp -a -- bin/%name              %buildroot/%_bindir/%name
+cp -a -- bin/%name-shim         %buildroot/%_bindir/%name-shim
+cp -a -- bin/ctr                %buildroot/%_bindir/%name-ctr
+cp -a -- bin/%name-stress       %buildroot/%_bindir/%name-stress
+cp -a -- bin/%name-shim-runc-v1 %buildroot/%_bindir/%name-shim-runc-v1
+cp -a -- bin/%name-shim-runc-v2 %buildroot/%_bindir/%name-shim-runc-v2
+
 cp -a -- %SOURCE1 %buildroot/%_unitdir/%name.service
 cp -a -- %SOURCE2 %buildroot/%_initdir/%name
 cp -a -- %SOURCE3 %buildroot/%_sysconfdir/sysconfig/limits.d/%name
@@ -83,6 +87,32 @@ install -p -D -m 644 %SOURCE4 %{buildroot}%{_sysconfdir}/%{name}/config.toml
 %_unitdir/%name.service
 
 %changelog
+* Wed Sep 30 2020 Vladimir Didenko <cow@altlinux.org> 1.3.7-alt1
+- 1.3.7
+
+* Fri Jul 3 2020 Vladimir Didenko <cow@altlinux.org> 1.3.6-alt2
+- Add previously missed binaries
+
+* Fri Jul 3 2020 Vladimir Didenko <cow@altlinux.org> 1.3.6-alt1
+- 1.3.6
+
+* Fri May 29 2020 Vladimir Didenko <cow@altlinux.org> 1.3.4-alt1
+- 1.3.4
+
+* Tue Feb 18 2020 Vladimir Didenko <cow@altlinux.org> 1.3.3-alt1
+- 1.3.3
+- Fixes CVE-2019-16884
+- Fix license name
+
+* Thu Oct 10 2019 Vladimir Didenko <cow@altlinux.org> 1.3.0-alt1
+- 1.3.0
+
+* Thu Sep 12 2019 Vladimir Didenko <cow@altlinux.org> 1.2.9-alt1
+- 1.2.9
+
+* Thu Jul 4 2019 Vladimir Didenko <cow@altlinux.org> 1.2.7-alt1
+- 1.2.7
+
 * Sat Mar 16 2019 Alexey Shabalin <shaba@altlinux.org> 1.2.5-alt1
 - 1.2.5
 

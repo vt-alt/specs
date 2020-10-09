@@ -4,7 +4,7 @@
 
 %global provider_prefix %{provider}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          f3d3985d67407e25526e5e8b380b03afe2543877
+%global commit          026aabaa659832804b01754aaadd2c0f420c68b6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global __find_debuginfo_files %nil
@@ -15,11 +15,11 @@
 %brp_strip_none %_bindir/*
 
 Name:           libnetwork
-Version:        18.09.0
-Release:        alt2.git%shortcommit
+Version:        19.03.13
+Release:        alt1.git%shortcommit
 Summary:        Networking for containers
 Group:          Development/Other
-License:        Apache 2.0
+License:        Apache-2.0
 URL:            https://%provider_prefix
 ExclusiveArch:  %go_arches
 
@@ -57,10 +57,32 @@ mkdir -p -- %buildroot/%_bindir
 install -p -m 755 bin/docker-proxy %buildroot/%_bindir
 
 %files -n docker-proxy
-%doc CHANGELOG.md README.md ROADMAP.md
+%doc CHANGELOG.md README.md
 %_bindir/*
 
 %changelog
+* Wed Sep 30 2020 Vladimir Didenko <cow@altlinux.org> 19.03.13-alt1.git026aaba
+- New version for docker 19.03.13-ce
+
+* Fri Jun 5 2020 Vladimir Didenko <cow@altlinux.org> 19.03.11-alt1.git153d076
+- New version for docker 19.03.11-ce (fixes: CVE-2020-13401)
+
+* Tue Feb 18 2020 Vladimir Didenko <cow@altlinux.org> 19.03.6-alt1.git92cbfe3
+- New version (for docker 19.03.6-ce)
+- Fix license name
+
+* Fri Nov 15 2019 Vladimir Didenko <cow@altlinux.org> 19.03.5-alt1.git510ec3a
+- New version (for docker 19.03.5-ce)
+
+* Thu Oct 10 2019 Vladimir Didenko <cow@altlinux.org> 19.03.3-alt1.git45c7102
+- New version (for docker 19.03.3-ce).
+
+* Thu Jul 25 2019 Vladimir Didenko <cow@altlinux.org> 19.03.0-alt1.gitfc5a7d9
+- New version (for docker 19.03.0-ce).
+
+* Thu Jul 5 2019 Vladimir Didenko <cow@altlinux.org> 18.09.0-alt3.gite7933d4
+- New version (for docker 18.09.7-ce).
+
 * Tue Jan 29 2019 Vladimir Didenko <cow@altlinux.org> 18.09.0-alt2.gitf3d3985
 - New version (for docker 18.09.1-ce).
 

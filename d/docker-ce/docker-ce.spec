@@ -11,14 +11,14 @@
 %global build_dir ./_build
 %global build_dir_cli %build_dir/src/%import_path_cli
 %global build_dir_engine %build_dir/src/%import_path_engine
-%global commit      2d0083d657f82c47044c8d3948ba434b622fe2fd
+%global commit      9424aeaee927a5ddd19ee10702159cd91cc3f48e
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:       docker-ce
-Version:    19.03.1
-Release: alt2
+Version:    19.03.13
+Release: alt1
 Summary: Automates deployment of containerized applications
-License: ASL 2.0
+License: Apache-2.0
 Group: System/Configuration/Other
 
 %global versuffix ce
@@ -174,6 +174,34 @@ exit 0
 %{_datadir}/vim/vimfiles/syntax/dockerfile.vim
 
 %changelog
+* Wed Sep 30 2020 Vladimir Didenko <cow@altlinux.org> 19.03.13-alt1
+- 19.03.13
+
+* Fri Jul 3 2020 Vladimir Didenko <cow@altlinux.org> 19.03.12-alt1
+- 19.03.12
+
+* Fri Jun 5 2020 Vladimir Didenko <cow@altlinux.org> 19.03.11-alt1
+- 19.03.11 (fixes: CVE-2020-13401)
+
+* Fri May 29 2020 Vladimir Didenko <cow@altlinux.org> 19.03.10-alt1
+- 19.03.10
+
+* Thu Mar 12 2020 Vladimir Didenko <cow@altlinux.org> 19.03.8-alt1
+- 19.03.8 (better mitigation for CVE-2019-14271)
+
+* Tue Feb 18 2020 Vladimir Didenko <cow@altlinux.org> 19.03.6-alt1
+- 19.03.6
+- Fix license name
+
+* Fri Nov 15 2019 Vladimir Didenko <cow@altlinux.org> 19.03.5-alt1
+- 19.03.5
+
+* Thu Oct 10 2019 Vladimir Didenko <cow@altlinux.org> 19.03.3-alt1
+- 19.03.3
+
+* Thu Sep 12 2019 Vladimir Didenko <cow@altlinux.org> 19.03.2-alt1
+- 19.03.2
+
 * Thu Sep 05 2019 Mikhail Gordeev <obirvalger@altlinux.org> 19.03.1-alt2
 - Make udev rules not executable
 

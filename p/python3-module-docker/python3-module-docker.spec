@@ -1,52 +1,49 @@
 %define oname docker
 
-Name: python-module-%oname
+Name: python3-module-%oname
 Version: 4.3.1
 Release: alt1
 
 Summary: Python client for Docker.
 
 License: %asl
-Group: Development/Python
+Group: Development/Python3
 Url: https://github.com/docker/docker-py
 
 Source: %oname-%version.tar
 BuildArch: noarch
 
-BuildRequires(pre): rpm-build-licenses rpm-build-python
-BuildRequires: python-devel python-module-distribute python-module-pip
-Requires: python-module-backports.ssl_match_hostname >= 3.5
-Requires: python-module-ipaddress >= 1.0.16
+BuildRequires(pre): rpm-build-licenses
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel python3-module-distribute python3-module-pip
 
-%setup_python_module %oname
-%filter_from_requires /python3[(]six.moves[)]/d
 
 %description
 An API client for docker written in Python
-
 
 %prep
 %setup -n %oname-%version
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
 
+%filter_from_requires /python3[(]six.moves[)]/d
 
 %files
 %doc LICENSE README.md
 # Exclude Windows specific stuff
-%exclude %python_sitelibdir/%oname/transport/npipesocket.py
-%exclude %python_sitelibdir/%oname/transport/npipeconn.py
-%python_sitelibdir/%oname/
-%python_sitelibdir/*.egg-info
+%exclude %python3_sitelibdir/%oname/transport/npipesocket.py
+%exclude %python3_sitelibdir/%oname/transport/npipeconn.py
+%python3_sitelibdir/%oname/
+%python3_sitelibdir/*.egg-*
 
 %changelog
-* Sat Oct 03 2020 Alexey Shabalin <shaba@altlinux.org> 4.3.1-alt1
+* Wed Sep 9 2020 Vladimir Didenko <cow@altlinux.ru> 4.3.1-alt1
 - 4.3.1
-- build python2 module only
+- Build Python3 version as separate package
 
 * Fri Jul 3 2020 Vladimir Didenko <cow@altlinux.ru> 4.2.2-alt1
 - 4.2.2
