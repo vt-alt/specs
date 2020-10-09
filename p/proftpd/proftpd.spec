@@ -2,7 +2,7 @@
 
 Name: proftpd
 Version: %ver
-Release: alt0.2.ga73dbfe3b
+Release: alt0.4.ga73dbfe3b
 
 %define _libexecdir %{expand:%_libdir}
 %def_disable tests
@@ -74,6 +74,12 @@ Patch11: %name-1.3.5-alt-mysql8-transition.patch
 Patch50: %name-deb-change_pam_name.patch
 Patch51: %name-deb-core_create-home.patch
 
+# Upstream security fixes
+Patch100: upstream-fix-for-CVE-2019-18217.patch
+Patch101: upstream-fix-for-CVE-2019-19269-and-CVE-2019-19270.patch
+Patch102: upstream-fix-for-CVE-2020-9272.patch
+Patch103: upstream-fix-for-CVE-2020-9273.patch
+
 Provides: ftpserver
 Requires: locale-en
 PreReq: anonftp
@@ -84,6 +90,7 @@ Packager: Afanasov Dmitry <ender@altlinux.org>
 BuildRequires: gcc-c++ libncurses-devel libtinfo-devel zlib-devel libltdl-devel libpcre-devel
 # ftpmail findreq
 BuildRequires: perl-Mail-Sendmail
+BuildRequires: libcap-devel
 
 %{?_with_mod_auth_pam:BuildRequires: pam-devel}
 
@@ -381,6 +388,12 @@ See control(8) for details.
 %patch50 -p1
 %patch51 -p1
 
+# Upstream security fixes
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+
 %build
 #__libtoolize --ltdl
 %__autoconf
@@ -673,6 +686,14 @@ fi
 %_controldir/%name
 
 %changelog
+* Thu Oct 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.6-alt0.4.ga73dbfe3b
+- Applied security fixes from upstream (Fixes: CVE-2020-9272, CVE-2020-9273).
+- Built with system libcap.
+
+* Wed Oct 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.3.6-alt0.3.ga73dbfe3b
+- Applied security fixes from upstream (Fixes: CVE-2019-18217, CVE-2019-19269, CVE-2019-19270).
+- Updated changelog records for vulnerability policy compatibility.
+
 * Wed Dec 25 2019 Anton Midyukov <antohami@altlinux.org> 1.3.6-alt0.2.ga73dbfe3b
 - replace /var/run -> /run, /var/lock -> /run/lock
 - create tmpfiles config (Closes: 37187)
@@ -681,7 +702,7 @@ fi
 * Tue Jul 23 2019 L.A. Kostis <lakostis@altlinux.ru> 1.3.6-alt0.1.ga73dbfe3b
 - Updated to 1.3.6-ga73dbfe3b.
 - Fix mod_copy bug #4372 (Ensure that mod_copy checks for <Limits> for its SITE
-  CPFR) (CVE-2019-12815) (closes #37056).
+  CPFR) (Fixes: CVE-2019-12815) (closes #37056).
 - Updated mod_sql_postgres patch.
 - Updated -pcre patch.
 
@@ -694,7 +715,7 @@ fi
 * Tue Jan 02 2018 L.A. Kostis <lakostis@altlinux.ru> 1.3.5-alt4.rel.e
 - 1.3.5e release:
   + Backported fix for "AllowChrootSymlinks off" checking each component
-      for symlinks (CVE-2017-7418).
+      for symlinks (Fixes: CVE-2017-7418).
 - minor .spec cleanup.
 
 * Wed Dec 02 2015 Andrey Cherepanov <cas@altlinux.org> 1.3.5-alt3.rel.a.1
@@ -708,8 +729,9 @@ fi
 - .spec fixes.
 
 * Wed May 20 2015 Konstantin A. Lepikhov <lakostis@altlinux.ru> 1.3.5-alt1.gita31d0ab
-- Updated to 1.3.5-a31d0ab GIT fixing following CVEs:
-  + CVE-2013-4359.
+- Updated to 1.3.5-a31d0ab GIT fixing CVEs.
+- Fixes:
+  + CVE-2013-4359
 - Include the fix for Bug 4169 (Unauthenticated copying of files
   via SITE CPFR/CPTO allowed by mod_copy).
 - Configuration changes:
@@ -837,8 +859,8 @@ fi
 - fix null reference in CVE-2006-5815 patch made by upstream.
 
 * Mon Nov 13 2006 L.A. Kostis <lakostis@altlinux.org> 1.3.0rel-alt1.2
-- Security fix for CVE-2006-5815 ("CommandBufferSize" Directive Remote Code
-  Execution Vulnerability).
+- Fixes:
+  + CVE-2006-5815 "CommandBufferSize" Directive Remote Code Execution Vulnerability
 
 * Tue Aug 29 2006 LAKostis <lakostis at altlinux.org> 1.3.0rel-alt1.1
 - fix %%setup.
