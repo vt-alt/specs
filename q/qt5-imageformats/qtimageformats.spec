@@ -6,7 +6,7 @@
 
 Name: qt5-imageformats
 Version: 5.12.9
-Release: alt1
+Release: alt1.M90P.1
 
 Group: System/Libraries
 Summary: Qt5 - QtImageFormats component
@@ -16,6 +16,8 @@ License: LGPLv2 / GPLv3
 Requires: %name-common = %EVR
 
 Source: %qt_module-everywhere-src-%version.tar
+
+Patch1: %name-alt-libjasper-compat.patch
 
 # Automatically added by buildreq on Tue Jun 03 2014 (-bi)
 # optimized out: elfutils libGL-devel libcloog-isl4 libjpeg-devel libqt5-clucene libqt5-core libqt5-gui libqt5-help libqt5-network libqt5-sql libqt5-widgets libqt5-xml libstdc++-devel python-base qt5-base-devel qt5-declarative-devel qt5-tools ruby ruby-stdlibs zlib-devel
@@ -50,6 +52,7 @@ This package contains documentation for Qt5 %qt_module
 
 %prep
 %setup -qn %qt_module-everywhere-src-%version
+%patch1 -p2
 
 %if_disabled fmt_jp2
 rm -rf config.tests/jasper
@@ -83,6 +86,9 @@ export QT_HASH_SEED=0
 %endif
 
 %changelog
+* Tue Oct 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.12.9-alt1.M90P.1
+- Fixed build with new libjasper.
+
 * Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
 - new version
 

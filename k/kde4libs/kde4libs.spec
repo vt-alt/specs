@@ -18,7 +18,7 @@
 %define rname kdelibs
 Name: kde4libs
 Version: %major.%minor.%bugfix
-Release: alt5
+Release: alt7
 
 %define conflictver %major.%minor-alt0.0.1
 %define conflictver_kdevelop 3.4.1-alt0.0.1
@@ -136,7 +136,7 @@ BuildRequires: herqq-devel
 BuildRequires: libXrender-devel libXext-devel libXScrnSaver-devel grantlee-devel
 #BuildRequires: libaspell-devel aspell
 BuildRequires: libenchant-devel
-BuildRequires: libavahi-devel libjasper-devel libjpeg-devel
+BuildRequires: libavahi-devel libjpeg-devel
 BuildRequires: libgif-devel libxslt-devel liblzma-devel docbook-style-xsl docbook-dtds
 %if_enabled openexr
 BuildRequires: openexr-devel
@@ -160,7 +160,8 @@ Requires: %name = %version-%release
 Requires: cmake libqt4-devel kde-common-devel >= %major.%minor
 Requires: libXrender-devel libXext-devel libXdmcp-devel libXcomposite-devel libXdamage-devel libxkbfile-devel libXtst-devel libXScrnSaver-devel
 Requires: libXpm-devel libXxf86vm-devel libXt-devel libXft-devel
-Requires: libstrigi-devel libpcre-devel libgif-devel xml-utils
+Requires: libstrigi-devel libpcre-devel xml-utils
+#Requires: libgif-devel
 Requires: libutempter-devel bzlib-devel phonon-devel automoc shared-desktop-ontologies-devel
 Requires: docbook-style-xsl docbook-dtds
 
@@ -362,6 +363,12 @@ done
 %_K4includedir/*
 
 %changelog
+* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt7
+- build without libjasper
+
+* Fri Dec 27 2019 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt6
+- clean requires
+
 * Thu Aug 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.14.38-alt5
 - security fixes: CVE-2019-14744
 

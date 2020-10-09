@@ -41,7 +41,7 @@
 Name: lib%bname%sover
 Epoch: 1
 Version: 3.4.5
-Release: alt1
+Release: alt1.M90P.1
 Summary: Open Source Computer Vision Library
 License: Distributable
 Group: System/Libraries
@@ -60,6 +60,7 @@ Source3: %bname-xfeatures2d-vgg-%version.tar
 
 Patch1: %bname-alt-build.patch
 Patch2: %bname-alt-unimplemented-functions.patch
+Patch3: libopencv-4.4.0-upstream-jasper-compat.patch
 
 BuildRequires: gcc-c++ libjasper-devel libjpeg-devel libtiff-devel
 BuildRequires: openexr-devel graphviz libpng-devel libpixman-devel
@@ -249,6 +250,7 @@ This package contains %Name examples.
 %setup -b 1 -b 2 -b 3
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 rm -fR 3rdparty/{ffmpeg,libjasper,libjpeg,libpng,libtiff,openexr,tbb,zlib,protobuf,libwebp}
 
@@ -332,6 +334,9 @@ cp %_builddir/%bname-xfeatures2d-vgg-%version/* BUILD/downloads/xfeatures2d/
 %_datadir/%Name/lbpcascades
 
 %changelog
+* Fri Oct 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.4.5-alt1.M90P.1
+- Rebuilt with new libjasper.
+
 * Wed Jan 23 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.4.5-alt1
 - Updated to upstream version 3.4.5.
 

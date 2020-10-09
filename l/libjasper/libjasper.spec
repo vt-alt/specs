@@ -1,5 +1,5 @@
 Name: libjasper
-Version: 2.0.14
+Version: 2.0.19
 Release: alt1
 
 Summary: Implementation of the codec specified in the JPEG-2000 Part-1 standard
@@ -10,7 +10,8 @@ Group: System/Libraries
 Url: http://www.ece.uvic.ca/~mdadams/jasper/
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
-Source: http://www.ece.uvic.ca/~frodo/jasper/software/jasper-%version.tar
+# Source-url: https://github.com/mdadams/jasper/archive/version-%version.tar.gz
+Source: %name-%version.tar
 
 # Automatically added by buildreq on Wed Nov 18 2009
 BuildRequires: rpm-macros-cmake cmake imake libGL-devel libXext-devel libXi-devel libXmu-devel libglut-devel libjpeg-devel
@@ -52,7 +53,7 @@ variety of formats.  One such format supported by JasPer is the JPEG-2000
 code stream format defined in ISO/IEC 15444-1:2000.
 
 %prep
-%setup -n jasper-%version
+%setup
 
 %build
 %cmake
@@ -78,6 +79,12 @@ code stream format defined in ISO/IEC 15444-1:2000.
 %doc %_docdir/JasPer/
 
 %changelog
+* Wed Sep 02 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.19-alt1
+- new version 2.0.19 (with rpmrb script)
+
+* Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 2.0.16-alt1
+- new version 2.0.16 (switched to github tarball)
+
 * Sun Jun 24 2018 Vitaly Lipatov <lav@altlinux.ru> 2.0.14-alt1
 - new version, use cmake, pack devel-doc
 

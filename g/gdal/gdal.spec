@@ -10,7 +10,7 @@
 Summary: The Geospatial Data Abstraction Library (GDAL)
 Name: gdal
 Version: 2.2.3
-Release: alt3.1.M90P.1
+Release: alt3.1.M90P.2
 Group: Sciences/Geosciences
 
 License: MIT
@@ -25,6 +25,7 @@ Patch3: %name-1.7.1-alt-inst_docs.patch
 Patch5: %name-alt-libproj.so_name.patch
 Patch6: %name-alt-python3.patch
 Patch7: %name-2.2.3-alt-mysql8-transition.patch
+Patch8: %name-alt-libjasper-compat.patch
 
 %define libname lib%name
 
@@ -123,6 +124,7 @@ Perl modules for GDAL/OGR.
 %patch5 -p2
 %patch6 -p2
 %patch7 -p0
+%patch8 -p2
 
 %if_with python3
 cp -fR swig/python swig/python3
@@ -261,6 +263,9 @@ sed -i 's|__bool__ = __nonzero__||' \
 %endif
 
 %changelog
+* Tue Oct 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.2
+- Fixed build with new libjasper.
+
 * Fri Aug 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.1
 - Fixed build dependencies.
 
