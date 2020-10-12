@@ -1,11 +1,11 @@
 %define oname tslib
 %define plugindir %_libdir/libts-1.0
 %define sover 0
-%define libts libts%sover
+%define libts libts_0.0_%sover
 
-Name: libts
-Version: 1.22
-Release: alt3
+Name: libts-compat
+Version: 1.0
+Release: alt2
 
 Summary: tslib - touchscreen access library
 
@@ -16,31 +16,25 @@ Group: System/Libraries
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 Source: http://download.berlios.de/tslib/%oname-%version.tar
+Patch: tslib-glibc2.8.patch
 
-BuildRequires: gcc-c++ glibc-devel libSDL2-devel
+# Automatically added by buildreq on Sun Jan 10 2010
+BuildRequires: gcc-c++ glibc-devel
 
 %description
 Hardware independent touchscreen access library.
 
-%package -n tslib
-Group: System/Libraries
-Summary: %name library
-#Requires: %name-common = %EVR
-Provides: libts = %EVR
-Obsoletes: libts < %EVR
-%description -n tslib
-Hardware independent touchscreen access library utils.
-
 %package -n %libts
 Group: System/Libraries
 Summary: %name library
-#Requires: %name-common = %EVR
 %description -n %libts
-%name library.
+Hardware independent touchscreen access library.
 
 %package devel
 Summary: Development library and headers for %name
 Group: Development/C
+Requires: %name = %version-%release
+
 %description devel
 Development files (headers etc.) for %name.
 
@@ -49,46 +43,25 @@ Development files (headers etc.) for %name.
 %__subst 's,^# module_raw input$,module_raw input,' etc/ts.conf
 # For quick verification during building:
 grep "module_raw input" etc/ts.conf
+%patch0 -p1
 
 %build
 ./autogen.sh
-%configure --with-plugindir=%plugindir --with-sdl2
+%configure --with-plugindir=%plugindir
 %make_build
 
 %install
 %makeinstall_std
 rm -f %buildroot%plugindir/*.la
 
-%files -n tslib
-%doc README AUTHORS ChangeLog
-%config(noreplace) %_sysconfdir/ts.conf
-%_bindir/ts_*
-%dir %plugindir
-%plugindir/*.so
-%_man1dir/*
-%_man5dir/*
-
 %files -n %libts
 %doc README AUTHORS ChangeLog
-%_libdir/libts.so.%sover
-%_libdir/libts.so.*
-
-%files devel
-%_libdir/*.so
-%_includedir/tslib.h
-%_pkgconfigdir/*.pc
-%_man3dir/*
+%_libdir/libts-0.0.so.%sover
+%_libdir/libts-0.0.so.*
 
 %changelog
-* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 1.22-alt3
-- fix requires
-
-* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 1.22-alt2
-- split library to separate package
-- package manpages
-
-* Wed Sep 23 2020 Sergey V Turchin <zerg@altlinux.org> 1.22-alt1
-- new version
+* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 1.0-alt2
+- package only compat library
 
 * Wed Apr 17 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 1.0-alt1.qa1
 - NMU: rebuilt for debuginfo.
