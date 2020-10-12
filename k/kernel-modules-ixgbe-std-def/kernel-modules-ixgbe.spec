@@ -1,5 +1,5 @@
 %define module_name             ixgbe
-%define module_version          5.8.1
+%define module_version          5.9.4
 %define module_release          alt1
 
 %define flavour		std-def
@@ -64,6 +64,9 @@ echo "blacklist %module_name" > %buildroot/etc/modprobe.d/blacklist-%module_name
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Thu Oct 01 2020 Alexei Takaseev <taf@altlinux.org> 5.9.4-alt1
+- 5.9.4
 
 * Wed Aug 19 2020 Alexei Takaseev <taf@altlinux.org> 5.8.1-alt1
 - 5.8.1
