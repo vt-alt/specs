@@ -1,6 +1,6 @@
 Name: elinks
 Version: 0.12
-Release: alt0.12.2
+Release: alt0.12.6
 
 Summary: Lynx-like text WWW browser with many features
 License: GPLv2
@@ -33,6 +33,9 @@ with more open patches/features inclusion policy.
 %setup -n elinks-0.12pre5
 %patch -p1
 
+# fix shebang
+sed -i 's,/usr/bin/env python,%_bindir/python2,' doc/tools/asciidoc/asciidoc.py
+
 %build
 cat config/m4/*.m4 >acinclude.m4
 %autoreconf
@@ -55,7 +58,15 @@ export ac_cv_prog_HAVE_SMBCLIENT=no
 touch src/intl/gettext/plural.y
 make -C src/intl/gettext V=1 plural.c
 
-make -C src V=1 CFLAGS="%optflags -fno-strict-aliasing -Wno-pointer-sign -Werror"
+%add_optflags -fno-strict-aliasing -Wno-pointer-sign -Werror
+%ifarch %e2k
+# elinks-0.12/src/util/error.h:189 (#define if_assert_failed) => ftbfs on e2k
+%add_optflags  -Wno-error=assign-where-compare-meant
+# textarea.c:46 (int split_prev:1) => error #108: signed bit field of length 1
+%add_optflags -Wno-error=signed-one-bit-field
+%endif
+
+make -C src V=1 CFLAGS="%optflags"
 make -C doc V=1 features.txt manual.html
 
 %install
@@ -82,6 +93,18 @@ install -pD -m644 elinks.conf %buildroot/etc/elinks/elinks.conf
 %doc doc/manual.html
 
 %changelog
+* Sat Oct 03 2020 Michael Shigorin <mike@altlinux.org> 0.12-alt0.12.6
+- workaround ftbfs with lcc
+
+* Sun May 31 2020 Anton Midyukov <antohami@altlinux.org> 0.12-alt0.12.5
+- Fix FTBFS
+
+* Tue Sep 17 2019 Ivan A. Melnikov <iv@altlinux.org> 0.12-alt0.12.4
+- fix double dereference (closes: #36113)
+
+* Wed Sep 11 2019 Denis Medvedev <nbr@altlinux.org> 0.12-alt0.12.3
+- (Fixes: CVE-2012-4545)
+
 * Tue Feb 05 2019 Fr. Br. George <george@altlinux.ru> 0.12-alt0.12.2
 - rebuild with OpenSSL 1.1
 
