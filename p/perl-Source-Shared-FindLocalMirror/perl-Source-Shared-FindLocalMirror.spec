@@ -1,14 +1,14 @@
 %define module Source-Shared-FindLocalMirror
 
 Name: perl-%module
-Version: 0.006
+Version: 0.007
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
 
 Summary: Local Mirror locator for Source-Shared framework
 Group: Development/Perl
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 #Url: http://search.cpan.org/dist/%module
 Url: http://git.altlinux.org/people/viy/packages/perl-%module
@@ -35,6 +35,9 @@ for Source-Shared framework
 %perl_vendor_privlib/S*
 
 %changelog
+* Fri Oct 09 2020 Igor Vlasenko <viy@altlinux.ru> 0.007-alt1
+- added p9 & p10 support
+
 * Wed Oct 31 2018 Igor Vlasenko <viy@altlinux.ru> 0.006-alt1
 - added /var/ftp/pub/distribution
 
