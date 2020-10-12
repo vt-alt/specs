@@ -2,7 +2,7 @@
 %define _libexecdir /usr/libexec
 
 Name: virt-manager
-Version: 2.2.1
+Version: 3.1.0
 Release: alt2
 Summary: Virtual Machine Manager
 
@@ -14,6 +14,7 @@ AutoReqProv: nopython
 
 # https://github.com/virt-manager/virt-manager
 Source: %name-%version.tar
+Patch0001: 0001-fixed-build-with-python3-module-docutils-on-p9-branch.patch
 # Patch: %name-%version-%release.patch
 
 Requires: virt-manager-common = %EVR
@@ -37,8 +38,8 @@ Requires: typelib(Vte) = 2.91
 BuildRequires(pre): rpm-build-python3 rpm-build-gir
 BuildRequires: python3-devel python3-module-argcomplete
 BuildRequires: libgio
-BuildRequires: intltool
-BuildRequires: /usr/bin/pod2man
+BuildRequires: gettext-tools
+BuildRequires: python3-module-docutils
 BuildRequires: bash-completion
 
 %add_python3_lib_path %_datadir/%name
@@ -70,7 +71,6 @@ AutoReqProv: nopython
 Requires: virt-manager-common = %EVR
 
 Provides: virt-clone
-Provides: virt-convert
 Provides: virt-xml
 
 %description -n virt-install
@@ -81,6 +81,8 @@ machine).
 %prep
 %setup
 #%%patch -p1
+%patch0001 -p1
+
 
 %build
 python3 setup.py configure
@@ -105,11 +107,10 @@ done
 %files
 %_bindir/%name
 %_datadir/%name/ui/*.ui
-%_datadir/%name/virt-manager
 %_datadir/%name/virtManager
 %_datadir/%name/icons
 %_desktopdir/%name.desktop
-%_datadir/appdata/%name.appdata.xml
+%_datadir/metainfo/%name.appdata.xml
 %_datadir/icons/hicolor/*/apps/%name.png
 %_datadir/glib-2.0/schemas/*.gschema.xml
 
@@ -118,28 +119,30 @@ done
 
 %files common -f %name.lang
 %dir %_datadir/%name
-%_datadir/%name/virtconv
 %_datadir/%name/virtinst
 
 %files -n virt-install
 %_bindir/virt-install
 %_bindir/virt-clone
-%_bindir/virt-convert
 %_bindir/virt-xml
-%_datadir/%name/virt-install
-%_datadir/%name/virt-clone
-%_datadir/%name/virt-convert
-%_datadir/%name/virt-xml
 %_datadir/bash-completion/completions/virt-install
 %_datadir/bash-completion/completions/virt-clone
-%_datadir/bash-completion/completions/virt-convert
 %_datadir/bash-completion/completions/virt-xml
 %_man1dir/virt-install.1*
 %_man1dir/virt-clone.1*
-%_man1dir/virt-convert.1*
 %_man1dir/virt-xml.1*
 
 %changelog
+* Tue Oct 06 2020 Alexey Shabalin <shaba@altlinux.org> 3.1.0-alt2
+- fixed build on p9
+
+* Thu Oct 01 2020 Alexey Shabalin <shaba@altlinux.org> 3.1.0-alt1
+- new version 3.1.0
+
+* Wed Sep 16 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.0-alt1
+- new version 3.0.0
+- removed virt-convert
+
 * Mon Dec 02 2019 Alexey Shabalin <shaba@altlinux.org> 2.2.1-alt2
 - fixed requires(added gir packages)
 
@@ -156,20 +159,20 @@ done
 * Tue Oct 16 2018 Alexey Shabalin <shaba@altlinux.org> 2.0.0-alt1
 - new version 2.0.0
 
-* Thu Sep 13 2018 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt1.git2549e6%ubt
+* Thu Sep 13 2018 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt1.git2549e6
 - upstream master snapshot
 
-* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt0.git4484f473%ubt
+* Fri Jul 27 2018 Alexey Shabalin <shaba@altlinux.org> 1.6.0-alt0.git4484f473
 - pre release 1.6.0
 - migrate to python3
 
-* Tue Mar 06 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.1-alt1%ubt
+* Tue Mar 06 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.1-alt1
 - 1.5.1
 
-* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.0-alt1%ubt
+* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 1.5.0-alt1
 - 1.5.0
 
-* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.3-alt1%ubt
+* Tue Sep 26 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.3-alt1
 - 1.4.3
 
 * Wed Aug 09 2017 Alexey Shabalin <shaba@altlinux.ru> 1.4.2-alt1
