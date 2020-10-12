@@ -1,9 +1,9 @@
 %define cfg %_builddir/%name-%version/
 # See https://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_2/ for example
-%define rev 63028
+%define rev 63942
 
 Name:    lazarus
-Version: 2.0.8
+Version: 2.0.10
 Release: alt1
 Epoch:   1
 
@@ -14,7 +14,7 @@ Url:     http://www.lazarus-ide.org/
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64
 
 Source:  %name-%version.tar
 Source2: extra.tar
@@ -126,8 +126,10 @@ make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 # Make other program and utilites
 sed -e "s#__LAZARUSDIR__#%{cfg}#" tools/install/linux/environmentoptions.xml > environmentoptions.xml
 
+%ifnarch aarch64
 # Build apiwizz
 make -C tools/apiwizz/
+%endif
 
 # Build explorateur_lrs
 ./lazbuild --ws="$LCL_PLATFORM" --pcp=%cfg tools/explorateur_lrs/LRS_Explorer.lpr
@@ -178,7 +180,9 @@ install -m 644 install/lazarus.desktop %buildroot%_desktopdir/%name.desktop
 ln -sf lazarus-ide %buildroot%_bindir/lazarus
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/LRS_Explorer
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/lrsexplorer
+%ifnarch aarch64
 ln -sf $LAZARUSDIR/tools/apiwizz/apiwizz %buildroot%_bindir/apiwizz
+%endif
 ln -sf $LAZARUSDIR/tools/lazdatadesktop/lazdatadesktop %buildroot%_bindir/lazdatadesktop
 
 cat tools/install/linux/environmentoptions.xml | sed -e "s#__LAZARUSDIR__#$LAZARUSDIR/#" -e "s#__FPCSRCDIR__#%{_datadir}/fpcsrc/#" > %buildroot%_sysconfdir/%name/environmentoptions.xml
@@ -234,6 +238,10 @@ rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 %_libdir/libQt5Pas.so
 
 %changelog
+* Wed Sep 30 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt1
+- New version.
+- Build on aarch64 (except apiwizz).
+
 * Mon Apr 20 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.8-alt1
 - New version.
 - Fix License tag according to SPDX.
