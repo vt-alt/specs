@@ -4,7 +4,7 @@
 
 Name: kernel-image-mcom02
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt1
+Release: alt2
 
 Provides: kernel-modules-dm-secdel-mcom02 = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Wed Oct 07 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt2
+- rebuilt with SECURITY_SELINUX_DEVELOP=y
+
 * Mon Sep 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt1
 - Update for release v4.4.189.9
 
