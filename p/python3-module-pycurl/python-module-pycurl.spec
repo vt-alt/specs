@@ -1,27 +1,23 @@
 %define oname pycurl
 %define oversion %(echo %version | sed -e "s|\\.|_|g")
 
-Name: python-module-%oname
+Name: python3-module-pycurl
 Version: 7.43.0.6
 Release: alt2
 
 Summary: Python bindings to libcurl
-
 License: LGPL
-Group: Development/Python
+Group: Development/Python3
 Url: http://pycurl.io/
-
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # Source-url: https://github.com/pycurl/pycurl/archive/REL_%oversion.tar.gz
-Source: %oname-%version.tar
+Source: %name-%version.tar
 
-# revert python3 based improvement
-# https://github.com/pycurl/pycurl/commit/9b8a7f97261cb91f4894a8afa0cf6221f546c361
-Patch1: 9b8a7f97261cb91f4894a8afa0cf6221f546c361.patch
-
-BuildRequires(pre): rpm-build-python
+BuildRequires(pre): rpm-build-python3
 BuildRequires: libcurl-devel libssl-devel
+
+Requires: python3 >= 3.5
 
 BuildRequires(pre): libcurl
 %define libcurlver %(rpm -q --qf '%%{VERSION}' libcurl)
@@ -31,33 +27,35 @@ Requires: libcurl >= %libcurlver
 This module provides the Python bindings to libcurl.
 
 %prep
-%setup -n %oname-%version
-%patch1 -R -p1
+%setup
 
 %build
 %add_optflags -fno-strict-aliasing
 
-%__python setup.py docstrings
-%python_build_debug
+%__python3 setup.py docstrings
+%python3_build_debug
 
 %install
-%python_install
+%python3_install
 
 %files
-%python_sitelibdir/*
 %_docdir/%oname/
+%python3_sitelibdir/*
 
 
 %changelog
 * Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 7.43.0.6-alt2
-- revert python3 based improvement (ALT bug 39027)
+- the package needs python 3.5 or above
 
 * Sun Sep 20 2020 Vitaly Lipatov <lav@altlinux.ru> 7.43.0.6-alt1
 - new version 7.43.0.6 (with rpmrb script)
 - require libcurl not older than was at building time (ALT bug 25431)
 
+* Wed Mar 18 2020 Pavel Skrylev <majioa@altlinux.org> 7.43.0.2-alt3
+- fixed (!) inconsistency error to in libcurl versions 7.65.0 and 7.68.0 (fixes #38235)
+
 * Thu Feb 20 2020 Andrey Bychkov <mrdrew@altlinux.org> 7.43.0.2-alt2
-- python3 support removed (built separately)
+- Build for python2 disabled.
 
 * Sun Nov 04 2018 Vitaly Lipatov <lav@altlinux.ru> 7.43.0.2-alt1
 - new version 7.43.0.2 (with rpmrb script)
