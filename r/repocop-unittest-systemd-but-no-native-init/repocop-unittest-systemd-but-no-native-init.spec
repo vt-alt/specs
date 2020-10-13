@@ -1,7 +1,7 @@
 %define testname systemd-but-no-native-init
 
 Name: repocop-unittest-%testname
-Version: 0.04
+Version: 0.05
 Release: alt1
 BuildArch: noarch
 Packager: Igor Vlasenko <viy@altlinux.ru>
@@ -28,7 +28,7 @@ sqlite3 "$REPOCOP_TEST_DBDIR/rpm.db" <<EOSQL
 select a.pkgid,a.filename from rpm_files as a where (a.filename glob '/lib/systemd/system/*.service' or a.filename glob '/usr/lib/systemd/system/*.service') and a.pkgid not in (select c.pkgid from rpm_files as c where c.filename glob '/etc/rc.d/init.d/*' or c.filename glob '/etc/xinetd.d/*');
 EOSQL
 
-touch $REPOCOP_TEST_TMPDIR/msg-warn
+touch $REPOCOP_TEST_TMPDIR/msg
 
 sed -i -e '/^service-/d;/^systemd-/d' $REPOCOP_TEST_TMPDIR/pre
 cat $REPOCOP_TEST_TMPDIR/pre | while read -r pkgid service; do
@@ -42,19 +42,17 @@ cat $REPOCOP_TEST_TMPDIR/pre | while read -r pkgid service; do
 
 	 if [ -e $servicepath ] ; then
 	     :
-	     #echo $pkgid >> $REPOCOP_TEST_TMPDIR/msg-fail
-	     	 if grep -q '^Type=dbus' $servicepath || grep -q '^Alias=display-manager.service' $servicepath; then
+	     if grep -q '^Type=dbus' $servicepath || grep -q '^Alias=display-manager.service' $servicepath; then
 	     	  :
-	     	  #echo $pkgid >> $REPOCOP_TEST_TMPDIR/msg-info
-		 else
-		 	 echo $pkgid >> $REPOCOP_TEST_TMPDIR/msg-warn
-		 fi
+	     else
+		echo $pkgid >> $REPOCOP_TEST_TMPDIR/msg
+	     fi
 	 fi
 	 ;;
     esac
 done
 
-for i in `sort -u $REPOCOP_TEST_TMPDIR/msg-info`; do repocop-test-info -k $i "The package have native systemd file(s) but no  SysV init scripts."; done
+for i in `sort -u $REPOCOP_TEST_TMPDIR/msg`; do repocop-test-info -k $i "The package have native systemd file(s) but no  SysV init scripts."; done
 rm $REPOCOP_TEST_TMPDIR/*
 EOF
 
@@ -72,6 +70,9 @@ done
 #%_datadir/repocop/fixscripts/*.pl
 
 %changelog
+* Mon Oct 12 2020 Igor Vlasenko <viy@altlinux.ru> 0.05-alt1
+- bugfixes
+
 * Sun Sep 27 2020 Igor Vlasenko <viy@altlinux.ru> 0.04-alt1
 - sysVinit is deprecating, set as info
 
