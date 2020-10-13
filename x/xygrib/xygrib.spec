@@ -2,11 +2,11 @@
 
 Name: xygrib
 Version: 1.2.6
-Release: alt1
+Release: alt2
 
 Summary: Visualisation of meteo data from files in GRIB formats
 
-License: %gpl3only
+License: GPL-3.0-only
 Group: Networking/Other
 Url: https://opengribs.org
 Source0: %binname-%version.tar.gz
@@ -14,6 +14,7 @@ Source1: %binname.desktop
 
 Patch1: XyGrib-1.2.6-71e6ce91da79.diff
 Patch2: XyGrib-1.2.6-c3fd4c5b0a41.diff
+Patch3: XyGrib-1.2.6-Qt-5.15.patch
 
 Requires: fonts-ttf-liberation
 Requires: %name-data = %version-%release
@@ -38,7 +39,7 @@ Architecture independent files for XyGrib.
 Included low resolution maps for XyGrib (25 km, 5 km and 1 km)
 and cities with population from 3000 to 10000 and more 10000.
 
-data/gis/* have another license: %ccby30
+data/gis/* have another license: CC-BY-3.0
 home page: http://www.geonames.org/
 
 %prep
@@ -47,6 +48,7 @@ home page: http://www.geonames.org/
 
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 # -DNO_UPDATE=1 deactivates XyGrib internal SW update
@@ -54,12 +56,15 @@ home page: http://www.geonames.org/
     -DCMAKE_INSTALL_PREFIX=%_datadir/openGribs \
     -DCMAKE_CXX_FLAGS="%optflags -DNO_UPDATE=1"
 
-cd BUILD
-make
+#cd BUILD
+#make
+%cmake_build
 
 %install
-cd BUILD
-make install DESTDIR=%buildroot
+
+#cd BUILD
+#make install DESTDIR=%buildroot
+%cmakeinstall_std
 
 mkdir %buildroot/%_bindir
 mv %buildroot/%_datadir/openGribs/XyGrib/%binname %buildroot/%_bindir/%binname
@@ -81,6 +86,10 @@ find %buildroot \( -name 'Thumbs.db' -o -name 'Thumbs.db.gz' \) -print -delete
 %_datadir/openGribs
 
 %changelog
+* Sat Sep 19 2020 Sergey Y. Afonin <asy@altlinux.org> 1.2.6-alt2
+- fixed build with Qt 5.15 (based on Gentoo's bug 732732)
+- updated License tag to SPDX syntax
+
 * Tue Jul 16 2019 Sergey Y. Afonin <asy@altlinux.org> 1.2.6-alt1
 - New version
 
