@@ -1,18 +1,21 @@
 %define binname zyGrib
-%def_without system_qwt
+%def_with system_qwt
 
 Name: zygrib
 Version: 8.0.1
-Release: alt4
+Release: alt6
 
 Summary: Visualisation of meteo data from files in GRIB formats
 
-License: %gpl3plus
+License: GPL-3.0-only
 Group: Networking/Other
 Url: http://www.zygrib.org
 Source0: %binname-%version.tgz
 Source1: %binname.png
 Source2: %binname.desktop
+
+Patch1: zygrib-8.0.1-proj6.2.patch
+Patch2: zygrib-8.0.1-qt-5.15.patch
 
 Requires: fonts-ttf-liberation
 Requires: %name-data = %{version}-%{release}
@@ -23,8 +26,6 @@ BuildRequires: libjasper-devel >= 2.0
 %if_with system_qwt
 BuildRequires: libqwt6-qt5-devel
 %endif
-
-BuildRequires: rpm-build-licenses
 
 %description
 Visualization of meteo data from files in GRIB formats v1 and v2.
@@ -43,12 +44,15 @@ Architecture independent files for ZYGrib.
 Included low resolution maps for ZYGrib (25 km, 5 km and 1 km)
 and cities with population from 3000 to 10000 and more 10000.
 
-data/gis/* have another license: %ccby30
+data/gis/* have another license: CC-BY-3.0
 home page: http://www.geonames.org/
 
 %prep
 
 %setup -q -n %binname-%version
+
+%patch1 -p1
+%patch2 -p1
 
 # remove system-wide fonts
 rm -rf data/fonts
@@ -56,6 +60,7 @@ rm -rf data/fonts
 %if_with system_qwt
 #perl -p -e 's|cd src/qwt-6.0.1/src|# cd src/qwt-6.0.1/src|g;' -i $RPM_BUILD_DIR/%binname-%version/Makefile
 sed 's|cd ..QWTDIR./src|# cd \$(QWTDIR)/src|' -i Makefile
+sed 's|-lqwt|-lqwt-qt5|' -i src/zyGrib.pro
 %endif
 
 sed -i "s|^CFLAGS= -O3 -g -m64 .*$|CFLAGS= -O3 -g \$(INC) \$(DEFS)|" src/g2clib/makefile
@@ -116,6 +121,14 @@ fi
 %_datadir/%binname
 
 %changelog
+* Fri Sep 18 2020 Sergey Y. Afonin <asy@altlinux.org> 8.0.1-alt6
+- fixed build with Qt 5.15 (based on Gentoo's bug 732732)
+- built with system's qwt (internal can't be build with Qt 5.15)
+- updated License tag to SPDX syntax
+
+* Sun Oct 06 2019 Vladislav Zavjalov <slazav@altlinux.org> 8.0.1-alt5
+- rebuild with libproj 6.2.0 (use ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Sat Feb 16 2019 Vladislav Zavjalov <slazav@altlinux.org> 8.0.1-alt4
 - rebuild with libproj 5.2.2
 
