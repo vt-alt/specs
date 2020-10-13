@@ -1,4 +1,4 @@
-%define major 1
+%define major 1.0
 %define pre beta1
 
 %def_without gnome_vfs
@@ -7,7 +7,7 @@
 %def_disable test
 
 Name: inkscape
-Version: %major.0
+Version: %major.1
 Release: alt1
 
 Summary: A Vector Drawing Application
@@ -27,10 +27,7 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 Source: %name-%version.tar
 
 Patch: %name-dia.patch
-Patch2: inkscape-0.92.3-alt-dependencies.patch
-Patch3: inkscape-poppler-0.82.0.patch
-Patch4: inkscape-poppler-0.83.0.patch
-Patch5: inkscape-python2-compat.patch
+Patch6: fix_atomic_rel_error.patch
 
 # Typical environment for GTK program
 Requires(post,postun): desktop-file-utils
@@ -87,9 +84,7 @@ inkview is standalone viewer for Inkscape files (SVG)
 
 %prep
 %setup
-#patch3 -p1
-#patch4 -p1
-#patch5 -p1
+%patch6 -p1
 
 %build
 %cmake_insource -DBUILD_SHARED_LIBS=off
@@ -102,12 +97,8 @@ inkview is standalone viewer for Inkscape files (SVG)
 
 rm -rf %buildroot%_docdir/inkscape/
 # remove unneeded man
-rm -rf %buildroot%_mandir/fr/
-rm -rf %buildroot%_mandir/de/
-rm -rf %buildroot%_mandir/el/
-rm -rf %buildroot%_mandir/ja/
-rm -rf %buildroot%_mandir/sk/
-rm -rf %buildroot%_mandir/zh_TW/
+rm -rf %buildroot%_mandir/??/
+rm -rf %buildroot%_mandir/??_??/
 
 %find_lang %name
 
@@ -133,6 +124,9 @@ true
 %_man1dir/inkview*
 
 %changelog
+* Wed Sep 16 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt1
+- new version 1.0.1 (with rpmrb script)
+
 * Wed May 06 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt1
 - new version (1.0) with rpmgs script
 
