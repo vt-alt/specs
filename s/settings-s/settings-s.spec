@@ -1,6 +1,6 @@
 Name:     settings-s
-Version:  0.3
-Release:  alt0.M90P.2
+Version:  0.4.1
+Release: alt0.M90P.1
 
 Summary:  settings for custom distro
 License:  GPLv2
@@ -22,7 +22,7 @@ Summary: integrity checker script and settings
 Group: System/Configuration/Other
 Requires: systemd
 Requires: osec-controls
-Requires: osec-cronjob >= 1.3.0-alt0.M90P.2
+Requires: osec-cronjob >= 1.3.1-alt1.M90P.1
 
 %description -n integ
 Integrity check setup only
@@ -83,6 +83,21 @@ fi
 
 
 %changelog
+* Mon Oct 05 2020 Paul Wolneykien <manowar@altlinux.org> 0.4.1-alt0.M90P.1
+- Build version 0.4.1-alt1 for the p9 branch.
+
+* Fri Oct 02 2020 Paul Wolneykien <manowar@altlinux.org> 0.4.1-alt1
+- Set integalert service state from its preset after system
+  installation.
+
+* Thu Oct 01 2020 Paul Wolneykien <manowar@altlinux.org> 0.4-alt0.M90P.1
+- Build version 0.4-alt1 for the p9 branch.
+- Require p9 osec-cronjob version: >= 1.3.1-alt1.M90P.1.
+
+* Thu Oct 01 2020 Paul Wolneykien <manowar@altlinux.org> 0.4-alt1
+- Use "IMMUTABLE_DATABASE" configuration option for read-only osec runs.
+  This requires osec-cronjob >= 1.3.1-alt2.
+
 * Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 0.3-alt0.M90P.2
 - Setup OSEC for full journal output after integrity database
   initialization after install.

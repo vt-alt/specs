@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: osec
-Version: 1.3.0
-Release: alt0.M90P.3
+Version: 1.3.1
+Release: alt1.M90P.1
 
 Summary: Lightweight file permission checker
 License: GPL3
@@ -10,9 +10,6 @@ Group: System/Base
 Url: https://github.com/legionus/osec
 
 Source: %name-%version.tar
-Patch0: %name-%version-allchanges.patch
-Patch1: %name-%version-timerunit.patch
-Patch2: %name-%version-readonly.patch
 
 Requires(pre): shadow-utils
 
@@ -28,7 +25,7 @@ BuildRequires: flex bison help2man libcdb-devel libcap-devel libattr-devel perl-
 BuildRequires: libgcrypt-devel
 
 %package cronjob
-Summary: General scheduling framework for osec
+Summary: General cron framework for osec
 Provides: %name-cron
 Requires: %name = %EVR
 Requires: %name-reporter
@@ -52,8 +49,7 @@ by traversing filesystem and making human readable reports about changes
 and found files/directories with suspicious ownership or permissions.
 
 %description cronjob
-This package contains a general cron framework for osec and
-a systemd timerunit.
+This package contains a general framework for osec pipelines.
 
 %description mailreport
 This package contains a set of reporters to use with osec:
@@ -64,9 +60,6 @@ add name of rpm packages for files in report.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %autoreconf
@@ -74,7 +67,10 @@ add name of rpm packages for files in report.
 %make_build
 
 %install
-%makeinstall unitdir=%buildroot%_unitdir
+%makeinstall
+
+mkdir -p -- %buildroot/%_unitdir
+cp -- contrib/osec.timer contrib/osec.service %buildroot/%_unitdir/
 
 cd %buildroot
 #cron job file
@@ -113,7 +109,8 @@ rm -f %osec_statedir/osec.db.*
 %attr(770,root,%osec_group) %osec_statedir
 %defattr(600,root,root,700)
 %config(noreplace) /etc/osec
-%config(noreplace) %_unitdir/osec.*
+%_unitdir/osec.timer
+%_unitdir/osec.service
 
 %files mailreport
 %_bindir/osec_mailer
@@ -121,6 +118,21 @@ rm -f %osec_statedir/osec.db.*
 %_bindir/osec_rpm_reporter
 
 %changelog
+* Thu Oct 01 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.1-alt1.M90P.1
+- Build version 1.3.1-alt2 for the p9 branch.
+- Syncronize the code with the upstream version. Drop the patches.
+
+* Wed Sep 30 2020 Alexey Gladkov <legion@altlinux.ru> 1.3.1-alt2
+- Add systemd-specific files (ALT#38902).
+
+* Tue Sep 29 2020 Alexey Gladkov <legion@altlinux.ru> 1.3.1-alt1
+- New version (1.3.1);
+- Cronjob changes:
+  + Add config parameter to disallow database changes (ALT#38903).
+  + Summarize more types of changes in the report (ALT#38771).
+- Fixed extra space in the reported string.
+- contrib: Add systemd-specific files.
+
 * Thu Sep 17 2020 Paul Wolneykien <manowar@altlinux.org> 1.3.0-alt0.M90P.3
 - Added note about the possible values for READ_ONLY.
 
