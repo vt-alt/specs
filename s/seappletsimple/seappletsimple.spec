@@ -2,7 +2,7 @@
 
 Name: seappletsimple
 Version: 0.2.3
-Release: alt1%ubt
+Release: alt4
 
 Summary: Simple applet for SELinux
 License: GPL
@@ -12,7 +12,6 @@ Requires: qt5-translations
 
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: libselinux-devel rpm-build-xdg
 %if_disabled qt5
 BuildRequires: gcc-c++ libqt4-devel
@@ -65,6 +64,15 @@ install -m644 %name.desktop %buildroot/%_xdgconfigdir/autostart/%name.desktop
 %_xdgconfigdir/autostart/%name.desktop
 
 %changelog
+* Sun Oct 04 2020 Denis Medvedev <nbr@altlinux.org> 0.2.3-alt4
+- Bump version needed to overcome p9 version check after ubt removal.
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.2.3-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.2.3-alt2
+- NMU: remove %ubt from release
+
 * Thu Mar 09 2017 Sergey V Turchin <zerg at altlinux dot org> 0.2.3-alt1%ubt
 - fix release build
 

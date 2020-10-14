@@ -3,7 +3,7 @@
 
 Name: sechooser
 Version: 0.2.2
-Release: alt3%ubt
+Release: alt7
 
 Summary: Selinux user range chooser
 License: GPL
@@ -13,7 +13,6 @@ Requires: qt5-translations
 
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: libselinux-devel
 %if_disabled qt5
 BuildRequires: gcc-c++ libqt4-devel
@@ -62,6 +61,18 @@ install -m644 translations/sechooser_??.qm %buildroot/%_qt5_translationdir/
 %_bindir/*
 
 %changelog
+* Fri Jan 24 2020 Denis Medvedev <nbr@altlinux.org> 0.2.2-alt7
+- revert DRI3 commit, it should be done system-wide.
+
+* Fri Jan 24 2020 Denis Medvedev <nbr@altlinux.org> 0.2.2-alt6
+- Force disabling of DRI3 by setting the corresponding value in ENV
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.2.2-alt5
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.2.2-alt4
+- NMU: remove %ubt from release
+
 * Tue Mar 07 2017 Sergey V Turchin <zerg at altlinux dot org> 0.2.2-alt3%ubt
 - build with Qt5
 
