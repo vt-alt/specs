@@ -3,8 +3,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.6.0
-Release: alt2
+Version: 4.6.1
+Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
 
@@ -71,6 +71,9 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Fri Oct 09 2020 Ivan Razzhivin <underwit@altlinux.org> 4.6.1-alt1
+- fix clocksource (closes: 39050)
+
 * Fri Sep 11 2020 Sergey V Turchin <zerg@altlinux.org> 4.6.0-alt2
 - fix requires (closes: 38921)
 
