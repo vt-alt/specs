@@ -1,5 +1,5 @@
 Name: livecd-qemu-arch
-Version: 0.5
+Version: 0.6.2
 Release: alt1
 
 Summary: prepare live-builder.iso for ARM/PPC/aarch64/armh/mipsel/riscv64 QEMU
@@ -71,6 +71,16 @@ echo ':ppc:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x0
 echo 32768 > /proc/sys/vm/mmap_min_addr
 EOF
 
+cat > %buildroot%_bindir/register-qemu-ppc64le << EOF
+#!/bin/sh
+# https://www.altlinux.org/Ports/ppc64le
+modprobe binfmt_misc
+sleep 0.1
+[ -d /proc/sys/fs/binfmt_misc ] || exit 1
+echo ':ppc64le:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x15\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\x00:/qemu-ppc64le:' > /proc/sys/fs/binfmt_misc/register
+echo 32768 > /proc/sys/vm/mmap_min_addr
+EOF
+
 cat > %buildroot%_sysconfdir/apt/apt.conf.sisyphus.riscv64 << EOF
 Dir::Etc::main "/dev/null";
 Dir::Etc::parts "/var/empty";
@@ -125,7 +135,8 @@ EOF
 
 cat > %buildroot%_sysconfdir/apt/sources.list.sisyphus.armh << EOF
 # https://www.altlinux.org/Ports/arm
-rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/ports/armh/Sisyphus armh classic
+rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus armh classic
+rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
 EOF
 
 cat > %buildroot%_sysconfdir/apt/apt.conf.4.1.ppc << EOF
@@ -142,12 +153,34 @@ rpm http://ftp.altlinux.org/pub/people/wart/repos/lioka/powerpc ppc64 classic
 rpm http://ftp.altlinux.org/pub/people/wart/repos/lioka/powerpc noarch classic
 EOF
 
+cat > %buildroot%_sysconfdir/apt/apt.conf.sisyphus.ppc64le << EOF
+Dir::Etc::main "/dev/null";
+Dir::Etc::parts "/var/empty";
+Dir::Etc::SourceParts "/var/empty";
+Dir::Etc::sourcelist "/etc/apt/sources.list.sisyphus.ppc64le";
+EOF
+
+cat > %buildroot%_sysconfdir/apt/sources.list.sisyphus.ppc64le << EOF
+# https://www.altlinux.org/Ports/ppc64le
+rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus ppc64le classic
+rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
+EOF
+
 %files
 %_sysconfdir/apt/apt.conf.*
 %_sysconfdir/apt/sources.list.*
 %attr(755,root,root) %_bindir/register-qemu-*
 
 %changelog
+* Mon Oct 05 2020 Anton Midyukov <antohami@altlinux.org> 0.6.2-alt1
+- fix repo for armh
+
+* Thu Aug 06 2020 Anton Midyukov <antohami@altlinux.org> 0.6.1-alt1
+- fix syntax error in register-qemu-ppc64le
+
+* Fri Jan 24 2020 Anton Midyukov <antohami@altlinux.org> 0.6-alt1
+- added ppc64le support
+
 * Sat Mar 23 2019 Anton Midyukov <antohami@altlinux.org> 0.5-alt1
 - added riscv64 support
 
