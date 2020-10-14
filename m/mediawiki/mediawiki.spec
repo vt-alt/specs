@@ -1,9 +1,9 @@
 %define webappdir %webserver_webappsdir/mediawiki
-%define major 1.34
+%define major 1.35
 
 Name: mediawiki
-Version: %major.1
-Release: alt2
+Version: %major.0
+Release: alt1
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
 
@@ -25,7 +25,7 @@ Source6: AdminSettings.sample
 Source7: 99-read-user-configs.php
 
 Patch: %name-1.31-alt.patch
-Patch1: %name-1.33-config-path.patch
+Patch1: %name-1.35-config-path.patch
 
 BuildRequires(pre): rpm-macros-apache2
 BuildRequires(pre): rpm-build-licenses
@@ -60,7 +60,7 @@ If you wish pure %name, install only %name-common package.
 Summary: Common files for %name
 Group: Networking/WWW
 Requires: webserver-common
-Requires: php7-libs >= 7.0.0
+Requires: php7-libs >= 7.3.19
 Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader
 Requires: diffutils
 Requires: php7-opcache
@@ -68,6 +68,11 @@ Requires: pear-Mail >= 1.4.1
 
 AutoProv:no
 AutoReq:yes,nomingw32,nomingw64,noerlang,noruby
+
+# due shebang with node
+%add_findreq_skiplist %_mediawikidir/extensions/VisualEditor/lib/ve/rebaser/src/server.js
+%add_findreq_skiplist %_mediawikidir/extensions/VisualEditor/lib/ve/rebaser/src/tools/dump-mongo.js
+
 
 # since 1.20
 Provides: mediawiki-extensions-ParserFunctions
@@ -137,6 +142,13 @@ Obsoletes: mediawiki-extensions-StubManager
 # since 1.34
 Provides: mediawiki-extensions-Scribunto
 Obsoletes: mediawiki-extensions-Scribunto
+
+# since 1.35
+Provides: mediawiki-extensions-VisualEditor
+Obsoletes: mediawiki-extensions-VisualEditor
+
+Provides: mediawiki-extensions-Parsoid
+Obsoletes: mediawiki-extensions-Parsoid
 
 %description -n %name-common
 %summary
@@ -212,6 +224,17 @@ rm -rf %buildroot%_mediawikidir/maintenance/language/zhtable
 rm -rf %buildroot%_mediawikidir/vendor/zordius/lightncandy/build/
 
 rm -rf %buildroot%_mediawikidir//extensions/Scribunto/includes/engines/LuaStandalone/binaries/
+
+# devel tools, reqs node
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/tools/test.selser.sh
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/debug_selser.sh
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/*.js
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/toolcheck.js.sh
+rm -rfv %buildroot%_mediawikidir/extensions/VisualEditor/lib/ve/bin/
+rm -rfv %buildroot%_mediawikidir/extensions/VisualEditor/bin/
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/wikipeg/tools/impact
+
+
 
 find %buildroot%_mediawikidir/ \
   \( -name .htaccess -or -name \*.cmi \) \
@@ -318,7 +341,7 @@ exit 0
 %webappdir/images/*
 %webappdir/config/AdminSettings.sample
 
-%doc COPYING CREDITS FAQ HISTORY README RELEASE-NOTES-%major UPGRADE
+%doc COPYING CREDITS FAQ HISTORY README.md RELEASE-NOTES-%major UPGRADE
 %doc README.ALT-ru_RU.UTF-8 README.UPGRADE.ALT-ru_RU.UTF-8 install_php_config.sh mediawiki.ini
 %doc docs
 
@@ -337,6 +360,16 @@ exit 0
 
 
 %changelog
+* Fri Oct 09 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt1
+- new version 1.35.0 LTS (with rpmrb script)
+- CVE-2020-25813, CVE-2020-25812, CVE-2020-25815
+- CVE-2020-17367, CVE-2020-17368, CVE-2020-25814
+- CVE-2020-25828, CVE-2020-25869, CVE-2020-25827
+
+* Sat Aug 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.2-alt1
+- new version 1.34.2 (with rpmrb script)
+- CVE-2020-15005
+
 * Tue Jun 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1.34.1-alt2
 - add Obsoletes: mediawiki-extensions-Scribunto (ALT bug 38653)
 

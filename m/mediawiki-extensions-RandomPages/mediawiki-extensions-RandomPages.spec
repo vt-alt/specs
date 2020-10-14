@@ -1,10 +1,10 @@
 %define oname RandomPages
 
-%define mwversion 1.34
+%define mwversion 1.35
 %setup_mediawiki_ext %mwversion %oname
 
 Name: mediawiki-extensions-%oname
-Version: 0.5
+Version: 0.6
 Release: alt1
 
 Summary: RandomPages adds a new MediaWiki wiki parser for get random pages
@@ -41,6 +41,9 @@ Available options:
 %files -f %oname.files
 
 %changelog
+* Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 0.6-alt1
+- new version (0.6) with rpmgs script - for 1.35
+
 * Fri May 01 2020 Vitaly Lipatov <lav@altlinux.ru> 0.5-alt1
 - new version (0.5) with rpmgs script - for 1.34
 
