@@ -32,7 +32,7 @@
 %def_disable static
 
 Name: collectd
-Version: 5.10.0
+Version: 5.12.0
 Release: alt1
 
 Summary: (Multi-)System statistics collection
@@ -811,6 +811,12 @@ service %name condrestart ||:
 # - macroize repetitive sections
 
 %changelog
+* Tue Sep 29 2020 Anton Farygin <rider@altlinux.ru> 5.12.0-alt1
+- 5.11.0 -> 5.12.0
+
+* Wed Jul 01 2020 Anton Farygin <rider@altlinux.ru> 5.11.0-alt1
+- 5.10.0 -> 5.11.0
+
 * Wed Dec 25 2019 Anton Farygin <rider@altlinux.ru> 5.10.0-alt1
 - 5.9.1 -> 5.10.0
 - cleanup spec
