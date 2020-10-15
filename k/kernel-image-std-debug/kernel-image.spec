@@ -1,8 +1,8 @@
 Name: kernel-image-std-debug
 Release: alt1
-epoch:1 
-%define kernel_base_version	4.19
-%define kernel_sublevel .102
+epoch:2
+%define kernel_base_version	5.4
+%define kernel_sublevel .71
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -46,9 +46,10 @@ Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 %define old_kbuild_dir	%_prefix/src/linux-%kversion-%flavour
 
 %brp_strip_none /boot/*
+%add_verify_elf_skiplist %modules_dir/*
 
 Summary: The Linux kernel (the core of the Linux operating system)
-License: GPL
+License: GPL-2.0-only
 Group: System/Kernel and hardware
 Url: http://www.kernel.org/
 Packager: Kernel Maintainers Team <kernel@packages.altlinux.org>
@@ -61,7 +62,7 @@ ExclusiveArch: i586
 %if "%sub_flavour" == "debug"
 ExclusiveArch: i586 x86_64 ppc64le
 %else
-ExclusiveArch: i586 x86_64 ppc64le aarch64
+ExclusiveArch: i586 x86_64 ppc64le aarch64 armh
 %endif
 %endif
 
@@ -71,6 +72,9 @@ ExclusiveArch: i586 x86_64 ppc64le aarch64
 %endif
 %ifarch aarch64
 %define make_target Image
+%endif
+%ifarch %arm
+%define make_target zImage
 %endif
 
 %define image_path arch/%base_arch/boot/%make_target
@@ -92,6 +96,9 @@ ExclusiveArch: i586 x86_64 ppc64le aarch64
 %ifarch ppc64le
 %define qemu_pkg ppc
 %endif
+%ifarch %arm
+%define qemu_pkg arm
+%endif
 
 ExclusiveOS: Linux
 
@@ -108,7 +115,8 @@ BuildRequires: module-init-tools >= 3.16
 BuildRequires: lzma-utils
 BuildRequires: libelf-devel
 BuildRequires: bc
-BuildRequires: openssl-devel
+BuildRequires: rsync
+BuildRequires: openssl-devel openssl
 # for check
 %{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
@@ -119,7 +127,8 @@ Provides: kernel-modules-kvm-%flavour = %version-%release
 Provides: kernel-modules-kvm-%kversion-%flavour-%krelease = %version-%release
 
 %if_enabled docs
-BuildRequires: python-module-sphinx perl-Pod-Usage
+BuildRequires: python3-module-sphinx /usr/bin/sphinx-build perl-Pod-Usage python3-module-sphinx_rtd_theme
+BuildRequires: fontconfig
 %endif
 
 %if_enabled ccache
@@ -150,11 +159,12 @@ these drivers are built separately from the kernel; they are available
 in separate packages (kernel-modules-*-%flavour).
 
 There are some kernel variants in ALT systems:
-* std-def: standard longterm kernel
-* std-pae: legacy i686 kernel with 64G memory support
-* std-debug: kernel with some DEBUG options enabled
-* un-def: more modern then std-def and with voluntary (on ppc64le) or
+* std-def: standard longterm kernel without preemption;
+* std-pae: variant of std-def kernel for i686 with 64G memory support;
+* std-debug: variant of std-def kernel kernel with some DEBUG options enabled;
+* un-def: more modern then std-def and with voluntary (on ppc64le) and
   forced (on x86) preemption enabled.
+* sn-def: insecure kernel for SecretNet only
 
 %package -n kernel-image-domU-%flavour
 Summary: Uncompressed linux kernel for XEN domU boot 
@@ -177,7 +187,8 @@ Conflicts: kernel-modules-drm-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-drm-%kversion-%flavour-%krelease > %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-drm-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -195,7 +206,8 @@ Provides:  kernel-modules-drm-ancient-%kversion-%flavour-%krelease = %version-%r
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease > %version-%release
 Prereq: coreutils
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-drm-ancient-%flavour
 The Direct Rendering Modules for ancient cards: mgag200.ko,
@@ -212,7 +224,8 @@ Conflicts: kernel-modules-drm-nouveau-%kversion-%flavour-%krelease > %version-%r
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-drm-nouveau-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -232,7 +245,8 @@ Conflicts: kernel-modules-drm-radeon-%kversion-%flavour-%krelease > %version-%re
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-drm-radeon-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -251,7 +265,8 @@ Conflicts: kernel-modules-ide-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-ide-%kversion-%flavour-%krelease > %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-ide-%flavour
 This package contains  IDE driver modules for the Linux kernel
@@ -276,7 +291,8 @@ Provides:  kernel-modules-lirc-%kversion-%flavour-%krelease = %version-%release
 Provides:  kernel-modules-lirc-%flavour = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-v4l-%flavour
 Video for linux drivers
@@ -291,7 +307,8 @@ Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Requires: kernel-modules-v4l-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
 
 %description -n kernel-modules-staging-%flavour
 Drivers and filesystems that are not ready to be merged into the main
@@ -383,7 +400,7 @@ echo "Building Kernel $KernelVer"
 
 #configuration construction
 
-CONFIGS=config-%_target_cpu
+CONFIGS="config config-%_target_cpu"
 
 %if "%base_flavour" == "std"
 CONFIGS="$CONFIGS config-std"
@@ -403,7 +420,7 @@ scripts/kconfig/merge_config.sh -m $CONFIGS
 #%make_build include/linux/version.h
 %make_build %make_target
 %make_build modules
-%ifarch aarch64
+%ifarch aarch64 %arm
 %make_build dtbs
 %endif
 
@@ -411,7 +428,7 @@ echo "Kernel built $KernelVer"
 
 %if_enabled docs
 # psdocs, pdfdocs don't work yet
-%make_build htmldocs
+%make_build SPHINXOPTS="-j $([ %__nprocs -ge 8 ] && echo 8 || echo %__nprocs)" htmldocs
 %endif
 
 %install
@@ -426,19 +443,17 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 %endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
-make modules_install INSTALL_MOD_PATH=%buildroot
+%make_build modules_install INSTALL_MOD_PATH=%buildroot
 
-%ifarch aarch64
+%ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
 find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
-mkdir -p %buildroot/%modules_dir/kernel/drivers/staging/media
 %endif
 
 mkdir -p %buildroot%kbuild_dir/arch/%arch_dir
 install -d %buildroot%kbuild_dir
 cp -a include %buildroot%kbuild_dir/include
 cp -a arch/%arch_dir/include %buildroot%kbuild_dir/arch/%arch_dir
-
 
 # drivers-headers install
 install -d %buildroot%kbuild_dir/drivers/scsi
@@ -475,6 +490,7 @@ KbuildFiles="
 	arch/x86/Makefile_64
 %endif
 %endif
+
 	scripts/pnmtologo
 	scripts/mod/modpost
 	scripts/mkmakefile
@@ -510,12 +526,13 @@ KbuildFiles="
 	scripts/gcc-plugins/*.so
 	scripts/ld-version.sh
 	tools/objtool/objtool
+
 	.config
 	.kernelrelease
 	gcc_version.inc
 	System.map
 %ifarch aarch64 ppc64le
-	arch/%arch_dir/kernel/module.lds
+       arch/%arch_dir/kernel/module.lds
 %endif
 "
 for f in $KbuildFiles; do
@@ -532,7 +549,7 @@ ln -s %kbuild_dir %buildroot%modules_dir/build
 ln -s "$(relative %kbuild_dir %old_kbuild_dir)" %buildroot%old_kbuild_dir
 
 # Provide kernel headers for userspace
-make headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
+%make_build headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
 
 #provide symlink to autoconf.h for back compat
 pushd %buildroot%old_kbuild_dir/include/linux
@@ -556,6 +573,9 @@ cp -a Documentation/* %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 # eu-findtextrel will fail if it is not a DSO or PIE.
 %add_verify_elf_skiplist /boot/vmlinuz-*
 
+%post
+blacklist=/etc/modprobe.d/blacklist-ixgbe.conf
+[ -f $blacklist ] && mv $blacklist $blacklist.rpmsave ||:
 
 %check
 KernelVer=%kversion-%flavour-%krelease
@@ -587,7 +607,12 @@ console=hvc0
 %ifarch aarch64
 qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
+%ifarch %arm
+qemu_arch=arm
+qemu_opts="-machine virt"
+console=ttyAMA0
+%endif
+timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console no_timer_check" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -599,29 +624,21 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 /boot/vmlinuz-%kversion-%flavour-%krelease
 /boot/System.map-%kversion-%flavour-%krelease
 /boot/config-%kversion-%flavour-%krelease
-%dir %modules_dir
+%dir %modules_dir/
 %defattr(0600,root,root,0700)
-%modules_dir/kernel
-%modules_dir/modules.order
-%modules_dir/modules.builtin
-%modules_dir/kernel.builtin.modinfo
+%modules_dir/*
 %exclude %modules_dir/build
-%exclude %modules_dir/kernel/drivers/media
-%exclude %modules_dir/kernel/drivers/staging
+%exclude %modules_dir/kernel/drivers/media/
+%exclude %modules_dir/kernel/drivers/staging/
 %exclude %modules_dir/kernel/drivers/gpu/drm
 %ifnarch aarch64
-%exclude %modules_dir/kernel/drivers/ide
+%exclude %modules_dir/kernel/drivers/ide/
 %endif
-%ghost %modules_dir/modules.alias
-%ghost %modules_dir/modules.dep
-%ghost %modules_dir/modules.devname
-%ghost %modules_dir/modules.softdep
-%ghost %modules_dir/modules.symbols
 %ghost %modules_dir/modules.alias.bin
 %ghost %modules_dir/modules.dep.bin
 %ghost %modules_dir/modules.symbols.bin
 %ghost %modules_dir/modules.builtin.bin
-%ifarch aarch64
+%ifarch aarch64 %arm
 /lib/devicetree/%kversion-%flavour-%krelease
 %endif
 
@@ -636,7 +653,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %files -n kernel-headers-modules-%flavour
 %kbuild_dir
 %old_kbuild_dir
-%dir %modules_dir
+%dir %modules_dir/
 %modules_dir/build
 
 %if_enabled docs
@@ -646,10 +663,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-drm-%flavour
 %modules_dir/kernel/drivers/gpu/drm
+%dir %modules_dir/kernel/drivers/media/rc
+%modules_dir/kernel/drivers/media/rc/rc-core.*
 %exclude %modules_dir/kernel/drivers/gpu/drm/nouveau
 %exclude %modules_dir/kernel/drivers/gpu/drm/radeon
 %exclude %modules_dir/kernel/drivers/gpu/drm/mgag200
-%ifnarch aarch64
+%ifnarch aarch64 armh
 %exclude %modules_dir/kernel/drivers/gpu/drm/sis
 %exclude %modules_dir/kernel/drivers/gpu/drm/savage
 %exclude %modules_dir/kernel/drivers/gpu/drm/tdfx
@@ -660,7 +679,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-drm-ancient-%flavour
 %modules_dir/kernel/drivers/gpu/drm/mgag200
-%ifnarch aarch64
+%ifnarch aarch64 armh
 %modules_dir/kernel/drivers/gpu/drm/sis
 %modules_dir/kernel/drivers/gpu/drm/savage
 %modules_dir/kernel/drivers/gpu/drm/tdfx
@@ -680,256 +699,397 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 %files -n kernel-modules-v4l-%flavour
 %modules_dir/kernel/drivers/media/
-%dir %modules_dir/kernel/drivers/staging/media
-%dir %modules_dir/kernel/drivers/staging
-%modules_dir/kernel/drivers/media
 
 %files -n kernel-modules-staging-%flavour
-%modules_dir/kernel/drivers/staging
+%modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Oct 15 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.71-alt1
+- v5.4.71
+
+* Fri Oct 09 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.70-alt1
+- v5.4.70
+
+* Thu Oct 08 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.69-alt1.1
+- expiremental fix for Baikal-M rtc-efi
+
+* Sat Oct 03 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.69-alt1
+- v5.4.69
+
+* Fri Oct 02 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.68-alt1.1
+- Epoch up to make it greater then in c8 :-(
+
+* Wed Sep 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.68-alt1.1
+- SD card usage on Raspberry Pi 3 fixed
+
+* Mon Sep 28 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.68-alt1
+- v5.4.68
+
+* Thu Sep 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt3
+- memory sanitize patch added
+
+* Thu Sep 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt2
+- lost baikal-m patches added
+
+* Wed Sep 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.67-alt1
+- v5.4.67
+
+* Tue Sep 22 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.66-alt1
+- v5.4.66
+
+* Fri Sep 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.65-alt2
+- baikal-m drivers and configuration from asheplyakov@ merged
+
+* Wed Sep 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.65-alt1
+- v5.4.65
+
+* Thu Sep 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.64-alt1
+- v5.4.64  (Fixes: CVE-2020-12888, CVE-2020-14386)
+
+* Thu Sep 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.62-alt1
+- v5.4.62
+
+* Thu Aug 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.61-alt1
+- v5.4.61
+
+* Mon Aug 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.60-alt1
+- v5.4.60  (Fixes: CVE-2019-19448, CVE-2019-19770, CVE-2020-14331)
+
+* Fri Aug 07 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.57-alt1
+- v5.4.57
+
+* Thu Aug 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.56-alt2
+- CONFIG_SCSI_HISI_SAS enabled
+
+* Wed Aug 05 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.56-alt1
+- v5.4.56
+
+* Fri Jul 31 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.55-alt1
+- v5.4.55
+
+* Wed Jul 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.54-alt1
+- v5.4.54
+
+* Fri Jul 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.53-alt1
+- v5.4.53
+
+* Thu Jul 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.51-alt1
+- v5.4.51
+
+* Thu Jul 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.50-alt1
+- v5.4.50
+
+* Sat Jun 27 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:5.4.49-alt2
+- Added armh support.
+- Updated and cleaned up aarch64 and ppc64le configs.
+- Built with numa balancing support (disabled by default).
+- Disabled CONFIG_PAGE_OWNER.
+
+* Thu Jun 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.49-alt1
+- v5.4.49
+
+* Tue Jun 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.48-alt1
+- v5.4.48
+
+* Thu Jun 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.47-alt1
+- v5.4.47
+
+* Thu Jun 11 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.46-alt1
+- v5.4.46
+
+* Mon Jun 08 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.45-alt1
+- v5.4.45  (Fixes: CVE-2020-10757)
+
+* Wed Jun 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.44-alt1
+- v5.4.44
+
+* Wed May 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.43-alt1
+- v5.4.43
+
+* Wed May 20 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.42-alt1
+- v5.4.42
+
+* Fri May 15 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.41-alt1
+- v5.4.41
+
+* Tue May 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.40-alt2
+- many scsi and sata controllers enabled on aarch64
+- modules for RPi3 enabled
+
+* Sun May 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.40-alt1
+- v5.4.40
+
+* Wed May 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.39-alt1
+- v5.4.39
+
+* Sun May 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.38-alt1
+- v5.4.38
+
+* Thu Apr 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.36-alt1
+- v5.4.36  (Fixes: CVE-2020-11884)
+
+* Fri Apr 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.35-alt1
+- v5.4.35  (Fixes: CVE-2019-19377)
+
+* Thu Apr 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.32-alt1
+- v5.4.32
+
+* Wed Apr 08 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.31-alt1
+- v5.4.31
+
+* Thu Apr 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.30-alt1
+- v5.4.30
+
+* Wed Mar 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.28-alt1
+- v5.4.28  (Fixes: CVE-2019-19769)
+
+* Sat Mar 21 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.27-alt1
+- v5.4.27
+
+* Wed Mar 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.26-alt1
+- v5.4.26
+
+* Mon Mar 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.25-alt2
+- post exit status fixed
+
+* Fri Mar 13 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.25-alt1
+- v5.4.25  (Fixes: CVE-2020-8647, CVE-2020-8648, CVE-2020-8649)
+
+* Fri Mar 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.24-alt1
+- v5.4.24
+
+* Fri Mar 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.108-alt1
+- v4.19.108
+
+* Sat Feb 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.23-alt1
+- v5.4.23
+
+* Sat Feb 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.107-alt1
+- v4.19.107
+
+* Tue Feb 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.22-alt1
+- v5.4.22  (Fixes: CVE-2019-19076)
+
+* Tue Feb 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.106-alt1
+- v4.19.106
+
+* Thu Feb 20 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.21-alt1
+- v5.4.21
+
+* Thu Feb 20 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.105-alt1
+- v4.19.105
+
+* Thu Feb 13 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.19-alt1
+- v5.4.19  (Fixes: CVE-2013-1798, CVE-2019-3016)
+
+* Thu Feb 13 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.103-alt1
+- v4.19.103  (Fixes: CVE-2013-1798, CVE-2019-3016)
+
+* Fri Feb 07 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.17-alt1
+- v5.4.17 (Fixes: CVE-2019-14896, CVE-2019-14897)
+
 * Wed Feb 05 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.102-alt1
 - v4.19.102  (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
 
-* Mon Jan 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.99-alt1
-- v4.19.99
+* Mon Jan 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.15-alt1
+- v5.4.15
 
-* Thu Jan 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.98-alt1
-- v4.19.98
+* Thu Jan 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.14-alt1
+- v5.4.14
 
-* Sat Jan 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.97-alt1
-- v4.19.97
+* Sat Jan 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.13-alt1
+- v5.4.13
 
-* Wed Jan 15 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.96-alt1
-- v4.19.96(Fixes:_CVE-2019-14615,_CVE-2019-14895)
+* Wed Jan 15 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.12-alt1
+- v5.4.12(Fixes:_CVE-2019-14615,_CVE-2019-14895)
 
-* Sun Jan 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.95-alt1
-- v4.19.95
+* Sun Jan 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.11-alt1
+- v5.4.11
 
-* Thu Jan 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.94-alt1
-- v4.19.94
+* Thu Jan 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.10-alt1
+- v5.4.10
 
-* Mon Jan 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.93-alt1
-- v4.19.93
+* Mon Jan 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.8-alt1
+- v5.4.8
 
-* Wed Jan 01 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.92-alt1
-- v4.19.92  (Fixes: CVE-2019-19037)
+* Wed Jan 01 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.7-alt1
+- v5.4.7  (Fixes: CVE-2019-19037)
 
-* Sat Dec 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.91-alt1
-- v4.19.91
+* Sat Dec 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.6-alt1
+- v5.4.6
 
-* Wed Dec 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.90-alt1
-- v4.19.90
+* Thu Dec 19 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.5-alt1
+- v5.4.5
 
-* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.89-alt1
-- v4.19.89  (Fixes: CVE-2019-19332)
+* Wed Dec 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.4-alt1
+- v5.4.4
 
-* Fri Dec 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.88-alt1
-- v4.19.88
+* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.3-alt1
+- v5.4.3  (Fixes: CVE-2019-18660, CVE-2019-19332)
 
-* Thu Dec 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.87-alt1
-- v4.19.87  (Fixes: CVE-2019-18660)
+* Sat Dec 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.4.0-alt1
+- v5.4
 
-* Sun Nov 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.86-alt1
-- v4.19.86
+* Thu Dec 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.15-alt1
+- v5.3.15
+* Sun Nov 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.13-alt1
+- v5.3.13
 
-* Thu Nov 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.85-alt1
-- v4.19.85
+* Thu Nov 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.12-alt1
+- v5.3.12
 
-* Wed Nov 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.84-alt1
-- v4.19.84  (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
+* Wed Nov 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.11-alt1
+- v5.3.11
 
-* Sun Nov 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.83-alt1
-- v4.19.83
+* Sun Nov 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.10-alt1
+- v5.3.10
 
-* Wed Nov 06 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.81-alt2
+* Thu Nov 07 2019 Vitaly Chikunov <vt@altlinux.org> 1:5.3.8-alt2
 - Merge kernel-modules-kvm into kernel-image.
 
-* Tue Oct 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.81-alt1
-- v4.19.81
+* Tue Oct 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.8-alt1
+- v5.3.8
 
-* Fri Oct 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.80-alt1
-- v4.19.80
+* Fri Oct 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.7-alt1
+- v5.3.7
 
-* Sun Oct 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.79-alt1
-- v4.19.79
+* Sun Oct 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.6-alt1
+- v5.3.6
 
-* Mon Oct 07 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.78-alt1
-- v4.19.78
+* Wed Oct 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.5-alt1
+- v5.3.5  (Fixes: CVE-2019-14821)
 
-* Sat Oct 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.77-alt1
-- v4.19.77
+* Wed Oct 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.3.0-alt1
+- v5.3
 
-* Tue Oct 01 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.76-alt1
-- v4.19.76
+* Mon Oct 07 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.20-alt1
+- v5.2.20
 
-* Sat Sep 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.75-alt1
-- v4.19.75  (Fixes: CVE-2019-14814, CVE-2019-14815, CVE-2019-14816, CVE-2019-14821,
-  CVE-2019-15504)
+* Sat Oct 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.19-alt1
+- v5.2.19
 
-* Mon Sep 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.73-alt1
-- v4.19.73  (Fixes: CVE-2019-15030, CVE-2019-15031)
+* Mon Sep 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.15-alt1
+- v5.2.15  (Fixes: CVE-2019-15030, CVE-2019-15031)
 
-* Tue Sep 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.72-alt1
-- v4.19.72
+* Tue Sep 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.14-alt1
+- v5.2.14
 
-* Fri Sep 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.70-alt1
-- v4.19.70
+* Fri Sep 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.12-alt1
+- v5.2.12
 
-* Thu Aug 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.69-alt1
-- v4.19.69
+* Thu Aug 29 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.11-alt1
+- v5.2.11
 
-* Sun Aug 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.68-alt1
-- v4.19.68
+* Mon Aug 26 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.10-alt1
+- v5.2.10
 
-* Fri Aug 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.67-alt1
-- v4.19.67
+* Thu Aug 22 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.9-alt2
+- aarch64 support added
 
-* Sun Aug 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.66-alt1
-- v4.19.66
+* Fri Aug 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.9-alt1
+- v5.2.9
 
-* Fri Aug 09 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.65-alt3
-- Pack scripts/ld-version.sh.
+* Sun Aug 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.8-alt1
+- v5.2.8
 
-* Fri Aug 09 2019 Vitaly Chikunov <vt@altlinux.org> 1:4.19.65-alt2
-- Support building external modules on ppc64.
+* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.21-alt1
+- v5.1.21  (Fixes: CVE-2019-11478)
 
-* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.65-alt1
-- v4.19.65
+* Tue Aug 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.7-alt1
+- v5.2.7
 
-* Mon Aug 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.64-alt1
-- v4.19.64  (Fixes: CVE-2019-10207, CVE-2019-11478, CVE-2019-13648, CVE-2019-3900)
+* Mon Aug 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.6-alt1
+- v5.2.6  (Fixes: CVE-2019-10207, CVE-2019-11478, CVE-2019-13648)
 
-* Wed Jul 31 2019 Valery Inozemtsev <shrek@altlinux.ru> 1:4.19.60-alt2
-- Added aarch64 support.
+* Thu Jul 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.1-alt1
+- v5.2.1
 
-* Sun Jul 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.60-alt1
-- v4.19.60
+* Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.18-alt1
+- v5.1.18  (Fixes: CVE-2019-3846)
 
-* Thu Jul 18 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt2
-- re-enabled docs subpackage
+* Fri Jul 12 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.17-alt1
+- v5.1.17
 
-* Tue Jul 16 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.59-alt1
-- v4.19.59  (Fixes: CVE-2019-3846)
-
-* Fri Jul 12 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.58-alt1
-- v4.19.58
-
-* Fri Jul 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:4.19.57-alt2
+* Thu Jul 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1:5.1.16-alt2
 - Added ppc64le support.
 
-* Wed Jul 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.57-alt1
-- v4.19.57
+* Wed Jul 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.16-alt1
+- v5.1.16
 
-* Tue Jun 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.56-alt1
-- v4.19.56
+* Tue Jun 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.15-alt1
+- v5.1.15
 
-* Mon Jun 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.55-alt1
-- v4.19.55  (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
+* Mon Jun 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.14-alt1
+- v5.1.14
 
-* Mon Jun 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.51-alt1
-- v4.19.51
+* Thu Jun 20 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.12-alt1
+- v5.1.12 (Fixes: CVE-2019-11477, CVE-2019-11478, CVE-2019-11479)
+
+* Mon Jun 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.21-alt2
 - multiple kernel remote denial of service issues fixed
 
-* Sun Jun 09 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.49-alt1
-- v4.19.49
+* Mon Jun 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.1.9-alt1
+- v5.1.9
 
-* Wed Jun 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.48-alt1
-- v4.19.48
+* Sat May 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.15-alt1
+- v5.0.15  (Fixes: CVE-2011-1079)
 
-* Fri May 31 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.47-alt1
-- v4.19.47
+* Wed May 08 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.14-alt1
+- v5.0.14
 
-* Tue May 28 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.46-alt1
-- v4.19.46
+* Sun May 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.13-alt1
+- v5.0.13
 
-* Wed May 22 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.45-alt1
-- v4.19.45  (Fixes: CVE-2019-11833)
+* Sat May 04 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.12-alt1
+- v5.0.12  (Fixes: CVE-2019-3882)
 
-* Fri May 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.44-alt1
-- v4.19.44
+* Mon Apr 22 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.9-alt1
+- v5.0.9
 
-* Wed May 15 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.43-alt1
-- v4.19.43  (Fixes: CVE-2018-12126, CVE-2018-12127, CVE-2018-12130, CVE-2019-11091)
+* Wed Apr 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.8-alt2
+- AltHa LSM added
 
-* Sat May 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.42-alt1
-- v4.19.42  (Fixes: CVE-2011-1079)
+* Wed Apr 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.8-alt1
+- v5.0.8  (Fixes: CVE-2019-3887)
 
-* Wed May 08 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.41-alt1
-- v4.19.41
+* Mon Apr 08 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.7-alt1
+- v5.0.7
 
-* Sun May 05 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.40-alt1
-- v4.19.40
+* Wed Apr 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.6-alt1
+- v5.0.6
 
-* Sat May 04 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.39-alt1
-- v4.19.39  (Fixes: CVE-2019-3882)
+* Sat Mar 30 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.5-alt1
+- v5.0.5
 
-* Mon Apr 22 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.36-alt1
-- v4.19.36
+* Tue Mar 19 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.0.1-alt1
+- v5.0.1
 
-* Wed Apr 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.35-alt1
-- v4.19.35  (Fixes: CVE-2019-3887)
+* Tue Mar 19 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.17-alt1
+- v4.20.17
 
-* Mon Apr 08 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.34-alt1
-- v4.19.34
+* Wed Mar 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.15-alt1
+- v4.20.15
 
-* Wed Apr 03 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.33-alt1
-- v4.19.33
-
-* Wed Mar 27 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.32-alt1
-- v4.19.32
-
-* Tue Mar 19 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.30-alt1
-- v4.19.30
-
-* Fri Mar 15 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.29-alt2
-- added PTRACE_GET_SYSCALL_INFO
-
-* Thu Mar 14 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.29-alt1
-- v4.19.29
-
-* Wed Mar 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.27-alt1
-- 4.19.27
+* Wed Mar 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.14-alt1
+- 4.20.14
 
 * Thu Feb 28 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.26-alt1
 - v4.19.26
 
-* Thu Feb 28 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.14.104-alt1
-- v4.14.104
-
 * Tue Feb 26 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.25-alt2
 - SCSI_SMARTPQI set to m
 
-* Mon Feb 25 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.25-alt1
-- v4.19.25
+* Tue Feb 26 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.12-alt1
+- 4.20.12
 
-* Thu Feb 21 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.24-alt1
-- v4.19.24
+* Thu Feb 07 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.7-alt1
+- 4.20.7
 
-* Fri Feb 15 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.23-alt1
-- v4.19.23  (Fixes: CVE-2019-3819, CVE-2019-6974, CVE-2019-7221, CVE-2019-7222)
+* Fri Jan 11 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.20.1-alt1
+- 4.20.1
 
-* Fri Feb 08 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.20-alt1
-- v4.19.20  (Fixes: CVE-2018-16880)
-
-* Thu Jan 31 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.19-alt1
-- v4.19.19
-
-* Sun Jan 27 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.18-alt1
-- v4.19.18
-
-* Thu Jan 24 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.17-alt1
-- v4.19.17  (Fixes: CVE-2019-3701)
-
-* Thu Jan 17 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.16-alt1
-- v4.19.16
-
-* Sun Jan 13 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.15-alt1
-- v4.19.15
-- obsolete requires(postun) removed
-
-* Thu Jan 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.14-alt1
-- v4.19.14  (Fixes: CVE-2018-19985)
+* Mon Dec 24 2018 Kernel Bot <kernelbot@altlinux.org> 1:4.20.0-alt1
+- 4.20
 
 * Sat Dec 22 2018 Kernel Bot <kernelbot@altlinux.org> 1:4.19.12-alt1
 - v4.19.12
