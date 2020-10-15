@@ -1,9 +1,10 @@
 Name: lyx
-Version: 2.3.2
-Release: alt1
+Version: 2.3.4.4
+Release: alt2
 
 Summary: LyX - a WYSIWYM word processor for the Desktop Environment.
-License: GPL
+# LGPL-2.1+: src/support/gzstream.* src/support/weighted_btree.h
+License: GPL-2.0-or-later and LGPL-2.1-or-later
 Group: Publishing
 Epoch: 2
 Url: http://www.lyx.org
@@ -16,14 +17,15 @@ Source4: %{name}48.xpm
 Source5: lyxcat
 
 Patch2: lyx-2.1.2-xdg_open.patch
+Patch3: 0004-Use-python3-internally-in-the-C-code-as-well.patch
+Patch4: 0006-Fix-os.popen-for-Python-3.patch
+Patch5: %name-%version-alt-boost-1.73.0-compat.patch
 
 BuildRequires: desktop-file-utils
-BuildRequires: gcc-c++ imake libaspell-devel libSM-devel python-devel bc
+BuildRequires: gcc-c++ imake libaspell-devel libSM-devel python3-devel bc
 BuildRequires: libaiksaurus-devel boost-signals-devel boost-devel boost-filesystem-devel
 BuildRequires: qt5-base-devel qt5-x11extras-devel qt5-svg-devel
 BuildRequires: zlib-devel libenchant-devel libhunspell-devel libmythes-devel
-
-Requires: python >= 2.4 
 
 Provides: lyx-common lyx-qt lyx-latex-beamer
 Obsoletes: lyx-common lyx-qt lyx-latex-beamer
@@ -60,10 +62,20 @@ Virtual package that install required set of tex packages for LyX.
 %prep
 %setup
 find 3rdparty -not -type d -not -name Makefile.in -delete
+find lib \( -name '*.py' -or -name '*.py.in' \) \
+	-execdir sed -i '1i #!/usr/bin/python3' {} \+
+sed -i 's|#! */usr/bin/env python|#!/usr/bin/env python3|' \
+	lib/lyx2lyx/lyx2lyx \
+	lib/scripts/listerrors \
+	#
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p2
 
 %build
 %autoreconf
+export PYTHON=python3
 %configure \
 	--without-included-boost \
 	--with-enchant \
@@ -76,6 +88,9 @@ find 3rdparty -not -type d -not -name Makefile.in -delete
 %install
 %makeinstall_std
 %find_lang %name
+
+# This one is optional and python2-only.
+rm %buildroot%_datadir/%name/lyx2lyx/profiling.py
 
 install -d -m 755 %buildroot%_desktopdir
 install -m 644 %SOURCE1 %buildroot%_desktopdir/
@@ -110,7 +125,7 @@ rm %buildroot%_datadir/%name/scripts/prefTest.pl.in
 %post
 # configure Lyx in new way
 cd %_datadir/%name
-python configure.py
+python3 configure.py
 
 %files -f %name.lang
 %doc ANNOUNCE COPYING INSTALL* README* NEWS UPGRADING RELEASE-NOTES
@@ -126,6 +141,16 @@ python configure.py
 %files -n lyx-tex
 
 %changelog
+* Thu Jun 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2:2.3.4.4-alt2
+- Rebuilt with boost-1.73.0.
+
+* Wed May 20 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 2:2.3.4.4-alt1
+- Updated to 2.3.4.4.
+- Switched to python3.
+
+* Fri Aug 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2:2.3.3-alt1
+- Updated to 2.3.3.
+
 * Thu Mar 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2:2.3.2-alt1
 - Fixed package version.
 
