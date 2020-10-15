@@ -2,7 +2,7 @@
 
 Name: opensc
 Version: 0.20.0
-Release: alt1
+Release: alt2
 
 Group: System/Configuration/Hardware
 Summary: OpenSC library - for accessing SmartCard devices using PC/SC Lite
@@ -71,6 +71,15 @@ OpenSC module for PAM.
 %build
 %autoreconf
 %add_optflags %optflags_shared
+
+%ifarch %e2k
+# card-openpgp.c::pgp_get_card_features():
+# error: variable "flags" may be used uninitialized
+%add_optflags -Wno-error=maybe-uninitialized
+# card-mcrd.c:559: error #191: type qualifier is meaningless on cast type
+%add_optflags -Wno-error=ignored-qualifiers
+%endif
+
 PCSC_SONAME="$(objdump -p "%_libdir/libpcsclite.so"| awk '/SONAME/ {print $2}')"
 %configure \
      %{subst_enable static} \
@@ -117,6 +126,9 @@ rm -f %buildroot%_datadir/doc/opensc/opensc.conf
 %endif
 
 %changelog
+* Mon Oct 12 2020 Michael Shigorin <mike@altlinux.org> 0.20.0-alt2
+- E2K: ftbfs workarounds
+
 * Mon Apr 27 2020 Andrey Cherepanov <cas@altlinux.org> 0.20.0-alt1
 - New version.
 - Fixes:
