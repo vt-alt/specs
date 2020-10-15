@@ -5,8 +5,8 @@
 %def_enable wayland
 
 Name: vlc
-Version: 3.0.11
-Release: alt1
+Version: 3.0.11.1
+Release: alt2
 
 Summary: VLC media player
 License: GPLv2
@@ -16,6 +16,7 @@ Url: http://www.videolan.org
 Source: vlc-%version.tar
 Patch: vlc-3.0.6-alt-e2k-lcc123.patch
 Patch1: 0001-configure-fix-linking-on-RISC-V-ISA.patch
+Patch2: vlc-3.0.10-qt-5.15.patch
 
 BuildRequires: gcc-c++
 BuildRequires: freetype2-devel glib2-devel flex
@@ -632,6 +633,7 @@ This package contains fortunes from VLC media player.
 %prep
 %setup
 echo %version-%release > src/revision.txt
+
 %ifarch %e2k
 # lcc 1.23 isn't quite gcc5 regarding builtins as well
 %patch -p1
@@ -640,7 +642,9 @@ sed -i 's,const ATTR_USED,const,' modules/video_filter/deinterlace/yadif.h
 # modules/demux/adaptive/PlaylistManager.cpp:638: undefined reference to `__pthread_register_cancel' ...
 %add_optflags -pthread
 %endif
+
 %patch1 -p1
+%patch2 -p1
 
 %build
 %add_optflags -I%_includedir/samba-4.0
@@ -1395,6 +1399,12 @@ chmod 755 %buildroot%_libexecdir/rpm/vlc.filetrigger
 %files maxi
 
 %changelog
+* Sun Oct 04 2020 Anton Farygin <rider@altlinux.ru> 3.0.11.1-alt2
+- fixed build with qt-5.15
+
+* Thu Jul 30 2020 Anton Farygin <rider@altlinux.ru> 3.0.11.1-alt1
+- 3.0.11.1
+
 * Fri Jun 26 2020 Anton Farygin <rider@altlinux.ru> 3.0.11-alt1
 - 3.0.11
 - fixes:
