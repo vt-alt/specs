@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
-%define lvm2version 2.03.9
-%define dmversion 1.02.171
+%define lvm2version 2.03.10
+%define dmversion 1.02.173
 
 %define _sbindir /sbin
 %define usrsbindir %_prefix/sbin
@@ -114,6 +114,7 @@ the lvm2 libraries.
 Version: %dmversion
 Summary: Library of routines for device-mapper management
 Group: System/Libraries
+Provides: device-mapper-libs = %dmversion-%release
 
 %description -n libdevmapper
 Library of routines for device-mapper management.
@@ -123,6 +124,7 @@ Version: %dmversion
 Summary: Header file for libdevmapper
 Group: System/Libraries
 Requires: libdevmapper = %dmversion-%release
+Provides: device-mapper-devel = %dmversion-%release
 
 %description -n libdevmapper-devel
 Header files for libdevmapper.
@@ -142,6 +144,7 @@ Summary: Utilities for low level logical volume management
 Group: System/Kernel and hardware
 Requires: libdevmapper = %dmversion-%release
 Requires: lsblk udev >= 150-alt4
+Provides: device-mapper = %dmversion-%release
 
 %description -n dmsetup
 Utilities for low level logical volume management.
@@ -152,6 +155,7 @@ Summary: Device-mapper event daemon
 Group: System/Base
 Requires: dmsetup = %dmversion-%release
 Requires: libdevmapper-event = %dmversion-%release
+Provides: device-mapper-event = %dmversion-%release
 
 %description -n dmeventd
 This package contains the dmeventd daemon for monitoring the state
@@ -164,6 +168,7 @@ License: LGPLv2
 Group: System/Libraries
 Requires: liblvm2  = %lvm2version-%release
 Requires: libdevmapper = %dmversion-%release
+Provides: device-mapper-event-libs  = %dmversion-%release
 
 %description -n libdevmapper-event
 This package contains the device-mapper event daemon shared library,
@@ -176,6 +181,7 @@ License: LGPLv2
 Group: System/Libraries
 Requires: libdevmapper-event = %dmversion-%release
 Requires: libdevmapper-devel = %dmversion-%release
+Provides: device-mapper-event-devel = %dmversion-%release
 
 %description -n libdevmapper-event-devel
 This package contains files needed to develop applications that use
@@ -285,6 +291,7 @@ mv libdm/ioctl/libdevmapper.a .
 	%{?_enable_lvmdbusd:--enable-dbus-service} \
 	%{?_enable_vdo:--with-vdo=internal --with-vdo-format=%_bindir/vdoformat} \
 	%{?_enable_writecache:--with-writecache=internal} \
+    --with-integrity=internal \
 	--with-dmeventd-path="%_sbindir/dmeventd" \
 	--with-systemdsystemunitdir=%_unitdir \
 	--with-tmpfilesdir=%_tmpfilesdir \
@@ -486,6 +493,14 @@ install -m 0755 %SOURCE6 %buildroot%_initdir/lvm2-lvmpolld
 %endif
 
 %changelog
+* Wed Oct 14 2020 Alexey Shabalin <shaba@altlinux.org> 2.03.10-alt1
+- 2.03.10
+- Add provides device-mapper-* packages for RH compat.
+
+* Thu May 14 2020 Alexey Shabalin <shaba@altlinux.org> 2.03.9-alt2
+- Not use hard coded paths in blkdeactivate script
+- Update global_filter devices for PVE
+
 * Thu Apr 02 2020 Alexey Shabalin <shaba@altlinux.org> 2.03.9-alt1
 - 2.03.9
 
