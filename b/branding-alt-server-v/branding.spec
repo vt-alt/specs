@@ -2,7 +2,7 @@
 %define Brand ALT
 %define theme server-v
 %define Theme Server-V
-%define codename FalcoRusticolus
+%define codename Altostratus
 %define status %nil
 %define status_en %nil
 %define flavour %brand-%theme
@@ -18,7 +18,7 @@
 
 Name: branding-%flavour
 Version: 9.1
-Release: alt1
+Release: alt3
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -56,7 +56,7 @@ License: GPLv2+
 
 Requires(pre):    coreutils
 Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
+Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme
 %branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/light-blue
@@ -118,7 +118,7 @@ License: Different licenses
 Group: Graphics
 BuildArch: noarch
 Provides: design-graphics-%theme  branding-alt-%theme-graphics
-Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
+Obsoletes: design-graphics-%theme
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
 
 Requires(post,preun): alternatives >= 0.2
@@ -141,7 +141,7 @@ Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
 License:  GPLv2+
 Group:    System/Configuration/Other
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
-Obsoletes: %obsolete_list  branding-alt-%theme-release
+Obsoletes: %obsolete_list
 %branding_add_conflicts %flavour release
 
 %description release
@@ -317,6 +317,12 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Wed Oct 14 2020 Alexey Shabalin <shaba@altlinux.org> 9.1-alt3
+- define codename as Altostratus
+
+* Wed Sep 16 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.1-alt2
+- fix "the package obsoletes itself" error
+
 * Wed May 27 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.1-alt1
 - version 9.1
 
