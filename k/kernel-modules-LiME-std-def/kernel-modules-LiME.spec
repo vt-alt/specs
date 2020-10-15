@@ -1,10 +1,10 @@
 %define module_name	LiME
-%define module_version	1.8.1
+%define module_version	1.9.1
 
-%define module_release alt2
+%define module_release alt1
 
 %define flavour		std-def
-%define karch %ix86 x86_64 aarch64 ppc64le armh
+%define karch %ix86 x86_64 aarch64 ppc64le armh e2k e2kv4 e2kv5 e2kv6
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-std-def
 

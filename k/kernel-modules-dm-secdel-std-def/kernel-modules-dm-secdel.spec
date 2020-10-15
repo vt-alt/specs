@@ -1,8 +1,8 @@
 %define module_name     dm-secdel
 %define module_version  1.0.7
-%define module_release  alt2
+%define module_release  alt5
 %define flavour         std-def
-%define karch %ix86 x86_64 aarch64 ppc64le
+%define karch %ix86 x86_64 aarch64 ppc64le armh e2k e2kv4 e2kv5 e2kv6
 
 %setup_kernel_module %flavour
 
@@ -11,7 +11,7 @@
 Summary: dm-linear with secure deletion on discard
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
-Epoch: %(echo %kepoch | sed s/://)
+Epoch: 1
 Release: %module_release.%kcode.%kbuildrelease
 License: GPLv2
 Group: System/Kernel and hardware
@@ -50,5 +50,5 @@ install -m644 -D dm-secdel.ko %buildroot/%module_dir/
 %module_dir
 
 %changelog
-* %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %kepoch%version-%release
+* %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %epoch:%version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.

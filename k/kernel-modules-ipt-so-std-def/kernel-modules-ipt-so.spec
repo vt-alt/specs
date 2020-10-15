@@ -1,6 +1,6 @@
 %define module_name     ipt-so
 %define module_version  1.0
-%define module_release  alt6
+%define module_release  alt7
 %define flavour         std-def
 
 %setup_kernel_module %flavour
@@ -36,7 +36,7 @@ Provides: kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%r
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%release
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le armh e2k e2kv4 e2kv5 e2kv6
 ExclusiveOS: Linux
 
 %description

@@ -1,10 +1,10 @@
 %define module_name	ndpi
 %define module_version	2.6
 
-%define module_release alt2
+%define module_release alt3
 
 %define flavour		std-def
-%define karch x86_64 i586
+%define karch %ix86 x86_64 aarch64 ppc64le armh e2k e2kv4 e2kv5 e2kv6
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-std-def
 BuildRequires: libiptables-devel
