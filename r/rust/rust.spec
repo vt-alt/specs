@@ -1,24 +1,20 @@
-%define rust_ver 1.42.0
-%define rust_rel alt1.1.p9
-%define cargo_ver %rust_ver
-%define cargo_rel %rust_rel
-
 Name: rust
 Epoch: 1
-Version: %rust_ver
-Release: %rust_rel
+Version: 1.43.0
+Release: alt0.1.p9
 Summary: The Rust Programming Language
 
 Group: Development/Other
-License: Apache 2.0, MIT 
+License: Apache-2.0 and MIT
 URL: http://www.rust-lang.org/
 
-Source: https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
+# https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
+Source: %{name}c-%version-src.tar
 
 Patch1: rust-gdb.patch
 
 BuildPreReq: /proc
-BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
+BuildRequires: curl python-devel cmake libffi-devel patchelf
 
 %def_without  bootstrap
 %def_with  bundled_llvm
@@ -29,10 +25,21 @@ BuildRequires: curl gcc-c++ python-devel cmake libffi-devel patchelf
 %endif
 
 %if_without bundled_llvm
-
-BuildRequires: llvm7.0-devel
-
+BuildRequires: llvm9.0-devel
+BuildRequires: llvm9.0-devel-static
 %endif
+BuildRequires: gcc-c++
+BuildRequires: libstdc++-devel
+
+BuildRequires: curl
+BuildRequires: binutils
+BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(liblzma)
+BuildRequires: pkgconfig(openssl)
+BuildRequires: pkgconfig(zlib)
+BuildRequires: pkgconfig(libgit2)
+BuildRequires: pkgconfig(libssh2)
+BuildRequires: pkgconfig(libffi)
 
 %if_without bootstrap
 
@@ -42,7 +49,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.41.1
+%define r_ver 1.42.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -99,7 +106,7 @@ segfaults, and guarantees thread safety.
 %package gdb
 Group: Development/Other
 Summary: run rust compiler under gdb
-Requires: %name = %rust_ver-%rust_rel
+Requires: %name = %epoch:%version-%release
 Requires: gdb
 AutoReq: nopython
 
@@ -116,14 +123,8 @@ its standard library.
 
 %package cargo
 Summary: The Rust package manager
-Version: %cargo_ver
-Release: %cargo_rel
 Group: Development/Tools
 Requires: rust
-BuildRequires: libssh2-devel libgit2-devel openssl-devel zlib-devel
-
-Obsoletes: rust-cargo < 1.29.0
-Provides: rust-cargo = %cargo_ver
 
 %description cargo
 Cargo is a tool that allows Rust projects to declare their various dependencies
@@ -131,19 +132,16 @@ and ensure that you'll always get a repeatable build.
 
 %package cargo-doc
 Summary: Documentation for Cargo
-Version: %cargo_ver
 Group: Development/Documentation
-Requires: rust-doc = %rust_ver-%rust_rel
+Requires: rust-doc = %epoch:%version-%release
 
 %description cargo-doc
 This package includes HTML documentation for Cargo.
 
 %package -n rustfmt
 Summary: Tool to find and fix Rust formatting issues
-Version: 1.4.9
-Release: alt1
 Group: Development/Tools
-Requires: rust-cargo = %cargo_ver-%cargo_rel
+Requires: rust-cargo = %epoch:%version-%release
 
 %description -n rustfmt
 A tool for formatting Rust code according to style guidelines.
@@ -152,7 +150,7 @@ A tool for formatting Rust code according to style guidelines.
 Summary: Rust Language Server for IDE integration
 Group: Development/Tools
 Requires: rust-analysis
-Requires: %name = %rust_ver-%rust_rel
+Requires: %name = %epoch:%version-%release
 
 %description -n rls
 The Rust Language Server provides a server that runs in the background,
@@ -162,18 +160,15 @@ reformatting, and code completion, and enables renaming and refactorings.
 
 %package -n clippy
 Summary: Lints to catch common mistakes and improve your Rust code
-Version: 0.0.212
-Release: alt8
 Group: Development/Tools
-License: MPLv2.0
+License: MPL-2.0
 Requires: rust-cargo
-Requires: %name = %rust_ver-%rust_rel
+Requires: %name = %epoch:%version-%release
 
 %description -n clippy
 A collection of lints to catch common mistakes and improve your Rust code.
 
 %package src
-Version: %rust_ver
 Summary: Sources for the Rust standard library
 Group: Development/Other
 AutoReq: no
@@ -186,7 +181,7 @@ useful as a reference for code completion tools in various editors.
 %package analysis
 Summary: Compiler analysis data for the Rust standard library
 Group: Development/Tools
-Requires: %name = %rust_ver-%rust_rel
+Requires: %name = %epoch:%version-%release
 
 %description analysis
 This package contains analysis data files produced with rustc's -Zsave-analysis
@@ -194,7 +189,7 @@ feature for the Rust standard library. The RLS (Rust Language Server) uses this
 data to provide information about the Rust standard library.
 
 %prep
-%setup -n %{name}c-%rust_ver-src
+%setup -n %{name}c-%version-src
 
 %patch1 -p2
 
@@ -218,6 +213,7 @@ sed -i 's/Path::new("lib")/Path::new("%_lib")/' src/bootstrap/builder.rs
 %build
 export RUST_BACKTRACE=1
 export RUSTFLAGS="%rustflags"
+
 cat > config.toml <<EOF
 [build]
 cargo = "%cargo"
@@ -227,9 +223,11 @@ docs = true
 verbose = 0
 vendor = true
 extended = true
+
 [install]
 prefix = "%prefix"
 libdir = "%_lib"
+
 [rust]
 channel = "stable"
 codegen-units = 1
@@ -251,6 +249,10 @@ export LIBGIT2_SYS_USE_PKG_CONFIG=1
 export LIBSSH2_SYS_USE_PKG_CONFIG=1
 export PKG_CONFIG_ALLOW_CROSS=1
 
+export LIBGIT2_SYS_USE_PKG_CONFIG=1
+export LIBSSH2_SYS_USE_PKG_CONFIG=1
+export PKG_CONFIG_ALLOW_CROSS=1
+
 python2.7 x.py build
 python2.7 x.py doc
 
@@ -260,7 +262,17 @@ export RUSTFLAGS="%rustflags"
 DESTDIR=%buildroot python2.7 x.py install
 rm -f -- %buildroot/%_libdir/lib*.so.old
 
+rm -f -- %buildroot/%_libdir/lib*.so.old
+
+
 %check
+%if_without bundled_llvm
+# ensure that rustc_llvm is actually dynamically linked to libLLVM
+find build/*/stage2/lib/rustlib/* \
+	-name '*rustc_llvm*.so' -execdir objdump -p '{}' '+' |
+	grep -qs 'NEEDED.*LLVM'
+%endif
+
 #python2.7 x.py test --no-fail-fast || :
 
 %clean
@@ -331,8 +343,17 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Wed Oct 07 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.43.0-alt0.1.p9
+- Backport new version to p9 branch.
+
 * Mon Aug 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.42.0-alt1.1.p9
 - Backport new version to p9 branch.
+
+* Fri Jul 31 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.43.0-alt1
+- 1.43.0 (ALT#38770)
+- Remove garbage from %%_libdir (ALT#38641)
+- Use uncompressed source archive
+- Update license tag
 
 * Fri Jul 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.41.1-alt0.1.p9
 - Backport to p9 branch with fix packaging on armh.
