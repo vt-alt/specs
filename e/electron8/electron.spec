@@ -1,6 +1,6 @@
 # TODO: build from sources
-Name: electron9
-Version: 9.3.2
+Name: electron8
+Version: 8.5.2
 Release: alt1
 
 Summary: Build cross platform desktop apps with JavaScript, HTML, and CSS
@@ -63,19 +63,12 @@ ln -rs %buildroot%_libdir/%name/electron %buildroot/%_bindir/%name
 %endif
 
 %changelog
-* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 9.3.2-alt1
-- new version 9.3.2 (with rpmrb script)
+* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 8.5.2-alt1
+- new version 8.5.2 (with rpmrb script)
 
-* Wed Aug 05 2020 Vitaly Lipatov <lav@altlinux.ru> 9.1.2-alt1
-- new version 9.1.2 (with rpmrb script)
-
-* Sat Jun 27 2020 Vitaly Lipatov <lav@altlinux.ru> 9.0.4-alt1
-- new version (9.0.4) with rpmgs script
+* Sat Jun 27 2020 Vitaly Lipatov <lav@altlinux.ru> 8.3.4-alt1
+- new version
 - add armh (armv7l) arch
-
-* Sat May 23 2020 Vitaly Lipatov <lav@altlinux.ru> 9.0.0-alt1
-- new version (9.0.0) with rpmgs script
-- build as electron9
 
 * Wed Mar 25 2020 Vitaly Lipatov <lav@altlinux.ru> 8.2.0-alt1
 - new version (8.2.0) with rpmgs script
