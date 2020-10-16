@@ -1,7 +1,7 @@
 %define module Source-Shared-FindLocalMirror
 
 Name: perl-%module
-Version: 0.007
+Version: 0.008
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -35,6 +35,9 @@ for Source-Shared framework
 %perl_vendor_privlib/S*
 
 %changelog
+* Wed Oct 14 2020 Igor Vlasenko <viy@altlinux.ru> 0.008-alt1
+- altlinux-find-local-mirror: both -b sisyphus and -b Sisyphus
+
 * Fri Oct 09 2020 Igor Vlasenko <viy@altlinux.ru> 0.007-alt1
 - added p9 & p10 support
 
