@@ -1,5 +1,5 @@
 Name: libjasper
-Version: 2.0.19
+Version: 2.0.22
 Release: alt1
 
 Summary: Implementation of the codec specified in the JPEG-2000 Part-1 standard
@@ -10,11 +10,12 @@ Group: System/Libraries
 Url: http://www.ece.uvic.ca/~mdadams/jasper/
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
+
 # Source-url: https://github.com/mdadams/jasper/archive/version-%version.tar.gz
 Source: %name-%version.tar
 
-# Automatically added by buildreq on Wed Nov 18 2009
-BuildRequires: rpm-macros-cmake cmake imake libGL-devel libXext-devel libXi-devel libXmu-devel libglut-devel libjpeg-devel
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: cmake imake libGL-devel libXext-devel libXi-devel libXmu-devel libglut-devel libjpeg-devel
 
 %description
 JasPer is a collection
@@ -56,7 +57,8 @@ code stream format defined in ISO/IEC 15444-1:2000.
 %setup
 
 %build
-%cmake
+# TODO: -DJAS_ENABLE_HIDDEN=true
+%cmake -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=OFF
 %cmake_build
 
 %install
@@ -79,8 +81,32 @@ code stream format defined in ISO/IEC 15444-1:2000.
 %doc %_docdir/JasPer/
 
 %changelog
+* Thu Oct 08 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.22-alt1
+- new version 2.0.22 (with rpmrb script)
+- add -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=OFF
+- upstream changes:
+ + remove JPEG dummy codec
+ + fix OpenGL/glut detection
+
+* Thu Oct 08 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.21-alt1
+- new version 2.0.21 (with rpmrb script)
+- ZDI-15-529, CVE-2018-19541
+
+* Thu Oct 08 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.20-alt1
+- new version 2.0.20 (with rpmrb script)
+- upstream changes:
+ + fix several ISO/IEC 15444-4 conformance bugs
+ + disable the MIF codec by default for security reasons
+- CVE-2016-9398
+
 * Wed Sep 02 2020 Vitaly Lipatov <lav@altlinux.ru> 2.0.19-alt1
 - new version 2.0.19 (with rpmrb script)
+- CVE-2018-9154, CVE-2018-19541, CVE-2016-9399, CVE-2017-13751
+- CVE-2018-19540, CVE-2018-9055, CVE-2017-13748
+- CVE-2017-5503, CVE-2017-5504, CVE-2017-5505
+- CVE-2018-9252, CVE-2018-19139, CVE-2018-19543, CVE-2017-9782
+- CVE-2018-20570, CVE-2018-20622, CVE-2016-9398, CVE-2017-14132
+- CVE-2017-5499, CVE-2018-18873, CVE-2017-13750
 
 * Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 2.0.16-alt1
 - new version 2.0.16 (switched to github tarball)

@@ -10,7 +10,7 @@
 Summary: The Geospatial Data Abstraction Library (GDAL)
 Name: gdal
 Version: 2.2.3
-Release: alt3.1.M90P.3
+Release: alt3.1.M90P.4
 Group: Sciences/Geosciences
 
 License: MIT
@@ -267,6 +267,9 @@ sed -i 's|__bool__ = __nonzero__||' \
 %endif
 
 %changelog
+* Wed Oct 14 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.3-alt3.1.M90P.4
+- NMU: fix build with libjasper 2.0.22
+
 * Wed Oct 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.3
 - Applied security fixes from upstream (Fixes: CVE-2019-17545, CVE-2019-17545).
 
