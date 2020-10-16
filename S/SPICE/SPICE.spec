@@ -1,4 +1,4 @@
-
+%define _unpackaged_files_terminate_build 1
 %def_disable celt051
 %def_enable opus
 %def_enable lz4
@@ -6,7 +6,7 @@
 %def_disable manual
 
 Name: SPICE
-Version: 0.14.2
+Version: 0.14.3
 Release: alt1
 Summary: Implements the SPICE protocol
 Group: Graphical desktop/Other
@@ -17,7 +17,7 @@ Url: http://www.spice-space.org/
 Source: %name-%version.tar
 Source2: spice-common.tar
 Source3: spice-common-recorder.tar
-Patch1: fix-alt.patch
+#Patch1: fix-alt.patch
 
 BuildRequires: gcc-c++
 BuildRequires(pre): meson >= 0.48
@@ -72,10 +72,9 @@ tar -xf %SOURCE2 -C subprojects/spice-common
 tar -xf %SOURCE3 -C subprojects/spice-common/common/recorder
 # version in .tarball-version file
 echo "%version" > .tarball-version
-%patch1 -p1
+#%%patch1 -p1
 
 %build
-rm -f GITVERSION
 %meson
 %meson_build \
     %{?_disable_gstreamer:-Dgstreamer=no}
@@ -86,7 +85,7 @@ rm -f %buildroot%_libdir/libspice-server.a
 rm -f %buildroot%_libdir/libspice-server.la
 
 %files -n libspice-server
-%doc COPYING README NEWS
+%doc COPYING README CHANGELOG.md
 %_libdir/libspice-server.so.*
 
 %files -n libspice-server-devel
@@ -95,6 +94,9 @@ rm -f %buildroot%_libdir/libspice-server.la
 %_pkgconfigdir/spice-server.pc
 
 %changelog
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 0.14.3-alt1
+- 0.14.3
+
 * Fri May 31 2019 Alexey Shabalin <shaba@altlinux.org> 0.14.2-alt1
 - 0.14.2 (fixes: CVE-2019-3813)
 - build with gstreamer support
