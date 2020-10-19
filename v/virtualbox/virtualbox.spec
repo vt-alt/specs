@@ -62,7 +62,7 @@
 
 Name: virtualbox
 Version: 6.1.8
-Release: alt1
+Release: alt2
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPLv2
@@ -895,6 +895,9 @@ mountpoint -q /dev || {
 %endif
 
 %changelog
+* Fri Oct 09 2020 Sergey V Turchin <zerg@altlinux.org> 6.1.8-alt2
+- Fix compile with Qt-5.15
+
 * Thu May 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.8-alt1
 - Update to newest version 6.1.8
 
