@@ -1,6 +1,8 @@
+%define git_commit 5a939ccfaf79c4a3b451e25d7550f663f0845314
+
 Name: dolphin-emu
 Version: 5.0
-Release: alt13
+Release: alt14.git5a939cc
 
 Summary: The Gamecube / Wii Emulator
 License: GPLv2
@@ -11,63 +13,58 @@ Packager: Nazarov Denis <nenderus@altlinux.org>
 
 ExclusiveArch: x86_64 aarch64
 
-# https://github.com/%name/dolphin/archive/%version/dolphin-%version.tar.gz
-Source: dolphin-%version.tar
-Patch0: %name-alt-gcc.patch
-Patch1: %name-alt-gcc8.patch
-Patch2: %name-alt-git.patch
-Patch3: %name-alt-soundtouch.patch
+# https://github.com/%name/dolphin/archive/%git_commit/dolphin-%git_commit.tar.gz
+Source: dolphin-%git_commit.tar
+Patch0: %name-alt-git.patch
 
-BuildPreReq: bzlib-devel
 BuildPreReq: libbrotli-devel
 BuildPreReq: libexpat-devel
 BuildPreReq: libpcre-devel
-BuildPreReq: libswresample-devel
 BuildPreReq: libuuid-devel
 
+BuildRequires: bzlib-devel
 BuildRequires: cmake
-BuildRequires: compat-libwxGTK3.1-gtk2-devel
-BuildRequires: gcc-c++
 BuildRequires: libSFML-devel
 BuildRequires: libXcomposite-devel
 BuildRequires: libXcursor-devel
 BuildRequires: libXdamage-devel
 BuildRequires: libXdmcp-devel
+BuildRequires: libXft-devel
 BuildRequires: libXi-devel
 BuildRequires: libXinerama-devel
 BuildRequires: libXmu-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXxf86vm-devel
-BuildRequires: libao-devel
+BuildRequires: libalsa-devel
 BuildRequires: libavformat-devel
 BuildRequires: libbluez-devel
 BuildRequires: libcurl-devel
 BuildRequires: libenet-devel
 BuildRequires: libevdev-devel
-BuildRequires: libgtest-devel
-BuildRequires: libgtk+2-devel
+BuildRequires: libfmt-devel
+BuildRequires: libhidapi-devel
+BuildRequires: liblzma-devel
 BuildRequires: liblzo2-devel
 BuildRequires: libmbedtls-devel
 BuildRequires: libminiupnpc-devel
-BuildRequires: libopenal-devel
-BuildRequires: libportaudio2-devel
+BuildRequires: libpng-devel
+BuildRequires: libpugixml-devel
 BuildRequires: libpulseaudio-devel
-BuildRequires: libsoil-devel
-BuildRequires: libsoundtouch-devel
+BuildRequires: libswresample-devel
 BuildRequires: libswscale-devel
+BuildRequires: libsystemd-devel
 BuildRequires: libudev-devel
 BuildRequires: libusb-devel
+BuildRequires: libzstd-devel
+BuildRequires: qt5-base-devel
 
 %description
 Dolphin-emu is a emulator for Gamecube, Wii, Triforce that lets
 you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 
 %prep
-%setup -n dolphin-%version
+%setup -n dolphin-%git_commit
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %__mkdir_p %_target_platform
@@ -80,7 +77,6 @@ cmake .. \
 	-DCMAKE_SKIP_RPATH:BOOL=TRUE \
 	-DCMAKE_BUILD_TYPE:STRING="Release" \
 	-DUSE_SHARED_ENET:BOOL=TRUE \
-	-DUSE_SHARED_GTEST:BOOL=TRUE \
 	-Wno-dev
 
 popd
@@ -95,11 +91,14 @@ popd
 %_bindir/*
 %_desktopdir/%name.desktop
 %_datadir/%name
-%_liconsdir/%name.png
+%_iconsdir/hicolor/256x256/apps/%name.png
 %_iconsdir/hicolor/scalable/apps/%name.svg
 %_man6dir/%{name}*
 
 %changelog
+* Sun Oct 11 2020 Nazarov Denis <nenderus@altlinux.org> 5.0-alt14.git5a939cc
+- Update to git commit 5a939cc (ALT #39062)
+
 * Fri Jul 03 2020 Nazarov Denis <nenderus@altlinux.org> 5.0-alt13
 - Don't gzip sources to sppedup rpmbuild -bp
 - Update BuildRequires and BuidPreReq
