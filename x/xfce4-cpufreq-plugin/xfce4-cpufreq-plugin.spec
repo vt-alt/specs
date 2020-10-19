@@ -1,22 +1,20 @@
 Name: xfce4-cpufreq-plugin
-Version: 1.2.1
+Version: 1.2.2
 Release: alt1
 
 Summary: Show CPU freqency and governours plugin for the Xfce panel
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-cpufreq-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
-# git://git.xfce.org/panel-plugins/xfce4-cpufreq-plugin
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-cpufreq-plugin.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel
 
-BuildRequires: fontconfig libX11-devel libgtk+3-devel perl-XML-Parser
+BuildRequires: libX11-devel libgtk+3-devel
 
 Requires: xfce4-panel >= 4.10
 
@@ -58,6 +56,16 @@ mkdir m4
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Thu Oct 15 2020 Mikhail Efremov <sem@altlinux.org> 1.2.2-alt1
+- Updated to 1.2.2.
+
+* Mon Sep 14 2020 Mikhail Efremov <sem@altlinux.org> 1.2.1-alt2.gfc6f46b
+- Fixed BR.
+- Added Vcs tag.
+- Updated Url tag.
+- Don't use rpm-build-licenses.
+- Upstream git snapshot.
+
 * Mon Sep 24 2018 Mikhail Efremov <sem@altlinux.org> 1.2.1-alt1
 - Explicitly enable debug (minimum level).
 - Update url.
