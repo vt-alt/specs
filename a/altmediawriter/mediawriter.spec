@@ -2,7 +2,7 @@
 %define oname ALTMediaWriter
 
 Name:           altmediawriter
-Version:        0.4.4
+Version:        0.4.8
 Release:        alt1
 Summary:        ALT Media Writer
 Group:          System/Configuration/Other
@@ -59,6 +59,29 @@ appstream-util validate-relax --nonet %buildroot/%_datadir/appdata/%name.appdata
 
 
 %changelog
+* Wed Oct 07 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.8-alt1
+- Improve image summary display
+- Improve windows build
+- Build windows version statically
+
+* Thu Oct 01 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.7-alt1
+- Added more filters to file dialog (closes: 39017)
+- Add missing image types
+- Show image type name instead of description in image details
+
+* Wed Sep 16 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.6-alt1
+- Added p9-kworkstation release (closes: 38804).
+- Fixed "Delete downloaded image?" button showing for local
+  images (closes: 38803).
+- Improved asset update process
+  + Only need to edit app.qrc now.
+  + Match assets dir structure with getalt's.
+  + Add assets/UPDATING.md with instructions.
+- Fixed "Board is unknown" messages.
+
+* Fri May 22 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.5-alt1
+- Fixed searching releases in Russian (closes: 38478)
+
 * Fri May 01 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.4-alt1
 - Added qt5-quickcontrols requirement (closes: 38072)
 - Updated BuildRequires according to gear-buildreq output
