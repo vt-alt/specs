@@ -1,7 +1,7 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
-Version: 6.0.7
-Release: alt4
+Version: 6.1.8
+Release: alt1
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -11,15 +11,14 @@ ExclusiveArch: x86_64 aarch64
 Requires: bridge-utils chrony ntpdate corosync2 fuse rrd-cached ksmtuned openvswitch
 Requires: sqlite3 vixie-cron faketime tzdata openssh-server openssh-clients
 
-Source0: %name.tar.xz
-Source1: pve-access-control.tar.xz
+Source0: %name.tar
+Source1: pve-access-control.tar
 Source2: pve-apiclient.tar.xz
 
 Patch0: %name.patch
 Patch1: pve-access-control.patch
 Patch2: pve-cluster-install_vzdump_cron_config.patch
 Patch3: pve-cluster-get_guest_config_property.patch
-Patch4: pve-cluster-upstream-prevent-deadlock.patch
 
 Source3: %name.filetrigger
 
@@ -35,7 +34,7 @@ on all nodes.
 
 %package -n pve-access-control
 Summary: PVE access control library
-Version: 6.0.2
+Version: 6.1.2
 Group: Development/Perl
 
 %description -n pve-access-control
@@ -48,7 +47,6 @@ control function used by PVE.
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 grep '/var/run' * -rl | while read f; do
     sed -i 's|/var/run|/run|' $f
@@ -152,8 +150,12 @@ fi
 %dir %perl_vendor_privlib/PVE/APIClient
 %perl_vendor_privlib/PVE/APIClient/Exception.pm
 %perl_vendor_privlib/PVE/APIClient/LWP.pm
+%perl_vendor_privlib/PVE/DataCenterConfig.pm
+%perl_vendor_privlib/PVE/RRD.pm
+%perl_vendor_privlib/PVE/SSHInfo.pm
 %dir %perl_vendor_privlib/PVE/Cluster
 %perl_vendor_privlib/PVE/Cluster/IPCConst.pm
+%perl_vendor_privlib/PVE/Cluster/Setup.pm
 %dir %_localstatedir/%name
 %dir %_localstatedir/rrdcached/db
 %dir %_localstatedir/rrdcached/journal
@@ -170,6 +172,7 @@ fi
 %dir %perl_vendor_privlib/PVE
 %perl_vendor_privlib/PVE/RPCEnvironment.pm
 %perl_vendor_privlib/PVE/AccessControl.pm
+%perl_vendor_privlib/PVE/TokenConfig.pm
 %dir %perl_vendor_privlib/PVE/CLI
 %perl_vendor_privlib/PVE/CLI/pveum.pm
 %dir %perl_vendor_privlib/PVE/API2
@@ -180,6 +183,10 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Tue Jul 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.1.8-alt1
+- pve-cluster 6.1-8
+- pve-access-control 6.1-2
+
 * Wed Jul 08 2020 Anton Farygin <rider@altlinux.ru> 6.0.7-alt4
 - add upstream patch to prevent deadlock in pmxcfs
 

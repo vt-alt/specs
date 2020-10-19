@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
-Version: 6.0.7
-Release: alt10
+Version: 6.2.4
+Release: alt1.M90P.1
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -25,6 +25,7 @@ Source14: pve-i18n.tar.xz
 Source15: pve-mini-journalreader.tar.xz
 Source16: jquery-3.3.1.min.js
 Source17: bootstrap-3.4.1-dist.zip
+Source18: pve-acme.tar.xz
 
 Source5: pve-manager-ru.po
 Source6: basealt_logo.png
@@ -51,7 +52,6 @@ Patch14: pve-container-lxc.patch
 Patch15: pve-manager-sgdisk.patch
 Patch16: pve-manager-logrotate.patch
 Patch18: pve-container-lxcnetdelbr.patch
-Patch19: pve-manager-snapshot-resize.patch
 Patch20: pve-manager-rem-package-ver-btn.patch
 Patch21: pve-http-server-alt.patch
 Patch22: extjs-alt.patch
@@ -60,7 +60,6 @@ Patch24: pve-manager-postfix-ntpd.patch
 Patch25: pve-manager-gettext.patch
 Patch26: pve-ha-manager-watchdog.patch
 Patch27: pve-widget-toolkit-alt.patch
-Patch28: pve-widget-toolkit-alt-utils.patch
 Patch29: pve-manager-widgettoolkit.patch
 Patch30: pve-manager-perl-T.patch
 Patch31: qemu-server-qemu-3-0-0-alt.patch
@@ -72,16 +71,12 @@ Patch36: qemu-server-vmgenid-aarch64.patch
 Patch37: pve-mini-journalreader-alt.patch
 Patch38: pve-http-server-glyphicons.patch
 Patch39: qemu-server-aarch64-spice.patch
-Patch40: qemu-server-virtio-rng.patch
 Patch41: pve-manager-aarch64.patch
 Patch42: qemu-server-aarch64.patch
 Patch43: pve-mini-journalreader-getopt.patch
-Patch44: 0001-usb-Enable-USB3-for-Spice-USB-passthrough.patch
 Patch45: qemu-server-xhci.patch
 Patch46: pve-manager-timezone.patch
-Patch47: pve-widget-toolkit-ComboGrid-mark-multiSelect.patch
-Patch48: pve-widget-toolkit-ComboGrid-multiSelect.patch
-Patch49: qemu-server-qxl-max_outputs.patch
+Patch47: qemu-server-pci-rng-audio-M90P.patch
 Patch50: pve-container-ENV.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
@@ -89,13 +84,14 @@ BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLea
 BuildRequires: perl-IO-Multiplex perl-Locale-PO perl-UUID unzip xmlto pve-lxc libnetfilter_conntrack-devel
 BuildRequires: perl(File/Sync.pm) perl(Net/DNS/Resolver.pm) perl(Pod/Select.pm) perl(Crypt/Eksblowfish/Bcrypt.pm)
 BuildRequires: perl(Template.pm) perl(IPC/Run.pm) perl(Term/ReadLine.pm) libjson-c-devel libsystemd-devel
+BuildRequires: perl(HTTP/Daemon.pm) gnupg
 
 %description
 This package contains the PVE management tools
 
 %package -n pve-container
 Summary: PVE Container management tool
-Version: 3.0.7
+Version: 3.1.5
 Group: Development/Perl
 PreReq: shadow-submap
 Requires: pve-lxc >= 2.1.0 dtach perl-Crypt-Eksblowfish >= 0.009-alt5_15
@@ -105,7 +101,7 @@ Tool to manage Linux Containers on PVE
 
 %package -n pve-firewall
 Summary: PVE Firewall
-Version: 4.0.8
+Version: 4.1.2
 Group: System/Servers
 Requires: ebtables ipset iptables iptables-ipv6 shorewall shorewall6 iproute2 >= 4.10.0
 
@@ -114,15 +110,23 @@ This package contains the PVE Firewall
 
 %package -n pve-ha-manager
 Summary: PVE HA Manager
-Version: 3.0.2
+Version: 3.0.9
 Group: System/Servers
 
 %description -n pve-ha-manager
 HA Manager PVE
 
+%package -n pve-ha-simulator
+Summary: PVE HA Simulator
+Version: 3.0.9
+Group: System/Servers
+
+%description -n pve-ha-simulator
+PVE HA Simulator
+
 %package -n pve-qemu-server
 Summary: Qemu Server Tools
-Version: 6.0.9
+Version: 6.2.2
 Group: System/Servers
 Requires: socat genisoimage pve-qemu-system >= 4.1.1-alt1
 Provides: qemu-server = %version-%release
@@ -133,7 +137,7 @@ This package contains the Qemu Server tools used by PVE
 
 %package -n pve-guest-common
 Summary: PVE common guest-related modules
-Version: 3.0.1
+Version: 3.0.10
 Group: System/Servers
 
 %description -n pve-guest-common
@@ -141,7 +145,7 @@ This package contains a common code base used by pve-container and qemu-server
 
 %package -n pve-http-server
 Summary: PVE Asynchrounous HTTP Server Implementation
-Version: 3.0.2
+Version: 3.0.5
 Group: System/Servers
 Requires: fonts-font-awesome
 
@@ -149,9 +153,13 @@ Requires: fonts-font-awesome
 This is used to implement the PVE REST API
 
 %add_findreq_skiplist %perl_vendor_privlib/PVE/HA/Env/PVE2.pm
+%add_findreq_skiplist %_bindir/pve-ha-simulator
+%add_findreq_skiplist %_datadir/pve-ha-simulator/PVE/HA/*.pm
+%add_findreq_skiplist %_datadir/pve-ha-simulator/PVE/HA/Sim/*.pm
+%add_findreq_skiplist %_datadir/pve-ha-simulator/PVE/HA/Sim/Resources/*.pm
 
 %prep
-%setup -q -c -n pve -a1 -a2 -a3 -a4 -a10 -a11 -a12 -a13 -a14 -a15
+%setup -q -c -n pve -a1 -a2 -a3 -a4 -a10 -a11 -a12 -a13 -a14 -a15 -a18
 %patch0 -p0 -b .altwww
 %patch1 -p0 -b .alt
 %patch2 -p0 -b .alt
@@ -169,7 +177,6 @@ This is used to implement the PVE REST API
 %patch15 -p0 -b .sgdisk
 %patch16 -p0 -b .logrotate
 %patch18 -p0 -b .lxcnetdelbr
-%patch19 -p0 -b .resize
 %patch20 -p0 -b .rembtn
 %patch21 -p0 -b .alt
 %patch22 -p0 -b .alt
@@ -178,7 +185,6 @@ This is used to implement the PVE REST API
 %patch25 -p0 -b .gettext
 %patch26 -p0 -b .watchdog
 %patch27 -p0 -b .alt
-%patch28 -p0 -b .alt
 %patch29 -p0 -b .widgettoolkit
 %patch30 -p0 -b .T
 %patch31 -p0 -b .qemu-3-0-0
@@ -190,16 +196,12 @@ This is used to implement the PVE REST API
 %patch37 -p0 -b .type-limits
 %patch38 -p0 -b .glyphicons
 %patch39 -p0 -b .aarch64-spice
-%patch40 -p0 -b .virtio-rng
 %patch41 -p0 -b .aarch64
 %patch42 -p0 -b .aarch64
 %patch43 -p0 -b .getopt
-%patch44 -p0 -b .usb3
 %patch45 -p0 -b .xhci
 %patch46 -p0 -b .timezone
-%patch47 -p0
-%patch48 -p0
-%patch49 -p0 -b .max_outputs
+%patch47 -p0 -b .rng
 %patch50 -p0 -b .ENV
 
 find -name Makefile | while read m; do
@@ -215,12 +217,12 @@ install -m0644 %SOURCE5 pve-i18n/ru.po
 %build
 for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit pve-mini-journalreader/src; do
     pushd $d
-    %make PACKAGE="pve-manager" VERSION="6.0-7" PVERELEASE="6.0" REPOID="28984024"
+    %make PACKAGE="pve-manager" VERSION="6.2-4" PVERELEASE="6.2" REPOID="9824574a"
     popd
 done
 
 %install
-for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit pve-i18n pve-mini-journalreader/src; do
+for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit pve-i18n pve-mini-journalreader/src pve-acme/src; do
     pushd $d
     %make DESTDIR=%buildroot install
     popd
@@ -372,8 +374,13 @@ __EOF__
 %perl_vendor_privlib/PVE/pvecfg.pm
 %perl_vendor_privlib/PVE/Report.pm
 %perl_vendor_privlib/PVE/VZDump.pm
+%perl_vendor_privlib/PVE/ExtMetric.pm
+%perl_vendor_privlib/PVE/CertCache.pm
+%perl_vendor_privlib/PVE/ACME.pm
+%perl_vendor_privlib/PVE/ACME
 %perl_vendor_privlib/PVE/API2/ACME.pm
 %perl_vendor_privlib/PVE/API2/ACMEAccount.pm
+%perl_vendor_privlib/PVE/API2/ACMEPlugin.pm
 %perl_vendor_privlib/PVE/API2/APT.pm
 %perl_vendor_privlib/PVE/API2/Backup.pm
 %perl_vendor_privlib/PVE/API2/Ceph.pm
@@ -419,6 +426,7 @@ __EOF__
 %perl_vendor_privlib/PVE/Status/InfluxDB.pm
 %perl_vendor_privlib/PVE/Status/Plugin.pm
 %perl_vendor_privlib/PVE/CLI/pveam.pm
+%_datadir/proxmox-acme
 %_datadir/pve-manager
 %_localstatedir/pve-manager
 %dir %_localstatedir/vz/images
@@ -529,6 +537,10 @@ __EOF__
 %_man8dir/pve-ha-crm.8*
 %_man8dir/pve-ha-lrm.8*
 
+%files -n pve-ha-simulator
+%_bindir/pve-ha-simulator
+%_datadir/pve-ha-simulator
+
 %files -n pve-qemu-server
 %_datadir/bash-completion/completions/qm
 %_datadir/bash-completion/completions/qmrestore
@@ -552,6 +564,7 @@ __EOF__
 %perl_vendor_privlib/PVE/QMPClient.pm
 %perl_vendor_privlib/PVE/API2/Qemu/Agent.pm
 %perl_vendor_privlib/PVE/API2/Qemu.pm
+%perl_vendor_privlib/PVE/API2/Qemu/CPU.pm
 %perl_vendor_privlib/PVE/CLI/qm.pm
 %perl_vendor_privlib/PVE/CLI/qmrestore.pm
 %perl_vendor_privlib/PVE/VZDump/QemuServer.pm
@@ -562,6 +575,11 @@ __EOF__
 %perl_vendor_privlib/PVE/QemuServer/OVF.pm
 %perl_vendor_privlib/PVE/QemuServer/Cloudinit.pm
 %perl_vendor_privlib/PVE/QemuServer/Agent.pm
+%perl_vendor_privlib/PVE/QemuServer/CPUConfig.pm
+%perl_vendor_privlib/PVE/QemuServer/Drive.pm
+%perl_vendor_privlib/PVE/QemuServer/Helpers.pm
+%perl_vendor_privlib/PVE/QemuServer/Machine.pm
+%perl_vendor_privlib/PVE/QemuServer/Monitor.pm
 %_datadir/qemu-server
 %_localstatedir/qemu-server
 %_man1dir/qm.1*
@@ -571,6 +589,7 @@ __EOF__
 
 %files -n pve-guest-common
 %dir %perl_vendor_privlib/PVE/VZDump
+%perl_vendor_privlib/PVE/VZDump/Common.pm
 %perl_vendor_privlib/PVE/VZDump/Plugin.pm
 %perl_vendor_privlib/PVE/ReplicationState.pm
 %perl_vendor_privlib/PVE/ReplicationConfig.pm
@@ -584,6 +603,21 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Fri Oct 09 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.4-alt1.M90P.1
+- fixed booting VM on Kunpeng-920
+
+* Mon Aug 24 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.4-alt1
+- pve-manager 6.2-4
+- pve-container 3.1-5
+- pve-firewall 4.1-2
+- qemu-server 6.2-2
+- pve-ha-manager 3.0-9
+- pve-guest-common 3.0-10
+- pve-http-server 3.0-5
+- pve-widget-toolkit 2.2-1
+- pve-i18n 2.1-3
+- pve-acme 1.0.4
+
 * Fri Jul 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.0.7-alt10
 - fixed pvecfg.pm (closes: #38725)
 

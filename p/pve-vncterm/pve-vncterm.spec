@@ -2,8 +2,8 @@
 
 Name: pve-%sname
 Summary: VNC Terminal Emulator
-Version: 1.5.2
-Release: alt3
+Version: 1.6.2
+Release: alt1
 License: GPLv2
 Group: Networking/WWW
 Url: https://git.proxmox.com/
@@ -15,7 +15,7 @@ Source2: unifont.hex
 Patch0: %sname-alt.patch
 
 ExclusiveArch: x86_64 aarch64
-BuildRequires: libgnutls-devel libjpeg-devel perl-Pod-Usage zlib-devel libpng-devel
+BuildRequires: cmake libgnutls-devel libjpeg-devel perl-Pod-Usage zlib-devel libpng-devel
 
 %description
 With vncterm you can start commands and export its standard input and
@@ -40,6 +40,9 @@ install -m0644 %SOURCE2 .
 %_man1dir/%sname.1*
 
 %changelog
+* Fri Sep 04 2020 Valery Inozemtsev <shrek@altlinux.ru> 1.6.2-alt1
+- 1.6-2
+
 * Wed Aug 28 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.5.2-alt3
 - added build for aarch64
 

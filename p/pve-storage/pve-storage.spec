@@ -1,7 +1,7 @@
 Name: pve-storage
 Summary: PVE storage management library
-Version: 6.0.9
-Release: alt2
+Version: 6.1.7
+Release: alt1
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
@@ -44,6 +44,9 @@ __EOF__
 %_man1dir/pvesm.1*
 
 %changelog
+* Tue Jul 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.1.7-alt1
+- 6.1-7
+
 * Thu Jun 04 2020 Andrew A. Vasilyev <andy@altlinux.org> 6.0.9-alt2
 - add Linstor plugin support for DRBD
 

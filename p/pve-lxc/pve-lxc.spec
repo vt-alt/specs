@@ -1,8 +1,8 @@
 %define rname lxc
 
 Name: pve-%rname
-Version: 3.1.0
-Release: alt4
+Version: 4.0.3
+Release: alt1
 Summary: Linux containers usersapce tools
 Group: System/Configuration/Other
 License: LGPL
@@ -13,28 +13,26 @@ ExclusiveArch: x86_64 aarch64
 Requires: lxcfs
 Conflicts: %rname %rname-libs
 
-Source: %rname-%version.tar.xz
+Source: %rname-%version.tar.gz
 Source1: %rname-config.tar
 
-Patch1: 0001-PVE-Config-lxc.service-start-after-a-potential-syslo.patch
-Patch2: 0002-PVE-Down-run-lxcnetaddbr-when-instantiating-veths.patch
-Patch3: 0003-PVE-Config-deny-rw-mounting-of-sys-and-proc.patch
-Patch4: 0004-PVE-Up-separate-the-limiting-from-the-namespaced-cgr.patch
-Patch5: 0005-PVE-Up-start-initutils-make-cgroupns-separation-leve.patch
-Patch6: 0006-PVE-Config-namespace-separation.patch
-Patch7: 0007-PVE-Up-possibility-to-run-lxc-monitord-as-a-regular-.patch
-Patch8: 0008-PVE-Config-Disable-lxc.monitor-cgroup.patch
-Patch9: 0009-init-add-ExecReload-to-lxc.service-to-only-reload-pr.patch
-Patch10: 0010-PVE-Config-attach-always-use-getent.patch
-Patch11: 0001-conf-use-SYSERROR-on-lxc_write_to_file-errors.patch
-Patch12: 0002-Revert-conf-remove-extra-MS_BIND-with-sysfs-mixed.patch
-Patch13: 0003-CVE-2019-5736-runC-rexec-callers-as-memfd.patch
-Patch14: 0004-apparmor-generate-ro-bind-remount-rule-list.patch
-Patch15: 0005-attach-don-t-close-stdout-of-getent.patch
+Patch1: 0001-allow-running-lxc-monitord-as-a-system-daemon.patch
+Patch2: 0002-systemd-Add-Documentation-key.patch
+Patch3: 0003-introduce-lxc.cgroup.dir.-monitor-container-containe.patch
+Patch4: 0004-doc-s-lxc.cgroup.container.namespace-lxc.cgroup.cont.patch
+Patch5: 0005-confile-coding-style-fixes-for-set_config_cgroup_con.patch
+Patch6: 0006-api-extensions-add-and-document-cgroup_advanced_isol.patch
+Patch7: 0007-doc-Add-lxc.cgroup.dir.-monitor-container-container..patch
+Patch8: 0008-confile-fix-jump-table-order.patch
+Patch9: 0009-get-the-right-path-in-get_cgroup-command.patch
+Patch10: 0010-cgroups-adhere-to-boolean-return.patch
+Patch11: 0011-PVE-Config-lxc.service-start-after-a-potential-syslo.patch
+Patch12: 0012-PVE-Config-deny-rw-mounting-of-sys-and-proc.patch
+Patch13: 0013-PVE-Config-attach-always-use-getent.patch
+Patch14: 0014-apparmor-Allow-ro-remount-of-boot_id.patch
 
 Patch20: lxc-alt.patch
 Patch21: lxc-altlinux-lxc.patch
-Patch22: lxc-unused-variable.patch
 Patch23: lxc-alt-remove-dependency-on-policycoreutils.patch
 
 BuildRequires: docbook2X libcap-devel libdbus-devel libgnutls-devel libseccomp-devel libselinux-devel
@@ -65,12 +63,10 @@ an applications or a system.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
 
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
+%patch20 -p1 -b .alt
+%patch21 -p1 -b .altlinux
+%patch23 -p1 -b .pol
 
 %build
 %autoreconf
@@ -116,6 +112,12 @@ rm -fr %buildroot/usr/lib/%rname/%rname-apparmor-load
 %_man7dir/*.7*
 
 %changelog
+* Thu Sep 03 2020 Valery Inozemtsev <shrek@altlinux.ru> 4.0.3-alt1
+- 4.0.3-1
+
+* Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.1.0-alt5
+- NMU: fixed build with new selinux.
+
 * Wed Jan 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 3.1.0-alt4
 - remove dependency on policycoreutils
 

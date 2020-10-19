@@ -1,6 +1,6 @@
 Name: pve-docs
 Summary: PVE Documentation
-Version: 6.0.4
+Version: 6.2.4
 Release: alt1
 License: GPLv3
 Group: Documentation
@@ -33,7 +33,7 @@ grep 'proxmox.com' * -rl | while read f; do
 	sed -i 's|proxmox.com|basealt.ru|' $f
 done
 
-rm -f getting-help.adoc howto-improve-pve-docs.adoc pve-package-repos.adoc pve-faq.adoc pve-installation.adoc pve-system-requirements.adoc translation.adoc
+rm -f getting-help.adoc howto-improve-pve-docs.adoc pve-package-repos.adoc pve-faq.adoc pve-installation.adoc pve-system-requirements.adoc translation.adoc pve-installation-media.adoc system-booting.adoc
 
 %build
 %make
@@ -59,6 +59,9 @@ install -m644 images/screenshot/*.png %buildroot%_datadir/%name/images/screensho
 %_datadir/pve-doc-generator
 
 %changelog
+* Wed Jul 08 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.4-alt1
+- 6.2-4
+
 * Tue Jul 30 2019 Valery Inozemtsev <shrek@altlinux.ru> 6.0.4-alt1
 - 6.0-4
 
