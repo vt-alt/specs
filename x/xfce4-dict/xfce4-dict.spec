@@ -1,20 +1,18 @@
 Name: xfce4-dict
-Version: 0.8.3
+Version: 0.8.4
 Release: alt1
 
 Summary: Xfce4 Dictionary - A client program to query different dictionaries
-License: %gpl2plus
+License: GPLv2+
 Group: Graphical desktop/XFce
 Packager: Xfce Team <xfce@packages.altlinux.org>
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
-# git://git.xfce.org/apps/xfce4-dict
+Url: https://docs.xfce.org/apps/xfce4-dict/start
+Vcs: https://gitlab.xfce.org/apps/xfce4-dict.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
 Obsoletes: xfce4-dict-plugin < 0.5.2
 Provides: xfce4-dict-plugin
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel libxfce4util-devel
@@ -61,6 +59,12 @@ panel plugin for the Xfce panel.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Thu Oct 15 2020 Mikhail Efremov <sem@altlinux.org> 0.8.4-alt1
+- Added Vcs tag.
+- Updated Url tag.
+- Don't use rpm-build-licenses.
+- Updated to 0.8.4.
+
 * Mon Oct 07 2019 Mikhail Efremov <sem@altlinux.org> 0.8.3-alt1
 - Updated to 0.8.3.
 
