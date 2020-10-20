@@ -1,17 +1,21 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: freecol
 Version: 0.11.6
-Release: alt1
+Release: alt2
 Summary: FreeCol is opensource Colonization clone.
 Url: http://freecol.org
 Group: Games/Strategy
-License: GPL3
+License: GPL-2.0+
+
 BuildArch: noarch
 
-Source: %name-%version-%release.tar
+Source: %name-%version.tar
 Source1: %name.desktop
 Source2: %name.xpm
 
 Patch1: %name-%version-fedora-source-encoding.patch
+Patch2: CVE-2018-1000825.patch
 
 BuildRequires: rpm-build-java
 BuildRequires: ant ant-nodeps
@@ -24,11 +28,10 @@ Requires: java
 FreeCol is a turn-based strategy game based on the old game Colonization and similar to Civilization. 
 The objective of the game is to create an independent nation.
 
-
 %prep
-%setup -q -n %name-%version
+%setup
 %patch1 -p1
-
+%patch2 -p1
 
 %build
 export CLASSPATH=$(build-classpath junit)
@@ -55,11 +58,9 @@ pushd %_gamesdatadir/%name >/dev/null 2>&1
 popd >/dev/null 2>&1
 EOF
 
-
 chmod +x %buildroot%_bindir/%name
 install -p %SOURCE1 %buildroot%_desktopdir/%name.desktop
 install -p %SOURCE2 %buildroot%_niconsdir/%name.xpm
-
 
 %files
 %_bindir/%name
@@ -68,6 +69,10 @@ install -p %SOURCE2 %buildroot%_niconsdir/%name.xpm
 %_niconsdir/%name.xpm
 
 %changelog
+* Mon Oct 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.11.6-alt2
+- Applied security fix from Debian (Fixes: CVE-2018-1000825).
+- Updated license tag.
+
 * Tue Nov 14 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 0.11.6-alt1
 - Updated to upstream version 0.11.6.
 
