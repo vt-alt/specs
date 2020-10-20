@@ -1,18 +1,31 @@
-Name: SoQt
-Version: 1.5.0
-Release: alt6
+Name: soqt
+Version: 1.6.0
+Release: alt2
 Summary: Qt GUI component toolkit library for Coin
-License: GPL
+License: BSD-3-Clause
 Group: Development/Tools
-Url: http://www.coin3d.org
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
+Url: https://github.com/coin3d/soqt
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
-Source: http://ftp.coin3d.org/coin/src/all/SoQt-1.5.0.tar.gz
+Source: %name-%version.tar
+Source1: cpack-src.tar
+Source2: soanydata-src.tar
+Source3: sogui-src.tar
+Patch1:  SoQt-1.6.0-cmake.patch
 
+Provides: SoQt = %EVR
+Obsoletes: SoQt < %EVR
 Requires: lib%name = %version-%release
 
-BuildPreReq: libGL-devel libGLU-devel doxygen gcc-c++ gcc-fortran
-BuildPreReq: libX11-devel libcoin3d-devel libqt4-devel
+BuildRequires(pre): cmake
+BuildRequires(pre): rpm-build-ninja
+BuildRequires(pre): qt5-base-devel
+BuildRequires: gcc-c++
+BuildRequires: libGL-devel
+BuildRequires: libGLU-devel
+BuildRequires: doxygen
+BuildRequires: libX11-devel
+BuildRequires: libcoin3d-devel
 
 %description
 SoQt is a Qt GUI component toolkit library for Coin.  It is also compatible
@@ -23,7 +36,8 @@ InventorXt GUI component toolkit.
 Summary: Shared libraries of SoQt
 Group: System/Libraries
 Requires: libcoin3d
-Conflicts: %name < %version-%release
+Provides: libSoQt = %EVR
+Obsoletes: libSoQt < %EVR
 
 %description -n lib%name
 SoQt is a Qt GUI component toolkit library for Coin.  It is also compatible
@@ -37,8 +51,8 @@ Summary: Development files for SoQt
 Group: Development/C++
 Requires: lib%name = %version-%release
 Requires: libcoin3d-devel
-Conflicts: %name < %version-%release
-Conflicts: xinetd-devel
+Provides: libSoQt-devel = %EVR
+Obsoletes: libSoQt-devel < %EVR
 
 %description -n lib%name-devel
 SoQt is a Qt GUI component toolkit library for Coin.  It is also compatible
@@ -51,6 +65,8 @@ This package contains development files for SoQt.
 Summary: Documentation for SoQt
 Group: Development/Documentation
 BuildArch: noarch
+Provides: libSoQt-devel-doc = %EVR
+Obsoletes: libSoQt-devel-doc < %EVR
 
 %description -n lib%name-devel-doc
 SoQt is a Qt GUI component toolkit library for Coin.  It is also compatible
@@ -61,53 +77,49 @@ This package contains development documentation for SoQt.
 
 %prep
 %setup
+%patch1 -p1
+tar xf %SOURCE1
+tar xf %SOURCE2
+tar xf %SOURCE3
 
 %build
-export QTDIR=%_qt4dir
-export CPPFLAGS="%optflags"
-%configure \
-	--disable-static \
-	--enable-html \
-	--enable-man \
-	--enable-html-help \
-	--enable-debug=no \
-	--enable-symbols=no \
-	--with-doxygen=%_bindir \
-	--with-x \
-	--with-mesa \
-	--with-coin=%prefix \
-	--with-opengl=%prefix \
-	--with-qt=%_qt4dir
-%make_build
+%cmake -GNinja \
+       -DSOQT_BUILD_DOCUMENTATION=TRUE \
+       -DSOQT_BUILD_DOC_MAN=TRUE
+%ninja_build -C BUILD
 
 %install
-touch htmlhelp/SoQt-1_5.chm
-%makeinstall_std
-
-#install -d %buildroot%_docdir/%name
-#mv %buildroot%_datadir/SoQt/html %buildroot%_docdir/%name/
+%ninja_install -C BUILD
+mv %buildroot%_includedir/Inventor %buildroot%_includedir/Coin4/
+rm -rf %buildroot%_infodir
+rm -rf %buildroot%_man3dir/misc.3*
 
 %files
 
 %files -n lib%name
-%doc AUTHORS BUGS.txt COPYING ChangeLog FAQ LICENSE.GPL NEWS README
+%doc AUTHORS BUGS.txt FAQ NEWS README
 %_libdir/*.so.*
 
 %files -n lib%name-devel
-%_bindir/*
-%_man1dir/*
-%_datadir/Coin/conf/*
+%_datadir/SoQt
 %_libdir/*.so
 %_includedir/*
-%_aclocaldir/*
 %_man3dir/*
 %_pkgconfigdir/*
+%_libdir/cmake/*
 
 %files -n lib%name-devel-doc
 %doc docs/*
-%doc %_docdir/soqt
+%doc %_defaultdocdir/SoQt
 
 %changelog
+* Fri Oct 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.6.0-alt2
+- Remove /usr/share/man/man3/misc.3.xz conflicting with xinetd-devel.
+
+* Fri Sep 18 2020 Andrey Cherepanov <cas@altlinux.org> 1.6.0-alt1
+- New version.
+- Fix License tag, project URL and maintainer.
+
 * Thu Apr 28 2011 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.5.0-alt6
 - Rebuilt with coin3d 3.1.3-alt5
 

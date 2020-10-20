@@ -1,5 +1,5 @@
 %def_with bundled_libs
-%def_with glvnd
+%def_without glvnd
 %define oname freecad
 %define ldir %_libdir/%oname
 %ifndef build_parallel_jobs
@@ -13,7 +13,7 @@
 
 Name:    freecad
 Version: 0.18.4
-Release: alt4.1.p9
+Release: alt4.2.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: LGPL-2.0+
@@ -146,10 +146,10 @@ rm -rf src/3rdParty
 #patch3 -p1
 %patch4 -p1
 #patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
+#patch6 -p1
+#patch7 -p1
+#patch8 -p1
+#patch9 -p1
 
 %build
 export PATH=$PATH:%_qt5_bindir
@@ -237,6 +237,10 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Tue Oct 06 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt4.2.p9
+- Build with new version of coin3d.
+- Build without glvnd.
+
 * Tue Sep 15 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt4.1.p9
 - Backport fixes to p9 branch.
 

@@ -1,22 +1,35 @@
-Name: coin3d
-Version: 3.1.3
-Release: alt10
+Name:    coin3d
+Version: 4.0.0
+Release: alt1
 Summary: OpenGL-based, 3D graphics library
-License: GPL
-Group: Development/Tools
-Url: http://www.coin3d.org
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
+License: BSD-3-Clause
+Group:   System/Libraries
+Url:     https://github.com/coin3d/coin
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
-Source: http://ftp.coin3d.org/coin/src/all/Coin-%version.tar.gz
-Patch1: %name-add-debugerror-includes.patch
+Source: %name-%version.tar
+
+Patch1: 0002-Added-c-suffix-to-SO_VERSION.patch
+Patch2: 0003-Drop-use-of-cpack.patch
+Patch3: 01_convert_old_patches.patch
 
 Requires: lib%name = %version-%release
 Requires: %name-common = %version-%release
 
-BuildPreReq: libGL-devel libGLU-devel doxygen gcc-c++ fontconfig
-BuildPreReq: libopenal-devel zlib-devel bzlib-devel
-BuildPreReq: gcc-fortran libdirectfb-devel libX11-devel libXt-devel
-BuildPreReq: libexpat-devel
+BuildRequires(pre): cmake
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: gcc-c++
+BuildRequires: doxygen
+BuildRequires: boost-devel
+BuildRequires: bzlib-devel
+BuildRequires: fontconfig-devel
+BuildRequires: libGL-devel
+BuildRequires: libGLU-devel
+BuildRequires: libX11-devel
+BuildRequires: libXt-devel
+BuildRequires: libexpat-devel
+BuildRequires: libfreetype-devel
+BuildRequires: zlib-devel
 
 %description
 Coin is an OpenGL-based, 3D graphics library that has its roots in the
@@ -107,77 +120,45 @@ This package contains architecture independent files of Coin3D.
 
 %prep
 %setup
-%patch1 -p2
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
-#sed -i 's|^libdir.*|libdir=%_libdir|' Coin.pc.in
-%add_optflags -I%_includedir/directfb -fpermissive
-%configure \
-	--enable-3ds-import \
-	--enable-threadsafe \
-	--enable-html \
-	--enable-man \
-	--enable-dl-simage \
-	--enable-dl-openal \
-	--enable-dl-glu \
-	--with-pthread \
-	--with-doxygen \
-	--with-dl \
-	--with-simage \
-	--with-openal \
-	--with-fontconfig \
-	--with-freetype \
-	--with-zlib \
-	--with-bzip2 \
-	--with-x \
-	--with-opengl \
-	--with-mesa \
-	--enable-system-expat
-%make
+%cmake -GNinja \
+       -DCOIN_BUILD_DOCUMENTATION=TRUE \
+       -DCOIN_BUILD_DOCUMENTATION_MAN=TRUE \
+       -DHAVE_MULTIPLE_VERSION=TRUE \
+       -DUSE_EXTERNAL_EXPAT=TRUE
+%ninja_build -C BUILD
 
 %install
-%makeinstall_std
-
-install -d %buildroot%_docdir/%name
-#mv %buildroot%_datadir/Coin/html %buildroot%_docdir/%name/
-%ifarch x86_64
-sed -i 's|/lib64|/lib|g' %buildroot%_bindir/coin-config
-sed -i 's|/lib|/lib64|g' %buildroot%_bindir/coin-config
-sed -i 's|/lib64|/lib|g' %buildroot%_datadir/Coin/conf/coin-default.cfg
-sed -i 's|/lib|/lib64|g' %buildroot%_datadir/Coin/conf/coin-default.cfg
-%endif
-sed -i 's|^\(htmldir\).*|\1=%_docdir/%name/html|g' \
-	%buildroot%_datadir/Coin/conf/coin-default.cfg
-
-mv %buildroot%_datadir/aclocal/coin.m4 \
-	%buildroot%_datadir/aclocal/%name.m4
+%ninja_install -C BUILD
 
 %files -n lib%name
-%doc AUTHORS COPYING FAQ* LICENSE.GPL NEWS README README.UNIX RELNOTES
-%doc THANKS
+%doc AUTHORS ChangeLog README{,.UNIX} THANKS FAQ*
 %_libdir/*.so.*
 
 %files -n lib%name-devel
 %_bindir/*
-%_man1dir/*
-%_datadir/Coin/conf/coin-default.cfg
 %_libdir/*.so
 %_pkgconfigdir/*
+%_libdir/cmake/*
 %_includedir/*
-%_datadir/aclocal/*
 
 %files -n lib%name-devel-doc
 %doc docs/*
-%doc %_docdir/coin
+%doc %_defaultdocdir/Coin4
 %_man3dir/*
-%exclude %_man3dir/deprecated.3*
 %exclude %_man3dir/details.3*
 
 %files common
-%_datadir/Coin
-%exclude %_datadir/Coin/conf/coin-default.cfg
+%_datadir/Coin4
 
 %changelog
+* Thu Sep 17 2020 Andrey Cherepanov <cas@altlinux.org> 4.0.0-alt1
+- New version.
+
 * Tue Dec 08 2015 Andrey Cherepanov <cas@altlinux.org> 3.1.3-alt10
 - Add debugerror.h include in base include file (for freecad build)
 
