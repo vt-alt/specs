@@ -2,7 +2,7 @@
 
 Name: unixODBC-compat
 Version: 2.2.12
-Release: alt11
+Release: alt12
 
 Summary: Unix ODBC driver manager and database drivers
 Summary(ru_RU.UTF-8): Система управления драйверами ODBC для unix 
@@ -26,8 +26,7 @@ Patch3: %rname-2.2.11-stricmp.patch
 Patch4: %rname-2.2.11-symbols.patch
 Patch5: %rname-2.2.12-alt-ltdl.patch
 
-# Automatically added by buildreq on Mon Feb 14 2011
-BuildRequires: flex gcc-c++ libltdl7-devel libqt3-devel libreadline-devel
+BuildRequires: flex gcc-c++ libltdl7-devel libreadline-devel
 
 %description
 UnixODBC is a free/open and solution for ODBC. ODBC is an open
@@ -67,13 +66,12 @@ rm -r libltdl
 %patch5 -p1
 
 %build
-export QTDIR=%_qt3dir
 %autoreconf
 %configure \
 	--with-gnu-ld \
 	--enable-threads \
 	--enable-ltdllib \
-    --with-qt-libraries=%_qt3dir/lib \
+	--disable-gui \
 	--disable-static
 %make_build
 
@@ -95,6 +93,9 @@ find doc -name Makefile\* -delete
 %exclude %_libdir/libodbcpsql.so.2*
 
 %changelog
+* Fri Oct 16 2020 Sergey V Turchin <zerg@altlinux.org> 2.2.12-alt12
+- build without GUI
+
 * Mon Oct 05 2015 Andrey Cherepanov <cas@altlinux.org> 2.2.12-alt11
 - rebuilt against gcc5-built qt3
 
