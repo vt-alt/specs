@@ -1,12 +1,14 @@
-%define rev %nil
+%define _unpackaged_files_terminate_build 1
+
 Name: feh
-Version: 2.16
+Version: 3.5
 Release: alt1
 Summary: Image viewer using Imlib 2
 Group: Graphics
 License: BSD
-Packager: Andrew Clark <andyc@altlinux.org>
+
 Url: https://feh.finalrewind.org/
+
 # git://github.com/derf/feh.git refs/tags/v%%version
 Source: %name-%version.tar
 
@@ -22,29 +24,39 @@ a slideshow or multiple windows. feh supports the creation of
 montages as index prints with many user-configurable options.
 
 %prep
-%setup -q
-sed -in 's/\(VERSION *?=\).*/\1 %version-%release/' config.mk
-sed -in 's/^\(CFLAGS *?=\).*/\1 %optflags/' config.mk
-sed -in 's/\/usr\/local/\/usr\//' config.mk
-sed -in 's#exif\ ?= 0#exif\ ?= 1#' config.mk
+%setup
 
 %build
-%make_build PREFIX="%_prefix"
+export VERSION="%version"
+export CFLAGS="%optflags"
+export PREFIX="%_prefix"
+
+%make_build exif=1
 
 %install
-%makeinstall_std
+export VERSION="%version"
+export CFLAGS="%optflags"
+export PREFIX="%_prefix"
+
+%makeinstall_std exif=1
 
 %files
 %_bindir/*
 %_man1dir/*
 %_datadir/%name
 %_desktopdir/%name.desktop
+%_liconsdir/%name.png
+%_iconsdir/hicolor/scalable/apps/%name.svg
 
 %exclude %_datadir/doc/%name
 
-%doc AUTHORS ChangeLog README TODO
+%doc AUTHORS ChangeLog README.md TODO
+%doc COPYING
 
 %changelog
+* Mon Oct 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.5-alt1
+- Updated to upstream version 3.5 (Fixes: CVE-2017-7875).
+
 * Thu Jun 16 2016 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.16-alt1
 - Updated to 2.16.
 
