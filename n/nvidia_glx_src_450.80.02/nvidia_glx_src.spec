@@ -27,7 +27,7 @@
 %define nv_version 450
 %define nv_release 80
 %define nv_minor   02
-%define pkg_rel alt211
+%define pkg_rel alt212
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -367,6 +367,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 19 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt212
+- whitelisted 10DE:0FCD
+
 * Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt211
 - new version
 
