@@ -8,7 +8,7 @@
 
 Name: inkscape
 Version: %major.1
-Release: alt1
+Release: alt2
 
 Summary: A Vector Drawing Application
 
@@ -18,11 +18,6 @@ Url: http://inkscape.org
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-#Source: http://prdownloads.sf.net/%name/%name-%version%pre.tar
-#Source-url: https://launchpad.net/inkscape/%major.x/%version/+download/inkscape-%version.tar.bz2
-#Source-url: https://inkscape.org/gallery/item/14917/inkscape-%version%pre.tar.bz2
-#Source-url: https://gitlab.com/inkscape/inkscape/-/archive/master/inkscape-master.tar.bz2
-#Source-url: https://inkscape.org/gallery/item/18460/inkscape-%version.tar.xz
 # Source-url: https://media.inkscape.org/dl/resources/file/inkscape-%version.tar.xz
 Source: %name-%version.tar
 
@@ -33,11 +28,12 @@ Patch6: fix_atomic_rel_error.patch
 Requires(post,postun): desktop-file-utils
 BuildPreReq: desktop-file-utils
 
-%add_findreq_skiplist %_datadir/%name/extensions/*
+AutoProv:yes,nopython3
+BuildRequires(pre): rpm-build-python3
+%add_python3_lib_path %_datadir/%name/extensions
 
 BuildRequires: boost-devel-headers cmake gcc-c++ intltool
 BuildRequires: libgc-devel libgsl-devel libpopt-devel libxslt-devel perl-devel zlib-devel libsoup-devel libaspell-devel libdbus-devel
-#BuildRequires: python2.7(xml.dom)
 
 # Checking for modules 'gtkmm-3.0>=3.22;gdkmm-3.0>=3.22;gtk+-3.0>=3.22;gdk-3.0>=3.22;gdl-3.0>=3.4'
 BuildRequires: libgtkmm3-devel >= 3.22 libgdl3-devel >= 3.4
@@ -58,7 +54,7 @@ Requires: icc-profiles
 
 # For extensions
 # https://bugzilla.altlinux.org/21626
-Requires: wmf-utils python3-module-lxml
+Requires: wmf-utils
 # Recommends: skencil pstoedit
 
 # mike: work around https://bugzilla.altlinux.org/24586
@@ -100,6 +96,10 @@ rm -rf %buildroot%_docdir/inkscape/
 rm -rf %buildroot%_mandir/??/
 rm -rf %buildroot%_mandir/??_??/
 
+subst "s|/usr/bin/env python$|%__python3|" %buildroot%_datadir/%name/extensions/*.py
+# remove tests
+rm -rf %buildroot%_datadir/%name/extensions/tests/
+
 %find_lang %name
 
 %check
@@ -124,6 +124,9 @@ true
 %_man1dir/inkview*
 
 %changelog
+* Fri Oct 16 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt2
+- cleanup spec, add search requires in extensions dir (ALT bug 39052)
+
 * Wed Sep 16 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt1
 - new version 1.0.1 (with rpmrb script)
 
