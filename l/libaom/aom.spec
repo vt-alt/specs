@@ -1,17 +1,18 @@
 %define _unpackaged_files_terminate_build 1
 
 %define oname aom
+%define soname 2
+%define libname lib%{oname}%{soname}
 
 # tests require approximately 500Mb of video data and run really long (up to a few hours)
 %def_disable check
 
 Name: lib%oname
-Version: 1.0.0
+Version: 2.0.0
 Release: alt1
 Summary: AV1 Codec Library
-
 Group: System/Libraries
-License: BSD
+License: BSD-2-Clause
 Url: http://aomedia.org/
 
 # https://aomedia.googlesource.com/aom/
@@ -25,19 +26,37 @@ AOMedia Video 1, almost universally referred to as AV1,
 is an open, royalty-free video coding format designed
 for video transmissions over the Internet.
 
+%package -n %libname
+Summary: AV1 Codec Library
+Group: System/Libraries
+
+%description -n %libname
+AOMedia Video 1, almost universally referred to as AV1,
+is an open, royalty-free video coding format designed
+for video transmissions over the Internet.
+
 %package devel
 Summary: Development files for %name
 Group: Development/C
-Requires: %name = %EVR
+Requires: %libname = %EVR
 
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
 
+%package devel-static
+Summary: Static development files for %name
+Group: Development/C
+Requires: %name-devel = %EVR
+
+%description devel-static
+The %name-devel-static package contains static libraries for
+developing applications that use %name.
+
 %package tools
 Summary: Tools for %name
 Group: Other
-Requires: %name = %EVR
+Requires: %libname = %EVR
 
 %description tools
 The %name-tools package contains tools for %name.
@@ -46,7 +65,7 @@ The %name-tools package contains tools for %name.
 Summary: Documentation for %name
 Group: Documentation
 BuildArch: noarch
-Requires: %name = %EVR
+Requires: %libname = %EVR
 
 %description docs
 The %name-docs package contains documentation files for %name.
@@ -55,6 +74,9 @@ The %name-docs package contains documentation files for %name.
 %setup
 %patch1 -p1
 
+# Override old version from changelog
+echo -n %version > version
+
 %build
 %cmake \
 	-DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
@@ -62,7 +84,8 @@ The %name-docs package contains documentation files for %name.
 	-DAOM_TARGET_CPU:STRING=generic \
 	-DENABLE_DOCS:BOOL=ON \
 	-DENABLE_EXAMPLES:BOOL=ON \
-	-DENABLE_TOOLS:BOOL=ON
+	-DENABLE_TOOLS:BOOL=ON \
+	%nil
 
 %cmake_build
 
@@ -76,14 +99,18 @@ export LIBAOM_TEST_DATA_PATH=$(pwd)/.gear/testdata
 export LD_LIBRARY_PATH=%buildroot%_libdir:$(pwd)/BUILD/third_party/googletest/src/googletest
 %make -C BUILD runtests
 
-%files
+%files -n %libname
 %doc LICENSE PATENTS README.md
-%_libdir/*.so.*
+%_libdir/*.so.%{soname}
+%_libdir/*.so.%{soname}.*
 
 %files devel
 %_includedir/%oname
 %_libdir/*.so
 %_pkgconfigdir/*.pc
+
+%files devel-static
+%_libdir/*.a
 
 %files tools
 %_bindir/*
@@ -92,6 +119,12 @@ export LD_LIBRARY_PATH=%buildroot%_libdir:$(pwd)/BUILD/third_party/googletest/sr
 %doc BUILD/docs/html
 
 %changelog
+* Thu Jul 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.0-alt1
+- Updated to upstream version 2.0.0.
+
+* Mon Aug 12 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.0-alt2
+- Fixed version detection (Closes: #37096).
+
 * Thu Feb 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.0-alt1
 - Updated to upstream version 1.0.0.
 
