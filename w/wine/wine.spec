@@ -1,15 +1,25 @@
-%def_enable static
+%def_disable static
 %define gecko_version 2.47.1
-%define mono_version 4.9.4
-%define major 5.0
+%define mono_version 5.1.1
+%define major 5.19
 %define rel %nil
 
+%def_with gtk3
+
+# rpm-build-info gives _distro_version
+%if %_vendor == "alt" && (%_distro_version == "p9" || %_distro_version == "Sisyphus")
+%def_with vulkan
+# vkd3d depends on vulkan
+%def_with vkd3d
+%def_with faudio
+%endif
+
 Name: wine
-Version: %major.2
+Version: %major.1
 Release: alt1
 Epoch: 1
 
-Summary: WINE Is Not An Emulator - environment for running MS Windows 16/32/64 bit applications
+Summary: WINE Is Not An Emulator - environment for running Windows applications
 
 License: LGPLv2+
 Group: Emulators
@@ -19,16 +29,17 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # TODO: major in gear
 
-# Source-url: https://dl.winehq.org/wine/source/5.0/wine-%major%rel.tar.xz
+# Source-url: https://dl.winehq.org/wine/source/5.x/wine-%major%rel.tar.xz
 Source: %name-%version.tar
 # Source1-url: https://github.com/wine-staging/wine-staging/archive/v%major%rel.tar.gz
 Source1: %name-staging-%version.tar
 
 Source3: %name-%version-desktop.tar
 Source4: %name-%version-icons.tar
+Source6: %name-%version-scripts.tar
 
 # local patches
-Source5: %name-patches-%version.tar
+Source10: %name-patches-%version.tar
 
 AutoReq: yes, noperl
 
@@ -37,9 +48,11 @@ ExclusiveArch: %ix86 x86_64 aarch64
 # try build wine64 only on ALT
 %if %_vendor == "alt"
 %ifarch x86_64 aarch64
-	%def_with build64
+    %def_with build64
+    %define winearch wine64
 %else
     %def_without build64
+    %define winearch wine32
     # skip -fPIC checking (-fnoPIC need in new wine to skip DECLSPEC_HOTPATCH)
     %add_verify_elf_skiplist %_libdir/wine/*.so
     # TODO: use -fPIC for libwine.so.1
@@ -47,7 +60,12 @@ ExclusiveArch: %ix86 x86_64 aarch64
 %endif
 %else
    %def_without build64
+   %define winearch wine32
 %endif
+
+# TODO:
+%define libdir %_libdir
+%define libwinedir %libdir/wine
 
 # for wine-staging gitapply.sh script
 BuildPreReq: /proc
@@ -59,25 +77,37 @@ BuildRequires: gcc
 %endif
 
 # General dependencies
-BuildRequires: rpm-build-intro >= 1.0
+BuildRequires(pre): rpm-build-intro >= 2.1.14
 BuildRequires: util-linux flex bison
 BuildRequires: fontconfig-devel libfreetype-devel
-BuildRequires: libncurses-devel libncursesw-devel libtinfo-devel
 BuildRequires: zlib-devel libldap-devel libgnutls-devel
 BuildRequires: libxslt-devel libxml2-devel
 BuildRequires: libjpeg-devel liblcms2-devel libpng-devel libtiff-devel
 BuildRequires: libgphoto2-devel libsane-devel libcups-devel
 BuildRequires: libalsa-devel jackit-devel libgsm-devel libmpg123-devel libpulseaudio-devel
 BuildRequires: libopenal-devel libGLU-devel
-BuildRequires: libusb-devel libieee1284-devel libpcap-devel libkrb5-devel
+BuildRequires: libusb-devel libieee1284-devel libkrb5-devel
 BuildRequires: libv4l-devel
 BuildRequires: libunixODBC-devel
+BuildRequires: libnetapi-devel libpcap-devel 
 #BuildRequires: gstreamer-devel gst-plugins-devel
 # TODO: opencl-headers (autoimports now), osmesa
 
+%if_with vulkan
+BuildRequires: libvulkan-devel
+%endif
+%if_with vkd3d
+BuildRequires: vkd3d-devel >= 1.2
+%endif
+%if_with faudio
+BuildRequires: libfaudio-devel
+%endif
+
 # Staging part
+%if_with gtk3
 # GTK3 theme support: staging only
-BuildRequires: libgtk+3-devel
+BuildRequires: libgtk+3-devel libcairo-devel
+%endif
 BuildRequires: libva-devel
 
 # udev needed for udev version detect
@@ -119,22 +149,23 @@ Conflicts: wine-vanilla wine-etersoft
 Requires: cabextract
 
 # Provides/Obsoletes Fedora packages
-%define common_provobs wine-core wine-filesystem wine-common wine-desktop wine-systemd wine-sysvinit
+%define common_provobs wine-filesystem wine-desktop wine-systemd wine-sysvinit
 %define base_provobs wine-alsa wine-capi wine-cms wine-ldap wine-openal wine-pulseaudio wine-wow wine-alsa wine-capi wine-cms wine-ldap wine-openal wine-opencl wine-pulseaudio wine-twain
 %define fonts_provobs wine-fonts wine-arial-fonts wine-courier-fonts wine-fixedsys-fonts wine-marlett-fonts wine-ms-sans-serif-fonts wine-small-fonts wine-symbol-fonts wine-system-fonts wine-tahoma-fonts wine-times-new-roman-fonts wine-wingdings-fonts
 #Provides: %common_provobs %base_provobs %fonts_provobs
 Obsoletes: %common_provobs %base_provobs %fonts_provobs
 
+#BuildRequires(pre): rpm-macros-wine
 
 #=========================================================================
 
 %description
-Wine is a program which allows running Microsoft Windows programs
-(including DOS, Windows 3.x and Win32 executables) on Unix. It
-consists of a program loader which loads and executes a Microsoft
-Windows binary, and a library (called Winelib) that implements Windows
-API calls using their Unix or X11 equivalents.  The library may also
-be used for porting Win32 code into native Unix executables.
+Wine (originally an acronym for "Wine Is Not an Emulator")
+is a compatibility layer capable of running Windows applications.
+Instead of simulating internal Windows logic like a virtual machine or emulator,
+Wine translates Windows API calls into POSIX calls on-the-fly,
+eliminating the performance and memory penalties
+of other methods and allowing you to cleanly integrate Windows applications into your desktop.
 
 This build based on wine source with wine-staging project patches
 and ALT in progress patches.
@@ -191,12 +222,27 @@ Group: System/Libraries
 Conflicts: libwine-vanilla
 
 # Actually for x86_32
-Requires: glibc-pthread glibc-nss
+Requires: glibc-nss
 
 # Runtime linked
-Requires: libcups libncurses
+Requires: libcups
 Requires: libXrender libXi libXext libX11 libICE
-Requires: libssl libgnutls30 libpng16 libjpeg
+Requires: libXcomposite libXcursor libXinerama libXrandr
+Requires: libssl libgnutls30
+Requires: libpng16 libjpeg libtiff5
+Requires: libxslt
+
+%if_with gtk3
+Requires: libcairo libgtk+3
+%endif
+
+%if_with vulkan
+Requires: libvulkan1
+%endif
+
+# Recommended
+#Requires: libnetapi libunixODBC2 libpcap0.8
+
 # Linked:
 #Requires: fontconfig libfreetype
 
@@ -214,8 +260,11 @@ Group: System/Libraries
 Requires: lib%name = %EVR
 Conflicts: libwine-vanilla-gl
 
+# Runtime linked (via dl_open)
 Requires: libGL
+
 # wine-staging only
+Requires: libva
 Requires: libtxc_dxtn
 
 %description -n lib%name-gl
@@ -242,6 +291,9 @@ Obsoletes: wine-devel
 Provides: wine-devel
 Conflicts: libwine-vanilla-devel
 
+# due winegcc require
+Requires: gcc-c++
+
 %description -n lib%name-devel
 lib%name-devel contains the header files and some utilities needed to
 develop programs using lib%name.
@@ -263,7 +315,7 @@ develop programs which make use of Wine.
 
 
 %prep
-%setup -a 1 -a 5
+%setup -a 1 -a 10
 # Apply wine-staging patches
 %name-staging/patches/patchinstall.sh DESTDIR=$(pwd) --all --backend=patch
 
@@ -284,12 +336,18 @@ export CC=clang
 	--enable-win64 \
 %endif
 	--disable-tests \
+	%{subst_enable static} \
+	%{subst_with gtk3} \
 	--without-gstreamer \
 	--without-oss \
 	--without-capi \
 	--without-hal \
-        --without-mingw \
-	--with-xattr
+	--without-mingw \
+	--with-xattr \
+	%{subst_with vulkan} \
+	%{subst_with vkd3d} \
+	%{subst_with faudio} \
+	%nil
 
 %__make depend
 %make_build
@@ -297,6 +355,9 @@ export CC=clang
 
 %install
 %makeinstall_std
+
+install tools/wineapploader %buildroot%_bindir/wineapploader
+
 # unpack desktop files
 cd %buildroot%_desktopdir/
 tar xvf %SOURCE3
@@ -308,11 +369,23 @@ mkdir -p %buildroot%_iconsdir/
 cd %buildroot%_iconsdir/
 tar xvf %SOURCE4
 
+# unpack scripts files
+mkdir -p %buildroot%_bindir/
+cd %buildroot%_bindir/
+tar xvf %SOURCE6
+
 # Do not pack non english man pages yet
 rm -rf %buildroot%_mandir/*.UTF-8
 
 # Do not pack dangerous association for run windows executables
 rm -f %buildroot%_desktopdir/wine.desktop
+
+%if_disabled static
+for i in %buildroot%_libdir/wine/*.a ; do
+    [ "$i" == "%buildroot%_libdir/wine/libwinecrt0.a" ] && continue
+    rm -fv $i
+done
+%endif
 
 %files
 %doc ANNOUNCE AUTHORS LICENSE README
@@ -327,6 +400,8 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %lang(pt_BR) %doc documentation/README.pt_br
 %lang(tr) %doc documentation/README.tr
 
+%_bindir/wine_setup
+
 %if_without build64
 %_bindir/wine
 %_bindir/wine-preloader
@@ -334,6 +409,7 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %_bindir/wine64
 %_bindir/wine64-preloader
 %endif
+%_bindir/wineapploader
 
 %_bindir/regsvr32
 %_bindir/winecfg
@@ -346,7 +422,7 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %_bindir/winedbg
 %_bindir/wineboot
 %_bindir/winepath
-%_libdir/wine/*.exe.so
+%libwinedir/*.exe.so
 
 #%_initdir/wine
 #%_initdir/wine.outformat
@@ -381,43 +457,49 @@ rm -f %buildroot%_desktopdir/wine.desktop
 
 %files -n lib%name
 %doc LICENSE AUTHORS COPYING.LIB
-%_libdir/libwine*.so.*
-%dir %_libdir/wine/
-%_libdir/wine/fakedlls/
+%libdir/libwine*.so.*
+%dir %libwinedir/
+%libwinedir/fakedlls/
 
 %if_without build64
-%_libdir/wine/*.dll16.so
-%_libdir/wine/*.drv16.so
-%_libdir/wine/*.exe16.so
-%_libdir/wine/winoldap.mod16.so
-%_libdir/wine/*.vxd.so
+%libwinedir/*.dll16.so
+%libwinedir/*.drv16.so
+%libwinedir/*.exe16.so
+%libwinedir/winoldap.mod16.so
+%libwinedir/*.vxd.so
 %endif
 
-%_libdir/wine/*.com.so
-%_libdir/wine/*.cpl.so
-%_libdir/wine/*.drv.so
-%_libdir/wine/*.dll.so
-%_libdir/wine/*.acm.so
-%_libdir/wine/*.ocx.so
-%_libdir/wine/*.tlb.so
-%_libdir/wine/*.sys.so
+%libwinedir/ntdll.so
+%libwinedir/user32.so
+%libwinedir/bcrypt.so
+%libwinedir/odbc32.so
+%libwinedir/*.com.so
+%libwinedir/*.cpl.so
+%libwinedir/*.drv.so
+%libwinedir/*.dll.so
+%libwinedir/*.acm.so
+%libwinedir/*.ocx.so
+%libwinedir/*.tlb.so
+%libwinedir/*.sys.so
+%libwinedir/ksproxy.ax.so
 
 %dir %_datadir/wine/
 %_datadir/wine/wine.inf
 %_datadir/wine/winebus.inf
+%_datadir/wine/wineusb.inf
 %_datadir/wine/winehid.inf
-%_datadir/wine/l_intl.nls
+%_datadir/wine/nls/
 %_datadir/wine/fonts/
 
 # move to separate packages
-%exclude %_libdir/wine/twain*
-%exclude %_libdir/wine/d3d10.dll.so
-%exclude %_libdir/wine/d3d8.dll.so
-%exclude %_libdir/wine/d3d9.dll.so
-%exclude %_libdir/wine/d3dxof.dll.so
-%exclude %_libdir/wine/opengl32.dll.so
-%exclude %_libdir/wine/glu32.dll.so
-%exclude %_libdir/wine/wined3d.dll.so
+%exclude %libwinedir/twain*
+%exclude %libwinedir/d3d10.dll.so
+%exclude %libwinedir/d3d8.dll.so
+%exclude %libwinedir/d3d9.dll.so
+%exclude %libwinedir/d3dxof.dll.so
+%exclude %libwinedir/opengl32.dll.so
+%exclude %libwinedir/glu32.dll.so
+%exclude %libwinedir/wined3d.dll.so
 
 %files full
 
@@ -434,24 +516,23 @@ rm -f %buildroot%_desktopdir/wine.desktop
 
 
 %files -n lib%name-twain
-%_libdir/wine/twain*
-%_libdir/wine/gphoto2.ds.so
-%_libdir/wine/sane.ds.so
+%libwinedir/twain*
+%libwinedir/gphoto2.ds.so
+%libwinedir/sane.ds.so
 
 %files -n lib%name-gl
-%_libdir/wine/d3d10.dll.so
-%_libdir/wine/d3d8.dll.so
-%_libdir/wine/d3d9.dll.so
-%_libdir/wine/d3dxof.dll.so
-%_libdir/wine/opengl32.dll.so
-%_libdir/wine/glu32.dll.so
-%_libdir/wine/wined3d.dll.so
+%libwinedir/d3d10.dll.so
+%libwinedir/d3d8.dll.so
+%libwinedir/d3d9.dll.so
+%libwinedir/d3dxof.dll.so
+%libwinedir/opengl32.dll.so
+%libwinedir/glu32.dll.so
+%libwinedir/wined3d.dll.so
 
 %files -n lib%name-devel
-%doc LICENSE LICENSE.OLD
+%doc LICENSE
 %_bindir/function_grep.pl
 %_bindir/winebuild
-%_bindir/msidb
 %_bindir/wmc
 %_bindir/wrc
 %_bindir/widl
@@ -463,9 +544,9 @@ rm -f %buildroot%_desktopdir/wine.desktop
 %_bindir/msidb
 
 %_includedir/wine/
-%_libdir/lib*.so
-%_libdir/wine/lib*.def
-%_libdir/wine/libwinecrt0.a
+%libdir/lib*.so
+%libwinedir/lib*.def
+%libwinedir/libwinecrt0.a
 #%_aclocaldir/wine.m4
 
 %_man1dir/wmc.*
@@ -480,11 +561,99 @@ rm -f %buildroot%_desktopdir/wine.desktop
 
 %if_enabled static
 %files -n lib%name-devel-static
-%_libdir/wine/lib*.a
-%exclude %_libdir/wine/libwinecrt0.a
+%libwinedir/lib*.a
+%exclude %libwinedir/libwinecrt0.a
 %endif
 
 %changelog
+* Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.19.1-alt1
+- new version 5.19.1 (with rpmrb script)
+- add gcc-c++ require to devel package (due winegcc)
+- update Basealt patches to staging wine-5.19
+
+* Thu Oct 08 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.5-alt1
+- update Basealt patches to staging wine-5.18
+
+* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.4-alt1
+- add scripts/wine_setup (check and install all needed packages)
+- revert "add reg files for initial file open integration"
+- update patches to staging wine-5.18:
+ + wine.inf.in: disable decorated window for maincontroller.exe (eterbug #14662)
+ + add Office and media file associations (eterbug #14583)
+
+* Sun Oct 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.3-alt1
+- update patches to staging wine-5.18
+- add reg files for initial file open integration
+- drop Requires: glibc-pthread (we already have auto reqs for it)
+- update summary and description (ALT bug 34281)
+
+* Sat Oct 03 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.2-alt1
+- update Basealt patches
+
+* Thu Oct 01 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:5.18.1-alt3
+- Re-enabled vkd3d.
+
+* Thu Oct 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.1-alt2
+- crypt32: fix CertGetCertificateContextProperty for CERT_KEY_PROV_INFO_PROP_ID property
+
+* Mon Sep 28 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.18.1-alt1
+- new version 5.18.1 (with rpmrb script)
+- console no longer requires the curses library
+- build with vkd3d disabled (see ALT bug 39002)
+
+* Tue Sep 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.17.1-alt1
+- new version 5.17.1 (with rpmrb script)
+- add fix for dotnet install issue (eterbug #11790)
+
+* Wed Sep 09 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.16.1-alt3
+- just require libvulkan1 as all other libs
+- backport small fixes from future biarch build
+
+* Tue Sep 08 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.16.1-alt2
+- build vulkan only for p9 and Sisyphus
+
+* Sun Aug 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.16.1-alt1
+- new version 5.16.1 (with rpmrb script)
+
+* Fri Aug 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:5.12.1-alt2
+- Rebuilt with vulkan, vkd3d and faudio support (ALT bug #38810).
+
+* Thu Jul 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.12.1-alt1
+- new version 5.12.1 (with rpmrb script)
+- set strict require wine-mono 5.1.0
+
+* Thu Jul 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.10.1-alt1
+- new version 5.10.1 (with rpmrb script)
+
+* Tue May 26 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.9.1-alt1
+- new version 5.9.1 (with rpmrb script)
+
+* Sun May 10 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.8.1-alt1
+- new version 5.8.1 (with rpmrb script)
+
+* Tue May 05 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.7.1-alt1
+- new version 5.7.1 (with rpmrb script)
+- update wine-mono require to 5.0.0
+
+* Mon Mar 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.5.1-alt1
+- new version 5.5.1 (with rpmrb script)
+
+* Mon Mar 16 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.4.1-alt1
+- new version 5.4.1 (with rpmrb script)
+
+* Sun Mar 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.3.1-alt2
+- add BR: libnetapi-devel
+- add requires for detected libraries
+
+* Sun Mar 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.3.1-alt1
+- new version 5.3.1 (with rpmrb script)
+
+* Mon Feb 17 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.2.1-alt1
+- new version 5.2.1 (with rpmrb script)
+
+* Tue Feb 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.1.2-alt1
+- new version 5.1.2 (with rpmrb script)
+
 * Wed Jan 22 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.0.2-alt1
 - new version 5.0.2 (with rpmrb script)
 - wine 5.0 release
