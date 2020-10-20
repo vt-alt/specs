@@ -2,8 +2,8 @@
 %global require_libhangul_version 0.1.0
 
 Name:       ibus-hangul
-Version:    1.5.1
-Release:    alt2
+Version:    1.5.4
+Release:    alt1
 Summary:    The Hangul engine for IBus input platform
 License:    GPLv2+
 Group:      System/Libraries
@@ -17,14 +17,15 @@ Patch1:     ibus-hangul-setup-abspath.patch
 
 %add_python3_path %_datadir/%name
 BuildRequires(pre): rpm-build-python3 rpm-build-gir
-BuildRequires:  python3-devel
-BuildRequires:  gettext-devel, automake, libtool
-BuildRequires:  intltool
-BuildRequires:  libtool
-BuildRequires:  libhangul-devel >= %{require_libhangul_version}
-BuildRequires:  pkgconfig
-BuildRequires:  libibus-devel >= %{require_ibus_version}
-BuildRequires:  desktop-file-utils
+BuildRequires: libgtk+3-devel
+BuildRequires: python3-devel
+BuildRequires: gettext-devel, automake, libtool
+BuildRequires: intltool
+BuildRequires: libtool
+BuildRequires: libhangul-devel >= %{require_libhangul_version}
+BuildRequires: pkgconfig
+BuildRequires: libibus-devel >= %{require_ibus_version}
+BuildRequires: desktop-file-utils
 
 #Requires:   libibus >= %{require_ibus_version}
 #Requires:   libhangul >= %{require_libhangul_version}
@@ -65,8 +66,15 @@ desktop-file-validate ${RPM_BUILD_ROOT}%{_datadir}/applications/ibus-setup-hangu
 %{_datadir}/glib-2.0/schemas/* 
 %_desktopdir/ibus-setup-hangul.desktop
 %_iconsdir/hicolor/*/apps/*
+%_datadir/metainfo/org.freedesktop.ibus.engine.hangul.metainfo.xml
 
 %changelog
+* Fri Oct 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt1
+- New version.
+
+* Mon Apr 13 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.3-alt1
+- New version.
+
 * Wed Aug 21 2019 Anton Midyukov <antohami@altlinux.org> 1.5.1-alt2
 - rebuild with python3
 
