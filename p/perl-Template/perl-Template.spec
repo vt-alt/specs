@@ -1,18 +1,19 @@
+# altfork: https://bugzilla.altlinux.org/show_bug.cgi?id=38635
+%def_without altbugzilla
 %define _unpackaged_files_terminate_build 1
 %define dist Template-Toolkit
 Name: perl-Template
-Version: 3.007
+Version: 3.009
 Release: alt2
 
 Summary: Perl Template Toolkit
-License: GPL or Artistic
+License: GPLv2+ or Artistic-2.0
 Group: Development/Perl
 
 URL: http://www.template-toolkit.org
 Source0: http://www.cpan.org/authors/id/A/AT/ATOOMIC/%{dist}-%{version}.tar.gz
 Patch: Template-Toolkit-2.22-alt-no-apache.patch
-Patch2: Template-Toolkit-3.007-alt-initialize-variable.patch
-Patch3: Template-Toolkit-3.007-alt-remove-rel2abs.patch
+Patch2: Template-Toolkit-3.008-alt-initialize-variable.patch
 Patch4: Template-Toolkit-3.007-alt-encode-utf8.patch
 
 # Automatically added by buildreq on Sun Oct 09 2011
@@ -30,8 +31,9 @@ LaTeX, and so on.
 %setup -q -n %{dist}-%{version}
 %patch -p1
 %patch2 -p1
-%patch3 -p1
+%if_with altbugzilla
 %patch4 -p1
+%endif
 
 %build
 %perl_vendor_build TT_XS_ENABLE=y TT_XS_DEFAULT=y TT_ACCEPT=y \
@@ -69,6 +71,16 @@ LaTeX, and so on.
 	%_man1dir/ttree.*
 
 %changelog
+* Wed Sep 02 2020 Igor Vlasenko <viy@altlinux.ru> 3.009-alt2
+- restored patch2
+
+* Wed Sep 02 2020 Igor Vlasenko <viy@altlinux.ru> 3.009-alt1
+- new version
+- mcpain@'s alt bugzilla patches made optional (closes: #38635)
+
+* Mon Apr 06 2020 Igor Vlasenko <viy@altlinux.ru> 3.008-alt1
+- new version
+
 * Tue Mar 24 2020 Oleg Solovyov <mcpain@altlinux.org> 3.007-alt2
 - Fixes for ALT Linux Bugzilla:
   + do not use an uninitialized variable
