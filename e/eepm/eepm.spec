@@ -1,10 +1,10 @@
 Name: eepm
-Version: 3.2.4
+Version: 3.3.4
 Release: alt1
 
 Summary: Etersoft EPM package manager
 
-License: AGPLv3
+License: AGPL-3.0+
 Group: System/Configuration/Packaging
 Url: http://wiki.etersoft.ru/EPM
 
@@ -62,6 +62,10 @@ mkdir -p %buildroot%_sysconfdir/eepm/repack.d/
 cp repack.d/*.sh %buildroot%_sysconfdir/eepm/repack.d/
 chmod 0755 %buildroot%_sysconfdir/eepm/repack.d/*.sh
 
+mkdir -p %buildroot%_sysconfdir/eepm/prescription.d/
+cp prescription.d/*.sh %buildroot%_sysconfdir/eepm/prescription.d/
+chmod 0755 %buildroot%_sysconfdir/eepm/prescription.d/*.sh
+
 mkdir -p %buildroot%_sysconfdir/bash_completion.d/
 install -m 0644 bash_completion/serv %buildroot%_sysconfdir/bash_completion.d/serv
 ln -s serv %buildroot%_sysconfdir/bash_completion.d/cerv
@@ -81,9 +85,11 @@ rm -f %buildroot%_bindir/distr_info
 %doc README.md TODO LICENSE
 %dir %_sysconfdir/eepm/
 %dir %_sysconfdir/eepm/repack.d/
+%dir %_sysconfdir/eepm/prescription.d/
 %config(noreplace) %_sysconfdir/eepm/eepm.conf
 %config(noreplace) %_sysconfdir/eepm/serv.conf
 %config(noreplace) %_sysconfdir/eepm/repack.d/*.sh
+%config(noreplace) %_sysconfdir/eepm/prescription.d/*.sh
 %_bindir/epm*
 %_bindir/eepm
 %_bindir/upm
@@ -98,6 +104,49 @@ rm -f %buildroot%_bindir/distr_info
 %_sysconfdir/bash_completion.d/cerv
 
 %changelog
+* Fri Oct 16 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.4-alt1
+- epm: skip all args with spaces (we don't support it)
+- epm-dedup: add --direct support to use epm internal implementation
+- epm-repofix: add support for yandex and basealt
+- epm-addrepo: add support for basealt and yandex repo sites
+- epm-release_upgrade: replace etersoft-gpgkeys with alt-gpgkeys if we have not LINUX@Etersoft repo
+- epm-repo: add set command implemented via clean & change
+- epm-repack: don't intersect with source rpm package
+
+* Sun Oct 11 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.3-alt1
+- fix typo in get_task_packages
+
+* Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.2-alt1
+- mask direct in assure_exists
+- epm-repofix: mask apt-repo using
+- update tools_estrlist from estrlist package
+- epm-remove: add --skip-missed
+
+* Wed Oct 07 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.1-alt1
+- get_task_packages: add arepo packages (i586) too
+- epm-upgrade: drop devel subpackages from upgrade from a task
+- update tools_estrlist from estrlist package
+- update glibc-restore prescription
+
+* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.0-alt1
+- add epm prescription support
+- add prescription for install missed i586 packages (i586-fix)
+- add prescriptions for wine, php7, glusterfs7, glusterfs8
+- distr_info: sync with distro_info-1.3
+
+* Wed Sep 30 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.6-alt1
+- autoremove: use apt-get autoremove on ALT by default
+- epm-mark: add apt-mark support for ALT and deb based systems
+- epm-repack: add workaround for spaced paths to pkg
+- add PackageKit commands
+- zoom.sh: s/return/exit (ALT bug 39014)
+
+* Mon Aug 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.5-alt1
+- epm-repack: always use anypackage to rpm function for deb->rpm conversion
+- epm-repack: drop dir "/" and other root dir paths from a file list
+- epm-repack: improve cleanup tmp dir
+- add repack scripts for InfoWatch products
+
 * Fri Jul 24 2020 Andrey Cherepanov <cas@altlinux.org> 3.2.4-alt1
 - fix repack rules for mssql-server: remove libcrypto-devel and fix path to sysctl
 

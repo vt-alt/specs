@@ -1,12 +1,12 @@
 # NOTE: do not use clean_spec or rpmcs for this spec
 
 Name: rpm-build-altlinux-compat
-Version: 2.2.0
+Version: 2.2.2
 Release: alt1
 
 Summary: ALT Linux compatibility and extensions in rpm build
 
-License: GPL
+License: GPLv2
 Group: Development/Other
 Url: http://wiki.sisyphus.ru/devel/RpmBuildAltlinuxCompat
 
@@ -131,6 +131,14 @@ Command rpmbph from etersoft-build-utils will do it automatically.
 %endif
 
 %changelog
+* Wed Oct 07 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.2-alt1
+- distr_vendor: fix again for catching up p9 branches (ALT bug 39046)
+
+* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.1-alt1
+- fix license to GPLv2+ and add LICENSE file
+- install.sh: forbids empty distro related info
+- update distr_vendor from distro_info from distro_info package (ALT bug 39046)
+
 * Wed Sep 09 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.0-alt1
 - fix remove_repo_info macro
 - provide all packages as rpm-macros-*
