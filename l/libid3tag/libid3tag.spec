@@ -1,27 +1,35 @@
+%define _unpackaged_files_terminate_build 1
+
 %def_disable static
 
 Name: libid3tag
 Version: 0.15.1b
-Release: alt8
-
+Release: alt9
 Summary: ID3 Tag manipulation library
 Summary(ru_RU.UTF-8): Библиотека для работы с тегами ID3
-License: GPL
+License: GPL-2.0
 Group: Sound
 Url: http://mad.sourceforge.net/
-Packager: Mykola Grechukh <gns@altlinux.org>
 
-Source: http://download.sourceforge.net/%name/%name-%version.tar.bz2
+# http://download.sourceforge.net/%name/%name-%version.tar.bz2
+Source: %name-%version.tar
 Patch1: %name-0.15.0b-alt-pkgconfig.patch
 Patch2: libid3tag-0.15.1b-fix-CVE-2008-2109.patch
-Patch3: libid3tag-0.15.1b-ds-rcc.patch
-Patch4: %name-%version-alt-gcc6.patch
+
+# Patches from Debian
+Patch10: 10_a_capella.dpatch
+# CVE-2004-2779
+Patch11: 10_utf16.dpatch
+Patch12: 11_unknown_encoding.dpatch
+Patch13: gperf_size_t.patch
+
+# Patches from Gentoo
+Patch20: libid3tag-0.15.1b-file-write.patch
+Patch21: libid3tag-0.15.1b-tag.patch
 
 %{?_enable_static:BuildPreReq: glibc-devel-static}
 
-# Automatically added by buildreq on Thu Mar 04 2004
 BuildRequires: gcc-c++ gperf libstdc++-devel zlib-devel
-BuildRequires: librcc-devel
 
 %description
 %name is a library for reading and (eventually) writing ID3 tags,
@@ -33,8 +41,7 @@ both ID3v1 and the various versions of ID3v2.
 %package devel
 Summary: Development files for %name
 Group: Development/C
-PreReq: %name = %version-%release
-License: GPL
+PreReq: %name = %EVR
 
 %description devel
 This package contains development files required for packaging software
@@ -47,8 +54,7 @@ using %name library.
 %package devel-static
 Summary: Static libraries for %name
 Group: Development/C
-PreReq: %name-devel = %version-%release
-License: GPL
+PreReq: %name-devel = %EVR
 
 %description devel-static
 This package contains development libraries required for packaging
@@ -62,8 +68,13 @@ statically linked %name-based software.
 %setup
 %patch1 -p1
 %patch2 -p0
-%patch3 -p1
-%patch4 -p2
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch20 -p1
+%patch21 -p1
+
 touch NEWS AUTHORS ChangeLog
 
 %build
@@ -79,6 +90,7 @@ touch NEWS AUTHORS ChangeLog
 %makeinstall_std
 
 %files
+%doc COPYING
 %doc CHANGES README CREDITS COPYRIGHT
 %_libdir/*.so.*
 
@@ -93,6 +105,9 @@ touch NEWS AUTHORS ChangeLog
 %endif
 
 %changelog
+* Mon Oct 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.15.1b-alt9
+- Applied patches from Debian and Gentoo (Fixes: CVE-2004-2779).
+
 * Thu Jul 13 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 0.15.1b-alt8
 - Fixed build with gcc-6
 
