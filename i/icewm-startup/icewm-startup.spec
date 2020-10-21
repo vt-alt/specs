@@ -1,11 +1,10 @@
-%def_without p7_backport
 %def_without xtdesktop
 %def_without desklaunch
 %def_without kde3kdesktop
 %def_without ivman
 Name: icewm-startup
-Version: 0.20
-Release: alt3
+Version: 0.21
+Release: alt1
 
 Summary: simple pluggable IceWM autostart manager
 
@@ -266,12 +265,8 @@ update-menus plug-in для менеджера автозапуска прогр
 %package networkmanager
 Group: Graphical desktop/Icewm
 Summary: start gnome networkmanager applet
-%if_with p7_backport
-Requires: %name NetworkManager-gnome polkit-gnome
-%else
 Requires: %name ModemManager NetworkManager-applet-gtk
 Requires: NetworkManager-wifi usb-modeswitch
-%endif
 AutoReq: no
 
 %description networkmanager
@@ -360,7 +355,7 @@ EOF
 
 # Startup
 
-%__mkdir_p %buildroot/%icewmconfdir/startup.d
+mkdir -p %buildroot/%icewmconfdir/startup.d
 cat <<'EOF' > %buildroot/%icewmconfdir/startup
 #!/bin/sh
 
@@ -389,7 +384,7 @@ EOF
 
 # Shutdown
 
-%__mkdir_p %buildroot/%icewmconfdir/shutdown.d
+mkdir -p %buildroot/%icewmconfdir/shutdown.d
 cat <<'EOF' > %buildroot/%icewmconfdir/shutdown
 #!/bin/sh
 
@@ -504,7 +499,6 @@ EOF
 
 cat <<EOF > %buildroot/%icewmconfdir/startup.d/080-networkmanager
 #!/bin/sh
-/usr/libexec/polkit-1/polkit-gnome-authentication-agent-1&
 /usr/bin/nm-applet&
 EOF
 
@@ -644,6 +638,9 @@ fi
 %config %icewmconfdir/shutdown.d/000-simple-sound
 
 %changelog
+* Sat Sep 05 2020 Igor Vlasenko <viy@altlinux.ru> 0.21-alt1
+- bugfix: launch nm-applet properly w/o polkit-gnome
+
 * Tue Oct 15 2019 Igor Vlasenko <viy@altlinux.ru> 0.20-alt3
 - fixed requires for notification-daemon
 
