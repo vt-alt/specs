@@ -1,7 +1,7 @@
 
 Name: phpipam
-Version: 1.40.000
-Release: alt3
+Version: 1.42.027
+Release: alt1
 Summary: PHP-based virtual machine control tool
 Group: Networking/WWW
 License: GPLv3
@@ -117,6 +117,14 @@ rm -rf %buildroot%webserver_webappsdir/%name/functions/GoogleAuthenticator/tests
 %config(noreplace) %apache2_extra_available/%name.conf
 
 %changelog
+* Mon Oct 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.42.027-alt1
+- snapshot of 1.4 branch 0c66d2335a9dd13006c83ed64ae565a4a3cb7f0c
+- Update jQuery to address three CVE Vulnerabilities
+- Fixes:
+  + CVE-2020-11022
+  + CVE-2020-11023
+  + CVE-2019-11358
+
 * Fri Jun 05 2020 Alexey Shabalin <shaba@altlinux.org> 1.40.000-alt3
 - snapshot of 1.4 branch e4ae4ce1dae77125b7878b3cdc2f72f24f841ce8
 
