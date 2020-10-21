@@ -13,7 +13,7 @@
 %endif
 
 Name: bacula9
-Version: 9.6.5
+Version: 9.6.6
 Release: alt1
 
 License: AGPL-3.0
@@ -884,6 +884,9 @@ fi
 %endif
 
 %changelog
+* Mon Oct 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.6-alt1
+- Updated to upstream version 9.6.6.
+
 * Thu Aug 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.5-alt1
 - Updated to upstream version 9.6.5.
 
