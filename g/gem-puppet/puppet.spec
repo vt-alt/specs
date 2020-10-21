@@ -2,7 +2,7 @@
 %define        confdir        ext/redhat
 
 Name:          gem-%pkgname
-Version:       6.18.0
+Version:       6.19.0
 Release:       alt1
 Summary:       A network tool for managing many disparate systems
 Group:         Development/Ruby
@@ -181,6 +181,9 @@ getent group puppet >/dev/null || %_sbindir/groupadd -r puppet
 %ruby_gemdocdir
 
 %changelog
+* Tue Oct 20 2020 Andrey Cherepanov <cas@altlinux.org> 6.19.0-alt1
+- New version.
+
 * Mon Aug 24 2020 Andrey Cherepanov <cas@altlinux.org> 6.18.0-alt1
 - New version.
 
