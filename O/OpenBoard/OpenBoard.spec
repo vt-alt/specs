@@ -3,8 +3,8 @@
 
 %define dest_dir %_libdir/OpenBoard
 Name: OpenBoard
-Version: 1.5.3
-Release: alt1
+Version: 1.5.4
+Release: alt0.1.p9
 Summary: Interactive whiteboard for schools and universities
 License: GPL-3.0+
 Group: Education
@@ -20,8 +20,9 @@ Patch1: openboard-1.3.4-XPDFRenderer_with_poppler.patch
 Patch3: openboard-gcc8.patch
 Patch4: openboard-poppler-0.71.patch
 Patch5: openboard-poppler-0.72.patch
+Patch6: openboard-poppler-0.83.patch
 # fix build with Qt5 >= 5.12
-Patch6: openboard-1.4.1-fix-build-with-qt-5.12.patch
+Patch10: openboard-1.4.1-fix-build-with-qt-5.12.patch
 
 BuildRequires: gcc-c++ libgomp-devel
 BuildRequires: desktop-file-utils
@@ -67,11 +68,15 @@ Interactive whiteboard for schools and universities.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
+#patch6 -p1
+#patch10 -p1
 
 # remove unwanted and nonfree libraries
 sed -i -e 's|-lfdk-aac ||' src/podcast/podcast.pri
 sed -i -e 's|-lx264 ||' src/podcast/podcast.pri
+
+# fix build with poppler 0.83
+sed -i -e 's,std=c++11,std=c++14,g' src/podcast/podcast.pri
 
 %build
 %_qt5_bindir/lrelease -removeidentical %name.pro
@@ -154,6 +159,12 @@ cp -R resources/customizations %buildroot%dest_dir/
 %_bindir/%name
 
 %changelog
+* Tue Oct 20 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt0.1.p9
+- Backport to p9 branch.
+
+* Sat Mar 28 2020 Anton Midyukov <antohami@altlinux.org> 1.5.4-alt1
+- new version 1.5.4
+
 * Fri Aug 16 2019 Anton Midyukov <antohami@altlinux.org> 1.5.3-alt1
 - new version 1.5.3
 
