@@ -1,8 +1,8 @@
 %global myname make-initrd
 
 Name: make-initrd
-Version: 2.9.0
-Release: alt1
+Version: 2.11.0
+Release: alt3
 
 Summary: Creates an initramfs image
 License: GPL-3.0
@@ -120,6 +120,8 @@ Summary: plymouth module for %name
 Group: System/Base
 Requires: %name = %version-%release
 Requires: plymouth
+Requires: plymouth-plugin-label
+Requires: fonts-ttf-dejavu
 AutoReq: noshell, noshebang
 
 %description plymouth
@@ -178,7 +180,6 @@ fi
 %_datadir/%myname
 %_man1dir/*
 /lib/initrd
-%_prefix/libexec/%myname
 %exclude %_datadir/%myname/features/devmapper
 %exclude %_datadir/%myname/features/lvm
 %exclude %_datadir/%myname/features/luks
@@ -218,6 +219,46 @@ fi
 %endif
 
 %changelog
+* Wed Oct 07 2020 Alexey Gladkov <legion@altlinux.ru> 2.11.0-alt3
+- Utilities:
+  + initrd-put: Properly handle the situation when the copy_file_range is not implemented
+
+* Tue Oct 06 2020 Alexey Gladkov <legion@altlinux.ru> 2.11.0-alt2
+- Feature plymouth:
+  + Add missing rpm dependencies
+- Utilities:
+  + initrd-put: Fix handling of previous directories
+
+* Mon Oct 05 2020 Alexey Gladkov <legion@altlinux.ru> 2.11.0-alt1
+- Feature luks:
+  + Decrypt using plymouth if present (thx Oleg Solovyov) (ALT#38934, ALT#34634)
+  + Run luks handler after mountdev
+- Feature multipath:
+  + Add service file and multipathd (ALT#38461)
+- Feature plymouth:
+  + Add missing label plugin (thx Oleg Solovyov)
+  + Include fonts (thx Oleg Solovyov)
+- Runtime:
+  + Add rdlog=console boot parameter to send all log messages to the /dev/console
+  + Check bootable conditions after each uevend handler
+- Misc:
+  + Replace initrd-cp by initrd-put
+
+* Thu Sep 10 2020 Alexey Gladkov <legion@altlinux.ru> 2.10.0-alt1
+- New feature:
+  + Add lkrg feature to preload lkrg module (thx Vladimir D. Seleznev)
+- Feature fsck:
+  + Show more friendly message
+  + Do not check swap
+- Feature network:
+  + Fix synchronization service
+  + Fix generation network config from cmdline
+- Feature pipeline:
+  + Show an error if the previous step is used which did not exist
+  + Run handlers as separate programs
+- Feature guestfs:
+  + Add file utility (thx Mikhail Gordeev)
+
 * Mon Jul 27 2020 Alexey Gladkov <legion@altlinux.ru> 2.9.0-alt1
 - Feature changes:
   + guestfs: Add mke2fs utility
