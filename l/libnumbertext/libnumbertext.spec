@@ -1,5 +1,5 @@
 Name: libnumbertext
-Version: 1.0.3
+Version: 1.0.6
 Release: alt1
 Summary: Number to number name and money text conversion library
 Group: Development/C++
@@ -39,7 +39,7 @@ make check
 rm -f $RPM_BUILD_ROOT/%_libdir/*.la
 
 %files
-%doc AUTHORS ChangeLog README NEWS THANKS
+%doc AUTHORS ChangeLog README* NEWS THANKS
 %_bindir/spellout
 %_libdir/*.so.*
 %_datadir/libnumbertext
@@ -50,6 +50,9 @@ rm -f $RPM_BUILD_ROOT/%_libdir/*.la
 %_libdir/*.so
 
 %changelog
+* Wed Sep 23 2020 Fr. Br. George <george@altlinux.ru> 1.0.6-alt1
+- Autobuild version bump to 1.0.6
+
 * Mon Aug 20 2018 Fr. Br. George <george@altlinux.ru> 1.0.3-alt1
 - Autobuild version bump to 1.0.3
 
