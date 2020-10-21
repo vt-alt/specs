@@ -1,44 +1,19 @@
-# -*- coding: utf-8; mode: rpm-spec -*-
-# $Id: w3m.spec,v 1.2 2006/02/14 08:39:36 eugene Exp $
+%define _unpackaged_files_terminate_build 1
 
 Name: w3m
 Version: 0.5.3
-Release: alt2
+Release: alt3.git20200502
 License: BSD
 Group: Networking/WWW
 Summary: w3m is a pager with Web browsing capability
 Url: http://w3m.sourceforge.net/
 
-Source: %name-%version.tar.gz
+# https://github.com/tats/w3m.git
+Source: %name-%version.tar
+
 Patch10: %name-0.5.3-alt-DSO.patch
-Patch11: %name-0.5.2-alt-glibc-2.16.patch
-Patch12: %name-0.5.2-alt-libgc-7.2d.patch
-Patch13: w3m-0.5.3-alt-perl522.patch
 
 #### FEDORA PATCHES ############################
-
-# commented in favor of Patch12: %name-0.5.2-alt-libgc-7.2d.patch
-# Change for function call GC_get_warn_proc()
-# https://sourceforge.net/tracker/?func=detail&aid=3595876&group_id=39518&atid=425441
-#Patch0:  %{name}-rh555467_FTBFS.patch
-
-# commented in favor of Patch10: %name-0.5.3-alt-DSO.patch
-# w3mimgdisplay need to be linked with -lX11 to build against gcc 4.5
-# https://sourceforge.net/tracker/?func=detail&aid=3126430&group_id=39518&atid=425441
-#Patch1:  %{name}-rh566101_Fix-DSO-X11.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=604864
-# verify SSL certificates by default. SSL support really is pointless
-# without doing that. Also disable use of SSLv2 by default as it's 
-# insecure, deprecated, dead since last century.
-# https://sourceforge.net/tracker/?func=detail&aid=3595801&group_id=39518&atid=425441
-Patch2:  %{name}-0.5.2-ssl_verify_server_on.patch
-
-# commented in favor of Patch11: %name-0.5.2-alt-glibc-2.16.patch
-# Now glib-2.14 owns structure name file_handle
-# https://sourceforge.net/tracker/?func=detail&aid=3595814&group_id=39518&atid=425441
-#Patch3:  %{name}-0.5.2-glibc2.14-fix_file_handle_error.patch
-
 # Resolves a bug of when given following command w3m crashes
 # w3m https://www.example.coma
 # but following command works fine by giving can't load error
@@ -46,18 +21,8 @@ Patch2:  %{name}-0.5.2-ssl_verify_server_on.patch
 # https://sourceforge.net/tracker/?func=detail&aid=3595167&group_id=39518&atid=425441
 Patch4:  %{name}-rh707994-fix-https-segfault.patch
 
-#https://sourceforge.net/tracker/?group_id=39518&atid=425441
-Patch5:  %{name}-0.5.3-parallel-make.patch
-
-#https://bugzilla.redhat.com/show_bug.cgi?id=1037380
-Patch6:  %{name}-0.5.3-format-security.patch
-
 #https://bugzilla.redhat.com/show_bug.cgi?id=1038009
 Patch7:  %{name}-0.5.3-FTBFS-sys-errlist.patch
-
-
-
-Packager: Eugene Vlasov <eugvv@altlinux.ru>
 
 %add_findreq_skiplist %_libexecdir/w3m/cgi-bin/w3mhelp.cgi
 
@@ -67,7 +32,6 @@ BuildRequires: lynx
 BuildRequires: libtinfo-devel
 # JP support, currently in autoimports
 #BuildRequires:  nkf
-
 
 %description
 w3m is a pager with WWW capability. It IS a pager, but it can be
@@ -80,35 +44,24 @@ used as a text-mode WWW browser with following features:
 * You can change URL description like 'http://hogege.net' in plain text
   into link to that URL.
 
-
 %package img
 Summary: A helper program to display the inline images for w3m
 Group: Networking/WWW
 Requires: ImageMagick
-Requires: w3m = %version-%release
+Requires: w3m = %EVR
 
 %description img
 w3m-img package provides a helper program for w3m to display the inline
 images on the terminal emulator in X Window System environments and the
 linux framebuffer.
 
-
 %prep
-%setup -q
+%setup
 #  fedora patches
-#patch0 -p0
-#patch1 -p0
-%patch2 -p1
-#patch3 -p1
 %patch4 -p0
-%patch5 -p1
-%patch6 -p1
 %patch7 -p1
 # alt patches
 %patch10 -p2
-%patch11 -p2
-%patch12 -p2
-%patch13 -p1
 
 %build
 %add_optflags -I%_includedir/gc
@@ -130,9 +83,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %doc doc/README* doc/*.html doc/menu.* doc/keymap.* doc/HISTORY
 %doc *_en.html NEWS TODO
 %_bindir/w3m*
-%_man1dir/w3m.1.*
+%_man1dir/w3m.1*
 %_man1dir/w3mman.1*
-%_mandir/ja/man1/w3m.1.*
+%_mandir/de/man1/w3m.1*
+%_mandir/de/man1/w3mman.1*
+%_mandir/ja/man1/w3m.1*
 %_datadir/w3m/
 %_libexecdir/w3m/
 %exclude %_libexecdir/w3m/w3mimgdisplay
@@ -141,6 +96,16 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %_libexecdir/w3m/w3mimgdisplay
 
 %changelog
+* Tue Oct 20 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.5.3-alt3.git20200502
+- Updated to snapshot from upstream (Fixes: CVE-2016-9422, CVE-2016-9423,
+  CVE-2016-9424, CVE-2016-9425, CVE-2016-9426, CVE-2016-9428, CVE-2016-9429,
+  CVE-2016-9430, CVE-2016-9431, CVE-2016-9432, CVE-2016-9433, CVE-2016-9434,
+  CVE-2016-9435, CVE-2016-9436, CVE-2016-9437, CVE-2016-9438, CVE-2016-9439,
+  CVE-2016-9440, CVE-2016-9441, CVE-2016-9442, CVE-2016-9443, CVE-2016-9622,
+  CVE-2016-9623, CVE-2016-9624, CVE-2016-9625, CVE-2016-9626, CVE-2016-9627,
+  CVE-2016-9628, CVE-2016-9629, CVE-2016-9630, CVE-2016-9631, CVE-2016-9632,
+  CVE-2016-9633, CVE-2018-6196, CVE-2018-6197, CVE-2018-6198).
+
 * Tue Sep 25 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.5.3-alt2
 - NMU: updated build dependencies.
 
