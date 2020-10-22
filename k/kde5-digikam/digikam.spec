@@ -3,6 +3,8 @@
 
 %define opencv_ver %{get_version libopencv-devel}
 
+# Debian abandon libjasper
+%def_disable jasper
 %def_disable baloo
 %def_enable mysql
 %_K5if_ver_gteq %ubt_id M90
@@ -18,16 +20,16 @@
 
 %define rname digikam
 %define label digiKam
-%define sover 6
+Name: kde5-%rname
+%define lname lib%name
+Version: 7.1.0
+Release: alt1
+%K5init %{?_enable_obsolete_kde4:no_altplace}
+
+%define sover %version
 %define libdigikamdatabase libdigikamdatabase%sover
 %define libdigikamcore libdigikamcore%sover
 %define libdigikamgui libdigikamgui%sover
-
-Name: kde5-%rname
-%define lname lib%name
-Version: 6.4.0
-Release: alt4
-%K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Summary: digiKam is an advanced digital photo management application for linux
 License: GPLv2+
@@ -55,8 +57,10 @@ BuildRequires(pre): rpm-build-kf5 rpm-build-ubt libopencv-devel
 #BuildRequires: doxygen eigen3 extra-cmake-modules flex git-core graphviz kde4-marble-devel kde5-kcalcore-devel kde5-kcontacts-devel kde5-libkipi-devel kde5-libksane-devel kde5-pimlibs-devel kf5-kdelibs4support-devel kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kfilemetadata-devel kf5-ki18n-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmodels-devel kf5-knotifyconfig-devel kf5-sonnet-devel kf5-threadweaver-devel libXres-devel libexiv2-devel libexpat-devel libgomp-devel libgphoto2-devel libjasper-devel libjpeg-devel liblcms2-devel liblensfun-devel liblqr-devel libopencv-devel libtiff-devel libusb-devel python-module-google python3-dev qt4-dbus qt5-multimedia-devel qt5-webkit-devel qt5-x11extras-devel rpm-build-ruby sqlite3 zlib-devel-static
 BuildRequires: doxygen eigen3 extra-cmake-modules flex graphviz
 BuildRequires: qt5-multimedia-devel qt5-webengine-devel qt5-x11extras-devel qt5-xmlpatterns-devel
-BuildRequires: libqtav-devel libx265-devel
-BuildRequires: libXres-devel libexiv2-devel libexpat-devel libgomp-devel libgphoto2-devel libjasper-devel libjpeg-devel libpng-devel
+BuildRequires: libx265-devel
+BuildRequires: libXres-devel libexiv2-devel libexpat-devel libgomp-devel libgphoto2-devel libjpeg-devel libpng-devel
+%{?_enable_jasper:BuildRequires: libjasper-devel}
+BuildRequires: libqtav-devel
 BuildRequires: liblcms2-devel liblensfun-devel liblqr-devel libtiff-devel libusb-devel libtbb-devel libxml2-devel libxslt-devel
 BuildRequires: libEGL-devel libGL-devel libGLU-devel
 BuildRequires: libImageMagick-devel
@@ -64,7 +68,8 @@ BuildRequires: sqlite3 zlib-devel
 BuildRequires: kde5-marble-devel
 BuildRequires: kde5-akonadi-devel kde5-akonadi-mime-devel kde5-kcalcore-devel kde5-kcontacts-devel kde5-kmime-devel kde5-kcalcore-devel
 BuildRequires: kde5-libkipi-devel kde5-libksane-devel kde5-akonadi-contacts-devel
-BuildRequires: kf5-kdelibs4support-devel kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kfilemetadata-devel kf5-ki18n-devel kf5-kinit-devel
+BuildRequires: kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kfilemetadata-devel kf5-ki18n-devel kf5-kinit-devel
+BuildRequires: kf5-kiconthemes-devel kf5-knotifications-devel
 BuildRequires: kf5-kio-devel kf5-kitemmodels-devel kf5-knotifyconfig-devel kf5-sonnet-devel kf5-threadweaver-devel
 %if_enabled mysql
 BuildRequires: libmysqlclient-devel
@@ -80,13 +85,13 @@ Source0: %rname-%version.tar
 Source1: po.tar
 Source2: doc.tar
 Source3: doc-translated.tar
+#
+Source6: CMakeLists.txt
+#
 Source10: mysql_install_db
 # ALT
 Patch100: alt-libraw-aarch64.patch
-Patch101: alt-exiv2-req.patch
-Patch102: alt-own-mysql-install-db.patch
-Patch103: debian-opencv-4.2-compat.patch
-Patch104: alt-qt5.15.patch
+Patch101: alt-own-mysql-install-db.patch
 
 %description
 DigiKam is an advanced digital photo management application for KDE.
@@ -140,7 +145,7 @@ Summary: A Photo Management Application for KDE
 Requires: %name-common = %version-%release
 BuildArch: noarch
 %description data
-DigiKam is an advanced digital photo management application for KDE.
+%label is an advanced digital photo management application for KDE.
 Photos can be collected into albums which can be sorted chronologically,
 by directory layout or by custom collections.
 DigiKam also provides tagging functionality. Images can be tagged despite of
@@ -153,7 +158,7 @@ DigiKam also includes tools like Image Editor, to modify photos using plugins
 such as red eye correction or Gamma correction, exif management,...
 Light Table to make artistic photos and an external image editor such
 as Showfoto.
-DigiKam also uses KIPI plugins (KDE Image Plugin Interface) to increase
+%label also uses KIPI plugins (KDE Image Plugin Interface) to increase
 its functionalities.
 
 %package devel
@@ -163,12 +168,13 @@ Summary: Development files for %label
 Development files for %label.
 
 %prep
-%setup -n %rname-%version  -a1 -a2 -a3
+%setup -n %rname-%version -c -a1 -a2 -a3
+mv %rname-%version core
+install -m 0644 %SOURCE6 ./
+pushd core
 %patch100 -p1
 %patch101 -p1
-%patch102 -p1
-%patch103 -p2
-%patch104 -p1
+popd
 
 # change double to qreal for casting on arm
 #find -type f -name \*.cpp | \
@@ -185,24 +191,25 @@ Development files for %label.
 rm -rf doc-translated/sv/
 sed -i '/add_subdirectory.*sv.*/d' doc-translated/CMakeLists.txt
 
-cat >> CMakeLists.txt <<__EOF__
-find_package(KF5I18n CONFIG REQUIRED)
-ki18n_install(po)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS DocTools)
-ECM_OPTIONAL_ADD_SUBDIRECTORY(doc)
-ECM_OPTIONAL_ADD_SUBDIRECTORY(doc-translated)
-__EOF__
+#cat >> CMakeLists.txt <<__EOF__
+#find_package(KF5I18n CONFIG REQUIRED)
+#ki18n_install(po)
+#find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS DocTools)
+#ECM_OPTIONAL_ADD_SUBDIRECTORY(doc)
+#ECM_OPTIONAL_ADD_SUBDIRECTORY(doc-translated)
+#__EOF__
 
-find -type f -name CMakeLists.txt -o -name \*Target.cmake | \
-while read f ; do
-    sed -i '/^set_target_properties.*digikam.*SOVERSION.*DIGIKAM_VERSION_SHORT/s|\(SOVERSION.*\)DIGIKAM_VERSION_SHORT}|\1DIGIKAM_MAJOR_VERSION}|' $f
-%if_disabled obsolete_kde4
-    sed -i 's|${DATA_INSTALL_DIR}/digikam|${KDE_INSTALL_DATADIR_KF5}/digikam|' $f
-%endif
-done
+#find -type f -name CMakeLists.txt -o -name \*Target.cmake | \
+#while read f ; do
+#    :
+#    sed -i '/^set_target_properties.*digikam.*SOVERSION.*DIGIKAM_VERSION_SHORT/s|\(SOVERSION.*\)DIGIKAM_VERSION_SHORT}|\1DIGIKAM_MAJOR_VERSION}|' $f
+#%if_disabled obsolete_kde4
+#    sed -i 's|${DATA_INSTALL_DIR}/digikam|${KDE_INSTALL_DATADIR_KF5}/digikam|' $f
+#%endif
+#done
 
 %ifarch armh
-sed -i '/set(HAVE_OPENGL TRUE)/ s,TRUE,FALSE,' CMakeLists.txt
+sed -i '/set(HAVE_OPENGL TRUE)/ s,TRUE,FALSE,' core/CMakeLists.txt
 %endif
 
 %build
@@ -214,6 +221,7 @@ sed -i '/set(HAVE_OPENGL TRUE)/ s,TRUE,FALSE,' CMakeLists.txt
     -DENABLE_INTERNALMYSQL=%{?_enable_mysql:ON}%{!_enable_mysql:OFF} \
     -DENABLE_MYSQLSUPPORT=%{?_enable_mysql:ON}%{!_enable_mysql:OFF} \
     -DENABLE_KFILEMETADATASUPPORT=%{?_enable_baloo:ON}%{!?_enable_baloo:OFF} \
+    -DENABLE_APPSTYLES=ON \
     -DBUILD_TESTING=OFF \
     -DENABLE_OPENCV3=%{?_enable_opencv3:ON}%{!?_enable_opencv3:OFF} \
     #
@@ -305,6 +313,12 @@ rm -rf %buildroot/%_K5doc/*/kipi-plugins
 %_K5lib/libdigikamgui.so.*
 
 %changelog
+* Tue Oct 20 2020 Sergey V Turchin <zerg@altlinux.org> 7.1.0-alt1
+- new version
+
+* Tue Oct 06 2020 Sergey V Turchin <zerg@altlinux.org> 6.4.0-alt5
+- build without jasper
+
 * Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 6.4.0-alt4
 - fix to build with Qt-5.15
 
