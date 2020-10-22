@@ -1,4 +1,4 @@
-%define git_version 2d095e947a02261ce61424021bb43bd3022d35cb
+%define git_version 2f3caa3b8b3d5c5f2719a1e9d8e7deea5ae1a5c6
 %define _unpackaged_files_terminate_build 1
 
 %def_with ocf
@@ -42,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.11
+Version: 14.2.12
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1542,6 +1542,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 21 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.12-alt1
+- 14.2.12
+
 * Thu Aug 13 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.11-alt1
 - 14.2.11
 
