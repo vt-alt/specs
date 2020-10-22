@@ -3,29 +3,30 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 0.23
-Release: alt1.2.1.1
+Version: 1.1.1
+Release: alt1
 Summary: implements a XML/HTML/XHTML Markup safe string for Python
 
 Group: Development/Python
-License: GPL
+License: BSD-3-Clause
 Url: http://pypi.python.org/pypi/MarkupSafe
 
-Source: %name-%version.tar
+Source: %oname-%version.tar
 Packager: Vladimir Lettiev <crux@altlinux.ru>
 
-# Automatically added by buildreq on Thu Jan 28 2016 (-bi)
-# optimized out: elfutils python-base python-devel python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-unittest python3 python3-base
-BuildRequires: python-module-setuptools python3-devel python3-module-setuptools rpm-build-python3
-
-#BuildRequires: python-module-setuptools
+BuildRequires(pre): rpm-build-python
+BuildRequires: python-module-setuptools
 %if_with python3
 BuildRequires(pre): rpm-build-python3
-#BuildRequires: python3-devel python3-module-distribute
+BuildRequires: python3-devel python3-module-setuptools
 %endif
 
 %description
-%summary
+MarkupSafe implements a text object that escapes characters so it is
+safe to use in HTML and XML. Characters that have special meanings are
+replaced so that they display as the actual characters. This mitigates
+injection attacks, meaning untrusted user input can safely be displayed
+on a page.
 
 %if_with python3
 %package -n python3-module-%oname
@@ -33,17 +34,11 @@ Summary: implements a XML/HTML/XHTML Markup safe string for Python 3
 Group: Development/Python3
 
 %description -n python3-module-%oname
-%summary
-
-%package -n python3-module-%oname-tests
-Summary: Tests for MarkupSafe (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-tests
-%summary
-
-This package contains tests for MarkupSafe.
+MarkupSafe implements a text object that escapes characters so it is
+safe to use in HTML and XML. Characters that have special meanings are
+replaced so that they display as the actual characters. This mitigates
+injection attacks, meaning untrusted user input can safely be displayed
+on a page.
 %endif
 
 %package tests
@@ -57,7 +52,7 @@ Requires: %name = %version-%release
 This package contains tests for MarkupSafe.
 
 %prep
-%setup -q
+%setup -q -n %oname-%version
 %if_with python3
 rm -rf ../python3
 cp -a . ../python3
@@ -80,27 +75,23 @@ popd
 %endif
 
 %files
+%doc README.rst
 %python_sitelibdir/markupsafe
-%exclude %python_sitelibdir/markupsafe/tests.*
 %python_sitelibdir/MarkupSafe-%version-py?.?.egg-info
-%doc AUTHORS LICENSE README.rst
-
-%files tests
-%python_sitelibdir/markupsafe/tests.*
 
 %if_with python3
 %files -n python3-module-%oname
-%doc AUTHORS LICENSE README.rst
+%doc README.rst
 %python3_sitelibdir/*
-%exclude %python3_sitelibdir/*/__pycache__/tests.*
-%exclude %python3_sitelibdir/*/tests.*
-
-%files -n python3-module-%oname-tests
-%python3_sitelibdir/*/__pycache__/tests.*
-%python3_sitelibdir/*/tests.*
 %endif
 
 %changelog
+* Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 1.1.1-alt1
+- New version.
+- Fix License tag according upstream and SPDX.
+- Build from upstream tag.
+- Do not package tests.
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.23-alt1.2.1.1
 - (NMU) Rebuilt with python-3.6.4.
 

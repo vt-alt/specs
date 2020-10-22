@@ -3,16 +3,15 @@
 %def_with python3
 
 Name: python-module-%oname
-Version: 0.24
-Release: alt1.git20140328.2
+Version: 1.1.0
+Release: alt1
 Summary: Various helpers to pass trusted data to untrusted environments and back
-License: BSD
+License: BSD-3-Clause
 Group: Development/Python
 Url: https://pypi.python.org/pypi/itsdangerous/
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
 
 # https://github.com/mitsuhiko/itsdangerous.git
-Source: %name-%version.tar
+Source: %oname-%version.tar
 BuildArch: noarch
 
 BuildPreReq: python-devel python-module-setuptools
@@ -40,7 +39,7 @@ Various helpers to pass data to untrusted environments and to get it
 back safe and sound.
 
 %prep
-%setup
+%setup -n %oname-%version
 
 %if_with python3
 cp -fR . ../python3
@@ -65,16 +64,21 @@ popd
 %endif
 
 %files
-%doc CHANGES README docs/*.rst
+%doc README.rst docs/*.rst
 %python_sitelibdir/*
 
 %if_with python3
 %files -n python3-module-%oname
-%doc CHANGES README docs/*.rst
+%doc README.rst docs/*.rst
 %python3_sitelibdir/*
 %endif
 
 %changelog
+* Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1
+- New version.
+- Fix License tag according to SPDX.
+- Build from upstream tag.
+
 * Wed May 16 2018 Andrey Bychkov <mrdrew@altlinux.org> 0.24-alt1.git20140328.2
 - (NMU) rebuild with python3.6
 

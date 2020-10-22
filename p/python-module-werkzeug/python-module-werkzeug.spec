@@ -5,15 +5,15 @@
 
 Summary: Werkzeug is one of the most advanced WSGI utility modules
 Name: python-module-%oname
-Version: 0.15.5
+Version: 0.16.1
 Release: alt1
-License: BSD
+License: BSD-3-Clause
 Group: Development/Python
 BuildArch: noarch
 URL: http://werkzeug.pocoo.org/
 
 # http://github.com/mitsuhiko/werkzeug.git
-Source: %name-%version.tar
+Source: %oname-%version.tar
 
 BuildRequires: python-module-pytest
 %if_with python3
@@ -52,7 +52,7 @@ handling requests and leaves all that up to the developer.
 %endif
 
 %prep
-%setup
+%setup -n %oname-%version
 
 %if_with python3
 cp -fR . ../python3
@@ -96,6 +96,11 @@ popd
 %endif
 
 %changelog
+* Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 0.16.1-alt1
+- New version.
+- Fix License tag according SPDX.
+- Build from upstream tag.
+
 * Fri Aug 30 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.15.5-alt1
 - Version updated to 0.15.5
 

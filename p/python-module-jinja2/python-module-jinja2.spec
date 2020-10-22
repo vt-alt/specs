@@ -1,11 +1,11 @@
 %define oname jinja2
 
-%def_with doc
+%def_without doc
 %def_with python3
 %def_disable check
 
 Name: python-module-%oname
-Version: 2.10
+Version: 2.11.2
 Release: alt1
 
 Summary: The new and improved version of a small but fast template engine
@@ -50,7 +50,6 @@ inspired non-XML syntax but supports inline expressions and an optional
 sandboxed environment.
 %endif
 
-%if_with doc
 %package doc
 Summary: Documentation for Jinja2
 Group: Development/Documentation
@@ -72,7 +71,6 @@ inspired non-XML syntax but supports inline expressions and an optional
 sandboxed environment.
 
 This package contains pickles for Jinja2.
-%endif
 
 %prep
 %setup
@@ -113,7 +111,7 @@ cp -fR docs/_build/pickle %buildroot%python_sitelibdir_noarch/jinja2/
 make test
 
 %files
-%doc AUTHORS CHANGES.rst
+%doc CHANGES.rst
 %python_sitelibdir_noarch/jinja2/
 %python_sitelibdir_noarch/*.egg-info
 %if_with doc
@@ -132,12 +130,21 @@ make test
 
 %if_with python3
 %files -n python3-module-%oname
-%doc AUTHORS CHANGES.rst
+%doc CHANGES.rst
 %python3_sitelibdir_noarch/jinja2/
 %python3_sitelibdir_noarch/*.egg-info
 %endif
 
 %changelog
+* Mon Jul 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.11.2-alt1
+- 2.11.2 released
+
+* Fri Nov 29 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.10.3-alt1
+- 2.10.3 released
+
+* Mon Sep 09 2019 Anton Farygin <rider@altlinux.ru> 2.10.1-alt1
+- 2.10.1 (Fixes: CVE-2019-10906)
+
 * Thu Mar 22 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 2.10-alt1
 - Updated to upstream version 2.10.
 
