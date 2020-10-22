@@ -7,7 +7,7 @@
 
 Name: evms
 Version: 2.5.5
-Release: alt44
+Release: alt47
 
 Summary: Enterprise Volume Management System utilities
 License: GPL
@@ -58,6 +58,13 @@ Summary: EVMS GUI
 Group: System/Kernel and hardware
 Requires: evms = %version-%release
 
+%package -n %name-test
+Summary: EVMS Tests
+Group: Development/C
+Requires: %name-cli = %EVR
+Requires: installer-scripts-remount-stage2
+BuildArch: noarch
+
 %description
 This package contains the user-space tools needed to manage EVMS (Enterprise
 Volume Management System) volumes.
@@ -91,6 +98,9 @@ Ncurses ui tool for EVMS
 %description -n %name-gui
 GTK+ ui tool for EVMS
 
+%description -n %name-test
+Tests for EVMS
+
 %prep
 %setup
 # die early, die often
@@ -119,6 +129,7 @@ mkdir -p %buildroot{%_sysconfdir,%_libdir,%_sbindir/sbin}
 install -pD -m 0755 altlinux/startevms %buildroot/sbin
 install -pm0755 tests/evms_deactivate %buildroot/sbin
 install -pm0644 tests/evms_deactivate.8 %buildroot%_man8dir
+install -pm0755 tests/cli_scripts/evms-raid-test %buildroot/%_sbindir
 mv %buildroot/sbin/%{?_with_x:{evmsn,evmsgui}}%{!?_with_x:evmsn} %buildroot%_sbindir/
 for f in %buildroot/%_lib/*.so; do
 ln -sf ../../%_lib/`readlink $f` %buildroot%_libdir/${f##*/}
@@ -168,7 +179,27 @@ EOF
 %_sbindir/%{name}gui
 %endif
 
+%files -n %name-test
+%_sbindir/evms-raid-test
+
 %changelog
+* Tue Oct 20 2020 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt47
+- Revert "Fix LVM2 logical volume deactivation"
+  Fix not ready yet and was sent by mistake
+
+* Tue Sep 29 2020 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt46
+- Fix LVM2 logical volume deactivation (closes: #38796)
+- Remove broken dependency on
+  /usr/share/install2/initinstall.d/80-stop-md-dm.sh
+
+* Tue Sep 15 2020 Slava Aseev <ptrnine@altlinux.org> 2.5.5-alt45
+- plugins/md:
+  + fix raid discovering and md_minor getting for metadata=1.*
+    (closes: #35918)
+  + use better name's collision resolving for metadata=1.*
+  + use metadata=1.2 by default
+  + add RAID test
+
 * Wed May 20 2020 Oleg Solovyov <mcpain@altlinux.org> 2.5.5-alt44
 - restore old swapfs UUID
 
