@@ -4,8 +4,8 @@
 %def_enable ssl
 
 Name: spamassassin
-Version: 3.4.3
-Release: alt1
+Version: 3.4.4
+Release: alt2
 
 Summary: Spam filter for email written in perl
 License: Apache-2.0
@@ -210,11 +210,11 @@ sed "s/^[0-9]\+ \+[0-9]\+/$RNDM1 $RNDM2/" -i %_sysconfdir/cron.d/sa-update >/dev
 
 %post spamc
 /usr/sbin/groupadd -r -f spamd
-/usr/sbin/useradd -r -g spamd -d /dev/null -s /dev/null -n spamc >/dev/null 2>&1 ||:
+/usr/sbin/useradd -r -g spamd -d /dev/null -s /dev/null -N spamc >/dev/null 2>&1 ||:
 
 %pre spamd
 /usr/sbin/groupadd -r -f spamd
-/usr/sbin/useradd -r -g spamd -d %_localstatedir/spamd -s /dev/null -n spamd >/dev/null 2>&1 ||:
+/usr/sbin/useradd -r -g spamd -d %_localstatedir/spamd -s /dev/null -N spamd >/dev/null 2>&1 ||:
 
 %files
 %doc CREDITS INSTALL README TRADEMARK USAGE procmailrc.example Changes sample-nonspam.txt sample-spam.txt
@@ -261,6 +261,13 @@ sed "s/^[0-9]\+ \+[0-9]\+/$RNDM1 $RNDM2/" -i %_sysconfdir/cron.d/sa-update >/dev
 #%_man3dir/*
 
 %changelog
+* Wed Oct 21 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.4-alt2
+- fixed typo in %%changelog
+
+* Wed Oct 21 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.4-alt1
+- 3.4.4 (fixes: CVE-2020-1931, CVE-2020-1930)
+- applied repocop's patch for specfile-useradd-n
+
 * Fri Jan 03 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.3-alt1
 - 3.4.3 (fixes: CVE-2018-11805, CVE-2019-12420)
 - updated %%License to SPDX syntax
