@@ -3,7 +3,7 @@
 %def_disable webkit
 
 Name: psi
-Version: 1.4
+Version: 1.5
 Release: alt1
 Group: Networking/Instant messaging
 Summary: Psi Jabber client
@@ -21,6 +21,7 @@ Patch0: %name-%version-%release.patch
 Patch1: psi-0.14-alt-glibc-2.16.patch
 Patch2: psi-1.3-build-qt511.patch
 Patch3: psi-plus-alt-qt-5.11-window-close-bug.patch
+Patch4: psi-1.5-build-qt515.patch
 
 #BuildRequires: unzip
 Requires: sound_handler ca-certificates
@@ -214,6 +215,7 @@ Plugins without description yet:
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch4 -p1
 mv libpsi src/
 mv qhttp 3rdparty/
 mv http-parser 3rdparty/
@@ -286,6 +288,9 @@ rm -f %buildroot%_libdir/%name/plugins/libripperccplugin.so
 %_libdir/%name/plugins/libwatcherplugin.so
 
 %changelog
+* Fri Oct 02 2020 Oleg Solovyov <mcpain@altlinux.org> 1.5-alt1
+- Updated to version 1.5
+
 * Wed Nov 21 2018 Oleg Solovyov <mcpain@altlinux.org> 1.4-alt1
 - Updated to version 1.4
 - disabled QtWebKit (Closes: #37380)
