@@ -4,7 +4,7 @@
 
 Name:    lazarus
 Version: 2.0.10
-Release: alt1
+Release: alt3
 Epoch:   1
 
 Summary: Lazarus Component Library and IDE
@@ -40,11 +40,15 @@ BuildRequires(pre): qt5-base-devel
 BuildRequires: fpc >= 2.6.4 fpc-utils glibc-devel libgtk+2-devel libXi-devel desktop-file-utils 
 BuildRequires: libXext-devel libXtst-devel libGL-devel libGLU-devel libode-devel
 BuildRequires: qt5-x11extras-devel
+BuildRequires: qt5pas-devel
 
 Requires:   fpc >= 2.6.4 fpc-src fpc-utils gdb libGL-devel libXi-devel libXext-devel libgtk+2-devel
 Requires:   glibc-devel
 Requires:   libdbus-devel
 Requires:   xterm
+Requires:   lazarus-lcl
+# Default LCL
+Requires:   lazarus-gtk
 
 Provides:   %name-docs = %version
 Obsoletes:  %name-docs < %version
@@ -63,6 +67,23 @@ Lazarus - свободно-распространяемая, с открытым
 среда для быстрой разработки прикладных программ (Rapid Application
 Development tool) на FreePascal, использующая библиотеки компонет LCL
 (Lazarus component library).  LCL входят в состав данного пакета.
+
+%package qt5
+Summary: Interface for Lazarus based on Qt5
+Group: Development/Other
+Provides: lazarus-lcl
+Requires: qt5pas-devel
+
+%description qt5
+Interface for Lazarus based on Qt5.
+
+%package gtk
+Summary: Interface for Lazarus based on GTK+
+Group: Development/Other
+Provides: lazarus-lcl
+
+%description gtk
+Interface for Lazarus based on GTK+.
 
 # The version is taken from lcl/interfaces/qt5/cbindings/Qt5Pas.pro
 %global qt5pas_version 2.6
@@ -121,7 +142,13 @@ fi
 echo "const RevisionStr = '%rev';" > ide/revision.inc
 
 # Make IDE
-make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
+# Build IDE based on Qt5
+make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0 LCL_PLATFORM=qt5
+mv lazarus lazarus-qt5
+
+# Build IDE based on GTK+
+make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0 LCL_PLATFORM=gtk2
+cp lazarus lazarus-gtk
 
 # Make other program and utilites
 sed -e "s#__LAZARUSDIR__#%{cfg}#" tools/install/linux/environmentoptions.xml > environmentoptions.xml
@@ -157,7 +184,8 @@ popd
 export LCL_PLATFORM=
 #export LCL_PLATFORM=gtk2
 #export FPCDIR=%%_libdir/fpc
-strip lazarus
+strip lazarus-qt5
+strip lazarus-gtk
 strip startlazarus
 strip lazbuild
 strip tools/lazres
@@ -177,7 +205,13 @@ mkdir -p %buildroot$LAZARUSDIR \
 %makeinstall_std INSTALL_PREFIX=%buildroot%_prefix _LIB=%_lib
 install -m 644 install/lazarus.desktop %buildroot%_desktopdir/%name.desktop
 
-ln -sf lazarus-ide %buildroot%_bindir/lazarus
+install -Dm0755 lazarus-qt5 %buildroot%_bindir/lazarus-qt5
+install -Dm0755 lazarus-gtk %buildroot%_bindir/lazarus-gtk
+rm -f %buildroot%_bindir/lazarus-ide
+mkdir -p %buildroot%_altdir
+echo "%_bindir/lazarus	%_bindir/lazarus-qt5	50" > %buildroot%_altdir/lazarus-qt5
+echo "%_bindir/lazarus	%_bindir/lazarus-gtk	50" > %buildroot%_altdir/lazarus-gtk
+
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/LRS_Explorer
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/lrsexplorer
 %ifnarch aarch64
@@ -212,10 +246,17 @@ pushd lcl/interfaces/qt5/cbindings/
     %makeinstall_std INSTALL_ROOT=%buildroot
 popd
 rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
+rm -rf %buildroot$LAZARUSDIR/lazarus.app
+
+# Make executable symlink to selected program
+rm -f %buildroot$LAZARUSDIR/lazarus
+ln -s ../../bin/lazarus %buildroot$LAZARUSDIR/lazarus
 
 %files
 %_libdir/%name
 %_bindir/*
+%exclude %_bindir/lazarus-qt5
+%exclude %_bindir/lazarus-gtk
 %dir %_sysconfdir/%name
 %config(noreplace) %_sysconfdir/%name/environmentoptions.xml
 %config(noreplace) %_sysconfdir/%name/projectoptions.xml
@@ -229,6 +270,14 @@ rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 %exclude %_libdir/libQt5Pas.so*
 %_iconsdir/hicolor/48x48/mimetypes/*.png
 
+%files qt5
+%_bindir/lazarus-qt5
+%_altdir/lazarus-qt5
+
+%files gtk
+%_bindir/lazarus-gtk
+%_altdir/lazarus-gtk
+
 %files -n qt5pas
 %doc lcl/interfaces/qt5/cbindings/COPYING.TXT
 %doc lcl/interfaces/qt5/cbindings/README.TXT
@@ -238,6 +287,12 @@ rm -rf %buildroot$LAZARUSDIR/lcl/interfaces/qt5/cbindings
 %_libdir/libQt5Pas.so
 
 %changelog
+* Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt3
+- Fix run startlazarus.
+
+* Thu Oct 15 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt2
+- Packages lcl packages lazarus-qt5 and lazarus-gtk.
+
 * Wed Sep 30 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt1
 - New version.
 - Build on aarch64 (except apiwizz).

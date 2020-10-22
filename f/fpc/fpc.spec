@@ -1,4 +1,4 @@
-%def_enable  bootstrap
+%def_disable bootstrap
 %def_with    sources
 %def_without doc
 %def_without win32
@@ -8,7 +8,7 @@
 
 Name: 	  fpc
 Version:  3.2.0
-Release:  alt1
+Release:  alt2
 Epoch:    3
 
 Summary:  Free Pascal Compiler -- Meta Package
@@ -1021,6 +1021,9 @@ Free Pascal runtime library units cross-compiled for win32.
 %endif
 
 %changelog
+* Fri Oct 02 2020 Andrey Cherepanov <cas@altlinux.org> 3:3.2.0-alt2
+- Build without bootstrap.
+
 * Tue Jul 21 2020 Andrey Cherepanov <cas@altlinux.org> 3:3.2.0-alt1
 - Downgrade to stable version 3.2.0.
 - New network units: gnutls, libmagic and vcl-compat.
