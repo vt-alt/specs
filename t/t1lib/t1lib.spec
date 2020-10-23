@@ -1,22 +1,26 @@
 Name: t1lib
 Version: 5.1.2
-Release: alt5.1
+Release: alt6
 
 Summary: Type 1 font rasterizer
 License: LGPL
 Group: System/Libraries
 
 Url: ftp://sunsite.unc.edu/pub/Linux/libs/graphics/
-Source0: ftp://ibiblio.org/pub/Linux/libs/graphics/%name-%version.tar.gz
+# ftp://ibiblio.org/pub/Linux/libs/graphics/%name-%version.tar.gz
+Source: %name-%version.tar
 Source1: t1lib-CP1251.enc
 Source2: t1lib-KOI8-R.enc
 Source3: t1lib-KOI8-U.enc
-#Patch1: t1lib-5.0.2-alt-makefile-destdir.patch
 Patch2: t1lib-5.1.2-alt-makefile-doc.patch
 Patch3: t1lib-5.1.2-alt-config.patch
 Patch4: t1lib-5.1.2-deb-alt-fixes.patch
-#Patch5: t1lib-5.0.2-debian-bounds.patch
-Packager: Michael Shigorin <mike@altlinux.org>
+
+# Patches from Gentoo
+Patch100: t1lib-5.1.2-CVE-2010-2642_2011-0433_2011-5244.patch
+Patch101: t1lib-5.1.2-CVE-2011-0764.patch
+Patch102: t1lib-5.1.2-CVE-2011-1552_1553_1554.patch
+Patch103: t1lib-5.1.2-format-security.patch
 
 # Automatically added by buildreq on Sat May 10 2008
 BuildRequires: imake libXaw-devel libXpm-devel texlive-context texlive-collection-latexrecommended xorg-cf-files libXext-devel
@@ -27,23 +31,23 @@ BuildPreReq: libSM-devel libXmu-devel
 %package x
 Summary: Type 1 font rasterizer X.Org libraries
 Group: System/Libraries
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %package devel
 Summary: Type 1 font rasterizer development files
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %package devel-static
 Summary: Type 1 font rasterizer static libraries
 Group: Development/C
-Requires: %name-devel = %version-%release
+Requires: %name-devel = %EVR
 
 %package utils
 Summary: Utilities for manipulating Type 1 fonts
 License: GPL
 Group: Graphics
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description
 T1lib is a library for generating character and string-glyphs from
@@ -71,11 +75,14 @@ It also contains the "t1libconfig" script used to configure %name.
 
 %prep
 %setup
-#patch1 -p1
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-#patch5 -p1
+%patch4 -p2
 
 %build
 autoconf
@@ -131,6 +138,10 @@ install -pm644 Changes README.t* doc/t1lib_doc.pdf.bz2 %buildroot%docdir/
 # - merge type1afm.1 manpage from debian patch
 
 %changelog
+* Wed Oct 21 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.1.2-alt6
+- Applied security fixes from Gentoo (Fixes: CVE-2010-2642, CVE-2011-0433,
+  CVE-2011-0764, CVE-2011-1552, CVE-2011-1553, CVE-2011-1554, CVE-2011-5244).
+
 * Sat Mar 03 2018 Igor Vlasenko <viy@altlinux.ru> 5.1.2-alt5.1
 - NMU: rebuild with TeXLive instead of TeTeX
 
