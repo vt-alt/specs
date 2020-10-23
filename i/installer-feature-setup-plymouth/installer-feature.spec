@@ -1,5 +1,5 @@
 Name: installer-feature-setup-plymouth
-Version: 0.5.7
+Version: 0.5.8
 Release: alt1
 
 Summary: Set up plymouth
@@ -26,6 +26,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Wed Sep 09 2020 Oleg Solovyov <mcpain@altlinux.org> 0.5.8-alt1
+- don't setup plymouth if there are encrypted volumes
+
 * Wed Aug 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.5.7-alt1
 - don't try setup plymouth if no plymouth in $destdir
 
