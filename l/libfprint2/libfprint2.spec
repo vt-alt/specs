@@ -1,6 +1,8 @@
-Name: libfprint
-Version: 0.7.0
-Release: alt2
+%define _unpackaged_files_terminate_build 1
+
+Name: libfprint2
+Version: 1.90.3
+Release: alt1
 
 Summary: Tool kit for fingerprint scanner
 License: LGPLv2+
@@ -11,8 +13,11 @@ Url: http://www.freedesktop.org/wiki/Software/fprint/libfprint
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
+BuildRequires(pre): meson
 BuildRequires: libusb-devel libnss-devel glib2-devel libImageMagick-devel libXv-devel libpixman-devel
-BuildRequires: gcc-c++ doxygen
+BuildRequires: gcc-c++ doxygen 
+BuildRequires: libgio-devel libgusb-devel libudev-devel gtk-doc libcairo-devel cmake
+BuildRequires: /proc python3-module-pygobject3
 
 %description
 The fprint project aims to support for consumer fingerprint reader
@@ -30,40 +35,49 @@ developing applications that use %name.
 %prep
 %setup
 %patch -p1
-mkdir -p m4
 
 %build
-%ifarch %e2k
-# lcc 1.23.12's frontend is more strict...
-sed -i 's,int main(void),&;,' configure.ac
-%endif
-%autoreconf
-%configure \
-	--disable-static \
-	--enable-udev-rules \
-	--with-udev-rules-dir=%_sysconfdir/udev/rules.d \
-	--enable-examples-build \
-	--enable-x11-examples-build
-%make_build
-pushd doc
-%make docs
-popd
+# introspection lacks at least GUsb*.gir in Sysiphus
+%meson -Ddrivers=all \
+       -Dintrospection=false \
+       -Dudev_rules=true \
+       -Dudev_rules_dir=%_sysconfdir/udev/rules.d/ \
+       -Dgtk-examples=false \
+       -Ddoc=true
+export LD_LIBRARY_PATH="libfprint"
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
+
+%check
+%meson_test
 
 %files
 %doc COPYING INSTALL NEWS TODO THANKS AUTHORS README
 %_libdir/*.so.*
-%_sysconfdir/udev/rules.d/60-fprint-autosuspend.rules
+%_sysconfdir/udev/rules.d/60-libfprint-2-autosuspend.rules
 
 %files devel
-%doc HACKING doc/html
+%doc HACKING.md
+%doc %_datadir/gtk-doc/html/libfprint-2
 %_includedir/*
 %_libdir/*.so
-%_pkgconfigdir/%name.pc
+%_pkgconfigdir/libfprint-2.pc
 
 %changelog
+* Wed Sep 30 2020 Anton Farygin <rider@altlinux.ru> 1.90.3-alt1
+- 1.90.3
+
+* Wed Aug 12 2020 Anton Farygin <rider@altlinux.ru> 1.90.2-alt1
+- 1.90.2
+
+* Tue Feb 04 2020 Nikolai Kostrigin <nickel@altlinux.org> 1.0-alt1
+- new version
+  + build system switched to meson by upstream
+  + add meson, libgio-devel, libgusb-devel, libudev-devel, gtk-doc to BR:
+  + remove fix for e2k
+
 * Mon May 06 2019 Michael Shigorin <mike@altlinux.org> 0.7.0-alt2
 - fix build on e2k with lcc
 - minor spec cleanup

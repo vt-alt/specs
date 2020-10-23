@@ -1,7 +1,7 @@
 %define _localstatedir %{_var}
 
 Name: fprintd
-Version: 0.8.0
+Version: 1.90.1
 Release: alt1
 Summary: D-Bus service for Fingerprint reader access
 Group: System/Servers
@@ -14,14 +14,21 @@ Patch: %name-%version.patch
 Patch1: %name-0.4.1-alt-build.patch
 Patch3: %name-0.4.1-alt-pam_docs.patch
 
+BuildRequires(pre): meson
 BuildRequires: libdbus-glib-devel
-BuildRequires: pkgconfig(libfprint) > 0.1.0
+BuildRequires: pkgconfig(libfprint-2) > 0.1.0
 BuildRequires: pkgconfig(glib-2.0) pkgconfig(dbus-glib-1)
 BuildRequires: pkgconfig(gmodule-2.0) pkgconfig(polkit-gobject-1) >= 0.91 pkgconfig(gio-2.0) >= 2.26
 BuildRequires: libpam0-devel
 BuildRequires: gtk-doc intltool
 BuildRequires: /usr/bin/pod2man /usr/bin/xmllint /usr/bin/xsltproc docbook-dtds
 BuildRequires: pkgconfig(systemd)
+BuildRequires: pkgconfig(libpamtest)
+BuildRequires: python3-module-pycairo
+BuildRequires: python3-module-dbus
+BuildRequires: python3-module-dbusmock
+BuildRequires: python3-module-libpamtest
+BuildRequires: python3(gi)
 
 %description
 D-Bus service to access fingerprint readers.
@@ -49,51 +56,47 @@ fingerprint readers access.
 %prep
 %setup -q
 %patch -p1
-%patch1 -p1
-%patch3 -p1
+#patch1 -p1
+#patch3 -p1
 
 %build
-%autoreconf
-%configure \
-	--libdir=/%_lib \
-	--libexecdir=%_prefix/libexec \
-	--enable-gtk-doc \
-	--enable-pam \
-	--with-systemdsystemunitdir=%_unitdir \
-	--disable-static
-%make_build
+%meson
+%meson_build
 
 %install
-%makeinstall_std
-mkdir -p %buildroot%_sysconfdir/pam.d
-cp system-auth-fprintd %buildroot%_sysconfdir/pam.d
-mkdir -p %buildroot%_localstatedir/lib/fprint
-rm -fv %buildroot/%_lib/security/pam_fprintd.{a,la,so.*}
+%meson_install
 %find_lang %name
+
+%check
+%meson_test
 
 %files -f %name.lang
 %doc README COPYING AUTHORS TODO
 %config(noreplace) %_sysconfdir/fprintd.conf
-%_sysconfdir/pam.d/system-auth-fprintd
-%_sysconfdir/dbus-1/system.d/net.reactivated.Fprint.conf
+#_sysconfdir/pam.d/system-auth-fprintd
+%_datadir/dbus-1/system.d/net.reactivated.Fprint.conf
 %_bindir/fprintd-*
-%_prefix/libexec/fprintd
+%_prefix/lib/fprintd
 %_unitdir/fprintd.service
 %_datadir/dbus-1/system-services/net.reactivated.Fprint.service
 %_datadir/polkit-1/actions/net.reactivated.fprint.device.policy
-%dir %_localstatedir/lib/fprint
+#dir %_localstatedir/lib/fprint
 %_man1dir/fprintd.1*
 
 %files -n pam_fprintd
 %doc pam/README
 /%_lib/security/pam_fprintd.so
+%_man8dir/pam_fprintd.8*
 
 %files devel
-%_datadir/gtk-doc/html/fprintd
+#_datadir/gtk-doc/html/fprintd
 %_datadir/dbus-1/interfaces/net.reactivated.Fprint.Device.xml
 %_datadir/dbus-1/interfaces/net.reactivated.Fprint.Manager.xml
 
 %changelog
+* Thu Aug 13 2020 Anton Farygin <rider@altlinux.ru> 1.90.1-alt1
+- 1.90.1
+
 * Sat Mar 17 2018 Alexey Shabalin <shaba@altlinux.ru> 0.8.0-alt1
 - 0.8.0
 
