@@ -16,7 +16,7 @@
 %define nv_version 450
 %define nv_release 80
 %define nv_minor 02
-%define pkg_rel alt228
+%define pkg_rel alt231
 %define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -250,6 +250,10 @@ mkdir -p %buildroot/%_sysconfdir/X11/xorg.conf.d/
 echo >%buildroot/%_sysconfdir/X11/xorg.conf.d/09-nvidia.conf
 mkdir -p %buildroot/%_sysconfdir/ld.so.conf.d/
 echo >%buildroot/%_sysconfdir/ld.so.conf.d/nvidia.conf
+# setup make-initrd
+mkdir -p %buildroot/%_datadir/make-initrd/features/nvidia/
+echo "BLACKLIST_MODULES += nvidia nvidia-drm nvidia-modeset" >%buildroot/%_datadir/make-initrd/features/nvidia/config.mk
+
 
 %post -n %{bin_pkg_name}_common
 if [ -z "$DURING_INSTALL" ]; then
@@ -265,6 +269,7 @@ fi
 %files
 %dir %module_local_dir
 %dir %_datadir/nvidia/
+%_datadir/make-initrd/features/nvidia/
 %ghost %_bindir/nvidia-bug-report.sh
 %ghost %_sysconfdir/X11/xorg.conf.d/09-nvidia.conf
 %ghost %_sysconfdir/ld.so.conf.d/nvidia.conf
@@ -307,6 +312,15 @@ fi
 /usr/lib/nvidia/alternate-install-present
 
 %changelog
+* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt231
+- package make-initrd feature to exclude nvidia from initrd (closes: 39108)
+
+* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt230
+- don't package 01-nvidia.mk because /etc/initrd.mk.d/ not conform with /etc/initrd.mk
+
+* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt229
+- package /etc/initrd.mk.d/01-nvidia.mk to exclude nvidia from initrd
+
 * Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt228
 - new version
 
