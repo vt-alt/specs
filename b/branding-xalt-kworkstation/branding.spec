@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 1
-%define bugfix 0
+%define bugfix 1
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -73,6 +73,8 @@ License: Distributable
 Group:  System/Configuration/Boot and Init
 Provides: plymouth-theme-%theme plymouth(system-theme)
 Requires: plymouth-plugin-script
+Requires: plymouth-plugin-label
+Requires: fonts-ttf-dejavu
 PreReq: plymouth
 %description bootsplash
 This package contains graphics for boot process, displayed via Plymouth
@@ -434,6 +436,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Mon Sep 21 2020 Oleg Solovyov <mcpain at altlinux dot org> 9.1.1-alt1
+- show prompt when asking passphrase
+
 * Mon Aug 31 2020 Sergey V Turchin <zerg at altlinux dot org> 9.1.0-alt1
 - new version
 
