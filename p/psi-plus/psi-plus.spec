@@ -3,7 +3,7 @@
 %def_disable webkit
 
 Name: psi-plus
-Version: 1.4.912
+Version: 1.4.1513
 Release: alt1
 
 Summary: Psi+ Jabber client
@@ -282,32 +282,6 @@ You can select or deselect a contact for history removal from the context menu o
 Данный плагин предназначен для удаления истории переписки с отмеченными контактами при выходе из Psi+.
 Отметить контакт или удалить отметку можно из контекстного меню контакта, либо через окно с настройками плагина.
 
-# ICQ die plugin
-%package plugin-icqdie
-Summary: ICQ die support for %name
-Group: Networking/Instant messaging
-Requires: %name = %EVR
-
-%description plugin-icqdie
-This plugin is designed to help you transfer as many contacts as possible from ICQ to Jabber.
-The plugin has a number of simple settings that can help you:
-
- - Set a special message text
- - Exclude specific ICQ numbers
- - Set the time interval after which the message will be repeated
- - Disable the message for the active window/tab
- - Disable messages for contacts that are not in your roster
-
-%description plugin-icqdie -l ru_RU.UTF-8
-Данный плагин призван помочь Вам перевести как можно бОльшее количество Ваших контактов с ICQ на Jabber.
-Плагин имеет ряд несложных настроек, с помощью которых можно:
-
- - Задать текст сообщения
- - Исключить определённые ICQ номера
- - Задать интервал времени, по истечении которого сообщение будет повторено
- - Отключить сообщения для активного окна/таба
- - Отключить сообщения для контактов не из Вашего ростера
-
 # Image plugin
 %package plugin-image
 Summary: Image support for %name
@@ -464,46 +438,6 @@ The address of FTP server is specified as ftp://ftp.domain.tld/path1/path2.
 Адрес FTP-сервера задаётся в виде ftp://ftp.domain.tld/path1/path2.
 Примечание: Для работы со скриншотами также можно использовать отдельное (самостоятельное) приложение qScreenshot. Доступно на различных платформах (в т.ч. и под MS Windows).
 
-# Skins plugin
-%package plugin-skins
-Summary: Skins support for %name
-Group: Networking/Instant messaging
-Requires: %name = %EVR
-
-%description plugin-skins
-This plugin is designed to create, store and apply skins to Psi+.
-Skin - a set of custom settings.
-In order to apply a new skin for Psi+ you can use different methods:
-
- - Create in the PsiData folder skins directory and position it previously downloaded skin (by default the plugin looks in the directory PsiData)
- - Open a file from anywhere on the skin of a local disk using the Open command in the plugin settings
-
-Each skin must be in a separate directory. You can also add a screenshot to the skin file.
-In most cases, to be sure that the skin is applied correctly, you must perform a sequence of actions:
-
- - Apply the skin
- - Restart the application
- - Apply the same skin again
-
-This will enable all settings (icons, toolbars, status) to pick up correctly.
-
-%description plugin-skins -l ru_RU.UTF-8
-Данный плагин предназначен для создания и использования скинов в Psi+.
-Скин - это набор пользовательских настроек.
-Для того, чтобы применить новый скин для Psi+, можно использовать различные способы:
-
- - Создать в каталоге PsiData папку skins и расположить в ней предварительно скачанный скин (по умолчанию плагин «смотрит» в папку PsiData).
- - Открыть файл скина из любого места локального диска при помощи команды Open в настройках плагина.
-
-Каждый скин должен лежать в отдельной папке. Рядом с файлом скина можно также положить скриншот скина.
-В большинстве случаев для того, чтобы быть уверенным, что скин применился правильно, необходимо выполнить следующую последовательность действий:
-
- - Применить скин
- - Перезапустить Psi+
- - Применить этот же скин повторно
-
-Такая последовательность действий позволит всем настройкам (иконкам, положению панелей инструментов) примениться правильно и до конца.
-
 # Stop spam plugin
 %package plugin-stopspam
 Summary: Stop spam support for %name
@@ -645,7 +579,7 @@ rm -rf src/libpsi/tools/zip/minizip
 
 %build
 for plugin in \
-	src/plugins/dev/redirectorplugin ; do
+	plugins/dev/redirectorplugin ; do
 
 	pushd $plugin
 	%qmake_qt5 $(basename $plugin).pro
@@ -663,12 +597,12 @@ done
 %cmakeinstall_std
 
 # Generic plugins
-pushd src/plugins/dev
+pushd plugins/dev
 install -pDm644 redirectorplugin/libredirectplugin.so %buildroot%_libdir/%name/plugins
 popd
 
 rm %buildroot%_datadir/%name/{COPYING,README.html}
-rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
+rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,openpgp}plugin.so
 
 %files
 %doc COPYING INSTALL README.html TODO
@@ -680,11 +614,10 @@ rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
 %_datadir/%name/client_icons.txt
 %_datadir/%name/certs
 %_datadir/%name/iconsets
-%_datadir/%name/skins
 %_datadir/%name/sound
-%_datadir/%name/themes
 %_pixmapsdir/%name.png
 %_iconsdir/hicolor/*/apps/*.png
+%_datadir/metainfo/%name.appdata.xml
 
 # Attention plugin
 %files plugin-attention
@@ -738,10 +671,6 @@ rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
 %files plugin-historykeeper
 %_libdir/%name/plugins/libhistorykeeperplugin.so
 
-# ICQ die plugin
-%files plugin-icqdie
-%_libdir/%name/plugins/libicqdieplugin.so
-
 # Image plugin
 %files plugin-image
 %_libdir/%name/plugins/libimageplugin.so
@@ -782,10 +711,6 @@ rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
 %files plugin-screenshot
 %_libdir/%name/plugins/libscreenshotplugin.so
 
-# Skins plugin
-%files plugin-skins
-%_libdir/%name/plugins/libskinsplugin.so
-
 # Stopspam plugin
 %files plugin-stopspam
 %_libdir/%name/plugins/libstopspamplugin.so
@@ -807,6 +732,9 @@ rm %buildroot%_libdir/%name/plugins/lib{battleshipgame,gnupg,rippercc}plugin.so
 %_libdir/%name/plugins/libwatcherplugin.so
 
 %changelog
+* Fri Oct 02 2020 Oleg Solovyov <mcpain@altlinux.org> 1.4.1513-alt1
+- Version 1.4.1513
+
 * Wed Oct 16 2019 Oleg Solovyov <mcpain@altlinux.org> 1.4.912-alt1
 - Version 1.4.912
 - disabled QtWebKit (Closes: #37381)
