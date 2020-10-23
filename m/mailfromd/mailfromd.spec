@@ -5,7 +5,7 @@
 
 Name: mailfromd
 
-%define baseversion 8.7
+%define baseversion 8.8
 
 %if %snapshot
 %define snapshotdate 20181109
@@ -14,15 +14,13 @@ Release: alt0.%snapshotdate.1
 %define srcdir %name-%baseversion-%snapshotdate
 %else
 Version: %baseversion
-Release: alt3
+Release: alt1
 %define srcdir %name-%version
 %endif
 
-Packager: Sergey Y. Afonin <asy@altlinux.ru>
-
 Summary: Universal flexible smtp data supervisor for Sendmail, MeTA1 and Postfix
 
-License: %gpl3plus
+License: GPL-3.0-or-later
 Group: System/Servers
 Requires: makemap m4
 
@@ -59,8 +57,6 @@ Patch1: mailfromd-savsrv.c-not_cache_mf_timeout.diff
 #Errata
 #Patch10:
 
-BuildRequires(pre): rpm-build-licenses
-
 # Automatically added by buildreq on Mon Oct 07 2013
 # optimized out: emacs-X11 emacs-base emacs-cedet-speedbar emacs-common fontconfig libX11-locales libgdk-pixbuf libgpg-error libp11-kit libtinfo-devel mailutils pkg-config
 BuildRequires: emacs-X11 flex libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libncurses-devel libpam-devel libreadline-devel libtokyocabinet-devel
@@ -81,7 +77,7 @@ verify_sender, milter-regex, clamav-milter, milter-greylist ang other.
 
 %package cfg_full
 Summary: Full featured configuration of mailfromd.
-Copyright: %gpl3plus
+License: GPL-3.0-or-later
 Requires: %name = %version-%release
 Provides: %name-config
 Group: System/Servers
@@ -92,7 +88,7 @@ Full featured configuration of mailfromd (can be used with Sendmail since 8.14)
 
 %package cfg_clamav
 Summary: clamav-milter replacement configuration.
-Copyright: %gpl3plus
+License: GPL-3.0-or-later
 Requires: %name = %version-%release
 Provides: %name-config
 Group: System/Servers
@@ -103,7 +99,7 @@ clamav-milter replacement configuration.
 
 %package doc
 Summary: Documentation for mailfromd.
-Copyright: %fdl
+License: GFDL-1.2
 Group: Development/Documentation
 BuildArch: noarch
 
@@ -112,7 +108,7 @@ Documentation for mailfromd.
 
 %package mfl
 Summary: GNU Emacs MFL extention for mailfromd.
-Copyright: %gpl3plus
+License: GPL-3.0-or-later
 Requires: emacs-base
 Group: System/Servers
 BuildArch: noarch
@@ -126,7 +122,7 @@ called "MFL mode".
 
 %package locales
 Summary: National Language files for mailfromd
-Copyright: %gpl3plus
+License: GPL-3.0-or-later
 Group: System/Servers
 BuildArch: noarch
 
@@ -309,6 +305,11 @@ rm -f %_localstatedir/mailfromd-clamav/*.db &>/dev/null ||:
 %files locales -f mailfromd.lang
 
 %changelog
+* Mon Oct 19 2020 Sergey Y. Afonin <asy@altlinux.org> 8.8-alt1
+- new version
+- changed Copyright tags to License tags, updated their to SPDX syntax
+- removed the Packager tag
+
 * Sun Mar 17 2019 Sergey Y. Afonin <asy@altlinux.ru> 8.7-alt3
 - changes in mailfromd.mf:
   + implemented delayed check (action in "data" callback)
@@ -519,7 +520,7 @@ rm -f %_localstatedir/mailfromd-clamav/*.db &>/dev/null ||:
 - new snapshot
 - changed flex-old to flex in BuildRequires
 - added %%check section
-- removed %__ macroses
+- removed %%__ macroses
 
 * Tue Sep 29 2009 Sergey Y. Afonin <asy@altlinux.ru> 5.2.90-alt0.20090928.1
 - new snapshot
