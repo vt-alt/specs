@@ -1,17 +1,33 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: xli
 Version: 1.17.0
-Release: alt8.1
-
+Release: alt9
 Summary: X11 Image Loading Utility
 License: MIT
 Group: Graphics
 
 Url: http://pantransit.reptiles.org/prog
 # had to repackage
-Source: %url/%name-%version.tar.bz2
-Patch1: xli_1.17.0-18.diff.bz2
-Patch2: xli-1.17.0-mdk-path.patch
-Packager: Michael Shigorin <mike@altlinux.org>
+# %url/%name-%version.tar.bz2
+Source: %name-%version.tar
+
+Patch1: xli-1.17.0-mdk-path.patch
+Patch2: xli-1.17.0-alt-includes.patch
+
+# Patches from Debian
+Patch10: 040-8-bit_palette_support.patch
+Patch11: 050-read_past_bufferend_343718.patch
+Patch12: 060-security_fixes.patch
+Patch13: 080-fillscreen_forall.patch
+Patch14: 090-multiple_images_merge.patch
+Patch15: 100-xpm_background.patch
+Patch16: 110-arrow_keys.patch
+Patch17: 130-zoom_auto_440768.patch
+Patch18: 150-fix-x-resource-leak.patch
+Patch19: 160-disable-libjpeg-scaling.patch
+Patch20: 170-fix-spelling.patch
+Patch21: 180-add_GCC_hardening.patch
 
 Provides: xloadimage
 Obsoletes: xloadimage
@@ -30,11 +46,24 @@ on CD Image, X Window Dump, Targa Image, McIDAS areafile, G3 FAX Image,
 PC Paintbrush Image, GEM Bit Image, MacPaint Image, X Pixmap, X Bitmap.
 
 %prep
-%setup -q
+%setup
 %patch1 -p1
-%patch2 -p1
+%patch2 -p2
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p2
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
 
 %build
+%add_optflags -Werror=implicit-function-declaration
 xmkmf -a
 %make_build CFLAGS="%optflags"
 for i in xli xlito; do
@@ -70,6 +99,9 @@ chmod 644 README*
 # - look at 2006-11-10 snapshot?
 
 %changelog
+* Thu Oct 22 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.17.0-alt9
+- Applied patches from Debian (Fixes: CVE-2005-3178).
+
 * Wed Oct 03 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.17.0-alt8.1
 - Rebuilt with libpng15
 
