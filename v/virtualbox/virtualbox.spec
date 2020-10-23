@@ -62,7 +62,7 @@
 
 Name: virtualbox
 Version: 6.1.8
-Release: alt2
+Release: alt3
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
 License: GPLv2
@@ -122,7 +122,6 @@ BuildRequires: qt5-declarative-devel
 BuildRequires: qt5-location-devel 
 BuildRequires: qt5-multimedia-devel
 BuildRequires: qt5-phonon-devel
-BuildRequires: qt5-quick1-devel 
 BuildRequires: qt5-quickcontrols2-devel 
 BuildRequires: qt5-script-devel
 BuildRequires: qt5-sensors-devel
@@ -895,6 +894,9 @@ mountpoint -q /dev || {
 %endif
 
 %changelog
+* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 6.1.8-alt3
+- fix compile with Qt-5.15
+
 * Fri Oct 09 2020 Sergey V Turchin <zerg@altlinux.org> 6.1.8-alt2
 - Fix compile with Qt-5.15
 
