@@ -1,6 +1,6 @@
 Name: rust
 Epoch: 1
-Version: 1.43.0
+Version: 1.44.0
 Release: alt0.1.p9
 Summary: The Rust Programming Language
 
@@ -49,7 +49,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.42.0
+%define r_ver 1.43.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -290,7 +290,6 @@ rm -rf %rustdir
 %dir %_libdir/rustlib/etc
 %dir %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/*
-%exclude %_bindir/*miri
 %exclude %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 %exclude %_libdir/rustlib/etc/*
 %exclude %_libdir/rustlib/install.log
@@ -343,11 +342,17 @@ rm -rf %rustdir
 %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
 
 %changelog
+* Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.44.0-alt0.1.p9
+- Backport new version to p9 branch.
+
 * Wed Oct 07 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.43.0-alt0.1.p9
 - Backport new version to p9 branch.
 
 * Mon Aug 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.42.0-alt1.1.p9
 - Backport new version to p9 branch.
+
+* Mon Aug 03 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.44.0-alt1
+- 1.44.0
 
 * Fri Jul 31 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.43.0-alt1
 - 1.43.0 (ALT#38770)
