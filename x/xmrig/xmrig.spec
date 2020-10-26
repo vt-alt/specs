@@ -1,6 +1,6 @@
 Name:		xmrig
-Version:	6.3.0
-Release:	alt1.1
+Version:	6.4.0
+Release:	alt1
 Summary:	RandomX and CryptoNight CPU miner
 Url:		https://github.com/xmrig/xmrig
 Group:		Office
@@ -31,7 +31,8 @@ cmake		../. \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_CXX_FLAGS:STRING="%optflags" \
 		-DCMAKE_C_FLAGS:STRING="%optflags" \
-		-DWITH_HWLOC=OFF
+		-DWITH_HWLOC=OFF \
+		-DWITH_EMBEDDED_CONFIG=ON
 %make_build
 
 %install
@@ -43,6 +44,12 @@ install -Dp -m 0755 ./%name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Sat Oct 24 2020 Motsyo Gennadi <drool@altlinux.ru> 6.4.0-alt1
+- 6.4.0
+
+* Sat Sep 05 2020 Motsyo Gennadi <drool@altlinux.ru> 6.3.3-alt1
+- 6.3.3
+
 * Sun Jul 19 2020 Motsyo Gennadi <drool@altlinux.ru> 6.3.0-alt1.1
 - add ExcludeArch for armh
 
