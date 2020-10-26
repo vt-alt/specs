@@ -8,7 +8,7 @@
 
 Name: inkscape
 Version: %major.1
-Release: alt2
+Release: alt4
 
 Summary: A Vector Drawing Application
 
@@ -60,6 +60,10 @@ Requires: wmf-utils
 # mike: work around https://bugzilla.altlinux.org/24586
 Requires: gnome-icon-theme
 
+# TODO
+#Requires: inkscape-data = %EVR
+Requires: inkscape-tutorial
+
 %description
 Inkscape is a SVG based generic vector-drawing program for Linux/Unix
 and Windows.  It uses an advanced imaging engine with anti-aliased
@@ -76,7 +80,35 @@ Summary: Viewer for Inkscape files
 Group: Graphics
 
 %description viewer
-inkview is standalone viewer for Inkscape files (SVG)
+inkview is standalone viewer for Inkscape files (SVG).
+
+# TODO: move /usr/share/inkscape to data package?
+%package data
+Summary: Inkscape data files
+Group: Graphics
+BuildArch: noarch
+
+%description data
+Inkview tutorial.
+
+
+%package tutorial
+Summary: Inkscape tutorial
+Group: Graphics
+BuildArch: noarch
+
+%description tutorial
+Inkview tutorial.
+
+%package checkinstall
+Summary: Checkinstall for %name
+Group: Development/Other
+BuildArch: noarch
+#Requires(pre): %name = %EVR
+Conflicts: python3(setuptools)
+
+%description checkinstall
+Run checkinstall tests for %name.
 
 %prep
 %setup
@@ -97,8 +129,11 @@ rm -rf %buildroot%_mandir/??/
 rm -rf %buildroot%_mandir/??_??/
 
 subst "s|/usr/bin/env python$|%__python3|" %buildroot%_datadir/%name/extensions/*.py
+
 # remove tests
 rm -rf %buildroot%_datadir/%name/extensions/tests/
+rm -rf %buildroot%_datadir/%name/extensions/inkex/tester/
+rm -rf %buildroot%_datadir/%name/extensions/{setup.py,setup.cfg}
 
 %find_lang %name
 
@@ -112,6 +147,7 @@ true
 %_bindir/inkscape
 #_libdir/libinkscape_base.so
 %_datadir/%name/
+%exclude %_datadir/inkscape/tutorials/
 #_datadir/appdata/inkscape*
 %_desktopdir/*.desktop
 %_iconsdir/hicolor/*/apps/*.png
@@ -123,7 +159,18 @@ true
 %_bindir/inkview
 %_man1dir/inkview*
 
+%files tutorial
+%_datadir/inkscape/tutorials/
+
+%files checkinstall
+
 %changelog
+* Wed Oct 21 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt4
+- pack tutorial in separate noach package
+
+* Wed Oct 21 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt3
+- add checkinstall, drop setuptools require
+
 * Fri Oct 16 2020 Vitaly Lipatov <lav@altlinux.ru> 1.0.1-alt2
 - cleanup spec, add search requires in extensions dir (ALT bug 39052)
 
