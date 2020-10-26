@@ -7,7 +7,7 @@
 %define ver 8.1
 Name: %oname%ver
 Version: %ver.1
-Release: alt3
+Release: alt4
 Summary: The Visualization Toolkit, an Object-Oriented Approach to 3D Graphics
 License: BSD-like
 Group: Development/Tools
@@ -20,6 +20,7 @@ Source1: vtkm-%version.tar
 
 Patch0: %oname-%version-alt-armh.patch
 Patch1: %oname-%version-alt-build.patch
+Patch2: alt-qt5.15.patch
 
 Requires: lib%name = %EVR
 
@@ -276,7 +277,7 @@ You need set environment variable VTK_DATA_ROOT=/usr/share/vtk-%ver.
 %package data
 Summary: The Visualization Toolkit (VTK) data
 Group: Development/Tools
-BuildArch: noarch
+#BuildArch: noarch
 
 %description data
 VTK is an open-source software system for image processing, 3D graphics, volume
@@ -306,6 +307,7 @@ You need set environment variable VTK_DATA_ROOT=/usr/share/vtk-%ver.
 %patch0 -p1
 %endif
 %patch1 -p1
+%patch2 -p1
 
 cp -rv %_datadir/vtk-%ver/.ExternalData/* ./.ExternalData/
 
@@ -527,6 +529,9 @@ cp -alL ExternalData/* %buildroot%_datadir/%oname-%ver
 %files tests -f testing.list
 
 %changelog
+* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 8.1.1-alt4
+- fix compile with Qt-5.15
+
 * Thu Oct 11 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 8.1.1-alt3
 - fixed build on armh
 
