@@ -1,5 +1,5 @@
 Name: distro_info
-Version: 1.5
+Version: 1.6
 Release: alt1
 
 Summary: Get various info about a system and used distro
@@ -32,6 +32,10 @@ install -m0644 -D man/distro_info.1 %buildroot%_man1dir/distro_info.1
 %_man1dir/*
 
 %changelog
+* Mon Oct 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.6-alt1
+- distro_info: improve ALT c8 support
+- add --distro-arch support (returns distro depended arch name)
+
 * Sun Oct 11 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5-alt1
 - distro_info: add -c: print number of available CPU cores
 - distro_info: cosmetic improvements

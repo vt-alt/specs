@@ -1,6 +1,6 @@
 Name: eepm
-Version: 3.3.4
-Release: alt1
+Version: 3.4.0
+Release: alt2
 
 Summary: Etersoft EPM package manager
 
@@ -23,7 +23,7 @@ Provides: upm
 %if %_vendor == "alt"
 # FIXHERE: Replace with target platform package manager
 Requires: apt rpm
-Requires: distro_info >= 1.1
+Requires: distro_info >= 1.6
 %endif
 
 %description
@@ -34,6 +34,21 @@ Can be useful for system administrators working
 with various distros.
 
 See detailed description here: http://wiki.etersoft.ru/EPM
+
+%package repack
+Summary: Etersoft EPM package manager (repack requirements)
+Group: System/Configuration/Packaging
+Requires: %name = %EVR
+Requires: fakeroot alien rpm-build dpkg
+
+%description repack
+This package has requirements needed for using epm repack on ALT
+(repack rpm packages and repack/install deb packages).
+
+See https://bugzilla.altlinux.org/show_bug.cgi?id=34308 for
+a discussion about extra requirements.
+
+Requires: fakeroot alien rpm-build dpkg
 
 %prep
 %setup
@@ -103,7 +118,28 @@ rm -f %buildroot%_bindir/distr_info
 %_sysconfdir/bash_completion.d/serv
 %_sysconfdir/bash_completion.d/cerv
 
+%if %_vendor == "alt"
+%files repack
+%endif
+
 %changelog
+* Wed Oct 21 2020 Vitaly Lipatov <lav@altlinux.ru> 3.4.0-alt2
+- add epm-repack subpackage (just a static requirements)
+
+* Mon Oct 19 2020 Vitaly Lipatov <lav@altlinux.ru> 3.4.0-alt1
+- serv-list_startup: temp. fix for non systemd systems
+- serv: add list-failed command
+- epm-repack: add workaround for empty Summary
+- add repack support for dialog-ee-x deb package
+- epm: disable warming up by default
+- epm addrepo/removerepo: fix repo manipulating on deb systems
+- epm-addrepo: initial implementation of addkey for deb
+
+* Mon Oct 19 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.5-alt1
+- epm-repo: fix set
+- epm-release_upgrade: big rewrite, add support for downgrade to с8
+- epm-release_upgrade: allow two params: from and to
+
 * Fri Oct 16 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.4-alt1
 - epm: skip all args with spaces (we don't support it)
 - epm-dedup: add --direct support to use epm internal implementation
