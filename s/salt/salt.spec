@@ -1,6 +1,6 @@
 Summary: Tool to manage your infrastructure
 Name: salt
-Version: 3001.1
+Version: 3002
 Release: alt1
 Url: http://saltstack.org
 #VCS: https://github.com/saltstack/salt
@@ -239,6 +239,9 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %_man1dir/salt-proxy.1.*
 
 %changelog
+* Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 3002-alt1
+- New version.
+
 * Tue Aug 25 2020 Andrey Cherepanov <cas@altlinux.org> 3001.1-alt1
 - New version.
 - Use python3-module-pycryptodomex instead of python3-module-pycrypto.
