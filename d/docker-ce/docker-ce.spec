@@ -1,3 +1,4 @@
+%define _unpackaged_files_terminate_build 1
 %define _libexecdir /usr/libexec
 
 %global provider        github
@@ -11,12 +12,12 @@
 %global build_dir ./_build
 %global build_dir_cli %build_dir/src/%import_path_cli
 %global build_dir_engine %build_dir/src/%import_path_engine
-%global commit      9424aeaee927a5ddd19ee10702159cd91cc3f48e
+%global commit      4484c46d9d1a2d10b8fc662923ad586daeedb04f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:       docker-ce
 Version:    19.03.13
-Release: alt1
+Release: alt2
 Summary: Automates deployment of containerized applications
 License: Apache-2.0
 Group: System/Configuration/Other
@@ -75,12 +76,13 @@ export GOPATH="$(pwd)/%{build_dir}:%{go_path}"
 # build cli
 mkdir -p %{build_dir_cli}
 cp -alv -- components/cli/* %{build_dir_cli}
-DISABLE_WARN_OUTSIDE_CONTAINER=1 make -C %{build_dir_cli} VERSION=%{fullversion}
+DISABLE_WARN_OUTSIDE_CONTAINER=1 make -C %{build_dir_cli} VERSION=%{version} GITCOMMIT=%{shortcommit}
 DISABLE_WARN_OUTSIDE_CONTAINER=1 make -C %{build_dir_cli} manpages
 
 # build daemon
-export DOCKER_GITCOMMIT="%{shortcommit}/%{version}"
+export DOCKER_GITCOMMIT=%{shortcommit}
 export DOCKER_BUILDTAGS='selinux journald pkcs11 seccomp'
+export VERSION=%{version}
 mkdir -p %{build_dir_engine}
 cp -alv -- components/engine/* %{build_dir_engine}
 pushd %{build_dir_engine}
@@ -91,7 +93,7 @@ popd
 # install binary
 install -d %{buildroot}%{_bindir}
 install -p -m 755 %{build_dir_cli}/build/docker %{buildroot}%{_bindir}/docker
-install -p -m 755 %{build_dir_engine}/bundles/dynbinary-daemon/dockerd-dev %{buildroot}%{_bindir}/dockerd
+install -p -m 755 %{build_dir_engine}/bundles/dynbinary-daemon/dockerd %{buildroot}%{_bindir}/dockerd
 
 install -d %{buildroot}%{_libexecdir}/docker
 
@@ -128,6 +130,7 @@ install -d %{buildroot}%{_sharedstatedir}/%{repo_engine}
 
 # install systemd/init scripts
 install -p -D -m 644 altlinux/%{repo_engine}.service %{buildroot}%{_unitdir}/%{repo_engine}.service
+install -p -m 644 %{build_dir_engine}/contrib/init/systemd/docker.socket %{buildroot}%{_unitdir}/
 install -p -D -m 755 altlinux/%{repo_engine}.init %{buildroot}%{_initddir}/%{repo_engine}
 
 install -d %buildroot%_sysconfdir/sysconfig
@@ -163,6 +166,7 @@ exit 0
 %{_bindir}/dockerd
 %dir %{_libexecdir}/docker
 %{_unitdir}/docker.service
+%{_unitdir}/docker.socket
 %_initdir/docker
 %{_datadir}/bash-completion/completions/docker
 %{_datadir}/zsh/site-functions/_docker
@@ -174,6 +178,11 @@ exit 0
 %{_datadir}/vim/vimfiles/syntax/dockerfile.vim
 
 %changelog
+* Sat Oct 24 2020 Alexey Shabalin <shaba@altlinux.org> 19.03.13-alt2
+- fix docker and dockerd --version
+- update default docker daemon config (daemon.json)
+- update systemd service unit and install docker.socket
+
 * Wed Sep 30 2020 Vladimir Didenko <cow@altlinux.org> 19.03.13-alt1
 - 19.03.13
 
