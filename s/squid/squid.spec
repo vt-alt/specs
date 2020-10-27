@@ -6,9 +6,10 @@
 %def_with nettle
 # gnutls for squidclient
 %def_with gnutls
+%def_with systemd
 
 Name: squid
-Version: 4.10
+Version: 4.13
 Release: alt1
 %define langpack_ver 20170901 
 Summary: The Squid proxy caching server
@@ -42,7 +43,7 @@ Obsoletes: %name-conf-default
 %{?_enable_poll:%force_disable epoll}
 
 BuildConflicts: bind-devel
-BuildPreReq: rpm-build >= 4.0.4-alt10
+BuildRequires(pre): rpm-build >= 4.0.4-alt10
 
 # Automatically added by buildreq on Fri Nov 30 2018 (-bb)
 # optimized out: ca-trust cppunit ed elfutils glibc-kernheaders-generic glibc-kernheaders-x86 gnu-config libcom_err-devel libcrypt-devel libnfnetlink-devel libp11-kit libsasl2-3 libstdc++-devel perl perl-Encode perl-Pod-Escapes perl-Pod-Simple perl-parent perl-podlators pkg-config python-base sh3 xz
@@ -53,6 +54,7 @@ BuildRequires: cppunit-devel doxygen gcc-c++ libcap-devel libdb4-devel libkrb5-d
 %{?_enable_esi:BuildRequires: libxml2-devel libexpat-devel}
 %{?_with_nettle:BuildRequires: libnettle-devel}
 %{?_with_gnutls:BuildRequires: libgnutls-devel >= 3.1.5}
+%{?_with_systemd:BuildRequires: libsystemd-devel}
 
 %description
 Squid is a high-performance proxy caching server for Web clients,
@@ -135,6 +137,7 @@ sed -i -e "s|squid_curtime|$RELEASE_TIME|" include/version.h
 	%{subst_enable ecap} \
 	%{subst_with nettle} \
 	%{subst_with gnutls} \
+	%{subst_with systemd} \
 	--enable-ipv6 \
 	--enable-unlinkd \
 	--enable-cachemgr-hostname=localhost \
@@ -277,7 +280,6 @@ chown -R %name:%name %_spooldir/%name >/dev/null 2>&1 ||:
 %doc %_docdir/%name-%version/debug-sections.txt
 %doc %_docdir/%name-%version/html
 
-
 %files helpers
 %doc %dir %_docdir/%name-%version
 %doc %_docdir/%name-%version/scripts
@@ -295,9 +297,19 @@ chown -R %name:%name %_spooldir/%name >/dev/null 2>&1 ||:
 %exclude %_man8dir/cachemgr.cgi.*
 
 %changelog
+* Sat Oct 24 2020 Alexey Shabalin <shaba@altlinux.org> 4.13-alt1
+- 4.13 (Fixes: CVE-2020-15811, CVE-2020-15810, CVE-2020-24606)
+
+* Sat Oct 24 2020 Alexey Shabalin <shaba@altlinux.org> 4.12-alt1
+- 4.12 (Fixes: CVE-2020-14059, CVE-2020-14058, CVE-2020-15049)
+
+* Fri May 01 2020 Alexey Shabalin <shaba@altlinux.org> 4.11-alt1
+- 4.11 (Fixes: CVE-2019-12519, CVE-2019-12521, CVE-2020-11945)
+- build with systemd sd_notify support
+
 * Sat Mar 14 2020 Alexey Shabalin <shaba@altlinux.org> 4.10-alt1
 - Updated to 4.10.
-- Fixed:
+- Fixes:
   + CVE-2019-12526 Heap Overflow issue in URN processing.
   + CVE-2019-12523 Multiple issues in URI processing.
   + CVE-2019-18676 Multiple issues in URI processing.
