@@ -1,6 +1,6 @@
 Name: wpa_supplicant
 Version: 2.9
-Release: alt2
+Release: alt3
 
 Summary: wpa_supplicant is an implementation of the WPA Supplicant component
 License: BSD
@@ -111,6 +111,10 @@ tar c -C %name/wpa_gui-qt4/icons hicolor |tar x -C %buildroot%_iconsdir
 %_iconsdir/hicolor/*/*/*.png
 
 %changelog
+* Fri Oct 23 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.9-alt3
+- AP: Silently ignore management frame from unexpected source address
+  (Fixes: CVE-2019-16275) (Closes: 39132)
+
 * Wed Dec 04 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.9-alt2
 - added prebuilt icon set and drop inkscape BR
 
