@@ -12,7 +12,7 @@
 %define llvm_version      10.0
 
 Name: 	 thunderbird
-Version: 78.3.3
+Version: 78.4.0
 Release: alt1
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -35,6 +35,7 @@ Source8: thunderbird-wayland.desktop
 
 Patch11: thunderbird-alt-allow-send-in-windows-1251.patch
 Patch12: alt-use-vorbis-on-arm-too.patch
+Patch13: 0013-MOZILLA-1663715-Build-with-Rust-1.47.0.patch
 
 Patch21: mozilla-1353817.patch
 Patch23: build-aarch64-skia.patch
@@ -52,7 +53,6 @@ Patch38: Bug-628252-os2.cc-fails-to-compile-against-GCC-4.6-m.patch
 Patch39: Load-dependent-libraries-with-their-real-path-to-avo.patch
 Patch40: Properly-launch-applications-set-in-HOME-.mailcap.patch
 Patch41: fix-function-nsMsgComposeAndSend-to-respect-Replo.patch
-
 
 Patch50: enigmail-use-juniorModeForceOff.patch
 Patch52: enigmail-gost.patch
@@ -255,6 +255,7 @@ tar -xf %SOURCE6
 
 %patch11 -p2
 %patch12 -p2
+%patch13 -p1
 %patch21 -p2
 %patch23 -p2
 %ifarch %arm
@@ -642,6 +643,12 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt1
+- New version (78.4.0).
+- Fixes:
+  + CVE-2020-15969 Use-after-free in usersctp
+  + CVE-2020-15683 Memory safety bugs fixed in Thunderbird 78.4
+
 * Fri Oct 16 2020 Andrey Cherepanov <cas@altlinux.org> 78.3.3-alt1
 - New version (78.3.3).
 
