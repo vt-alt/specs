@@ -4,7 +4,7 @@
 %define dest_dir %_libdir/OpenBoard
 Name: OpenBoard
 Version: 1.5.4
-Release: alt0.1.p9
+Release: alt1.1.p9
 Summary: Interactive whiteboard for schools and universities
 License: GPL-3.0+
 Group: Education
@@ -57,6 +57,8 @@ BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(poppler)
 BuildRequires: pkgconfig(poppler-cpp)
 BuildRequires: pkgconfig(sdl)
+
+Requires: onboard
 
 %description
 Interactive whiteboard for schools and universities.
@@ -159,6 +161,12 @@ cp -R resources/customizations %buildroot%dest_dir/
 %_bindir/%name
 
 %changelog
+* Tue Oct 27 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt1.1.p9
+- Backport fix to p9 branch (ALT #39107).
+
+* Mon Oct 26 2020 Anton Midyukov <antohami@altlinux.org> 1.5.4-alt2
+- Requires onboard (Closes: 39119)
+
 * Tue Oct 20 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt0.1.p9
 - Backport to p9 branch.
 
