@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        78.3.1
+Version:        78.4.0
 Release:        alt0.1.p9
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -48,8 +48,9 @@ Patch007: 0007-ALT-Fix-aarch64-build.patch
 Patch008: 0008-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
 Patch009: 0009-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
 Patch010: 0010-arm-js-src-wasm-add-struct-user_vfp-definition.patch
-Patch011: 0011-arm-tools-profiler-drop-MOZ_SIGNAL_TRAMPOLINE.patch
+Patch011: 0011-Bug-1640982-Set-CARGO_PROFILE_RELEASE_LTO-true-when-.patch
 Patch012: 0012-use-floats-for-audio-on-arm-too.patch
+Patch013: 0013-MOZILLA-1663715-Build-with-Rust-1.47.0.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -197,6 +198,7 @@ Most likely you don't need to use this package.
 %patch010 -p1
 %patch011 -p1
 %patch012 -p1
+%patch013 -p1 -d mozilla
 ### Finish apply patches
 
 cd mozilla
@@ -233,6 +235,9 @@ find third_party \
 # compile cbindgen
 CBINDGEN_HOME="$PWD/cbindgen"
 CBINDGEN_BINDIR="$CBINDGEN_HOME/bin"
+
+# Do not use desktop notify during build process
+export MOZ_NOSPAM=1
 
 if [ ! -x "$CBINDGEN_BINDIR/cbindgen" ]; then
 	mkdir -p -- "$CBINDGEN_HOME"
@@ -443,6 +448,15 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Tue Oct 20 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt1
+- New version (78.4.0).
+- Fixes:
+  + CVE-2020-15969 Use-after-free in usersctp
+  + CVE-2020-15683 Memory safety bugs fixed in Firefox 82 and Firefox ESR 78.4
+
 * Mon Oct 05 2020 Andrey Cherepanov <cas@altlinux.org> 78.3.1-alt0.1.p9
 - Backport new version to p9 branch.
 
