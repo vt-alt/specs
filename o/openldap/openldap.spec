@@ -1,3 +1,4 @@
+%define _unpackaged_files_terminate_build 1
 %define _sover 2.4
 %define _bname openldap
 ### Build switches for enable or disable fiture ###
@@ -16,8 +17,8 @@
 %def_enable ntlm
 
 Name: openldap
-Version: %_sover.48
-Release: alt3
+Version: %_sover.54
+Release: alt0.M90P.1
 
 Provides: openldap2.4 = %version-%release
 Obsoletes: openldap2.4 < %version-%release
@@ -469,6 +470,7 @@ mv %buildroot/%_sysconfdir/%_bname/*.default \
 mv %buildroot/%_sysconfdir/%_bname/*.example \
 	%buildroot/%_docdir/%_bname-servers-%version/
 rm -f %buildroot%ldap_dir/bases/*.example
+rm -f %buildroot%_sysconfdir/%_bname/slapd.ldif
 
 # Documentations for servers
 mkdir -p %buildroot/%_docdir/%_bname-servers-%version/{back-{null,perl,sql},schema,slapi,overlays}/
@@ -690,6 +692,9 @@ rm -f /var/lib/ldap/%_lib/*.so*
 #[FR] Create chroot-scripts dynamic while build package 
 
 %changelog
+* Sun Oct 25 2020 Alexey Shabalin <shaba@altlinux.org> 2.4.54-alt0.M90P.1
+- 2.4.54 (Fixes: CVE-2020-12243)
+
 * Mon Oct 07 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.4.48-alt3
 - sasl fix fixed
 
