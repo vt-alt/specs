@@ -1,7 +1,7 @@
 %define module_name             e1000e
 %define module_version          3.8.7
 %define module_release          alt1
-%define flavour                 std-def
+%define flavour                 un-def
 %define karch                   %ix86 x86_64
 
 %setup_kernel_module %flavour
@@ -21,7 +21,7 @@ Patch: e1000e-rename.patch
 
 ExclusiveOS: Linux
 BuildRequires(pre): rpm-build-kernel
-BuildRequires(pre): kernel-headers-modules-std-def
+BuildRequires(pre): kernel-headers-modules-un-def
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name = %module_version
 %if 0%{?!_without_check:%{?!_disable_check:1}}
