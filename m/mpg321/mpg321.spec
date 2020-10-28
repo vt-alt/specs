@@ -1,16 +1,23 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: mpg321
 Version: 0.3.2
-Release: alt1
-
+Release: alt2
 Summary: A Free command-line mp3 player, compatible with mpg123
 Summary(ru_RU.UTF-8): mp3 плейер c интерфейсом командной строки, совместимый с mpg123
 Group: Sound
 License: GPLv2+
 Url: http://mpg321.sourceforge.net/
 
-Packager: Igor Zubkov <icesik@altlinux.org>
+Source0: %{name}_%{version}.orig.tar
 
-Source0: %{name}_%{version}.orig.tar.gz
+# Patches from Gentoo
+Patch1: mpg321-0.3.2-format-security.patch
+Patch2: mpg321-0.3.2-CVE-2019-14247.patch
+Patch3: mpg321-0.3.2-gcc10.patch
+
+# Patches from ALT
+Patch100: mpg321-0.3.2-alt-build.patch
 
 # whether to replace mpg123 or not?
 # on PII 350Mhz mpg321 uses 25 percents CPU time against 4.5 percents for mpg123.
@@ -51,8 +58,14 @@ mpg321 - проигрыватель mp3 файлов с интерфейсом �
 
 %prep
 %setup -q -n %name-%version-orig
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch100 -p2
 
 %build
+%add_optflags -Werror=implicit-function-declaration
+
 %if %REPLACE_123
 %configure \
     --enable-alsa=no \
@@ -75,6 +88,9 @@ mpg321 - проигрыватель mp3 файлов с интерфейсом �
 %_man1dir/*
 
 %changelog
+* Tue Oct 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.2-alt2
+- Applied patches from Gentoo (Fixes: CVE-2019-14247).
+
 * Mon Nov 26 2012 Igor Zubkov <icesik@altlinux.org> 0.3.2-alt1
 - 0.2.11 -> 0.3.2
 - Enable IPv6
