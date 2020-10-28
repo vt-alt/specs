@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.6.1
+Version: 4.6.2
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -71,6 +71,9 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Mon Oct 26 2020 Ivan Razzhivin <underwit@altlinux.org> 4.6.2-alt1
+- fix regular expression (closes: 39050)
+
 * Fri Oct 09 2020 Ivan Razzhivin <underwit@altlinux.org> 4.6.1-alt1
 - fix clocksource (closes: 39050)
 
