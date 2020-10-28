@@ -1,6 +1,8 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: atftp
-Version: 0.7.1
-Release: alt1.qa1
+Version: 0.7.2
+Release: alt1
 
 URL: https://sourceforge.net/projects/atftp
 Summary: Advanced Trivial File Transfer Protocol
@@ -8,7 +10,12 @@ License: GPLv2+
 Group: System/Servers
 Conflicts: tftpd
 
-Source: %name-%version-%release.tar
+Source: %name-%version.tar
+
+Source1: atftpd.init
+Source2: atftpd.sysconfig
+
+Patch1: %name-%version-alt.patch
 
 %description
 atftp stands for Advanced Trivial File Transfer Protocol. It is called
@@ -23,6 +30,7 @@ faster boot of hundreds of machine simultaneously.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %configure --disable-libpcre
@@ -30,8 +38,8 @@ make
 
 %install
 %makeinstall
-install -pm0755 -D atftpd.init %buildroot%_initdir/atftpd
-install -pm0644 -D atftpd.sysconfig %buildroot%_sysconfdir/sysconfig/atftpd
+install -pm0755 -D %SOURCE1 %buildroot%_initdir/atftpd
+install -pm0644 -D %SOURCE2 %buildroot%_sysconfdir/sysconfig/atftpd
 mkdir -p %buildroot%_localstatedir/tftpboot
 mkdir -pm0770 %buildroot%_runtimedir/atftpd
 mkdir -pm0770 %buildroot%_logdir/atftpd
@@ -69,6 +77,9 @@ touch %buildroot%_sysconfdir/mtftp.conf
 %dir %attr(0770,root,_atftpd) %_runtimedir/atftpd
 
 %changelog
+* Tue Oct 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.2-alt1
+- Updated to upstream version 0.7.2 (Fixes: CVE-2019-11365, CVE-2019-11366).
+
 * Thu Mar 15 2018 Igor Vlasenko <viy@altlinux.ru> 0.7.1-alt1.qa1
 - NMU: added URL:
 
