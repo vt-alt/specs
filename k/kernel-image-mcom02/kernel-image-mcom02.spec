@@ -4,7 +4,7 @@
 
 Name: kernel-image-mcom02
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt4
+Release: alt5
 
 Provides: kernel-modules-dm-secdel-mcom02 = %version-%release
 
@@ -254,6 +254,10 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Wed Oct 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt5
+- LiME 1.9.1
+- nDPI 2.6
+
 * Wed Oct 21 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt4
 - rebuilt with AUDITSYSCALL=y
 
