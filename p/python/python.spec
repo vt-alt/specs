@@ -4,7 +4,7 @@
 Name: %real_name
 
 Version: 2.7.16
-Release: alt1.M90P.1
+Release: alt1.M90P.2
 
 %define package_name		%real_name
 %define weight			1001
@@ -182,6 +182,7 @@ This is a python with relaxed conflicts: using with python24 are allowed.
 Summary: Base python modules and executables
 Group: Development/Python
 Provides: /usr/bin/python
+Provides: python2-base = %EVR
 Provides: %python_libdir %python_dynlibdir %python_sitelibdir %python_tooldir
 %if "lib" != "%_lib"
 Provides: %prefix/lib/%python_name %prefix/lib/%python_name/site-packages %prefix/lib/%python_name/tools
@@ -1177,6 +1178,9 @@ rm -f %buildroot%_man1dir/python2.1 %buildroot%_man1dir/python.1
 %endif
 
 %changelog
+* Mon Oct 26 2020 Andrey Cherepanov <cas@altlinux.org> 2.7.16-alt1.M90P.2
+- Add provides python2-base for python-base.
+
 * Fri Jan 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.7.16-alt1.M90P.1
 - 'Trusted mode': optional modules loading paths restriction
 

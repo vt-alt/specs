@@ -5,7 +5,7 @@
 %def_enable systemd
 
 Name: pcsc-lite
-Version: 1.8.25
+Version: 1.9.0
 Release: alt1
 
 Summary: PC/SC Lite smart card framework and applications
@@ -26,6 +26,7 @@ Requires: libpcsclite = %version-%release
 BuildRequires: rpm-build-licenses perl-podlators
 BuildRequires: flex
 BuildRequires: pkgconfig(libudev)
+BuildRequires: python2-base
 %{?_enable_polkit:BuildRequires: pkgconfig(polkit-gobject-1) >= 0.111}
 %{?_enable_systemd:BuildRequires: pkgconfig(systemd)}
 
@@ -75,6 +76,7 @@ Static libraries for libpcsclite
 %prep
 %setup
 subst 's|AC_PREREQ(\[2.69\])|AC_PREREQ(\[2.68\])|' configure.ac
+subst 's|%_bindir/python$|%__python|' src/spy/pcsc-spy
 
 %build
 %autoreconf
@@ -151,6 +153,12 @@ install -pDm644 %SOURCE3 %buildroot/lib/tmpfiles.d/pcsc-lite.conf
 %endif
 
 %changelog
+* Mon Jun 15 2020 Andrey Cherepanov <cas@altlinux.org> 1.9.0-alt1
+- New version.
+
+* Fri Jan 03 2020 Andrey Cherepanov <cas@altlinux.org> 1.8.26-alt1
+- New version.
+
 * Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.8.25-alt1
 - New version.
 
