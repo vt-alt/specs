@@ -27,14 +27,14 @@
 
 Name: LibreOffice-still
 %define hversion 6.4
-%define urelease 6.2
+%define urelease 7.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
 
-Release: alt2
+Release: alt1
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -629,6 +629,9 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.7.2-alt1
+- New Still version 6.4.7.2.
+
 * Sat Sep 05 2020 Andrey Cherepanov <cas@altlinux.org> 6.4.6.2-alt2
 - Package KDE5-specific libraries to LibreOffice-still-kde5.
 
