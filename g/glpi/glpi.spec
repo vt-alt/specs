@@ -1,8 +1,8 @@
 %define installdir %webserver_webappsdir/%name
 
 Name: glpi
-Version: 9.4.6
-Release: alt1
+Version: 9.5.2
+Release: alt2
 
 Summary: IT and asset management software
 License: GPLv2
@@ -15,6 +15,7 @@ BuildArch: noarch
 Source0: http://www.glpi-project.org/IMG/gz/%name-%version.tar.gz
 Source1: apache2.conf
 Source2: README.ALT
+Source3: UPGRADE.ALT
 Patch: patch0.patch
 
 Requires: webserver-common php-engine curl lynx
@@ -39,7 +40,10 @@ Apache 2.x web-server configuration for %name
 %package php7
 Summary: PHP7 dependencies for %name
 Group: Networking/Other
-Requires: %name = %version-%release, php7-mysqli, php7-ldap, php7-imap, php7-curl, php7-gd2, php7-fileinfo, php7-mbstring, php7-apcu, php7-opcache, php7-xmlrpc, php7-exif
+Requires: %name = %version-%release
+Requires: php7-curl, php7-fileinfo, php7-gd2, php7-json, php7-mbstring, php7-mysqlnd-mysqli, php7-session, php7-zlib, php7-simplexml, php7-xml, php7-intl
+Requires: php7-bz2, php7-imap, php7-ldap, php7-openssl, php7-apcu, php7-xmlrpc
+
 %description php7
 PHP7 dependencies for %name
 
@@ -57,8 +61,9 @@ install -pD -m0644 %_sourcedir/apache2.conf %buildroot%_sysconfdir/httpd2/conf/s
 mkdir -p %buildroot%installdir
 cp -rp * %buildroot%installdir/
 
-#install README.ALT
+#install README.ALT and UPGRADE.ALT
 install -pD -m0644 %_sourcedir/README.ALT README.ALT
+install -pD -m0644 %_sourcedir/UPGRADE.ALT UPGRADE.ALT
 
 # remove .htaccess files - we're use apache config instead
 find %buildroot%installdir -name .htaccess -delete
@@ -66,8 +71,11 @@ find %buildroot%installdir -name .htaccess -delete
 # remove files
 find %buildroot%installdir/files -type f -delete
 find $RPM_BUILD_ROOT \( -name 'Thumbs.db' -o -name 'Thumbs.db.gz' \) -print -delete
+find %buildroot%installdir -name *.py -delete
+rm -rf %buildroot%installdir/vendor/sabre/dav/bin
 
 %post
+echo "If you upgrade from previous version then read /usr/share/doc/glpi/UPGRADE.ALT"
 
 %post apache2
 if [ "$1" = "1" ]; then
@@ -93,12 +101,12 @@ fi
 #%config %attr(0664,root,%webserver_group) %installdir/config/define.php
 %dir %attr(2770,root,%webserver_group) %installdir/files
 %attr(2770,root,%webserver_group) %installdir/files/*
+%dir %attr(2770,root,%webserver_group) %installdir/marketplace
 %installdir/ajax
 %installdir/bin
 %installdir/config
 %installdir/css
 %installdir/css_compiled
-%installdir/files
 %installdir/front
 %installdir/inc
 %installdir/install
@@ -107,6 +115,7 @@ fi
 %installdir/locales
 %installdir/pics
 %installdir/plugins
+%installdir/public
 %installdir/scripts
 %installdir/sound
 %installdir/vendor
@@ -118,8 +127,10 @@ fi
 %doc CONTRIBUTING.md
 %doc README.md
 %doc SUPPORT.md
+%doc SECURITY.md
 %doc apirest.md
 %doc README.ALT
+%doc UPGRADE.ALT
 
 %files apache2
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/sites-available/%name.conf
@@ -127,6 +138,22 @@ fi
 %files php7
 
 %changelog
+* Tue Oct 27 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.2-alt2
+- Fixed spec
+
+* Mon Oct 26 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.2-alt1
+-New version 9.5.2
+- Security fixes:
+ + CVE-2020-15176 : SQL injection with a query parameter of user form
+ + CVE-2020-15175 : Removal of .htaccess file in the files folder via a plugin endpoint
+ + CVE-2020-15217 : Leakage issue with knowledge base
+ + CVE-2020-15177 : Stored XSS in install script
+ + CVE-2020-15226 : Minor SQL Injection in Search API
+
+
+* Fri Jul 24 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.1-alt1
+- New version 9.5.1
+
 * Sun Jun 07 2020 Pavel Zilke <zidex at altlinux dot org> 9.4.6-alt1
 - New version 9.4.6
 - This is a security release, upgrading is highly recommended
