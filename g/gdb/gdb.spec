@@ -11,7 +11,7 @@
 
 Name: gdb
 Version: 8.2.50.20180917
-Release: alt4.1
+Release: alt6
 
 Summary: A GNU source-level debugger for C, C++ and other languages
 License: GPLv3+
@@ -28,6 +28,8 @@ Source3: gdb-gstack.man
 Patch1: gdb-alt-testsuite-version.patch
 Patch2: gdb-alt-readline.patch
 Patch3: gdb-alt-bfd.patch
+Patch4: gdb-alt-fix-build-on-mips.patch
+Patch5: gdb-alt-fix-CVE-2019-1010180.patch
 
 ### Fedora patches
 # Match the Fedora's version info.
@@ -733,6 +735,8 @@ mv readline/doc readline-doc
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p2
+%patch5 -p1
 
 # We want to use these as system libraries.
 rm -r readline zlib
@@ -876,8 +880,14 @@ fi
 %_libdir/lib*.a
 
 %changelog
+* Wed Oct 28 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 8.2.50.20180917-alt6
+- Applied upstream patch (ALT#39135) (fixes CVE-2019-1010180).
+
 * Tue Jul 14 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 8.2.50.20180917-alt4.1
 - ubsan renders gdb unusable on arm and adds no benefit in general, disable it
+
+* Tue Jul 09 2019 Ivan A. Melnikov <iv@altlinux.org> 8.2.50.20180917-alt5
+- Fix build on mips.
 
 * Thu Jun 27 2019 Ivan Zakharyaschev <imz@altlinux.org> 8.2.50.20180917-alt4
 - %%pre: corrected the old symlink path in 8.2.50.20180917-alt3.
