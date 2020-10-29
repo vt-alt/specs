@@ -2,7 +2,7 @@
 
 Name: libfreetype
 Version: 2.10.1
-Release: alt1.1.p9
+Release: alt1.1.p9.1
 Summary: A free and portable font rendering engine
 License: FTL or GPLv2+
 Group: System/Libraries
@@ -26,6 +26,7 @@ Patch11: freetype-2.10.0-enable-subpixel-rendering.patch
 Patch12: freetype-2.10.0-enable-valid.patch
 Patch13: ft2demos-2.4.10-rh-more-demos.patch
 Patch14: freetype-2.10.0-alt-e2k.patch
+Patch15: freetype-2.10.1-debian-cve-2020-15999.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: bzlib-devel libX11-devel libharfbuzz-devel libpng-devel zlib-devel
@@ -92,6 +93,8 @@ ln -s ft2demos-%version ft2demos
 %patch11 -p1
 %patch12 -p1
 %patch13 -p0
+
+%patch15 -p1
 
 %ifarch %e2k
 # lcc 1.23.12 lacks vector_shuffle gcc extension
@@ -162,6 +165,9 @@ mv %buildroot%develdocdir/{FTL.TXT,LICENSE.TXT,CHANGES.bz2} %buildroot%docdir/
 %_bindir/ft*
 
 %changelog
+* Thu Oct 29 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.10.1-alt1.1.p9.1
+- Fixed CVE-2020-15999.
+
 * Sat Sep 05 2020 Andrey Cherepanov <cas@altlinux.org> 2.10.1-alt1.1.p9
 - Provides freetype for Zoom compatibility.
 
