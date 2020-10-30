@@ -1,17 +1,21 @@
 Name: installer-feature-selinux
 Version: 0.12
-Release: alt1
+Release: alt12
 
 Summary: Installer selinux hooks
 License: GPL
 Group: System/Configuration/Other
-BuildArch: noarch
+
+Url: http://altlinux.org/sl
 Source: %name-%version.tar
+
+BuildArch: noarch
 Provides: %name-stage2
+
+BuildRequires(pre): rpm-macros-alterator
 
 %description
 This package contains selinux hooks for installer.
-
 
 %prep
 %setup
@@ -19,14 +23,55 @@ This package contains selinux hooks for installer.
 %install
 %define hookdir %_datadir/install2
 mkdir -p %buildroot%hookdir/{initinstall,preinstall,postinstall}.d
+mkdir -p %buildroot%_alterator_libdir/hooks/setup-postinstall.d
 install -pm755 preinstall.sh %buildroot%hookdir/preinstall.d/90-selinux.sh
 install -pm755 postinstall.sh %buildroot%hookdir/postinstall.d/90-selinux.sh
+install -pm755 preinstall.sh %buildroot%_alterator_libdir/hooks/setup-postinstall.d/80-selinux.sh
 
 %files
 %hookdir/preinstall.d/*
 %hookdir/postinstall.d/*
+%_alterator_libdir/hooks/setup-postinstall.d/*
 
 %changelog
+* Thu Oct 15 2020 Anton Midyukov <antohami@altlinux.org> 0.12-alt12
+- Added support extlinux.conf, bootconf (Tavolga)
+- Added support alterator-setup
+- preinstall.sh: Not enable enforcing mode
+
+* Mon May 25 2020 Denis Medvedev <nbr@altlinux.org> 0.12-alt11
+- different format of inline doc. Small fix.
+
+* Fri May 22 2020 Denis Medvedev <nbr@altlinux.org> 0.12-alt10
+- proper escaping in inline documents for scripts that fix working
+of level showing applet.
+
+* Thu May 21 2020 Denis Medvedev <nbr@altlinux.org> 0.12-alt9
+- fix typos in scripts.
+
+* Fri Apr 24 2020 Denis Medvedev <nbr@altlinux.org> 0.12-alt8
+- prepared scripts for safe values for seapplet. Seapplet doesn't work
+with DRI3 and MITSHM in QT.
+
+* Wed Oct 09 2019 Denis Medvedev <nbr@altlinux.org> 0.12-alt7
+- setting shell for officer if selinux
+
+* Fri Jun 28 2019 Denis Medvedev <nbr@altlinux.org> 0.12-alt6
+- also removed extra smem - already added by installer.
+
+* Tue Jun 25 2019 Michael Shigorin <mike@altlinux.org> 0.12-alt5
+- fix e2k session setup under systemd 239
+- harden/denoise scripts regarding absent files
+
+* Thu May 23 2019 Denis Medvedev <nbr@altlinux.org> 0.12-alt4
+- small fix in regexp
+
+* Thu May 23 2019 Denis Medvedev <nbr@altlinux.org> 0.12-alt3
+- Integrated root login disabling features.
+
+* Wed May 22 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.12-alt2
+- fixed work without dovecot installed
+
 * Tue May 21 2019 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.12-alt1
 - disable ipv6 in dovecot.conf
 
