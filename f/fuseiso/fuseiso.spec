@@ -1,17 +1,21 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: fuseiso
 Version: 20070708
-Release: alt2.qa1
-
+Release: alt3
 Summary: Mount ISO filesystem images as a non-root user
 Group: File tools
 URL: http://sourceforge.net/projects/fuseiso/
-License: GPL
+License: GPL-2.0+
 
-Source0: %name-%version.tar.bz2
+Source0: %name-%version.tar
 
 Patch0: fuseiso-20070708-alt-build.patch
-
-Packager: Igor Zubkov <icesik@altlinux.org>
+# Patches from Gentoo
+Patch1: fuseiso-20070708-largeiso.patch
+Patch2: fuseiso-20070708-fix-typo.patch
+Patch3: fuseiso-20070708-CVE-2015-8837.patch
+Patch4: fuseiso-20070708-integer-overflow.patch
 
 # Automatically added by buildreq on Sun Nov 16 2008
 BuildRequires: gcc-c++ glib2-devel libfuse-devel zlib-devel
@@ -22,8 +26,12 @@ plain ISO9660 Level 1 and 2, Rock Ridge, Joliet, zisofs..
 Supported image types: ISO, BIN (single track only), NRG, MDF, IMG (CCD).
 
 %prep
-%setup -q
+%setup
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
 %autoreconf
@@ -38,6 +46,9 @@ Supported image types: ISO, BIN (single track only), NRG, MDF, IMG (CCD).
 %_bindir/%name
 
 %changelog
+* Thu Oct 29 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 20070708-alt3
+- Applied patches from Gentoo (Fixes: CVE-2015-8836, CVE-2015-8837).
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 20070708-alt2.qa1
 - NMU: rebuilt for debuginfo.
 
