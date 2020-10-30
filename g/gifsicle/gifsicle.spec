@@ -1,12 +1,15 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: gifsicle
-Version: 1.88
+Version: 1.92
 Release: alt1
 Summary: command-line program for manipulating GIF images
 Group: Graphics
-License: GPL
+License: GPL-2.0
 Url: http://www.lcdf.org/gifsicle
 
-Source: %name-%version.tar.gz
+# https://github.com/kohler/gifsicle.git
+Source: %name-%version.tar
 
 # Automatically added by buildreq on Tue Mar 27 2007
 BuildRequires: libSM-devel libX11-devel
@@ -23,6 +26,7 @@ program that checks whether two GIFs look the same.
 %setup
 
 %build
+%autoreconf
 %configure
 %make_build
 
@@ -36,9 +40,12 @@ program that checks whether two GIFs look the same.
 %_man1dir/gifsicle.1.*
 %_bindir/gifview
 %_man1dir/gifview.1.*
-%doc README* NEWS
+%doc README.md NEWS.md
 
 %changelog
+* Wed Oct 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.92-alt1
+- Updated to upstream version 1.92 (Fixes: CVE-2017-1000421).
+
 * Tue Jul 14 2015 Fr. Br. George <george@altlinux.ru> 1.88-alt1
 - Autobuild version bump to 1.88
 
