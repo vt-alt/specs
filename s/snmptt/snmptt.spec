@@ -2,17 +2,20 @@
 %filter_from_requires /perl.SNMP.pm/d
 
 Name: snmptt
-Version: 1.4
-Release: alt5
+Version: 1.4.2
+Release: alt1
 Summary: An SNMP trap handler written in Perl
 
 Group: System/Servers
 License: GPLv2+
 Url: http://www.snmptt.org/
+
 Source0: http://downloads.sourceforge.net/snmptt/%{name}-%{version}.tar
+
 #TODO: Upstream
 Source1: %name.service
 Source2: %name.init
+
 BuildArch: noarch
 
 BuildRequires: perl-Text-Balanced perl-Config-IniFiles
@@ -32,7 +35,7 @@ parameters.
 Summary: MySQL support for %name
 Group: System/Servers
 Requires: perl(DBD/mysql.pm)
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description mysql
 MySQL support for %name
@@ -43,7 +46,7 @@ MySQL support for %name
 Summary: PostgreSQL support for %name
 Group: System/Servers
 Requires: perl(DBD/Pg.pm)
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description postgresql
 PostgreSQL support for %name
@@ -54,7 +57,7 @@ PostgreSQL support for %name
 Summary: ODBC support for %name
 Group: System/Servers
 Requires: perl(DBD/ODBC.pm)
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description odbc
 ODBC support for %name
@@ -65,7 +68,7 @@ ODBC support for %name
 Summary: NET-SNMP support for %name
 Group: System/Servers
 Requires: perl(SNMP.pm)
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description net-snmp
 NET-SNMP support for %name
@@ -133,6 +136,9 @@ install -d %buildroot%_logdir/snmptt
 %files net-snmp
 
 %changelog
+* Tue Oct 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.2-alt1
+- Updated to upstream version 1.4.2 (Fixes: CVE-2020-24361).
+
 * Fri Jan 29 2016 Terechkov Evgenii <evg@altlinux.org> 1.4-alt5
 - Fix service stopping with systemd
 
