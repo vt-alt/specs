@@ -1,7 +1,7 @@
 %define distro cliff
 Name: installer-distro-%distro
 Version: 8.2
-Release: alt0.M90P.1
+Release: alt4
 
 License: GPL
 Group: System/Configuration/Other
@@ -12,6 +12,29 @@ Source: %name-%version.tar
 
 %description
 Installer files for Cliff distro.
+
+%package common
+Summary: Cliff Installer common files
+License: GPL
+Group: System/Configuration/Other
+
+Requires: alterator-officer
+
+%description common
+Cliff Installer common files.
+Needed also for alterator-setup.
+
+%package rootfs
+Summary: Cliff Installer for alterator-setup
+License: GPL
+Group: System/Configuration/Other
+
+Requires: %name-common = %EVR
+Requires(pre): alterator-setup
+Requires: installer-integ-stage2
+
+%description rootfs
+Cliff Installer for alterator-setup.
 
 %package stage2
 Summary: Installer stage2
@@ -25,7 +48,7 @@ Requires: alterator-datetime
 Requires: alterator-pkg
 Requires: alterator-vm
 Requires: alterator-notes
-Requires: alterator-officer
+Requires: %name-common = %EVR
 Requires: x-cursor-theme-jimmac
 Requires: installer-integ-stage2
 
@@ -66,17 +89,37 @@ mkdir -p %buildroot%install2dir/steps
 cp -a * %buildroot%install2dir/
 cp -a steps.d/* %buildroot%install2dir/steps 
 
+%post rootfs
+if [ $1 = 1 ]; then
+	sed -i '/root/a users-officer' %_sysconfdir/alterator-setup/steps
+fi
+
+%files common
+%install2dir/steps/*.desktop
+%install2dir/*.d/*
+
+%files rootfs
+
 %files stage2
 %install2dir/alterator-menu
 %install2dir/installer-steps
-%install2dir/steps/*.desktop
 %install2dir/services-*
 %install2dir/systemd-*
-%install2dir/*.d/*
 
 %files stage3
 
 %changelog
+* Thu Oct 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt4
+- officer step skip in network installation
+
+* Thu Oct 22 2020 Anton Midyukov <antohami@altlinux.org> 8.2-alt3
+- Merge with p9
+- Require installer-integ-stage2 packages in rootfs.
+
+* Tue Oct 20 2020 Anton Midyukov <antohami@altlinux.org> 8.2-alt2
+- Moved installer steps to installer-distro-cliff-common subpackage
+- Added officer step for alterator-setup
+
 * Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 8.2-alt0.M90P.1
 - Build version 8.2-alt1 for the p9 branch.
 - Require installer-integ packages in stage2 and stage3.
