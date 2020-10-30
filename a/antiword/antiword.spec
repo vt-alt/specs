@@ -1,14 +1,21 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: antiword
 Version: 0.37
-Release: alt3.1.qa1
-
+Release: alt4
 Summary: Antiword an application to display Microsoft(R) Word files
 License: GPL
 Group: Text tools
 Url: http://www.winfield.demon.nl/index.html
-Packager: Andrey Semenov <mitrofan@altlinux.ru>
 
-Source: %name-%version.tar.gz
+Source: %name-%version.tar
+
+# Patches from Debian
+Patch1: 10_fix_buffer_overflow_wordole_c.patch
+Patch2: 50_antiword-manpage-hyphen-to-minus.patch
+Patch3: docx.patch
+Patch4: remove-cjb.net-references.patch
+Patch5: use-snprintf.patch
 
 %description
 Antiword is a free MS Word reader for Linux and RISC OS. There are ports to
@@ -27,6 +34,11 @@ its KDE-enabled part.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 %make_build
@@ -43,12 +55,15 @@ cp -a Resources/ %buildroot%_datadir/%name
 %doc Docs/ReadMe Docs/testdoc.doc
 %_bindir/%name
 %_datadir/%name/
-%_man1dir/%name.1.*
+%_man1dir/%name.1*
 
 %files -n kantiword
 %_bindir/kantiword
 
 %changelog
+* Thu Oct 29 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.37-alt4
+- Applied patches from Debian (Fixes: CVE-2014-8123).
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 0.37-alt3.1.qa1
 - NMU: rebuilt for debuginfo.
 
