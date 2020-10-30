@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-setup
-Version: 0.3.4
+Version: 0.3.6
 Release: alt1
 
 Summary: Perform initial setup of an OEM installation (warning!)
@@ -41,16 +41,27 @@ next boot!  Given that its sole purpose is the _initial_
 configuration of a new system (like setting root password)
 nobody should need that on an up-and-running host.
 
+%package x11vnc
+Summary: Perform initial setup of an OEM installation through VNC (warning!)
+Group: System/Configuration/Other
+Requires: x11vnc-service
+Requires: %name
+Requires: alterator-vnc
+
+%description x11vnc
+This is a X11 VNC version of the alterator setup package.
+
+WARNING: you really don't want to install this package
+into an already configured system as it may spoil the
+next boot!  Given that its sole purpose is the _initial_
+configuration of a new system (like setting root password)
+nobody should need that on an up-and-running host.
+
 %prep
 %setup
 
 %install
 %makeinstall
-
-# TODO: alterator-wizardface might take a parameter
-mkdir -p %buildroot%_datadir/install2
-ln -s ../../..%_sysconfdir/alterator-setup/steps \
-	%buildroot%_datadir/install2/installer-steps
 
 cat >> %buildroot%_sysconfdir/alterator-setup/config << EOF
 # erase %name and related packages
@@ -59,34 +70,62 @@ EOF
 
 %files
 %dir %_sysconfdir/%name
-%config(noreplace) %_sysconfdir/%name/*
+%config(noreplace) %_sysconfdir/%name/config
 %_initdir/setup
 %_sbindir/%name
 %_alterator_datadir/steps/*
+%exclude %_alterator_datadir/steps/vnc.desktop
 %_alterator_datadir/ui/*
 %_alterator_libdir/hooks/*/*
 %_alterator_backend3dir/*
 %_datadir/alterator-setup/
-%_datadir/install2/installer-steps
-/lib/systemd/system/setup.*
+/lib/systemd/system/setup.service
+/lib/systemd/system/setup.target
+%config(noreplace) %_sysconfdir/%name/steps
+
+%files x11vnc
+%_initdir/setup-vnc
+/lib/systemd/system/setup-vnc.service
+/lib/systemd/system/setup-vnc.target
+%_alterator_datadir/steps/vnc.desktop
+%config(noreplace) %_sysconfdir/%name/steps-vnc
 
 # the restore is done in postinstall script
 # triggered by successful completion of the module
 # as it can be reused now (doesn't self destruct)
 %post
+[ ! -f /lib/systemd/system/setup-vnc.target ] || exit 0
 %post_service setup
 [ -d /etc/systemd/system ] || exit 0
 mv /etc/systemd/system/default.target /etc/systemd/system/default.target.bak ||:
 ln -sf /lib/systemd/system/setup.target /etc/systemd/system/default.target
 
+%post x11vnc
+%post_service setup-vnc
+[ -d /etc/systemd/system ] || exit 0
+mv /etc/systemd/system/default.target /etc/systemd/system/default.target.bak ||:
+ln -sf /lib/systemd/system/setup-vnc.target /etc/systemd/system/default.target
+
 # package is removed in postinstall hook, but
 # 'systemd stop' stops whole setup.service with hook.
 %preun
-if [ -x /sbin/sd_booted ]; then
+if [ -x /sbin/sd_booted -a ! -f /lib/systemd/system/setup-vnc.target ]; then
 /sbin/sd_booted || %preun_service setup
 fi
 
+%preun x11vnc
+if [ -x /sbin/sd_booted ]; then
+/sbin/sd_booted || %preun_service setup-vnc
+fi
+
 %changelog
+* Thu Oct 15 2020 Anton Midyukov <antohami@altlinux.org> 0.3.6-alt1
+- setup-postinstall.d: Run '/sbin/integalert fix', if it exist before reboot
+- setup-postinstall.d: Add 94-bootloder-update
+
+* Tue Apr 03 2020 Nikita Ermakov <arei@altlinux.org> 0.3.5-alt1
+- Add VNC support.
+
 * Fri Feb 14 2020 Mikhail Efremov <sem@altlinux.org> 0.3.4-alt1
 - postinstall: Run indexhtml-update.
 
@@ -98,6 +137,7 @@ fi
 
 * Fri Dec 06 2019 Ivan A. Melnikov <iv@altlinux.org> 0.3.3-alt4
 - remove rootfs-installer-features on cleanup, if present
+
 
 * Fri Dec 28 2018 Ivan A. Melnikov <iv@altlinux.org> 0.3.3-alt3
 - setup.service: relax dependency on plymouth-start.service
