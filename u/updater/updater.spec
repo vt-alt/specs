@@ -1,5 +1,5 @@
 Name:     updater
-Version:  1.2
+Version:  1.3
 Release:  alt1
 
 Summary:  Updater of packages for distros with security and integrity
@@ -32,7 +32,10 @@ install -Dm 0750 integrity-applier %buildroot%_bindir/integrity-applier
 install -Dm 0640 updater-after.service %buildroot/lib/systemd/system/updater-after.service
 install -Dm 0640 updater-main.service %buildroot/lib/systemd/system/updater-main.service
 install -Dm 0640 updater-signing.service %buildroot/lib/systemd/system/updater-signing.service
-install -Dm 0750 parser-bootloader-data.awk %buildroot%_sbindir/parser-bootloader-data.awk
+install -Dm 0750 parser-bootloader-grub.awk %buildroot%_sbindir/parser-bootloader-grub.awk
+install -Dm 0750 parser-bootloader-boot-conf.awk %buildroot%_sbindir/parser-bootloader-boot-conf.awk
+install -Dm 0750 parser-bootloader-bootconf.awk %buildroot%_sbindir/parser-bootloader-bootconf.awk
+install -Dm 0750 parser-bootloader-extlinux-conf.awk %buildroot%_sbindir/parser-bootloader-extlinux-conf.awk
 
 %files
 %doc README
@@ -41,6 +44,13 @@ install -Dm 0750 parser-bootloader-data.awk %buildroot%_sbindir/parser-bootloade
 /lib/systemd/system/*
 
 %changelog
+* Mon Oct 12 2020 Anton Midyukov <antohami@altlinux.org> 1.3-alt1
+- added support /boot/extlinux/extlinux.conf to updater-utils
+- added support /boot/bootconf to updater-utils
+
+* Mon May 25 2020 Denis Medvedev <nbr@altlinux.org> 1.2-alt2
+- added code to fix selinux attributes on a newly installed packets.
+
 * Fri Jul 26 2019 Denis Medvedev <nbr@altlinux.org> 1.2-alt1
 - fixed not needed deps on selinux, grub. Audit log now
 renamed after update
