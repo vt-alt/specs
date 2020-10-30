@@ -2,7 +2,7 @@
 %define _inspircd_group _inspircd
 
 Name: inspircd
-Version: 2.0.26
+Version: 2.0.29
 Release: alt1
 
 Summary: InspIRCd is a modular Internet Relay Chat (IRC) server 
@@ -89,6 +89,9 @@ install -d -m0755 %buildroot%_logdir/%name
 %doc README.md
 
 %changelog
+* Mon Oct 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.29-alt1
+- Updated to upstream version 2.0.29 (Fixes: CVE-2019-20917, CVE-2020-25269).
+
 * Tue Jun 26 2018 Pavel Akopov <pak@altlinux.org> 2.0.26-alt1
 - initial build
 
