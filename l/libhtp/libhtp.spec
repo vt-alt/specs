@@ -1,12 +1,16 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: libhtp
 Epoch: 1
-Version: 0.5.25
-Release: alt1.qa1
+Version: 0.5.35
+Release: alt1
 Summary: LibHTP is a security-aware parser for the HTTP protocol and the related bits and pieces
-License: BSD License
+License: BSD-3-Clause
 Group: Security/Networking
 Url: https://github.com/OISF/libhtp
+
 Source0: %name-%version.tar
+
 BuildRequires: zlib-devel
 
 %description
@@ -34,10 +38,18 @@ follows:
 %package devel
 Summary: Development headers and libraries for %name
 Requires: %name = %EVR
-Group: Security/Networking
+Group: Development/C
 
 %description devel
 Development headers and libraries for %name.
+
+%package devel-static
+Summary: Static libraries for %name
+Requires: %name-devel = %EVR
+Group: Development/C
+
+%description devel-static
+Static libraries for %name.
 
 %prep
 %setup
@@ -58,7 +70,13 @@ Development headers and libraries for %name.
 %_includedir/htp
 %_libdir/pkgconfig/htp.pc
 
+%files devel-static
+%_libdir/*.a
+
 %changelog
+* Tue Oct 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.5.35-alt1
+- Updated to upstream version 0.5.35 (Fixes: CVE-2019-17420).
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 1:0.5.25-alt1.qa1
 - NMU: applied repocop patch
 
