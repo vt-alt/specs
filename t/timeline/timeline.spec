@@ -1,6 +1,6 @@
 Name: timeline
-Version: 2.2.0
-Release: alt2
+Version: 2.3.0
+Release: alt1
 Group: Office
 Summary: Displaying and navigating events on a timeline
 License: GPL-3.0 and CC-BY-SA-3.0
@@ -96,6 +96,9 @@ rm -rf %buildroot%_datadir/timeline/dependencies
 %python3_sitelibdir/timelinelib*
 
 %changelog
+* Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 2.3.0-alt1
+- New version.
+
 * Thu Jun 11 2020 Andrey Cherepanov <cas@altlinux.org> 2.2.0-alt2
 - Complete Russian translation (thanks Olesya Gerasimenko).
 
