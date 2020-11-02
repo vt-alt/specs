@@ -1,18 +1,21 @@
 %define _unpackaged_files_terminate_build 1
+
 %define oname FileZilla
 
 Name: filezilla
-Version: 3.40.0
+Version: 3.51.0
 Release: alt1
 Summary: FileZilla is a fast and reliable FTP client
 
 Group: Networking/File transfer
 License: GPL
-Url: http://filezilla.sourceforge.net/
-# Repacked http://download.filezilla-project.org/client/%{oname}_%{version}_src.tar.bz2
+Url: https://filezilla-project.org/
+# Repacked https://download.filezilla-project.org/client/%{oname}_%{version}_src.tar.bz2
 Source: %oname-%version.tar
 
-BuildRequires: gcc-c++ libdbus-devel libfilezilla-devel libgnutls-devel libgtk+3-devel libnettle-devel libpugixml-devel libsqlite3-devel libwxGTK3.0-devel xdg-utils
+Patch1: %name-%version-alt-system-pugixml.patch
+
+BuildRequires: gcc-c++ libdbus-devel libfilezilla-devel libgtk+3-devel libnettle-devel libpugixml-devel libsqlite3-devel libwxGTK3.0-devel xdg-utils
 
 %description
 FileZilla is a fast and reliable FTP client and server with lots
@@ -20,18 +23,27 @@ of useful features and an intuitive interface
 
 %prep
 %setup -n %oname-%version
+%patch1 -p2
 
 %build
-%configure --disable-autoupdatecheck
+%autoreconf
+%configure \
+	--disable-autoupdatecheck \
+	--with-pugixml=system \
+	%nil
+
 %make_build
 
 %install
-%make_install DESTDIR=%buildroot install
+%makeinstall_std
 
 %find_lang %name
 
 %files -f %name.lang
+%doc COPYING
+%doc AUTHORS ChangeLog NEWS README
 %_bindir/*
+%_libdir/*.so
 %_datadir/%name
 %_desktopdir/%name.desktop
 %_datadir/appdata/filezilla.appdata.xml
@@ -42,6 +54,27 @@ of useful features and an intuitive interface
 %_man5dir/*
 
 %changelog
+* Mon Oct 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.51.0-alt1
+- Updated to upstream version 3.51.0.
+
+* Mon Aug 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.50.0-alt1
+- Updated to upstream version 3.50.0.
+
+* Thu Aug 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.49.1-alt1
+- Updated to upstream version 3.49.1.
+
+* Thu Jun 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.48.1-alt1
+- Updated to upstream version 3.48.1.
+
+* Mon Apr 13 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.47.2.1-alt1
+- Updated to upstream version 3.47.2.1.
+
+* Mon Sep 02 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.44.2-alt1
+- Updated to upstream version 3.44.2.
+
+* Fri Jul 05 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.43.0-alt1
+- Updated to upstream version 3.43.0.
+
 * Tue Feb 19 2019 Egor Zotov <egorz@altlinux.org> 3.40.0-alt1
 - Updated to upstream version 3.40.0.
 
