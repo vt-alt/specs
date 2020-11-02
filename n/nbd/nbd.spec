@@ -1,23 +1,34 @@
+%define _unpackaged_files_terminate_build 1
+
 %def_disable debug
 %def_enable syslog
 %def_enable lfs
 %def_disable sdp
-%def_with gznbd
+%def_enable gznbd
 %def_with setproctitle
 %def_without  static_client
 
 Name: nbd
-Version: 3.2
+Version: 3.20
 Release: alt1
 Summary: Network Block Device user space tools
 License: GPL
 Group: Networking/Other
 URL: http://%name.sourceforge.net/
+
+# https://github.com/NetworkBlockDevice/nbd.git
 Source: %name-%version.tar
+
+Source1: nbd.init
+Source2: nbd-server.conf
+Source3: nbd.service
+Source4: nbd.sysconfig
+
+Patch1: %name-alt.patch
 
 BuildRequires: glib2-devel docbook-utils
 %{?_with_setproctitle:BuildRequires: setproctitle-devel}
-%{?_with_gznbd:BuildRequires: zlib-devel}
+%{?_enable_gznbd:BuildRequires: zlib-devel}
 %{?_with_static_client:BuildRequires: dietlibc}
 %{?_enable_sdp:BuildRequires: libsdp-devel}
 
@@ -37,7 +48,7 @@ user space tools.
 %package server
 Summary: Network Block Device server
 Group: Networking/Other
-Requires: %name-doc = %version-%release
+Requires: %name-doc = %EVR
 
 %description server
 This package contains nbd-server - a user space daemon to serve files
@@ -46,7 +57,7 @@ for Network Block Devices on remote hosts.
 %package client
 Summary: Network Block Device client
 Group: Networking/Other
-Requires: %name-doc = %version-%release
+Requires: %name-doc = %EVR
 
 %description client
 This package contains nbd-client - a user space tool needed to manage
@@ -56,7 +67,7 @@ a Network Block Device.
 %package client-static
 Summary: Network Block Device static client
 Group: Networking/Other
-Requires: %name-doc = %version-%release
+Requires: %name-doc = %EVR
 
 %description client-static
 This package contains a statically linked edition of nbd-client.
@@ -64,41 +75,46 @@ This package contains a statically linked edition of nbd-client.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 ./autogen.sh
+
 %if_with static_client
 %configure \
     %{subst_enable debug} \
     %{subst_enable lfs} \
     --disable-syslog \
-    --disable-sdp
+    --disable-sdp \
+    %nil
+
 make CC="diet -Os %__cc" CFLAGS="%optflags -Os" LDADD="-lcompat" %name-client
 mv %name-client{,.static}
 %make_build clean
 %endif
+
 %configure \
     %{subst_enable debug} \
     %{subst_enable lfs} \
     %{subst_enable syslog} \
     %{subst_enable sdp} \
     %{subst_with setproctitle} \
-    #
+    %{subst_enable gznbd} \
+    %nil
+
 %make_build
-%{?_with_gznbd:%make_build -C gznbd CFLAGS="%optflags -DMY_NAME='\"gznbd\"'"}
 
 %install
 %makeinstall_std
 %{?_with_static_client:install -pm755 %name-client.static %buildroot%_sbindir/}
-%{?_with_gznbd:install -pm755 gznbd/gznbd %buildroot%_bindir/}
-install -pD -m755 %name.init %buildroot%_initdir/%name
-install -pD -m755 %name.service %buildroot%_unitdir/nbd.service
-install -pD -m644 %name.sysconfig %buildroot%_sysconfdir/sysconfig/nbd-server
-install -pD %name-server.conf %buildroot%_sysconfdir/%name-server/config
+install -pD -m755 %SOURCE1 %buildroot%_initdir/%name
+install -pD -m755 %SOURCE3 %buildroot%_unitdir/nbd.service
+install -pD -m644 %SOURCE4 %buildroot%_sysconfdir/sysconfig/nbd-server
+install -pD %SOURCE2 %buildroot%_sysconfdir/%name-server/config
 
 %define docdir %_docdir/%name-%version
 mkdir -p %buildroot%docdir
-install -pm644 README simple_test %buildroot%docdir/
+install -pm644 README.md tests/run/simple_test %buildroot%docdir/
 
 %pre server
 %_sbindir/groupadd -r -f _nbd
@@ -133,6 +149,9 @@ install -pm644 README simple_test %buildroot%docdir/
 %endif
 
 %changelog
+* Thu Oct 29 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.20-alt1
+- Updated to upstream version 3.20 (Fixes: CVE-2013-6410, CVE-2013-7441, CVE-2015-0847).
+
 * Fri Jul 06 2012 Dmitry V. Levin <ldv@altlinux.org> 3.2-alt1
 - Updated to 3.2.
 - Updated package decriptions.
