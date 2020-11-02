@@ -1,6 +1,6 @@
 %define _unpackaged_files_terminate_build 1
 
-%define major 3.0.6.33328
+%define major 3.0.7.33374
 %define minor 0
 %define pkgname Firebird
 %define pkgversion %major-%minor
@@ -8,7 +8,7 @@
 
 Name: firebird
 Version: %major.%minor
-Release: alt2
+Release: alt1
 Summary: Firebird SQL Database, fork of InterBase
 Group: Databases
 License: IPL
@@ -313,7 +313,7 @@ fi
 %_libdir/libfbclient.so.*
 
 %files server
-%attr(0664,root,root) %_tmpfilesdir/%name.conf
+%attr(0644,root,root) %_tmpfilesdir/%name.conf
 %dir %attr(2775,root,%name) %_localstatedir/%name
 %dir %attr(2775,root,%name) %_localstatedir/%name/secdb
 %dir %attr(2775,root,%name) %_localstatedir/%name/system
@@ -327,6 +327,7 @@ fi
 %config(noreplace) %_sysconfdir/%name/fbintl.conf
 %_sysconfdir/%name/libfbintl.so
 %attr(0755,root,root) %_initdir/%name
+#TODO: move xinetd.d config to separate subpackage
 %config(noreplace) %attr(640,root,root) %_sysconfdir/xinetd.d/%name
 %_unitdir/*
 %dir %attr (2770,root,%name) %_logdir/%name
@@ -357,6 +358,9 @@ fi
 %_datadir/%name/examples/*
 
 %changelog
+* Mon Oct 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.7.33374.0-alt1
+- Updated to upstream version 3.0.7.33374-0.
+
 * Mon Jul 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.6.33328.0-alt2
 - Fixed runtime directory creation (Closes: #38722).
 
