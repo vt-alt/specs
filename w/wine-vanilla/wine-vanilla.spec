@@ -11,7 +11,7 @@
 %endif
 
 Name: wine-vanilla
-Version: 5.19
+Version: 5.20
 Release: alt1
 
 Summary: Wine - environment for running Windows applications
@@ -397,6 +397,7 @@ done
 %_libdir/wine/user32.so
 %_libdir/wine/bcrypt.so
 %_libdir/wine/odbc32.so
+%_libdir/wine/windowscodecs.so
 %_libdir/wine/*.com.so
 %_libdir/wine/*.cpl.so
 %_libdir/wine/*.drv.so
@@ -490,6 +491,9 @@ done
 %endif
 
 %changelog
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 5.20-alt1
+- new version 5.20
+
 * Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 5.19-alt1
 - new version 5.19
 - add gcc-c++ require to devel package (due winegcc)

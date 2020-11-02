@@ -1,7 +1,7 @@
 %def_disable static
 %define gecko_version 2.47.1
 %define mono_version 5.1.1
-%define major 5.19
+%define major 5.20
 %define rel %nil
 
 %def_with gtk3
@@ -15,7 +15,7 @@
 %endif
 
 Name: wine
-Version: %major.1
+Version: %major.0.1
 Release: alt1
 Epoch: 1
 
@@ -473,6 +473,7 @@ done
 %libwinedir/user32.so
 %libwinedir/bcrypt.so
 %libwinedir/odbc32.so
+%libwinedir/windowscodecs.so
 %libwinedir/*.com.so
 %libwinedir/*.cpl.so
 %libwinedir/*.drv.so
@@ -566,6 +567,9 @@ done
 %endif
 
 %changelog
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.20.0.1-alt1
+- new version 5.20.0.1 (with rpmrb script)
+
 * Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 1:5.19.1-alt1
 - new version 5.19.1 (with rpmrb script)
 - add gcc-c++ require to devel package (due winegcc)
