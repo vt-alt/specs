@@ -1,20 +1,20 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: libtar
 Version: 1.2.20
-Release: alt1
-
-Packager: Victor Forsiuk <force@altlinux.org>
-
+Release: alt2.git.6d0ab4c
 Summary: C library for manipulating POSIX tar files
 License: BSD
 Group: System/Libraries
-Url: http://www.feep.net/libtar/
+Url: https://repo.or.cz/w/libtar.git
 
-#Source: ftp://ftp.feep.net/pub/software/libtar/%name-%version.tar.gz
-# VCS: http://repo.or.cz/libtar.git
-# 6d0ab4c7
+# git://repo.or.cz/libtar.git
 Source: %name-%version.tar
-# (fc) don't strip while install
-Patch: libtar-1.2.11-bz729009.patch
+
+# Patches from Debian
+Patch1: CVE-2013-4420.patch
+Patch2: oldgnu_prefix.patch
+Patch3: no_strip.patch
 
 # Automatically added by buildreq on Tue Mar 09 2010
 BuildRequires: zlib-devel
@@ -26,7 +26,7 @@ POSIX tar format and many of the commonly-used GNU extensions.
 %package devel
 Summary: Development tools for programs which will use the %name library
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description devel
 The %name-devel package includes the header files necessary for developing
@@ -34,7 +34,9 @@ programs which will use the %name library.
 
 %prep
 %setup
-%patch -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 # set correct version for .so build
 %define ltversion %(echo %{version} | tr '.' ':')
@@ -59,6 +61,9 @@ lib/Makefile.in
 %_man3dir/*
 
 %changelog
+* Thu Oct 29 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.20-alt2.git.6d0ab4c
+- Applied patches from Debian (Fixes: CVE-2013-4420).
+
 * Thu Nov 13 2014 Yuri N. Sedunov <aris@altlinux.org> 1.2.20-alt1
 - 1.2.20
 - removed obsolete patches
