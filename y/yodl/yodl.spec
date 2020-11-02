@@ -1,22 +1,23 @@
-Name: yodl
-Version: 3.00.0
-Release: alt1.qa2
-Epoch: 1
+%define _unpackaged_files_terminate_build 1
 
+Name: yodl
+Epoch: 1
+Version: 4.03.00
+Release: alt2
 Summary: Yet oneOther Document Language
 License: GPL
 Group: Text tools
-Packager: Alexey Tourbin <at@altlinux.ru>
+URL: https://gitlab.com/fbb-git/yodl
 
-URL: http://yodl.sourceforge.net/
+# https://gitlab.com/fbb-git/yodl.git
 Source: yodl-%version.tar
-Patch1: yodl-1.31.18-mdk-htmldocs.patch
-Patch2: yodl-1.31.18-alt-htmlfoot.patch
-Patch3: yodl-1.31.18-deb.patch
-Patch4: yodl-1.31.18-suse-python25.patch
+
+Patch1: yodl-alt-build.patch
 
 # Automatically added by buildreq on Sun Apr 13 2008
 BuildRequires: flex groff-base netpbm python-modules
+BuildRequires: gcc-c++
+BuildRequires: boost-filesystem-devel
 
 BuildPreReq: icmake texlive-collection-latexrecommended tex(epsf.sty) ghostscript-utils
 
@@ -47,21 +48,18 @@ This package contais documentation for Yodl.
 
 %prep
 %setup
-#patch1 -p1
-#patch2 -p1
-#patch3 -p1
-#patch4 -p0
+%patch1 -p2
 
 %build
-%add_optflags -D_GNU_SOURCE=1
+%add_optflags -std=c++17
 export ac_cv_lib_intl_gettext=no
-for i in programs man manual macros
+for i in programs macros man manual
 do
 	./build $i
 done
 
 %install
-for i in programs man manual macros docs
+for i in programs macros man manual docs
 do
 	./build install $i %buildroot
 done
@@ -73,8 +71,15 @@ done
 
 %files docs
 %_docdir/%name
+%_docdir/yodl-doc
 
 %changelog
+* Thu Oct 29 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:4.03.00-alt2
+- Use boost::filesystem instead of std::filesystem for P9 compatibility.
+
+* Wed Oct 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:4.03.00-alt1
+- Updated to upstream version 4.03.00 (Fixes: CVE-2016-10375).
+
 * Mon Mar 12 2018 Igor Vlasenko <viy@altlinux.ru> 1:3.00.0-alt1.qa2
 - NMU: fixed BR: for texlive 2017
 

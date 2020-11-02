@@ -1,13 +1,14 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: icmake
-Version: 7.21.01
-Release: alt1.git20140120
+Version: 9.03.01
+Release: alt1
 Summary: Hybrid between a 'make' utility and a 'shell script' language
 License: GPLv3
 Group: Development/Tools
-Url: http://icmake.sourceforge.net/
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
+Url: https://gitlab.com/fbb-git/icmake
 
-# git://icmake.git.sourceforge.net/gitroot/icmake/icmake
+# https://gitlab.com/fbb-git/icmake.git
 Source: %name-%version.tar
 
 %description
@@ -35,10 +36,10 @@ This package contains documentation for Icmake.
 
 %prep
 %setup
-sed -i 's|@LIBDIR@|%_libdir|g' %name/INSTALL.im
 
 %build
 pushd %name
+./icm_prepare /
 ./icm_bootstrap /
 popd
 
@@ -53,15 +54,19 @@ popd
 %doc %name/changelog %name/doc/*.doc
 %_sysconfdir/*
 %_bindir/*
-%_libdir/%name
+%_libexecdir/%name
 %_datadir/%name
 %_man1dir/*
 %_man7dir/*
 
 %files doc
 %_docdir/%name
+%_docdir/icmake-doc
 
 %changelog
+* Wed Oct 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.03.01-alt1
+- Updated to upstream version 9.03.01.
+
 * Thu May 29 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 7.21.01-alt1.git20140120
 - Version 7.21.01
 
