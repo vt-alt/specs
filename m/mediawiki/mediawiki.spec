@@ -3,7 +3,7 @@
 
 Name: mediawiki
 Version: %major.0
-Release: alt1
+Release: alt2
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
 
@@ -37,8 +37,6 @@ BuildRequires: apache2-devel
 Requires: %name-common = %version-%release
 Requires: %name-apache2 %name-mysql
 
-Requires: ImageMagick-tools
-
 %description
 MediaWiki is the software used for Wikipedia and the other Wikimedia
 Foundation websites. Compared to other wikis, it has an excellent
@@ -50,8 +48,6 @@ interface. Remember to secure the config dir after completing the
 configuration.
 
 This is a typical %name installation (with Apache2 and MySQL support).
-Also, optional dependency will be installed:
-ImageMagick-tools.
 
 If you wish pure %name, install only %name-common package.
 
@@ -61,7 +57,7 @@ Summary: Common files for %name
 Group: Networking/WWW
 Requires: webserver-common
 Requires: php7-libs >= 7.3.19
-Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader
+Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader php7-gd
 Requires: diffutils
 Requires: php7-opcache
 Requires: pear-Mail >= 1.4.1
@@ -170,7 +166,7 @@ Install this package, if you wish to run %name under apache2 webserver
 Summary: Virtual package for mysql requires for %name
 Group: Networking/WWW
 Requires: %name-common = %version-%release
-Requires: php7-mysqli
+Requires: php7-mysqlnd-mysqli
 
 %description -n %name-mysql
 Install this package, if you wish to run %name with MySQL database
@@ -360,6 +356,10 @@ exit 0
 
 
 %changelog
+* Thu Oct 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt2
+- use php7-gd instead of ImageMagick by default
+- use php7-mysqlnd-mysqli instead of php7-mysqli (ALT bug 39162)
+
 * Fri Oct 09 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt1
 - new version 1.35.0 LTS (with rpmrb script)
 - CVE-2020-25813, CVE-2020-25812, CVE-2020-25815
