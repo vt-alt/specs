@@ -1,7 +1,10 @@
+%def_with check
+%def_with pdfdoc
+
 %define soname 28
 Summary: Command-line tools and library for transforming PDF files
 Name: qpdf
-Version: 10.0.1
+Version: 10.0.2
 Release: alt1
 License: Apache-2.0
 Group: System/Base
@@ -13,14 +16,25 @@ Patch0: %name-%version-%release.patch
 BuildRequires: zlib-devel xml-utils xsltproc docbook-style-xsl
 BuildRequires: pcre-devel
 BuildRequires: libjpeg-devel
-
 BuildRequires: perl-base
+BuildRequires: libgnutls-devel
 
 # for autoreconf
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libtool
 BuildRequires: gcc-c++
+
+%if_with pdfdoc
+BuildRequires: /usr/bin/fop
+%endif
+
+%if_with check
+# for testing
+BuildRequires: perl(Digest/SHA.pm)
+BuildRequires: /usr/bin/gs
+BuildRequires: /usr/bin/tiffcmp
+%endif
 
 Requires: lib%name%soname = %EVR
 
@@ -66,14 +80,24 @@ QPDF Manual
 
 %configure --disable-static \
 	   --enable-html-doc \
+	   --enable-crypto-gnutls \
+	   --disable-implicit-crypto \
 	   --disable-check-autofiles \
-	   --with-docbook-xsl=%_datadir/xml/docbook/xsl-stylesheets \
-           --enable-show-failed-test-output
+%if_with check
+	   --enable-show-failed-test-output \
+	   --enable-test-compare-images \
+           --enable-show-failed-test-output \
+%endif
+	   --with-docbook-xsl=%_datadir/xml/docbook/xsl-stylesheets
 
 %make
 
 %install
 %makeinstall
+rm -rf %buildroot%_docdir/qpdf
+
+%check
+make check
 
 
 %files
@@ -96,6 +120,10 @@ QPDF Manual
 %doc doc/qpdf-manual.html doc/stylesheet.css
 
 %changelog
+* Thu Oct 29 2020 Anton Farygin <rider@altlinux.ru> 10.0.2-alt1
+- 10.0.2
+- enabled tests
+
 * Mon Apr 13 2020 Anton Farygin <rider@altlinux.ru> 10.0.1-alt1
 - 10.0.1
 
