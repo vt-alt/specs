@@ -2,7 +2,7 @@
 
 Name: atftp
 Version: 0.7.2
-Release: alt1
+Release: alt2
 
 URL: https://sourceforge.net/projects/atftp
 Summary: Advanced Trivial File Transfer Protocol
@@ -14,6 +14,7 @@ Source: %name-%version.tar
 
 Source1: atftpd.init
 Source2: atftpd.sysconfig
+Source3: atftpd.tmpfiles.conf
 
 Patch1: %name-%version-alt.patch
 
@@ -40,8 +41,8 @@ make
 %makeinstall
 install -pm0755 -D %SOURCE1 %buildroot%_initdir/atftpd
 install -pm0644 -D %SOURCE2 %buildroot%_sysconfdir/sysconfig/atftpd
+install -pm0644 -D %SOURCE3 %buildroot%_tmpfilesdir/atftpd.tmpfiles.conf
 mkdir -p %buildroot%_localstatedir/tftpboot
-mkdir -pm0770 %buildroot%_runtimedir/atftpd
 mkdir -pm0770 %buildroot%_logdir/atftpd
 touch %buildroot%_sysconfdir/mtftp.conf
  
@@ -62,6 +63,8 @@ touch %buildroot%_sysconfdir/mtftp.conf
 %config(noreplace) %_sysconfdir/sysconfig/atftpd
 %ghost %config(noreplace) %_sysconfdir/mtftp.conf
 
+%_tmpfilesdir/atftpd.tmpfiles.conf
+
 %_initdir/atftpd
 
 %_bindir/atftp
@@ -74,9 +77,11 @@ touch %buildroot%_sysconfdir/mtftp.conf
 
 %dir %_localstatedir/tftpboot
 %dir %attr(0770,root,_atftpd) %_logdir/atftpd
-%dir %attr(0770,root,_atftpd) %_runtimedir/atftpd
 
 %changelog
+* Wed Oct 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.2-alt2
+- Create runtime directory via tmpfiles (Closes: #39157).
+
 * Tue Oct 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.7.2-alt1
 - Updated to upstream version 0.7.2 (Fixes: CVE-2019-11365, CVE-2019-11366).
 
