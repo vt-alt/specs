@@ -1,9 +1,10 @@
 %define _unpackaged_files_terminate_build 1
 
-%define jss_version 4.5.3
+%define jss_version 4.7.0
+%define tomcat_version 9.0.37
 
 Name: tomcatjss
-Version: 7.4.1
+Version: 7.5.0
 Release: alt1
 
 Summary: JSSE module for Apache Tomcat that uses JSS
@@ -13,6 +14,7 @@ Group: System/Libraries
 Url: http://www.dogtagpki.org/wiki/TomcatJSS
 
 Source: %name-%version.tar
+Patch0: %name-%version-alt.patch
 
 BuildRequires(pre): rpm-macros-java
 BuildRequires: /proc
@@ -20,11 +22,11 @@ BuildRequires: jpackage-generic-compat
 BuildRequires: apache-commons-logging
 BuildRequires: ant
 BuildRequires: jss >= %jss_version
-BuildRequires: tomcat
+BuildRequires: tomcat >= %tomcat_version
 
 BuildArch: noarch
 Requires: jss >= %jss_version
-Requires: tomcat
+Requires: tomcat >= %tomcat_version
 Requires: apache-commons-logging
 
 %description
@@ -35,6 +37,7 @@ Services (NSS).
 
 %prep
 %setup
+%autopatch -p1
 
 %build
 
@@ -61,6 +64,9 @@ ant -v -f build.xml \
 %_javadir/tomcatjss-%version.jar
 
 %changelog
+* Mon Sep 14 2020 Stanislav Levin <slev@altlinux.org> 7.5.0-alt1
+- 7.4.1 -> 7.5.0.
+
 * Mon Aug 26 2019 Stanislav Levin <slev@altlinux.org> 7.4.1-alt1
 - 7.4.0 -> 7.4.1.
 

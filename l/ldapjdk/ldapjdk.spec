@@ -8,11 +8,11 @@
 
 Name: ldapjdk
 Epoch: 1
-Version: 4.21.0
+Version: 4.22.0
 Release: alt1
 
 Summary: LDAP SDK
-License: MPLv1.1 or GPLv2+ or LGPLv2+
+License: MPL-1.1 or GPLv2+ or LGPLv2+
 Group: Development/Java
 # Source-git: https://github.com/dogtagpki/ldap-sdk.git
 Url: https://www.dogtagpki.org/wiki/LDAP_SDK
@@ -119,6 +119,9 @@ ln -s ldapjdk.jar %buildroot%_javadir/ldapsdk.jar
 
 ################################################################################
 %changelog
+* Mon Sep 14 2020 Stanislav Levin <slev@altlinux.org> 1:4.22.0-alt1
+- 4.21.0 -> 4.22.0.
+
 * Mon Aug 26 2019 Stanislav Levin <slev@altlinux.org> 1:4.21.0-alt1
 - 4.20.0 -> 4.21.0.
 

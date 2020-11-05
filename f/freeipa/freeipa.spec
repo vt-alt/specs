@@ -35,7 +35,7 @@
 %define ds_version 1.4.1.6
 %define gssproxy_version 0.8.0-alt2
 %define krb5_version 1.16.3
-%define pki_version 10.7.3
+%define pki_version 10.9.2
 %define python_ldap_version 3.2.0
 %define samba_version 4.7.6
 %define slapi_nis_version 0.56.3
@@ -43,8 +43,8 @@
 %define openldap_version 2.4.47-alt2
 
 Name: freeipa
-Version: 4.8.6
-Release: alt2
+Version: 4.8.9
+Release: alt0.M90P.1
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -60,10 +60,10 @@ BuildRequires(pre): rpm-build-python3
 BuildRequires: libcmocka-devel
 BuildRequires: libini_config-devel
 BuildRequires: libkrb5-devel >= %krb5_version
-BuildRequires: libnss-devel
 BuildRequires: libpopt-devel
 BuildRequires: libsasl2-devel
 BuildRequires: libssl-devel
+BuildRequires: libsystemd-devel
 BuildRequires: libxmlrpc-devel
 BuildRequires: openldap-devel >= %openldap_version
 
@@ -75,11 +75,11 @@ BuildRequires: libsss_idmap-devel
 BuildRequires: libsss_certmap-devel
 BuildRequires: libsss_nss_idmap-devel >= %sssd_version
 BuildRequires: libunistring-devel
-BuildRequires: libsystemd-devel
 
 BuildRequires: 389-ds-base-devel >= %ds_version
 BuildRequires: samba-devel >= %samba_version
-BuildRequires: node-uglify-js
+BuildRequires: nodejs
+BuildRequires: python3(rjsmin)
 %endif # only_client
 
 # python
@@ -98,6 +98,7 @@ BuildRequires: python3-module-six
 BuildRequires: python3-module-sss_nss_idmap
 
 %if_with fasttest
+BuildRequires: chrony
 BuildRequires: keyutils
 BuildRequires: systemd
 %endif
@@ -151,6 +152,7 @@ BuildRequires: python3-module-sss_nss_idmap
 BuildRequires: python3-module-sss-murmur
 BuildRequires: python3-module-sssdconfig >= %sssd_version
 BuildRequires: python3-module-systemd
+BuildRequires: python3-module-yaml
 BuildRequires: python3-module-yubico
 
 %endif
@@ -172,7 +174,6 @@ Requires: %name-client = %EVR
 Requires: acl
 Requires: gssproxy >= %gssproxy_version
 Requires: sssd-dbus >= %sssd_version
-Requires: selinux-policy-alt
 Requires: pki-ca >= %pki_version
 Requires: pki-kra >= %pki_version
 Requires: certmonger >= %certmonger_version
@@ -199,8 +200,6 @@ Requires: python3-module-gssapi
 Requires: python3-module-systemd
 Requires: slapi-nis >= %slapi_nis_version
 
-# upgrade path from monolithic -server to -server + -server-dns
-Obsoletes: %name-server <= 4.2.0
 # Versions of nss-pam-ldapd < 0.8.4 require a mapping from uniqueMember to
 # member.
 Conflicts: nss-ldapd < 0.8.4
@@ -268,9 +267,6 @@ Requires: bind >= %bind_version
 Requires: bind-utils >= %bind_version
 Requires: opendnssec
 
-# upgrade path from monolithic -server to -server + -server-dns
-Obsoletes: %name-server <= 4.2.0
-
 %description server-dns
 IPA integrated DNS server with support for automatic DNSSEC signing.
 Integrated DNS server is BIND 9. OpenDNSSEC provides key management.
@@ -312,7 +308,6 @@ Requires: certmonger >= %certmonger_version
 Requires: nss-utils
 Requires: bind-utils
 Requires: oddjob-mkhomedir
-Requires: policycoreutils
 Requires: python3-module-gssapi
 Requires: python3-module-ipaclient = %EVR
 Requires: python3-module-ldap >= %python_ldap_version
@@ -349,6 +344,17 @@ Requires: cifs-utils
 %description client-samba
 This package provides command-line tools to deploy Samba domain member
 on the machine enrolled into a FreeIPA environment
+
+###############################################################################
+
+%package client-epn
+Summary: Tools to configure Expiring Password Notification in IPA
+Group: System/Base
+Requires: %name-client = %EVR
+
+%description client-epn
+This package provides a service to collect and send expiring password
+notifications via email (SMTP).
 
 ###############################################################################
 
@@ -567,6 +573,7 @@ mkdir -p %buildroot%_sysconfdir/cron.d
 
 mkdir -p %buildroot%_sysconfdir/bind
 touch %buildroot%_sysconfdir/bind/ipa-ext.conf
+touch %buildroot%_sysconfdir/bind/ipa-options-ext.conf
 
 mkdir -p %buildroot%_sharedstatedir/ipa/backup
 mkdir -p %buildroot%_sharedstatedir/ipa/gssproxy
@@ -725,7 +732,7 @@ if [ $1 -gt 1 ] ; then
     fi
 
     if [ $restore -ge 2 ]; then
-        sed -E --in-place=.orig 's/^(HostKeyAlgorithms ssh-rsa,ssh-dss)$/# disabled by ipa-client update\n# \1/' /etc/openssh/ssh_config
+        sed -E --in-place=.orig 's/^(HostKeyAlgorithms ssh-rsa,ssh-dss)$/# disabled by ipa-client update\n# \1/' /etc/openssh/ssh_config ||:
     fi
 fi
 
@@ -764,6 +771,18 @@ if [ -f '/etc/openssh/sshd_config' -a $restore -ge 2 ]; then
     fi
 fi
 
+%post client-epn
+# first installation
+if [ $1 -eq 1 ]; then
+    systemctl -q preset ipa-epn.{service,timer} ||:
+fi
+
+%preun client-epn
+# removal (not upgrade)
+if [ $1 -eq 0 ]; then
+    systemctl --no-reload -q disable --now ipa-epn.{service,timer} ||:
+fi
+
 %if_without only_client
 %files server
 %_sbindir/ipa-backup
@@ -799,6 +818,7 @@ fi
 %_libexecdir/ipa/ipa-pki-retrieve-key
 %_libexecdir/ipa/ipa-pki-wait-running
 %_libexecdir/ipa/ipa-otpd
+%_libexecdir/ipa/ipa-print-pac
 %dir %_libexecdir/ipa/custodia
 %attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-dmldap
 %attr(755,root,root) %_libexecdir/ipa/custodia/ipa-custodia-pki-tomcat
@@ -823,7 +843,6 @@ fi
 %attr(755,root,root) %plugin_dir/libipa_uuid.so
 %attr(755,root,root) %plugin_dir/libipa_modrdn.so
 %attr(755,root,root) %plugin_dir/libipa_lockout.so
-%attr(755,root,root) %plugin_dir/libipa_cldap.so
 %attr(755,root,root) %plugin_dir/libipa_dns.so
 %attr(755,root,root) %plugin_dir/libipa_range_check.so
 %attr(755,root,root) %plugin_dir/libipa_otp_counter.so
@@ -875,9 +894,9 @@ fi
 %_datadir/ipa/kdcproxy.wsgi
 %_datadir/ipa/ipaca*.ini
 %_datadir/ipa/*.ldif
+%exclude %_datadir/ipa/ipa-cldap-conf.ldif
 %_datadir/ipa/*.uldif
 %_datadir/ipa/*.template
-%_datadir/ipa/bind.ipa-ext.conf
 %_datadir/ipa/advise/
 %_datadir/ipa/profiles/
 %dir %_datadir/ipa/html
@@ -896,6 +915,7 @@ fi
 %ghost %attr(0644,root,root) %config(noreplace) %_sysconfdir/ipa/kdcproxy/ipa-kdc-proxy.conf
 %ghost %attr(0644,root,root) %config(noreplace) %_datadir/ipa/html/ca.crt
 %ghost %attr(0640,root,named) %config(noreplace) %_sysconfdir/bind/ipa-ext.conf
+%ghost %attr(0640,root,named) %config(noreplace) %_sysconfdir/bind/ipa-options-ext.conf
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krb.con
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krb5.ini
 %ghost %attr(0644,root,root) %_datadir/ipa/html/krbrealm.con
@@ -938,6 +958,8 @@ fi
 %_sbindir/ipa-adtrust-install
 %_datadir/ipa/smb.conf.empty
 %attr(755,root,root) %_libdir/samba/pdb/ipasam.so
+%attr(755,root,root) %plugin_dir/libipa_cldap.so
+%_datadir/ipa/ipa-cldap-conf.ldif
 %_man1dir/ipa-adtrust-install.1*
 %_sysconfdir/dbus-1/system.d/oddjob-ipa-trust.conf
 %_sysconfdir/oddjobd.conf.d/oddjobd-ipa-trust.conf
@@ -975,6 +997,16 @@ fi
 %files client-samba
 %_sbindir/ipa-client-samba
 %_man1dir/ipa-client-samba.1*
+
+%files client-epn
+%_sbindir/ipa-epn
+%_man1dir/ipa-epn.1*
+%_man5dir/epn.conf.5*
+%attr(644,root,root) %_unitdir/ipa-epn.service
+%attr(644,root,root) %_unitdir/ipa-epn.timer
+%dir %attr(0755,root,root) %_sysconfdir/ipa/epn
+%attr(600,root,root) %config(noreplace) %_sysconfdir/ipa/epn.conf
+%attr(644,root,root) %config(noreplace) %_sysconfdir/ipa/epn/expire_msg.template
 
 %files client-automount
 %_sbindir/ipa-client-automount
@@ -1015,9 +1047,22 @@ fi
 %python3_sitelibdir/ipapython-*.egg-info/
 %python3_sitelibdir/ipalib-*.egg-info/
 %python3_sitelibdir/ipaplatform-*.egg-info/
-%python3_sitelibdir/ipaplatform-*-nspkg.pth
 
 %changelog
+* Thu Oct 01 2020 Stanislav Levin <slev@altlinux.org> 4.8.9-alt0.M90P.1
+- Backported to P9.
+
+* Fri Aug 21 2020 Stanislav Levin <slev@altlinux.org> 4.8.9-alt1
+- 4.8.8 -> 4.8.9.
+- Made SELinux optional (closes: #38788).
+
+* Tue Aug 04 2020 Stanislav Levin <slev@altlinux.org> 4.8.8-alt2
+- Fixed FTBFS(new pylint 2.5.3).
+- Fixed group ownership of pki instance nssdb.
+
+* Tue Jun 30 2020 Stanislav Levin <slev@altlinux.org> 4.8.8-alt1
+- 4.8.6 -> 4.8.8.
+
 * Fri Jun 05 2020 Stanislav Levin <slev@altlinux.org> 4.8.6-alt2
 - Applied upstream fixes.
 

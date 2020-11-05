@@ -7,13 +7,13 @@
 %define resteasy_lib        %_javadir/resteasy
 %define jaxrs_api_jar       %_javadir/jboss-jaxrs-2.0-api.jar
 
-%define tomcatjss_version   7.4.1
-%define jss_version         4.6.0
-%define ldapjdk_version     4.21.0
+%define tomcatjss_version   7.5.0
+%define jss_version         4.7.0
+%define ldapjdk_version     4.22.0
 
 Name: pki-core
-Version: 10.7.4
-Release: alt3
+Version: 10.9.4
+Release: alt1
 
 Summary: Certificate System - PKI Core Components
 License: %gpl2only
@@ -23,6 +23,8 @@ Url: http://www.dogtagpki.org
 
 Source: %name-%version.tar
 Patch: %name-%version-alt.patch
+
+ExcludeArch: %ix86
 
 BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-build-python3
@@ -35,6 +37,7 @@ BuildRequires: sh4
 BuildRequires: apache2-devel
 BuildRequires: apache-commons-cli
 BuildRequires: apache-commons-httpclient
+BuildRequires: apache-commons-net
 
 BuildRequires: libnss-devel
 BuildRequires: zlib-devel
@@ -58,6 +61,10 @@ BuildRequires: go-md2man
 BuildRequires: python3-module-sphinx
 BuildRequires: python3-module-nss
 
+# healthcheck
+BuildRequires: python3-module-pytest-runner
+BuildRequires: freeipa-healthcheck
+
 %if_with check
 BuildRequires: /dev/shm
 BuildRequires: ctest
@@ -65,11 +72,18 @@ BuildRequires: nss-utils
 BuildRequires: openssl
 BuildRequires: python3-module-flake8
 BuildRequires: python3-module-ldap
+BuildRequires: python3-module-lxml
 BuildRequires: python3-module-pyflakes
 BuildRequires: python3-module-pylint
 BuildRequires: python3-module-selinux
 BuildRequires: python3-module-tox
 %endif
+
+# mark upgrade code as Python3 code
+%add_python3_path %_datadir/pki/upgrade/
+%add_python3_path %_datadir/pki/server/upgrade/
+%add_python3_compile_exclude %_datadir/pki/upgrade/
+%add_python3_compile_exclude %_datadir/pki/server/upgrade/
 
 #### Meta package ####
 Requires: dogtag-pki-server-theme = %EVR
@@ -113,7 +127,6 @@ symmetric key operations to Java programs.
 %package -n pki-base
 Summary: Dogtag PKI Base Package
 Group: System/Base
-BuildArch: noarch
 Requires: python3-module-pki-base = %EVR
 Provides: pki-common = %EVR
 Provides: pki-util = %EVR
@@ -128,7 +141,6 @@ and utilities written in Python.
 %package -n pki-base-java
 Summary: Dogtag PKI Base Java Package
 Group: System/Base
-BuildArch: noarch
 Requires: pki-base = %EVR
 Requires: java-1.8.0-openjdk-headless
 Requires: xalan-j2
@@ -142,7 +154,6 @@ libraries and utilities written in Java.
 %package -n python3-module-pki-base
 Summary: Dogtag PKI Python3 Package
 Group: Development/Python3
-BuildArch: noarch
 Requires: pki-base = %EVR
 
 %description -n python3-module-pki-base
@@ -154,6 +165,7 @@ Group: System/Base
 Requires: pki-base-java = %EVR
 Requires: openldap-clients
 Requires: nss-utils
+Requires: p11-kit-trust
 Provides: pki-native-tools = %EVR
 Provides: pki-java-tools = %EVR
 Obsoletes: pki-native-tools < %EVR
@@ -166,7 +178,6 @@ Certificate System into a more complete and robust PKI solution.
 %package -n pki-server
 Summary: Dogtag PKI Server Package
 Group: System/Base
-BuildArch: noarch
 Requires: pki-symkey = %EVR
 Requires: pki-tools = %EVR
 Requires: openssl
@@ -195,7 +206,6 @@ following PKI subsystems:
 %package -n pki-ca
 Summary: Dogtag PKI CA Package
 Group: System/Servers
-BuildArch: noarch
 Requires: pki-server = %EVR
 
 %description -n pki-ca
@@ -210,7 +220,6 @@ where it obtains its own signing certificate from a public CA.
 %package -n pki-kra
 Summary: Dogtag PKI KRA Package
 Group: System/Servers
-BuildArch: noarch
 Requires: pki-server = %EVR
 
 %description -n pki-kra
@@ -231,7 +240,6 @@ since such archival would undermine non-repudiation properties of signing keys.
 %package -n pki-ocsp
 Summary: Dogtag PKI OCSP Package
 Group: System/Servers
-BuildArch: noarch
 Requires: pki-server = %EVR
 
 %description -n pki-ocsp
@@ -259,7 +267,6 @@ whenever they are issued or updated.
 %package -n pki-tks
 Summary: Dogtag PKI TKS Package
 Group: System/Servers
-BuildArch: noarch
 Requires: pki-server = %EVR
 
 %description -n pki-tks
@@ -311,7 +318,6 @@ smart card.
 %package -n pki-javadoc
 Summary: Dogtag PKI Javadoc Package
 Group: Documentation
-BuildArch: noarch
 Requires: javapackages-tools
 
 Provides: pki-util-javadoc = %EVR
@@ -327,7 +333,6 @@ This package contains PKI API documentation.
 %package -n pki-console
 Summary: PKI Console Package
 Group: Networking/Other
-BuildArch: noarch
 Requires: idm-console-framework
 Requires: pki-base-java = %EVR
 Requires: dogtag-pki-console-theme = %EVR
@@ -335,10 +340,17 @@ Requires: dogtag-pki-console-theme = %EVR
 %description -n pki-console
 The PKI Console is a Java application used to administer PKI server.
 
+%package -n pki-healthcheck
+Summary: Dogtag PKI Healthcheck
+Group: System/Servers
+
+%description -n pki-healthcheck
+The healthcheck tool is intended for executing health checks against PKI.
+This is the plugin for freeipa-healthcheck.
+
 %package -n dogtag-pki-server-theme
 Summary: Dogtag PKI Server Theme Package
 Group: Networking/Other
-BuildArch: noarch
 Provides: pki-server-theme = %EVR
 Obsoletes: pki-server-theme < %EVR
 
@@ -349,7 +361,6 @@ interface for PKI Server.
 %package -n dogtag-pki-console-theme
 Summary: Dogtag PKI Console Theme Package
 Group: Networking/Other
-BuildArch: noarch
 Provides: pki-console-theme = %EVR
 Obsoletes: pki-console-theme < %EVR
 
@@ -372,6 +383,14 @@ grep -rlsm1 '^#!/usr/bin/python[[:space:]]*$' | \
 xargs sed -i '1s|^#!/usr/bin/python[[:space:]]*$|#!/usr/bin/python3|'
 
 %build
+# get Java <major>.<minor> version number
+set -o pipefail
+java_version="$(%java_home/bin/java -XshowSettings:properties -version  2>&1 | \
+    sed -n 's/ *java.version *= *\([0-9]\+\.[0-9]\+\).*/\1/p')"
+# if <major> == 1, get <minor> version number
+# otherwise get <major> version number
+java_version="$(echo $java_version | sed -e 's/^1\.//' -e 's/\..*$//')"
+
 # get Tomcat <major>.<minor> version number
 tomcat_version=`/usr/sbin/tomcat version | sed -n 's/Server number: *\([0-9]\+\.[0-9]\+\).*/\1/p'`
 if [ $tomcat_version == "9.0" ]; then
@@ -379,12 +398,15 @@ if [ $tomcat_version == "9.0" ]; then
 else
     app_server=tomcat-$tomcat_version
 fi
+set +o pipefail
 
 %add_optflags -I/usr/include/apu-1
 %cmake \
     --no-warn-unused-cli \
     -DVERSION=%version-%release \
     -DVAR_INSTALL_DIR:PATH=%_var \
+    -DP11_KIT_TRUST=%_libdir/libnssckbi.so \
+    -DJAVA_VERSION=$java_version \
     -DJAVA_HOME=%java_home \
     -DJAVA_LIB_INSTALL_DIR=%_jnidir \
     -DSYSTEMD_LIB_INSTALL_DIR=%_unitdir \
@@ -393,15 +415,12 @@ fi
     -DRESTEASY_LIB=%resteasy_lib \
     -DNSS_DEFAULT_DB_TYPE=%nss_default_db_type \
     -DBUILD_PKI_CORE:BOOL=ON \
-    -DWITH_PYTHON3_DEFAULT:BOOL=ON \
-    -DPYTHON_EXECUTABLE=%_bindir/python3 \
+    -DPYTHON_EXECUTABLE=%__python3 \
 %if_with check
     -DWITH_TEST:BOOL=ON \
 %else
     -DWITH_TEST:BOOL=OFF \
 %endif
-    -DWITH_PYTHON2:BOOL=OFF \
-    -DWITH_PYTHON3:BOOL=ON \
     -DWITH_JAVADOC:BOOL=ON \
     -DBUILD_PKI_CONSOLE:BOOL=ON \
     -DTHEME=dogtag \
@@ -429,22 +448,17 @@ touch %buildroot%_logdir/pki/pki-server-upgrade-%version.log
 mkdir %buildroot%_logdir/pki/server
 mkdir %buildroot%_logdir/pki/server/upgrade
 
-# files for native 'tpsclient'
-# REMINDER:  Remove this comment once 'tpsclient' is rewritten as a Java app
-rm %buildroot%_initdir/pki-tpsd
-rm %buildroot%_unitdir/pki-tpsd.target
-rm %buildroot%_unitdir/pki-tpsd@.service
-rm %buildroot%_libdir/httpd/modules/mod_tokendb.so
-rm %buildroot%_libdir/httpd/modules/mod_tps.so
-rm %buildroot%_libdir/tps/libldapauth.so
-rm -r %buildroot%_datadir/pki/tps/cgi-bin/
-rm -r %buildroot%_datadir/pki/tps/docroot/
-rm -r %buildroot%_datadir/pki/tps/lib/
-rm -r %buildroot%_datadir/pki/tps/samples/
-rm -r %buildroot%_datadir/pki/tps/scripts/
-
 ln -sf tps/libtps.so %buildroot%_libdir/libtps.so
 ln -sf tps/libtokendb.so %buildroot%_libdir/libtokendb.so
+
+# don't package tests
+rm -r %buildroot%_datadir/pki/tests/
+
+# since we package python modules as arch dependent
+%if "%python3_sitelibdir" != "%python3_sitelibdir_noarch"
+mkdir -p %buildroot%python3_sitelibdir
+mv %buildroot%python3_sitelibdir_noarch/* %buildroot%python3_sitelibdir/
+%endif
 
 %check
 export PIP_NO_INDEX=YES
@@ -472,7 +486,7 @@ else
     # On RPM upgrade run system upgrade
     echo "pki-base: Upgrading PKI system configuration"
     echo "Upgrading PKI system configuration at `/bin/date`." >> %_logdir/pki/pki-upgrade-%version.log 2>&1
-    %_sbindir/pki-upgrade --silent -v >> %_logdir/pki/pki-upgrade-%version.log 2>&1
+    %_sbindir/pki-upgrade -v >> %_logdir/pki/pki-upgrade-%version.log 2>&1
     echo >> %_logdir/pki/pki-upgrade-%version.log 2>&1
     echo "pki-base: PKI system upgrade status:"
     %_sbindir/pki-upgrade --status 2>&1 | sed 's/^/pki-base: /'
@@ -486,14 +500,7 @@ then
 fi
 
 %post -n pki-server
-echo "pki-server: Upgrading PKI server configuration"
-echo "Upgrading PKI server configuration at `/bin/date`." >> %_logdir/pki/pki-server-upgrade-%version.log 2>&1
-%_sbindir/pki-server upgrade --silent -v >> %_logdir/pki/pki-server-upgrade-%version.log 2>&1
-echo >> %_logdir/pki/pki-server-upgrade-%version.log 2>&1
-echo "pki-server: PKI server upgrade status:"
-%_sbindir/pki-server upgrade --status 2>&1 | sed 's/^/pki-server: /'
-
-if [ "$1" == "2" ]
+if [ "$1" -ge 2 ]
 then
     systemctl daemon-reload ||:
 fi
@@ -508,10 +515,12 @@ fi
 %doc %_datadir/doc/pki-base/html
 %doc %_datadir/pki/server/docs
 %dir %_datadir/pki/etc
+%dir %_datadir/pki/lib
 %dir %_datadir/pki/scripts
 %dir %_datadir/pki/examples
 %dir %_logdir/pki
 %_datadir/pki/VERSION
+%_datadir/pki/pom.xml
 %_datadir/pki/etc/pki.conf
 %_datadir/pki/etc/logging.properties
 %_datadir/pki/scripts/config
@@ -527,20 +536,20 @@ fi
 
 %files -n pki-base-java
 %_datadir/pki/examples/java/
-%_datadir/pki/lib/
+%_datadir/pki/lib/*.jar
 %dir %_javadir/pki
 %_javadir/pki/pki-cmsutil.jar
-%_javadir/pki/pki-nsutil.jar
 %_javadir/pki/pki-certsrv.jar
 
 %files -n python3-module-pki-base
-%exclude %python3_sitelibdir_noarch/pki/server
-%python3_sitelibdir_noarch/pki
+%exclude %python3_sitelibdir/pki/server/
+%python3_sitelibdir/pki/
 
 %files -n pki-tools
 %doc base/native-tools/doc/README
-%_bindir/pki
 %_bindir/p7tool
+%_bindir/pistool
+%_bindir/pki
 %_bindir/revoker
 %_bindir/setpin
 %_bindir/sslget
@@ -571,6 +580,7 @@ fi
 %_bindir/TokenInfo
 %_javadir/pki/pki-tools.jar
 %_datadir/pki/java-tools/
+%_datadir/pki/lib/p11-kit-trust.so
 %_man1dir/AtoB.1.*
 %_man1dir/AuditVerify.1.*
 %_man1dir/BtoA.1.*
@@ -612,7 +622,9 @@ fi
 %_sbindir/pkidestroy
 %_sbindir/pki-server
 %_sbindir/pki-server-upgrade
-%python3_sitelibdir_noarch/pki/server/
+%python3_sitelibdir/pki/server/
+%exclude %python3_sitelibdir/pki/server/healthcheck/
+
 %_datadir/pki/etc/tomcat.conf
 %dir %_datadir/pki/deployment
 %_datadir/pki/deployment/config/
@@ -629,7 +641,6 @@ fi
 %_unitdir/pki-tomcatd-nuxwdog.target
 %_javadir/pki/pki-cms.jar
 %_javadir/pki/pki-cmsbundle.jar
-%_javadir/pki/pki-cmscore.jar
 %_javadir/pki/pki-tomcat.jar
 %dir %_sharedstatedir/pki
 %_man1dir/pkidaemon.1.*
@@ -639,6 +650,7 @@ fi
 %_man8dir/pkidestroy.8.*
 %_man8dir/pkispawn.8.*
 %_man8dir/pki-server.8.*
+%_man8dir/pki-server-acme.8.*
 %_man8dir/pki-server-instance.8.*
 %_man8dir/pki-server-subsystem.8.*
 %_man8dir/pki-server-nuxwdog.8.*
@@ -657,6 +669,8 @@ fi
 %_datadir/pki/server/etc/
 %_datadir/pki/server/lib/
 %_datadir/pki/server/upgrade/
+%_datadir/pki/acme/
+%_javadir/pki/pki-acme.jar
 
 %files -n pki-ca
 %_javadir/pki/pki-ca.jar
@@ -693,6 +707,14 @@ fi
 %_bindir/pkiconsole
 %_javadir/pki/pki-console.jar
 
+%files -n pki-healthcheck
+%_sbindir/pki-healthcheck
+%python3_sitelibdir/pki/server/healthcheck/
+%python3_sitelibdir/pkihealthcheck-*.egg-info/
+%config(noreplace) %_sysconfdir/pki/healthcheck.conf
+%_man5dir/pki_healthcheck.conf.*
+%_man8dir/pki-healthcheck.8.*
+
 %files -n dogtag-pki-server-theme
 %_datadir/pki/common-ui/
 %_datadir/pki/CS_SERVER_VERSION
@@ -719,6 +741,13 @@ fi
 %_javadir/pki/pki-console-theme.jar
 
 %changelog
+* Mon Sep 14 2020 Stanislav Levin <slev@altlinux.org> 10.9.4-alt1
+- 10.7.4 -> 10.9.4.
+
+* Tue Aug 04 2020 Stanislav Levin <slev@altlinux.org> 10.7.4-alt4
+- Fixed FTBFS(new pylint 2.5.3).
+- Fixed group ownership of pki nssdb.
+
 * Fri Jul 17 2020 Stanislav Levin <slev@altlinux.org> 10.7.4-alt3
 - Removed Conflict against strongswan.
 

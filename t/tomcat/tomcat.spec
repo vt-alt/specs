@@ -10,12 +10,8 @@ AutoReq: yes,noosgi
 BuildRequires: rpm-build-java-osgi
 BuildRequires: /proc
 BuildRequires: jpackage-generic-compat
-%define fedora 29
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
-# %%name and %%version is ahead of its definition. Predefining for rpm 4.0 compatibility.
-%define name tomcat
-%define version 9.0.13
 # Copyright (c) 2000-2008, JPackage Project
 # All rights reserved.
 #
@@ -46,60 +42,49 @@ BuildRequires: jpackage-generic-compat
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%global jspspec 2.3
-%global major_version 9
-%global minor_version 0
-%global micro_version 13
-%global packdname apache-tomcat-%{version}-src
-%global servletspec 4.0
-%global elspec 3.0
-%global tcuid 91
+%define jspspec 2.3
+%define major_version 9
+%define minor_version 0
+%define micro_version 37
+%define servletspec 4.0
+%define elspec 3.0
 # Recommended version is specified in java/org/apache/catalina/core/AprLifecycleListener.java
 %global native_version 1.2.14
 
 
 # FHS 2.3 compliant tree structure - http://www.pathname.com/fhs/2.3/
-%global basedir %{_var}/lib/%{name}
-%global appdir %{basedir}/webapps
-%global apphomedir %{_datadir}/%{name}
-%global bindir %{apphomedir}/bin
-%global confdir %{_sysconfdir}/%{name}
-%global libdir %{_javadir}/%{name}
-%global logdir %{_var}/log/%{name}
-%global cachedir %{_var}/cache/%{name}
-%global tempdir %{cachedir}/temp
-%global workdir %{cachedir}/work
-%global _systemddir /lib/systemd/system
+%define basedir %{_var}/lib/%{name}
+%define appdir %{basedir}/webapps
+%define apphomedir %{_datadir}/%{name}
+%define bindir %{apphomedir}/bin
+%define confdir %{_sysconfdir}/%{name}
+%define libdir %{_javadir}/%{name}
+%define logdir %{_var}/log/%{name}
+%define cachedir %{_var}/cache/%{name}
+%define tempdir %{cachedir}/temp
+%define workdir %{cachedir}/work
+%define _systemddir /lib/systemd/system
 
-# Fedora doesn't seem to have this macro, so we define it if it doesn't exist
-%{!?_mavendepmapfragdir: %global _mavendepmapfragdir /usr/share/maven-metadata}
-# Fedora 24 erroneously uses %%{_datadir}/maven-fragments instead of /maven-metadata for some reason...
-# Override the mavendepmapfragdir var on fc24
-%{?fc24: %global _mavendepmapfragdir /usr/share/maven-metadata}
+%define tomcat_user tomcat
+%define tomcat_group tomcat
 
 Name:          tomcat
 Epoch:         1
 Version:       %{major_version}.%{minor_version}.%{micro_version}
-Release:       alt1_2jpp8
+Release:       alt1
 Summary:       Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
-License:       ASL 2.0
+License: Apache-2.0
 URL:           http://tomcat.apache.org/
-Source0:       http://www.apache.org/dist/tomcat/tomcat-%{major_version}/v%{version}/src/%{packdname}.tar.gz
+# https://downloads.apache.org/tomcat/tomcat-9/v%version/src/apache-%name-%version-src.tar.gz
+Source0: %name-%version.tar.gz
 Source1:       %{name}-%{major_version}.%{minor_version}.conf
 Source3:       %{name}-%{major_version}.%{minor_version}.sysconfig
 Source4:       %{name}-%{major_version}.%{minor_version}.wrapper
 Source5:       %{name}-%{major_version}.%{minor_version}.logrotate
 Source6:       %{name}-%{major_version}.%{minor_version}-digest.script
 Source7:       %{name}-%{major_version}.%{minor_version}-tool-wrapper.script
-Source8:       servlet-api-OSGi-MANIFEST.MF
-Source9:       jsp-api-OSGi-MANIFEST.MF
 Source11:      %{name}-%{major_version}.%{minor_version}.service
-Source12:      el-api-OSGi-MANIFEST.MF
-Source13:      jasper-el-OSGi-MANIFEST.MF
-Source14:      jasper-OSGi-MANIFEST.MF
-Source15:      tomcat-api-OSGi-MANIFEST.MF
-Source16:      tomcat-juli-OSGi-MANIFEST.MF
 Source20:      %{name}-%{major_version}.%{minor_version}-jsvc.service
 Source21:      tomcat-functions
 Source30:      tomcat-preamble
@@ -108,39 +93,27 @@ Source32:      tomcat-named.service
 
 Patch0:        %{name}-%{major_version}.%{minor_version}-bootstrap-MANIFEST.MF.patch
 Patch1:        %{name}-%{major_version}.%{minor_version}-tomcat-users-webapp.patch
-Patch2:        %{name}-9.0.10-RemoveCompilerOptions.patch
-Patch3:        disableJavadocFailOnWarning.patch
-Patch4:        %{name}-build.patch
+Patch2:        %{name}-build.patch
+# remove this on ecj 4.12+ upgrade
+Patch3: %name-9.0.37-Revert-JDT-4.12-has-a-constant-for-Java-12.patch
+Patch4: %name-9.0.37-rhbz-1857043.patch
 
 BuildArch:     noarch
 
 BuildRequires: ant
-BuildRequires: ecj >= 1:4.6.1
+BuildRequires: ecj >= 1:4.10
 BuildRequires: findutils
-BuildRequires: apache-commons-collections
 BuildRequires: apache-commons-daemon
-BuildRequires: apache-commons-dbcp
-BuildRequires: apache-commons-pool
 BuildRequires: tomcat-taglibs-standard
 BuildRequires: java-devel >= 1.8.0
-BuildRequires: jpackage-utils >= 0:1.7.0
-%if 0%{?fedora} >= 27 || 0%{?rhel} > 7
-# add_maven_depmap is deprecated, using javapackages-local for now
-# See https://fedora-java.github.io/howto/latest/#_add_maven_depmap_macro
 BuildRequires: javapackages-local
-%endif
-BuildRequires: junit
 BuildRequires: geronimo-jaxrpc
 BuildRequires: geronimo-saaj
 BuildRequires: aqute-bnd
 BuildRequires: aqute-bndlib
 BuildRequires: wsdl4j
-BuildRequires: libsystemd-devel libudev-devel systemd systemd-analyze systemd-coredump systemd-networkd systemd-portable systemd-services systemd-stateless systemd-sysvinit systemd-utils
 
 Requires:      apache-commons-daemon
-Requires:      apache-commons-collections
-Requires:      apache-commons-dbcp
-Requires:      apache-commons-pool
 Requires:      jpackage-utils
 Requires:      procps
 Requires:      %{name}-lib = %{epoch}:%{version}-%{release}
@@ -180,15 +153,6 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 %description docs-webapp
 The docs web application for Apache Tomcat.
 
-%package javadoc
-Group: Development/Java
-Summary: Javadoc generated documentation for Apache Tomcat
-Requires: jpackage-utils
-BuildArch: noarch
-
-%description javadoc
-Javadoc generated documentation for Apache Tomcat.
-
 %package jsvc
 Group: System/Servers
 Summary: Apache jsvc wrapper for Apache Tomcat as separate service
@@ -217,10 +181,7 @@ Summary: Libraries needed to run the Tomcat Web container
 Requires: %{name}-jsp-%{jspspec}-api = %{epoch}:%{version}-%{release}
 Requires: %{name}-servlet-%{servletspec}-api = %{epoch}:%{version}-%{release}
 Requires: %{name}-el-%{elspec}-api = %{epoch}:%{version}-%{release}
-Requires: ecj >= 1:4.6.1
-Requires: apache-commons-collections
-Requires: apache-commons-dbcp
-Requires: apache-commons-pool
+Requires: ecj >= 1:4.10
 Requires(preun): coreutils
 
 %description lib
@@ -256,7 +217,7 @@ Requires: tomcat-taglibs-standard >= 0:1.1
 The ROOT and examples web applications for Apache Tomcat.
 
 %prep
-%setup -q -n %{packdname}
+%setup
 # remove pre-built binaries and windows files
 find . -type f \( -name "*.bat" -o -name "*.class" -o -name Thumbs.db -o -name "*.gz" -o \
    -name "*.jar" -o -name "*.war" -o -name "*.zip" \) -delete
@@ -264,7 +225,7 @@ find . -type f \( -name "*.bat" -o -name "*.class" -o -name Thumbs.db -o -name "
 %patch0 -p0
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
+%patch3 -p1
 %patch4 -p0
 
 ln -s $(build-classpath tomcat-taglibs-standard/taglibs-standard-impl) webapps/examples/WEB-INF/lib/jstl.jar
@@ -281,10 +242,9 @@ export OPT_JAR_LIST="xalan-j2-serializer"
    # who needs a build.properties file anyway
    %{ant} -Dbase.path="." \
       -Dbuild.compiler="modern" \
-      -Dcommons-collections.jar="$(build-classpath apache-commons-collections)" \
       -Dcommons-daemon.jar="$(build-classpath apache-commons-daemon)" \
       -Dcommons-daemon.native.src.tgz="HACK" \
-      -Djdt.jar="$(build-classpath ecj)" \
+      -Djdt.jar="$(build-classpath ecj/ecj)" \
       -Dtomcat-native.tar.gz="HACK" \
       -Dtomcat-native.home="." \
       -Dcommons-daemon.native.win.mgr.exe="HACK" \
@@ -297,12 +257,9 @@ export OPT_JAR_LIST="xalan-j2-serializer"
       -Dbndlibg.jar="$(build-classpath aqute-bnd/aQute.libg)" \
       -Dbndannotation.jar="$(build-classpath aqute-bnd/biz.aQute.bnd.annotation)" \
       -Dslf4j-api.jar="$(build-classpath slf4j/slf4j-api)" \
-      -Dno.build.dbcp=true \
       -Dversion="%{version}" \
       -Dversion.build="%{micro_version}" \
-      -Djava.7.home=%{java_home} \
-      -Dexecute.validate=false \
-      deploy dist-prepare dist-source javadoc
+      deploy dist-source
 
     # remove some jars that we'll replace with symlinks later
     rm output/build/bin/commons-daemon.jar output/build/lib/ecj.jar
@@ -314,35 +271,10 @@ pushd ../web
 popd
 popd
 
-# inject OSGi manifests
-mkdir -p META-INF
-cp -p %{SOURCE8} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/servlet-api.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE9} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/jsp-api.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE12} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/el-api.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE13} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/jasper-el.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE14} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/jasper.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE15} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/lib/tomcat-api.jar META-INF/MANIFEST.MF
-cp -p %{SOURCE16} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip output/build/bin/tomcat-juli.jar META-INF/MANIFEST.MF
-
 %install
 # build initial path structure
 install -d -m 0755 ${RPM_BUILD_ROOT}%{_bindir}
 install -d -m 0755 ${RPM_BUILD_ROOT}%{_sbindir}
-install -d -m 0755 ${RPM_BUILD_ROOT}%{_javadocdir}/%{name}
 install -d -m 0755 ${RPM_BUILD_ROOT}%{_systemddir}
 install -d -m 0755 ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
 install -d -m 0755 ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
@@ -370,8 +302,6 @@ pushd output/build
     cp -a lib/*.jar ${RPM_BUILD_ROOT}%{libdir}
     cp -a webapps/* ${RPM_BUILD_ROOT}%{appdir}
 popd
-# javadoc
-cp -a output/dist/webapps/docs/api/* ${RPM_BUILD_ROOT}%{_javadocdir}/%{name}
 
 sed -e "s|\@\@\@TCHOME\@\@\@|%{apphomedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
@@ -425,8 +355,7 @@ pushd ${RPM_BUILD_ROOT}%{_javadir}
 popd
 
 pushd output/build
-    %{_bindir}/build-jar-repository lib apache-commons-collections \
-                                        apache-commons-dbcp apache-commons-pool ecj 2>&1
+    %{_bindir}/build-jar-repository lib ecj 2>&1
     # need to use -p here with b-j-r otherwise the examples webapp fails to
     # load with a java.io.IOException
     %{_bindir}/build-jar-repository -p webapps/examples/WEB-INF/lib \
@@ -438,10 +367,7 @@ pushd ${RPM_BUILD_ROOT}%{libdir}
     ln -s ../../java/%{name}-jsp-%{jspspec}-api.jar .
     ln -s ../../java/%{name}-servlet-%{servletspec}-api.jar .
     ln -s ../../java/%{name}-el-%{elspec}-api.jar .
-    ln -s $(build-classpath apache-commons-collections) commons-collections.jar
-    ln -s $(build-classpath apache-commons-dbcp) commons-dbcp.jar
-    ln -s $(build-classpath apache-commons-pool) commons-pool.jar
-    ln -s $(build-classpath ecj) jasper-jdt.jar
+    ln -s $(build-classpath ecj/ecj) jasper-jdt.jar
 
     # Temporary copy the juli jar here from /usr/share/java/tomcat (for maven depmap)
     cp -a ${RPM_BUILD_ROOT}%{bindir}/tomcat-juli.jar ./
@@ -561,9 +487,9 @@ install -D -m 755 %{S:46} %buildroot%_sbindir/%{name}-sysv
 
 
 %pre
-%{_sbindir}/groupadd -g %{tcuid} -r tomcat 2>/dev/null || :
-%{_sbindir}/useradd -c "Apache Tomcat" -u %{tcuid} -g tomcat \
-    -s /sbin/nologin -r -d %{apphomedir} tomcat 2>/dev/null || :
+%_sbindir/groupadd -r -f %tomcat_user 2>/dev/null ||:
+%_sbindir/useradd -c "Apache Tomcat" -g %tomcat_group \
+    -s /sbin/nologin -r -d %{apphomedir} tomcat 2>/dev/null ||:
 
 %post
 %post_service %{name}
@@ -636,9 +562,6 @@ install -D -m 755 %{S:46} %buildroot%_sbindir/%{name}-sysv
 %files docs-webapp
 %{appdir}/docs
 
-%files javadoc
-%{_javadocdir}/%{name}
-
 %files jsp-%{jspspec}-api -f output/dist/src/res/maven/.mfiles-tomcat-jsp-api
 %_altdir/jsp_tomcat-jsp-2.3-api
 %{_javadir}/%{name}-jsp-%{jspspec}*.jar
@@ -647,6 +570,9 @@ install -D -m 755 %{S:46} %buildroot%_sbindir/%{name}-sysv
 %dir %{libdir}
 %{libdir}/*.jar
 %{_javadir}/*.jar
+%exclude %_javadir/%name-el-api.jar
+%exclude %_javadir/%name-servlet-api.jar
+%exclude %_javadir/%name-jsp-api.jar
 %{bindir}/tomcat-juli.jar
 %{_mavenpomdir}/JPP.%{name}-annotations-api.pom
 %{_mavenpomdir}/JPP.%{name}-catalina-ha.pom
@@ -692,6 +618,9 @@ install -D -m 755 %{S:46} %buildroot%_sbindir/%{name}-sysv
 %attr(0660,tomcat,tomcat) %verify(not size md5 mtime) %{logdir}/catalina.out
 
 %changelog
+* Tue Sep 15 2020 Stanislav Levin <slev@altlinux.org> 1:9.0.37-alt1
+- 9.0.13 -> 9.0.37.
+
 * Mon Mar 25 2019 Igor Vlasenko <viy@altlinux.ru> 1:9.0.13-alt1_2jpp8
 - new version
 
