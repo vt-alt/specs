@@ -15,7 +15,7 @@
 
 Name: glib-networking
 Version: %ver_major.3
-Release: alt1
+Release: alt1.p9.1
 
 Summary: Networking support for GIO
 Group: System/Libraries
@@ -27,6 +27,8 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %else
 Source: %name-%version.tar
 %endif
+Patch1: glib-networking-2.60.3-upstream-alt-fix-cve-2020-13645.patch
+Patch2: glib-networking-2.60.3-alt-fix-null-dereference.patch
 
 %{?_enable_gnome_proxy:Requires: gsettings-desktop-schemas >= 3.2.0}
 Requires: ca-certificates
@@ -70,6 +72,8 @@ the functionality of the installed %name package.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
 
 %build
 %meson \
@@ -111,6 +115,10 @@ the functionality of the installed %name package.
 %endif
 
 %changelog
+* Wed Oct 28 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.60.3-alt1.p9.1
+- Fixed CVE-2020-13645.
+- Fixed possible NULL dereference.
+
 * Sun Jun 09 2019 Yuri N. Sedunov <aris@altlinux.org> 2.60.3-alt1
 - 2.60.3
 
