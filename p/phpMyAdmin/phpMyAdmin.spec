@@ -1,6 +1,6 @@
 Name: phpMyAdmin
-Version: 4.8.5
-Release: alt2
+Version: 5.0.4
+Release: alt1
 
 Summary: phpMyAdmin - web-based MySQL administration
 
@@ -89,10 +89,12 @@ Group: System/Servers
 Requires: %name = %version-%release
 Requires: apache2-mod_php7 >= 7.0.0
 Requires: apache2-base
-Requires: php7-mysqli
+# needed MYSQLI_TYPE_JSON exists only in mysqlnd
+Requires: php7-mysqlnd-mysqli
 Requires: php7-mcrypt
 Requires: php7-mbstring
 Requires: php7-gd2
+Requires: php7-zip
 Conflicts: %name-apache2
 
 %description apache2-php7
@@ -119,7 +121,11 @@ Install this package if you need phpMyAdmin for apache 2.4 and php7.
 
 %install
 mkdir -p %buildroot%webserver_webappsdir
+
 cp config.sample.inc.php config.inc.php
+# see https://bugzilla.altlinux.org/show_bug.cgi?id=37954
+echo "\$cfg['TempDir'] = '/tmp';" >> config.inc.php
+
 cp -r ../%name-%version %buildroot%webserver_webappsdir/%name
 
 # remove unneeded
@@ -142,7 +148,7 @@ ln -s %apache2_extra_available/%name.conf %buildroot%apache2_extra_enabled/%name
 #__subst 's|--dir--|%apache2_extra_available|g' %buildroot%_controldir/%name-apache2
 
 %post
-%__subst "s|\(blowfish_secret'\] = \)''|\1'$(pwgen -0s1)'|" %webserver_webappsdir/%name/config.inc.php
+%__subst "s|\(blowfish_secret'\] = \)''|\1'$(pwgen -0s1 32)'|" %webserver_webappsdir/%name/config.inc.php
 
 #pre apache2
 #pre_control %name-apache2
@@ -172,6 +178,36 @@ ln -s %apache2_extra_available/%name.conf %buildroot%apache2_extra_enabled/%name
 #attr(755,root,root) %_controldir/%name-apache2
 
 %changelog
+* Thu Oct 29 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.4-alt1
+- new version 5.0.4 (with rpmrb script)
+
+* Tue Oct 13 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.3-alt1
+- new version 5.0.3 (with rpmrb script)
+- several important security fixes:
+ + PMASA-2020-5 XSS vulnerability with transformation feature
+ + MASA-2020-6 SQL injection vulnerability with the search feature
+
+* Thu Jun 04 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.2-alt1
+- new version 5.0.2 (with rpmrb script)
+
+* Fri Jan 31 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.1-alt3
+- fix blowfish_secret length, add tmp dir path (ALT bug 37954)
+
+* Wed Jan 22 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.1-alt2
+- use php7-mysqlnd-mysqli (contains MYSQLI_TYPE_JSON)
+
+* Thu Jan 16 2020 Vitaly Lipatov <lav@altlinux.ru> 5.0.1-alt1
+- new version 5.0.1 (with rpmrb script)
+- PMASA-2020-1 is an SQL injection vulnerability
+
+* Sat Nov 23 2019 Vitaly Lipatov <lav@altlinux.ru> 4.9.2-alt1
+- new version 4.9.2 (with rpmrb script)
+
+* Tue Jun 11 2019 Vitaly Lipatov <lav@altlinux.ru> 4.9.0.1-alt1
+- new version 4.9.0.1 (with rpmrb script)
++ PMASA-2019-3 is an SQL injection flaw in the Designer feature
++ PMASA-2019-4 is a CSRF attack that's possible through the 'cookie' login form
+
 * Mon Mar 04 2019 Vitaly Lipatov <lav@altlinux.ru> 4.8.5-alt2
 - disable php5 subpackage
 
@@ -592,6 +628,6 @@ ln -s %apache2_extra_available/%name.conf %buildroot%apache2_extra_enabled/%name
 - built for ALT Linux
 - spec adapted from PLD
 
-* Mon Oct 01 2002 PLD Team <feedback@pld.org.pl> 2.3.1-1
+* Tue Oct 01 2002 PLD Team <feedback@pld.org.pl> 2.3.1-1
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 ppv, blues, kloczek, orzech, pioklo, qboosh, tiwek
