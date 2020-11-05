@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.14
+Version: 0.4.15
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,9 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Thu Oct 01 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.15-alt1
+- Show pending changes made by user/profile
+
 * Tue Sep 22 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.14-alt1
 - Fixed disk groups when there are no objects on disks
 
