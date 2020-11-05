@@ -1,5 +1,5 @@
 Name:     vokoscreenNG
-Version:  3.0.5
+Version:  3.0.7
 Release:  alt1
 
 Summary:  VokscreenNG is a user friendly Open Source screencaster for Linux and Windows
@@ -19,6 +19,7 @@ BuildRequires: qt5-multimedia-devel
 BuildRequires: qt5-tools-devel
 BuildRequires: qt5-x11extras-devel
 BuildRequires: libgstreamermm1.0-devel
+BuildRequires: libpulseaudio-devel
 
 %description
 %summary
@@ -44,5 +45,11 @@ install -Dpm0644 src/applications/%name.png %buildroot%_pixmapsdir/%name.png
 %_pixmapsdir/%name.png
 
 %changelog
+* Thu Oct 01 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.7-alt1
+- New version.
+
+* Thu Sep 03 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.6-alt1
+- New version.
+
 * Mon Aug 24 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.5-alt1
 - Initial build for Sisyphus.
