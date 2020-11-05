@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.19
-Release:	alt1
+Release:	alt2
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -39,7 +39,7 @@ Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables, ipset >= 4.1-alt2
 Requires:	ethtool >= 0:3-alt4, ifplugd >= 0.28-alt2
-Requires:	hotplug, ncpfs, ppp, openvpn, wireguard-tools
+Requires:	hotplug, ppp, openvpn, wireguard-tools
 Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
 %description full
@@ -141,6 +141,9 @@ fi
 %files full
 
 %changelog
+* Tue Nov 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9.19-alt2
+- Removed ncpfs from dependencies.
+
 * Fri Jul 10 2020 Anton Farygin <rider@altlinux.ru> 0.9.19-alt1
 - added openvswitch support from the our openvswitch package
 - fixed OVS_OPTIONS and OVS_EXTRA usage for interfaces with TYPE=ovsbr
