@@ -1,12 +1,12 @@
 Name: thunar
-Version: 1.8.15
+Version: 1.8.16
 Release: alt1
 
 Summary: Thunar File Manager for the Xfce Desktop Environment
 Summary (ru_RU.UTF-8): Файловый менеджер Thunar
 Group: Graphical desktop/XFce
 License: GPLv2+ and LGPLv2+
-Url: https://xfce.org
+Url: https://docs.xfce.org/xfce/thunar/start
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
 Vcs: https://gitlab.xfce.org/xfce/thunar.git
@@ -135,6 +135,10 @@ make check
 %exclude %_libdir/thunarx-*/*.la
 
 %changelog
+* Mon Nov 02 2020 Mikhail Efremov <sem@altlinux.org> 1.8.16-alt1
+- Updated url.
+- Updated to 1.8.16.
+
 * Mon May 25 2020 Mikhail Efremov <sem@altlinux.org> 1.8.15-alt1
 - Updated Vcs tag.
 - Updated to 1.8.15.
