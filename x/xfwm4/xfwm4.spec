@@ -1,5 +1,5 @@
 Name: xfwm4
-Version: 4.14.5
+Version: 4.14.6
 Release: alt1
 
 %def_enable epoxy
@@ -77,6 +77,9 @@ Xfce.
 %_libdir/xfce4/*
 
 %changelog
+* Mon Nov 02 2020 Mikhail Efremov <sem@altlinux.org> 4.14.6-alt1
+- Updated to 4.14.6.
+
 * Wed Aug 12 2020 Mikhail Efremov <sem@altlinux.org> 4.14.5-alt1
 - Updated to 4.14.5.
 
