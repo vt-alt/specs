@@ -9,7 +9,7 @@
 %define _pluginsdir %_libdir/%name/plugins/3.2
 
 Name: wireshark
-Version: 3.2.7
+Version: 3.2.8
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -225,6 +225,13 @@ _EOF_
 %_pkgconfigdir/wireshark.pc
 
 %changelog
+* Tue Nov 03 2020 Anton Farygin <rider@altlinux.ru> 3.2.8-alt1
+- 3.2.8 
+- fixes:
+   * CVE-2020-28030 the GQUIC dissector could crash.
+   * CVE-2020-26575 the Facebook Zero Protocol (aka FBZERO) dissector
+     could enter an infinite loop.
+
 * Wed Sep 30 2020 Anton Farygin <rider@altlinux.ru> 3.2.7-alt1
 - 3.2.7
 - fixes:
