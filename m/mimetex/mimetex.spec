@@ -1,14 +1,15 @@
-Name: mimetex
-Version: 1.71
-Release: alt1.rev20090617.qa1
+%define _unpackaged_files_terminate_build 1
 
-Summary: Mimetex ets you easily embed LaTeX math in your html pages 
+Name: mimetex
+Version: 1.76
+Release: alt1
+Summary: Mimetex ets you easily embed LaTeX math in your html pages
 License: GPL
 Group: Networking/Other
-
 Url: http://www.forkosh.com/mimetex.html
-Source0: %name-%version.tar.bz2
-Packager: Vladimir A. Svyatoshenko <svyt@altlinux.ru>
+
+Source: %name-%version.tar
+Patch1: mimetex_manual.diff
 
 #AutoReqProv: no
 Requires: webserver-common 
@@ -18,30 +19,31 @@ Conflicts: moodle-filter-mimetex
 %define installdir %webserver_cgibindir
 
 %description
-  MimeTeX, licensed under the gpl, lets you easily embed LaTeX math in your html pages.  It parses 
-a LaTeX math expression and immediately emits the corresponding gif image, rather than the usual 
-TeX dvi. And mimeTeX is an entirely separate little program that doesn't use TeX or its fonts in 
-any way. It's just one cgi that you put in your site's cgi-bin/ directory, with no other 
-dependencies. So mimeTeX is very easy to install. And it's equally easy to use. Just place an 
+MimeTeX, licensed under the gpl, lets you easily embed LaTeX math in your html pages. It parses
+a LaTeX math expression and immediately emits the corresponding gif image, rather than the usual
+TeX dvi. And mimeTeX is an entirely separate little program that doesn't use TeX or its fonts in
+any way. It's just one cgi that you put in your site's cgi-bin/ directory, with no other
+dependencies. So mimeTeX is very easy to install. And it's equally easy to use. Just place an
 html <img> tag in your document wherever you want to see the corresponding LaTeX expression.
 
 %prep
-%setup -q -n %name
+%setup
+%patch1 -p1
 
 %build
-gcc -DAA mimetex.c gifsave.c -lm -o mimetex.cgi
-
-%__rm *.c 
-%__rm *.h 
+gcc %optflags -DAA mimetex.c gifsave.c -lm -o mimetex.cgi
 
 %install
-%__install -pD -m755 mimetex.cgi %buildroot%installdir/mimetex.cgi
+install -pD -m755 mimetex.cgi %buildroot%installdir/mimetex.cgi
 
 %files
 %installdir/mimetex.cgi
 %doc COPYING README mimetex.html
 
 %changelog
+* Tue Nov 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.76-alt1
+- Updated to version 1.76 from Debian (Fixes: CVE-2009-1382, CVE-2009-2459).
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 1.71-alt1.rev20090617.qa1
 - NMU: rebuilt for debuginfo.
 
