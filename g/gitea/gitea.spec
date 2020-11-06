@@ -1,14 +1,9 @@
 %global import_path code.gitea.io/gitea
 
-%global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
-%set_verify_elf_method unresolved=no
-%add_debuginfo_skiplist %go_root %_bindir
-%brp_strip_none %_bindir/*
-
 Name:    gitea
-Version: 1.12.3
+Version: 1.12.5
 Release: alt1
 
 Summary: Git with a cup of tea, painless self-hosted git service
@@ -96,6 +91,12 @@ useradd -r -g %name -c 'Gitea daemon' \
 %doc *.md
 
 %changelog
+* Thu Oct 29 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.5-alt1
+- Build new version.
+
+* Fri Sep 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.4-alt1
+- Build new version.
+
 * Mon Aug 03 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.3-alt1
 - Build new version.
 
