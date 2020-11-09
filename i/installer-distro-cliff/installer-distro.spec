@@ -1,7 +1,7 @@
 %define distro cliff
 Name: installer-distro-%distro
 Version: 8.2
-Release: alt4
+Release: alt6
 
 License: GPL
 Group: System/Configuration/Other
@@ -109,6 +109,12 @@ fi
 %files stage3
 
 %changelog
+* Thu Nov 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt6
+- less services enabled by default
+
+* Mon Nov 02 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt5
+- supress officer-related errors when no such user exists
+
 * Thu Oct 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt4
 - officer step skip in network installation
 
