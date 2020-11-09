@@ -1,6 +1,6 @@
 Name: libxml2
 Version: 2.9.10
-Release: alt2
+Release: alt4
 Epoch: 1
 
 Summary: The library for manipulating XML files
@@ -152,7 +152,7 @@ ln -s ../xmlconf
 %define _configure_script ../configure
 
 %configure \
-    --with-python \
+    --with-python=%_bindir/python2 \
     --with-python-install-dir=%python_sitelibdir \
     --with-html-dir=%_docdir \
     --with-html-subdir=%name-%version \
@@ -248,6 +248,13 @@ install -p -m644 doc/*.html %buildroot%pkgdocdir/
 %doc %_datadir/gtk-doc/html/libxml2/
 
 %changelog
+* Fri Nov 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:2.9.10-alt4
+- Applied security fixes from upstream (Fixes: CVE-2019-20388, CVE-2020-7595,
+  CVE-2020-24977).
+
+* Mon Dec 23 2019 Ivan A. Melnikov <iv@altlinux.org> 1:2.9.10-alt3
+- Fix building without python-base.
+
 * Sat Nov 02 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.9.10-alt2
 - xml2-config: fixed regressions introduced in v2.9.10.
 
