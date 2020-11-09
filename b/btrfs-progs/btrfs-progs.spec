@@ -1,6 +1,6 @@
 %define _unpackaged_files_terminate_build 0
 Name: btrfs-progs
-Version: 5.3.1
+Version: 5.9
 Release: alt1
 
 Summary: Utilities for managing the Btrfs filesystem
@@ -52,9 +52,12 @@ btrfs filesystem-specific programs.
 %patch0 -p1
 
 %build
-autoreconf -fisv
+autoreconf -fisv -I m4
 automake --add-missing ||:
-%configure --disable-python --disable-static
+%configure --disable-python \
+	   --disable-static \
+	   --with-pkgconfigdir=%_pkgconfigdir \
+	   #
 %make_build
 
 %install
@@ -79,9 +82,28 @@ rm -f %buildroot/%{_lib}/libbtrfsutil.so
 
 %files -n libbtrfs-devel
 %_libdir/*.so
+%_pkgconfigdir/libbtrfsutil.pc
 %_includedir/*
 
 %changelog
+* Mon Nov 02 2020 Anton Farygin <rider@altlinux.ru> 5.9-alt1
+- 5.9
+
+* Fri Jul 10 2020 Anton Farygin <rider@altlinux.ru> 5.7-alt1
+- 5.7
+
+* Wed May 20 2020 Anton Farygin <rider@altlinux.ru> 5.6.1-alt1
+- 5.6.1
+
+* Mon Apr 20 2020 Anton Farygin <rider@altlinux.ru> 5.6-alt1
+- 5.6
+
+* Fri Feb 21 2020 Anton Farygin <rider@altlinux.ru> 5.4.1-alt1
+- 5.4.1
+
+* Tue Dec 10 2019 Anton Farygin <rider@altlinux.ru> 5.4-alt1
+- 5.4
+
 * Wed Nov 20 2019 Anton Farygin <rider@altlinux.ru> 5.3.1-alt1
 - 5.3.1
 
