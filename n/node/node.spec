@@ -4,13 +4,14 @@
 %def_without npm
 # in other case, note: we will npm-@npmver-@release package! fix release if npmver is unchanged
 
-%define major 14.11
+%define major 14.15
 
 #we need ABI virtual provides where SONAMEs aren't enough/not present so deps
 #break when binary compatibility is broken
 %global nodejs_abi 14
 
-%global napi 6
+# there are both 6 and 7 provided (https://github.com/nodejs/node/pull/35199), see napi using
+%global napi 7
 
 # TODO: really we have no configure option to build with shared libv8
 # V8 presently breaks ABI at least every x.y release while never bumping SONAME,
@@ -23,7 +24,7 @@
 %define openssl_version 1.0.2n
 %def_with systemssl
 
-%global libuv_abi 1.39.0
+%global libuv_abi 1.40.0
 %def_with systemuv
 
 %global libicu_abi 6.7
@@ -50,7 +51,7 @@
 
 Name: node
 Version: %major.0
-Release: alt2
+Release: alt1
 
 Summary: Evented I/O for V8 Javascript
 
@@ -99,7 +100,9 @@ BuildRequires: libnghttp2-devel >= %libnghttp2_abi
 %if_with systemhttp-parser
 BuildRequires: libhttp-parser-devel >= 2.9.2-alt2
 %endif
-BuildRequires: libcares-devel >= 1.11.0
+
+# c-ares
+BuildRequires: libcares-devel >= 1.16.1
 
 BuildRequires: curl
 
@@ -115,9 +118,11 @@ Obsoletes: node.js < %version-%release
 
 Provides: nodejs(abi) = %{nodejs_abi}
 Provides: nodejs(v8-abi) = %{v8_abi}
+Provides: nodejs(napi) = 6
 Provides: nodejs(napi) = %{napi}
 
-Provides: bundled(llhttp) = 2.1.2
+Provides: bundled(llhttp) = 2.1.3
+Provides: bundled(uvwasi) = 0.0.11
 
 # /usr/bin/ld.default: failed to set dynamic section sizes: memory exhausted
 %ifarch %ix86
@@ -375,6 +380,24 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Tue Oct 27 2020 Vitaly Lipatov <lav@altlinux.ru> 14.15.0-alt1
+- new version 14.15.0 (with rpmrb script)
+- 2020-10-27, Version 14.15.0 'Fermium' (LTS), @richardlau
+  This release marks the transition of Node.js 14.x into Long Term Support (LTS)
+
+
+* Fri Oct 16 2020 Vitaly Lipatov <lav@altlinux.ru> 14.14.0-alt1
+- new version 14.14.0 (with rpmrb script)
+
+* Thu Oct 08 2020 Vitaly Lipatov <lav@altlinux.ru> 14.13.1-alt1
+- new version 14.13.1 (with rpmrb script)
+- internal update llhttp to 2.1.3
+
+* Tue Oct 06 2020 Vitaly Lipatov <lav@altlinux.ru> 14.13.0-alt1
+- new version 14.13.0 (with rpmrb script)
+- set libuv >= 1.40.0
+- set c-ares >= 1.16.1
+
 * Fri Sep 18 2020 Vitaly Lipatov <lav@altlinux.ru> 14.11.0-alt2
 - set libicu >= 6.7 (missed since 14.6.0), use packaged icu only on Sisyphus
 
