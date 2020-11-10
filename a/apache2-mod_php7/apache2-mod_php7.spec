@@ -3,12 +3,23 @@
 
 Name: apache2-mod_php7
 Version: %php7_version
-Release: %php7_release
+Release: %php7_release.2
 
 Summary: The php7 HTML-embedded scripting language for use with Apache2
+
 Group: System/Servers
-License: PHP
+License: PHP-3.01
 Url: http://www.php.net/
+
+Source1: php.ini
+Source2: %name-browscap.ini
+
+Patch0: apache2-mod_php7-7.1.0.patch
+Patch1: php-alt-namespace.patch
+
+BuildRequires(pre): rpm-build-php7 rpm-macros-apache2
+BuildRequires: apache2-devel apache2-httpd-worker libmm-devel libxml2-devel php7-devel zlib-devel libsqlite3-devel
+BuildRequires: php7-devel = %php7_version
 
 Requires: php7 = %php7_version
 Requires: php7 >= %php7_version-%php7_release
@@ -18,17 +29,6 @@ Requires(post): apache2-base
 
 Conflicts: apache2-mod_php5
 Provides: php-engine = %php7_version-%php7_release
-
-Source1: php.ini
-Source2: %name-browscap.ini
-
-Patch0: apache2-mod_php7-7.1.0.patch
-Patch1: php-alt-namespace.patch
-
-BuildRequires(pre): rpm-build-php7 apache2-devel
-# Automatically added by buildreq on Wed Mar 23 2011
-BuildRequires: apache2-devel apache2-httpd-worker libmm-devel libxml2-devel php7-devel zlib-devel
-BuildRequires: php7-devel = %php7_version
 
 %description
 PHP is an HTML-embedded scripting language. PHP attempts to make it
@@ -88,13 +88,13 @@ cat > %buildroot/%apache2_mods_start/mod_php7.conf << EOF
 mod_php7=yes
 EOF
 
-cat > %buildroot/%_rpmlibdir/%name.filetrigger << EOF
+cat > %buildroot/%_rpmlibdir/90-php-%name.filetrigger << EOF
 #!/bin/sh
-%apache2_sbindir/a2chkconfig >/dev/null
-%php7_sapi_postin
+LC_ALL=C sed 's|^%php7_sysconfdir/%php7_sapi/control.d||' |
+        egrep -qs '^%php7_sysconfdir/%php7_sapi|^%php7_extdir' || exit 0
 %post_apache2conf
 EOF
-chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
+chmod 755 %buildroot/%_rpmlibdir/90-php-%name.filetrigger
 
 install -m 644 %SOURCE1 %buildroot/%php7_sysconfdir/%php7_sapi/php.ini
 install -m 644 %SOURCE2 %buildroot/%php7_sysconfdir/%php7_sapi/browscap.ini
@@ -117,7 +117,6 @@ done
 
 %postun
 if [ $1 = 0 ]; then
-	%apache2_sbindir/a2chkconfig >/dev/null
 	%post_apache2conf
 fi
 
@@ -129,7 +128,7 @@ fi
 %config(noreplace) %php7_sysconfdir/%php7_sapi/php.ini
 %config(noreplace) %php7_sysconfdir/%php7_sapi/browscap.ini
 %apache2_moduledir/%so_file
-%_rpmlibdir/%name.filetrigger
+%_rpmlibdir/90-php-%name.filetrigger
 %doc CREDITS
 
 
@@ -137,7 +136,7 @@ fi
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Rebuild with new PHP
 
-* Tue Mar 29 2016 Anton Farygin <rider@altlinux.org> 5.6.19.20160303-alt1 
+* Tue Mar 29 2016 Anton Farygin <rider@altlinux.org> 5.6.19.20160303-alt1
 - Rebuild with php5-5.6.19.20160303-alt1
 
 * Wed Nov 14 2012 Anton Farygin <rider@altlinux.ru> 5.3.18.20121017-alt1

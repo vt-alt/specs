@@ -17,7 +17,6 @@ Packager:       Nikolay A. Fetisov <naf@altlinux.ru>
 Source1:	php-%php7_extension.ini
 Source2:	php-%php7_extension-params.sh
 
-Patch1:		php7-pdo_mysql-7.2.15-alt-mysql8-transition.patch
 
 BuildRequires(pre): rpm-build-php7
 BuildRequires: gcc-c++ libMySQL-devel
@@ -36,7 +35,6 @@ This package contains a MySQL driver for PDO.
 %prep
 %setup -T -c
 cp -pr -- %php7_extsrcdir/%php7_extension/* .
-%patch1 -p0
 
 # Fix path to pdo*.h
 subst 's@php/ext@php/%_php7_version/ext@g' config.m4

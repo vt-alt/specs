@@ -13,8 +13,6 @@ URL:		http://www.php.net/manual/en/ref.mysqli.php
 #Source0:	standart PHP module
 Source1:	php-%php7_extension.ini
 Source2:	php-%php7_extension-params.sh
-Patch0: php7-force_libmysqlclient_r.patch
-Patch1: php7-mysql8-transition.patch
 Conflicts: php7-mysqlnd-mysqli
 
 BuildRequires(pre): rpm-build-php7 
@@ -22,13 +20,11 @@ BuildRequires: php7-devel = %php7_version
 BuildRequires: libmysqlclient-devel >= 5.1.50-alt5
 
 %description
-MySQLi (improved) - new MySQL interface for PHP and MySQL 4.1.3+
+MySQLi (improved) - MySQL interface for PHP and MySQL 4.1.3+
 
 %prep
 %setup -T -c
 cp -pr -- %php7_extsrcdir/%php7_extension/* .
-%patch0 -p0
-%patch1 -p0
 
 %build
 phpize

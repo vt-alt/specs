@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.3.23
+Version: 7.3.24
 Release: alt1
 
 %define php7_name      %name
@@ -360,18 +360,17 @@ subst 's,@php7_major@,%_php7_major,'   %buildroot/%_sysconfdir/rpm/macros.d/%php
 subst 's,@php7_release@,%php7_release,'     %buildroot/%_sysconfdir/rpm/macros.d/%php7_name-ver
 subst 's,sbin/lsattr,bin/lsattr,' %buildroot/%php7_libdir/build/config.guess
 mkdir -p  %buildroot%_rpmlibdir
-cat > %buildroot%_rpmlibdir/%name.filetrigger << EOF
+cat > %buildroot%_rpmlibdir/89-%name.filetrigger << EOF
 #!/bin/sh
-LC_ALL=C egrep -qs '^%php7_extdir' || exit 0
+LC_ALL=C egrep -qs '^%php7_sysconfdir/.*/php.d|^%php7_extdir' || exit 0
 if [ -x %php7_postin ]; then
     export php_servicedir=%php7_servicedir
     export php_sysconfdir=%php7_sysconfdir
     export php_extconf=%php7_extconf
-    export sapiList=cli
     %php7_postin ||:
 fi
 EOF
-chmod 755 %buildroot/%_rpmlibdir/%name.filetrigger
+chmod 755 %buildroot/%_rpmlibdir/89-%name.filetrigger
 
 %check
 export NO_INTERACTION=1 REPORT_EXIT_STATUS=1
@@ -427,7 +426,7 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %_man1dir/php7.*
 %_man1dir/phpdbg7.*
 %_man1dir/phar7*.1*
-%_rpmlibdir/%name.filetrigger
+%_rpmlibdir/89-%name.filetrigger
 %doc CODING_STANDARDS CREDITS INSTALL LICENSE
 %doc NEWS README.* php.ini-* EXTENSIONS
 %doc UPGRADING*
@@ -464,6 +463,12 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %doc tests run-tests.php 
 
 %changelog
+* Tue Nov 03 2020 Anton Farygin <rider@altlinux.ru> 7.3.24-alt1
+- 7.3.24
+-filetrigger renamed to 89-php.filetrigger for sync
+ start order with filetriggers from SAPI
+
+
 * Wed Oct 07 2020 Anton Farygin <rider@altlinux.ru> 7.3.23-alt1
 - 7.3.23 (Fixes: CVE-2020-7069, CVE-2020-7070)
 
