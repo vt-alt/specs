@@ -7,7 +7,7 @@
 %def_enable lua
 
 Name: haproxy
-Version: 2.0.13
+Version: 2.0.19
 Release: alt1
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -19,6 +19,7 @@ Source: %name-%version.tar
 Source1: %name.cfg
 Source2: %name.init
 Source3: %name.logrotate
+Source4: %name.service
 
 BuildRequires: libpcre2-devel zlib-devel libssl-devel libsystemd-devel
 %{?_enable_lua:BuildRequires: liblua5-devel >= 5.3}
@@ -53,7 +54,8 @@ addlib_opts=ADDLIB=-latomic
 %endif
 
 %make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_ZLIB=1 USE_SYSTEMD=1 %{?_enable_lua:USE_LUA=1} \
-	${regparm_opts:-} ${addlib_opts:-} PREFIX="%_prefix" ADDINC="$(pcre2-config --cflags)" CFLAGS="%optflags"
+	${regparm_opts:-} ${addlib_opts:-} PREFIX="%_prefix" ADDINC="$(pcre2-config --cflags)" CFLAGS="%optflags" \
+	EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
 
 pushd contrib/halog
 %make halog OPTIMIZE="%optflags"
@@ -63,17 +65,13 @@ popd
 #%make iprange OPTIMIZE="%optflags"
 #popd
 
-pushd contrib/systemd
-%make haproxy.service PREFIX="%_prefix"
-popd
-
 %install
 %make_install install-bin DESTDIR=%buildroot PREFIX="%_prefix" TARGET="linux-glibc"
 %make_install install-man DESTDIR=%buildroot PREFIX="%_prefix"
 
 install -p -D -m 0644 %SOURCE1 %buildroot%haproxy_confdir/%name.cfg
 install -D -m 0755 %SOURCE2 %buildroot%_initrddir/haproxy
-install -p -D -m 0644 contrib/systemd/haproxy.service %buildroot%_unitdir/%name.service
+install -p -D -m 0644 %SOURCE4 %buildroot%_unitdir/%name.service
 install -p -D -m 0644 %SOURCE3 %buildroot%_logrotatedir/%name
 install -d -m 0755 %buildroot%haproxy_home
 install -d -m 0755 %buildroot%haproxy_datadir
@@ -109,6 +107,14 @@ cp -p examples/errorfiles/* %buildroot%haproxy_datadir/
 %attr(-,%haproxy_user,%haproxy_group) %dir %haproxy_home
 
 %changelog
+* Tue Nov 10 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.19-alt1
+- 2.0.19
+
+* Sat Apr 18 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.14-alt1
+- 2.0.14
+- build with prometheus-exporter
+- add security options to systemd unit
+
 * Sun Mar 15 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.13-alt1
 - 2.0.13
 
