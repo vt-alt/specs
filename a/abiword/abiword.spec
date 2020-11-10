@@ -2,6 +2,7 @@
 
 %define abi_ver 3.0
 %define ver_major 3.0
+%define docs_ver %ver_major.1
 %def_enable spell
 %def_disable ots
 %def_with goffice
@@ -13,7 +14,7 @@
 
 Name: abiword
 Version: %ver_major.4
-Release: alt3
+Release: alt4
 
 Summary: Lean and fast full-featured word processor
 Group: Office
@@ -43,6 +44,7 @@ Provides: %name-%abi_ver = %version-%release
 Conflicts: %name-light
 
 Requires: %name-data = %version-%release
+Requires: %name-docs >= %docs_ver
 
 BuildRequires: autoconf-archive gcc-c++ boost-devel libappstream-glib-devel libreadline-devel flex
 BuildRequires: gobject-introspection-devel libgtk+3-gir-devel libgsf-gir-devel
@@ -201,6 +203,11 @@ install -p -m 0644 -D %SOURCE13 %buildroot%_datadir/mime/packages/abiword.xml
 %python_sitelibdir/gi/overrides/*
 
 %changelog
+* Fri Nov 06 2020 Yuri N. Sedunov <aris@altlinux.org> 3.0.4-alt4
+- updated to 3.0.4-4-g57ea77281 (msword: Fix a potential buffer overrun
+  in footnotes and endnotes)
+- explicitly required %%name-docs
+
 * Fri May 01 2020 Yuri N. Sedunov <aris@altlinux.org> 3.0.4-alt3
 - fixed built with python2
 
