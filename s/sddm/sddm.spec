@@ -8,7 +8,7 @@
 
 Name: sddm
 Version: 0.18.1
-Release: alt8
+Release: alt10
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -29,6 +29,8 @@ Source12: sddm-greeter.pam
 Source20: Xsetup
 Source21: Xstop
 # upstream
+Patch1: CVE-2020-28049.patch
+Patch2: nvidia-after-vt-switching.patch
 # SuSE
 Patch10: create_pid_file.patch
 # github issues
@@ -76,6 +78,9 @@ ability to create smooth, animated user interfaces.
 
 %prep
 %setup -n %name-%version
+%patch1 -p1
+%patch2 -p1
+#
 %patch10 -p1
 #
 %patch100 -p1 -b .defaults
@@ -120,6 +125,8 @@ sed -i 's|rst2man2.py|rst2man.py3|' data/man/CMakeLists.txt
     -DRUNTIME_DIR="%_runtimedir/sddm" \
     -DPID_FILE="%_runtimedir/sddm.pid" \
     -DCONFIG_FILE="%sddm_confdir/sddm.conf" \
+    -DCONFIG_DIR="%_sysconfdir/sddm.conf.d" \
+    -DSYSTEM_CONFIG_DIR="%_datadir/sddm/conf.d" \
     -DQT_IMPORTS_DIR="%_qt5_qmldir" \
     -DDBUS_CONFIG_FILENAME="sddm_org.freedesktop.DisplayManager.conf" \
     -DUID_MIN=500 \
@@ -137,6 +144,8 @@ install -Dm 0644 %SOURCE1 %buildroot/%sddm_confdir/sddm.conf
 install -Dpm 0644 %SOURCE2 %buildroot/lib/tmpfiles.d/sddm.conf
 install -d %buildroot/%_runtimedir/sddm
 install -d %buildroot/%_localstatedir/sddm
+install -d %buildroot/%_sysconfdir/sddm.conf.d
+install -d %buildroot/%_datadir/sddm/conf.d
 
 install -m 0755 %SOURCE20 %buildroot/%sddm_confdir/
 install -m 0755 %SOURCE21 %buildroot/%sddm_confdir/
@@ -158,6 +167,7 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 %files
 %doc docs/*.md ChangeLog LICENSE* README* CONTRIBUTORS
 %dir %sddm_confdir
+%dir %_sysconfdir/sddm.conf.d/
 %config(noreplace) %sddm_confdir/*
 %config(noreplace) %_sysconfdir/pam.d/sddm*
 %config(noreplace) %_sysconfdir/dbus-1/system.d/sddm_org.freedesktop.DisplayManager.conf
@@ -174,6 +184,14 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Thu Nov 05 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt10
+- fix X not having access control on startup (fixes: CVE-2020-28049)
+- add fix against graphical glitches on nvidia after VT switching
+
+* Wed Sep 30 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt9
+- set config dir to /etc/sddm.conf.d/
+- set system config dir to /usr/share/sddm/conf.d/
+
 * Wed Aug 26 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt8
 - enable virtual keyboard by default
 
