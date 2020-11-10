@@ -4,7 +4,7 @@
 
 Name: kernel-image-skit
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt1
+Release: alt2
 
 Provides: kernel-modules-dm-secdel-skit = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Nov 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt2
+- fix netlabel userspace compatibility issue
+
 * Thu Oct 29 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt1
 - Update for release v4.4.189.7
 
