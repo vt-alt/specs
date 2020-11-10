@@ -1,5 +1,5 @@
 Name: wxMaxima
-Version: 20.02.1
+Version: 20.11.0
 Release: alt1
 
 Summary: GUI for the computer algebra system Maxima
@@ -7,7 +7,7 @@ License: GPL-2.0+
 Group: Sciences/Mathematics
 
 Url: https://wxmaxima-developers.github.io/wxmaxima
-Packager: Ilya Mashkin <oddity@altlinux.ru>
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source0: %name-%version.tar
 Source5: wxmaxima-ru.po.bz2
@@ -16,7 +16,12 @@ Patch:   %name-alt-help-path.patch
 Requires: maxima
 
 BuildRequires(pre): cmake
-BuildRequires: gcc-c++ libwxGTK3.0-devel libpango-devel libxml2-devel zlib-devel makeinfo
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: gcc-c++ libwxGTK3.1-devel libpango-devel libxml2-devel zlib-devel makeinfo
+BuildRequires: po4a doxygen
+BuildRequires: libgomp-devel
+BuildRequires: desktop-file-utils libappstream-glib
+BuildRequires: ccache
 
 ExclusiveArch: %ix86 x86_64 armh aarch64 %e2k
 
@@ -36,7 +41,7 @@ wxMaxima provides 2d formated display of maxima output.
 %prep
 %setup
 bzcat %SOURCE5 >locales/wxMaxima/ru.po
-%patch -p1
+#patch -p1
 %ifarch %e2k
 # strip UTF-8 BOM for lcc < 1.24
 find -type f -name '*.cpp' -o -name '*.h' | xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
@@ -47,12 +52,11 @@ find -type f -name '*.cpp' -o -name '*.h' | xargs -r sed -ri 's,^\xEF\xBB\xBF,,'
 # -std=c++03 by default as of lcc 1.23.12
 %add_optflags -std=c++11
 %endif
-%cmake
-%cmake_build
-makeinfo info/wxmaxima.texi
+%cmake -GNinja
+%ninja_build -C BUILD
 
 %install
-%cmakeinstall_std
+%ninja_install -C BUILD
 # icons
 install -pD -m644 data/wxmaxima-16.xpm %buildroot%_miconsdir/%name.xpm
 install -pD -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
@@ -73,10 +77,42 @@ install -pD -m644 data/wxmaxima-32.xpm %buildroot%_niconsdir/%name.xpm
 %_datadir/mime/packages/x-wxmathml.xml
 %_datadir/mime/packages/x-wxmaxima-batch.xml
 %_docdir/wxmaxima/
-%_mandir/man1/wxmaxima.1*
+%_man1dir/wxmaxima.1*
+%_mandir/de/man1/wxmaxima.1*
 %_pixmapsdir/*%name.png
 
 %changelog
+* Tue Nov 03 2020 Andrey Cherepanov <cas@altlinux.org> 20.11.0-alt1
+- New version.
+
+* Sun Sep 13 2020 Andrey Cherepanov <cas@altlinux.org> 20.09.0-alt1
+- New version.
+
+* Tue Jul 28 2020 Andrey Cherepanov <cas@altlinux.org> 20.07.0-alt1
+- New version.
+- Complete Russian translations (thanks Olesya Gerasimenko).
+
+* Sat Jun 20 2020 Andrey Cherepanov <cas@altlinux.org> 20.06.6-alt1
+- New version.
+- Add optional requirements.
+- Build by ninja-build.
+- Build with wxGTK3.1.
+
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 20.06.1-alt1
+- New version.
+
+* Sat Apr 18 2020 Andrey Cherepanov <cas@altlinux.org> 20.04.0-alt1
+- New version.
+
+* Mon Mar 23 2020 Andrey Cherepanov <cas@altlinux.org> 20.03.1-alt1
+- New version.
+
+* Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 20.03.0-alt1
+- New version.
+
+* Tue Feb 25 2020 Andrey Cherepanov <cas@altlinux.org> 20.02.4-alt1
+- New version.
+
 * Fri Feb 14 2020 Andrey Cherepanov <cas@altlinux.org> 20.02.1-alt1
 - New version.
 - Complete Russian translations (thanks Olesya Gerasimenko).
