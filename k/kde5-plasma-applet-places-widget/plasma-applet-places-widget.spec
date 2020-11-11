@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 1.3
-Release: alt3
+Release: alt4
 %K5init altplace
 
 Group: Graphical desktop/KDE
@@ -19,6 +19,7 @@ Patch1: alt-metadata.patch
 Patch2: alt-auto-width.patch
 Patch3: alt-defaults.patch
 Patch4: alt-recentlyused.patch
+Patch5: alt-inpanel-size.patch
 
 # Automatically added by buildreq on Mon Aug 21 2017 (-bi)
 # optimized out: cmake cmake-modules gcc-c++ kf5-kconfig-devel kf5-kcoreaddons-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-qml libqt5-quick libqt5-svg libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms python-base python-modules python3 python3-base qt5-base-common qt5-base-devel rpm-build-python3
@@ -35,6 +36,7 @@ Plasma 5 widget that gives access to user places.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 mkdir -p po/ru
 install -m 0644 %SOURCE1 po/ru/plasma_applet_org.kde.placesWidget.po
@@ -57,6 +59,9 @@ __EOF__
 %_K5srv/plasma-applet-org.kde.placesWidget.desktop
 
 %changelog
+* Tue Nov 10 2020 Sergey V Turchin <zerg@altlinux.org> 1.3-alt4
+- don't fit all panel height
+
 * Thu Jan 30 2020 Sergey V Turchin <zerg@altlinux.org> 1.3-alt3
 - don't show recentlyused:/ by default
 
