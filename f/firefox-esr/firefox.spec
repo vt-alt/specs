@@ -15,7 +15,7 @@ Summary:              The Mozilla Firefox project is a redesign of Mozilla's bro
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox-esr
-Version:        78.4.0
+Version:        78.4.1
 Release:        alt0.1.p9
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -51,6 +51,10 @@ Patch010: 0010-arm-js-src-wasm-add-struct-user_vfp-definition.patch
 Patch011: 0011-Bug-1640982-Set-CARGO_PROFILE_RELEASE_LTO-true-when-.patch
 Patch012: 0012-use-floats-for-audio-on-arm-too.patch
 Patch013: 0013-MOZILLA-1663715-Build-with-Rust-1.47.0.patch
+Patch020: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
+Patch021: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
+Patch022: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
+Patch024: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -199,6 +203,10 @@ Most likely you don't need to use this package.
 %patch011 -p1
 %patch012 -p1
 %patch013 -p1 -d mozilla
+#patch020 -p1
+#patch021 -p1
+#patch022 -p1
+#patch024 -p1
 ### Finish apply patches
 
 cd mozilla
@@ -448,6 +456,17 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Wed Nov 11 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Tue Nov 10 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.1-alt1
+- New version (78.4.1).
+- Fixes:
+  + CVE-2020-26950 Write side effects in MCallGetProperty opcode not accounted for
+
+* Mon Oct 26 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt2
+- Build with nss-3.58.0 (thanks legion@).
+
 * Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt0.1.p9
 - Backport new version to p9 branch.
 
