@@ -8,7 +8,7 @@
 
 Name: sddm
 Version: 0.18.1
-Release: alt10
+Release: alt11
 %K5init no_altplace man
 
 Group: Graphical desktop/KDE
@@ -184,6 +184,9 @@ install -p -m 0644 %SOURCE11 %buildroot%_sysconfdir/pam.d/sddm-autologin
 /lib/tmpfiles.d/sddm.conf
 
 %changelog
+* Wed Nov 11 2020 Oleg Solovyov <mcpain@altlinux.org> 0.18.1-alt11
+- fix pwdrenew dialog (Closes: 36975)
+
 * Thu Nov 05 2020 Sergey V Turchin <zerg@altlinux.org> 0.18.1-alt10
 - fix X not having access control on startup (fixes: CVE-2020-28049)
 - add fix against graphical glitches on nvidia after VT switching
