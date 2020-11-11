@@ -1,7 +1,7 @@
 %define oname logilab-devtools
 Name: python-module-%oname
 Version: 0.23.0
-Release: alt1.1
+Release: alt2
 Summary: Set of development tools used at Logilab
 License: GPL
 Group: Development/Python
@@ -13,6 +13,8 @@ BuildArch: noarch
 
 BuildPreReq: python-module-setuptools
 BuildPreReq: python-module-logilab-common
+
+Requires: mercurial
 
 %py_provides logilab.devtools
 %py_requires logilab.common
@@ -33,8 +35,6 @@ Set of tools which aims to help the developpement process, including:
 %install
 %python_install
 
-touch %buildroot%python_sitelibdir/hgext/__init__.py
-
 %check
 python setup.py test
 
@@ -46,6 +46,9 @@ python setup.py test
 %exclude %python_sitelibdir/*.pth
 
 %changelog
+* Thu Nov 05 2020 Grigory Ustinov <grenka@altlinux.org> 0.23.0-alt2
+- Remove strange touch of mercurial's file (Close: #38688).
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.23.0-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 
