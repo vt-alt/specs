@@ -1,234 +1,200 @@
-%define urwdir /usr/share/fonts/type1/urw
-%define srcurl ftp://ftp.foolabs.com/pub/xpdf
-%def_without protections
+%define _unpackaged_files_terminate_build 1
 
 Name: xpdf
-Version: 3.03
-Release: alt2
+Version: 4.02
+Release: alt1
 
-Summary: Portable Document Format (PDF) suite
-License: GPLv2 or GPLv3
+Summary: The PDF viewer and tools
+License: GPLv2 GPLv3 BSD
 Group: Office
+Packager: Andrew Savchenko <bircoph@altlinux.org>
 
-URL: http://www.foolabs.com/xpdf/
-Source0: %srcurl/xpdf-%version.tar.gz
+URL: https://www.xpdfreader.com
+# https://xpdfreader-dl.s3.amazonaws.com/%name-%version.tar.gz
+Source0: xpdf-%version.tar
+Source1: xpdf.desktop
 
-Source2: %srcurl/xpdf-cyrillic-2003-jun-28.tar.gz
-Source3: %srcurl/xpdf-greek-2003-jun-28.tar.gz
-Source4: %srcurl/xpdf-hebrew-2003-feb-16.tar.gz
-Source5: %srcurl/xpdf-latin2-2002-oct-22.tar.gz
-Source6: %srcurl/xpdf-turkish-2002-apr-10.tar.gz
-Source7: %srcurl/xpdf-chinese-simplified-2004-jan-16.tar.gz
-Source8: %srcurl/xpdf-chinese-traditional-2004-jan-16.tar.gz
-Source9: %srcurl/xpdf-japanese-2004-jul-27.tar.gz
-Source10: %srcurl/xpdf-korean-2005-jul-07.tar.gz
-Source11: %srcurl/xpdf-thai-2002-jan-16.tar.gz
-Source100: xpdf-16x16.png
-Source101: xpdf-32x32.png
-Source102: xpdf-48x48.png
-Source103: xpdf.desktop
+Source2: xpdf-arabic.tar
+Source3: xpdf-chinese-simplified.tar
+Source4: xpdf-chinese-traditional.tar
+Source5: xpdf-cyrillic.tar
+Source6: xpdf-greek.tar
+Source7: xpdf-hebrew.tar
+Source8: xpdf-japanese.tar
+Source9: xpdf-korean.tar
+Source10: xpdf-latin2.tar
+Source11: xpdf-thai.tar
+Source12: xpdf-turkish.tar
 
-Patch2: xpdf-3.03-xpdfrc.patch
+# Gentoo patches
+Patch1: xpdf-automagic.patch
+Patch2: xpdf-visibility.patch
+Patch3: xpdf-shared-libs.patch
+Patch4: xpdf-CVE-2019-17064.patch
 
-Patch5: xpdf-2.02-ext.patch
-Patch6: xpdf-3.00-core.patch
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: gcc-c++ cmake
+BuildRequires: libcups-devel qt5-base-devel libpaper-devel libpng-devel
+BuildRequires: libfreetype-devel fontconfig-devel zlib-devel
+BuildRequires: desktop-file-utils inkscape >= 1.0
 
-Patch15: xpdf-3.00-papersize.patch
-Patch16: xpdf-3.03-crash.patch
-Patch17: xpdf-3.00-64bit.patch
+# xpdf is a virtual package with is a full setup of xpdf
+Requires: %name-viewer = %EVR %name-utils = %EVR
+Requires: %name-i18n = %EVR %name-desktop = %EVR
 
-Patch22: xpdf-3.02-additionalzoom.patch
-
-Patch24: xpdf-3.02-fontlist.patch
-
-# Debian patches:
-Patch30: xpdf-3.03-permissions.patch
-Patch31: xpdf-3.02-debian-add_accelerators.patch
-# Proper stream encoding on 64bit platforms
-Patch34: xpdf-debian-fix-444648.patch
-
-Requires: fonts-type1-urw
-Requires: urlview
-
-# Finally: we choose openmotif
-#BuildPreReq: openmotif-devel
-
-# xpdf moans when xpdfrc points to thai files that does not installed.
-# instead of editing xpdfrc when (un)installing xpdf-thai, we eliminate
-# this package and move thai files to main xpdf package
-Obsoletes: xpdf-thai
-
-# Automatically added by buildreq on Fri Oct 01 2010
-BuildRequires: gcc-c++ imake libXp-devel libXpm-devel libfreetype-devel libopenmotif-devel xorg-cf-files
-
-# xpdf now - virtual fileless package that depends on both splitted
-# subpackages for compatability with previous versions
-Requires: xpdf-reader = %version-%release
-###Requires: xpdf-utils = %version-%release
-#!!! As of xpdf-3.02-alt6 xpdf-utils nuked (obsoleted by poppler)
-#!!! So now 'xpdf' package no more needed but we will not touch it
+%define desc \
+The Xpdf open source project includes a PDF viewer along with a \
+collection of command line tools which perform various functions on \
+PDF files.
 
 %description
-Xpdf is a suite of tools for Portable Document Format (PDF) files.
-PDF files are sometimes called Acrobat files, after Adobe Acrobat
-(Adobe's PDF viewer).
-
-This package is intended for compatibility with previous versions of this
-package only. You can safely remove it from your system.
+%desc
 
 %package common
-Summary: Portable Document Format (PDF) suite -- common files
+Summary: The PDF viewer and tools --- common files
 Group: Office
 BuildArch: noarch
+Requires: fonts-type1-urw
 
 %description common
-Xpdf is an X Window System based viewer for Portable Document Format (PDF)
-files. PDF files are sometimes called Acrobat files, after Adobe Acrobat
-(Adobe's PDF viewer).
+%desc
 
-This package contains common files needed by the other xpdf packages.
+This package contains common files (config and common documentation)
+needed by the other xpdf packages.
 
-%package reader
-Summary: Portable Document Format (PDF) suite -- viewer for X11
+%package viewer
+Summary: The PDF viewer and tools --- the PDF viewer
 Group: Office
-Requires: %name-common = %version-%release
+Requires: %name-common = %EVR qt5-svg
+Obsoletes: xpdf-reader
 
-%description reader
-Xpdf is an X Window System based viewer for Portable Document Format (PDF)
-files. PDF files are sometimes called Acrobat files, after Adobe Acrobat
-(Adobe's PDF viewer).
+%description viewer
+%desc
 
 This package contains xpdf itself, a PDF viewer for X11. xpdf is designed to
 be small and efficient. xpdf supports encrypted PDF files. Standard X fonts,
 Truetype fonts and Type 1 fonts are supported.
 
-This package also contains pdftoppm, a utility for converting PDF files to
-Portable Pixmap formats (PBM, PGM, PPM).
-
-See also the xpdf-utils package for conversion utilities and the other xpdf-*
-packages for additional language support.
-
-%package chinese-simplified
-Summary: ISO-2022-CN, EUC-CN and GBK encoding support for xpdf
+%package utils
+Summary: The PDF viewer and tools --- the PDF utils
 Group: Office
-Requires: %name-common = %version-%release
-BuildArch: noarch
+Requires: %name-common = %EVR
 
-%description chinese-simplified
-The Xpdf language support packages include CMap files, text encodings,
-and various other configuration information necessary or useful for
-specific character sets. (They do not include any fonts.) 
-This package provides support files needed to use the Xpdf tools with
-Chinese-simplified PDF files.
+%description utils
+%desc
 
-%package chinese-traditional
-Summary: Big5 and Big5ascii encoding support for xpdf
+This package contains various xpdf tools to process and convert PDF
+files.
+
+%package i18n
+Summary: The PDF viewer and tools --- i18n encoding maps
 Group: Office
-Requires: %name-common = %version-%release
 BuildArch: noarch
+Obsoletes: xpdf-chinese-simplified xpdf-chinese-traditional xpdf-japanese xpdf-korean
 
-%description chinese-traditional
-The Xpdf language support packages include CMap files, text encodings,
-and various other configuration information necessary or useful for
-specific character sets. (They do not include any fonts.) 
-This package provides support files needed to use the Xpdf tools with
-Chinese-traditional PDF files.
+%description i18n
+%desc
 
-%package japanese
-Summary: ISO-2022-JP, EUC-JP and Shift-JIS encoding support for xpdf
+This package provides encoding maps required to support non-UTF-8
+national fonts for various languages: arabic, chinese-simplified,
+chinese-traditional, cyrillic, greek, hebrew, japanes, korean,
+latin2, thai, turkish.
+
+%package desktop
+Summary: The PDF viewer and tools --- desktop files
 Group: Office
-Requires: %name-common = %version-%release
 BuildArch: noarch
+Requires: %name-viewer = %EVR
 
-%description japanese
-The Xpdf language support packages include CMap files, text encodings,
-and various other configuration information necessary or useful for
-specific character sets. (They do not include any fonts.) 
-This package provides support files needed to use the Xpdf tools with
-Japanese PDF files.
+%description desktop
+%desc
 
-%package korean
-Summary: ISO-2022-KR (KSX1001) encoding support for xpdf
-Group: Office
-Requires: %name-common = %version-%release
-BuildArch: noarch
-
-%description korean
-The Xpdf language support packages include CMap files, text encodings,
-and various other configuration information necessary or useful for
-specific character sets. (They do not include any fonts.) 
-This package provides support files needed to use the Xpdf tools with
-Korean PDF files.
+This package contains desktop integration files for the XPDF
+viewer.
 
 %prep
-%setup -q -a2 -a3 -a4 -a5 -a6 -a7 -a8 -a9 -a10 -a11
-
+%setup -a2 -a3 -a4 -a5 -a6 -a7 -a8 -a9 -a10 -a11 -a12
+%patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
-%patch5 -p1
-%patch6 -p1
+sed -i \
+    "s|/usr/local/etc|%_sysconfdir|;
+     s|/usr/local|%_prefix|;
+     s|^#fontFile|fontFile|;
+     s|/ghostscript/fonts|/type1/urw|;
+     s|^#textEncoding|textEncoding|;
+     s|^#enableFreeType|enableFreeType|;
+     s|^#antialias|antialias|;
+     " \
+    doc/sample-xpdfrc
 
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-
-%patch22 -p1
-
-%patch24 -p1
-
-%patch30 -p1
-%patch31 -p1
-
-%patch34 -p1
+sed -i "s|/usr/local|%_prefix|" */add-to-xpdfrc
 
 %build
-# Not sure about --enable-multithreaded and --enable-wordlist options
-# Now they are enabled (as in PLD), but this is subject to reevaluation.
-# --enable-a4-paper removed. Why? See xpdf-3.00-papersize.patch.
+mycmakeargs=(
+    -DBUILD_SHARED_LIBS=ON
+    -DCMAKE_SKIP_RPATH=OFF
+    -DCMAKE_SKIP_INSTALL_RPATH=OFF
+    -DA4_PAPER=ON
+    -DNO_FONTCONFIG=OFF
+    -DNO_TEXT_SELECT=ON
+    -DOPI_SUPPORT=ON
+    -DSPLASH_CMYK=ON
+    -DWITH_LIBPAPER=ON
+    -DWITH_LIBPNG=ON
+    -DXPDFWIDGET_PRINTING=ON
+    -DSYSTEM_XPDFRC="%_sysconfdir/xpdfrc"
+)
+%cmake "${mycmakeargs[@]}"
 
-%remove_optflags -Wtrampolines
-export CXXFLAGS="%optflags %optflags_nocpp"
-%configure \
-	--without-t1-library \
-	--enable-opi \
-		--enable-multithreaded \
-		--enable-wordlist \
-	--enable-freetype2 \
-	--with-freetype2-includes=%_includedir/freetype2
+%cmake_build VERBOSE=1
 
-make urwdir=%urwdir
-
-subst 's@/usr/local/etc/@%_sysconfdir/@' doc/*.1 doc/*.5
-subst 's@/usr/local/share/ghostscript/fonts@%urwdir@' doc/sample-xpdfrc doc/*.1 doc/*.5
-subst 's@^#displayFontT1@displayFontT1@' doc/sample-xpdfrc
-
-for i in cyrillic greek hebrew latin2 turkish \
-         chinese-simplified chinese-traditional japanese korean thai; do
-	subst 's@/usr/local/share/xpdf@%_datadir/xpdf@' \
-		xpdf-$i/add-to-xpdfrc \
-		xpdf-$i/README
-	echo >> doc/sample-xpdfrc
-	cat xpdf-$i/add-to-xpdfrc >> doc/sample-xpdfrc
-	rm xpdf-$i/add-to-xpdfrc
+# xpdf upstream provides only svg icon, so generate png icons
+sizes="16 22 24 32 36 48 64 72 96 128 192 256 384 512 1024"
+cd xpdf-qt
+mkdir $sizes
+for i in $sizes; do
+    inkscape xpdf-icon.svg -w $i -h $i -o $i/xpdf.png
 done
-
-# xpdf no longer supports X fonts
-subst 's/^displayCIDFontX/#displayCIDFontX/g' doc/sample-xpdfrc
 
 %install
-%makeinstall_std
-for i in cyrillic greek hebrew latin2 turkish \
-         chinese-simplified chinese-traditional japanese korean thai; do
-	mkdir -p %buildroot%_datadir/xpdf/$i
-	cp -a xpdf-$i/* %buildroot%_datadir/xpdf/$i/
+%cmakeinstall_std
+
+desktop-file-install --dir %buildroot%_desktopdir %{SOURCE1}
+
+# install icons
+sizes="16 22 24 32 36 48 64 72 96 128 192 256 384 512 1024"
+mkdir -p %buildroot%_iconsdir/hicolor/scalable/apps
+cp xpdf-qt/xpdf-icon.svg %buildroot%_iconsdir/hicolor/scalable/apps/
+for s in $sizes; do
+	mkdir -p %buildroot%_iconsdir/hicolor/${s}x${s}/apps
+	cp xpdf-qt/$s/xpdf.png %buildroot%_iconsdir/hicolor/${s}x${s}/apps/
 done
 
+mkdir -p %buildroot%_sysconfdir
+cp doc/sample-xpdfrc %buildroot%_sysconfdir/xpdfrc
 
-install -pD -m644 %_sourcedir/xpdf.desktop %buildroot%_desktopdir/xpdf.desktop
-# mdk icons
-install -pD -m644 %_sourcedir/xpdf-16x16.png %buildroot%_miconsdir/xpdf.png
-install -pD -m644 %_sourcedir/xpdf-32x32.png %buildroot%_niconsdir/xpdf.png
-install -pD -m644 %_sourcedir/xpdf-48x48.png %buildroot%_liconsdir/xpdf.png
+# rename pdf* -> xpdf* to avoid file collisions
+for d in "bin" "share/man/man1"; do
+	pushd "%buildroot%_prefix/${d}"
+	for i in pdf*; do
+		mv "${i}" "x${i}"
+	done
+	popd
+done
+
+# install i18n files and update xpdfrc
+for i in arabic chinese-simplified chinese-traditional cyrillic greek \
+		 hebrew japanese korean latin2 thai turkish; do
+	mkdir -p "%buildroot%_datadir/xpdf/${i}"
+	cp -a -t "%buildroot%_datadir/xpdf/${i}" \
+		$(find -O3 "xpdf-${i}" -maxdepth 1 -mindepth 1 \
+			! -name README ! -name add-to-xpdfrc)
+
+	cat "xpdf-${i}/add-to-xpdfrc" >> "%buildroot%_sysconfdir/xpdfrc"
+done
 
 %files
 
@@ -236,37 +202,29 @@ install -pD -m644 %_sourcedir/xpdf-48x48.png %buildroot%_liconsdir/xpdf.png
 %doc CHANGES README
 %config(noreplace) %_sysconfdir/xpdfrc
 %_man5dir/*
-%dir %_datadir/xpdf
-%_datadir/xpdf/cyrillic
-%_datadir/xpdf/greek
-%_datadir/xpdf/hebrew
-%_datadir/xpdf/latin2
-%_datadir/xpdf/thai
-%_datadir/xpdf/turkish
 
-%files reader
+%files viewer
 %_bindir/xpdf
-%exclude %_bindir/pdf*
-%_desktopdir/*
+%_man1dir/xpdf.1*
+
+%files utils
+%exclude %_bindir/xpdf
+%_bindir/xpdf*
+%exclude %_man1dir/xpdf.1*
 %_man1dir/xpdf*
-%exclude %_man1dir/pdf*
-%_miconsdir/*.png
-%_niconsdir/*.png
-%_liconsdir/*.png
+%_libdir/xpdf/*.so
 
-%files chinese-simplified
-%_datadir/xpdf/chinese-simplified
+%files i18n
+%_datadir/xpdf/*
 
-%files chinese-traditional
-%_datadir/xpdf/chinese-traditional
-
-%files japanese
-%_datadir/xpdf/japanese
-
-%files korean
-%_datadir/xpdf/korean
+%files desktop
+%_desktopdir/*
+%_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Sun Mar 08 2020 Andrey Savchenko <bircoph@altlinux.org> 4.02-alt1
+- Major version bump and repackaging.
+
 * Tue Feb 12 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.03-alt2
 - Rebuilt with default gcc-c++.
 
