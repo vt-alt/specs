@@ -1,6 +1,6 @@
 Name: postfix
 Version: 2.11.11
-Release: alt2
+Release: alt3
 Epoch: 1
 
 Summary: Postfix Mail Transport Agent
@@ -709,6 +709,9 @@ ln -snf %name/aliases %_sysconfdir/aliases
 %endif #with tls
 
 %changelog
+* Sun Jul 05 2020 Dmitry V. Levin <ldv@altlinux.org> 1:2.11.11-alt3
+- Fixed build on linux 5.x.
+
 * Thu Apr 11 2019 Dmitry V. Levin <ldv@altlinux.org> 1:2.11.11-alt2
 - chroot.conf: do not apply alias_maps update rules to alias_database files.
 - dict_mysql: backported MySQL 8.x support.
