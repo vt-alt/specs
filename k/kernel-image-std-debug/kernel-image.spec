@@ -2,7 +2,7 @@ Name: kernel-image-std-debug
 Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .72
+%define kernel_sublevel .76
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -704,6 +704,18 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Nov 10 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.76-alt1
+- v5.4.76
+
+* Fri Nov 06 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.75-alt1
+- v5.4.75  (Fixes: CVE-2020-25656)
+
+* Mon Nov 02 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.74-alt1
+- v5.4.74
+
+* Thu Oct 29 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.73-alt1
+- v5.4.73
+
 * Mon Oct 19 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.72-alt1
 - v5.4.72
 
