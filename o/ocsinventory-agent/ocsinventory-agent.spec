@@ -1,11 +1,11 @@
 Name: ocsinventory-agent
-Version: 2.6.0
+Version: 2.8.0
 Release: alt1
 Epoch: 1
 
 Summary: Hardware and software inventory tool (Agent)
 Group: System/Servers
-License: GPL
+License: GPL-2.0+ or Artistic-1.0
 Url: http://www.ocsinventory-ng.org/
 
 Packager: Pavel Zilke <zidex at altlinux dot org>
@@ -99,6 +99,12 @@ rm -f %buildroot%perl_vendorlib/Ocsinventory/postinst.pl
 %_var/lib/%name
 
 %changelog
+* Fri Nov 06 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.8.0-alt1
+- New version.
+
+* Tue Feb 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.6.1-alt1
+- New version.
+
 * Tue May 21 2019 Andrey Cherepanov <cas@altlinux.org> 1:2.6.0-alt1
 - New version.
 
