@@ -2,7 +2,7 @@
 
 Name:    cloud-init
 Version: 20.1
-Release: alt1
+Release: alt2
 
 Summary: Cloud instance init scripts
 Group:   System/Configuration/Boot and Init
@@ -145,6 +145,9 @@ fi
 %dir %_sharedstatedir/cloud
 
 %changelog
+* Mon Nov 09 2020 Mikhail Gordeev <obirvalger@altlinux.org> 20.1-alt2
+- Fix dictionary key lookup for python3 (Closes: 38848)
+
 * Mon Apr 06 2020 Mikhail Gordeev <obirvalger@altlinux.org> 20.1-alt1
 - Update to 20.1
 
