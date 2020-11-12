@@ -2,7 +2,7 @@
 %define oname ALTMediaWriter
 
 Name:           altmediawriter
-Version:        0.4.8
+Version:        0.6.1
 Release:        alt1
 Summary:        ALT Media Writer
 Group:          System/Configuration/Other
@@ -59,6 +59,28 @@ appstream-util validate-relax --nonet %buildroot/%_datadir/appdata/%name.appdata
 
 
 %changelog
+* Thu Nov 05 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.6.1-alt1
+- Fix arch and file type translations
+- Fix missing header on some Qt versions
+- Fix custom image not loading on windows
+
+* Thu Nov 05 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.6.0-alt1
+- Implement LIVE variants
+- Fix download bugs
+- Remove user agent from network requests
+- Attempt to recover from connection errors instead of failing
+- Don't do MD5 check after writing
+- Don't force software renderer
+- Remove built-in metadata
+  + While metadata is downloading only show Custom release
+- Update license
+
+* Tue Oct 20 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.5.0-alt1
+- Remove artifacts from all yml strings
+- Remove blank rectangle that obscured top of images list
+- Put workstation and server releases on the front page
+- Reduce row heights and max line counts
+
 * Wed Oct 07 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.4.8-alt1
 - Improve image summary display
 - Improve windows build
