@@ -1,12 +1,12 @@
 Name: expat
-Version: 2.2.4
+Version: 2.2.10
 Release: alt1
 
 %def_disable static
 %define pkgdocdir %_docdir/%name-%version
 
 Summary: An XML parser written in C
-License: MIT/X Consortium
+License: MIT
 Group: System/Base
 Url: http://www.libexpat.org/
 # http://downloads.sourceforge.net/project/expat/expat/%version/expat-%version.tar.bz2
@@ -56,6 +56,7 @@ This package provides the Expat parser as a library for static linking.
 
 %build
 %autoreconf
+export DOCBOOK_TO_MAN="xmlto man --skip-validation"
 %configure %{subst_enable static}
 %make_build
 
@@ -104,6 +105,13 @@ install -p -m644 examples/*.c %buildroot%pkgdocdir/examples/
 %endif	# enabled static
 
 %changelog
+* Fri Oct 16 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.2.10-alt1
+- Updated to 2.2.10.
+
+* Sun May 31 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.2.9-alt1
+- 2.2.4 -> 2.2.9 (fixes CVE-2018-20843 and CVE-2019-15903)
+- Fixed license field according with SPDX
+
 * Mon Aug 21 2017 Alexey Tourbin <at@altlinux.ru> 2.2.4-alt1
 - 2.1.0 -> 2.2.4
 
