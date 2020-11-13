@@ -1,3 +1,6 @@
+# BEGIN SourceDeps(oneline):
+BuildRequires: pkgconfig(libpcre)
+# END SourceDeps(oneline)
 %def_without gnome
 %def_with gnome3
 %def_with kde
@@ -6,13 +9,13 @@
 %def_without webkit
 %def_with webkit3
 %def_without dotnet
-%def_with python2
+%def_without python2
 %def_with python3
 %define _libexecdir %_prefix/libexec
 
 Name: libproxy
 Version: 0.4.15
-Release: alt3
+Release: alt5
 Summary: A library handling all the details of proxy configuration
 
 Group: System/Libraries
@@ -171,6 +174,12 @@ developing applications that use %name.
 %if_without gnome
 	-DWITH_GNOME2=OFF \
 %endif
+%if_without python2
+	-DWITH_PYTHON2=OFF \
+%endif
+%if_without python3
+	-DWITH_PYTHON3=OFF \
+%endif
 	-DWITH_WEBKIT3=ON \
 	-DWITH_PERL=OFF
 
@@ -257,6 +266,15 @@ popd
 %_datadir/cmake/Modules/Findlibproxy.cmake
 
 %changelog
+* Wed Nov 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.4.15-alt5
+- Fixed python2 and python3 switches.
+
+* Wed Nov 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.4.15-alt4
+- Applied security fixes from upstream (Fixes: CVE-2020-25219, CVE-2020-26154)
+
+* Fri Apr 03 2020 Igor Vlasenko <viy@altlinux.ru> 0.4.15-alt3.1
+- NMU: applied logoved fixes
+
 * Sat Apr 20 2019 Alexey Shabalin <shaba@altlinux.org> 0.4.15-alt3
 - fixed build with python-3.7
 - build with mozjs-60
