@@ -1,21 +1,26 @@
 %define _unpackaged_files_terminate_build 1
 
 Name:       puppetserver
-Version:    6.5.0
-Release:    alt2.2
-
+Version:    6.13.0
+Release:    alt2
 Summary:    Server automation framework and application
 License:    Apache-2.0
 Group:      Other
 Url:        https://github.com/puppetlabs/puppetserver
 
-BuildArch:  noarch
+BuildArch: noarch
 
 Source: %name-%version.tar
 
+Source1: puppetserver.init
+Source2: jruby-1_7.jar
+Source3: jruby-9k.jar
+
+Patch1: puppetserver-6.13.0-alt.patch
+
 BuildPreReq: /proc
 BuildPreReq: rpm-build-java
-BuildPreReq: rpm-build-ruby
+BuildPreReq: rpm-macros-ruby /usr/bin/ruby
 
 Requires: clojure
 Requires: puppet
@@ -40,71 +45,67 @@ control over the Ruby runtime.
 
 %prep
 %setup
+%patch1 -p2
 sed "s|gem-path: \\[.*\\]|gem-path: [$(echo $(ls /usr/lib/ruby/gems | \
    sed -e "s,^,/usr/lib/ruby/gems/,") | sed "s/ \\+/, /")]|" \
-   -i puppetserver/config/conf.d/puppetserver.conf
+   -i ext/config/conf.d/puppetserver.conf
 
 %install
 install -d -m 0755 %buildroot%_datadir/%name
 install -d -m 0770 %buildroot%_localstatedir/%name
-install -m 0644 puppetserver.jar %buildroot%_datadir/%name
-install -m 0755 puppetserver/ezbake-functions.sh %buildroot%_datadir/%name
-install -m 0644 puppetserver/ezbake.manifest %buildroot%_datadir/%name
+install -m 0644 puppet-server-release.jar %buildroot%_datadir/%name
+install -m 0755 ext/ezbake-functions.sh %buildroot%_datadir/%name
+install -m 0644 ext/ezbake.manifest %buildroot%_datadir/%name
 install -d -m 0755 %buildroot%_sysconfdir/%name
 install -d -m 0755 %buildroot%_sysconfdir/%name/conf.d
 
-install -m 0644 jruby-9k.jar %buildroot%_datadir/%name
-install -m 0644 jruby-1_7.jar %buildroot%_datadir/%name
+install -m 0644 %SOURCE2 %buildroot%_datadir/%name
+install -m 0644 %SOURCE3 %buildroot%_datadir/%name
   
 install -d -m 0755 %buildroot%_sysconfdir/%name/services.d
 
-install -m 0644 puppetserver/system-config/services.d/bootstrap.cfg %buildroot%_sysconfdir/%name/bootstrap.cfg
+install -m 0644 ext/system-config/services.d/bootstrap.cfg %buildroot%_sysconfdir/%name/bootstrap.cfg
     
-install -m 0644 puppetserver/config/conf.d/puppetserver.conf %buildroot%_sysconfdir/%name/conf.d/puppetserver.conf
-install -m 0644 puppetserver/config/request-logging.xml %buildroot%_sysconfdir/%name/request-logging.xml
-install -m 0644 puppetserver/config/logback.xml %buildroot%_sysconfdir/%name/logback.xml
-install -m 0644 puppetserver/config/conf.d/global.conf %buildroot%_sysconfdir/%name/conf.d/global.conf
-install -m 0644 puppetserver/config/conf.d/web-routes.conf %buildroot%_sysconfdir/%name/conf.d/web-routes.conf
-install -m 0644 puppetserver/config/conf.d/auth.conf %buildroot%_sysconfdir/%name/conf.d/auth.conf
-install -m 0644 puppetserver/config/conf.d/metrics.conf %buildroot%_sysconfdir/%name/conf.d/metrics.conf
-install -m 0644 puppetserver/config/conf.d/webserver.conf %buildroot%_sysconfdir/%name/conf.d/webserver.conf
-install -m 0644 puppetserver/config/services.d/ca.cfg %buildroot%_sysconfdir/%name/services.d/ca.cfg
+install -m 0644 ext/config/conf.d/puppetserver.conf %buildroot%_sysconfdir/%name/conf.d/puppetserver.conf
+install -m 0644 ext/config/request-logging.xml %buildroot%_sysconfdir/%name/request-logging.xml
+install -m 0644 ext/config/logback.xml %buildroot%_sysconfdir/%name/logback.xml
+install -m 0644 ext/config/conf.d/global.conf %buildroot%_sysconfdir/%name/conf.d/global.conf
+install -m 0644 ext/config/conf.d/web-routes.conf %buildroot%_sysconfdir/%name/conf.d/web-routes.conf
+install -m 0644 ext/config/conf.d/auth.conf %buildroot%_sysconfdir/%name/conf.d/auth.conf
+install -m 0644 ext/config/conf.d/metrics.conf %buildroot%_sysconfdir/%name/conf.d/metrics.conf
+install -m 0644 ext/config/conf.d/webserver.conf %buildroot%_sysconfdir/%name/conf.d/webserver.conf
+install -m 0644 ext/config/services.d/ca.cfg %buildroot%_sysconfdir/%name/services.d/ca.cfg
 
 install -d -m 0755 %buildroot%_datadir/%name/cli
 install -d -m 0755 %buildroot%_datadir/%name/cli/apps
 install -d -m 0755 %buildroot%_bindir
-install -m 0755 puppetserver/bin/puppetserver %buildroot%_bindir/%name
-install -m 0755 puppetserver/cli/reload %buildroot%_datadir/%name/cli/apps/reload
-install -m 0755 puppetserver/cli/stop %buildroot%_datadir/%name/cli/apps/stop
-install -m 0755 puppetserver/cli/gem %buildroot%_datadir/%name/cli/apps/gem
-install -m 0755 puppetserver/cli/irb %buildroot%_datadir/%name/cli/apps/irb
-install -m 0755 puppetserver/cli/foreground %buildroot%_datadir/%name/cli/apps/foreground
-install -m 0755 puppetserver/cli/ruby %buildroot%_datadir/%name/cli/apps/ruby
-install -m 0755 puppetserver/cli/start %buildroot%_datadir/%name/cli/apps/start
-install -m 0755 puppetserver/cli/ca %buildroot%_datadir/%name/cli/apps/ca
+install -m 0755 ext/bin/puppetserver %buildroot%_bindir/%name
+install -m 0755 ext/cli/reload %buildroot%_datadir/%name/cli/apps/reload
+install -m 0755 ext/cli/stop %buildroot%_datadir/%name/cli/apps/stop
+install -m 0755 ext/cli/gem %buildroot%_datadir/%name/cli/apps/gem
+install -m 0755 ext/cli/irb %buildroot%_datadir/%name/cli/apps/irb
+install -m 0755 ext/cli/foreground %buildroot%_datadir/%name/cli/apps/foreground
+install -m 0755 ext/cli/ruby %buildroot%_datadir/%name/cli/apps/ruby
+install -m 0755 ext/cli/start %buildroot%_datadir/%name/cli/apps/start
+install -m 0755 ext/cli/ca %buildroot%_datadir/%name/cli/apps/ca
 
-install -m 0755 puppetserver/cli_defaults/cli-defaults.sh %buildroot%_datadir/%name/cli/
+install -m 0755 ext/cli_defaults/cli-defaults.sh %buildroot%_datadir/%name/cli/
 
 install -d -m 0755 %buildroot%_var/run/%name
 install -d -m 0700 %buildroot%_var/log/%name
 install -d -m 0700 %buildroot%_localstatedir/%name/jars
 
 install -d -m 0755 %buildroot%_sysconfdir/default
-install -m 0644 puppetserver/default %buildroot%_sysconfdir/default/%name
+install -m 0644 ext/default %buildroot%_sysconfdir/default/%name
 
 install -d -m 0755 %buildroot%_sysconfdir/init.d
-install -m 0755 puppetserver.init %buildroot%_sysconfdir/init.d/%name
-
-mkdir -p %buildroot%_sysconfdir/sysconfig
-cat %name.service > %buildroot%_sysconfdir/sysconfig/%name
+install -m 0755 %SOURCE1 %buildroot%_sysconfdir/init.d/%name
 
 mkdir -p %buildroot%_tmpfilesdir
-cat > %buildroot%_tmpfilesdir/%name.conf <<EOF
-    d /var/run/puppetserver 0755 puppet puppet -
-EOF
+install -m 0644 ext/puppetserver.tmpfiles.conf %buildroot%_tmpfilesdir/
 
 mkdir -p %buildroot%_sysconfdir/logrotate.d
-cat puppetserver/puppetserver.logrotate.conf > %buildroot%_sysconfdir/logrotate.d/puppetserver
+install -m 0644 ext/puppetserver.logrotate.conf %buildroot%_sysconfdir/logrotate.d/
 
 %pre
 getent group puppet > /dev/null || \
@@ -145,15 +146,19 @@ chmod 0700 /var/lib/puppetserver/jars
 %_var/lib/%name
 %_var/run/%name
 %_bindir/%name
-%_sysconfdir/logrotate.d/%name
-%_tmpfilesdir/%name.conf
-%_sysconfdir/sysconfig/%name
+%_sysconfdir/logrotate.d/*
+%_tmpfilesdir/*
 %_sysconfdir/init.d/%name
 %_sysconfdir/default/%name
 
-
 %changelog
-* Fri May 22 2020 Pavel Skrylev <majioa@altlinux.org> 6.5.0-alt2.2
+* Tue Nov 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.13.0-alt2
+- Updated dependencies for p9 compatibility.
+
+* Fri Nov 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.13.0-alt1
+- Updated to upstream version 6.13.0 (Fixes: CVE-2020-7943).
+
+* Fri May 22 2020 Pavel Skrylev <majioa@altlinux.org> 6.5.0-alt3
 - ! max memory consumption for JVM by increasing top border an config
   (closes #38519)
 

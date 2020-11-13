@@ -1,7 +1,9 @@
 %define _unpackaged_files_terminate_build 1
 
+%def_enable initd
+
 Name:     puppetdb
-Version:  6.2.0
+Version:  6.13.0
 Release:  alt1
 
 Summary:  Centralized Puppet Storage
@@ -9,19 +11,22 @@ License:  Apache-2.0
 Group:    Other
 Url:      https://github.com/puppetlabs/puppetdb
 
+# https://downloads.puppetlabs.com/puppetdb/puppetdb-%version.tar.gz
 Source:   %name-%version.tar
+
+Source1: %name.init
+
+Patch1: %name-%version-alt.patch
 
 BuildArch:      noarch
 
-BuildPreReq: /proc rpm-build-java rpm-build-ruby rpm-build-ubt
+BuildPreReq: /proc rpm-build-java
+BuildRequires: rpm-macros-ruby /usr/bin/ruby
 
 Requires: puppet
 Requires: postgresql
 Requires: clojure
 Requires: ruby-msgpack
-
-%def_enable initd
-
 
 %description
 PuppetDB is the fast, scalable, and reliable data warehouse for Puppet. It
@@ -37,29 +42,24 @@ PuppetDB Ruby plug-in
 
 %prep
 %setup
+%patch1 -p2
 
 %install
 install -D %name.jar %buildroot%_javadir/%name/%name.jar
-install -D %name.service %buildroot%_unitdir/%name.service
+install -D ext/redhat/puppetdb.service %buildroot%_unitdir/%name.service
 
 %if_enabled initd
-install -D %name.init %buildroot%_initdir/%name
-mkdir -p %buildroot%_sysconfdir/tmpfiles.d
-cat >%buildroot%_sysconfdir/tmpfiles.d/%name.conf <<EOF
-d /var/run/puppetdb 0775 _puppetdb _puppetdb -
-EOF
+install -D %SOURCE1 %buildroot%_initdir/%name
+install -D ext/puppetdb.tmpfiles.conf %buildroot%_tmpfilesdir/puppetdb.tmpfiles.conf
 mkdir -p %buildroot%_runtimedir/%name
 %endif
 
-mkdir -p %buildroot%_sysconfdir/sysconfig
-touch %buildroot%_sysconfdir/sysconfig/%name
-
 mkdir -p %buildroot%_sysconfdir/logrotate.d
-cat puppetdb.logrotate.conf > %buildroot%_sysconfdir/logrotate.d/puppetdb
+cp ext/puppetdb.logrotate.conf %buildroot%_sysconfdir/logrotate.d/puppetdb
 
-install -D default %buildroot%_sysconfdir/default/%name
+install -D ext/default %buildroot%_sysconfdir/default/%name
 
-install -Dm 0755 cli/%name %buildroot%_bindir/%name
+install -Dm 0755 ext/bin/%name %buildroot%_bindir/%name
 
 install -d -m 0755 %buildroot%_sysconfdir/%name/conf.d
 install -d -m 0755 %buildroot%_javadir/%name/cli
@@ -67,43 +67,42 @@ install -d -m 0755 %buildroot%_javadir/%name/cli/apps
 install -d -m 0755 %buildroot%_logdir/%name
 install -d -m 0755 %buildroot%_localstatedir/%name
 
-install request-logging.xml %buildroot%_sysconfdir/%name/request-logging.xml
-install jetty.ini %buildroot%_sysconfdir/%name/conf.d/jetty.ini
-install config.ini %buildroot%_sysconfdir/%name/conf.d/config.ini
-install repl.ini %buildroot%_sysconfdir/%name/conf.d/repl.ini
-install database.ini %buildroot%_sysconfdir/%name/conf.d/database.ini
-install bootstrap.cfg %buildroot%_sysconfdir/%name/bootstrap.cfg
-install logback.xml %buildroot%_sysconfdir/%name/logback.xml
+install ext/config/request-logging.xml %buildroot%_sysconfdir/%name/request-logging.xml
+install ext/config/conf.d/jetty.ini %buildroot%_sysconfdir/%name/conf.d/jetty.ini
+install ext/config/conf.d/config.ini %buildroot%_sysconfdir/%name/conf.d/config.ini
+install ext/config/conf.d/repl.ini %buildroot%_sysconfdir/%name/conf.d/repl.ini
+install ext/config/conf.d/database.ini %buildroot%_sysconfdir/%name/conf.d/database.ini
+install ext/config/bootstrap.cfg %buildroot%_sysconfdir/%name/bootstrap.cfg
+install ext/config/logback.xml %buildroot%_sysconfdir/%name/logback.xml
 
-install -m 0755 cli/reload %buildroot%_javadir/%name/cli/apps/reload
-install -m 0755 cli/foreground %buildroot%_javadir/%name/cli/apps/foreground
-install -m 0755 cli/start %buildroot%_javadir/%name/cli/apps/start
-install -m 0755 cli/stop %buildroot%_javadir/%name/cli/apps/stop
-install -m 0755 cli/anonymize %buildroot%_javadir/%name/cli/apps/anonymize
-install -m 0755 cli/ssl-setup %buildroot%_javadir/%name/cli/apps/ssl-setup
-install -m 0755 cli/config-migration %buildroot%_javadir/%name/cli/apps/config-migration
-install -m 0755 cli/foreground %buildroot%_javadir/%name/cli/apps/foreground
-install -m 0755 cli/upgrade %buildroot%_javadir/%name/cli/apps/upgrade
+install -m 0755 ext/cli/reload %buildroot%_javadir/%name/cli/apps/reload
+install -m 0755 ext/cli/foreground %buildroot%_javadir/%name/cli/apps/foreground
+install -m 0755 ext/cli/start %buildroot%_javadir/%name/cli/apps/start
+install -m 0755 ext/cli/stop %buildroot%_javadir/%name/cli/apps/stop
+install -m 0755 ext/cli/anonymize %buildroot%_javadir/%name/cli/apps/anonymize
+install -m 0755 ext/cli/ssl-setup %buildroot%_javadir/%name/cli/apps/ssl-setup
+install -m 0755 ext/cli/config-migration %buildroot%_javadir/%name/cli/apps/config-migration
+install -m 0755 ext/cli/upgrade %buildroot%_javadir/%name/cli/apps/upgrade
 
-install -Dm 0644 puppet/reports/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/reports/puppetdb.rb
-install -Dm 0644 puppet/indirector/resource/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/indirector/resource/puppetdb.rb
-install -Dm 0644 puppet/indirector/node/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/indirector/node/puppetdb.rb
-install -Dm 0644 puppet/indirector/catalog/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/indirector/catalog/puppetdb.rb
-install -Dm 0644 puppet/indirector/facts/puppetdb_apply.rb %buildroot%ruby_sitelibdir/puppet/indirector/facts/puppetdb_apply.rb
-install -Dm 0644 puppet/indirector/facts/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/indirector/facts/puppetdb.rb
-install -Dm 0644 puppet/util/puppetdb.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb.rb
-install -Dm 0644 puppet/util/puppetdb/atom.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/atom.rb
-install -Dm 0644 puppet/util/puppetdb/command_names.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/command_names.rb
-install -Dm 0644 puppet/util/puppetdb/command.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/command.rb
-install -Dm 0644 puppet/util/puppetdb/http.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/http.rb
-install -Dm 0644 puppet/util/puppetdb/char_encoding.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/char_encoding.rb
-install -Dm 0644 puppet/util/puppetdb/config.rb %buildroot%ruby_sitelibdir/puppet/util/puppetdb/config.rb
-install -Dm 0644 puppet/face/node/deactivate.rb %buildroot%ruby_sitelibdir/puppet/face/node/deactivate.rb
-install -Dm 0644 puppet/face/node/status.rb %buildroot%ruby_sitelibdir/puppet/face/node/status.rb
-install -Dm 0644 puppet/functions/puppetdb_query.rb %buildroot%ruby_sitelibdir/puppet/functions/puppetdb_query.rb
+install -Dm 0644 puppet/reports/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/reports/puppetdb.rb
+install -Dm 0644 puppet/indirector/resource/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/indirector/resource/puppetdb.rb
+install -Dm 0644 puppet/indirector/node/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/indirector/node/puppetdb.rb
+install -Dm 0644 puppet/indirector/catalog/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/indirector/catalog/puppetdb.rb
+install -Dm 0644 puppet/indirector/facts/puppetdb_apply.rb %buildroot%ruby__sitelibdir/puppet/indirector/facts/puppetdb_apply.rb
+install -Dm 0644 puppet/indirector/facts/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/indirector/facts/puppetdb.rb
+install -Dm 0644 puppet/util/puppetdb.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb.rb
+install -Dm 0644 puppet/util/puppetdb/atom.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/atom.rb
+install -Dm 0644 puppet/util/puppetdb/command_names.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/command_names.rb
+install -Dm 0644 puppet/util/puppetdb/command.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/command.rb
+install -Dm 0644 puppet/util/puppetdb/http.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/http.rb
+install -Dm 0644 puppet/util/puppetdb/char_encoding.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/char_encoding.rb
+install -Dm 0644 puppet/util/puppetdb/config.rb %buildroot%ruby__sitelibdir/puppet/util/puppetdb/config.rb
+install -Dm 0644 puppet/face/node/deactivate.rb %buildroot%ruby__sitelibdir/puppet/face/node/deactivate.rb
+install -Dm 0644 puppet/face/node/status.rb %buildroot%ruby__sitelibdir/puppet/face/node/status.rb
+install -Dm 0644 puppet/functions/puppetdb_query.rb %buildroot%ruby__sitelibdir/puppet/functions/puppetdb_query.rb
 
-install -m 0755 ezbake-functions.sh %buildroot%_javadir/%name/ezbake-functions.sh
-install -m 0644 ezbake.manifest %buildroot%_javadir/%name/ezbake.manifest
+install -m 0755 ext/ezbake-functions.sh %buildroot%_javadir/%name/ezbake-functions.sh
+install -m 0644 ext/ezbake.manifest %buildroot%_javadir/%name/ezbake.manifest
 
 %pre
 getent group _puppetdb > /dev/null || groupadd -r _puppetdb || :
@@ -117,10 +116,9 @@ useradd -r --gid _puppetdb --home %_localstatedir/%name --shell $(which nologin)
 %dir %attr(0770,_puppetdb,_puppetdb) %_localstatedir/%name
 %if_enabled initd
 %_initdir/%name
-%_sysconfdir/tmpfiles.d/%name.conf
+%_tmpfilesdir/puppetdb.tmpfiles.conf
 %_sysconfdir/logrotate.d/%name
-%_runtimedir/%name
-%doc docs/%name/*
+%doc ext/docs/%name/*
 %endif
 %dir %_javadir/%name
 %dir %attr(0770,_puppetdb,_puppetdb) %_logdir/%name
@@ -130,7 +128,6 @@ useradd -r --gid _puppetdb --home %_localstatedir/%name --shell $(which nologin)
 %_javadir/%name/cli/apps/*
 %_bindir/*
 
-%config(noreplace) %attr(0660,_puppetdb,_puppetdb) %_sysconfdir/sysconfig/%name
 %config(noreplace) %attr(0660,_puppetdb,_puppetdb) %_sysconfdir/default/%name
 %config(noreplace) %attr(0660,_puppetdb,_puppetdb) %_sysconfdir/%name/request-logging.xml
 %config(noreplace) %attr(0660,_puppetdb,_puppetdb) %_sysconfdir/%name/conf.d/jetty.ini
@@ -141,10 +138,19 @@ useradd -r --gid _puppetdb --home %_localstatedir/%name --shell $(which nologin)
 %config(noreplace) %attr(0660,_puppetdb,_puppetdb) %_sysconfdir/%name/logback.xml
 
 %files terminus
-%ruby_sitelibdir/*
+%ruby__sitelibdir/*
 
 
 %changelog
+* Mon Oct 26 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.13.0-alt1
+- Updated to upstream version 6.13.0 (Fixes: CVE-2020-7943).
+
+* Sat Jul 06 2019 Igor Vlasenko <viy@altlinux.ru> 6.2.0-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Mon Jul 01 2019 Andrey Bychkov <mrdrew@altlinux.org> 6.2.0-alt2
+- fix path to puppetdb.conf
+
 * Wed Mar 06 2019 Andrey Bychkov <mrdrew@altlinux.org> 6.2.0-alt1
 - Version updated to 6.2.0
 
