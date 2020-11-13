@@ -1,20 +1,81 @@
 Name: unzip
 Version: 6.0
-Release: alt2.qa1
+Release: alt4
 
 Packager: Victor Forsyuk <force@altlinux.org>
 
 Summary: An utility for unpacking zip archives
-License: distributable (BSD-based)
+License: Info-ZIP
 Group: Archiving/Compression
 
 Url: http://www.info-zip.org/
 %define src_ver	%(echo %version|sed "s/\\.//"g)
 Source: http://downloads.sourceforge.net/infozip/unzip%src_ver.tar.gz
-Patch1: unzip-6.0-alt-natspec.patch
+Patch0: unzip-6.0-alt-natspec.patch
+
+# Not sent to upstream.
+Patch1: unzip-6.0-bzip2-configure.patch
+# Upstream plans to do this in zip (hopefully also in unzip).
+Patch2: unzip-6.0-exec-shield.patch
+# Upstream plans to do similar thing.
+Patch3: unzip-6.0-close.patch
+# Details in rhbz#532380.
+# Reported to upstream: http://www.info-zip.org/board/board.pl?m-1259575993/
+Patch4: unzip-6.0-attribs-overflow.patch
+# Not sent to upstream, as it's Fedora/RHEL specific.
+# Modify the configure script to accept var LFLAGS2 so linking can be configurable
+# from the spec file. In addition '-s' is still removed as before
+Patch5: unzip-6.0-configure.patch
+Patch6: unzip-6.0-manpage-fix.patch
+# Update match.c with recmatch() from zip 3.0's util.c
+# This also resolves the license issue in that old function.
+# Original came from here: https://projects.parabolagnulinux.org/abslibre.git/plain/libre/unzip-libre/match.patch
+Patch7: unzip-6.0-fix-recmatch.patch
+# Update process.c
+Patch8: unzip-6.0-symlink.patch
+# change using of macro "case_map" by "to_up"
+Patch9: unzip-6.0-caseinsensitive.patch
+# downstream fix for "-Werror=format-security"
+# upstream doesn't want hear about this option again
+Patch10: unzip-6.0-format-secure.patch
+
+Patch11: unzip-6.0-valgrind.patch
+Patch12: unzip-6.0-x-option.patch
+Patch13: unzip-6.0-overflow.patch
+Patch14: unzip-6.0-cve-2014-8139.patch
+Patch15: unzip-6.0-cve-2014-8140.patch
+Patch16: unzip-6.0-cve-2014-8141.patch
+Patch17: unzip-6.0-overflow-long-fsize.patch
+
+# Fix heap overflow and infinite loop when invalid input is given (#1260947)
+Patch18: unzip-6.0-heap-overflow-infloop.patch
+
+# support non-{latin,unicode} encoding
+#Patch19: unzip-6.0-alt-iconv-utf8.patch
+#Patch20: unzip-6.0-alt-iconv-utf8-print.patch
+Patch21: 0001-Fix-CVE-2016-9844-rhbz-1404283.patch
+
+# restore unix timestamp accurately
+Patch22: unzip-6.0-timestamp.patch
+
+# fix possible heap based stack overflow in passwd protected files
+Patch23: unzip-6.0-cve-2018-1000035-heap-based-overflow.patch
+
+Patch24: unzip-6.0-cve-2018-18384.patch
+
+# covscan issues
+Patch25: unzip-6.0-COVSCAN-fix-unterminated-string.patch
+
+Patch26: unzip-zipbomb-part1.patch
+Patch27: unzip-zipbomb-part2.patch
+Patch28: unzip-zipbomb-part3.patch
+Patch29: unzip-zipbomb-manpage.patch
+
+Patch30: CVE-2015-7697-part_from_opensuse.patch
 
 # Automatically added by buildreq on Mon Aug 10 2009
 BuildRequires: libnatspec-devel
+BuildRequires: bzip2-devel
 
 %description
 The unzip utility is used to list, test, or extract files from a zip archive.
@@ -25,7 +86,46 @@ default behaviors do differ in some respects.
 
 %prep
 %setup -n unzip%src_ver
+%patch0 -p1
+
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+#conflicts with natspec
+#patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+#conflicts with natspec
+#patch19 -p1
+#patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+#conflicts with natspec
+#patch25 -p1
+
+#CVE-2019-13232 possible zipbomb in unzip
+#not works on 32-bit platforms
+#patch26 -p1
+#patch27 -p1
+#patch28 -p1
+#patch29 -p1
+
+%patch30 -p1
+
 ln -s unix/Makefile .
 
 %__subst 's/1L/1/g' man/*.1
@@ -33,13 +133,14 @@ ln -s unix/Makefile .
 # Let configure emit link flag required for our build instead of useless strip option:
 %__subst 's/"-s"/"-lnatspec"/' unix/configure
 # Tweak to build with our optimizations and defines:
+# IZ_HAVE_UXUIDGID is needed for right functionality of unzip -X
+# NOMEMCPY solve problem with memory overlapping - decomression is slowly,
+# but successfull.
 %define _optlevel 3
-%__subst 's/CFLAGS_OPT=.-O3./CFLAGS_OPT="%optflags -DNO_WORKING_ISPRINT -DDATE_FORMAT=DF_YMD"/g' unix/configure
+%__subst 's/CFLAGS_OPT=.-O3./CFLAGS_OPT="%optflags -DUNIX -DNO_WORKING_ISPRINT -DNOMEMCPY -DIZ_HAVE_UXUIDGID -DDATE_FORMAT=DF_YMD"/g' unix/configure
 # -DNO_WORKING_ISPRINT fixes ALT bug #21137.
 
 %build
-# TODO: build with bzip2 compression method support
-#
 # We will use `generic' make target instead of ready made `linux' or `linux_noasm`
 # This target allows us to use flags and defines produced by unzip's configure
 # script at build time instead of hardcoded for linux target.
@@ -59,6 +160,24 @@ ln -s unzip %buildroot%_bindir/zipinfo
 %doc BUGS LICENSE
 
 %changelog
+* Fri Nov 13 2020 Evgeny Sinelnikov <sin@altlinux.org> 6.0-alt4
+- Build with bzip2 compression method support
+- Massive apply security patches from Fedora and openSUSE
+- Fixes:
+  + CVE-2014-8139 CRC32 verification heap-based buffer overread
+  + CVE-2014-8140 out-of-bounds write issue in test_compr_eb()
+  + CVE-2014-8141 getZip64Data() out-of-bounds read issues
+  + CVE-2014-9913 buffer overflow in zipinfo
+  + CVE-2014-9636 out-of-bounds read or write and crash
+  + CVE-2015-7696 fix for heap overflow
+  + CVE-2015-7697 fix infinite loop when extracting empty bzip2 data
+  + CVE-2016-9844 buffer overflow in zipinfo in similar way like fix for CVE-2014-9913
+  + CVE-2018-1000035 heap based buffer overflow when opening password protected files
+  + CVE-2018-18384 buffer overflow, when a ZIP archive specially crafted
+
+* Wed Jan 15 2020 Nikita Ermakov <arei@altlinux.org> 6.0-alt3
+- Update license to meet the SPDX.
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 6.0-alt2.qa1
 - NMU: rebuilt for debuginfo.
 
