@@ -1,34 +1,28 @@
-%def_enable snapshot
-
 Name: lshw
-Version: 2.18
+Version: B.02.19.2
 Release: alt2
-%define real_version B.0%version
 
 Summary: Hardware Lister
-License: GPLv2 only
+License: GPL-2.0
 Group: System/Kernel and hardware
 Url: http://ezix.org/project/wiki/HardwareLiSter
 
-%if_disabled snapshot
-Source: http://ezix.org/software/files/%name-%real_version.tar.gz
-%else
-Source: %name-%real_version.tar
-%endif
-Source1: lshw.consolehelper
-Source2: lshw.pam
+Source: %name-%version.tar
 Source100: lshw-icons.tar.bz2
-Source101: lshw.desktop
+Source102: lshw-gtk.1
 
-Patch1: lshw-2.11-guiname.patch
+Patch1: lshw-fix-desktop.patch
 Patch2: lshw-2.13-gcc43.patch
-Patch3: lshw-B.02.18-alt-build_gui.patch
 # fc (rhbz #1332486)
-Patch10: lshw-B.02.18-non-root.patch
+Patch10: lshw-non-root.patch
+Patch11: lshw-B.02.19.2-cmake.patch
+Patch12: lshw-B.02.18-scandir.patch
+Patch13: lshw-fix-mmc.patch
+Patch14: lshw-fix-segfault-in-apfs-volume-code.patch
 
 Requires: pciids usbids
 
-# Automatically added by buildreq on Sun Jan 15 2012
+BuildRequires(pre): cmake rpm-build-ninja
 BuildRequires: gcc-c++ libgtk+2-devel libsqlite3-devel
 
 %description
@@ -44,7 +38,6 @@ Information can be output in plain text, XML or HTML.
 Summary: Graphical hardware lister
 Group: System/Kernel and hardware
 Requires: pciids usbids
-# Probably we should drop this requirements...
 Requires: lshw = %version-%release
 
 %description gui
@@ -57,48 +50,44 @@ machines (PowerMac G4 is known to work) and AMD64.
 This package provides graphical (GTK+) front-end to lshw.
 
 %prep
-%setup -n lshw-%real_version -a 100
-%patch1 -p1
+%setup -a 100
 %patch2 -p1
-%patch3 -p1
 %patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
 
 %build
-#subst 's/\(DEFINES=\)/\1-D_FILE_OFFSET_BITS=64 /' src/core/Makefile src/gui/Makefile src/Makefile
 %add_optflags -D_FILE_OFFSET_BITS=64
-export SQLITE=1
-export NPROCS=1
-%make_build all gui
+%cmake -DNOLOGO=ON -DHWDATA=OFF -DPOLICYKIT=ON -DBUILD_SHARED_LIBS=OFF -GNinja
+%ninja_build -C BUILD
 
 %install
-export SQLITE=1
-%make_install install install-gui DESTDIR=%buildroot
+%ninja_install -C BUILD
+patch -p0 -d %buildroot < %PATCH1
+
+ln -s gtk-lshw %buildroot%_sbindir/lshw-gui
 
 install -Dp -m644 lshw.png %buildroot%_pixmapsdir/lshw.png
 install -Dp -m644 lshw-16x16.png %buildroot%_miconsdir/lshw.png
 install -Dp -m644 lshw-32x32.png %buildroot%_niconsdir/lshw.png
 install -Dp -m644 lshw-48x48.png %buildroot%_liconsdir/lshw.png
-install -Dp -m644 %_sourcedir/lshw.desktop %buildroot%_desktopdir/lshw.desktop
 
-# To run GUI via consolehelper
-install -pD -m640 %_sourcedir/lshw.pam %buildroot%_sysconfdir/pam.d/lshw-gui
-install -pD -m640 %_sourcedir/lshw.consolehelper %buildroot%_sysconfdir/security/console.apps/lshw-gui
-install -d %buildroot%_bindir
-ln -s %_bindir/consolehelper %buildroot%_bindir/lshw-gui
+# Install man page
+install -Dpm0644 %SOURCE102 %buildroot%_man1dir/lshw-gtk.1
 
 %find_lang lshw
 
 %files -f lshw.lang
+%doc README.md
 %_sbindir/lshw
-%exclude %_datadir/lshw/*.txt
-%exclude %_datadir/lshw/*.ids
-%_man1dir/*
+%_man1dir/lshw.1*
 
 %files gui
 %_bindir/lshw-gui
+%_sbindir/gtk-lshw
 %_sbindir/lshw-gui
-%_sysconfdir/security/console.apps/*
-%_sysconfdir/pam.d/*
 %dir %_datadir/lshw
 %_datadir/lshw/ui/
 %_datadir/lshw/artwork/
@@ -107,8 +96,19 @@ ln -s %_bindir/consolehelper %buildroot%_bindir/lshw-gui
 %_niconsdir/*
 %_liconsdir/*
 %_desktopdir/*
+%_man1dir/lshw-gtk.1*
+%_datadir/appdata/*.appdata.xml
+%_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon May 25 2020 Andrey Cherepanov <cas@altlinux.org> B.02.19.2-alt2
+- Fix build with rpm-build-ninja.
+
+* Tue May 12 2020 Andrey Cherepanov <cas@altlinux.org> B.02.19.2-alt1
+- New version.
+- Fix License tag according to SPDX.
+- Use polkit for privilege escalation instead of consolehelper.
+
 * Wed Dec 05 2018 Andrey Cherepanov <cas@altlinux.org> 2.18-alt2
 - Fix race condition in build.
 
