@@ -1,6 +1,6 @@
 Name: installer-feature-selinux
 Version: 0.12
-Release: alt12
+Release: alt13
 
 Summary: Installer selinux hooks
 License: GPL
@@ -12,8 +12,6 @@ Source: %name-%version.tar
 BuildArch: noarch
 Provides: %name-stage2
 
-BuildRequires(pre): rpm-macros-alterator
-
 %description
 This package contains selinux hooks for installer.
 
@@ -23,17 +21,17 @@ This package contains selinux hooks for installer.
 %install
 %define hookdir %_datadir/install2
 mkdir -p %buildroot%hookdir/{initinstall,preinstall,postinstall}.d
-mkdir -p %buildroot%_alterator_libdir/hooks/setup-postinstall.d
 install -pm755 preinstall.sh %buildroot%hookdir/preinstall.d/90-selinux.sh
 install -pm755 postinstall.sh %buildroot%hookdir/postinstall.d/90-selinux.sh
-install -pm755 preinstall.sh %buildroot%_alterator_libdir/hooks/setup-postinstall.d/80-selinux.sh
 
 %files
 %hookdir/preinstall.d/*
 %hookdir/postinstall.d/*
-%_alterator_libdir/hooks/setup-postinstall.d/*
 
 %changelog
+* Wed Nov 11 2020 Anton Midyukov <antohami@altlinux.org> 0.12-alt13
+- Drop a separate script for alterator-setup
+
 * Thu Oct 15 2020 Anton Midyukov <antohami@altlinux.org> 0.12-alt12
 - Added support extlinux.conf, bootconf (Tavolga)
 - Added support alterator-setup

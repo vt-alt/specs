@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-setup
-Version: 0.3.6
+Version: 0.3.8
 Release: alt1
 
 Summary: Perform initial setup of an OEM installation (warning!)
@@ -119,6 +119,14 @@ if [ -x /sbin/sd_booted ]; then
 fi
 
 %changelog
+* Wed Nov 11 2020 Anton Midyukov <antohami@altlinux.org> 0.3.8-alt1
+- Added preinstall step, needed rootfs-installer-features
+
+* Sat Nov 07 2020 Anton Midyukov <antohami@altlinux.org> 0.3.7-alt1
+- Added requires on alteratord.service into systemd units (Closes: 39076)
+- Added packages install step from installer-common-stage2
+- Added net-eth step from installer-common-stage2
+
 * Thu Oct 15 2020 Anton Midyukov <antohami@altlinux.org> 0.3.6-alt1
 - setup-postinstall.d: Run '/sbin/integalert fix', if it exist before reboot
 - setup-postinstall.d: Add 94-bootloder-update

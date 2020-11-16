@@ -1,7 +1,7 @@
 %define distro cliff
 Name: installer-distro-%distro
 Version: 8.2
-Release: alt6
+Release: alt7
 
 License: GPL
 Group: System/Configuration/Other
@@ -18,23 +18,9 @@ Summary: Cliff Installer common files
 License: GPL
 Group: System/Configuration/Other
 
-Requires: alterator-officer
-
 %description common
 Cliff Installer common files.
 Needed also for alterator-setup.
-
-%package rootfs
-Summary: Cliff Installer for alterator-setup
-License: GPL
-Group: System/Configuration/Other
-
-Requires: %name-common = %EVR
-Requires(pre): alterator-setup
-Requires: installer-integ-stage2
-
-%description rootfs
-Cliff Installer for alterator-setup.
 
 %package stage2
 Summary: Installer stage2
@@ -51,6 +37,7 @@ Requires: alterator-notes
 Requires: %name-common = %EVR
 Requires: x-cursor-theme-jimmac
 Requires: installer-integ-stage2
+Requires: alterator-officer
 
 %description stage2
 Cliff Installer stage2.
@@ -71,7 +58,7 @@ Requires: alterator-net-bond alterator-net-bridge
 Requires: installer-feature-nfs-server-stage3
 Requires: installer-feature-powerbutton-stage3
 Requires: installer-integ-stage3
-%ifnarch armh e2k
+%ifnarch armh %e2k
 Requires: alterator-grub
 %endif
 Requires: alterator-luks
@@ -89,16 +76,9 @@ mkdir -p %buildroot%install2dir/steps
 cp -a * %buildroot%install2dir/
 cp -a steps.d/* %buildroot%install2dir/steps 
 
-%post rootfs
-if [ $1 = 1 ]; then
-	sed -i '/root/a users-officer' %_sysconfdir/alterator-setup/steps
-fi
-
 %files common
 %install2dir/steps/*.desktop
 %install2dir/*.d/*
-
-%files rootfs
 
 %files stage2
 %install2dir/alterator-menu
@@ -109,6 +89,12 @@ fi
 %files stage3
 
 %changelog
+* Wed Nov 11 2020 Anton Midyukov <antohami@altlinux.org> 8.2-alt7
+- Require alterator-officer by installer-distro-cliff-stage2 only
+- Not add officer step into alterator-setup
+- Drop installer-distro-cliff-rootfs subpackage
+- Spec: use rpm macros for e2k arch (Closes: 39105)
+
 * Thu Nov 05 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt6
 - less services enabled by default
 
