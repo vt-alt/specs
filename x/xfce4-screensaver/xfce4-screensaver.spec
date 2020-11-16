@@ -1,5 +1,5 @@
 Name: xfce4-screensaver
-Version: 0.1.10
+Version: 0.1.11
 Release: alt1
 
 Summary: Screen saver and locker for Xfce
@@ -7,7 +7,7 @@ License: GPLv2+ and LGPLv2+
 Group: Graphical desktop/XFce
 Url: https://git.xfce.org/apps/xfce4-screensaver/about/
 
-Vcs: https://git.xfce.org/apps/xfce4-screensaver
+Vcs: https://gitlab.xfce.org/apps/xfce4-screensaver.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: Xfce Team <xfce@packages.altlinux.org>
@@ -21,7 +21,6 @@ BuildRequires: libdbus-glib-devel libdbus-devel
 BuildRequires: libXScrnSaver-devel libxklavier-devel libXrandr-devel libGL-devel
 BuildRequires: libsystemd-devel libpam0-devel libwnck3-devel
 BuildRequires: xmlto
-BuildRequires: exo-csource
 
 Requires: xfce4-common
 
@@ -70,10 +69,16 @@ and the Xfconf configuration backend.
 %_desktopdir/*.desktop
 %_datadir/dbus-1/services/*.service
 %_datadir/desktop-directories/*.directory
+%_iconsdir/hicolor/*/apps/*
 %_man1dir/*
 %_pixmapsdir/*.svg
 
 %changelog
+* Mon Nov 09 2020 Mikhail Efremov <sem@altlinux.org> 0.1.11-alt1
+- Update Vcs tag.
+- Drop exo-csource from BR.
+- 0.1.10 -> 0.1.11.
+
 * Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 0.1.10-alt1
 - 0.1.9 -> 0.1.10.
 
