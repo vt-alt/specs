@@ -1,17 +1,17 @@
 Name: erc
-Version: 0.9.3
+Version: 0.9.4
 Release: alt1
 
 Summary: Universal Archive Tool
 
 License: AGPLv3
-Group: System/Configuration/Packaging
-Url: https://github.com/vitlav/erc
+Group: File tools
+Url: https://github.com/Etersoft/erc
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
 
-# git-clone http://git.etersoft.ru/projects/korinf/erc.git
-Source: ftp://updates.etersoft.ru/pub/Etersoft/Sisyphus/sources/tarball/%name-%version.tar
+# Source-git: http://git.etersoft.ru/projects/korinf/erc.git
+Source: ftp://updates.etersoft.ru/pub/Korinf/sources/tarball/%name-%version.tar
 
 BuildArchitectures: noarch
 
@@ -48,6 +48,10 @@ See detailed russian description here: http://wiki.etersoft.ru/ERC
 #%_sysconfdir/bash_completion.d/erc
 
 %changelog
+* Tue Mar 10 2020 Vitaly Lipatov <lav@altlinux.ru> 0.9.4-alt1
+- ercat: add check for unpack binary and epm assure
+- ercat: add .zst (.zstd) support
+
 * Sun Oct 22 2017 Vitaly Lipatov <lav@altlinux.ru> 0.9.3-alt1
 - add support for pack to zip if one dir arg was received
 
