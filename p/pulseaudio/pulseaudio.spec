@@ -1,6 +1,6 @@
 Name: pulseaudio
 Version: 13.0
-Release: alt3
+Release: alt4
 
 Summary: PulseAudio is a networked sound server
 Group: System/Servers
@@ -22,7 +22,7 @@ BuildRequires: libssl-devel libsystemd-devel
 
 Requires: %name-utils = %version-%release
 Requires: %name-daemon = %version-%release
-Requires: %name-gconf = %version-%release
+Requires: %name-gsettings = %version-%release
 
 %description
 PulseAudio is a networked sound server, similar in theory to the Enlightened
@@ -93,10 +93,12 @@ Summary: Pulseaudio system daemon
 Group: Sound
 Requires: pulseaudio-daemon = %version-%release
 
-%package gconf
+%package gsettings
 Summary: PulseAudio -- gnome-related part
 Group: Sound
 Requires: %name-daemon = %version-%release
+Provides: %name-gconf = %version-%release
+Obsoletes: %name-gconf
 
 %package jack
 Summary: PulseAudio -- JACK part
@@ -147,7 +149,7 @@ numerous features.
 
 This package contains PulseAudio equalizer interface.
 
-%description gconf
+%description gsettings
 PulseAudio is a networked sound server, similar in theory to the Enlightened
 Sound Daemon (EsounD). PulseAudio is however much more advanced and has
 numerous features.
@@ -193,6 +195,8 @@ touch config.rpath
     --with-access-group=audio \
     --enable-per-user-esound-socket \
     --enable-adrian-aec \
+    --enable-gsettings \
+    --disable-gconf \
     --disable-static \
     #
 
@@ -249,7 +253,7 @@ find %buildroot%_libdir -name \*.la -delete
 
 %pulsemoduledir/*.so
 
-%exclude %pulsemoduledir/module-gconf.so
+%exclude %pulsemoduledir/module-gsettings.so
 
 %exclude %pulsemoduledir/module-jack-sink.so
 %exclude %pulsemoduledir/module-jack-source.so
@@ -297,11 +301,13 @@ find %buildroot%_libdir -name \*.la -delete
 %files qpaeq
 %_bindir/qpaeq
 
-%files gconf
+%files gsettings
 %dir %pulselibdir
 %dir %pulsemoduledir
-%_libexecdir/pulse/gconf-helper
-%pulsemoduledir/module-gconf.so
+%_libexecdir/pulse/gsettings-helper
+%pulsemoduledir/module-gsettings.so
+%_datadir/GConf/gsettings/pulseaudio.convert
+%_datadir/glib-2.0/schemas/org.freedesktop.pulseaudio.gschema.xml
 
 %files jack
 %dir %pulselibdir
@@ -334,6 +340,9 @@ find %buildroot%_libdir -name \*.la -delete
 %doc doxygen/html
 
 %changelog
+* Sat Jul 25 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.0-alt4
+- disable long obsolete gconf plugin
+
 * Tue Dec 03 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.0-alt3
 - rebuilt with python3
 
