@@ -38,7 +38,7 @@
 %def_disable check
 
 Name:    golang
-Version: 1.14.10
+Version: 1.14.12
 Release: alt1
 Summary: The Go Programming Language
 Group:   Development/Other
@@ -293,6 +293,13 @@ mkdir -p -- \
 
 
 %changelog
+* Sat Nov 14 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.12-alt1
+- New version (1.14.12).
+- Fixes:
+  + CVE-2020-28362
+  + CVE-2020-28366
+  + CVE-2020-28367
+
 * Tue Oct 27 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.10-alt1
 - New version (1.14.10).
 
