@@ -3,7 +3,7 @@
 Name: pve-common
 Summary: PVE base library
 Version: 6.1.4
-Release: alt2
+Release: alt3
 License: GPLv3
 Group: Development/Perl
 Url: https://git.proxmox.com/
@@ -66,6 +66,9 @@ make -C test check
 %perl_vendor_privlib/PVE
 
 %changelog
+* Fri Nov 06 2020 Andrew A. Vasilyev <andy@altlinux.org> 6.1.4-alt3
+- check for empty address in bridged interface
+
 * Wed Sep 30 2020 Andrew A. Vasilyev <andy@altlinux.org> 6.1.4-alt2
 - add many unrecognized etcnet options
 
