@@ -4,7 +4,7 @@
 
 Name: kernel-image-skit
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt2
+Release: alt3
 
 Provides: kernel-modules-dm-secdel-skit = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Tue Nov 17 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt3
+- CONFIG_CRYPTO_CRC32C=m
+
 * Mon Nov 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt2
 - fix netlabel userspace compatibility issue
 
