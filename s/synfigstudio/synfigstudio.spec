@@ -1,18 +1,20 @@
 %def_without build_docs
 
 Name:    synfigstudio
-Version: 1.3.12
+Version: 1.4.0
 Release: alt1
 
 Summary: Synfig studio - animation program
-Group:   Office
 License: GPLv2+
+Group:   Office
+
 Url:     http://www.synfig.org
 #Source: https://github.com/synfig/synfig.git
 Source:  %name-%version.tar
-Patch0: %name-%version-%release.patch
+Patch:   %name-%version-%release.patch
 
-ExclusiveArch: %ix86 x86_64
+# FIXME: would be nice on aarch64 as well
+ExclusiveArch: %ix86 x86_64 %e2k
 
 BuildRequires(pre): rpm-build-xdg
 BuildRequires(pre): rpm-build-python3
@@ -68,6 +70,9 @@ Requires: lib%name = %version-%release
 
 %add_python3_compile_include %_datadir/synfig/plugins
 
+# internal dependency
+%add_python3_req_skip common
+
 %description
 Synfig Animation Studio is a powerful, industrial-strength vector-based
 2D animation software, designed from the ground-up for producing
@@ -102,9 +107,13 @@ Obsoletes: libsynfig-devel < %version-%release
 Header files for Synfig studio.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup
+%patch -p1
 mkdir local-pkg-config
+%ifarch %e2k
+# -lgcov not there yet...
+find -name subs.m4 | xargs sed -i 's, -pg,,;s, -fprofile-arcs,,'
+%endif
 
 %build
 %add_optflags -fpermissive -std=c++11 -I%_includedir/sigc++-2.0 -I%_libdir/sigc++-2.0/include
@@ -205,6 +214,27 @@ cat synfig.lang >> %name.lang
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Nov 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.4.0-alt1
+- New version.
+
+* Sun Nov 08 2020 Vitaly Lipatov <lav@altlinux.ru> 1.3.16-alt2
+- NMU: skip internal python dependency 'common'
+
+* Sat Aug 08 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.16-alt1
+- New version.
+
+* Tue Jul 21 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.15-alt1
+- New version.
+
+* Thu Jun 25 2020 Michael Shigorin <mike@altlinux.org> 1.3.14-alt2
+- E2K: avoid profiling (no -lgcov just yet).
+
+* Sun Apr 26 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.14-alt1
+- New version.
+
+* Thu Mar 19 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.13-alt1
+- New version.
+
 * Mon Feb 03 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.12-alt1
 - New version.
 
@@ -230,7 +260,7 @@ cat synfig.lang >> %name.lang
 * Mon May 21 2018 Andrey Cherepanov <cas@altlinux.org> 1.3.8-alt1
 - New version.
 
-* Mon Feb 13 2018 Alexandr Antonov <aas@altlinux.org> 1.3.5-alt1
+* Tue Feb 13 2018 Alexandr Antonov <aas@altlinux.org> 1.3.5-alt1
 - New version.
 
 * Mon Aug 21 2017 Anton Farygin <rider@altlinux.ru> 1.3.4-alt2
