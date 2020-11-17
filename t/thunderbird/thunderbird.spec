@@ -12,8 +12,8 @@
 %define llvm_version      10.0
 
 Name: 	 thunderbird
-Version: 78.4.0
-Release: alt1
+Version: 78.4.3
+Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
 License: MPL-2.0
@@ -53,6 +53,11 @@ Patch38: Bug-628252-os2.cc-fails-to-compile-against-GCC-4.6-m.patch
 Patch39: Load-dependent-libraries-with-their-real-path-to-avo.patch
 Patch40: Properly-launch-applications-set-in-HOME-.mailcap.patch
 Patch41: fix-function-nsMsgComposeAndSend-to-respect-Replo.patch
+
+Patch120: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
+Patch121: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
+Patch122: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
+Patch124: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
 
 Patch50: enigmail-use-juniorModeForceOff.patch
 Patch52: enigmail-gost.patch
@@ -145,6 +150,10 @@ Provides:  %name-esr-lightning-ru = %EVR
 Obsoletes: %name-esr-lightning-ru < %EVR
 Provides:  %name-ru = %EVR
 Obsoletes: %name-ru < %EVR
+%if_without enigmail
+Provides: %name-enigmail = %EVR
+Obsoletes: %name-enigmail < %EVR
+%endif
 
 # Protection against fraudulent DigiNotar certificates
 Requires: libnss >= 3.13.1-alt1
@@ -275,6 +284,11 @@ tar -xf %SOURCE6
 %patch39 -p1
 %patch40 -p1
 %patch41 -p1
+
+#patch120 -p2
+#patch121 -p2
+#patch122 -p2
+#patch124 -p2
 
 #echo %version > mail/config/version.txt
 
@@ -643,6 +657,21 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Thu Nov 12 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.3-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Thu Nov 12 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.3-alt1
+- New version (78.4.3).
+
+* Wed Nov 11 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.2-alt1
+- New version (78.4.2).
+- Fixes:
+  + CVE-2020-26950 Write side effects in MCallGetProperty opcode not accounted for
+
+* Sat Nov 07 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.1-alt1
+- New version (78.4.1).
+- Thunderbird now provides thunderbird-enigmail itself.
+
 * Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.0-alt1
 - New version (78.4.0).
 - Fixes:
