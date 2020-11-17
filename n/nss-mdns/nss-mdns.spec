@@ -1,13 +1,13 @@
 Name: nss-mdns
-Version: 0.10
-Release: alt4
+Version: 0.14.1
+Release: alt1
 
 Summary: nss-mdns provides host name resolution via Multicast DNS
 License: GPL
 Group: System/Libraries
-Url: http://www.avahi.org/
+Url: https://github.com/lathiat/nss-mdns
 
-Source: %name-%version.tar
+Source: v%version.tar.gz
 
 BuildRequires: gcc-c++ libavahi-devel lynx
 
@@ -76,12 +76,17 @@ if [ "$1" -eq 0 -a -f /etc/nsswitch.conf ] ; then
 	update_chrooted all
 fi
 
-
 %files -n lib%name
-%doc README doc/README.html doc/style.css
+%doc *.md
 /%_lib/libnss_*.so.*
 
 %changelog
+* Thu Dec 05 2019 Fr. Br. George <george@altlinux.ru> 0.14.1-alt1
+- Autobuild version bump to 0.14.1
+
+* Thu Dec 05 2019 Fr. Br. George <george@altlinux.ru> 0.14-alt1
+- submajor version update
+
 * Tue Jun 11 2013 Anton V. Boyarshinov <boyarsh@altlinux.ru> 0.10-alt4
 - post scripts got from Fedora (closes #29051)
 - postuntrigger removed
