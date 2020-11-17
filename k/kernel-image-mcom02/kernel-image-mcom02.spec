@@ -4,7 +4,7 @@
 
 Name: kernel-image-mcom02
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt5
+Release: alt6
 
 Provides: kernel-modules-dm-secdel-mcom02 = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Mon Nov 16 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt6
+- fix netlabel userspace compatibility issue
+
 * Wed Oct 28 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.9-alt5
 - LiME 1.9.1
 - nDPI 2.6
