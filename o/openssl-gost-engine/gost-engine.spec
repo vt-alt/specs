@@ -1,6 +1,6 @@
 Name: openssl-gost-engine
 Version: 1.1.0.3.0.255.ge3af41d.p1
-Release: alt2
+Release: alt3
 
 License: BSD-style
 Summary: A reference implementation of the Russian GOST crypto algorithms for OpenSSL
@@ -75,6 +75,10 @@ CTEST_OUTPUT_ON_FAILURE=1 \
 %_man1dir/gost*sum*
 
 %changelog
+* Mon Jun 01 2020 Paul Wolneykien <manowar@altlinux.org> 1.1.0.3.0.255.ge3af41d.p1-alt3
+- Fix for the "openssl-gost' control: Don't override the main section
+  (closes: 37922).
+
 * Fri Oct 25 2019 Paul Wolneykien <manowar@altlinux.org> 1.1.0.3.0.255.ge3af41d.p1-alt2
 - Added openssl-gost control script to turn the GOST ciphers on
   and off.
