@@ -3,7 +3,7 @@
 
 Name: mediawiki
 Version: %major.0
-Release: alt2
+Release: alt4
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
 
@@ -117,8 +117,9 @@ Provides: mediawiki-extensions-CiteThisPage
 Provides: mediawiki-extensions-Gadgets
 
 # since 1.29?
-Provides: mediawiki-extensions-PdfHandler
-Conflicts: mediawiki-extensions-PdfHandler < 1.24
+# we pack separate subpackage since 1.35
+#Provides: mediawiki-extensions-PdfHandler
+#Conflicts: mediawiki-extensions-PdfHandler < 1.24
 
 # since 1.31
 Provides: mediawiki-extensions-CategoryTree
@@ -189,6 +190,38 @@ Requires: %name-common = %version-%release
 %description -n %name-hiphop
 %summary
 
+%package extensions-SyntaxHighlight_GeSHi
+Epoch: 1
+Summary: Extension for mediawiki to highlight source code with GeSHi
+Summary(ru_RU.UTF-8): Расширение mediawiki для раскраски синтаксиса исходников с помощью GeSHi
+Group: Networking/WWW
+Requires: %name-common = %version-%release
+Requires: python3-module-Pygments >= 2.2.0
+
+%description extensions-SyntaxHighlight_GeSHi
+The <syntaxhighlight> tags allow the display of preformatted code modules but in addition
+they add coloring according to the code language settings. Like the <pre> tags
+and the <poem> tags, they preserve white space, that is, they depict the code
+module exactly as it was typed.
+
+%package extensions-PdfHandler
+Summary: PdfHandler extension shows uploaded pdf files in a multipage preview layout
+Group: Networking/WWW
+Requires: %name-common = %version-%release
+# There are commands used. See https://www.mediawiki.org/wiki/Extension:PdfHandler
+Requires: /usr/bin/gs
+# poppler (needed for retrieving metainfo)
+# Requires: /usr/bin/pdfinfo /usr/bin/pdftotext
+# use convert wrapper from ImageMagick-tools or GraphicsMagick-ImageMagick-compat
+Requires: /usr/bin/convert
+
+%description extensions-PdfHandler
+The extension shows uploaded pdf files in a multipage preview layout. With
+enabled WebStore the extension generates automatically Images from the
+specified page.
+
+Recommended: poppler (for PDF metainfo retrieving)
+
 
 %prep
 %setup
@@ -240,8 +273,6 @@ find %buildroot%_mediawikidir/ \
 # packed as docs
 rm -rf %buildroot%_mediawikidir/docs/
 
-# do not pack that bundled extension:
-rm -rf %buildroot%_mediawikidir/extensions/SyntaxHighlight_GeSHi/
 
 mkdir -p %buildroot%_mediawikidir/config/
 
@@ -289,6 +320,24 @@ wfLoadExtension('ParserFunctions');
 \$wgPFEnableStringFunctions = true;
 EOF
 
+cat > %buildroot%_mediawiki_settings_dir/50-PdfHandler.php << EOF
+<?php
+wfLoadExtension('PdfHandler');
+
+\$wgFileExtensions[] = 'pdf';
+EOF
+
+# remove embedded python module
+rm -rfv %buildroot%_mediawikidir/extensions/SyntaxHighlight_GeSHi/pygments/*
+# instead of set wgPygmentizePath
+ln -s %_bindir/pygmentize3 %buildroot%_mediawikidir/extensions/SyntaxHighlight_GeSHi/pygments/pygmentize
+
+# TODO: use macro
+# config for enable bundled SyntaxHighlight_GeSHi
+cat > %buildroot%_mediawiki_settings_dir/50-SyntaxHighlight_GeSHi.php << EOF
+<?php
+wfLoadExtension('SyntaxHighlight_GeSHi');
+EOF
 
 %pre -n %name-common
 if [ -L %_mediawikidir/config ]; then
@@ -327,6 +376,10 @@ exit 0
 %files -n %name-common
 %add_findreq_skiplist %_datadir/%name/config/LocalSettings.php
 %_mediawikidir/
+%exclude %_mediawikidir/extensions/SyntaxHighlight_GeSHi/
+%exclude %_mediawiki_settings_dir/50-SyntaxHighlight_GeSHi.php
+%exclude %_mediawikidir/extensions/PdfHandler/
+%exclude %_mediawiki_settings_dir/50-PdfHandler.php
 #exclude %_datadir/%name/maintenance/hiphop/
 %attr(2750,root,%webserver_group) %dir %webappdir/
 %attr(2770,root,%webserver_group) %dir %webappdir/config/
@@ -354,8 +407,22 @@ exit 0
 #%files -n %name-hiphop
 #%_datadir/%name/maintenance/hiphop/
 
+%files extensions-SyntaxHighlight_GeSHi
+%_mediawikidir/extensions/SyntaxHighlight_GeSHi/
+%_mediawiki_settings_dir/50-SyntaxHighlight_GeSHi.php
+%doc extensions/SyntaxHighlight_GeSHi/README
+
+%files extensions-PdfHandler
+%_mediawikidir/extensions/PdfHandler/
+%_mediawiki_settings_dir/50-PdfHandler.php
 
 %changelog
+* Mon Nov 09 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt4
+- pack extensions-PdfHandler separately in a subpackage
+
+* Wed Nov 04 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt3
+- pack subpackage extensions-SyntaxHighlight_GeSHi
+
 * Thu Oct 29 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt2
 - use php7-gd instead of ImageMagick by default
 - use php7-mysqlnd-mysqli instead of php7-mysqli (ALT bug 39162)
