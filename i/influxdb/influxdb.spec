@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/influxdb
-%global commit ff383cdc0420217e3460dabe17db54f8557d95b6
+%global commit 563e6c3d1a7a2790763c6289501095dbec19244e
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		influxdb
-Version:	1.7.8
+Version:	1.8.3
 Release:	alt1
 Summary:	Distributed time-series database
 
@@ -27,7 +27,7 @@ Source104: influxdb.tmpfiles
 
 Patch1: influxdb-opentsdb-fix.patch
 
-ExclusiveArch:  %go_arches
+ExclusiveArch: %go_arches
 BuildRequires(pre): rpm-build-golang
 BuildRequires: xmlto asciidoc
 
@@ -46,36 +46,30 @@ events, and performing analytics.
 # This is necessary because the gdm cannot work with the vendor directory and always tries to update
 # all dependencies from the external servers. So, we can't use Makefile to compile.
 #
-# $ go get -d github.com/influxdata/influxdb
-# pushd ~/go/src/github.com/influxdata/influxdb
-# $ git checkout to %version
-# $ dep ensure -vendor-only
-# popd
 # $ git rm -rf vendor
-# $ cp -r ~go/src/github.com/influxdata/influxdb/vendor ./
+# $ go mod vendor
 # $ git add --force vendor
-# $ git commit -m "update go pkgs by dep ensure -vendor-only"
-# $ rm -rf ~/go/src/github.com/influxdata/influxdb
-
+# $ git commit -m "update go pkgs by go mod vendor"
 
 export BUILDDIR="$PWD/.gopath"
 export IMPORT_PATH="%import_path"
 export GOPATH="$BUILDDIR:%go_path"
-export GO111MODULE=off
-
-%golang_prepare
-
-cd .gopath/src/%import_path
-
 export VERSION=%version
 export COMMIT=%commit
 export BRANCH=altlinux
+export GOFLAGS="-mod=vendor"
+
+
+%golang_prepare
+
+pushd .gopath/src/%import_path
 
 CGO_ENABLED=0 GOGC=off go install -ldflags " -s -w \
     -X main.version=$VERSION \
     -X main.commit=$COMMIT \
     -X main.branch=$BRANCH \
-    " -a -installsuffix nocgo ./...
+    " ./...
+popd
 
 %install
 export BUILDDIR="$PWD/.gopath"
@@ -130,6 +124,24 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0755, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Fri Nov 13 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.3-alt1
+- 1.8.3
+
+* Wed Aug 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.2-alt1
+- 1.8.2
+
+* Wed Aug 05 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.1-alt1
+- 1.8.1
+
+* Tue Apr 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.8.0-alt1
+- 1.8.0
+
+* Sat Apr 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.7.10-alt1
+- 1.7.10
+
+* Sun Dec 22 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.9-alt1
+- 1.7.9
+
 * Wed Sep 11 2019 Alexey Shabalin <shaba@altlinux.org> 1.7.8-alt1
 - 1.7.8
 

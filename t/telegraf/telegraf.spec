@@ -1,5 +1,5 @@
 %global import_path github.com/influxdata/telegraf
-%global commit 1b35d6c24591228787c69f3eb31d67961fa5ba5f
+%global commit 292e285a09c82697d1e5314fe3a092e489bc6b85
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name:		telegraf
-Version:	1.14.3
+Version:	1.16.1
 Release:	alt1
 Summary:	The plugin-driven server agent for collecting and reporting metrics
 
@@ -26,7 +26,6 @@ Source104: telegraf.tmpfiles
 
 ExclusiveArch:  %go_arches
 BuildRequires(pre): rpm-build-golang
-BuildRequires: golang-dep
 
 %description
 Telegraf is an agent written in Go for collecting, processing, aggregating, and writing metrics.
@@ -67,7 +66,7 @@ CGO_ENABLED=0 GOGC=off go install -ldflags " -s -w \
     -X main.version=$VERSION \
     -X main.commit=$COMMIT \
     -X main.branch=$BRANCH \
-    " -a -installsuffix nocgo ./...
+    " -a ./cmd/telegraf
 
 %install
 export BUILDDIR="$PWD/.gopath"
@@ -75,10 +74,7 @@ export GOPATH="%go_path"
 %golang_install
 
 # cleanup
-rm -rf -- %buildroot/%_datadir
-rm -f %buildroot%_bindir/stress_test_write
-rm -f %buildroot%_bindir/thrift_serialize
-rm -f %buildroot%_bindir/examples
+rm -rf -- %buildroot%_datadir
 
 # Install config files
 install -p -D -m 640 etc/telegraf.conf %buildroot%_sysconfdir/%name/%name.conf
@@ -123,6 +119,18 @@ install -p -D -m 644 %SOURCE104 %buildroot%_tmpfilesdir/%name.conf
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Thu Nov 12 2020 Alexey Shabalin <shaba@altlinux.org> 1.16.1-alt1
+- 1.16.1
+
+* Sun Oct 25 2020 Alexey Shabalin <shaba@altlinux.org> 1.16.0-alt1
+- 1.16.0
+
+* Sat Sep 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.3-alt1
+- 1.15.3
+
+* Wed Aug 05 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.2-alt1
+- 1.15.2
+
 * Fri May 29 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.3-alt1
 - 1.14.3
 
