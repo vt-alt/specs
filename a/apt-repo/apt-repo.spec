@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.3.13
+Version:  1.3.15
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -35,6 +35,12 @@ install -Dpm 644 %name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 %_man8dir/%name.8*
 
 %changelog
+* Mon Nov 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.15-alt1
+- Add https to allowed apt protocols.
+
+* Sun Nov 08 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.14-alt1
+- Ignore list and install *-checkinstall packages from task (ALT #39221).
+
 * Sat Jul 04 2020 Anton Midyukov <antohami@altlinux.org> 1.3.13-alt1
 - Added armh repo support.
 
