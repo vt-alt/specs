@@ -7,8 +7,8 @@
 %def_enable deprecated
 
 Name: bluez
-Version: 5.54
-Release: alt5
+Version: 5.55
+Release: alt1
 
 Summary: Bluetooth utilities
 License: GPL-2.0-or-later
@@ -87,6 +87,7 @@ export CFLAGS="$CFLAGS %(getconf LFS_CFLAGS)"
 	%{subst_enable btpclient} \
 	--enable-cups \
 	--enable-tools \
+	--enable-hid2hci \
 	--localstatedir=%_var \
 	%{subst_enable deprecated}
 %make_build
@@ -180,6 +181,11 @@ fi
 %endif
 
 %changelog
+* Mon Nov 16 2020 Valery Inozemtsev <shrek@altlinux.ru> 5.55-alt1
+- 5.55;
+- securuty fixes:
+  + CVE-2020-27153 (closes #39291)
+
 * Tue Jun 09 2020 Yuri N. Sedunov <aris@altlinux.org> 5.54-alt5
 - fixed %%post, %%preun scripts
 - used LFS_CFLAGS
