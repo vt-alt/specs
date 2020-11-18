@@ -1,7 +1,7 @@
 # obsoleted koffice version
 %define koffice_ver 4:2.3.70
 
-%define sover 19
+%define sover 20
 %define libkritacommand libkritacommand%sover
 %define libkritaimpex libkritaimpex%sover
 %define libkritalibkis libkritalibkis%sover
@@ -30,7 +30,7 @@
 %define libkritatext libkritatext%sover
 
 Name: krita
-Version: 4.3.0
+Version: 4.4.1
 Release: alt1
 %K5init no_altplace
 
@@ -71,8 +71,9 @@ BuildRequires: libquazip-qt5-devel
 #BuildRequires: libquadmath-devel
 BuildRequires: libopencolorio-devel
 BuildRequires: libXres-devel libxcbutil-devel
-BuildRequires: libjpeg-devel libpng-devel libpoppler-qt5-devel libraw-devel libtiff-devel openexr-devel
-BuildRequires: libexiv2-devel liblcms2-devel libheif-devel
+BuildRequires: libjpeg-devel libpng-devel libpoppler-qt5-devel libraw-devel libtiff-devel
+#BuildRequires: libheif-devel openexr-devel
+BuildRequires: libexiv2-devel liblcms2-devel
 BuildRequires: kf5-karchive-devel kf5-kcrash-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kwindowsystem-devel
 
 %description
@@ -433,6 +434,9 @@ done
 %_libdir/libkritametadata.so.*
 
 %changelog
+* Tue Nov 03 2020 Sergey V Turchin <zerg@altlinux.org> 4.4.1-alt1
+- new version
+
 * Mon Aug 31 2020 Sergey V Turchin <zerg@altlinux.org> 4.3.0-alt1
 - new version
 
