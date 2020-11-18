@@ -1,6 +1,6 @@
 Name: rpmrebuild
 Version: 2.11
-Release: alt4
+Release: alt6
 License: GPLv2+
 Group: Development/Other
 Summary: A tool to build rpm file from rpm database
@@ -8,9 +8,9 @@ Source: %name-%version.tar.gz
 Patch: rpmrebuild-2.9-alt-tmpdir.patch
 Patch1: rpmrebuild-2.11-alt-toonewtags.patch
 Patch2: rpmrebuild-2.11-correctly-quote-rpmargs.patch
-Patch3: rpmrebuild-alt-remove-SendBugReport.patch
+Patch3: rpmrebuild-2.11-CommandLineParsing-allow-more-than-9-arguments.patch
+Patch4: rpmrebuild-alt-remove-SendBugReport.patch
 Url: http://rpmrebuild.sourceforge.net/
-BuildArch: noarch
 
 Requires: /usr/bin/rpmbuild
 # due to rpmrebuild.sh
@@ -36,6 +36,7 @@ Rpmrebuild plugin for automatically un-prelinking package content.
 %patch1 -p1
 %patch2 -p2
 %patch3 -p2
+%patch4 -p2
 
 %build
 %make
@@ -56,12 +57,21 @@ Rpmrebuild plugin for automatically un-prelinking package content.
 %prefix/lib/%name/*
 %_man1dir/*
 
+%ifarch %ix86 alpha sparc sparc64 s390 s390x x86_64 ppc ppc64
 %files un_prelink
 %_man1dir/un_prelink.plug*
 %_mandir/*/*/un_prelink.plug*
 %prefix/lib/%name/plugins/un_prelink*
+%endif
 
 %changelog
+* Wed Nov 18 2020 Dmitry V. Levin <ldv@altlinux.org> 2.11-alt6
+- rpmrebuild: fixed handling of more than 9 arguments.
+
+* Wed Oct 02 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.11-alt5
+- Package %name-un_prelink subpackage only on architectures supported
+  by prelink.
+
 * Tue Oct 30 2018 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.11-alt4
 - Reintroduced disttag (rediffed rpmrebuild-2.11-alt-toonewtags.patch).
 
