@@ -1,25 +1,15 @@
 Name: bzip2
-Version: 1.0.6
-Release: alt6
+Version: 1.0.8
+Release: alt1
 Epoch: 1
 
-Summary: Extremely powerful file compression utility
-License: BSD-style
+Summary: A file compression utility
+License: bzip2-1.0.6
 Group: Archiving/Compression
-Url: http://www.bzip.org/
+Url: https://www.sourceware.org/bzip2/
 
-# http://www.bzip.org/%version/bzip2-%version.tar.gz
-Source: bzip2-%version.tar
-Source1: bzip2.texi
-
-Patch1: bzip2-1.0.6-alt-autotools.patch
-Patch2: bzip2-1.0.6-alt-export.patch
-Patch3: bzip2-1.0.6-owl-bzdiff-tmp.patch
-Patch4: bzip2-1.0.6-alt-owl-fopen.patch
-Patch5: bzip2-1.0.6-alt-const.patch
-Patch6: bzip2-1.0.6-alt-progname.patch
-Patch7: bzip2-1.0.6-flok-show-progress.patch
-Patch8: CVE-2016-3189.patch
+# git://git.altlinux.org/gears/b/bzip2.git
+Source: %name-%version-%release.tar
 
 Requires: bzlib = %EVR
 BuildPreReq: glibc-devel-static makeinfo
@@ -42,12 +32,6 @@ Group: Development/C
 Provides: %name-devel-static = %version
 Obsoletes: %name-devel-static
 Requires: bzlib-devel = %EVR
-
-%package doc
-Summary: Documentation for developing apps which will use bzip2
-Group: Development/C
-BuildArch: noarch
-Requires: %name = %EVR
 
 %description
 bzip2 is a freely available, patent-free, high quality data compressor.
@@ -77,23 +61,8 @@ This package contains the static library needed to develop statically
 linked programs that use the bzip2 compression and decompression
 library.
 
-%description doc
-This package contains additional documentation on bzip2 compression and
-decompression library.
-
 %prep
-%setup -q
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-find -type f -name \*.orig -delete
-chmod a+x *.sh
-install -pm644 %_sourcedir/bzip2.texi .
+%setup -n %name-%version-%release
 
 %build
 %define _optlevel 3
@@ -110,7 +79,7 @@ install -pm644 %_sourcedir/bzip2.texi .
 %make_build -k check
 
 %install
-%makeinstall
+%makeinstall_std
 
 # Relocate shared libraries from %_libdir/ to /%_lib/.
 mkdir %buildroot/%_lib
@@ -159,14 +128,17 @@ Libs: -lbz2
 Cflags:
 EOF
 
-%define docdir %_docdir/%name-%version
+%define docdir %_docdir/%name
 rm -rf %buildroot%docdir
 mkdir -p %buildroot%docdir
-install -pm644 CHANGES LICENSE README *.html %buildroot%docdir/
+install -pm644 CHANGES LICENSE README %buildroot%docdir/
+
+%set_verify_elf_method strict
+%define _unpackaged_files_terminate_build 1
 
 %files -n bzlib
 /%_lib/*
-%dir %docdir
+%dir %docdir/
 %docdir/LICENSE
 
 %files -n bzlib-devel
@@ -184,14 +156,14 @@ install -pm644 CHANGES LICENSE README *.html %buildroot%docdir/
 %_bindir/bzcat
 %_man1dir/b*zip*.*
 %_man1dir/bzcat.*
-%dir %docdir
+%dir %docdir/
 %docdir/[CR]*
 
-%files doc
-%dir %docdir
-%docdir/*.html
-
 %changelog
+* Mon Mar 02 2020 Dmitry V. Levin <ldv@altlinux.org> 1:1.0.8-alt1
+- 1.0.6 -> 1.0.8.
+- Removed symbol versioning stub.
+
 * Sun Mar 10 2019 Dmitry V. Levin <ldv@altlinux.org> 1:1.0.6-alt6
 - bzlib-devel: packaged pkgconfig file (requested by viy@).
 
@@ -364,7 +336,7 @@ install -pm644 CHANGES LICENSE README *.html %buildroot%docdir/
 * Wed Mar 22 2000 Pixel <pixel@mandrakesoft.com> 0.9.5d-7mdk
 - remove provides bzip2
 
-* Wed Mar 21 2000 Daouda LO <daouda@mandrakesoft.com> 0.9.5d-6mdk
+* Tue Mar 21 2000 Daouda LO <daouda@mandrakesoft.com> 0.9.5d-6mdk
 - change to new group architecture
 
 * Sat Mar  4 2000 Pixel <pixel@mandrakesoft.com> 0.9.5d-5mdk

@@ -15,16 +15,17 @@
 #----------------------------------------------------------------------
 %define subst_enable_to() %{expand:%%{?_enable_%{1}:--enable-%{2}}} %{expand:%%{?_disable_%{1}:--disable-%{2}}}
 
-%{!?x86_64:%define x86_64 x86_64}
+%{!?x86_64:%global x86_64 x86_64}
 
 %define Name Tokyo Cabinet
 Name: tokyocabinet
 %define lname lib%name
 Summary: A modern implementation of a DBM
 Version: 1.4.47
-Release: alt1
+Release: alt2
 License: %lgpl2plus
 Group: Databases
+Packager: Vladimir Lettiev <crux@altlinux.org>
 URL: http://fallabs.com/%name
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
@@ -193,6 +194,9 @@ mv %buildroot{%_datadir/%name,%_docdir/%name-%version}
 
 
 %changelog
+* Mon Mar 02 2020 Dmitry V. Levin <ldv@altlinux.org> 1.4.47-alt2
+- Rebuilt.
+
 * Fri Feb 18 2011 Vladimir Lettiev <crux@altlinux.ru> 1.4.47-alt1
 - 1.4.47
 

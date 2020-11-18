@@ -1,12 +1,13 @@
 Summary:	Binary diff/patch utility
 Name:		bsdiff
 Version:	4.3
-Release:	alt1
+Release:	alt2
 Group:		File tools
-License:	BSD
-URL:		http://www.daemonology.net/bsdiff/
-Source:		http://www.daemonology.net/bsdiff/%name-%version.tar.gz
-BuildRequires:	bzlib-devel
+License:	BSD-2-Clause
+Packager:	Fr. Br. George <george@altlinux.org>
+URL:		https://www.daemonology.net/bsdiff/
+Source:		%name-%version.tar
+BuildRequires:	gcc bzlib-devel
 
 %description
 bsdiff and bspatch are tools for building and applying patches to
@@ -17,7 +18,7 @@ than those produced by Xdelta, and 15%% smaller than those produced
 by .RTPatch.
 
 %prep
-%setup -q
+%setup
 
 %build
 %__cc %optflags bsdiff.c -lbz2 -o bsdiff
@@ -37,6 +38,9 @@ install -D bspatch.1 %buildroot%_mandir/man1/bspatch.1
 %_mandir/man1/bspatch.1*
 
 %changelog
+* Mon Mar 02 2020 Dmitry V. Levin <ldv@altlinux.org> 4.3-alt2
+- Rebuilt.
+
 * Sun Aug 06 2006 Fr. Br. George <george@altlinux.ru> 4.3-alt1
 - Initial ALT build
 
