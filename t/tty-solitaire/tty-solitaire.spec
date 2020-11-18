@@ -1,7 +1,7 @@
 %def_enable Werror
 
 Name:     tty-solitaire
-Version:  1.1.1
+Version:  1.3.0
 Release:  alt1
 
 Summary:  Play solitaire in your terminal!
@@ -28,11 +28,18 @@ Buildrequires: libncursesw-devel
 %install
 %makeinstall_std PREFIX=%_prefix
 
+%check
+make test
+
 %files
 %_bindir/*
 %doc LICENSE README CHANGELOG TODO.md
 
 %changelog
+* Tue Jun 02 2020 Grigory Ustinov <grenka@altlinux.org> 1.3.0-alt1
+- Automatically updated to 1.3.0.
+- Add check.
+
 * Mon Nov 12 2018 Grigory Ustinov <grenka@altlinux.org> 1.1.1-alt1
 - Build new version.
 
