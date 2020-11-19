@@ -1,12 +1,13 @@
 Name:		luckybackup
 Version:	0.5.0
-Release:	alt1
+Release:	alt2
 Summary:	A powerful, fast and reliable backup and sync tool
 
 Group:		File tools
 License:	GPLv3+
 URL:		http://luckybackup.sourceforge.net/index.html
 Source0:	http://downloads.sourceforge.net/project/%{name}/%{version}/source/%{name}-%{version}.tar.gz
+Source1:	luckybackup_ru.ts
 
 BuildRequires(pre): gcc-c++ qt5-base-devel
 BuildRequires:	desktop-file-utils
@@ -27,6 +28,7 @@ proceeding in any data manipulation ), reliable and fully customizable.
 sed -i 's,/usr/share/doc/luckybackup,%{_pkgdocdir},' luckybackup.pro
 sed -i 's,/usr/share/doc/luckybackup/license/gpl.html,%{_pkgdocdir}/license/gpl.html,' src/global.h
 sed -i 's,/usr/share/doc/luckybackup/manual/index.html,%{_pkgdocdir}/manual/index.html,' src/global.h
+cp -a %SOURCE1 translations/luckybackup_ru.ts
 
 %build
 %qmake_qt5
@@ -52,6 +54,9 @@ cp -a manual %buildroot%_defaultdocdir/%name
 %doc %_defaultdocdir/%name
 
 %changelog
+* Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt2
+- Complete Russian translation (thanks Dmitry Astankov).
+
 * Tue Dec 04 2018 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt1
 - New version.
 - Package manual.
