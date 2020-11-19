@@ -15,8 +15,8 @@
 %def_with x509_alt_username
 
 Name: openvpn
-Version: 2.4.7
-Release: alt2
+Version: 2.4.9
+Release: alt1
 
 Summary: a full-featured SSL VPN solution
 Summary(ru_RU.UTF-8): полнофункциональное решение VPN на базе SSL
@@ -47,9 +47,9 @@ Source10: %name.tmpfiles
 Conflicts: syslogd < 1.4.1-alt11
 
 BuildRequires(pre): rpm-build-licenses
-# Automatically added by buildreq on Fri May 31 2019
-# optimized out: glibc-kernheaders-generic glibc-kernheaders-x86 libgpg-error libpkcs11-helper libssl-devel perl pkg-config python-base sh4
-BuildRequires: cmake git-core glibc-devel-static iproute2 liblz4-devel liblzo2-devel libpam-devel libpkcs11-helper-devel libselinux-devel libsystemd-devel net-tools
+# Automatically added by buildreq on Mon Nov 16 2020
+# optimized out: glibc-kernheaders-generic glibc-kernheaders-x86 libgpg-error libpkcs11-helper libssl-devel perl pkg-config python-modules python2-base python3 python3-base python3-module-paste ruby ruby-stdlibs sh4
+BuildRequires: cmake git-core glibc-devel-static iproute2 liblz4-devel liblzo2-devel libselinux-devel net-tools
 
 %{?_with_systemd:BuildRequires: libsystemd-devel}
 %{?_with_pkcs11:BuildRequires: pkcs11-helper-devel}
@@ -338,6 +338,12 @@ ln -s -- %openvpn_root/dev/log %buildroot%_sysconfdir/syslog.d/%name
 %endif
 
 %changelog
+* Mon Nov 16 2020 Nikolay A. Fetisov <naf@altlinux.org> 2.4.9-alt1
+- New version
+- Security fixes:
+  + CVE-2020-11810: race condition allowes one client kills other
+    client session via false client floating (Closes: 39122)
+
 * Fri May 31 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.4.7-alt2
 - Dropped BR: libssl10.
 
