@@ -1,5 +1,5 @@
 Name: distro_info
-Version: 1.6
+Version: 1.7
 Release: alt1
 
 Summary: Get various info about a system and used distro
@@ -32,6 +32,9 @@ install -m0644 -D man/distro_info.1 %buildroot%_man1dir/distro_info.1
 %_man1dir/*
 
 %changelog
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 1.7-alt1
+- distro_info: add --debian-arch
+
 * Mon Oct 19 2020 Vitaly Lipatov <lav@altlinux.ru> 1.6-alt1
 - distro_info: improve ALT c8 support
 - add --distro-arch support (returns distro depended arch name)

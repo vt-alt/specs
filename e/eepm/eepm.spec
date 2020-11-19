@@ -1,6 +1,6 @@
 Name: eepm
-Version: 3.4.0
-Release: alt2
+Version: 3.7.1
+Release: alt1
 
 Summary: Etersoft EPM package manager
 
@@ -15,15 +15,13 @@ Source: ftp://updates.etersoft.ru/pub/Etersoft/Sisyphus/sources/tarball/%name-%v
 
 BuildArchitectures: noarch
 
-# Contains the same command epm
-Conflicts: epm
-
-Provides: upm
+Obsoletes: epm
+Provides: epm = %EVR
 
 %if %_vendor == "alt"
 # FIXHERE: Replace with target platform package manager
 Requires: apt rpm
-Requires: distro_info >= 1.6
+Requires: distro_info >= 1.7
 %endif
 
 %description
@@ -91,10 +89,12 @@ chmod a+x %buildroot%_datadir/%name/tools_*
 
 %if %_vendor == "alt"
 # use external eget
-rm -f %buildroot%_datadir/%name/tools_eget
+#rm -f %buildroot%_datadir/%name/tools_eget
 # use external distro_info
 rm -f %buildroot%_bindir/distr_info
 %endif
+
+mkdir -p %buildroot/var/lib/eepm/
 
 %files
 %doc README.md TODO LICENSE
@@ -107,9 +107,9 @@ rm -f %buildroot%_bindir/distr_info
 %config(noreplace) %_sysconfdir/eepm/prescription.d/*.sh
 %_bindir/epm*
 %_bindir/eepm
-%_bindir/upm
 %_bindir/serv
 %_bindir/cerv
+%dir /var/lib/eepm/
 %if %_vendor != "alt"
 %_bindir/distr_info
 %endif
@@ -123,6 +123,80 @@ rm -f %buildroot%_bindir/distr_info
 %endif
 
 %changelog
+* Wed Nov 11 2020 Vitaly Lipatov <lav@altlinux.ru> 3.7.1-alt1
+- epm-release_upgrade: use [alt] sign for Sisyphus
+- epm-autoremove: supports for python2 and python3 separately
+- epm-sh-install: don't check vendor if a package is unaccesible
+- add prescription python2-remove
+- repack: add lightworks.sh
+
+* Tue Nov 10 2020 Vitaly Lipatov <lav@altlinux.ru> 3.7.0-alt1
+- drop alternative name upm, provide epm
+- epm-restore: some improvements
+- improve teamviewer repack
+
+* Fri Nov 06 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.8-alt1
+- epm-restore: add support for various names of requirements.txt file
+- epm play: add anydesk, assistant, onlyoffice support
+- various small improvements
+
+* Mon Nov 02 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.7-alt1
+- epm-install: return 0 if all packages are filtered out
+- epm-addrepo: use sudocmd for apt-repo
+- epm-repofix: disable root checking
+
+* Sun Nov 01 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.6-alt1
+- epm-restore: add requirements_dev.txt, setup.py, require.json (npm)
+- epm-release_upgrade: drop signs if there are unknown vendor ID during update from repo
+
+* Wed Oct 28 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.5-alt1
+- repack skypeforlinux: drop unneeded /opt/skypeforlinux dir
+- add play for discord
+- eget: add hack for skip mask if there ?...= (some args)
+- epm-epm_install: don't use epm command
+- add prescription for i586-remove
+- epm: print command when run with --verbose or EPM_VERBOSE is set
+- epm-remove: add --simulate support for deb
+
+* Tue Oct 27 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.4-alt1
+- add repack for teams (move to /opt, fix reqs)
+- play: add viber support
+- repack: move skype to /opt, fix reqs
+- improve all prescriptions for play
+
+* Mon Oct 26 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.3-alt1
+- epm-release-upgrade: remove gdb before update to p9
+- tools_eget: update to eget 4.0 (wget/curl support)
+- epm-sh-functions: always use internal tools_eget
+- epm-epm_install: fix for install more short name
+
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.2-alt1
+- prescriptions: use DISTRVERNDOR instead of distro_info
+- prescriptions: add --remove support
+- epm-prescription: add support for --list, --list-all, --remove
+
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.1-alt1
+- use has_space from estrlist (works with dash)
+- epm-repack: implement initial stoplist support for deb packages we don't want convert
+- epm-repack: make fatal any errors in repack scripts
+- add prescription for teamviewer
+
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.6.0-alt1
+- epm-install: add --noscripts support for rpm install
+- epm-install: disable scripts by default for outside vendors
+- add prescription for teams, vivaldi
+- add repack for vivaldi-stable
+- prescription, repack: add PROGDIR to PATH
+- distr_info: sync with distro_info-1.7
+
+* Fri Oct 23 2020 Vitaly Lipatov <lav@altlinux.ru> 3.5.0-alt1
+- epm-autoremove: add --auto support
+- epm-repack: skip system dir packing
+- add repack script for microsoft-edge-dev
+- epm: introduce play command: use for install
+       edge, zoom, chrome, chromium-gost, skype
+       from the official sites
+
 * Wed Oct 21 2020 Vitaly Lipatov <lav@altlinux.ru> 3.4.0-alt2
 - add epm-repack subpackage (just a static requirements)
 
