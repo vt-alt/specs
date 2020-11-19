@@ -1,6 +1,6 @@
 Name: c-ares
 Version: 1.16.1
-Release: alt1
+Release: alt2
 
 Summary: A library that performs asynchronous DNS operations
 License: MIT
@@ -8,6 +8,7 @@ Group: System/Libraries
 
 Url: http://c-ares.haxx.se/
 Source: %url/download/c-ares-%version.tar
+Patch0: %name-%version-%release.patch
 
 # need for test/configure
 BuildRequires: gcc-c++
@@ -37,6 +38,7 @@ compile applications or shared objects that use c-ares.
 
 %prep
 %setup -n c-ares-%version
+%patch0 -p1
 
 %build
 %autoreconf
@@ -67,6 +69,9 @@ install -pm755 .libs/{acountry,adig,ahost} %buildroot%_bindir/
 %_man3dir/*
 
 %changelog
+* Tue Nov 17 2020 Anton Farygin <rider@altlinux.ru> 1.16.1-alt2
+- added 0d252eb commit from upstream to resolve security issue (fixes: CVE-2020-8277)
+
 * Fri May 15 2020 Anton Farygin <rider@altlinux.ru> 1.16.1-alt1
 - 1.16.1
 
