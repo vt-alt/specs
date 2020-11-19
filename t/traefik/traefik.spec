@@ -1,5 +1,5 @@
 %global import_path github.com/containous/traefik
-%global commit fb3839e09602895615fefc3934090cb013dea4f5
+%global commit 3e61d1f233ebdf015eaf59e2c253fb8a1f79dbe9
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
@@ -9,7 +9,7 @@
 %brp_strip_none %_bindir/*
 
 Name: traefik
-Version: 2.0.7
+Version: 2.3.2
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -52,7 +52,8 @@ Documentation: http://docs.traefik.io/
 # $ git commit -n --no-post-rewrite -m "add node js modules"
 
 # Vendorized go modules
-# $ GO111MODULE=on GOPROXY=direct go mod vendor -v
+# $ go generate
+# $ GO111MODULE=on go mod vendor -v
 # $ git add -f vendor
 # $ git commit -n --no-post-rewrite -m "add go vendor modules"
 
@@ -132,12 +133,19 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(750, root, %name) %_sysconfdir/%name
 %dir %attr(750, root, %name) %_sysconfdir/%name/%name.d
 %config(noreplace) %attr(640, root, %name) %_sysconfdir/%name/traefik.toml
-%config(noreplace) %attr(660, root, %name) %_sysconfdir/%name/acme.json
+%config(noreplace) %attr(600, %name, %name) %_sysconfdir/%name/acme.json
 %_unitdir/%name.service
 %dir %attr(0770, root, %name) %_logdir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Tue Nov 10 2020 Alexey Shabalin <shaba@altlinux.org> 2.3.2-alt1
+- 2.3.2
+- fix perm of acme.json
+
+* Tue Aug 04 2020 Alexey Shabalin <shaba@altlinux.org> 2.2.8-alt1
+- 2.2.8
+
 * Sun Mar 15 2020 Alexey Shabalin <shaba@altlinux.org> 2.0.7-alt1
 - 2.0.7
 
