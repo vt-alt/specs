@@ -11,31 +11,31 @@
 %define rust_version  1.42.0
 %define cargo_version 1.42.0
 
-Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
+Summary: The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
-Name:           firefox-esr
-Version:        78.4.1
-Release:        alt0.1.p9
-License:        MPL-2.0
-Group:          Networking/WWW
-URL:            http://www.mozilla.org/projects/firefox/
+Name: firefox-esr
+Version: 78.5.0
+Release: alt0.1.p9
+License: MPL-2.0
+Group: Networking/WWW
+URL: http://www.mozilla.org/projects/firefox/
 
-Packager:	Andrey Cherepanov <cas@altlinux.ru>
+Packager: Andrey Cherepanov <cas@altlinux.ru>
 
-Source0:        firefox-source.tar
-Source1:        rpm-build.tar
-Source2:        searchplugins.tar
-Source3:        cbindgen-vendor.tar
-Source4:        firefox-mozconfig
-Source5:        distribution.ini
-Source6:        firefox.desktop
-Source7:        firefox-wayland.desktop
-Source8:        firefox.c
-Source9:        firefox-prefs.js
-Source10:       firefox-l10n.txt
-Source11:       l10n.tar
-Source12:       firefox-privacy-prefs.js
+Source0: firefox-source.tar
+Source1: rpm-build.tar
+Source2: searchplugins.tar
+Source3: cbindgen-vendor.tar
+Source4: firefox-mozconfig
+Source5: distribution.ini
+Source6: firefox.desktop
+Source7: firefox-wayland.desktop
+Source8: firefox.c
+Source9: firefox-prefs.js
+Source10: firefox-l10n.txt
+Source11: l10n.tar
+Source12: firefox-privacy-prefs.js
 
 ### Start Patches
 Patch001: 0001-SUSE-NonGnome-KDE-integration.patch
@@ -50,7 +50,6 @@ Patch009: 0009-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
 Patch010: 0010-arm-js-src-wasm-add-struct-user_vfp-definition.patch
 Patch011: 0011-Bug-1640982-Set-CARGO_PROFILE_RELEASE_LTO-true-when-.patch
 Patch012: 0012-use-floats-for-audio-on-arm-too.patch
-Patch013: 0013-MOZILLA-1663715-Build-with-Rust-1.47.0.patch
 Patch020: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
 Patch021: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
 Patch022: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
@@ -202,7 +201,6 @@ Most likely you don't need to use this package.
 %patch010 -p1
 %patch011 -p1
 %patch012 -p1
-%patch013 -p1 -d mozilla
 #patch020 -p1
 #patch021 -p1
 #patch022 -p1
@@ -456,6 +454,25 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Tue Nov 17 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Mon Nov 16 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt1
+- New version (78.5.0).
+- Fixes:
+  + CVE-2020-26951 Parsing mismatches could confuse and bypass security sanitizer for chrome privileged code
+  + CVE-2020-16012 Variable time processing of cross-origin images during drawImage calls
+  + CVE-2020-26953 Fullscreen could be enabled without displaying the security UI
+  + CVE-2020-26956 XSS through paste (manual and clipboard API)
+  + CVE-2020-26958 Requests intercepted through ServiceWorkers lacked MIME type restrictions
+  + CVE-2020-26959 Use-after-free in WebRequestService
+  + CVE-2020-26960 Potential use-after-free in uses of nsTArray
+  + CVE-2020-15999 Heap buffer overflow in freetype
+  + CVE-2020-26961 DoH did not filter IPv4 mapped IP Addresses
+  + CVE-2020-26965 Software keyboards may have remembered typed passwords
+  + CVE-2020-26966 Single-word search queries were also broadcast to local network
+  + CVE-2020-26968 Memory safety bugs fixed in Firefox 83 and Firefox ESR 78.5
+
 * Wed Nov 11 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.1-alt0.1.p9
 - Backport new version to p9 branch.
 
