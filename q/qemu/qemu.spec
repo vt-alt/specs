@@ -119,7 +119,7 @@
 
 Name: qemu
 Version: 4.2.1
-Release: alt1
+Release: alt2
 
 Summary: QEMU CPU Emulator
 License: BSD-2-Clause AND BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later AND MIT
@@ -1068,6 +1068,9 @@ fi
 %_bindir/ivshmem-server
 
 %changelog
+* Tue Nov 17 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt2
+- Fixes: CVE-2020-15863, CVE-2020-24352, CVE-2020-14364
+
 * Mon Jul 06 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt1
 - 4.2.1 (Fixes: CVE-2020-1983, CVE-2020-10761, CVE-2020-1711, CVE-2020-13800, CVE-2020-11869, CVE-2020-13361)
 
