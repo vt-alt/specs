@@ -1,4 +1,4 @@
-%define git_version 2f3caa3b8b3d5c5f2719a1e9d8e7deea5ae1a5c6
+%define git_version 7e94c5afc28f3eaf36151ad1e1457de5f16c4fdf
 %define _unpackaged_files_terminate_build 1
 
 %def_with ocf
@@ -42,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.12
+Version: 14.2.14
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1542,6 +1542,11 @@ fi
 %endif
 
 %changelog
+* Thu Nov 19 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.14-alt1
+- 14.2.14
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-25660 Fix a regression in Messenger V2 replay attacks
+
 * Wed Oct 21 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.12-alt1
 - 14.2.12
 
