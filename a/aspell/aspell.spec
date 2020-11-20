@@ -1,17 +1,14 @@
 Name: aspell
-Version: 0.60.6.1
-Release: alt3
+Version: 0.60.8
+Release: alt1
 
 Summary: An Open Source interactive spelling checker program
-License: LGPL
+License: LGPL-2.1
 Group: Text tools
 Url: http://%name.net/
-Packager: Damir Shayhutdinov <damir@altlinux.ru>
 
 Source: http://ftp.gnu.org/gnu/%name/%name-%version.tar.gz
 Source101: %name-ispell.alternatives
-
-Patch1: %name-0.60.6.1-gcc7-fixes.patch
 
 BuildRequires(pre): rpm-macros-alternatives
 BuildRequires: gcc-c++ libncursesw-devel
@@ -71,7 +68,6 @@ Static library needed to build statically linked applications with %name.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 %autoreconf
@@ -128,6 +124,11 @@ rm -rf %buildroot%_libdir/%name/*.la
 %_man1dir/*.1.*
 
 %changelog
+* Mon Nov 16 2020 Alexei Takaseev <taf@altlinux.org> 0.60.8-alt1
+- 0.60.8 (ALT #39290)
+- Fix License
+- Drop unneeded patch aspell-0.60.6.1-gcc7-fixes.patch (fix in upstream)
+
 * Sat Aug 11 2018 Alexei Takaseev <taf@altlinux.org> 0.60.6.1-alt3
 - Add BR: rpm-macros-alternatives
 
