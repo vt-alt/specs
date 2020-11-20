@@ -1,17 +1,20 @@
-Name:		luckybackup
-Version:	0.5.0
-Release:	alt2
-Summary:	A powerful, fast and reliable backup and sync tool
+Name: luckybackup
+Version: 0.5.0
+Release: alt3
+Summary: A powerful, fast and reliable backup and sync tool
 
-Group:		File tools
-License:	GPLv3+
-URL:		http://luckybackup.sourceforge.net/index.html
-Source0:	http://downloads.sourceforge.net/project/%{name}/%{version}/source/%{name}-%{version}.tar.gz
-Source1:	luckybackup_ru.ts
+Group: File tools
+License: GPL-3.0+
+URL: http://luckybackup.sourceforge.net/index.html
+Source0: http://downloads.sourceforge.net/project/%{name}/%{version}/source/%{name}-%{version}.tar.gz
+Source1: luckybackup_ru.ts
+Patch1: luckybackup-remove-missing-translations.patch
+Patch2: luckybackup-use-locale.patch
 
 BuildRequires(pre): gcc-c++ qt5-base-devel
-BuildRequires:	desktop-file-utils
-Requires:	beesu
+BuildRequires: qt5-tools
+#BuildRequires: desktop-file-utils
+Requires: polkit
 
 %define _pkgdocdir %{_docdir}/%{name}-%{version}
 
@@ -25,12 +28,17 @@ proceeding in any data manipulation ), reliable and fully customizable.
 
 %prep
 %setup -q
+%patch1 -p2
+%patch2 -p2
 sed -i 's,/usr/share/doc/luckybackup,%{_pkgdocdir},' luckybackup.pro
 sed -i 's,/usr/share/doc/luckybackup/license/gpl.html,%{_pkgdocdir}/license/gpl.html,' src/global.h
 sed -i 's,/usr/share/doc/luckybackup/manual/index.html,%{_pkgdocdir}/manual/index.html,' src/global.h
 cp -a %SOURCE1 translations/luckybackup_ru.ts
+# Remove generated language files
+rm -f translations/*.qm
 
 %build
+lrelease-qt5 *.pro
 %qmake_qt5
 %make_build
 
@@ -41,6 +49,9 @@ cp -a %SOURCE1 translations/luckybackup_ru.ts
 subst 's,data/,/usr/share/doc/luckybackup/manual/data/,g' manual/index.html
 mkdir -p %buildroot%_defaultdocdir/%name
 cp -a manual %buildroot%_defaultdocdir/%name
+
+# Remove source translation files
+rm -f %buildroot%_datadir/%name/translations/*.ts
 
 %files
 %doc readme/README readme/changelog
@@ -54,6 +65,11 @@ cp -a manual %buildroot%_defaultdocdir/%name
 %doc %_defaultdocdir/%name
 
 %changelog
+* Thu Nov 19 2020 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt3
+- Rebuild language files.
+- Requires polkit instead of beesu (ALT #39315).
+- Use current locale as default language.
+
 * Mon Aug 19 2019 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt2
 - Complete Russian translation (thanks Dmitry Astankov).
 
