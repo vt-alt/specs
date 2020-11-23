@@ -1,5 +1,5 @@
 Name: keepassxc
-Version:  2.5.4
+Version:  2.6.2
 Release:  alt1
 
 Summary: KeePassXC Password Safe - light-weight cross-platform password manager
@@ -11,6 +11,8 @@ Url: http://www.keepassxc.org/
 Source: %name-%version.tar
 
 %def_without yubikey
+# requires asciidoctor
+%def_enable docs
 
 BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-macros-cmake
@@ -27,6 +29,9 @@ BuildRequires: libXi-devel, libXtst-devel, qt5-x11extras-devel
 # Optional for YubiKey support
 %if_with yubikey
 BuildRequires: libyubikey-devel, ykpers-devel
+%endif
+%if_enabled docs
+BuildRequires: asciidoctor
 %endif
 
 %description
@@ -53,6 +58,11 @@ find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
   -DWITH_XC_KEESHARE_SECURE=ON \
   -DWITH_XC_UPDATECHECK=OFF \
   -DWITH_XC_FDOSECRETS=ON \
+%if_enabled docs
+  -DWITH_XC_DOCS=ON \
+%else
+  -DWITH_XC_DOCS=OFF \
+%endif
 %if_with yubikey
   -DWITH_XC_YUBIKEY=ON
 %endif
@@ -70,9 +80,21 @@ find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
 %_datadir/mime/packages/%name.xml
 %_iconsdir/hicolor/*/*/*
 %_datadir/%name
+%if_enabled docs
 %_mandir/man?/*
+%endif
 
 %changelog
+* Thu Oct 22 2020 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.2-alt1
+- Updated to v2.6.2.
+
+* Thu Aug 20 2020 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.1-alt1
+- Updated to v2.6.1.
+
+* Tue Jul 07 2020 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.0-alt1
+- Updated to v2.6.0.
+- add asciidoctor as a build requirement to build documentation
+
 * Fri Apr 10 2020 Pavel Nakonechnyi <zorg@altlinux.org> 2.5.4-alt1
 - Updated to v2.5.4.
 
