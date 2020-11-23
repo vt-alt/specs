@@ -1,7 +1,7 @@
 %define zabbix_user	zabbix
 %define zabbix_group	zabbix
 %define zabbix_home	/dev/null
-%define svnrev		3131fdac04
+%define svnrev		eaa427cf19
 
 %def_with pgsql
 %def_enable java
@@ -16,8 +16,8 @@
 
 
 Name: zabbix
-Version: 4.4.4
-Release: alt0.p9.1
+Version: 5.0.5
+Release: alt2.1.p9
 Epoch: 1
 
 Summary: A network monitor
@@ -30,7 +30,7 @@ Url: http://www.zabbix.com
 Source0: %name-%version.tar
 Patch0: %name-%version-alt.patch
 
-%{?_enable_java:BuildRequires(pre): java-devel-default}
+#%%{?_enable_java:BuildRequires(pre): java-devel-default}
 BuildRequires(pre): libelf-devel rpm-build-webserver-common rpm-macros-apache2
 
 # Automatically added by buildreq on Thu Nov 02 2017 (-bi)
@@ -299,11 +299,6 @@ sed -i -e "s,{ZABBIX_REVISION},%svnrev," include/version.h src/zabbix_java/src/c
 
 %autoreconf
 
-# we must call this for produce dbsync.h
-#pushd create/schema
-#./gen.pl c >../../include/dbsync.h
-#popd
-
 %configure --with-mysql \
 	--with-net-snmp \
 	--enable-server \
@@ -396,7 +391,7 @@ find conf -type f -print0 | xargs -0 sed -i \
 
 %install
 # Generate *.mo files
-for pofile in `find frontends/php/locale -type f -name '*.po'`
+for pofile in `find ui/locale -type f -name '*.po'`
 do
     msgfmt --use-fuzzy -c -o ${pofile%%po}mo $pofile
 done
@@ -421,12 +416,11 @@ install -m0755 src/%{name}_proxy/%{name}_proxy_pgsql %buildroot%_sbindir
 
 # conf files
 install -m0640 conf/%{name}_{server,agentd,proxy}.conf %buildroot%_sysconfdir/%name
-#install -m0640 misc/conf/%{name}_agentd/userparameter_{examples,mysql}.conf %buildroot%_sysconfdir/%name
 install -Dpm 644 sources/%name-tmpfiles.conf %buildroot/lib/tmpfiles.d/%name.conf
 
 # frontends
-mv frontends/php/locale/*.sh .
-cp -r frontends %buildroot%webserver_webappsdir/%name/
+mv ui/locale/*.sh .
+cp -r ui %buildroot%webserver_webappsdir/%name/
 
 # apache2 config
 install -pDm0644 sources/%name.conf %buildroot%_sysconfdir/httpd2/conf/addon.d/A.%name.conf
@@ -539,6 +533,12 @@ fi
 %preun agent
 %preun_service zabbix_agentd
 
+%post phpfrontend-engine
+if [ -f %webserver_webappsdir/%name/frontends/php/conf/zabbix.conf.php -a ! -f %webserver_webappsdir/%name/ui/conf/zabbix.conf.php ]
+then
+    cp -p %webserver_webappsdir/%name/frontends/php/conf/zabbix.conf.php %webserver_webappsdir/%name/ui/conf/
+fi
+
 %files common
 %dir %attr(1775,root,%zabbix_group) %_logdir/%name
 %dir %_sysconfdir/%name
@@ -548,15 +548,16 @@ fi
 %doc database/sqlite3/schema.sql database/sqlite3/data.sql database/sqlite3/images.sql
 
 %files common-database-mysql
-%doc database/mysql/schema.sql database/mysql/data.sql database/mysql/images.sql
+%doc database/mysql/schema.sql database/mysql/data.sql database/mysql/images.sql database/mysql/double.sql
 
 %if_with pgsql
 %files common-database-pgsql
-%doc database/postgresql/schema.sql database/postgresql/data.sql database/postgresql/images.sql database/postgresql/timescaledb.sql
+%doc database/postgresql/schema.sql database/postgresql/data.sql database/postgresql/images.sql database/postgresql/double.sql database/postgresql/timescaledb.sql
 %endif
 
 %files server-common
 %_bindir/%{name}_get
+%_bindir/%{name}_js
 %config(noreplace) %_sysconfdir/sysconfig/zabbix_server
 %config(noreplace) %attr(0640,root,%zabbix_group) %_sysconfdir/%name/%{name}_server.conf
 %_man1dir/%{name}_get.*
@@ -637,6 +638,43 @@ fi
 %_includedir/%name
 
 %changelog
+* Fri Nov 20 2020 Andrey Cherepanov <cas@altlinux.org> 1:5.0.5-alt2.1.p9
+- Backport new version to p9 branch.
+
+* Thu Nov 19 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.5-alt3
+- Add lost double.sql (ALT #39311)
+
+* Mon Nov 16 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.5-alt2
+- Copy old zabbix.conf.php from pre-5.0 version (ALT #39282)
+
+* Tue Oct 27 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.5-alt1
+- 5.0.5
+
+* Tue Oct 06 2020 Andrey Cherepanov <cas@altlinux.org> 1:5.0.4-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Tue Sep 29 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.4-alt1
+- 5.0.4
+
+* Wed Sep 02 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.3-alt1
+- 5.0.3
+
+* Fri Jul 03 2020 Alexei Takaseev <taf@altlinux.org> 1:4.4.10-alt1
+- 4.4.10
+
+* Tue May 26 2020 Alexei Takaseev <taf@altlinux.org> 1:4.4.9-alt1
+- 4.4.9
+
+* Mon Mar 30 2020 Alexei Takaseev <taf@altlinux.org> 1:4.4.7-alt1
+- 4.4.7
+
+* Tue Feb 25 2020 Alexei Takaseev <taf@altlinux.org> 1:4.4.6-alt1
+- 4.4.6
+
+* Sat Feb 01 2020 Alexei Takaseev <taf@altlinux.org> 1:4.4.5-alt1
+- 4.4.5
+- Cleanup spec
+
 * Tue Jan 21 2020 Andrey Cherepanov <cas@altlinux.org> 1:4.4.4-alt0.p9.1
 - Backport new version to p9 branch.
 
