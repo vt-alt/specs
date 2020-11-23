@@ -3,8 +3,8 @@
 %def_enable system_asio
 
 Name: galera
-Version: 26.4.5
-Release: alt2
+Version: 26.4.6
+Release: alt1
 Summary: Synchronous multi-master wsrep provider (replication engine)
 Group: System/Servers
 License: GPLv2
@@ -80,8 +80,6 @@ install -D -m 644 %SOURCE4 %buildroot%_sysconfdir/garbd/garbd.conf
 install -D -m 755 garb/garbd %buildroot%_sbindir/garbd
 install -D -m 644 libgalera_smm.so %buildroot%_libdir/galera/libgalera_smm.so
 install -D -m 644 COPYING %buildroot%_docdir/galera/COPYING
-install -D -m 644 asio/LICENSE_1_0.txt %buildroot%_docdir/galera/LICENSE.asio
-install -D -m 644 www.evanjones.ca/LICENSE %buildroot%_docdir/galera/LICENSE.crc32
 install -D -m 644 scripts/packages/README %buildroot%_docdir/galera/README
 install -D -m 644 scripts/packages/README-MySQL %buildroot%_docdir/galera/README-MySQL
 
@@ -110,12 +108,13 @@ useradd -r -g _garbd -c "Galera Arbitrator Daemon" -d %_localstatedir/garbd -s /
 %_initdir/garbd
 %_tmpfilesdir/garbd.conf
 %doc %_docdir/galera/COPYING
-%doc %_docdir/galera/LICENSE.asio
-%doc %_docdir/galera/LICENSE.crc32
 %doc %_docdir/galera/README
 %doc %_docdir/galera/README-MySQL
 
 %changelog
+* Wed Nov 11 2020 Alexey Shabalin <shaba@altlinux.org> 26.4.6-alt1
+- 26.4.6
+
 * Wed Sep 09 2020 Alexey Shabalin <shaba@altlinux.org> 26.4.5-alt2
 - run daemon garbd as _garbd user
 - add /var/log/garbd dir with perm (ALT #37919)
