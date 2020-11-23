@@ -2,7 +2,7 @@
 %define        confdir        ext/redhat
 
 Name:          gem-%pkgname
-Version:       6.19.0
+Version:       7.0.0
 Release:       alt1
 Summary:       A network tool for managing many disparate systems
 Group:         Development/Ruby
@@ -16,7 +16,7 @@ Source1:       client.init
 Source2:       puppet.service
 Source3:       puppet-nm-dispatcher
 
-Patch1: puppet-Adjust-default-paths.patch
+Patch1: puppet-alt-adjust-default-paths.patch
 Patch2: puppet-fix-locale-loading.patch
 Patch3: puppet-alt-aptrpm-osfamily.patch
 
@@ -117,6 +117,10 @@ END.
 # link to gem library code base
 ln -s %ruby_gemlibdir %buildroot%_datadir/%pkgname
 
+# Create public subdirectory
+mkdir -p %buildroot%ruby_gemlibdir/public
+touch %buildroot%ruby_gemlibdir/public/.dir
+
 # Create locale and modules directories
 mkdir -p %buildroot%_datadir/puppet-{locale,modules}
 touch %buildroot%_datadir/puppet-{locale,modules}/.dir
@@ -181,6 +185,12 @@ getent group puppet >/dev/null || %_sbindir/groupadd -r puppet
 %ruby_gemdocdir
 
 %changelog
+* Sat Nov 14 2020 Andrey Cherepanov <cas@altlinux.org> 7.0.0-alt1
+- New version.
+
+* Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 6.19.1-alt1
+- New version.
+
 * Tue Oct 20 2020 Andrey Cherepanov <cas@altlinux.org> 6.19.0-alt1
 - New version.
 
