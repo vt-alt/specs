@@ -1,7 +1,7 @@
 %define oname logilab-devtools
 Name: python-module-%oname
 Version: 0.23.0
-Release: alt2
+Release: alt3
 Summary: Set of development tools used at Logilab
 License: GPL
 Group: Development/Python
@@ -9,6 +9,7 @@ Url: https://pypi.python.org/pypi/logilab-devtools/
 Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
 
 Source: %name-%version.tar
+Patch: logilab-devtools_fix_wrong_import_path.patch
 BuildArch: noarch
 
 BuildPreReq: python-module-setuptools
@@ -28,6 +29,7 @@ Set of tools which aims to help the developpement process, including:
 
 %prep
 %setup
+%patch -p2
 
 %build
 %python_build_debug
@@ -46,8 +48,11 @@ python setup.py test
 %exclude %python_sitelibdir/*.pth
 
 %changelog
+* Wed Nov 11 2020 Grigory Ustinov <grenka@altlinux.org> 0.23.0-alt3
+- Fix wrong import path (Closes: #39250).
+
 * Thu Nov 05 2020 Grigory Ustinov <grenka@altlinux.org> 0.23.0-alt2
-- Remove strange touch of mercurial's file (Close: #38688).
+- Remove strange touch of mercurial's file (Closes: #38688).
 
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.23.0-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
