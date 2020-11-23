@@ -2,7 +2,7 @@
 
 Name: glibc
 Version: 2.27
-Release: alt12
+Release: alt13
 Epoch: 6
 
 Summary: The GNU libc libraries
@@ -776,6 +776,10 @@ fi
 %glibc_sourcedir
 
 %changelog
+* Mon Nov 16 2020 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt13
+- Updated to glibc-2.27-155-gdaf88b1dd1 from 2.27 branch
+  (fixes: CVE-2020-1752, CVE-2020-6096).
+
 * Thu Dec 19 2019 Dmitry V. Levin <ldv@altlinux.org> 6:2.27-alt12
 - Updated to glibc-2.27-144-gbef0b1cb31 from 2.27 branch.
 - Added compat provides for ld-linux-aarch64.so.1 on aarch64 (closes: #37641).
