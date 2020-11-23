@@ -6,8 +6,8 @@
 %def_without monitor
 
 Name: thermald
-Version: 1.8
-Release: alt2
+Version: 2.2
+Release: alt1
 
 Summary: Thermal daemon for IA
 
@@ -29,6 +29,11 @@ BuildRequires: pkgconfig(gio-2.0)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: libdbus-glib-devel
 BuildRequires: systemd-devel
+BuildRequires: gtk-doc
+BuildRequires: liblzma-devel
+BuildRequires: libupower-devel
+BuildRequires: libevdev-devel
+BuildRequires: autoconf-archive
 Requires: dbus
 
 %description
@@ -65,7 +70,7 @@ embedded devices.
 %setup
 
 %build
-%autoreconf
+./autogen.sh
 %configure \
     --disable-option-checking \
     --disable-silent-rules
@@ -177,6 +182,10 @@ exit 0
 %endif
 
 %changelog
+* Mon Nov 09 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.2-alt1
+- new version 2.2
+  + change packaging scheme to git subtree
+
 * Fri Mar 08 2019 Anton Midyukov <antohami@altlinux.org> 1.8-alt2
 - Update buildrequires (Fix FTBFS)
 
