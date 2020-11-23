@@ -1,5 +1,5 @@
 Name: libXrender
-Version: 0.9.8
+Version: 0.9.10
 Release: alt1
 Summary: X Render Library
 License: MIT/X11
@@ -47,6 +47,10 @@ develop programs which make use of %name
 %_pkgconfigdir/*.pc
 
 %changelog
+* Tue Nov 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.9.10-alt1
+- 0.9.10
+- securuty fixes: CVE-2016-7949, CVE-2016-7950
+
 * Sat Jun 15 2013 Valery Inozemtsev <shrek@altlinux.ru> 0.9.8-alt1
 - 0.9.8
 
