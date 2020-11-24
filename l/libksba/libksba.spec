@@ -2,7 +2,7 @@
 
 Name: libksba
 Version: 1.3.6
-Release: alt13
+Release: alt14
 
 Group: System/Libraries
 Summary: X.509 library
@@ -54,12 +54,11 @@ Static libraries for the %name-devel package
 %patch4 -p1
 #%patch5 -p1
 
+%build
 #__aclocal
 #__autoconf
 #__automake
 ./autogen.sh
-
-%build
 %configure \
     %{subst_enable static} \
     --enable-ld-version-script
@@ -92,6 +91,9 @@ Static libraries for the %name-devel package
 %endif
 
 %changelog
+* Sun Nov 08 2020 Michael Shigorin <mike@altlinux.org> 1.3.6-alt14
+- srpm_cleanup related ftbfs fixup
+
 * Tue Oct 22 2019 Paul Wolneykien <manowar@altlinux.org> 1.3.6-alt13
 - Maintenance release.
 

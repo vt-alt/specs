@@ -4,8 +4,8 @@
 %def_disable beta
 
 Name: gnupg2
-Version: 2.2.17
-Release: alt8
+Version: 2.2.19
+Release: alt2
 
 Group: Text tools
 Summary: The GNU Privacy Guard suite
@@ -184,6 +184,13 @@ install -pm644 AUTHORS NEWS THANKS %buildroot%docdir/
 %docdir
 
 %changelog
+* Tue Dec 10 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.19-alt2
+- Fixed gpgsm decryption: test for GCRY_CIPHER_GOST28147 before
+  checking the key length.
+
+* Tue Dec 10 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.19-alt1
+- Fresh up to v2.2.19.
+
 * Tue Nov 05 2019 Paul Wolneykien <manowar@altlinux.org> 2.2.17-alt8
 - Fixed segfault in gpg encryption with a GOST key on i586.
 
