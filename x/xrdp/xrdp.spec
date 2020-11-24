@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.14
-Release: alt2
+Release: alt4
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -19,7 +19,7 @@ Source3: %name-init-alt
 Source4: libpainter.tar
 Source5: librfxcodec.tar
 Source6: xorgxrdp.tar
-Source7: xrdp-sesman.pam
+Source7: xrdp-polkit-1.rules
 
 # patches from Debian
 Patch2: asm-xorgxrdp.diff
@@ -31,9 +31,20 @@ Patch10: lfs.diff
 Patch12: xrdp-alt-startwm.patch
 Patch13: alt-add-russian-keyboard.patch
 Patch14: xrdp-alt-add-comment-about-windows_xp.patch
-# https://github.com/neutrinolabs/xrdp/pull/1659
-Patch15: xrdp-fix-sprintf-truncation.patch
 Patch16: xrdp-alt-ppc64le-support.patch
+
+# Fedora patches
+Patch20: xrdp-0.9.2-setpriv.patch
+Patch21: xrdp-0.9.4-service.patch
+Patch22: xrdp-0.9.6-script-interpreter.patch
+Patch23: xrdp-0.9.9-sesman.patch
+Patch24: xrdp-0.9.10-scripts-libexec.patch
+Patch25: xrdp-0.9.14-arch.patch
+Patch26: xrdp-0.9.14-fuse-pointer.patch
+Patch27: xrdp-0.9.14-log-snprintf.patch
+Patch28: xrdp-0.9.14-vnc-uninit.patch
+Patch29: xrdp-0.9.14-xfree86-evdev.patch
+Patch30: xrdp-0.9.14-xrdp-ini.patch
 
 BuildPreReq: rpm-build-intro rpm-macros-intro-conflicts
 BuildRequires: libjpeg-devel
@@ -95,8 +106,18 @@ tar xf %SOURCE6
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
 %patch16 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+#patch23 -p1
+#patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
+#patch30 -p1
 
 cp %SOURCE3 %name-init
 
@@ -112,6 +133,10 @@ echo '#!/bin/bash -l
 
 %build
 %add_optflags -Wno-error=int-to-pointer-cast
+%ifarch %e2k
+# 0.9.14: expression has no effect (ssl.h, onoff)
+%add_optflags -Wno-error=unused-value
+%endif
 ./bootstrap
 for dir in xorgxrdp librfxcodec libpainter; do
 	pushd $dir
@@ -152,7 +177,7 @@ install -D -m755 %name-init %buildroot%_initdir/%name
 rm -rf %buildroot%_sysconfdir/init.d
 
 # install sesman pam config 
-install -Dp -m 644 %SOURCE7 %buildroot%_sysconfdir/pam.d/xrdp-sesman
+install -Dp -m 644 instfiles/pam.d/xrdp-sesman.system %buildroot%_sysconfdir/pam.d/xrdp-sesman
 
 # install xrdp systemd units
 install -Dp -m 644 instfiles/xrdp.service %buildroot/lib/systemd/system/xrdp.service
@@ -177,6 +202,9 @@ install -Dp -m 755 sesman/startwm-bash.sh %buildroot%_sysconfdir/xrdp/startwm-ba
 
 # install openssl config for key generation
 install -Dp -m 644 keygen/openssl.conf %buildroot%_sysconfdir/xrdp/openssl.conf
+
+#install xrdp.rules /usr/share/polkit-1/rules.d
+install -Dp -m 644 %SOURCE7 %buildroot%_datadir/polkit-1/rules.d/xrdp.rules
 
 # Clean unnecessary files
 find %buildroot -name *.a -delete -o -name *.la -delete
@@ -232,6 +260,7 @@ fi
 %_logrotatedir/%name
 %dir %_datadir/xrdp/
 %_datadir/xrdp/*
+%_datadir/polkit-1/rules.d/xrdp.rules
 %_man1dir/*
 %_man5dir/*
 %_man8dir/*
@@ -243,6 +272,12 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Wed Nov 18 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt4
+- Use patches and polkit rules from Fedora.
+
+* Mon Oct 12 2020 Michael Shigorin <mike@altlinux.org> 0.9.14-alt3
+- E2K: ftbfs workaround
+
 * Mon Sep 14 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt2
 - Use system-auth pam rules instead of local unix users.
 
