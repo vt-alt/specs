@@ -7,7 +7,7 @@
 %def_enable check
 
 Name: krb5
-Version: 1.17.1
+Version: 1.17.2
 Release: alt1
 
 %if_without bootstrap
@@ -540,6 +540,9 @@ fi
 # {{{ changelog
 
 %changelog
+* Thu Nov 19 2020 Ivan A. Melnikov <iv@altlinux.org> 1.17.2-alt1
+- 1.17.2 (Fixes: CVE-2020-28196)
+
 * Thu Dec 12 2019 Ivan A. Melnikov <iv@altlinux.org> 1.17.1-alt1
 - 1.17.1
 
