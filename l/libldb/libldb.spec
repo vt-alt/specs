@@ -8,8 +8,8 @@
 %endif
 
 Name: libldb
-Version: 2.0.12
-Release: alt2
+Version: 2.1.4
+Release: alt1
 Summary: A schema-less, ldap like, API and database
 License: LGPLv3+
 Group: System/Libraries
@@ -20,6 +20,7 @@ Patch: ldb-samba-modules.patch
 Patch1: ldb-alt-fix-python-ldflags.patch
 Patch2: ldb-skip-test_guid_indexed_v1_db-on-mips64el-ppc64le-mipsel.patch
 Patch3: ldb-skip-ldb_lmdb_free_list_test-on-ppc64le.patch
+Patch4: ldb-workaround-for-failure-on-ppc64le.patch
 
 BuildRequires: libpopt-devel libldap-devel xsltproc docbook-style-xsl docbook-dtds
 BuildRequires: libcmocka-devel >= 1.1.3
@@ -87,6 +88,7 @@ Development files for the Python3 bindings for the LDB library
 %patch2 -p1
 %ifarch ppc64le
 %patch3 -p2
+%patch4 -p2
 %endif
 
 %build
@@ -176,6 +178,9 @@ make test
 %_pkgconfigdir/pyldb-util.cpython-*.pc
 
 %changelog
+* Fri Aug 28 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.1.4-alt1
+- Update to the 2.1.4 for latest samba-4.12.6 release
+
 * Thu Jul 23 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.0.12-alt2
 - Disable ldb_lmdb_free_list_test on ppc64le (Samba#14404)
 
