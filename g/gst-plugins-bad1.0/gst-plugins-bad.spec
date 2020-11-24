@@ -36,7 +36,7 @@
 
 Name: %_name-bad%api_ver
 Version: %ver_major.1
-Release: alt2
+Release: alt3
 
 Summary: A set of GStreamer plugins that need more quality
 Group: System/Libraries
@@ -48,6 +48,9 @@ Source: http://gstreamer.freedesktop.org/src/%_name-bad/%_name-bad-%version.tar.
 %else
 Source: %_name-bad-%version.tar
 %endif
+
+# dc57fb7095b5041e4f3a4cae2bafd56369e10212
+Patch2: %_name-bad-1.17.1-up-vulkan-Drop-use-of-VK_RESULT_BEGIN_RANGE.patch
 
 Provides: %_name-bad = %version-%release
 
@@ -120,6 +123,7 @@ This package contains documentation for GStreamer Bad Plug-ins.
 
 %prep
 %setup -n %_name-bad-%version
+%patch2 -p1
 
 %build
 %meson \
@@ -166,6 +170,9 @@ This package contains documentation for GStreamer Bad Plug-ins.
 %endif
 
 %changelog
+* Thu Nov 19 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.16.1-alt3
+- build against next vulkan fixed
+
 * Fri Oct 04 2019 Yuri N. Sedunov <aris@altlinux.org> 1.16.1-alt2
 - rebuilt with libopenh264-2.0.0
 

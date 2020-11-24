@@ -29,7 +29,7 @@
 
 Name: libwebkitgtk4
 Version: %ver_major.4
-Release: alt1.2.p9
+Release: alt1.3.p9
 
 Summary: Web browser engine
 Group: System/Libraries
@@ -223,7 +223,7 @@ subst 's|Q\(unused-arguments\)|W\1|' Source/cmake/WebKitCompilerFlags.cmake
 %add_optflags -msse2 -mfpmath=sse
 %endif
 
-%ifarch x86_64
+%ifarch x86_64 armh
 n=%smp
 [  "$n"  -lt  16  ]  ||  n=16
 %if_disabled gigacage
@@ -238,7 +238,13 @@ export GIGACAGE_ENABLED=0
 %{?_enable_gtkdoc:-DENABLE_GTKDOC:BOOL=ON} \
 %{?_enable_x11:-DENABLE_X11_TARGET:BOOL=ON} \
 %{?_enable_wayland:-DENABLE_WAYLAND_TARGET:BOOL=ON} \
-%{?_disable_gold:-DUSE_LD_GOLD:BOOL=OFF}
+%{?_disable_gold:-DUSE_LD_GOLD:BOOL=OFF} \
+%ifarch armh
+-DENABLE_JIT=OFF \
+-DENABLE_C_LOOP=ON \
+-DENABLE_SAMPLING_PROFILER=OFF \
+-DUSE_SYSTEM_MALLOC=ON \
+%endif
 #-DENABLE_TOUCH_EVENTS:BOOL=ON \
 #-DENABLE_TOUCH_ICON_LOADING:BOOL=ON \
 #-DENABLE_TOUCH_SLIDER:BOOL=ON \
@@ -250,7 +256,7 @@ export GIGACAGE_ENABLED=0
 #-DENABLE_BATTERY_STATUS:BOOL=ON \
 #-DENABLE_DEVICE_ORIENTATION:BOOL=ON \
 #-DENABLE_ORIENTATION_EVENTS:BOOL=ON
-%ifarch x86_64
+%ifarch x86_64 armh
 %make -j $n -C BUILD
 %else
 %cmake_build
@@ -322,6 +328,9 @@ install -pD -m755 %SOURCE1 %buildroot%_rpmmacrosdir/webki2gtk.env
 
 
 %changelog
+* Thu Nov 12 2020 Yuri N. Sedunov <aris@altlinux.org> 2.24.4-alt1.3.p9
+- armh: disabled JIT, enabled system malloc
+
 * Fri Jun 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.24.4-alt1.2.p9
 - fixed packaging on armh
 

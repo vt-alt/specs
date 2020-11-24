@@ -1,7 +1,7 @@
 %def_disable snapshot
 %def_disable doc
 # since mesa-18.0 wayland-egl moved to this wayland package
-%define main_ver 1.17.0
+%define main_ver 1.18.0
 %define egl_ver 18.1.0
 %define mesa_epoch 4
 
@@ -31,6 +31,8 @@ compositor can be a standalone display server running on Linux kernel
 modesetting and evdev input devices, an X applications, or a wayland
 client itself. The clients can be traditional applications, X servers
 (rootless or fullscreen) or other display servers.
+
+See https://wayland.freedesktop.org/releases.html for release news.
 
 %package devel
 Summary: Common headers for Wayland
@@ -177,6 +179,9 @@ Wayland-EGL development package
 
 
 %changelog
+* Wed Feb 12 2020 Yuri N. Sedunov <aris@altlinux.org> 1.18.0-alt1
+- 1.18.0
+
 * Fri Mar 29 2019 Yuri N. Sedunov <aris@altlinux.org> 1.17.0-alt1
 - 1.17.0
 
