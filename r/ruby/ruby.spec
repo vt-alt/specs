@@ -9,8 +9,8 @@
 %define lname lib%name
 
 Name:     ruby
-Version:  2.5.5
-Release:  alt3
+Version:  2.5.9
+Release:  alt1
 Summary:  An Interpreted Object-Oriented Scripting Language
 License:  BSD 2-clause Simplified License/Ruby
 Group:    Development/Ruby
@@ -353,6 +353,17 @@ rm -rf %buildroot%_bindir/{ri,rdoc}
 %endif
 
 %changelog
+* Mon Nov 16 2020 Pavel Skrylev <majioa@altlinux.org> 2.5.9-alt1
+- ^ 2.5.5 -> 2.5.9
+- Fixes:
+  + CVE-2019-16255: A code injection vulnerability of Shell#[] and Shell#test
+    (closes #39292)
+  + CVE-2019-16254: HTTP response splitting in WEBrick (Additional fix)
+  + CVE-2019-15845: A NUL injection vulnerability of File.fnmatch and
+    File.fnmatch?
+  + CVE-2019-16201: Regular Expression Denial of Service vulnerability of
+    WEBrick's Digest access authentication
+
 * Mon Jun 03 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.5.5-alt3
 - Fixed build on ppc64le architecture.
 - spec: bootstrap: fixed miniruby version.
