@@ -1,8 +1,8 @@
 %def_with doc
 
 Name: cifs-utils
-Version: 6.8
-Release: alt3
+Version: 6.11
+Release: alt1
 
 Summary: Utilities for doing and managing mounts of the Linux CIFS filesystem
 License: GPLv3+
@@ -11,7 +11,12 @@ Group: System/Kernel and hardware
 Url: https://wiki.samba.org/index.php/LinuxCIFS_utils
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-build-ubt rpm-macros-pam0
+# Patch from Fedora
+Patch1: cifs-utils-destdir.patch
+
+Patch2: cifs-utils-alt-python3.patch
+
+BuildRequires(pre): rpm-macros-pam0
 BuildRequires: libcap-ng-devel libkeyutils-devel libkrb5-devel libtalloc-devel libwbclient-devel libpam-devel
 BuildRequires: python-module-docutils
 Requires: keyutils
@@ -48,6 +53,8 @@ provide these credentials to the kernel automatically at login.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
 
 %build
 %autoreconf
@@ -57,6 +64,7 @@ provide these credentials to the kernel automatically at login.
 %make_build
 
 %install
+install -d %buildroot/sbin
 %makeinstall_std
 mkdir -p %buildroot%_sysconfdir/request-key.d
 install -pm644 contrib/request-key.d/cifs.{idmap,spnego}.conf %buildroot%_sysconfdir/request-key.d/
@@ -67,11 +75,14 @@ printf '%_libdir/%name/idmap-plugin\t%_libdir/%name/idmapwb.so\t10\n' > %buildro
 
 %files
 /sbin/mount.cifs
+/sbin/mount.smb3
 %_sbindir/cifs.upcall
 %_sbindir/cifs.idmap
 %_bindir/cifscreds
 %_bindir/getcifsacl
 %_bindir/setcifsacl
+%_bindir/smb2-quota
+%_bindir/smbinfo
 %dir %_libdir/%name
 %_libdir/%name/idmapwb.so
 %_altdir/cifs-idmap-plugin-idmapwb
@@ -79,10 +90,13 @@ printf '%_libdir/%name/idmap-plugin\t%_libdir/%name/idmapwb.so\t10\n' > %buildro
 %_man8dir/cifs.idmap.8*
 %_man8dir/cifs.upcall.8*
 %_man8dir/mount.cifs.8*
+%_man8dir/mount.smb3.8*
 %_man8dir/idmapwb.8.*
 %_man1dir/getcifsacl.1*
 %_man1dir/setcifsacl.1*
 %_man1dir/cifscreds.1*
+%_man1dir/smb2-quota.1*
+%_man1dir/smbinfo.1*
 %endif
 %doc AUTHORS ChangeLog README
 %config(noreplace) %_sysconfdir/request-key.d/cifs.idmap.conf
@@ -98,6 +112,12 @@ printf '%_libdir/%name/idmap-plugin\t%_libdir/%name/idmapwb.so\t10\n' > %buildro
 %endif
 
 %changelog
+* Thu Nov 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 6.11-alt1
+- Updated to upstream version 6.11 (Fixes: CVE-2020-14342).
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 6.8-alt4
+- NMU: remove rpm-build-ubt from BR:
+
 * Thu Mar 28 2019 Michael Shigorin <mike@altlinux.org> 6.8-alt3
 - introduced doc knob (on by default) to work around ftbfs on e2k
 - added explicit BR(pre): rpm-macros-pam0
