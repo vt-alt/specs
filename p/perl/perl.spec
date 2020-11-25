@@ -1,6 +1,6 @@
 Name: perl
-Version: 5.28.2
-Release: alt2
+Version: 5.28.3
+Release: alt1
 Epoch: 1
 
 Summary: Practical Extraction and Report Language
@@ -385,7 +385,7 @@ equivalent text will have identical binary representations.
 %patch346 -p1
 %patch349 -p1
 %patch350 -p1
-%patch353 -p1
+#patch353 -p1
 %patch354 -p1
 %patch356 -p1
 %patch357 -p1
@@ -1073,6 +1073,11 @@ echo perl >%buildroot%_sysconfdir/buildreqs/packages/substitute.d/perl-base
 	%autolib/Unicode
 
 %changelog
+* Wed Nov 18 2020 Igor Vlasenko <viy@altlinux.ru> 1:5.28.3-alt1
+- p9 build
+- 5.28.3
+- fixes CVE-2020-10543,CVE-2020-10878,CVE-2020-12723
+
 * Thu Jan 23 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1:5.28.2-alt2
 - Licence tag fixed
 - build in year 2020 fixed (Time-Local)

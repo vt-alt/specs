@@ -1,26 +1,22 @@
 %define _unpackaged_files_terminate_build 1
 %define module	MRO-Compat
 %define name	perl-%{module}
-%define version 0.12
 
 Name:		%{name}
 Version:	0.13
-Release:	alt1
+Release:	alt2
 Summary:	mro::* interface compatibility for Perls < 5.9.5
 URL:		http://search.cpan.org/dist/%{module}
 Source0:		http://www.cpan.org/authors/id/H/HA/HAARG/%{module}-%{version}.tar.gz
 License:	GPL
 Group:		Development/Perl
 # Automatically added by buildreq on Fri Nov 13 2009 (-bi)
-BuildRequires: perl-Class-C3 perl-Module-Install perl-Test-Pod perl-Test-Pod-Coverage
+BuildRequires: perl-Class-C3 perl-Test-Pod perl-Test-Pod-Coverage
 
 BuildRequires:	perl-devel
-BuildRequires:	perl-Module-Install
 BuildRequires:	perl-Class-C3
 BuildRequires:	perl-Class-C3-XS
-Provides:	perl(mro.pm)
 BuildArch:	noarch
-%add_findreq_skiplist mro.pm
 
 
 %description
@@ -50,22 +46,10 @@ docs, and contain a lot of other
 %setup -q -n %{module}-%{version}
 
 %build
-#{__perl} Makefile.PL INSTALLDIRS=vendor
-#make
-#make test
 %perl_vendor_build
 
 %install
-#make_install DESTDOR=%buildroot install 
 %perl_vendor_install
-
-
-#files
-#defattr(-,root,root)
-#doc ChangeLog README
-#{perl_vendorlib}/MRO
-#{_mandir}/*/*
-
 
 %files
 %doc Changes README
@@ -74,6 +58,12 @@ docs, and contain a lot of other
 
 
 %changelog
+* Sat Nov 07 2020 Igor Vlasenko <viy@altlinux.ru> 0.13-alt2
+- build w/o mro.pm provides
+
+* Wed Apr 22 2020 Igor Vlasenko <viy@altlinux.ru> 0.13-alt1.1
+- dropped deprecated BR: perl-Module-Install
+
 * Mon Apr 03 2017 Igor Vlasenko <viy@altlinux.ru> 0.13-alt1
 - automated CPAN update
 
