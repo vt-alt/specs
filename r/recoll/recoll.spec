@@ -6,8 +6,8 @@
 %define pre %nil
 
 Name: recoll
-Version: 1.25.22
-Release: alt1
+Version: 1.25.23
+Release: alt1.p9.1
 
 Summary: A personal full text search package
 License: %gpl2plus
@@ -22,6 +22,7 @@ Source4: recoll_uk.qm
 # 1.24.1+ru
 Source5: recoll-searchgui.desktop
 Source100: recoll.watch
+Patch: mimeparse-equal-in-text.diff
 
 Packager: Michael Shigorin <mike@altlinux.org>
 
@@ -93,6 +94,7 @@ This package contains Python bindings for Recoll.
 
 %prep
 %setup -n %name-%version%pre
+%patch -p2
 
 sed -i 's/openoffice/loffice/' sampleconf/mimeview
 sed -i '/^Categories=/s/=/=Qt;/' desktop/*.desktop
@@ -155,6 +157,10 @@ rm -f %buildroot%_datadir/%name/filters/xdg-open
 %python3_sitelibdir/recollchm/
 
 %changelog
+* Fri Nov 20 2020 Michael Shigorin <mike@altlinux.org> 1.25.23-alt1.p9.1
+- 1.25.23 fixes mbox parser without changing index format
+  (an upsteam provided patch was needed to finalize the fixup)
+
 * Thu Aug 29 2019 Michael Shigorin <mike@altlinux.org> 1.25.22-alt1
 - new version (watch file uupdate)
 
