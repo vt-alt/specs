@@ -39,7 +39,7 @@
 %def_with systemnghttp2
 
 # to use internal llhttp
-%def_without systemhttp-parser
+%def_without systemhttpparser
 
 %def_disable check
 
@@ -50,7 +50,7 @@
 %define oversion %version
 
 Name: node
-Version: %major.0
+Version: %major.1
 Release: alt1
 
 Summary: Evented I/O for V8 Javascript
@@ -97,12 +97,12 @@ BuildRequires: libicu-devel >= %libicu_abi
 BuildRequires: libnghttp2-devel >= %libnghttp2_abi
 %endif
 
-%if_with systemhttp-parser
+%if_with systemhttpparser
 BuildRequires: libhttp-parser-devel >= 2.9.2-alt2
 %endif
 
-# c-ares
-BuildRequires: libcares-devel >= 1.16.1
+# c-ares, see https://bugzilla.altlinux.org/show_bug.cgi?id=39303
+BuildRequires: libcares-devel >= 1.16.1-alt2
 
 BuildRequires: curl
 
@@ -256,7 +256,7 @@ export PYTHONPATH=$(pwd)/tools/v8_gypfiles
 %if_with systemicu
     --with-intl=system-icu \
 %endif
-%if_with systemhttp-parser
+%if_with systemhttpparser
     --shared-http-parser \
 %endif
     --shared-cares \
@@ -380,6 +380,11 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Mon Nov 16 2020 Vitaly Lipatov <lav@altlinux.ru> 14.15.1-alt1
+- new version 14.15.1 (with rpmrb script)
+- set c-ares >= 1.16.1-alt2
+- CVE-2020-8277: Denial of Service through DNS request (High)
+
 * Tue Oct 27 2020 Vitaly Lipatov <lav@altlinux.ru> 14.15.0-alt1
 - new version 14.15.0 (with rpmrb script)
 - 2020-10-27, Version 14.15.0 'Fermium' (LTS), @richardlau
