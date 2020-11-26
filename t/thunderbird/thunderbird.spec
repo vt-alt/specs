@@ -12,7 +12,7 @@
 %define llvm_version      10.0
 
 Name: 	 thunderbird
-Version: 78.4.3
+Version: 78.5.0
 Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -35,7 +35,7 @@ Source8: thunderbird-wayland.desktop
 
 Patch11: thunderbird-alt-allow-send-in-windows-1251.patch
 Patch12: alt-use-vorbis-on-arm-too.patch
-Patch13: 0013-MOZILLA-1663715-Build-with-Rust-1.47.0.patch
+Patch13: thunderbird-fix-guess-timezone-in-calendar.patch
 
 Patch21: mozilla-1353817.patch
 Patch23: build-aarch64-skia.patch
@@ -264,7 +264,7 @@ tar -xf %SOURCE6
 
 %patch11 -p2
 %patch12 -p2
-%patch13 -p1
+%patch13 -p2
 %patch21 -p2
 %patch23 -p2
 %ifarch %arm
@@ -657,6 +657,26 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Sat Nov 21 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Thu Nov 19 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt1
+- New version (78.5.0).
+- Fixes:
+  + CVE-2020-26951 Parsing mismatches could confuse and bypass security sanitizer for chrome privileged code
+  + CVE-2020-16012 Variable time processing of cross-origin images during drawImage calls
+  + CVE-2020-26953 Fullscreen could be enabled without displaying the security UI
+  + CVE-2020-26956 XSS through paste (manual and clipboard API)
+  + CVE-2020-26958 Requests intercepted through ServiceWorkers lacked MIME type restrictions
+  + CVE-2020-26959 Use-after-free in WebRequestService
+  + CVE-2020-26960 Potential use-after-free in uses of nsTArray
+  + CVE-2020-15999 Heap buffer overflow in freetype
+  + CVE-2020-26961 DoH did not filter IPv4 mapped IP Addresses
+  + CVE-2020-26965 Software keyboards may have remembered typed passwords
+  + CVE-2020-26966 Single-word search queries were also broadcast to local network
+  + CVE-2020-26968 Memory safety bugs fixed in Thunderbird 78.5
+- Fix guess timezone for calendar (ALT #38081).
+
 * Thu Nov 12 2020 Andrey Cherepanov <cas@altlinux.org> 78.4.3-alt0.1.p9
 - Backport new version to p9 branch.
 
