@@ -3,7 +3,7 @@
 %define is_ffmpeg %([ -n "`rpmquery --qf '%%{SOURCERPM}' libavformat-devel 2>/dev/null | grep -e '^libav'`" ] && echo 0 || echo 1)
 
 Name: kdenlive
-Version: 20.04.2
+Version: 20.08.3
 Release: alt1
 %K5init no_altplace man appdata
 
@@ -72,8 +72,6 @@ sed -i "s|URL.*github.*rttr.*|URL file://${PWD}/rttr.tar|" rttr.CMakeLists.txt
 
 %install
 %K5install
-mkdir %buildroot/%_xdgconfigdir
-mv %buildroot/%_K5xdgconf/* %buildroot/%_xdgconfigdir/
 sed -i 's|^Exec=\(.*\)|Exec=kde5 \1|' %buildroot/%_K5xdgapp/org.kde.kdenlive.desktop
 
 %find_lang %name --with-kde --all-name
@@ -81,7 +79,6 @@ sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 
 %files -f %name.lang
 %doc AUTHORS
-%config(noreplace) %_xdgconfigdir/*kdenlive*
 %_K5bin/*
 %_K5plug/mltpreview.so
 %_K5xdgapp/*.desktop
@@ -95,9 +92,13 @@ sed -i '/[[:space:]]\/.*[[:space:]]/s|[[:space:]]\(\/.*$\)| "\1"|' %name.lang
 %_man1dir/kdenlive*
 %_datadir/metainfo/org.kde.kdenlive.appdata.xml
 %_datadir/qlogging-categories5/*.categories
+%_datadir/knsrcfiles/*.knsrc
 
 
 %changelog
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.3-alt1
+- new version
+
 * Mon Jun 15 2020 Sergey V Turchin <zerg@altlinux.org> 20.04.2-alt1
 - new version
 
