@@ -1,6 +1,6 @@
 Name: userpasswd
 Version: 0.3.3
-Release: alt2
+Release: alt4
 
 Group: System/Configuration/Other
 Summary: The graphical tool for changing password
@@ -9,10 +9,10 @@ Packager: Dmitry V. Levin <ldv@altlinux.org>
 
 Source: %name-%version.tar
 
+Requires: pam0_tcb >= 1.1.0.1
 Conflicts: usermode
 BuildRequires: libgtk+2-devel
 
-BuildRequires(pre):rpm-build-ubt
 
 %description
 Install this package if you would like to provide users with
@@ -36,6 +36,12 @@ graphical tool for changing password.
 %_datadir/pixmaps/*
 
 %changelog
+* Wed Nov 25 2020 Fr. Br. George <george@altlinux.ru> 0.3.3-alt4
+- Fix message comparison fail that prevents GUI from start (Closes: #37456)
+
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 0.3.3-alt3
+- NMU: remove rpm-build-ubt from BR:
+
 * Wed Dec 19 2018 Michael Shigorin <mike@altlinux.org> 0.3.3-alt2
 - drop %%ubt
 
@@ -153,7 +159,7 @@ graphical tool for changing password.
 * Mon Apr 09 2001 Pablo Saratxaga <pablo@mandrakesoft.com> 1.37-4mdk
 - included latest translations
 
-* Tue Apr 3 2001 Frederic Crozat <fcrozat@mandrakesoft.com> 1.37-3mdk
+* Tue Apr 03 2001 Frederic Crozat <fcrozat@mandrakesoft.com> 1.37-3mdk
 - Update patch 2 to set INITIAL_USER and BROWSER variable
 
 * Wed Nov 29 2000 Geoffrey lee <snailtalk@mandrakesoft.com> 1.37-2mdk
@@ -168,17 +174,17 @@ graphical tool for changing password.
 * Tue Oct 10 2000 Geoffrey Lee <snailtalk@mandrakesoft.com> 1.36-1mdk
 - bump up version for security fix. (RH)
 
-* Mon Oct 9 2000 Pablo Saratxaga <pablo@mandrakesoft.com> 1.35-5mdk
+* Mon Oct 09 2000 Pablo Saratxaga <pablo@mandrakesoft.com> 1.35-5mdk
 - updated French, Spanish, etc. translations
 
-* Mon Oct 9 2000 Pablo Saratxaga <pablo@mandrakesoft.com> 1.35-4mdk
+* Mon Oct 09 2000 Pablo Saratxaga <pablo@mandrakesoft.com> 1.35-4mdk
 - included translations into the rpm; and added new ones (new ones still
  very incomplete)
 
-* Mon Oct 9 2000 Renaud Chaillat <rchaillat@mandrakesoft.com> 1.35-3mdk
+* Mon Oct 09 2000 Renaud Chaillat <rchaillat@mandrakesoft.com> 1.35-3mdk
 - set gid also when no session
 
-* Fri Oct 6 2000 Renaud Chaillat <rchaillat@mandrakesoft.com> 1.35-2mdk
+* Fri Oct 06 2000 Renaud Chaillat <rchaillat@mandrakesoft.com> 1.35-2mdk
 - patch in userhelper to set gid when executing a foreign program
  (-w option) (thanks to Fred Lepied)
 
@@ -211,7 +217,7 @@ graphical tool for changing password.
 * Tue Mar 07 2000 Nalin Dahyabhai <nalin@redhat.com>
 - queue notice messages until we get prompts in userhelper to fix bug #8745
 
-* Fri Feb 03 2000 Nalin Dahyabhai <nalin@redhat.com>
+* Thu Feb 03 2000 Nalin Dahyabhai <nalin@redhat.com>
 - free trip through the build system
 
 * Tue Jan 11 2000 Nalin Dahyabhai <nalin@redhat.com>
@@ -287,10 +293,10 @@ graphical tool for changing password.
 - added make archive rule to Makefile
 - uses a build root
 
-* Fri Nov 7 1997 Otto Hammersmith <otto@redhat.com>
+* Fri Nov 07 1997 Otto Hammersmith <otto@redhat.com>
 - new version that fixed memory leak bug.
 
-* Mon Nov 3 1997 Otto Hammersmith <otto@redhat.com>
+* Mon Nov 03 1997 Otto Hammersmith <otto@redhat.com>
 - updated version to fix bugs
 
 * Fri Oct 17 1997 Otto Hammersmith <otto@redhat.com>
@@ -302,5 +308,5 @@ graphical tool for changing password.
  misfeatures.
 - Fixed the file list...
 
-* Mon Oct 6 1997 Otto Hammersmith <otto@redhat.com>
+* Mon Oct 06 1997 Otto Hammersmith <otto@redhat.com>
 - Created the spec file.
