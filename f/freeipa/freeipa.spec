@@ -44,7 +44,7 @@
 
 Name: freeipa
 Version: 4.8.9
-Release: alt0.M90P.1
+Release: alt0.M90P.2
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -229,6 +229,10 @@ Requires: python3-module-samba
 Requires: librpm
 Obsoletes: python3-module-ipaserver-ntp < %EVR
 Provides: python3-module-ipaserver-ntp = %EVR
+Conflicts: python-module-ipaserver
+Obsoletes: python-module-ipaserver
+Conflicts: python-module-ipaserver-ntp
+Obsoletes: python-module-ipaserver-ntp
 
 %description -n python3-module-ipaserver
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -386,6 +390,10 @@ Requires: python3-module-freeipa = %EVR
 Requires: python3-module-dns
 Obsoletes: python3-module-ipaclient-ntp < %EVR
 Provides: python3-module-ipaclient-ntp = %EVR
+Conflicts: python-module-ipaclient
+Obsoletes: python-module-ipaclient
+Conflicts: python-module-ipaclient-ntp
+Obsoletes: python-module-ipaclient-ntp
 
 %description -n python3-module-ipaclient
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -437,6 +445,8 @@ Requires: python3-module-yubico
 %py3_provides ipaplatform.services
 %py3_provides ipaplatform.tasks
 %py3_provides ipaplatform._importhook
+Conflicts: python-module-freeipa
+Obsoletes: python-module-freeipa
 
 %description -n python3-module-freeipa
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -476,6 +486,8 @@ Requires: sshpass
 Requires: iptables
 # Tests have a huge amount useless Provides
 %set_findprov_skiplist %python3_sitelibdir/ipatests/*
+Conflicts: python-module-ipatests
+Obsoletes: python-module-ipatests
 
 %description -n python3-module-ipatests
 IPA is an integrated solution to provide centrally managed Identity (users,
@@ -1049,6 +1061,9 @@ fi
 %python3_sitelibdir/ipaplatform-*.egg-info/
 
 %changelog
+* Thu Nov 26 2020 Stanislav Levin <slev@altlinux.org> 4.8.9-alt0.M90P.2
+- Fixed apt transaction on distro-branch upgrade.
+
 * Thu Oct 01 2020 Stanislav Levin <slev@altlinux.org> 4.8.9-alt0.M90P.1
 - Backported to P9.
 
