@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.15
+Version: 0.4.17
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,12 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Tue Nov 10 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.17-alt1
+- Pending changes: fix LUKS partitions
+
+* Fri Nov 06 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.16-alt1
+- Pending changes: fix NVMe and mmcblk installations
+
 * Thu Oct 01 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.15-alt1
 - Show pending changes made by user/profile
 
