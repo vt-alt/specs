@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: birdtray
-Version: 1.8.1
-Release: alt2
+Version: 1.9.0
+Release: alt1
 Summary: Birdtray is a free system tray notification for new mail for Thunderbird
 License: GPLv3 
 Group: Networking/Mail
@@ -57,6 +57,9 @@ sed -i '/Exec=birdtray/i\Comment=Birdtray' %buildroot%_desktopdir/com.ulduzsoft.
 %_desktopdir/com.ulduzsoft.Birdtray.desktop
 
 %changelog
+* Thu Nov 12 2020 Mikhail Chernonog <snowmix@altlinux.org> 1.9.0-alt1
+- 1.8.1 -> 1.9.0
+
 * Tue Sep 29 2020 Sergey V Turchin <zerg@altlinux.org> 1.8.1-alt2
 - Fix to build with Qt-5.15
 
