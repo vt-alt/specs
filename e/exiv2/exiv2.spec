@@ -7,11 +7,11 @@
 %def_disable check
 
 Name: exiv2
-Version: 0.27.2
+Version: 0.27.3
 Release: alt1
 
 Summary: Command line tool to access EXIF data in image files
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: Graphics
 Url: http://www.exiv2.org
 
@@ -22,6 +22,9 @@ Source: https://github.com/Exiv2/%name/archive/v%version/%name-%version.tar.gz
 #VCS: https://github.com/Exiv2/exiv2.git
 Source: %name-%version.tar
 %endif
+# aarch64, armh, ppc64le:
+# cc1plus: error: '-fcf-protection=full' is not supported for this target
+Patch: %name-0.27.3-alt-no-fcf-protection.patch
 
 Requires: lib%name = %version-%release
 
@@ -56,13 +59,16 @@ exiv2 library.
 
 %prep
 %setup -n %name-%version
+%ifnarch %ix86 x86_64
+%patch
+%endif
 
 %build
 # xmpsdk: embedded copy of exempi should be compiled with BanAllEntityUsage
 # https://bugzilla.redhat.com/show_bug.cgi?id=888769
 export CPPFLAGS="$CPPFLAGS -DBanAllEntityUsage=1"
 export MAKEFILES_TYPE='Unix Makefiles'
-%add_optflags -D_FILE_OFFSET_BITS=64
+%add_optflags %(getconf LFS_CFLAGS)
 %cmake -G "$MAKEFILES_TYPE" \
 	-DCMAKE_BUILD_TYPE="Release" \
 	-DBUILD_STATIC_LIBS=OFF \
@@ -98,6 +104,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 
 
 %changelog
+* Wed Jul 01 2020 Yuri N. Sedunov <aris@altlinux.org> 0.27.3-alt1
+- 0.27.3
+
 * Sat Aug 10 2019 Yuri N. Sedunov <aris@altlinux.org> 0.27.2-alt1
 - 0.27.2
 

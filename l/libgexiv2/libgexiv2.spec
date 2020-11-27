@@ -3,24 +3,27 @@
 %define api_ver 0.10
 
 %def_enable gtk_doc
+%def_disable python2
 %def_enable vala
 %def_enable check
 
 Name: lib%_name
-Version: %ver_major.0
-Release: alt1
+Version: %ver_major.1
+Release: alt2
 
 Summary: GObject-based Exiv2 wrapper
 Group: System/Libraries
-License: GPL2
+License: GPL-2.0-or-later
 Url: https://wiki.gnome.org/Projects/gexiv2
 
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%_name/%ver_major/%_name-%version.tar.xz
 
-BuildRequires(pre): meson
+BuildRequires(pre): meson rpm-build-python3
 BuildRequires: gcc-c++ libexiv2-devel libgio-devel gobject-introspection-devel
-BuildRequires: python-module-pygobject3-devel rpm-build-python3 python3-module-pygobject3-devel
-BuildRequires: gtk-doc
+BuildRequires:  python3-module-pygobject3-devel
+%{?_enable_gtk_doc:BuildRequires: gtk-doc}
+%{?_enable_python2:BuildRequires(pre): rpm-build-python
+BuildRequires: python-module-pygobject3-devel}
 %{?_enable_vala:BuildRequires: vala-tools}
 
 %description
@@ -116,8 +119,10 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %files gir-devel
 %_girdir/GExiv2-%api_ver.gir
 
+%if_enabled python2
 %files -n python-module-%_name
 %python_sitelibdir/gi/overrides/GExiv2.py*
+%endif
 
 %files -n python3-module-%_name
 %python3_sitelibdir/gi/overrides/GExiv2.py*
@@ -129,6 +134,12 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %endif
 
 %changelog
+* Sat Nov 14 2020 Yuri N. Sedunov <aris@altlinux.org> 0.12.1-alt2
+- disabled Python 2 support
+
+* Fri May 29 2020 Yuri N. Sedunov <aris@altlinux.org> 0.12.1-alt1
+- 0.12.1
+
 * Tue Mar 12 2019 Yuri N. Sedunov <aris@altlinux.org> 0.12.0-alt1
 - 0.12.0
 
