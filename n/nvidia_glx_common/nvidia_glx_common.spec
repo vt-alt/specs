@@ -16,7 +16,7 @@
 %define nv_version 450
 %define nv_release 80
 %define nv_minor 02
-%define pkg_rel alt231
+%define pkg_rel alt232
 %define set_gl_nvidia_ver 1.3.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -77,6 +77,7 @@ Source: set_gl_nvidia-%set_gl_nvidia_ver.tar
 Source1: alternate-install-present
 Source2: nvidia-install-driver
 Source3: nvidia-clean-driver
+Source10: nvidia-sleep.tar
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: libsysfs-devel
@@ -119,7 +120,7 @@ This is common package for NVIDIA drivers.
 
 
 %prep
-%setup -T -c -n %name-%tbver%dirsuffix
+%setup -T -c -n %name-%tbver%dirsuffix -a10
 cd %_builddir
 cd %name-%tbver%dirsuffix
 tar xvf %SOURCE0
@@ -253,6 +254,20 @@ echo >%buildroot/%_sysconfdir/ld.so.conf.d/nvidia.conf
 # setup make-initrd
 mkdir -p %buildroot/%_datadir/make-initrd/features/nvidia/
 echo "BLACKLIST_MODULES += nvidia nvidia-drm nvidia-modeset" >%buildroot/%_datadir/make-initrd/features/nvidia/config.mk
+# nvidia-sleep
+install -Dpm 0644 nvidia-sleep/nvidia-sleep-tmpfiles.conf %buildroot/lib/tmpfiles.d/nvidia-sleep.conf
+mkdir -p %buildroot/%_unitdir/
+install -m 0644 nvidia-sleep/*.service %buildroot/%_unitdir/
+mkdir -p -m 0755 %buildroot/%_presetdir
+cat >%buildroot/%_presetdir/22-nvidia-sleep.preset <<__EOF__
+enable nvidia-hibernate.service
+enable nvidia-suspend.service
+enable nvidia-resume.service
+__EOF__
+mkdir -p %buildroot/lib/systemd/system-sleep/
+install -Dpm 0755 nvidia-sleep/nvidia %buildroot/lib/systemd/system-sleep/
+mkdir -p %buildroot/%_bindir
+install -Dpm 0755 nvidia-sleep/nvidia-sleep.sh %buildroot/%_bindir
 
 
 %post -n %{bin_pkg_name}_common
@@ -310,8 +325,17 @@ fi
 %_bindir/nvidia-clean-driver
 %_bindir/nvidia-install-driver
 /usr/lib/nvidia/alternate-install-present
+#
+%_bindir/nvidia-sleep.sh
+/lib/tmpfiles.d/nvidia-sleep.conf
+%_presetdir/??-nvidia-*.preset
+%_unitdir/nvidia-*.service
+/lib/systemd/system-sleep/nvidia
 
 %changelog
+* Fri Nov 27 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt232
+- add hibernate support for systemd
+
 * Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt231
 - package make-initrd feature to exclude nvidia from initrd (closes: 39108)
 
