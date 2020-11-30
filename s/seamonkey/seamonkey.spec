@@ -1,80 +1,89 @@
-%def_without	lightning
-%def_without 	system_mozldap
-%def_without 	enigmail
+%def_without lightning
+%def_without system_mozldap
+%def_without enigmail
 
-%define sm_prefix	%_libdir/%name
-%define sm_datadir	%_datadir/%name
-%define sm_version	%name-%version
-%define sm_arch_extensionsdir	%sm_prefix/extensions
-%define sm_noarch_extensionsdir	%sm_datadir/extensions
-%define sm_cid		\{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
-%define enigmail_ciddir	%sm_arch_extensionsdir/\{847b3a00-7ab1-11d4-8f02-006008948af5\}
-%define sm_idldir       %_datadir/idl/%name
-%define sm_includedir   %_includedir/%name
-%define sm_develdir     %sm_prefix-devel
+%define sm_prefix %_libdir/%name
+%define sm_datadir %_datadir/%name
+%define sm_version %name-%version
+%define sm_arch_extensionsdir %sm_prefix/extensions
+%define sm_noarch_extensionsdir %sm_datadir/extensions
+%define sm_cid \{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
+%define enigmail_ciddir %sm_arch_extensionsdir/\{847b3a00-7ab1-11d4-8f02-006008948af5\}
+%define sm_idldir %_datadir/idl/%name
+%define sm_includedir %_includedir/%name
+%define sm_develdir %sm_prefix-devel
 %ifndef build_parallel_jobs
 %define build_parallel_jobs 32
 %endif
-%define beta_suffix	%nil
+%define beta_suffix %nil
+%define cid langpack-ru@seamonkey.mozilla.org
+%define ciddir %sm_prefix/extensions/%cid
 
-Name: 	 seamonkey
-Version: 2.53.4
-Release: alt1
-Epoch:   1
+Name: seamonkey
+Version: 2.53.5.1
+Release: alt0.1.p9
+Epoch: 1
 Summary: Web browser and mail reader
 License: MPL-2.0
-Group:   Networking/WWW
-
-Packager:   Andrey Cherepanov <cas@altlinux.org>
-
+Group: Networking/WWW
 Url: http://www.mozilla.org/projects/seamonkey/
+
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 # TODO: build failed on aarch64 and ppc64le
 ExclusiveArch: %ix86 x86_64
 
-Source0:	%name-%version%beta_suffix.source.tar.xz
-Source2:	mozilla-searchplugins.tar
-Source3:	seamonkey-alt-browser.desktop
-Source4:	seamonkey-alt-mail.desktop
-Source5:	seamonkey-prefs.js
-Source6:	enigmail.tar
-Source7:	seamonkey-mozconfig
-Source8:	rpm-build.tar
-Source9:        cbindgen-vendor.tar
+Source0: %name-%version%beta_suffix.source.tar.xz
+Source2: mozilla-searchplugins.tar
+Source3: seamonkey-alt-browser.desktop
+Source4: seamonkey-alt-mail.desktop
+Source5: seamonkey-prefs.js
+Source6: enigmail.tar
+Source7: seamonkey-mozconfig
+Source8: rpm-build.tar
+Source9: cbindgen-vendor.tar
+Source10: seamonkey-%{version}.ru.langpack.xpi
+Source11: seamonkey-ru.watch
 
-Patch0:		seamonkey-fix-installdirs.patch
-Patch1:		seamonkey-2.2-alt-machOS-fix.patch
-Patch2:		seamonkey-2.0.14-alt-fix-plugin-path.patch
-Patch3:		xulrunner-noarch-extensions.patch
+Patch0: seamonkey-fix-installdirs.patch
+Patch1: seamonkey-2.2-alt-machOS-fix.patch
+Patch2: seamonkey-2.0.14-alt-fix-plugin-path.patch
+Patch3: xulrunner-noarch-extensions.patch
 %if_with system_mozldap
-Patch5:		thunderbird-with-system-mozldap.patch
+Patch5: thunderbird-with-system-mozldap.patch
 %endif
-Patch6:		seamonkey-2.13.2-alt-fix-build.patch
-Patch8:		seamonkey-2.26-enable-addons.patch
-Patch9:		mozilla-js-makefile.patch
-Patch10:	firefox-32-baseline-disable.patch
-Patch11:        seamonkey-2.53.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
-Patch12:        seamonkey-2.53.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch6: seamonkey-2.13.2-alt-fix-build.patch
+Patch8: seamonkey-2.26-enable-addons.patch
+Patch9: mozilla-js-makefile.patch
+Patch10: firefox-32-baseline-disable.patch
+Patch11: seamonkey-2.53.2-alt-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch12: seamonkey-2.53.2-alt-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch120: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
+Patch121: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
+Patch122: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
+Patch124: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
 
 Requires(pre,postun): urw-fonts
 
 #Obsoletes
-Obsoletes:	seamonkey-dom-inspector
-Provides:	seamonkey-dom-inspector
-Obsoletes:	seamonkey-enigmail
-Provides:	seamonkey-enigmail
-Obsoletes:	seamonkey-irc
-Provides:	seamonkey-irc
-Obsoletes:	seamonkey-js-debugger
-Provides:	seamonkey-js-debugger
-Obsoletes:	seamonkey-mail
-Provides:	seamonkey-mail
-Obsoletes:	seamonkey-plugins-common
-Provides:	seamonkey-plugins-common
-Obsoletes:	seamonkey-psm
-Provides:	seamonkey-psm
-Obsoletes:	seamonkey-spellchecker
-Provides:	seamonkey-spellchecker
+Obsoletes: seamonkey-dom-inspector
+Provides: seamonkey-dom-inspector
+Obsoletes: seamonkey-enigmail
+Provides: seamonkey-enigmail
+Obsoletes: seamonkey-irc
+Provides: seamonkey-irc
+Obsoletes: seamonkey-js-debugger
+Provides: seamonkey-js-debugger
+Obsoletes: seamonkey-mail
+Provides: seamonkey-mail
+Obsoletes: seamonkey-plugins-common
+Provides: seamonkey-plugins-common
+Obsoletes: seamonkey-psm
+Provides: seamonkey-psm
+Obsoletes: seamonkey-spellchecker
+Provides: seamonkey-spellchecker
+Obsoletes: seamonkey-ru < %EVR
+Provides: seamonkey-ru = %EVR
 
 BuildRequires(pre): rpm-macros-alternatives
 BuildRequires(pre): browser-plugins-npapi-devel
@@ -84,7 +93,7 @@ BuildRequires(pre): browser-plugins-npapi-devel
 BuildPreReq: mozldap-devel
 %endif
 BuildRequires: gcc-c++
-%define clang_version %nil
+%define clang_version 10.0
 BuildRequires: clang%clang_version
 BuildRequires: clang%clang_version-devel
 BuildRequires: llvm%clang_version-devel
@@ -108,15 +117,21 @@ BuildRequires: libdbus-devel
 BuildRequires: libdbus-glib-devel
 BuildRequires: libXcursor-devel
 BuildRequires: libXi-devel
+BuildRequires: nasm
+
 # Rust requires
 BuildRequires: rust
 BuildRequires: rust-cargo
 BuildRequires: /proc
 
+# seamonkey-ru
+BuildRequires: unzip
+BuildRequires: hunspell-ru
+
 # Mozilla requires
-BuildRequires:	libnspr-devel       >= 4.9.2-alt1
-BuildRequires:	libnss-devel        >= 3.15.1-alt1
-BuildRequires:	libnss-devel-static >= 3.15.1-alt1
+BuildRequires: libnspr-devel       >= 4.9.2-alt1
+BuildRequires: libnss-devel        >= 3.15.1-alt1
+BuildRequires: libnss-devel-static >= 3.15.1-alt1
 
 # Python requires
 BuildRequires: python-module-distribute
@@ -124,6 +139,8 @@ BuildRequires: python-modules-compiler
 BuildRequires: python-modules-logging
 BuildRequires: python-modules-sqlite3
 BuildRequires: python-modules-json
+
+Requires: hunspell-ru
 
 %set_autoconf_version 2.13
 %add_findprov_lib_path %sm_prefix
@@ -145,23 +162,23 @@ An integrated calendar for Seamonkey.
 %endif
 
 %package devel
-Summary:	Seamonkey development kit.
-Group:		Development/C++
+Summary: Seamonkey development kit.
+Group: Development/C++
 Requires: %name = %epoch:%version-%release
 
-Requires:	python-base
-AutoReq:	yes, nopython
+Requires: python-base
+AutoReq: yes, nopython
 
 %description devel
 Seamonkey development kit.
 
 %package -n rpm-build-seamonkey
-Summary: 	RPM helper macros to rebuild seamonkey packages
-Group:		Development/Other
-BuildArch:	noarch
+Summary:  RPM helper macros to rebuild seamonkey packages
+Group: Development/Other
+BuildArch: noarch
 
-Requires:	mozilla-common-devel
-Requires:	rpm-build-mozilla.org
+Requires: mozilla-common-devel
+Requires: rpm-build-mozilla.org
 
 %description -n rpm-build-seamonkey
 These helper macros provide possibility to rebuild
@@ -192,6 +209,10 @@ tar -xf %SOURCE6 -C mailnews/extensions/
 %endif
 %patch11 -p1
 %patch12 -p1
+#patch120 -p1
+#patch121 -p1
+#patch122 -p1
+#patch124 -p1
 
 ### Copying .mozconfig to build directory
 cp -f %SOURCE7 .mozconfig
@@ -420,8 +441,15 @@ printf '%_bindir/xbrowser\t%_bindir/%name\t100\n' > %buildroot%_altdir/%name
     done
 )
 
+# Install langpack
+mkdir -p %buildroot/%ciddir/dictionaries
+unzip %SOURCE10 -d %buildroot/%ciddir
+ln -s %_datadir/myspell/ru_RU.aff %buildroot/%ciddir/dictionaries/ru.aff
+ln -s %_datadir/myspell/ru_RU.dic %buildroot/%ciddir/dictionaries/ru.dic
+
 %files
 %dir %sm_datadir
+%ciddir
 %_altdir/%name
 %_bindir/%name
 %_datadir/applications/*.desktop
@@ -441,6 +469,19 @@ printf '%_bindir/xbrowser\t%_bindir/%name\t100\n' > %buildroot%_altdir/%name
 %_sysconfdir/rpm/macros.d/%name
 
 %changelog
+* Tue Nov 24 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.5.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Sat Nov 21 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.5.1-alt1
+- New version.
+
+* Mon Nov 16 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.5-alt1
+- New version.
+
+* Wed Nov 11 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.4-alt2
+- Fix build with NSS 3.58.
+- Include seamonkey-ru.
+
 * Wed Sep 23 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.4-alt1
 - New version.
 
