@@ -12,8 +12,8 @@
 # git rev-list --count remotes/upstream/releases/FreeCAD-0-17
 
 Name:    freecad
-Version: 0.18.4
-Release: alt4.2.p9
+Version: 0.18.5
+Release: alt0.1.p9
 Epoch:   1
 Summary: OpenSource 3D CAD modeller
 License: LGPL-2.0+
@@ -34,10 +34,12 @@ Patch2: %name-build-with-external-smesh.patch
 #Patch3: upstream.patch
 Patch4: %name-desktop-ru.patch
 
-Patch6: %name-%version-upstream-qt-5.15-compat-1.patch
-Patch7: %name-%version-upstream-qt-5.15-compat-2.patch
-Patch8: %name-%version-upstream-qt-5.15-compat-3.patch
-Patch9: %name-%version-upstream-qt-5.15-compat-4.patch
+Patch5: %name-0.18.4-alt-boost-1.73.0-compat.patch
+Patch6: %name-0.18.4-upstream-qt-5.15-compat-1.patch
+Patch7: %name-0.18.4-upstream-qt-5.15-compat-2.patch
+Patch8: %name-0.18.4-upstream-qt-5.15-compat-3.patch
+Patch9: %name-0.18.4-upstream-qt-5.15-compat-4.patch
+Patch10: %name-alt-ignore-macro-with-empty-name.patch 
 
 Provides:  free-cad = %version-%release
 Obsoletes: free-cad < %version-%release
@@ -103,6 +105,8 @@ Requires: libEGL-devel libGLU-devel
 %py_provides ImageGui PartDesignGui _PartDesign
 %add_python_req_skip pyopencl IfcImport Units
 %add_findreq_skiplist %ldir/Mod/*
+Requires: openscad
+Requires: python-module-GitPython
 
 %description
 FreeCAD will be a general purpose 3D CAD modeler. FreeCAD is aimed directly at
@@ -150,28 +154,29 @@ rm -rf src/3rdParty
 #patch7 -p1
 #patch8 -p1
 #patch9 -p1
+%patch10 -p1
 
 %build
 export PATH=$PATH:%_qt5_bindir
 %add_optflags -Wl,-rpath,%ldir/lib
 %cmake_insource -GNinja \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_INSTALL_DATADIR=%ldir \
-	-DCMAKE_INSTALL_DOCDIR=%ldir/doc \
-	-DCMAKE_INSTALL_LIBDIR=%ldir/lib \
-	-DOPENMPI_INCLUDE_DIRS=%_libdir/openmpi/include \
-	-DFREECAD_LIBPACK_USEPYSIDE=OFF \
-	-DBUILD_QT5=ON \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_DATADIR=%ldir \
+-DCMAKE_INSTALL_DOCDIR=%ldir/doc \
+-DCMAKE_INSTALL_LIBDIR=%ldir/lib \
+-DOPENMPI_INCLUDE_DIRS=%_libdir/openmpi/include \
+-DFREECAD_LIBPACK_USEPYSIDE=OFF \
+-DBUILD_QT5=ON \
 %if_without bundled_libs
-	-DFREECAD_USE_EXTERNAL_SMESH=ON \
-	-DSMESH_DIR=%_libdir \
-	-DSMESH_INCLUDE_DIR=%_includedir/smesh \
-	-DSMESH_VERSION_MAJOR=7 \
+-DFREECAD_USE_EXTERNAL_SMESH=ON \
+-DSMESH_DIR=%_libdir \
+-DSMESH_INCLUDE_DIR=%_includedir/smesh \
+-DSMESH_VERSION_MAJOR=7 \
 %endif
 %if_with glvnd
-	-DOpenGL_GL_PREFERENCE=GLVND \
+-DOpenGL_GL_PREFERENCE=GLVND \
 %endif
-	-DFREECAD_USE_EXTERNAL_PIVY=ON 
+-DFREECAD_USE_EXTERNAL_PIVY=ON 
 
 # Fix Unknown release and repository URL
 sed -i 's,FCRevision      \"Unknown\",FCRevision      \"%{release} (Git)\",' src/Build/Version.h
@@ -194,7 +199,7 @@ ln -s ../%_lib/%name/bin/FreeCADCmd %buildroot%_bindir/FreeCADCmd
 # icons
 for size in 16 32 48 64
 do
-  install -Dm0644 %buildroot%ldir/%name-icon-${size}.png %buildroot%_iconsdir/hicolor/${size}x${size}/apps/%name.png
+install -Dm0644 %buildroot%ldir/%name-icon-${size}.png %buildroot%_iconsdir/hicolor/${size}x${size}/apps/%name.png
 done
 install -Dm0644 %buildroot%ldir/%name.svg %buildroot%_iconsdir/hicolor/scalable/apps/%name.svg
 install -Dm0644 %buildroot%ldir/%name.xpm %buildroot%_pixmapsdir/%name.xpm
@@ -237,6 +242,14 @@ rm -rf %buildroot%_prefix/Ext
 %ldir/doc
 
 %changelog
+* Fri Nov 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.5-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Fri Nov 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.5-alt1
+- New version.
+- Add requirements of openscad and GitPython.
+- Fix Addon Manager during macro info retrieving.
+
 * Tue Oct 06 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.18.4-alt4.2.p9
 - Build with new version of coin3d.
 - Build without glvnd.
