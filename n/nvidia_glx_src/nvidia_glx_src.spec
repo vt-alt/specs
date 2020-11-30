@@ -1,6 +1,9 @@
 %set_verify_elf_method textrel=relaxed
 
 %define tbname         NVIDIA-Linux-x86_64
+%ifarch aarch64
+%define tbname         NVIDIA-Linux-aarch64
+%endif
 %define dirsuffix %nil
 
 %define nvidia_ml_sover 1
@@ -19,16 +22,17 @@
 
 Name: nvidia_glx_src
 Version: 450.80.02
-Release: alt1
+Release: alt2
 
 Source0: null
-Source201: http://http.download.nvidia.com/XFree86/Linux-x86_64/%version/NVIDIA-Linux-x86_64-%version.run
+Source201: http://http.download.nvidia.com/XFree86/Linux-x86_64/%version/%tbname-%version.run
+Source202: http://http.download.nvidia.com/XFree86/Linux-x86_64/%version/%tbname-%version.run
 
 BuildRequires: kernel-build-tools rpm-macros-alternatives
 BuildRequires: libXext-devel libEGL-devel
 BuildRequires: libwayland-client-devel libwayland-server-devel
 #BuildRequires: libGLdispatch libGLX
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64
 
 
 Group: System/Kernel and hardware
@@ -44,7 +48,9 @@ Group: System/Libraries
 #BuildArch: noarch
 Summary: nvidia library
 Requires: libnvidia-opencl
+%ifnarch aarch64
 Requires: libnvidia-compiler
+%endif
 Requires: libnvidia-ptxjitcompiler
 Requires: libnvidia-ml
 %description -n ocl-nvidia
@@ -104,7 +110,11 @@ nvidia library
 %setup -T -c -n %tbname-%version%dirsuffix
 rm -rf %_builddir/%tbname-%version%dirsuffix
 cd %_builddir
+%ifarch aarch64
+sh %SOURCE202 -x
+%else
 sh %SOURCE201 -x
+%endif
 cd %tbname-%version%dirsuffix
 
 pushd kernel
@@ -118,7 +128,9 @@ popd
 mkdir -p %buildroot/%_libdir/
 install -m 0644 %subd/libcuda.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-opencl.so.%version %buildroot/%_libdir/
+%ifnarch aarch64
 install -m 0644 %subd/libnvidia-compiler.so.%version %buildroot/%_libdir/
+%endif
 install -m 0644 %subd/libnvidia-ptxjitcompiler.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvidia-ml.so.%version %buildroot/%_libdir/
 install -m 0644 %subd/libnvcuvid.so.%version %buildroot/%_libdir/
@@ -128,8 +140,10 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 
 %files -n ocl-nvidia
 
+%ifnarch aarch64
 %files -n libnvidia-compiler
 %_libdir/libnvidia-compiler.so.%version
+%endif
 
 %files -n libnvidia-ptxjitcompiler
 %_libdir/libnvidia-ptxjitcompiler.so.%version
@@ -157,6 +171,9 @@ install -m 0644 nvidia.icd %buildroot/%_sysconfdir/OpenCL/vendors/
 %_libdir/libnvidia-encode.so.%version
 
 %changelog
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt2
+- add aarch64 part
+
 * Thu Oct 01 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt1
 - new version
 
