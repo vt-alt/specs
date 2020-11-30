@@ -1,15 +1,17 @@
 Name: rtl-sdr
 Url: http://sdr.osmocom.org/trac/wiki/rtl-sdr
 Version: 0.6.0
-Release: alt1
+Release: alt2
 License: GPLv2+
-Requires(pre): shadow-utils rpm-macros-cmake
-BuildRequires: cmake libusb-devel
 Group: Communications
 Summary: SDR utilities for Realtek RTL2832 based DVB-T dongles
 Packager: Anton Midyukov <antohami@altlinux.org>
 
 Source: %name-%version.tar
+
+Requires(pre): shadow-utils
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: cmake libusb-devel
 
 %description
 This package can turn your RTL2832 based DVB-T dongle into a SDR receiver.
@@ -58,6 +60,9 @@ exit 0
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Nov 23 2020 Anton Midyukov <antohami@altlinux.org> 0.6.0-alt2
+- Fix Requires (Closes: 39334)
+
 * Tue Dec 25 2018 Anton Midyukov <antohami@altlinux.org> 0.6.0-alt1
 - New version 0.6.0
 
