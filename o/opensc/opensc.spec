@@ -1,8 +1,8 @@
 %def_disable static
 
 Name: opensc
-Version: 0.20.0
-Release: alt2
+Version: 0.21.0
+Release: alt1
 
 Group: System/Configuration/Hardware
 Summary: OpenSC library - for accessing SmartCard devices using PC/SC Lite
@@ -12,7 +12,6 @@ License: LGPL-2.1+
 Requires: lib%name = %version-%release
 
 Source: %name-%version.tar
-Patch1: opensc-0.20.0-no-common.patch
 
 BuildRequires: db2latex-xsl docbook-dtds docbook-style-xsl libXt-devel libassuan-devel
 BuildRequires: libltdl7-devel libpcsclite-devel libreadline-devel libssl-devel xsltproc zlib-devel
@@ -66,7 +65,6 @@ OpenSC module for PAM.
 
 %prep
 %setup
-%patch1 -p1
 
 %build
 %autoreconf
@@ -126,6 +124,9 @@ rm -f %buildroot%_datadir/doc/opensc/opensc.conf
 %endif
 
 %changelog
+* Sun Nov 22 2020 Andrey Cherepanov <cas@altlinux.org> 0.21.0-alt1
+- New version.
+
 * Mon Oct 12 2020 Michael Shigorin <mike@altlinux.org> 0.20.0-alt2
 - E2K: ftbfs workarounds
 
