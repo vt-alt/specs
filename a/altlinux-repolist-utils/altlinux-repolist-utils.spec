@@ -1,5 +1,5 @@
 Name: altlinux-repolist-utils
-Version: 0.007
+Version: 0.008
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -44,6 +44,9 @@ install -m 644 ALTLinux/RepoList/*.pm %buildroot%perl_vendor_privlib/ALTLinux/Re
 %perl_vendor_privlib/ALTLinux/*
 
 %changelog
+* Thu Nov 19 2020 Igor Vlasenko <viy@altlinux.ru> 0.008-alt1
+- bugfix in altlinux-repolist-src-names-* thanks to grenka@
+
 * Tue Sep 22 2020 Igor Vlasenko <viy@altlinux.ru> 0.007-alt1
 - fixed false warning
 
