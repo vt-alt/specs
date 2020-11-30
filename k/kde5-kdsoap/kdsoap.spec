@@ -1,10 +1,10 @@
 %define rname kdsoap
-%define sover 0
+%define sover 1
 %define libkdsoap libkdsoap%sover
 %define libkdsoap_server libkdsoap-server%sover
 
 Name: kde5-%rname
-Version: 1.9.0
+Version: 1.9.1
 Release: alt1
 %K5init altplace
 
@@ -62,7 +62,7 @@ This package contains the development files for %name.
 
 %prep
 %setup -qn %rname-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 %K5build \
@@ -94,5 +94,8 @@ mv %buildroot/%_datadir/mkspecs/features/* %buildroot/%_K5archdata/mkspecs/featu
 %_K5archdata/mkspecs/features/kdsoap.prf
 
 %changelog
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 1.9.1-alt1
+- new version
+
 * Mon Aug 17 2020 Sergey V Turchin <zerg@altlinux.org> 1.9.0-alt1
 - initial build
