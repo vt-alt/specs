@@ -1,7 +1,7 @@
 
 Name: cacti
-Version: 1.2.3
-Release: alt1
+Version: 1.2.15
+Release: alt3
 
 %define cactidir %_datadir/%name
 %define cacticonfdir %_sysconfdir/%name
@@ -78,9 +78,6 @@ insecure to keep the setup files in place.
 %setup -q
 %patch -p1
 
-mkdir -p sql
-# you should run this sql if your database contains path to %{_datadir}...
-cp %SOURCE5 sql
 
 %build
 chmod a+rx scripts/*
@@ -96,6 +93,8 @@ chmod 755 %buildroot%_sbindir/cacti-poller
 install -m 0640 include/config.php.dist %buildroot%cacticonfdir/config.php
 touch %buildroot%_logdir/%name/%name.log
 
+# you should run this sql if your database contains path to %{_datadir}...
+cp %SOURCE5 docs/
 cp %SOURCE2 docs/README_ALT.txt
 cp %SOURCE7 docs/
 cp %SOURCE8 docs/
@@ -135,7 +134,7 @@ chmod -v 660 %_logdir/%name/* %_localstatedir/%name/*
 fi
 
 %files
-%doc docs/README_ALT.txt CHANGELOG LICENSE README.md
+%doc docs/README_ALT.txt docs/%name-rrdpath.sql CHANGELOG LICENSE README.md cacti.sql
 %config(noreplace) %_sysconfdir/cron.d/cacti
 %_sbindir/cacti-poller
 %dir %attr(750,root,%webserver_group) %cacticonfdir
@@ -164,6 +163,31 @@ fi
 %cactidir/install
 
 %changelog
+* Fri Nov 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.15-alt3
+- Fixed merge issue in lib/clog_webapi.php found by Alexander Makeenkov.
+
+* Wed Nov 25 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.15-alt2
+- Fixed issues in 1.2.15 release.
+
+* Mon Nov 23 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.15-alt1
+- Updated to upstream version 1.2.15 (Fixes: CVE-2020-13230, CVE-2020-13231).
+
+* Thu Mar 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.2.10-alt3
+- fix syntax error in include/global.php (thx to vercha@)
+
+* Wed Mar 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.2.10-alt2
+- package cacti.sql to doc dir
+
+* Sun Mar 15 2020 Alexey Shabalin <shaba@altlinux.org> 1.2.10-alt1
+- 1.2.10
+- Fixes:
+  + CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
+  + CVE-2019-17358 When deserializating data, ensure basic sanitization has been performed
+  + CVE-2019-16723 Security issue allows to view all graphs
+  + CVE-2020-7106 Lack of escaping on some pages can lead to XSS exposure
+  + CVE-2020-7237 Remote Code Execution due to input validation failure in Performance Boost Debug Log
+  + CVE-2020-8813 When guest users have access to realtime graphs, remote code could be executed
+
 * Fri Apr 05 2019 Alexey Shabalin <shaba@altlinux.org> 1.2.3-alt1
 - 1.2.3
 
