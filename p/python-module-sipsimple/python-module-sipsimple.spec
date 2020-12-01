@@ -2,14 +2,16 @@
 %def_enable bundled_pjsip
 
 Name:    python-module-%modulename
-Version: 3.4.2
+Version: 3.5.0
 Release: alt1
 
 Summary: SIP SIMPLE implementation for Python
 License: GPLv3
 Group:   Development/Python
-URL:     https://github.com/AGProjects/python-sipsimple
 
+Url:     https://github.com/AGProjects/python-sipsimple
+Source: python-%modulename-%version.tar
+Patch: python-module-sipsimple-alt-add-arch-webrtc-defines.patch
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 BuildRequires(pre): rpm-build-python
@@ -29,9 +31,6 @@ BuildRequires: libalsa-devel
 BuildRequires: libpjsip-devel
 %endif
 
-Source: python-%modulename-%version.tar
-Patch1: python-module-sipsimple-alt-add-arch-webrtc-defines.patch
-
 %description
 SIP SIMPLE client SDK is a Software Development Kit for easy development
 of SIP end-points that support rich media like Audio, Video, Instant
@@ -40,9 +39,14 @@ types can be easily added by using an extensible high-level API.
 
 %prep
 %setup -n python-%modulename-%version
-%patch1 -p1
-cp /usr/share/gnu-config/config.* deps/pjsip/
+%patch -p1
+cp -at deps/pjsip/ -- /usr/share/gnu-config/config.*
 chmod +x deps/pjsip/*configure
+%ifarch %e2k
+# more 64-bit little endian arches
+sed -i 's,^#elif defined(__aarch64__),& || defined(__e2k__),' \
+	deps/pjsip/third_party/webrtc/src/typedefs.h
+%endif
 
 %build
 %python_build
@@ -55,6 +59,12 @@ chmod +x deps/pjsip/*configure
 %python_sitelibdir/*.egg-info
 
 %changelog
+* Wed Jun 10 2020 Andrey Cherepanov <cas@altlinux.org> 3.5.0-alt1
+- New version.
+
+* Sun Sep 01 2019 Michael Shigorin <mike@altlinux.org> 3.4.2-alt2
+- Fixed build on %%e2k.
+
 * Thu Mar 28 2019 Andrey Cherepanov <cas@altlinux.org> 3.4.2-alt1
 - New version.
 

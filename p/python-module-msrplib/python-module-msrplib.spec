@@ -1,7 +1,7 @@
 %define  modulename msrplib
 
 Name:    python-module-%modulename
-Version: 0.19.2
+Version: 0.20.0
 Release: alt1
 
 Summary: MSRP (RFC4975) client library
@@ -38,6 +38,9 @@ traversal purposes is defined in RFC 4976.
 %python_sitelibdir/*.egg-info
 
 %changelog
+* Sat Mar 14 2020 Andrey Cherepanov <cas@altlinux.org> 0.20.0-alt1
+- New version.
+
 * Fri Oct 05 2018 Andrey Cherepanov <cas@altlinux.org> 0.19.2-alt1
 - New version.
 
