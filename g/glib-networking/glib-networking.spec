@@ -15,7 +15,7 @@
 
 Name: glib-networking
 Version: %ver_major.3
-Release: alt1.p9.1
+Release: alt1.p9.2
 
 Summary: Networking support for GIO
 Group: System/Libraries
@@ -115,6 +115,9 @@ the functionality of the installed %name package.
 %endif
 
 %changelog
+* Tue Dec 01 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.60.3-alt1.p9.2
+- More graceful possible NULL dereference fix (thnx imz@).
+
 * Wed Oct 28 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.60.3-alt1.p9.1
 - Fixed CVE-2020-13645.
 - Fixed possible NULL dereference.
