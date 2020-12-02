@@ -1,20 +1,21 @@
 %define _unpackaged_files_terminate_build 1
+
 %define oname selenium
 
-Name: python-module-%oname
-Version: 3.141.0
-Release: alt2
+Name: python3-module-%oname
+Version: 3.0.2
+Release: alt3
+
 Summary: Python bindings for Selenium
 License: ASL
-Group: Development/Python
+Group: Development/Python3
 Url: https://pypi.python.org/pypi/selenium/
 
-Source0: %oname-%version.tar.gz
+Source0: https://pypi.python.org/packages/0c/42/20c235e604bf736bc970c1275a78c4ea28c6453a0934002f95df9c49dad0/%{oname}-%{version}.tar.gz
 Patch: selenium-use-without-bundled-libs.patch
-BuildArch: noarch
 
-BuildRequires(pre): rpm-build-python
-BuildRequires: python-devel python-module-setuptools
+BuildRequires(pre): rpm-build-python3
+
 
 %description
 Python language bindings for Selenium WebDriver.
@@ -23,29 +24,31 @@ The selenium package is used automate web browser interaction from
 Python.
 
 %prep
-%setup -q -n %oname-%version
-%patch -p2
+%setup -q -n %{oname}-%{version}
+%patch -p1
 
 %build
-%python_build
+%python3_build_debug
 
 %install
-%python_install
+%python3_install
+
+%if "%_libexecdir" != "%_libdir"
+mv %buildroot%_libexecdir %buildroot%_libdir
+%endif
 
 find %buildroot -type f -name '*.so' -exec rm -f '{}' +
 
 %check
-python2 setup.py test
+%__python3 setup.py test
 
 %files
-%python_sitelibdir/*
+%python3_sitelibdir/*
+
 
 %changelog
-* Thu Apr 30 2020 Stanislav Levin <slev@altlinux.org> 3.141.0-alt2
-- Fixed FTBFS.
-
-* Sun Apr 12 2020 Alexey Shabalin <shaba@altlinux.org> 3.141.0-alt1
-- build for python2 only
+* Mon Feb 10 2020 Andrey Bychkov <mrdrew@altlinux.org> 3.0.2-alt3
+- Build for python2 disabled.
 
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 3.0.2-alt2.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
