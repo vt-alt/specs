@@ -24,7 +24,7 @@
 
 Name: xorg-server
 Version: 1.20.8
-Release: alt4
+Release: alt5
 Epoch: 2
 License: MIT/X11
 Summary: Xserver - X Window System display server
@@ -312,6 +312,9 @@ install -pD -m644 xorg-sdk.rpmmacros %buildroot%_rpmmacrosdir/xorg-sdk
 %_rpmmacrosdir/xorg-sdk
 
 %changelog
+* Tue Dec 01 2020 Valery Inozemtsev <shrek@altlinux.ru> 2:1.20.8-alt5
+- fixes: CVE-2020-25712, CVE-2020-14360
+
 * Thu Sep 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 2:1.20.8-alt4
 - fixes: CVE-2020-14346, CVE-2020-14361, CVE-2020-1436
 
