@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.3.24
+Version: 7.3.25
 Release: alt1
 
 %define php7_name      %name
@@ -463,11 +463,13 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %doc tests run-tests.php 
 
 %changelog
+* Fri Nov 27 2020 Anton Farygin <rider@altlinux.ru> 7.3.25-alt1
+- 7.3.25
+
 * Tue Nov 03 2020 Anton Farygin <rider@altlinux.ru> 7.3.24-alt1
 - 7.3.24
--filetrigger renamed to 89-php.filetrigger for sync
+- filetrigger renamed to 89-php.filetrigger for sync
  start order with filetriggers from SAPI
-
 
 * Wed Oct 07 2020 Anton Farygin <rider@altlinux.ru> 7.3.23-alt1
 - 7.3.23 (Fixes: CVE-2020-7069, CVE-2020-7070)
