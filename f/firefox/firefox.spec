@@ -5,16 +5,16 @@
 %define firefox_datadir %_datadir/firefox
 
 %define gst_version   1.0
-%define nspr_version  4.24
-%define nss_version   3.49.1
-%define rust_version  1.37.0
-%define cargo_version 1.37.0
+%define nspr_version  4.28
+%define nss_version   3.56.0
+%define rust_version  1.45.0
+%define cargo_version 1.45.0
 
 Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox
-Version:        72.0.2
+Version:        80.0.1
 Release:        alt0.1.p9
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -37,77 +37,93 @@ Source11:       l10n.tar
 Source12:       firefox-privacy-prefs.js
 
 ### Start Patches
-Patch001: 0001-ALT-fix-werror-return-type.patch
-Patch002: 0002-SUSE-NonGnome-KDE-integration.patch
-Patch003: 0003-ALT-Use-system-nspr-headers.patch
-Patch004: 0004-FEDORA-build-arm-libopus.patch
-Patch005: 0005-FEDORA-build-arm.patch
-Patch006: 0006-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
-Patch007: 0007-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
-Patch008: 0008-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
-Patch009: 0009-ALT-Fix-aarch64-build.patch
-Patch010: 0010-MOZILLA-1568569-Linux-video-is-semi-transparent-on-W.patch
-Patch011: 0011-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
+Patch001: 0001-SUSE-NonGnome-KDE-integration.patch
+Patch002: 0002-ALT-Use-system-nspr-headers.patch
+Patch003: 0003-FEDORA-build-arm-libopus.patch
+Patch004: 0004-FEDORA-build-arm.patch
+Patch005: 0005-ALT-ppc64le-fix-clang-error-invalid-memory-operand.patch
+Patch006: 0006-ALT-ppc64le-disable-broken-getProcessorLineSize-code.patch
+Patch007: 0007-ALT-Fix-aarch64-build.patch
+Patch008: 0008-MOZILLA-1196777-GTK3-keyboard-input-focus-sticks-on-.patch
+Patch009: 0009-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
+Patch010: 0010-arm-js-src-wasm-add-struct-user_vfp-definition.patch
+Patch011: 0011-Bug-1640982-Set-CARGO_PROFILE_RELEASE_LTO-true-when-.patch
+Patch012: 0012-use-floats-for-audio-on-arm-too.patch
 ### End Patches
+
+ExcludeArch: ppc64le armh
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
 BuildRequires(pre): browser-plugins-npapi-devel
 
-BuildRequires: clang7.0
-BuildRequires: clang7.0-devel
-BuildRequires: llvm7.0-devel
-BuildRequires: lld-devel
-%ifarch %{ix86}
-BuildRequires: gcc
-BuildRequires: gcc-c++
-%endif
+BuildRequires: clang10.0
+BuildRequires: clang10.0-devel
+BuildRequires: llvm10.0-devel
+BuildRequires: lld10.0-devel
 BuildRequires: libstdc++-devel
 BuildRequires: rpm-macros-alternatives
 BuildRequires: rust >= %rust_version
 BuildRequires: rust-cargo >= %cargo_version
-BuildRequires: libXt-devel libX11-devel libXext-devel libXft-devel libXScrnSaver-devel
-BuildRequires: libXcursor-devel
-BuildRequires: libXi-devel
-BuildRequires: libXcomposite-devel
-BuildRequires: libXdamage-devel
-BuildRequires: libcurl-devel libgtk+2-devel libgtk+3-devel libhunspell-devel libjpeg-devel
-BuildRequires: xorg-cf-files chrpath alternatives yasm
-BuildRequires: zip unzip
-BuildRequires: bzlib-devel zlib-devel
-BuildRequires: libcairo-devel libpixman-devel
-BuildRequires: libGL-devel
-BuildRequires: libwireless-devel
-BuildRequires: libalsa-devel
-BuildRequires: libnotify-devel
-BuildRequires: libevent-devel
-BuildRequires: libproxy-devel
-BuildRequires: libshell
-BuildRequires: libvpx5-devel
-BuildRequires: libgio-devel
-BuildRequires: libfreetype-devel fontconfig-devel
-BuildRequires: libstartup-notification-devel
-BuildRequires: libffi-devel
-BuildRequires: gstreamer%gst_version-devel gst-plugins%gst_version-devel
-BuildRequires: libopus-devel
-BuildRequires: libpulseaudio-devel
-#BuildRequires: libicu-devel
-BuildRequires: libdbus-devel libdbus-glib-devel
 BuildRequires: node
-BuildRequires: nasm
-BuildRequires: libxkbcommon-devel
-BuildRequires: libdrm-devel
+BuildRequires: nasm yasm
+BuildRequires: zip unzip
+BuildRequires: libshell
+BuildRequires: libwireless-devel
+BuildRequires: xorg-cf-files chrpath alternatives
+BuildRequires: gstreamer%gst_version-devel gst-plugins%gst_version-devel
+BuildRequires: pkgconfig(xt)
+BuildRequires: pkgconfig(xcursor)
+BuildRequires: pkgconfig(xi)
+BuildRequires: pkgconfig(xcomposite)
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(xext)
+BuildRequires: pkgconfig(xft)
+BuildRequires: pkgconfig(xscrnsaver)
+BuildRequires: pkgconfig(xdamage)
+BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(gtk+-2.0)
+BuildRequires: pkgconfig(gtk+-3.0)
+BuildRequires: pkgconfig(hunspell)
+BuildRequires: pkgconfig(libjpeg)
+BuildRequires: pkgconfig(bzip2)
+BuildRequires: pkgconfig(zlib)
+BuildRequires: pkgconfig(cairo)
+BuildRequires: pkgconfig(pixman-1)
+BuildRequires: pkgconfig(dri)
+BuildRequires: pkgconfig(alsa)
+BuildRequires: pkgconfig(libnotify)
+BuildRequires: pkgconfig(libevent)
+BuildRequires: pkgconfig(libproxy-1.0)
+BuildRequires: pkgconfig(vpx)
+BuildRequires: pkgconfig(gio-2.0)
+BuildRequires: pkgconfig(freetype2)
+BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(libstartup-notification-1.0)
+BuildRequires: pkgconfig(libffi)
+BuildRequires: pkgconfig(opus)
+BuildRequires: pkgconfig(libpulse)
+BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(dbus-glib-1)
+BuildRequires: pkgconfig(xkbcommon)
+BuildRequires: pkgconfig(libdrm)
+#BuildRequires: pkgconfig(icu-i18n)
 
 # Python requires
 BuildRequires: /dev/shm
-BuildRequires: python3-base
-BuildRequires: python-module-distribute
+
+BuildRequires: python2-base
+BuildRequires: python-module-setuptools
 BuildRequires: python-module-pip
 BuildRequires: python-modules-compiler
 BuildRequires: python-modules-logging
 BuildRequires: python-modules-sqlite3
 BuildRequires: python-modules-json
 
+BuildRequires: python3-base
+BuildRequires: python3(setuptools)
+BuildRequires: python3(pip)
+BuildRequires: python3(sqlite3)
 
 # Rust requires
 BuildRequires: /proc
@@ -149,8 +165,8 @@ cross-platform.
 %package wayland
 Summary:    Firefox Wayland launcher.
 Group:      Networking/WWW
-BuildArch:  noarch
-Requires:   %name
+
+Requires: %name >= %version-%release
 
 %description wayland
 The firefox-wayland package contains launcher and desktop file
@@ -171,9 +187,8 @@ firefox packages by some Alt Linux Team Policy compatible way.
 %package -n firefox-config-privacy
 Summary:	Firefox configuration with the paranoid privacy settings
 Group:		System/Configuration/Networking
-BuildArch:	noarch
 
-Requires: %name = %version-%release
+Requires: %name >= %version-%release
 
 %description -n firefox-config-privacy
 Settings disable:
@@ -202,6 +217,7 @@ Most likely you don't need to use this package.
 %patch009 -p1
 %patch010 -p1
 %patch011 -p1
+%patch012 -p1
 ### Finish apply patches
 
 cd mozilla
@@ -217,20 +233,68 @@ ac_add_options --prefix="%_prefix"
 ac_add_options --libdir="%_libdir"
 %ifnarch %{ix86} ppc64le
 ac_add_options --enable-linker=lld
+%endif
 %ifnarch x86_64
 ac_add_options --disable-webrtc
 %endif
-%endif
-%ifarch %{ix86} x86_64
+%ifarch armh %{ix86} x86_64
 ac_add_options --disable-elf-hack
 %endif
+%ifarch %{ix86}
+ac_add_options --disable-av1
+%endif
 EOF
+
+find third_party \
+	-type f \( -name '*.so' -o -name '*.o' -o -name '*.a' \) \
+	-delete
+
+rm -rf -- obj-x86_64-pc-linux-gnu
 
 
 %build
 # compile cbindgen
 CBINDGEN_HOME="$PWD/cbindgen"
 CBINDGEN_BINDIR="$CBINDGEN_HOME/bin"
+
+%add_findprov_lib_path %firefox_prefix
+
+export MOZ_BUILD_APP=browser
+export MOZ_CHROME_MULTILOCALE="$(tr '\n' ' ' < %SOURCE10)"
+
+MOZ_OPT_FLAGS="-pipe -O2 -g0"
+%ifarch armh
+MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -march=armv7-a -mthumb"
+%endif
+
+# PIE, full relro
+MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -DPIC -fPIC -Wl,-z,relro -Wl,-z,now"
+
+# Add fake RPATH
+MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -Wl,-rpath,/$(printf %%s '%firefox_prefix' |tr '[:print:]' '_')"
+
+# If MOZ_DEBUG_FLAGS is empty, firefox's build will default it to "-g" which
+# overrides the -g0 from line above and breaks building on s390
+# (OOM when linking, rhbz#1238225)
+export MOZ_DEBUG_FLAGS=" "
+
+export CFLAGS="$MOZ_OPT_FLAGS"
+export CXXFLAGS="$MOZ_OPT_FLAGS"
+
+export MOZ_PARALLEL_BUILD=8
+export CC="clang"
+export CXX="clang++"
+export AR="llvm-ar"
+export NM="llvm-nm"
+export RANLIB="llvm-ranlib"
+export LLVM_PROFDATA="llvm-profdata"
+
+export LIBIDL_CONFIG=/usr/bin/libIDL-config-2
+export SHELL=/bin/sh
+export PATH="$CBINDGEN_BINDIR:$PATH"
+
+export RUST_BACKTRACE=1
+export RUSTFLAGS="-Clink-args=-fPIC -Cdebuginfo=0"
 
 if [ ! -x "$CBINDGEN_BINDIR/cbindgen" ]; then
 	mkdir -p -- "$CBINDGEN_HOME"
@@ -252,53 +316,18 @@ fi
 # compile firefox
 cd mozilla
 
-%add_optflags %optflags_shared
-%add_findprov_lib_path %firefox_prefix
-
-export MOZ_BUILD_APP=browser
-export MOZ_CHROME_MULTILOCALE="$(tr '\n' ' ' < %SOURCE10)"
-
-MOZ_OPT_FLAGS="-pipe -O2 -g0"
-
-# PIE, full relro
-MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -DPIC -fPIC -Wl,-z,relro -Wl,-z,now"
-
-# Add fake RPATH
-MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -Wl,-rpath,/$(printf %%s '%firefox_prefix' |tr '[:print:]' '_')"
-
-# If MOZ_DEBUG_FLAGS is empty, firefox's build will default it to "-g" which
-# overrides the -g0 from line above and breaks building on s390
-# (OOM when linking, rhbz#1238225)
-export MOZ_DEBUG_FLAGS=" "
-
-export CFLAGS="$MOZ_OPT_FLAGS"
-export CXXFLAGS="$MOZ_OPT_FLAGS"
-
-#ifnarch %{ix86}
-export CC="clang"
-export CXX="clang++"
-export AR="llvm-ar"
-export NM="llvm-nm"
-export RANLIB="llvm-ranlib"
-export LLVM_PROFDATA="llvm-profdata"
-#else
-#export CC="gcc"
-#export CXX="g++"
-#endif
-
-export LIBIDL_CONFIG=/usr/bin/libIDL-config-2
 export srcdir="$PWD"
-export SHELL=/bin/sh
-export RUSTFLAGS="-Cdebuginfo=0"
-export MOZ_MAKE_FLAGS="-j10"
-export PATH="$CBINDGEN_BINDIR:$PATH"
+#export MOZ_MAKE_FLAGS="-j10 --no-print-directory"
+export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
 
-autoconf old-configure.in > old-configure
-pushd js/src
-autoconf old-configure.in > old-configure
-popd
+# Fix virtualenv
+python3 ./mach python --exec-file /dev/null
+pyver="$(python3 -c 'import sys; print("python{}.{}".format(*sys.version_info))')"
+find objdir/_virtualenvs/init_py3/lib/python3/site-packages \
+	-mindepth 1 -maxdepth 1 \
+	-exec mv -t "objdir/_virtualenvs/init_py3/lib/$pyver/site-packages" -- '{}' '+'
 
-./mach build
+python3 ./mach build
 
 while read -r loc; do
 	./mach build chrome-$loc
@@ -377,7 +406,9 @@ export XDG_SESSION_TYPE=wayland
 
 unset DISPLAY
 
-exec %_bindir/firefox "$@"
+BIN="%_bindir/firefox"
+
+exec "$BIN" "$@"
 EOF
 
 chmod +x ./%_bindir/firefox-wayland
@@ -392,7 +423,7 @@ install -D -m 644 %SOURCE7 ./%_datadir/applications/firefox-wayland.desktop
 
 # Add alternatives
 mkdir -p ./%_altdir
-printf '%_bindir/xbrowser\t%_bindir/firefox\t100\n' >./%_altdir/firefox
+printf '%_bindir/xbrowser\t%_bindir/firefox\t70\n' >./%_altdir/firefox
 
 rm -f -- \
 	./%firefox_prefix/removed-files
@@ -448,8 +479,144 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Tue Dec 01 2020 Andrey Cherepanov <cas@altlinux.org> 80.0.1-alt0.1.p9
+- Backport new version to p9 branch.
+- Decrease weight in alternatives.
+- Build with bundled icu.
+- Allow sideloading app and system unsigned addons.
+- Fix bogus timestamp in changelog.
+
+* Tue Sep 08 2020 Alexey Gladkov <legion@altlinux.ru> 80.0.1-alt1
+- New release (80.0.1).
+
+* Thu Aug 27 2020 Alexey Gladkov <legion@altlinux.ru> 80.0-alt1
+- New release (80.0).
+- Security fixes:
+  + CVE-2020-15663: Downgrade attack on the Mozilla Maintenance Service could have resulted in escalation of privilege
+  + CVE-2020-15664: Attacker-induced prompt for extension installation
+  + CVE-2020-12401: Timing-attack on ECDSA signature generation
+  + CVE-2020-6829: P-384 and P-521 vulnerable to an electro-magnetic side channel attack on signature generation
+  + CVE-2020-12400: P-384 and P-521 vulnerable to a side channel attack on modular inversion
+  + CVE-2020-15665: Address bar not reset when choosing to stay on a page after the beforeunload dialog is shown
+  + CVE-2020-15666: MediaError message property leaks cross-origin response status
+  + CVE-2020-15667: Heap overflow when processing an update file
+  + CVE-2020-15668: Data Race when reading certificate information
+  + CVE-2020-15670: Memory safety bugs fixed in Firefox 80 and Firefox ESR 78.2
+
+* Mon Aug 17 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 79.0-alt2
+- rebuilt for armh
+
+* Thu Jul 30 2020 Alexey Gladkov <legion@altlinux.ru> 79.0-alt1
+- New release (79.0).
+- ExcludeArch armh ppc64le
+- Security fixes:
+  + CVE-2020-15652: Potential leak of redirect targets when loading scripts in a worker
+  + CVE-2020-6514: WebRTC data channel leaks internal address to peer
+  + CVE-2020-15655: Extension APIs could be used to bypass Same-Origin Policy
+  + CVE-2020-15653: Bypassing iframe sandbox when allowing popups
+  + CVE-2020-6463: Use-after-free in ANGLE gl::Texture::onUnbindAsSamplerTexture
+  + CVE-2020-15656: Type confusion for special arguments in IonMonkey
+  + CVE-2020-15658: Overriding file type when saving to disk
+  + CVE-2020-15657: DLL hijacking due to incorrect loading path
+  + CVE-2020-15654: Custom cursor can overlay user interface
+  + CVE-2020-15659: Memory safety bugs fixed in Firefox 79
+
+* Mon Jul 13 2020 Alexey Gladkov <legion@altlinux.ru> 78.0.2-alt1
+- New release (78.0.2).
+- Security fixes:
+  + MFSA-2020-0003: X-Frame-Options bypass using object or embed tags
+
+* Sat Jul 04 2020 Alexey Gladkov <legion@altlinux.ru> 78.0.1-alt1
+- New release (78.0.1).
+- Security fixes:
+  + CVE-2020-12415: AppCache manifest poisoning due to url encoded character processing
+  + CVE-2020-12416: Use-after-free in WebRTC VideoBroadcaster
+  + CVE-2020-12417: Memory corruption due to missing sign-extension for ValueTags on ARM64
+  + CVE-2020-12418: Information disclosure due to manipulated URL object
+  + CVE-2020-12419: Use-after-free in nsGlobalWindowInner
+  + CVE-2020-12420: Use-After-Free when trying to connect to a STUN server
+  + CVE-2020-12402: RSA Key Generation vulnerable to side-channel attack
+  + CVE-2020-12421: Add-On updates did not respect the same certificate trust rules as software updates
+  + CVE-2020-12422: Integer overflow in nsJPEGEncoder::emptyOutputBuffer
+  + CVE-2020-12423: DLL Hijacking due to searching %%PATH%% for a library
+  + CVE-2020-12424: WebRTC permission prompt could have been bypassed by a compromised content process
+  + CVE-2020-12425: Out of bound read in Date.parse()
+  + CVE-2020-12426: Memory safety bugs fixed in Firefox 78
+
+* Tue Jun 23 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 77.0.1-alt2
+- fixed packaging on so-called armh
+
+* Thu Jun 04 2020 Alexey Gladkov <legion@altlinux.ru> 77.0.1-alt1
+- New release (77.0.1).
+- Security fixes:
+  + CVE-2020-12399: Timing attack on DSA signatures in NSS library
+  + CVE-2020-12405: Use-after-free in SharedWorkerService
+  + CVE-2020-12406: JavaScript type confusion with NativeTypes
+  + CVE-2020-12407: WebRender leaking GPU memory when using border-image CSS directive
+  + CVE-2020-12408: URL spoofing when using IP addresses
+  + CVE-2020-12409: URL spoofing with unicode characters
+  + CVE-2020-12410: Memory safety bugs fixed in Firefox 77 and Firefox ESR 68.9
+  + CVE-2020-12411: Memory safety bugs fixed in Firefox 77
+
+* Fri May 08 2020 Alexey Gladkov <legion@altlinux.ru> 76.0.1-alt1
+- New release (76.0.1).
+
+* Wed May 06 2020 Alexey Gladkov <legion@altlinux.ru> 76.0-alt1
+- New release (76.0).
+- Security fixes:
+  + CVE-2020-12387: Use-after-free during worker shutdown
+  + CVE-2020-12388: Sandbox escape with improperly guarded Access Tokens
+  + CVE-2020-12389: Sandbox escape with improperly separated process types
+  + CVE-2020-6831: Buffer overflow in SCTP chunk input validation
+  + CVE-2020-12390: Incorrect serialization of nsIPrincipal.origin for IPv6 addresses
+  + CVE-2020-12391: Content-Security-Policy bypass using object elements
+  + CVE-2020-12392: Arbitrary local file access with 'Copy as cURL'
+  + CVE-2020-12393: Devtools' 'Copy as cURL' feature did not fully escape website-controlled data, potentially leading to command injection
+  + CVE-2020-12394: URL spoofing in location bar when unfocussed
+  + CVE-2020-12395: Memory safety bugs fixed in Firefox 76 and Firefox ESR 68.8
+  + CVE-2020-12396: Memory safety bugs fixed in Firefox 76
+
+* Wed Apr 08 2020 Alexey Gladkov <legion@altlinux.ru> 75.0-alt1
+- New release (75.0).
+- Security fixes:
+  + CVE-2020-6821: Uninitialized memory could be read when using the WebGL copyTexSubImage method
+  + CVE-2020-6822: Out of bounds write in GMPDecodeData when processing large images
+  + CVE-2020-6823: Malicious Extension could obtain auth codes from OAuth login flows
+  + CVE-2020-6824: Generated passwords may be identical on the same site between separate private browsing sessions
+  + CVE-2020-6825: Memory safety bugs fixed in Firefox 75 and Firefox ESR 68.7
+  + CVE-2020-6826: Memory safety bugs fixed in Firefox 75
+
 * Tue Mar 24 2020 Andrey Cherepanov <cas@altlinux.org> 72.0.2-alt0.1.p9
 - Backport new version with security fixed to p9 branch.
+
+* Thu Mar 12 2020 Alexey Gladkov <legion@altlinux.ru> 74.0-alt1
+- New release (74.0).
+- Security fixes:
+  + CVE-2020-6805: Use-after-free when removing data about origins
+  + CVE-2020-6806: BodyStream::OnInputStreamReady was missing protections against state confusion
+  + CVE-2020-6807: Use-after-free in cubeb during stream destruction
+  + CVE-2020-6808: URL Spoofing via javascript: URL
+  + CVE-2020-6809: Web Extensions with the all-urls permission could access local files
+  + CVE-2020-6810: Focusing a popup while in fullscreen could have obscured the fullscreen notification
+  + CVE-2020-6811: Devtools' 'Copy as cURL' feature did not fully escape website-controlled data, potentially leading to command injection
+  + CVE-2019-20503: Out of bounds reads in sctp_load_addresses_from_init
+  + CVE-2020-6812: The names of AirPods with personally identifiable information were exposed to websites with camera or microphone permission
+  + CVE-2020-6813: @import statements in CSS could bypass the Content Security Policy nonce feature
+  + CVE-2020-6814: Memory safety bugs fixed in Firefox 74 and Firefox ESR 68.6
+  + CVE-2020-6815: Memory and script safety bugs fixed in Firefox 74
+
+* Wed Feb 19 2020 Alexey Gladkov <legion@altlinux.ru> 73.0.1-alt1
+- New release (73.0.1).
+
+* Mon Feb 17 2020 Alexey Gladkov <legion@altlinux.ru> 73.0-alt1
+- New release (73.0).
+- Security fixes:
+  + CVE-2020-6796: Missing bounds check on shared memory read in the parent process
+  + CVE-2020-6797: Extensions granted downloads.open permission could open arbitrary applications on Mac OSX
+  + CVE-2020-6798: Incorrect parsing of template tag could result in JavaScript injection
+  + CVE-2020-6799: Arbitrary code execution when opening pdf links from other applications, when Firefox is configured as default pdf reader
+  + CVE-2020-6800: Memory safety bugs fixed in Firefox 73 and Firefox ESR 68.5
+  + CVE-2020-6801: Memory safety bugs fixed in Firefox 73
 
 * Thu Jan 23 2020 Alexey Gladkov <legion@altlinux.ru> 72.0.2-alt1
 - New release (72.0.2).
@@ -2191,7 +2358,7 @@ rm -rf -- \
 * Thu Jan 07 2010 Alexey Gladkov <legion@altlinux.ru> 3.6.0-alt0.20100113
 - New snapshot (3.6.0 20100113).
 
-* Mon Nov 24 2009 Alexey Gladkov <legion@altlinux.ru> 3.6.0-alt0.20091124
+* Tue Nov 24 2009 Alexey Gladkov <legion@altlinux.ru> 3.6.0-alt0.20091124
 - New major branch (3.6.0 b4pre).
 
 * Sun Oct 11 2009 Alexey Gladkov <legion@altlinux.ru> 3.5.3-alt0.20091010
@@ -2219,7 +2386,7 @@ rm -rf -- \
 * Thu Jun 04 2009 Alexey Gladkov <legion@altlinux.ru> 3.5-alt1.20090601
 - New snapshot (3.5 20090601).
 
-* Wed Apr 24 2009 Alexey Gladkov <legion@altlinux.ru> 3.5-alt1.20090424
+* Fri Apr 24 2009 Alexey Gladkov <legion@altlinux.ru> 3.5-alt1.20090424
 - New snapshot (3.5 20090424).
 
 * Sun Jan 18 2009 Alexey Gladkov <legion@altlinux.ru> 3.1-alt1.20090312

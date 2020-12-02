@@ -1,6 +1,6 @@
 Name: rust
 Epoch: 1
-Version: 1.44.0
+Version: 1.45.1
 Release: alt0.1.p9
 Summary: The Rust Programming Language
 
@@ -9,37 +9,39 @@ License: Apache-2.0 and MIT
 URL: http://www.rust-lang.org/
 
 # https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
-Source: %{name}c-%version-src.tar
+Source: %{name}c-src.tar
 
 Patch1: rust-gdb.patch
 
+%def_without bootstrap
+%def_without bundled_llvm
+%def_without debuginfo
+
 BuildPreReq: /proc
-BuildRequires: curl python-devel cmake libffi-devel patchelf
 
-%def_without  bootstrap
-%def_with  bundled_llvm
-%ifarch armh
-%define abisuff eabihf
-%else
-%define abisuff %nil
-%endif
-
-%if_without bundled_llvm
-BuildRequires: llvm9.0-devel
-BuildRequires: llvm9.0-devel-static
-%endif
 BuildRequires: gcc-c++
 BuildRequires: libstdc++-devel
-
 BuildRequires: curl
+BuildRequires: cmake
 BuildRequires: binutils
+BuildRequires: python3-base
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(liblzma)
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(zlib)
 BuildRequires: pkgconfig(libgit2)
 BuildRequires: pkgconfig(libssh2)
+BuildRequires: pkgconfig(tinfo)
+%if_without bundled_llvm
 BuildRequires: pkgconfig(libffi)
+BuildRequires: llvm10.0-devel
+BuildRequires: llvm10.0-devel-static
+%else
+BuildRequires: ninja-build
+%endif
+%ifarch aarch64
+BuildRequires: patchelf
+%endif
 
 %if_without bootstrap
 
@@ -49,7 +51,7 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.43.0
+%define r_ver 1.44.0
 Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
 Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
 Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
@@ -94,10 +96,19 @@ Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux
 %define r_arch powerpc64le
 %endif
 
-%global rustflags -Clink-arg=-Wl,-z,relro,-z,now
+%ifarch armh
+%define abisuff eabihf
+%else
+%define abisuff %nil
+%endif
+
+%define rust_triple %r_arch-unknown-linux-gnu%abisuff
+%define rustlibdir %_libdir/rustlib
 
 # Since 1.12.0: striping debuginfo damages *.so files
+%if_without debuginfo
 %add_debuginfo_skiplist %_libdir %_bindir
+%endif
 
 %description
 Rust is a systems programming language that runs blazingly fast, prevents
@@ -189,14 +200,14 @@ feature for the Rust standard library. The RLS (Rust Language Server) uses this
 data to provide information about the Rust standard library.
 
 %prep
-%setup -n %{name}c-%version-src
+%setup -n %{name}c-src
 
 %patch1 -p2
 
 %if_with bootstrap
 tar xf %r_src
 mkdir -p %rustdir
-pushd rust-%r_ver-%r_arch-unknown-linux-gnu%abisuff
+pushd rust-%r_ver-%rust_triple
 ./install.sh --prefix=%rustdir
 popd
 
@@ -210,19 +221,68 @@ patchelf --set-interpreter /lib64/ld-linux-aarch64.so.1 %rustdir/bin/rustc
 sed -i 's/Path::new("lib")/Path::new("%_lib")/' src/bootstrap/builder.rs
 %endif
 
+# This only affects the transient rust-installer, but let it use our dynamic xz-libs
+sed -i -e '/LZMA_API_STATIC/d' src/bootstrap/tool.rs
+
+%if_without bundled_llvm
+# Static linking to distro LLVM needs to add -lffi
+# https://github.com/rust-lang/rust/issues/34486
+sed -i -e '$a #[link(name = "ffi")] extern {}' src/librustc_llvm/lib.rs
+
+rm -rf src/llvm-project
+%endif
+
+# We never enable emscripten.
+rm -rf src/llvm-emscripten/
+
+# We never enable other LLVM tools.
+rm -rf src/tools/clang
+rm -rf src/tools/lld
+rm -rf src/tools/lldb
+
+# Remove other unused vendored libraries
+rm -rf vendor/curl-sys/curl
+rm -rf vendor/jemalloc-sys/jemalloc
+rm -rf vendor/libz-sys/src/zlib
+rm -rf vendor/lzma-sys/xz-*
+rm -rf vendor/openssl-src/openssl
+
+# CI tooling won't be used
+rm -rf src/ci
+
+# Remove hidden files from source
+find src/ -type f -name '.appveyor.yml' -delete
+find src/ -type f -name '.travis.yml' -delete
+find src/ -type f -name '.cirrus.yml' -delete
+
+# The configure macro will modify some autoconf-related files, which upsets
+# cargo when it tries to verify checksums in those files.  If we just truncate
+# that file list, cargo won't have anything to complain about.
+find vendor \
+	-name .cargo-checksum.json \
+	-exec sed -i -e 's/"files":{[^}]*}/"files":{ }/' '{}' '+'
+
+
 %build
+cat >env.sh <<EOF
 export RUST_BACKTRACE=1
-export RUSTFLAGS="%rustflags"
+export RUSTFLAGS="-Clink-arg=-Wl,-z,relro,-z,now -Clink-args=-fPIC"
+export LIBGIT2_SYS_USE_PKG_CONFIG=1
+export LIBSSH2_SYS_USE_PKG_CONFIG=1
+export DESTDIR="%buildroot"
+EOF
 
 cat > config.toml <<EOF
 [build]
 cargo = "%cargo"
 rustc = "%rustc"
+python = "python3"
 submodules = false
 docs = true
 verbose = 0
 vendor = true
 extended = true
+tools = ["cargo", "rls", "clippy", "rustfmt", "analysis", "src"]
 
 [install]
 prefix = "%prefix"
@@ -230,18 +290,29 @@ libdir = "%_lib"
 
 [rust]
 channel = "stable"
-codegen-units = 1
 codegen-tests = false
 backtrace = true
 jemalloc = false
 rpath = false
 debug = false
 deny-warnings = false
+%if_without debuginfo
+debuginfo-level = 0
+codegen-units = 2
+%else
+debuginfo-level = 1
+codegen-units = 0
+%endif
+
+[llvm]
+ninja = true
+use-libcxx = false
+link-shared = true
 EOF
 
 %if_without bundled_llvm
 cat >> config.toml <<EOF
-[target.%r_arch-unknown-linux-gnu%abisuff]
+[target.%rust_triple]
 llvm-config = "/usr/bin/llvm-config"
 EOF
 %endif
@@ -249,36 +320,61 @@ export LIBGIT2_SYS_USE_PKG_CONFIG=1
 export LIBSSH2_SYS_USE_PKG_CONFIG=1
 export PKG_CONFIG_ALLOW_CROSS=1
 
-export LIBGIT2_SYS_USE_PKG_CONFIG=1
-export LIBSSH2_SYS_USE_PKG_CONFIG=1
-export PKG_CONFIG_ALLOW_CROSS=1
+. ./env.sh
 
-python2.7 x.py build
-python2.7 x.py doc
+python3 x.py build
+python3 x.py doc
+
 
 %install
-export RUSTFLAGS="%rustflags"
+. ./env.sh
 
-DESTDIR=%buildroot python2.7 x.py install
+python3 x.py install
+
 rm -f -- %buildroot/%_libdir/lib*.so.old
 
-rm -f -- %buildroot/%_libdir/lib*.so.old
+# The libdir libraries are identical to those under rustlib/.  It's easier on
+# library loading if we keep them in libdir, but we do need them in rustlib/
+# to support dynamic linking for compiler plugins, so we'll symlink.
+find %buildroot/%rustlibdir/%rust_triple/lib \
+	-name '*.so' -printf '%%f %%p\n' |
+while read -r n rustlib; do
+	lib="%buildroot/%_libdir/$n"
+
+	[ -e "$lib" ] ||
+		continue
+
+	c="$(sha1sum "$rustlib" "$lib" |cut -f1 -d\  |uniq |wc -l)"
+
+	[ "$c" = 1 ] ||
+		continue
+
+	ln -s -f -- "$(relative "$lib" "$rustlib")" "$rustlib"
+done
+
+# Remove installer artifacts (manifests, uninstall scripts, etc.)
+find %buildroot/%rustlibdir -maxdepth 1 -type f -delete
+
+# We don't actually need to ship any of those python scripts in rust-src anyway.
+find %buildroot/%rustlibdir/src -type f -name '*.py' -delete
 
 
 %check
+. ./env.sh
 %if_without bundled_llvm
-# ensure that rustc_llvm is actually dynamically linked to libLLVM
-find build/*/stage2/lib/rustlib/* \
-	-name '*rustc_llvm*.so' -execdir objdump -p '{}' '+' |
+# ensure that rustc_driver is actually dynamically linked to libLLVM
+find %buildroot/%_libdir \
+	-name 'librustc_driver-*.so' -execdir objdump -p '{}' '+' |
 	grep -qs 'NEEDED.*LLVM'
 %endif
+# python3 ./x.py test --no-doc --no-fail-fast ||:
 
-#python2.7 x.py test --no-fail-fast || :
 
 %clean
 %if_with bootstrap
 rm -rf %rustdir
 %endif
+
 
 %files
 %exclude %_datadir/doc/rust
@@ -286,17 +382,12 @@ rm -rf %rustdir
 %_bindir/rustc
 %_bindir/rustdoc
 %_libdir/lib*.so
-%dir %_libdir/rustlib
-%dir %_libdir/rustlib/etc
-%dir %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff
-%_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/*
-%exclude %_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
-%exclude %_libdir/rustlib/etc/*
-%exclude %_libdir/rustlib/install.log
-%exclude %_libdir/rustlib/manifest-*
-%exclude %_libdir/rustlib/rust-installer-version
-%exclude %_libdir/rustlib/uninstall.sh
-%exclude %_libdir/rustlib/components
+%dir %rustlibdir
+%dir %rustlibdir/etc
+%dir %rustlibdir/%rust_triple
+%rustlibdir/%rust_triple/*
+%exclude %rustlibdir/%rust_triple/analysis
+%exclude %rustlibdir/etc/*
 %_man1dir/rustc.*
 %_man1dir/rustdoc.*
 
@@ -304,8 +395,8 @@ rm -rf %rustdir
 %_bindir/rust-gdb
 %_bindir/rust-gdbgui
 %exclude %_bindir/rust-lldb
-%_libdir/rustlib/etc/*
-%exclude %_libdir/rustlib/etc/lldb_*
+%rustlibdir/etc/*
+%exclude %rustlibdir/etc/lldb_*
 
 %files doc
 %_datadir/doc/%name
@@ -336,12 +427,15 @@ rm -rf %rustdir
 %doc src/tools/clippy/{README.md,CHANGELOG.md,LICENSE*}
 
 %files src
-%_libdir/rustlib/src
+%rustlibdir/src
 
 %files analysis
-%_libdir/rustlib/%r_arch-unknown-linux-gnu%abisuff/analysis
+%rustlibdir/%rust_triple/analysis
 
 %changelog
+* Wed Nov 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.45.1-alt0.1.p9
+- Backport new version to p9 branch.
+
 * Fri Oct 23 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.44.0-alt0.1.p9
 - Backport new version to p9 branch.
 
@@ -350,6 +444,12 @@ rm -rf %rustdir
 
 * Mon Aug 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.42.0-alt1.1.p9
 - Backport new version to p9 branch.
+
+* Mon Aug 03 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.45.1-alt1
+- New version (1.45.1).
+- Use python3.
+- Use system LLVM.
+- Removed duplicate libraries.
 
 * Mon Aug 03 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.44.0-alt1
 - 1.44.0

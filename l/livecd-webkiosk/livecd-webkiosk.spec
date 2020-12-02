@@ -1,6 +1,6 @@
 Name: livecd-webkiosk
-Version: 0.6.0
-Release: alt1
+Version: 0.6.1
+Release: alt2
 
 Summary: start the browser for a suitable webkiosk environment
 License: Public domain
@@ -10,7 +10,7 @@ Url: http://en.altlinux.org/starterkits
 Packager: Michael Shigorin <mike@altlinux.org>
 
 Requires: ratpoison xinit libshell
-BuildArch: noarch
+ExcludeArch: ppc64le armh aarch64
 
 %define skeldir %_sysconfdir/skel
 %define ifacedir %_sysconfdir/net/ifaces/eth0
@@ -79,7 +79,7 @@ ratpoison &
 
 read cmdline < /proc/cmdline
 cmdline_get url url
-[ -n "\$url" -a -f /image/index.html ] && url=/image/index.html
+[ -z "\$url" -a -f /image/index.html ] && url=/image/index.html
 
 while :; do
 	xset s off; xset -dpms
@@ -147,6 +147,12 @@ chmod +x %wrapper
 %endif
 
 %changelog
+* Mon Nov 30 2020 Andrey Cherepanov <cas@altlinux.org> 0.6.1-alt2
+- ExcludeArch: ppc64le armh aarch64 (as for firefox and seamonkey).
+
+* Fri Sep 13 2019 Leonid Krivoshein <klark@altlinux.org> 0.6.1-alt1
+- fixed typo in the spec: url from cmdline now realy used
+
 * Wed Sep 12 2018 Michael Shigorin <mike@altlinux.org> 0.6.0-alt1
 - replaced qupzilla with falkon following upstream decision
 - made all but firefox subpackages x86/aarch64-only
