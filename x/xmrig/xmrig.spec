@@ -1,6 +1,6 @@
 Name:		xmrig
-Version:	6.4.0
-Release:	alt1
+Version:	6.6.1
+Release:	alt0.p9.1
 Summary:	RandomX and CryptoNight CPU miner
 Url:		https://github.com/xmrig/xmrig
 Group:		Office
@@ -44,6 +44,12 @@ install -Dp -m 0755 ./%name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
+* Mon Nov 30 2020 Motsyo Gennadi <drool@altlinux.ru> 6.6.1-alt0.p9.1
+- build for p9
+
+* Mon Nov 30 2020 Motsyo Gennadi <drool@altlinux.ru> 6.6.1-alt1
+- 6.6.1
+
 * Sat Oct 24 2020 Motsyo Gennadi <drool@altlinux.ru> 6.4.0-alt1
 - 6.4.0
 
