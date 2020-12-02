@@ -2,33 +2,39 @@
 
 %def_disable debug
 %def_disable static
-%if_disabled debug
-%remove_optflags -O2
-%add_optflags -O3
-%endif
+%def_with python2
+
 %define upname libtorrent-rasterbar
 %define soname 9
 
 Name: libtorrent-rasterbar
 Epoch: 3
-Version: 1.1.12
-Release: alt1
+Version: 1.1.13
+Release: alt2
 
 Summary: libTorrent is a BitTorrent library written in C++ for *nix
+License: BSD
 Group: System/Libraries
-License: GPL
-Url: http://www.rasterbar.com/products/libtorrent
 
+Url: https://www.rasterbar.com/products/libtorrent/
 # https://github.com/arvidn/libtorrent.git
 Source: %name-%version.tar
+Patch: %name-1.1.9-fedora-system-tommath.patch
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: libssl-devel
 BuildRequires: gcc-c++ zlib-devel
 BuildRequires: glibc-devel glibc-core
 BuildRequires: boost-devel boost-asio-devel boost-filesystem
 BuildRequires: boost-filesystem-devel boost-program_options-devel
-BuildRequires: python-devel boost-python-devel
+BuildRequires: boost-multiprecision-devel
+BuildRequires: python3-devel boost-python3-devel
 BuildRequires: libGeoIP-devel
+BuildRequires: libtommath-devel
+
+%if_with python2
+BuildRequires: python-devel boost-python-devel
+%endif
 
 %description
 libTorrent is designed to avoid redundant copying and storing of data
@@ -89,8 +95,6 @@ Conflicts: libtorrent-rasterbar8-devel < %EVR
 Obsoletes: libtorrent-rasterbar8-devel < %EVR
 Conflicts: libtorrent-rasterbar7-devel < %EVR
 Obsoletes: libtorrent-rasterbar7-devel < %EVR
-Conflicts: libtorrent-rasterbar-devel < %EVR
-Obsoletes: libtorrent-rasterbar-devel < %EVR
 Conflicts: libtorrent-devel
 
 %description -n %upname-devel
@@ -110,6 +114,7 @@ The libtorrent-devel package contains static libraries needed
 to develop applications using libTorrent.
 %endif
 
+%if_with python2
 %package -n python-module-%upname
 Summary: libTorrent python bindings
 Group: Development/Python
@@ -120,25 +125,75 @@ Conflicts: python-module-libtorrent-rasterbar7 < %EVR
 %description -n python-module-%upname
 The python-module-libtorrent-rasterbar contains
 python bindings to libTorrent.
+%endif
+
+%package -n python3-module-%upname
+Summary: libTorrent python bindings
+Group: Development/Python3
+Requires: %name%soname = %EVR
+
+%description -n python3-module-%upname
+The python3-module-libtorrent-rasterbar contains
+python-3 bindings to libTorrent.
 
 %prep
 %setup
+%patch -p1
 
 mkdir -p build-aux
 touch build-aux/config.rpath
 
-mv -f COPYING COPYING.orig
-ln -s $(relative %_licensedir/GPL-2 %_docdir/%name/COPYING) COPYING
+%if_with python2
+cp -r . ../build-python2
+%endif
 
 %build
-export LDFLAGS="$LDFLAGS -L/%_lib -lrt"
-%autoreconf
 %add_optflags -fno-strict-aliasing -DTORRENT_USE_WSTRING=1 -DTORRENT_EXPORT_EXTRA=1
-%configure %{subst_enable static} %{subst_enable debug} --with-boost-libdir=%_libdir \
-	--enable-python-binding
+%add_optflags -I%_includedir/tommath
+
+%if_with python2
+pushd ../build-python2
+
+export PYTHON=%_bindir/python2
+
+%ifarch %e2k
+# -std=c++03 by default as of lcc 1.23.20
+%add_optflags -std=c++11
+%endif
+
+%autoreconf
+%configure \
+	%{subst_enable static} \
+	%{subst_enable debug} \
+	--with-boost-libdir=%_libdir \
+	--enable-python-binding \
+	--with-boost-python=boost_python%{python_version_nodots python2} \
+	%nil
+
+%make_build V=1
+popd
+%endif
+
+export PYTHON=%_bindir/python3
+
+%autoreconf
+%configure \
+	%{subst_enable static} \
+	%{subst_enable debug} \
+	--with-boost-libdir=%_libdir \
+	--enable-python-binding \
+	--with-boost-python=boost_python%{python_version_nodots python3} \
+	%nil
+
 %make_build V=1
 
 %install
+%if_with python2
+pushd ../build-python2/bindings/python
+%python_install
+popd
+%endif
+
 %makeinstall_std
 
 rm -f %buildroot%_libdir/*.la
@@ -148,24 +203,38 @@ rm -f %buildroot%_libdir/*.a
 
 %files -n %name%soname
 %doc AUTHORS ChangeLog NEWS README.rst
-%doc --no-dereference COPYING
+%doc COPYING LICENSE
 %_libdir/*.so.*
 
 %files -n %upname-devel
 %_includedir/*
 %_libdir/*.so
-%_libdir/pkgconfig/*
+%_pkgconfigdir/*
 
 %if_enabled static
 %files -n %upname-devel-static
 %_libdir/*.a
 %endif
 
+%if_with python2
 %files -n python-module-%upname
 %python_sitelibdir/libtorrent.so
 %python_sitelibdir/*.egg-info
+%endif
+
+%files -n python3-module-%upname
+%python3_sitelibdir/libtorrent*.so
+%python3_sitelibdir/*.egg-info
 
 %changelog
+* Thu Nov 07 2019 Michael Shigorin <mike@altlinux.org> 3:1.1.13-alt2
+- E2K: explicit -std=c++11
+- Minor spec cleanup
+
+* Thu Jul 11 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3:1.1.13-alt1
+- Updated to upstream version 1.1.13.
+- Built bindings for python-3 (Closes: #31679).
+
 * Mon Jan 28 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3:1.1.12-alt1
 - Updated to upstream version 1.1.12.
 - Updated package names to support shared libs policy.

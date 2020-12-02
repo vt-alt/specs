@@ -1,19 +1,17 @@
 Name: btcat
-Version: 0.1
-Release: alt2
+Version: 0.2
+Release: alt1
 
 Summary: Btcat is a torrent command line tool
-License: %gpl3plus
+License: GPL-3.0-or-later
 Group: Networking/WWW
-Url: http://jordic.com/btcat
+Url: https://github.com/glebfm/btcat
 
-Patch0: btcat-0.1-drop-unnecessary-Tkinter-dependence.patch
 BuildArch: noarch
 
 Source: btcat
 
-BuildPreReq: rpm-build-licenses
-BuildRequires: python-devel
+BuildRequires: rpm-build-python3
 
 %description
 btcat is a command line tool that downloads a file using the bittorrent
@@ -25,16 +23,18 @@ instance, to reproduce a media file while it's still downloading.
 %prep
 %setup -c -T
 cp %_sourcedir/btcat .
-%patch0 -p1
 
 %install
 mkdir -p %buildroot/%_bindir
-install -m755 btcat %buildroot/%_bindir/
+install -m755 btcat %buildroot%_bindir/
 
 %files
 %_bindir/btcat
 
 %changelog
+* Fri Mar 27 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2-alt1
+- Updated to v0.2.
+
 * Fri Dec 11 2015 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.1-alt2
 - Fixed program permissions.
 
