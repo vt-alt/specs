@@ -1,3 +1,5 @@
+%set_verify_info_method relaxed
+
 %define DEFAULT_LISP    sbcl
 
 %define BUILD_GCL	0
@@ -22,27 +24,24 @@
 %define CVS_BUILD	0
 
 Name: maxima
-Version: 5.42.1
-%define maxima_version 5.42.1
-Release: alt2
+Version: 5.43.2
+%define maxima_version 5.43.2
+Release: alt1
 Summary: Maxima Computer Algebra System
-License: GPL
+License: GPL-2.0
 Group: Sciences/Mathematics
 Url: http://maxima.sourceforge.net
 Packager: Ilya Mashkin <oddity@altlinux.ru>
 
+ExclusiveArch: armh aarch64 %ix86 x86_64 ppc sparcv9                                                           
+
 Source0: maxima-%version.tar.gz
-Source1: maxima-new-16.xpm
-Source2: maxima-new-32.xpm
-Source3: maxima-new-48.xpm
-Source4: maxima-xmaxima.desktop
 Source6: maxima-modes.el
 %if %BUILD_BOOK
 Source7: breqn-0.94.tar.bz2
 %endif
 
-Patch1: maxima-5.14.0-gnuplot-pm3d.patch
-Patch6: maxima-5.9.4-gcl_setarch.patch
+Patch1: maxima-alt-desktop-i18n.patch
 
 ## upstreamable patches
 # https://bugzilla.redhat.com/show_bug.cgi?id=837142
@@ -52,11 +51,9 @@ Patch50: maxima-5.37.1-clisp-noreadline.patch
 # Build the fasl while building the executable to avoid double initialization
 Patch51: maxima-5.30.0-build-fasl.patch
 
-
 ## Other maxima reference docs
 Source10: http://starship.python.net/crew/mike/TixMaxima/macref.pdf
 Source11: http://maxima.sourceforge.net/docs/maximabook/maximabook-19-Sept-2004.pdf
-
 
 %description
 Maxima is a full symbolic computation program.  It is full featured
@@ -65,7 +62,7 @@ functions, integration, Todd-coxeter, graphing, bigfloats.  It has a
 symbolic debugger source level debugger for maxima code.  Maxima is
 based on the original Macsyma developed at MIT in the 1970's.  It is
 quite reliable, and has good garbage collection, and no memory leaks.
-It comes with hundreds of self tests.  
+It comes with hundreds of self tests.
 
 %package common
 Summary: Maxima Symbolic Computation Program. Common files
@@ -130,22 +127,23 @@ Maxima binaries compiled with SBCL (Steel Bank Common Lisp).
 Summary: Emacs Maxima modes
 Group: Editors
 Requires:  emacs emacs-mode-auctex 
+BuildRequires: emacs-common
 #Requires: maxima-common = %version-%release
-
 Obsoletes: maxima-emacs
 BuildArch: noarch
-
 
 %description -n emacs-maxima
 Set of Maxima emacs modes.
 %endif
 
 %if %BUILD_XMAXIMA
-%package xmaxima
+%package -n xmaxima
 Summary: Maxima graphical frontend
 Group: Sciences/Mathematics
 Requires: maxima-common = %version-%release tk tcl
-%description xmaxima
+Provides: %name-xmaxima = %EVR
+Obsoletes: %name-xmaxima < %EVR
+%description -n xmaxima
 Maxima graphical frontend written in Tcl/Tk.
 %endif
 
@@ -164,9 +162,7 @@ Maxima Spanish language pack.
 %package lang-es-utf8
 Summary: Maxima Spanish language pack (UTF-8)
 Group: Sciences/Mathematics
-
 #Requires: maxima-common = %version-%release
-
 BuildArch: noarch
 
 %description lang-es-utf8
@@ -177,9 +173,7 @@ Maxima Spanish language pack (UTF-8).
 %package lang-pt
 Summary: Maxima Portuguese language pack
 Group: Sciences/Mathematics
-
 #Requires: maxima-common = %version-%release
-
 BuildArch: noarch
 
 %description lang-pt
@@ -190,9 +184,7 @@ Maxima Portuguese language pack.
 %package lang-pt-utf8
 Summary: Maxima Portuguese language pack (UTF-8)
 Group: Sciences/Mathematics
-
 #Requires: maxima-common = %version-%release
-
 BuildArch: noarch
 
 %description lang-pt-utf8
@@ -203,9 +195,7 @@ Maxima Portuguese language pack (UTF-8).
 %package lang-pt_BR
 Summary: Maxima Brazilian Portuguese language pack
 Group: Sciences/Mathematics
-
 #Requires: maxima-common = %version-%release
-
 BuildArch: noarch
 
 %description lang-pt_BR
@@ -250,12 +240,12 @@ Maxima book
 tar jxf %SOURCE7 -C doc/maximabook
 %endif
 
-#patch1 -p1
-#%patch2 -p1
-#patch6 -p1 -b .gcl-setarch
-
+%patch1 -p2
 %patch50 -p1 -b .clisp-noreadline
 %patch51 -p1 -b .build-fasl
+
+# Set new path to maxima-index.lisp
+subst 's|maxima::\*maxima-infodir\* |"%_datadir/maxima/%maxima_version/doc" |' src/cl-info.lisp
 
 # Extra docs
 install -p -m644 %{SOURCE10} .
@@ -342,9 +332,6 @@ pushd doc
 popd  
 
 %install
-
-%set_verify_info_method relaxed
-
 #export RPM_FINDREQ_METHOD=none
 #%define _findreq_default_method none
 # info files must be uncompressed
@@ -375,30 +362,8 @@ install -d %buildroot%_docdir/maxima-%version/maximabook
 install -d %buildroot%_docdir/maxima-%version/emaxima
 %endif
 
-%if %BUILD_XMAXIMA
-# icons
-install -D -m644 %SOURCE1 %buildroot%_miconsdir/maxima.xpm
-install -D -m644 %SOURCE2 %buildroot%_niconsdir/maxima.xpm
-install -D -m644 %SOURCE3 %buildroot%_liconsdir/maxima.xpm
-# menu item
-install -D -m644 %SOURCE4 %buildroot%_desktopdir/maxima-xmaxima.desktop
-%endif
-
 # emacs modes
 %if %BUILD_EMACS
-#  emaxima
-install -D -m644 \
-  %maxima_dir/interfaces/emacs/emaxima/*.el \
-  %maxima_dir/interfaces/emacs/emaxima/*.lisp \
-    %buildroot%emacs_maxima_dir
-install -D -m644 \
-  %maxima_dir/interfaces/emacs/emaxima/*.sty \
-    %buildroot%_datadir/texmf/tex/latex/emaxima/emaxima.sty
-#  old modes
-install -D -m644 \
-  %maxima_dir/interfaces/emacs/misc/*.el \
-    %buildroot%emacs_maxima_dir
-# site start
 install -D -m644 %SOURCE6 %buildroot%_sysconfdir/emacs/site-start.d/maxima.el
 echo "(setq load-path (cons \"%emacs_maxima_dir\" load-path))" >> \
   %buildroot%_sysconfdir/emacs/site-start.d/maxima.el
@@ -406,7 +371,6 @@ echo "(setq load-path (cons \"%emacs_maxima_dir\" load-path))" >> \
 
 # documentation
 %define maxima_docdir %buildroot%_docdir/maxima-%version
-install -D -m644 COPY* AUT* NEW* READ* INST* Change* doc/contrib* %maxima_docdir
 %if %BUILD_BOOK
 install -D -m644 %maxima_dir/doc/maximabook/maxima.pdf %maxima_docdir/maxima.pdf
 %endif
@@ -417,8 +381,37 @@ install -D -m644 %maxima_dir/doc/emaxima/EMaximaIntro.ps %maxima_docdir/emaxima/
 %endif
 
 cd %maxima_dir
-
 %makeinstall
+
+%if %BUILD_EMACS
+# Move emacs .el and .lisp scripts to subdirectory
+mv %buildroot%_datadir/emacs/site-lisp/*.{el,lisp} %buildroot%emacs_maxima_dir
+mkdir -p %buildroot%_datadir/texmf/tex/latex/emaxima
+mv %buildroot%_datadir/emacs/site-lisp/*.sty %buildroot%_datadir/texmf/tex/latex/emaxima
+%endif
+
+# Move all maxima-index.lisp from /usr/share/info to maxima directory
+%define doc_dir %_datadir/maxima/%maxima_version/doc
+pushd %buildroot%_infodir
+find . -name maxima-index.lisp | while read f;do
+	d="$(dirname $f)"
+	d="${d//\.\/}"
+	mkdir -p %buildroot%doc_dir/$d 2>/dev/null ||:
+	mv "$f" %buildroot%doc_dir/$d
+	if [ "$d" == "." ]; then
+		for i in `ls maxima.info*`; do
+			ln -s ../../../info/$i %buildroot%doc_dir/$i
+		done
+	else
+		for i in `ls $d/maxima.info*`; do
+			ln -s ../../../../info/$i %buildroot%doc_dir/$i
+		done
+	fi
+done
+popd
+
+# Remove disallowed ELF files in /usr/share
+rm -f %buildroot%_datadir/maxima/%maxima_version/share/test_encodings/escape-double-quote
 
 %files common
 %doc doc/maximabook/maxima.pdf
@@ -427,21 +420,27 @@ cd %maxima_dir
 %_infodir/*
 %if %BUILD_LANG_ES
 %exclude %_infodir/es
+%exclude %doc_dir/es
 %endif
 %if %BUILD_LANG_ES_UTF
 %exclude %_infodir/es.utf8
+%exclude %doc_dir/es.utf8
 %endif
 %if %BUILD_LANG_PT
 %exclude %_infodir/pt
+%exclude %doc_dir/pt
 %endif
 %if %BUILD_LANG_PT_UTF
 %exclude %_infodir/pt.utf8
+%exclude %doc_dir/pt.utf8
 %endif
 %if %BUILD_LANG_PT_BR
 %exclude %_infodir/pt_BR
+%exclude %doc_dir/pt_BR
 %endif
 %if %BUILD_LANG_PT_BR_UTF
 %exclude %_infodir/pt_BR.utf8
+%exclude %doc_dir/pt_BR.utf8
 %endif
 %_mandir/man1/maxima.1*
 %dir %_libexecdir/maxima
@@ -456,7 +455,6 @@ cd %maxima_dir
 %_datadir/maxima/%maxima_version/tests
 %_datadir/bash-completion/completions/*maxima
 %_datadir/pixmaps/*maxima*
-%exclude %_datadir/maxima/%maxima_version/emacs
 %if %BUILD_LANG_ES
 %exclude %_datadir/maxima/%maxima_version/doc/html/es
 %endif
@@ -475,14 +473,10 @@ cd %maxima_dir
 %if %BUILD_LANG_PT_BR_UTF
 %exclude %_datadir/maxima/%maxima_version/doc/html/pt_BR.utf8
 %endif
-%dir %_docdir/maxima-%version
-%doc %_docdir/maxima-%version/COPY*
-%doc %_docdir/maxima-%version/AUT*
-%doc %_docdir/maxima-%version/NEW*
-%doc %_docdir/maxima-%version/READ*
-%doc %_docdir/maxima-%version/INST*
-%doc %_docdir/maxima-%version/Change*
-%doc %_docdir/maxima-%version/contrib*
+%doc AUTHORS
+%doc README
+%doc README.external
+%doc README.lisps
 %doc %_docdir/maxima-%version/intromax.html
 %doc %_docdir/maxima-%version/implementation
 
@@ -524,16 +518,14 @@ cd %maxima_dir
 %endif
 
 %if %BUILD_XMAXIMA
-%files xmaxima
+%files -n xmaxima
 %_bindir/xmaxima
-%_desktopdir/maxima-xmaxima.desktop
-%_niconsdir/maxima.xpm
-%_miconsdir/maxima.xpm
-%_liconsdir/maxima.xpm
+%_desktopdir/*.desktop
 %dir %_datadir/maxima
 %dir %_datadir/maxima/%maxima_version
 %_datadir/maxima/%maxima_version/xmaxima
 %_datadir/mime/packages/*.xml
+%_datadir/metainfo/*.appdata.xml
 %endif
 
 %if %BUILD_BOOK
@@ -546,40 +538,55 @@ cd %maxima_dir
 %files lang-es
 %_datadir/maxima/%maxima_version/doc/html/es
 %_infodir/es
+%doc_dir/es
 %endif
 
 %if %BUILD_LANG_ES_UTF
 %files lang-es-utf8
 %_datadir/maxima/%maxima_version/doc/html/es.utf8
 %_infodir/es.utf8
+%doc_dir/es.utf8
 %endif
 
 %if %BUILD_LANG_PT
 %files lang-pt
 %_datadir/maxima/%maxima_version/doc/html/pt
 %_infodir/pt
+%doc_dir/pt
 %endif
 
 %if %BUILD_LANG_PT_UTF
 %files lang-pt-utf8
 %_datadir/maxima/%maxima_version/doc/html/pt.utf8
 %_infodir/pt.utf8
+%doc_dir/pt.utf8
 %endif
 
 %if %BUILD_LANG_PT_BR
 %files lang-pt_BR
 %_datadir/maxima/%maxima_version/doc/html/pt_BR
 %_infodir/pt_BR
+%doc_dir/pt_BR
 %endif
 
 %if %BUILD_LANG_PT_BR_UTF
 %files lang-pt_BR-utf8
 %_datadir/maxima/%maxima_version/doc/html/pt_BR.utf8
 %_infodir/pt_BR.utf8
+%doc_dir/pt_BR.utf8
 %endif
 
-
 %changelog
+* Wed Apr 29 2020 Andrey Cherepanov <cas@altlinux.org> 5.43.2-alt1
+- 5.43.2 (ALT #34445).
+- Fix bogus changelog entries.
+- Fix License tag according to SPDX.
+- Rename maxima-xmaxima to xmaxima and package its metainfo.
+- Move all maxima-index.lisp from info dir (ALT #21842).
+
+* Wed Feb 13 2019 Andrey Cherepanov <cas@altlinux.org> 5.42.1-alt2.1
+- Build with default cmucl lisp.
+
 * Thu Dec 06 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.42.1-alt2
 - rebuilt with recent libffcall
 - enabled build on aarch64
@@ -664,7 +671,7 @@ cd %maxima_dir
 * Mon Sep 03 2012 Ilya Mashkin <oddity@altlinux.ru> 5.28.0-alt1
 - 5.28.0
 
-* Tue Aug 27 2012 Ilya Mashkin <oddity@altlinux.ru> 5.27.0-alt2
+* Mon Aug 27 2012 Ilya Mashkin <oddity@altlinux.ru> 5.27.0-alt2
 - build with sbcl 1.0.58
 
 * Fri Apr 27 2012 Ilya Mashkin <oddity@altlinux.ru> 5.27.0-alt1
@@ -914,12 +921,12 @@ cd %maxima_dir
 - Some spec rewrite. In particular subpackages maxima-<lisp> are
   renamed to maxima-bin-<lisp>.
 
-* Thu May 20 2002 Vadim V. Zhytnikov <vvzhy@mail.ru> 5.9.0-alt0.05
+* Mon May 20 2002 Vadim V. Zhytnikov <vvzhy@mail.ru> 5.9.0-alt0.05
 - optional build for some packages.
 - default lisp now can be selected.
 - xmaxima is back.
 
-* Sun Apr 26 2002 Vadim V. Zhytnikov <vvzhy@mail.ru> 5.9.0-alt0.04
+* Fri Apr 26 2002 Vadim V. Zhytnikov <vvzhy@mail.ru> 5.9.0-alt0.04
 - Search path is now in place.
 
 * Sun Mar 24 2002 Vadim V. Zhytnikov <vvzhy@mail.ru> 5.9.0-alt0.03
