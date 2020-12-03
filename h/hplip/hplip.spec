@@ -28,7 +28,7 @@
 %endif
 
 Name:    hplip
-Version: 3.19.12
+Version: 3.20.11
 Release: alt1
 Epoch:   1
 
@@ -46,9 +46,7 @@ URL: https://developers.hp.com/hp-linux-imaging-and-printing
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 # Remove self-satisfied requires
-%if_with python3
-%filter_from_requires /^python3(\(base.*\|installer.*\|prnt\|scan\|copier\))/d
-%endif
+%filter_from_requires /^python[0-9.]*(\(base.*\|installer.*\|prnt\|scan\|copier\|hpmudext\|pcard\))/d
 
 %define hpijsname hpijs
 
@@ -58,7 +56,7 @@ Provides: cups-backend-ptal
 Obsoletes: cups-backend-ptal
 Conflicts: cups < 1.1.18-alt7
 
-PreReq:	cups
+Requires(pre,postun): cups
 Requires: %name-common = %{?epoch:%epoch:}%version-%release
 
 # TODO: split hplip and hplip-utils
@@ -76,12 +74,18 @@ Requires: wget
 Requires: %{_bindir}/gpg
 
 %if_enabled python_code
-###Requires: python
+
 %if_with python3
 BuildRequires(pre): rpm-build-python3
-%add_python3_lib_path %_datadir/%name
+%add_python3_compile_include %_datadir/%name
+AutoReqProv: nopython
+AutoProv: nopython3
+%py3_requires distro
 %else
-%add_python_lib_path %_datadir/%name
+BuildRequires(pre): rpm-build-python
+%add_python_compile_include %_datadir/%name
+AutoProv: nopython
+%py_requires distro
 %endif
 # Andy Kuleshov report
 Requires: python%{pysuffix}-module-dbus
@@ -92,9 +96,19 @@ Requires: python-modules-ctypes
 
 Requires: service => 0.5.9-alt1
 
-BuildPreReq: libsane-devel
-# Automatically added by buildreq on Thu Sep 22 2005
-BuildRequires: gcc-c++ libcups-devel libjpeg-devel libnet-snmp-devel libssl-devel libstdc++-devel libusb-devel libusb-compat-devel libdbus-devel zlib-devel
+BuildRequires(pre): libsane-devel
+
+BuildRequires: gcc-c++
+BuildRequires: libavahi-devel
+BuildRequires: libcups-devel
+BuildRequires: libdbus-devel
+BuildRequires: libjpeg-devel
+BuildRequires: libnet-snmp-devel
+BuildRequires: libssl-devel
+BuildRequires: libstdc++-devel
+BuildRequires: libusb-compat-devel
+BuildRequires: libusb-devel
+BuildRequires: zlib-devel
 
 %if_enabled python_code
 %if_enabled qt3
@@ -112,7 +126,7 @@ BuildRequires: python%{pysuffix}-devel
 
 %if_enabled PPDs
 #cups-common and foomatic-filters is for cupstestppd
-BuildPreReq: perl cups-common %{cups_filters}
+BuildRequires: perl cups-common %{cups_filters}
 %endif
 
 %if_enabled policykit
@@ -128,6 +142,7 @@ Source6: %name-icons.tar
 Source7: %name-fixppd.sh
 Source8: %name.watch
 Source9: upstream-signing-key.asc
+Source10: hp-systray
 
 #TODO: see what fdi is better:
 # https://bugzilla.redhat.com/show_bug.cgi?id=478495
@@ -160,6 +175,10 @@ Patch12: hplip-3.16.11-alt-fax-setup.patch
 Patch13: hplip-alt-fix-PPD-file-choose-in-qt5.patch
 # Localization files made for old qt3 forms
 Patch14: hplip-alt-use-l10n.patch
+# Use python3 in service file
+Patch15: hplip-alt-use-python3-in-service.patch
+# Fix undefined _GDB() function
+Patch17: hplip-alt-fix-undefined-_GDB-call.patch
 
 # fedora patches
 Patch101: hplip-pstotiff-is-rubbish.patch
@@ -300,6 +319,8 @@ Requires: python%{pysuffix}-module-Pillow
 # Enable D-Bus threading (and require pygobject2) (bug #600932).
 # patch33 -p1 -b .dbus-threads
 Requires: python%{pysuffix}-module-pygobject
+# hplip-gui uses lsusb
+Requires: %_bindir/lsusb
 
 Requires: %name = %{?epoch:%epoch:}%version-%release
 
@@ -623,6 +644,8 @@ tar -xf %SOURCE6
 %if_with l10n
 %patch14 -p2
 %endif
+%patch15 -p2
+%patch17 -p2
 
 egrep -lZr '#!/usr/bin/python$' . | xargs -r0 sed -i 's,#!/usr/bin/python$,#!/usr/bin/python%{pysuffix},'
 fgrep -lZr '#!/usr/bin/env python' . | xargs -r0 sed -i 's,#!/usr/bin/env python,#!/usr/bin/python%{pysuffix},'
@@ -692,6 +715,13 @@ EOF
 
 #we install foomatic data in separate package
 # TODO
+
+# Fix path to Python3 includes for python3 >= 3.8
+%if_with python3
+%add_optflags `pkg-config --cflags python3`
+%endif
+%undefine _configure_gettext
+
 %configure \
     --with-mimedir=%{_datadir}/cups/mime \
     --disable-foomatic-rip-hplip-install \
@@ -870,6 +900,10 @@ mv %{buildroot}/usr/lib/udev %{buildroot}/lib/
 # remove hp-uiscan.desktop
 rm -f %buildroot%_desktopdir/hp-uiscan.desktop
 
+# Replace symlink by shell wrapper to correct behaviour of right mouse button
+rm -f %buildroot%_bindir/hp-systray
+install -Dm0755 %{SOURCE10} %buildroot%_bindir/hp-systray
+
 %pre
 # TODO: drop it somewhere after p7 release
 # no more services
@@ -943,6 +977,7 @@ fi
 %{_bindir}/hp-unload
 # Files
 %dir %{_datadir}/hplip
+%{_datadir}/hplip/__pycache__
 %{_datadir}/hplip/align.py*
 %{_datadir}/hplip/check-plugin.py*
 %{_datadir}/hplip/clean.py*
@@ -1153,6 +1188,118 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Wed Dec 02 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.11-alt1
+- New version.
+- Replace symlink by shell wrapper to correct behaviour of right mouse button.
+
+* Fri Oct 02 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.9-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP LaserJet MFP M234dw, M234dwe
+  + HP Color LaserJet Managed MFP E57540dn
+  + HP Color LaserJet Managed Flow MFP E57540c
+  + HP Color LaserJet Enterprise MFP M578dn, M578f
+  + HP Color LaserJet Enterprise Flow MFP M578c, M578z
+  + HP Color LaserJet Managed E55040dw, E55040dn
+  + HP Color LaserJet Enterprise M554dn
+  + HP Color LaserJet Enterprise M555dn, M555x
+
+* Fri Jun 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.6-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP Color LaserJet Managed MFP E78223a
+  + HP Color LaserJet Managed MFP E78223dv
+  + HP Color LaserJet Managed MFP E78223dn
+  + HP Color LaserJet Mngd MFP E78223dn Plus
+  + HP Color LaserJet Mngd MFP E78223dn CN
+  + HP Color LaserJet Managed MFP E78228dn 
+  + HP Color LaserJet Managed MFP E78228dn Plus
+  + HP Color LaserJet Managed MFP E78228dn CN
+  + HP Color LaserJet Managed Flow MFP E78330z Plus
+  + HP Color LaserJet Managed Flow MFP E78330z CN
+  + HP Color LaserJet Managed MFP E78330dn
+  + HP Color LaserJet Mngd MFP E78330dn Plus
+  + HP Color LaserJet Mngd MFP E78330dn CN
+  + HP Color LaserJet Managed MFP E78330z
+  + HP Color LaserJet Managed Flow MFP E78325z Plus
+  + HP Color LaserJet Managed Flow MFP E78325dn CN
+  + HP Color LaserJet Managed Flow MFP E78325z CN
+  + HP Color LaserJet Managed MFP E78325dn
+  + HP Color LaserJet Managed MFP E78325z
+  + HP Color LaserJet Managed Flow MFP E78323z
+  + HP Color LaserJet Mgd Flw MFPE78323Z Plus
+  + HP Color LaserJet Mgd Flw MFPE78323z CN
+  + HP Color LaserJet Managed MFP E78323dn
+  + HP Color LaserJet Mngd MFP E78323dn Plus
+  + HP Color LaserJet Mngd MFP E78323dn CN
+
+* Mon May 18 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.5-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP DeskJet 1200
+  + HP DeskJet Ink Advantage 1200
+  + HP DeskJet 2300 All-in-One
+  + HP DeskJet Ink Advantage 2300 All-in-One
+  + HP ENVY 6000 series
+  + HP DeskJet Plus 6000 series
+  + HP ENVY Pro 6400 series
+  + HP DeskJet Plus 6400 series
+  + HP DeskJet 2700 All-in-One Printer series
+  + HP DeskJet Ink Advantage 2700 All-in-One Printer series
+  + HP DeskJet Plus 4100 All-in-One Printer series
+  + HP DeskJet Ink Advantage 4100 All-in-One Printer series
+  + HP LaserJet Enterprise M610dn
+  + HP LaserJet Enterprise M611dn
+  + HP LaserJet Enterprise M611x
+  + HP LaserJet Enterprise M612dn
+  + HP LaserJet Enterprise M612x
+  + HP LaserJet Enterprise MFP M634dn
+  + HP LaserJet Enterprise MFP M634z
+  + HP LaserJet Enterprise Flow MFP M634h
+  + HP LaserJet Enterprise MFP M635h
+  + HP LaserJet Enterprise MFP M635fht
+  + HP LaserJet Enterprise Flow MFP M635z
+  + HP LaserJet Enterprise MFP M636fh
+  + HP LaserJet Enterprise Flow MFP M636z
+
+* Wed Apr 01 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.3-alt4
+- Add requirement of %_bindir/lsusb for hplip-gui (ALT #38312).
+
+* Thu Mar 19 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.3-alt3
+- Returned Python autorequires, required distro python module.
+
+* Mon Mar 16 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.3-alt2
+- Apply patch (ALT #38043).
+
+* Thu Mar 12 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.3-alt1
+- New version (ALT #38043).
+- Fix systray icon menu (ALT #38147).
+
+* Fri Feb 28 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.2-alt1
+- New version.
+- Added support for the following new Printers:
+  + HP Neverstop Laser MFP 1200n
+  + HP Neverstop Laser MFP 1201n
+  + HP Neverstop Laser MFP 1200nw
+  + HP Neverstop Laser MFP 1202nw
+  + HP Laser NS MFP 1005n
+  + HP Neverstop Laser 1000n
+  + HP Neverstop Laser 1001nw
+  + HP Laser NS 1020n
+  + HP ScanJet Pro 2000 s2
+  + HP ScanJet Pro 3000 s4
+  + HP ScanJet Pro N4000 snw1
+  + HP ScanJet Enterprise Flow 5000 s5
+  + HP ScanJet Enterprise Flow N7000 snw1
+
+* Thu Feb 27 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.19.12-alt3
+- Do not generate provides with Python scripts that are not packaged as library.
+- Fix path to Python3 includes for python3 >= 3.8.
+- Spec cleanup.
+
+* Fri Feb 14 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.19.12-alt2
+- Use python3 in service file.
+
 * Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 1:3.19.12-alt1
 - New version.
 - Added support for the following new Printers:
