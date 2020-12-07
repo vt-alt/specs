@@ -5,9 +5,9 @@
 %def_with icu
 
 %define prog_name            postgresql
-%define postgresql_major     11
-%define postgresql_minor     9
-%define postgresql_altrel    1
+%define postgresql_major     12
+%define postgresql_minor     5
+%define postgresql_altrel    3
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -296,7 +296,7 @@ pushd contrib
 popd
 
 cp -a COPYRIGHT README \
-    doc/{KNOWN_BUGS,MISSING_FEATURES,TODO,bug.template} \
+    doc/{KNOWN_BUGS,MISSING_FEATURES,TODO} \
     src/tutorial %buildroot%docdir/
 
 %find_lang ecpglib%libecpg_major-%postgresql_major
@@ -314,7 +314,6 @@ cp -a COPYRIGHT README \
 %find_lang pg_test_fsync-%postgresql_major
 %find_lang pg_test_timing-%postgresql_major
 %find_lang pg_upgrade-%postgresql_major
-%find_lang pg_verify_checksums-%postgresql_major
 %find_lang pg_waldump-%postgresql_major
 %find_lang pgscripts-%postgresql_major
 %find_lang plperl-%postgresql_major
@@ -329,8 +328,7 @@ cat psql-%postgresql_major.lang \
     pgscripts-%postgresql_major.lang \
     pg_basebackup-%postgresql_major.lang \
     pg_test_fsync-%postgresql_major.lang \
-    pg_test_timing-%postgresql_major.lang \
-    pg_verify_checksums-%postgresql_major.lang > main.lang
+    pg_test_timing-%postgresql_major.lang > main.lang
 
 cat postgres-%postgresql_major.lang \
     pg_controldata-%postgresql_major.lang \
@@ -388,16 +386,6 @@ chown postgres:postgres ~postgres/.bash_profile
 
 # $2, holds the number of instances of the target package that will remain
 # after the operation if $2 is 0, the target package will be removed
-%triggerpostun -- %{prog_name}9.3-server
-if [ "$2" -eq 0 ]; then
-       %post_service %prog_name
-fi
-
-%triggerpostun -- %{prog_name}9.4-server
-if [ "$2" -eq 0 ]; then
-       %post_service %prog_name
-fi
-
 %triggerpostun -- %{prog_name}9.5-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
@@ -413,12 +401,22 @@ if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
-%triggerpostun -- %{prog_name}10-1C-server
+%triggerpostun -- %{prog_name}11-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
-%triggerpostun -- %{prog_name}11-server
+%triggerpostun -- %{prog_name}12-server
+if [ "$2" -eq 0 ]; then
+       %post_service %prog_name
+fi
+
+%triggerpostun -- %{prog_name}12-1C-server
+if [ "$2" -eq 0 ]; then
+       %post_service %prog_name
+fi
+
+%triggerpostun -- %{prog_name}13-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
@@ -438,7 +436,6 @@ fi
 %_bindir/pg_basebackup
 %_bindir/pg_test_fsync
 %_bindir/pg_test_timing
-%_bindir/pg_verify_checksums
 %_bindir/pg_isready
 %_bindir/pg_recvlogical
 %_man1dir/clusterdb.1*
@@ -457,7 +454,6 @@ fi
 %_man1dir/pg_basebackup.1*
 %_man1dir/pg_isready.1*
 %_man1dir/pg_recvlogical.1*
-%_man1dir/pg_verify_checksums.1*
 %_man7dir/*
 %dir %docdir
 %docdir/KNOWN_BUGS
@@ -465,13 +461,13 @@ fi
 %docdir/TODO
 %docdir/COPYRIGHT
 %docdir/README
-%docdir/bug.template
 
 %files docs
 %dir %docdir
 %dir %docdir/html
 %docdir/html/*.html
 %docdir/html/*.css
+%docdir/html/*.svg
 %dir %docdir/tutorial
 %docdir/tutorial/*
 %docdir/contrib
@@ -648,9 +644,6 @@ fi
 %_datadir/%PGSQL/extension/tcn-*.sql
 %_datadir/%PGSQL/extension/tcn.control
 %_libdir/pgsql/test_decoding.so
-%_libdir/pgsql/timetravel.so
-%_datadir/%PGSQL/extension/timetravel-*.sql
-%_datadir/%PGSQL/extension/timetravel.control
 %_libdir/pgsql/tsm_system_rows.so
 %_datadir/%PGSQL/extension/tsm_system_rows-*.sql
 %_datadir/%PGSQL/extension/tsm_system_rows.control
@@ -712,7 +705,6 @@ fi
 %_datadir/%PGSQL/postgres.description
 %_datadir/%PGSQL/postgres.shdescription
 %_datadir/%PGSQL/*.sample
-%_datadir/%PGSQL/conversion_create.sql
 %_datadir/%PGSQL/information_schema.sql
 %_datadir/%PGSQL/sql_features.txt
 %_datadir/%PGSQL/system_views.sql
@@ -790,6 +782,16 @@ fi
 %endif
 
 %changelog
+* Thu Dec 03 2020 Alexei Takaseev <taf@altlinux.org> 12.5-alt3
+- Decrased shared_buffers from 4G to 512M
+
+* Wed Nov 18 2020 Alexei Takaseev <taf@altlinux.org> 12.5-alt2
+- Add %%triggerpostun for PG 13
+
+* Mon Nov 16 2020 Alexei Takaseev <taf@altlinux.org> 12.5-alt1
+- 12.5 (Fixes CVE-2020-25694, CVE-2020-25695, CVE-2020-25696)
+- Re-applay patch from 1C
+
 * Wed Aug 12 2020 Alexei Takaseev <taf@altlinux.org> 11.9-alt1
 - 11.9 (Fixes CVE-2020-14349, CVE-2020-14350)
 

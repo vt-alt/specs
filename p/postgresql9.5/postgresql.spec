@@ -4,8 +4,8 @@
 %define prog_name            postgresql
 %define postgresql_major     9
 %define postgresql_minor     5
-%define postgresql_subminor  23
-%define postgresql_altrel    1
+%define postgresql_subminor  24
+%define postgresql_altrel    2
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -42,6 +42,8 @@ Patch8: 0001-Add-postgresql-startup-method-through-service-1-to-i.patch
 Provides: %prog_name = %EVR
 Conflicts: %prog_name < %EVR
 Conflicts: %prog_name > %EVR
+# 1C
+Conflicts: %{prog_name}12-1C
 
 BuildRequires: OpenSP docbook-style-dsssl docbook-style-dsssl-utils docbook-style-xsl flex libldap-devel libossp-uuid-devel libpam-devel libreadline-devel libssl-devel libxslt-devel openjade perl-DBI perl-devel postgresql-common python-devel setproctitle-devel tcl-devel xsltproc zlib-devel
 BuildRequires: libselinux-devel libkrb5-devel
@@ -111,6 +113,8 @@ Development static library for postgresql-devel
 Summary: Extra documentation for PostgreSQL
 Group: Databases
 BuildArch: noarch
+# 1C
+Conflicts: %{prog_name}12-1C-docs
 
 %description docs
 The postgresql-docs package includes the SGML source for the documentation
@@ -123,6 +127,8 @@ Summary: Contributed source and binaries distributed with PostgreSQL
 Group: Databases
 Requires: %name-server = %EVR
 Provides: %prog_name-contrib = %EVR
+# 1C
+Conflicts: %{prog_name}12-1C-contrib
 
 %description contrib
 The postgresql-contrib package includes the contrib tree distributed with
@@ -136,6 +142,8 @@ Requires(pre): postgresql-common > 1.0-alt3
 Requires: %name = %EVR
 Requires: glibc-locales
 Provides: %prog_name-server = %EVR
+# 1C
+Conflicts: %{prog_name}12-1C-server
 
 %description server
 The postgresql-server package includes the programs needed to create
@@ -154,6 +162,8 @@ Summary: The PL/Tcl procedural language for PostgreSQL
 Group: Databases
 Requires: %name-server = %EVR, tcl >= 8.4.0-alt1
 Provides: postgresql-tcl
+# 1C
+Conflicts: %{prog_name}12-1C-tcl
 
 %description tcl
 PostgreSQL is an advanced Object-Relational database management
@@ -165,6 +175,8 @@ Summary: The PL/Perl procedural language for PostgreSQL
 Group: Databases
 Requires: %name-server = %EVR
 Provides: postgresql-perl = %EVR
+# 1C
+Conflicts: %{prog_name}12-1C-perl
 
 %description perl
 PostgreSQL is an advanced Object-Relational database management
@@ -176,6 +188,8 @@ Summary: Development module for Python code to access a PostgreSQL DB
 Group: Databases
 Requires: %name-server = %EVR
 Provides: postgresql-python = %EVR
+# 1C
+Conflicts: %{prog_name}12-1C-python
 
 %description python
 PostgreSQL is an advanced Object-Relational database management
@@ -385,17 +399,22 @@ if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
-%triggerpostun -- %{prog_name}11-1C-server
-if [ "$2" -eq 0 ]; then
-       %post_service %prog_name
-fi
-
 %triggerpostun -- %{prog_name}11-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
 
 %triggerpostun -- %{prog_name}12-server
+if [ "$2" -eq 0 ]; then
+       %post_service %prog_name
+fi
+
+%triggerpostun -- %{prog_name}12-1C-server
+if [ "$2" -eq 0 ]; then
+       %post_service %prog_name
+fi
+
+%triggerpostun -- %{prog_name}13-server
 if [ "$2" -eq 0 ]; then
        %post_service %prog_name
 fi
@@ -748,6 +767,13 @@ fi
 %endif
 
 %changelog
+* Wed Nov 18 2020 Alexei Takaseev <taf@altlinux.org> 9.5.24-alt2
+- Change conflict 1C 11 -> 1C 12 (ALT #39313)
+- Add %%triggerpostun for PG 13
+
+* Mon Nov 16 2020 Alexei Takaseev <taf@altlinux.org> 9.5.24-alt1
+- 9.5.24 (Fixes CVE-2020-25694, CVE-2020-25695, CVE-2020-25696)
+
 * Wed Aug 12 2020 Alexei Takaseev <taf@altlinux.org> 9.5.23-alt1
 - 9.5.23 (Fixes CVE-2020-14350)
 
