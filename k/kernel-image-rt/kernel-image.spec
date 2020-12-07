@@ -1,8 +1,8 @@
 %define kflavour		rt
 Name: kernel-image-%kflavour
 %define kernel_base_version	4.19
-%define kernel_sublevel		.124
-%define kernel_rt_release	rt53
+%define kernel_sublevel		.160
+%define kernel_rt_release	rt69
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 Release: alt1.%kernel_rt_release
@@ -71,14 +71,6 @@ ExclusiveArch: x86_64
 %define arch_dir x86
 %endif
 
-%define qemu_pkg %_arch
-%ifarch %ix86 x86_64
-%define qemu_pkg x86
-%endif
-%ifarch ppc64le
-%define qemu_pkg ppc
-%endif
-
 ExclusiveOS: Linux
 
 BuildRequires(pre): rpm-build-kernel
@@ -96,7 +88,7 @@ BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: openssl-devel
 # for check
-%{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static /dev/kvm}}
+%{?!_without_check:%{?!_disable_check:BuildRequires: rpm-build-vm-run >= 1.15}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
 Provides: kernel-modules-drbd83-%flavour = %version-%release
 Provides: kernel-modules-igb-%flavour = %version-%release
@@ -122,12 +114,9 @@ Requires: bootloader-utils >= 0.4.24-alt1
 Requires: module-init-tools >= 3.1
 Requires: mkinitrd >= 1:2.9.9-alt1
 Requires: startup >= 0.8.3-alt1
+Requires: coreutils
 
 Provides: kernel = %kversion
-
-Prereq: coreutils
-Prereq: module-init-tools >= 3.1
-Prereq: mkinitrd >= 1:2.9.9-alt1
 
 AutoReqProv: no
 
@@ -142,6 +131,7 @@ Summary: Header files for the Linux kernel
 Group: Development/Kernel
 Requires: kernel-headers-common >= 1.1.5
 Provides: kernel-headers = %version
+AutoReqProv: nocpp
 #Provides: kernel-headers-%base_flavour = %version-%release
 
 %description -n kernel-headers-%flavour
@@ -164,6 +154,7 @@ Summary: Headers and other files needed for building kernel modules
 Group: Development/Kernel 
 Requires: gcc%kgcc_version
 Requires: libelf-devel
+AutoReqProv: nocpp
 
 %description -n kernel-headers-modules-%flavour
 This package contains header files, Makefiles and other parts of the
@@ -274,7 +265,7 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 %endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
-make modules_install INSTALL_MOD_PATH=%buildroot
+%make_build modules_install INSTALL_MOD_PATH=%buildroot
 
 %ifarch aarch64
 mkdir -p %buildroot/lib/devicetree/$KernelVer
@@ -379,7 +370,7 @@ ln -s %kbuild_dir %buildroot%modules_dir/build
 ln -s "$(relative %kbuild_dir %old_kbuild_dir)" %buildroot%old_kbuild_dir
 
 # Provide kernel headers for userspace
-make headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
+%make_build headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
 
 find %buildroot%kheaders_dir -name ..install.cmd -delete
 
@@ -405,62 +396,11 @@ cp -a Documentation/* %buildroot%_docdir/kernel-doc-%base_flavour-%version/
 # eu-findtextrel will fail if it is not a DSO or PIE.
 %add_verify_elf_skiplist /boot/vmlinuz-*
 
+# Fix: eu-elflint failed for modules
+%add_verify_elf_skiplist %modules_dir/*
 
 %check
-KernelVer=%kversion-%flavour-%krelease
-mkdir -p test
-cd test
-cat > init.c <<__EOF__
-#include <unistd.h>
-#include <stdio.h>
-#include <err.h>
-#include <sys/mount.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/reboot.h>
-int main()
-{
-	if (mkdir("/sys", 0666))
-		warn("mkdir /sys");
-	else if (mount("sysfs", "/sys", "sysfs", 0, NULL))
-		warn("mount /sys");
-	else if (access("/sys/kernel/realtime", R_OK))
-		warn("access /sys/kernel/realtime");
-	else
-		puts("Boot successful!");
-	reboot(RB_POWER_OFF);
-}
-__EOF__
-gcc -static -o init init.c
-echo init | cpio -H newc -o | gzip -9n > initrd.img
-qemu_arch=%_arch
-qemu_opts="-M accel=kvm:tcg -bios bios.bin"
-console=ttyS0
-%ifarch %ix86
-  qemu_arch=i386
-%endif
-%ifarch ppc64le
-  qemu_arch=ppc64
-  qemu_opts="-cpu power8,compat=power7"
-  console=hvc0
-%endif
-%ifarch aarch64
-  qemu_opts="-M virt,gic_version=3 -cpu max"
-  console=ttyAMA0
-%endif
-time -p \
-timeout --foreground 600 \
-qemu-system-$qemu_arch $qemu_opts \
-	-nographic -no-reboot \
-	-kernel %buildroot/boot/vmlinuz-$KernelVer \
-	-initrd initrd.img \
-	-append "console=$console panic=-1" > boot.log &&
-grep -q "^Boot successful!" boot.log &&
-grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
-	cat >&2 boot.log
-	echo >&2 'Marker not found'
-	exit 1
-}
+vm-run cat /sys/kernel/realtime
 
 %files
 /boot/vmlinuz-%kversion-%flavour-%krelease
@@ -500,6 +440,37 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %endif
 
 %changelog
+* Fri Nov 27 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.160-alt1.rt69
+- Update to v4.19.160-rt69 (25 Nov 2020).
+
+* Sun Nov 08 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.152-alt1.rt65
+- Update to v4.19.152-rt65 (30 Oct 2020).
+
+* Sun Oct 04 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.148-alt1.rt64
+- Update to v4.19.148-rt64 (02 Oct 2020).
+- config: Enable some options.
+
+* Sun Sep 06 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.142-alt1.rt63
+- Update to v4.19.142-rt63 (03 Sep 2020).
+
+* Sat Aug 29 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.135-alt1.rt61
+- Update to v4.19.135-rt61 (28 Aug 2020).
+
+* Fri Aug 07 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.135-alt1.rt60
+- Update to v4.19.135-rt60 (03 Aug 2020).
+
+* Wed Jul 15 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.132-alt1.rt59
+- Update to v4.19.132-rt59 (14 Jul 2020).
+
+* Tue Jul 07 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.127-alt2.rt55
+- Rebuild with debuginfo package.
+
+* Wed Jul 01 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.127-alt1.rt55
+- Update to v4.19.127-rt55 (22 Jun 2020).
+
+* Mon Jun 15 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.127-alt1.rt54
+- Update to 4.19.127-rt54 (08 Jun 2020).
+
 * Sat May 23 2020 Vitaly Chikunov <vt@altlinux.org> 4.19.124-alt1.rt53
 - Update to 4.19.124-rt53.
 

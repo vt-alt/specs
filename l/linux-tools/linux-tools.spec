@@ -1,7 +1,11 @@
-%define kernel_base_version 5.3
+# SPDX-License-Identifier: GPL-2.0-only
+%define _unpackaged_files_terminate_build 1
+%define _stripped_files_terminate_build 1
+
+%define kernel_base_version 5.9
 %define kernel_source kernel-source-%kernel_base_version
-%add_verify_elf_skiplist %_libexecdir/traceevent_%kernel_base_version/plugins/*
-%add_findreq_skiplist %_datadir/perf_%kernel_base_version-core/tests/*.py
+%add_verify_elf_skiplist %_libexecdir/traceevent/plugins/*
+%add_findreq_skiplist %_datadir/perf-core/tests/*.py
 
 # from hv_kvp_daemon.c
 %define kvp_config_loc /var/lib/hyperv
@@ -9,33 +13,40 @@
 
 Name: linux-tools
 Version: %kernel_base_version
-Release: alt1
+Release: alt3
 
-Summary: Performance analysis tools for Linux
-License: GPLv2
+Summary: Tools from Linux Kernel tree
+License: GPL-2.0-only
 Group: Development/Tools
 URL: http://www.kernel.org/
+Requires: perf
 
-BuildRequires: libaudit-devel elfutils-devel perl-devel libslang2-devel bison flex binutils-devel asciidoc xmlto libssl-devel liblzma-devel libdw-devel
+BuildRequires(pre): rpm-build-kernel
+BuildRequires(pre): rpm-build-python3
+BuildRequires: asciidoc
+BuildRequires: binutils-devel
+BuildRequires: elfutils-devel
+BuildRequires: flex
+BuildRequires: libaudit-devel
+BuildRequires: libcap-devel
 BuildRequires: libdw-devel
+BuildRequires: liblzma-devel
 %ifnarch %arm
 BuildRequires: libnuma-devel
 %endif
-BuildRequires(pre): rpm-build-kernel
-BuildRequires(pre): rpm-macros-alternatives
+BuildRequires: libslang2-devel
+BuildRequires: libssl-devel
+BuildRequires: libzstd-devel
+BuildRequires: perl-devel
+BuildRequires: xmlto
+
 BuildRequires: %kernel_source = 1.0.0
-BuildRequires: python-devel
+BuildRequires: python3-devel
 BuildRequires: readline-devel
-# python-module-docutils is just for rst2man
-BuildRequires: python-module-docutils
+# python3-module-docutils is just for rst2man.py
+BuildRequires: python3-module-docutils
 # python3 is just for scripts/bpf_helpers_doc.py
 BuildRequires: python3
-
-Patch1: linux-tools-alt.patch
-Patch2: python-linking.patch
-
-AutoReq: yes,noperl,nopython
-AutoProv: yes,noperl,nopython
 
 # Sources for hyperv-daemon
 Source5: hv_get_dhcp_info.sh
@@ -51,20 +62,30 @@ Source31: hypervkvpd.rules
 Source32: hypervvssd.rules
 Source33: hypervfcopyd.rules
 
-%package -n python-module-perf
-Summary: Python bindings for apps which will manipulate perf events
-Group: Development/Python
-Provides: python-perf
-
 %description
+Various tools from the Linux Kernel source tree.
+
+%package -n perf
+Summary: Performance analysis tools for Linux
+Group: Development/Debuggers
+Conflicts: linux-tools < 5.8
+AutoReq: noperl,nopython
+AutoProv: noperl,nopython
+
+%description -n perf
 Performance counters for Linux are a new kernel-based subsystem that provide
 a framework for all things performance analysis. It covers hardware level
 (CPU/PMU, Performance Monitoring Unit) features and software features
 (software counters, tracepoints) as well.
 This package contains performance analysis tools for Linux
 
-%description -n python-module-perf
-The python-perf package contains a module that permits applications
+%package -n python3-module-perf
+Summary: Python bindings for apps which will manipulate perf events
+Group: Development/Python
+Provides: python3-perf
+
+%description -n python3-module-perf
+The python3-perf package contains a module that permits applications
 written in the Python programming language to use the interface
 to manipulate perf events.
 
@@ -160,157 +181,170 @@ manipulation of eBPF programs and maps.
 %prep
 %setup -cT
 tar -xf %kernel_src/%kernel_source.tar
-cd %kernel_source
-%patch1 -p1
-%patch2 -p1
+cd %kernel_source/tools
+
+# Avoid conflict with trace-cmd which installs same plug-ins in
+# %%_libdir/traceevent/plugins
+sed -i 's|\(plugindir[[:blank:]]*=[[:blank:]]*\).*$|\1%_libexecdir/traceevent/plugins|' perf/Makefile.config
+
+# Improve 'Install the audit-libs-python package' help text.
+sed -i '/apt-get/ {
+		s/python-audit/python3-module-audit/
+		s/.(Ubuntu)//
+	}
+	/yum.install/d
+	s/audit-libs-python/python3-module-audit/' perf/scripts/python/Perf-Trace-Util/lib/Perf/Trace/Util.py
+
+# Transient powerpc `make bpf` fix
+sed -i '/#include/a typedef struct { __u32 u[4]; } __vector128;' include/uapi/linux/types.h
 
 %build
-# Build perf
-pushd %kernel_source/tools/perf
-sed -i 's|\(perfexecdir[[:blank:]]*=[[:blank:]]*\).*$|\1share/perf_%kernel_base_version-core|' Makefile.config
-sed -i 's|\(plugindir[[:blank:]]*=[[:blank:]]*\).*$|\1%_libexecdir/traceevent_%kernel_base_version/plugins|' Makefile.config
-sed -i 's|\(STRACE_GROUPS_DIR[[:blank:]]*=[[:blank:]]*\).*$|\1share/perf_%kernel_base_version-core/strace/groups|' Makefile.config
-%make_build VERSION=%kernel_base_version \
-     VF=1 \
-     WERROR=0 \
-     NO_GTK2=1 \
-     PYTHON=python2 \
-     PYTHON_CONFIG=python2-config
-popd
+cd %kernel_source/tools
 
-# build bpftool
-%make_build -C %kernel_source/tools/bpf/bpftool
+# Use rst2man from python3-module-docutils
+# Sisyphus have rst2man.py, p9 have rst2man.py3.
+rst2man() {
+	type rst2man.py3 >/dev/null 2>&1 && rst2man.py3 "$@" || rst2man.py "$@"
+}; export -f rst2man
+
+# Noiseless git stub
+git() { exit 1; }; export -f git
+
+%define perf_opts \\\
+	PERF_VERSION=%version-%release \\\
+	JOBS=%__nprocs \\\
+	WERROR=0 \\\
+	NO_GTK2=1 \\\
+	PYTHON=python3 \\\
+	PYTHON_CONFIG=python3-config \\\
+	%nil
+
+%define install_opts \\\
+	DESTDIR=%buildroot \\\
+	prefix=%_prefix \\\
+	%nil
+
+### Build perf
+make -C perf \
+     %perf_opts \
+     VF=1 \
+     all \
+     doc \
+     python \
+     libtraceevent_plugins
+
+### build bpf tools
+# runqslower does not build with: `Couldn't find kernel BTF; set VMLINUX_BTF to specify its location.`
+sed -i /^all:/s/runqslower// bpf/Makefile
+sed -i /^install:/s/runqslower_install// bpf/Makefile
+%make_build bpf
+%make_build -C bpf/bpftool doc
 
 # Build cpupower
-chmod +x %kernel_source/tools/power/cpupower/utils/version-gen.sh
-%make_build -C %kernel_source/tools/power/cpupower CPUFREQ_BENCH=false
+%make_build cpupower CPUFREQ_BENCH=false
 
 %ifarch %ix86
-    pushd %kernel_source/tools/power/cpupower/debug/i386
-    %make_build centrino-decode powernow-k8-decode
-    popd
+  %make_build -C power/cpupower/debug/i386 centrino-decode powernow-k8-decode
 %endif
 
 %ifarch x86_64
-    pushd %kernel_source/tools/power/cpupower/debug/x86_64
-    %make_build centrino-decode powernow-k8-decode
-    popd
+  %make_build -C power/cpupower/debug/x86_64 centrino-decode powernow-k8-decode
+  %make_build intel-speed-select
 %endif
 
 %ifarch %ix86 x86_64
-   pushd %kernel_source/tools/power/x86/x86_energy_perf_policy
-   %make_build
-   popd
-   pushd %kernel_source/tools/power/x86/turbostat
-   %make_build
-   popd
+  %make_build x86_energy_perf_policy
+  %make_build turbostat
 %endif
 
-# Build hyperv daemons
+### Build hyperv daemons
 %ifarch %ix86 x86_64
-make -C %kernel_source/tools hv
+  make hv
 %endif
+
+# acpi cannot make in parrallel.
+make acpi
+
+%make_build \
+	cgroup \
+	firmware \
+	freefall \
+	gpio \
+	iio \
+	leds \
+	objtool \
+	tmon \
+	vm
 
 %install
-# Install perf
-pushd %kernel_source/tools/perf
-make VERSION=%kernel_base_version \
-     VF=1 \
-     WERROR=0 \
-     NO_GTK2=1 \
-     PYTHON=python2 \
-     PYTHON_CONFIG=python2-config \
-     DESTDIR=%buildroot \
-     prefix=%_prefix \
+cd %kernel_source/tools
+
+### Install perf
+# Note: perf's Makefile cannot set `mandir=%%_mandir` properly.
+make -C perf \
+     %perf_opts \
+     %install_opts \
      install \
      install-man \
      install-python_ext
 
 install -d -m 0755 %buildroot%_docdir/%name
-install -m 0644 {CREDITS,design.txt,Documentation/examples.txt,Documentation/tips.txt} %buildroot%_docdir/%name/
-popd
+install -m 0644 perf/{CREDITS,design.txt,Documentation/examples.txt,Documentation/tips.txt} %buildroot%_docdir/%name/
 
 rm %buildroot/%_docdir/perf-tip/tips.txt
 rmdir %buildroot/%_docdir/perf-tip
 
-rename perf  perf_%kernel_base_version  %buildroot%_bindir/perf
-rename trace trace_%kernel_base_version %buildroot%_bindir/trace
-rename perf  perf_%kernel_base_version  %buildroot%_sysconfdir/bash_completion.d/perf
-rename perf  perf_%kernel_base_version  %buildroot%_man1dir/perf*
-
 find %buildroot%_sysconfdir/bash_completion.d \
-	%buildroot%_datadir/perf_%kernel_base_version-core \
+	%buildroot%_datadir/perf-core \
 	%buildroot%_libexecdir/perf* \
 	%buildroot%_docdir \
 	-name bin -prune -o -type f \
 	| xargs chmod a-x
 
-make -C %kernel_source/tools/bpf/bpftool \
-	DESTDIR=%buildroot \
-	prefix=%_prefix \
-	bash_compdir=%_sysconfdir/bash_completion.d/ \
+### Install bpf tools
+make %install_opts \
+	bpf_install
+# Previous does not install docs, thus
+make -C bpf/bpftool \
+	%install_opts \
 	mandir=%_mandir \
-	install \
 	doc-install
-# provided by man-pages
+
+# Provided by man-pages
 rm -f %buildroot/%_man7dir/bpf-helpers.*
 
-# Make alternatives:
-mkdir -p %buildroot%_altdir
-cat <<'_EOF'_ > %buildroot%_altdir/%name
-%_bindir/perf	%_bindir/perf_%kernel_base_version	20
-%_bindir/trace	%_bindir/trace_%kernel_base_version	20
-%_sysconfdir/bash_completion.d/perf	%_sysconfdir/bash_completion.d/perf_%kernel_base_version	20
-_EOF_
-
-# Add man alternatives:
-pushd %buildroot%_man1dir
-for file in *.1;do
-alterfile=`echo $file|sed -e "s|_%kernel_base_version||"`
-echo "%_man1dir/$alterfile.xz	%_man1dir/$file.xz	20" >> %buildroot%_altdir/%name
-done
-popd
-
-# Install cpupower
-%make -C %kernel_source/tools/power/cpupower DESTDIR=%buildroot libdir=%_libdir mandir=%_mandir CPUFREQ_BENCH=false install
+### Install cpupower
+%make %install_opts libdir=%_libdir mandir=%_mandir CPUFREQ_BENCH=false cpupower_install
 rm -f %buildroot%_libdir/*.{a,la}
 %find_lang cpupower
+mv cpupower.lang ../../
 
 %ifarch %ix86
-    pushd %kernel_source/tools/power/cpupower/debug/i386
-    install -m755 centrino-decode %buildroot%_bindir/centrino-decode
-    install -m755 powernow-k8-decode %buildroot%_bindir/powernow-k8-decode
-    popd
+  pushd power/cpupower/debug/i386
+  install -m755 centrino-decode %buildroot%_bindir/centrino-decode
+  install -m755 powernow-k8-decode %buildroot%_bindir/powernow-k8-decode
+  popd
 %endif
 
 %ifarch x86_64
-    pushd %kernel_source/tools/power/cpupower/debug/x86_64
-    install -m755 centrino-decode %buildroot%_bindir/centrino-decode
-    install -m755 powernow-k8-decode %buildroot%_bindir/powernow-k8-decode
-    popd
+  pushd power/cpupower/debug/x86_64
+  install -m755 centrino-decode %buildroot%_bindir/centrino-decode
+  install -m755 powernow-k8-decode %buildroot%_bindir/powernow-k8-decode
+  popd
+  make %install_opts intel-speed-select_install
 %endif
 
 %ifarch %ix86 x86_64
-   mkdir -p %buildroot%_mandir/man8
-   pushd %kernel_source/tools/power/x86/x86_energy_perf_policy
-   make DESTDIR=%buildroot install
-   popd
-   pushd %kernel_source/tools/power/x86/turbostat
-   make DESTDIR=%buildroot install
-   popd
+  make %install_opts x86_energy_perf_policy_install
+  make %install_opts turbostat_install
 %endif
 
-# Install hyperv daemons
+### Install hyperv daemons
 %ifarch %ix86 x86_64
-#make -C %kernel_source/tools hv_install
-pushd %kernel_source/tools/hv
-
 mkdir -p %buildroot%_sbindir
-install -p -m 0755 hv_kvp_daemon %buildroot%_sbindir/hypervkvpd
-install -p -m 0755 hv_vss_daemon %buildroot%_sbindir/hypervvssd
-install -p -m 0755 hv_fcopy_daemon %buildroot%_sbindir/hypervfcopyd
-
-popd
+install -p -m 0755 hv/hv_kvp_daemon %buildroot%_sbindir/hypervkvpd
+install -p -m 0755 hv/hv_vss_daemon %buildroot%_sbindir/hypervvssd
+install -p -m 0755 hv/hv_fcopy_daemon %buildroot%_sbindir/hypervfcopyd
 
 mkdir -p %buildroot%kvp_scripts_path
 mkdir -p %buildroot%kvp_config_loc
@@ -340,6 +374,33 @@ install -p -m 0644 %SOURCE33 %buildroot%_udevrulesdir/hypervfcopyd.rules
 # Directory for pool files
 mkdir -p %buildroot%_sharedstatedir/hyperv
 %endif
+
+make %install_opts mandir=%_mandir acpi_install
+# Rename them to not conflict with acpica and pmtools
+mv %buildroot%_sbindir/acpidbg    %buildroot%_sbindir/acpidbg-linux
+mv %buildroot%_sbindir/acpidump   %buildroot%_sbindir/acpidump-linux
+mv %buildroot%_sbindir/ec         %buildroot%_sbindir/ec-linux
+mv %buildroot%_man8dir/acpidump.8 %buildroot%_man8dir/acpidump-linux.8
+
+make %install_opts freefall_install
+make %install_opts gpio_install
+make %install_opts iio_install
+make %install_opts vm_install
+install -p -m755 cgroup/cgroup_event_listener	%buildroot%_bindir
+install -p -m755 firmware/ihex2fw		%buildroot%_bindir
+install -p -m755 kvm/kvm_stat/kvm_stat		%buildroot%_bindir
+install -p -m755 leds/get_led_device_info.sh	%buildroot%_bindir
+install -p -m755 leds/led_hw_brightness_mon	%buildroot%_bindir
+install -p -m755 leds/uledmon			%buildroot%_bindir
+install -p -m755 objtool/fixdep			%buildroot%_bindir
+install -p -m755 objtool/objtool		%buildroot%_bindir
+install -p -m755 thermal/tmon/tmon		%buildroot%_bindir
+install -p -m755 thermal/tmon/tmon.8		%buildroot%_man8dir
+
+%check
+# Simplistic test
+%buildroot%_bindir/perf version --build-options
+# To run more comprehensive test run: perf test
 
 %post -n hypervkvpd
 # auto enable service for Hyper-V guest
@@ -383,23 +444,54 @@ fi
 %preun_service hypervfcopyd
 
 %files
-%_altdir/%name
-%_bindir/perf_%kernel_base_version
-%_bindir/trace_%kernel_base_version
+%_sbindir/acpidbg-linux
+%_sbindir/acpidump-linux
+%_sbindir/ec-linux
+%_man8dir/acpidump-linux.*
+%_bindir/cgroup_event_listener
+%_bindir/ihex2fw
+%_sbindir/freefall
+%_bindir/lsgpio
+%_bindir/gpio-hammer
+%_bindir/gpio-event-mon
+%_bindir/gpio-watch
+%_bindir/iio_event_monitor
+%_bindir/lsiio
+%_bindir/iio_generic_buffer
+%_bindir/kvm_stat
+%_bindir/get_led_device_info.sh
+%_bindir/led_hw_brightness_mon
+%_bindir/uledmon
+%_bindir/fixdep
+%_bindir/objtool
+%_bindir/tmon
+%_man8dir/tmon.*
+%_sbindir/page-types
+%_sbindir/slabinfo
+%_sbindir/page_owner_sort
+
+%files -n perf
+%_bindir/perf
+%_bindir/trace
 %_man1dir/perf*
-%_sysconfdir/bash_completion.d/perf_%kernel_base_version
-%_libexecdir/traceevent_%kernel_base_version
+%_sysconfdir/bash_completion.d/perf
+%_libexecdir/traceevent
 %_libexecdir/perf
-%_datadir/perf_%kernel_base_version-core
+%_prefix/libexec/perf-core
+%_datadir/perf-core
 %doc %_docdir/%name
 
-%files -n python-module-perf
-%python_sitelibdir/perf*
+%files -n python3-module-perf
+%python3_sitelibdir/perf*
 
 # files cpupower
 %files -n cpupower -f cpupower.lang
 %_bindir/cpupower
+%ifarch x86_64
+%_bindir/intel-speed-select
+%endif
 %_man1dir/cpupower*
+%_datadir/bash-completion/completions/cpupower
 %ifarch %ix86 x86_64
 %_man8dir/turbostat*
 %_man8dir/x86_energy_perf_policy*
@@ -429,7 +521,6 @@ fi
 %_initdir/hypervkvpd
 %_unitdir/hypervkvpd.service
 %_udevrulesdir/hypervkvpd.rules
-%dir %_sharedstatedir/hyperv
 
 %files -n hypervvssd
 %_sbindir/hypervvssd
@@ -445,11 +536,40 @@ fi
 %endif
 
 %files -n bpftool
+%_bindir/bpf_asm
+%_bindir/bpf_dbg
+%_bindir/bpf_jit_disasm
 %_sbindir/bpftool
-%_sysconfdir/bash_completion.d/bpftool
+%_datadir/bash-completion/completions/bpftool
 %_man8dir/bpftool*
 
 %changelog
+* Thu Nov 12 2020 Vitaly Chikunov <vt@altlinux.org> 5.9-alt3
+- spec: Fix make acpi race appeared on armh.
+
+* Wed Nov 11 2020 Vitaly Chikunov <vt@altlinux.org> 5.9-alt2
+- spec: Fix 'rst2man.py: command not found' in p9.
+
+* Mon Oct 12 2020 Vitaly Chikunov <vt@altlinux.org> 5.9-alt1
+- Update to v5.9 (2020-10-11).
+
+* Thu Aug 06 2020 Vitaly Chikunov <vt@altlinux.org> 5.8-alt1
+- Update to v5.8.
+- spec: Switch to python3.
+- spec: Move perf into separate package.
+- spec: Build more tools (into linux-tools).
+- spec: Remove kernel version suffix from perf name.
+- spec: Pack /usr/libexec/perf-core.
+- spec: Enable libzstd.
+- spec: Add simple %%check section.
+
+* Fri Oct 25 2019 Alexey Shabalin <shaba@altlinux.org> 5.3-alt3
+- fixed typo alternatives for perf
+
+* Thu Oct 24 2019 Alexey Shabalin <shaba@altlinux.org> 5.3-alt2
+- move bash completions for bpftool to /usr/share
+- package bash completions for cpupower
+
 * Wed Oct 23 2019 Alexey Shabalin <shaba@altlinux.org> 5.3-alt1
 - Update for 5.3
 - fixed sysvinit scripts
