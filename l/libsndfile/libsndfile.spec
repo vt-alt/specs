@@ -1,5 +1,5 @@
 Name: libsndfile
-Version: 1.0.28
+Version: 1.0.30
 Release: alt2
 
 Summary: A library to handle various audio file formats
@@ -8,16 +8,16 @@ License: LGPL
 Url: http://www.mega-nerd.com/%name/
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
-Source: %url/files/%name-%version.tar.gz
+# Was: %url/files/%name-%version.tar.gz
+# Now: https://github.com/libsndfile/libsndfile.git
+Source: %name-%version.tar
 
-Patch0: libsndfile-1.0.25-system-gsm.patch
+Patch0: libsndfile-1.0.30-system-gsm.patch
 Patch1: libsndfile-1.0.25-zerodivfix.patch
-Patch2: revert.patch
-Patch3: libsndfile-1.0.28-flacbufovfl.patch
-Patch4: libsndfile-1.0.29-cve2017_6892.patch
-Patch5: libsndfile-1.0.28-cve2017_12562.patch
 
 BuildRequires: gcc-c++ libalsa-devel libflac-devel libsqlite3-devel libvorbis-devel libgsm-devel
+BuildRequires: autogen
+BuildRequires: libopus-devel
 # for check
 BuildRequires: python-modules
 
@@ -48,12 +48,8 @@ This package contains utilities for %name
 
 %prep
 %setup -q
-%patch0 -p1 -b .systemgsm
+%patch0 -p2 -b .systemgsm
 %patch1 -p1 -b .zerodivfix
-%patch2 -p1 -b .revert
-%patch3 -p1 -b .flacbufovfl
-%patch4 -p1 -b .cve2017_6892
-%patch5 -p1 -b .cve2017_12562
 rm -r src/GSM610
 
 %build
@@ -85,6 +81,14 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_man1dir/*.1*
 
 %changelog
+* Mon Dec 07 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.30-alt2
+- Updated build dependencies for external libraries detection.
+
+* Thu Dec 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.30-alt1
+- Updated to upstream version 1.0.30 (Fixes: CVE-2017-8362, CVE-2017-14245,
+  CVE-2017-14246, CVE-2017-14634, CVE-2018-13139, CVE-2018-13419, CVE-2018-19432,
+  CVE-2018-19661, CVE-2018-19662, CVE-2018-19758, CVE-2019-3832)
+
 * Fri Sep 07 2018 Valery Inozemtsev <shrek@altlinux.ru> 1.0.28-alt2
 - fixes: CVE-2017-6892, CVE-2017-12562
 
