@@ -7,6 +7,8 @@
 %def_without gamin
 %def_with pgsql
 %def_with tests
+%def_with geoip
+%def_with maxminddb
 
 %define lighttpd_user lighttpd
 %define lighttpd_group lighttpd
@@ -15,8 +17,8 @@
 %define docdir %_docdir/%name-%version-doc
 
 Name: lighttpd
-Version: 1.4.55
-Release: alt2
+Version: 1.4.56
+Release: alt1
 
 Summary: A fast webserver with minimal memory-footprint
 License: BSD
@@ -32,10 +34,12 @@ Requires(pre): shadow-utils shadow-groups webserver-common
 Provides: webserver
 
 BuildRequires(pre): rpm-macros-webserver-common
-# Automatically added by buildreq on Mon Oct 15 2018
-# optimized out: glibc-kernheaders-generic glibc-kernheaders-x86 libcom_err-devel libcrypt-devel libgamin-fam libpq-devel libsasl2-3 perl pkg-config python-base sh3
-BuildRequires: bzlib-devel libfcgi-devel libpcre-devel zlib-devel
+# Automatically added by buildreq on Wed Dec 02 2020
+# optimized out: glibc-kernheaders-generic glibc-kernheaders-x86 libcom_err-devel libcrypt-devel libkrb5-devel libsasl2-3 perl pkg-config python2-base sh4
+BuildRequires: bzlib-devel libbrotli-devel libfcgi-devel libpcre-devel libxxhash-devel zlib-devel
 
+%{?_with_maxminddb:BuildPreReq: libmaxminddb-devel}
+%{?_with_geoip:BuildPreReq: libGeoIP-devel}
 %{?_with_mysql:BuildPreReq: libmysqlclient-devel}
 %{?_with_gssapi:BuildPreReq: libkrb5-devel}
 %{?_with_ssl:BuildPreReq: libssl-devel}
@@ -85,6 +89,28 @@ Requires: %name = %version-%release
 %description ldap-vhost
 This module provides virtual hosts (vhosts) based on a LDAP.
 %endif #ldap
+
+%if_with geoip
+%package geoip
+Summary: GeoIP module (plugin) for %name
+Group: System/Servers
+Requires: %name = %version-%release
+
+%description geoip
+The module loads a geoip database of type "country" or "city" and sets new
+ENV vars based on ip record lookups.
+%endif #geoip
+
+%if_with maxminddb
+%package maxminddb
+Summary: MaxMind GeoIP2 module (plugin) for %name.
+Group: System/Servers
+Requires: %name = %version-%release
+
+%description maxminddb
+The module loads a geoip database of type "country" or "city" and sets new
+ENV vars based on ip record lookups.
+%endif #maxminddb
 
 %if_with gssapi
 %package auth-gssapi
@@ -148,6 +174,11 @@ libtoolize -f -c
 
 %build
 %configure --libdir=%_libdir/%name \
+                          --with-brotli \
+                          --with-zlib \
+                          --with-bzip2 \
+                          --with-uuid \
+                          --with-xxhash \
     %{?_with_mysql:       --with-mysql} \
     %{?_with_pgsql:       --with-pgsql} \
     %{?_with_ssl:         --with-openssl} \
@@ -156,6 +187,8 @@ libtoolize -f -c
     %{?_with_lua:	  --with-lua} \
     %{?_with_gamin:	  --with-fam} \
     %{?_with_gssapi:	  --with-krb5} \
+    %{?_with_geoip:	  --with-geoip} \
+    %{?_with_maxminddb:	  --with-maxminddb} \
     %{?_with_lua:	  LUA_CFLAGS="-I/usr/include/" LUA_LIBS="-llua"}
 %make_build
 
@@ -254,6 +287,14 @@ gpasswd -a %lighttpd_user %webserver_group
 %exclude %_libdir/%name/*_trigger_b4_dl.so
 %endif #trigger_b4_dl
 
+%if_with maxminddb
+%exclude %_libdir/%name/*_maxminddb.so
+%endif #maxminddb
+
+%if_with geoip
+%exclude %_libdir/%name/*_geoip.so
+%endif #geoip
+
 %exclude %_libdir/%name/*_rrdtool.so
 %_sbindir/*
 %exclude %_libdir/%name/*.la
@@ -288,6 +329,16 @@ gpasswd -a %lighttpd_user %webserver_group
 %_libdir/%name/*_vhostdb_pgsql.so
 %endif #pgsql
 
+%if_with geoip
+%files geoip
+%_libdir/%name/*_geoip.so
+%endif #geoip
+
+%if_with maxminddb
+%files maxminddb
+%_libdir/%name/*_maxminddb.so
+%endif #maxminddb
+
 %if_with lua
 %files cml
 %_libdir/%name/*cml.so
@@ -302,6 +353,9 @@ gpasswd -a %lighttpd_user %webserver_group
 %_libdir/%name/*rrdtool.so
 
 %changelog
+* Wed Dec 02 2020 Alexei Takaseev <taf@altlinux.org> 1.4.56-alt1
+- 1.4.56
+
 * Mon May 25 2020 Alexei Takaseev <taf@altlinux.org> 1.4.55-alt2
 - Disable gamin support
 
