@@ -1,7 +1,7 @@
 Name: drbd9
-Version: 9.0.23
-Release: alt0.rc3.1
-%define githash 2d2e11074a6e1a4d2f3c0cbb6ca6db32f0c42a5d
+Version: 9.0.25
+Release: alt2
+%define githash 1053e9f98123e8293e9f2897af654b40cde0d24c
 
 Summary: The Linux kernel code for DRBD9.
 License: GPLv2
@@ -48,7 +48,7 @@ tar -cf %kernel_srcdir/kernel-source-%name-%version.tar %name-%version
 
 %check
 # sed -i s/SUBDIRS=/M=/g Makefile
-# make -C drbd KDIR=/lib/modules/*/build
+# make -C drbd KDIR=/lib/modules/*/build -k
 
 %files -n kernel-source-%name
 %attr(0644,root,root) %kernel_src/kernel-source-%name-%version.tar
@@ -57,6 +57,21 @@ tar -cf %kernel_srcdir/kernel-source-%name-%version.tar %name-%version
 %doc README.md COPYING
 
 %changelog
+* Sat Oct 24 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.25-alt2
+- Build for kernel 5.9.
+
+* Tue Oct 13 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.25-alt1
+- 9.0.25
+
+* Tue Sep 01 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.24-alt2
+- Build for kernel 5.8.
+
+* Thu Jul 02 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.24-alt1
+- 9.0.24
+
+* Sun Jun 21 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.23-alt1
+- 9.0.23
+
 * Thu Jun 04 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.23-alt0.rc3.1
 - 9.0.23rc3
 

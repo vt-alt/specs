@@ -1,8 +1,8 @@
 Name: kernel-image-std-def
-Release: alt1.1
-epoch:1 
+Release: alt1
+epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .68
+%define kernel_sublevel .81
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -704,6 +704,51 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Dec 02 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.81-alt1
+- v5.4.81
+
+* Tue Nov 24 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.80-alt1
+- v5.4.80
+
+* Sun Nov 22 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.79-alt1
+- v5.4.79  (Fixes: CVE-2020-4788)
+
+* Thu Nov 19 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.78-alt1
+- v5.4.78
+
+* Thu Nov 12 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.77-alt1
+- v5.4.77
+
+* Tue Nov 10 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.76-alt1
+- v5.4.76
+
+* Fri Nov 06 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.75-alt1
+- v5.4.75  (Fixes: CVE-2020-25656)
+
+* Mon Nov 02 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.74-alt1
+- v5.4.74
+
+* Thu Oct 29 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.73-alt1
+- v5.4.73
+
+* Mon Oct 19 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.72-alt1
+- v5.4.72
+
+* Thu Oct 15 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.71-alt1
+- v5.4.71
+
+* Fri Oct 09 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.70-alt1
+- v5.4.70
+
+* Thu Oct 08 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.69-alt1.1
+- expiremental fix for Baikal-M rtc-efi
+
+* Sat Oct 03 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.69-alt1
+- v5.4.69
+
+* Fri Oct 02 2020 Kernel Bot <kernelbot@altlinux.org> 2:5.4.68-alt1.1
+- Epoch up to make it greater then in c8 :-(
+
 * Wed Sep 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.4.68-alt1.1
 - SD card usage on Raspberry Pi 3 fixed
 

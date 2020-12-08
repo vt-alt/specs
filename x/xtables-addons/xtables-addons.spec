@@ -1,14 +1,12 @@
 Name: xtables-addons
-Version: 3.9
+Version: 3.13
 Release: alt1
 Summary: IP tables addons
 Group: System/Kernel and hardware
 
-URL: http://xtables-addons.sourceforge.net/
+URL: https://inai.de/projects/xtables-addons/
 License: GPLv2
-
-# git://xtables-addons.git.sf.net/gitroot/xtables-addons/xtables-addons.git
-# git://git.altlinux.org/gears/x/xtables-addons.git
+#git://git.inai.de/xtables-addons
 Source: %name-%version.tar
 Source1: %name.watch
 
@@ -59,6 +57,7 @@ tar -cjf %kernel_srcdir/kernel-source-%name-%version.tar.bz2 kernel-source-%name
 %files
 %doc README
 %_sbindir/*
+%_bindir/*
 %attr(0755,root,root) /%_lib/lib*.so*
 /%_lib/iptables/*.so*
 %_man8dir/*
@@ -71,6 +70,15 @@ tar -cjf %kernel_srcdir/kernel-source-%name-%version.tar.bz2 kernel-source-%name
 %kernel_src/*
 
 %changelog
+* Tue Nov 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.13-alt1
+- 3.13
+
+* Wed Sep 16 2020 Anton Farygin <rider@altlinux.ru> 3.11-alt1
+- 3.11
+
+* Wed Sep 02 2020 Anton Farygin <rider@altlinux.ru> 3.10-alt1
+- 3.10
+
 * Tue Mar 10 2020 Anton Farygin <rider@altlinux.ru> 3.9-alt1
 - 3.9
 
