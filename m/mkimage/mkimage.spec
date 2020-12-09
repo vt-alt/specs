@@ -1,9 +1,9 @@
 Name: mkimage
-Version: 0.2.30
+Version: 0.2.35
 Release: alt1
 
 Summary: Simple image creator
-License: GPL3
+License: GPL-3.0-or-later
 Group: Development/Other
 
 Packager: Alexey Gladkov <legion@altlinux.ru>
@@ -59,6 +59,9 @@ mkdir -p %buildroot%sysctldir
 echo "fs.protected_hardlinks = 0" > %buildroot%sysctldir/49-%name.conf
 ln -s 49-%name.conf %buildroot%sysctldir/51-%name.conf	# *sigh*
 
+# This script is executed in chroot.
+%add_findreq_skiplist %_datadir/%name/tools/mki-copy-efiboot-chrooted
+
 %post
 if grep -Fqsx 1 "%procfile"; then
 	echo "warning: mkimage won't work, see %name-preinstall" >&2
@@ -83,6 +86,28 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Fri Dec 04 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.35-alt1
+- Exclude mki-copy-efiboot-chrooted from requires search (ALT#39369).
+- Update license tag.
+
+* Tue Sep 29 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.34-alt1
+- mki-copy-efiboot-chrooted: fix label variable visibility scope (thx Nikolai Kostrigin)
+- mki-copy-efiboot-chrooted: remove extra slash in bootloader path (thx Nikolai Kostrigin)
+
+* Mon Aug 31 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.33-alt1
+- tools.mk.in: added forgotten variable (mike@)
+
+* Mon Aug 24 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.32-alt1
+- mki-copy-efiboot: Split mki-copy-efiboot
+- mki-copy-efiboot-chrooted: Fix adding a refind banner
+- Avoid using -a and -o in a test expression
+- mki-pack-isodata: move from mkisofs to xorriso (make@)
+- mki-copy-e2kboot: added e2k boot.conf support (mike@)
+- mki-build-propagator: e2k calls vmlinuz files just image (mike@)
+
+* Tue Jul 07 2020 Mikhail Efremov <sem@altlinux.org> 0.2.31-alt1
+- mki-fakedev: Dropped unused and broken --number argument.
+
 * Tue Feb 25 2020 Anton Midyukov <antohami@altlinux.org> 0.2.30-alt1
 - mki-copy-ieee1275boot: replaced alt0 to boot
 - mki-copy-grubaa64boot, mki-pack-efionly-isoboot: replaced grub-efi
