@@ -2,7 +2,7 @@
 
 Name: 	 qcad
 Version: 3.25.2.4
-Release: alt1
+Release: alt2
 Summary: A professional CAD system
 Summary(ru_RU.UTF-8): Профессиональная система CAD
 
@@ -15,6 +15,10 @@ Group:   Graphics
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source0: qcad-%version.tar
+Source1: qcadcore_ru.ts
+Source2: qcadentity_ru.ts
+Source3: scripts_ru.ts
+
 Patch:   %name-%version-%release.patch
 Patch1:  qcad-qt5-unbundle_libraries.patch
 Patch2:  qcad-alt-use-system-zlib.patch
@@ -57,12 +61,17 @@ QCad это профессиональная CAD система. С QCad вы м
 %patch -p1
 %patch1 -p1
 %patch2 -p1
+
+cp -f %SOURCE1 ts/qcadcore_ru.ts
+cp -f %SOURCE2 ts/qcadentity_ru.ts
+cp -f %SOURCE3 ts/scripts_ru.ts
+rm -f ts/*.qm
+
 rm -rf src/3rdparty/opennurbs/zlib
 %if_with debug
 echo 'DEFINES -= QT_NO_DEBUG_OUTPUT' >> shared.pri
 %endif
 %qmake_qt5
-#lupdate-qt5 %name.pro
 
 %define fallback_qt_version 5.12.3
 if [ ! -e src/3rdparty/qt-labs-qtscriptgenerator-%_qt5_version ] ; then
@@ -73,6 +82,8 @@ if [ ! -e src/3rdparty/qt-labs-qtscriptgenerator-%_qt5_version ] ; then
 fi
 
 %build
+# Regenerate all translations
+for pro in ts/scripts.pro src/gui/gui.pro src/entity/entity.pro src/core/core.pro; do lrelease-qt5 ${pro};done
 #export NPROCS=1
 %make_build
 
@@ -128,6 +139,9 @@ done
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Wed Nov 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.25.2.4-alt2
+- Complete Russian translation (thanks Olesya Gerasimenko).
+
 * Wed Nov 18 2020 Andrey Cherepanov <cas@altlinux.org> 3.25.2.4-alt1
 - New version.
 
