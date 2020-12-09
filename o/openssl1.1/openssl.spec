@@ -1,7 +1,7 @@
 %def_enable tsget
 
 Name: openssl1.1
-Version: 1.1.1g
+Version: 1.1.1i
 Release: alt1
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
@@ -9,8 +9,9 @@ License: OpenSSL
 Group: System/Base
 Url: http://www.openssl.org
 
-# git://git.altlinux.org/gears/o/openssl10.git
+# Repacked https://openssl.org/source/openssl-%version.tar.gz
 Source: openssl-%version.tar
+
 Source1: openssl-config
 Source2: Makefile.certificate
 Source3: make-dummy-cert
@@ -465,6 +466,12 @@ LD_LIBRARY_PATH=%buildroot/%_lib \
 %endif
 
 %changelog
+* Tue Dec 08 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1i-alt1
+- Updated to 1.1.1i (fixes CVE-2020-1971).
+
+* Mon Dec 07 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1h-alt1
+- Updated to 1.1.1h.
+
 * Tue Apr 21 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1g-alt1
 - Updated to 1.1.1g (fixes CVE-2019-1551, CVE-2020-1967).
 
