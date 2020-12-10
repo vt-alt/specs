@@ -1,6 +1,6 @@
 Name: mupdf
-Version: 1.13.0
-Release: alt3
+Version: 1.18.0
+Release: alt1
 Summary: A lightweight PDF viewer and toolkit
 Group: Office
 License: GPLv3
@@ -8,11 +8,14 @@ Url: http://mupdf.com/
 Source0: http://mupdf.com/download/%name-%version-source.tar.gz
 Source1: %name.desktop
 Source2: debian.tar
-Patch0: %name-upstream.patch
+Patch1: mupdf-1.18.0-gentoo-fix-oob-in-pdf-layer.patch
+Patch2: mupdf-1.18.0-gentoo-fix-oob-in-pixmap.patch
 
 # Automatically added by buildreq on Thu Aug 22 2013
 # optimized out: libX11-devel pkg-config xorg-xextproto-devel xorg-xproto-devel
 BuildRequires: libXext-devel libfreetype-devel libjbig2dec-devel libjpeg-devel libssl-devel zlib-devel libfreeglut-devel
+BuildRequires: libgumbo-devel
+BuildRequires: gcc-c++
 
 %description
 MuPDF is a lightweight PDF viewer and toolkit written in portable C.
@@ -41,19 +44,22 @@ applications that use mupdf and static libraries
 
 %prep
 %setup -n %name-%version-source -a2
-#patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 # TODO rebuild with new openjpeg
 #BuildRequires: openjpeg-devel
-rm -rf thirdparty/[^o]*
+# NOTE: artifex bundled a forked and patched version of lcms2
+# TODO: unbundle mujs
+rm -rf thirdparty/{curl,freeglut,freetype,gumbo-parser,harfbuzz,jbig2dec,libjpeg,zlib}
 sed -i 's/-lopenjpeg //' debian/mupdf.pc
 
 %build
-%make_build
+%make_build USE_SYSTEM_LIBS=yes USE_SYSTEM_OPENJPEG=no USE_SYSTEM_MUJS=no
 
 %install
 # TODO deal with platform/debian/mupdf.install / iconsdirs
-%makeinstall
+%makeinstall USE_SYSTEM_LIBS=yes USE_SYSTEM_OPENJPEG=no USE_SYSTEM_MUJS=no
 install -D %SOURCE1 %buildroot%_desktopdir/%name.desktop
 install -D -m644 debian/%name.xpm %buildroot/%_datadir/pixmaps/%name.xpm
 sed 's/@VERSION@/%version/g' < debian/mupdf.pc > mupdf.pc
@@ -72,6 +78,10 @@ install -D mupdf.pc %buildroot%_pkgconfigdir/mupdf.pc
 %_libdir/lib*.a
 
 %changelog
+* Wed Dec 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.18.0-alt1
+- Updated to upstream version 1.18.0 (Fixes: CVE-2017-5991, CVE-2018-10289,
+  CVE-2018-16647, CVE-2018-16648, CVE-2019-14975, CVE-2020-26519).
+
 * Thu Oct 18 2018 Fr. Br. George <george@altlinux.ru> 1.13.0-alt3
 - Rebuilt with libfreeglut
 
