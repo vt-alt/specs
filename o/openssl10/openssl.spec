@@ -3,11 +3,11 @@
 %def_disable devel
 
 Name: openssl10
-Version: 1.0.2r
-Release: alt3
+Version: 1.0.2u
+Release: alt1.p9.1
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
-License: BSD-style
+License: OpenSSL
 Group: System/Base
 Url: https://www.openssl.org/source/
 
@@ -46,6 +46,8 @@ Patch84: openssl-rh-trusted-first-doc.patch
 Patch87: openssl-rh-cc-reqs.patch
 Patch90: openssl-rh-enc-fail.patch
 Patch92: openssl-rh-system-cipherlist.patch
+
+Patch100: openssl-fix-CVE-2020-1971.patch
 
 %define shlib_soversion 10
 %define openssldir /var/lib/ssl
@@ -253,6 +255,8 @@ on the command line.
 %patch87 -p1
 %patch90 -p1
 %patch92 -p1
+
+%patch100 -p1
 
 find -type f -name \*.orig -delete
 
@@ -497,6 +501,11 @@ fi
 %endif
 
 %changelog
+* Wed Dec 09 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.0.2u-alt1.p9.1
+- Updated to 1.0.2u (fixes CVE-2019-1547, CVE-2019-1551, CVE-2019-1552,
+  CVE-2019-1563)
+- Backported upstream fix for GENERAL_NAME_cmp (fixes CVE-2020-1971).
+
 * Wed Apr 17 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.0.2r-alt3
 - Fixed build on mips64, mips64el architectures.
 - Added support of build on riscv64 and e2k architectures.
