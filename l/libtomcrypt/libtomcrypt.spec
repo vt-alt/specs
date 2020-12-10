@@ -1,6 +1,6 @@
 Name: libtomcrypt
 Version: 1.18.2
-Release: alt2
+Release: alt3
 Summary: A comprehensive, portable cryptographic toolkit
 Group: System/Libraries
 License: WTFPL
@@ -8,6 +8,8 @@ Url: http://www.libtom.net/
 
 # https://github.com/libtom/libtomcrypt.git
 Source: crypt-%version.tar.xz
+
+Patch1: CVE-2019-17362.patch
 
 BuildRequires: dblatex libtommath-devel
 
@@ -52,6 +54,7 @@ The %name-doc package contains documentation for use with %name.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 # no configure script ships with libtomcrypt.  Its only requirement is
@@ -98,6 +101,9 @@ find %buildroot -name 'libtomcrypt_prof*' -exec rm -f {} ';'
 %doc LICENSE doc/crypt.pdf
 
 %changelog
+* Tue Dec 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.18.2-alt3
+- Applied security fix from upstream (Fixes: CVE-2019-17362).
+
 * Tue Feb 12 2019 Fr. Br. George <george@altlinux.ru> 1.18.2-alt2
 - Change packaging scheme
 - Rebuild with libtommath-1.1.0
