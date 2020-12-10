@@ -5,7 +5,7 @@
 
 Name: 3proxy
 Version: 0.6.1
-Release: alt1.qa1
+Release: alt2
 
 Summary: Proxy server
 
@@ -23,6 +23,7 @@ Source5: README-ALT.UTF8
 
 Patch1: %name-%version-alt-droproot.patch
 Patch2: %name-%version-alt-changes.patch
+Patch3: CVE-2019-14495.patch
 
 Packager: Afanasov Dmitry <ender@altlinux.org>
 
@@ -35,6 +36,7 @@ BuildRequires: libcap-devel
 %setup -q 
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %make_build -f Makefile.Linux
@@ -94,6 +96,9 @@ install -pD -m644 README-ALT* %buildroot%_datadir/%name-%version/
 %_datadir/%name-%version
 
 %changelog
+* Wed Dec 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.1-alt2
+- Applied security fix from upstream (Fixes: CVE-2019-14495).
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 0.6.1-alt1.qa1
 - NMU: rebuilt for debuginfo.
 
