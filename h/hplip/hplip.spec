@@ -29,7 +29,7 @@
 
 Name:    hplip
 Version: 3.20.11
-Release: alt1
+Release: alt2
 Epoch:   1
 
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
@@ -1188,6 +1188,9 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Thu Dec 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.11-alt2
+- Fix hp-systray for $XDG_SESSION_DESKTOP = KDE (ALT #39401).
+
 * Wed Dec 02 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.11-alt1
 - New version.
 - Replace symlink by shell wrapper to correct behaviour of right mouse button.
