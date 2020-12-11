@@ -1,5 +1,5 @@
 Name: eiskaltdcpp
-Version: 2.2.10.0.614.gitc9c510b8
+Version: 2.4.0
 Release: alt1
 
 Summary: EiskaltDC++ - Direct Connect client
@@ -12,7 +12,7 @@ Source: %name-%version.tar
 Patch: eiskaltdcpp-use_libidn2.patch
 
 BuildRequires: boost-interprocess-devel bzlib-devel cmake gcc-c++
-BuildRequires: libaspell-devel libgtk+2-devel libidn2-devel liblua5.1-devel
+BuildRequires: libaspell-devel libgtk+2-devel libidn2-devel liblua-devel
 BuildRequires: libnotify-devel libpcrecpp-devel qt5-phonon-devel
 BuildRequires: qt5-tools-devel qt5-multimedia-devel qt5-script-devel
 BuildRequires: libssl-devel perl-JSON-RPC perl-Term-ShellUI libminiupnpc-devel
@@ -92,7 +92,7 @@ command line interface for XML-RPC Daemon
 %patch -p1
 
 %build
-%add_optflags -fno-strict-aliasing $(pkg-config libpcre --cflags)
+%add_optflags -fno-strict-aliasing $(pkg-config libpcre --cflags) $(pkg-config harfbuzz --cflags)
 %cmake_insource \
 -DCMAKE_BUILD_TYPE=Release \
 -DCMAKE_SKIP_RPATH:BOOL=yes \
@@ -152,7 +152,6 @@ command line interface for XML-RPC Daemon
 %_datadir/%name/emoticons
 %_datadir/%name/examples
 %_datadir/%name/sounds
-%_datadir/%name/update_geoip
 %_datadir/%name/luascripts
 %_miconsdir/%name.png
 %_niconsdir/%name.png
@@ -173,6 +172,24 @@ command line interface for XML-RPC Daemon
 %_datadir/%name/cli
 
 %changelog
+* Fri Dec 04 2020 Grigory Ustinov <grenka@altlinux.org> 2.4.0-alt1
+- Build new version.
+
+* Wed Sep 16 2020 Grigory Ustinov <grenka@altlinux.org> 2.2.10.0.691.git57ccdeb-alt1
+- Build from last commit (Closes: #36782).
+
+* Thu Jul 02 2020 Grigory Ustinov <grenka@altlinux.org> 2.2.10.0.689.git0a574792-alt1
+- Build from last commit.
+
+* Sat Feb 22 2020 Nikita Ermakov <arei@altlinux.org> 2.2.10.0.646.git93944747-alt2
+- Change BR from liblua5.1-devel to more general liblua-devel.
+
+* Tue Dec 31 2019 Grigory Ustinov <grenka@altlinux.org> 2.2.10.0.646.git93944747-alt1
+- Build from last commit (Closes: #37709).
+
+* Wed Nov 13 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.10.0.614.gitc9c510b8-alt2
+- Fixed build.
+
 * Mon May 27 2019 Grigory Ustinov <grenka@altlinux.org> 2.2.10.0.614.gitc9c510b8-alt1
 - Build from last commit (Closes: #36783).
 - Change build scheme.
