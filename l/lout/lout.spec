@@ -2,7 +2,7 @@
 
 Name: lout
 Version: 3.40
-Release: alt3
+Release: alt4
 
 Summary: The Lout document formatting language
 License: GPL
@@ -13,6 +13,7 @@ Source: %name-%version.tar.gz
 Source1: %name-mode.el
 Source2: fontdefs.ld
 Source3: %name-3.40-user.ps.bz2
+Patch1: lout-3.40-fedora-cve.patch
 Requires: urw-fonts >= 1:2.0-alt9
 BuildRequires(pre): rpm-build-fonts
 %{?_with_emacs:BuildPreReq: emacs}
@@ -52,6 +53,7 @@ package.
 
 %prep
 %setup
+%patch1 -p1
 rm -f doc/user/.pie_intr.swp
 
 cp -a %SOURCE2 data
@@ -105,6 +107,9 @@ find . \( -name '.*.swp' -o -name '#*#' -o -name '*~' \) -print -delete
 %doc %_docdir/%name
 
 %changelog
+* Tue Dec 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.40-alt4
+- Applied security patch from Fedora (Fixes: CVE-2019-19917, CVE-2019-19918)
+
 * Tue Mar 19 2019 Ivan Zakharyaschev <imz@altlinux.org> 3.40-alt3
 - (.spec) fix an unmet "elusive" dep (release without an epoch)
   on urw-fonts
