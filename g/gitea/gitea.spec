@@ -3,7 +3,7 @@
 %global _unpackaged_files_terminate_build 1
 
 Name:    gitea
-Version: 1.12.5
+Version: 1.12.6
 Release: alt1
 
 Summary: Git with a cup of tea, painless self-hosted git service
@@ -23,8 +23,8 @@ Patch1: %name-%version.patch
 Patch2: ALT_config.patch
 
 BuildRequires(pre): rpm-build-golang
-BuildRequires: golang go-bindata
-BuildRequires: npm >= 6.13.6-alt2 node
+BuildRequires: golang >= 1.12 go-bindata
+BuildRequires: npm >= 6.13.6-alt2 node >= 10.13
 BuildRequires: libpam0-devel
 
 Requires: git-core
@@ -91,6 +91,9 @@ useradd -r -g %name -c 'Gitea daemon' \
 %doc *.md
 
 %changelog
+* Fri Dec 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.6-alt1
+- Build new version.
+
 * Thu Oct 29 2020 Alexey Shabalin <shaba@altlinux.org> 1.12.5-alt1
 - Build new version.
 
