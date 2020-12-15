@@ -4,7 +4,7 @@
 %def_disable check
 
 Name: python-module-%oname
-Version: 0.8.0
+Version: 0.9.1
 Release: alt1
 Summary: A toolbelt of useful classes and functions to be used with python-module-requests
 License: Apache 2.0
@@ -90,5 +90,8 @@ popd
 %endif
 
 %changelog
+* Sun Sep 22 2019 Anton Farygin <rider@altlinux.ru> 0.9.1-alt1
+- 0.9.1
+
 * Tue Aug 08 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 0.8.0-alt1
 - Initial build for ALT.

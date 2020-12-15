@@ -1,28 +1,28 @@
 %define py3bdir ../%name-%version-python3-build
-%define realversion 0.9.8
-
-%def_with python3
+%define realversion 2.3.0
 
 Name: httpie
-Version: 0.9.9
-Release: alt1.qa1
-Summary: A Curl-like tool for humans
+Version: 2.3.0
+Release: alt3
 
+Summary: A Curl-like tool for humans
 Group: Networking/WWW
 License: BSD
 Url: http://httpie.org
-Source0: %name-%version.tar
-Patch0: %name-%version-system-urllib3.patch
-BuildRequires: python-devel python-module-Pygments python-module-requests help2man python-module-setuptools rpm-build-python python-modules-json
 BuildArch: noarch
 
-Requires: python-module-requests >= 2.11.0
-Requires: python-module-Pygments >= 2.1.3
+Source0: %name-%version.tar
 
-%if_with python3
-BuildRequires: python3-dev python3-module-Pygments python3-module-requests
-BuildRequires: python3-module-setuptools rpm-build-python3
-%endif
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-dev python3-module-setuptools
+BuildRequires: python3-module-Pygments python3-module-requests
+BuildRequires: help2man
+
+Requires: python3-module-requests >= 2.11.0
+Requires: python3-module-Pygments >= 2.1.3
+Requires: python3-module-socks
+
+Obsoletes: httpie-python3 < %EVR
 
 %description
 HTTPie is a CLI HTTP utility built out of frustration with existing tools. The
@@ -33,79 +33,48 @@ HTTPie does so by providing an http command that allows for issuing arbitrary
 HTTP requests using a simple and natural syntax and displaying colorized
 responses.
 
-%if_with python3
-%package -n httpie-python3
-Summary: A Curl-like tool for humans
-Group: Networking/WWW
-
-Requires: python3-module-requests >= 2.11.0
-Requires: python3-module-Pygments >= 2.1.3
-
-%description -n httpie-python3
-HTTPie is a CLI HTTP utility built out of frustration with existing tools. The
-goal is to make CLI interaction with HTTP-based services as human-friendly as
-possible.
-
-HTTPie does so by providing an http command that allows for issuing arbitrary
-HTTP requests using a simple and natural syntax and displaying colorized
-responses.
-%endif
-
 %prep
 %setup
-%patch0 -p0
-sed -i '/#!\/usr\/bin\/env/d' %name/__main__.py
 
-%if_with python3
-rm -rf %py3bdir
-cp -a . %py3bdir
-%endif
+sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|' \
+    $(find ./ -name '*.py')
 
 %build
-python setup.py build
-
-%if_with python3
-pushd %py3bdir
-python3 setup.py build
-popd
-%endif
+%__python3 setup.py build
 
 %install
-%if_with python3
-pushd %py3bdir
-python3 setup.py install --skip-build --root %buildroot
-mv %buildroot%_bindir/http %buildroot%_bindir/http.python3
-popd
-%endif
-
-python setup.py install --root %buildroot
+%__python3 setup.py install --skip-build --root %buildroot
 
 mkdir -p %buildroot/%_man1dir
-export PYTHONPATH=%buildroot%python_sitelibdir
-help2man --no-discard-stderr %buildroot/%_bindir/http > %buildroot/%_man1dir/http.1
 
-%if_with python3
 export PYTHONPATH=%buildroot%python3_sitelibdir
-help2man --no-discard-stderr %buildroot/%_bindir/http.python3 > %buildroot/%_man1dir/http.python3.1
-%endif
+help2man --no-discard-stderr %buildroot/%_bindir/http > %buildroot/%_man1dir/http.1
+help2man --no-discard-stderr %buildroot/%_bindir/https > %buildroot/%_man1dir/https.1
 
 %files
 %_bindir/http
-%python_sitelibdir/%name
-%python_sitelibdir/%name-%{realversion}*
-%_man1dir/http.1.*
-%doc LICENSE README.rst
-
-%if_with python3
-%files -n httpie-python3
-%_bindir/http.python3
+%_bindir/https
 %python3_sitelibdir/%name
 %python3_sitelibdir/%name-%{realversion}*
-%_man1dir/http.python3.1.*
+%_man1dir/http.1*
+%_man1dir/https.1*
 %doc LICENSE README.rst
-%endif
+
 
 %changelog
+* Mon Dec 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.0-alt3
+- Updated runtime dependencies.
+
+* Fri Dec 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.0-alt2
+- Updated obsoletes.
+- Stopped renaming binaries and man pages.
+
+* Wed Dec 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.0-alt1
+- Updated to upstream version 2.3.0 (Fixes: CVE-2019-10751).
+
+* Sat Dec 07 2019 Andrey Bychkov <mrdrew@altlinux.org> 0.9.9-alt2
+- build for python2 disabled
+
 * Sun Oct 14 2018 Igor Vlasenko <viy@altlinux.ru> 0.9.9-alt1.qa1
 - NMU: applied repocop patch
 

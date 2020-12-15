@@ -1,26 +1,40 @@
+%define _unpackaged_files_terminate_build 1
 %define oname Pygments
 
-Name: python-module-Pygments
-Version: 2.4.2
-Release: alt3
+%def_with docs
+%def_with check
+
+Name: python3-module-Pygments
+Version: 2.6.1
+Release: alt2
 
 Summary: Pygments is a syntax highlighting package written in Python
 
 License: BSD
-Group: Development/Python
-Url: http://pygments.org/
+Group: Development/Python3
+Url: https://pygments.org/
 
 BuildArch: noarch
 
 Source: %name-%version.tar
 Source1: autobuild.watch
 
-BuildRequires(pre): rpm-macros-sphinx
-BuildRequires: python-module-docutils
-BuildRequires: python-module-objects.inv
-BuildRequires: python-module-alabaster
-BuildRequires: python-module-html5lib
 BuildRequires: time
+
+BuildRequires(pre): rpm-build-python3
+
+%if_with docs
+BuildRequires(pre): rpm-macros-sphinx3
+BuildPreReq: python3-module-docutils
+BuildPreReq: python3-module-alabaster
+BuildPreReq: python3-module-html5lib
+BuildPreReq: python3-module-objects.inv
+%endif
+
+%if_with check
+BuildRequires: python3(pytest)
+BuildRequires: python3(tox)
+%endif
 
 %description
 It is a generic syntax highlighter for general use in all kinds of
@@ -32,107 +46,97 @@ to prettify source code. Highlights are:
  * a number of output formats, presently HTML, LaTeX, RTF, SVG and ANSI sequences
  * it is usable as a command-line tool and as a library
 
-%package tests
-Summary: Tests for %name
-Group: Development/Python
-Requires: %name = %version-%release
-AutoReq: yes, nopython
-
-%description tests
-It is a generic syntax highlighter for general use in all kinds of
-software such as forum systems, wikis or other applications that need
-to prettify source code. Highlights are:
- * a wide range of common languages and markup formats is supported
- * special attention is paid to details, increasing quality by a fair amount
- * support for new languages and formats are added easily
- * a number of output formats, presently HTML, LaTeX, RTF, SVG and ANSI sequences
- * it is usable as a command-line tool and as a library
-
-This package contains tests for %name.
-
+%if_with docs
 %package doc
 Summary: Documentation for %name
 Group: Development/Documentation
 BuildArch: noarch
-
 %description doc
-It is a generic syntax highlighter for general use in all kinds of
-software such as forum systems, wikis or other applications that need
-to prettify source code. Highlights are:
- * a wide range of common languages and markup formats is supported
- * special attention is paid to details, increasing quality by a fair amount
- * support for new languages and formats are added easily
- * a number of output formats, presently HTML, LaTeX, RTF, SVG and ANSI sequences
- * it is usable as a command-line tool and as a library
-
 This package contains documentation for %name.
 
 %package pickles
 Summary: Pickles for %name
-Group: Development/Python
+Group: Development/Python3
 BuildArch: noarch
 
 %description pickles
-It is a generic syntax highlighter for general use in all kinds of
-software such as forum systems, wikis or other applications that need
-to prettify source code. Highlights are:
- * a wide range of common languages and markup formats is supported
- * special attention is paid to details, increasing quality by a fair amount
- * support for new languages and formats are added easily
- * a number of output formats, presently HTML, LaTeX, RTF, SVG and ANSI sequences
- * it is usable as a command-line tool and as a library
-
 This package contains pickles for %name.
+%endif
 
 %prep
 %setup
 
-%prepare_sphinx .
-ln -s ../objects.inv doc/
+# drop post release tags
+sed -i \
+    -e 's/^tag_build[[:space:]]*=.*$/tag_build =/' \
+    -e 's/^tag_date[[:space:]]*=.*$/tag_date = 0/' \
+setup.cfg
 
 %build
-%python_build
+%if_with docs
+%prepare_sphinx3 .
+ln -s ../objects.inv doc/
+%endif
 
-%make -C doc pickle
-%make -C doc html
+%python3_build
+%if_with docs
+export PYTHONPATH=$(pwd)/build/lib
+%make SPHINXBUILD='py3_sphinx-build' -C doc pickle
+%make SPHINXBUILD='py3_sphinx-build' -C doc html
+%endif
 
 %install
-%python_install
+%python3_install
+mv %buildroot%_bindir/pygmentize %buildroot%_bindir/pygmentize3
+ln -s pygmentize3 %buildroot%_bindir/pygmentize.py3
 
-install -d %buildroot%_man1dir
+%if_with docs
 install -d %buildroot%_docdir/%name
-
-install -p -m644 AUTHORS CHANGES LICENSE TODO \
-	%buildroot%_docdir/%name/
 cp -fR doc/_build/html %buildroot%_docdir/%name/
+cp -fR doc/_build/pickle %buildroot%python3_sitelibdir/pygments/
+%endif
 
-install -p -m644 doc/pygmentize.1 %buildroot%_man1dir
-cp -fR tests %buildroot%python_sitelibdir/pygments/
-cp -fR doc/_build/pickle %buildroot%python_sitelibdir/pygments/
+%check
+ptrn='pytest-cov'
+{ grep -s -l "$ptrn" tox.ini | xargs sed -i -e "/$ptrn/d"; } || exit 1
+# use tox's pytest
+sed -i '/^\[testenv\]$/a whitelist_externals =\
+    \/bin\/cp\
+    \/bin\/sed\
+setenv =\
+    py3: _PYTEST_BIN=%_bindir\/py.test3\
+commands_pre =\
+    \/bin\/cp {env:_PYTEST_BIN:} \{envbindir\}\/py.test\
+    \/bin\/sed -i \x271c #!\{envpython\}\x27 \{envbindir\}\/py.test' tox.ini
+export PIP_NO_BUILD_ISOLATION=no
+export PIP_NO_INDEX=YES
+export TOXENV=py3
+tox.py3 --sitepackages -vv -r
 
 %files
-%doc %dir %_docdir/%name
-%doc %_docdir/%name/*
-%exclude %_docdir/%name/html
-%_bindir/pygmentize
-%python_sitelibdir/*
-%exclude %python_sitelibdir/*/pickle
-%exclude %python_sitelibdir/pygments/tests
-%_man1dir/*
-
-%files tests
-%python_sitelibdir/pygments/tests
+%doc LICENSE
+%_bindir/pygmentize3
+%_bindir/pygmentize.py3
+%python3_sitelibdir/pygments/
+%python3_sitelibdir/%oname-%version-py%_python3_version.egg-info/
+%if_with docs
+%exclude %python3_sitelibdir/*/pickle
 
 %files doc
-%doc %dir %_docdir/%name
-%doc %_docdir/%name/html
+%doc %dir %_docdir/python3-module-%oname
+%doc %_docdir/python3-module-%oname/html
 
 %files pickles
-%python_sitelibdir/*/pickle
+%python3_sitelibdir/*/pickle
+%endif
 
 %changelog
-* Wed May 06 2020 Stanislav Levin <slev@altlinux.org> 2.4.2-alt3
-- Moved Python3 subpackage to its own package.
+* Mon Dec 14 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.6.1-alt2
+- Fixed documentation generation on p9.
+
+* Wed May 06 2020 Stanislav Levin <slev@altlinux.org> 2.6.1-alt1
+- 2.4.2 -> 2.6.1.
+- Enabled testing.
 
 * Tue Feb 11 2020 Andrey Bychkov <mrdrew@altlinux.org> 2.4.2-alt2
 - Fixed build requires.
