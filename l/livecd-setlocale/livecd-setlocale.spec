@@ -1,9 +1,9 @@
 Name: livecd-setlocale
-Version: 0.3.8
+Version: 0.3.9
 Release: alt1
 
 Summary: Automatically set locale from /proc/cmdline
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 
 Source0: %name.tar
@@ -33,6 +33,10 @@ rm -f %_sysconfdir/profile.d/00dconf-kbd.sh
 %_unitdir/livecd-setlocale.service
 
 %changelog
+* Fri Dec 11 2020 Anton Midyukov <antohami@altlinux.org> 0.3.9-alt1
+- set ctrl+shift for switch keyboard layout for be_BY, tt_RU, uk_UA locale
+- Fix License Tag
+
 * Sun Mar 29 2020 Anton Midyukov <antohami@altlinux.org> 0.3.8-alt1
 - set alt+shift for switch keyboard layout
 
