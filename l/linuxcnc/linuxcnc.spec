@@ -7,8 +7,8 @@
 %def_without static
 %set_verify_elf_method unresolved=relaxed
 Name: linuxcnc
-Version: 2.7.15
-Release: alt2
+Version: 2.8.1
+Release: alt1
 
 Summary: LinuxCNC controls CNC machines
 Summary(ru_RU.UTF-8): Программа управления ЧПУ станков
@@ -20,8 +20,13 @@ ExclusiveArch: aarch64 alpha %arm ia64 %ix86 x86_64
 
 Packager: Anton Midyukov <antohami@altlinux.org>
 Source: %name-%version.tar
-Source1: aarch64-io.h
 Patch1: fix-dir-path.patch
+#Patch2: linuxcnc-upstream-accommodate-systems-without-io.h.patch
+#Patch3: linuxcnc-upstream-fix-undefined-symbols-1.patch
+#Patch4: linuxcnc-upstream-fix-undefined-symbols-2.patch
+#Patch5: linuxcnc-upstream-fix-undefined-symbols-3.patch
+Patch6: qtvcp_import_fix.patch
+Patch7: not_require_dpkg.patch
 Buildrequires(pre): rpm-build-tcl rpm-build-python
 BuildRequires: gcc-c++ pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gtk+-2.0)
@@ -55,9 +60,12 @@ Requires: %name-data = %version
 Requires: lib%name = %version
 Requires: tclx tcl-blt
 %py_requires Xlib
+%py_requires PyQt5.Qsci
 %add_python_req_skip emccanon
 %add_python_req_skip interpreter
 %add_python_req_skip gtk.gdk
+
+%filter_from_requires s/^.*rip-environment//
 
 # replace requres python-module-gst -> python-module-gst1.0
 # see https://github.com/LinuxCNC/linuxcnc/commit/fe2483ceb06a1ae93669e0f98657eb8fa1638915
@@ -138,22 +146,25 @@ Spanish documementation for %name
 %prep
 %setup
 %patch1 -p1
+#patch2 -p1
+#patch3 -p1
+#patch4 -p1
+#patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 sed -i 's|lib/tcltk/linuxcnc|%_lib/tcl/linuxcnc|' lib/python/rs274/options.py
 sed -i 's|INCLUDES := .|INCLUDES := . /usr/include/tirpc|' src/Makefile
 sed -i 's|LDFLAGS := |LDFLAGS := -ltirpc |' src/Makefile
-%ifarch aarch64
-mkdir -p src/rtapi/sys
-cp %SOURCE1 src/rtapi/sys/io.h
-%endif
 
 #fix make install
 sed 's/ -o root//g' -i src/Makefile
 
 # explicitly set python-2
-find . -type f | xargs sed -i \
+find . -type f -name *.py | xargs sed -i \
 	-e '1s:^#!/usr/bin/env python$:#!/usr/bin/python%__python_version:' \
 	-e '1s:^#!/usr/bin/python$:#!/usr/bin/python%__python_version:' \
+	-e '1s:^#!/usr/bin/python3$:#!/usr/bin/python%__python_version:' \
 	%nil
 
 %build
@@ -263,6 +274,7 @@ popd
 %_datadir/gmoccapy
 %_datadir/gscreen
 %_datadir/gtksourceview-2.0/*
+%_datadir/qtvcp/*
 %_liconsdir/*
 %_niconsdir/*
 %_miconsdir/*
@@ -285,6 +297,12 @@ popd
 %endif
 
 %changelog
+* Sun Dec 06 2020 Anton Midyukov <antohami@altlinux.org> 2.8.1-alt1
+- New version 2.8.1
+
+* Thu Sep 17 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.7.15-alt3
+- Fixed build on armh and rebuilt with new boost.
+
 * Thu Mar 12 2020 Anton Midyukov <antohami@altlinux.org> 2.7.15-alt2
 - Fixed tcl dir again
 
