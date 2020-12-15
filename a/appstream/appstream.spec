@@ -1,6 +1,8 @@
+%def_without docs
+
 Name:    appstream
-Version: 0.12.6
-Release: alt1
+Version: 0.13.1
+Release: alt0.1.b9
 Summary: Utilities to generate, maintain and access the AppStream Xapian database 
 
 # lib LGPLv2+, tools GPLv2+
@@ -9,7 +11,9 @@ Group:   System/Configuration/Packaging
 URL:     http://www.freedesktop.org/wiki/Distributions/AppStream/Software
 Source0: appstream-%{version}.tar
 # VCS:   https://github.com/ximion/appstream
+Patch1:  appstream-no-Wno-deprecated-copy.patch
 
+BuildRequires(pre): meson
 BuildRequires: gcc-c++
 BuildRequires: ctest
 BuildRequires: gettext
@@ -17,18 +21,22 @@ BuildRequires: gobject-introspection-devel
 BuildRequires: gperf
 BuildRequires: intltool
 BuildRequires: itstool
+BuildRequires: liblmdb-devel
 BuildRequires: libprotobuf-lite-devel
 BuildRequires: libstemmer-devel
 BuildRequires: libxapian-devel
 BuildRequires: libxml2-devel
 BuildRequires: libyaml-devel
-BuildRequires: meson
 BuildRequires: ninja-build
 BuildRequires: protobuf-compiler
-BuildRequires: publican
+%if_with docs
+BuildRequires: daps
+%endif
 BuildRequires: qt5-base-devel
 BuildRequires: xmlto
 BuildRequires: gtk-doc
+BuildRequires: libsoup-devel
+BuildRequires: /proc
 
 #Requires: appstream-data
 
@@ -70,10 +78,15 @@ BuildArch: noarch
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %meson  -Dqt=true \
+%if_with docs
 	-Ddocs=true \
+%else
+	-Ddocs=false \
+%endif
 	-Dstemming=true
 %meson_build
 
@@ -84,11 +97,6 @@ mkdir -p %{buildroot}/var/cache/app-info/{icons,xapian,xmls}
 touch %{buildroot}/var/cache/app-info/cache.watch
 
 %find_lang appstream
-
-# move metainfo to right/legacy location, at least until our tools can handle it
-mkdir -p %{buildroot}%{_datadir}/appdata/
-mv %{buildroot}%{_datadir}/metainfo/*.xml \
-   %{buildroot}%{_datadir}/appdata/
 
 %check
 #%%meson_test
@@ -109,7 +117,7 @@ mv %{buildroot}%{_datadir}/metainfo/*.xml \
 %dir %_cachedir/app-info/xmls
 %_man1dir/appstreamcli.1.*
 %_datadir/gettext/its/metainfo.*
-%_datadir/appdata/org.freedesktop.appstream.cli.*.xml
+%_datadir/metainfo/org.freedesktop.appstream.cli.*.xml
 
 %files devel
 %_includedir/appstream/
@@ -130,6 +138,31 @@ mv %{buildroot}%{_datadir}/metainfo/*.xml \
 %_datadir/gtk-doc/html/%name
 
 %changelog
+* Mon Dec 14 2020 Andrey Cherepanov <cas@altlinux.org> 0.13.1-alt0.1.b9
+- Do not use unsupported option -Wno-deprecated-copy.
+
+* Tue Dec 01 2020 Andrey Cherepanov <cas@altlinux.org> 0.13.1-alt1
+- New version.
+
+* Fri Nov 20 2020 Andrey Cherepanov <cas@altlinux.org> 0.12.11-alt2
+- Do not build API documentation because both daps and publican are not build for i586.
+
+* Thu May 14 2020 Andrey Cherepanov <cas@altlinux.org> 0.12.11-alt1
+- New version.
+- Use daps instead of publican for documentation build.
+
+* Fri Jan 24 2020 Andrey Cherepanov <cas@altlinux.org> 0.12.10-alt1
+- New version.
+
+* Mon Dec 16 2019 Andrey Cherepanov <cas@altlinux.org> 0.12.9-alt1
+- New version.
+
+* Tue Aug 20 2019 Andrey Cherepanov <cas@altlinux.org> 0.12.8-alt1
+- New version.
+
+* Sun Jun 23 2019 Andrey Cherepanov <cas@altlinux.org> 0.12.7-alt1
+- New version.
+
 * Sat Mar 09 2019 Andrey Cherepanov <cas@altlinux.org> 0.12.6-alt1
 - New version.
 
