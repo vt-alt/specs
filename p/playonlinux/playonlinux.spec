@@ -1,18 +1,19 @@
 %define  oname PlayOnLinux
 
 Name:    playonlinux
-Version: 4.2.10
-Release: alt4
+Version: 4.3.4
+Release: alt2
 
 Summary: Play your Windows games on Linux
 License: GPLv3
 Group:   Games/Other
 Url:     http://www.playonlinux.com
-Packager: Denis Medvedev <nbr@altlinux.org> 
+Packager: Denis Medvedev <nbr@altlinux.org>
 
 Source: http://www.playonlinux.com/script_files/%oname/%version/%{oname}_%version.tar.gz
 Source1: playonlinux.sh
 Source2: %oname.desktop
+Patch: playonlinux-remove-capture-plugin.patch
 
 BuildRequires: python-module-wx3.0
 Requires: ImageMagick-tools
@@ -24,6 +25,7 @@ Requires: xterm
 Requires: binutils
 Requires: icoutils
 Requires: python-module-wx3.0
+Requires: jq
 
 %add_findreq_skiplist %_datadir/%name/bash/*
 %add_findreq_skiplist %_datadir/%name/lib/scripts.lib
@@ -41,6 +43,17 @@ and respectful of the free software.
 
 %prep
 %setup -n %name
+%patch -p1
+
+# fix python shebangs
+find . -type f -print0 |
+    xargs -r0 sed -i 's@!/usr/bin/python@!%__python@' --
+
+find . -type f -print0 |
+    xargs -r0 sed -i 's@/usr/bin/env python@%__python@' --
+
+find . -type f -print0 |
+    xargs -r0 sed -i 's@exec python@exec %__python@' --
 
 %install
 mkdir %buildroot
@@ -74,6 +87,17 @@ ln -sf /lib/libnss_db.so.2 %buildroot%_libdir/%name/libnss_db.so.2
 %_libdir/%name/*
 
 %changelog
+* Fri Dec 11 2020 Grigory Ustinov <grenka@altlinux.org> 4.3.4-alt2
+- Build new version (Closes: #39392).
+- Add requirement on jq (Closes: #39404).
+- Disable capture plugin (Closes: #39403).
+
+* Mon Dec 07 2020 Grigory Ustinov <grenka@altlinux.org> 4.3.4-alt1
+- Build new version.
+
+* Tue Aug 25 2020 Grigory Ustinov <grenka@altlinux.org> 4.2.10-alt5
+- Fix FTBFS.
+
 * Tue Oct 02 2018 Grigory Ustinov <grenka@altlinux.org> 4.2.10-alt4
 - Remove dependency on ImageMagick.
 
