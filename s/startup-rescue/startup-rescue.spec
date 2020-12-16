@@ -1,6 +1,6 @@
 Name: startup-rescue
-Version: 0.32
-Release: alt4
+Version: 0.33
+Release: alt1
 
 Summary: The system startup scripts for rescue disk
 License: GPL
@@ -65,6 +65,9 @@ install -pm755 rescue-remote.init %buildroot%_initdir/rescue-remote
 %_initdir/rescue-remote
 
 %changelog
+* Wed Dec 16 2020 Anton Midyukov <antohami@altlinux.org> 0.33-alt1
+- Create /dev/{core,fd,stdin,stdout,stderr} symlinks if needed
+
 * Sat Feb 15 2020 Anton Midyukov <antohami@altlinux.org> 0.32-alt4
 - Fixed DHCP timeout (closes: 38089)
 
