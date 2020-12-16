@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.1
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -46,6 +46,10 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Tue Dec 15 2020 Elena Mishina <lepata@altlinux.org> 9.1-alt2
+- update to ALT Kworkstation 9.1RC1
+- add OEM-mode
+
 * Wed Sep 09 2020 Elena Mishina <lepata@altlinux.org> 9.1-alt1
 - update to ALT Kworkstation 9.1Beta
 - add fleet-commander
