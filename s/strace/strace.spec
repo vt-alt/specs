@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.9
+Version: 5.10
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -63,6 +63,8 @@ CFLAGS_FOR_BUILD="$RPM_OPT_FLAGS"; export CFLAGS_FOR_BUILD
 %install
 %makeinstall_std -C build
 %set_verify_elf_method strict
+%define _unpackaged_files_terminate_build 1
+%define _stripped_files_terminate_build 1
 
 %check
 %buildroot%_bindir/strace -V
@@ -82,6 +84,12 @@ echo 'END OF TEST SUITE INFORMATION'
 %doc COPYING CREDITS NEWS README README-linux-ptrace
 
 %changelog
+* Mon Dec 14 2020 Dmitry V. Levin <ldv@altlinux.org> 5.10-alt1
+- v5.9-13-gd2addc92d -> v5.10.
+
+* Wed Dec 02 2020 Dmitry V. Levin <ldv@altlinux.org> 5.9.0.13.d2add-alt1
+- v5.9 -> v5.9-13-gd2addc92d.
+
 * Thu Sep 24 2020 Dmitry V. Levin <ldv@altlinux.org> 5.9-alt1
 - v5.8 -> v5.9.
 
