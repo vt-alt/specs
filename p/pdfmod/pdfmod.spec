@@ -1,6 +1,6 @@
 Name:           pdfmod
 Version:        0.9.1
-Release:        alt9
+Release:        alt10
 
 Summary:        PDF Modifier
 License:        GPL-2.0+
@@ -12,14 +12,19 @@ Patch0:         pdfmod-0.9.1-alt-fix-configure.patch
 Packager:       Korneechev Evgeniy <ekorneechev@altlinux.org>
 
 BuildRequires:  /proc
-BuildRequires:  gnome-doc-utils libgnome-sharp-devel hyena-devel
-# Automatically added by buildreq on Fri Sep 09 2016
-# optimized out: libgtk-sharp2 mono mono-data mono-mscorlib perl-Encode 
-# perl-XML-Parser pkg-config python-base python-modules python3
-BuildRequires:  hyena intltool libgnome-sharp mono-core mono-data python3-base
+BuildRequires:  gnome-doc-utils
+BuildRequires:  hyena-devel
+BuildRequires:  intltool
+BuildRequires:  libgnome-sharp-devel
+BuildRequires:  mono-data
+BuildRequires:  mono-devel
+BuildRequires:  python3-base
 
+Requires:       gawk
+Requires:       libgnome-sharp
+Requires:       libgtk-sharp2
+Requires:       libpoppler8-glib
 Requires:       mono-core >= 5.0
-Requires:       libgnome-sharp libgtk-sharp2 libpoppler8-glib gawk
 
 %description
 PDF Mod is a simple tool for modifying your PDFs: moving, removing,
@@ -51,6 +56,9 @@ echo "</configuration>" >> %_sysconfdir/mono/config
 %_datadir/applications/%name.desktop
 
 %changelog
+* Mon Dec 07 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 0.9.1-alt10
+- Fixed build: mono-devel to deps
+
 * Thu Sep 21 2017 Evgeniy Korneechev <ekorneechev@altlinux.org> 0.9.1-alt9
 - Reverted previous change
 
