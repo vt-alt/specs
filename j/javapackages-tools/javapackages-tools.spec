@@ -45,7 +45,7 @@ BuildRequires: jpackage-generic-compat
 
 Name:           javapackages-tools
 Version:        5.0.0
-Release:        alt1_12jpp8
+Release:        alt1_12jpp8.M90P.1
 
 Summary:        Macros and scripts for Java packaging support
 
@@ -100,6 +100,9 @@ Patch39: macros.jpackage-alt-script.patch
 Conflicts:       jpackage-utils < 0:5.0.1
 Obsoletes:       jpackage-utils < 0:5.0.1
 Provides:       jpackage-utils = 1:5.0.0
+
+# for jvm backports
+Provides: javapackages-filesystem = %version
 
 %description
 This package provides macros and scripts to support Java packaging.
@@ -333,6 +336,9 @@ popd
 %doc --no-dereference LICENSE
 
 %changelog
+* Sun Dec 13 2020 Igor Vlasenko <viy@altlinux.ru> 1:5.0.0-alt1_12jpp8.M90P.1
+- added Provides: javapackages-filesystem for jvm 9-11 backports
+
 * Thu May 10 2018 Igor Vlasenko <viy@altlinux.ru> 1:5.0.0-alt1_12jpp8
 - java update
 
