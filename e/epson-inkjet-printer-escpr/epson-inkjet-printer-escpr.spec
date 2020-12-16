@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.7.7
+%define ver     1.7.8
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -62,7 +62,7 @@ http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX
 # Packaging settings
 %prep
 %setup -q
-%patch0 -p1
+%patch0 -p2
 
 %build
 %undefine _configure_gettext
@@ -85,6 +85,12 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Mon Dec 14 2020 Andrey Cherepanov <cas@altlinux.org> 1.7.8-alt1
+- New version.
+- Supported new models:
+  + Epson EP-713A Series
+  + Epson EP-813A Series
+
 * Wed Jan 29 2020 Andrey Cherepanov <cas@altlinux.org> 1.7.7-alt1
 - New version.
 - Supported new models:
