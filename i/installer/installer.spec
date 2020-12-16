@@ -1,5 +1,5 @@
 Name: installer
-Version: 1.10.4
+Version: 1.10.6
 Release: alt2
 
 Summary: Installer common parts
@@ -111,6 +111,15 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Mon Dec 14 2020 Anton Midyukov <antohami@altlinux.org> 1.10.6-alt2
+- Set locale to last $LANG (needed for rEFInd)
+
+* Fri Nov 06 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.10.6-alt1
+- don't remove drm modules when virtio presents
+
+* Thu Oct 22 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.10.5-alt1
+- fixed .disk/info copying during network install
+
 * Thu Sep 17 2020 Michael Shigorin <mike@altlinux.org> 1.10.4-alt2
 - installer-common-stage2: explicit R: glibc-locales (opens: #38955)
 
