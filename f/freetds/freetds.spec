@@ -1,9 +1,11 @@
+%define _unpackaged_files_terminate_build 1
+
 %def_disable static
 
-%define	TDSVER 7.0
+%define	TDSVER 7.4
 %define	name freetds
-%define	release alt1
-%define	version 1.00.97
+%define	release alt2
+%define	version 1.2.17
 
 Name:		%name
 Version:	%version
@@ -13,11 +15,13 @@ Summary:	An OpenSource implementation of the tubular data stream protocol
 License:	GPL/LGPL
 Group:		System/Libraries
 URL:		http://www.freetds.org/
-Packager: Dmitry Lebkov <dlebkov@altlinux.ru>
 
 Source0:	%name-%version.tar
 Source1:	%name.sh
 Source2:	%name.csh
+
+Patch1: %name-alt-revert-dblib-fix-TDS_DONE_RESULT-empty-rowsets.patch
+Patch2: %name-alt-fix-datacopy-logging.patch
 
 # Automatically added by buildreq on Sun Aug 19 2018
 # optimized out: glibc-kernheaders-generic glibc-kernheaders-x86 libcom_err-devel libkrb5-devel libncurses-devel libtinfo-devel libunixODBC-devel-compat perl pkg-config python-base python-modules python3 python3-base python3-dev ruby sh3
@@ -68,7 +72,7 @@ This package is built with support for TDS version %TDSVER.
 Summary: 	An OpenSource implementation of the TDS protocol. Development files
 License:	GPL/LGPL
 Group: 		Development/C
-PreReq:		lib%name = %version-%release
+PreReq:		lib%name = %EVR
 Provides:	%name-devel
 
 %description -n lib%name-devel
@@ -82,7 +86,7 @@ This package is built with support for TDS version %TDSVER.
 Summary: 	An OpenSource implementation of the TDS protocol. Static libraries
 License:	GPL/LGPL
 Group: 		Development/C
-PreReq:		lib%name-devel = %version-%release
+PreReq:		lib%name-devel = %EVR
 Provides:	%name-devel-static
 
 %description -n lib%name-devel-static
@@ -97,7 +101,7 @@ This package is built with support for TDS version %TDSVER.
 Summary:	An OpenSource implementation of the TDS protocol. Utilities
 License:	GPL/LGPL
 Group:		Databases
-PreReq:		lib%name = %version-%release
+PreReq:		lib%name = %EVR
 Provides:	%name-utils
 
 %description -n %name-utils
@@ -111,6 +115,8 @@ useful utilities.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p2
 
 %build
 %add_optflags -fno-strict-aliasing
@@ -167,6 +173,12 @@ useful utilities.
 
 
 %changelog
+* Wed Dec 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.17-alt2
+- Fixed datacopy functionality and logging.
+
+* Wed Dec 09 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.17-alt1
+- Updated to upstream version 1.2.17 (Fixes: CVE-2019-13508).
+
 * Sun Sep 02 2018 Nikolay A. Fetisov <naf@altlinux.org> 1.00.97-alt1
 - New version
 
