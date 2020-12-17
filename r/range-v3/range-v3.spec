@@ -4,8 +4,8 @@
 Name: range-v3
 
 Summary: Range library for C++14/17/20, basis for C++20's std::ranges
-Version: 0.10.0
-Release: alt3
+Version: 0.11.0
+Release: alt1
 
 License: Boost
 Group: Development/C++
@@ -19,6 +19,7 @@ Source: %name-%version.tar
 BuildArch: noarch
 
 # WAIT: https://bugzilla.altlinux.org/show_bug.cgi?id=37930
+# WAIT: https://bugzilla.altlinux.org/show_bug.cgi?id=38830
 %set_gcc_version 8
 BuildRequires: gcc8-c++
 
@@ -76,6 +77,9 @@ rm -vf %buildroot%_includedir/module.modulemap
 %_datadir/cmake/%name
 
 %changelog
+* Thu Aug 20 2020 Vitaly Lipatov <lav@altlinux.ru> 0.11.0-alt1
+- new version 0.11.0 (with rpmrb script)
+
 * Mon Jan 27 2020 Vitaly Lipatov <lav@altlinux.ru> 0.10.0-alt3
 - build range-v3 in any case, use gcc8
 
