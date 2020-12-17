@@ -12,7 +12,7 @@
 
 Name: 389-ds-base
 Version: 1.4.1.18
-Release: alt4
+Release: alt5
 
 Summary: 389 Directory Server (base)
 License: GPLv3+
@@ -606,6 +606,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 15 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.18-alt5
+- Added support for gost-yescrypt for hashing passwords.
+
 * Fri Oct 16 2020 Stanislav Levin <slev@altlinux.org> 1.4.1.18-alt4
 - Obsoleted previous 389-ds Web services.
 
