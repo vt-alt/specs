@@ -1,5 +1,5 @@
 Name: startup-mediacheck
-Version: 0.2.3
+Version: 0.2.4
 Release: alt1
 
 Summary: The system startup scripts for mediacheck (warning!)
@@ -32,6 +32,10 @@ install -pm755 rc.sysinit.mediacheck %buildroot%_sysconfdir/rc.d/
 %_sysconfdir/rc.d/rc.sysinit.mediacheck
 
 %changelog
+* Wed Dec 16 2020 Anton Midyukov <antohami@altlinux.org> 0.2.4-alt1
+- Port on POSIX shell
+- Fix log level
+
 * Tue Nov 10 2015 Michael Shigorin <mike@altlinux.org> 0.2.3-alt1
 - fixed verifying USB flash media ("sdb1 vs sdb")
 - added debug shell at tty11 if check failed
