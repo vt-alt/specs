@@ -7,7 +7,7 @@
 Name: obs-studio
 Summary: Free and open source software for video recording and live streaming
 Summary(ru_RU.UTF-8): Свободная программа для записи и трансляции видеопотока
-Version: 26.0.2
+Version: 26.1.0
 Release: alt1
 License: GPLv2+
 Group: Video
@@ -174,6 +174,9 @@ sed -i 's|OBS_MULTIARCH_SUFFIX|LIB_SUFFIX|g' cmake/Modules/ObsHelpers.cmake
 %_datadir/obs/obs-plugins/linux-pulseaudio/
 
 %changelog
+* Tue Dec 15 2020 Anton Midyukov <antohami@altlinux.org> 26.1.0-alt1
+- new version 26.1.0
+
 * Sat Oct 10 2020 Anton Midyukov <antohami@altlinux.org> 26.0.2-alt1
 - new version 26.0.2
 
