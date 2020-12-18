@@ -1,4 +1,4 @@
-%define git_version afdd217ae5fb1ed3f60e16bd62357ca58cc650e5
+%define git_version 762032d6f509d5e7ee7dc008d80fe9c87086603c
 %define _unpackaged_files_terminate_build 1
 
 %def_with ocf
@@ -42,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.15
+Version: 14.2.16
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1542,6 +1542,12 @@ fi
 %endif
 
 %changelog
+* Thu Dec 17 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.16-alt1
+- 14.2.16
+- Fixes for the following security vulnerabilities:
+  + CVE-2020-27781 OpenStack Manila use of ceph_volume_client.py library
+    allowed tenant access to any Ceph credential's secret.
+
 * Tue Nov 24 2020 Alexey Shabalin <shaba@altlinux.org> 14.2.15-alt1
 - 14.2.15
 
