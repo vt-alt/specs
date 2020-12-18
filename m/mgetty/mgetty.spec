@@ -3,36 +3,31 @@
 %define alllibdir %_libdir/%allname
 
 Name: mgetty
-Version: 1.1.37
-Release: alt2
-
-%define verdate Jun05
+Version: 1.2.1
+Release: alt1
 
 Summary: A getty replacement for use with data and fax modems
 License: GPL
 Group: Communications
 
 Url: http://mgetty.greenie.net/
-Source: ftp://mgetty.greenie.net/pub/%name/source/1.1/%name%version-%verdate.tar.gz
+# ftp://mgetty.greenie.net/pub/%name/source/1.2/%name-%version.tar.gz
+Source: %name-%version.tar
 Source1: %name.logrotate
-Source2: voice.conf-dist.bz2
+Source2: voice.conf-dist
 
 Patch1: %name-1.1.5-config.patch
 Patch2: %name-1.1.5-makekvg.patch
 Patch3: %name-1.1.28-paths.patch
-Patch4: %name-1.1.14-echo.patch
 Patch5: %name-1.1.24-imakefile.patch
-Patch6: %name-1.1.24-texinfo.patch
 Patch7: %name-1.1.24-contrib.patch
-#Patch8: %name-1.1.24-faxprint.patch
 Patch9: %name-1.1.21-void.patch
 Patch10: %name-1.1.30-paths.patch
 Patch11: %name-1.1.26-elsa.patch
-Patch12: %name-1.1.21-giftopnm.patch
 
 Patch15: %name-1.1.25-usrvavaev.patch
 Patch16: %name-1.1.26-logfile.patch
-Patch17: %name-1.1.25-cid.patch.bz2
+Patch17: %name-1.1.25-cid.patch
 Patch18: %name-1.1.26-avc_cid.patch
 patch19: %name-1.1.30.FAX_OUT_USER.patch
 Patch20: %name-1.1.29-helper.patch
@@ -48,16 +43,10 @@ Patch35: %name-alt-warnings.patch
 
 # from gentoo
 Patch40: mgetty-1.1.31-callback.patch
-Patch41: mgetty-1.1.35-faxrunq.patch
 Patch42: mgetty-1.1.35-strerror.patch
-
-# from fedora
-Patch50: mgetty-1.1.36-fedora-gcc7.patch
 
 # debian-based
 Patch60: mgetty-1.1.37-alt-texi2roff.patch
-
-Packager: Fr. Br. George <george@altlinux.ru>
 
 Requires(pre): /var/lock/serial
 
@@ -131,40 +120,33 @@ Documentation, samples and contributed stuff that comes with %name.
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-#patch6 -p1
-%patch7 -p1
-#patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-#patch12 -p1
+%patch1 -p2
+%patch2 -p2
+%patch3 -p2
+%patch5 -p2
+%patch7 -p2
+%patch9 -p2
+%patch10 -p2
+%patch11 -p2
 
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch30 -p1
-%patch31 -p1
-%patch32 -p1
-%patch33 -p1
-%patch34 -p1
+%patch15 -p2
+%patch16 -p2
+%patch17 -p2
+%patch18 -p2
+%patch19 -p2
+%patch20 -p2
+%patch21 -p2
+%patch22 -p2
+%patch30 -p2
+%patch31 -p2
+%patch32 -p2
+%patch33 -p2
+%patch34 -p2
 
 %patch35 -p2
 
-%patch40 -p1
-#patch41 -p1
-%patch42 -p1
-
-%patch50 -p1
+%patch40 -p2
+%patch42 -p2
 
 %patch60 -p2
 
@@ -182,6 +164,8 @@ find -type f |
 find -type f |
 	xargs fgrep -l /perl5 |
 	xargs -r perl -pi -e 's,/perl5,/perl,g'
+
+chmod +x ./mkidirs
 
 %build
 %make
@@ -214,7 +198,7 @@ install -pm755 callback/ct %buildroot%_bindir
 # This conflicts with efax
 mv %buildroot%_man1dir/fax.1 %buildroot%_man1dir/%{name}_fax.1
 
-bzcat %SOURCE2 >%buildroot%allconfdir/voice.conf
+cat %SOURCE2 >%buildroot%allconfdir/voice.conf
 chmod 0600 %buildroot%allconfdir/voice.conf
 
 mkdir -p %buildroot/var/log/%name
@@ -355,6 +339,10 @@ find samples -type f |xargs chmod a-x
 # - Consider Gentoo patches
 
 %changelog
+* Wed Dec 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.1-alt1
+- Updated to upstream version 1.2.1 (Fixes: CVE-2018-16741, CVE-2018-16742,
+  CVE-2018-16743, CVE-2018-16744, CVE-2018-16745, CVE-2019-1010189, CVE-2019-1010190).
+
 * Sat Feb 02 2019 Michael Shigorin <mike@altlinux.org> 1.1.37-alt2
 - fix build without texi2roff
 
