@@ -1,6 +1,6 @@
 Name: dnstracer
 Version: 1.9
-Release: alt1.qa1
+Release: alt1.qa1.M90P.1
 
 Summary: A tool to trace DNS queries
 License: BSD
@@ -11,6 +11,9 @@ Packager: Evgenii Terechkov <evg@altlinux.ru>
 
 Source: http://www.mavetju.org/download/dnstracer-%version.tar.gz
 
+# Patch from Gentoo
+Patch1: dnstracer-1.9-argv0.patch
+
 %description
 dnstracer determines where a given Domain Name Server (DNS) gets its
 information from, and follows the chain of DNS servers back to the
@@ -18,6 +21,7 @@ servers which know the data.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 %configure
@@ -32,6 +36,9 @@ servers which know the data.
 %_bindir/*
 
 %changelog
+* Thu Dec 17 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.9-alt1.qa1.M90P.1
+- Applied security patch from Gentoo (Fixes: CVE-2017-9430).
+
 * Mon Apr 15 2013 Dmitry V. Levin (QA) <qa_ldv@altlinux.org> 1.9-alt1.qa1
 - NMU: rebuilt for debuginfo.
 
