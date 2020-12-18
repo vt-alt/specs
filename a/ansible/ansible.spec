@@ -1,6 +1,6 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
-Version: 2.9.15
+Version: 2.9.16
 Release: alt1
 
 Group:   System/Configuration/Other
@@ -81,6 +81,9 @@ find %buildroot%python3_sitelibdir/ansible_test/_data -name \*.ps1 -delete
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Wed Dec 16 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.16-alt1
+- New version.
+
 * Tue Nov 03 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.15-alt1
 - New version.
 
