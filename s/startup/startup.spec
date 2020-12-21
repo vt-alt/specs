@@ -1,9 +1,9 @@
 Name: startup
-Version: 0.9.9.6
+Version: 0.9.9.10
 Release: alt1
 
 Summary: The system startup scripts
-License: GPLv2+
+License: GPL-2.0-or-later
 Group: System/Base
 BuildArch: noarch
 
@@ -97,28 +97,6 @@ for f in /var/{log/wtmp,run/utmp}; do
 	fi
 done
 
-if [ -s /etc/sysconfig/i18n -a ! -e /etc/locale.conf ]; then
-	grep -E '^(LANG|LANGUAGE|LC_ADDRESS|LC_COLLATE|LC_CTYPE|LC_IDENTIFICATION|LC_MEASUREMENT|LC_MESSAGES|LC_MONETARY|LC_NAME|LC_NUMERIC|LC_PAPER|LC_TELEPHONE|LC_TIME)=' /etc/sysconfig/i18n > /etc/locale.conf
-	chmod 644 /etc/locale.conf
-fi
-
-# Dup of timeconfig %%post - here to avoid a dependency.
-if [ -L %_sysconfdir/localtime ]; then
-	_FNAME=`ls -ld %_sysconfdir/localtime |awk '{print $11}' |sed 's/lib/share/'`
-	if [ -f "$_FNAME" ]; then
-		rm %_sysconfdir/localtime
-		cp -fp "$_FNAME" %_sysconfdir/localtime
-		if ! grep -q "^ZONE=" %_sysconfdir/sysconfig/clock; then
-			echo "ZONE=\"$_FNAME"\" |sed -e "s|[^\"]*/usr/share/zoneinfo/||" >>%_sysconfdir/sysconfig/clock
-		fi
-	fi
-fi
-
-if grep -qs '^fb:[0-9]*:once:/etc/rc.d/scripts/framebuffer_setfont' /etc/inittab; then
-	/sbin/chkconfig --add fbsetfont
-	sed -i 's,^\(fb:[0-9]*:once:/etc/rc.d/scripts/framebuffer_setfont\),#\1,' /etc/inittab
-fi
-
 %preun
 if [ $1 -eq 0 ]; then
 	/sbin/chkconfig --del fbsetfont
@@ -169,6 +147,32 @@ done
 %ghost %config(noreplace,missingok) %verify(not md5 mtime size) %attr(600,root,root) %_localstatedir/random/random-seed
 
 %changelog
+* Tue Dec 15 2020 Alexey Gladkov <legion@altlinux.ru> 0.9.9.10-alt1
+- rc.sysinit:
+  + Create /dev/{core,fd,stdin,stdout,stderr} symlinks if needed (ALT#39423).
+
+* Thu Nov 28 2019 Alexey Gladkov <legion@altlinux.ru> 0.9.9.9-alt1
+- rc.sysinit:
+  + Remount procfs/sysfs even if these filesystems were not mounted.
+  + Do not change group of /proc since it does not change anything.
+- Remove creation of /etc/locale.conf.
+- Remove the legacy code of migration /etc/localtime.
+- Remove the legacy code of migration framebuffer_setfont.
+
+* Wed Nov 20 2019 Alexey Gladkov <legion@altlinux.ru> 0.9.9.8-alt1
+- rc.sysinit:
+  + Fix regression with ignoring HOSTNAME.
+
+* Sun Nov 17 2019 Alexey Gladkov <legion@altlinux.ru> 0.9.9.7-alt1
+- rc.sysinit:
+  + Add parameter for udev service.
+  + Do not hardcode systemd-modules-load and optimize mount /proc.
+  + Remove obsolete code that updates the /etc/mtab file.
+  + Remove obsolete idetune.
+  + Remove obsolete rsbac_autotune.
+  + Refactor code.
+- fbsetfont: Remove duplicate code
+
 * Wed Oct 31 2018 Alexey Shabalin <shaba@altlinux.org> 0.9.9.6-alt1
 - random: move random_seed from /var/run to /var/lib/random,
   because /var/run might be on tmpfs
