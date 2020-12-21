@@ -1,8 +1,8 @@
 # NOTE: do not use clean_spec or rpmcs for this spec
 
 Name: rpm-build-altlinux-compat
-Version: 2.2.2
-Release: alt1
+Version: 2.2.6
+Release: alt2
 
 Summary: ALT Linux compatibility and extensions in rpm build
 
@@ -75,7 +75,6 @@ Summary: Conflicts macros for ALT Linux rpm build
 Group: Development/Other
 Requires: %_rpmmacrosdir
 Requires: rpm-build-intro = %version-%release
-Provides: rpm-macros-intro-conflicts = %version-%release
 
 %description -n rpm-macros-intro-conflicts
 This package contains conflicts macros for
@@ -131,6 +130,24 @@ Command rpmbph from etersoft-build-utils will do it automatically.
 %endif
 
 %changelog
+* Sat Nov 21 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.6-alt2
+- restore rpm-macros-intro and rpm-macros-compat provides
+
+* Thu Nov 12 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.6-alt1
+- introduce python3_build_doc
+- drop duplicate self-provides
+
+* Thu Nov 05 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.5-alt1
+- macros.intro: python3_prune: add test dirs removing too
+
+* Fri Oct 30 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.4-alt1
+- just a hotfix: introduce python3_prune macro
+
+* Fri Oct 30 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.3-alt1
+- introduce py3_buildrequires
+- introduce py3_prune macro
+- distr_vendor: update from distro_info 1.7
+
 * Wed Oct 07 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.2-alt1
 - distr_vendor: fix again for catching up p9 branches (ALT bug 39046)
 
