@@ -1,17 +1,16 @@
 Name: icoutils
-Version: 0.29.1
-Release: alt1.1
+Version: 0.32.3
+Release: alt1
 
 Summary: Utility for extracting and converting Microsoft icon and cursor files
 Summary(ru_RU.KOI8-R): Утилита для извлечения и преобразования файлов Microsoft пиктограмм и курсоров
-License: GPL
+License: GPL-3.0+
 Group: Graphics
 
 Url: http://www.nongnu.org/icoutils/
 
-Packager: Ilya Mashkin <oddity@altlinux.ru>
-
-Source0: http://savannah.nongnu.org/download/icoutils/%name-%version.tar.bz2
+# http://savannah.nongnu.org/download/icoutils/%name-%version.tar.bz2
+Source: %name-%version.tar
 
 # Automatically added by buildreq on Tue Jul 12 2005 (-bi)
 BuildRequires: gcc-c++ libpng-devel libstdc++-devel perl-Term-ReadLine-Gnu perl-libwww zlib-devel
@@ -21,7 +20,7 @@ Summary: Additional tools designed to work with icoutils
 Summary(ru_RU.KOI8-R): Дополнительные инструменты для работы с icoutils
 Group: Graphics
 
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description
 The icoutils are a set of programs for extracting and converting images in
@@ -54,9 +53,10 @@ icoutils - набор программ для извлечения и преобразования изображений из/в
 использования.
 
 %prep
-%setup -q
+%setup
 
 %build
+%autoreconf
 %configure
 %make
 
@@ -76,10 +76,14 @@ icoutils - набор программ для извлечения и преобразования изображений из/в
 %_bindir/extresso
 %_bindir/genresscript
 
-%_man1dir/extresso.1.*
-%_man1dir/genresscript.1.*
+%_man1dir/extresso.1*
+%_man1dir/genresscript.1*
 
 %changelog
+* Thu Dec 17 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.32.3-alt1
+- Updated to upstream version 0.32.3 (Fixes: CVE-2017-5208,
+  CVE-2017-5331, CVE-2017-5332, CVE-2017-5333).
+
 * Thu Oct 04 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 0.29.1-alt1.1
 - Rebuilt with libpng15
 
