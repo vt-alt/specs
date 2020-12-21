@@ -4,7 +4,7 @@
 
 Name:    lazarus
 Version: 2.0.10
-Release: alt3
+Release: alt4
 Epoch:   1
 
 Summary: Lazarus Component Library and IDE
@@ -22,6 +22,7 @@ Source3: environmentoptions.xml
 Source4: projectoptions.xml
 
 Patch0: %name-0.9.22-alt-relax-onwine.patch
+Patch1: %name-without-tests.patch
 Patch2: %name-fix-desktop-file.patch
 Patch3: %name-fix-install-path-in-Makefile.patch
 Patch4: %name-2.0.2-fix-fpc-search.patch
@@ -113,6 +114,7 @@ developing applications that use qt5pas.
 %patch0 -p1
 
 tar xf %SOURCE2
+%patch1 -p2
 %patch2 -p2
 %patch3 -p2
 subst 's|/usr/lib/|%{_libdir}/|' %PATCH4
@@ -210,7 +212,7 @@ install -Dm0755 lazarus-gtk %buildroot%_bindir/lazarus-gtk
 rm -f %buildroot%_bindir/lazarus-ide
 mkdir -p %buildroot%_altdir
 echo "%_bindir/lazarus	%_bindir/lazarus-qt5	50" > %buildroot%_altdir/lazarus-qt5
-echo "%_bindir/lazarus	%_bindir/lazarus-gtk	50" > %buildroot%_altdir/lazarus-gtk
+echo "%_bindir/lazarus	%_bindir/lazarus-gtk	100" > %buildroot%_altdir/lazarus-gtk
 
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/LRS_Explorer
 ln -sf $LAZARUSDIR/tools/explorateur_lrs/LRS_Explorer %buildroot%_bindir/lrsexplorer
@@ -287,6 +289,11 @@ ln -s ../../bin/lazarus %buildroot$LAZARUSDIR/lazarus
 %_libdir/libQt5Pas.so
 
 %changelog
+* Thu Dec 17 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt4
+- Translate comment in desktop file into Russian (ALT #36852).
+- Make different weights if alternatives.
+- Remove tests to prevent sendmail autoreq.
+
 * Thu Oct 22 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt3
 - Fix run startlazarus.
 
