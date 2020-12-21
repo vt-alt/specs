@@ -1,6 +1,8 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: a2ps
 Version: 4.14
-Release: alt2
+Release: alt3
 
 # Brain damaged lib/program_name system...
 %set_verify_elf_method unresolved=relaxed
@@ -10,7 +12,7 @@ License: GPL
 Group: Publishing
 Url: http://www.gnu.org/s/a2ps
 
-Source0: %name-%{version}.tar.bz2
+Source0: %name-%version.tar
 Source1: %name-reconfigure
 Patch1: %name-2.13-pld-info.patch
 Patch2: %name-2.13-pld-security.patch
@@ -27,9 +29,11 @@ Patch11: %name-4.13-varargs.patch
 Patch12: %name-4.13-64bit-fixes.patch
 Patch13: %name-4.13-alt-liba2ps_with_lm.patch
 Patch14: %name-alt-koi8.edf.patch
+Patch15: %name-4.14-gentoo-CVE-2014-0466.patch
+Patch16: %name-4.14-debian-fix-bad-free.patch
+Patch17: %name-4.14-debian-fix-format-security.patch
 
-
-PreReq: lib%name = %version-%release
+PreReq: lib%name = %EVR
 
 %def_disable static
 %{?_enable_static:BuildPreReq: glibc-devel-static}
@@ -74,7 +78,7 @@ The lib%name package contains a shared library of functions of %name' filters.
 Summary: %name development files
 Group: Development/C
 License: GPL
-PreReq: lib%name = %version-%release
+PreReq: lib%name = %EVR
 
 %description -n lib%name-devel
 The lib%name package contains development files for using
@@ -88,7 +92,7 @@ lib%name in development.
 Summary: Staitc library for %name
 Group: Development/C
 License: GPL
-PreReq: lib%name-devel = %version-%release
+PreReq: lib%name-devel = %EVR
 
 %description -n lib%name-devel-static
 This package contains library for building statically linked software.
@@ -115,6 +119,9 @@ This package contains library for building statically linked software.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p0
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
 
 %build
 %{?!_enable_static:export lt_cv_prog_cc_static_works=no}
@@ -157,6 +164,9 @@ install -m 755 %SOURCE1 %buildroot%_sbindir
 %endif
 
 %changelog
+* Fri Dec 18 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 4.14-alt3
+- Applied security patches from Debian and Gentoo (Fixes: CVE-2014-0466, CVE-2015-8107).
+
 * Thu Jan 19 2012 Fr. Br. George <george@altlinux.ru> 4.14-alt2
 - Fix build
 
