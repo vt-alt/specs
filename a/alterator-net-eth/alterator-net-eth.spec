@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.7
+Version: 5.1.8
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Thu Dec 03 2020 Ivan Razzhivin <underwit@altlinux.org> 5.1.8-alt1
+- Add support NetworkManager for alterator-net-wifi
+
 * Sat May 09 2020 Evgeny Sinelnikov <sin@altlinux.org> 5.1.7-alt1
 - Add Native NetworkManager control mode support (closes: #38455)
 

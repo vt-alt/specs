@@ -1,8 +1,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-net-wifi
-Version: 0.14
-Release: alt2
+Version: 0.17
+Release: alt1
 
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
 
@@ -44,6 +44,19 @@ alterator module for wi-fi connections administration
 %_alterator_backend3dir/*
 
 %changelog
+* Thu Dec 17 2020 Ivan Razzhivin <underwit@altlinux.org> 0.17-alt1
+- show message for wrong password
+- hide password entry
+- save settings when connected
+
+* Mon Dec 14 2020 Ivan Razzhivin <underwit@altlinux.org> 0.16-alt1
+- show password
+- connect/disconnect
+- check password format
+
+* Thu Dec 03 2020 Ivan Razzhivin <underwit@altlinux.org> 0.15-alt1
+- Add support NetworkManager
+
 * Sat Jan 19 2019 Fr. Br. George <george@altlinux.ru> 0.14-alt2
 - Fix incorrect interface naming
 
