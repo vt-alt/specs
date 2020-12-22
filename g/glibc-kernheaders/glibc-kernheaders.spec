@@ -1,4 +1,4 @@
-%define kernel_base_version 5.1
+%define kernel_base_version 5.4
 %define kernel_source kernel-source-%kernel_base_version
 
 Name: glibc-kernheaders
@@ -9,22 +9,27 @@ Summary: Linux kernel C header files for use by glibc and other userspace softwa
 # grep -Fhwr SPDX-License-Identifier: /usr/include/linux-default/include |sort |uniq -c |sort -n
 #   1 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) AND MIT) */
 #   1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) */
-#   1 /* SPDX-License-Identifier: BSD-3-Clause */
-#   1 /* SPDX-License-Identifier: GPL-2.0+ */
-#   2 /* SPDX-License-Identifier: (GPL-2.0 OR CDDL-1.0) */
-#   2 /* SPDX-License-Identifier: MIT */
+#   1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause */
+#   1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
+#   1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) or BSD-3-Clause */
+#   1 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
+#   1 /* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+#   2 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR CDDL-1.0) */
+#   2 /* SPDX-License-Identifier: BSD-3-Clause */
 #   3 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR MIT) */
 #   3 /* SPDX-License-Identifier: LGPL-2.1 WITH Linux-syscall-note */
+#   3 /* SPDX-License-Identifier: MIT */
 #   4 /* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR BSD-3-Clause) */
 #   4 /* SPDX-License-Identifier: LGPL-2.0+ WITH Linux-syscall-note */
-#   5 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
-#   9 /* SPDX-License-Identifier: GPL-2.0 */
-#  14 /* SPDX-License-Identifier: GPL-1.0+ WITH Linux-syscall-note */
+#   5 /* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+#   5 /* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+#   6 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+#  12 /* SPDX-License-Identifier: GPL-1.0+ WITH Linux-syscall-note */
 #  15 /* SPDX-License-Identifier: LGPL-2.1+ WITH Linux-syscall-note */
-#  16 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-#  18 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
-# 115 /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-# 587 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+#  17 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
+#  17 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+# 118 /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+# 569 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
 License: GPL-2.0-only with Linux-syscall-note
 Group: Development/Kernel
 Url: http://www.kernel.org/
@@ -37,24 +42,21 @@ Patch2: 0002-uapi-move-struct-reiserfs_security_handle-out-from-l.patch
 Patch3: 0003-uapi-fix-linux-nfc.h-userspace-compilation-errors.patch
 Patch4: 0004-uapi-fix-linux-vm_sockets.h-userspace-compilation-er.patch
 Patch5: 0005-uapi-fix-linux-sctp.h-userspace-compilation-errors.patch
-Patch6: 0006-uapi-fix-scsi-scsi_netlink.h-userspace-compilation-e.patch
-Patch7: 0007-uapi-fix-scsi-scsi_netlink_fc.h-userspace-compilatio.patch
-Patch8: 0008-uapi-fix-scsi-scsi_bsg_fc.h-userspace-compilation-er.patch
-Patch9: 0009-uapi-fix-asm-ipcbuf.h-userspace-compilation-errors.patch
-Patch10: 0010-uapi-fix-asm-msgbuf.h-userspace-compilation-errors.patch
-Patch11: 0011-uapi-fix-asm-sembuf.h-userspace-compilation-errors.patch
-Patch12: 0012-uapi-fix-asm-shmbuf.h-userspace-compilation-errors.patch
-Patch13: 0013-uapi-fix-another-asm-shmbuf.h-userspace-compilation-.patch
-Patch14: 0014-uapi-fix-asm-signal.h-userspace-compilation-errors.patch
-Patch15: 0015-uapi-introduce-__kernel_uapi_size_t.patch
-Patch16: 0016-x86-uapi-fix-asm-signal.h-userspace-compilation-erro.patch
-Patch17: 0017-uapi-fix-linux-kexec.h-userspace-compilation-errors.patch
-Patch18: 0018-uapi-fix-linux-omapfb.h-userspace-compilation-error.patch
-Patch19: 0019-uapi-fix-linux-fsmap.h-userspace-compilation-error.patch
-Patch20: 0020-uapi-fix-linux-usb-audio.h-userspace-compilation-err.patch
-Patch21: 0021-uapi-fix-linux-sysctl.h-Obsolete-types-detected-warn.patch
+Patch6: 0006-uapi-fix-asm-ipcbuf.h-userspace-compilation-errors.patch
+Patch7: 0007-uapi-fix-asm-msgbuf.h-userspace-compilation-errors.patch
+Patch8: 0008-uapi-fix-asm-sembuf.h-userspace-compilation-errors.patch
+Patch9: 0009-uapi-fix-asm-shmbuf.h-userspace-compilation-errors.patch
+Patch10: 0010-uapi-fix-another-asm-shmbuf.h-userspace-compilation-.patch
+Patch11: 0011-uapi-fix-asm-signal.h-userspace-compilation-errors.patch
+Patch12: 0012-uapi-introduce-__kernel_uapi_size_t.patch
+Patch13: 0013-x86-uapi-fix-asm-signal.h-userspace-compilation-erro.patch
+Patch14: 0014-uapi-fix-linux-kexec.h-userspace-compilation-errors.patch
+Patch15: 0015-uapi-fix-linux-omapfb.h-userspace-compilation-error.patch
+Patch16: 0016-uapi-fix-linux-fsmap.h-userspace-compilation-error.patch
+Patch17: 0017-uapi-fix-linux-usb-audio.h-userspace-compilation-err.patch
+Patch18: 0018-uapi-fix-linux-sysctl.h-Obsolete-types-detected-warn.patch
 
-BuildRequires: rpm-build-kernel
+BuildRequires: rpm-build-kernel rsync
 BuildRequires: %kernel_source = 1.0.0
 
 %if 0%{!?mips:1}
@@ -190,12 +192,9 @@ cd %kernel_source
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
 
 # No exceptions, please!
-sed -i 's/^no-export-headers/#&/' include/uapi/linux/Kbuild
+sed -i 's/^no-export-headers/#&/' include/uapi/Kbuild
 
 %build
 mkdir -p headers
@@ -330,6 +329,15 @@ cd - > /dev/null
 %hdr_dir/include/asm
 
 %changelog
+* Mon Nov 25 2019 Dmitry V. Levin <ldv@altlinux.org> 5.4-alt1
+- v5.3 -> v5.4.
+
+* Sun Sep 15 2019 Dmitry V. Levin <ldv@altlinux.org> 5.3-alt1
+- v5.2 -> v5.3.
+
+* Sun Jul 07 2019 Dmitry V. Levin <ldv@altlinux.org> 5.2-alt1
+- v5.1 -> v5.2.
+
 * Mon May 06 2019 Dmitry V. Levin <ldv@altlinux.org> 5.1-alt1
 - v5.0 -> v5.1.
 
