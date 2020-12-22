@@ -1,13 +1,17 @@
+%add_optflags -fcommon
+
 Name: pcsxr
-Version: 1.9.93
-Release: alt3
+Version: 1.9.95
+Release: alt1
 
 Summary: A plugin based PlayStation (PSX) emulator with high compatibility
-License: GPLv2 / Public Domain
+License: GPLv3
 Group: Emulators
 
 Url: http://pcsxr.codeplex.com/
 Packager: Nazarov Denis <nenderus@altlinux.org>
+
+ExcludeArch: ppc64le
 
 Source: %name-%version.tar.bz2
 Patch0: %name-zlib-alt.patch
@@ -32,6 +36,7 @@ important PSX components, and is able to play many games without problems.
 %patch0 -p1
 
 %build
+%__mkdir include
 %autoreconf
 %configure --enable-opengl
 %make_build
@@ -55,6 +60,9 @@ important PSX components, and is able to play many games without problems.
 %_datadir/psemu/*.ui
 
 %changelog
+* Sun Dec 13 2020 Nazarov Denis <nenderus@altlinux.org> 1.9.95-alt1
+- Version 1.9.95
+
 * Sat Mar 02 2019 Nazarov Denis <nenderus@altlinux.org> 1.9.93-alt3
 - Rename uncompress2 to avoid conflict with zlib (ALT #36177)
 
