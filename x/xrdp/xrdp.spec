@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.14
-Release: alt4
+Release: alt5
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -19,7 +19,8 @@ Source3: %name-init-alt
 Source4: libpainter.tar
 Source5: librfxcodec.tar
 Source6: xorgxrdp.tar
-Source7: xrdp-polkit-1.rules
+Source7: xrdp-sesman.pam
+Source8: xrdp-polkit-1.rules
 
 # patches from Debian
 Patch2: asm-xorgxrdp.diff
@@ -137,6 +138,10 @@ echo '#!/bin/bash -l
 # 0.9.14: expression has no effect (ssl.h, onoff)
 %add_optflags -Wno-error=unused-value
 %endif
+%ifarch %ix86
+%add_optflags -fPIC
+%set_verify_elf_method textrel=relaxed
+%endif
 ./bootstrap
 for dir in xorgxrdp librfxcodec libpainter; do
 	pushd $dir
@@ -177,7 +182,7 @@ install -D -m755 %name-init %buildroot%_initdir/%name
 rm -rf %buildroot%_sysconfdir/init.d
 
 # install sesman pam config 
-install -Dp -m 644 instfiles/pam.d/xrdp-sesman.system %buildroot%_sysconfdir/pam.d/xrdp-sesman
+install -Dp -m 644 %SOURCE7 %buildroot%_sysconfdir/pam.d/xrdp-sesman
 
 # install xrdp systemd units
 install -Dp -m 644 instfiles/xrdp.service %buildroot/lib/systemd/system/xrdp.service
@@ -204,7 +209,7 @@ install -Dp -m 755 sesman/startwm-bash.sh %buildroot%_sysconfdir/xrdp/startwm-ba
 install -Dp -m 644 keygen/openssl.conf %buildroot%_sysconfdir/xrdp/openssl.conf
 
 #install xrdp.rules /usr/share/polkit-1/rules.d
-install -Dp -m 644 %SOURCE7 %buildroot%_datadir/polkit-1/rules.d/xrdp.rules
+install -Dp -m 644 %SOURCE8 %buildroot%_datadir/polkit-1/rules.d/xrdp.rules
 
 # Clean unnecessary files
 find %buildroot -name *.a -delete -o -name *.la -delete
@@ -272,6 +277,10 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Mon Dec 21 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt5
+- Change PAM rules from system-auth to common-login.
+- Build with -fPIC for i586.
+
 * Wed Nov 18 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt4
 - Use patches and polkit rules from Fedora.
 
