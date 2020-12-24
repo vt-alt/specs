@@ -1,24 +1,21 @@
 Name: xfce4-diskperf-plugin
-Version: 2.6.2
+Version: 2.6.3
 Release: alt1
 
 Summary: Disk performance plugin for the Xfce panel
-License: %bsdstyle
+License: BSD-2-Clause
 Group: Graphical desktop/XFce
 Packager: Xfce Team <xfce@packages.altlinux.org>
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-diskperf-plugin
 
-# Upstream: git://git.xfce.org/panel-plugins/xfce4-diskperf-plugin
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-diskperf-plugin.git
 Source: %name-%version.tar
 #Patch: %name-%version-%release.patch
 
-BuildRequires(pre): rpm-build-licenses
-
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4panel-gtk3-devel libxfce4ui-gtk3-devel
-BuildRequires: intltool perl-XML-Parser
 
-Requires: xfce4-panel >= 4.9
+Requires: xfce4-panel >= 4.11
 
 %define _unpackaged_files_terminate_build 1
 
@@ -28,6 +25,8 @@ Requires: xfce4-panel >= 4.9
 %prep
 %setup
 #patch -p1
+# Don't use git tag in version.
+%xfce4_drop_gitvtag diskperf_version_tag configure.ac.in
 
 %build
 %xfce4reconf
@@ -40,13 +39,23 @@ Requires: xfce4-panel >= 4.9
 %find_lang %name
 
 %files -f %name.lang
-%doc README AUTHORS NEWS
+%doc README AUTHORS NEWS COPYING
 %_libdir/xfce4/panel/plugins/*.so
 %_datadir/xfce4/panel/plugins/*.desktop
 
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Dec 21 2020 Mikhail Efremov <sem@altlinux.org> 2.6.3-alt1
+- Updated for 2.6.3.
+
+* Mon Sep 14 2020 Mikhail Efremov <sem@altlinux.org> 2.6.2-alt2.g00e91df
+- Fixed BR.
+- Added Vcs tag.
+- Updated Url tag.
+- Fixed License tag.
+- Upstream git snapshot.
+
 * Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 2.6.2-alt1
 - Updated for 2.6.2.
 
