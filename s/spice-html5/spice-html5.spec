@@ -1,20 +1,18 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: spice-html5
-Version: 0.1.7
-Release: alt3.gitf9f700e
+Version: 0.3.0
+Release: alt1
 Summary: Pure Javascript SPICE client
 Group: Networking/Remote access
 
 License: LGPLv3
 Url: http://www.spice-space.org
 Source: %name/%name-%version.tar
-Patch0: %name-gitf9f700e.patch
-Patch1: Spice-devel-Add-Send-Ctrl-Alt-Delete-button-to-spice_auto.html.patch
 
 BuildArch: noarch
 # this path is used for symlinking into an actual project
-Provides: %_datadir/spice-html5
+Provides: %_datadir/spice-html5/src
 
 %description
 %name is a Javascript SPICE client.  This includes a simple HTML
@@ -23,8 +21,6 @@ file for Apache, but should work with any web server.
 
 %prep
 %setup
-%patch0 -p1
-%patch1 -p1
 
 %build
 
@@ -36,6 +32,15 @@ file for Apache, but should work with any web server.
 %doc COPYING COPYING.LESSER README TODO apache.conf.sample
 
 %changelog
+* Fri Dec 18 2020 Stanislav Levin <slev@altlinux.org> 0.3.0-alt1
+- 0.2.2 -> 0.3.0.
+
+* Fri Jun 05 2020 Stanislav Levin <slev@altlinux.org> 0.2.2-alt2
+- Corrected spice-html5 path to provide.
+
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 0.2.2-alt1
+- new version 0.2.2
+
 * Wed Apr 17 2019 Stanislav Levin <slev@altlinux.org> 0.1.7-alt3.gitf9f700e
 - Fixed Provides.
 

@@ -2,11 +2,12 @@
 
 %define _localstatedir %_var
 %define _libexecdir    /usr/libexec
-%def_without check
+%define spice_html5_version 0.3.0-alt1
+%def_with check
 
 Name: fleet-commander-admin
 Version: 0.15.1
-Release: alt1.M90P.1
+Release: alt4.M90P.1
 
 Summary: Fleet Commander
 License: LGPLv2+ or MIT or BSD
@@ -20,12 +21,13 @@ ExcludeArch: %ix86
 BuildRequires(pre): rpm-build-xdg
 BuildRequires(pre): rpm-build-python3
 BuildRequires: autoconf-archive
+BuildRequires: libudev-devel
 BuildRequires: python3(dbus)
 BuildRequires: python3(gi)
 BuildRequires: python3(libvirt)
 BuildRequires: python3(pexpect)
 BuildRequires: python3(samba)
-BuildRequires: spice-html5 < 0.2.2
+BuildRequires: spice-html5 >= %spice_html5_version
 BuildRequires: iproute2
 
 %if_with check
@@ -35,6 +37,7 @@ BuildRequires: libnm-gir
 BuildRequires: libjson-glib-gir
 BuildRequires: python3(dbusmock)
 BuildRequires: python3(ipalib)
+BuildRequires: python3(pylint)
 BuildRequires: python3(six)
 BuildRequires: python3(sqlite3)
 BuildRequires: samba-common
@@ -44,11 +47,14 @@ BuildRequires: samba-common
 %add_python3_path %_datadir/fleet-commander-admin/python/
 %add_python3_compile_exclude %_datadir/fleet-commander-admin/python/
 
-Requires: cockpit
+Requires: cockpit-bridge
+Requires: cockpit-dashboard
+Requires: cockpit-shell
+Requires: cockpit-ws
 Requires: python3-module-freeipa-desktop-profile-client
 Requires: realmd
 Requires: samba-common
-Requires: spice-html5 < 0.2.2
+Requires: spice-html5 >= %spice_html5_version
 
 %description
 Fleet Commander is an application that allows you to manage the desktop
@@ -81,23 +87,6 @@ Logs changes for Fleet Commander virtual sessions.
 %setup
 %patch -p1
 
-# for now skip tests which require real system/session dbus
-grep -qs '^TESTS[[:space:]]*=.* 01_logger_dconf\.sh .* 03_logger_nm\.py ' \
-tests/Makefile.am || exit 1
-sed -i '/^TESTS[[:space:]]*=/{s/01_logger_dconf\.sh//g;s/03_logger_nm\.py//g}' \
-tests/Makefile.am
-
-# udev rules are located on /lib/udev/
-grep -qs '${prefix}/lib/udev/rules\.d' \
-data/Makefile.am || exit 1
-sed -i 's/${prefix}\/lib\/udev\/rules\.d/\/lib\/udev\/rules\.d/g' \
-data/Makefile.am
-
-# runuser is not on user PATH
-grep -qs '^AC_PATH_PROG(\[RUNUSER\], \[runuser\])$' configure.ac || exit 1
-sed -i '/^AC_PATH_PROG(\[RUNUSER\], \[runuser\])$/{s/)$/, "$PATH:\/sbin")/g}' \
-configure.ac
-
 grep -qsr '#!/usr/bin/env[[:space:]]\+python-wrapper.sh' ./tests/ || exit 1
 grep -rl '#!/usr/bin/env[[:space:]]\+python-wrapper.sh' | \
 xargs sed -i 's/#!\/usr\/bin\/env[[:space:]]\+python-wrapper.sh/#!\/usr\/bin\/python3/g'
@@ -115,29 +104,30 @@ data/fleet-commander-logger.in
 grep -qsF 'time.sleep(0.1)' tests/_wait_for_name.py || exit 1
 sed -i 's/time\.sleep(0\.1)/time.sleep(1)/g' tests/_wait_for_name.py
 
-# we use a packaged spice-html5 instead of bundled;
-# in such a case this directory should be empty
-[ ! "$(ls -A admin/cockpit/fleet-commander-admin/js/spice-html5)" ] || exit 1
+# we use a packaged spice-html5 instead of bundled
 rm -r admin/cockpit/fleet-commander-admin/js/spice-html5
+
 # use here a symlink to ensure that our packaged version is synced with bundled
 # one
-ln -s %_datadir/spice-html5 admin/cockpit/fleet-commander-admin/js/
+ln -s %_datadir/spice-html5 \
+    admin/cockpit/fleet-commander-admin/js/spice-html5
 
 %build
 %autoreconf
 export PYTHON=python3
-%configure \
-    --with-systemdsystemunitdir=%_unitdir
+%configure
 %make_build
 
 %install
 %makeinstall_std
-install -m 755 -d %buildroot/%_localstatedir/lib/fleet-commander-admin/profiles
+install -m 755 -d %buildroot/%_sharedstatedir/fleet-commander-admin/profiles
 # remove bundled spice-html5
 rm -r %buildroot%_datadir/cockpit/fleet-commander-admin/js/spice-html5
-ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js/
+ln -s %_datadir/spice-html5 \
+    %buildroot%_datadir/cockpit/fleet-commander-admin/js/spice-html5
 
 %check
+%make pylint
 %make check || { cat ./tests/test-suite.log; exit 1; }
 
 %files
@@ -152,7 +142,7 @@ ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js
 %_datadir/cockpit/fleet-commander-admin/
 %_datadir/dbus-1/services/org.freedesktop.FleetCommander.service
 %config(noreplace) %_xdgconfigdir/fleet-commander-admin.conf
-%_localstatedir/lib/fleet-commander-admin
+%_sharedstatedir/fleet-commander-admin
 %attr(755, root, root) %_libexecdir/fleet-commander-admin
 %_datadir/metainfo/org.freedesktop.FleetCommander.admin.metainfo.xml
 
@@ -170,6 +160,9 @@ ln -s %_datadir/spice-html5 %buildroot%_datadir/cockpit/fleet-commander-admin/js
 %_datadir/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/{c73e87a7-b5a1-4b6f-b10b-0bd70241a64d}.xpi
 
 %changelog
+* Wed Dec 23 2020 Stanislav Levin <slev@altlinux.org> 0.15.1-alt4.M90P.1
+- Applied upstream fixes.
+
 * Thu Aug 13 2020 Andrey Bychkov <mrdrew@altlinux.org> 0.15.1-alt1.M90P.1
 - Firefox profile directory detection fixed (fc logger);
 - Fixed crash firefox_bookmark when removing bookmarks;
