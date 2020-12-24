@@ -5,7 +5,7 @@
 
 %define rname qmmp
 Name: qmmp1
-Version: 1.4.1
+Version: 1.4.3
 Release: alt1
 %K5init no_altplace
 
@@ -39,7 +39,8 @@ BuildRequires: libbs2b-devel libcddb-devel libcdio-paranoia-devel libcurl-devel 
 BuildRequires: libavformat-devel libwildmidi-devel
 BuildRequires: libfaad-devel libflac-devel libgme-devel libopusfile-devel libsamplerate-devel libsoxr-devel
 BuildRequires: libmad-devel libmpg123-devel
-BuildRequires: libmodplug-devel libmpcdec-devel libvorbis-devel libwavpack-devel
+BuildRequires: libmodplug-devel libvorbis-devel libwavpack-devel
+#BuildRequires: libmpcdec0-devel
 #BuildRequires: libshout2-devel
 #BuildRequires: libarchive-devel
 #BuildRequires: libsidplayfp-devel
@@ -278,6 +279,9 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %_K5link/lib*.so
 
 %changelog
+* Fri Dec 18 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.3-alt1
+- new version
+
 * Thu Aug 20 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.1-alt1
 - new version
 
