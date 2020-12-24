@@ -1,24 +1,22 @@
 Name: xfce4-systemload-plugin
-Version: 1.2.3
+Version: 1.2.4
 Release: alt1
 
 Summary: System load plugin for the Xfce panel
 Summary(ru_RU.UTF-8): Отображение использования ресурсов системы на панели Xfce
-License: %bsd
+License: BSD-2-Clause
 Group: Graphical desktop/XFce
-Url: https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-systemload-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# git://git.xfce.org/panel-plugins/xfce4-systemload-plugin
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-systemload-plugin.git
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
-
-BuildRequires(pre): rpm-build-licenses
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildRequires: libxfce4util-devel libxfce4ui-gtk3-devel libxfce4panel-gtk3-devel
 
-BuildRequires: intltool fontconfig libX11-devel libgtk+3-devel libstartup-notification libupower-devel perl-XML-Parser
+BuildRequires: libX11-devel libgtk+3-devel libstartup-notification libupower-devel
 
 Requires: xfce4-panel >= 4.9
 
@@ -34,6 +32,8 @@ Requires: xfce4-panel >= 4.9
 %prep
 %setup
 %patch -p1
+# Don't use git tag in version.
+%xfce4_drop_gitvtag systemload_version_tag configure.ac.in
 
 %build
 %xfce4reconf
@@ -47,7 +47,7 @@ Requires: xfce4-panel >= 4.9
 %find_lang %name
 
 %files -f %name.lang
-%doc README COPYING AUTHORS
+%doc README.md COPYING AUTHORS
 %_libdir/xfce4/panel/plugins/*.so
 %_datadir/xfce4/panel/plugins/*.desktop
 
@@ -55,6 +55,19 @@ Requires: xfce4-panel >= 4.9
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Dec 21 2020 Mikhail Efremov <sem@altlinux.org> 1.2.4-alt1
+- Updated to 1.2.4.
+
+* Mon Sep 14 2020 Mikhail Efremov <sem@altlinux.org> 1.2.3-alt3.gbfecbdd
+- Fixed BR.
+- Updated Vcs tag.
+- Upstream git snapshot.
+
+* Wed Mar 25 2020 Mikhail Efremov <sem@altlinux.org> 1.2.3-alt2
+- Update Url.
+- Add Vcs tag.
+- Fix license.
+
 * Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 1.2.3-alt1
 - Updated to 1.2.3.
 
