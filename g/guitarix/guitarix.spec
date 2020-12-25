@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: guitarix
-Version: 0.41.0
+Version: 0.42.0
 Release: alt1
 Summary: Mono amplifier to JACK
 Group: Sound
@@ -164,6 +164,9 @@ install -p -m644 %SOURCE1 %buildroot%_datadir/metainfo
 %_libdir/lv2/*
 
 %changelog
+* Tue Dec 22 2020 Anton Midyukov <antohami@altlinux.org> 0.42.0-alt1
+- new version 0.42.0
+
 * Sat Aug 08 2020 Anton Midyukov <antohami@altlinux.org> 0.41.0-alt1
 - new version 0.41.0
 
