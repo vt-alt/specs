@@ -1,6 +1,6 @@
 Name: tzdata
-Version: 2019c
-Release: alt1
+Version: 2020e
+Release: alt3
 
 Summary: Timezone data
 # tzdata itself is Public Domain, but tzupdate is GPLv2+,
@@ -42,7 +42,12 @@ xz -9k NEWS
 make CFLAGS='%optflags' VERSION=%version
 
 %install
-%make_install install_default DESTDIR=%buildroot TZDATA_TEXT= VERSION=%version
+case "$(rpm --eval %%_priority_distbranch)" in
+	'' | %%* | [a-z][0-9] | [a-z][0-9][^0-9]* ) ZFLAGS='-b fat' ;;
+	*) ZFLAGS= ;;
+esac
+%make_install install_default \
+	DESTDIR=%buildroot TZDATA_TEXT= VERSION=%version ZFLAGS="$ZFLAGS"
 mv %buildroot%_datadir/zoneinfo{-leaps,/right}
 rm %buildroot%_datadir/zoneinfo-posix
 mkdir %buildroot%_datadir/zoneinfo/posix
@@ -60,7 +65,27 @@ echo '%name%version' > %buildroot%srcdir/VERSION
 %define __spec_install_custom_post hardlink -vc %buildroot
 
 %check
-make -k check_tables
+for f in *.html; do touch check_"$f"; done
+make -k check
+
+# test basic glibc compatibility
+cat > expected <<'EOF'
+Mon Aug 17 12:00:00 UTC 2015
+Mon Aug 17 15:00:00 MSK 2015
+Mon Aug 17 05:00:00 PDT 2015
+EOF
+{
+	d='%buildroot%_datadir/zoneinfo'
+	t='@1439812800'
+
+	TZ=UTC date -d "$t"
+	TZ="$d/Europe/Moscow" date -d "$t"
+	TZ="$d/America/Los_Angeles" date -d "$t"
+} > output
+diff -u expected output || {
+	: "$d is not compatible with glibc"
+	exit 1
+}
 
 %post -p %_sbindir/tzupdate
 
@@ -73,6 +98,21 @@ make -k check_tables
 %srcdir/
 
 %changelog
+* Fri Dec 25 2020 Dmitry V. Levin <ldv@altlinux.org> 2020e-alt3
+- Use "zic -b fat" for old branches (see ALT#39164).
+
+* Fri Dec 25 2020 Dmitry V. Levin <ldv@altlinux.org> 2020e-alt2
+- %%check: test compatibility with glibc.
+
+* Wed Dec 23 2020 Dmitry V. Levin <ldv@altlinux.org> 2020e-alt1
+- 2020d -> 2020e-1-g15e0ac3.
+
+* Wed Oct 21 2020 Dmitry V. Levin <ldv@altlinux.org> 2020d-alt1
+- 2020a -> 2020d.
+
+* Thu Apr 23 2020 Dmitry V. Levin <ldv@altlinux.org> 2020a-alt1
+- 2019c -> 2020a.
+
 * Tue Sep 24 2019 Dmitry V. Levin <ldv@altlinux.org> 2019c-alt1
 - 2019b -> 2019c (closes: #37260).
 
@@ -94,7 +134,7 @@ make -k check_tables
 * Wed May 02 2018 Dmitry V. Levin <ldv@altlinux.org> 2018e-alt1
 - 2018d -> 2018e.
 
-* Thu Apr 06 2018 Maxim Voronov <mvoronov@altlinux.org> 2018d-alt2
+* Fri Apr 06 2018 Maxim Voronov <mvoronov@altlinux.org> 2018d-alt2
 - tzupdate: create /etc/localtime as a symlink if it does not exist.
 
 * Thu Mar 22 2018 Dmitry V. Levin <ldv@altlinux.org> 2018d-alt1
@@ -304,7 +344,7 @@ make -k check_tables
 - Upstream 2008d
   - Changes for Brazil and Mauritius
 
-* Wed May 30 2008 Petr Machata <pmachata@redhat.com> - 2008c-1
+* Fri May 30 2008 Petr Machata <pmachata@redhat.com> - 2008c-1
 - Upstream 2008c
   - Mongolia changes zone
   - Pakistan DST is scheduled until Sep/1, instead of Aug/31
@@ -349,7 +389,7 @@ make -k check_tables
   - Iran will resume DST next year
   - Venezuela is scheduled to change TZ to -4:30 on January 1
 
-* Thu Sep 25 2007 Keith Seitz <keiths@redhat.com> - 2007g-2
+* Tue Sep 25 2007 Keith Seitz <keiths@redhat.com> - 2007g-2
 - Add support for building java's zoneinfo files in new
   tzdata-java RPM.
 
@@ -488,7 +528,7 @@ make -k check_tables
 * Thu Mar 16 2006 Petr Machata <pmachata@redhat.com> - 2006b-2
 - Patch for Sri Lanka time zone change (#184514)
 
-* Thu Feb 22 2006 Petr Machata <pmachata@redhat.com> 2006b-1
+* Wed Feb 22 2006 Petr Machata <pmachata@redhat.com> 2006b-1
 - Upstream 2006b:
   - using tz64code version, as 32 is legacy according to tzdata ML
   - new manual pages for ctime, strftime, tzset
