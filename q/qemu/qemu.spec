@@ -119,7 +119,7 @@
 
 Name: qemu
 Version: 4.2.1
-Release: alt2
+Release: alt4
 
 Summary: QEMU CPU Emulator
 License: BSD-2-Clause AND BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later AND MIT
@@ -256,6 +256,7 @@ BuildArch: noarch
 Requires(pre): control >= 0.7.2
 Requires(pre): shadow-utils sysvinit-utils
 Requires: %name-img = %EVR
+Requires: ipxe-roms-qemu
 
 %description common
 QEMU is a fast processor emulator using dynamic translation to achieve
@@ -487,14 +488,17 @@ This package provides the system emulator for %%{1}. \
 %%package system-%%{1}-core \
 Summary: QEMU system emulator for %%{1} \
 Group: Emulators \
-Requires: %%name-common = %%EVR seavgabios \
+Requires: %%name-common = %%EVR \
 Conflicts: %%name-system < 2.10.1-alt1 \
 \
 %%if %%{1} == x86 \
-Requires: seabios >= 1.7.4-alt2 ipxe-roms-qemu edk2-ovmf libseccomp >= 2.2.3 qboot \
+Requires: seabios >= 1.7.4-alt2 seavgabios edk2-ovmf libseccomp >= 2.2.3 qboot \
 %%endif \
 %%if %%{1} == aarch64 \
 Requires: edk2-aarch64 \
+%%endif \
+%%if %%{1} == ppc \
+Requires: seavgabios \
 %%endif \
 \
 %%description system-%%{1}-core \
@@ -504,12 +508,9 @@ This package provides the system emulator for %%{1}. \
 %%if %%{1} == x86 \
 %%_bindir/qemu-system-i386 \
 %%_man1dir/qemu-system-i386.1* \
-%%_datadir/%%name/bios.bin \
-%%_datadir/%%name/bios-256k.bin \
-%%_datadir/%%name/bios-microvm.bin \
+%%_datadir/%%name/bios* \
 %%_datadir/%%name/sgabios.bin \
-%%_datadir/%%name/linuxboot.bin \
-%%_datadir/%%name/linuxboot_dma.bin \
+%%_datadir/%%name/linuxboot* \
 %%_datadir/%%name/multiboot.bin \
 %%_datadir/%%name/kvmvapic.bin \
 %%_datadir/%%name/pvh.bin \
@@ -528,33 +529,30 @@ This package provides the system emulator for %%{1}. \
 %%endif \
 \
 %%if %%{1} == s390x \
-%%_datadir/%%name/s390-ccw.img \
-%%_datadir/%%name/s390-netboot.img \
+%%_datadir/%%name/s390-* \
 %%ifarch s390x \
 %%_sysconfdir/sysctl.d/50-kvm-s390x.conf \
 %%endif \
 %%endif \
 \
 %%if %%{1} == sparc \
-%%_datadir/%%name/QEMU,tcx.bin \
-%%_datadir/%%name/QEMU,cgthree.bin \
+%%_datadir/%%name/QEMU* \
 %%_datadir/%%name/openbios-sparc* \
 %%endif \
 \
-%%%if %%{1} == ppc \
+%%if %%{1} == ppc \
 %%_datadir/%%name/bamboo.dtb \
 %%_datadir/%%name/canyonlands.dtb \
 %%_datadir/%%name/ppc_rom.bin \
 %%_datadir/%%name/qemu_vga.ndrv \
 %%_datadir/%%name/skiboot.lid \
-%%_datadir/%%name/u-boot.e500 \
-%%_datadir/%%name/u-boot-sam460-20100605.bin \
+%%_datadir/%%name/u-boot* \
 %%_datadir/%%name/openbios-ppc \
 %%_datadir/%%name/slof.bin \
 %%endif \
 \
 %%%if %%{1} == riscv \
-%%_datadir/%%name/opensbi-riscv*.bin \
+%%_datadir/%%name/opensbi*.bin \
 %%endif \
 \
 %%_bindir/qemu-system-%%{1}* \
@@ -1068,6 +1066,12 @@ fi
 %_bindir/ivshmem-server
 
 %changelog
+* Thu Dec 24 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt4
+- Fixes: CVE-2020-25723
+
+* Tue Dec 22 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt3
+- Add ipxe-roms-qemu to requires for all arches
+
 * Tue Nov 17 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt2
 - Fixes: CVE-2020-15863, CVE-2020-24352, CVE-2020-14364
 
