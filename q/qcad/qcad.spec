@@ -1,8 +1,8 @@
 %def_with debug
 
 Name: 	 qcad
-Version: 3.25.2.4
-Release: alt2
+Version: 3.25.2.8
+Release: alt1
 Summary: A professional CAD system
 Summary(ru_RU.UTF-8): Профессиональная система CAD
 
@@ -22,6 +22,7 @@ Source3: scripts_ru.ts
 Patch:   %name-%version-%release.patch
 Patch1:  qcad-qt5-unbundle_libraries.patch
 Patch2:  qcad-alt-use-system-zlib.patch
+Patch3:  qcad-alt-check-translation-file.patch
 
 BuildRequires: gcc-c++ qt5-base-devel python
 BuildRequires: desktop-file-utils
@@ -61,6 +62,7 @@ QCad это профессиональная CAD система. С QCad вы м
 %patch -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 cp -f %SOURCE1 ts/qcadcore_ru.ts
 cp -f %SOURCE2 ts/qcadentity_ru.ts
@@ -139,6 +141,12 @@ done
 %_iconsdir/hicolor/*/apps/%name.png
 
 %changelog
+* Fri Dec 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.25.2.8-alt1
+- New version.
+
+* Fri Dec 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.25.2.4-alt3
+- Check for translation file exists to prevent wrong warnings.
+
 * Wed Nov 25 2020 Andrey Cherepanov <cas@altlinux.org> 3.25.2.4-alt2
 - Complete Russian translation (thanks Olesya Gerasimenko).
 
