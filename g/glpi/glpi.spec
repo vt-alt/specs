@@ -1,8 +1,8 @@
 %define installdir %webserver_webappsdir/%name
 
 Name: glpi
-Version: 9.5.2
-Release: alt2
+Version: 9.5.3
+Release: alt1
 
 Summary: IT and asset management software
 License: GPLv2
@@ -42,7 +42,7 @@ Summary: PHP7 dependencies for %name
 Group: Networking/Other
 Requires: %name = %version-%release
 Requires: php7-curl, php7-fileinfo, php7-gd2, php7-json, php7-mbstring, php7-mysqlnd-mysqli, php7-session, php7-zlib, php7-simplexml, php7-xml, php7-intl
-Requires: php7-bz2, php7-imap, php7-ldap, php7-openssl, php7-apcu, php7-xmlrpc
+Requires: php7-bz2, php7-imap, php7-ldap, php7-openssl, php7-apcu, php7-xmlrpc, php7-zip
 
 %description php7
 PHP7 dependencies for %name
@@ -138,18 +138,28 @@ fi
 %files php7
 
 %changelog
+* Sat Dec 05 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.3-alt1
+- New version 9.5.3
+- This is a security release, upgrading is recommended
+- Security fixes:
+ + CVE-2020-27662 : Insecure Direct Object Reference on ajax/comments.php
+ + CVE-2020-27663 : Insecure Direct Object Reference on ajax/getDropdownValue.php
+ + CVE-2020-26212 : Any CalDAV calendars is read-only for every authenticated user
+
+* Thu Oct 29 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.2-alt3
+- Changed PHP7 dependencies
+
 * Tue Oct 27 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.2-alt2
 - Fixed spec
 
 * Mon Oct 26 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.2-alt1
--New version 9.5.2
+- New version 9.5.2
 - Security fixes:
  + CVE-2020-15176 : SQL injection with a query parameter of user form
  + CVE-2020-15175 : Removal of .htaccess file in the files folder via a plugin endpoint
  + CVE-2020-15217 : Leakage issue with knowledge base
  + CVE-2020-15177 : Stored XSS in install script
  + CVE-2020-15226 : Minor SQL Injection in Search API
-
 
 * Fri Jul 24 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.1-alt1
 - New version 9.5.1
