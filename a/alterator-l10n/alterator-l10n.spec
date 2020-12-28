@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.76
+Version: 2.9.80
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,18 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Sat Dec 26 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.80-alt1
+- alterator-net-wifi: update translation
+
+* Fri Dec 25 2020 Ivan Savin <svn17@altlinux.org> 2.9.79-alt1
+- alterator-auth: update translation
+
+* Fri Dec 25 2020 Andrey Cherepanov <cas@altlinux.org> 2.9.78-alt1
+- Update timezones from tzdata-2020e.
+
+* Wed Dec 09 2020 Lenar Shakirov <snejok@altlinux.org> 2.9.77-alt1
+- alterator-printers: update translations
+
 * Thu Oct 29 2020 Oleg Solovyov <mcpain@altlinux.org> 2.9.76-alt1
 - alterator-vm: translate pending operations
 
