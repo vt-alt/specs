@@ -1,7 +1,7 @@
 Name: rust
 Epoch: 1
-Version: 1.45.1
-Release: alt0.1.p9
+Version: 1.45.2
+Release: alt1.1.p9
 Summary: The Rust Programming Language
 
 Group: Development/Other
@@ -10,10 +10,16 @@ URL: http://www.rust-lang.org/
 
 # https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
 Source: %{name}c-src.tar
+Source5: https://static.rust-lang.org/dist/rust-1.44.0-armv7-unknown-linux-gnueabihf.tar.gz
 
 Patch1: rust-gdb.patch
+Patch2: rust-cargo-version.patch
 
+%ifarch armh
+%def_with bootstrap
+%else
 %def_without bootstrap
+%endif
 %def_without bundled_llvm
 %def_without debuginfo
 
@@ -52,11 +58,11 @@ BuildRequires: rust rust-cargo
 %else
 
 %define r_ver 1.44.0
-Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
-Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
-Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
-Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnueabihf.tar.gz
-Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux-gnu.tar.gz
+#Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
+#Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
+#Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
+#Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnueabihf.tar.gz
+#Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux-gnu.tar.gz
 
 %ifarch %ix86
 %define r_src %SOURCE2
@@ -203,6 +209,7 @@ data to provide information about the Rust standard library.
 %setup -n %{name}c-src
 
 %patch1 -p2
+%patch2 -p2
 
 %if_with bootstrap
 tar xf %r_src
@@ -279,7 +286,7 @@ rustc = "%rustc"
 python = "python3"
 submodules = false
 docs = true
-verbose = 0
+verbose = 2
 vendor = true
 extended = true
 tools = ["cargo", "rls", "clippy", "rustfmt", "analysis", "src"]
@@ -307,22 +314,17 @@ codegen-units = 0
 [llvm]
 ninja = true
 use-libcxx = false
-link-shared = true
-EOF
-
 %if_without bundled_llvm
-cat >> config.toml <<EOF
+link-shared = true
+
 [target.%rust_triple]
 llvm-config = "/usr/bin/llvm-config"
-EOF
 %endif
-export LIBGIT2_SYS_USE_PKG_CONFIG=1
-export LIBSSH2_SYS_USE_PKG_CONFIG=1
-export PKG_CONFIG_ALLOW_CROSS=1
+EOF
 
 . ./env.sh
 
-python3 x.py build
+python3 x.py build --verbose
 python3 x.py doc
 
 
@@ -433,6 +435,9 @@ rm -rf %rustdir
 %rustlibdir/%rust_triple/analysis
 
 %changelog
+* Thu Dec 03 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.45.2-alt1.1.p9
+- Backport new version to p9 branch (bootstrap on armh).
+
 * Wed Nov 25 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.45.1-alt0.1.p9
 - Backport new version to p9 branch.
 
@@ -442,8 +447,12 @@ rm -rf %rustdir
 * Wed Oct 07 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.43.0-alt0.1.p9
 - Backport new version to p9 branch.
 
-* Mon Aug 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.42.0-alt1.1.p9
-- Backport new version to p9 branch.
+* Mon Aug 17 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:1.45.2-alt2
+- rebuilt with bootstrap on armh
+
+* Tue Aug 11 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.45.2-alt1
+- New version (1.45.2).
+- ExcludeArch armh.
 
 * Mon Aug 03 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.45.1-alt1
 - New version (1.45.1).
