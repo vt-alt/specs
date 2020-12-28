@@ -1,12 +1,14 @@
 Name:		freebasic
-Version:	1.05.0
-Release:	alt2
+Version:	1.07.2
+Release:	alt1
 
 Summary:	FreeBASIC language compiler
-License:	GPLv2+ and LGPLv2+ with exception
+License:	GPL-2.0+ and LGPL-2.0+ with exception and GFDL-1.1-or-later
 Group:		Education
 
-Source:		FreeBASIC-%version-source.tar.gz
+ExclusiveArch: %ix86 x86_64
+
+Source:		FreeBASIC-%version-source.tar
 Source1:	FB-manual-%version-html.zip
 URL: 		http://freebasic.net
 #VCS:           https://github.com/freebasic/fbc
@@ -44,8 +46,7 @@ ln -s 00index.html doc/html/index.html
 %make_build FBCFLAGS="-i /usr/include/freebasic" FBLFLAGS="-p %_libdir/freebasic -prefix %_prefix"
 
 %install
-mkdir -p %buildroot%_prefix
-%makeinstall_std prefix=%buildroot%_prefix
+%makeinstall_std prefix=%_prefix
 
 # Install man page
 install -D doc/fbc.1 %buildroot%_man1dir/fbc.1
@@ -71,6 +72,12 @@ cp -a doc/html/* %buildroot%_docdir/freebasic
 %_man1dir/*
 
 %changelog
+* Sun Dec 27 2020 Andrey Cherepanov <cas@altlinux.org> 1.07.2-alt1
+- New version.
+
+* Fri May 15 2020 Andrey Cherepanov <cas@altlinux.org> 1.07.1-alt1
+- New version.
+
 * Fri Jun 10 2016 Andrey Cherepanov <cas@altlinux.org> 1.05.0-alt2
 - Remove biarch provides
 
