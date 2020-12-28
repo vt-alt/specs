@@ -1,6 +1,6 @@
 Name: tcpdump
-Version: 4.9.2
-Release: alt1
+Version: 4.9.3
+Release: alt2
 Epoch: 1
 
 Summary: A network traffic monitoring tool
@@ -26,7 +26,6 @@ headers, or just the ones that match particular criteria.
 
 %prep
 %setup -n %name-%version-%release
-bzip2 -9k CHANGES
 
 %build
 %add_optflags -fno-strict-aliasing
@@ -45,15 +44,51 @@ install -pm755 *.awk %buildroot%_datadir/%name/
 
 %post
 /usr/sbin/groupadd -r -f tcpdump
-/usr/sbin/useradd -r -g tcpdump -d /dev/null -s /dev/null -n tcpdump >/dev/null 2>&1 ||:
+/usr/sbin/useradd -r -g tcpdump -d /dev/null -s /dev/null -N tcpdump >/dev/null 2>&1 ||:
 
 %files
 %_sbindir/*
 %_datadir/%name
 %_mandir/man?/*
-%doc CHANGES.bz2 CREDITS LICENSE README
+%doc CHANGES CREDITS LICENSE README
 
 %changelog
+* Fri Sep 18 2020 Nikita Ermakov <arei@altlinux.org> 1:4.9.3-alt2
+- Use -N option with useradd instead of compat -n option.
+
+* Thu Oct 17 2019 Nikita Ermakov <arei@altlinux.org> 1:4.9.3-alt1
+- Updated to 4.9.3.
+- Do not compress CHANGES.
+- Make link to tcpdump instead of copy.
+- Fixes:
+  + CVE-2017-16808
+  + CVE-2018-14468
+  + CVE-2018-14469
+  + CVE-2018-14470
+  + CVE-2018-14466
+  + CVE-2018-14461
+  + CVE-2018-14462
+  + CVE-2018-14465
+  + CVE-2018-14881
+  + CVE-2018-14464
+  + CVE-2018-14463
+  + CVE-2018-14467
+  + CVE-2018-10103
+  + CVE-2018-10105
+  + CVE-2018-14880
+  + CVE-2018-16451
+  + CVE-2018-14882
+  + CVE-2018-16227
+  + CVE-2018-16229
+  + CVE-2018-16301
+  + CVE-2018-16230
+  + CVE-2018-16452
+  + CVE-2018-16300
+  + CVE-2018-16228
+  + CVE-2019-15166
+  + CVE-2019-15167
+  + CVE-2018-14879
+
 * Tue Jan 29 2019 Nikita Ermakov <arei@altlinux.org> 1:4.9.2-alt1
 - Updated to 4.9.2.
 

@@ -1,5 +1,5 @@
 Name: libpcap
-Version: 1.9.0
+Version: 1.9.1
 Release: alt2
 Epoch: 2
 
@@ -83,7 +83,6 @@ statically linked libpcap-based applications.
 
 %prep
 %setup -n %name-%version-%release
-bzip2 -9k CHANGES
 
 %build
 export V_RPATH_OPT=
@@ -106,7 +105,7 @@ autoconf -f -v
 %files -n %libname
 %_libdir/*.so.*
 %_man7dir/*
-%doc CHANGES.bz2 CREDITS LICENSE README.md TODO
+%doc CHANGES CREDITS LICENSE README.md TODO
 
 %files devel
 %_bindir/*
@@ -121,6 +120,15 @@ autoconf -f -v
 %endif
 
 %changelog
+* Tue May 26 2020 Nikita Ermakov <arei@altlinux.org> 2:1.9.1-alt2
+- Try to use different sockets (AF_NETLINK, AF_UNIX, AF_INET) for ioctls.
+- Get the ARPHRD_ values from a Linux kernel header.
+
+* Thu Oct 17 2019 Nikita Ermakov <arei@altlinux.org> 2:1.9.1-alt1
+- Update to 1.9.1.
+- Do not compress CHANGES.
+- (Fixes CVE-2018-16301 CVE-2019-15161 CVE-2019-15162 CVE-2019-15163 CVE-2019-15164 CVE-2019-15165)
+
 * Thu Jan 24 2019 Nikita Ermakov <arei@altlinux.org> 2:1.9.0-alt2
 - Fix VERSION.
 
