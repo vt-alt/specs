@@ -1,7 +1,7 @@
 %define oname roundcubemail
 %define rel %nil
 Name: roundcube
-Version: 1.4.9
+Version: 1.4.10
 Release: alt1
 
 Summary: Browser-based multilingual IMAP client with an application-like user interface
@@ -152,6 +152,10 @@ service httpd2 condreload
 %config(noreplace) %apache2_extra_available/%name.conf
 
 %changelog
+* Mon Dec 28 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.10-alt1
+- new version 1.4.10 (with rpmrb script)
+- CVE-2020-35730
+
 * Mon Oct 05 2020 Vitaly Lipatov <lav@altlinux.ru> 1.4.9-alt1
 - new version 1.4.9 (with rpmrb script)
 
