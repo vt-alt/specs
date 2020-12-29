@@ -2,16 +2,17 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: simplescreenrecorder
-Version: 0.3.11
-Release: alt4.gitb200b97
+Version: 0.4.3
+Release: alt1
 
 Summary: Simple Screen Recording with OpenGL capture
-License: GPLv3
+License: GPL-3.0 and ISC and GPL-3.0+ and Zlib
 Group: Video
 
-Url: http://www.maartenbaert.be/simplescreenrecorder/
-Source: %version.tar.gz
+Url: https://www.maartenbaert.be/simplescreenrecorder/
+Source: https://github.com/MaartenBaert/ssr/archive/%version/ssr-%version.tar.gz
 
+BuildRequires(pre): rpm-build-ninja
 BuildRequires: gcc-c++
 BuildRequires: cmake
 BuildRequires: libavformat-devel
@@ -30,6 +31,8 @@ BuildRequires: pkgconfig(xi)
 BuildRequires: qt5-linguist
 BuildRequires: libappstream-glib
 BuildRequires: libXinerama-devel
+BuildRequires: libv4l-devel
+BuildRequires: qt5-tools-devel
 
 Obsoletes: simplescreenrecording
 
@@ -54,8 +57,7 @@ sed -i 's,^#ifdef __x86_64__,#if defined (__x86_64__) || defined (__e2k__),' \
 
 %build
 %cmake \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_QT5=TRUE \
+    -GNinja \
 %ifnarch %ix86 x86_64
     -DENABLE_X86_ASM=FALSE \
 %endif
@@ -65,10 +67,12 @@ sed -i 's,^#ifdef __x86_64__,#if defined (__x86_64__) || defined (__e2k__),' \
 %ifarch ppc64le
     -DWITH_GLINJECT=FALSE \
 %endif
-%cmake_build
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_QT5=TRUE
+%ninja_build -C BUILD
 
 %install
-%cmakeinstall_std
+%ninja_install -C BUILD
 rm -f %buildroot%_libdir/*.la
 
 %files
@@ -80,9 +84,29 @@ rm -f %buildroot%_libdir/*.la
 %_iconsdir/hicolor/*/apps/*
 %_man1dir/*.1.*
 %_datadir/%name
-%_datadir/appdata/*
+%_datadir/metainfo/*
 
 %changelog
+* Mon Dec 28 2020 Leontiy Volodin <lvol@altlinux.org> 0.4.3-alt1
+- 0.4.3
+- Updated source link.
+- Built with ninja instead make.
+- Features:
+    + Added V4L2 support (most webcams and capture cards).
+    + Added option to mark recorded area on screen during recording.
+    + Added JACK metadata.
+    + Optionally support XDG config directory (~/.config/simplescreenrecorder) instead of home directory (~/.ssr).
+    + Bugfixes.
+
+* Tue May 19 2020 Leontiy Volodin <lvol@altlinux.org> 0.4.2-alt1
+- 0.4.2
+
+* Fri May 01 2020 Leontiy Volodin <lvol@altlinux.org> 0.4.1-alt1
+- 0.4.1
+
+* Mon Apr 13 2020 Leontiy Volodin <lvol@altlinux.org> 0.4.0-alt1
+- 0.4.0
+
 * Fri Oct 18 2019 Leontiy Volodin <lvol@altlinux.org> 0.3.11-alt4.gitb200b97
 - update from git
 - update buildrequires
