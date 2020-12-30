@@ -1,7 +1,7 @@
 Name: rust
 Epoch: 1
-Version: 1.45.2
-Release: alt1.1.p9
+Version: 1.46.0
+Release: alt0.1.p9
 Summary: The Rust Programming Language
 
 Group: Development/Other
@@ -10,18 +10,14 @@ URL: http://www.rust-lang.org/
 
 # https://static.rust-lang.org/dist/%{name}c-%version-src.tar.xz
 Source: %{name}c-src.tar
-Source5: https://static.rust-lang.org/dist/rust-1.44.0-armv7-unknown-linux-gnueabihf.tar.gz
 
 Patch1: rust-gdb.patch
-Patch2: rust-cargo-version.patch
 
-%ifarch armh
-%def_with bootstrap
-%else
 %def_without bootstrap
-%endif
 %def_without bundled_llvm
 %def_without debuginfo
+
+ExcludeArch: armh
 
 BuildPreReq: /proc
 
@@ -57,12 +53,12 @@ BuildRequires: rust rust-cargo
 
 %else
 
-%define r_ver 1.44.0
-#Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
-#Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
-#Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
-#Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnueabihf.tar.gz
-#Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux-gnu.tar.gz
+%define r_ver 1.45.0
+Source2: https://static.rust-lang.org/dist/rust-%r_ver-i686-unknown-linux-gnu.tar.gz
+Source3: https://static.rust-lang.org/dist/rust-%r_ver-x86_64-unknown-linux-gnu.tar.gz
+Source4: https://static.rust-lang.org/dist/rust-%r_ver-aarch64-unknown-linux-gnu.tar.gz
+Source5: https://static.rust-lang.org/dist/rust-%r_ver-armv7-unknown-linux-gnueabihf.tar.gz
+Source6: https://static.rust-lang.org/dist/rust-%r_ver-powerpc64le-unknown-linux-gnu.tar.gz
 
 %ifarch %ix86
 %define r_src %SOURCE2
@@ -209,7 +205,6 @@ data to provide information about the Rust standard library.
 %setup -n %{name}c-src
 
 %patch1 -p2
-%patch2 -p2
 
 %if_with bootstrap
 tar xf %r_src
@@ -435,6 +430,10 @@ rm -rf %rustdir
 %rustlibdir/%rust_triple/analysis
 
 %changelog
+* Tue Dec 29 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.46.0-alt0.1.p9
+- Backport new version to p9 branch.
+- ExcludeArch: armh.
+
 * Thu Dec 03 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.45.2-alt1.1.p9
 - Backport new version to p9 branch (bootstrap on armh).
 
@@ -446,6 +445,12 @@ rm -rf %rustdir
 
 * Wed Oct 07 2020 Andrey Cherepanov <cas@altlinux.org> 1:1.43.0-alt0.1.p9
 - Backport new version to p9 branch.
+
+* Sat Aug 29 2020 Alexey Gladkov <legion@altlinux.ru> 1:1.46.0-alt1
+- New version (1.46.0).
+
+* Tue Aug 18 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:1.45.2-alt3
+- rebuilt without bootstrap
 
 * Mon Aug 17 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:1.45.2-alt2
 - rebuilt with bootstrap on armh
