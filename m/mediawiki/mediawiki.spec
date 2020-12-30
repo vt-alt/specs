@@ -2,8 +2,8 @@
 %define major 1.35
 
 Name: mediawiki
-Version: %major.0
-Release: alt4
+Version: %major.1
+Release: alt1
 
 Summary: A wiki engine, typical installation (with Apache2 and MySQL support)
 
@@ -208,6 +208,7 @@ module exactly as it was typed.
 Summary: PdfHandler extension shows uploaded pdf files in a multipage preview layout
 Group: Networking/WWW
 Requires: %name-common = %version-%release
+Conflicts: %name-common < 1.35.0-alt4
 # There are commands used. See https://www.mediawiki.org/wiki/Extension:PdfHandler
 Requires: /usr/bin/gs
 # poppler (needed for retrieving metainfo)
@@ -417,6 +418,12 @@ exit 0
 %_mediawiki_settings_dir/50-PdfHandler.php
 
 %changelog
+* Wed Dec 23 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.1-alt1
+- new version 1.35.1 (with rpmrb script)
+- T268894, CVE-2020-35474, T268917, CVE-2020-35475
+- T268938, CVE-2020-35478, CVE-2020-35479
+- T205908, CVE-2020-35477, T120883, CVE-2020-35480
+
 * Mon Nov 09 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.0-alt4
 - pack extensions-PdfHandler separately in a subpackage
 
