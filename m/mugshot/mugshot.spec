@@ -1,5 +1,5 @@
 Name:    mugshot
-Version: 0.4.2
+Version: 0.4.3
 Release: alt1
 
 Summary: Mugshot is a lightweight user configuration utility that allows you to easily update personal user details
@@ -37,7 +37,7 @@ easily update personal user details. This includes:
 %python3_build
 
 %install
-install -Dm0644 build/share/applications/mugshot.desktop %buildroot%_desktopdir/%name.desktop
+install -Dm0644 build/share/applications/org.bluesabre.Mugshot.desktop %buildroot%_desktopdir/org.bluesabre.Mugshot.desktop
 %python3_install --prefix=/usr
 rm -rf %buildroot%_datadir/doc/%name \
        %buildroot%_datadir/%name/metainfo
@@ -54,12 +54,15 @@ cp -av build/mo/* %buildroot%_datadir/locale
 %python3_sitelibdir/*.egg-info
 %_datadir/%name
 %_datadir/glib-2.0/schemas/*.xml
-%_desktopdir/%name.desktop
+%_desktopdir/*.desktop
 %_iconsdir/hicolor/*/apps/%name.*
 %_datadir/metainfo/%name.appdata.xml
 %_man1dir/%name.1*
 
 %changelog
+* Tue Dec 29 2020 Andrey Cherepanov <cas@altlinux.org> 0.4.3-alt1
+- New version.
+
 * Sun Sep 01 2019 Andrey Cherepanov <cas@altlinux.org> 0.4.2-alt1
 - New version.
 
