@@ -1,5 +1,5 @@
 Name: xfce4-mount-plugin
-Version: 1.1.4
+Version: 1.1.5
 Release: alt1
 
 Summary: Mount plugin for Xfce Desktop
@@ -51,6 +51,9 @@ information on each device.
 %exclude %_libdir/xfce4/panel/plugins/*.la
 
 %changelog
+* Mon Dec 28 2020 Mikhail Efremov <sem@altlinux.org> 1.1.5-alt1
+- Updated to 1.1.5.
+
 * Mon Dec 21 2020 Mikhail Efremov <sem@altlinux.org> 1.1.4-alt1
 - Updated to 1.1.4.
 
