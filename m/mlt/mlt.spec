@@ -18,8 +18,8 @@
 %define libmltxx libmlt++%mltxx_sover
 
 Name: mlt
-Version: 6.22.1
-Release: alt1
+Version: 6.24.0
+Release: alt1.1
 
 Summary: Multimedia framework designed for television broadcasting
 License: GPL-3.0-or-later
@@ -46,7 +46,7 @@ Patch103: alt-libav.patch
 #BuildRequires: frei0r-devel ladspa_sdk libSDL_image-devel libalsa-devel libavdevice-devel libavformat-devel libexif-devel libfftw3-devel libjack-devel libpulseaudio-devel libsamplerate-devel libsox-devel libswfdec-devel libswscale-devel libxml2-devel python-module-google python3-dev qt5-svg-devel rpm-build-ruby swig
 BuildRequires(pre): rpm-build-kf5 rpm-build-python3 libavformat-devel
 BuildRequires: qt5-svg-devel
-BuildRequires: frei0r-devel libSDL2-devel libSDL2_image-devel libalsa-devel libexif-devel
+BuildRequires: frei0r-devel libSDL-devel libSDL2-devel libSDL2_image-devel libalsa-devel libexif-devel
 BuildRequires: libavfilter-devel libswscale-devel libavdevice-devel libavformat-devel
 %if %is_ffmpeg
 BuildRequires: libswresample-devel
@@ -218,6 +218,12 @@ install -pm 0755 src/swig/python/_%name.so %buildroot/%python3_sitelibdir/
 %_pkgconfigdir/mlt++.pc
 
 %changelog
+* Thu Dec 31 2020 L.A. Kostis <lakostis@altlinux.ru> 6.24.0-alt1.1
+- add libSDL support (fix flowblade segfault).
+
+* Thu Dec 31 2020 L.A. Kostis <lakostis@altlinux.ru> 6.24.0-alt1
+- new version
+
 * Tue Aug 25 2020 Sergey V Turchin <zerg@altlinux.org> 6.22.1-alt1
 - new version
 
