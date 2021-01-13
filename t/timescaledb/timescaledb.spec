@@ -2,7 +2,7 @@
 %define pg_ver %(c=%{full_ver}; echo ${c%%.*})
 
 Name: timescaledb
-Version: 1.7.4
+Version: 2.0.0
 Release: alt1
 Summary: Open-source time-series database powered by PostgreSQL
 Group: Databases
@@ -56,6 +56,9 @@ echo %major_ver
 %_datadir/pgsql/extension/*
 
 %changelog
+* Fri Jan 08 2021 Alexey Shabalin <shaba@altlinux.org> 2.0.0-alt1
+- new version 2.0.0
+
 * Fri Oct 02 2020 Alexey Shabalin <shaba@altlinux.org> 1.7.4-alt1
 - Initial build.
 
