@@ -1,7 +1,7 @@
 %def_disable snapshot
 
 %define _name blockdev
-%define ver_major 2.23
+%define ver_major 2.24
 %define rev 1
 
 %ifnarch %ix86 x86_64
@@ -17,7 +17,7 @@
 
 Name: lib%_name
 Version: %ver_major
-Release: alt1
+Release: alt2
 
 Summary: A library for low-level manipulation with block devices
 Group: System/Libraries
@@ -170,7 +170,6 @@ with the libblockdev-dm plugin/library.
 Summary: The FS plugin for the libblockdev library
 Group: System/Libraries
 Requires: %name-utils = %version-%release
-Requires: multipath-tools
 
 %description fs
 The libblockdev library plugin (and in the same time a standalone library)
@@ -181,7 +180,6 @@ Summary: Development files for the libblockdev-fs plugin/library
 Group: Development/C
 Requires: %name-fs = %version-%release
 Requires: %name-utils-devel = %version-%release
-
 
 %description fs-devel
 This package contains header files and pkg-config files needed for development
@@ -313,7 +311,6 @@ with the libblockdev-mpath plugin/library.
 Summary: The partitioning plugin for the libblockdev library
 Group: System/Libraries
 Requires: %name-utils = %version-%release
-Requires: multipath-tools
 Requires: cgdisk fixparts gdisk
 
 %description part
@@ -447,12 +444,13 @@ vm-cache-stats -- for displaying stats for LVM cache devices.
 %prep
 %setup -n %name-%version
 sed -i 's/mkfs\.vfat/mkfs.fat/g
-	s/fsck\.vfat/fsck.fat/g' src/plugins/fs.c src/lib/plugin_apis/fs.api tests/fs_test.py
+	s/fsck\.vfat/fsck.fat/g' src/lib/plugin_apis/fs.* src/plugins/fs/generic.c \
+	src/plugins/fs/vfat.c tests/fs_test.py
 
 sed -i 's/\(pylint\)-3/\1.py3/' Makefile.*
 
 %build
-%add_optflags -D_FILE_OFFSET_BITS=64
+%add_optflags %(getconf LFS_CFLAGS)
 %autoreconf
 %configure \
 	%{subst_with vdo} \
@@ -645,6 +643,13 @@ find %buildroot -type f -name "*.la" -print0| xargs -r0 rm -f --
 %endif
 
 %changelog
+* Fri Jan 01 2021 Yuri N. Sedunov <aris@altlinux.org> 2.24-alt2
+- more fixes for dosfstools without compatibility symlinks (ALT #39495)
+- %%name-{fs,part}: removed obsolete multipath-tools dependency (ALT #39482)
+
+* Thu May 28 2020 Yuri N. Sedunov <aris@altlinux.org> 2.24-alt1
+- 2.24
+
 * Tue Sep 10 2019 Yuri N. Sedunov <aris@altlinux.org> 2.23-alt1
 - 2.23
 
