@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
-Version: 0.9.14
-Release: alt5
+Version: 0.9.15
+Release: alt1
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -35,16 +35,12 @@ Patch14: xrdp-alt-add-comment-about-windows_xp.patch
 Patch16: xrdp-alt-ppc64le-support.patch
 
 # Fedora patches
-Patch20: xrdp-0.9.2-setpriv.patch
 Patch21: xrdp-0.9.4-service.patch
 Patch22: xrdp-0.9.6-script-interpreter.patch
 Patch23: xrdp-0.9.9-sesman.patch
 Patch24: xrdp-0.9.10-scripts-libexec.patch
 Patch25: xrdp-0.9.14-arch.patch
-Patch26: xrdp-0.9.14-fuse-pointer.patch
-Patch27: xrdp-0.9.14-log-snprintf.patch
 Patch28: xrdp-0.9.14-vnc-uninit.patch
-Patch29: xrdp-0.9.14-xfree86-evdev.patch
 Patch30: xrdp-0.9.14-xrdp-ini.patch
 
 BuildPreReq: rpm-build-intro rpm-macros-intro-conflicts
@@ -108,17 +104,10 @@ tar xf %SOURCE6
 %patch13 -p1
 %patch14 -p1
 %patch16 -p1
-%patch20 -p1
 %patch21 -p1
 %patch22 -p1
-#patch23 -p1
-#patch24 -p1
 %patch25 -p1
-%patch26 -p1
-%patch27 -p1
 %patch28 -p1
-%patch29 -p1
-#patch30 -p1
 
 cp %SOURCE3 %name-init
 
@@ -277,6 +266,9 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Tue Dec 29 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.15-alt1
+- New version.
+
 * Mon Dec 21 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.14-alt5
 - Change PAM rules from system-auth to common-login.
 - Build with -fPIC for i586.
