@@ -1,6 +1,6 @@
 Name: AcetoneISO2
-Version: 2.3
-Release: alt2
+Version: 2.4
+Release: alt1
 
 Summary: CD/DVD Image Manipulator
 
@@ -19,21 +19,23 @@ Patch2: acetoneiso2-2.1.1-pro.patch
 Provides: acetoneiso2
 Obsoletes: acetoneiso2
 
-# Automatically added by buildreq on Wed Dec 15 2010
 BuildRequires: gcc-c++ libqt4-devel
 
 Requires: fuseiso
 
 %description
 AcetoneISO2: The CD/DVD image manipulator for Linux, it can do the following:
-- Mount automatically ISO, MDF, NRG, BIN, NRG without the need to insert admin password! Only single-track images are supported for the moment.
+- Mount automatically ISO, MDF, NRG, BIN, NRG without the need to insert
+  admin password! Only single-track images are supported for the moment.
 - a native utility to blank your CD-RW, DVD-RW and DVD-RW discs
-- A nice display which shows current images mounted and possibility to click on it to quickly reopen mounted image
+- A nice display which shows current images mounted and possibility to
+  click on it to quickly reopen mounted image
 - Convert 2 ISO all image types:
   *.bin *.mdf *.nrg *.img *.daa *.dmg *.cdi *.b5i *.bwi *.pdi and much more
 - Extract images content to a folder:
   *.bin *.mdf *.nrg *.img *.daa *.dmg *.cdi *.b5i *.bwi *.pdi and much more
-- Play a DVD Movie Image with Kaffeine / VLC / SMplayer with auto-cover download from Amazon
+- Play a DVD Movie Image with Kaffeine / VLC / SMplayer with auto-cover download
+  from Amazon
 - Generate an ISO from a Folder or CD/DVD
 - Check MD5 file of an image and/or generate it to a text file
 - Calculate ShaSums of images in 128, 256 and 384 bit
@@ -48,9 +50,10 @@ AcetoneISO2: The CD/DVD image manipulator for Linux, it can do the following:
 - Create a database of images to manage big collections
 - Extract the Boot Image file of a CD/DVD or ISO
 - Backup a CD-Audio to a *.bin image
-- Complete localization for English, Italian, French, Spanish, Polish and much more!
+- Complete localization for different languages!
 - Quick and simple utility to Rip a DVD to Xvid AVI
-- Quick and simple utility to convert a generic video (avi, mpeg, mov, wmv, asf) to Xvid AVI
+- Quick and simple utility to convert a generic video (avi, mpeg, mov, wmv, asf)
+  to Xvid AVI
 - Quick and simple utility to convert a FLV video to AVI
 - Utility to download videos from Youtube and Metacafe!
 - Extract Audio from a video file
@@ -59,29 +62,38 @@ AcetoneISO2: The CD/DVD image manipulator for Linux, it can do the following:
 - Display History that shows all images you mount in time
 
 %prep
-%setup -q -n %name-%version/acetoneiso
-%patch0 -p1
-%patch1 -p3
-%patch2 -p3
+%setup
+%patch0 -p0
+%patch1 -p2
+%patch2 -p2
+
+# Fix perms
+chmod -x acetoneiso/sources/*
 
 %build
+pushd acetoneiso
 qmake-qt4
 %make_build
+popd
 
 %install
+pushd acetoneiso
 make INSTALL_ROOT=%buildroot install
 
 #icon
 %__install -pD -m644 images/Acetino2.png %buildroot%_iconsdir/Acetino2.png
+popd
 
 %files
-%doc ../AUTHORS ../CHANGELOG ../FEATURES ../LICENSE ../README ../TODO
+%doc AUTHORS CHANGELOG FEATURES LICENSE README TODO
 %_bindir/acetoneiso
-# %%{_datadir}/acetoneiso2
 %_desktopdir/AcetoneISO.desktop
 %_iconsdir/Acetino2.png
 
 %changelog
+* Thu Mar 19 2020 Grigory Ustinov <grenka@altlinux.org> 2.4-alt1
+- Build new version (Closes: #38070).
+
 * Mon Jun 04 2018 Grigory Ustinov <grenka@altlinux.org> 2.3-alt2
 - Fix extra large icon in menu (Closes: #33482).
 
