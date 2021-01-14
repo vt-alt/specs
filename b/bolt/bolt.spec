@@ -1,10 +1,10 @@
-%define git g55918d9
+%define git gfc530dc
 %define _libexec %_prefix/libexec
 %def_enable test
 
 Name: bolt
 Version: 0.8
-Release: alt0.1.%git
+Release: alt0.211.%git
 Summary: Thunderbolt device manager
 Group: System/Libraries
 License: LGPLv2+
@@ -64,7 +64,7 @@ mentioned tasks.
 %_libexec/boltd
 %_unitdir/%name.service
 %_udevrulesdir/*-%name.rules
-%_sysconfdir/dbus-1/system.d/org.freedesktop.bolt.conf
+%_datadir/dbus-1/system.d/org.freedesktop.bolt.conf
 %_datadir/dbus-1/interfaces/org.freedesktop.bolt.xml
 %_datadir/polkit-1/actions/org.freedesktop.bolt.policy
 %_datadir/polkit-1/rules.d/org.freedesktop.bolt.rules
@@ -74,6 +74,12 @@ mentioned tasks.
 %ghost %dir %_localstatedir/boltd
 
 %changelog
+* Tue Jun 02 2020 L.A. Kostis <lakostis@altlinux.ru> 0.8-alt0.211.gfc530dc
+- 0.8-211-gfc530dc.
+
+* Sat Mar 21 2020 L.A. Kostis <lakostis@altlinux.ru> 0.8-alt0.195.g6b9b6e0
+- 0.8-195-g6b9b6e0.
+
 * Mon Jun 03 2019 L.A. Kostis <lakostis@altlinux.ru> 0.8-alt0.1.g55918d9
 - Initial build for ALTLinux.
 - GIT 55918d9.
