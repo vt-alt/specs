@@ -1,13 +1,13 @@
 %define policy_name alt
-%define date 20170811
+%define date 20201102
 %define seconf %_sysconfdir/selinux/config
 %define default_mode permissive
 
 Summary: SELinux %policy_name policy
 Name: selinux-policy-alt
-Version: 0.0.43
+Version: 0.0.52
 Release: alt1
-License: %distributable
+License: Distributable
 Group: System/Base
 Source: %name-%date.tar
 BuildArch: noarch
@@ -78,11 +78,12 @@ install -D -m0644 "$tmpfile" %buildroot/%policy_conf/policy/policy.29
 install -D -m0644 "$tmpfile" %buildroot/%policy_conf/modules/active/modules/dolphin.pp
 install -D -m0644 "$tmpfile" %buildroot/%policy_conf/modules/active/modules/xorg.pp
 install -D -m0644 "$tmpfile" %buildroot/%policy_conf/modules/active/modules/psql.pp
-
+install -D -m0644 "$tmpfile" %buildroot/%policy_conf/modules/active/modules/allow_smb.pp
 
 #
 # %%post
 #
+
 %post
 
 # XXX bug in 'semodule'
@@ -116,7 +117,7 @@ for i in $modules; do
 done
 
 # Always install new policy
-semodule -n -s %policy_name -b %policy_data/base.pp
+semodule -n -s %policy_name -i %policy_data/base.pp
 
 # Always install all modules
 echo -e "\tActivate modules for '%policy_name' policy:"
@@ -182,6 +183,7 @@ fi
 exit 0 # End of %%preun section
 
 %files
+%doc usr/share/doc/selinux-policy-alt/commit-id
 %config(noreplace) %_sysconfdir/selinux/config
 %dir %policy_conf
 %dir %policy_conf/contexts
@@ -219,6 +221,7 @@ exit 0 # End of %%preun section
 %attr(0755,root,root) %_sysconfdir/security/alt.newrole/mkdirs
 %config(noreplace) %_sysconfdir/security/alt.newrole/dirs
 %config(noreplace) %_sysconfdir/security/alt.newrole/config
+%config(noreplace) %_sysconfdir/security/namespace.d/namespace-selinux.conf
 
 %_bindir/slrun
 %_bindir/slrun2
@@ -227,6 +230,8 @@ exit 0 # End of %%preun section
 %_unitdir/selinux-autorelabel-mark.service
 %_unitdir/selinux-autorelabel.service
 %_unitdir/sysinit.target.wants/selinux-autorelabel.service
+%dir %_unitdir/systemd-modules-load.service.d
+%_unitdir/systemd-modules-load.service.d/*.conf
 
 # Files that are auto created at installation step.
 # Let's take care of them.
@@ -261,8 +266,49 @@ exit 0 # End of %%preun section
 %ghost %policy_conf/modules/active/modules/dolphin.pp
 %ghost %policy_conf/modules/active/modules/xorg.pp
 %ghost %policy_conf/modules/active/modules/psql.pp
+%ghost %policy_conf/modules/active/modules/allow_smb.pp
 
 %changelog
+* Mon Nov 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.0.52-alt1
+- Merged changes by Denis Medvedev (nbr@).
+
+* Fri Sep 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.0.51-alt1
+- Update policy for current Sisyphus
+
+* Thu Apr 16 2020 Anton Farygin <rider@altlinux.ru> 0.0.50-alt4
+- FTBFS: change License tag to Distributable
+
+* Thu Aug 08 2019 Denis Medvedev <nbr@altlinux.org> 0.0.50-alt3
+- to sisyphus
+
+* Thu Jul 25 2019 Denis Medvedev <nbr@altlinux.org> 0.0.50-alt2
+- to sisyphus
+
+* Tue Jul 02 2019 Denis Medvedev <nbr@altlinux.org> 0.0.50-alt1
+- to sisyphus
+
+* Wed Apr 10 2019 Denis Medvedev <nbr@altlinux.org> 0.0.50-alt0.M80C.1
+- to c8
+
+* Sat Mar 30 2019 Denis Medvedev <nbr@altlinux.org> 0.0.49-alt0.M80C.1
+- to c8
+
+* Thu Jan 31 2019 Denis Medvedev <nbr@altlinux.org> 0.0.48-alt0.M80C.1
+- to c8
+
+* Mon Jan 14 2019 Denis Medvedev <nbr@altlinux.org> 0.0.47-alt0.M80C.1
+- to c8
+
+* Mon Mar 19 2018 Denis Medvedev <nbr@altlinux.org> 0.0.45-alt0.M80C.1
+- to c8
+
+* Mon Mar 19 2018 Denis Medvedev <nbr@altlinux.org> 0.0.45-alt1
+- fix creation of level subdirs when system has strictier
+permissions on files
+
+* Tue Mar 06 2018 Denis Medvedev <nbr@altlinux.org> 0.0.44-alt1
+- allow network operations for smb and ftp access using udiskd
+
 * Tue Aug 08 2017 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.0.43-alt1
 - CD and USB flash mounting via gvfs fixed
 

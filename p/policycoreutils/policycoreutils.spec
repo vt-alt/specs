@@ -9,8 +9,8 @@
 Summary: SELinux policy core utilities
 Name: policycoreutils
 Epoch:   1
-Version: 3.0
-Release: alt2
+Version: 3.1
+Release: alt1
 License: GPLv2
 Group: System/Base
 Url: https://github.com/SELinuxProject/selinux
@@ -45,9 +45,10 @@ BuildRequires(pre): rpm-build-python3
 BuildRequires: libaudit-devel libcap-devel libpam-devel
 BuildRequires: libselinux-devel libsemanage-devel libsepol-devel libsepol-devel-static
 BuildRequires: desktop-file-utils
-BuildRequires: glib2-devel libdbus-glib-devel
+BuildRequires: glib2-devel libgio-devel
 BuildRequires: libcap-ng-devel libpcre-devel libcgroup-devel
 BuildRequires: python3-devel
+BuildRequires: libsystemd-devel
 
 %add_python3_path %_datadir/system-config-selinux
 
@@ -174,7 +175,7 @@ popd
 %makeinstall_std -C selinux-sandbox-%version LSPP_PRIV=y LIBDIR="%_libdir" LIBEXECDIR="%_libexecdir" LIBSEPOLA="%_libdir/libsepol.a" CFLAGS="%optflags %optflags_shared" LDFLAGS="-pie -Wl,-z,relro"
 %makeinstall_std -C selinux-dbus-%version LSPP_PRIV=y LIBDIR="%_libdir" LIBEXECDIR="%_libexecdir" LIBSEPOLA="%_libdir/libsepol.a" CFLAGS="%optflags %optflags_shared" LDFLAGS="-pie -Wl,-z,relro"
 %makeinstall_std -C semodule-utils-%version LSPP_PRIV=y LIBDIR="%_libdir" LIBEXECDIR="%_libexecdir" LIBSEPOLA="%_libdir/libsepol.a" CFLAGS="%optflags %optflags_shared" LDFLAGS="-pie -Wl,-z,relro"
-%makeinstall_std -C restorecond-%version LSPP_PRIV=y LIBDIR="%_libdir" LIBEXECDIR="%_libexecdir" LIBSEPOLA="%_libdir/libsepol.a" CFLAGS="%optflags %optflags_shared" LDFLAGS="-pie -Wl,-z,relro" SYSTEMDDIR="/lib/systemd"
+%makeinstall_std -C restorecond-%version LSPP_PRIV=y LIBDIR="%_libdir" LIBEXECDIR="%_libexecdir" LIBSEPOLA="%_libdir/libsepol.a" CFLAGS="%optflags %optflags_shared" LDFLAGS="-pie -Wl,-z,relro"
 %makeinstall_std -C mcstrans-%version LIBDIR=%_libdir CFLAGS="%optflags $(pkg-config --cflags-only-I libpcre)" LIBSEPOLA="%_libdir/libsepol.a" SYSTEMDDIR="/lib/systemd"
 
 %if "%python3_sitelibdir_noarch" != "%python3_sitelibdir"
@@ -324,6 +325,7 @@ grep -Fvx -f %name-newrole.lang -f %name-sandbox.lang -f %name-restorecond.lang 
 
 %files restorecond -f %name-restorecond.lang
 %_unitdir/restorecond.service
+%_prefix/lib/systemd/user/restorecond_user.service
 %_datadir/dbus-1/services/org.selinux.Restorecond.service
 %_sbindir/restorecond
 %_initddir/restorecond
@@ -409,6 +411,9 @@ grep -Fvx -f %name-newrole.lang -f %name-sandbox.lang -f %name-restorecond.lang 
 %python3_sitelibdir/__pycache__/*
 
 %changelog
+* Fri Jul 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.1-alt1
+- Updated to upstream version 3.1.
+
 * Thu Apr 16 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.0-alt2
 - Removed runtime dependency on selinux-policy-alt
 

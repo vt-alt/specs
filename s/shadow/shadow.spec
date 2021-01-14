@@ -1,7 +1,7 @@
 Name: shadow
 Version: 4.5
-Release: alt5
-Serial: 1
+Release: alt8
+Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
 License: BSD-style
@@ -59,7 +59,7 @@ This package contains shared library required for various shadow utils.
 %package -n lib%name-devel
 Summary: Development files for the shadow password file routines library
 Group: Development/C
-Requires: lib%name = %serial:%version-%release
+Requires: lib%name = %EVR
 
 %description -n lib%name-devel
 Shadow library manipulates local user and group databases. It supports both
@@ -70,7 +70,7 @@ on lib%name.
 %package -n lib%name-devel-static
 Summary: Shadow password file routines static library
 Group: Development/C
-Requires: lib%name-devel = %serial:%version-%release
+Requires: lib%name-devel = %EVR
 
 %description -n lib%name-devel-static
 Shadow library manipulates local user and group databases. It supports both
@@ -81,7 +81,7 @@ linked software based on lib%name.
 %package utils
 Summary: Utilities for managing shadow password files and user/group accounts
 Group: System/Base
-Requires: %name-convert = %serial:%version-%release, tcb-utils >= 0.9.8
+Requires: %name-convert = %EVR, tcb-utils >= 0.9.8
 Obsoletes: adduser
 
 %description utils
@@ -99,7 +99,7 @@ user/group accounts:
 %package check
 Summary: Utilities for checking integrity of the password, group, shadow-password, or shadow-group files
 Group: System/Base
-Requires: %name-convert = %serial:%version-%release
+Requires: %name-convert = %EVR
 
 %description check
 This package includes utilities for checking integrity of the password, group,
@@ -111,7 +111,7 @@ shadow-password, or shadow-group files:
 Summary: Utilities for convertion to and from shadow passwords and groups
 Group: System/Base
 %if_enabled shadow
-Requires: lib%name = %serial:%version-%release
+Requires: lib%name = %EVR
 %endif
 
 %description convert
@@ -125,7 +125,7 @@ and groups:
 %package change
 Summary: Utilities for changing user shell, finger and password information
 Group: System/Base
-Requires: %name-utils = %serial:%version-%release
+Requires: %name-utils = %EVR
 
 %description change
 This package includes utilities for changing user shell, finger and password
@@ -139,7 +139,7 @@ information:
 %package edit
 Summary: Utilities for editing the password, group, shadow-password, or shadow-group files
 Group: System/Base
-Requires: %name-utils = %serial:%version-%release
+Requires: %name-utils = %EVR
 
 %description edit
 This package includes utilities for editing the password, group,
@@ -150,7 +150,7 @@ shadow-password, or shadow-group files:
 %package groups
 Summary: Utilities for execute command as different group ID
 Group: System/Base
-Requires: %name-utils = %serial:%version-%release
+Requires: %name-utils = %EVR
 
 %description groups
 This package includes utilities for execute command as different group ID:
@@ -161,7 +161,7 @@ This package includes utilities for execute command as different group ID:
 %package submap
 Summary: Utilities for creating uid and gid mappings in user namespaces
 Group: System/Base
-Requires: %name-utils = %serial:%version-%release
+Requires: %name-utils = %EVR
 
 %description submap
 This package includes utilities for creating uid and gid mappings
@@ -172,7 +172,7 @@ in user namespaces:
 %package log
 Summary: Utilities for examining lastlog and faillog files
 Group: System/Base
-Requires: %name-utils = %serial:%version-%release
+Requires: %name-utils = %EVR
 
 %description log
 This package includes utilities for examining lastlog and faillog files:
@@ -184,14 +184,14 @@ This package includes utilities for examining lastlog and faillog files:
 Summary: The shadow suite
 Group: System/Base
 BuildArch: noarch
-Requires: %name-change = %serial:%version-%release
-Requires: %name-check = %serial:%version-%release
-Requires: %name-convert = %serial:%version-%release
-Requires: %name-edit = %serial:%version-%release
-Requires: %name-groups = %serial:%version-%release
-Requires: %name-log = %serial:%version-%release
-Requires: %name-utils = %serial:%version-%release
-Requires: %name-submap = %serial:%version-%release
+Requires: %name-change = %EVR
+Requires: %name-check = %EVR
+Requires: %name-convert = %EVR
+Requires: %name-edit = %EVR
+Requires: %name-groups = %EVR
+Requires: %name-log = %EVR
+Requires: %name-utils = %EVR
+Requires: %name-submap = %EVR
 
 %description suite
 This virtual package unifies all shadow suite subpackages.
@@ -403,6 +403,26 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:4.5-alt8
+- NMU: fixed build with new selinux.
+
+* Wed Nov 06 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt7
+- valid_field: Check that characters are ASCII.
+- login.defs: Add SAFE_PWDB_FIELDS variable.
+- man: Add SAFE_PWDB_FIELDS description.
+- lib: Add SAFE_PWDB_FIELDS variable.
+- useradd,usermod: Use valid_field() to check fields.
+
+* Fri Nov 01 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt6
+- Use epoch instead of serial.
+- login.defs: Add REGEXP_NAME variable.
+- man: Add REGEXP_NAME description.
+- pwck,grpck: Use strcasecmp() to check names.
+- libmisc: Don't allow leading digits in the names with regexp too.
+- utils: Check that user/group is unique.
+- libmisc: Allow names to be verified by regexp (closes: #9202).
+- Fix build with gcc-9.
+
 * Tue Aug 27 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt5
 - Backported patch from shadow-4.6:
   + newgidmap: enforce setgroups=deny if self-mapping a group

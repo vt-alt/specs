@@ -2,7 +2,7 @@
 
 Name: libselinux
 Epoch: 1
-Version: 3.0
+Version: 3.1
 Release: alt1
 Summary: SELinux library
 License: Public Domain
@@ -113,6 +113,9 @@ fi
 %python3_sitelibdir/*
 
 %changelog
+* Fri Jul 31 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.1-alt1
+- Updated to upstream version 3.1.
+
 * Mon Mar 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:3.0-alt1
 - Updated to upstream version 3.0.
 

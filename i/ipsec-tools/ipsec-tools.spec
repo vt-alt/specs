@@ -1,7 +1,7 @@
 Summary: IPsec-Tools package use the IPsec functionality in the linux-2.5+ kernels.
 Name: ipsec-tools
 Version: 0.8.2
-Release: alt2
+Release: alt3
 URL: http://ipsec-tools.sourceforge.net/
 License: BSD
 Group: Security/Networking
@@ -42,6 +42,7 @@ Patch102: ipsec-tools-0.7.2-alt-config.patch
 Patch103: ipsec-tools-0.7.2-alt-unres.patch
 Patch104: ipsec-tools-0.7.2-alt-gcc44-warns.patch
 Patch105: ipsec-tools-0.8.0-alt-wildcard-psk.patch
+Patch106: ipsec-tools-0.8.2-alt-selinux-compat.patch
 
 # Debian patches
 Patch201: ipsec-tools-0.8.2-make-peer_certfile-dnssec-validate-dnssec.patch
@@ -109,6 +110,7 @@ IPSec-Tools development files package.
 %patch103 -p1 -b .unres
 %patch104 -p1 -b .gcc4warn
 %patch105 -p1 -b .wildcard
+%patch106 -p2
 
 %patch201 -p1
 %patch203 -p1
@@ -208,6 +210,9 @@ install -p -m0644 %SOURCE6 %buildroot%_unitdir/racoon.service
 
 
 %changelog
+* Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.8.2-alt3
+- NMU: fixed build with new selinux.
+
 * Wed Aug 29 2018 Alexey Shabalin <shaba@altlinux.org> 0.8.2-alt2
 - build with openssl-1.1
 - add patches from Debian

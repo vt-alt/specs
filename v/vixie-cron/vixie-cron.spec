@@ -1,6 +1,6 @@
 Name: vixie-cron
 Version: 4.1.20060426
-Release: alt10.1
+Release: alt10.2
 
 %def_with selinux
 
@@ -136,6 +136,9 @@ touch %buildroot%_sysconfdir/{at,cron}.{allow,deny}
 %attr(700,root,root) %dir %_sysconfdir/cron.d
 
 %changelog
+* Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 4.1.20060426-alt10.2
+- NMU: fixed build with new selinux.
+
 * Sun Apr 01 2018 Igor Vlasenko <viy@altlinux.ru> 4.1.20060426-alt10.1
 - NMU: added URL
 

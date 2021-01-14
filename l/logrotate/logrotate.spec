@@ -1,23 +1,20 @@
 Name: logrotate
-Version: 3.9.1
-Release: alt5
+Version: 3.16.0
+Release: alt1.git35_6e8dfb8
 
 Summary: Rotates, compresses, and mails system logs
 License: GPLv2+
 Group: File tools
-Url: https://fedorahosted.org/logrotate/
+Url: https://github.com/logrotate/logrotate
 
-# https://fedorahosted.org/releases/l/o/logrotate/%name-%version.tar.gz
+# https://github.com/logrotate/logrotate/releases/download/%version/logrotate-%version.tar.xz
 Source: logrotate-%version.tar
 Source1: logrotate.cron
 
-Patch1: logrotate-alt-config.patch
-Patch2: logrotate-alt-file_type.patch
-Patch3: logrotate-alt-taboo.patch
-Patch4: logrotate-alt-insecure-permissions.patch
-Patch5: logrotate-upstream-gcc6.patch
-Patch6: logrotate-upstream-configure.patch
-Patch7: logrotate-upstream-function-detection.patch
+Patch1: 0001-ALT-Improve-messages-about-wrong-file-types.patch
+Patch2: 0002-ALT-Change-logrotate-defaults.patch
+Patch3: 0003-ALT-insecure-permissions.patch
+Patch4: 0004-ALT-Add-more-taboo-suffixes.patch
 
 Provides: /etc/logrotate.d
 
@@ -36,13 +33,10 @@ a daily cron job.
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+%patch1 -p2
+%patch2 -p2
+%patch3 -p2
+%patch4 -p2
 
 %build
 touch AUTHORS ChangeLog NEWS README
@@ -54,7 +48,9 @@ touch AUTHORS ChangeLog NEWS README
 %makeinstall_std
 mkdir -p %buildroot/etc/logrotate.d
 
-install -pD -m640 examples/logrotate-default %buildroot/etc/logrotate.conf
+install -pD -m640 examples/logrotate.conf %buildroot/etc/logrotate.conf
+install -pD -m640 examples/btmp %buildroot/etc/logrotate.d/btmp
+install -pD -m640 examples/wtmp %buildroot/etc/logrotate.d/wtmp
 install -pD -m755 %_sourcedir/logrotate.cron %buildroot/etc/cron.daily/logrotate
 install -pD -m644 /dev/null %buildroot%_localstatedir/logrotate/status
 
@@ -70,13 +66,22 @@ fi
 %_sbindir/*
 %config(noreplace) /etc/cron.daily/logrotate
 %config(noreplace) /etc/logrotate.conf
+%config(noreplace) /etc/logrotate.d/btmp
+%config(noreplace) /etc/logrotate.d/wtmp
 %_mandir/man?/*
 %attr(750,root,root) %dir /etc/logrotate.d
 %attr(700,root,root) %dir %_localstatedir/logrotate
 %attr(644,root,root) %verify(not size md5 mtime) %config(noreplace) %_localstatedir/logrotate/status
-%doc CHANGES
+%doc ChangeLog.md
 
 %changelog
+* Sun Apr 26 2020 Alexey Gladkov <legion@altlinux.ru> 3.16.0-alt1.git35_6e8dfb8
+- Update from git (6e8dfb8).
+
+* Sat Apr 25 2020 Alexey Gladkov <legion@altlinux.ru> 3.16.0-alt1
+- New version (3.16.0).
+- Update project url.
+
 * Tue Jan 09 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 3.9.1-alt5
 - Fixed build.
 

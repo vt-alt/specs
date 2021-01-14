@@ -2,8 +2,8 @@
 %def_enable qt5
 
 Name: sechooser
-Version: 0.2.2
-Release: alt7
+Version: 0.3.1
+Release: alt1
 
 Summary: Selinux user range chooser
 License: GPL
@@ -61,6 +61,12 @@ install -m644 translations/sechooser_??.qm %buildroot/%_qt5_translationdir/
 %_bindir/*
 
 %changelog
+* Wed Oct 21 2020 Denis Medvedev <nbr@altlinux.org> 0.3.1-alt1
+- replaced unstable getlogin with reliable proc data read.
+
+* Tue Oct 20 2020 Sergey V Turchin <zerg at altlinux dot org> 0.3.0-alt1
+- disable shared memory holder
+
 * Fri Jan 24 2020 Denis Medvedev <nbr@altlinux.org> 0.2.2-alt7
 - revert DRI3 commit, it should be done system-wide.
 

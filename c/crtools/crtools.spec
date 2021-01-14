@@ -1,14 +1,15 @@
 Name: crtools
-Version: 3.13
-Release: alt2
+Version: 3.15
+Release: alt1
 
 Summary: Utility to checkpoint/restore tasks
 License: GPL-2.0-only
 Group: System/Configuration/Other
 Url: http://criu.org
 
-# repacked http://download.openvz.org/criu/criu-%version.tar.bz2
+VCS: git://github.com/checkpoint-restore/criu.git
 Source: criu-%version.tar
+Source1: criu.watch
 Patch1: 0001-FEDORA-aio-fix.patch
 Patch2: 0002-ALT-build-against-python3.patch
 
@@ -19,6 +20,8 @@ BuildRequires: libnet2-devel
 BuildRequires: libprotobuf-c-devel %_bindir/protoc-c
 BuildRequires: libprotobuf-devel protobuf-compiler
 BuildRequires: asciidoc xmlto %_bindir/a2x
+BuildRequires: libnftables-devel
+BuildRequires: libgnutls-devel
 
 %description
 An utility to checkpoint/restore tasks.
@@ -71,8 +74,7 @@ Python library library of checkpoint/restore.
 
 %prep
 %setup -n criu-%version
-%patch1 -p2
-%patch2 -p2
+%autopatch -p1
 
 %build
 export CFLAGS="%optflags"
@@ -108,6 +110,7 @@ find %buildroot -name 'lib*.a' -delete
 %files -n python3-module-criu
 %_bindir/crit
 %python3_sitelibdir_noarch/pycriu
+%python3_sitelibdir_noarch/crit-*.egg-info
 %_man1dir/crit.1*
 
 %files -n libcriu2
@@ -123,6 +126,17 @@ find %buildroot -name 'lib*.a' -delete
 %_pkgconfigdir/criu.pc
 
 %changelog
+* Wed Nov 04 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.15-alt1
+- Updated to 3.15.
+
+* Mon Aug 03 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.14-alt2
+- Fixed FTBFS: fixed uses of deprecated security_context_t.
+
+* Wed Apr 29 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.14-alt1
+- Updated to 3.14.
+- Built against nftables and gnutls libraries.
+- Packed watch file.
+
 * Mon Sep 30 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 3.13-alt2
 - Built for ppc64le.
 - Built with SELinux support.

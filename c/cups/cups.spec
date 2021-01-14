@@ -1,6 +1,6 @@
 Name: cups
 Version: 2.3.1
-Release: alt1
+Release: alt2
 
 Summary: Common Unix Printing System - server package
 License: GPL
@@ -413,6 +413,9 @@ chmod 755 %buildroot/usr/lib/cups/backend/ipp
 %config(noreplace) %_sysconfdir/xinetd.d/%name-lpd
 
 %changelog
+* Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.1-alt2
+- NMU: fixed build with new selinux.
+
 * Thu Mar 05 2020 Fr. Br. George <george@altlinux.ru> 2.3.1-alt1
 - Autobuild version bump to 2.3.1
 - Update patches (manual FC-lspp.patch fix)
