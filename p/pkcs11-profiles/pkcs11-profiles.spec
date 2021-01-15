@@ -10,15 +10,12 @@
 %def_disable isbc
 %endif
 
-%ifarch %ix86 x86_64
-%def_enable jacarta
-%else
+# libjcpkcs11 is not available in Sisyphus any more!
 %def_disable jacarta
-%endif
 
 Name: pkcs11-profiles
 Version: 0.1.9
-Release: alt2
+Release: alt2.M90P.1
 
 Summary: Set of scripts and profiles for PAM PKCS11 configuration
 License: GPLv3+
@@ -169,6 +166,10 @@ Contains prompts and other messages of "Zastava" PAM PKCS#11 set
 %config(noreplace) %confdir/message.profiles/zastava
 
 %changelog
+* Wed Jan 13 2021 Paul Wolneykien <manowar@altlinux.org> 0.1.9-alt2.M90P.1
+- Disable JaCarta profile: libjcpkcs11 is not available in Sisyphus
+  any more!
+
 * Mon Jul 01 2019 Michael Shigorin <mike@altlinux.org> 0.1.9-alt2
 - Enable rutokenecp on platforms supported by 1.9.12.0 release.
 - Disable isbc on e2k: the binaries are underlinked and don't pass
