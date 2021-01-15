@@ -1,5 +1,5 @@
 Name: polkit-sysvinit
-Version: 0.4.1
+Version: 0.4.2
 Release: alt1
 
 Summary: Allow media/network changes to xgrp users
@@ -38,6 +38,10 @@ install -pm644 %SOURCE0 %SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 \
 %pkdir/*
 
 %changelog
+* Tue Dec 29 2020 Anton Midyukov <antohami@altlinux.org> 0.4.2-alt1
+- Added modify-device* and open-device* rules
+  for gnome-disk-utility support (thx Speccyfighter).
+
 * Tue Nov 19 2019 Anton Midyukov <antohami@altlinux.org> 0.4.1-alt1
 - Added 60-cpu-x.rules
 - changed pkdir on _datadir/polkit-1/rules.d
