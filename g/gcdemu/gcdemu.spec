@@ -4,7 +4,7 @@
 Summary: GTK+ based GUI for controlling CDEmu daemon
 Summary(ru_RU.UTF-8): Основанная на GTK+ GUI для управления CDEmu
 Name: gcdemu
-Version: 3.2.0
+Version: 3.2.4
 Release: alt1
 Group: Emulators
 License: GPLv2+
@@ -22,6 +22,8 @@ BuildRequires: cmake intltool
 
 Requires: cdemu-daemon >= %version
 Requires: cdemu-client >= %version
+Requires: typelib(Gtk) = 3.0
+%filter_from_requires /^typelib(AppIndicator3)/d
 
 BuildArch: noarch
 
@@ -74,6 +76,11 @@ mv %buildroot/%_desktopdir/%name.desktop %buildroot/%_sysconfdir/xdg/autostart/
 %_sysconfdir/xdg/autostart/%name.desktop
 
 %changelog
+* Thu Jan 07 2021 Anton Midyukov <antohami@altlinux.org> 3.2.4-alt1
+- new version (3.2.4)
+- Add requires typelib(Gtk) = 3.0
+- Skip requires typelib(AppIndicator3)
+
 * Mon Jul 30 2018 Anton Midyukov <antohami@altlinux.org> 3.2.0-alt1
 - new version (3.2.0) with rpmgs script
 

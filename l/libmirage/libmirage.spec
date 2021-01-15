@@ -1,8 +1,8 @@
 %define soversion 11
 
 Name: libmirage
-Version: 3.2.0
-Release: alt2
+Version: 3.2.4
+Release: alt1
 
 Summary: A CD-ROM image access library
 License: GPLv2+
@@ -104,6 +104,12 @@ popd
 %doc %_datadir/gtk-doc/html/%name
 
 %changelog
+* Mon Nov 02 2020 Nazarov Denis <nenderus@altlinux.org> 3.2.4-alt1
+- Version 3.2.4 (ALT #39133)
+
+* Mon Jun 17 2019 Nazarov Denis <nenderus@altlinux.org> 3.2.2-alt1
+- Version 3.2.2
+
 * Sat Jan 26 2019 Nazarov Denis <nenderus@altlinux.org> 3.2.0-alt2
 - Remove %ubt macro
 

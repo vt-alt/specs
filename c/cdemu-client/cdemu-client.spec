@@ -1,6 +1,6 @@
 Name: cdemu-client
-Version: 3.2.0
-Release: alt2
+Version: 3.2.4
+Release: alt1
 
 Summary: A simple command-line client to control CDEmu daemon
 License: GPLv2+
@@ -16,7 +16,7 @@ BuildRequires: cmake
 BuildRequires: intltool
 BuildRequires: rpm-build-gir
 
-Requires: cdemu-daemon >= 3.2.0
+Requires: cdemu-daemon >= 3.2.2
 
 %description
 This is cdemu-client, a simple command-line client for controlling CDEmu daemon.
@@ -56,6 +56,12 @@ popd
 %_sysconfdir/bash_completion.d/cdemu
 
 %changelog
+* Mon Nov 02 2020 Nazarov Denis <nenderus@altlinux.org> 3.2.4-alt1
+- Version 3.2.4
+
+* Mon Jun 17 2019 Nazarov Denis <nenderus@altlinux.org> 3.2.1-alt1
+- Version 3.2.1
+
 * Sat Jan 26 2019 Nazarov Denis <nenderus@altlinux.org> 3.2.0-alt2
 - Remove %ubt macro
 
