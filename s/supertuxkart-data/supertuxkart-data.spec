@@ -1,14 +1,14 @@
 Name: supertuxkart-data
-Version: 1.0
+Version: 1.2
 Release: alt1
 
-License: GPL
+License: GPL-3.0-or-later and CC-BY-SA-3.0 and CC-BY-SA-4.0
 Url: http://supertuxkart.sourceforge.net
 Summary: SuperTuxKart is a kart racing game
 Group: Games/Arcade
 BuildArch: noarch
 
-# svn checkout https://svn.code.sf.net/p/supertuxkart/code/stk-assets supertuxkart-data
+# svn checkout https://svn.code.sf.net/p/supertuxkart/code/stk-assets stk-assets
 Source: %name-%version.tar.xz
 
 %description
@@ -39,6 +39,7 @@ cp -pr ./* %buildroot%_datadir/supertuxkart/data
 
 rm %buildroot%_datadir/supertuxkart/data/licenses.txt
 rm %buildroot%_datadir/supertuxkart/data/SVN-CONFIG
+rm %buildroot%_datadir/supertuxkart/data/check_licenses.php
 
 # remove these assets because supertuxkart-0.9.2 fails to load with them
 rm -rf %buildroot%_datadir/supertuxkart/data/karts/sara_the_racer
@@ -49,6 +50,18 @@ rm -rf %buildroot%_datadir/supertuxkart/data/karts/sara_the_wizard
 %_datadir/supertuxkart/data
 
 %changelog
+* Sat Aug 29 2020 Leontiy Volodin <lvol@altlinux.org> 1.2-alt1
+- 1.2
+
+* Tue Aug 11 2020 Leontiy Volodin <lvol@altlinux.org> 1.2-alt0.1.rc1
+- Update to release candidate 1
+
+* Fri Jan 31 2020 Leontiy Volodin <lvol@altlinux.org> 1.1-alt2
+- Remove php from buildrequires (ALT #37831)
+
+* Thu Jan 09 2020 Leontiy Volodin <lvol@altlinux.org> 1.1-alt1
+- Update to upstream version 1.1
+
 * Mon Apr 22 2019 Leontiy Volodin <lvol@altlinux.org> 1.0-alt1
 - Update to upstream version 1.0
 
