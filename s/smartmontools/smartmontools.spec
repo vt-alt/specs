@@ -1,5 +1,7 @@
+%global _unpackaged_files_terminate_build 1
+
 Name: smartmontools
-Version: 7.0
+Version: 7.2
 Release: alt1
 
 Summary: Control and monitor storage systems using S.M.A.R.T.
@@ -12,6 +14,7 @@ Url: http://smartmontools.sourceforge.net
 Source0: smartmontools-%version.tar
 Source1: smartd.init
 Source2: smartd.sysconfig
+Source3: smartmontools-update-drivedb
 
 Patch1: smartmontools-alt-conf.patch
 Patch2: smartmontools-alt-service.patch
@@ -31,6 +34,20 @@ control and monitor storage systems using the Self-Monitoring, Analysis
 and Reporting Technology System (S.M.A.R.T.) built into most modern
 ATA and SCSI hard disks.  It is derived from the smartsuite package,
 and includes support for ATA/ATAPI-5 disks.
+
+%package update-drivedb
+Summary: Install drivedb update script and cron task
+Group: Monitoring
+Requires: %name
+Requires: gnupg curl crontabs
+
+%description update-drivedb
+This package contains script to update drive database and verify it
+using GnuPG. Monthly cronjob is also provided.
+
+Use this package when your smart output contains Unknown_Attribute
+records: the drive database is updated much faster than
+smartmontools themselves.
 
 %prep
 %setup
@@ -61,6 +78,9 @@ install -pD -m644 %_sourcedir/smartd.sysconfig \
 
 rm %buildroot%docdir/{ChangeLog,COPYING,INSTALL}
 
+install -pD -m755 %_sourcedir/smartmontools-update-drivedb \
+	%buildroot%_sysconfdir/cron.monthly/smartmontools-update-drivedb
+
 %post
 %post_service smartd
 
@@ -78,11 +98,24 @@ rm %buildroot%docdir/{ChangeLog,COPYING,INSTALL}
 %config(noreplace) %_sysconfdir/smartd.conf
 %config(noreplace) %_sysconfdir/sysconfig/smartd
 %config(noreplace) %_sysconfdir/smartd_warning.sh
-%exclude %_sbindir/update-smart-drivedb
-%exclude %_datadir/%name
 %docdir
 
+%files update-drivedb
+%_sbindir/update-smart-drivedb
+%_datadir/%name
+%_man8dir/update-smart-drivedb.*
+%_sysconfdir/cron.monthly/smartmontools-update-drivedb
+
 %changelog
+* Fri Jan 01 2021 Michael Shigorin <mike@altlinux.org> 7.2-alt1
+- Updated to 7.2.
+
+* Fri Jul 03 2020 Andrew Savchenko <bircoph@altlinux.org> 7.1-alt2
+- Add package for drivedb update script, data and cronjob.
+
+* Tue Dec 31 2019 Michael Shigorin <mike@altlinux.org> 7.1-alt1
+- Updated to 7.1.
+
 * Mon Dec 31 2018 Michael Shigorin <mike@altlinux.org> 7.0-alt1
 - Updated to 7.0.
 
