@@ -13,7 +13,7 @@
 %endif
 
 Name: bacula9
-Version: 9.6.6
+Version: 9.6.7
 Release: alt1
 
 License: AGPL-3.0
@@ -41,8 +41,7 @@ Source16: baculum-apache2.logrotate
 Source17: generic.xpm
 Patch1: %name-alt.patch
 Patch2: %name-gui-alt.patch
-Patch3: %name-9.0.6-alt-mysql8-transition.patch
-Patch4: bacula-9.4.0-fedora-seg-fault.patch
+Patch3: bacula-9.4.0-fedora-seg-fault.patch
 
 BuildRequires: gcc-c++
 BuildRequires: libMySQL-devel postgresql-devel
@@ -422,8 +421,7 @@ pushd ../%name-gui-%version/baculum
 popd
 %endif
 
-%patch3 -p0
-%patch4 -p1
+%patch3 -p1
 
 mv ../%name-icons-%version icons
 
@@ -884,6 +882,9 @@ fi
 %endif
 
 %changelog
+* Mon Jan 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.7-alt1
+- Updated to upstream version 9.6.7.
+
 * Mon Oct 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 9.6.6-alt1
 - Updated to upstream version 9.6.6.
 
