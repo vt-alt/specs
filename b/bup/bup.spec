@@ -1,5 +1,5 @@
 Name:     bup
-Version:  0.29.3
+Version:  0.32
 Release:  alt1
 
 Summary:  Very efficient backup system based on the git packfile format
@@ -8,29 +8,34 @@ Summary:  Very efficient backup system based on the git packfile format
 # - lib/bup/bupsplit.h: BSD License (two clause),
 # - lib/bup/options.py: BSD License (two clause),
 # - definition of relpath() function in wvtest.py: Python License
-License:  LGPLv2 and BSD and Python
+License:  LGPL-2.0 and BSD-2-Clause and Python
 Group:    Archiving/Backup
 URL:      https://bup.github.io/
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
-
-ExclusiveArch: %ix86 x86_64
 
 Source:   %name-%version.tar
 # VCS:    https://github.com/bup/bup
 Source1:  bup-web.service
 
 Patch1:   bup-disable-test_from_path_error.patch
+Patch2:   bup-python.patch
+Patch3:   bup-fix_uint32.patch
 
-BuildPreReq:   python-devel 
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel
 BuildRequires: git-core
 BuildRequires: pandoc
-BuildRequires: python-module-fuse
-BuildRequires: python-module-pyxattr
-BuildRequires: python-module-libacl
-BuildRequires: python-module-tornado
+BuildRequires: python3-module-fuse
+BuildRequires: python3-module-pyxattr
+BuildRequires: python3-module-libacl
+BuildRequires: python3-module-tornado
 
-Requires: git-core python-module-pyxattr python-module-libacl python-module-fuse
+%add_findreq_skiplist %_libexecdir/%name/cmd/bup*
+%add_python3_path %_libexecdir/%name/
+%py3_requires xattr posix1e fuse
+
+Requires: git-core
 
 %description
 Very efficient backup system based on the git packfile format, providing fast
@@ -57,11 +62,11 @@ virtual machine images). Some of its features are:
   that way, or even export it over Samba.
 
 %package web
-License: LGPLv2
+License: LGPL-2.0
 Summary: Web server for browsing through bup repositories
 Group:   Archiving/Backup
 Requires: %name = %version-%release
-Requires: python-module-tornado
+Requires: python3-module-tornado
 
 %description web
 Provides the "bup web" command which runs a web server for browsing through
@@ -70,6 +75,8 @@ bup repositories.
 %prep
 %setup -q
 #patch1 -p1
+#patch2 -p1
+%patch3 -p1
 
 %build
 pushd config
@@ -82,14 +89,14 @@ pushd config
        --libexecdir=%{_libexecdir} \
        --mandir=%{_mandir}
 popd
-%make_build PREFIX=%_prefix
+%make_build PREFIX=%_prefix PYTHON=%__python3
 
 %install
-%makeinstall_std PREFIX=%_prefix
-mkdir -p %buildroot%python_sitelibdir
-mv %buildroot%_libexecdir/bup/bup %buildroot%python_sitelibdir
-
+%makeinstall_std PREFIX=%_prefix PYTHON=%__python3
+rm -f %buildroot%_bindir/%name
+ln -s ../lib/bup/cmd/bup %buildroot%_bindir/%name
 install -Dm0644 %SOURCE1 %buildroot%_unitdir/bup-web.service
+rm -f %buildroot%_libexecdir/%name/bup/py2raise.py
 
 %check
 #make test
@@ -105,7 +112,6 @@ install -Dm0644 %SOURCE1 %buildroot%_unitdir/bup-web.service
 %doc %_defaultdocdir/%name/
 %_bindir/%name
 %_libexecdir/%name/
-%python_sitelibdir/bup
 %_man1dir/%{name}*
 %exclude %_libexecdir/%name/cmd/bup-web
 %exclude %_libexecdir/%name/web/
@@ -118,6 +124,21 @@ install -Dm0644 %SOURCE1 %buildroot%_unitdir/bup-web.service
 %_man1dir/bup-web.1*
 
 %changelog
+* Sun Jan 10 2021 Andrey Cherepanov <cas@altlinux.org> 0.32-alt1
+- New version.
+
+* Sat Nov 14 2020 Grigory Ustinov <grenka@altlinux.org> 0.31-alt2
+- Transfer on python3.
+
+* Sun Aug 23 2020 Andrey Cherepanov <cas@altlinux.org> 0.31-alt1
+- New version.
+
+* Mon May 25 2020 Andrey Cherepanov <cas@altlinux.org> 0.30.1-alt1
+- New version.
+
+* Mon Oct 07 2019 Andrey Cherepanov <cas@altlinux.org> 0.30-alt1
+- New version.
+
 * Mon Aug 26 2019 Andrey Cherepanov <cas@altlinux.org> 0.29.3-alt1
 - New version.
 
