@@ -1,26 +1,26 @@
-%def_enable qt4
-%def_disable qt5
+%def_enable qt5
+
+Name: mount-tray
+Version: 1.2.5
+Release: alt6
 
 Summary: udisks based removable device mounter
-Name: mount-tray
 License: GPLv2
-Version: 1.2.5
-Release: alt4
-Source0: %name-%version.tar
-Patch0: %name-%version-alt.patch
-Packager: Evgenii Terechkov <evg@altlinux.org>
 Group: System/Kernel and hardware
 Url: https://github.com/h4tr3d/mount-tray
+Packager: Evgenii Terechkov <evg@altlinux.org>
 
-BuildRequires: gcc-c++ libudev-devel
+Source0: %name-%version.tar
+
+BuildRequires: gcc-c++ libudev-devel librsvg-utils
 %if_enabled qt5
-Requires: libqt5-svg
 BuildRequires: qt5-base-devel
-%endif
-%if_enabled qt4
+Requires: libqt5-svg
+%else
 BuildRequires: libqt4-devel
 Requires: libqt4-svg
 %endif
+Requires: udisks2
 
 %description
 Small Qt-based tray application for mount and unmount removable
@@ -31,13 +31,11 @@ pcmanfm).
 
 %prep
 %setup
-%patch0 -p1
 
 %build
 %if_enabled qt5
 %qmake_qt5
-%endif
-%if_enabled qt4
+%else
 %qmake_qt4
 %endif
 %make_build STRIP=touch
@@ -45,13 +43,25 @@ pcmanfm).
 %install
 install -pDm 755 %name %buildroot%_bindir/%name
 install -pDm 644 %name.desktop %buildroot%_desktopdir/%name.desktop
+rsvg-convert -d 2400 -z 2.0 -a -o images/%name.png images/icon.svgz
+install -pDm 644 images/%name.png %buildroot%_pixmapsdir/%name.png
 
 %files
 %_bindir/%name
 %_desktopdir/%name.desktop
+%_pixmapsdir/%name.png
 %doc COPY
 
 %changelog
+* Thu Jan 07 2021 Dmitriy Khanzhin <jinn@altlinux.org> 1.2.5-alt6
+- Add application icon
+- Add Requires: udisks2
+- Remove patch
+- Cleanup spec
+
+* Wed Nov 13 2019 Nikita Ermakov <arei@altlinux.org> 1.2.5-alt5
+- Enable Qt5 by default and make Qt4 optional.
+
 * Sun Mar 26 2017 Terechkov Evgenii <evg@altlinux.org> 1.2.5-alt4
 - Change Url: (ALT#33264)
 
