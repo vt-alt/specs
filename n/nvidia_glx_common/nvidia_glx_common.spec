@@ -13,11 +13,11 @@
 
 # version-release
 
-%define nv_version 450
-%define nv_release 80
-%define nv_minor 02
-%define pkg_rel alt232
-%define set_gl_nvidia_ver 1.3.0
+%define nv_version 460
+%define nv_release 32
+%define nv_minor 03
+%define pkg_rel alt233
+%define set_gl_nvidia_ver 1.4.0
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
@@ -133,9 +133,9 @@ cp settings.h.in settings.h
 %else
 %define glvnd_scheme -1
 %endif
-#Nif_ver_gteq %ubt_id M100
-#define glvnd_scheme 1
-#endif
+%Nif_ver_gteq %ubt_id M100
+%define glvnd_scheme 1
+%endif
 sed -i "s|@GLVND_SCHEME@|%glvnd_scheme|" settings.h
 
 sed -i "s|@DEFAULT_VERSION@|%version|" settings.h
@@ -333,6 +333,9 @@ fi
 /lib/systemd/system-sleep/nvidia
 
 %changelog
+* Thu Jan 14 2021 Sergey V Turchin <zerg@altlinux.org> 460.32.03-alt233
+- new version
+
 * Fri Nov 27 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt232
 - add hibernate support for systemd
 
