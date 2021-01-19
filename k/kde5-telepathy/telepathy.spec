@@ -1,5 +1,5 @@
 Name: kde5-telepathy
-Version: 19.12.1
+Version: 19.12.2
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -9,7 +9,7 @@ License: GPLv2+
 
 BuildArch: noarch
 
-Requires: mjpegtools
+#Requires: mjpegtools
 #
 Requires: telepathy-accounts-signon
 Requires: telepathy-mission-control
@@ -42,6 +42,9 @@ BuildRequires(pre): rpm-build-ubt
 %files
 
 %changelog
+* Tue Jan 19 2021 Sergey V Turchin <zerg@altlinux.org> 19.12.2-alt1
+- clean requires
+
 * Mon Sep 14 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.1-alt1
 - don't require kde5-ktp-call-ui
 
