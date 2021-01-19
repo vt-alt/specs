@@ -6,10 +6,10 @@
 # as they are loaded into wireshark/tshark processes which guarantee that linkage
 %set_verify_elf_method unresolved=relaxed
 
-%define _pluginsdir %_libdir/%name/plugins/3.2
+%define _pluginsdir %_libdir/%name/plugins/3.4
 
 Name: wireshark
-Version: 3.2.8
+Version: 3.4.2
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -223,8 +223,12 @@ _EOF_
 %_libdir/libwireshark.so
 %_libdir/libwsutil.so
 %_pkgconfigdir/wireshark.pc
+%_libdir/%name/cmake
 
 %changelog
+* Tue Jan 12 2021 Anton Farygin <rider@altlinux.ru> 3.4.2-alt1
+- 3.4.2
+
 * Tue Nov 03 2020 Anton Farygin <rider@altlinux.ru> 3.2.8-alt1
 - 3.2.8 
 - fixes:
