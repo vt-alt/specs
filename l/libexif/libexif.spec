@@ -3,7 +3,7 @@
 
 Name: libexif
 Version: 0.6.22
-Release: alt2
+Release: alt3
 
 Summary: libexif is a library for parsing, editing, and saving EXIF data
 License: LGPLv2+
@@ -16,6 +16,7 @@ Source: %name-%version.tar
 Patch0: libexif-0.6.16-pkgconfig.patch
 Patch1: libexif-0.6.22-upstream-fix-CVE-2020-0198.patch
 Patch2: libexif-0.6.22-upstream-fix-use_the_correct_integer_type.patch
+Patch3: libexif-0.6.22-upstream-fix-CVE-2020-0452.patch
 
 # Automatically added by buildreq on Tue Jun 12 2007
 BuildRequires: doxygen gcc-c++
@@ -54,6 +55,7 @@ linked against %name library.
 %patch0 -p1 -b .pkgconfig
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %autoreconf
@@ -81,6 +83,11 @@ linked against %name library.
 %endif
 
 %changelog
+* Tue Jan 19 2021 Dmitriy Khanzhin <jinn@altlinux.org> 0.6.22-alt3
+- added upstream commit:
+  + fixed a incorrect overflow check that could be optimized away
+    (fixes CVE-2020-0452)
+
 * Fri Aug 21 2020 Dmitriy Khanzhin <jinn@altlinux.org> 0.6.22-alt2
 - added upstream commits:
   + fixed another unsigned integer overflow (fixes CVE-2020-0198)
