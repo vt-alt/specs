@@ -1,7 +1,7 @@
 Name: drbd9
-Version: 9.0.25
-Release: alt2
-%define githash 1053e9f98123e8293e9f2897af654b40cde0d24c
+Version: 9.0.26
+Release: alt0.rc4
+%define githash b6537aa8b890890a1e22aee26f65bc1c3e097b97
 
 Summary: The Linux kernel code for DRBD9.
 License: GPLv2
@@ -57,6 +57,9 @@ tar -cf %kernel_srcdir/kernel-source-%name-%version.tar %name-%version
 %doc README.md COPYING
 
 %changelog
+* Tue Dec 15 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.26-alt0.rc4
+- 9.0.26rc4
+
 * Sat Oct 24 2020 Andrew A. Vasilyev <andy@altlinux.org> 9.0.25-alt2
 - Build for kernel 5.9.
 

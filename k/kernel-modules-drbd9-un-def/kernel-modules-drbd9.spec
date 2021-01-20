@@ -1,8 +1,8 @@
 %define module_name     drbd9
-%define module_version  9.0.23
-%define module_release  alt1
+%define module_version  9.0.26
+%define module_release  alt0.rc4
 %define flavour         un-def
-%define karch %ix86 x86_64 aarch64 ppc64le
+%define karch x86_64 aarch64 ppc64le
 
 %setup_kernel_module %flavour
 
@@ -11,7 +11,7 @@
 Summary: Kernel driver for DRBD
 Name: kernel-modules-%module_name-%flavour
 Version: %module_version
-Epoch: %(echo %kepoch | sed s/://)
+Epoch: 1
 Release: %module_release.%kcode.%kbuildrelease
 License: GPLv2+
 Group: System/Kernel and hardware
@@ -53,5 +53,5 @@ install -m644 -D drbd/drbd.ko drbd/drbd_transport_tcp.ko %buildroot/%module_dir/
 %module_dir
 
 %changelog
-* %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %kepoch%version-%release
+* %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %epoch:%version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.

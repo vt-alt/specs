@@ -14,7 +14,7 @@
 %define nv_version 340
 %define nv_release 108
 %define nv_minor %nil
-%define pkg_rel alt169
+%define pkg_rel alt170
 %def_enable egl
 %def_enable kernelsource
 %def_disable package_wfb
@@ -90,6 +90,8 @@ Patch5: xf86-video-nvidia-legacy-0001-fix-5.6-rc1.patch
 Patch6: xf86-video-nvidia-legacy-0002-fix-5.7-rc1.patch
 Patch7: xf86-video-nvidia-legacy-0003-fix-5.7-rc1-reinstate-legacy-support.patch 
 Patch8: xf86-video-nvidia-legacy-0004-fix-5.8.patch
+Patch9: xf86-video-nvidia-legacy-0005-fix-5.9.patch
+Patch10: xf86-video-nvidia-legacy-0006-fix-5.10.patch 
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -174,6 +176,8 @@ pushd kernel/
 %patch6 -p2
 %patch7 -p2
 %patch8 -p2
+%patch9 -p2
+%patch10 -p2
 rm -rf precompiled
 touch .nv-kernel.o.cmd
 popd
@@ -322,6 +326,9 @@ fi
 %endif
 
 %changelog
+* Thu Dec 24 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt170
+- add fix against 5.10 kernel
+
 * Thu Sep 03 2020 Sergey V Turchin <zerg@altlinux.org> 340.108-alt169
 - add fix against 5.8 kernel
 

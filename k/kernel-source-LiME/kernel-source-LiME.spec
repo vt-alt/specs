@@ -1,6 +1,6 @@
 %define module_name LiME
 %define module_version 1.9.1
-%define module_release	alt1
+%define module_release	alt2
 
 %define module_source	%module_name-%module_version.tar
 
@@ -36,6 +36,9 @@ cd ..
 %_usrsrc/*
 
 %changelog
+* Wed Dec 16 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.9.1-alt2
+- compat with kernel 5.10
+
 * Tue Oct 06 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.9.1-alt1
 - 1.9.1
 

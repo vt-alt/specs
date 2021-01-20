@@ -27,7 +27,7 @@
 %define nv_version 390
 %define nv_release 138
 %define nv_minor %nil
-%define pkg_rel alt205
+%define pkg_rel alt206
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -101,6 +101,9 @@ Source100: nvidia_create_xinf
 Patch1: alt-fix-build-kernel.patch
 Patch2: alt-ignore-dma-remap.patch
 Patch3: buildfix_kernel_5.8.patch
+Patch4: kernel-5.9.patch
+Patch5: kernel-5.9-64bit.patch
+Patch6: kernel-5.10.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -169,6 +172,11 @@ pushd kernel
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p2
+%if "%_lib" == "lib64"
+%patch5 -p2
+%endif
+%patch6 -p2
 rm -rf precompiled
 popd
 
@@ -352,6 +360,9 @@ fi
 %endif
 
 %changelog
+* Thu Dec 24 2020 Sergey V Turchin <zerg@altlinux.org> 390.138-alt206
+- add fix against 5.9 kernel
+
 * Fri Sep 04 2020 Sergey V Turchin <zerg@altlinux.org> 390.138-alt205
 - add fix against 5.8 kernel
 

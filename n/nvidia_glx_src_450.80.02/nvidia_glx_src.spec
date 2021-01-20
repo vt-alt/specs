@@ -27,7 +27,7 @@
 %define nv_version 450
 %define nv_release 80
 %define nv_minor   02
-%define pkg_rel alt212
+%define pkg_rel alt213
 %define nv_version_full %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
 %define nv_version_full %{nv_version}.%{nv_release}
@@ -107,6 +107,7 @@ Source100: nvidia_create_xinf
 Patch1: alt-fix-build-kernel.patch
 Patch2: alt-ignore-dma-remap.patch
 Patch3: kernel-5.7.patch
+Patch4: kernel-5.10.patch
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: kernel-build-tools rpm-macros-alternatives
@@ -173,6 +174,7 @@ pushd kernel
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p2
+%patch4 -p2
 rm -rf precompiled
 popd
 
@@ -367,6 +369,9 @@ fi
 %endif
 
 %changelog
+* Thu Dec 24 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt213
+- add fix against 5.10 kernel
+
 * Mon Oct 19 2020 Sergey V Turchin <zerg@altlinux.org> 450.80.02-alt212
 - whitelisted 10DE:0FCD
 

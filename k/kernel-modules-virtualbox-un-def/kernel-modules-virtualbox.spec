@@ -1,5 +1,5 @@
 %define module_name	virtualbox
-%define module_version	6.1.8
+%define module_version	6.1.16
 
 %define module_release	alt1
 
@@ -48,7 +48,8 @@ Provides: kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%r
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%release
 
-PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+#PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
+%requires_kimage
 ExclusiveArch: %karch
 
 Requires: %module_name-common
@@ -117,6 +118,18 @@ install -pD -m644 kernel-source-%net_module_adaptor_name-%module_version/vboxnet
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Fri Oct 23 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.16-alt1
+- Updated template for virtualbox 6.1.16
+
+* Tue Sep 08 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.14-alt1
+- Updated template for virtualbox 6.1.14
+
+* Tue Jul 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.12a-alt1
+- Updated template for virtualbox 6.1.12a
+
+* Tue Jun 9 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.10-alt1
+- Updated template for virtualbox 6.1.10
 
 * Thu May 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.8-alt1
 - Updated template for virtualbox 6.1.8

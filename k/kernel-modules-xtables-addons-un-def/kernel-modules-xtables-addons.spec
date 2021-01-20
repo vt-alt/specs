@@ -1,5 +1,5 @@
 %define module_name	xtables-addons
-%define module_version	3.9
+%define module_version	3.13
 %define module_release	alt1
 
 %define flavour		un-def
@@ -20,7 +20,7 @@ Packager:	Kernel Maintainer Team <kernel@packages.altlinux.org>
 Group:		System/Kernel and hardware
 Summary:	%module_name kernel module
 URL:		http://xtables-addons.sourceforge.net/
-License: GPL 
+License: GPLv2
 
 ExclusiveOS:	Linux
 BuildRequires: kernel-build-tools >= 0.7
@@ -68,11 +68,20 @@ install -pD -m 0644 *.ko %buildroot/%module_dir/
 rm -f %buildroot/%module_dir/xt_TEE.ko
 
 %files
-%module_dir/*
+%module_dir
 
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Tue Nov 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.ru> 3.13-alt1
+- 3.11 -> 3.13
+
+* Wed Sep 23 2020 Anton Farygin <rider@altlinux.ru> 3.11-alt1
+- 3.10 -> 3.11
+
+* Wed Sep 02 2020 Anton Farygin <rider@altlinux.ru> 3.10-alt1
+- 3.9 -> 3.10
 
 * Tue Mar 10 2020 Anton Farygin <rider@altlinux.ru> 3.9-alt1
 - 3.7 -> 3.9

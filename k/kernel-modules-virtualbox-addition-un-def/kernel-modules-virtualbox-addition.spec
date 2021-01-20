@@ -1,9 +1,9 @@
 %define module_name	virtualbox-addition
-%define module_version  6.1.8
+%define module_version  6.1.16
 %define module_release	alt1
 
 %define flavour		un-def
-%define karch x86_64 %ix86
+%define karch x86_64
 BuildRequires(pre): rpm-build-kernel >= 0.100-alt1
 BuildRequires(pre): kernel-headers-modules-un-def
 
@@ -45,11 +45,10 @@ Provides: kernel-modules-%vfs_module_name-%kversion-%flavour-%krelease = %versio
 Provides: kernel-modules-%vfs_module_name-%flavour = %version-%release
 Obsoletes: kernel-modules-%vfs_module_name-%flavour < %version-%release
 
-# Don't use requires_kimage macros due it clean from requires
-Requires: %kimage
+PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
 ExclusiveArch: %karch
 
-Requires: virtualbox-guest-common = %module_version
+Requires: virtualbox-guest-common
 Requires: kernel-modules-%module_name-video-%flavour = %version-%release
 Requires: kernel-modules-%module_name-guest-%flavour = %version-%release
 
@@ -62,7 +61,7 @@ that are needed for additonal guests support for VirtualBox.
 Summary: VirtualBox video modules
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-%requires_kimage
+PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
 License: GPLv2
 Group: System/Kernel and hardware
 
@@ -73,7 +72,7 @@ Conflicts: kernel-modules-%module_name-video-%kversion-%flavour-%krelease > %ver
 Provides: kernel-modules-%video_module_name-%kversion-%flavour-%krelease = %version-%release
 Provides: kernel-modules-%video_module_name-%flavour = %version-%release
 
-Requires: virtualbox-guest-common-vboxvideo = %module_version
+Requires: virtualbox-guest-common-vboxvideo
 
 %description -n kernel-modules-%module_name-video-%flavour
 This package contains VirtualBox addition vboxvideo module
@@ -86,7 +85,7 @@ your kernel.
 Summary: VirtualBox guest modules
 Version: %module_version
 Release: %module_release.%kcode.%kbuildrelease
-%requires_kimage
+PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
 License: GPLv2
 Group: System/Kernel and hardware
 
@@ -97,7 +96,7 @@ Conflicts: kernel-modules-%module_name-guest-%kversion-%flavour-%krelease > %ver
 Provides: kernel-modules-%guest_module_name-%kversion-%flavour-%krelease = %version-%release
 Provides: kernel-modules-%guest_module_name-%flavour = %version-%release
 
-Requires: virtualbox-guest-common-vboxguest = %module_version
+Requires: virtualbox-guest-common-vboxguest
 
 %description -n kernel-modules-%module_name-guest-%flavour
 This package contains VirtualBox addition vboxvideo module
@@ -152,6 +151,21 @@ install -pD -m644 kernel-source-%video_module_name-%module_version/vboxvideo.ko 
 %changelog
 * %(LC_TIME=C date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Fri Oct 23 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.16-alt1
+- Updated template for virtualbox 6.1.16
+
+* Tue Sep 08 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.14-alt1
+- Updated template for virtualbox 6.1.14
+
+* Tue Jul 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.12a-alt1
+- Updated template for virtualbox 6.1.12a
+
+* Thu Jun 18 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.10-alt2
+- Remove fixed module version for virtualbox-guest-common-* packages
+
+* Tue Jun 9 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.10-alt1
+- Updated template for virtualbox 6.1.10
 
 * Thu May 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.8-alt1
 - Updated template for virtualbox 6.1.8

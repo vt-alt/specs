@@ -61,7 +61,7 @@
 %add_findprov_lib_path %vboxdir
 
 Name: virtualbox
-Version: 6.1.8
+Version: 6.1.16
 Release: alt3
 
 Summary: VM VirtualBox OSE - Virtual Machine for x86 hardware
@@ -122,6 +122,7 @@ BuildRequires: qt5-declarative-devel
 BuildRequires: qt5-location-devel 
 BuildRequires: qt5-multimedia-devel
 BuildRequires: qt5-phonon-devel
+BuildRequires: qt5-quick1-devel 
 BuildRequires: qt5-quickcontrols2-devel 
 BuildRequires: qt5-script-devel
 BuildRequires: qt5-sensors-devel
@@ -200,6 +201,11 @@ It allows to share files and sync time with host system.
 %package guest-common
 Summary: Additions common files for VirtualBox OSE guest systems
 Group: Emulators
+Provides: %name-guest-common = 6.1.8
+Provides: %name-guest-common = 6.1.6
+Provides: %name-guest-common = 6.1.4
+Provides: %name-guest-common = 6.1.2
+Provides: %name-guest-common = 6.1.0
 
 %description guest-common
 This packages contains common files for VirtualBox OSE guest systems.
@@ -208,6 +214,11 @@ It consists modprobe rules to load kernel modules guest on guest system.
 %package guest-common-vboxvideo
 Summary: Additions common files for VirtualBox OSE vboxvideo driver
 Group: Emulators
+Provides: %name-guest-common-vboxvideo = 6.1.8
+Provides: %name-guest-common-vboxvideo = 6.1.6
+Provides: %name-guest-common-vboxvideo = 6.1.4
+Provides: %name-guest-common-vboxvideo = 6.1.2
+Provides: %name-guest-common-vboxvideo = 6.1.0
 
 %description guest-common-vboxvideo
 This packages contains common files for VirtualBox OSE vboxvideo driver.
@@ -216,6 +227,11 @@ It consists modprobe rules to load kernel module vboxvideo on guest system.
 %package guest-common-vboxguest
 Summary: Additions common files for VirtualBox OSE vboxguest driver
 Group: Emulators
+Provides: %name-guest-common-vboxguest = 6.1.8
+Provides: %name-guest-common-vboxguest = 6.1.6
+Provides: %name-guest-common-vboxguest = 6.1.4
+Provides: %name-guest-common-vboxguest = 6.1.2
+Provides: %name-guest-common-vboxguest = 6.1.0
 
 %description guest-common-vboxguest
 This packages contains common files for VirtualBox OSE vboxguest driver.
@@ -894,11 +910,28 @@ mountpoint -q /dev || {
 %endif
 
 %changelog
-* Thu Oct 22 2020 Sergey V Turchin <zerg@altlinux.org> 6.1.8-alt3
-- fix compile with Qt-5.15
+* Tue Jan 05 2021 Evgeny Sinelnikov <sin@altlinux.org> 6.1.16-alt3
+- Add compatibility provides for all old kernel modules builds
+  for virtualbox-6.1.x (Closes: 39501)
 
-* Fri Oct 09 2020 Sergey V Turchin <zerg@altlinux.org> 6.1.8-alt2
-- Fix compile with Qt-5.15
+* Mon Jan 04 2021 Evgeny Sinelnikov <sin@altlinux.org> 6.1.16-alt2
+- Update build for branch p9 (Closes: 39501)
+- Backport patches with adjustments for Linux 5.10
+
+* Wed Oct 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.16-alt1
+- Update to newest version 6.1.16
+
+* Wed Sep 09 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.14-alt1
+- Update to newest version 6.1.14
+
+* Thu Jul 23 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.12a-alt2
+- Add compatibility provides for old kernel modules builds for virtualbox-6.1.8
+
+* Tue Jul 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.12a-alt1
+- Update to newest version 6.1.12a
+
+* Mon Jun 08 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.10-alt1
+- Update to newest version 6.1.10
 
 * Thu May 21 2020 Valery Sinelnikov <greh@altlinux.org> 6.1.8-alt1
 - Update to newest version 6.1.8

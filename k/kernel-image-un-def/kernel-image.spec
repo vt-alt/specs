@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
 Release: alt1
 epoch:1 
-%define kernel_base_version	5.7
-%define kernel_sublevel .19
+%define kernel_base_version	5.10
+%define kernel_sublevel .7
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -359,9 +359,8 @@ Group: System/Kernel and hardware
 BuildArch: noarch
 
 %description -n kernel-doc-%base_flavour
-This package contains documentation files for ALT Linux kernel packages:
- * kernel-image-%base_flavour-up-%kversion-%krelease
- * kernel-image-%base_flavour-smp-%kversion-%krelease
+This package contains documentation files for ALT Linux
+kernel-image-%base_flavour-* kernel packages.
 
 The documentation files contained in this package may be different
 from the similar files in upstream kernel distributions, because some
@@ -428,7 +427,7 @@ echo "Kernel built $KernelVer"
 
 %if_enabled docs
 # psdocs, pdfdocs don't work yet
-%make_build htmldocs
+%make_build SPHINXOPTS="-j $([ %__nprocs -ge 8 ] && echo 8 || echo %__nprocs)" htmldocs
 %endif
 
 %install
@@ -443,8 +442,7 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 %endif
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
-make modules_install INSTALL_MOD_PATH=%buildroot
-find %buildroot -name '*.ko' | xargs gzip
+%make_build modules_install INSTALL_MOD_PATH=%buildroot
 
 %ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
@@ -516,6 +514,7 @@ KbuildFiles="
 	scripts/bin2c
 	scripts/gcc-version.sh
 	scripts/gcc-goto.sh
+	scripts/module.lds
 	scripts/recordmcount.pl
 	scripts/recordmcount.h
 	scripts/recordmcount.c
@@ -550,7 +549,7 @@ ln -s %kbuild_dir %buildroot%modules_dir/build
 ln -s "$(relative %kbuild_dir %old_kbuild_dir)" %buildroot%old_kbuild_dir
 
 # Provide kernel headers for userspace
-make headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
+%make_build headers_install INSTALL_HDR_PATH=%buildroot%kheaders_dir
 
 #provide symlink to autoconf.h for back compat
 pushd %buildroot%old_kbuild_dir/include/linux
@@ -610,7 +609,7 @@ qemu_arch=arm
 qemu_opts="-machine virt"
 console=ttyAMA0
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" -m 512 $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console" -initrd initrd.img > boot.log &&
+timeout --foreground 600 qemu-system-"$qemu_arch" -m 512 $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console no_timer_check" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -703,11 +702,95 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Jan 13 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.7-alt1
+- v5.10.7  (Fixes: CVE-2020-28374)
+
+* Sat Jan 09 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.6-alt1
+- v5.10.6
+
+* Thu Jan 07 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.5-alt1
+- v5.10.5
+
+* Wed Dec 30 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.10.3-alt1
+- v5.10.3
+
+* Fri Dec 25 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.10.2-alt2
+- ubuntu patch for NVIDIA drivers added
+
+* Mon Dec 21 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.10.2-alt1
+- v5.10.2
+
+* Fri Dec 18 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.10.1-alt1
+- v5.10.1
+
+* Mon Dec 14 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.10.0-alt1
+- v5.10
+
+* Fri Dec 11 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.14-alt1
+- v5.9.14  (Fixes: CVE-2020-28588)
+
+* Tue Dec 08 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.13-alt1
+- v5.9.13
+
+* Wed Dec 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.12-alt1
+- v5.9.12
+
+* Tue Nov 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.11-alt1
+- v5.9.11
+
+* Sun Nov 22 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.10-alt1
+- v5.9.10  (Fixes: CVE-2020-4788)
+
+* Thu Nov 19 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.9-alt1
+- v5.9.9
+
+* Thu Nov 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.8-alt1
+- v5.9.8
+
+* Tue Nov 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.7-alt1
+- v5.9.7
+
+* Fri Nov 06 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.6-alt1
+- v5.9.6  (Fixes: CVE-2020-25656)
+
+* Mon Nov 02 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.3-alt1
+- v5.9.3
+
+* Thu Oct 29 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.2-alt1
+- v5.9.2  (Fixes: CVE-2020-27152)
+
+* Mon Oct 19 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.1-alt1
+- v5.9.1
+
+* Mon Oct 12 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.9.0-alt1
+- v5.9
+
+* Fri Oct 09 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.14-alt1
+- v5.8.14
+
+* Sat Oct 03 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.13-alt1
+- v5.8.13
+
+* Mon Sep 28 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.12-alt1
+- v5.8.12
+
+* Wed Sep 23 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.11-alt1
+- v5.8.11
+
+* Tue Sep 22 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.10-alt1
+- v5.8.10
+
+* Wed Sep 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.9-alt1
+- v5.8.9
+
+* Thu Sep 10 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.8-alt1
+- v5.8.8
+
 * Thu Aug 27 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.19-alt1
 - v5.7.19
 
-* Mon Aug 24 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.17-alt1
-- v5.7.17  (Fixes: CVE-2019-19448, CVE-2019-19770, CVE-2020-14331)
+* Fri Aug 07 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.8.0-alt1
+- v5.8
 
 * Fri Aug 07 2020 Kernel Bot <kernelbot@altlinux.org> 1:5.7.14-alt1
 - v5.7.14
