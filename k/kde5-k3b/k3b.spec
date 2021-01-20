@@ -16,22 +16,22 @@
 
 %define req_std_burning cdrkit cdrdao dvd+rw-tools cdrskin
 %define req_std_common kde5-runtime %req_permhelper
-%define req_multimedia sox-play libsox-fmt-pulseaudio transcode vcdimager normalize lame flac mpc
-#req_multimedia transcode
+#define req_multimedia sox-play libsox-fmt-pulseaudio transcode vcdimager normalize lame flac mpc
+%define req_multimedia sox-play libsox-fmt-pulseaudio normalize lame flac mpc
 %define req_mini %req_std_burning %req_std_common
 %define req_all %req_mini %req_multimedia
 
 %define rname k3b
 Name: kde5-%rname
-Version: 19.12.3
-Release: alt1
+Version: 20.12.1
+Release: alt2
 %K5init %{?_enable_obsolete_kde4:no_altplace}
 
 Group: Archiving/Cd burning
 Summary: The CD Kreator (Complete set)
 Summary(ru_RU.UTF-8): Программа записи CD (Полный набор)
 URL: http://www.k3b.org/
-License: GPLv2
+License: GPL-2.0-or-later
 
 Provides: k3b = %version-%release
 Requires: %req_all
@@ -44,7 +44,6 @@ Obsoletes: kde4-k3b < %version-%release
 Source0: %rname-%version.tar
 Patch1: alt-permhelper.patch
 Patch2: alt-return-wodim.patch
-Patch3: alt-permhelper-install.patch
 
 # Automatically added by buildreq on Mon May 23 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils gcc-c++ glibc-devel-static gtk-update-icon-cache kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libavcodec-devel libavutil-devel libdbusmenu-qt52 libflac-devel libgpg-error libgst-plugins1.0 libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-opengl libqt5-positioning libqt5-printsupport libqt5-qml libqt5-quick libqt5-sensors libqt5-sql libqt5-svg libqt5-test libqt5-webchannel libqt5-webkit libqt5-webkitwidgets libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms perl pkg-config python-base python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs shared-mime-info xml-common xml-utils
@@ -79,7 +78,6 @@ K3b - это мощная графическая оболочка для про�
 %package mini
 Summary: The CD Creator
 Summary(ru_RU.UTF-8): Программа записи CD
-License: GPL
 Group: Archiving/Cd burning
 Requires: %req_mini
 %description mini
@@ -97,7 +95,6 @@ K3b - это мощная графическая оболочка для про�
 %package devel
 Summary: The CD Kreator (Development package.)
 Summary(ru_RU.UTF-8): Программа записи CD (Пакет разработчика.)
-License: GPL
 Group: Development/KDE and QT
 %description devel
 K3b is a GUI frontend to the cd recording programs. 
@@ -127,7 +124,6 @@ KDE 4 library.
 %setup -q -n %rname-%version
 #%patch1 -p1
 #%patch2 -p1
-%patch3 -p1
 
 %build
 %K5build \
@@ -187,6 +183,27 @@ mv %buildroot/%_K5xdgmime/x-k3b.xml \
 %_K5inc/k3b*.h
 
 %changelog
+* Tue Jan 19 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.1-alt2
+- remove transcode and vcdimager from requires
+
+* Thu Jan 14 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.1-alt1
+- new version
+
+* Fri Dec 18 2020 Sergey V Turchin <zerg@altlinux.org> 20.12.0-alt1
+- new version
+
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.3-alt1
+- new version
+
+* Wed Oct 14 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.2-alt1
+- new version
+
+* Fri Sep 18 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.1-alt1
+- new version
+
+* Fri Aug 14 2020 Sergey V Turchin <zerg@altlinux.org> 20.04.3-alt1
+- new version
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
