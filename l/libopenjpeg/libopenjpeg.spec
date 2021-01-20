@@ -1,92 +1,96 @@
-Name: libopenjpeg
-Version: 1.3
-Release: alt1.3
+%define _unpackaged_files_terminate_build 1
 
-Packager: Victor Forsiuk <force@altlinux.org>
+%define oname openjpeg
+%define sover 5
+
+Name: lib%oname
+Version: 1.5.2
+Release: alt1
 
 Summary: JPEG 2000 codec library
 License: BSD
 Group: System/Libraries
-
 URL: http://www.openjpeg.org/
-%define fversion %(echo %{version} | sed -e 's/\\./_/g')
-Source: http://www.openjpeg.org/openjpeg_v%{fversion}.tar.gz
 
-Patch1: openjpeg-1.3-libtiff.patch
-Patch2: openjpeg-1.3-cmake.patch
-Patch3: openjpeg-1.3-shlibname.patch
-Patch4: libopenjpeg-1.3-debuginfo.patch
+# https://github.com/uclouvain/openjpeg.git
+Source: %name-%version.tar
 
-# Automatically added by buildreq on Mon Feb 22 2010
-BuildRequires: libstdc++-devel libtiff-devel
+Patch1: %name-alt-dont-install-extra-files.patch
 
-### Be aware of https://bugzilla.redhat.com/show_bug.cgi?id=504663
-### But with current gcc4.4 in our repo bug is not reprodused
+BuildRequires(pre): rpm-macros-cmake
+BuildRequires: cmake
+BuildRequires: libtiff-devel liblcms2-devel libpng-devel zlib-devel
 
 %description
 OpenJPEG is an open-source JPEG 2000 codec written in C. This package contains
 runtime libraries for applications that use OpenJPEG.
 
+%package -n lib%oname%sover
+Summary: JPEG 2000 codec library
+Group: System/Libraries
+
+%description -n lib%oname%sover
+OpenJPEG is an open-source JPEG 2000 codec written in C. This package contains
+runtime libraries for applications that use OpenJPEG.
+
 %package devel
-Summary: Development tools for programs which will use the %name library
+Summary: Development tools for programs which will use the %oname library
 Group: Development/C
-Requires: %name = %version-%release
+Requires: lib%oname%sover = %EVR
 
 %description devel
 The %name-devel package includes the header files necessary for developing
-programs which will use the %name library.
+programs which will use the %oname library.
 
-%package -n openjpeg-tools
+%package -n %oname-tools
 Summary: JPEG 2000 command line tools
 Group: Graphics
+Requires: lib%oname%sover = %EVR
 
-%description -n openjpeg-tools
+%description -n %oname-tools
 OpenJPEG is an open-source JPEG 2000 codec written in C.
 
 %prep
-%setup -n OpenJPEG_v%{fversion}
+%setup
 %patch1 -p1
-#%patch2 -p1
-%patch3 -p1
-%patch4 -p2
 
-# Delete Windows stuff
-rm -rf jp3d
-# Make sure we use system libraries
-rm -rf libs
-find . -type f -print0 | xargs -0 chmod a-x
-
+# remove bundled libraries to ensure system ones are used
+rm -rf thirdparty/{include,liblcms2,libpng,libtiff,libz}
 
 %build
-# We build from packaged makefiles not touching cmake machinery
+%cmake \
+	-DOPENJPEG_INSTALL_LIB_DIR=%_lib \
+	%nil
 
-subst 's/-lstdc++/-lm/' Makefile
-%make_build
-%make_build -C codec
+%cmake_build
 
 %install
-# To allow non-root packaging
-subst 's/-o root -g root//' Makefile
+%cmakeinstall_std
 
-%make_install install DESTDIR=%buildroot INSTALL_LIBDIR=%_libdir
+# compat symlink, currently used at least by gpac
+ln -s openjpeg-1.5/openjpeg.h %buildroot%_includedir/openjpeg.h
 
-ln -sf libopenjpeg.so.2 %buildroot%_libdir/libopenjpeg.so
-
-install -d %buildroot%_bindir
-install -pm755 codec/{image_to_j2k,j2k_to_image} %buildroot%_bindir/
-
-%files
-%_libdir/lib*.so.2*
-%exclude %_libdir/*.a
+%files -n lib%oname%sover
+%doc LICENSE
+%doc AUTHORS CHANGES NEWS README THANKS
+%_libdir/lib*.so.*
 
 %files devel
 %_includedir/*
 %_libdir/lib*.so
+%_libdir/openjpeg-*
+%_pkgconfigdir/*.pc
+%_man3dir/*.3*
 
-%files -n openjpeg-tools
+%files -n %oname-tools
 %_bindir/*
+%_man1dir/*.1*
 
 %changelog
+* Mon Jul 29 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.5.2-alt1
+- Updated to upstream version 1.5.2.
+- Switched to soname proposed by upstream.
+
 * Thu Oct 04 2012 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.3-alt1.3
 - Rebuilt with libtiff5
 
