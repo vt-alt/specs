@@ -2,13 +2,14 @@
 
 Name:    python3-module-%modulename
 Version: 0.6.1.3
-Release: alt1
+Release: alt2
 Summary: Python module providing X2Go client API
 Group:	 Communications 
 
 License: AGPL-3.0-or-later
 URL:     https://www.x2go.org/
 Source0: %name-%version.tar
+Patch0:  fix-sshbroker-error.patch
 
 BuildArch: noarch
 
@@ -42,6 +43,7 @@ Python applications by providing a Python-based X2Go client API.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %python3_build
@@ -54,6 +56,9 @@ Python applications by providing a Python-based X2Go client API.
 %python3_sitelibdir/x2go*
 
 %changelog
+* Wed Jan 13 2021 Evgeniy Korneechev <ekorneechev@altlinux.org> 0.6.1.3-alt2
+- Fix sshbroker error
+
 * Fri Dec 18 2020 Evgeniy Korneechev <ekorneechev@altlinux.org> 0.6.1.3-alt1
-Initial build for Sysiphus
+- Initial build for Sysiphus
 
