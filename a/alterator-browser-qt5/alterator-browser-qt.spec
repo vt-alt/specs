@@ -10,7 +10,7 @@
 %define raw_name alterator-browser-qt
 
 Name: %bin_name
-Version: 3.2.6
+Version: 3.2.7
 Release: alt1
 
 Source:%name-%version.tar
@@ -82,6 +82,9 @@ __EOF__
 
 
 %changelog
+* Tue Jan 19 2021 Sergey V Turchin <zerg at altlinux dot org> 3.2.7-alt1
+- increase default font size
+
 * Tue Dec 29 2020 Sergey V Turchin <zerg at altlinux dot org> 3.2.6-alt1
 - fix wizard Next button tooltip translation
 - fix single-selection list current item
