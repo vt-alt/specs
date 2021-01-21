@@ -1,11 +1,11 @@
 Name: python-module-pyusb
-Version: 1.0.2
+Version: 1.1.1
 Release: alt1
 
 Summary: Python module which provides easy USB access
 
 Group: Development/Python
-License: GPL
+License: BSD-3-Clause
 Url: http://pyusb.sourceforge.net/
 
 Packager: Vitaly Lipatov <lav@altlinux.ru>
@@ -18,9 +18,9 @@ BuildArch: noarch
 Source: pyusb-%version.tar
 
 BuildRequires: libusb-devel python-devel
-BuildRequires: python-module-setuptools
+BuildRequires: python-module-setuptools_scm
 BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-module-setuptools
+BuildRequires: python3-module-setuptools_scm
 
 %description
 PyUSB is a Python module which provides easy USB access. For uncountable
@@ -41,12 +41,14 @@ back soon. Meanwhile, you can access the current project page here.
 cp -fR . ../python3
 
 %build
+export SETUPTOOLS_SCM_PRETEND_VERSION=%version
 %python_build
 pushd ../python3
 %python3_build
 popd
 
 %install
+export SETUPTOOLS_SCM_PRETEND_VERSION=%version
 %python_install
 pushd ../python3
 %python3_install
@@ -63,6 +65,13 @@ popd
 %python3_sitelibdir/*egg-info
 
 %changelog
+* Wed Jan 20 2021 Andrey Cherepanov <cas@altlinux.org> 1.1.1-alt1
+- New version.
+
+* Mon Sep 14 2020 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1
+- New version.
+- Fix license.
+
 * Mon Mar 26 2018 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt1
 - New version.
 - Build both Python2 and Python3 modules (ALT #34673)
