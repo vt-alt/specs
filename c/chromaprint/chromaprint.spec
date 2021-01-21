@@ -2,8 +2,8 @@
 %define libchromaprint libchromaprint%sover
 
 Name: chromaprint
-Version: 1.4.3
-Release: alt1%ubt
+Version: 1.5.0
+Release: alt1
 Summary: Library implementing the AcoustID fingerprinting
 
 Group: Sound
@@ -17,7 +17,6 @@ Patch2: chromaprint-1.1-alt-libav10.patch
 # Automatically added by buildreq on Mon May 21 2012 (-bi)
 # optimized out: boost-devel cmake-modules elfutils libavcodec-devel libavutil-devel libopencore-amrnb0 libopencore-amrwb0 libstdc++-devel pkg-config python-base
 #BuildRequires: boost-devel-headers cmake gcc-c++ libavdevice-devel libavformat-devel libfftw3-devel libswscale-devel libtag-devel
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: boost-devel cmake gcc-c++ libavdevice-devel libavformat-devel libfftw3-devel libswscale-devel libtag-devel
 BuildRequires: cmake kde-common-devel
 
@@ -79,13 +78,22 @@ applications which will use %name.
 %_libdir/pkgconfig/*.pc
 
 %changelog
-* Wed Jun 13 2018 Sergey V Turchin <zerg@altlinux.org> 1.4.3-alt1%ubt
+* Wed Jan 13 2021 Sergey V Turchin <zerg@altlinux.org> 1.5.0-alt1
 - new version
 
-* Thu Aug 10 2017 Sergey V Turchin <zerg@altlinux.org> 1.4.2-alt1%ubt
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.4.3-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 1.4.3-alt2
+- NMU: remove %%ubt from release
+
+* Wed Jun 13 2018 Sergey V Turchin <zerg@altlinux.org> 1.4.3-alt1
 - new version
 
-* Mon Jun 05 2017 Sergey V Turchin <zerg@altlinux.org> 1.2-alt2%ubt
+* Thu Aug 10 2017 Sergey V Turchin <zerg@altlinux.org> 1.4.2-alt1
+- new version
+
+* Mon Jun 05 2017 Sergey V Turchin <zerg@altlinux.org> 1.2-alt2
 - rebuild with ffmpeg
 
 * Wed Jul 01 2015 Sergey V Turchin <zerg@altlinux.org> 1.2-alt1
