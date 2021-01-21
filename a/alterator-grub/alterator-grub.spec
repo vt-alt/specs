@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-grub
-Version: 0.15.1
+Version: 0.16
 Release: alt1
 
 Summary: alterator module to setup grub bootloader
@@ -53,6 +53,11 @@ alterator module to setup grub bootloader
 %_bindir/*
 
 %changelog
+* Wed Dec 16 2020 Nikolai Kostrigin <nickel@altlinux.org> 0.16-alt1
+- fix EFI mode boot variable creation for some malformed UEFI firmwares
+  + backend: make default EFI loader option to create EFI\BOOT also
+  + backend: make EFI (removable) SB compatible
+
 * Mon Sep 14 2020 Paul Wolneykien <manowar@altlinux.org> 0.15.1-alt1
 - Fix: Show the password input fields if checkbox is preset.
 
