@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 1
-%define bugfix 2
+%define bugfix 3
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -436,6 +436,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Mon Jan 18 2021 Sergey V Turchin <zerg at altlinux dot org> 9.1.3-alt1
+- add english license text
+
 * Wed Dec 16 2020 Oleg Solovyov <mcpain@altlinux.org> 9.1.2-alt1
 - Update prompt when necessary
 
