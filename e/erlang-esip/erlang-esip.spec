@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.37
+Version: 1.0.39
 Release: alt1
 Summary: ProcessOne SIP server component in Erlang
 Group: Development/Erlang
@@ -14,8 +14,6 @@ Url: https://github.com/processone/esip
 
 # https://github.com/processone/esip.git
 Source: %name-%version.tar
-
-Patch1: erlang-esip-fedora-include_lib.patch
 
 BuildRequires(pre): rpm-build-erlang
 BuildRequires: erlang-otp-devel erlang-devel
@@ -29,7 +27,6 @@ ProcessOne SIP server component in Erlang.
 
 %prep
 %setup
-%patch1 -p0
 
 %build
 %autoreconf
@@ -48,6 +45,9 @@ ProcessOne SIP server component in Erlang.
 %_erllibdir/%realname-%version
 
 %changelog
+* Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.39-alt1
+- Updated to upstream version 1.0.39.
+
 * Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.37-alt1
 - Updated to upstream version 1.0.37.
 

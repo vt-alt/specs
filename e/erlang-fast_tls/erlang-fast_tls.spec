@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.1.8
+Version: 1.1.10
 Release: alt1
 Summary: TLS / SSL OpenSSL-based native driver for Erlang / Elixir
 Group: Development/Erlang
@@ -45,6 +45,9 @@ It is designed for efficiency, speed and compliance.
 %_erllibdir/%realname-%version
 
 %changelog
+* Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.10-alt1
+- Updated to upstream version 1.1.10.
+
 * Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.8-alt1
 - Updated to upstream version 1.1.8.
 

@@ -3,7 +3,7 @@
 %global realname yconf
 
 Name: erlang-%realname
-Version: 1.0.7
+Version: 1.0.9
 Release: alt1
 Summary: YAML configuration processor
 Group: Development/Erlang
@@ -42,6 +42,9 @@ YAML configuration processor.
 %_erllibdir/%realname-%version
 
 %changelog
+* Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.9-alt1
+- Updated to upstream version 1.0.9.
+
 * Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.7-alt1
 - Updated to upstream version 1.0.7.
 

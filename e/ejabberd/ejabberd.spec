@@ -11,7 +11,7 @@
 %def_enable tools
 
 Name: ejabberd
-Version: 20.07
+Version: 20.12
 Release: alt1
 Summary: Fault-tolerant distributed Jabber server written in Erlang
 License: GPL-2.0 with OpenSSL-exception
@@ -215,6 +215,9 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %attr(1770,root,ejabberd) %dir %_lockdir/ejabberd
 
 %changelog
+* Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 20.12-alt1
+- Updated to upstream version 20.12.
+
 * Wed Aug 05 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 20.07-alt1
 - Updated to upstream version 20.07.
 
