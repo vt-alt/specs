@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.17
+Version: 0.4.19
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,12 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Tue Jan 19 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.19-alt1
+- catch exception when restoring invalid value after backend error
+
+* Fri Jan 15 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.18-alt1
+- Forward exception message when getting options from backend
+
 * Tue Nov 10 2020 Oleg Solovyov <mcpain@altlinux.org> 0.4.17-alt1
 - Pending changes: fix LUKS partitions
 

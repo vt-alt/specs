@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.80
+Version: 2.9.81
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Fri Jan 15 2021 Oleg Solovyov <mcpain@altlinux.org> 2.9.81-alt1
+- alterator-vm: update translation
+
 * Sat Dec 26 2020 Ivan Razzhivin <underwit@altlinux.org> 2.9.80-alt1
 - alterator-net-wifi: update translation
 
