@@ -1,20 +1,23 @@
-Name: gif2png
-Version: 2.5.13
-Release: alt1
+%define _unpackaged_files_terminate_build 1
 
+%set_verify_elf_method strict,lint=relaxed
+
+Name: gif2png
+Version: 3.0.0
+Release: alt2.git.a9592ae
 Summary: A GIF to PNG converter
 Group: Graphics
-License: Zlib
+License: BSD-2-Clause
 Url: http://catb.org/~esr/gif2png/
 
 # https://gitlab.com/esr/gif2png
-# git://git.altlinux.org/gears/g/gif2png.git
-Source: %name-%version-%release.tar
+Source: %name-%version.tar
 Patch1: gif2png-2.5.8-alt-web2png.patch
-Patch2: gif2png-2.5.8-deb-warnings.patch
 
-# Automatically added by buildreq on Wed Jul 15 2015
-BuildRequires: libpng-devel zlib-devel python-modules xmlto
+ExclusiveArch: %go_arches
+
+BuildRequires(pre): rpm-build-golang
+BuildRequires: python-modules xmlto
 
 %description
 The gif2png program converts files from the obsolescent Graphic
@@ -28,7 +31,7 @@ to convert entire directory hierarchies.
 %package -n web2png
 Summary: A GIF to PNG converter for entire directory hierarchies
 Group: Graphics
-Requires: %name = %version-%release
+Requires: %name = %EVR
 BuildArch: noarch
 
 %description -n web2png
@@ -41,12 +44,17 @@ The distribution also includes a Python script, web2png, that will
 convert entire web hierarchies (images and HTML or PHP pages).
 
 %prep
-%setup -n %name-%version-%release
+%setup
 %patch1 -p1
-%patch2 -p1
+
+mkdir -p src/golang.org/x
+cp -r %go_root/src/cmd/vendor/golang.org/x/sys src/golang.org/x/
+cp -r %go_root/src/cmd/vendor/golang.org/x/crypto src/golang.org/x/
 
 %build
+export GOPATH="$(pwd):%go_path"
 export CFLAGS="$RPM_OPT_FLAGS $(getconf LFS_CFLAGS)"
+
 %make_build
 
 %install
@@ -55,19 +63,22 @@ export CFLAGS="$RPM_OPT_FLAGS $(getconf LFS_CFLAGS)"
 %check
 %make_build -k -C test
 
-%set_verify_elf_method strict
-%define _unpackaged_files_terminate_build 1
-
 %files
+%doc NEWS README
 %_bindir/gif2png
-%_mandir/man?/gif2png.*
-%doc COPYING NEWS README
+%_man1dir/gif2png.1*
 
 %files -n web2png
 %_bindir/web2png
-%_mandir/man?/web2png.*
+%_man1dir/web2png.1*
 
 %changelog
+* Thu Jan 21 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.0-alt2.git.a9592ae
+- Applied go macros for P9 compatibility.
+
+* Wed Jan 20 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 3.0.0-alt1.git.a9592ae
+- Updated to latest upstream snapshot (Fixes: CVE-2019-17371).
+
 * Thu Mar 21 2019 Dmitry V. Levin <ldv@altlinux.org> 2.5.13-alt1
 - 2.5.11 -> 2.5.13.
 
