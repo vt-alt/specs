@@ -1,5 +1,5 @@
 Name: distro_info
-Version: 1.7
+Version: 1.8
 Release: alt1
 
 Summary: Get various info about a system and used distro
@@ -32,6 +32,12 @@ install -m0644 -D man/distro_info.1 %buildroot%_man1dir/distro_info.1
 %_man1dir/*
 
 %changelog
+* Wed Jan 06 2021 Vitaly Lipatov <lav@altlinux.ru> 1.8-alt1
+- distro_info: set rolling version for ArchLinux
+- distro_info: use /etc/os-release firstly, drop obsoleted code
+- distro_info: set pretty name if PRETTY_NAME is empty
+- move package manager detection to distro_info (-g option)
+
 * Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 1.7-alt1
 - distro_info: add --debian-arch
 
