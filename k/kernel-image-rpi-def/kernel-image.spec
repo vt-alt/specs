@@ -6,7 +6,7 @@ epoch:1
 %define kernel_need_version	5.4
 # Used when kernel-source-x.y does not currently exist in repository.
 %define kernel_base_version	5.4
-%define kernel_sublevel .61
+%define kernel_sublevel .83
 %define kernel_extra_version	%nil
 # kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
@@ -493,6 +493,11 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Jan 19 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.83-alt1
+- Updated to 5.4.83 (still RPi-specific)
+- https://github.com/raspberrypi/linux.git rpi-5.4.y
+- commit bd204130252690fffb35e9f4f9495d322329bc59
+
 * Tue Sep 08 2020 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.61-alt1
 - Updated to https://github.com/raspberrypi/linux.git rpi-5.4.y
     commit 9a1dd17906692f1ab76e45b9f59976b063b37034
