@@ -1,6 +1,6 @@
 Name: screen
 Version: 4.6.2
-Release: alt2
+Release: alt3.p9.1
 
 Summary: A screen manager that supports multiple sessions on one terminal
 License: GPLv2+
@@ -117,6 +117,9 @@ ln -f %_libexecdir/utempter/utempter %_libexecdir/screen/
 %doc src/NEWS src/README src/FAQ src/doc/README.DOTSCREEN src/doc/*.ps.*
 
 %changelog
+* Wed Jan 20 2021 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.6.2-alt3.p9.1
+- Backported upstream commits (fixes CVE-2020-9366).
+
 * Fri Jun 28 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 4.6.2-alt2
 - Moved tmpfiles.d(5) config file to %%_tmpfilesdir.
 
