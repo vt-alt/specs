@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: gpupdate
-Version: 0.8.1
-Release: alt3
+Version: 0.8.2
+Release: alt1
 
 Summary: GPT applier
 License: GPLv3+
@@ -112,6 +112,10 @@ fi
 %exclude %python3_sitelibdir/gpoa/test
 
 %changelog
+* Tue Dec 22 2020 Igor Chudov <nir@altlinux.org> 0.8.2-alt1
+- Increased D-Bus timeouts on calls
+- Minor logging fixes
+
 * Wed Oct 07 2020 Evgeny Sinelnikov <sin@altlinux.org> 0.8.1-alt3
 - Fixed compatibility upgrade trigger condition
 
