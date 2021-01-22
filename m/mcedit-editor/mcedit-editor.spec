@@ -1,5 +1,5 @@
 Name: mcedit-editor
-Version: 0.1
+Version: 0.2
 Release: alt1
 
 Group: System/Configuration/Other
@@ -28,5 +28,8 @@ install -D -m 0755 %SOURCE1 %buildroot/%_sysconfdir/profile.d/mcedit-editor.csh
 %config(noreplace) %_sysconfdir/profile.d/mcedit-editor.csh
 
 %changelog
+* Thu Jan 21 2021 Sergey V Turchin <zerg@altlinux.org> 0.2-alt1
+- fix editor program
+
 * Wed Dec 16 2020 Sergey V Turchin <zerg@altlinux.org> 0.1-alt1
 - initial build
