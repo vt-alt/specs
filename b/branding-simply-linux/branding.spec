@@ -41,10 +41,14 @@
 
 %define java_version 1.8.0
 
+#alterantives weights
+%define alterator_browser_weight 52
+%define artworks_weight 12
+
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 9.0
+Version: 9.0.90
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -309,7 +313,7 @@ Some system settings for Simply Linux.
 
 %build
 autoconf
-THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme XFWM4_COMPOSITING=%xfwm4_compositing DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme MEDIA_PLAYER=%media_player ./configure
+THEME=%theme NAME='%Name' STATUS=%status VERSION=%version CODENAME=%codename GTK_THEME=%gtk_theme ICON_THEME=%icon_theme XFWM4_THEME=%xfwm4_theme XFWM4_COMPOSITING=%xfwm4_compositing DEFAULT_WEB_BROWSER=%web_browser DEFAULT_MAIL_READER=%mail_reader DEFAULT_FILE_MANAGER=%file_manager LO_ICON_THEME=%lo_icon_theme MEDIA_PLAYER=%media_player ALTERATOR_BROWSER_WEIGHT=%alterator_browser_weight ./configure
 make
 
 %install
@@ -334,9 +338,9 @@ popd
 
 install -d %buildroot//etc/alternatives/packages.d
 cat >%buildroot/etc/alternatives/packages.d/%name-graphics <<__EOF__
-%_datadir/artworks	%_datadir/design/%theme 10	
-%_datadir/design-current	%_datadir/design/%theme	10
-%_datadir/design/current	%_datadir/design/%theme	10
+%_datadir/artworks	%_datadir/design/%theme %artworks_weight
+%_datadir/design-current	%_datadir/design/%theme	%artworks_weight
+%_datadir/design/current	%_datadir/design/%theme	%artworks_weight
 __EOF__
 
 #release
@@ -387,6 +391,11 @@ JAVA_POLICY_DESKTOP="$(find /usr/share/applications -mindepth 1 -maxdepth 1 \
 [ -n "$JAVA_POLICY_DESKTOP" ] || exit 1
 cp -a "$JAVA_POLICY_DESKTOP" %buildroot/usr/share/slinux-style/applications/
 echo "NoDisplay=True" >>%buildroot/usr/share/slinux-style/applications/"${JAVA_POLICY_DESKTOP##*/}"
+
+# Workarond for rcc files: don't build it, just install old one:
+# seems something wrong with newly created files, they are ignored.
+# This issue must be further investigated.
+cp slinux.rcc %buildroot%_datadir/alterator-browser-qt/design/
 
 %ifarch %ix86 x86_64
 #bootloader
@@ -512,6 +521,11 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Thu Jan 21 2021 Mikhail Efremov <sem@altlinux.org> 9.0.90-alt1
+- Workaround for rcc file.
+- graphics: Fix duplicate alternatives.
+- alterator: Fix duplicate alternatives.
+
 * Tue Mar 24 2020 Mikhail Efremov <sem@altlinux.org> 9.0-alt1
 - menu: Use system java-*-openjdk-*-policytool.desktop.
 - indexhtml: Update download links.
