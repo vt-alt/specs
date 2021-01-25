@@ -1,6 +1,6 @@
 Name: x11vnc
 Version: 0.9.16
-Release: alt1
+Release: alt2
 
 %def_with avahi
 
@@ -10,6 +10,9 @@ Group: Networking/Remote access
 Url: https://github.com/LibVNC/x11vnc
 
 Source: %version.tar.gz
+
+Patch1: x11vnc-upstream-fno-common.patch
+Patch2: x11vnc-upstream-CVE-2020-29074.patch
 
 # Automatically added by buildreq on Wed Apr 27 2016
 # optimized out: fontconfig libX11-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel libcom_err-devel libgpg-error libkrb5-devel libp11-kit libwayland-client libwayland-server perl pkg-config python-base python-modules xorg-compositeproto-devel xorg-damageproto-devel xorg-fixesproto-devel xorg-inputproto-devel xorg-kbproto-devel xorg-randrproto-devel xorg-recordproto-devel xorg-renderproto-devel xorg-xextproto-devel xorg-xproto-devel zlib-devel
@@ -41,6 +44,8 @@ Some are on the rough side and will need some customization for your use.
 
 %prep
 %setup
+%patch1 -p1
+%patch2 -p1
 
 %build
 %autoreconf
@@ -63,6 +68,9 @@ install tkx11vnc %buildroot%_bindir/
 %exclude  %_bindir/Xdummy
 
 %changelog
+* Wed Jan 20 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.9.16-alt2
+- Applied security fix from upstream (Fixes: CVE-2020-29074).
+
 * Wed Aug 21 2019 Fr. Br. George <george@altlinux.ru> 0.9.16-alt1
 - Autobuild version bump to 0.9.16
 
