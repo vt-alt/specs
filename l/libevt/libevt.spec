@@ -14,7 +14,7 @@
 
 Name: libevt
 Version: 20140411
-Release: alt1
+Release: alt2
 
 Summary: Library and tools to access the Windows Event Log (EVT) format
 License: LGPLv3+ and GFDLv1.3+
@@ -26,6 +26,11 @@ Packager: Michael Shigorin <mike@altlinux.org>
 Source: %name-alpha-%version.tar.gz
 Source1: Windows_Event_Log_(EVT).pdf
 Source2: %name.watch
+
+Patch1: upstream-CVE-2018-8754.patch
+
+# Some dependencies are missing on excluded architectures
+ExcludeArch: %arm aarch64
 
 BuildRequires: pkg-config
 BuildRequires: python-dev
@@ -94,6 +99,7 @@ Python bindings for libevt, which can read Windows event files.
 
 %prep
 %setup
+%patch1 -p1
 cp -a "%SOURCE1" .
 
 %build
@@ -127,6 +133,9 @@ cp -a "%SOURCE1" .
 %python_sitelibdir/pyevt.so
 
 %changelog
+* Thu Jan 21 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 20140411-alt2
+- Applied security fix from upstream (Fixes CVE-2018-8754).
+
 * Sun May 11 2014 Michael Shigorin <mike@altlinux.org> 20140411-alt1
 - new version (watch file uupdate)
 
