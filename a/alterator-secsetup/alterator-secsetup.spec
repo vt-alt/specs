@@ -1,6 +1,6 @@
 Name: alterator-secsetup
-Version: 1.18
-Release: alt1
+Version: 2.0
+Release: alt3
 
 Source: %name-%version.tar
 
@@ -9,10 +9,11 @@ License: GPL
 Group: System/Configuration/Other
 
 BuildPreReq: alterator
-BuildRequires: gcc gcc-c++ gcc-c++-common librpm-devel 
 Requires: tcb-hash-prefix-control
 
 AutoReq: no
+
+BuildArch: noarch
 
 %description
 alterator module for managing security settings
@@ -21,10 +22,10 @@ alterator module for managing security settings
 %setup -q
 
 %build
-%make_build RPM_V413=$(rpm --version | cut -d. -f2) LIBDIR=%_libdir
+%make_build
 
 %install
-%makeinstall 
+%makeinstall
 mkdir -p -m 0755 %buildroot%_unitdir
 install -m 0644 macrosblock.service %buildroot%_unitdir/
 mkdir -p -m 0755 %buildroot%_sysctldir/
@@ -37,8 +38,21 @@ install -m 0644 secsetup.conf %buildroot%_sysctldir/
 %_datadir/alterator/ui/*
 %_unitdir/*
 %config(noreplace) %_sysctldir/*
+%dir %_datadir/alterator-secsetup
+%_datadir/alterator-secsetup/*
 
 %changelog
+* Tue Jan 19 2021 Danil Shein <dshein@altlinux.org> 2.0-alt3
+- fixed LibreOffice extension installer path
+
+* Tue Jan 19 2021 Danil Shein <dshein@altlinux.org> 2.0-alt2
+- fixed secsetup-macrosblocker script failure if VLC files not found
+
+* Fri Jan 15 2021 Danil Shein <dshein@altlinux.org> 2.0-alt1
+- new macros blocker helper executable (Closes: #37893)
+  + helper executable modifies LibreOffice menu xml files
+  + macros security level settings managed with LibreOffice extension
+
 * Tue Aug 25 2020 Ivan Razzhivin <underwit@altlinux.org> 1.18-alt1
 - fix translation
 
