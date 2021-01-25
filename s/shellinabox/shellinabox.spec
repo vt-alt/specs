@@ -1,6 +1,6 @@
 Name: shellinabox
 Version: 2.20
-Release: alt1
+Release: alt2
 
 Summary: AJAX based terminal emulator exporting a console to the browser
 License: GPLv2
@@ -12,6 +12,7 @@ Source1: shellinabox.conf
 Source2: shellinaboxd.init.in
 Source3: shellinaboxd.service
 Patch1:  shellinabox-ssh-options.patch
+Patch2:  upstream-CVE-2018-16789.patch
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -34,6 +35,7 @@ see also /etc/sysconfig/shellinaboxd (localhost only by default).
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
 
 %build
 %autoreconf
@@ -77,6 +79,9 @@ mkdir -p %buildroot%_localstatedir/%name
 %attr(750,%runas,%runas) %_localstatedir/%name
 
 %changelog
+* Fri Jan 22 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.20-alt2
+- Applied security fix from upstream (Fixes CVE-2018-16789).
+
 * Wed Jan 01 2020 Andrey Cherepanov <cas@altlinux.org> 2.20-alt1
 - New version (ALT #37711).
 - Build from upstream git tag.
