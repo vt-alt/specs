@@ -1,14 +1,15 @@
 %define _unpackaged_files_terminate_build 1
 
-%def_with bootstrap
+%def_without bootstrap
 # TODO:
 %def_with skipmanaged
+%def_with libunwind
 
 %define pre %nil
 
 Name: dotnet-coreclr
 Version: 3.1.6
-Release: alt1
+Release: alt2
 
 Summary: .NET Core runtime, called CoreCLR, and the base library, called mscorlib
 
@@ -32,7 +33,11 @@ BuildRequires: /proc
 
 BuildRequires: clang llvm python3
 
-BuildRequires: cmake libstdc++-devel libunwind-devel liblttng-ust-devel liblwp-devel
+BuildRequires: cmake libstdc++-devel
+%if_with libunwind
+BuildRequires: libunwind-devel
+%endif
+BuildRequires: liblttng-ust-devel liblwp-devel
 #BuildRequires: lldb-devel
 BuildRequires: libicu-devel libuuid-devel zlib-devel libcurl-devel libkrb5-devel libssl-devel
 BuildRequires: python-modules-xml
@@ -73,6 +78,10 @@ cross platform applications that work on Linux, Mac and Windows.
 # TODO: CMake Error: CMake can not determine linker language for target: System.Globalization.Native
 #__subst "s|__isMSBuildOnNETCoreSupported=0|__isMSBuildOnNETCoreSupported=1|" build.sh
 
+%if_with libunwind
+rm -rfv src/pal/src/libunwind/
+%endif
+
 # c8 hack
 %__subst "s|VERSION 3....|VERSION 3.4.3|" CMakeLists.txt tests/CMakeLists.txt
 
@@ -80,6 +89,9 @@ cross platform applications that work on Linux, Mac and Windows.
 export DotNetCoreSdkDir=%bootstrapdir
 export DotNetBuildToolsDir=%bootstrapdir
 bash -x ./build.sh -release -verbose -skipnuget -ignorewarnings -skiprestoreoptdata -cmakeargs -DENABLE_LLDBPLUGIN=0 \
+%if_with libunwind
+    -cmakeargs -DCLR_CMAKE_USE_SYSTEM_LIBUNWIND=1 \
+%endif
 %if_with skipmanaged
     -skipmanaged \
 %endif
@@ -149,6 +161,9 @@ chmod 0755 %buildroot%_rpmlibdir/%name.filetrigger
 %_rpmlibdir/%name.filetrigger
 
 %changelog
+* Sun Nov 08 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt2
+- build with external libunwind
+
 * Mon Aug 03 2020 Vitaly Lipatov <lav@altlinux.ru> 3.1.6-alt1
 - new version 3.1.6 (with rpmrb script) (ALT bug 38744)
 - .NET Core 3.1.6 - July 14, 2020

@@ -1,6 +1,6 @@
 Name: libclc
 Version: 0.2.0
-Release: alt4
+Release: alt6
 Summary: An open source implementation of the OpenCL 1.1 library requirements
 License: BSD
 Group: System/Libraries
@@ -9,7 +9,7 @@ URL: https://libclc.llvm.org
 Source: %name-%version.tar
 
 BuildPreReq: /proc
-BuildRequires: clang >= 9.0.0 libstdc++-devel llvm-devel >= 9.0.0 lld >= 9.0.0
+BuildRequires: clang >= 10.0.0 libstdc++-devel llvm-devel >= 10.0.0 lld >= 10.0.0
 
 %description
 libclc is an open source, BSD licensed implementation of the library
@@ -71,6 +71,12 @@ export CFLAGS=" -D__extern_always_inline=inline"
 %_pkgconfigdir/*.pc
 
 %changelog
+* Thu Oct 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.2.0-alt6
+- rebuild with llvm 11.0
+
+* Tue Aug 11 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.2.0-alt5
+- rebuild with llvm 10.0
+
 * Fri Feb 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 0.2.0-alt4
 - git snapshot master.9aa6f35
 
