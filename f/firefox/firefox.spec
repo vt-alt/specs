@@ -5,16 +5,14 @@
 %define firefox_datadir %_datadir/firefox
 
 %define gst_version   1.0
-%define nspr_version  4.28
-%define nss_version   3.56.0
-%define rust_version  1.45.0
-%define cargo_version 1.45.0
+%define rust_version  1.46.0
+%define cargo_version 1.46.0
 
 Summary:              The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name:           firefox
-Version:        80.0.1
+Version:        82.0.3
 Release:        alt0.1.p9
 License:        MPL-2.0
 Group:          Networking/WWW
@@ -49,9 +47,21 @@ Patch009: 0009-MOZILLA-1170092-Search-for-default-preferences-in-et.patch
 Patch010: 0010-arm-js-src-wasm-add-struct-user_vfp-definition.patch
 Patch011: 0011-Bug-1640982-Set-CARGO_PROFILE_RELEASE_LTO-true-when-.patch
 Patch012: 0012-use-floats-for-audio-on-arm-too.patch
+Patch013: 0013-MOZILLA-1669495-Fix-wrong-tooltips-sizes-on-wayland-.patch
+Patch014: 0014-MOZILLA-1668771-Wayland-Use-timeout-for-frame-callba.patch
+Patch015: 0015-MOZILLA-1661192-Don-t-use-popup-offset-when-we-don-t.patch
+Patch016: 0016-MOZILLA-1656727-Wayland-Track-delayed-commits-global.patch
+Patch017: 0017-MOZILLA-1640567-Pass-expected-window-position-to-the.patch
+Patch018: 0018-MOZILLA-1634404-Fix-popup-position-when-layout.css.d.patch
+Patch019: 0019-MOZILLA-1666567-land-NSS-c28e20f61e5d-UPGRADE_NSS_RE.patch
+Patch020: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
+Patch021: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
+Patch022: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
+Patch023: 0023-MOZILLA-1666567-land-NSS-NSS_3_58_RTM-UPGRADE_NSS_RE.patch
+Patch024: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
 ### End Patches
 
-ExcludeArch: ppc64le armh
+ExcludeArch: armh
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
@@ -128,11 +138,6 @@ BuildRequires: python3(sqlite3)
 # Rust requires
 BuildRequires: /proc
 
-# Mozilla requires
-BuildRequires: pkgconfig(nspr) >= %nspr_version
-BuildRequires: pkgconfig(nss) >= %nss_version
-BuildRequires: libnss-devel-static
-
 BuildRequires: autoconf_2.13
 %set_autoconf_version 2.13
 
@@ -149,9 +154,6 @@ Provides: firefox-kk = %EVR
 
 # ALT#30732
 Requires: gst-plugins-ugly%gst_version
-
-Requires: libnspr >= %nspr_version
-Requires: libnss >= %nss_version
 
 %description
 The Mozilla Firefox project is a redesign of Mozilla's browser component,
@@ -218,6 +220,18 @@ Most likely you don't need to use this package.
 %patch010 -p1
 %patch011 -p1
 %patch012 -p1
+%patch013 -p1
+%patch014 -p1
+%patch015 -p1
+%patch016 -p1
+%patch017 -p1
+%patch018 -p1
+#patch019 -p1
+#patch020 -p1
+#patch021 -p1
+#patch022 -p1
+#patch023 -p1
+#patch024 -p1
 ### Finish apply patches
 
 cd mozilla
@@ -281,6 +295,9 @@ export MOZ_DEBUG_FLAGS=" "
 export CFLAGS="$MOZ_OPT_FLAGS"
 export CXXFLAGS="$MOZ_OPT_FLAGS"
 
+#export MOZ_LTO=cross
+#export MOZ_NO_PIE_COMPAT=1
+
 export MOZ_PARALLEL_BUILD=8
 export CC="clang"
 export CXX="clang++"
@@ -295,6 +312,10 @@ export PATH="$CBINDGEN_BINDIR:$PATH"
 
 export RUST_BACKTRACE=1
 export RUSTFLAGS="-Clink-args=-fPIC -Cdebuginfo=0"
+
+#export WASM_SANDBOXED_LIBRARIES=graphite,ogg
+#export WASM_CC="$CC --target=wasm32-wasi"
+#export WASM_CXX="$CXX --target=wasm32-wasi"
 
 if [ ! -x "$CBINDGEN_BINDIR/cbindgen" ]; then
 	mkdir -p -- "$CBINDGEN_HOME"
@@ -319,6 +340,7 @@ cd mozilla
 export srcdir="$PWD"
 #export MOZ_MAKE_FLAGS="-j10 --no-print-directory"
 export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
+export MACH_USE_SYSTEM_PYTHON=1
 
 # Fix virtualenv
 python3 ./mach python --exec-file /dev/null
@@ -330,7 +352,7 @@ find objdir/_virtualenvs/init_py3/lib/python3/site-packages \
 python3 ./mach build
 
 while read -r loc; do
-	./mach build chrome-$loc
+	python3 ./mach build chrome-$loc
 done < %SOURCE10
 
 make -C objdir/browser/installer multilocale.txt
@@ -479,12 +501,52 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Sun Jan 03 2021 Andrey Cherepanov <cas@altlinux.org> 82.0.3-alt0.1.p9
+- Backport new version to p9 branch (ALT #39343).
+- Build with bundled nspr and nss.
+
 * Tue Dec 01 2020 Andrey Cherepanov <cas@altlinux.org> 80.0.1-alt0.1.p9
 - Backport new version to p9 branch.
 - Decrease weight in alternatives.
 - Build with bundled icu.
 - Allow sideloading app and system unsigned addons.
 - Fix bogus timestamp in changelog.
+
+* Tue Nov 10 2020 Alexey Gladkov <legion@altlinux.ru> 82.0.3-alt1
+- New release (82.0.3).
+- Security fixes:
+  + CVE-2020-26950: Write side effects in MCallGetProperty opcode not accounted for
+
+* Wed Oct 28 2020 Alexey Gladkov <legion@altlinux.ru> 82.0.1-alt1
+- New release (82.0.1).
+
+* Thu Oct 22 2020 Alexey Gladkov <legion@altlinux.ru> 82.0-alt1
+- New release (82.0).
+- Security fixes:
+  + CVE-2020-15969: Use-after-free in usersctp
+  + CVE-2020-15254: Undefined behavior in bounded channel of crossbeam rust crate
+  + CVE-2020-15680: Presence of external protocol handlers could be determined through image tags
+  + CVE-2020-15681: Multiple WASM threads may have overwritten each others' stub table entries
+  + CVE-2020-15682: The domain associated with the prompt to open an external protocol could be spoofed to display the incorrect origin
+  + CVE-2020-15683: Memory safety bugs fixed in Firefox 82 and Firefox ESR 78.4
+  + CVE-2020-15684: Memory safety bugs fixed in Firefox 82
+
+* Wed Oct 14 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.2-alt1
+- New release (81.0.2).
+
+* Sun Oct 04 2020 Alexey Gladkov <legion@altlinux.ru> 81.0.1-alt1
+- New release (81.0.1).
+
+* Sun Sep 27 2020 Alexey Gladkov <legion@altlinux.ru> 81.0-alt1
+- New release (81.0).
+- Build on all architectures.
+- Security fixes:
+  + CVE-2020-15675: Use-After-Free in WebGL
+  + CVE-2020-15677: Download origin spoofing via redirect
+  + CVE-2020-15676: XSS when pasting attacker-controlled data into a contenteditable element
+  + CVE-2020-15678: When recursing through layers while scrolling, an iterator may have become invalid, resulting in a potential use-after-free scenario
+  + CVE-2020-15673: Memory safety bugs fixed in Firefox 81 and Firefox ESR 78.3
+  + CVE-2020-15674: Memory safety bugs fixed in Firefox 81
 
 * Tue Sep 08 2020 Alexey Gladkov <legion@altlinux.ru> 80.0.1-alt1
 - New release (80.0.1).

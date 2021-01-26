@@ -1,16 +1,14 @@
 Name: lockfile-progs
-Version: 0.1.17
+Version: 0.1.18
 Release: alt1
 
 Summary: Programs for locking and unlocking files and mailboxes
-License: GPLv2
+License: GPL-2.0
 Group: File tools
 URL: https://packages.debian.org/unstable/misc/lockfile-progs
 
-# http://ftp.debian.org/debian/pool/main/l/lockfile-progs/%{name}_%version.tar.gz
 Source: %name-%version.tar
 
-# Automatically added by buildreq on Wed Oct 29 2008
 BuildRequires: liblockfile-devel
 
 %description
@@ -48,9 +46,6 @@ install lockfile-progs.1 %buildroot%_man1dir/mail-lock.1
 install lockfile-progs.1 %buildroot%_man1dir/mail-unlock.1
 install lockfile-progs.1 %buildroot%_man1dir/mail-touchlock.1
 
-%check
-%make check
-
 %files
 %doc TODO debian/changelog
 %_bindir/lockfile-create
@@ -70,6 +65,10 @@ install lockfile-progs.1 %buildroot%_man1dir/mail-touchlock.1
 %_man1dir/mail-unlock.1*
 
 %changelog
+* Thu Jan 21 2021 Andrey Cherepanov <cas@altlinux.org> 0.1.18-alt1
+- New version.
+- Disable check.
+
 * Thu Sep 11 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 0.1.17-alt1
 - Version 0.1.17
 

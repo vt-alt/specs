@@ -1,21 +1,15 @@
 %define _unpackaged_files_terminate_build 1
 
 Name:    castxml
-Version: 0.0.1.20181115
-Release: alt1.gitc3a239d
+Version: 0.4.2
+Release: alt1
 Summary: C-family abstract syntax tree XML output tool
 Group:   Development/Other
-
-# The main program is Apache 2.0
-# src/kwsys/* is BSD
-License: Apache 2.0 and BSD
+License: Apache-2.0
 URL:     https://github.com/CastXML/CastXML
 
 # https://github.com/CastXML/CastXML.git
 Source:	%name-%version.tar
-
-# Link against the shared llvm library (one common library).
-Patch1: %name-fedora-shared.patch
 
 BuildRequires: cmake ctest gcc-c++
 BuildRequires: llvm-devel lld
@@ -27,7 +21,7 @@ BuildRequires: clang-devel
 BuildRequires: clang-devel-static
 BuildRequires: libedit-devel
 BuildRequires: zlib-devel
-BuildRequires: python-module-sphinx
+BuildRequires: python3-module-sphinx python3-module-sphinx-sphinx-build-symlink
 BuildRequires: /proc
 
 Requires: /proc
@@ -45,10 +39,6 @@ may support alternative output formats.
 
 %prep
 %setup
-%patch1 -p1
-
-# LLVM_LIBRARY_DIRS does not work, and can not be overridden with -D flag
-#sed 's!${LLVM_LIBRARY_DIRS}!${LLVM_LIBRARY_DIR}!' -i CMakeLists.txt
 
 %build
 export CC=clang
@@ -56,9 +46,12 @@ export CXX=clang++
 %remove_optflags -frecord-gcc-switches
 
 %cmake \
+       -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+       -DCLANG_LINK_CLANG_DYLIB:BOOL=ON \
        -DCastXML_INSTALL_DOC_DIR:STRING=share/doc/%name \
        -DCastXML_INSTALL_MAN_DIR:STRING=share/man \
        -DCLANG_RESOURCE_DIR:PATH=$(clang -print-file-name=include)/.. \
+       -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
        -DBUILD_TESTING:BOOL=ON \
        -DSPHINX_MAN:BOOL=ON \
        -DCMAKE_EXE_LINKER_FLAGS:STRING=-fuse-ld=lld \
@@ -79,7 +72,8 @@ ctest
 popd
 
 %files
-%doc LICENSE NOTICE README.rst
+%doc LICENSE
+%doc NOTICE README.rst
 %_bindir/castxml
 %_man1dir/castxml.1*
 %dir %_datadir/%name
@@ -90,6 +84,24 @@ popd
 %_datadir/%name/empty.cpp
 
 %changelog
+* Mon Jan 18 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.4.2-alt1
+- Updated to upstream release version 0.4.2.
+
+* Fri Aug 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.6-alt1
+- Updated to upstream release version 0.3.6.
+
+* Mon Aug 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.4-alt2
+- Fixed linking with dynamic clang libraries.
+
+* Thu Jun 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.4-alt1
+- Updated to upstream release version 0.3.4.
+
+* Thu Feb 27 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.1-alt1
+- Updated to upstream release version 0.3.1.
+
+* Thu Jul 04 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.2.0-alt1
+- Updated to upstream release version 0.2.0.
+
 * Sat Dec 29 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 0.0.1.20181115-alt1.gitc3a239d
 - Updated to upstream snapshot c3a239d.
 

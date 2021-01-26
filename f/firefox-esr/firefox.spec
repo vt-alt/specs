@@ -15,7 +15,7 @@ Summary: The Mozilla Firefox project is a redesign of Mozilla's browser
 Summary(ru_RU.UTF-8): Интернет-браузер Mozilla Firefox
 
 Name: firefox-esr
-Version: 78.5.0
+Version: 78.6.1
 Release: alt0.1.p9
 License: MPL-2.0
 Group: Networking/WWW
@@ -54,6 +54,7 @@ Patch020: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
 Patch021: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
 Patch022: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
 Patch024: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
+Patch025: 0025-update-packed_simd-for-rust-1.48.patch
 ### End Patches
 
 BuildRequires(pre): mozilla-common-devel
@@ -205,6 +206,7 @@ Most likely you don't need to use this package.
 #patch021 -p1
 #patch022 -p1
 #patch024 -p1
+#patch025 -p0 -d mozilla
 ### Finish apply patches
 
 cd mozilla
@@ -401,7 +403,7 @@ install -D -m 644 %SOURCE7 ./%_datadir/applications/firefox-wayland.desktop
 
 # Add alternatives
 mkdir -p ./%_altdir
-printf '%_bindir/xbrowser\t%_bindir/firefox\t100\n' >./%_altdir/firefox
+printf '%_bindir/xbrowser\t%_bindir/firefox\t80\n' >./%_altdir/firefox-esr
 
 rm -f -- \
 	./%firefox_prefix/removed-files
@@ -433,7 +435,7 @@ rm -rf -- \
 %files
 %dir %_sysconfdir/firefox
 %dir %_sysconfdir/firefox/pref
-%_altdir/firefox
+%_altdir/firefox-esr
 %_bindir/firefox
 %firefox_prefix
 %mozilla_arch_extdir/%firefox_cid
@@ -454,6 +456,29 @@ rm -rf -- \
 %config(noreplace) %_sysconfdir/firefox/pref/all-privacy.js
 
 %changelog
+* Thu Jan 07 2021 Andrey Cherepanov <cas@altlinux.org> 78.6.1-alt0.1.p9
+- Backport new version to p9 branch (ALT #39497).
+
+* Wed Jan 06 2021 Andrey Cherepanov <cas@altlinux.org> 78.6.1-alt1
+- New version (78.6.1).
+- Security fixes:
+  + CVE-2020-16044 Use-after-free write when handling a malicious COOKIE-ECHO SCTP chunk
+
+* Mon Dec 14 2020 Andrey Cherepanov <cas@altlinux.org> 78.6.0-alt1
+- New version (78.6.0).
+- Fixes:
+  + CVE-2020-16042 Operations on a BigInt could have caused uninitialized memory to be exposed
+  + CVE-2020-26971 Heap buffer overflow in WebGL
+  + CVE-2020-26973 CSS Sanitizer performed incorrect sanitization
+  + CVE-2020-26974 Incorrect cast of StyleGenericFlexBasis resulted in a heap use-after-free
+  + CVE-2020-26978 Internal network hosts could have been probed by a malicious webpage
+  + CVE-2020-35111 The proxy.onRequest API did not catch view-source URLs
+  + CVE-2020-35112 Opening an extension-less download may have inadvertently launched an executable instead
+  + CVE-2020-35113 Memory safety bugs fixed in Firefox 84 and Firefox ESR 78.6
+
+* Thu Dec 03 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt2
+- Fix build against rust-1.48.
+
 * Tue Nov 17 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt0.1.p9
 - Backport new version to p9 branch.
 

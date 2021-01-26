@@ -1,6 +1,6 @@
 Name: python3-module-PySide2
 Version: 5.12.6
-Release: alt0.1.p9
+Release: alt0.2.p9
 
 Summary: Python bindings for the Qt 5 cross-platform application and UI framework
 Group: Development/Python3
@@ -15,8 +15,8 @@ Patch2: pyside2-python3.8-support.patch
 BuildRequires(pre): rpm-build-python3
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: clang-devel
-BuildRequires: llvm-devel
+BuildRequires: clang7.0-devel
+BuildRequires: llvm7.0-devel
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: python3-devel
@@ -198,6 +198,9 @@ subst 's|#!/usr/bin/env python|#!%__python3|' \
 %python3_sitelibdir/shiboken2_generator-*.egg-info/
 
 %changelog
+* Thu Jan 21 2021 Andrey Cherepanov <cas@altlinux.org> 5.12.6-alt0.2.p9
+- FTBFS: build with llvm7.0.
+
 * Sun May 17 2020 Andrey Cherepanov <cas@altlinux.org> 5.12.6-alt0.1.p9
 - Backport to p9 (build with g++).
 

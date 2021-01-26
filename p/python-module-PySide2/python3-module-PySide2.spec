@@ -1,6 +1,6 @@
 Name: python-module-PySide2
 Version: 5.12.6
-Release: alt1
+Release: alt1.1.p9
 
 Summary: Python bindings for the Qt 5 cross-platform application and UI framework
 Group: Development/Python
@@ -14,8 +14,8 @@ Patch1: pyside2-link-with-python.patch
 BuildRequires(pre): rpm-build-python
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: clang-devel
-BuildRequires: llvm-devel
+BuildRequires: clang7.0-devel
+BuildRequires: llvm7.0-devel
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: python-devel
@@ -60,6 +60,7 @@ since the previous versions (without the 2) refer to Qt 4.
 %package devel
 Summary: Development files related to %name
 Group: Development/Python
+Conflicts: python3-module-PySide2-devel
 
 %description devel
 %{summary}.
@@ -151,6 +152,9 @@ subst 's|#!/usr/bin/env python|#!%__python|' \
 	%buildroot%_bindir/pyside2-uic \
 	%buildroot%python_sitelibdir/pyside2uic/icon_cache.py
 
+# Remove pkgconfig files
+rm -f %buildroot%_libdir/pkgconfig/*.pc
+
 %files
 %doc README.md
 %_libdir/libpyside2*.so.*
@@ -163,7 +167,6 @@ subst 's|#!/usr/bin/env python|#!%__python|' \
 %_includedir/PySide2/
 %_libdir/libpyside2*.so
 %_libdir/cmake/PySide2*
-%_libdir/pkgconfig/pyside2.pc
 
 %files -n pyside2-tools-python2
 %doc README.pyside2.md
@@ -187,10 +190,13 @@ subst 's|#!/usr/bin/env python|#!%__python|' \
 %_includedir/shiboken2/
 %_libdir/cmake/Shiboken2-%version/
 %_libdir/libshiboken2*.so
-%_libdir/pkgconfig/shiboken2.pc
 %python_sitelibdir/shiboken2_generator/
 %python_sitelibdir/shiboken2_generator-*.egg-info/
 
 %changelog
+* Thu Jan 21 2021 Andrey Cherepanov <cas@altlinux.org> 5.12.6-alt1.1.p9
+- FTBFS: build with llvm7.0.
+- Remove pkgconfig files.
+
 * Thu May 14 2020 Andrey Cherepanov <cas@altlinux.org> 5.12.6-alt1
 - Initial build in Sisyphus for Python2.

@@ -16,7 +16,7 @@
 
 Name: %llvm_name
 Version: 10.0.0
-Release: alt0.1.p9
+Release: alt0.2.p9
 Summary: The Low Level Virtual Machine
 
 Group: Development/C
@@ -37,6 +37,7 @@ Patch7: clang-alt-aarch64-dynamic-linker-path.patch
 Patch8: 0001-Don-t-set-rpath-when-installing.patch
 Patch9: lld-9-alt-mipsel-permit-textrels-by-default.patch
 Patch10: llvm-10-alt-python3.patch
+Patch11: 0001-PowerPC-PPCBoolRetToInt-Skip-translation-if-there-is.patch
 
 # ThinLTO requires /proc/cpuinfo to exists so the same does llvm
 BuildPreReq: /proc
@@ -224,6 +225,7 @@ mv compiler-rt-%version.src projects/compiler-rt
 %patch8 -p1
 %patch9 -p1 -b .alt-mipsel-permit-textrels-by-default
 %patch10 -p1
+%patch11 -p2
 
 %build
 %cmake -G Ninja \
@@ -410,6 +412,9 @@ ninja -C BUILD check-all || :
 %doc %_docdir/lld
 
 %changelog
+* Sun Jan 03 2021 Andrey Cherepanov <cas@altlinux.org> 10.0.0-alt0.2.p9
+- Fixes https://bugs.llvm.org/show_bug.cgi?id=46923 which causes ICE on ppc64le.
+
 * Mon May 18 2020 Andrey Cherepanov <cas@altlinux.org> 10.0.0-alt0.1.p9
 - Backport to p9 branch.
 - Add conflicts to llvm7.0 packages.
