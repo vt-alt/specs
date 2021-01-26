@@ -1,46 +1,27 @@
+%define _unpackaged_files_terminate_build 1
+
 %define oname networkx
 
 %def_disable docs
-%def_disable python3
 
-Name:           python-module-%oname
-Version:        2.2
-Release:        alt4
+Name:           python3-module-%oname
 Epoch:          2
+Version:        2.5
+Release:        alt1
 Summary:        Creates and Manipulates Graphs and Networks
-Group:          Development/Python
+Group:          Development/Python3
 License:        LGPLv2+
 URL:            http://networkx.github.io
-# https://github.com/networkx/networkx.git
-Source:         %oname-%version.tar
 
 BuildArch:      noarch
 
-BuildRequires(pre): rpm-macros-sphinx
-BuildRequires: python-devel
-BuildRequires: python-module-setuptools
-BuildRequires: python-module-decorator >= 4.3.0
-BuildRequires: python-module-numpy >= 1.15.0
-BuildRequires: python-module-scipy >= 1.1.0
-#BuildRequires: python-module-pandas >= 0.23.3
-BuildRequires: python-module-matplotlib >= 2.2.2
-BuildRequires: python-module-pygraphviz >= 1.5
-BuildRequires: python-module-pydot >= 1.2.4
-BuildRequires: python-module-yaml >= 3.13
-BuildRequires: python-module-lxml >= 4.2.3
-BuildRequires: python-module-gdal >= 1.10.0
+# https://github.com/networkx/networkx.git
+Source:         %name-%version.tar
 
-%if_enabled docs
-BuildRequires: python-module-sphinx >= 1.7.6
-BuildRequires: python-module-sphinx_rtd_theme >= 0.4.1
-BuildRequires: python-module-sphinx-gallery >= 0.2.0
-BuildRequires: python-module-Pillow >= 5.2.0
-BuildRequires: python-module-nb2plots >= 0.6
-BuildRequires: python-module-texext >= 0.6
-%endif
+Patch1:         %oname-%version-alt.patch
 
-%if_enabled python3
 BuildRequires(pre): rpm-build-python3
+BuildRequires(pre): rpm-macros-sphinx3
 BuildRequires: python3-devel python3-module-setuptools
 BuildRequires: python3-module-decorator >= 4.3.0
 BuildRequires: python3-module-numpy >= 1.15.0
@@ -61,7 +42,6 @@ BuildRequires: python3-module-Pillow >= 5.2.0
 BuildRequires: python3-module-nb2plots >= 0.6
 BuildRequires: python3-module-texext >= 0.6
 %endif
-%endif
 
 Requires: %name-drawing = %EVR
 
@@ -70,35 +50,6 @@ NetworkX is a Python package for the creation, manipulation, and
 study of the structure, dynamics, and functions of complex networks.
 
 %package core
-Summary: Creates and Manipulates Graphs and Networks
-Group: Development/Python
-Requires: python-module-decorator
-Requires: python-module-yaml
-Requires: python-module-numpy
-Requires: python-module-scipy
-%add_python_req_skip tests
-%add_python_req_skip networkx.tests.test
-
-%description core
-NetworkX is a Python package for the creation, manipulation, and
-study of the structure, dynamics, and functions of complex networks.
-
-%package drawing
-Summary: Creates and Manipulates Graphs and Networks
-Group: Development/Python
-Requires: %name-core = %EVR
-Requires: python-module-pygraphviz
-Requires: python-module-pydot
-Requires: python-module-matplotlib
-
-%description drawing
-NetworkX is a Python package for the creation, manipulation, and
-study of the structure, dynamics, and functions of complex networks.
-
-This package provides support for graph visualizations.
-
-%if_enabled python3
-%package -n python3-module-%oname-core
 Summary: Creates and Manipulates Graphs and Networks (Python 3)
 Group: Development/Python3
 Requires: python3-module-decorator
@@ -108,44 +59,34 @@ Requires: python3-module-scipy
 %add_python3_req_skip tests
 %add_python3_req_skip networkx.tests.test
 
-%description -n python3-module-%oname-core
+%description core
 NetworkX is a Python package for the creation, manipulation, and
 study of the structure, dynamics, and functions of complex networks.
 
-%package -n python3-module-%oname-drawing
+%package drawing
 Summary: Creates and Manipulates Graphs and Networks (Python 3)
 Group: Development/Python3
-Requires: python3-module-%oname-core = %EVR
+Requires: %name-core = %EVR
 Requires: python3-module-pygraphviz
 Requires: python3-module-pydot
 Requires: python3-module-matplotlib
 
-%description -n python3-module-%oname-drawing
+%description drawing
 NetworkX is a Python package for the creation, manipulation, and
 study of the structure, dynamics, and functions of complex networks.
 
 This package provides support for graph visualizations.
 
-%package -n python3-module-%oname
-Summary: Creates and Manipulates Graphs and Networks (Python 3)
-Group: Development/Python3
-Requires: python3-module-%oname-drawing = %EVR
-
-%description -n python3-module-%oname
-NetworkX is a Python package for the creation, manipulation, and
-study of the structure, dynamics, and functions of complex networks.
-
-%package -n python3-module-%oname-tests
+%package tests
 Summary: Tests for NetworkX (Python 3)
 Group: Development/Python3
-Requires: python3-module-%oname = %EVR
+Requires: %name = %EVR
 
-%description -n python3-module-%oname-tests
+%description tests
 NetworkX is a Python package for the creation, manipulation, and
 study of the structure, dynamics, and functions of complex networks.
 
 This package contains tests for NetworkX.
-%endif
 
 %package docs
 Summary: Documentation for NetworkX
@@ -159,7 +100,7 @@ This package contains development documentation for NetworkX.
 
 %package pickles
 Summary: Pickles for NetworkX
-Group: Development/Python
+Group: Development/Python3
 
 %description pickles
 NetworkX is a Python package for the creation, manipulation, and
@@ -167,58 +108,29 @@ study of the structure, dynamics, and functions of complex networks.
 
 This package contains pickles for NetworkX.
 
-%package tests
-Summary: Tests for NetworkX
-Group: Development/Python
-Requires: %name = %EVR
-
-%description tests
-NetworkX is a Python package for the creation, manipulation, and
-study of the structure, dynamics, and functions of complex networks.
-
-This package contains tests for NetworkX.
-
 %prep
 %setup
+%patch1 -p1
 chmod -x examples/*/*.py
 chmod -x examples/*/*.bz2
-sed -i '1,1d' networkx/tests/test.py
 
-%if_enabled python3
-rm -rf ../python3
-cp -a . ../python3
-%endif
+find -type f -name '*.py' -exec sed -i \
+	's|#!/usr/bin/env python|#!/usr/bin/env python3|' '{}' +
 
 %if_enabled docs
-sed -i 's|@PYVER@|%_python_version|g' doc/Makefile
-%prepare_sphinx .
+sed -i 's|@PYVER@|%_python3_version|g' doc/Makefile
+%prepare_sphinx3 .
 %endif
 
 %build
-%python_build
-
-%if_enabled python3
-pushd ../python3
-find -type f -name '*.py' -exec sed -i \
-	's|#!/usr/bin/env python|#!/usr/bin/env python3|' '{}' +
 %python3_build
-popd
-%endif
 
 %install
-%python_install -O1
-#pushd nose_plugin
-#python_install -O1
-#popd
-
-%if_enabled python3
-pushd ../python3
 %python3_install
-popd
-%endif
 
 %if_enabled docs
-export PYTHONPATH=$PYTHONPATH:%buildroot%python_sitelibdir
+export SPHINXBUILD=sphinx-build-3
+export PYTHONPATH=$PYTHONPATH:%buildroot%python3_sitelibdir
 #make -C doc latex ||:
 #cp doc/build/doctrees/reference/credits.doctree \
 #	doc/build/doctrees/
@@ -227,73 +139,56 @@ export PYTHONPATH=$PYTHONPATH:%buildroot%python_sitelibdir
 mkdir installed-docs
 mv %buildroot%_docdir/%oname-%{version}* ./installed-docs
 
-cp -fR doc/build/pickle %buildroot%python_sitelibdir/%oname/
+cp -fR doc/build/pickle %buildroot%python3_sitelibdir/%oname/
 %endif
+
+rm -rf %buildroot%_defaultdocdir
 
 %files
+
 %files core
-%python_sitelibdir/*
-#exclude %python_sitelibdir/networkxdoctest.py*
-%if_enabled docs
-%exclude %python_sitelibdir/%oname/pickle
-%endif
-%exclude %python_sitelibdir/%oname/drawing
-%exclude %python_sitelibdir/%oname/readwrite/nx_shp.py*
-%exclude %python_sitelibdir/*/tests
-%exclude %python_sitelibdir/*/testing
-%exclude %python_sitelibdir/*/*/tests
-%exclude %python_sitelibdir/*/*/*/tests
-
-%files drawing
-%python_sitelibdir/%oname/drawing
-%python_sitelibdir/%oname/readwrite/nx_shp.py*
-%exclude %python_sitelibdir/%oname/drawing/tests
-
-%files tests
-#python_sitelibdir/networkxdoctest.py*
-%python_sitelibdir/*/tests
-%python_sitelibdir/*/testing
-%python_sitelibdir/*/*/tests
-%python_sitelibdir/*/*/*/tests
-
-%if_enabled docs
-
-%files docs
-%doc installed-docs/*
-%doc doc/build/html
-
-%files pickles
-%python_sitelibdir/%oname/pickle
-
-%endif
-
-%if_enabled python3
-%files -n python3-module-%oname
-
-%files -n python3-module-%oname-core
 %python3_sitelibdir/*
+%if_enabled docs
+%exclude %python3_sitelibdir/%oname/pickle
+%endif
 %exclude %python3_sitelibdir/%oname/drawing
-%exclude %python3_sitelibdir/%oname/readwrite/nx_shp.py*
+%exclude %python3_sitelibdir/%oname/readwrite/nx_shp.py
+%exclude %python3_sitelibdir/%oname/readwrite/__pycache__/nx_shp.*
 %exclude %python3_sitelibdir/*/tests
 %exclude %python3_sitelibdir/*/testing
 %exclude %python3_sitelibdir/*/*/tests
 %exclude  %python3_sitelibdir/*/*/*/tests
 
-%files -n python3-module-%oname-drawing
+%files drawing
 %python3_sitelibdir/%oname/drawing
-%python3_sitelibdir/%oname/readwrite/nx_shp.py*
+%python3_sitelibdir/%oname/readwrite/nx_shp.py
+%python3_sitelibdir/%oname/readwrite/__pycache__/nx_shp.*
 %exclude %python3_sitelibdir/%oname/drawing/tests
 
-%files -n python3-module-%oname-tests
+%files tests
 %python3_sitelibdir/*/tests
 %python3_sitelibdir/*/testing
 %python3_sitelibdir/*/*/tests
 %python3_sitelibdir/*/*/*/tests
+
+%if_enabled docs
+%files docs
+%doc installed-docs/*
+%doc doc/build/html
+
+%files pickles
+%python3_sitelibdir/%oname/pickle
 %endif
 
 %changelog
-* Tue Aug 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2:2.2-alt4
-- Rebuilt only python-2 module.
+* Mon Jan 18 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2:2.5-alt1
+- Updated to upstream version 2.5.
+- Removed dependency from python3-module-networkx-core
+  to python3-module-networkx-drawing (Closes: 39559).
+
+* Mon Aug 10 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2:2.4-alt1
+- Updated to upstream version 2.4.
+- Disabled build for python-2.
 
 * Thu Jun 04 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2:2.2-alt3
 - Fixed dependencies of core modules.
