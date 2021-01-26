@@ -1,10 +1,11 @@
+%define _unpackaged_files_terminate_build 1
 %define _runtimedir /run
 %define _localstatedir /var
 #Use GTK+ instead of Xlib
 %def_with gtk
 
 Name: spice-vdagent
-Version: 0.19.0
+Version: 0.21.0
 Release: alt1
 Epoch: 1
 Summary: Agent for Spice guests
@@ -17,10 +18,10 @@ Source: %name-%version.tar
 Source2: spice-vdagentd.init-alt
 Patch: %name-%version.patch
 
-BuildRequires: pkgconfig(glib-2.0) >= 2.34
-%{?_with_gtk:BuildRequires: pkgconfig(gtk+-3.0) >= 3.10}
+BuildRequires: pkgconfig(gio-unix-2.0) >= 2.50
+%{?_with_gtk:BuildRequires: pkgconfig(gtk+-3.0) >= 3.22}
 BuildRequires: pkgconfig(xfixes) pkgconfig(xrandr) >= 1.3 pkgconfig(xinerama) pkgconfig(x11)
-BuildRequires: pkgconfig(spice-protocol) >= 0.14.0
+BuildRequires: pkgconfig(spice-protocol) >= 0.14.3
 BuildRequires: pkgconfig(alsa) >= 1.0.22
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(libdrm)
@@ -57,7 +58,6 @@ Features:
 %install
 %makeinstall_std
 install -m 0755 %SOURCE2 %buildroot%_initdir/spice-vdagentd
-mkdir -p %buildroot%_runtimedir/spice-vdagentd
 
 %post
 %post_service spice-vdagentd
@@ -73,13 +73,18 @@ mkdir -p %buildroot%_runtimedir/spice-vdagentd
 %_unitdir/*
 %_bindir/spice-vdagent
 %_sbindir/spice-vdagentd
-%dir %_runtimedir/spice-vdagentd
 %_sysconfdir/xdg/autostart/spice-vdagent.desktop
 %_datadir/gdm/autostart/LoginWindow/spice-vdagent.desktop
 %_datadir/gdm/greeter/autostart/spice-vdagent.desktop
 %_man1dir/*
 
 %changelog
+* Thu Jan 21 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1:0.21.0-alt1
+- new version 0.21.0 (Fixes CVE-2020-25650, CVE-2020-25651, CVE-2020-25652, CVE-2020-25653).
+
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 1:0.20.0-alt1
+- new version 0.20.0
+
 * Sun Jun 02 2019 Alexey Shabalin <shaba@altlinux.org> 1:0.19.0-alt1
 - 0.19.0
 
