@@ -4,7 +4,7 @@
 #define _without_test 1
 
 Name: perl-%module
-Version: 0.075
+Version: 0.076
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -46,6 +46,9 @@ install -Dm644 stdheaders.txt %buildroot%_datadir/%module/headers-ignore/stdhead
 %_man1dir/sourcedep-resolve*
 
 %changelog
+* Sat Jan 16 2021 Igor Vlasenko <viy@altlinux.ru> 0.076-alt1
+- new version
+
 * Mon Jan 13 2020 Igor Vlasenko <viy@altlinux.ru> 0.075-alt1
 - new version
 
