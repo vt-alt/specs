@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.4.5
+Version: 1.4.6
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,18 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Mon Jan 25 2021 Anton Midyukov <antohami@altlinux.org> 1.4.6-alt1
+- deepin: add Network Manager applet
+- engineering: initial as distributiv
+- efi: fixed check modules for kernel-image >= 5.10
+- oem: fixed calculation of required free space for installing additional
+  packages
+- oem: not use git in 60-oem-install.mk
+- regular: do not default to mounting anything found (thanks mike@)
+- rescue: added save session mode support for efi
+- tar2fs: Disable os-probe at the time of grub installation
+- xfce-sysv: add gnome-disks (suggested by Speccyfighter)
+
 * Mon Dec 07 2020 Anton Midyukov <antohami@altlinux.org> 1.4.5-alt1
 - Initial feature drm, added Nvidia proprietary driver support
 - Adapted use/repo/main for vm/ targets
