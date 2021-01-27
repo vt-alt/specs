@@ -2,7 +2,7 @@
 
 Name: openssl1.1
 Version: 1.1.1i
-Release: alt1
+Release: alt2
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
 License: OpenSSL
@@ -47,6 +47,7 @@ Patch145: openssl-rh-weak-ciphers.patch
 # Patch149: openssl-rh-evp-kdf.patch (new functionality; not sure)
 # Patch150: openssl-rh-ssh-kdf.patch (new functionality; not sure)
 # Backported fixes including security fixes
+Patch151: openssl-x509_vfy.c-Fix-a-regression-in-find_isser.patch
 
 %define shlib_soversion 1.1
 %define openssldir /var/lib/ssl
@@ -243,6 +244,7 @@ on the command line.
 #%%patch148 -p1 (not needed)
 #%%patch149 -p1 (new functionality; not sure)
 #%%patch150 -p1 (new functionality; not sure)
+%patch151 -p1
 
 find -type f -name \*.orig -delete
 # Skip afalg test.
@@ -466,6 +468,9 @@ LD_LIBRARY_PATH=%buildroot/%_lib \
 %endif
 
 %changelog
+* Mon Jan 18 2021 Stanislav Levin <slev@altlinux.org> 1.1.1i-alt2
+- Backported upstream fix for GH#13739.
+
 * Tue Dec 08 2020 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1i-alt1
 - Updated to 1.1.1i (fixes CVE-2020-1971).
 
