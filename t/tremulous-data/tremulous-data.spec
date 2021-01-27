@@ -1,17 +1,16 @@
-ExclusiveArch: %ix86 x86_64
-
 Name: tremulous-data
 Version: 1.2.0
-Release: alt1
+Release: alt2
 
 Summary: Tremulous - 3D FPS Strategic Shooter - Data files
 License: GPL
 Group: Games/Arcade
-Url: http://tremulous.net
 
+Url: http://tremulous.net
+Source: tremulous-data-%version.tar.bz2
 BuildArch: noarch
 
-Source0: tremulous-data-%version.tar.bz2
+%define tdatadir %_gamesdatadir/tremulous
 
 %description
 Tremulous is a free, open source game that blends a team based FPS with elements
@@ -25,14 +24,17 @@ base defense (to some degree), healing functions and much more...
 This package contains data files needed for Tremulous.
 
 %install
-mkdir -p %buildroot%_gamesdatadir/tremulous
-
-tar -jxf %SOURCE0 -C %buildroot%_gamesdatadir/tremulous
+mkdir -p %buildroot%tdatadir
+tar -jxf %SOURCE0 -C %buildroot%tdatadir
 
 %files
-%_gamesdatadir/tremulous
+%tdatadir
 
 %changelog
+* Sat Oct 05 2019 Michael Shigorin <mike@altlinux.org> 1.2.0-alt2
+- Dropped ExclusiveArch: as tremulous has been built
+  on all of our primary arches
+
 * Wed Aug 05 2018 Pavel Moseev <mars@altlinux.org> 1.2.0-alt1
 - Updated to upstream version 1.2.0-beta
 

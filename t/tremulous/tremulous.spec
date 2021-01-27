@@ -1,7 +1,7 @@
-%define gver 4.7
-%set_gcc_version %gver
+#define gver 4.7
+#set_gcc_version %%gver
 
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le %e2k
 
 %define _user _tremulous
 %define _group _tremulous
@@ -16,17 +16,26 @@ ExclusiveArch: %ix86 x86_64
 %ifarch ppc
 %define __arch ppc
 %endif
+%ifarch ppc64le
+%define __arch ppc64le
+%endif
+%ifarch aarch64
+%define __arch aarch64
+%endif
+%ifarch %e2k
+%define __arch e2k
+%endif
 
 Name: tremulous
 Version: 1.2.0
-Release: alt1
+Release: alt2
 
 Summary: Tremulous - 3D FPS Strategic Shooter
 License: GPL
 Group: Games/Arcade
 Url: http://tremulous.net
 
-Source: tremulous-%version-src.tar.bz2
+Source: tremulous-%version-src.tar
 Source1: tremulous-client.desktop
 Source2: tremulous.xpm
 Source3: tremulous.init
@@ -34,12 +43,27 @@ Source3: tremulous.init
 #	fix for #14027
 Patch0: tremulous-alt-mmap.patch
 Patch1: tremulous-alt-debuginfo-2.patch
+Patch2: tremulous-alt-e2k.patch
+
+# fedora patches
+Patch10: tremulous-1.2.0-dll-overwrite.patch
+Patch11: tremulous-getstatus-dos.patch
+Patch12: tremulous-aarch64.patch
+Patch13: tremulous-i686.patch
 
 Requires: %name-server = %version-%release
 Requires: %name-client = %version-%release
 
 # Automatically added by buildreq on Wed Jun 25 2008
 BuildRequires: esound libX11-devel libXext-devel libopenal-devel libSDL-devel
+
+# instead of bundled ones
+BuildRequires: libcurl-devel
+BuildRequires: libjpeg-devel
+BuildRequires: libvorbis-devel
+BuildRequires: libspeex-devel
+BuildRequires: libspeexdsp-devel
+BuildRequires: zlib-devel
 
 BuildPreReq: libGL-devel libGLU-devel
 
@@ -115,13 +139,38 @@ base defense (to some degree), healing functions and much more...
 Dedicated server.
 
 %prep
-%setup -q
-subst 's,-Werror,,g' src/tools/asm/Makefile
+%setup
+sed -i 's,-Werror,,g' src/tools/asm/Makefile
 %patch0 -p0 
 %patch1 -p2
+%ifarch %e2k
+%patch2 -p2
+%endif
+
+%patch10 -p1 -b .dll-overwrite
+%patch11 -p1 -b .getstatus-dos
+%ifarch aarch64
+%patch12 -p1 -b .aarch64
+%endif
+%patch13 -p1 -b .i686
+
+# Rip out the bundled libraries and use the
+# system versions instead
+rm -r src/SDL12 src/AL src/libcurl src/libspeex src/libs
 
 %build
-%make_build release
+%add_optflags -fno-strict-aliasing -ffast-math
+# the CROSS_COMPILING=1 is a hack to not build q3cc and qvm files
+# since we've stripped out q3cc as this is not Free Software.
+%make_build release \
+	OPTIMIZE="%optflags" \
+	CROSS_COMPILING=1 \
+	USE_CODEC_VORBIS=1 \
+	USE_LOCAL_HEADERS=0 \
+	BUILD_GAME_SO=0 \
+	GENERATE_DEPENDENCIES=0 \
+	USE_INTERNAL_SPEEX=0 \
+	USE_INTERNAL_ZLIB=0
 
 %install
 install -p -D -m644 %SOURCE1 %buildroot%_desktopdir/%name-client.desktop
@@ -187,6 +236,10 @@ install -d %buildroot%_home
 %attr(775,root,%_group) %dir %_home
 
 %changelog
+* Sat Oct 05 2019 Michael Shigorin <mike@altlinux.org> 1.2.0-alt2
+- Build on %%e2k and aarch64 as well (try building on ppc64le either)
+- Pull fedora patches and some spec bits in
+
 * Wed Sep 12 2018 Pavel Moseev <mars@altlinux.org> 1.2.0-alt1
 - Updated to upstream version 1.2.0-beta
 
