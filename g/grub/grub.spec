@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt29.qa1
+Release: alt29.qa2
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -32,6 +32,8 @@ Source11: embedded_grub.cfg
 Source12: grub-entries
 Source13: grub-entries.8
 
+Source14: grub-efi.filetrigger
+
 Patch0: grub-2.02-os-alt.patch
 Patch1: grub-2.00-sysconfig-path-alt.patch
 Patch2: grub-2.02-altlinux-theme.patch
@@ -55,6 +57,8 @@ Patch20: grub-2.02-alt-os-prober-compat.patch
 Patch21: grub-2.02-debian-grub-install-extra-removable.patch
 Patch22: grub-2.02-debian-grub-install-removable-shim.patch
 Patch23: grub-2.02-alt-grub-install-no-fallback-for-removable.patch
+Patch24: grub-2.02-alt-update-russian-translation.patch
+Patch25: grub-2.02-alt-add-translation-for-installer.patch
 
 # add a rhboot/grub-2.02-sb set of patches to ensure SecureBoot safe operation
 # refer to url:  https://github.com/rhboot/grub2/commits/grub-2.02-sb
@@ -226,6 +230,8 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch21 -p1
 %patch22 -p1
 %patch23 -p2
+%patch24 -p2
+%patch25 -p2
 
 #SB patches
 %patch101 -p1
@@ -250,6 +256,9 @@ when one can't disable it easily, doesn't want to, or needs not to.
 
 sed -i "/^AC_INIT(\[GRUB\]/ s/%version[^]]\+/%version-%release/" configure.ac
 sed -i "s/PYTHON:=python/PYTHON:=python3/" autogen.sh
+
+# forced update of translations
+rm -rf po/%name.pot
 
 %build
 ./autogen.sh
@@ -382,6 +391,7 @@ install -pDm755 %SOURCE4  %buildroot%_rpmlibdir/grub.filetrigger
 install -pDm755 %SOURCE6  %buildroot%_sbindir/grub-autoupdate
 %ifarch %efi_arches
 install -pDm755 %SOURCE10 %buildroot%_sbindir/grub-efi-autoupdate
+install -pDm755 %SOURCE14 %buildroot%_rpmlibdir/grub-efi.filetrigger
 %endif
 install -pDm755 %SOURCE12 %buildroot%_sbindir/grub-entries
 
@@ -499,6 +509,7 @@ rm %buildroot%_sysconfdir/grub.d/41_custom
 %endif
 %_sbindir/grub-efi-autoupdate
 %_libdir/grub/%grubefiarch
+%_rpmlibdir/%name-efi.filetrigger
 %endif
 
 %ifarch %ix86 x86_64 ppc64le
@@ -531,6 +542,14 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Wed Jan 27 2021 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa2
+- grub-efi-autoupdate: fix grub update rendering system unbootable
+- grub-efi.filetrigger: add to ensure grub reinstall during shim-signed update
+- provide OS ALT installer messages Russian translation
+  + add alt-add-translation-for-installer patch (underwit@)
+- update grub messages Russian translation
+  + add alt-update-russian-translation patch (underwit@, Olesya Gerasimenko)
+
 * Fri Dec 25 2020 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa1
 - grub-install: add workaround for malformed EFI-firmware implementations
   + add debian-grub-install-removable-shim patch
