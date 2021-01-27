@@ -8,7 +8,7 @@
 %def_disable check
 
 Name: lib%oname
-Version: 2.0.0
+Version: 2.0.1
 Release: alt1
 Summary: AV1 Codec Library
 Group: System/Libraries
@@ -119,6 +119,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir:$(pwd)/BUILD/third_party/googletest/sr
 %doc BUILD/docs/html
 
 %changelog
+* Mon Jan 25 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.1-alt1
+- Updated to upstream version 2.0.1.
+
 * Thu Jul 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.0-alt1
 - Updated to upstream version 2.0.0.
 
