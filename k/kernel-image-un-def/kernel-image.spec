@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
-Release: alt2
+Release: alt1
 epoch:1 
 %define kernel_base_version	5.10
-%define kernel_sublevel .9
+%define kernel_sublevel .10
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -702,6 +702,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Sun Jan 24 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.10-alt1
+- v5.10.10
+
 * Wed Jan 20 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.9-alt2
 - CONFIG_RMI4_* enabled
 
