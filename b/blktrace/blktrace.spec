@@ -1,47 +1,59 @@
+# SPDX-License-Identifier: GPL-2.0-only
+%define _unpackaged_files_terminate_build 1
+
 Name: blktrace
-Version: 1.0.5
-Release: alt1.1
+Version: 1.2.0
+Release: alt1
+Summary: Block queue IO tracer
+License: GPL-2.0-only
+Group: Development/Debuggers
+Url: https://git.kernel.dk/cgit/blktrace/
+Vcs: git://git.kernel.dk/blktrace.git
 
-Summary: Block IO tracer
-License: GPL
-Group: System/Kernel and hardware
-
-Url: http://git.kernel.dk/?p=blktrace.git
 Source: %name-%version.tar
-Packager: Michael Shigorin <mike@altlinux.org>
+BuildRequires: libaio-devel
 
-# Automatically added by buildreq on Sat Jun 14 2008
-BuildRequires: libaio-devel texlive-collection-latexrecommended tex(a4wide.sty)
+# Avoid: "forbidden requires: python-base
+# sisyphus_check: check-deps ERROR: package dependencies violation"
+AutoReqProv: nopython noshebang
 
 %description
-%name can show detailed info about what is happening on a block
-device io queue. This is valuable for diagnosing and fixing
-performance or application problems relating to block layer io.
-
-Authors:
---------
-    Jens Axboe <axboe/kernel.dk>
+blktrace is a block layer IO tracing mechanism which provides detailed
+information about request queue operations up to user space.
 
 %prep
 %setup
 
 %build
-make CFLAGS="%optflags" all docs
+%make_build CFLAGS="%optflags"
+# No building docs to avoid bringing texlive monster.
 
 %install
-make \
-	dest=%buildroot \
-	prefix=%buildroot%prefix \
-	mandir=%buildroot%_mandir \
-	install
+%makeinstall_std \
+	prefix=%prefix \
+	mandir=%_mandir
+
+%check
+%buildroot%_bindir/blkparse -V
+%buildroot%_bindir/btreplay -V
+%buildroot%_bindir/btrecord -V
+%buildroot%_bindir/btt -V
+%buildroot%_bindir/blkiomon -V
+# blktrace itself will just segfault, becasue no access to `/sys/devices/system/cpu/online`.
+# Other proggies do not support `-V`.
 
 %files
-%doc README doc/*.pdf
+%doc README doc/blktrace.tex
 %_bindir/*
 %_man1dir/*
 %_man8dir/*
 
 %changelog
+* Sat Aug 08 2020 Vitaly Chikunov <vt@altlinux.org> 1.2.0-alt1
+- Update to blktrace-1.2.0-37-ga021a33 (2020-05-13).
+- spec: Do not build blktrace.pdf (read blktrace.tex instead).
+- spec: Remove python dependency for rarely useful bno_plot.py.
+
 * Mon Mar 12 2018 Igor Vlasenko <viy@altlinux.ru> 1.0.5-alt1.1
 - NMU: fixed build with new texlive
 
