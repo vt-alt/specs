@@ -1,14 +1,14 @@
 %def_with libidn2
 
 Name: dnsmasq
-Version: 2.80
+Version: 2.83
 
-Release: alt3
+Release: alt1
 Summary: A lightweight caching nameserver
-License: %gpl2plus
+License: GPLv2+
 Group: System/Servers
 Url: http://www.thekelleys.org.uk/dnsmasq
-# git://thekelleys.org.uk/dnsmasq.git
+Vcs: git://thekelleys.org.uk/dnsmasq.git
 Source0: %name-%version.tar
 Source1: %name.init
 Source2: %name.sysconfig
@@ -17,7 +17,6 @@ Source4: %name.service
 Patch: %name-%version-%release.patch
 
 BuildPreReq: glibc-kernheaders
-BuildRequires(pre): rpm-build-licenses
 
 # IDN
 %if_with libidn2
@@ -113,7 +112,7 @@ fi
 fi
 # Create dnsmasq user
 groupadd -r -f _dnsmasq ||:
-useradd -r -g _dnsmasq -d /dev/null -s /dev/null -n _dnsmasq >/dev/null 2>&1 ||:
+useradd -r -g _dnsmasq -d /dev/null -s /dev/null -N _dnsmasq >/dev/null 2>&1 ||:
 
 %post
 %post_service %name
@@ -139,6 +138,19 @@ useradd -r -g _dnsmasq -d /dev/null -s /dev/null -n _dnsmasq >/dev/null 2>&1 ||:
 %_man1dir/dhcp_*
 
 %changelog
+* Fri Jan 22 2021 Mikhail Efremov <sem@altlinux.org> 2.83-alt1
+- Use useradd -N instead of -n.
+- Updated to 2.83 (fixes: CVE-2020-25681, CVE-2020-25682, CVE-2020-25683,
+    CVE-2020-25684, CVE-2020-25685, CVE-2020-25686, CVE-2020-25687).
+
+* Mon Jul 27 2020 Mikhail Efremov <sem@altlinux.org> 2.82-alt1
+- Updated to 2.82.
+
+* Mon Apr 13 2020 Mikhail Efremov <sem@altlinux.org> 2.81-alt1
+- Add Vcs tag.
+- Don't use rpm-build-licenses.
+- Updated to 2.81.
+
 * Thu Aug 15 2019 Mikhail Efremov <sem@altlinux.org> 2.80-alt3
 - Patches from upstream:
   + Fix breakage of dhcp_lease_time utility.
