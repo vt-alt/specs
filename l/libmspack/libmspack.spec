@@ -1,6 +1,6 @@
 Name: libmspack
 Version: 0.6
-Release: alt1
+Release: alt2
 
 Summary: Compressors and decompressors for Microsoft compression formats
 
@@ -12,6 +12,8 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # Source-url: https://github.com/kyz/libmspack/archive/v%{version}alpha.tar.gz
 Source: %name-%version.tar
+
+Patch1: upstream-CVE-2018-18584.patch
 
 BuildRequires: gcc
 
@@ -45,6 +47,7 @@ based on %name.
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 cd libmspack
@@ -75,6 +78,9 @@ cd libmspack
 %_bindir/oabextract
 
 %changelog
+* Thu Jan 21 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6-alt2
+- Applied security fix from upstream (Fixes CVE-2018-18584).
+
 * Tue Jul 03 2018 Vitaly Lipatov <lav@altlinux.ru> 0.6-alt1
 - new version 0.6 (with rpmrb script)
 
