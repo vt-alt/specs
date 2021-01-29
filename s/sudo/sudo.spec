@@ -1,5 +1,5 @@
 Name: sudo
-Version: 1.8.31p2
+Version: 1.9.5p2
 Release: alt1
 Epoch: 1
 
@@ -22,6 +22,11 @@ BuildRequires: flex libpam-devel perl-podlators
 # Due check of man pages type
 BuildRequires: /usr/bin/nroff
 
+BuildRequires: libaudit-devel libcap-devel
+BuildRequires: libselinux-devel
+
+BuildRequires: python3-dev
+
 %define _libexecdir %_prefix/libexec/sudo
 
 Summary(ru_RU.UTF-8): Запускает команды в контексте другого пользователя
@@ -38,6 +43,23 @@ Sudo - программа, разработанная в помощь систе
 с ведением протокола их деятельности.  Основная идея - делегировать
 как можно меньше прав, но ровно столько, сколько необходимо для
 решения поставленных задач.
+
+%package logsrvd
+Summary: High-performance log server for %name
+Group: System/Servers
+Requires: %name = %epoch:%version-%release
+
+%description logsrvd
+%name-logsrvd is a high-performance log server that accepts event and I/O logs from sudo.
+It can be used to implement centralized logging of sudo logs.
+
+%package python
+Summary: Python plugin for %name
+Group: Development/Python
+Requires: %name = %epoch:%version-%release
+
+%description python
+The %name-python package contains sudo python policy plugin.
 
 %package devel
 Summary: Development files for %name
@@ -74,6 +96,9 @@ configure_options='
 --with-editor=/bin/vitmp
 --with-sendmail=/usr/sbin/sendmail
 --with-sssd
+--with-selinux
+--with-linux-audit
+--enable-python
 --docdir=%_datadir/doc/%name-%version
 --with-plugindir=%_libdir/sudo
 --libexecdir=%_libdir
@@ -165,12 +190,15 @@ fi
 
 %files -f sudo_all.lang
 %config %_controldir/sudo*
+%attr(600,root,root) %config(noreplace) %_sysconfdir/sudo.conf
 %attr(400,root,root) %config(noreplace) %_sysconfdir/sudoers
 %attr(600,root,root) %config(noreplace) %_sysconfdir/pam.d/sudo
 %_bindir/sudoedit
 %dir %_libdir/sudo
 %_libdir/*.so.*
+%_libdir/sudo/sesh
 %_libdir/sudo/*.so*
+%exclude %_libdir/sudo/python_plugin.so
 %attr(700,root,root) %_bindir/sudo
 %attr(700,root,root) %_bindir/sudoreplay
 %attr(755,root,root) %_sbindir/visudo
@@ -178,7 +206,25 @@ fi
 %_bindir/cvtsudoers
 %_mandir/man?/*
 %exclude %_man8dir/sudo_plugin.8*
+%exclude %_man8dir/sudo_plugin_python.8*
+%exclude %_man5dir/sudo_logsrv.proto.5*
+%exclude %_man5dir/sudo_logsrvd.conf.5*
+%exclude %_man8dir/sudo_logsrvd.8*
+%exclude %_man8dir/sudo_sendlog.8*
 %_datadir/doc/%name-%version/
+
+%files logsrvd
+%attr(600,root,root) %config(noreplace) %_sysconfdir/sudo_logsrvd.conf
+%_sbindir/sudo_logsrvd
+%_sbindir/sudo_sendlog
+%_man5dir/sudo_logsrv.proto.5*
+%_man5dir/sudo_logsrvd.conf.5*
+%_man8dir/sudo_logsrvd.8*
+%_man8dir/sudo_sendlog.8*
+
+%files python
+%_libdir/sudo/python_plugin.so
+%_man8dir/sudo_plugin_python.8*
 
 %files devel
 %doc plugins/sample/sample_plugin.c
@@ -186,6 +232,22 @@ fi
 %_man8dir/sudo_plugin.8*
 
 %changelog
+* Wed Jan 27 2021 Evgeny Sinelnikov <sin@altlinux.org> 1:1.9.5p2-alt1
+- Update to latest security release (fixes: CVE-2021-3156) (closes: 39615)
+- Added sudo-python package with Sudo Python Plugin API
+- Added sudo-logsrvd package with High-performance log server
+
+* Fri Nov 13 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:1.9.3p1-alt1
+- Update to latest release
+- Enable python policy support
+
+* Sun Aug 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:1.9.2-alt1
+- Update to latest release of the sudo 1.9 (Fixes: CVE-2019-19232, CVE-2019-19234)
+- Added sudo event and I/O log server
+- Added send sudo I/O log to log server utility
+- Added selinux support
+- Added native audit support
+
 * Sun Aug 30 2020 Evgeny Sinelnikov <sin@altlinux.org> 1:1.8.31p2-alt1
 - Update to latest release (Fixes: CVE-2019-18634)
 
