@@ -1,4 +1,4 @@
-%define kernel_base_version 5.4
+%define kernel_base_version 5.5
 %define kernel_source kernel-source-%kernel_base_version
 
 Name: glibc-kernheaders
@@ -42,19 +42,16 @@ Patch2: 0002-uapi-move-struct-reiserfs_security_handle-out-from-l.patch
 Patch3: 0003-uapi-fix-linux-nfc.h-userspace-compilation-errors.patch
 Patch4: 0004-uapi-fix-linux-vm_sockets.h-userspace-compilation-er.patch
 Patch5: 0005-uapi-fix-linux-sctp.h-userspace-compilation-errors.patch
-Patch6: 0006-uapi-fix-asm-ipcbuf.h-userspace-compilation-errors.patch
-Patch7: 0007-uapi-fix-asm-msgbuf.h-userspace-compilation-errors.patch
-Patch8: 0008-uapi-fix-asm-sembuf.h-userspace-compilation-errors.patch
-Patch9: 0009-uapi-fix-asm-shmbuf.h-userspace-compilation-errors.patch
-Patch10: 0010-uapi-fix-another-asm-shmbuf.h-userspace-compilation-.patch
-Patch11: 0011-uapi-fix-asm-signal.h-userspace-compilation-errors.patch
-Patch12: 0012-uapi-introduce-__kernel_uapi_size_t.patch
-Patch13: 0013-x86-uapi-fix-asm-signal.h-userspace-compilation-erro.patch
-Patch14: 0014-uapi-fix-linux-kexec.h-userspace-compilation-errors.patch
-Patch15: 0015-uapi-fix-linux-omapfb.h-userspace-compilation-error.patch
-Patch16: 0016-uapi-fix-linux-fsmap.h-userspace-compilation-error.patch
-Patch17: 0017-uapi-fix-linux-usb-audio.h-userspace-compilation-err.patch
-Patch18: 0018-uapi-fix-linux-sysctl.h-Obsolete-types-detected-warn.patch
+Patch6: 0006-uapi-fix-asm-shmbuf.h-userspace-compilation-errors.patch
+Patch7: 0007-uapi-fix-another-asm-shmbuf.h-userspace-compilation-.patch
+Patch8: 0008-uapi-fix-asm-signal.h-userspace-compilation-errors.patch
+Patch9: 0009-uapi-introduce-__kernel_uapi_size_t.patch
+Patch10: 0010-x86-uapi-fix-asm-signal.h-userspace-compilation-erro.patch
+Patch11: 0011-uapi-fix-linux-kexec.h-userspace-compilation-errors.patch
+Patch12: 0012-uapi-fix-linux-omapfb.h-userspace-compilation-error.patch
+Patch13: 0013-uapi-fix-linux-fsmap.h-userspace-compilation-error.patch
+Patch14: 0014-uapi-fix-linux-usb-audio.h-userspace-compilation-err.patch
+Patch15: 0015-uapi-fix-linux-sysctl.h-Obsolete-types-detected-warn.patch
 
 BuildRequires: rpm-build-kernel rsync
 BuildRequires: %kernel_source = 1.0.0
@@ -189,9 +186,6 @@ cd %kernel_source
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
 
 # No exceptions, please!
 sed -i 's/^no-export-headers/#&/' include/uapi/Kbuild
@@ -329,6 +323,9 @@ cd - > /dev/null
 %hdr_dir/include/asm
 
 %changelog
+* Mon Jan 27 2020 Dmitry V. Levin <ldv@altlinux.org> 5.5-alt1
+- v5.4 -> v5.5.
+
 * Mon Nov 25 2019 Dmitry V. Levin <ldv@altlinux.org> 5.4-alt1
 - v5.3 -> v5.4.
 
@@ -674,10 +671,10 @@ cd - > /dev/null
 * Thu Oct 10 2002 Arjan van de Ven <arjanv@redhat.com
 - added support for mixed 32/64 headers
 
-* Tue Mar 21 2002 Arjan van de Ven <arjanv@redhat.com
+* Thu Mar 21 2002 Arjan van de Ven <arjanv@redhat.com
 - update ethtool and other network ioctls
 
-* Tue Feb 10 2002 Arjan van de Ven <arjanv@redhat.com
+* Sun Feb 10 2002 Arjan van de Ven <arjanv@redhat.com
 - removed autoconf.h content
 
 * Sun Feb 10 2002 Arjan van de Ven <arjanv@redhat.com
