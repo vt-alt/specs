@@ -13,7 +13,7 @@
 
 Name: nagios
 Version: 3.0.6
-Release: alt13
+Release: alt15
 
 Summary: Services and network monitoring system
 License: GPL
@@ -53,6 +53,10 @@ Patch10: nagios-3.0.2-nagiosdevlist-disable-contactgroup-svc-notifications.patch
 Patch11: nagios-3.0.6-alt-warnings.patch
 Patch12: nagios-3.0.6-alt-ignore-empty-hostgroups.patch
 Patch13: nagios-3.0.6-alt-format-comments.patch
+Patch14: nagios-3.0.6-CVE-2014-1878.patch
+Patch15: nagios-3.0.6-CVE-2016-9566.patch
+Patch16: nagios-3.0.6-CVE-2016-8641.patch
+Patch17: nagios-3.0.6-CVE-2017-12847.patch
 
 ###########################################
 # Provide the abstract service names (which are virtual pkg names),
@@ -172,6 +176,10 @@ Virtual package for complete install of Nagios(R) monitoring system.
 %patch11 -p1 -b .p11
 %patch12 -p2 -b .p12
 %patch13 -p2 -b .p13
+%patch14 -p2 -b .p14
+%patch15 -p2 -b .p15
+%patch16 -p2 -b .p16
+%patch17 -p2 -b .p17
 
 %build
 PATH=$PATH:/usr/sbin
@@ -222,7 +230,6 @@ mkdir -p %buildroot/%extinfo_cfgdir
 mkdir -p %buildroot/%_localstatedir/%name/tmp
 mkdir -p %buildroot/%_spooldir/%name
 mkdir -p %buildroot/var/run/%name
-/bin/touch %buildroot/var/run/%name/%name.pid
 
 #instal docs
 mkdir -p -m 0755 %buildroot/%_docdir/%name-%version/html
@@ -331,7 +338,6 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 
 %attr(2751,%nagios_usr,%nagios_grp) %dir %_localstatedir/%name
 %attr(2771,root,%nagios_grp) %dir /var/run/nagios
-%attr(0644,%nagios_usr,%nagios_grp) /var/run/nagios/%name.pid
 %attr(2751,%nagios_usr,%nagios_grp) %dir %_localstatedir/%name/rw
 %attr(0700,%nagios_usr,%nagios_grp) %dir %_localstatedir/%name/tmp
 %attr(2751,%nagios_usr,%nagios_grp) %dir %_spooldir/%name
@@ -390,6 +396,17 @@ subst 's|# Nagios(R) web-interface settings||' /etc/lighttpd/lighttpd.conf
 %files full
 
 %changelog
+* Wed Jan 27 2021 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt15
+- Fixes:
+  + CVE-2017-12847 Kill arbitrary processes by leveraging access to PID file.
+- Don't install the PID file.
+
+* Wed Jan 27 2021 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt14
+- Fixes:
+  + CVE-2016-8641 Privilege escalation via symbolic links.
+  + CVE-2016-9566 Gaining root privileges via a symlink attack on the log file.
+  + CVE-2014-1878 Possible segfault in cmd.cgi.
+
 * Wed May 13 2020 Paul Wolneykien <manowar@altlinux.org> 3.0.6-alt13
 - Fix: Require "authn_core" module in 100-nagios.mods.conf.
 
