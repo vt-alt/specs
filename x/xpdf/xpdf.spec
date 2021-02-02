@@ -1,11 +1,11 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: xpdf
-Version: 4.02
+Version: 4.03
 Release: alt1
 
 Summary: The PDF viewer and tools
-License: GPLv2 GPLv3 BSD
+License: GPLv2 or GPLv3
 Group: Office
 Packager: Andrew Savchenko <bircoph@altlinux.org>
 
@@ -30,13 +30,12 @@ Source12: xpdf-turkish.tar
 Patch1: xpdf-automagic.patch
 Patch2: xpdf-visibility.patch
 Patch3: xpdf-shared-libs.patch
-Patch4: xpdf-CVE-2019-17064.patch
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: gcc-c++ cmake
 BuildRequires: libcups-devel qt5-base-devel libpaper-devel libpng-devel
 BuildRequires: libfreetype-devel fontconfig-devel zlib-devel
-BuildRequires: desktop-file-utils inkscape >= 1.0
+BuildRequires: desktop-file-utils librsvg-utils
 
 # xpdf is a virtual package with is a full setup of xpdf
 Requires: %name-viewer = %EVR %name-utils = %EVR
@@ -91,6 +90,7 @@ Summary: The PDF viewer and tools --- i18n encoding maps
 Group: Office
 BuildArch: noarch
 Obsoletes: xpdf-chinese-simplified xpdf-chinese-traditional xpdf-japanese xpdf-korean
+License: (GPLv2 or GPLv3) and BSD
 
 %description i18n
 %desc
@@ -117,7 +117,6 @@ viewer.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 sed -i \
     "s|/usr/local/etc|%_sysconfdir|;
@@ -156,7 +155,7 @@ sizes="16 22 24 32 36 48 64 72 96 128 192 256 384 512 1024"
 cd xpdf-qt
 mkdir $sizes
 for i in $sizes; do
-    inkscape xpdf-icon.svg -w $i -h $i -o $i/xpdf.png
+    rsvg-convert xpdf-icon.svg -w $i -h $i -o $i/xpdf.png
 done
 
 %install
@@ -199,7 +198,7 @@ done
 %files
 
 %files common
-%doc CHANGES README
+%doc ANNOUNCE CHANGES README
 %config(noreplace) %_sysconfdir/xpdfrc
 %_man5dir/*
 
@@ -222,6 +221,14 @@ done
 %_iconsdir/hicolor/*/apps/*
 
 %changelog
+* Sat Jan 30 2021 Andrew Savchenko <bircoph@altlinux.org> 4.03-alt1
+- Version bump
+- Many bugfixes, including security, including, but not limited to:
+  Fixes: CVE-2020-25725, CVE-2020-35376
+
+* Mon Nov 09 2020 Andrew Savchenko <bircoph@altlinux.org> 4.02-alt2
+- Switch from inkscape to rsvg-convert for svg->png generation.
+
 * Sun Mar 08 2020 Andrey Savchenko <bircoph@altlinux.org> 4.02-alt1
 - Major version bump and repackaging.
 
