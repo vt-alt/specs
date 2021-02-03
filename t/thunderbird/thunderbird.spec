@@ -9,10 +9,10 @@
 
 %define enigmail_version  2.1.7
 %define gdata_version     2.6
-%define llvm_version      10.0
+%define llvm_version      11.0
 
 Name: 	 thunderbird
-Version: 78.5.0
+Version: 78.7.0
 Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -35,7 +35,6 @@ Source8: thunderbird-wayland.desktop
 
 Patch11: thunderbird-alt-allow-send-in-windows-1251.patch
 Patch12: alt-use-vorbis-on-arm-too.patch
-Patch13: thunderbird-fix-guess-timezone-in-calendar.patch
 
 Patch21: mozilla-1353817.patch
 Patch23: build-aarch64-skia.patch
@@ -53,6 +52,7 @@ Patch38: Bug-628252-os2.cc-fails-to-compile-against-GCC-4.6-m.patch
 Patch39: Load-dependent-libraries-with-their-real-path-to-avo.patch
 Patch40: Properly-launch-applications-set-in-HOME-.mailcap.patch
 Patch41: fix-function-nsMsgComposeAndSend-to-respect-Replo.patch
+Patch42: thunderbird-update-packed_simd-for-rust-1.48.patch
 
 Patch120: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
 Patch121: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
@@ -264,7 +264,6 @@ tar -xf %SOURCE6
 
 %patch11 -p2
 %patch12 -p2
-%patch13 -p2
 %patch21 -p2
 %patch23 -p2
 %ifarch %arm
@@ -284,6 +283,7 @@ tar -xf %SOURCE6
 %patch39 -p1
 %patch40 -p1
 %patch41 -p1
+#patch42 -p0
 
 #patch120 -p2
 #patch121 -p2
@@ -657,6 +657,47 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Wed Jan 27 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.0-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Wed Jan 27 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.0-alt1
+- New version (78.7.0).
+- Security fixes:
+  + CVE-2021-23953 Cross-origin information leakage via redirected PDF requests
+  + CVE-2021-23954 Type confusion when using logical assignment operators in JavaScript switch statements
+  + CVE-2020-15685 IMAP Response Injection when using STARTTLS
+  + CVE-2020-26976 HTTPS pages could have been intercepted by a registered service worker when they should not have been
+  + CVE-2021-23960 Use-after-poison for incorrectly redeclared JavaScript variables during GC
+  + CVE-2021-23964 Memory safety bugs fixed in Thunderbird 78.7
+
+* Wed Jan 13 2021 Andrey Cherepanov <cas@altlinux.org> 78.6.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Tue Jan 12 2021 Andrey Cherepanov <cas@altlinux.org> 78.6.1-alt1
+- New version (78.6.1).
+- Security fixes:
+  + CVE-2020-16044 Use-after-free write when handling a malicious COOKIE-ECHO SCTP chunk
+
+* Tue Dec 15 2020 Andrey Cherepanov <cas@altlinux.org> 78.6.0-alt1
+- New version (78.6.0).
+- Security fixes:
+  + CVE-2020-16042 Operations on a BigInt could have caused uninitialized memory to be exposed
+  + CVE-2020-26971 Heap buffer overflow in WebGL
+  + CVE-2020-26973 CSS Sanitizer performed incorrect sanitization
+  + CVE-2020-26974 Incorrect cast of StyleGenericFlexBasis resulted in a heap use-after-free
+  + CVE-2020-26978 Internal network hosts could have been probed by a malicious webpage
+  + CVE-2020-35111 The proxy.onRequest API did not catch view-source URLs
+  + CVE-2020-35112 Opening an extension-less download may have inadvertently launched an executable instead
+  + CVE-2020-35113 Memory safety bugs fixed in Thunderbird 78.6
+
+* Thu Dec 03 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Wed Dec 02 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.1-alt1
+- New version (78.5.1).
+- Security fixes:
+  + CVE-2020-26970 Stack overflow due to incorrect parsing of SMTP server response codes
+
 * Sat Nov 21 2020 Andrey Cherepanov <cas@altlinux.org> 78.5.0-alt0.1.p9
 - Backport new version to p9 branch.
 
