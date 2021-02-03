@@ -1,6 +1,6 @@
 Name: task-rutoken
 Version: 1.0
-Release: alt4
+Release: alt5
 
 Summary: Metapackage to install all software for Rutoken support
 License: GPL
@@ -13,7 +13,6 @@ Requires: librtpkcs11ecp
 %ifarch i586 x86_64
 Requires: rtadmin
 Requires: openssl-engines-rutoken
-Requires: rutoken-plugin
 %endif
 Requires: pcsc-lite-ccid
 
@@ -22,6 +21,9 @@ Metapackage to install all software for Rutoken support
 
 %files
 %changelog
+* Thu Jan 21 2021 Andrey Cherepanov <cas@altlinux.org> 1.0-alt5
+- Do not require missing rutoken-plugin.
+
 * Wed Oct 16 2019 Michael Shigorin <mike@altlinux.org> 1.0-alt4
 - Sync ExclusiveArch: list with librtpkcs11ecp 1.9.12.0-alt1
 - Restrict x86-only dependencies yet
