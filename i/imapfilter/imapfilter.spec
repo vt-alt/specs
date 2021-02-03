@@ -1,6 +1,6 @@
 Name: imapfilter
-Version: 2.6.12
-Release: alt1
+Version: 2.7.5
+Release: alt2
 
 Summary: mail filtering utility
 License: BSD
@@ -12,7 +12,7 @@ Url: https://github.com/lefcha/imapfilter
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
-BuildRequires: lua-devel libpcre-devel libssl-devel
+BuildRequires: lua-devel libpcre2-devel libssl-devel
 
 %description
 %name is a mail filtering utility.  It connects to remote mail servers
@@ -38,6 +38,12 @@ make BINDIR=%buildroot%_bindir SHAREDIR=%buildroot%_datadir/%name MANDIR=%buildr
 %_mandir/*/*
 
 %changelog
+* Fri Jan 29 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.7.5-alt2
+- Updated certificate paths to ALT-specific values.
+
+* Fri Jan 22 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.7.5-alt1
+- 2.7.5 (Fixes CVE-2016-10937).
+
 * Tue Jan 29 2019 Vladimir Lettiev <crux@altlinux.org> 2.6.12-alt1
 - 2.6.12
 
