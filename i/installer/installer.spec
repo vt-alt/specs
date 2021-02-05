@@ -1,6 +1,6 @@
 Name: installer
-Version: 1.10.6
-Release: alt2
+Version: 1.10.7
+Release: alt1
 
 Summary: Installer common parts
 License: GPLv2+
@@ -111,6 +111,9 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Thu Jan 28 2021 Oleg Solovyov <mcpain@altlinux.org> 1.10.7-alt1
+- fix crypttab generation (Closes: #39581)
+
 * Mon Dec 14 2020 Anton Midyukov <antohami@altlinux.org> 1.10.6-alt2
 - Set locale to last $LANG (needed for rEFInd)
 
