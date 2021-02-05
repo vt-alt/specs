@@ -2,7 +2,7 @@
 
 Name: mount-tray
 Version: 1.2.5
-Release: alt6
+Release: alt7
 
 Summary: udisks based removable device mounter
 License: GPLv2
@@ -11,14 +11,13 @@ Url: https://github.com/h4tr3d/mount-tray
 Packager: Evgenii Terechkov <evg@altlinux.org>
 
 Source0: %name-%version.tar
+Patch0: %name-%version-alt.patch
 
-BuildRequires: gcc-c++ libudev-devel librsvg-utils
+BuildRequires: gcc-c++ libudev-devel
 %if_enabled qt5
 BuildRequires: qt5-base-devel
-Requires: libqt5-svg
 %else
 BuildRequires: libqt4-devel
-Requires: libqt4-svg
 %endif
 Requires: udisks2
 
@@ -31,6 +30,7 @@ pcmanfm).
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %if_enabled qt5
@@ -43,7 +43,6 @@ pcmanfm).
 %install
 install -pDm 755 %name %buildroot%_bindir/%name
 install -pDm 644 %name.desktop %buildroot%_desktopdir/%name.desktop
-rsvg-convert -d 2400 -z 2.0 -a -o images/%name.png images/icon.svgz
 install -pDm 644 images/%name.png %buildroot%_pixmapsdir/%name.png
 
 %files
@@ -53,6 +52,11 @@ install -pDm 644 images/%name.png %buildroot%_pixmapsdir/%name.png
 %doc COPY
 
 %changelog
+* Wed Jan 27 2021 Dmitriy Khanzhin <jinn@altlinux.org> 1.2.5-alt7
+- Use tray icon in png format (ALT #39566)
+- Restore patch
+- Remove [Build]Requires no longer needed
+
 * Thu Jan 07 2021 Dmitriy Khanzhin <jinn@altlinux.org> 1.2.5-alt6
 - Add application icon
 - Add Requires: udisks2
