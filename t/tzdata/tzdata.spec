@@ -1,6 +1,6 @@
 Name: tzdata
-Version: 2020e
-Release: alt3
+Version: 2021a
+Release: alt1
 
 Summary: Timezone data
 # tzdata itself is Public Domain, but tzupdate is GPLv2+,
@@ -98,6 +98,12 @@ diff -u expected output || {
 %srcdir/
 
 %changelog
+* Sun Jan 24 2021 Dmitry V. Levin <ldv@altlinux.org> 2021a-alt1
+- 2020f -> 2021a.
+
+* Tue Dec 29 2020 Dmitry V. Levin <ldv@altlinux.org> 2020f-alt1
+- 2020e-1-g15e0ac3 -> 2020f (no changes).
+
 * Fri Dec 25 2020 Dmitry V. Levin <ldv@altlinux.org> 2020e-alt3
 - Use "zic -b fat" for old branches (see ALT#39164).
 
