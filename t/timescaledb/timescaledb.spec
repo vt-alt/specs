@@ -2,8 +2,8 @@
 %define pg_ver %(c=%{full_ver}; echo ${c%%.*})
 
 Name: timescaledb
-Version: 2.0.0
-Release: alt1
+Version: 2.0.1
+Release: alt2
 Summary: Open-source time-series database powered by PostgreSQL
 Group: Databases
 License: Apache-2.0
@@ -50,12 +50,22 @@ echo %major_ver
 %install
 %cmakeinstall_std
 
+%post -n postgresql%pg_ver-%name
+echo "Execute the following psql command inside any database that you want to update:"
+echo "ALTER EXTENSION timescaledb UPDATE;                                            "
+
 %files -n postgresql%pg_ver-%name
 %doc README.md LICENSE-APACHE
 %_libdir/pgsql/*
 %_datadir/pgsql/extension/*
 
 %changelog
+* Mon Feb 08 2021 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt2
+- add update instruction to %%post
+
+* Fri Jan 29 2021 Alexey Shabalin <shaba@altlinux.org> 2.0.1-alt1
+- new version 2.0.1
+
 * Fri Jan 08 2021 Alexey Shabalin <shaba@altlinux.org> 2.0.0-alt1
 - new version 2.0.0
 
