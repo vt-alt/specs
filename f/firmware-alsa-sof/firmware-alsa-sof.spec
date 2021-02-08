@@ -1,7 +1,7 @@
 %global _firmwarepath  /lib/firmware
 Summary: Firmware and topology files for Sound Open Firmware project
 Name: firmware-alsa-sof
-Version: 1.4.2
+Version: 1.6.1
 Release: alt1
 # See later in the spec for a breakdown of licensing
 License: BSD
@@ -26,12 +26,11 @@ This package contains the debug files for the Sound Open Firmware project.
 %prep
 %setup
 
-# add missing symlink
-ln -s v1.4.2/intel-signed/sof-cnl-v1.4.2.ri lib/firmware/intel/sof/sof-cml.ri
-
 %build
+
 %install
 mkdir -p  %buildroot%_firmwarepath
+export SOF_VERSION=v%version
 ROOT=%buildroot ./go.sh
 # remove NXP firmware files
 rm -rf %buildroot%_firmwarepath/nxp
@@ -39,6 +38,8 @@ rm -rf %buildroot%_firmwarepath/nxp
 # gather files and directories
 FILEDIR=$(pwd)
 pushd %buildroot/%_firmwarepath
+# remove all broken symlinks
+find . -xtype l -type l -print -delete
 find -P . -name "*.ri" | sed -e '/^.$/d' > $FILEDIR/alsa-sof-firmware.files
 find -P . -name "*.tplg" | sed -e '/^.$/d' >> $FILEDIR/alsa-sof-firmware.files
 find -P . -name "*.ldc" | sed -e '/^.$/d' > $FILEDIR/alsa-sof-firmware.debug-files
@@ -64,6 +65,9 @@ cat alsa-sof-firmware.files
 %files debug -f alsa-sof-firmware.debug-files
 
 %changelog
+* Fri Feb 05 2021 Anton Farygin <rider@altlinux.org> 1.6.1-alt1
+- 1.6.1
+
 * Mon Apr 27 2020 Anton Farygin <rider@altlinux.ru> 1.4.2-alt1
 - first build for ALT, based on Fedora package
 
