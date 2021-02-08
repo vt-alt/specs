@@ -1,16 +1,15 @@
-%define  snapshot  20190424
+%define  snapshot  20210112
 %define  addonsdir %python_sitelibdir/odoo/addons
 
 Name: 	 odoo
-Version: 12.0
-Release: alt2.%snapshot
+Version: 14.0
+Release: alt1.%snapshot
 
 Summary: Odoo is a suite of web based open source business apps
-
-License: LGPLv3
+License: LGPL-3.0
 Group:   System/Servers
 URL:     http://www.odoo.com/
-# Git: https://github.com/odoo/odoo (branch: 12.0)
+# Git: https://github.com/odoo/odoo (branch: 14.0)
 
 Source0: %name.tar
 Source1: odoo.service
@@ -39,13 +38,14 @@ Provides:  openerp-httpd-fonts-access = %version-%release
 Obsoletes: openerp-httpd-fonts-access < %version-%release
 
 %filter_from_requires /python3(xmlrpclib)/d
-%py3_requires feedparser gevent mako mock ofxparse PIL psutil pydot ldap pyparsing serial usb qrcode vatnumber vobject xlsxwriter xlwt num2words phonenumbers
-Requires: python3-module-suds-jurko
+%filter_from_requires /python3(odoo.addons.hw_drivers.tools)/d
+%py3_requires feedparser gevent mako mock ofxparse PIL psutil pydot ldap pyparsing serial usb qrcode vatnumber vobject xlsxwriter xlwt num2words phonenumbers sassc
+Requires: python3-module-suds
 Requires: wkhtmltopdf
 Requires: lessjs >= 3.0.0
 
 %description
-Server package for OpenERP, the version 7 branch.
+Server package for OpenERP.
 
 OpenERP is a free Enterprise Resource Planning and Customer Relationship
 Management software. It is mainly developed to meet changing needs.
@@ -108,6 +108,9 @@ install -d %buildroot%_spooldir/odoo
 install -d %buildroot%_runtimedir/odoo
 install -d %buildroot%_sharedstatedir/odoo
 
+# Disable python2 requirement
+subst 's|^#!.*env python2$|#!%__python3|' %buildroot%python3_sitelibdir/odoo/addons/mail/static/scripts/odoo-mailgate.py
+
 %pre
 getent group odoo > /dev/null || /usr/sbin/groupadd -r odoo
 getent passwd _odoo > /dev/null || \
@@ -137,6 +140,13 @@ getent passwd _odoo > /dev/null || \
 #%%attr(-,openerp,openerp) %ghost %_logdir/openerp/openerp-server.log
 
 %changelog
+* Tue Jan 12 2021 Andrey Cherepanov <cas@altlinux.org> 14.0-alt1.20210112
+- New version.
+- Disable python2 requirement (ALT #39287).
+
+* Tue Nov 10 2020 Vitaly Lipatov <lav@altlinux.ru> 12.0-alt3.20190424
+- NMU: requires: s/suds-jurko/suds/
+
 * Tue Apr 30 2019 Andrey Cherepanov <cas@altlinux.org> 12.0-alt2.20190424
 - Fix license.
 
