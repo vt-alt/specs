@@ -9,7 +9,7 @@
 
 Name: sssd
 Version: 2.4.0
-Release: alt2
+Release: alt3
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -42,6 +42,7 @@ Patch: %name-%version-alt.patch
 %define gpocachepath %sssdstatedir/gpo_cache
 %global secdbpath %sssdstatedir/secrets
 %define deskprofilepath %sssdstatedir/deskprofile
+%define dotcachepath %sssdstatedir/.cache
 
 %define sssd_user _sssd
 
@@ -494,6 +495,7 @@ find %buildroot -name "*.la" -exec rm -f {} \;
 rm -Rf %buildroot%_docdir/%name
 
 mkdir -p %buildroot%pubconfpath/krb5.include.d
+mkdir -p %buildroot%dotcachepath
 
 # Add alternatives for idmap-plugin
 mkdir -p %buildroot/%_altdir
@@ -597,6 +599,7 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %attr(750,%sssd_user,root) %dir %pipepath/private
 %attr(755,%sssd_user,%sssd_user) %dir %gpocachepath
 %attr(755,%sssd_user,%sssd_user) %dir %pubconfpath
+%attr(755,%sssd_user,%sssd_user) %dir %dotcachepath
 %attr(770,root,%sssd_user) %dir %_logdir/%name
 %attr(750,root,%sssd_user) %dir %_sysconfdir/sssd
 %attr(750,root,%sssd_user) %dir %_sysconfdir/sssd/conf.d
@@ -790,6 +793,12 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Tue Feb 02 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.0-alt3
+- Add krb5_use_subdomain_realm=True to support upnSuffixes for trusted domains
+- Allow to set case_sensitive=Preserving in subdomain section
+- Add auto_private_groups to subdomain_inherit
+- Add /var/lib/sss/.cache directory for gencache.tdb using samba gpo libraries
+
 * Thu Nov 12 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.4.0-alt2
 - Reapply patch with ignore GPO if SecEdit/GptTmpl.inf is missing
 
