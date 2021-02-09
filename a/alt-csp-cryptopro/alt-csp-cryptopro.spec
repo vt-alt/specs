@@ -1,5 +1,5 @@
 Name: alt-csp-cryptopro
-Version: 0.0.3
+Version: 0.0.5
 Release: alt1
 
 Group: File tools
@@ -15,9 +15,9 @@ BuildRequires: quazip-qt5-devel
 BuildRequires: qt5-tools-devel
 
 Provides: alt-csp-cryptopro-mate = %EVR
-Obsoletes: alt-csp-cryptopro-mate <= %EVR
+Obsoletes: alt-csp-cryptopro-mate < %EVR
 Provides: alt-csp-cryptopro-kde = %EVR
-Obsoletes: alt-csp-cryptopro-kde <= %EVR
+Obsoletes: alt-csp-cryptopro-kde < %EVR
 
 %description
 CryptoPRO GUI tool
@@ -42,6 +42,12 @@ install -m 0644 BUILD/*.qm %buildroot/%_qt5_translationdir/
 %_datadir/file-manager/actions/alt-csp-cryptopro.desktop
 
 %changelog
+* Mon Feb 01 2021 Oleg Solovyov <mcpain@altlinux.org> 0.0.5-alt1
+- new version (Closes: 39484, 39547, 39548, 39557)
+
+* Fri Jan 15 2021 Oleg Solovyov <mcpain@altlinux.org> 0.0.4-alt1
+- new version
+
 * Tue Jan 12 2021 Sergey V Turchin <zerg at altlinux dot org> 0.0.3-alt1
 - rearrange UI
 
