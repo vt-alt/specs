@@ -1,6 +1,6 @@
 Name: cups
-Version: 2.3.1
-Release: alt2
+Version: 2.3.3
+Release: alt1
 
 Summary: Common Unix Printing System - server package
 License: GPL
@@ -122,6 +122,7 @@ Requires: printer-testpages bc cups-filters
 BuildRequires: gcc-c++ libacl-devel libaudit-devel libavahi-devel libdbus-devel libpam-devel libpaper-devel libselinux-devel libssl-devel libsystemd-daemon-devel systemd-devel libusb-devel xdg-utils zlib-devel
 
 BuildRequires: dbus python python-module-polib
+BuildRequires: libgnutls-devel
 
 %description
 The Common Unix Printing System provides a portable printing layer for
@@ -295,7 +296,9 @@ export LIBS="-laudit -lselinux"
    --with-local_protocols='dnssd' \
    --enable-lspp \
    --enable-libpaper \
-   --enable-debug
+   --enable-debug \
+   --enable-gnutls \
+   %nil
 
 %make_build
 
@@ -413,6 +416,11 @@ chmod 755 %buildroot/usr/lib/cups/backend/ipp
 %config(noreplace) %_sysconfdir/xinetd.d/%name-lpd
 
 %changelog
+* Thu Jan 28 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt1
+- Updated to upstream version 2.3.3 (Fixes CVE-2019-8842, CVE-2020-3898).
+- Built with gnutls support re-enabled.
+  Gnutls support may be required by cups-filters.
+
 * Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.1-alt2
 - NMU: fixed build with new selinux.
 

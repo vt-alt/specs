@@ -2,8 +2,8 @@
 %global _localstatedir %_var
 
 Name: cups-filters
-Version: 1.28.5
-Release: alt1
+Version: 1.28.7
+Release: alt2
 
 Summary: OpenPrinting CUPS filters and backends
 # For a breakdown of the licensing, see COPYING file
@@ -24,6 +24,8 @@ Source3: default-testpage.pdf
 Patch0: %name-alt.patch
 Patch1: %name-braille-indexv4-path.patch
 Patch2: %name-pjl-as-ps.patch
+# TODO: remove this patch when https://github.com/apple/cups/issues/5886 is fixed.
+Patch3: %name-alt-disable-fax.patch
 
 Conflicts: cups < 1.6.1-alt1
 Conflicts: ghostscript-cups
@@ -105,6 +107,7 @@ serial backend for cups
 %patch0 -p2
 %patch1 -p2
 %patch2 -p2
+%patch3 -p1
 
 %build
 ./autogen.sh
@@ -193,6 +196,15 @@ install -D -m 644 %SOURCE3 %buildroot/%_datadir/cups/data/
 %_libdir/libfontembed.so
 
 %changelog
+* Fri Jan 29 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.28.7-alt2
+- Disabled fax support due to CUPS issue #5886.
+
+* Mon Jan 11 2021 Anton Farygin <rider@altlinux.ru> 1.28.7-alt1
+- 1.28.7
+
+* Mon Dec 28 2020 Anton Farygin <rider@altlinux.ru> 1.28.6-alt1
+- 1.28.6
+
 * Thu Nov 05 2020 Anton Farygin <rider@altlinux.ru> 1.28.5-alt1
 - 1.28.5
 
