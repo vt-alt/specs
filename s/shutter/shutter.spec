@@ -1,5 +1,5 @@
 Name: shutter
-Version: 0.94.3
+Version: 0.95
 Release: alt1
 
 Summary: Shutter is a feature-rich screenshot program
@@ -7,9 +7,7 @@ License: GPLv3+
 Group: Graphics
 
 Url: http://shutter-project.org/
-Source: http://shutter-project.org/wp-content/uploads/releases/tars/shutter-%version.tar.gz
-
-Patch: shutter-0.94-fix_desktop_names_encoding.patch
+Source: shutter-%version.tar
 
 BuildArch: noarch
 BuildRequires(pre): rpm-build-perl
@@ -19,6 +17,7 @@ Requires: perl-Sort-Naturally
 Requires: perl-Glib perl-File-Which perl-File-Copy-Recursive perl-File-BaseDir perl-IO-stringy
 Requires: perl-Gnome2 perl-File-DesktopEntry perl-File-MimeInfo perl-Proc-ProcessTable
 Requires: perl-Gnome2-Canvas perl-Proc-Simple perl-Locale-gettext perl-JSON
+Requires: perl-Number-Bytes-Human perl-Glib-Object-Introspection
 Requires: perl-Gnome2-GConf
 Requires: perl-Gnome2-VFS
 Requires: perl-Gnome2-Wnck
@@ -48,13 +47,11 @@ hosting site, all within one window.
 
 %prep
 %setup
-%patch -p2
 
 subst 's/Application;/Graphics;2DGraphics;RasterGraphics;/' share/applications/shutter.desktop
 
 %build
-# Remove local copies of perl modules that are not part of shutter
-rm -rf share/shutter/resources/modules/{File,Proc,Net,Sort}
+./po2mo.sh
 
 %install
 install -pDm 755 bin/shutter %buildroot%_bindir/shutter
@@ -89,12 +86,13 @@ cp -a share %buildroot/usr
 %_iconsdir/hicolor/64x64/*
 %_iconsdir/hicolor/72x72/*
 %_iconsdir/hicolor/96x96/*
-%_iconsdir/ubuntu-mono-dark/*
-%_iconsdir/ubuntu-mono-light/*
 %_iconsdir/hicolor/scalable/*/*
 %_iconsdir/HighContrast/scalable/apps/shutter*
 
 %changelog
+* Mon Feb 08 2021 Grigory Ustinov <grenka@altlinux.org> 0.95-alt1
+- Build new version (Closes: #39323).
+
 * Tue Oct 06 2020 Grigory Ustinov <grenka@altlinux.org> 0.94.3-alt1
 - Build new version (Closes: #39038).
 
