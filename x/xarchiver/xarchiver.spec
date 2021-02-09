@@ -1,24 +1,19 @@
 Name: xarchiver
-Version: 0.5.4
-Release: alt2
+Version: 0.5.4.17
+Release: alt1
 
 Summary: A GTK+2 only archive manager
 License: %gpl2plus
 Group: File tools
 
 Url: http://xarchiver.sourceforge.net/
-Source: %name-%version.tar
-Patch1: xarchiver-0.5.4-debian-desktop-file.patch
-Patch2: xarchiver-0.5.4-debian-encrypted-7z-archives.patch
-# https://github.com/ib/xarchiver/commit/cfa1d536312abb8d81f9cd74c15cf21038f03a8c
-Patch3: xarchiver-0.5.4-fix-crash-cancelling-progress.patch
-Patch4: xarchiver-0.5.4-alt-tar-detection.patch
+Source: %name-%version.tar.gz
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-BuildRequires(pre): rpm-build-licenses
-
-BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
-BuildRequires: glibc-devel-static libgtk+2-devel
+BuildRequires(pre): rpm-build-licenses rpm-build-xfce4 xfce4-dev-tools
+# Automatically added by buildreq on Thu Dec 19 2019
+# optimized out: fontconfig fontconfig-devel glib2-devel glibc-kernheaders-generic glibc-kernheaders-x86 gnu-config intltool libatk-devel libcairo-devel libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libharfbuzz-devel libpango-devel perl perl-Encode perl-parent pkg-config python-modules python2-base sh4 xml-common xml-utils
+BuildRequires: glibc-devel-static libgtk+2-devel xsltproc libzstd-devel
 
 %description
 Xarchiver is a lightweight GTK2 only frontend for manipulating 7z, arj,
@@ -29,12 +24,10 @@ supported.
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
+touch AUTHORS NEWS # XXX
+
 %xfce4reconf
 %configure \
     -enable-debug=no
@@ -51,9 +44,19 @@ supported.
 %_datadir/pixmaps/%name/*.png
 %_libexecdir/thunar-archive-plugin/xarchiver.tap
 %_iconsdir/*/*/*/*
+%_man1dir/*
 %doc %_docdir/%name
 
 %changelog
+* Thu Jan 28 2021 Fr. Br. George <george@altlinux.ru> 0.5.4.17-alt1
+- Autobuild version bump to 0.5.4.17
+
+* Thu Dec 19 2019 Fr. Br. George <george@altlinux.ru> 0.5.4.14.0.35.g47ca4c0-alt1
+- Update to git g47ca4c0 (zstd support)
+
+* Thu Dec 19 2019 Fr. Br. George <george@altlinux.ru> 0.5.4.14-alt1
+- Autobuild version bump to 0.5.4.14
+
 * Tue Jul 26 2016 Mikhail Efremov <sem@altlinux.org> 0.5.4-alt2
 - Fix detection of a tar program (closes: #32303).
 - Fix crash when cancelling progress bar.
@@ -108,5 +111,5 @@ supported.
 * Fri Nov 18 2005 Eugene Ostapets <eostapets@altlinux.ru> 0.2.1-alt2
 - add russian translation
 
-* Thu Jul 5 2005 Eugene Ostapets <eostapets@altlinux.ru> 0.2.1-alt1
+* Tue Jul 05 2005 Eugene Ostapets <eostapets@altlinux.ru> 0.2.1-alt1
 - build for ALT Linux
