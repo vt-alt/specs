@@ -1,7 +1,7 @@
 %define oname yakuake
 
 Name:    kde5-%oname
-Version: 20.12.1
+Version: 20.12.2
 Release: alt1
 
 Summary: Very powerful Quake style Konsole for KF5
@@ -83,6 +83,9 @@ This version is built with KF5.
 %_datadir/metainfo/*.appdata.xml
 
 %changelog
+* Mon Feb 08 2021 Andrey Cherepanov <cas@altlinux.org> 20.12.2-alt1
+- New version.
+
 * Thu Jan 21 2021 Andrey Cherepanov <cas@altlinux.org> 20.12.1-alt1
 - New version.
 
