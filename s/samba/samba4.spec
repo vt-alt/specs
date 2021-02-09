@@ -60,8 +60,8 @@
 %endif
 
 Name:    samba
-Version: 4.12.10
-Release: alt2
+Version: 4.12.11
+Release: alt1
 
 Group:   System/Servers
 Summary: The Samba4 CIFS and AD client and server suite
@@ -125,6 +125,8 @@ BuildRequires: libarchive-devel >= 3.1.2
 BuildRequires: libjansson-devel
 BuildRequires: libgpgme-devel
 BuildRequires: liburing-devel >= 0.4
+BuildRequires: /usr/bin/rpcgen
+BuildRequires: libtirpc-devel
 
 %if_with mitkrb5
 BuildRequires: libssl-devel
@@ -1811,6 +1813,9 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Mon Jan 18 2021 Evgeny Sinelikov <sin@altlinux.org> 4.12.11-alt1
+- Update to latest release of Samba 4.12
+
 * Thu Nov 19 2020 Evgeny Sinelikov <sin@altlinux.org> 4.12.10-alt2
 - Spotlight searches against an SMB server mdfind utility in samba-common-tools
   conflicts with gnustep-gworkspace due it also includes mdfind (closes: 39295)
