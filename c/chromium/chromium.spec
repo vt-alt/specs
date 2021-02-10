@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        88.0.4324.96
+Version:        88.0.4324.150
 Release:        alt0.1.p9
 
 Summary:        An open source web browser developed by Google
@@ -458,6 +458,24 @@ EOF
 %_altdir/%name
 
 %changelog
+* Sun Feb 07 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.150-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Sat Feb 06 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.150-alt1
+- New version (88.0.4324.150).
+- Security fixes:
+  - CVE-2021-21148: Heap buffer overflow in V8.
+
+* Wed Feb 03 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.146-alt1
+- New version (88.0.4324.146).
+- Security fixes:
+  - CVE-2021-21142: Use after free in Payments .
+  - CVE-2021-21143: Heap buffer overflow in Extensions.
+  - CVE-2021-21144: Heap buffer overflow in Tab Groups.
+  - CVE-2021-21145: Use after free in Fonts.
+  - CVE-2021-21146: Use after free in Navigation.
+  - CVE-2021-21147: Inappropriate implementation in Skia.
+
 * Tue Jan 26 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.96-alt0.1.p9
 - Backport new version to p9 branch.
 
