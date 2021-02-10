@@ -1,13 +1,13 @@
-%define ver_major 1.4
+%define ver_major 1.8
 %define api_ver 1
 
 Name: libgnome-games-support
-Version: %ver_major.4
+Version: %ver_major.0
 Release: alt1
 
 Summary: Shared library for GNOME games
 Group: System/Libraries
-License: GPLv3 LGPLv3
+License: LGPL-3.0
 
 Url: https://wiki.gnome.org/Apps/Games
 Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.tar.xz
@@ -16,6 +16,7 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %define gtk_ver 3.20.0
 %define vala_ver 0.39.6
 
+BuildRequires(pre): meson
 BuildRequires: libgio-devel >= %glib_ver libgtk+3-devel >= %gtk_ver
 BuildRequires: libgee0.8-devel vala-tools >= %vala_ver
 
@@ -36,11 +37,11 @@ developing applications that use %name.
 %setup
 
 %build
-%configure
-%make_build
+%meson
+%meson_build
 
 %install
-%makeinstall_std
+%meson_install
 
 %find_lang %name
 
@@ -56,6 +57,15 @@ developing applications that use %name.
 
 
 %changelog
+* Sat Sep 12 2020 Yuri N. Sedunov <aris@altlinux.org> 1.8.0-alt1
+- 1.8.0
+
+* Fri Mar 27 2020 Yuri N. Sedunov <aris@altlinux.org> 1.6.1-alt1
+- 1.6.1
+
+* Fri Mar 06 2020 Yuri N. Sedunov <aris@altlinux.org> 1.6.0.1-alt1
+- 1.6.0.1 (ported to Meson build system)
+
 * Tue Sep 03 2019 Yuri N. Sedunov <aris@altlinux.org> 1.4.4-alt1
 - 1.4.4
 
