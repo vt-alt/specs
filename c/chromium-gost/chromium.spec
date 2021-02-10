@@ -33,7 +33,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium-gost
-Version:        88.0.4324.96
+Version:        88.0.4324.150
 Release:        alt0.1.p9
 
 Summary:        An open source web browser developed by Google
@@ -56,7 +56,17 @@ Source200:      chromium.default
 # tar cvf ~/RPM/SOURCES/chromium-gost.tar --exclude='.git*' chromium-gost
 Source300:	chromium-gost.tar
 
-Obsoletes:      chromium-GOST
+Provides:       chromium-browser = %version
+Obsoletes:      chromium-browser < %version
+Obsoletes:      chromium-stable <= %version
+
+Provides:       webclient
+
+Obsoletes:      chromium-password
+Obsoletes:      chromium-kde
+Obsoletes:      chromium-gnome
+Obsoletes:      chromium-desktop-kde
+Obsoletes:      chromium-desktop-gnome
 
 # Unsupported target_cpu
 ExcludeArch: ppc64le armh
@@ -479,6 +489,28 @@ EOF
 %_altdir/%name
 
 %changelog
+* Tue Feb 09 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.150-alt0.1.p9
+- Backport new version to p9 branch.
+- Add provide for webclient (ALT #39666).
+
+* Mon Feb 08 2021 Fr. Br. George <george@altlinux.ru> 88.0.4324.150-alt1
+- Build GOST version
+
+* Sat Feb 06 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.150-alt0
+- New version (88.0.4324.150).
+- Security fixes:
+  - CVE-2021-21148: Heap buffer overflow in V8.
+
+* Wed Feb 03 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.146-alt1
+- New version (88.0.4324.146).
+- Security fixes:
+  - CVE-2021-21142: Use after free in Payments .
+  - CVE-2021-21143: Heap buffer overflow in Extensions.
+  - CVE-2021-21144: Heap buffer overflow in Tab Groups.
+  - CVE-2021-21145: Use after free in Fonts.
+  - CVE-2021-21146: Use after free in Navigation.
+  - CVE-2021-21147: Inappropriate implementation in Skia.
+
 * Fri Jan 29 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.96-alt0.1.p9
 - Backport new version to p9 branch.
 
@@ -486,7 +518,7 @@ EOF
 - Build GOST version
 - Add missing symlink (closes: #39572)
 
-* Sun Jan 24 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.96-alt0
+* Sun Jan 24 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.96-alt1
 - New version (88.0.4324.96).
 - Security fixes:
   - CVE-2020-16044: Use after free in WebRTC.
@@ -519,10 +551,7 @@ EOF
 * Fri Jan 15 2021 Alexey Gladkov <legion@altlinux.ru> 87.0.4280.141-alt2
 - Fix ServiceWorkerRegistrationObjectHost double free
 
-* Thu Jan 14 2021 Fr. Br. George <george@altlinux.ru> 87.0.4280.141-alt1
-- Buiild GOST version
-
-* Fri Jan 08 2021 Alexey Gladkov <legion@altlinux.ru> 87.0.4280.141-alt0
+* Fri Jan 08 2021 Alexey Gladkov <legion@altlinux.ru> 87.0.4280.141-alt1
 - New version (87.0.4280.141).
 - Security fixes:
   - CVE-2020-15995: Out of bounds write in V8.
@@ -647,9 +676,6 @@ EOF
   - CVE-2020-6539: Use after free in CSS.
   - CVE-2020-6540: Heap buffer overflow in Skia.
   - CVE-2020-6541: Use after free in WebUSB.
-
-* Tue Jul 21 2020 Fr. Br. George <george@altlinux.ru> 83.0.4103.61-alt2.M90P.1
-- Build GOST version
 
 * Wed Jul 15 2020 Alexey Gladkov <legion@altlinux.ru> 84.0.4147.89-alt1
 - New version (84.0.4147.89).
