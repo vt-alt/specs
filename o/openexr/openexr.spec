@@ -1,8 +1,8 @@
-%define libsover 24
 
 %define rname OpenEXR
+%define libsover 25
 Name: openexr
-Version: 2.3.0
+Version: 2.5.3
 Release: alt1
 
 %define common %name%libsover-common
@@ -11,7 +11,7 @@ Release: alt1
 
 Group: System/Libraries
 Summary: A high-dynamic-range image file library
-License: BSD
+License: BSD-3-Clause
 URL: http://www.openexr.org/
 
 Requires: %libilmimf = %version-%release
@@ -21,15 +21,9 @@ Provides: %name-utils = %version-%release
 Obsoletes: %name-utils < %version-%release
 
 Source: %name-%version.tar
-# FC
-Patch1: openexr-2.3.0-bigendian.patch
-Patch2: openexr-2.3.0-tests.patch
 
-# Automatically added by buildreq on Thu Apr 21 2011 (-bi)
-# optimized out: elfutils libstdc++-devel pkg-config
-#BuildRequires: gcc-c++ glibc-devel-static ilmbase-devel zlib-devel
 BuildRequires: gcc-c++ glibc-devel ilmbase-devel zlib-devel
-BuildRequires: cmake kde-common-devel
+BuildRequires: cmake
 
 %description
 OpenEXR is an image file format and library developed by Industrial Light
@@ -72,17 +66,17 @@ developing applications with %rname
 
 %prep
 %setup -q -n %name-%version
-%patch1 -p2
-%patch2 -p2
+%ifarch %e2k
+# e2k has MMX/SSE but 2.2.0+'s asm needs to be ported
+%add_optflags -U__SSE2__ -U__SSE4_1__
+%endif
 
 %build
-%configure \
-    --disable-static \
-    #
-%make_build
+%cmake
+%cmake_build
 
 %install
-%makeinstall_std
+make -C BUILD install DESTDIR=%buildroot
 
 
 %files -n %common
@@ -91,11 +85,11 @@ developing applications with %rname
 %_bindir/*
 
 %files -n %libilmimf
-%doc AUTHORS ChangeLog PATENTS LICENSE README*
+%doc PATENTS README*
 %_libdir/libIlmImf-*.so.%libsover
 %_libdir/libIlmImf-*.so.%libsover.*
 %files -n %libilmimfutil
-%doc AUTHORS ChangeLog PATENTS LICENSE README*
+%doc PATENTS README*
 %_libdir/libIlmImfUtil-*.so.%libsover
 %_libdir/libIlmImfUtil-*.so.%libsover.*
 
@@ -104,10 +98,17 @@ developing applications with %rname
 %_includedir/%rname
 %_libdir/lib*.so
 %_libdir/pkgconfig/*
+%_libdir/cmake/OpenEXR/
 #%_datadir/aclocal/%name.m4
 
 
 %changelog
+* Mon Oct 26 2020 Sergey V Turchin <zerg@altlinux.org> 2.5.3-alt1
+- new version
+
+* Sat Sep 21 2019 Michael Shigorin <mike@altlinux.org> 2.3.0-alt2
+- E2K: avoid SIMD for now (SSE asm needs to be ported)
+
 * Fri Sep 20 2019 Sergey V Turchin <zerg@altlinux.org> 2.3.0-alt1
 - new version
 

@@ -36,7 +36,7 @@
 
 Name: %_name-bad%api_ver
 Version: %ver_major.1
-Release: alt3
+Release: alt3.1
 
 Summary: A set of GStreamer plugins that need more quality
 Group: System/Libraries
@@ -51,6 +51,7 @@ Source: %_name-bad-%version.tar
 
 # dc57fb7095b5041e4f3a4cae2bafd56369e10212
 Patch2: %_name-bad-1.17.1-up-vulkan-Drop-use-of-VK_RESULT_BEGIN_RANGE.patch
+Patch3: alt-openexr-cflags.patch
 
 Provides: %_name-bad = %version-%release
 
@@ -124,6 +125,7 @@ This package contains documentation for GStreamer Bad Plug-ins.
 %prep
 %setup -n %_name-bad-%version
 %patch2 -p1
+%patch3 -p1
 
 %build
 %meson \
@@ -170,6 +172,9 @@ This package contains documentation for GStreamer Bad Plug-ins.
 %endif
 
 %changelog
+* Wed Feb 03 2021 Sergey V Turchin <zerg@altlinux.org> 1.16.1-alt3.1
+- fix compile with new openexr
+
 * Thu Nov 19 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 1.16.1-alt3
 - build against next vulkan fixed
 
