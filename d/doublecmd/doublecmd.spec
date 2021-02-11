@@ -2,8 +2,8 @@
 
 Name: doublecmd
 Summary: Twin-panel (commander-style) file manager
-Version: 0.9.9
-Release: alt2
+Version: 0.9.10
+Release: alt1
 Epoch:   1
 Url: https://doublecmd.sourceforge.io
 
@@ -145,6 +145,9 @@ convert -resize 16x16 pixmaps/mainicon/alt/256px-dcfinal.png %buildroot%_miconsd
 %_pixmapsdir/%name.png
 
 %changelog
+* Mon Feb 08 2021 Andrey Cherepanov <cas@altlinux.org> 1:0.9.10-alt1
+- New version.
+
 * Fri Oct 16 2020 Andrey Cherepanov <cas@altlinux.org> 1:0.9.9-alt2
 - Build on aarch64, do not build on i586.
 
