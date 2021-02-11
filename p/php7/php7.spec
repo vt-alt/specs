@@ -7,7 +7,7 @@
 
 Summary: The PHP7 scripting language
 Name:	 php7
-Version: 7.3.26
+Version: 7.3.27
 Release: alt1
 
 %define php7_name      %name
@@ -463,6 +463,9 @@ unset NO_INTERACTION REPORT_EXIT_STATUS
 %doc tests run-tests.php 
 
 %changelog
+* Tue Feb 09 2021 Anton Farygin <rider@altlinux.org> 7.3.27-alt1
+- 7.3.27 (Fixes: CVE-2021-21702)
+
 * Thu Jan 14 2021 Anton Farygin <rider@altlinux.ru> 7.3.26-alt1
 - 7.3.26
 
