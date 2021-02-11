@@ -3,8 +3,8 @@
 %def_enable	gtk3
 
 Name: opencpn
-Version: 5.0.0
-Release: alt4.1.p9
+Version: 5.2.4
+Release: alt1
 Summary: A free and open source software for marine navigation
 
 Group: Other
@@ -15,18 +15,16 @@ Source1: %name.desktop
 
 ExcludeArch: ppc64le
 
-Patch1: opencpn-5.0.0-detection_of_wxWebview.patch
-Patch2: opencpn-5.0.0-mga-missing_glx_include.patch
-Patch3: opencpn-5.0.0-aarch64-plugindir.patch
-
 Requires: %name-data
 
 #Errara
-#Patch100:
+Patch100: opencpn-5.0.0-mga-missing_glx_include.patch
+Patch101: opencpn-5.2.4-dashboard.cpp.patch
 
 # Automatically added by buildreq on Mon Mar 25 2013
 # optimized out: cmake-modules fontconfig fontconfig-devel glib2-devel libGL-devel libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXrender-devel libatk-devel libcairo-devel libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libpango-devel libstdc++-devel pkg-config xorg-kbproto-devel xorg-xf86miscproto-devel xorg-xproto-devel
 BuildRequires: bzlib-devel cmake gcc-c++ libGLU-devel libXScrnSaver-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXdmcp-devel libXinerama-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libXxf86vm-devel libxkbfile-devel zlib-devel
+BuildRequires: lsb-release libflac-devel libogg-devel libvorbis-devel libopus-devel
 
 %if_enabled gtk3
 BuildRequires: libwxGTK3.1-devel libgtk+3-devel
@@ -63,6 +61,8 @@ with other licenses (look to the LICENSING file).
 %package data
 Summary: Architecture independent files for OpenCPN
 Group: Other
+BuildArch: noarch
+Requires: icon-theme-hicolor
 
 %description data
 Architecture independent files for OpenCPN.
@@ -70,21 +70,21 @@ Architecture independent files for OpenCPN.
 %prep
 %setup -n OpenCPN-%version
 
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-
-#patch100 -p1
+%patch100 -p1
+%patch101 -p2
 
 #rm -f src/tinyxml*.cpp include/tinyxml.h
 #rm -rf plugins/grib_pi/src/zlib-1.2.3
 #rm -rf plugins/grib_pi/src/bzip2
 
-# https://lists.altlinux.org/pipermail/devel/2019-March/207515.html
-sed -i 's/\(SET .LIB_INSTALL_DIR "lib64".\)/# \1/' CMakeLists.txt
+sed -i 's/lwx_gtk3u_aui-3.0/lwx_gtk3u_aui-3.1/' CMakeLists.txt
+sed -i 's/wx_gtk3u_gl-3.0/wx_gtk3u_gl-3.1/' CMakeLists.txt
+
+# https://github.com/OpenCPN/OpenCPN/issues/2160
+sed -i 's|po/opencpn_zh_CN.po zh_TW|po/opencpn_zh_CN.po zh_CN|' CMakeLists.txt
 
 %build
-%add_optflags %(pkg-config --cflags pango)
+#add_optflags %(pkg-config --cflags pango)
 %cmake -DBUNDLE_DOCS=1 -DBUNDLE_TCDATA=1 -DBUNDLE_GSHHS=1
 cd BUILD
 make
@@ -113,30 +113,32 @@ rm -rf %buildroot/%_datadir/doc
 
 %_bindir/opencpn
 
-# https://lists.altlinux.org/pipermail/devel/2019-March/207515.html
-%dir %_usr/lib/%name
-%_usr/lib/opencpn/*_pi.so
+%dir %_libdir/%name
+%_libdir/opencpn/*_pi.so
 
 %files data -f BUILD/%name.lang
 %doc data/doc/*
 %_man1dir/opencpn.*
 
-%_datadir/appdata/opencpn.appdata.xml
+%_datadir/metainfo/opencpn.metainfo.xml
 
 %dir %_datadir/%name
 %dir %_datadir/%name/sounds
-#dir %_datadir/%name/gshhs
-#dir %_datadir/%name/tcdata
+%dir %_datadir/%name/gshhs
+%dir %_datadir/%name/tcdata
 %dir %_datadir/%name/s57data
 %dir %_datadir/%name/uidata
 %dir %_datadir/%name/plugins
 
 %_datadir/%name/sounds/*
-#{_datadir}/%name/gshhs/*
-#{_datadir}/%name/tcdata/*
+%_datadir/%name/gshhs/*
+%_datadir/%name/tcdata/*
 %_datadir/%name/s57data/*
 %_datadir/%name/uidata/*
 %_datadir/%name/plugins/*
+
+%_datadir/%name/license.txt
+%_datadir/%name/ocpn-plugins.xml
 
 %dir %_datadir/%name/doc
 %_datadir/%name/doc/help_web.html
@@ -159,9 +161,16 @@ rm -rf %buildroot/%_datadir/doc
 %_datadir/%name/license.html
 
 %changelog
-* Sat Jun 20 2020 Andrey Cherepanov <cas@altlinux.org> 5.0.0-alt4.1.p9
-- Backport to p9 branch.
-- Arch-depended opencpn-data.
+* Sun Feb 07 2021 Sergey Y. Afonin <asy@altlinux.org> 5.2.4-alt1
+- New version
+- added opencpn-5.2.4-dashboard.cpp.patch
+
+* Wed Feb 03 2021 Sergey Y. Afonin <asy@altlinux.org> 5.2.0-alt1
+- New version
+- added icon-theme-hicolor to Requires of data subpackage
+- removed patches:
+  + opencpn-5.0.0-aarch64-plugindir.patch
+  + opencpn-5.0.0-detection_of_wxWebview.patch
 
 * Thu Apr 30 2020 Sergey Y. Afonin <asy@altlinux.org> 5.0.0-alt5
 - built with GTK+3 (due to same change of libwxsvg-1.5.22-alt2)
