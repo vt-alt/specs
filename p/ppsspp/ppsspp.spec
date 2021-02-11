@@ -1,13 +1,13 @@
 %define armips_commit 7885552b208493a6a0f21663770c446c3ba65576
 %define discord_rpc_commit 3d3ae7129d17643bc706da0a2eea85aafd10ab3a
 %define glslang_commit d0850f875ec392a130ccf00018dab458b546f27c
-%define ppsspp_ffmpeg_commit 55147e5f33f5ae4904f75ec082af809267122b94
-%define ppsspp_lang_commit 1c64b8fbd3cb6bd87935eb53f302f7de6f86e209
+%define miniupnp_commit 7e229ddd635933239583ab190d9b614bde018157
+%define ppsspp_lang_commit 567b22525b115751ee3ae2ed2c8b046034c9dd8d
 %define spirv_cross_commit a1f7c8dc8ea2f94443951ee27003bffa562c1f13
 
 Name: ppsspp
-Version: 1.10.3
-Release: alt1
+Version: 1.11
+Release: alt3
 
 Summary: PlayStation Portable Emulator
 License: GPL-2.0-or-later
@@ -16,7 +16,7 @@ Group: Emulators
 Url: https://www.%name.org
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
-ExcludeArch: ppc64le armh
+ExcludeArch: ppc64le
 
 # https://github.com/hrydgard/%name/archive/v%version/%name-%version.tar.gz
 Source0: %name-%version.tar
@@ -26,8 +26,8 @@ Source1: armips-%armips_commit.tar
 Source2: discord-rpc-%discord_rpc_commit.tar
 # https://github.com/hrydgard/glslang/archive/%glslang_commit/glslang-%glslang_commit.tar.gz
 Source3: glslang-%glslang_commit.tar
-# https://github.com/hrydgard/ppsspp-ffmpeg/archive/%ppsspp_ffmpeg_commit/ppsspp-ffmpeg-%ppsspp_ffmpeg_commit.tar.gz
-Source4: ppsspp-ffmpeg-%ppsspp_ffmpeg_commit.tar
+# https://github.com/hrydgard/miniupnp/archive/%miniupnp_commit/miniupnp-%miniupnp_commit.tar.gz
+Source4: miniupnp-%miniupnp_commit.tar
 # https://github.com/hrydgard/ppsspp-lang/archive/%ppsspp_lang_commit/ppsspp-lang-%ppsspp_lang_commit.tar.gz
 Source5: ppsspp-lang-%ppsspp_lang_commit.tar
 # https://github.com/KhronosGroup/SPIRV-Cross/archive/%spirv_cross_commit/SPIRV-Cross-%spirv_cross_commit.tar.gz
@@ -35,13 +35,19 @@ Source6: SPIRV-Cross-%spirv_cross_commit.tar
 Source7: %name.desktop
 Source8: %name-qt.desktop
 
-Patch0: %name-alt-git.patch
+Patch0: %name-alt-ffmpeg.patch
+Patch1: %name-alt-git.patch
 
 BuildRequires: cmake
 BuildRequires: libGLEW-devel
 BuildRequires: libSDL2-devel
+BuildRequires: libavdevice-devel
+BuildRequires: libavfilter-devel
 BuildRequires: libpng-devel
+BuildRequires: libpostproc-devel
 BuildRequires: libsnappy-devel
+BuildRequires: libswresample-devel
+BuildRequires: libswscale-devel
 BuildRequires: libzip-devel
 BuildRequires: qt5-multimedia-devel
 BuildRequires: rapidjson
@@ -83,11 +89,12 @@ This build using the Qt frontend.
 %__mv -Tf ../armips-%armips_commit ext/armips
 %__mv -Tf ../discord-rpc-%discord_rpc_commit ext/discord-rpc
 %__mv -Tf ../glslang-%glslang_commit ext/glslang
-%__mv -Tf ../ppsspp-ffmpeg-%ppsspp_ffmpeg_commit ffmpeg
+%__mv -Tf ../miniupnp-%miniupnp_commit ext/miniupnp
 %__mv -Tf ../ppsspp-lang-%ppsspp_lang_commit assets/lang
 %__mv -Tf ../SPIRV-Cross-%spirv_cross_commit ext/SPIRV-Cross
 
 %patch0 -p1
+%patch1 -p1
 
 echo "// This is a generated file.
 
@@ -111,6 +118,7 @@ cmake .. \
 	-DCMAKE_SKIP_RPATH:BOOL=TRUE \
 	-DUSE_SYSTEM_SNAPPY:BOOL=TRUE \
 	-DUSE_SYSTEM_LIBZIP:BOOL=TRUE \
+	-DUSE_SYSTEM_FFMPEG:BOOL=TRUE \
 	-DHEADLESS:BOOL=TRUE \
 	-DLIBZIP_INCLUDE_DIR=%_includedir \
 	-DPNG_LIBRARY=%_libdir/libpng.so \
@@ -133,11 +141,16 @@ cmake .. \
 	-DCMAKE_SKIP_RPATH:BOOL=TRUE \
 	-DUSE_SYSTEM_SNAPPY:BOOL=TRUE \
 	-DUSE_SYSTEM_LIBZIP:BOOL=TRUE \
+	-DUSE_SYSTEM_FFMPEG:BOOL=TRUE \
 	-DUSING_QT_UI:BOOL=TRUE \
 	-DLIBZIP_INCLUDE_DIR=%_includedir \
 	-DPNG_LIBRARY=%_libdir/libpng.so \
 	-DPNG_PNG_INCLUDE_DIR=%_includedir \
+%ifarch armh
+	-DUSING_GLES2:BOOL=TRUE \
+%else
 	-DOpenGL_GL_PREFERENCE:STRING=GLVND \
+%endif
 	-Wno-dev
 popd
 
@@ -181,6 +194,20 @@ CPLUS_INCLUDE_PATH=%_includedir/libzip %make_build -C %_target_platform-qt
 %_desktopdir/%name-qt.desktop
 
 %changelog
+* Mon Feb 08 2021 Nazarov Denis <nenderus@altlinux.org> 1.11-alt3
+- Build on ARMv7
+
+* Mon Feb 08 2021 Nazarov Denis <nenderus@altlinux.org> 1.11-alt2
+- Add workaround ffmpeg 3.1 or later
+
+* Mon Feb 08 2021 Nazarov Denis <nenderus@altlinux.org> 1.11-alt1
+- Version 1.11
+
+* Sun Feb 07 2021 Nazarov Denis <nenderus@altlinux.org> 1.10.3-alt2.git5d97f3c
+- Update to git d97f3c
+- Use system ffmpeg
+- Build also ARMv7hf
+
 * Mon Jul 13 2020 Nazarov Denis <nenderus@altlinux.org> 1.10.3-alt1
 - Version 1.10.3
 
