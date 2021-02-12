@@ -1,24 +1,20 @@
 %define soversion 2
 
 Name: faad
-Version: 2.7
-Release: alt6
+Version: 2.10.0
+Release: alt1
 
 Summary: FAAD is a Freeware Advanced Audio Decoder
-License: GPL
+License: GPL-2.0-or-later
 Group: Sound
 
 Url: http://www.audiocoding.com
-Source: http://prdownloads.sourceforge.net/faac/%{name}2-%version.tar.bz2
-Patch1: faad2-alt-fix-no-ext-segfault.patch
-Patch2: faad2-alt-make-mp4ff-shared.patch
-Packager: Pavlov Konstantin <thresh@altlinux.ru>
+# https://github.com/knik0/faad2/releases
+Source: faad2-%version.tar
 
 %define libsndfile_ver 1.0.5
 
-Requires: lib%name%soversion = %version-%release
-
-BuildPreReq: libsndfile >= %libsndfile_ver
+BuildRequires(pre): libsndfile >= %libsndfile_ver
 
 BuildRequires: gcc-c++ id3lib-devel libstdc++-devel zlib-devel
 
@@ -45,10 +41,7 @@ This package provides header files development libraries and
 documentation for lib%name.
 
 %prep
-%setup -n %{name}2-%version
-
-%patch1 -p2
-%patch2 -p2
+%setup -n faad2-%version
 
 find ./ -type f -name "Makefile*" -print0 | \
 xargs -r0 subst 's,^\(CFLAGS\),AM_\1,g
@@ -74,17 +67,24 @@ rm -f %buildroot%_libdir/*.la
 
 %files
 %_bindir/*
-#_man1dir/*
+%_man1dir/*
 
 %files -n lib%name%soversion
-%_libdir/*.so.*
+%_libdir/*.so.%{soversion}*
 %doc AUTHORS ChangeLog NEWS README TODO
 
 %files -n lib%name-devel
 %_includedir/*
 %_libdir/*.so
+%_pkgconfigdir/faad2.pc
 
 %changelog
+* Sat Feb 06 2021 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.10.0-alt1
+- Updated to 2.10.0.
+- Packaged faad man page.
+- lib%name-devel: packaged pkgconfig file.
+- Fixed license field.
+
 * Wed Mar 06 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 2.7-alt6
 - Removed xmms plugin subpackage.
 
