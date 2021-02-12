@@ -8,8 +8,8 @@
 %def_with openssl
 
 Name: sssd
-Version: 2.4.0
-Release: alt3
+Version: 2.4.1
+Release: alt2
 Group: System/Servers
 Summary: System Security Services Daemon
 License: GPLv3+
@@ -669,6 +669,7 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %config(noreplace) %_pamdir/*-sss*
 /%_lib/libnss_sss.so.2
 /%_lib/security/pam_sss.so
+/%_lib/security/pam_sss_gss.so
 %_libdir/krb5/plugins/libkrb5/sssd_krb5_locator_plugin.so
 %_libdir/krb5/plugins/authdata/sssd_pac_plugin.so
 %_libdir/cifs-utils/cifs_idmap_sss.so
@@ -793,6 +794,14 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Tue Feb 09 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.1-alt2
+- Fixate that upstream fixed the memory leak in the
+  simple access provider (fixes: OVE-20210209-0001)
+
+* Fri Feb 05 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.1-alt1
+- Update to 2.4.1
+- Add PAM module pam_sss_gss for authentication using GSSAPI
+
 * Tue Feb 02 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.0-alt3
 - Add krb5_use_subdomain_realm=True to support upnSuffixes for trusted domains
 - Allow to set case_sensitive=Preserving in subdomain section
