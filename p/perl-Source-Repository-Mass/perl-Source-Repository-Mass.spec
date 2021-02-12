@@ -1,7 +1,7 @@
 %define module Source-Repository-Mass
 
 Name: perl-%module
-Version: 0.437
+Version: 0.439
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -14,7 +14,7 @@ Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar
 Url: https://www.altlinux.org/Packaging_Automation/MassProcessing
 
 BuildRequires: perl-devel perl-RPM-Source-Editor perl(RPM/Header.pm) perl(RPM/Vercmp.pm) perl-String-ShellQuote perl-RPM-Source-Convert perl-Source-Package perl-RPM-Source-BundleImport perl-Source-Repository perl-Source-Shared-Resource perl(Source/Shared/Utils/GlobList.pm) perl(Source/Shared/FindLocalMirror.pm)
-Requires: perl-RPM-Source-Editor > 0.9230
+Requires: perl-RPM-Source-Editor > 0.9242
 Conflicts: perl-Source-Repository < 0.391
 
 %description
@@ -37,6 +37,12 @@ Conflicts: perl-Source-Repository < 0.391
 %perl_vendor_privlib/Source*
 
 %changelog
+* Wed Feb 10 2021 Igor Vlasenko <viy@altlinux.ru> 0.439-alt1
+- new version
+
+* Wed Jan 27 2021 Igor Vlasenko <viy@altlinux.ru> 0.438-alt1
+- new version
+
 * Sat Jan 16 2021 Igor Vlasenko <viy@altlinux.ru> 0.437-alt1
 - new version
 
