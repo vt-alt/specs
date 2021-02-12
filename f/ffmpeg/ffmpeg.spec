@@ -5,15 +5,15 @@
 %define set_enable() %{expand:%%force_enable %{1}} %{expand:%%undefine _disable_%{1}}
 %define subst_enable_with() %{expand:%%{?_enable_%{1}:--enable-%{2}} } %{expand:%%{?_disable_%{1}:--disable-%{2}} }
 
+# License
+%def_enable gpl
+%def_enable version3
+%def_disable nonfree
 
 # Enable/Disable stuff
 %def_enable doc
-%def_disable nonfree
-%def_enable gpl
-%def_enable version3
 %def_enable ffplay
 %def_enable ffprobe
-%def_enable gpl
 %def_enable pthreads
 %def_enable shared
 %def_disable static
@@ -24,9 +24,9 @@
 %endif
 %def_enable debug
 # External library support
-%def_disable avisynth
 %def_enable bzlib
-%def_disable frei0r
+%def_enable chromaprint
+%def_enable frei0r
 %def_enable gnutls
 %def_enable libaom
 %def_enable libass
@@ -34,35 +34,36 @@
 %def_enable libbs2b
 %def_enable libcaca
 %def_enable libcdio
-# need libcelt >= 0.11.0
-%def_disable libcelt
 %def_enable libcodec2
 %def_enable libdav1d
 %def_enable libdc1394
 %def_enable libdrm
-%def_enable libflite
+%def_disable libflite
 %def_enable libfontconfig
 %def_enable libfreetype
 %def_enable libfribidi
+%def_disable libglslang
 %def_enable libgme
 %def_enable libgsm
 %def_enable libjack
+%def_enable liblensfun
 %def_enable libmp3lame
-
 %{?_enable_version3:%def_enable libopencore_amrnb}
 %{?_enable_version3:%def_enable libopencore_amrwb}
 %def_enable libopenjpeg
 %def_enable libopus
 %def_enable libpulse
+%def_enable librabbitmq
 %def_enable librsvg
-%def_enable librubberband
 %def_disable librtmp
+%def_enable librubberband
 %def_enable libsnappy
 %def_enable libsoxr
-%def_enable libssh
 %def_enable libspeex
+%def_enable libssh
 %def_enable libtheora
 %def_enable libtwolame
+%def_enable libudev
 %def_enable libv4l2
 %def_enable libvidstab
 %def_enable libvorbis
@@ -71,15 +72,49 @@
 %def_enable libwebp
 %def_enable libx264
 %def_enable libx265
+%def_enable libxml2
 %def_enable libxvid
 %def_enable libzmq
 %def_enable libzvbi
 %def_enable lv2
 %def_enable openal
 %def_enable opengl
+%def_enable sdl2
 %def_enable vaapi
 %def_enable vdpau
+%def_enable vulkan
 %def_enable zlib
+
+# library needed
+%def_disable avisynth
+%def_disable crystalhd
+%def_disable ladspa
+%def_disable libaribb24
+%def_disable libdavs2
+%def_disable libilbc
+%def_disable libklvanc
+%def_disable libkvazaar
+%def_disable libmfx
+%def_disable libmodplug
+%def_disable libmysofa
+%def_disable libopenh264
+%def_disable libopenmpt
+%def_disable librav1e
+%def_disable libshine
+%def_disable libsrt
+%def_disable libtensorflow
+%def_disable libtesseract
+%def_disable libvmaf
+%def_disable libxavs2
+%def_disable libzimg
+%def_disable mbedtls
+%def_disable omx
+%def_disable opencl
+%def_disable pocketsphinx
+%def_disable vapoursynth
+
+# need libcelt >= 0.11.0
+%def_disable libcelt
 
 %if_enabled mmx
 %set_verify_elf_method textrel=relaxed
@@ -89,6 +124,14 @@
 %set_verify_elf_method textrel=relaxed
 %endif
 #soversion
+
+# nvidia cuda doesn't support arm
+# https://developer.nvidia.com/nvidia-video-codec-sdk/download
+%ifarch %arm
+%def_disable cuvid
+%else
+%def_enable cuvid
+%endif # cuvid
 
 %define avdevicever 58
 %define avformatver 58
@@ -102,8 +145,8 @@
 
 Name:		ffmpeg
 Epoch:		2
-Version:	4.2.4
-Release:	alt1
+Version:	4.3.1
+Release:	alt3.2
 
 Summary:	A command line toolbox to manipulate, convert and stream multimedia content
 License:	GPLv3
@@ -123,6 +166,7 @@ BuildRequires:	yasm
 %{?_enable_doc:BuildRequires: perl-podlators texi2html}
 %{?_enable_ffplay:BuildRequires: libSDL2-devel}
 %{?_enable_bzlib:BuildRequires: bzlib-devel}
+%{?_enable_chromaprint:BuildRequires: libchromaprint-devel}
 %{?_enable_frei0r:BuildRequires: frei0r-devel}
 %{?_enable_gnutls:BuildRequires: libgnutls-devel}
 %{?_enable_libaom:BuildRequires: libaom-devel >= 1.0.0}
@@ -140,10 +184,13 @@ BuildRequires:	yasm
 %{?_enable_libflite:BuildRequires: flite-devel}
 %{?_enable_libfontconfig:BuildRequires: fontconfig-devel}
 %{?_enable_libfribidi:BuildRequires: libfribidi-devel}
+%{?_enable_libglslang:BuildRequires: glslang-devel}
 %{?_enable_libgme:BuildRequires: libgme-devel}
 %{?_enable_libgsm:BuildRequires: libgsm-devel}
 %{?_enable_libjack:BuildRequires: libjack-devel}
+%{?_enable_liblensfun:BuildRequires: liblensfun-devel}
 %{?_enable_libmp3lame:BuildRequires: liblame-devel}
+%{?_enable_librabbitmq:BuildRequires: librabbitmq-c-devel}
 %{?_enable_libopencore_amrnb:BuildRequires: libopencore-amrnb-devel}
 %{?_enable_libopencore_amrwb:BuildRequires: libopencore-amrwb-devel}
 %{?_enable_libopenjpeg:BuildRequires: libopenjpeg2.0-devel}
@@ -158,6 +205,7 @@ BuildRequires:	yasm
 %{?_enable_libspeex:BuildRequires: libspeex-devel}
 %{?_enable_libtheora:BuildRequires: libtheora-devel}
 %{?_enable_libtwolame:BuildRequires: libtwolame-devel}
+%{?_enable_libudev:BuildRequires: libudev-devel}
 %{?_enable_libv4l2:BuildRequires: libv4l-devel}
 %{?_enable_libvidstab:BuildRequires: libvidstab-devel}
 %{?_enable_libvorbis:BuildRequires: libvorbis-devel}
@@ -166,14 +214,18 @@ BuildRequires:	yasm
 %{?_enable_libwebp:BuildRequires: libwebp-devel}
 %{?_enable_libx264:BuildRequires: libx264-devel >= 118}
 %{?_enable_libx265:BuildRequires: libx265-devel}
+%{?_enable_libxml2:BuildRequires: libxml2-devel}
 %{?_enable_libxvid:BuildRequires: libxvid-devel}
 %{?_enable_libzmq:BuildRequires: libzeromq-devel}
 %{?_enable_libzvbi:BuildRequires: libzvbi-devel}
 %{?_enable_lv2:BuildRequires: liblilv-devel lv2-devel}
 %{?_enable_openal:BuildRequires: libopenal-devel}
 %{?_enable_opengl:BuildRequires: libGL-devel}
+%{?_enable_sdl2:BuildRequires: libSDL2-devel}
 %{?_enable_vaapi:BuildRequires: libva-devel}
 %{?_enable_vdpau:BuildRequires: libvdpau-devel}
+%{?_enable_vulkan:BuildRequires: libvulkan-devel}
+%{?_enable_cuvid:BuildRequires: nv-codec-headers}
 
 %define common_descr \
 FFmpeg is a collection of libraries and tools to process multimedia content\
@@ -523,6 +575,10 @@ xz Changelog
 	--mandir=%_mandir \
 	--docdir=%_docdir/%name-%version \
 	--disable-rpath \
+%ifarch armh aarch64
+	--enable-v4l2_m2m \
+	--enable-v4l2-request \
+%endif
 %ifarch mips mipsel mips64 mips64el
 	--disable-mipsdsp \
 	--disable-mipsdspr2 \
@@ -550,9 +606,12 @@ xz Changelog
 	--enable-avresample \
 	%{subst_enable avisynth} \
 	%{subst_enable bzlib} \
+	%{subst_enable chromaprint} \
 	%{subst_enable frei0r} \
 	%{subst_enable gnutls} \
+	%{subst_enable ladspa} \
 	%{subst_enable libaom} \
+	%{subst_enable libaribb24} \
 	%{subst_enable libass} \
 	%{subst_enable libbluray} \
 	%{subst_enable libbs2b} \
@@ -561,47 +620,72 @@ xz Changelog
 	%{subst_enable libcelt} \
 	%{subst_enable libcodec2} \
 	%{subst_enable libdav1d} \
+	%{subst_enable libdavs2} \
 	%{subst_enable libdc1394} \
 	%{subst_enable libdrm} \
 	%{subst_enable libflite} \
 	%{subst_enable libfontconfig} \
 	%{subst_enable libfreetype} \
 	%{subst_enable libfribidi} \
+	%{subst_enable libglslang} \
 	%{subst_enable libgme} \
 	%{subst_enable libgsm} \
+	%{subst_enable libilbc} \
 	%{subst_enable libjack} \
+	%{subst_enable libklvanc} \
+	%{subst_enable libkvazaar} \
+	%{subst_enable liblensfun} \
+	%{subst_enable libmfx} \
+	%{subst_enable libmodplug} \
 	%{subst_enable libmp3lame} \
+	%{subst_enable librabbitmq} \
+	%{subst_enable libmysofa} \
 	%{subst_enable_with libopencore_amrnb libopencore-amrnb} \
 	%{subst_enable_with libopencore_amrwb libopencore-amrwb} \
 	%{subst_enable libopenjpeg} \
+	%{subst_enable libopenmpt} \
 	%{subst_enable libopus} \
 	%{subst_enable libpulse} \
 	%{subst_enable librsvg} \
-	%{subst_enable librubberband} \
 	%{subst_enable librtmp} \
+	%{subst_enable librubberband} \
+	%{subst_enable libshine} \
 	%{subst_enable libsnappy} \
 	%{subst_enable libsoxr} \
-	%{subst_enable libssh} \
 	%{subst_enable libspeex} \
+	%{subst_enable libssh} \
+	%{subst_enable libtesseract} \
 	%{subst_enable libtheora} \
 	%{subst_enable libtwolame} \
+	%{subst_enable libudev} \
 	%{subst_enable libv4l2} \
 	%{subst_enable libvidstab} \
+	%{subst_enable libvmaf} \
 	%{subst_enable libvorbis} \
 	%{subst_enable libvpx} \
 	%{subst_enable libwavpack} \
 	%{subst_enable libwebp} \
 	%{subst_enable libx264} \
 	%{subst_enable libx265} \
+	%{subst_enable libxavs2} \
+	%{subst_enable libxml2} \
 	%{subst_enable libxvid} \
+	%{subst_enable libzimg} \
 	%{subst_enable libzmq} \
 	%{subst_enable libzvbi} \
 	%{subst_enable lv2} \
+	%{subst_enable omx} \
 	%{subst_enable openal} \
+	%{subst_enable opencl} \
 	%{subst_enable opengl} \
+	%{subst_enable pocketsphinx} \
+	%{subst_enable sdl2} \
 	%{subst_enable vaapi} \
+	%{subst_enable vapoursynth} \
 	%{subst_enable vdpau} \
+	%{subst_enable vulkan} \
 	%{subst_enable zlib} \
+	%{subst_enable cuvid} \
 	--enable-hardcoded-tables \
 	--enable-runtime-cpudetect \
 %if_enabled debug
@@ -779,8 +863,30 @@ xz Changelog
 %endif
 
 %changelog
-* Tue Jul 21 2020 Anton Farygin <rider@altlinux.ru> 2:4.2.4-alt1
-- 4.2.4 (Fixes: CVE-2020-13904, CVE-2020-13904)
+* Wed Dec 09 2020 L.A. Kostis <lakostis@altlinux.ru> 2:4.3.1-alt3.2
+- Disable cuvid on arm.
+
+* Mon Dec 07 2020 L.A. Kostis <lakostis@altlinux.ru> 2:4.3.1-alt3.1
+- Enable cuvid support.
+
+* Mon Aug 03 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2:4.3.1-alt3
+- enable v4l2 mem2mem and request-api on arm arches
+
+* Wed Jul 22 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2:4.3.1-alt2
+- Built with support of:
+  + chromaprint;
+  + frei0r plugins;
+  + liblensfun;
+  + librabbitmq;
+  + libxml2;
+  + sdl2;
+  + vulkan.
+
+* Mon Jul 13 2020 Anton Farygin <rider@altlinux.ru> 2:4.3.1-alt1
+- 4.3.1
+
+* Thu Jun 18 2020 Anton Farygin <rider@altlinux.ru> 2:4.3-alt1
+- 4.3
 
 * Mon May 25 2020 Anton Farygin <rider@altlinux.ru> 2:4.2.3-alt1
 - 4.2.3 (Fixes: CVE-2019-13312,CVE-2020-12284)
