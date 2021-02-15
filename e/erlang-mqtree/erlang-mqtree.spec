@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.11
+Version: 1.0.12
 Release: alt1
 Summary: Index tree for MQTT topic filters
 Group: Development/Erlang
@@ -42,6 +42,9 @@ topic filters for efficient matching.
 %_erllibdir/%realname-%version
 
 %changelog
+* Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.12-alt1
+- Updated to upstream version 1.0.12.
+
 * Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.11-alt1
 - Updated to upstream version 1.0.11.
 

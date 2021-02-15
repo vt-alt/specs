@@ -11,7 +11,7 @@
 %def_enable tools
 
 Name: ejabberd
-Version: 20.12
+Version: 21.01
 Release: alt1
 Summary: Fault-tolerant distributed Jabber server written in Erlang
 License: GPL-2.0 with OpenSSL-exception
@@ -33,6 +33,8 @@ Patch4: ejabberd-fedora-enable-systemd-notification-if-available.patch
 Patch11: ejabberd-alt-version.patch
 # https://github.com/processone/ejabberd/issues/1037
 Patch12: ejabberd-alt-erllibs-path.patch
+
+Patch13: ejabberd-alt-dont-rebuild-translation.patch
 
 BuildRequires(pre): jabber-common >= 0.2
 BuildRequires(pre): rpm-build-erlang
@@ -114,6 +116,7 @@ The main features of ejabberd is:
 %patch4 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 # Upstream seems to import erlang-xmpp and erlang-fast_xml in a way that isn't compatible with them
 # being system libraries. We need to patch the include statements to fix this.
@@ -215,6 +218,9 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %attr(1770,root,ejabberd) %dir %_lockdir/ejabberd
 
 %changelog
+* Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 21.01-alt1
+- Updated to upstream version 21.01.
+
 * Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 20.12-alt1
 - Updated to upstream version 20.12.
 
