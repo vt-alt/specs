@@ -12,7 +12,7 @@
 %define llvm_version      11.0
 
 Name: 	 thunderbird
-Version: 78.7.0
+Version: 78.7.1
 Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -657,6 +657,12 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Sat Feb 06 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Sat Feb 06 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.1-alt1
+- New version (78.7.1).
+
 * Wed Jan 27 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.0-alt0.1.p9
 - Backport new version to p9 branch.
 
