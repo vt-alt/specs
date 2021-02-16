@@ -146,7 +146,7 @@
 Name:		ffmpeg
 Epoch:		2
 Version:	4.3.1
-Release:	alt3.2
+Release:	alt4
 
 Summary:	A command line toolbox to manipulate, convert and stream multimedia content
 License:	GPLv3
@@ -863,6 +863,9 @@ xz Changelog
 %endif
 
 %changelog
+* Wed Jan 20 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2:4.3.1-alt4
+- Applied security fixes from upstream (Fixes: CVE-2020-35964, CVE-2020-35965).
+
 * Wed Dec 09 2020 L.A. Kostis <lakostis@altlinux.ru> 2:4.3.1-alt3.2
 - Disable cuvid on arm.
 
