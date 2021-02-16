@@ -1,15 +1,10 @@
 %global import_path github.com/minio/minio
-%global commit 41688a936b8915f16120699ae975be302043d223
+%global commit 0d057c777ad62d9f612a605689b0d8ab544cf325
 %global shortcommit %(c=%{commit}; echo ${c:0:12})
-%global tag RELEASE.2020-05-28T23-29-21Z
-%define version 2020.05.28
+%global tag RELEASE.2021-02-07T01-31-02Z
+%define version 2021.02.07
 
-%global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
-
-%set_verify_elf_method unresolved=no
-%add_debuginfo_skiplist %go_root %_bindir
-%brp_strip_none %_bindir/*
 
 Name: minio
 Version: %version
@@ -99,6 +94,18 @@ useradd -r -g _%name -c "Minio" -d %_sharedstatedir/%name -s /dev/null -n _%name
 %_unitdir/%name.service
 
 %changelog
+* Mon Feb 08 2021 Alexey Shabalin <shaba@altlinux.org> 2021.02.07-alt1
+- Update to RELEASE.2021-02-07T01-31-02Z
+
+* Sun Oct 25 2020 Alexey Shabalin <shaba@altlinux.org> 2020.10.18-alt1
+- Update to RELEASE.2020-10-18T21-54-12Z
+
+* Mon Aug 17 2020 Alexey Shabalin <shaba@altlinux.org> 2020.08.16-alt1
+- Update to RELEASE.2020-08-16T18-39-38Z
+
+* Sun Jun 28 2020 Alexey Shabalin <shaba@altlinux.org> 2020.06.22-alt1
+- Update to RELEASE.2020-06-22T03-12-50Z
+
 * Fri May 29 2020 Alexey Shabalin <shaba@altlinux.org> 2020.05.28-alt1
 - Update to RELEASE.2020-05-28T23-29-21Z
 
