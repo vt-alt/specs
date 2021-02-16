@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.19
+Version: 0.4.20
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,9 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Tue Feb 02 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.20-alt1
+- Fix disk grouping in case of multiple partitions on the same disk
+
 * Tue Jan 19 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.19-alt1
 - catch exception when restoring invalid value after backend error
 
