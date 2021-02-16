@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: sane-airscan
-Version: 0.99.23
+Version: 0.99.24
 Release: alt1
 
 Summary: This package contains SANE backend for AirScan (eSCL) and WSD document scanners
@@ -66,6 +66,9 @@ meson ./BUILD
 %_man5dir/*.5.xz
 
 %changelog
+* Mon Feb 08 2021 Nikolai Kostrigin <nickel@altlinux.org> 0.99.24-alt1
+- new version
+
 * Sat Jan 16 2021 Nikolai Kostrigin <nickel@altlinux.org> 0.99.23-alt1
 - new version
 
