@@ -2,7 +2,7 @@
 %def_enable qt5
 
 Name: sechooser
-Version: 0.3.1
+Version: 0.3.2
 Release: alt1
 
 Summary: Selinux user range chooser
@@ -27,9 +27,9 @@ BuildRequires: qt5-base-devel qt5-tools
 %prep
 %setup -q -n %name-%version
 %if_disabled qt5
-%qmake_qt4
+%qmake_qt4 CONFIG+=nostrip
 %else
-%qmake_qt5
+%qmake_qt5 CONFIG+=nostrip
 %endif
 
 %build
@@ -61,6 +61,10 @@ install -m644 translations/sechooser_??.qm %buildroot/%_qt5_translationdir/
 %_bindir/*
 
 %changelog
+* Mon Feb 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.3.2-alt1
+- Enabled keyboard navigation and introduced active elements focus order.
+- Enabled building debuginfo package.
+
 * Wed Oct 21 2020 Denis Medvedev <nbr@altlinux.org> 0.3.1-alt1
 - replaced unstable getlogin with reliable proc data read.
 
