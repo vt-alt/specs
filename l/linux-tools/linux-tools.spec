@@ -2,7 +2,7 @@
 %define _unpackaged_files_terminate_build 1
 %define _stripped_files_terminate_build 1
 
-%define kernel_base_version 5.9
+%define kernel_base_version 5.10
 %define kernel_source kernel-source-%kernel_base_version
 %add_verify_elf_skiplist %_libexecdir/traceevent/plugins/*
 %add_findreq_skiplist %_datadir/perf-core/tests/*.py
@@ -13,7 +13,7 @@
 
 Name: linux-tools
 Version: %kernel_base_version
-Release: alt3
+Release: alt1
 
 Summary: Tools from Linux Kernel tree
 License: GPL-2.0-only
@@ -544,6 +544,9 @@ fi
 %_man8dir/bpftool*
 
 %changelog
+* Mon Dec 21 2020 Vitaly Chikunov <vt@altlinux.org> 5.10-alt1
+- Updae to v5.10 (2020-12-13).
+
 * Thu Nov 12 2020 Vitaly Chikunov <vt@altlinux.org> 5.9-alt3
 - spec: Fix make acpi race appeared on armh.
 
