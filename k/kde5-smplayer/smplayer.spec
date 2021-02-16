@@ -2,12 +2,12 @@
 %def_enable mpv
 
 %define rname smplayer
-%define svn 9245
+%define svn 9475
 %define xde kde5
 %define XDE KDE5
 %define xapp kf5
 Name: %xde-%rname
-Version: 19.10.2.%svn
+Version: 21.1.0.%svn
 Release: alt1
 
 %define qt_bin_dir %_qt5_bindir
@@ -170,6 +170,9 @@ done
 
 
 %changelog
+* Mon Feb 15 2021 Sergey V Turchin <zerg@altlinux.org> 21.1.0.9475-alt1
+- new version
+
 * Fri Dec 06 2019 Sergey V Turchin <zerg@altlinux.org> 19.10.2.9245-alt1
 - new version
 
