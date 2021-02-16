@@ -8,7 +8,7 @@
 %endif
 
 Name: nfdump
-Version: 1.6.21
+Version: 1.6.22
 Release: alt1
 Summary: collect and process netflow data
 Group: Monitoring
@@ -29,7 +29,7 @@ Source6: sfcapd.init
 Source7: sfcapd.sysconfig
 Source8: sfcapd.service
 
-Packager: Vladimir Lettiev <crux@altlinux.ru>
+Packager: Vladimir Lettiev <crux@altlinux.org>
 
 BuildRequires: librrd-devel libpcap-devel flex bison bzlib-devel
 
@@ -183,6 +183,9 @@ rm -f %buildroot%_libdir/libnfdump.a
 %endif
 
 %changelog
+* Wed Feb 10 2021 Sergey Y. Afonin <asy@altlinux.org> 1.6.22-alt1
+- 1.6.22
+
 * Wed Aug 12 2020 Sergey Y. Afonin <asy@altlinux.org> 1.6.21-alt1
 - 1.6.21
 
