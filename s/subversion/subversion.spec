@@ -62,7 +62,7 @@
 %define modname dav_svn_module
 
 Name:     subversion
-Version:  1.14.0
+Version:  1.14.1
 Release:  alt1
 
 Summary:  A version control system
@@ -773,6 +773,11 @@ fi
 %endif
 
 %changelog
+* Sun Feb 14 2021 Andrey Cherepanov <cas@altlinux.org> 1.14.1-alt1
+- New version.
+- Fixes:
+  + CVE-2020-17525 Remote unauthenticated denial-of-service in Subversion mod_authz_svn
+
 * Sat May 30 2020 Andrey Cherepanov <cas@altlinux.org> 1.14.0-alt1
 - New version.
 - Build subversion-python3, support for Python 2.x is removed.
