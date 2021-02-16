@@ -17,7 +17,7 @@
 %def_enable ntlm
 
 Name: openldap
-Version: %_sover.54
+Version: %_sover.57
 Release: alt0.M90P.1
 
 Provides: openldap2.4 = %version-%release
@@ -29,7 +29,7 @@ Obsoletes: openldap2.4 < %version-%release
 %define ldap_dir %_localstatedir/ldap
 
 Summary: LDAP libraries and sample clients
-License: OpenLDAP Public License
+License: OLDAP-2.8
 Group: System/Servers
 Url: http://www.openldap.org/
 
@@ -405,8 +405,7 @@ popd
 %make_build test
 
 %install
-
-%make DESTDIR=%buildroot install
+%makeinstall_std STRIP=""
 
 ###
 ## Install all slapd's file
@@ -692,6 +691,27 @@ rm -f /var/lib/ldap/%_lib/*.so*
 #[FR] Create chroot-scripts dynamic while build package 
 
 %changelog
+* Sat Feb 13 2021 Alexey Shabalin <shaba@altlinux.org> 2.4.57-alt0.M90P.1
+- 2.4.57
+- Fixes:
+  + CVE-2020-36221 Fixed slapd crashes in Certificate Exact Assertion processing
+  + CVE-2020-36222 Fixed slapd assertion failures in saslAuthzTo validation
+  + CVE-2020-36223 Fixed slapd crash in Values Return Filter control handling
+  + CVE-2020-36224 Fixed slapd crashes in saslAuthzTo processing
+  + CVE-2020-36225 Fixed slapd crashes in saslAuthzTo processing
+  + CVE-2020-36226 Fixed slapd crashes in saslAuthzTo processing
+  + CVE-2020-36227 Fixed slapd infinite loop with Cancel operation
+  + CVE-2020-36228 Fixed slapd crash in Certificate List Exact Assertion processing
+  + CVE-2020-36229 Fixed slapd crash in X.509 DN parsing
+  + CVE-2020-36230 Fixed slapd assertion failure in X.509 DN parsing
+
+* Sun Dec 27 2020 Alexey Shabalin <shaba@altlinux.org> 2.4.56-alt1
+- 2.4.56 (Fixes: CVE-2020-25709, CVE-2020-25710)
+- do not strip binaries to produce correct .debuginfo packages (ALT#27895)
+
+* Sun Dec 27 2020 Alexey Shabalin <shaba@altlinux.org> 2.4.55-alt1
+- 2.4.55 (Fixes: CVE-2020-25692)
+
 * Sun Oct 25 2020 Alexey Shabalin <shaba@altlinux.org> 2.4.54-alt0.M90P.1
 - 2.4.54 (Fixes: CVE-2020-12243)
 
