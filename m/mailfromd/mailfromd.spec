@@ -1,14 +1,14 @@
 #%%define %_libexecdir %_sbindir
-%define snapshot 0
+%define snapshot 1
 
 %define _unpackaged_files_terminate_build 1
 
 Name: mailfromd
 
-%define baseversion 8.8
+%define baseversion 8.9.90
 
 %if %snapshot
-%define snapshotdate 20181109
+%define snapshotdate 20210215
 Version: %baseversion
 Release: alt0.%snapshotdate.1
 %define srcdir %name-%baseversion-%snapshotdate
@@ -305,6 +305,14 @@ rm -f %_localstatedir/mailfromd-clamav/*.db &>/dev/null ||:
 %files locales -f mailfromd.lang
 
 %changelog
+* Tue Feb 16 2021 Sergey Y. Afonin <asy@altlinux.org> 8.9.90-alt0.20210215.1
+- new version
+- changes in mailfromd.mf:
+  + increased SpamAssassinStreamMaxLength to 1048576
+  + refactored some tests in prog envfrom
+  + updated exceptions by "rcpt to" value for working with
+    multiple recipients if they have equal exceptions
+
 * Mon Oct 19 2020 Sergey Y. Afonin <asy@altlinux.org> 8.8-alt1
 - new version
 - changed Copyright tags to License tags, updated their to SPDX syntax
