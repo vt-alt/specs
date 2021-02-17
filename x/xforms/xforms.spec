@@ -3,12 +3,12 @@ BuildRequires: chrpath
 %define suff sp1
 Name: xforms
 Version: 1.0.93
-Release: alt4
+Release: alt5
 
 Summary: A GUI toolkit based on Xlib for the X Window System
 
 Group: Development/Other
-License: LGPL
+License: LGPL-2.1+
 #Url: http://world.std.com/~xforms
 URL:     http://www.nongnu.org/xforms/
 
@@ -117,6 +117,7 @@ done
 
 %files -n lib%name-demos
 %_bindir/*
+%exclude %_bindir/iconvert
 %exclude %_bindir/fd2ps
 %exclude %_bindir/fdesign
 
@@ -132,6 +133,9 @@ done
 %endif
 
 %changelog
+* Wed Feb 10 2021 Leontiy Volodin <lvol@altlinux.org> 1.0.93-alt5
+- fixed conflict with openimageio-utils (ALT #39670)
+
 * Wed Mar 13 2013 Igor Vlasenko <viy@altlinux.ru> 1.0.93-alt4
 - fixed build
 
