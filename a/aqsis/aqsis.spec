@@ -1,14 +1,17 @@
+Group: Video
 # BEGIN SourceDeps(oneline):
-BuildRequires(pre): rpm-macros-fedora-compat
-BuildRequires: /usr/bin/desktop-file-install /usr/bin/swig gcc-c++ ilmbase-devel libGL-devel libGLU-devel python-devel rpm-build-python swig
+BuildRequires(pre): rpm-macros-cmake rpm-macros-fedora-compat
+BuildRequires: /usr/bin/desktop-file-install /usr/bin/swig boost-devel boost-filesystem-devel boost-program_options-devel boost-wave-devel gcc-c++ ilmbase-devel libGLU-devel libglvnd-devel python-devel rpm-build-python swig
 # END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
+# force out-of-tree build for spec compatibility with older releases
+%undefine __cmake_in_source_build
+
 Name:		aqsis
 Version:	1.8.2
-Release:	alt3_29
+Release:	alt4_41
 Summary:	Open source 3D rendering solution adhering to the RenderMan standard
-Group:		Video
 
 License:	GPLv2+ and LGPLv2+
 URL:		http://www.aqsis.org
@@ -23,13 +26,13 @@ Patch2: aqsis-1.8.2-boost-1.59.patch
 # Fix code to be C++11 compatible
 # https://sourceforge.net/p/aqsis/bugs/433/
 Patch3: aqsis-1.8.2-gcc6.patch
-
-Patch4: aqsis-1.8.2-alt-boost-thread.patch
+Patch4: aqsis-1.8.2-shared_ptr.patch
+Patch5: aqsis-gcc11.patch
 
 BuildRequires:  desktop-file-utils
 
 BuildRequires:  bison >= 1.35.0
-BuildRequires:  boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-devel-headers boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel
+BuildRequires:  boost-complete >= 1.34.0
 BuildRequires:  ctest cmake
 BuildRequires:  doxygen
 BuildRequires:  flex >= 2.5.4
@@ -38,17 +41,18 @@ BuildRequires:  libjpeg-devel
 BuildRequires:  libtiff-devel libtiffxx-devel
 BuildRequires:  libpng-devel
 BuildRequires:  libxslt xsltproc
-BuildRequires:  libqt4-declarative libqt4-devel libqt5-declarative qt4-designer qt5-designer qt5-tools qt5-xmlpatterns-devel
+BuildRequires:  libqt4-declarative libqt4-devel libqt4-help qt4-designer qt4-doc-html qt5-declarative-devel qt5-designer qt5-tools
 #BuildRequires:  tinyxml-devel
 BuildRequires:  openexr-devel
-BuildRequires:  python-module-sphinx
+BuildRequires:  python3-module-sphinx python3-module-sphinx-sphinx-build-symlink
 BuildRequires:  zlib-devel >= 1.1.4
 
-Requires: libqt4-core libqt4-dbus libqt4-network libqt4-script libqt4-sql libqt4-sql-sqlite libqt4-test libqt4-xml libqt4-xmlpatterns qt5-dbus
+Requires: libqt4-core libqt4-dbus libqt4-network libqt4-script libqt4-sql libqt4-sql-sqlite libqt4-test libqt4-xml libqt4-xmlpatterns qt4-common qt5-dbus
 Requires: aqsis-core = %{version}-%{release}
 Requires: aqsis-data = %{version}-%{release}
 Source44: import.info
-
+# TODO: fix build on armh
+ExcludeArch: armh
 
 %description
 Aqsis is a cross-platform photo-realistic 3D rendering solution,
@@ -59,9 +63,9 @@ This package contains graphical utilities and desktop integration.
 
 
 %package core
+Group: Video
 Requires:	%{name}-libs = %{version}-%{release}
 Summary:	Command-line tools for Aqsis Renderer
-Group:		Video
 
 %description core
 Aqsis is a cross-platform photo-realistic 3D rendering solution,
@@ -74,8 +78,8 @@ pre-processor for optimizing textures and a RIB processor.
 
 
 %package libs
+Group: System/Libraries
 Summary:        Library files for Aqsis Renderer
-Group:          System/Libraries
 
 %description libs
 Aqsis is a cross-platform photo-realistic 3D rendering solution,
@@ -86,11 +90,12 @@ This package contains the shared libraries for Aqsis Renderer.
 
 
 %package data
-Requires:	%{name} = %{version}-%{release}
+Group: Video
+#Requires:	%{name} = %{version}-%{release}
 Summary:	Example content for Aqsis Renderer
-Group:		Video
 BuildArch:      noarch
-AutoReq: yes,nopython
+#AutoReq: yes,nopython
+AutoReq: no
 
 %description data
 Aqsis is a cross-platform photo-realistic 3D rendering solution,
@@ -102,12 +107,12 @@ scenes, procedurals and shaders.
 
 
 %package devel
+Group: Development/Other
 Requires:	%{name} = %{version}-%{release}
 Requires:	aqsis-core = %{version}-%{release}
 Requires:	aqsis-libs = %{version}-%{release}
 Requires:	aqsis-data = %{version}-%{release}
 Summary:	Development files for Aqsis Renderer
-Group:		Development/Other
 
 %description devel
 Aqsis is a cross-platform photo-realistic 3D rendering solution,
@@ -124,15 +129,14 @@ integration with third-party applications.
 %patch1 -p1 -b imfinputfile-forward-declaration
 %patch2 -p1
 %patch3 -p1
-%patch4 -p2
+%patch4 -p1
+%patch5 -p1
+
 
 %build
 ## Do not Enable pdiff=yes Because it will conflict with Printdiff :
 ## /usr/bin/pdiff  from package	a2ps
-rm -rf build
-mkdir -p build
-pushd build
-%{fedora_cmake} \
+%{fedora_v2_cmake} \
   -DSYSCONFDIR:STRING=%{_sysconfdir}/%{name} \
   -DAQSIS_MAIN_CONFIG_NAME=aqsisrc-%{_lib} \
   -DLIBDIR=%{_lib} \
@@ -144,18 +148,15 @@ pushd build
   -DAQSIS_BOOST_REGEX_LIBRARY_NAME=boost_regex-mt \
   -DAQSIS_BOOST_THREAD_LIBRARY_NAME=boost_thread-mt \
   -DAQSIS_BOOST_WAVE_LIBRARY_NAME=boost_wave-mt \
-  -DCMAKE_CXX_FLAGS="$CXXFLAGS -DBOOST_FILESYSTEM_VERSION=3" \
-  -DAQSIS_USE_EXTERNAL_TINYXML:BOOL=OFF ..
+  -DAQSIS_ENABLE_THREADING:BOOL=ON \
+  -DCMAKE_CXX_FLAGS="$CXXFLAGS -DBOOST_FILESYSTEM_VERSION=3 -pthread" \
+  -DAQSIS_USE_EXTERNAL_TINYXML:BOOL=OFF
 
-make VERBOSE=1 %{?_smp_mflags}
-
-popd
+%fedora_v2_cmake_build
 
 
 %install
-pushd build
-make install DESTDIR=$RPM_BUILD_ROOT
-popd
+%fedora_v2_cmake_install
 
 # Move aqsisrc
 mv $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aqsisrc \
@@ -180,6 +181,8 @@ desktop-file-install --vendor "" --delete-original \
 desktop-file-install --vendor "" --delete-original \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   $RPM_BUILD_ROOT%{_datadir}/applications/piqsl.desktop
+
+
 
 
 %files
@@ -239,6 +242,15 @@ desktop-file-install --vendor "" --delete-original \
 
 
 %changelog
+* Tue Jan 26 2021 Igor Vlasenko <viy@altlinux.ru> 1.8.2-alt4_41
+- update to new release by fcimport
+
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 1.8.2-alt4_39
+- rebuild with new boost
+
+* Mon Nov 11 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.2-alt4_29
+- Rebuilt with boost-1.71.0.
+
 * Mon Jun 04 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.8.2-alt3_29
 - NMU: rebuilt with boost-1.67.0
 
