@@ -1,6 +1,6 @@
 Name: apt-indicator
-Version: 0.3.19
-Release: alt2
+Version: 0.3.20
+Release: alt1
 
 Summary: Applet for indication that newer packages are available
 License: GPL
@@ -77,6 +77,9 @@ mkdir -p %buildroot/%_datadir/%name/pixmaps
 %_iconsdir/hicolor/*/apps/apt-indicator.*
 
 %changelog
+* Thu Feb 11 2021 Oleg Solovyov <mcpain@altlinux.org> 0.3.20-alt1
+- fix build with new Qt
+
 * Fri Sep 18 2020 Ivan Zakharyaschev <imz@altlinux.org> 0.3.19-alt2
 - Just added some compiler flags (which don't change anything):
   + to adapt the C++ standard for the upcoming APT API (increased to C++17);
