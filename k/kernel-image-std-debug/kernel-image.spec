@@ -2,7 +2,7 @@ Name: kernel-image-std-debug
 Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .98
+%define kernel_sublevel .99
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -58,11 +58,7 @@ Patch0: %name-%version-%release.patch
 %if "%sub_flavour" == "pae"
 ExclusiveArch: i586
 %else
-%if "%sub_flavour" == "debug"
-ExclusiveArch: i586 x86_64 ppc64le
-%else
 ExclusiveArch: i586 x86_64 ppc64le aarch64 armh
-%endif
 %endif
 
 %define make_target bzImage
@@ -600,22 +596,29 @@ echo init | cpio -H newc -o | gzip -9n > initrd.img
 qemu_arch=%_arch
 qemu_opts=""
 console=ttyS0
+%ifarch x86_64
+  qemu_opts="-bios %_datadir/OVMF/OVMF_CODE.fd"
+%endif
 %ifarch %ix86
-qemu_arch=i386
+  qemu_arch=i386
 %endif
 %ifarch ppc64le
-qemu_arch=ppc64
-console=hvc0
+  qemu_arch=ppc64
+  console=hvc0
 %endif
 %ifarch aarch64
-qemu_opts="-machine accel=tcg,type=virt -cpu cortex-a57 -drive if=pflash,unit=0,format=raw,readonly,file=%_datadir/AAVMF/QEMU_EFI-pflash.raw"
+  # KVM hangs while booting std-debug, so always use TCG.
+  qemu_opts="-M virt,accel=tcg -cpu max -bios %_datadir/AAVMF/QEMU_EFI.fd"
+  console=ttyAMA0
 %endif
 %ifarch %arm
-qemu_arch=arm
-qemu_opts="-machine virt"
-console=ttyAMA0
+  qemu_arch=arm
+  qemu_opts="-M virt"
+  console=ttyAMA0
 %endif
-timeout --foreground 600 qemu-system-"$qemu_arch" $qemu_opts -kernel %buildroot/boot/vmlinuz-$KernelVer -nographic -append console="$console no_timer_check" -initrd initrd.img > boot.log &&
+timeout --foreground 600 \
+qemu-system-"$qemu_arch" -m 512 -nographic $qemu_opts \
+	-kernel %buildroot/boot/vmlinuz-$KernelVer -append console="$console no_timer_check" -initrd initrd.img > boot.log &&
 grep -q "^$msg" boot.log &&
 grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 	cat >&2 boot.log
@@ -707,6 +710,13 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Feb 18 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.99-alt1
+- v5.4.99
+
+* Tue Feb 16 2021 Vitaly Chikunov <vt@altlinux.org> 2:5.4.98-alt2
+- spec: Build on aarch64, armh.
+- spec: Improve qemu boot test.
+
 * Mon Feb 15 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.98-alt1
 - v5.4.98
 
