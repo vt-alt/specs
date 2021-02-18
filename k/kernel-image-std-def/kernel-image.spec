@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .97
+%define kernel_sublevel .98
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -116,6 +116,7 @@ BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: rsync
 BuildRequires: openssl-devel openssl
+BuildRequires: dwarves >= 1.16
 # for check
 %{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
@@ -706,6 +707,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon Feb 15 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.98-alt1
+- v5.4.98
+
 * Wed Feb 10 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.97-alt1
 - v5.4.97
 
