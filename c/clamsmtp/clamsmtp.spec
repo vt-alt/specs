@@ -1,16 +1,20 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: clamsmtp
 Version: 1.10
-Release: alt3
+Release: alt4
 
 Summary: SMTP virus-scanning proxy
 License: BSD
 Group: File tools
 
-Url: http://memberwebs.com/nielsen/software/clamsmtp/
+Url: http://thewalter.net/stef/software/clamsmtp/
 Source0: %name-%version.tar.gz
 Source1: %{name}d.init
 Source2: %{name}d.conf
 Source3: %name-README.ALT-ru_RU.UTF-8
+Source4: %{name}d.service
+Source5: %name.tmpfiles
 
 Patch0: clamsmtp-1.9-alt-strncat-buffer-overflow.patch
 Patch1: clamsmtp-1.10-alt-smtppass.patch
@@ -40,7 +44,8 @@ intercepted and scanned before forwarding.
 
 install -pD -m755 %SOURCE1 %buildroot%_initdir/%{name}d
 install -pD -m644 %SOURCE2 %buildroot%_sysconfdir/
-mkdir -p %buildroot%_var/run/%name
+install -pD -m644 %SOURCE4 %buildroot%_unitdir/%{name}d.service
+install -pD -m644 %SOURCE5 %buildroot%_tmpfilesdir/%name.conf
 install -m644 %SOURCE3 %_builddir/%name-%version/README.ALT-ru_RU.UTF-8
 
 %post
@@ -53,12 +58,16 @@ install -m644 %SOURCE3 %_builddir/%name-%version/README.ALT-ru_RU.UTF-8
 %doc AUTHORS ChangeLog README README.ALT-ru_RU.*
 %config(noreplace) %_sysconfdir/*.conf
 %_initdir/*
+%_unitdir/*
 %_sbindir/*
+%_tmpfilesdir/*
 %_man5dir/*
 %_man8dir/*
-%attr(3775,root,mail) %dir %_var/run/%name
 
 %changelog
+* Thu Feb 11 2021 Alexey Shabalin <shaba@altlinux.org> 1.10-alt4
+- NMU: add systemd unit and tmpfiles config
+
 * Fri Oct 19 2018 Leontiy Volodin <lvol@altlinux.org> 1.10-alt3
 - add clamsmtp-1.10-alt-smtppass.patch (thanks gentoo for this patch)
 
