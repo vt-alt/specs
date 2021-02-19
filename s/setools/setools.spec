@@ -4,7 +4,7 @@
 
 Name: setools
 Version: 4.3.0
-Release: alt1
+Release: alt2
 License: %gpl2plus
 URL: https://github.com/SELinuxProject/setools/wiki
 Summary: Policy analysis tools for SELinux
@@ -66,6 +66,7 @@ libraries designed to facilitate SELinux policy analysis.
 %package gui
 Summary: Policy analysis graphical tools for SELinux
 Group: System/Base
+Requires: qt5-assistant
 
 %description gui
 SETools is a collection of graphical tools, command-line tools, and
@@ -76,6 +77,7 @@ libraries designed to facilitate SELinux policy analysis.
 %patch -p1
 
 %build
+%add_optflags -Wno-error=deprecated-declarations
 CFLAGS="%{optflags}" python3 setup.py build_ext
 CFLAGS="%{optflags}" %python3_build_debug
 
@@ -116,6 +118,10 @@ egrep 'apol\.1' %name.lang > %name-gui.lang
 %python3_sitelibdir/setoolsgui
 
 %changelog
+* Thu Feb 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 4.3.0-alt2
+- Added dependency on qt5-assistant to setools-gui (Closes: #39599).
+- Fixed build with python-3.9.
+
 * Tue Jun 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 4.3.0-alt1
 - Updated to upstream version 4.3.0.
 
