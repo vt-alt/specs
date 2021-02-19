@@ -7,7 +7,7 @@
 %define prog_name            postgresql
 %define postgresql_major     12
 %define postgresql_minor     5
-%define postgresql_altrel    3
+%define postgresql_altrel    5
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -782,6 +782,15 @@ fi
 %endif
 
 %changelog
+* Tue Feb 16 2021 Alexei Takaseev <taf@altlinux.org> 12.5-alt5
+- Decrased shared_buffers from 4G to 512M (lost when reapplay
+  new 1C patch)
+
+* Thu Feb 11 2021 Alexei Takaseev <taf@altlinux.org> 12.5-alt4
+- Fix permission checks on constraint violation errors on partitions.
+  (Fixes CVE-2021-3393)
+- Re-applay patch from 1C
+
 * Thu Dec 03 2020 Alexei Takaseev <taf@altlinux.org> 12.5-alt3
 - Decrased shared_buffers from 4G to 512M
 

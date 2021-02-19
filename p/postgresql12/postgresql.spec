@@ -6,7 +6,7 @@
 
 %define prog_name            postgresql
 %define postgresql_major     12
-%define postgresql_minor     5
+%define postgresql_minor     6
 %define postgresql_altrel    0.M90P.1
 
 # Look at: src/interfaces/libpq/Makefile
@@ -784,6 +784,9 @@ fi
 %endif
 
 %changelog
+* Thu Feb 11 2021 Alexei Takaseev <taf@altlinux.org> 12.6-alt0.M90P.1
+- 12.6 (Fixes CVE-2021-3393)
+
 * Thu Dec 03 2020 Alexei Takaseev <taf@altlinux.org> 12.5-alt0.M90P.1
 - Enable -devel
 
