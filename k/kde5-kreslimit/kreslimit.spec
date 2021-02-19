@@ -1,6 +1,6 @@
 %define rname kreslimit
 Name: kde5-kreslimit
-Version: 1.2.1
+Version: 1.2.2
 Release: alt1
 
 %K5init altplace
@@ -44,6 +44,10 @@ Resource limit for launched applications
 
 
 %changelog
+* Thu Feb 18 2021 Ivan Razzhivin <underwit@altlinux.org> 1.2.2-alt1
+- remove mention from help center
+- remove help button
+
 * Wed Sep 09 2020 Ivan Razzhivin <underwit@altlinux.org> 1.2.1-alt1
 - the application fills the parent window
 - remove multiple items
