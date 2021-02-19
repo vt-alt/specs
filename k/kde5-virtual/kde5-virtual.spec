@@ -1,7 +1,7 @@
 
 Name: kde5-virtual
-Version: 5.20.0
-Release: alt2
+Version: 5.20.1
+Release: alt1
 
 Group: Graphical desktop/KDE
 Summary: Virtual packages for KDE 5
@@ -207,6 +207,7 @@ Provides: kde5-messenger-client-mix = %EVR
 Requires: kf5-filesystem
 Requires: choqok
 #Requires: blink-qt
+Requires: kde5-konversation
 %ifnarch armh ppc64le aarch64
 Requires: telegram-desktop
 %endif
@@ -243,6 +244,9 @@ Requires: psi-plus-plugin-otr psi-plus-plugin-stopspam psi-plus-plugin-storageno
 %files -n kde5-messenger-client-6-mix
 
 %changelog
+* Tue Feb 16 2021 Sergey V Turchin <zerg@altlinux.org> 5.20.1-alt1
+- add konversation to kde5-messenger-client-mix
+
 * Tue Nov 24 2020 Sergey V Turchin <zerg@altlinux.org> 5.20.0-alt2
 - change requires from psi to psi-plus
 
