@@ -1,11 +1,12 @@
 Name: lldpd
-Version: 1.0.4
-Release: alt1
+Version: 1.0.8
+Release: alt2
 Summary: Link Layer Discovery Protocol Daemon
 Source: %name-%version.tar
 Group: Networking/Other
-License: GPL
-Url: https://vincentbernat.github.io/lldpd/
+License: ICS
+Url: https://lldpd.github.io/
+Vcs: https://github.com/lldpd/lldpd.git
 
 Source1: lldpd.init
 Source2: lldpd.sysconfig
@@ -70,25 +71,6 @@ Summary: Link Layer Discovery Protocol Daemon
 
 %description devel
 Header files for LLDP Daemon
-
-%package -n bash-completion-lldpd
-Summary: Bash completion for lldpd
-Group: Shells
-BuildArch: noarch
-Requires: bash-completion
-Requires: %name = %version-%release
-
-%description -n bash-completion-lldpd
-Bash completion for lldpd.
-
-%package -n zsh-completion-lldpd
-Summary: Zsh completion for lldpd
-Group: Shells
-BuildArch: noarch
-Requires: %name = %version-%release
-
-%description -n zsh-completion-lldpd
-Zsh completion for lldpd.
 
 %prep
 %setup
@@ -165,6 +147,16 @@ fi
 %_pkgconfigdir/*
 
 %changelog
+* Thu Feb 18 2021 Alexey Shabalin <shaba@altlinux.org> 1.0.8-alt2
+- disable seccomp
+
+* Tue Feb 16 2021 Alexey Shabalin <shaba@altlinux.org> 1.0.8-alt1
+- new version 1.0.8 (Fixes: CVE-2020-27827)
+- enable seccomp for x86_64
+
+* Tue Jul 21 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.5-alt1
+- new version 1.0.5
+
 * Fri Oct 04 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.4-alt1
 - new version 1.0.4
 - merge complitions subpackages with main package
@@ -172,14 +164,14 @@ fi
 * Tue Jan 22 2019 Alexey Shabalin <shaba@altlinux.org> 1.0.3-alt1
 - 1.0.3
 
-* Fri Apr 13 2018 Alexey Shabalin <shaba@altlinux.ru> 1.0.1-alt1%ubt
+* Fri Apr 13 2018 Alexey Shabalin <shaba@altlinux.ru> 1.0.1-alt1
 - 1.0.1
 
-* Sat Mar 24 2018 Alexey Shabalin <shaba@altlinux.ru> 0.9.9-alt2%ubt
+* Sat Mar 24 2018 Alexey Shabalin <shaba@altlinux.ru> 0.9.9-alt2
 - add tmpfiles for chroot dir
 - move chroot dir from /var/lib/lldpd to /var/ran/lldpd
 
-* Sat Mar 24 2018 Alexey Shabalin <shaba@altlinux.ru> 0.9.9-alt1%ubt
+* Sat Mar 24 2018 Alexey Shabalin <shaba@altlinux.ru> 0.9.9-alt1
 - add ubt suffix to release
 
 * Sat Mar 24 2018 Alexey Shabalin <shaba@altlinux.ru> 0.9.9-alt1
