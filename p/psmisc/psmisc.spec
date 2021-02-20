@@ -1,36 +1,45 @@
-Name: psmisc
-Version: 22.20
-Release: alt1
+# SPDX-License-Identifier: GPL-2.0-only
+%define _unpackaged_files_terminate_build 1
 
-Summary: Utilities for managing processes on your system
-License: GPLv2+
+Name: psmisc
+Version: 23.3
+Release: alt2
+
+Summary: Miscellaneous utilities that use proc filesystem
+License: GPL-2.0-only
 Group: System/Base
-Url: http://sourceforge.net/projects/%name/
-# git://git.altlinux.org/gears/p/psmisc.git
-Source: %name-%version-%release.tar
+Url: https://gitlab.com/psmisc/psmisc
+Vcs: https://gitlab.com/psmisc/psmisc.git
+Source: %name-%version.tar
 
 %def_enable selinux
 BuildRequires: libncurses-devel %{?_enable_selinux:libselinux-devel}
+BuildRequires: libseccomp-devel
+BuildRequires: libcap-devel
+%{?!_without_check:%{?!_disable_check:BuildRequires: banner dejagnu rpm-build-vm >= 1.9 strace /proc}}
 
 %description
-This package contains utilities for managing processes on your system:
-pstree, killall and fuser.  The pstree command displays a tree structure
-of all of the running processes on your system.  The killall command
-sends a specified signal (SIGTERM if nothing is specified) to processes
-identified by name.  The fuser command identifies the PIDs of processes
-that are using specified files or filesystems.
+A package of small utilities that use proc filesystem.
+  fuser   - Identifies processes using files or sockets
+  killall - Kills processes by name, e.g. killall -HUP named
+  prtstat - Prints statistics of a process
+  pslog   - Prints log path(s) of a process
+  pstree  - Shows currently running processes as a tree
+  peekfd  - Shows the data travelling over a file descriptor
 
 %prep
-%setup -n %name-%version-%release
-mkdir -p m4
+%setup
 
+%define _configure_script ../configure
 %build
-%autoreconf
-%configure %{subst_enable selinux} --disable-harden-flags
+./autogen.sh
+mkdir build
+cd build
+%configure %{subst_enable selinux} --disable-harden-flags --enable-sandbox
 %make_build
 
 %install
-%makeinstall_std
+%makeinstall_std -C build
 mkdir -p %buildroot/sbin
 mv %buildroot%_bindir/fuser %buildroot/sbin/
 ln -s ../../sbin/fuser %buildroot%_bindir/
@@ -41,13 +50,99 @@ popd
 
 %find_lang %name
 
+%check
+pushd build
+PATH=%buildroot/sbin:%buildroot%_bindir:$PATH
+%ifarch x86_64
+ strace -o killall.log killall -s0 -u $USER
+ grep ^seccomp.*SECCOMP_SET_MODE_FILTER killall.log
+ grep ^prlimit.*RLIMIT_NPROC killall.log
+ grep ^capset.*CAP_SYS_PTRACE killall.log
+%endif
+
+my_tests() {
+  type killall pstree prtstat fuser pslog peekfd || :
+  killall --list
+  sleep 1m & sleep 1; killall sleep
+  sleep 1m & sleep 1; killall -e sleep
+  sleep 1m & sleep 1; killall -I SLEEP
+  sleep 1m & sleep 1; killall -r sl.ep
+  sleep 1m & sleep 1; killall -v sleep
+  sleep 1m & sleep 1; killall -w sleep
+  ! killall -s0 killall
+  killall -s0 -u $USER
+  yes | killall -s0 -u $USER -i > /dev/null
+  pstree
+  pstree -a >/dev/null
+  pstree -A >/dev/null
+  pstree -c >/dev/null
+  pstree -g >/dev/null
+  pstree -l >/dev/null
+  pstree -n >/dev/null
+  pstree -p >/dev/null
+  pstree -S >/dev/null
+  pstree -s >/dev/null
+  pstree -t >/dev/null
+  pstree -T >/dev/null
+  pstree -u >/dev/null
+  pstree -U >/dev/null
+  prtstat $$
+  prtstat -r $$
+  fuser --list-signals
+  fuser -v /proc  >/dev/null
+  fuser -mv /proc >/dev/null
+  fuser -m . -n file >/dev/null
+  fuser -m . -n udp  >/dev/null
+  fuser -m . -n tcp  >/dev/null
+  fuser -m . -u  >/dev/null
+  fuser -m . -4  >/dev/null
+  fuser -m . -6  >/dev/null
+  pslog $$
+}
+export -f my_tests
+
+banner TESTS
+my_tests
+make check
+
+banner VM
+vm-run "set -xe
+  type killall
+  /sbin/capsh --user=nobody -- -c 'sleep 1m' & sleep 1; killall sleep
+  /sbin/capsh --user=nobody -- -c 'sleep 1m' & sleep 1; killall -u nobody
+  # conflicts with kernel.yama.ptrace_scope=1
+  if type peekfd 2>/dev/null; then
+    timeout 1 peekfd \$\$ || test \$? = 124
+  fi
+  my_tests"
+popd
+
+banner ASAN
+PATH=src:$PATH
+mkdir asan
+cd asan
+# detect_leaks=0 or configure will fail to detect malloc due to leak in test
+ASAN_OPTIONS=detect_leaks=0 CFLAGS=-fsanitize=address \
+     ../configure %{subst_enable selinux} --disable-harden-flags -q --disable-sandbox
+%make_build -s
+my_tests
+make check
+
 %files -f %name.lang
 /sbin/*
 %_bindir/*
-%_man1dir/*
-%doc AUTHORS ChangeLog README
+%_man1dir/*.1*
+%doc AUTHORS ChangeLog COPYING README.md
 
 %changelog
+* Wed Jul 08 2020 Vitaly Chikunov <vt@altlinux.org> 23.3-alt2
+- spec: Simplify binaries packing.
+
+* Fri Jul 03 2020 Vitaly Chikunov <vt@altlinux.org> 23.3-alt1
+- Fresh re-import of v23.3.
+- spec: Add tests into %%check section.
+- Add seccomp sandboxing and drop most of root capabilities.
+
 * Sat Dec 08 2012 Dmitry V. Levin <ldv@altlinux.org> 22.20-alt1
 - Updated to v22.20 (closes: #28204).
 
