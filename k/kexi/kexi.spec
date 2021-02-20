@@ -18,7 +18,7 @@
 
 Name: kexi
 Version: 3.2.0
-Release: alt4
+Release: alt5
 %K5init no_altplace
 
 Group: Databases
@@ -50,6 +50,7 @@ BuildRequires: libmysqlclient-devel
 BuildRequires: postgresql-devel
 BuildRequires: kf5-karchive-devel kf5-kcrash-devel kf5-kguiaddons-devel kf5-kiconthemes-devel kf5-kio-devel
 BuildRequires: kf5-kparts-devel kf5-kproperty-devel kf5-kreport-devel kf5-ktexteditor-devel kf5-ktextwidgets-devel
+BuildRequires: kf5-syntax-highlighting-devel
 
 %description
 Kexi is a visual database applications creator.
@@ -233,6 +234,9 @@ done
 %_libdir/libkexidatatable%sover.so.*
 
 %changelog
+* Wed Feb 17 2021 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt5
+- update build requries
+
 * Mon Jan 27 2020 Sergey V Turchin <zerg@altlinux.org> 3.2.0-alt4
 - fix to build with new Qt
 
