@@ -1,6 +1,6 @@
 %define module_name	bcmwl
 %define module_version	6.30.223.248
-%define module_release alt20
+%define module_release alt21
 
 %define flavour		un-def
 %define karch %ix86 x86_64

@@ -2,7 +2,7 @@ Name: kernel-image-un-def
 Release: alt1
 epoch:1 
 %define kernel_base_version	5.10
-%define kernel_sublevel .15
+%define kernel_sublevel .17
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -112,11 +112,12 @@ BuildRequires: gcc%kgcc_version gcc%kgcc_version-c++
 BuildRequires: gcc%kgcc_version-plugin-devel libgmp-devel libmpc-devel
 BuildRequires: kernel-source-%kernel_base_version = %kernel_extra_version_numeric
 BuildRequires: module-init-tools >= 3.16
-BuildRequires: lzma-utils
+BuildRequires: lzma-utils zlib-devel
 BuildRequires: libelf-devel
 BuildRequires: bc
 BuildRequires: rsync
 BuildRequires: openssl-devel openssl
+BuildRequires: dwarves >= 1.16
 # for check
 %{?!_without_check:%{?!_disable_check:BuildRequires: qemu-system-%qemu_pkg-core ipxe-roms-qemu glibc-devel-static}}
 Provides: kernel-modules-eeepc-%flavour = %version-%release
@@ -702,8 +703,18 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Thu Feb 18 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.17-alt1
+- v5.10.17
+
+* Wed Feb 17 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.16-alt1
+- v5.10.16
+
 * Wed Feb 10 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.15-alt1
 - v5.10.15
+
+* Tue Feb 09 2021 Alexey Sheplyakov <asheplyakov@altlinux.org> 1:5.10.14-alt2
+- BE-M1000 (aka Baikal-M) support.  MBM1.0 boards with firmware from
+  SDK-M version 4.4 and 4.3 are supported
 
 * Mon Feb 08 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.14-alt1
 - v5.10.14
