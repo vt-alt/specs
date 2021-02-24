@@ -1,5 +1,4 @@
-# time limits :(
-ExcludeArch: armh
+%add_optflags -fcommon
 # BEGIN SourceDeps(oneline):
 BuildRequires(pre): rpm-macros-generic-compat
 BuildRequires: /usr/bin/desktop-file-install
@@ -182,9 +181,15 @@ BuildRequires: /proc rpm-build-java
 %global origin          openjdk
 %global minorver        0
 %global buildver        11
+%if %{bootstrap_build}
 # priority must be 7 digits in total
 #setting to 1, so debug ones can have 0
 %global priority        00000%{minorver}1
+%else
+# normal priority for java 9
+%define priority %( printf '%01d%02d%02d%02d' %{majorver} %{minorver} %{securityver} %{buildver} )
+%endif
+
 %global newjavaver      %{majorver}.%{minorver}.%{securityver}
 
 %global javaver         %{majorver}
@@ -266,7 +271,7 @@ BuildRequires: /proc rpm-build-java
 
 Name:    java-%{majorver}-%{origin}
 Version: %{newjavaver}.%{buildver}
-Release: alt2_6jpp8.M90P.1
+Release: alt8_6jpp8.M90P.1
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -373,7 +378,7 @@ BuildRequires: libfreetype-devel
 BuildRequires: libgif-devel
 BuildRequires: gcc-c++
 BuildRequires: gdb libgdb-devel
-BuildRequires: gtk-builder-convert gtk-demo libgail-devel libgtk+2-devel libgtk+2-gir-devel
+BuildRequires: gtk-builder-convert gtk-demo libgail-devel libgtk+2-devel
 BuildRequires: liblcms2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
@@ -387,7 +392,11 @@ BuildRequires: libXtst-devel
 BuildRequires: libnss-devel libnss-devel-static
 BuildRequires: xorg-proto-devel
 BuildRequires: zip
+%if %{bootstrap_build}
 BuildRequires: java-1.8.0-openjdk-devel
+%else
+BuildRequires: java-9-openjdk-devel
+%endif
 # Zero-assembler build requirement.
 %ifnarch %{jit_arches}
 BuildRequires: libffi-devel
@@ -441,6 +450,8 @@ Provides: %{_jvmdir}/%{sdkdir}/lib/%archinstall/server/libjvm.so(SUNWprivate_1.1
 %endif
 Patch33: java-9-openjdk-alt-link-fontmanager.patch
 Patch34: java-9-openjdk-alt-no-objcopy.patch
+Patch35: java-9-openjdk-alt-JDK-8237879.patch
+Patch36: java-9-openjdk-9.0.4.11-6.aarch64-fix-errors.patch
 
 
 %description
@@ -499,8 +510,6 @@ Provides: jce = %{epoch}:%{version}
 Provides: jdbc-stdext = 4.1
 Provides: java-sasl = %{epoch}:%{version}
 
-#https://bugzilla.redhat.com/show_bug.cgi?id=1312019
-Provides: /usr/bin/jjs
 Requires: java-common
 Requires: /proc
 Requires(post): /proc
@@ -836,12 +845,17 @@ done
 done
 %patch33 -p0
 %patch34 -p0
+%patch35 -p0
+%patch36 -p0
 
 # Setup nss.cfg
 #sed -e s:@NSS_LIBDIR@:%{NSS_LIBDIR}:g %{SOURCE11} > nss.cfg
 
 
 %build
+# zerg's girar armh hack:
+(while true; do date; sleep 7m; done) &
+# end armh hack, kill it when girar will be fixed
 # How many cpu's do we have?
 export NUM_PROC=%(/usr/bin/getconf _NPROCESSORS_ONLN 2> /dev/null || :)
 export NUM_PROC=${NUM_PROC:-1}
@@ -860,7 +874,9 @@ export CFLAGS="$CFLAGS -mieee"
 EXTRA_CFLAGS="-fstack-protector-strong"
 #see https://bugzilla.redhat.com/show_bug.cgi?id=1120792
 EXTRA_CFLAGS="$EXTRA_CFLAGS -Wno-error"
+EXTRA_CFLAGS="$EXTRA_CFLAGS -fcommon"
 EXTRA_CPP_FLAGS="-Wno-error"
+EXTRA_CPP_FLAGS="$EXTRA_CPP_FLAGS -fcommon"
 %ifarch %{power64} ppc
 # fix rpmlint warnings
 EXTRA_CFLAGS="$EXTRA_CFLAGS -fno-strict-aliasing"
@@ -895,7 +911,11 @@ bash ../configure \
     --with-version-build=%{buildver} \
     --with-version-pre="" \
     --with-version-opt="" \
+%if %{bootstrap_build}
     --with-boot-jdk=/usr/lib/jvm/java-1.8.0-openjdk \
+%else
+    --with-boot-jdk=/usr/lib/jvm/java-9-openjdk \
+%endif
     --with-debug-level=$debugbuild \
     --with-native-debug-symbols=internal \
     --enable-unlimited-crypto \
@@ -1298,10 +1318,10 @@ cat <<EOF >%buildroot%_altdir/%name-java-headless
 %_man1dir/java.1.gz	%_man1dir/java%{label}.1.gz	%{_jvmdir}/%{sdkdir}/bin/java
 EOF
 # binaries and manuals
-for i in keytool policytool servertool pack200 unpack200 \
+for i in jjs keytool policytool servertool pack200 unpack200 \
 orbd rmid rmiregistry tnameserv
 do
-  if [ -e %{_jvmdir}/%{sdkdir}/bin/$i ]; then
+  if [ -e %buildroot%{_jvmdir}/%{sdkdir}/bin/$i ]; then
     cat <<EOF >>%buildroot%_altdir/%name-java-headless
 %_bindir/$i	%{_jvmdir}/%{sdkdir}/bin/$i	%{_jvmdir}/%{sdkdir}/bin/java
 %_man1dir/$i.1.gz	%_man1dir/${i}%{label}.1.gz	%{_jvmdir}/%{sdkdir}/bin/java
@@ -1659,6 +1679,27 @@ fi
 
 
 %changelog
+* Sat Feb 06 2021 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt8_6jpp8.M90P.1
+- p9 bootstrap build for armh
+
+* Thu Dec 31 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt8_6jpp9
+- added alternatives for keytool,policytool,etc
+
+* Sat Dec 12 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt7_6jpp9
+- use zerg@'s hack for armh
+
+* Tue Nov 24 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt6_6jpp9
+- returned normal priority for java 9
+
+* Mon Nov 23 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt5_6jpp9
+- added jjs alternative and fixed /usr/bin/jjs provides
+
+* Sat Nov 07 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt4_6jpp9
+- non-bootstrap build with java9
+
+* Tue Oct 06 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt4_6jpp8
+- fixed build
+
 * Wed Sep 02 2020 Igor Vlasenko <viy@altlinux.ru> 0:9.0.4.11-alt2_6jpp8.M90P.1
 - backport
 
