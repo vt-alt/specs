@@ -2,7 +2,7 @@
 %def_disable static
 
 Name: inih
-Version: r48
+Version: r53
 Release: alt1
 
 Summary: Simple .INI file parser in C, good for embedded systems 
@@ -55,7 +55,7 @@ Static libraries for INI Not Invented Here
 %setup
 
 %build
-%meson
+%meson -Ddefault_library=shared -Ddistro_install=true -Dwith_INIReader=true
 %meson_build
 
 %install
@@ -86,6 +86,12 @@ Static libraries for INI Not Invented Here
 %endif
 
 %changelog
+* Sun Feb 07 2021 Nazarov Denis <nenderus@altlinux.org> r53-alt1
+- Version r53
+
+* Sun Jan 31 2021 Nazarov Denis <nenderus@altlinux.org> r52-alt1
+- Version r52
+
 * Wed Mar 04 2020 Nazarov Denis <nenderus@altlinux.org> r48-alt1
 - Initial build for ALT Linux
 
