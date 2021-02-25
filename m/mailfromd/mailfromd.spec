@@ -1,11 +1,13 @@
 #%%define %_libexecdir %_sbindir
-%define snapshot 1
+%define snapshot 0
 
 %define _unpackaged_files_terminate_build 1
 
+%def_enable mfl
+
 Name: mailfromd
 
-%define baseversion 8.9.90
+%define baseversion 8.10
 
 %if %snapshot
 %define snapshotdate 20210215
@@ -57,14 +59,16 @@ Patch1: mailfromd-savsrv.c-not_cache_mf_timeout.diff
 #Errata
 #Patch10:
 
-# Automatically added by buildreq on Mon Oct 07 2013
-# optimized out: emacs-X11 emacs-base emacs-cedet-speedbar emacs-common fontconfig libX11-locales libgdk-pixbuf libgpg-error libp11-kit libtinfo-devel mailutils pkg-config
-BuildRequires: emacs-X11 flex libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libncurses-devel libpam-devel libreadline-devel libtokyocabinet-devel
+BuildRequires: flex libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libncurses-devel libpam-devel libreadline-devel libtokyocabinet-devel
 
 BuildRequires: libmailutils-devel >= 3.6
 BuildRequires: mailutils
 BuildRequires: makeinfo
 BuildRequires: libadns-devel >= 1.5
+
+%if_enabled mfl
+BuildRequires: emacs-nox
+%endif
 
 %description
 Milter-filter for Sendmail v8, MeTA1 and Postfix (since 2.3; please
@@ -106,8 +110,9 @@ BuildArch: noarch
 %description doc
 Documentation for mailfromd.
 
+%if_enabled mfl
 %package mfl
-Summary: GNU Emacs MFL extention for mailfromd.
+Summary: GNU Emacs MFL extension for mailfromd.
 License: GPL-3.0-or-later
 Requires: emacs-base
 Group: System/Servers
@@ -119,6 +124,7 @@ you like.  However, the best choice for this job (as well as for many
 others) is, without doubt, GNU Emacs.  To ease the work of editing
 script files, the `mailfromd' package provides a special Emacs mode,
 called "MFL mode".
+%endif
 
 %package locales
 Summary: National Language files for mailfromd
@@ -299,12 +305,19 @@ rm -f %_localstatedir/mailfromd-clamav/*.db &>/dev/null ||:
 %files doc
 %_infodir/*
 
+%if_enabled mfl
 %files mfl
 %_datadir/emacs/site-lisp/*
+%endif
 
 %files locales -f mailfromd.lang
 
 %changelog
+* Wed Feb 24 2021 Sergey Y. Afonin <asy@altlinux.org> 8.10-alt1
+- new version
+- added "%%def_enable mfl" for allow to build without GNU Emacs extension
+- changed emacs-X11 to emacs-nox in BuildRequires
+
 * Tue Feb 16 2021 Sergey Y. Afonin <asy@altlinux.org> 8.9.90-alt0.20210215.1
 - new version
 - changes in mailfromd.mf:
