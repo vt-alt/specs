@@ -1,6 +1,6 @@
 Name: pulseaudio
-Version: 13.0
-Release: alt4
+Version: 14.2
+Release: alt1
 
 Summary: PulseAudio is a networked sound server
 Group: System/Servers
@@ -9,8 +9,8 @@ Url: http://pulseaudio.org/
 
 Source: %name-%version-%release.tar
 
-BuildRequires: gcc-c++ rpm-build-python3
-BuildRequires: doxygen intltool jackit-devel libalsa-devel libasyncns-devel
+BuildRequires: gcc-c++ meson rpm-build-python3
+BuildRequires: intltool jackit-devel libalsa-devel libasyncns-devel
 BuildRequires: libavahi-devel libbluez-devel
 BuildRequires: libcap-devel libdbus-devel libgdbm-devel libudev-devel
 BuildRequires: libltdl7-devel libsoxr-devel
@@ -18,7 +18,7 @@ BuildRequires: libsndfile-devel libspeex-devel libspeexdsp-devel libwebrtc-devel
 BuildRequires: libSM-devel libX11-devel libXtst-devel libxcbutil-devel
 BuildRequires: libGConf-devel
 BuildRequires: libfftw3-devel libsbc-devel liborc-devel orc xmltoman
-BuildRequires: libssl-devel libsystemd-devel
+BuildRequires: libcheck-devel libssl-devel libsystemd-devel
 
 Requires: %name-utils = %version-%release
 Requires: %name-daemon = %version-%release
@@ -80,13 +80,9 @@ Summary: PulseAudio daemon
 Group: Sound
 PreReq: shadow-utils
 Requires: lib%name = %version-%release
-Requires: udev-extras >= 0.20090516-alt2
 Conflicts: %name-utils < 0.9.16-alt0.2
 Provides: pulseaudio-bluez = %version-%release
 Obsoletes: pulseaudio-bluez
-Provides: esound
-Obsoletes: esound
-Conflicts: esd
 
 %package system
 Summary: Pulseaudio system daemon
@@ -113,11 +109,6 @@ Group: System/Libraries
 Summary: Development files for %name
 Group: Development/C
 Requires: lib%name = %version-%release
-
-%package -n lib%name-devel-doc
-Summary: Development documentation for %name
-Group: Development/C
-BuildArch: noarch
 
 %description daemon
 PulseAudio is a networked sound server, similar in theory to the Enlightened
@@ -177,48 +168,43 @@ numerous features.
 
 This package contains development files for pulseaudio.
 
-%description -n lib%name-devel-doc
-PulseAudio is a networked sound server, similar in theory to the Enlightened
-Sound Daemon (EsounD). PulseAudio is however much more advanced and has
-numerous features.
-
-This package contains doxygen documentation for pulseaudio.
-
 %prep
 %setup
-touch config.rpath
+echo %version > .tarball-version
 
 %build
-%autoreconf
-%configure \
-    --localstatedir=/var \
-    --with-access-group=audio \
-    --enable-per-user-esound-socket \
-    --enable-adrian-aec \
-    --enable-gsettings \
-    --disable-gconf \
-    --disable-static \
+%meson \
+    -Ddatabase=gdbm \
+    -Daccess_group=audio \
+    -Dadrian-aec=true \
     #
 
-%make_build all doxygen
+%meson_build
 
 %install
-%make_install DESTDIR=%buildroot install
+%meson_install
 install -pm0644 -D pulseaudio.sysconfig %buildroot%_sysconfdir/sysconfig/pulseaudio
 install -pm0755 -D pulseaudio.init %buildroot%_initdir/pulseaudio
-ln -s esdcompat %buildroot%_bindir/esd
+install -pm0644 -D pulseaudio.service %buildroot%_unitdir/pulseaudio.service
+install -pm0644    pulseaudio.socket %buildroot%_unitdir
 mkdir -p %buildroot%_localstatedir/pulse
 find %buildroot%_libdir -name \*.la -delete
 
 %find_lang %name
 
-%define pulselibdir %_libdir/pulse-13.0
+%define pulselibdir %_libdir/pulse-14.2
 %define pulsemoduledir %pulselibdir/modules
 
 %pre system
 %_sbindir/groupadd -r -f pulse &> /dev/null
 %_sbindir/useradd -r -g pulse -G audio -d /run/pulse -s /dev/null \
 	-c "Pulseaudio daemon" -M -n pulse &>/dev/null ||:
+
+%post system
+%post_service pulseaudio
+
+%preun system
+%preun_service pulseaudio
 
 %set_python3_req_method strict
 
@@ -235,15 +221,13 @@ find %buildroot%_libdir -name \*.la -delete
 
 %_bindir/start-pulseaudio-x11
 %_bindir/pulseaudio
-%_bindir/esdcompat
-%_bindir/esd
 %_bindir/pactl
 
 %_datadir/pulseaudio
 %_datadir/zsh/site-functions/_pulseaudio
 %_datadir/bash-completion/completions/*
 
-%_libdir/pulseaudio/libpulsecore-13.0.so
+%_libdir/pulseaudio/libpulsecore-14.2.so
 
 %_libexecdir/systemd/user/pulseaudio.service
 %_libexecdir/systemd/user/pulseaudio.socket
@@ -259,7 +243,6 @@ find %buildroot%_libdir -name \*.la -delete
 %exclude %pulsemoduledir/module-jack-source.so
 
 %_man1dir/pactl.1*
-%_man1dir/esdcompat.1*
 %_man1dir/pulseaudio.1*
 %_man1dir/start-pulseaudio-x11.1*
 %_man5dir/default.pa.5*
@@ -268,6 +251,8 @@ find %buildroot%_libdir -name \*.la -delete
 
 %files system
 %_initdir/pulseaudio
+%_unitdir/pulseaudio.service
+%_unitdir/pulseaudio.socket
 
 %config(noreplace) %_sysconfdir/sysconfig/pulseaudio
 %config(noreplace) %_sysconfdir/dbus-1/system.d/pulseaudio-system.conf
@@ -326,7 +311,7 @@ find %buildroot%_libdir -name \*.la -delete
 %_libdir/libpulse-mainloop-glib.so.*
 
 %dir %_libdir/pulseaudio
-%_libdir/pulseaudio/libpulsecommon-13.0.so
+%_libdir/pulseaudio/libpulsecommon-14.2.so
 %_man5dir/pulse-client.conf.5*
 
 %files -n lib%name-devel
@@ -336,10 +321,22 @@ find %buildroot%_libdir -name \*.la -delete
 %_pkgconfigdir/*.pc
 %_datadir/vala/vapi/*
 
-%files -n lib%name-devel-doc
-%doc doxygen/html
-
 %changelog
+* Mon Feb 01 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 14.2-alt1
+- 14.2 released
+
+* Tue Nov 24 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 14.0-alt1
+- 14.0 released
+
+* Thu Nov 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.99.3-alt1
+- 13.99.3
+
+* Wed Sep 23 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.99.2-alt1
+- 13.99.2
+
+* Fri Aug 07 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.99.1-alt1
+- updated up to v13.99.1-126-g7949ec50e
+
 * Sat Jul 25 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 13.0-alt4
 - disable long obsolete gconf plugin
 

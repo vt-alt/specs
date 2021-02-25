@@ -1,10 +1,10 @@
 Name: alsa-plugins
-Version: 1.1.9
-Release: alt1
+Version: 1.2.2
+Release: alt2
 Epoch: 1
 
 Summary: Advanced Linux Sound Architecture (ALSA) plugins
-License: LGPL
+License: LGPLv2.1+
 Group: System/Libraries
 
 Url: http://www.alsa-project.org
@@ -14,6 +14,8 @@ Patch: %name-%version-%release.patch
 
 BuildRequires: gcc-c++ libalsa-devel libavcodec-devel libdbus-devel
 BuildRequires: libpulseaudio-devel libsamplerate-devel libspeex-devel libspeexdsp-devel
+
+%define _unpackaged_files_terminate_build 1
 
 Summary(ru_RU.UTF-8): Плагины ALSA
 Summary(uk_UA.UTF-8): Плагіни ALSA
@@ -30,7 +32,8 @@ Advanced Linux Sound Architecture (ALSA) plugins.
 %package pulse
 Summary: ALSA pulseaudio plugin
 Group: Sound
-Requires: libalsa >= 1.0.21a pulseaudio-daemon
+Requires: libalsa >= 1.0.21a
+Requires: pulseaudio-daemon
 
 %description pulse
 ALSA pulseaudio plugin
@@ -47,25 +50,51 @@ ALSA pulseaudio plugin
 %install
 %makeinstall_std
 
-mkdir -p %buildroot%_datadir/alsa
-cat << __EOF__ >> %buildroot%_datadir/alsa/alsa.conf.d/pulse.conf
-pcm.!default { type pulse }
-ctl.!default { type pulse }
-pcm.pulse { type pulse }
-ctl.pulse { type pulse }
-__EOF__
+# drop unneeded files
+find %buildroot%_libdir/alsa-lib/ -name '*.la' -delete
+
+# install configs from Debian
+install -D pulse-alsa.conf %buildroot%_datadir/alsa/pulse-alsa.conf
+install -D pulse.conf %buildroot%_datadir/alsa/alsa.conf.d/99-pulse.conf
+
+# turn symlinks into relative ones
+find %buildroot%_sysconfdir/alsa/conf.d/ -type l -delete
+for i in %buildroot%_datadir/alsa/alsa.conf.d/*.conf; do
+	ln -sr "$i" %buildroot%_sysconfdir/alsa/conf.d/
+done
 
 %files
+# I know of README-pulse, too much hassle with merging docdirs
 %doc doc/*.txt doc/README-*
+%config(noreplace) %_sysconfdir/alsa/conf.d/*.conf
+%exclude %_sysconfdir/alsa/conf.d/*pulse*.conf
+%_datadir/alsa/alsa.conf.d/*.conf
+%exclude %_datadir/alsa/alsa.conf.d/*pulse*.conf
 %_libdir/alsa-lib/*.so
 %exclude %_libdir/alsa-lib/*pulse*.so
 
 %files pulse
 %_libdir/alsa-lib/*pulse*.so
-%_datadir/alsa/alsa.conf.d/pulse.conf
+%_sysconfdir/alsa/conf.d/99-pulseaudio-default.conf.example
+%_sysconfdir/alsa/conf.d/50-pulseaudio.conf
+%_sysconfdir/alsa/conf.d/99-pulse.conf
+%_datadir/alsa/pulse-alsa.conf
 %_datadir/alsa/alsa.conf.d/50-pulseaudio.conf
+%_datadir/alsa/alsa.conf.d/99-pulse.conf
 
 %changelog
+* Mon Feb 15 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1:1.2.2-alt2
+- Imported config files from Debian for alsa-plugins-pulse.
+  Upstream config 50-pulseaudio.conf alone sometimes isn't enough.
+
+* Thu Feb 20 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.2-alt1
+- 1.2.2
+
+* Mon Nov 18 2019 Michael Shigorin <mike@altlinux.org> 1:1.2.1-alt1
+- 1.2.1
+- actually package plugin configuration files
+- dropped pulse.conf in favour of upstream 50-pulseaudio.conf
+
 * Mon May 13 2019 Michael Shigorin <mike@altlinux.org> 1:1.1.9-alt1
 - 1.1.9
 

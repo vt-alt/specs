@@ -2,16 +2,16 @@
 %def_without python
 
 Name: libalsa
-Version: 1.1.9
-Release: alt2
+Version: 1.2.4
+Release: alt1
 Epoch: 1
 
 Summary: Advanced Linux Sound Architecture (ALSA) library
-License: LGPL 2.1+
+License: LGPLv2.1
 Group: System/Libraries
 
 Source: %name-%version.tar
-Patch: %name-%version-%release.patch
+Patch0: %name-%version-%release.patch
 Patch1: 0001-Restore-loading-usr-share-alsa-alsa.conf.d.patch
 Url: http://www.alsa-project.org
 
@@ -21,6 +21,10 @@ Obsoletes: libalsa2 < %version
 
 # for fourth-party software
 Provides: alsa-lib = %version
+
+# factored out from alsa-lib.git
+Requires: alsa-ucm-conf
+Requires: alsa-topology-conf
 
 # Automatically added by buildreq on Mon Dec 26 2016
 # optimized out: perl python-base python-modules
@@ -34,6 +38,8 @@ Provides: alsa-lib = %version
 %define modules_conf /etc/modules.conf
 %define modprobe_old %_sysconfdir/modprobe.d/alsa-modindex
 %define modprobe_conf %modprobe_old.conf
+
+%define _unpackaged_files_terminate_build 1
 
 %description
 Advanced Linux Sound Architecture (ALSA) libs. Modularized
@@ -77,7 +83,7 @@ Advanced Linux Sound Architecture (ALSA) Developer Documentation
 
 %prep
 %setup
-%patch -p1
+%patch0 -p1
 %patch1 -p1
 # Replace "include" with "__include__" in public header files
 # to make them compilable by "gcc -ansi" again.
@@ -86,9 +92,6 @@ find include -type f -print0 |
 	xargs -r0 sed -i 's/ inline / __inline__ /g' --
 
 %build
-%ifarch %e2k
-cc --version | grep -q '^lcc:1.21' && export LIBS+=" -lcxa"
-%endif
 %autoreconf
 %configure \
 	--with-configdir=%_datadir/alsa \
@@ -105,8 +108,10 @@ find %buildroot%_libdir -name \*.la -delete
 install -pDm644 asound.conf.sonicvibes_2 %buildroot%_datadir/alsa/cards/SonicVibes.conf
 
 mkdir -p %buildroot%pkgdocdir
+%if_with doc
 install -pm644 NOTES MEMORY-LEAK TODO %buildroot%pkgdocdir/
-%{?_with_doc:cp -a doc/doxygen/html %buildroot%pkgdocdir/}
+cp -a doc/doxygen/html %buildroot%pkgdocdir/
+%endif
 
 mkdir -p %buildroot%_sysconfdir/modprobe.d
 cat << __EOF__ >> %buildroot%modprobe_conf
@@ -129,8 +134,6 @@ options snd_pcsp index=10
 __EOF__
 
 install -d %buildroot%_localstatedir/alsa
-
-%define _unpackaged_files_terminate_build 1
 
 %pre
 [ ! -f %modutils_oss ] || {
@@ -170,6 +173,7 @@ done
 %_includedir/asoundlib.h
 %_libdir/*.so
 %_pkgconfigdir/alsa.pc
+%_pkgconfigdir/alsa-topology.pc
 %_datadir/aclocal/*
 
 %if_with doc
@@ -183,6 +187,36 @@ done
 %_bindir/aserver
 
 %changelog
+* Wed Oct 21 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.4-alt1
+- 1.2.4
+
+* Thu Jul 09 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.3.2-alt1
+- 1.2.3.2
+
+* Sat Jun 20 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.3.1-alt1
+- 1.2.3.1
+
+* Wed Jun 10 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.3-alt1
+- 1.2.3
+
+* Thu Feb 20 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.2-alt1
+- 1.2.2
+
+* Mon Dec 02 2019 Michael Shigorin <mike@altlinux.org> 1:1.2.1.2-alt1
+- 1.2.1.2
+- better License: tag spelling
+
+* Fri Nov 22 2019 Michael Shigorin <mike@altlinux.org> 1:1.2.1.1-alt1
+- 1.2.1.1
+- fix License: tag spelling
+- fix doc knob
+- E2K: drop lcc 1.21 support
+
+* Mon Nov 18 2019 Michael Shigorin <mike@altlinux.org> 1:1.2.1-alt1
+- 1.2.1
+- R: alsa-ucm-conf, alsa-topology-conf (maintained separately now)
+- added alsa-topology.pc to -devel subpackage
+
 * Tue May 14 2019 Dmitry V. Levin <ldv@altlinux.org> 1:1.1.9-alt2
 - NMU.
 - Packaged %_includedir/asoundlib.h introduced in 1.1.9 to fix builds

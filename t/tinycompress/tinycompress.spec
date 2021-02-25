@@ -1,9 +1,9 @@
 Name: tinycompress
-Version: 1.1.8
+Version: 1.2.4
 Release: alt1
 
 Summary: Userspace Interface to Kernel ALSA Compressed Audio APIs
-License: LGPLv2+ or BSD
+License: LGPLv2.1+ or BSD
 Group: Sound
 
 Url: http://git.alsa-project.org/?p=tinycompress.git
@@ -60,6 +60,15 @@ ln -s %_includedir/sound include/
 %_libdir/lib%name.so
 
 %changelog
+* Wed Oct 21 2020 Michael Shigorin <mike@altlinux.org> 1.2.4-alt1
+- 1.2.4
+
+* Wed Jun 10 2020 Michael Shigorin <mike@altlinux.org> 1.2.3-alt1
+- 1.2.3
+
+* Thu Feb 20 2020 Michael Shigorin <mike@altlinux.org> 1.2.2-alt1
+- 1.2.2
+
 * Thu Jan 24 2019 Michael Shigorin <mike@altlinux.org> 1.1.8-alt1
 - 1.1.8
 

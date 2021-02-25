@@ -1,10 +1,12 @@
+%def_with systemd
+
 Name: alsa-utils
-Version: 1.1.9
+Version: 1.2.4
 Release: alt1
 Epoch: 1
 
 Summary: Advanced Linux Sound Architecture (ALSA) utils
-License: GPL
+License: GPLv2+
 Group: System/Kernel and hardware
 
 Url: http://www.alsa-project.org
@@ -13,12 +15,12 @@ Patch: %name-%version-%release.patch
 Packager: Valery Inozemtsev <shrek@altlinux.ru>
 
 Requires: dialog
-#Requires: libalsa >= %version
 Obsoletes: alsa2-utils < 0.9.4
 Provides: alsa2-utils = %version
 Conflicts: alsa-utils < 1.0.9a-alt1
 
 BuildRequires: intltool libalsa-devel libncursesw-devel xmlto libfftw3-devel
+%{?_with_systemd:BuildRequires: systemd-devel}
 Requires: libncursesw >= 5.7
 Requires: sysfsutils
 
@@ -42,7 +44,7 @@ This package contains minimal client utility for ALSA:
 
 %package -n amixer
 Summary: Command-line mixer for ALSA soundcard driver
-License: GPL
+License: GPL-2.0-or-later
 Group: Sound
 
 %description -n amixer
@@ -52,24 +54,23 @@ driver.  amixer supports multiple soundcards.
 %prep
 %setup
 %patch -p1
-
 touch config.rpath
 
 %build
 %autoreconf
 %configure \
 	--with-curses=ncursesw \
+	%{?_with_systemd:--with-systemdsystemunitdir=%_unitdir} \
 	--disable-alsaconf
 %make_build
 
 %install
-%make DESTDIR=%buildroot install
-
+%makeinstall_std
 %find_lang --with-man --output=%name.lang %name
 
 %files -f %name.lang
 %doc ChangeLog README*
-/lib/udev/rules.d/90-alsa-restore.rules
+%_udevrulesdir/*.rules
 %_bindir/*
 %exclude %_bindir/aplay
 %exclude %_bindir/arecord
@@ -84,6 +85,13 @@ touch config.rpath
 %exclude %_man1dir/amixer.1*
 %_man7dir/*.7*
 
+%if_with systemd
+%_unitdir/alsa-restore.service
+%_unitdir/alsa-state.service
+%_unitdir/sound.target.wants/alsa-restore.service
+%_unitdir/sound.target.wants/alsa-state.service
+%endif
+
 %files -n aplay
 %_bindir/aplay
 %_bindir/arecord
@@ -95,6 +103,29 @@ touch config.rpath
 %_man1dir/amixer.1*
 
 %changelog
+* Wed Oct 21 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.4-alt1
+- 1.2.4
+
+* Wed Jun 10 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.3-alt1
+- 1.2.3 (closes: #38416)
+- dropped 89-alsa-ucm.rules (following upstream)
+
+* Thu Feb 20 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.2-alt1
+- 1.2.2
+
+* Mon Jan 13 2020 Michael Shigorin <mike@altlinux.org> 1:1.2.1-alt3
+- cherry-picked upstream commit 3c740d90490abe64c86c667934ba5d990817b873
+  (closes: #37757)
+
+* Sun Dec 08 2019 Vladimir D. Seleznev <vseleznv@altlinux.org> 1:1.2.1-alt2
+- added systemd knob (on by default)
+- spec: corrected license field (use specific SPDX identifier)
+
+* Mon Nov 18 2019 Michael Shigorin <mike@altlinux.org> 1:1.2.1-alt1
+- 1.2.1
+- added 89-alsa-ucm.rules
+- minor spec cleanup
+
 * Mon May 13 2019 Michael Shigorin <mike@altlinux.org> 1:1.1.9-alt1
 - 1.1.9
 
