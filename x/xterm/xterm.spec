@@ -1,7 +1,7 @@
 # Unpackaged files in buildroot should terminate build
 %define _unpackaged_files_terminate_build 1
 
-%define xterm_stdfalgs \\\
+%define xterm_stdflags \\\
 	--with-app-defaults=%_sysconfdir/X11/app-defaults \\\
 	--with-utempter \\\
 	--enable-warnings \\\
@@ -22,10 +22,12 @@
   --enable-load-vt-fonts \\\
   --enable-logfile-exec  \\\
   --enable-logging       \\\
+  --enable-readline-mouse\\\
+  --enable-regis-graphics\\\
   --enable-toolbar
 
 Name: xterm
-Version: 344
+Version: 366
 Release: alt1
 
 Summary: A standard terminal emulator for the X Window System
@@ -48,9 +50,8 @@ Patch0008: 0008-xterm-alt-i18n.patch
 Patch0009: 0009-xterm-alt-colors.patch
 Patch0010: 0010-xterm-alt-back_old_behavior_for_modifyFunctionKeys.patch
 Patch0011: 0011-xterm-alt-appdef.patch
-Patch0012: 0012-xterm-alt-enable_utf8title.patch
-Patch0013: 0013-xterm-alt-man_suffix.patch
-Patch0014: 0014-xterm-alt-translate-update-desktop.patch
+Patch0012: 0012-xterm-alt-man_suffix.patch
+Patch0013: 0013-xterm-alt-translate-update-desktop.patch
 
 Provides: xvt, %_bindir/xvt
 Requires(pre): libutempter >= 1.0.7, alternatives >= 0.3.5-alt1
@@ -95,7 +96,6 @@ install -pm755 %_sourcedir/uxterm .
 %patch0011 -p2
 %patch0012 -p2
 %patch0013 -p2
-%patch0014 -p2
 
 sed -i 's|^Exec=xterm|& -name XTerm|' %name.desktop
 sed -i 's|_48x48||' *.desktop
@@ -109,13 +109,13 @@ export ac_cv_path_XTERM_PATH=%_bindir/%name
 # Rebuild this
 touch ctlseqs.ms
 
-%configure %xterm_stdfalgs
+%configure %xterm_stdflags
 %make_build all ctlseqs.txt
 cp xterm xterm.std
 xz ctlseqs.txt
 
 make distclean
-%configure %xterm_stdfalgs %xterm_expflags
+%configure %xterm_stdflags %xterm_expflags
 %make_build
 cp xterm xterm.extd
 cp xterm.std xterm
@@ -157,6 +157,37 @@ EOF
 %attr(2711,root,utempter) %_bindir/XTerm
 
 %changelog
+* Wed Feb 24 2021 Fr. Br. George <george@altlinux.ru> 366-alt1
+- Autobuild version bump to 366
+- CVE-2021-27135 (Closes: #39725)
+
+* Thu Jan 28 2021 Fr. Br. George <george@altlinux.ru> 363-alt1
+- Autobuild version bump to 363
+
+* Thu Nov 26 2020 Fr. Br. George <george@altlinux.ru> 362-alt1
+- Autobuild version bump to 362
+
+* Wed Sep 30 2020 Fr. Br. George <george@altlinux.ru> 360-alt1
+- Autobuild version bump to 360
+
+* Wed Aug 26 2020 Fr. Br. George <george@altlinux.ru> 359-alt1
+- Autobuild version bump to 359
+
+* Sun May 31 2020 Fr. Br. George <george@altlinux.ru> 356-alt1
+- Autobuild version bump to 356
+- Update patches
+
+* Thu Jan 23 2020 Fr. Br. George <george@altlinux.ru> 352-alt1
+- Autobuild version bump to 352
+- Patch to dump XHTML and SVG without "floats with comma" bug
+
+* Mon Nov 04 2019 Fr. Br. George <george@altlinux.ru> 350-alt1
+- Autobuild version bump to 350
+
+* Thu Oct 17 2019 Fr. Br. George <george@altlinux.ru> 349-alt1
+- Autobuild version bump to 349
+- Update patches
+
 * Sun Apr 28 2019 Fr. Br. George <george@altlinux.ru> 344-alt1
 - Autobuild version bump to 344
 
