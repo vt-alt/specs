@@ -2,7 +2,7 @@
 %define sover 9
 
 Name: libmtp
-Version: 1.1.17
+Version: 1.1.18
 Release: alt1
 Packager: Dmitriy Khanzhin <jinn@altlinux.org>
 
@@ -108,6 +108,9 @@ rm -rf %buildroot%_docdir/%name-%version/html
 %_bindir/*
 
 %changelog
+* Thu Oct 15 2020 Dmitriy Khanzhin <jinn@altlinux.org> 1.1.18-alt1
+- 1.1.18
+
 * Tue Feb 04 2020 Dmitriy Khanzhin <jinn@altlinux.org> 1.1.17-alt1
 - 1.1.17
 - enabled mtpz
