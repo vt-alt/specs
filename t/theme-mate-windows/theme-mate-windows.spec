@@ -1,5 +1,5 @@
 Name:     theme-mate-windows
-Version:  1.9
+Version:  2.0
 Release:  alt1
 
 Summary:  Mate theme for Windows-like layout
@@ -47,6 +47,9 @@ install -Dm0644 applications.list \
 %_datadir/mate-menu/applications.list-themed
 
 %changelog
+* Sat Feb 20 2021 Andrey Cherepanov <cas@altlinux.org> 2.0-alt1
+- Change window theme to Dopple (ALT #38488).
+
 * Thu Apr 16 2020 Andrey Cherepanov <cas@altlinux.org> 1.9-alt1
 - Remove gksu requirement.
 
