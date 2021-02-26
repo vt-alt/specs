@@ -1,8 +1,8 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.3.3
-Release: alt2
+Version: 1.3.4
+Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
 
@@ -50,6 +50,9 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Thu Feb 18 2021 Paul Wolneykien <manowar@altlinux.org> 1.3.4-alt1
+- Send help URL on language change (closes: 38031).
+
 * Tue Apr 14 2020 Sergey V Turchin <zerg@altlinux.org> 1.3.3-alt2
 - remove unnecessary conflict with alterator-browser-qt5
 
