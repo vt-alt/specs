@@ -16,8 +16,8 @@
 %define nv_version 460
 %define nv_release 39
 %define nv_minor %nil
-%define pkg_rel alt234
-%define set_gl_nvidia_ver 1.4.0
+%define pkg_rel alt236
+%define set_gl_nvidia_ver 1.5.1
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
@@ -333,6 +333,13 @@ fi
 /lib/systemd/system-sleep/nvidia
 
 %changelog
+* Fri Feb 26 2021 Sergey V Turchin <zerg at altlinux dot org> 460.39-alt236
+- fix find xorg.conf
+
+* Fri Feb 26 2021 Sergey V Turchin <zerg@altlinux.org> 460.39-alt235
+- force load nvidia-drm for old cards when driver switching
+- don't generate 09-nvidia.conf if have /etc/X11/xorg.conf
+
 * Fri Feb 19 2021 Sergey V Turchin <zerg@altlinux.org> 460.39-alt234
 - new version
 
