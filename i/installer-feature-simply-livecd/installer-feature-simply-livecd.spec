@@ -1,5 +1,5 @@
 Name: installer-feature-simply-livecd
-Version: 9.0.0
+Version: 9.1.0
 Release: alt1
 
 Summary: LiveCD install hooks for Simply Linux.
@@ -26,7 +26,10 @@ Requires: livecd-installer-features
 Requires: installer-distro-simply-linux
 
 # Alterator modules used for livecd-install
+# Only require alterator-grub for arches that have grub.
+%ifarch  %ix86 x86_64 aarch64 ppc64le
 Requires: alterator-grub
+%endif
 Requires: alterator-vm
 Requires: alterator-luks
 
@@ -36,7 +39,6 @@ Requires: alterator-luks
 # in mkimage-profiles.
 Requires: installer-feature-desktop-other-fs-stage2
 Requires: installer-feature-lightdm-stage3
-Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-samba-usershares-stage2
 Requires: installer-feature-sudo-enable-by-default-stage3
@@ -67,6 +69,11 @@ cp -ar alterator-menu/ %buildroot%_datadir/livecd-install
 %_datadir/livecd-install/
 
 %changelog
+* Thu Feb 25 2021 Mikhail Efremov <sem@altlinux.org> 9.1.0-alt1
+- Try to kill light-locker during install.
+- Only require alterator-grub for arches that have grub.
+- Drop installer-feature-nfs-client-stage3.
+
 * Mon Dec 23 2019 Mikhail Efremov <sem@altlinux.org> 9.0.0-alt1
 - Set license as GPLv2+.
 - Requre alterator modules used by us.

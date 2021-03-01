@@ -1,5 +1,5 @@
 Name: installer-distro-simply-linux
-Version: 9.2.1
+Version: 9.3.0
 Release: alt1
 
 Summary: Installer common files
@@ -8,7 +8,6 @@ License: GPLv2+
 Group: System/Configuration/Other
 Source: %name-%version.tar
 
-BuildArch: noarch
 BuildRequires: alterator rpm-devel
 
 %description
@@ -22,6 +21,7 @@ Installer common files
 Summary: Installer stage2
 Summary(ru_RU.UTF-8): Пакеты необходимые на втором этапе установки Simply linux
 Group: System/Configuration/Other
+BuildArch: noarch
 Requires: %name = %version-%release
 Requires: installer-stage2
 #fonts
@@ -67,19 +67,20 @@ Group: System/Configuration/Other
 Requires: %name = %version-%release
 Requires: installer-stage3
 #modules
+# Only require alterator-grub for arches that have grub.
+%ifarch  %ix86 x86_64 aarch64 ppc64le
 Requires: alterator-grub
+%endif
 Requires: alterator-users
 Requires: alterator-root
-Requires: alterator-net-eth dhcpcd
+Requires: alterator-net-eth
 Requires: alterator-luks
 #Requires: alterator-x11
 #features
 Requires: installer-feature-bell-off-stage3
 Requires: installer-feature-lightdm-stage3
-Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-online-repo
 Requires: installer-feature-repo-add
-Requires: installer-feature-setup-network-stage3
 Requires: installer-feature-sudo-enable-by-default-stage3
 
 Provides: installer-lite-stage3
@@ -113,6 +114,12 @@ Installer stage3
 %files stage3
 
 %changelog
+* Wed Feb 24 2021 Mikhail Efremov <sem@altlinux.org> 9.3.0-alt1
+- stage3: Only require alterator-grub for arches that have grub.
+- stage3: Drop dhcpcd.
+- stage3: Drop installer-feature-setup-network-stage3.
+- stage3: Drop installer-feature-nfs-client-stage3.
+
 * Mon Feb 03 2020 Michael Shigorin <mike@altlinux.org> 9.2.1-alt1
 - 05-vm-profile.sh: fix "Setup 3 for workstation" case
   (alterator-vm would break given large enough disk
