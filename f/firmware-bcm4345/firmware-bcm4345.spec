@@ -1,5 +1,5 @@
 Name: firmware-bcm4345
-Version: 1.0
+Version: 2.0
 Release: alt1
 Summary: This file is needed to bluetooth working on Paspberry Pi 4
 License: LICENCE.cypress
@@ -25,5 +25,8 @@ Source1: LICENCE.cypress
 %doc %_docdir/%name
 
 %changelog
+* Wed Feb 24 2021 Dmitry Terekhin <jqt4@altlinux.org> 2.0-alt1
+- Firmware updated
+
 * Fri Mar 27 2020 Dmitry Terekhin <jqt4@altlinux.org> 1.0-alt1
 - Initial build
