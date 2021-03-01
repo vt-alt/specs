@@ -2,12 +2,12 @@
 %define discord_rpc_commit 3d3ae7129d17643bc706da0a2eea85aafd10ab3a
 %define glslang_commit d0850f875ec392a130ccf00018dab458b546f27c
 %define miniupnp_commit 7e229ddd635933239583ab190d9b614bde018157
-%define ppsspp_lang_commit 567b22525b115751ee3ae2ed2c8b046034c9dd8d
+%define ppsspp_lang_commit 6bd5b4bc983917ea8402f73c726b46e36f3de0b4
 %define spirv_cross_commit a1f7c8dc8ea2f94443951ee27003bffa562c1f13
 
 Name: ppsspp
-Version: 1.11
-Release: alt3
+Version: 1.11.2
+Release: alt2
 
 Summary: PlayStation Portable Emulator
 License: GPL-2.0-or-later
@@ -39,18 +39,18 @@ Patch0: %name-alt-ffmpeg.patch
 Patch1: %name-alt-git.patch
 
 BuildRequires: cmake
-BuildRequires: libGLEW-devel
-BuildRequires: libSDL2-devel
-BuildRequires: libavdevice-devel
-BuildRequires: libavfilter-devel
-BuildRequires: libpng-devel
-BuildRequires: libpostproc-devel
-BuildRequires: libsnappy-devel
-BuildRequires: libswresample-devel
-BuildRequires: libswscale-devel
-BuildRequires: libzip-devel
-BuildRequires: qt5-multimedia-devel
-BuildRequires: rapidjson
+BuildRequires: pkgconfig(Qt5Multimedia)
+BuildRequires: pkgconfig(RapidJSON)
+BuildRequires: pkgconfig(glew)
+BuildRequires: pkgconfig(libavdevice)
+BuildRequires: pkgconfig(libavfilter)
+BuildRequires: pkgconfig(libpng17)
+BuildRequires: pkgconfig(libpostproc)
+BuildRequires: pkgconfig(libswresample)
+BuildRequires: pkgconfig(libswscale)
+BuildRequires: pkgconfig(libzip)
+BuildRequires: pkgconfig(sdl2)
+BuildRequires: pkgconfig(snappy)
 
 Requires: %name-common = %EVR
 
@@ -194,6 +194,12 @@ CPLUS_INCLUDE_PATH=%_includedir/libzip %make_build -C %_target_platform-qt
 %_desktopdir/%name-qt.desktop
 
 %changelog
+* Thu Feb 18 2021 Nazarov Denis <nenderus@altlinux.org> 1.11.2-alt2
+- Fix buildrequires
+
+* Wed Feb 17 2021 Nazarov Denis <nenderus@altlinux.org> 1.11.2-alt1
+- Version 1.11.2
+
 * Mon Feb 08 2021 Nazarov Denis <nenderus@altlinux.org> 1.11-alt3
 - Build on ARMv7
 
