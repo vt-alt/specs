@@ -12,7 +12,7 @@
 
 Name: dotnet-runtime-%_dotnet_major
 Version: 5.0.3
-Release: alt1
+Release: alt2
 
 Summary: Microsoft .NET Runtime and Microsoft.NETCore.App
 
@@ -51,6 +51,7 @@ BuildRequires: libicu-devel libuuid-devel zlib-devel libcurl-devel libkrb5-devel
 # it is not linked directly (the same like in libicu-devel)
 # there are icu detection in a version range
 Requires: libicu
+Requires: libssl >= 1.1
 
 %if_with bootstrap
 BuildRequires: dotnet-bootstrap-%_dotnet_major = %version
@@ -64,7 +65,7 @@ BuildRequires: dotnet
 Requires: dotnet-common
 # = %version
 
-Requires: dotnet-hostfxr-%_dotnet_major
+Requires: dotnet-hostfxr-%_dotnet_major = %EVR
 
 
 %description
@@ -81,16 +82,17 @@ contributing to the project on GitHub (https://github.com/dotnet/core).
 %package -n dotnet-%_dotnet_major
 Version: %_dotnet_corerelease
 Group: Development/Other
-Summary: .NET %_dotnet_major
-
-AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
-AutoProv: no
+Summary: .NET %_dotnet_major full installation
 
 Requires: dotnet-host
-Requires: %name = %EVR
+Requires: dotnet-runtime-%_dotnet_major = %EVR
+Requires: dotnet-hostfxr-%_dotnet_major = %EVR
+#Requires: dotnet-apphost-pack-%_dotnet_major = %EVR
 
 %description -n dotnet-%_dotnet_major
 The .NET %_dotnet_major.
+
+This is a virtual package to provide full installation of .NET %_dotnet_major.
 
 .NET is a development platform that you can use to build command-line
 applications, microservices and modern websites. It is open source,
@@ -108,6 +110,7 @@ AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
 
 Conflicts: dotnet <= 3.1.6-alt1
+Requires: dotnet-common
 
 %description -n dotnet-host
 The .NET host is a command line program that runs a standalone
@@ -127,7 +130,7 @@ Summary: Microsoft .NET Host FX Resolver
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
 
-Requires: dotnet-host >= %version
+Requires: dotnet-host
 
 %description -n dotnet-hostfxr-%_dotnet_major
 The .NET host resolver contains the logic to resolve and select
@@ -156,6 +159,9 @@ contributing to the project on GitHub (https://github.com/dotnet/core).
 
 %prep
 %setup
+
+# set global runtime location
+%__subst "s|/usr/share/dotnet|%_dotnetdir|" src/installer/corehost/cli/hostmisc/pal.unix.cpp
 
 # replace obsoleted FindPythonInterp with FindPython3
 sed -i -e 's|FindPythonInterp|FindPython3|' -e 's|PYTHON_EXECUTABLE|Python3_EXECUTABLE|' \
@@ -316,6 +322,8 @@ rm -f %buildroot%_dotnet_shared/libprotononjit.so
 
 %_dotnet_shared/createdump
 
+%files -n dotnet-%_dotnet_major
+%doc README.md
 
 %files -n dotnet-host
 %doc LICENSE.TXT
@@ -330,6 +338,7 @@ rm -f %buildroot%_dotnet_shared/libprotononjit.so
 %_dotnet_hostfxr/libhostfxr.so
 
 %files -n dotnet-apphost-pack-%_dotnet_major
+%dir %_dotnetdir/
 %dir %_dotnetdir/packs/
 %dir %_dotnetdir/packs/Microsoft.NETCore.App.Host.%_dotnet_rid/
 %dir %_dotnet_apphostdir/
@@ -345,6 +354,9 @@ rm -f %buildroot%_dotnet_shared/libprotononjit.so
 %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/singlefilehost
 
 %changelog
+* Fri Feb 19 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.3-alt2
+- pack dotnet-5.0 full installation package, fix requires
+
 * Wed Feb 17 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.3-alt1
 - new version (5.0.3) with rpmgs script
 - .NET 5.0.3

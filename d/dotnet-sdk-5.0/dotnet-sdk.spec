@@ -13,7 +13,7 @@
 
 Name: dotnet-sdk-%_dotnet_major
 Version: 5.0.103
-Release: alt1
+Release: alt2
 
 Summary: SDK for the .NET
 
@@ -21,8 +21,6 @@ License: MIT
 Group: Development/Other
 
 Source: %name-%version.tar
-
-%define _dotnet_sdkrelease %version
 
 ExclusiveArch: aarch64 x86_64
 
@@ -38,15 +36,21 @@ BuildRequires: dotnet-host >= %_dotnet_corerelease
 BuildRequires: dotnet-apphost-pack-%_dotnet_major = %_dotnet_corerelease
 
 # SDK unusable without dotnet CLI
-#Requires: dotnet-host-%_dotnet_major = %_dotnet_corerelease
+Requires: dotnet-%_dotnet_major = %_dotnet_corerelease
+
+Requires: dotnet-runtime-%_dotnet_major = %_dotnet_corerelease
+Requires: dotnet-apphost-pack-%_dotnet_major = %_dotnet_corerelease
+Requires: dotnet-aspnetcore-runtime-%_dotnet_major = %_dotnet_corerelease
+Requires: dotnet-aspnetcore-targeting-pack-%_dotnet_major = %_dotnet_corerelease
+
+Requires: netstandard-targeting-pack-2.1 = %_dotnet_netstandartrelease
 
 Requires: dotnet-common
-# = %_dotnet_corerelease
 
 AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
 AutoProv: no
 
-Provides: netstandard-targeting-pack-2.1 = %_dotnet_netstandartrelease
+# TODO: move to separate packages?
 Provides: dotnet-targeting-pack-%_dotnet_major = %_dotnet_apprefrelease
 
 
@@ -54,6 +58,27 @@ Provides: dotnet-targeting-pack-%_dotnet_major = %_dotnet_apprefrelease
 SDK for the .NET runtime and libraries.
 
 Just copying managed code now.
+
+# Note: one for all versions
+%package -n netstandard-targeting-pack-2.1
+Version: %_dotnet_netstandartrelease
+Group: Development/Other
+Summary: NETStandard.Library.Ref 2.1
+
+AutoReq: yes,nomingw32,nomingw64,nomono,nomonolib
+AutoProv: no
+
+Conflicts: %name <= %EVR
+
+%description -n netstandard-targeting-pack-2.1
+NETStandard.Library.Ref 2.1
+
+.NET is a development platform that you can use to build command-line
+applications, microservices and modern websites. It is open source,
+cross-platform and is supported by Microsoft. We hope you enjoy using it!
+If you do, please consider joining the active community of developers that are
+contributing to the project on GitHub (https://github.com/dotnet/core).
+
 
 %prep
 %setup
@@ -81,18 +106,10 @@ rm -f %buildroot%_dotnet_sdk/AppHostTemplate/apphost
 #ln -sr %buildroot%_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
 cp %_dotnet_apphostdir/runtimes/%_dotnet_rid/native/apphost %buildroot%_dotnet_sdk/AppHostTemplate/apphost
 
-mkdir -p %buildroot%_cachedir/dotnet/NuGetFallbackFolder/
-ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet/sdk/NuGetFallbackFolder
-
-%pre
-%groupadd dotnet || :
-
 %files
 %dir %_dotnetdir/sdk/
 %_dotnet_sdk/
 
-# TODO: standalone package netstandard-targeting-pack-2.1.0
-%_dotnetdir/packs/NETStandard.Library.Ref/
 # TODO: dotnet-targeting-pack
 %_dotnetdir/packs/Microsoft.NETCore.App.Ref/
 
@@ -101,11 +118,19 @@ ln -sr %buildroot%_cachedir/dotnet/NuGetFallbackFolder %buildroot%_libdir/dotnet
 %dir %_dotnetdir/templates/%_dotnet_templatesrelease/
 %_dotnetdir/templates/%_dotnet_templatesrelease/*.nupkg
 
-%_libdir/dotnet/sdk/NuGetFallbackFolder/
-%dir %_cachedir/dotnet/
-%attr(2775,root,dotnet) %dir %_cachedir/dotnet/NuGetFallbackFolder/
+%files -n netstandard-targeting-pack-2.1
+%dir %_dotnetdir/
+%dir %_dotnetdir/packs/
+%dir %_dotnetdir/packs/NETStandard.Library.Ref/
+%_dotnetdir/packs/NETStandard.Library.Ref/%_dotnet_netstandartrelease/
 
 %changelog
+* Fri Feb 19 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.103-alt2
+- drop sdk/NuGetFallbackFolder
+- build netstandard-targeting-pack-2.1 separately
+- add require dotnet-5.0
+- don't create dotnet group anymore
+
 * Wed Feb 17 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.103-alt1
 - .NET SDK 5.0.103
 - CVE-2021-1721: .NET Core Denial of Service Vulnerability

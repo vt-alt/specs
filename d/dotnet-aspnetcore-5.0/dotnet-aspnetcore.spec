@@ -13,7 +13,7 @@
 
 Name: dotnet-aspnetcore-%_dotnet_major
 Version: 5.0.3
-Release: alt1
+Release: alt2
 
 Summary: ASP.NET is a cross-platform .NET framework for building modern cloud-based web application
 
@@ -68,7 +68,7 @@ Group: Development/Other
 AutoReq: no
 AutoProv: no
 
-Requires: dotnet-runtime-%_dotnet_major = %EVR
+Requires: dotnet-runtime-%_dotnet_major = %_dotnet_corerelease
 
 %description -n dotnet-aspnetcore-runtime-%_dotnet_major
 The ASP.NET runtime contains everything needed to run .NET Core
@@ -152,6 +152,9 @@ cp -a %bootstrapdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/*
 %_dotnetdir/packs/Microsoft.AspNetCore.App.Ref/%_dotnet_asppackrelease/
 
 %changelog
+* Fri Feb 19 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.3-alt2
+- fix requires
+
 * Wed Feb 17 2021 Vitaly Lipatov <lav@altlinux.ru> 5.0.3-alt1
 - ASP.NET 5.0.3
 - CVE-2021-1721: .NET Core Denial of Service Vulnerability
