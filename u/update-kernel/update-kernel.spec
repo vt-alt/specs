@@ -1,5 +1,5 @@
 Name: update-kernel
-Version: 0.9.19
+Version: 0.9.20
 Release: alt1
 
 Summary: Update kernel and modules
@@ -42,6 +42,10 @@ install -pm755 remove-old-kernels %buildroot%_sbindir/
 %_sbindir/remove-old-kernels
 
 %changelog
+* Thu Nov 19 2020 Vitaly Chikunov <vt@altlinux.org> 0.9.20-alt1
+- update-kernel: Fix and improve -r option (closes: #39041).
+- update-kernel: Add --list option.
+
 * Mon Aug 03 2020 Sergey Novikov <sotor@altlinux.org> 0.9.19-alt1
 - update-kernel: fix incorrect comparison of versions of duplicate modules
   (closes: #38772)
