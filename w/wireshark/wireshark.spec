@@ -9,7 +9,7 @@
 %define _pluginsdir %_libdir/%name/plugins/3.4
 
 Name: wireshark
-Version: 3.4.2
+Version: 3.4.3
 Release: alt1
 
 Summary: The BugTraq Award Winning Network Traffic Analyzer
@@ -20,8 +20,6 @@ Url: http://www.wireshark.org/
 Source: http://www.wireshark.org/download/src/%name-%version.tar
 Source2: %name.control
 Source3: %name.watch
-
-Patch: %name-%version-alt.patch
 
 # Automatically added by buildreq on Sun Dec 23 2007
 BuildRequires: control doxygen flex gcc-c++ libadns-devel libcap-devel libcom_err-devel libgnutls-openssl-devel libgcrypt-devel zlib-devel
@@ -113,7 +111,6 @@ extensions.
 
 %prep
 %setup
-%patch -p1
 
 %build
 # Some plugins use C++ and need lcxa. It can't be loaded
@@ -226,6 +223,9 @@ _EOF_
 %_libdir/%name/cmake
 
 %changelog
+* Wed Feb 24 2021 Anton Farygin <rider@altlinux.org> 3.4.3-alt1
+- 3.4.3 (Fixes: CVE-2021-22173, CVE-2021-22174)
+
 * Tue Jan 12 2021 Anton Farygin <rider@altlinux.ru> 3.4.2-alt1
 - 3.4.2
 
