@@ -1,15 +1,10 @@
-%global import_path github.com/containous/traefik
-%global commit 3e61d1f233ebdf015eaf59e2c253fb8a1f79dbe9
+%global import_path github.com/traefik/traefik
+%global commit f482e5e84a6aa1e5a5bd547883d9c1cb16ba20b0
 
-%global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
-%set_verify_elf_method unresolved=no
-%add_debuginfo_skiplist %go_root %_bindir
-%brp_strip_none %_bindir/*
-
 Name: traefik
-Version: 2.3.2
+Version: 2.4.3
 Release: alt1
 Summary: The Cloud Native Edge Router
 
@@ -95,10 +90,10 @@ popd
 mkdir -p dist
 
 go generate
-CGO_ENABLED=0 GOGC=off go build -ldflags " -s -w  \
-    -X github.com/containous/traefik/version.Version=$VERSION \
-    -X github.com/containous/traefik/version.Codename=$CODENAME \
-    -X github.com/containous/traefik/version.BuildDate=$DATE \
+CGO_ENABLED=0 GOGC=off go build -ldflags " -w  \
+    -X github.com/traefik/traefik/v2/pkg/version.Version=$VERSION \
+    -X github.com/traefik/traefik/v2/pkg/version.Codename=$CODENAME \
+    -X github.com/traefik/traefik/v2/pkg/version.BuildDate=$DATE \
     -X main.version=$VERSION \
     -X main.commit=$COMMIT \
     -X main.branch=$BRANCH \
@@ -139,6 +134,12 @@ install -d -m 755 %buildroot%_sharedstatedir/%name
 %dir %attr(0750, %name, %name) %_sharedstatedir/%name
 
 %changelog
+* Tue Feb 16 2021 Alexey Shabalin <shaba@altlinux.org> 2.4.3-alt1
+- 2.4.3
+
+* Sat Feb 13 2021 Alexey Shabalin <shaba@altlinux.org> 2.4.2-alt1
+- 2.4.2
+
 * Tue Nov 10 2020 Alexey Shabalin <shaba@altlinux.org> 2.3.2-alt1
 - 2.3.2
 - fix perm of acme.json
