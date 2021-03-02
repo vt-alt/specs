@@ -8,7 +8,7 @@
 
 Name: bluez
 Version: 5.55
-Release: alt1
+Release: alt2
 
 Summary: Bluetooth utilities
 License: GPL-2.0-or-later
@@ -18,6 +18,9 @@ Url: http://www.bluez.org/
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 Packager: L.A. Kostis <lakostis@altlinux.org>
+
+# Change firmware path to correct /lib/firmware
+Patch1: bluez-5.55-alt-firmware-path-fixes.patch
 
 # fc
 Patch10: 0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
@@ -74,6 +77,7 @@ https://github.com/zephyrproject-rtos/zephyr/blob/master/tests/bluetooth/tester/
 %prep
 %setup
 %patch -p1
+%patch1 -p1
 %patch10 -p1
 
 %build
@@ -181,6 +185,9 @@ fi
 %endif
 
 %changelog
+* Wed Feb 24 2021 Dmitry Terekhin <jqt4@altlinux.org> 5.55-alt2
+- Change firmware path to correct /lib/firmware
+
 * Mon Nov 16 2020 Valery Inozemtsev <shrek@altlinux.ru> 5.55-alt1
 - 5.55;
 - securuty fixes:
