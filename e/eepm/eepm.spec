@@ -1,5 +1,5 @@
 Name: eepm
-Version: 3.8.5
+Version: 3.8.9
 Release: alt1
 
 Summary: Etersoft EPM package manager
@@ -135,6 +135,26 @@ mkdir -p %buildroot/var/lib/eepm/
 %_bindir/yum
 
 %changelog
+* Thu Feb 25 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.9-alt1
+- epm-play: fix duplicates in the installed list
+- epm remove: don't try removing after rpm -e said there is not such package
+
+* Sat Feb 20 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.8-alt1
+- epm-repack: be verbose only with --verbose
+- add repack.d for trueconf-server (unsupported!)
+- fix some bashisms
+
+* Tue Feb 16 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.7-alt1
+- epm-play: allow mask unvaluable prescription, hide glibc-restore
+- epm-play: disable check for already installed (it is allowed upgrade)
+- repack.d/code.sh: drop firefox installing (closes: #39693)
+
+* Tue Feb 16 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.6-alt1
+- repack.d/code.sh: use upstream script to run code
+- epm-play: fix save installed app
+- teamviewer.sh: add comment about serv teamviewerd on
+- add env EPM_OPTIONS support
+
 * Tue Feb 02 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.5-alt1
 - epm restore: add requirements/ dir support
 - add glusterfs9 install
