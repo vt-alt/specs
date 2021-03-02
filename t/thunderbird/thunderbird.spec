@@ -12,7 +12,7 @@
 %define llvm_version      11.0
 
 Name: 	 thunderbird
-Version: 78.7.1
+Version: 78.8.0
 Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -425,16 +425,7 @@ export NPROCS=16
 export NPROCS=8
 %endif
 
-# Fix virtualenv
 python3 ./mach python --exec-file /dev/null
-python_ver="$(python3 -c 'import sys; print("python{}.{}".format(*sys.version_info))')"
-python_sitedir="objdir/_virtualenvs/init_py3/lib/$python_ver/site-packages"
-
-if [ -z "$(find "$python_sitedir" -type f -name '*.pth' -print -quit)" ]; then
-rm -rf -- "$python_sitedir"
-cp -ar objdir/_virtualenvs/init_py3/lib/python3/site-packages "$python_sitedir/"
-fi
-
 ./mach configure
 
 %if_enabled mach_build
@@ -657,6 +648,17 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 78.8.0-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Thu Feb 25 2021 Andrey Cherepanov <cas@altlinux.org> 78.8.0-alt1
+- New version (78.8.0).
+- Security fixes:
+  + CVE-2021-23969 Content Security Policy violation report could have contained the destination of a redirect
+  + CVE-2021-23968 Content Security Policy violation report could have contained the destination of a redirect
+  + CVE-2021-23973 MediaError message property could have leaked information about cross-origin resources
+  + CVE-2021-23978 Memory safety bugs fixed in Thunderbird 78.8
+
 * Sat Feb 06 2021 Andrey Cherepanov <cas@altlinux.org> 78.7.1-alt0.1.p9
 - Backport new version to p9 branch.
 
