@@ -28,7 +28,7 @@
 %endif
 
 Name:    hplip
-Version: 3.20.11
+Version: 3.21.2
 Release: alt2
 Epoch:   1
 
@@ -179,6 +179,7 @@ Patch14: hplip-alt-use-l10n.patch
 Patch15: hplip-alt-use-python3-in-service.patch
 # Fix undefined _GDB() function
 Patch17: hplip-alt-fix-undefined-_GDB-call.patch
+Patch18: hplip-alt-add-M125ra-model.patch
 
 # fedora patches
 Patch101: hplip-pstotiff-is-rubbish.patch
@@ -625,14 +626,13 @@ sed -i.duplex-constraints \
 %patch322 -p1
 %patch323 -p1
 %patch324 -p1
-%patch325 -p1
+%patch325 -p2
 %patch326 -p1
 %patch327 -p1
 %patch328 -p1
 %patch329 -p1
 
-# Conflicted patches
-%patch112 -p1 -b .logdir
+%patch112 -p2 -b .logdir
 
 tar -xf %SOURCE6
 
@@ -646,6 +646,7 @@ tar -xf %SOURCE6
 %endif
 %patch15 -p2
 %patch17 -p2
+%patch18 -p2
 
 egrep -lZr '#!/usr/bin/python$' . | xargs -r0 sed -i 's,#!/usr/bin/python$,#!/usr/bin/python%{pysuffix},'
 fgrep -lZr '#!/usr/bin/env python' . | xargs -r0 sed -i 's,#!/usr/bin/env python,#!/usr/bin/python%{pysuffix},'
@@ -1188,6 +1189,40 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.2-alt2
+- Add M125ra model.
+
+* Fri Feb 19 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.2-alt1
+- New version.
+- Added support for the following new printers:
+  + HP LaserJet Enterprise M406dn
+  + HP LaserJet Enterprise M407dn
+  + HP LaserJet Enterprise MFP M430f
+  + HP LaserJet Enterprise MFP M431f
+  + HP LaserJet Managed E40040dn
+  + HP LaserJet Managed MFP E42540f
+  + HP Color LaserJet Enterprise M455dn
+  + HP Color LaserJet Enterprise MFP M480f
+  + HP Color LaserJet Managed E45028dn
+  + HP Color LaserJet Managed MFP E47528f
+  + HP PageWide XL 3920 MFP
+  + HP PageWide XL 4200 Printer, 4200 Multifunction Printer
+  + HP PageWide XL 4700 Printer, 4700 Multifunction Printer
+  + HP PageWide XL 5200 Printer, 5200 Multifunction Printer
+  + HP PageWide XL 8200 Printer
+  + HP Laserjet M207d, M207dw
+  + HP Laserjet M208d, M208dw
+  + HP Laserjet M209d, M209dw, M209dwe
+  + HP Laserjet M210d, M210dw, M210dwe
+  + HP Laserjet M211d, M211dw
+  + HP Laserjet M212d, M212dw, M212dwe
+  + HP LaserJet MFP M232d, M232dw, M232dwc, M232sdn, M232sdw
+  + HP LaserJet MFP M233d, M233dw, M233sdn, M233sdw
+  + HP LaserJet MFP M234dw, M234dwe, M234sdn, M234sdne, M234sdw, M234sdwe
+  + HP LaserJet MFP M235d, M235dw, M235dwe, M235sdn, M235sdne, M235sdw, M235sdwe
+  + HP LaserJet MFP M236d, M236dw, M236sdn, M236sdw
+  + HP LaserJet MFP M237d, M237dw, M237dwe, 237sdne, M237sdn, 237sdwe, M237sdw
+
 * Thu Dec 10 2020 Andrey Cherepanov <cas@altlinux.org> 1:3.20.11-alt2
 - Fix hp-systray for $XDG_SESSION_DESKTOP = KDE (ALT #39401).
 
