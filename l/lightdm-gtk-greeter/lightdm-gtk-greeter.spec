@@ -2,15 +2,15 @@
 %define _localstatedir %_var
 
 Name: lightdm-gtk-greeter
-Version: 2.0.1
-Release: alt15
+Version: 2.0.7
+Release: alt2
 Summary: LightDM GTK+ Greeter
 Group: Graphical desktop/Other
 License: GPLv3+
 Url: https://launchpad.net/lightdm-gtk-greeter
 #To get source code use the command "bzr branch lp:lightdm-gtk-greeter"
 Source: %name-%version.tar
-Patch1: %name-2.0.1-alt-fixes.patch
+Patch1: %name-%version-alt-fixes.patch
 Patch2: %name-%version-advanced.patch
 
 Requires: lightdm >= 1.16.7-alt11
@@ -72,6 +72,13 @@ printf '%_datadir/xgreeters/lightdm-default-greeter.desktop\t%_datadir/xgreeters
 %config(noreplace) %_sysconfdir/lightdm/lightdm-gtk-greeter.conf
 
 %changelog
+* Thu Feb 25 2021 Paul Wolneykien <manowar@altlinux.org> 2.0.7-alt2
+- Added "enter-username" config param to explicitly ask for a
+  username before authentication starts (closes: 38544).
+
+* Mon Mar 16 2020 Paul Wolneykien <manowar@altlinux.org> 2.0.7-alt1
+- Fresh up to v2.0.7.
+
 * Mon Nov 11 2019 Paul Wolneykien <manowar@altlinux.org> 2.0.1-alt15
 - Russian translation of some prompts and titles (thx Oleg Zenin).
 - Translate the prompts and messages (thx Oleg Zenin).
