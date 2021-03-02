@@ -6,7 +6,7 @@ epoch:1
 %define kernel_need_version	5.10
 # Used when kernel-source-x.y does not currently exist in repository.
 %define kernel_base_version	5.10
-%define kernel_sublevel .7
+%define kernel_sublevel .17
 %define kernel_extra_version	%nil
 # kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
@@ -490,6 +490,15 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Feb 24 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.10.17-alt1
+- Updated to 5.10.17 (still RPi-specific)
+- https://github.com/raspberrypi/linux.git rpi-5.10.y
+- commit 12fdeddcde1ce67177ae0e13931ff24944015625
+- To work bluetooth on RPi3
+- CONFIG_SERIAL_DEV_BUS=y
+- CONFIG_SERIAL_DEV_CTRL_TTYPORT=y
+- CONFIG_BT_HCIUART_BCM=y
+
 * Wed Jan 20 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.10.7-alt1
 - Updated to 5.10.7 (still RPi-specific)
 - https://github.com/raspberrypi/linux.git rpi-5.10.y
