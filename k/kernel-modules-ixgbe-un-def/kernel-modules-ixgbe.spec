@@ -1,5 +1,5 @@
 %define module_name             ixgbe
-%define module_version          5.9.4
+%define module_version          5.10.2
 %define module_release          alt1
 
 %define flavour		un-def
@@ -29,6 +29,7 @@ BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name
 
 Patch0: ixgbe-rename.patch
+Patch1: allow-all-sfp.patch
 
 Provides: kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%release
 Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease < %version-%release
@@ -45,6 +46,7 @@ rm -rf %module_name-%module_version
 tar -jxvf %kernel_src/kernel-source-%module_name-%module_version.tar.bz2
 %setup -D -T -n kernel-source-%module_name-%module_version
 %patch0 -p1
+%patch1 -p1
 
 %build
 pushd src
@@ -64,6 +66,10 @@ echo "blacklist %module_name" > %buildroot/etc/modprobe.d/blacklist-%module_name
 %changelog
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
+
+* Mon Feb 08 2021 Alexei Takaseev <taf@altlinux.org> 5.10.2-alt1
+- 5.10.2
+- Allow all vendors sfp+
 
 * Thu Oct 01 2020 Alexei Takaseev <taf@altlinux.org> 5.9.4-alt1
 - 5.9.4

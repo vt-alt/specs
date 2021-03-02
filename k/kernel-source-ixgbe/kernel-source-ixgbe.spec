@@ -1,5 +1,5 @@
 %define module_name ixgbe
-%define module_version 5.9.4
+%define module_version 5.10.2
 
 %define module_source %module_name.tar
 
@@ -33,6 +33,9 @@ tar -cjf %kernel_srcdir/kernel-source-%module_name-%version.tar.bz2 %name-%versi
 %_usrsrc/*
 
 %changelog
+* Mon Feb 08 2021 Alexei Takaseev <taf@altlinux.org> 5.10.2-alt1
+- 5.10.2
+
 * Thu Oct 01 2020 Alexei Takaseev <taf@altlinux.org> 5.9.4-alt1
 - 5.9.4
 
