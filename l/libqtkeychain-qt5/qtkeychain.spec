@@ -1,6 +1,6 @@
 Name: libqtkeychain-qt5
-Version: 0.9.1
-Release: alt3
+Version: 0.12.0
+Release: alt1
 
 %define sover 1
 %define libqt5keychain libqt5keychain%sover
@@ -50,6 +50,7 @@ This package contains development files for qt5keychain.
 QTDIR="%_qt5_prefix" \
 %cmake .. \
     -DBUILD_WITH_QT4:BOOL=OFF \
+    -DBUILD_WITH_QT6:BOOL=OFF \
     -DQTKEYCHAIN_STATIC=OFF \
     -DECM_MKSPECS_INSTALL_DIR=%_qt5_archdatadir/mkspecs \
     -DCMAKE_BUILD_TYPE=Release
@@ -62,7 +63,7 @@ make install DESTDIR=%buildroot -C BUILD
 %find_lang --with-qt qtkeychain
 
 %files -n qt5keychain-common -f qtkeychain.lang
-%doc ReadMe.txt
+%doc ReadMe.*
 %doc COPYING
 
 %files -n %libqt5keychain
@@ -76,6 +77,9 @@ make install DESTDIR=%buildroot -C BUILD
 %_qt5_archdatadir/mkspecs/qt_Qt5Keychain.pri
 
 %changelog
+* Thu Feb 18 2021 Sergey V Turchin <zerg@altlinux.org> 0.12.0-alt1
+- new version
+
 * Wed Aug 28 2019 Sergey V Turchin <zerg@altlinux.org> 0.9.1-alt3
 - separate with qt4 version
 
