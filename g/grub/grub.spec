@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt29.qa2
+Release: alt29.qa3
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -59,6 +59,7 @@ Patch22: grub-2.02-debian-grub-install-removable-shim.patch
 Patch23: grub-2.02-alt-grub-install-no-fallback-for-removable.patch
 Patch24: grub-2.02-alt-update-russian-translation.patch
 Patch25: grub-2.02-alt-add-translation-for-installer.patch
+Patch26: grub-2.02-alt-grub-install-duplicate-grub-cfg.patch
 
 # add a rhboot/grub-2.02-sb set of patches to ensure SecureBoot safe operation
 # refer to url:  https://github.com/rhboot/grub2/commits/grub-2.02-sb
@@ -232,6 +233,7 @@ when one can't disable it easily, doesn't want to, or needs not to.
 %patch23 -p2
 %patch24 -p2
 %patch25 -p2
+%patch26 -p2
 
 #SB patches
 %patch101 -p1
@@ -542,6 +544,12 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Mon Mar 01 2021 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa3
+- fix OS ALT installer translation and make it common for all distributions
+  + update alt-add-translation-for-installer patch (antohami@)
+- duplicate grub.cfg to EFI/BOOT also to workaround some Acer firmwares
+  + add alt-grub-install-duplicate-grub-cfg patch (refer to ALT#39745)
+
 * Wed Jan 27 2021 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa2
 - grub-efi-autoupdate: fix grub update rendering system unbootable
 - grub-efi.filetrigger: add to ensure grub reinstall during shim-signed update
