@@ -1,3 +1,5 @@
+# This spec is backported to ALTLinux p9 automatically by rpmbph script from etersoft-build-utils.
+#
 %def_enable docs
 %def_enable mysql
 %def_enable sqlite
@@ -13,6 +15,7 @@
 %def_enable api
 %def_enable logdb
 %def_enable opentsdb
+%def_enable uresolver
 
 %ifarch %ix86
 %def_enable com485f
@@ -23,11 +26,11 @@
 %define oname uniset2
 
 Name: libuniset2
-Version: 2.8
-Release: alt8
+Version: 2.9.3
+Release: alt1.M90P.2
 Summary: UniSet - library for building distributed industrial control systems
 
-License: LGPL
+License: LGPL-2.1
 Group: Development/C++
 Url: http://wiki.etersoft.ru/UniSet
 
@@ -182,6 +185,14 @@ Obsoletes: %name-extentions-devel
 %description extension-common-devel
 Libraries needed to develop for uniset extensions
 
+%if_enabled uresolver
+%package extension-uresolver
+Group: Development/Tools
+Summary: CORBA object reference resolver based on http
+
+%description extension-uresolver
+CORBA object reference resolver based on http
+%endif
 
 %if_enabled mysql
 %package extension-mysql
@@ -521,6 +532,11 @@ rm -f %buildroot%_docdir/%oname/html/*.md5
 %_includedir/%oname/extensions/mqtt/
 %endif
 
+%if_enabled uresolver
+%files extension-uresolver
+%_bindir/%oname-httpresolver*
+%endif
+
 %files extension-common-devel
 %dir %_includedir/%oname/extensions
 %_includedir/%oname/extensions/*.*
@@ -540,10 +556,65 @@ rm -f %buildroot%_docdir/%oname/html/*.md5
 
 #%_pkgconfigdir/libUniSet2*.pc
 %exclude %_pkgconfigdir/libUniSet2.pc
-        
+
 # history of current unpublished changes
 
 %changelog
+* Fri Feb 12 2021 Pavel Vainerman <pv@altlinux.ru> 2.9.3-alt1.M90P.2
+- backport to ALTLinux p9 (by rpmbph script)
+
+* Sun Jan 31 2021 Pavel Vainerman <pv@altlinux.ru> 2.9.3-alt2
+- fixed lib version
+
+* Thu Jan 14 2021 Pavel Vainerman <pv@altlinux.ru> 2.9.3-alt1
+- minor fixes (supported old omniORB)
+
+* Sat Jan 09 2021 Pavel Vainerman <pv@altlinux.ru> 2.9.2-alt1
+- admin: added 'sinfo' function
+- admin: freezeValue -> freeze/unfreeze
+- globally updated help
+
+* Fri Jan 08 2021 Pavel Vainerman <pv@altlinux.ru> 2.9.1-alt1
+- supported http-resolver (when localIOR=1)
+
+* Thu Jan 07 2021 Pavel Vainerman <pv@altlinux.ru> 2.8.2-alt1
+- supported "freeze vaule"
+- modbus master: runtime reload config
+- update docs
+
+* Sat Jan 02 2021 Pavel Vainerman <pv@altlinux.ru> 2.8.1-alt3
+- make style
+- fixed docs
+
+* Sun Dec 27 2020 Pavel Vainerman <pv@altlinux.ru> 2.8.1-alt2
+- ALT spec: some fixes
+
+* Fri Dec 25 2020 Pavel Vainerman <pv@altlinux.ru> 2.8.1-alt1
+- logserver/logreader refactoring
+- update docs
+- some python-module refactoring
+
+* Sun Oct 25 2020 Pavel Vainerman <pv@altlinux.ru> 2.8-alt15
+- minor fixes
+
+* Fri Feb 14 2020 Pavel Vainerman <pv@altlinux.ru> 2.8-alt14
+- removed old define -D_GLIBCXX_USE_NANOSLEEP
+
+* Fri Feb 14 2020 Pavel Vainerman <pv@altlinux.ru> 2.8-alt13
+- (UNetUDP): added --unet-packsendpause and --unet-packsendpause-factor
+
+* Tue Jan 28 2020 Pavel Vainerman <pv@altlinux.ru> 2.8-alt12
+- minor fixes
+
+* Sun Jan 26 2020 Pavel Vainerman <pv@altlinux.ru> 2.8-alt11
+- remove std=c++11 cflags
+
+* Thu Dec 19 2019 Pavel Vainerman <pv@altlinux.ru> 2.8-alt10
+- (DBServer_PostrgeSQL): fix for check connection
+
+* Mon Jul 15 2019 Pavel Vainerman <pv@altlinux.ru> 2.8-alt9
+- (UNetUDP): fix bug in init digital sensors
+
 * Mon Mar 18 2019 Pavel Vainerman <pv@altlinux.ru> 2.8-alt8
 - minor fixes
 
