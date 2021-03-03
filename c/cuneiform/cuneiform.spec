@@ -1,6 +1,8 @@
+%define _unpackaged_files_terminate_build 1
+
 Name: cuneiform
 Version: 1.1.0
-Release: alt4
+Release: alt5
 
 Summary: Cuneiform is an OCR system originally developed and open sourced by Cognitive technologies.
 Summary(ru_RU.KOI8-R): Программа распознавания символов (OCR) Cuneiform, Linux-версия
@@ -9,12 +11,29 @@ License: BSD-style
 Group: Graphics
 Url: https://launchpad.net/cuneiform-linux
 
-Source: http://launchpad.net/%name-linux/%version/%version/+download/%name-linux-%version.tar.bz2
-Patch: cuneiform-1.1.0-minmax.patch
-Patch1: cuneiform-1.1.0-types.patch
+# http://launchpad.net/%name-linux/%version/%version/+download/%name-linux-%version.tar.bz2
+Source: %name-%version.tar
+
+# Man page from Gentoo
+Source1: cuneiform.1
+
+# Patches from Debian
+Patch1: graphicsmagick.diff
+Patch2: libm.diff
+Patch3: c-assert.diff
+Patch4: fix_buffer_overflow.diff
+Patch5: fix_buffer_overflow_2.diff
+Patch6: gcc-6.patch
+Patch7: typos.patch
+Patch8: strings.patch
+
+# Patches from Gentoo
+Patch50: cuneiform-1.1.0-gcc7.patch
 
 Requires: %name-data
-BuildRequires: gcc-c++ libImageMagick-devel cmake
+
+BuildRequires: gcc-c++ cmake
+BuildRequires: libGraphicsMagick-devel libGraphicsMagick-c++-devel
 
 %description
 Cuneiform is an OCR system originally developed and open sourced by
@@ -41,31 +60,41 @@ Language support and other data files required for Cuneiform OCR
 Поддержка различных языков и другие файлы с данными для OCR Cuneiform
 
 %prep
-%setup -n %name-linux-%version
-%patch -p1
+%setup
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch50 -p1
 
 %build
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=%_prefix
-%make_build
+%add_optflags -fcommon
+%cmake
+%cmake_build
 
 %install
-cd build
-%make preinstall
-cmake -DCMAKE_INSTALL_PREFIX=%buildroot%prefix -P cmake_install.cmake
+%cmakeinstall_std
+
+install -D -p -m644 %SOURCE1 %buildroot%_man1dir/cuneiform.1
 
 %files
 %_bindir/%name
 %_libdir/*.so*
 %_includedir/%name.h
+%_man1dir/*.1*
 
 %files data
 %dir %_datadir/%name
 %_datadir/%name/*
 
 %changelog
+* Mon Mar 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.0-alt5
+- Applied patches from Debian and Gentoo and fixed build with gcc-10.
+
 * Tue Oct 02 2018 Fr. Br. George <george@altlinux.ru> 1.1.0-alt4
 - Version up
 
