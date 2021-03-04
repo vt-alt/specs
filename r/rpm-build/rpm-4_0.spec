@@ -5,7 +5,7 @@
 
 Name: rpm-build
 Version: 4.0.4
-Release: alt151
+Release: alt164
 
 %define ifdef() %if %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define get_dep() %(rpm -q --qf '%%{NAME} >= %%|SERIAL?{%%{SERIAL}:}|%%{VERSION}-%%{RELEASE}' %1 2>/dev/null || echo '%1 >= unknown')
@@ -91,6 +91,7 @@ BuildPreReq: rpm >= 3.0.6-ipl24mdk, %_bindir/subst
 
 # For debugedit.
 BuildPreReq: elfutils-devel
+BuildRequires: librpm-devel
 
 # Automatically added by buildreq on Thu Apr 23 2009 and edited manually.
 BuildRequires: libdb4.7-devel libelf-devel liblzma-devel libpopt-devel python-devel zlib-devel
@@ -271,6 +272,7 @@ make apidocs
 
 # check
 lib/test-set
+make check
 
 %install
 %make_install DESTDIR='%buildroot' install
@@ -381,6 +383,7 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 # set-version helpers
 %rpmattr %_rpmlibdir/mkset
 %rpmattr %_rpmlibdir/setcmp
+%rpmattr %_prefix/libexec/rpm-build
 %if "%_lib" == "lib"
 %rpmdatattr %_rpmlibdir/verify-elf-non-lfs-funcs.list
 %endif
@@ -408,6 +411,64 @@ mv -T %buildroot%_rpmlibdir/{,build}macros
 %files checkinstall
 
 %changelog
+* Wed Jan 06 2021 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt164
+- ldd.in: fix trace_elf error diagnostics (ldv).
+- rpmio: Workaround another liblzma memory allocation failure on armh.
+- rpmio+pack: Update rpmio_flags 'T' with actual threads used.
+- rpmio: Make xzdio errors more informative.
+- rpmio: Fix lzopen_internal mode parsing when 'Tn' is used.
+
+* Mon Dec 21 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt163
+- Added fixup method: gnuconfig.
+
+* Sat Dec 19 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt162
+- Downgrade XZ->LZMA automatically for small payloads (by Alexey Tourbin).
+- Added payload compression string diagnostics.
+- Fixed exit status of "rpmbuild --version" command.
+
+* Fri Dec 18 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt161
+- debuginfo: strip --reloc-debug-sections for kernel modules.
+- rpmio: Lower memory limit on 32-bit arches for xz compression, again.
+- brp-debuginfo: Add debug sources check.
+- rpmio: Include rpmmacro.h to fix compilation warning.
+
+* Tue Dec 15 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt160
+- Add a wrapper for install in %%install section to skip strip.
+
+* Sun Dec 13 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt159
+- rpmio: Lower memory limit on 32-bit systems for xz compression.
+- rpmio: Make liblzma errors more verbose.
+
+* Thu Dec 10 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt158
+- Prevent exceeding 32 bit memory limitations with xz compression.
+
+* Tue Dec 08 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt157
+- Add support and enable multi-threaded xz payload compression.
+- Add affinity aware %%getncpus macro.
+- platform: change %%__nprocs to use %%getncpus instead of nproc(1).
+
+* Sat Nov 14 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt156
+- debugedit: Do not 'edit_dwarf2' when just extracting build-id.
+- debuginfo: Fix 'warning: File listed twice' for debug sources.
+
+* Thu Nov 12 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt155
+- debugedit: Fix 'Unhandled relocation 0 in .debug_info section' on e2k.
+- debuginfo: Fix source paths with `..` by creating appropriate empty dirs
+  under `/usr/src/debug` tree (closes: #39175).
+
+* Wed Nov 11 2020 Dmitry V. Levin <ldv@altlinux.org> 4.0.4-alt154
+- addReqProv: issue a warning and ignore self-provides,
+  providePackageNVR already does the right thing.
+
+* Tue Nov 10 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt153
+- debugedit: Copy debugedit with its tests from upstream.
+
+* Wed Nov 04 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt152
+- debuginfo: Allow kbuilds with the output directory.
+- debugedit: Fix 'canonicalization unexpectedly shrank by one character'
+  (closes: #39184).
+- brp-sign-kmodules: Sign kernel modules after kernel build.
+
 * Fri Aug 28 2020 Vitaly Chikunov <vt@altlinux.org> 4.0.4-alt151
 - debuginfo: Do not try to use eu-elfcompress if it does not exist.
 - debuginfo: Fix adding non-existent files into debuginfo package.

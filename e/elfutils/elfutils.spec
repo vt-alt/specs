@@ -1,5 +1,5 @@
 Name: elfutils
-Version: 0.177
+Version: 0.183
 Release: alt1
 
 Summary: A collection of utilities and DSOs to handle ELF files and DWARF data
@@ -13,8 +13,30 @@ Requires: libelf = %EVR
 
 %def_enable static
 %def_enable check
+%def_enable libdebuginfod
+%def_enable debuginfod
+%def_enable debuginfod_urls
 
-BuildRequires: bzlib-devel flex liblzma-devel libstdc++-devel zlib-devel
+BuildRequires: gettext
+BuildRequires: bison
+BuildRequires: flex
+
+# libstdc++ demangle support
+BuildRequires: gcc-c++
+
+# compression support
+BuildRequires: bzlib-devel liblzma-devel libzstd-devel zlib-devel
+
+%if_enabled libdebuginfod
+BuildRequires: libcurl-devel
+%endif
+
+%if_enabled debuginfod
+BuildRequires: libarchive-devel
+BuildRequires: libmicrohttpd-devel
+BuildRequires: libsqlite3-devel
+%endif
+
 %{?_enable_check:BuildRequires: /proc}
 
 %define _gnu %nil
@@ -151,6 +173,52 @@ Requires: libelf-devel = %EVR
 %description -n libelf-devel-static
 This package contains static libelf library.
 
+%package -n libdebuginfod
+Summary: Shared library to access debuginfod
+License: GPLv2+ or LGPLv3+
+Group: System/Libraries
+Requires: debuginfod-urls = %EVR
+
+%description -n libdebuginfod
+This package provides libdebuginfod shared library.
+
+%package -n libdebuginfod-devel
+Summary: Development libdebuginfod library and header files
+License: GPLv2+ or LGPLv3+
+Group: Development/C
+Requires: libdebuginfod = %EVR
+
+%description -n libdebuginfod-devel
+This package contains the library and header files for libdebuginfod.
+
+%package -n debuginfod-find
+Summary: A command line client for build-id HTTP ELF/DWARF server
+License: GPLv3+
+Group: Development/C
+Requires: libdebuginfod = %EVR
+
+%description -n debuginfod-find
+This packages contains debuginfod-find command line client
+for build-id HTTP ELF/DWARF server.
+
+%package -n debuginfod-urls
+Summary: Shell profiles with canned debuginfod urls
+License: GPLv3+ or LGPLv3+
+Group: Development/C
+BuildArch: noarch
+Requires: libelf = %EVR
+
+%description -n debuginfod-urls
+This package contains debuginfod url for ALT.
+
+%package -n debuginfod
+Summary: Debuginfo-related http file-server daemon
+License: GPLv3+ or LGPLv3+
+Group: System/Servers
+
+%description -n debuginfod
+This package contains debuginfod daemon.
+
 %prep
 %setup -n %name-%version-%release
 
@@ -164,7 +232,12 @@ cd %buildtarget
 	--disable-silent-rules \
 	--enable-dependency-tracking \
 	--enable-maintainer-mode \
-	--program-prefix=eu-
+	--program-prefix=eu- \
+	%{subst_enable libdebuginfod} \
+%if_enabled debuginfod_urls
+	--enable-debuginfod-urls="https://debuginfod.altlinux.org/" \
+%endif
+	%{subst_enable debuginfod}
 %make_build
 
 %install
@@ -172,6 +245,13 @@ cd %buildtarget
 %find_lang %name
 %set_verify_elf_method strict,rpath=normal
 %define _unpackaged_files_terminate_build 1
+%define _stripped_files_terminate_build 1
+
+%if_disabled debuginfod_urls
+# Explicitly remove debuginfod profile.d's as we don't have
+# default value for DEBUGINFOD_URLS anyway.
+rm %buildroot/%_sysconfdir/profile.d/debuginfod.*
+%endif
 
 %check
 export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
@@ -195,6 +275,7 @@ export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
 %_bindir/eu-strings
 %_bindir/eu-strip
 %_bindir/eu-unstrip
+%_man1dir/eu-*
 
 %files devel
 
@@ -209,7 +290,6 @@ export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
 %files -n libasm-devel
 %dir %_includedir/elfutils/
 %_includedir/elfutils/libasm.h
-%_includedir/elfutils/libebl.h
 %_libdir/libasm.so
 
 %if_enabled static
@@ -220,7 +300,6 @@ export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
 %files -n libdw
 %_libdir/libdw-*.so
 %_libdir/libdw*.so.*
-%_libdir/elfutils/
 
 %files -n libdw-devel
 %_includedir/dwarf.h
@@ -236,7 +315,6 @@ export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
 %files -n libdw-devel-static
 %dir %_includedir/elfutils/
 %_libdir/libdw.a
-%_libdir/libebl.a
 %endif
 
 %files -n libelf -f %name.lang
@@ -253,13 +331,74 @@ export PATH="%buildroot%_bindir:$PATH" LD_LIBRARY_PATH=%buildroot%_libdir
 %_includedir/elfutils/version.h
 %_libdir/libelf.so
 %_pkgconfigdir/libelf.pc
+%_man3dir/elf_*
 
 %if_enabled static
 %files -n libelf-devel-static
 %_libdir/libelf.a
 %endif
 
+%if_enabled libdebuginfod
+%files -n libdebuginfod
+%_libdir/libdebuginfod-*.so
+%_libdir/libdebuginfod.so.*
+
+%files -n libdebuginfod-devel
+%dir %_includedir/elfutils/
+%_includedir/elfutils/debuginfod.h
+%_libdir/libdebuginfod.so
+%_pkgconfigdir/libdebuginfod.pc
+%_man3dir/debuginfod*.3*
+
+%files -n debuginfod-find
+%_bindir/debuginfod-find
+%_man1dir/debuginfod-find.1*
+%endif
+
+%if_enabled debuginfod
+%files -n debuginfod
+%_bindir/debuginfod
+%_man8dir/debuginfod.*
+%endif
+
+%if_enabled debuginfod_urls
+%files -n debuginfod-urls
+%config(noreplace) %_sysconfdir/profile.d/debuginfod.*sh
+%endif
+
 %changelog
+* Fri Feb 05 2021 Dmitry V. Levin <ldv@altlinux.org> 0.183-alt1
+- elfutils-0.182 -> elfutils-0.183.
+
+* Tue Dec 01 2020 Dmitry V. Levin <ldv@altlinux.org> 0.182-alt3
+- Added libelf to libdebuginfod requirements.
+- Packaged debuginfod-find tool into a separate subpackage.
+- Packaged debuginfod-urls pointing to ALT debuginfod server (by Vitaly Chikunov).
+
+* Tue Nov 03 2020 Vitaly Chikunov <vt@altlinux.org> 0.182-alt2
+- spec: Enable libdebuginfod and debuginfod.
+
+* Sat Oct 31 2020 Dmitry V. Levin <ldv@altlinux.org> 0.182-alt1
+- elfutils-0.181 -> elfutils-0.182.
+
+* Tue Sep 08 2020 Dmitry V. Levin <ldv@altlinux.org> 0.181-alt1
+- elfutils-0.180-22-g15495182 -> elfutils-0.181.
+
+* Thu Aug 20 2020 Dmitry V. Levin <ldv@altlinux.org> 0.180.0.22.g1549-alt2
+- libdwfl: do not dlopen libdebuginfod.so in --disable-libdebuginfod mode.
+
+* Thu Jul 23 2020 Dmitry V. Levin <ldv@altlinux.org> 0.180.0.22.g1549-alt1
+- elfutils-0.180-2-g9698a399 -> elfutils-0.180-22-g15495182.
+
+* Mon Jun 15 2020 Dmitry V. Levin <ldv@altlinux.org> 0.180.0.2.9698-alt1
+- elfutils-0.179 -> elfutils-0.180-2-g9698a399.
+
+* Mon Mar 30 2020 Dmitry V. Levin <ldv@altlinux.org> 0.179-alt1
+- elfutils-0.178-15-g5de5dc7d -> elfutils-0.179.
+
+* Mon Dec 23 2019 Dmitry V. Levin <ldv@altlinux.org> 0.178.0.15.5de5-alt1
+- elfutils-0.177 -> elfutils-0.178-15-g5de5dc7d.
+
 * Tue Aug 13 2019 Dmitry V. Levin <ldv@altlinux.org> 0.177-alt1
 - elfutils-0.176-43-g1b1433d5 -> elfutils-0.177.
 
