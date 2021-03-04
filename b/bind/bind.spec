@@ -1,6 +1,6 @@
 Name: bind
-Version: 9.11.22
-%define src_version 9.11.22
+Version: 9.11.28
+%define src_version 9.11.28
 Release: alt1
 
 Summary: ISC BIND - DNS server
@@ -427,6 +427,15 @@ fi
 %exclude %docdir/COPYRIGHT
 
 %changelog
+* Thu Feb 18 2021 Stanislav Levin <slev@altlinux.org> 9.11.28-alt1
+- 9.11.25 -> 9.11.28 (fixes: CVE-2020-8625).
+
+* Mon Nov 30 2020 Stanislav Levin <slev@altlinux.org> 9.11.25-alt2
+- Backported fix for man pages (closes: #39350).
+
+* Fri Nov 27 2020 Stanislav Levin <slev@altlinux.org> 9.11.25-alt1
+- 9.11.22 -> 9.11.25.
+
 * Fri Aug 21 2020 Stanislav Levin <slev@altlinux.org> 9.11.22-alt1
 - 9.11.20 -> 9.11.22 (fixes: CVE-2020-8622, CVE-2020-8623, CVE-2020-8624).
 
@@ -617,7 +626,7 @@ fi
 * Wed Oct 17 2012 Fr. Br. George <george@altlinux.ru> 9.9.2-alt1
 - Version up to 9.9.2 (CVE 5166 included)
 
-* Wed Oct 15 2012 Fr. Br. George <george@altlinux.ru> 9.9.1-alt1
+* Mon Oct 15 2012 Fr. Br. George <george@altlinux.ru> 9.9.1-alt1
 - Version up to 9.9.1-P3 (6 middle versions jump!)
 - Drop outdated patches (including CVE 5166, this is insecure build)
 - Adapt actual patches
