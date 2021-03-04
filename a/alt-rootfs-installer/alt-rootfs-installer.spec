@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.4.1
+Version: 0.4.3
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPL-2.0-or-later
@@ -40,6 +40,15 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Sun Dec 27 2020 Anton Midyukov <antohami@altlinux.org> 0.4.3-alt1
+- Fix resize root partition
+
+* Fri Nov 27 2020 Anton Midyukov <antohami@altlinux.org> 0.4.2-alt1
+- Fixed support newer u-boot for Rockchip
+- Update supported boards
+- Added HiFive Unleashed OpenSBI SoC (riscv64) support (Thanks arei@)
+- Added --uefi option
+
 * Thu Sep 17 2020 Anton Midyukov <antohami@altlinux.org> 0.4.1-alt1
 - alt-rootfs-installer: Fix for empty $TMP
 - rpi-aarch64.sh: Fix write bootloader on Raspberry Pi 4
