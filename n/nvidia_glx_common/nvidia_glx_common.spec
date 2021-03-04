@@ -14,10 +14,10 @@
 # version-release
 
 %define nv_version 460
-%define nv_release 39
+%define nv_release 56
 %define nv_minor %nil
-%define pkg_rel alt236
-%define set_gl_nvidia_ver 1.5.1
+%define pkg_rel alt237
+%define set_gl_nvidia_ver 1.5.2
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
 %if "%nv_minor" == "%nil"
@@ -127,14 +127,11 @@ tar xvf %SOURCE0
 pushd set_gl_nvidia*
 cp settings.h.in settings.h
 
-%define glvnd_scheme 0
-%Nif_ver_gteq %ubt_id M90
-%define glvnd_scheme 0
-%else
 %define glvnd_scheme -1
-%endif
-%Nif_ver_gteq %ubt_id M100
+%Nif_ver_gteq %ubt_id M90
 %define glvnd_scheme 1
+%else
+%define glvnd_scheme 0
 %endif
 sed -i "s|@GLVND_SCHEME@|%glvnd_scheme|" settings.h
 
@@ -333,6 +330,9 @@ fi
 /lib/systemd/system-sleep/nvidia
 
 %changelog
+* Wed Mar 03 2021 Sergey V Turchin <zerg@altlinux.org> 460.56-alt237
+- new version
+
 * Fri Feb 26 2021 Sergey V Turchin <zerg at altlinux dot org> 460.39-alt236
 - fix find xorg.conf
 
