@@ -1,20 +1,20 @@
 %define _unpackaged_files_terminate_build 1
 
-# see http://lists.altlinux.org/pipermail/devel/2012-February/193243.html
+# http://lists.altlinux.org/pipermail/devel/2012-February/193243.html
 %def_disable python
 
-# see http://bugzilla.altlinux.org/31466
+# http://bugzilla.altlinux.org/31466
 %def_disable guile
 
 # https://lists.altlinux.org/pipermail/devel/2018-August/205163.html
 %def_enable mh
 
 %define use_chrpath 0
-%define snapshot    1
+%define snapshot    0
 
 Name: mailutils
 
-%define baseversion 3.10
+%define baseversion 3.12
 
 %if %snapshot
 %define snapshotdate 20200913
@@ -54,9 +54,7 @@ Provides: /bin/mail
 Requires: libmailutils = %{version}-%{release}
 Requires: libreadline
 
-# Automatically added by buildreq on Mon Feb 06 2012
-# optimized out: emacs-X11 emacs-base emacs-cedet-speedbar emacs-common fontconfig guile18 libX11-locales libgdk-pixbuf libgmp-devel libgpg-error libltdl7-devel libncurses-devel libstdc++-devel libtinfo-devel python-base python-modules
-BuildRequires: bzlib-devel flex gcc-c++ glibc-devel libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libpam-devel libreadline-devel libtokyocabinet-devel python-devel zlib-devel
+BuildRequires: bzlib-devel flex gcc-c++ glibc-devel libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libpam-devel libreadline-devel libtokyocabinet-devel zlib-devel
 
 BuildRequires: /dev/pts
 BuildRequires: makeinfo
@@ -64,8 +62,12 @@ BuildRequires: makeinfo
 BuildRequires: libltdl7-devel
 BuildRequires: perl-podlators
 
+%if_enabled python
+BuildRequires: python-devel
+%endif
+
 %if_enabled mh
-BuildRequires: emacs-X11
+BuildRequires: emacs-nox
 %endif
 
 %if %use_chrpath
@@ -256,31 +258,17 @@ python-module-mailutils.
 # errata patches
 #patch10 -p1
 
+if [ %version = 3.12 ]; then
+    echo "#endif" >> include/mailutils/sys/streamtrans.h
+fi
+
 gzip ChangeLog
-
-# https://lists.altlinux.org/pipermail/devel/2020-September/212028.html
-%ifnarch %ix86 x86_64
-sed -i "s|m4_include..strin.at..|dnl m4_include([strin.at])|"   libmailutils/tests/testsuite.at
-sed -i "s|m4_include..strout.at..|dnl m4_include([strout.at])|" libmailutils/tests/testsuite.at
-sed -i "s|m4_include..strerr.at..|dnl m4_include([strerr.at])|" libmailutils/tests/testsuite.at
-%endif
-
-# some includes for info-documentation are absent in 2.9.91
-pushd doc/texinfo
-for file in addr http mailcap numaddr sfrom url-parse
-do
- [ -f $file.inc ] || touch $file.inc
-done
-popd
-
-# see http://bugzilla.altlinux.org/31449
-sed "s/^@hashchar{}/#/" -i doc/texinfo/programs.texi
 
 %build
 
 %if ! %snapshot
 %if ! %use_chrpath
-# fixed RPATH issue (3.1.1 tarball created with wrong libtool)
+# fixed RPATH issue
 %autoreconf
 cp -f po/Makefile.in.in~ po/Makefile.in.in
 %endif
@@ -314,10 +302,6 @@ cp -f po/Makefile.in.in~ po/Makefile.in.in
 
 %check
 
-NAME=`whoami`
-sed -i "s|SENDER: gray@nonexistent.net|SENDER: $NAME@nonexistent.net|" \
-  $RPM_BUILD_DIR/%name-%version-%snapshotdate/sieve/tests/moderator.at
-
 #make check MH=/dev/null || { cat mh/tests/testsuite.log; exit 1; }
 %make check
 
@@ -340,8 +324,10 @@ pushd $RPM_BUILD_ROOT%_libdir
 popd
 %endif
 
+%if_enabled python
 rm -f $RPM_BUILD_ROOT%python_sitelibdir/mailutils/c_api.a
 rm -f $RPM_BUILD_ROOT%python_sitelibdir/mailutils/c_api.la
+%endif
 
 %if %use_chrpath
 find $RPM_BUILD_ROOT -type f | while read f; do
@@ -399,6 +385,9 @@ done
 %endif
 
 %files -n libmailutils-devel
+%if_disabled guile
+%exclude %_includedir/mailutils/guile.h
+%endif
 %_includedir/*
 %_bindir/mailutils-config
 %_datadir/aclocal/mailutils.m4
@@ -480,6 +469,11 @@ done
 %endif
 
 %changelog
+* Mon Mar 01 2021 Sergey Y. Afonin <asy@altlinux.org> 3.12-alt1
+- New version
+- Enabled standard streams tests for all architectures
+- Changed emacs-X11 to emacs-nox in BuildRequires
+
 * Sun Sep 27 2020 Sergey Y. Afonin <asy@altlinux.org> 3.10-alt0.20200913.1
 - New version (CVE-2019-18862 fixed in 3.8)
 - Updated %%description
