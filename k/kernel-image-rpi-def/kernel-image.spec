@@ -1,7 +1,7 @@
 %def_disable check
 
 Name: kernel-image-rpi-def
-Release: alt1
+Release: alt2
 epoch:1 
 %define kernel_need_version	5.4
 # Used when kernel-source-x.y does not currently exist in repository.
@@ -493,6 +493,14 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon Mar 01 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.83-alt2
+- To work bluetooth on RPi3
+- CONFIG_SERIAL_DEV_BUS=y
+- CONFIG_SERIAL_DEV_CTRL_TTYPORT=y
+- CONFIG_BT_HCIUART_BCM=y
+- To work thermal sensor on RPi3 (armh)
+- CONFIG_BCM2835_THERMAL=y
+
 * Tue Jan 19 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.83-alt1
 - Updated to 5.4.83 (still RPi-specific)
 - https://github.com/raspberrypi/linux.git rpi-5.4.y
