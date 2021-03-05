@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.36
+Version: 0.2.40
 Release: alt1
 
 Summary: Simple image creator
@@ -86,6 +86,32 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Wed Feb 17 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.40-alt1
+- mki-copy-grubaa64boot:
+  + Fix missing escaping a variable bootaa64
+
+* Fri Feb 12 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.39-alt1
+- Add a new type of bootable ISO with grub-pc.
+- mki-copy-grubaa64boot:
+  + Add support for the correct efi binary name
+- mki-copy-efiboot-chrooted:
+  + Replace grub-efi modules to boot/grub
+  + Fix conditition for restore grub.cfg
+  + Fix copy grub bootloader
+  + Fix PATH to grub modules
+
+* Tue Jan 26 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.38-alt1
+- mki-copy-grubaa64boot, mki-pack-efionly-isoboot:
+  + Unified with mki-copy-efiboot.
+  + Add EFI partition.
+- mki-copy-efiboot-chrooted:
+  + Copy locale for grub-efi (ALT#39587).
+  + Reducing iso size with use grub-efi.
+- Build iso with BOOT_TYPE=efiboot only.
+
+* Tue Dec 22 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.37-alt1
+- Rewrite mki-print-uris.
+
 * Fri Dec 18 2020 Alexey Gladkov <legion@altlinux.ru> 0.2.36-alt1
 - mki-copy-ieee1275boot: copy grub modules
 - mki-copy-grubaa64boot: copy theme for grub-efi (aarch64)
