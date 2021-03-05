@@ -1,5 +1,5 @@
 Name:     papirus-icon-theme
-Version:  20210201
+Version:  20210302
 Release:  alt1
 
 Summary:  All Papirus icon themes
@@ -93,6 +93,9 @@ cp -a Papirus Papirus-Dark Papirus-Light ePapirus %buildroot%_iconsdir
 %_iconsdir/ePapirus
 
 %changelog
+* Wed Mar 03 2021 Andrey Cherepanov <cas@altlinux.org> 20210302-alt1
+- New version.
+
 * Tue Feb 02 2021 Andrey Cherepanov <cas@altlinux.org> 20210201-alt1
 - New version.
 
