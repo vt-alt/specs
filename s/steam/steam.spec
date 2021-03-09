@@ -1,9 +1,9 @@
 Name: steam
-Version: 1.0.0.68
+Version: 1.0.0.69
 Release: alt1
 
 Summary: Launcher for the Steam software distribution service
-License: Proprietary
+License: Steam
 Group: Games/Other
 
 URL: http://www.steampowered.com/
@@ -12,6 +12,8 @@ Packager: Nazarov Denis <nenderus@altlinux.org>
 ExclusiveArch: %ix86
 
 Source0: http://repo.steampowered.com/%name/pool/%name/s/%name/%{name}_%version.tar.gz
+Source1: %{name}_install_agreement.txt
+
 Patch0: %name-apt-alt.patch
 Patch1: %name-desktop-alt.patch
 
@@ -40,6 +42,7 @@ savegame and screenshot functionality, and many social features.
 %__rm -rf %buildroot%_bindir/%{name}deps
 %__install -Dp -m0644 subprojects/%name-devices/60-%name-input.rules %buildroot%_udevrulesdir/60-%name-input.rules
 %__install -Dp -m0644 subprojects/%name-devices/60-%name-vr.rules %buildroot%_udevrulesdir/60-%name-vr.rules
+%__install -Dp -m0644 %SOURCE1 %buildroot%_defaultdocdir/%name/%{name}_install_agreement.txt
 
 %files
 %_bindir/%name
@@ -55,6 +58,12 @@ savegame and screenshot functionality, and many social features.
 %config %_udevrulesdir/60-%name-vr.rules
 
 %changelog 
+* Sat Mar 06 2021 Nazarov Denis <nenderus@altlinux.org> 1.0.0.69-alt1
+- Version 1.0.0.69
+
+* Sat Feb 27 2021 Nazarov Denis <nenderus@altlinux.org> 1.0.0.68-alt2
+- Restore license file
+
 * Sun Dec 06 2020 Nazarov Denis <nenderus@altlinux.org> 1.0.0.68-alt1
 - Version 1.0.0.68
 
