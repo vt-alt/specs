@@ -1,6 +1,6 @@
 %def_disable snapshot
 %define _libexecdir %_prefix/libexec
-%define ver_major 3.32
+%define ver_major 3.34
 %define xdg_name org.gnome.Geary
 # Elementary OS-specific
 %def_disable contractor
@@ -9,7 +9,7 @@
 
 Name: geary
 Version: %ver_major.2
-Release: alt1
+Release: alt0.M90P.1
 
 Summary: Email client
 License: LGPLv2.1+
@@ -23,10 +23,12 @@ Source: %name-%version.tar
 %endif
 
 %define vala_ver 0.26
-%define gtk_ver 3.14.0
+%define gtk_ver 3.24.7
 %define sqlite_ver 3.12.0
 %define gcr_ver 3.10.1
-%define webkit_ver 2.10
+%define webkit_ver 2.20
+
+Requires: dconf gnome-keyring gcr
 
 BuildRequires(pre): meson
 BuildRequires: vala-tools >= %vala_ver libvala-devel
@@ -42,6 +44,7 @@ BuildRequires: gobject-introspection-devel libgtk+3-gir-devel
 BuildRequires: libsoup-gir-devel libwebkit2gtk-gir-devel libcanberra-vala
 BuildRequires: gcr-libs-devel >= %gcr_ver gcr-libs-vala
 BuildRequires: libfolks-devel  libfolks-vala libenchant2-devel
+BuildRequires: libytnef-devel libdbus-devel libgspell-devel libhandy-devel
 %{?_enable_libunwind:BuildRequires: libunwind-devel}
 %{?_enable_valadoc:BuildRequires: valadoc}
 
@@ -54,9 +57,9 @@ Geary's development.
 
 %prep
 %setup
-subst "/\--thread/d" src/meson.build
 
 %build
+%add_optflags -I%_includedir/libytnef
 %meson %{?_enable_contractor:-Dcontractor=true} \
 	%{?_disable_libunwind:-Dlibunwind_optional=true}
 %meson_build
@@ -73,6 +76,7 @@ subst "/\--thread/d" src/meson.build
 %_desktopdir/%xdg_name.desktop
 %_desktopdir/%name-autostart.desktop
 %_datadir/glib-2.0/schemas/%xdg_name.gschema.xml
+%_datadir/dbus-1/services/%xdg_name.service
 %_iconsdir/*/*/apps/*
 %_iconsdir/hicolor/scalable/actions/*.svg
 %_datadir/metainfo/%xdg_name.appdata.xml
@@ -80,6 +84,18 @@ subst "/\--thread/d" src/meson.build
 %doc AUTHORS NEWS README THANKS
 
 %changelog
+* Sat Feb 20 2021 Leontiy Volodin <lvol@altlinux.org> 3.34.2-alt0.M90P.1
+- backport 3.34.2 into p9 branch (ALT #39680)
+
+* Mon Nov 25 2019 Yuri N. Sedunov <aris@altlinux.org> 3.34.2-alt1
+- 3.34.2
+
+* Mon Oct 07 2019 Yuri N. Sedunov <aris@altlinux.org> 3.34.1-alt1
+- 3.34.1
+
+* Sun Sep 22 2019 Yuri N. Sedunov <aris@altlinux.org> 3.34.0-alt1
+- 3.34.0
+
 * Sun Aug 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt1
 - 3.32.2
 
