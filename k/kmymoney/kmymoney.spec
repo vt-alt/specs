@@ -1,16 +1,17 @@
 Name:    kmymoney
-Version: 5.0.8
-Release: alt1
+Version: 5.1.1
+Release: alt2
 
-Summary: A Personal Finance Manager for KDE4
-Summary(ru_RU.UTF-8): Учёт финансов под KDE4
-License: GPLv2 or GPLv3
+Summary: A Personal Finance Manager for KDE
+Summary(ru_RU.UTF-8): Учёт финансов под KDE
+License: GPL-2.0 or GPL-3.0
 Group:   Office
 URL:     http://kmymoney2.sourceforge.net
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 Source0: %name-%version.tar
+Source1: ru.po
 Source2: %name.watch
 
 AutoReq: yes, noperl
@@ -105,7 +106,7 @@ Obsoletes: kde4-kmymoney-devel
 
 %description devel
 Include files and libraries mandatory for development with package
-kmymoney (KDE4).
+kmymoney (KDE).
 
 %package kbanking
 Summary: Online Banking plugin for KMyMoney
@@ -248,6 +249,7 @@ Internationalization and documentation for KMyMoney
 
 %prep
 %setup -q -n %name-%version
+cp %SOURCE1 po/ru/kmymoney.po
 
 %build
 # Need to build in one thread, see https://bugs.kde.org/show_bug.cgi?id=364387 for details
@@ -367,6 +369,16 @@ Internationalization and documentation for KMyMoney
 %exclude %_K5doc/en
 
 %changelog
+* Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 5.1.1-alt2
+- Complete Russian localization (thanks Olesya Gerasimenko).
+
+* Tue Dec 22 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.1-alt1
+- New version.
+
+* Fri Jun 19 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.0-alt1
+- New version.
+- Fix License and Summary.
+
 * Mon Feb 03 2020 Andrey Cherepanov <cas@altlinux.org> 5.0.8-alt1
 - New version.
 

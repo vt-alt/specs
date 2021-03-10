@@ -1,20 +1,18 @@
-%define origname gwenhywfar
 %def_with qt5
 
-Name:     libgwenhywfar
-Version:  5.1.2
+Name:     gwenhywfar
+Version:  5.4.1
 Release:  alt1
 
 Summary:  A multi-platform helper library for other libraries
+License:  LGPL-2.1+
 Group:    System/Libraries
-License:  LGPLv2+
 URL:      http://www2.aquamaniac.de/sites/download/packages.php
 # VCS:    http://git.aqbanking.de/git/gwenhywfar.git
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
-Source:   %origname-%version.tar
-Patch1:   %name-pthread.patch
+Source:   %name-%version.tar
 Patch2:   %name-fix-build-with-qt5.patch
 
 BuildRequires: gcc-c++ glibc-devel graphviz libcom_err-devel 
@@ -39,57 +37,69 @@ www.openhbci.de.
 Check http://www.freesource.info/wiki/Altlinux/Policy/TLS
 for ALT Linux TLS/SSL policy
 
-%package  gtk2
+%package -n lib%name
+Summary: A multi-platform helper library for other libraries
+Group:    System/Libraries
+
+%description -n lib%name
+This is Gwenhywfar, a multi-platform helper library for networking and
+security applications and libraries. It is heavily used by libchipcard
+www.libchipcard.de and OpenHBCI-TNG (The Next Generation)
+www.openhbci.de.
+
+Check http://www.freesource.info/wiki/Altlinux/Policy/TLS
+for ALT Linux TLS/SSL policy
+
+%package  -n lib%name-gtk2
 Summary:  Gwenhywfar support for GTK+ 2.x
 Group:    System/Libraries
-Requires: %name = %version-%release
+Requires: lib%name = %version-%release
 
-%description gtk2
+%description -n lib%name-gtk2
 Gwenhywfar support for GTK+ 2.x.
 
-%package  gtk3
+%package  -n lib%name-gtk3
 Summary:  Gwenhywfar support for GTK+ 3.x
 Group:    System/Libraries
-Requires: %name = %version-%release
+Requires: lib%name = %version-%release
 
-%description gtk3
+%description -n lib%name-gtk3
 Gwenhywfar support for GTK+ 3.x.
 
-%package  qt4
+%package  -n lib%name-qt4
 Summary:  Gwenhywfar support for Qt4
 Group:    System/Libraries
-Requires: %name = %version-%release
+Requires: lib%name = %version-%release
 
-%description qt4
+%description -n lib%name-qt4
 Gwenhywfar support for Qt4
 
 %if_with qt5
-%package  qt5
+%package  -n lib%name-qt5
 Summary:  Gwenhywfar support for Qt5
 Group:    System/Libraries
-Requires: %name = %version-%release
+Requires: lib%name = %version-%release
 
-%description qt5
+%description -n lib%name-qt5
 Gwenhywfar support for Qt5
 %endif
 
-%package  devel
+%package  -n lib%name-devel
 Summary:  Gwenhywfar development kit
 Group:    Development/C
-Requires: %name = %version-%release
-Requires: %name-gtk2 = %version-%release
-Requires: %name-qt4  = %version-%release
+Requires: lib%name = %version-%release
+Requires: lib%name-gtk2 = %version-%release
+Requires: lib%name-qt4  = %version-%release
 %if_with qt5
-Requires: %name-qt5  = %version-%release
+Requires: lib%name-qt5  = %version-%release
 %endif
 
-%description devel
+%description -n lib%name-devel
 This package contains gwenhywfar-config and header files for writing and
 compiling programs using Gwenhywfar.
 
 %prep
-%setup -q -n %origname-%version
-%patch1 -p1
+%setup
 %patch2 -p1
 
 %build
@@ -100,7 +110,6 @@ export PATH=$PATH:%_qt5_bindir
 %endif
 %configure \
 	--disable-static \
-	--with-openssl-libs=%_libdir \
 %if_with qt5
 	--with-guis="gtk2 gtk3 qt4 qt5" \
 	--with-qt5-qmake=%_bindir/qmake-qt5 \
@@ -115,13 +124,13 @@ export PATH=$PATH:%_qt5_bindir
 
 %install
 %makeinstall_std
-%find_lang %origname
+%find_lang %name
 
 # Use system-wide ca-certificates
 rm -f %buildroot%_datadir/gwenhywfar/ca-bundle.crt
 ln -s %_datadir/ca-certificates/ca-bundle.crt %buildroot%_datadir/gwenhywfar/ca-bundle.crt
 
-%files -f %origname.lang
+%files -n lib%name -f %name.lang
 %doc AUTHORS README TODO
 %_bindir/gct-tool
 %_bindir/gsa
@@ -132,26 +141,26 @@ ln -s %_datadir/ca-certificates/ca-bundle.crt %buildroot%_datadir/gwenhywfar/ca-
 %if_with qt5
 %exclude %_libdir/libgwengui-qt5.so.*
 %endif
-%_libdir/%origname/
+%_libdir/%name/
 %_datadir/gwenhywfar/ca-bundle.crt
 %_datadir/gwenhywfar/dialogs/*.dlg
 
-%files gtk2
+%files -n lib%name-gtk2
 %_libdir/libgwengui-gtk2.so.*
 
-%files gtk3
+%files -n lib%name-gtk3
 %_libdir/libgwengui-gtk3.so.*
 
-%files qt4
+%files -n lib%name-qt4
 %_libdir/libgwengui-qt4.so.*
 
 %if_with qt5
-%files qt5
+%files -n lib%name-qt5
 %_libdir/libgwengui-qt5.so.*
 %endif
 
-%files devel
-%_bindir/%origname-config
+%files -n lib%name-devel
+%_bindir/%name-config
 %_bindir/xmlmerge
 %_bindir/mklistdoc
 %_bindir/typemaker
@@ -159,11 +168,15 @@ ln -s %_datadir/ca-certificates/ca-bundle.crt %buildroot%_datadir/gwenhywfar/ca-
 %_libdir/*.so
 %_includedir/gwenhywfar5/
 %_pkgconfigdir/*
-%_datadir/%origname/typemaker2/*
+%_datadir/%name/typemaker2/*
 %_datadir/aclocal/gwenhywfar.m4
 %_libdir/cmake/*
 
 %changelog
+* Wed Dec 23 2020 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt1
+- New version.
+- Fix License tag.
+
 * Tue Feb 04 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.2-alt1
 - New version.
 

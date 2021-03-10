@@ -1,6 +1,6 @@
 Name:     libchipcard
-Version:  5.1.4
-Release:  alt0.1.rc1
+Version:  5.1.5
+Release:  alt0.1.rc2
 
 Summary:  A library for easy access to smart cards (chipcards)
 License:  LGPL-2.1
@@ -12,8 +12,7 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 Source:   %name-%version.tar
 Source1:  %name.init
 
-Patch0:  %name-etc.patch
-Patch1:  %name-am18.patch
+Patch1:  %name-alt-pkgconfig-fix.patch
 
 BuildRequires: gcc-c++ glibc-devel 
 BuildRequires: libgwenhywfar-devel >= 4.0.0
@@ -56,7 +55,8 @@ The most important daemon here is chipcardd which is needed to access
 local card readers.
 
 %prep
-%setup -q -n %name-%version
+%setup
+%patch1 -p1
 
 %build
 %autoreconf
@@ -74,6 +74,9 @@ rm -f %buildroot%_libdir/gwenhywfar/plugins/*/ct/*.la
 
 install -d %buildroot%_initrddir
 install %SOURCE1 %buildroot%_initrddir/chipcardd
+
+# Remove unfilled .pc file
+rm -f %buildroot%_libdir/pkgconfig/%name-server.pc
 
 %find_lang %name
 
@@ -95,6 +98,7 @@ install %SOURCE1 %buildroot%_initrddir/chipcardd
 %_datadir/chipcard/
 %_includedir/*
 %_aclocaldir/*
+%_libdir/pkgconfig/*.pc
 
 %files tools -f %name.lang
 %_bindir/*
@@ -102,6 +106,9 @@ install %SOURCE1 %buildroot%_initrddir/chipcardd
 %attr(754,root,root) %_initrddir/chipcardd
 
 %changelog
+* Wed Dec 23 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.5-alt0.1.rc2
+- New version.
+
 * Fri Feb 07 2020 Andrey Cherepanov <cas@altlinux.org> 5.1.4-alt0.1.rc1
 - New version.
 

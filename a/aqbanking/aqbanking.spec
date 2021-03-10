@@ -1,5 +1,5 @@
 Name:     aqbanking
-Version:  6.0.1
+Version:  6.2.5
 Release:  alt1
 
 Summary:  A library for online banking functions and financial data import/export
@@ -111,6 +111,7 @@ AqBanking4 Handbook (PDF)
 %patch1 -p1
 
 %build
+make -f Makefile.cvs
 %undefine _configure_gettext
 %autoreconf
 %configure \
@@ -122,7 +123,7 @@ AqBanking4 Handbook (PDF)
 	--enable-tutorials
 
 # hack for semi SMP build
-%make_build || make
+%make_build typefiles all || make
 
 %install
 %make_install install DESTDIR=%buildroot
@@ -218,6 +219,9 @@ rm -f %buildroot%_docdir/aqebics/aqebics-tool/README
 %_docdir/%name/
 
 %changelog
+* Wed Dec 23 2020 Andrey Cherepanov <cas@altlinux.org> 6.2.5-alt1
+- New version.
+
 * Tue Feb 04 2020 Andrey Cherepanov <cas@altlinux.org> 6.0.1-alt1
 - New version.
 

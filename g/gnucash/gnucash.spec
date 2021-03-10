@@ -4,7 +4,7 @@
 %def_with aqbanking
 
 Name: 	 gnucash
-Version: 4.3
+Version: 4.4
 Release: alt1
 
 Summary: GnuCash is an application to keep track of your finances
@@ -209,6 +209,9 @@ rm -rf %buildroot%_datadir/guile/site/*/tests \
 %files quotes
 
 %changelog
+* Tue Dec 29 2020 Andrey Cherepanov <cas@altlinux.org> 4.4-alt1
+- New version.
+
 * Sun Dec 27 2020 Andrey Cherepanov <cas@altlinux.org> 4.3-alt1
 - New version.
 
