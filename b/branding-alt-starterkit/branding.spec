@@ -10,7 +10,7 @@
 
 Name: branding-%brand-%theme
 Version: p9
-Release: alt6
+Release: alt7
 
 Url: http://en.altlinux.org/starterkits
 
@@ -335,6 +335,10 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_sysconfdir/skel/.config/autostart/*
 
 %changelog
+* Wed Mar 03 2021 Anton Midyukov <antohami@altlinux.org> p9-alt7
+- Update progressbar in splash
+- Add default-wide.png
+
 * Wed Dec 11 2019 Anton Midyukov <antohami@altlinux.org> p9-alt6
 - setup black background for grub
 
