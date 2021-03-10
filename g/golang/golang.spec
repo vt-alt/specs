@@ -10,7 +10,7 @@
 %global _unpackaged_files_terminate_build 1
 
 %global go_arches %ix86 x86_64 aarch64 %arm mipsel ppc64le riscv64
-%global go_root %_libdir/golang
+%global go_root %_prefix/lib/golang
 
 %ifarch x86_64
 %global go_hostarch  amd64
@@ -38,8 +38,8 @@
 %def_disable check
 
 Name:    golang
-Version: 1.14.15
-Release: alt1
+Version: 1.15.8
+Release: alt2
 Summary: The Go Programming Language
 Group:   Development/Other
 License: BSD
@@ -59,9 +59,11 @@ ExclusiveArch: %go_arches
 %add_debuginfo_skiplist %go_root
 %brp_strip_none %go_root/bin/*
 
-AutoReq: nocpp
+AutoReq: nocpp 
 
-BuildRequires(pre): rpm-build-golang
+Requires: %name-src = %version-%release
+
+BuildRequires(pre): rpm-build-golang rpm-build-python3
 BuildRequires: golang
 BuildRequires: libselinux-utils
 BuildRequires: libpcre-devel
@@ -76,7 +78,8 @@ Obsoletes: golang-godoc
 
 # Due to vet, cover utilities.
 Conflicts: golang-tools <= 0-alt1.git7e09e072
-
+# /usr/bin/cover
+Conflicts: perl-Devel-Cover
 
 %description
 Go is expressive, concise, clean, and efficient. Its concurrency mechanisms
@@ -88,7 +91,13 @@ modular program construction.
 %package gdb
 Summary:   The Go Runtime support for GDB
 Group:     Development/Other
+BuildArch: noarch
 Requires:  %name = %version-%release
+Requires:  gdb
+AutoReq: nopython
+%add_python3_path %go_root/src/runtime
+%add_python3_compile_exclude %go_root/src/runtime
+%add_python3_req_skip gdb
 
 %description gdb
 The Go Runtime support for GDB.
@@ -113,6 +122,32 @@ Requires:  %name = %version-%release
 %description docs
 Go sources and documentation.
 
+%package misc
+Summary:   Golang compiler miscellaneous sources
+Group:     Development/Other
+BuildArch: noarch
+Requires:  %name = %version-%release
+AutoReqProv: no
+
+%description misc
+%summary.
+
+%package tests
+Summary:   Golang compiler tests for stdlib
+Group:     Development/Other
+BuildArch: noarch
+Requires:  %name = %version-%release
+
+%description tests
+%summary.
+
+%package src
+Summary:   Golang compiler source tree
+Group:     Development/Other
+BuildArch: noarch
+
+%description src
+%{summary}.
 
 %prep
 %setup -q
@@ -156,7 +191,6 @@ go install -v -buildmode=shared std
 
 
 %check
-%if_enabled check
 export GOROOT=$PWD
 export PATH="$GOROOT/bin:$PATH"
 export CGO_ENABLED=0
@@ -166,7 +200,6 @@ export LDFLAGS="$RPM_LD_FLAGS"
 
 cd src
 ./run.bash --no-rebuild -v -k
-%endif
 
 
 %install
@@ -176,7 +209,7 @@ mkdir -p -- \
 	%buildroot/%go_root \
 	%buildroot/%_datadir/%name
 
-cp -afv api bin doc favicon.ico lib pkg robots.txt src test VERSION \
+cp -afv api bin doc favicon.ico lib pkg robots.txt src misc test VERSION \
 	%buildroot/%go_root/
 
 find %buildroot/%go_root -exec touch -r $PWD/VERSION "{}" \;
@@ -208,6 +241,9 @@ find \
 	\) \
 		-print0 |
 	xargs -0 rm -fv --
+
+# remove test for other platforms scripts
+rm %buildroot/%go_root/test/winbatch.go
 
 # remove the unnecessary zoneinfo file (Go will always use the system one first)
 rm -rfv -- \
@@ -269,8 +305,10 @@ mkdir -p -- \
 %_bindir/*
 %go_root
 %go_path
-
-%exclude %go_root/src/runtime/runtime-gdb.py*
+%exclude %go_root/doc
+%exclude %go_root/misc
+%exclude %go_root/src
+%exclude %go_root/test
 
 %ifarch x86_64
 %exclude %go_root/pkg/linux_%{go_hostarch}_dynlink
@@ -282,41 +320,61 @@ mkdir -p -- \
 
 %files gdb
 %_datadir/%name/gdb
-%go_root/src/runtime/runtime-gdb.py*
+%go_root/src/runtime/runtime-gdb.py
 
 
 %files docs
+%doc AUTHORS CONTRIBUTORS LICENSE PATENTS VERSION
 %dir %_datadir/%name
 %_datadir/%name/src
+%go_root/doc
 
-%doc AUTHORS CONTRIBUTORS LICENSE PATENTS VERSION
+%files misc
+%go_root/misc
 
+%files tests
+%go_root/test
+
+%files src
+%go_root/src
+%exclude %go_root/src/runtime/runtime-gdb.py
 
 %changelog
-* Fri Feb 05 2021 Alexey Shabalin <shaba@altlinux.org> 1.14.15-alt1
-- New version (1.14.15).
+* Fri Feb 26 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.15.8-alt2
+- Remove test for other platform scripts.
 
-* Wed Jan 20 2021 Alexey Shabalin <shaba@altlinux.org> 1.14.14-alt1
-- New version (1.14.14).
+* Fri Feb 05 2021 Alexey Shabalin <shaba@altlinux.org> 1.15.8-alt1
+- New version (1.15.8).
+
+* Wed Jan 20 2021 Alexey Shabalin <shaba@altlinux.org> 1.15.7-alt1
+- New version (1.15.7).
 - Fixes:
   + CVE-2021-3114
   + CVE-2021-3115
 
-* Fri Dec 04 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.13-alt1
-- New version (1.14.13).
+* Tue Dec 15 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.6-alt2
+- Disable AutoReqProv for misc package
 
-* Sat Nov 14 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.12-alt1
-- New version (1.14.12).
+* Fri Dec 04 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.6-alt1
+- New version (1.15.6).
+
+* Sat Nov 14 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.5-alt1
+- New version (1.15.5).
 - Fixes:
   + CVE-2020-28362
   + CVE-2020-28366
   + CVE-2020-28367
 
-* Tue Oct 27 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.10-alt1
-- New version (1.14.10).
+* Tue Oct 27 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.3-alt1
+- New version (1.15.3).
 
-* Fri Sep 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.9-alt1
-- New version (1.14.9). (Fixes: CVE-2020-24553)
+* Fri Sep 11 2020 Alexey Shabalin <shaba@altlinux.org> 1.15.2-alt1
+- New version (1.15.2). (Fixes: CVE-2020-24553)
+
+* Tue Aug 18 2020 Alexey Shabalin <shaba@altlinux.org> 1.15-alt1
+- New version (1.15).
+- Set a standard go_root as /usr/lib/golang, regardless of arch
+- Add misc, tests, src packages
 
 * Mon Aug 10 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.7-alt1
 - New version (1.14.7). (Fixes: CVE-2020-16845)
