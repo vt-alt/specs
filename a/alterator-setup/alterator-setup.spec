@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-setup
-Version: 0.3.8
+Version: 0.3.9
 Release: alt1
 
 Summary: Perform initial setup of an OEM installation (warning!)
@@ -119,6 +119,9 @@ if [ -x /sbin/sd_booted ]; then
 fi
 
 %changelog
+* Mon Feb 22 2021 Anton Midyukov <antohami@altlinux.org> 0.3.9-alt1
+- Fix conflict with package preinstall (ALT bug 39715)
+
 * Wed Nov 11 2020 Anton Midyukov <antohami@altlinux.org> 0.3.8-alt1
 - Added preinstall step, needed rootfs-installer-features
 
