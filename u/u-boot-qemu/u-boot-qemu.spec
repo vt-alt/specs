@@ -1,7 +1,7 @@
 %define allowed_arch armh aarch64 %ix86 x86_64 mips mipsel mips64 mips64el riscv32 riscv64 ppc64
 
 Name: u-boot-qemu
-Version: 2020.07
+Version: 2021.01
 Release: alt1
 
 Summary: Das U-Boot
@@ -12,7 +12,7 @@ ExclusiveArch: %allowed_arch
 
 Source: %name-%version-%release.tar
 
-BuildRequires: dtc >= 1.4 flex libssl-devel python3-dev swig
+BuildRequires: dtc >= 1.4 flex libssl-devel python3-dev python3(pkg_resources) swig
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
@@ -71,6 +71,12 @@ install -pm0644 -D u-boot.bin %buildroot%_datadir/u-boot/%qemu/u-boot.bin
 %_datadir/u-boot/*
 
 %changelog
+* Tue Jan 26 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt1
+- 2021.01 released
+
+* Tue Oct 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.10-alt1
+- 2020.10 released
+
 * Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
 - 2020.07 released
 

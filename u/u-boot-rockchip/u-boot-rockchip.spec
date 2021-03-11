@@ -1,5 +1,5 @@
 Name: u-boot-rockchip
-Version: 2020.07
+Version: 2021.01
 Release: alt1
 
 Summary: Das U-Boot
@@ -10,9 +10,10 @@ ExclusiveArch: aarch64
 
 Source: %name-%version-%release.tar
 
-BuildRequires: atf-rockchip >= 2.3
+BuildRequires: atf-rockchip >= 2.4
 BuildRequires: bc ccache dtc >= 1.4 flex
 BuildRequires: python3-dev swig
+BuildRequires: python3(pkg_resources)
 BuildRequires: python3(elftools.elf.elffile)
 
 %description
@@ -58,6 +59,12 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Wed Jan 27 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt1
+- 2021.01 released
+
+* Tue Oct 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.10-alt1
+- 2020.10 released
+
 * Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
 - 2020.07 released
 

@@ -2,7 +2,7 @@
 
 Summary: bootloader and GPU firmware for Raspberry Pi
 Name: raspberrypi-firmware
-Version: 20200730
+Version: 20210216
 Release: alt1
 Url: https://github.com/raspberrypi/firmware
 License: distributable
@@ -57,7 +57,7 @@ ln start4x.elf %buildroot/%target_rpi4
 ln bcm2711-rpi-4-b.dtb %buildroot/%target_rpi4
 
 %ifarch aarch64
-cat>%buildroot/%target_rpi4/config.txt<<EOF
+tee %buildroot/%target_rpi3/config.txt %buildroot/%target_rpi4/config.txt<<EOF
 arm_64bit=1
 EOF
 %endif
@@ -66,10 +66,7 @@ tee --append %buildroot/%target_rpi3/config.txt %buildroot/%target_rpi4/config.t
 enable_uart=1
 disable_overscan=1
 dtparam=audio=on
-EOF
-
-cat>>%buildroot/%target_rpi4/config.txt<<EOF
-dtoverlay=vc4-fkms-v3d
+hdmi_ignore_edid_audio=1
 EOF
 
 %files
@@ -78,6 +75,13 @@ EOF
 %target_rpi4/*
 
 %changelog
+* Mon Feb 22 2021 Anton Midyukov <antohami@altlinux.org> 20210216-alt1
+- New snapshot
+- Add new dtb:
+  + bcm2711-rpi-cm4.dtb
+  + bcm2711-rpi-400.dtb
+- Add option hdmi_ignore_edid_audio=1 to config.txt for fix audio
+
 * Thu Jul 30 2020 Anton Midyukov <antohami@altlinux.org> 20200730-alt1
 - New snapshot
 - Added overlays and dtb for all boards

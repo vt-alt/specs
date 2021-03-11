@@ -1,12 +1,12 @@
 Name: u-boot-tools
-Version: 2020.07
-Release: alt1
+Version: 2021.01
+Release: alt2
 
 Summary: Das U-Boot
 License: GPLv2+
 Group: System/Kernel and hardware
 
-ExclusiveArch: armh aarch64 %ix86 x86_64
+ExclusiveArch: armh aarch64 mipsel %ix86 x86_64
 
 Provides: uboot-tools = %version-%release
 Obsoletes: uboot-tools
@@ -15,28 +15,38 @@ Source: %name-%version-%release.tar
 
 BuildRequires: flex libssl-devel
 
-%def_without sandbox
-
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
 other processors, which can be installed in a boot ROM and used to
 initialize and test the hardware or to download and run application code.
-This package contains sandboxed U-Boot and tools.
+This package contains U-Boot tools.
 
 %prep
 %setup
 
 %build
-%make_build sandbox_defconfig %{?_with_sandbox:all NO_SDL=1}%{!?_with_sandbox:tools}
+%make_build NO_SDL=1 tools-only_defconfig tools-all
 
 %install
 mkdir -p %buildroot%_bindir
-install -pm0755 tools/{dumpimage,fdtgrep,gen_eth_addr,mkimage,mkenvimage} %{?_with_sandbox:u-boot} %buildroot%_bindir/
+install -pm0644 -D tools/env/fw_env.config %buildroot%_sysconfdir/fw_env.config
+install -pm0755 tools/{dumpimage,fdtgrep,gen_eth_addr,kwboot,mkimage,mkenvimage,env/fw_printenv} %buildroot%_bindir/
+ln -s fw_printenv %buildroot%_bindir/fw_setenv
 
 %files
+%config(noreplace) %_sysconfdir/fw_env.config
 %_bindir/*
 
 %changelog
+* Mon Feb 01 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt2
+- fw_setenv/fw_printenv and sample config packaged
+
+* Tue Jan 26 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt1
+- 2021.01 released
+
+* Tue Oct 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.10-alt1
+- 2020.10 released
+
 * Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
 - 2020.07 released
 

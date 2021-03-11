@@ -1,5 +1,5 @@
 Name: atf-rockchip
-Version: 2.3
+Version: 2.4
 Release: alt1
 
 Summary: ARM Trusted Firmware
@@ -20,7 +20,7 @@ This package provides support for the RK3328, RK3399 and PX30 SoC families.
 %setup
 
 %build
-for plat in rk3328 rk3399 px30; do
+for plat in rk3328 rk3368 rk3399 px30; do
 	make PLAT=$plat bl31
 	install -pm0644 -D build/$plat/release/bl31/bl31.elf out/$plat/bl31.elf
 	make distclean
@@ -36,6 +36,9 @@ cp -a out/* %buildroot%_datadir/atf/
 %_datadir/atf/*
 
 %changelog
+* Tue Jan 26 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.4-alt1
+- 2.4 released
+
 * Thu Jul 02 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.3-alt1
 - 2.3 released
 

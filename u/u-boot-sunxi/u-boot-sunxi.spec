@@ -1,6 +1,6 @@
 Name: u-boot-sunxi
-Version: 2020.07
-Release: alt1
+Version: 2021.01
+Release: alt2
 
 Summary: Das U-Boot
 License: GPLv2+
@@ -15,13 +15,14 @@ Provides: u-boot-sunxi64 = %version-%release
 Obsoletes: u-boot-sunxi64
 
 %ifarch aarch64
-%define ATF atf-sunxi >= 2.0
+%define ATF atf-sunxi >= 2.4
 %else
 %define ATF %nil
 %endif
 
 BuildRequires: %ATF bc ccache dtc >= 1.4 flex
 BuildRequires: python3-dev swig
+BuildRequires: python3(pkg_resources)
 
 %description
 boot loader for embedded boards based on PowerPC, ARM, MIPS and several
@@ -49,7 +50,6 @@ for board in $boards; do
 		export BL31=%_datadir/atf/sun50i_a64/bl31.bin
 %endif
 	%make_build HOSTCC='ccache gcc' CC='ccache gcc' O=build ${board}_defconfig all
-	grep -q '^CONFIG_SPL=y' build/.config && \
 	install -pm0644 -D build/u-boot-sunxi-with-spl.bin out/${board}/u-boot-sunxi-with-spl.bin
 	rm -rf build
 done
@@ -64,6 +64,15 @@ find . -type f | cpio -pmd %buildroot%_datadir/u-boot
 %_datadir/u-boot/*
 
 %changelog
+* Sat Feb 20 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt2
+- always set fdtfile env var to bare dtb filename (closes: 39705)
+
+* Wed Jan 27 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2021.01-alt1
+- 2021.01 released
+
+* Tue Oct 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.10-alt1
+- 2020.10 released
+
 * Fri Jul 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2020.07-alt1
 - 2020.07 released
 

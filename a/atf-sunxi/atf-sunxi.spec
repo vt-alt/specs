@@ -1,5 +1,5 @@
 Name: atf-sunxi
-Version: 2.3
+Version: 2.4
 Release: alt1
 
 Summary: ARM Trusted Firmware
@@ -33,6 +33,9 @@ cp -a out/* %buildroot%_datadir/atf/
 %_datadir/atf/*
 
 %changelog
+* Tue Jan 26 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.4-alt1
+- 2.4 released
+
 * Thu Jul 02 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 2.3-alt1
 - 2.3 released
 
