@@ -1,5 +1,5 @@
 Name: alterator-net-eth
-Version: 5.1.11
+Version: 5.1.12
 Release: alt1
 
 Source:%name-%version.tar
@@ -77,6 +77,9 @@ mapping current hostname to 127.0.0.1 in /etc/hosts.
 %_sysconfdir/hooks/hostname.d/*
 
 %changelog
+* Wed Mar 03 2021 Evgeny Sinelnikov <sin@altlinux.org> 5.1.12-alt1
+- Set NetworkManager Native as default if NetworkManager exists.
+
 * Tue Mar 02 2021 Sergey V Turchin <zerg@altlinux.org> 5.1.11-alt1
 - don't hardcode popup dialog size
 
