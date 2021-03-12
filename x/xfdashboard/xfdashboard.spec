@@ -1,5 +1,5 @@
 Name: xfdashboard
-Version: 0.8.0
+Version: 0.8.1
 Release: alt1
 
 Summary: A Gnome shell like dashboard for Xfce
@@ -69,7 +69,7 @@ This package contains development files required to build
 %_libdir/%name/
 %exclude %_libdir/%name/plugins/*.la
 %_xdgconfigdir/autostart/*.desktop
-%_datadir/appdata/*.xml
+%_datadir/metainfo/*.xml
 %_desktopdir/*.desktop
 %_iconsdir/hicolor/*/*/*.*
 %_datadir/themes/%{name}*/
@@ -88,6 +88,9 @@ This package contains development files required to build
 %_libdir/*.so
 
 %changelog
+* Wed Mar 10 2021 Mikhail Efremov <sem@altlinux.org> 0.8.1-alt1
+- Updated to 0.8.1.
+
 * Wed Dec 23 2020 Mikhail Efremov <sem@altlinux.org> 0.8.0-alt1
 - Updated to 0.8.0.
 
