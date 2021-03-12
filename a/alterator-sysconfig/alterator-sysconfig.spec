@@ -1,7 +1,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-sysconfig
-Version: 1.3.4
+Version: 1.3.5
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/preinstall.d/*
@@ -50,6 +50,11 @@ alterator module for basic system settings
 %_datadir/install2/preinstall.d/*
 
 %changelog
+* Wed Mar 10 2021 Paul Wolneykien <manowar@altlinux.org> 1.3.5-alt1
+- Restore a lost commit from v1.3.3.
+- Fix: Added "language" notification on language change (closes:
+  38031).
+
 * Thu Feb 18 2021 Paul Wolneykien <manowar@altlinux.org> 1.3.4-alt1
 - Send help URL on language change (closes: 38031).
 
