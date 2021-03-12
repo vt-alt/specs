@@ -4,7 +4,7 @@
 
 Name:    qgis
 Version: 2.18.28
-Release: alt2
+Release: alt4
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -27,6 +27,7 @@ Patch2: %name-sip-flags.patch
 Patch3: %name-fix-unresolved-variable.patch
 # Need to build otb-python for otbAppication
 Patch4: %name-disable-otb-plugin.patch
+Patch5: %name-alt-strict-sip-compat.patch
 
 # Fix unresolved symbols in grass based libs
 %set_verify_elf_method unresolved=relaxed
@@ -142,6 +143,7 @@ Please refer to %name-server-README for details!
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 # Delete bundled libs
 rm -rf src/core/gps/qextserialport
@@ -152,6 +154,7 @@ sed -i '/dxf2shp_converter/d' src/plugins/CMakeLists.txt
 gzip ChangeLog
 
 %build
+%add_optflags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1
 CFLAGS="${CFLAGS:-%optflags}"; export CFLAGS;
 CXXFLAGS="${CXXFLAGS:-%optflags}"; export CXXFLAGS;
 export LD_LIBRARY_PATH=`pwd`/output/%_lib
@@ -330,6 +333,12 @@ echo "%%lang(zh) /usr/share/qgis/i18n/qgis_zh-Hans.qm" >> %name.lang
 %_libexecdir/%name
 
 %changelog
+* Mon Mar 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.18.28-alt4
+- Fixed build with new stricter sip version.
+
+* Mon Oct 07 2019 Vladislav Zavjalov <slazav@altlinux.org> 2.18.28-alt3
+- Rebuild with libproj 6.2.0 (use ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 2.18.28-alt2
 - Fix Russian localization of desktop files, fix category for qbrowser.desktop.
 

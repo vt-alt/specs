@@ -1,5 +1,5 @@
 Name: asymptote
-Version: 2.47
+Version: 2.68
 Release: alt1
 
 Summary: Descriptive vector graphics language
@@ -17,17 +17,23 @@ Patch: asymptote-1.91-alt-DSO.patch
 Patch1: asymptote-1.91-alt-glibc-2.16.patch
 Patch2: asymptote-2.28-alt-gsl1.16.patch
 
-BuildRequires: flex gcc-c++ libfftw3-devel libfreeglut-devel libgsl-devel libreadline-devel libtirpc-devel zlib-devel
+BuildRequires: flex gcc-c++ libfftw3-devel libgsl-devel libreadline-devel libtirpc-devel zlib-devel
+BuildRequires: libglm-devel
+BuildRequires: libfreeglut-devel
+BuildRequires: libcurl-devel
 
 BuildRequires: libgc-devel >= 7.4.2
 
 BuildRequires(pre): rpm-build-tex rpm-build-python3
-BuildRequires: texlive-collection-latexrecommended ghostscript-utils /proc
-BuildRequires: python-module-PyQt5 python-module-PyXML python3-module-mpl_toolkits python3-module-yieldfrom
+BuildRequires: /proc
+BuildRequires: texlive-collection-latexrecommended ghostscript-utils
+BuildRequires: python3-module-PyQt5
+BuildRequires: python3-module-mpl_toolkits python3-module-yieldfrom
 # explicitly added texinfo for info files
 BuildRequires: texinfo
 BuildRequires: texi2dvi
 
+%add_python3_path %_datadir/%name/GUI/
 %add_python3_lib_path %_datadir/%name/GUI/
 %add_python3_req_skip configs
 
@@ -87,6 +93,13 @@ mv %buildroot%_man1dir/asy.1 %buildroot%_man1dir/asy-asymptote.1
 %_infodir/%name/*.info*
 
 %changelog
+* Sat Feb 06 2021 Anton Midyukov <antohami@altlinux.org> 2.68-alt1
+- new version 2.68 (with rpmrb script)
+- update buildrequires
+
+* Tue May 14 2019 Vitaly Lipatov <lav@altlinux.ru> 2.49-alt1
+- new version 2.49 (with rpmrb script)
+
 * Fri Dec 14 2018 Vitaly Lipatov <lav@altlinux.ru> 2.47-alt1
 - new version 2.47 (with rpmrb script)
 

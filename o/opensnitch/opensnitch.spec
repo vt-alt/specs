@@ -1,9 +1,10 @@
 %define _unpackaged_files_terminate_build 1
+
 %define import_path github.com/evilsocket/opensnitch
 
 Name: opensnitch
 Version: 1.0.0
-Release: alt3.b.git5c8f710
+Release: alt4.b.git.5c8f710
 Summary: OpenSnitch is a GNU/Linux port of the Little Snitch application firewall
 License: GPLv3
 Group: Networking/Other
@@ -114,6 +115,9 @@ mkdir -p %buildroot%_pseudouser_home
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Mon Sep 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.0-alt4.b.git.5c8f710
+- Fixed build.
+
 * Sun May 24 2020 Alexey Shabalin <shaba@altlinux.org> 1.0.0-alt3.b.git5c8f710
 - fixed build
 

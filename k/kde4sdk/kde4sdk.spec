@@ -12,7 +12,7 @@ Name: kde4sdk
 %define minor 12
 %define bugfix 2
 Version: %major.%minor.%bugfix
-Release: alt3
+Release: alt4
 
 Group: Graphical desktop/KDE
 Summary: K Desktop Environment - Software Development Kit
@@ -375,7 +375,7 @@ mv %buildroot/%_K4bindir/svn-clean %buildroot/%_K4bindir/svnclean
 %_K4bindir/fixuifiles
 %_K4bindir/includemocs
 %_K4bindir/kde_generate_export_header
-%_K4bindir/kde-systemsettings-tree.py
+#_K4bindir/kde-systemsettings-tree.py
 %_K4bindir/kdedoc
 %_K4bindir/kdekillall
 %_K4bindir/kdelnk2desktop.py
@@ -411,6 +411,9 @@ mv %buildroot/%_K4bindir/svn-clean %buildroot/%_K4bindir/svnclean
 
 
 %changelog
+* Fri Feb 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 15.12.2-alt4
+- Disabled parts of kde4sdk depending on PyKDE4.
+
 * Mon Jan 14 2019 Sergey V Turchin <zerg@altlinux.org> 15.12.2-alt3
 - build only scripts and po2xml
 

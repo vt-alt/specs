@@ -1,5 +1,8 @@
 
+%def_disable python
+%if_enabled python
 %define sipver2 %(rpm -q --qf '%%{VERSION}' python-module-sip)
+%endif
 
 %define sover 1
 %define sover_oq 0
@@ -8,7 +11,7 @@
 
 Name: avogadro
 Version: 1.2.0
-Release: alt5
+Release: alt8
 
 Group: Sciences/Chemistry
 Summary: An advanced molecular editor for chemical purposes
@@ -16,7 +19,12 @@ Url: http://avogadro.openmolecules.net/
 License: GPLv2
 Packager: Sergey V Turchin <zerg@altlinux.org>
 
+%if_enabled python
 Requires: python-module-sip = %sipver2
+%setup_python_module Avogadro
+%endif
+
+ExcludeArch: armh
 
 Source: %name-%version.tar
 # FC
@@ -32,16 +40,19 @@ Patch8: avogadro_eigen3.patch
 Patch100: avogadro-1.1.0-alt-config.patch
 Patch101: avogadro-1.0.3-alt-desktopfile.patch
 Patch102: avogadro-1.1.1-alt-fix-gcc6-version.patch
+Patch103: avogadro-1.2.0-alt-cmake-compat.patch
 
-%setup_python_module Avogadro
 
 # Automatically added by buildreq on Tue Feb 08 2011 (-bi)
 #BuildRequires: boost-devel-headers boost-python-devel cmake docbook-utils eigen2 gcc-c++ libXScrnSaver-devel libXau-devel libXcomposite-devel libXdmcp-devel libXpm-devel libXt-devel libXtst-devel libXv-devel libXxf86misc-devel libglew-devel libnumpy-devel libopenbabel-devel libqt3-devel libxkbfile-devel openbabel python-module-numpy-testing python-module-sip-devel python-modules-ctypes qt4-designer rpm-build-ruby zlib-devel-static
-BuildRequires(pre): rpm-build-ubt
+%if_enabled python
 BuildRequires(pre): python-module-sip-devel
-BuildRequires: boost-devel-headers boost-python-devel cmake docbook-utils docbook-utils-print eigen3 gcc-c++
+BuildRequires: python-module-numpy-testing python-modules-ctypes boost-python-devel
+%endif
+BuildRequires: boost-devel-headers cmake docbook-utils eigen3 gcc-c++
+#docbook-utils-print
 BuildRequires: libGLEW-devel libnumpy-devel libopenbabel-devel libqt4-devel
-BuildRequires: openbabel libopenbabel-devel python-module-numpy-testing python-modules-ctypes zlib-devel
+BuildRequires: openbabel libopenbabel-devel zlib-devel
 BuildRequires: kde-common-devel
 
 %description
@@ -84,6 +95,7 @@ Development Avogadro files.
 %patch100 -p1
 %patch101 -p1
 %patch102 -p1
+%patch103 -p2
 
 rm -f cmake/modules/FindPythonLibs.cmake
 sed -i 's|\${PYTHON_LIB_PATH}|%python_sitelibdir|g' libavogadro/src/python/CMakeLists.txt
@@ -99,8 +111,12 @@ sed -i 's|\${PYTHON_LIB_PATH}|%python_sitelibdir|g' libavogadro/src/python/CMake
     -DENABLE_TESTS:BOOL=OFF \
     -DENABLE_RPATH:BOOL=OFF \
     -DENABLE_GLSL:BOOL=ON \
+%if_enabled python
     -DPython_ADDITIONAL_VERSIONS=2.7 \
     -DENABLE_PYTHON:BOOL=ON \
+%else
+    -DENABLE_PYTHON:BOOL=OFF \
+%endif
     -DENABLE_VERSIONED_PLUGIN_DIR:BOOL=OFF \
     -DINSTALL_CMAKE_DIR:PATH=%_libdir/libmsym/cmake \
     #
@@ -125,7 +141,9 @@ sed -i 's|\${PYTHON_LIB_PATH}|%python_sitelibdir|g' libavogadro/src/python/CMake
 %_desktopdir/%name.desktop
 %_mandir/man1/%name.1*
 %_mandir/man1/avopkg.1*
+%if_enabled python
 %python_sitelibdir/Avogadro.so
+%endif
 
 %files -n %libname
 %_libdir/libavogadro.so.%{sover}
@@ -145,19 +163,29 @@ sed -i 's|\${PYTHON_LIB_PATH}|%python_sitelibdir|g' libavogadro/src/python/CMake
 %_datadir/qt4/mkspecs/features/%name.prf
 
 %changelog
+* Tue Mar 02 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.0-alt8
+- Fixed build with new cmake and gcc.
+- Disabled build for armh.
+
+* Fri Jul 05 2019 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt7
+- build without python
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 1.2.0-alt6
+- NMU: remove rpm-build-ubt from BR:
+
 * Sun Feb 03 2019 Anton Midyukov <antohami@altlinux.org> 1.2.0-alt5
 - rebuild with python-module-sip-4.9.13
 
-* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.0-alt4%ubt
+* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 1.2.0-alt4
 - NMU: rebuilt with boost-1.67.0
 
-* Mon Apr 09 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt3%ubt
+* Mon Apr 09 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt3
 - depend on current python-module-sip virsion (ALT#34779)
 
-* Tue Mar 13 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt2%ubt
+* Tue Mar 13 2018 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt2
 - build with eigen3
 
-* Wed Apr 12 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1%ubt
+* Wed Apr 12 2017 Sergey V Turchin <zerg@altlinux.org> 1.2.0-alt1
 - new version
 
 * Fri Jan 20 2017 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1-alt4.qa1

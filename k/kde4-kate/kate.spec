@@ -19,7 +19,7 @@
 %define bugfix 7
 Name: kde4-kate
 Version: %major.%minor.%bugfix
-Release: alt3%ubt
+Release: alt5
 
 Group: Editors
 Summary: Advanced text editor
@@ -41,7 +41,7 @@ Patch2: alt-gcc6.patch
 BuildRequires(pre): kde4libs-devel rpm-build-ubt
 BuildRequires: gcc-c++ glib2-devel zlib-devel kde-common-devel desktop-file-utils
 BuildRequires: qjson-devel kde4-kactivities-devel
-BuildRequires: python-module-PyQt4-devel python-devel python-module-sip python-module-sip-devel python-module-kde4 kde4-python-devel
+BuildRequires: python-devel 
 
 %description
 A fast and advanced text editor with nice plugins
@@ -197,15 +197,15 @@ kde4_add_text_mimes %buildroot%_K4xdg_apps/kwrite.desktop
 %_K4srv/katexmltools.desktop
 %_K4srv/katesql.desktop
 %_K4srv/katesearch.desktop
-%_K4srv/katepate_*.desktop
+#_K4srv/katepate_*.desktop
 %_K4srvtyp/kateplugin.desktop
-%_K4srvtyp/katepythonplugin.desktop
+#_K4srvtyp/katepythonplugin.desktop
 #%_K4doc/*/kate-plugins
 %_K4doc/*/kate
 %_K4iconsdir/hicolor/*/apps/kate.*
 # pate plugin
-%python_sitelibdir/PyKate4/
-%_K4srv/pate.desktop
+#python_sitelibdir/PyKate4/
+#_K4srv/pate.desktop
 
 %files -n kde4-kwrite
 %_K4bindir/kwrite
@@ -225,6 +225,12 @@ kde4_add_text_mimes %buildroot%_K4xdg_apps/kwrite.desktop
 %_K4link/lib*.so
 
 %changelog
+* Fri Feb 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 4.14.7-alt5
+- Disabled building python modules and plugins.
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 4.14.7-alt4
+- NMU: remove %ubt from release
+
 * Fri Apr 20 2018 Sergey V Turchin <zerg@altlinux.org> 4.14.7-alt3%ubt
 - fix to build with new gcc
 

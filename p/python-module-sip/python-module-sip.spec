@@ -2,10 +2,11 @@
 %define pkg_version %(echo %version | sed 's/\\./,/g')
 
 %def_with python3
+%def_with pyqt5
 
 Name: python-module-%oname
-Version: 4.19.13
-Release: alt1
+Version: 4.19.19
+Release: alt4
 
 Summary: Python bindings generator for C++ class libraries
 
@@ -17,7 +18,8 @@ URL: http://www.riverbankcomputing.com/software/sip/
 
 # hg clone http://www.riverbankcomputing.com/hg/sip
 #Source-url: https://pypi.io/packages/source/s/%oname/%oname-%version.tar.gz
-# Source-url: https://prdownloads.sourceforge.net/pyqt/sip/sip-%version/sip-%version.tar.gz
+#Source-url: https://prdownloads.sourceforge.net/pyqt/sip/sip-%version/sip-%version.tar.gz
+# Source-url: https://www.riverbankcomputing.com/static/Downloads/sip/%version/sip-%version.tar.gz
 Source: %name-%version.tar
 
 Provides: %modulename = %version-%release
@@ -30,7 +32,7 @@ BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
 %endif
 BuildRequires(pre): rpm-build-python
-BuildRequires: flex gcc-c++ python-devel 
+BuildRequires: flex gcc-c++ python2-base python-devel
 
 
 %description
@@ -115,7 +117,7 @@ Header files for sip
 %build
 mkdir python
 pushd python
-python ../configure.py --debug -d %python_sitelibdir
+python2 ../configure.py --debug -d %python_sitelibdir
 
 sed -i 's|^\(CPPFLAGS.*\)|\1 -g -I%python_includedir|' */Makefile
 %make_build
@@ -123,17 +125,19 @@ popd
 
 mkdir python-PyQt4
 pushd python-PyQt4
-python ../configure.py --debug -d %python_sitelibdir \
+python2 ../configure.py --debug -d %python_sitelibdir \
 	--sip-module=PyQt4.sip
 %make_build
 popd
 
+%if_with pyqt5
 mkdir python-PyQt5
 pushd python-PyQt5
-python ../configure.py --debug -d %python_sitelibdir \
+python2 ../configure.py --debug -d %python_sitelibdir \
 	--sip-module=PyQt5.sip
 %make_build
 popd
+%endif
 
 # docs build
 #python build.py doc
@@ -169,17 +173,20 @@ popd
 %install
 %if_with python3
 %makeinstall_std -C python3
+%makeinstall_std -C python3-PyQt4
+%makeinstall_std -C python3-PyQt5
+
 mv %buildroot%_bindir/sip %buildroot%_bindir/sip3
 sed -i 's|%_datadir/sip|%_datadir/sip3|' \
 	%buildroot%python3_sitelibdir/sipconfig.py
 sed -i 's|%_bindir/sip|%_bindir/sip3|' \
 	%buildroot%python3_sitelibdir/sipconfig.py
-%makeinstall_std -C python3-PyQt4
-%makeinstall_std -C python3-PyQt5
 %endif
 %makeinstall_std -C python
 %makeinstall_std -C python-PyQt4
+%if_with pyqt5
 %makeinstall_std -C python-PyQt5
+%endif
 
 %files
 %_bindir/sip
@@ -188,14 +195,18 @@ sed -i 's|%_bindir/sip|%_bindir/sip3|' \
 %exclude %python_sitelibdir/sipconfig.*
 %exclude %python_sitelibdir/sipdistutils.*
 %exclude %python_sitelibdir/PyQt4*
+%if_with pyqt5
 %exclude %python_sitelibdir/PyQt5*
+%endif
 %doc README NEWS LICENSE*
 
 %files -n python-module-PyQt4-%oname
 %python_sitelibdir/PyQt4*
 
+%if_with pyqt5
 %files -n python-module-PyQt5-%oname
 %python_sitelibdir/PyQt5*
+%endif
 
 %files devel
 %python_includedir/*
@@ -231,6 +242,18 @@ sed -i 's|%_bindir/sip|%_bindir/sip3|' \
 %endif
 
 %changelog
+* Sun Sep 06 2020 Vitaly Lipatov <lav@altlinux.ru> 4.19.19-alt4
+- add pyqt5 disable possibility
+
+* Sat Feb 08 2020 Anton Midyukov <antohami@altlinux.org> 4.19.19-alt3
+- fix PATH to sip3 (it was broken in 4.19.13-alt1)
+
+* Thu Feb 06 2020 Vitaly Lipatov <lav@altlinux.ru> 4.19.19-alt2
+- fix build: add python2-base buildreq
+
+* Mon Oct 07 2019 Vitaly Lipatov <lav@altlinux.ru> 4.19.19-alt1
+- new version 4.19.19 (with rpmrb script)
+
 * Sun Feb 03 2019 Anton Midyukov <antohami@altlinux.org> 4.19.13-alt1
 - new version (4.19.13) with rpmgs script
 - build PyQt4 and PyQt5-sip modules
