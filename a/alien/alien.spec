@@ -1,6 +1,6 @@
 Name: alien
 Version: 8.95
-Release: alt8
+Release: alt9
 
 Summary: Install Debian and Slackware Packages with RPM
 
@@ -17,6 +17,7 @@ Source: %name-%version.tar
 Patch: %name-Makefile.PL.patch
 Patch1: alien-dpkg-tar.xz.patch
 Patch2: alien-alt-plaintext-scripts.patch
+Patch3: alien-alt-fix-missing-spaces-in-control.patch
 
 # Automatically added by buildreq on Mon Feb 13 2006
 BuildRequires: perl-devel perl-podlators
@@ -38,6 +39,7 @@ It is recommended install dpkg package to full dpkg support.
 %patch -p2
 %patch1 -p2
 %patch2 -p2
+%patch3 -p2
 
 %build
 %perl_vendor_build INSTALLMAN1DIR=%_man1dir INSTALLMAN3DIR=%_man3dir
@@ -52,6 +54,9 @@ It is recommended install dpkg package to full dpkg support.
 %_man3dir/*
 
 %changelog
+* Tue Mar 09 2021 Andrey Cherepanov <cas@altlinux.org> 8.95-alt9
+- Fix missing spaces in control fields in deb packages.
+
 * Mon Jun 24 2019 Andrey Cherepanov <cas@altlinux.org> 8.95-alt8
 - Replace %% for %%%% in RPM scripts.
 
