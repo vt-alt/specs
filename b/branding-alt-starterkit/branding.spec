@@ -6,13 +6,16 @@
 %define codename Hypericum
 %define brand alt
 %define Brand ALT
+%define flavour %brand-%theme
 %define distro_name ALT Starterkit
 
-Name: branding-%brand-%theme
+Name: branding-%flavour
 Version: p9
-Release: alt7
+Release: alt8
 
 Url: http://en.altlinux.org/starterkits
+
+BuildRequires(pre): rpm-macros-branding
 
 BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-sans
 
@@ -24,7 +27,6 @@ BuildRequires: fribidi
 
 %define status %nil
 %define status_en %nil
-%define variants altlinux-office-desktop altlinux-office-server altlinux-lite altlinux-workbench school-master school-junior school-lite school-server altlinux-gnome-desktop altlinux-kdesktop ivk-chainmail simply-linux sisyphus-server-light altlinux-sisyphus altlinux-p7 altlinux-starterkit basealt-starterkit informika-schoolmaster
 
 # argh
 %define design_graphics_abi_epoch 0
@@ -54,7 +56,7 @@ Requires: coreutils
 Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 
 Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-bootloader ";done )
+%branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/black
 %define grub_high black/white
@@ -71,8 +73,9 @@ BuildArch: noarch
 Provides: plymouth-theme-%theme plymouth(system-theme)
 Requires: plymouth-plugin-script
 Requires: plymouth
+Conflicts: system-logo
+%branding_add_conflicts %flavour bootsplash
 
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-bootsplash ";done )
 %description bootsplash
 This package contains graphics for boot process, displayed via Plymouth
 
@@ -83,10 +86,8 @@ Group: System/Configuration/Other
 BuildArch: noarch
 Provides: design-alterator-browser-%theme branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
 Provides: alterator-icons design-alterator design-alterator-%theme
-Obsoletes: branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
-
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-alterator ";done )
-Obsoletes: design-alterator-server design-alterator-desktop design-alterator-browser-desktop design-alterator-browser-server
+Obsoletes: branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt design-alterator-server design-alterator-desktop design-alterator-browser-desktop design-alterator-browser-server
+%branding_add_conflicts %flavour alterator
 Requires: alternatives >= 0.2 alterator
 
 %description alterator
@@ -104,7 +105,7 @@ Provides: design-graphics-%theme branding-alt-%theme-graphics
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
 Obsoletes: branding-alt-%theme-graphics design-graphics-%theme
 Requires: alternatives >= 0.2
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-graphics ";done )
+%branding_add_conflicts %flavour graphics
 Conflicts: design-graphics-default
 
 %description graphics
@@ -121,7 +122,7 @@ BuildArch: noarch
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme branding-alt-%theme-release
 Obsoletes: %obsolete_list branding-alt-%theme-release
 Conflicts: %conflicts_list
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-release ";done )
+%branding_add_conflicts %flavour release
 
 %description release
 %distribution %version %Theme release file.
@@ -134,7 +135,7 @@ License: Distributable
 Group: Documentation
 BuildArch: noarch
 Conflicts: alt-notes-children alt-notes-hpc alt-notes-junior alt-notes-junior-sj alt-notes-junior-sm alt-notes-school-server alt-notes-server-lite alt-notes-skif alt-notes-terminal
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-notes ";done )
+%branding_add_conflicts %flavour notes
 
 %description notes
 Distribution license and release notes
@@ -145,7 +146,7 @@ Summary: Slideshow for %Brand %version %Theme installer
 License: Distributable
 Group: System/Configuration/Other
 BuildArch: noarch
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-slideshow ";done )
+%branding_add_conflicts %flavour slideshow
 
 %description slideshow
 Slideshow for %Brand %version %Theme installer
@@ -167,8 +168,7 @@ Conflicts: indexhtml-school_terminal
 Conflicts: indexhtml-small_business
 Conflicts: indexhtml-school-server
 Conflicts: branding-sisyphus-server-light-indexhtml
-
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-indexhtml";done )
+%branding_add_conflicts %flavour indexhtml
 
 Requires: xdg-utils
 Requires(post): indexhtml-common
@@ -181,7 +181,7 @@ ALT Linux index.html welcome page.
 Summary: XFCE settings for %Brand %version %Theme
 License: Distributable
 Group: Graphical desktop/XFce
-Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-xfce-settings ";done )
+%branding_add_conflicts %flavour xfce-settings
 
 %description xfce-settings
 XFCE settings for %Brand %version %Theme
@@ -335,6 +335,9 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_sysconfdir/skel/.config/autostart/*
 
 %changelog
+* Wed Mar 10 2021 Anton Midyukov <antohami@altlinux.org> p9-alt8
+- Fix missing conflicts (Closes: 39779)
+
 * Wed Mar 03 2021 Anton Midyukov <antohami@altlinux.org> p9-alt7
 - Update progressbar in splash
 - Add default-wide.png
