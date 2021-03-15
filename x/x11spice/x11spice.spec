@@ -1,9 +1,9 @@
 Name: x11spice
-Version: 1.1.0
-Release: alt6
+Version: 1.2
+Release: alt1
 Summary: x11spice connects a running X server as a Spice server
 Group: Networking/Remote access
-License: GPLv3
+License: GPL-3.0+
 Url: https://gitlab.com/spice/x11spice/
 Source0: %name-%version.tar
 
@@ -14,6 +14,7 @@ Patch4: %name-alt-desktop-l10n.patch
 
 BuildRequires(pre): rpm-build-xdg
 BuildRequires: libxcb-devel libxcbutil-devel libgtk+3-devel libspice-server-devel libpixman-devel libaudit-devel
+BuildRequires: xorg-util-macros
 
 ExcludeArch: %ix86
 
@@ -27,13 +28,13 @@ notably that of scan.c, was inspired by the code in x11vnc.
 %setup
 %patch1 -p2
 %patch2 -p2
-%patch3 -p2
+%patch3 -p1
 %patch4 -p2
 
 %build
 %ifarch %ix86
 #hack, excuse me, plz
-export CFLAGS="-Wno-error=address -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast -Wno-format"
+#export CFLAGS="-Wno-error=address -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast -Wno-format"
 %endif
 %autoreconf
 %configure
@@ -50,6 +51,9 @@ export CFLAGS="-Wno-error=address -Wno-pointer-to-int-cast -Wno-int-to-pointer-c
 %_man1dir/*
 
 %changelog
+* Fri Mar 05 2021 Andrey Cherepanov <cas@altlinux.org> 1.2-alt1
+- New version.
+
 * Thu May 23 2019 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt6
 - Add Russian localization to desktop file.
 

@@ -2,7 +2,7 @@
 
 Name: kumir2
 Version: 2.1.0
-Release: alt9.git4aa5e175
+Release: alt10.git42b99b78
 
 Summary: New version of Kumir - simple programming language and IDE for teaching programming
 Summary(ru_RU.UTF-8): Новая версия системы Кумир - простого учебного языка программирования и среды разработки
@@ -104,6 +104,9 @@ export PATH=%_qt5_bindir:$PATH
 %endif
 
 %changelog
+* Fri Mar 05 2021 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt10.git42b99b78
+- New snapshot.
+
 * Tue Sep 22 2020 Andrey Cherepanov <cas@altlinux.org> 2.1.0-alt9.git4aa5e175
 - New snapshot.
 - Fix License according to SPDX.
