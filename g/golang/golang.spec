@@ -38,8 +38,8 @@
 %def_disable check
 
 Name:    golang
-Version: 1.15.8
-Release: alt2
+Version: 1.15.10
+Release: alt1
 Summary: The Go Programming Language
 Group:   Development/Other
 License: BSD
@@ -340,6 +340,15 @@ mkdir -p -- \
 %exclude %go_root/src/runtime/runtime-gdb.py
 
 %changelog
+* Fri Mar 12 2021 Alexey Shabalin <shaba@altlinux.org> 1.15.10-alt1
+- New version (1.15.10).
+
+* Thu Mar 11 2021 Alexey Shabalin <shaba@altlinux.org> 1.15.9-alt1
+- New version (1.15.9).
+- Fixes:
+  + CVE-2021-27918
+  + CVE-2021-27919
+
 * Fri Feb 26 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.15.8-alt2
 - Remove test for other platform scripts.
 
