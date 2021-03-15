@@ -1,9 +1,11 @@
 # -*- rpm-spec -*-
 %define _unpackaged_files_terminate_build 1
 
+%def_with python2
+
 Name: nut
 Version: 2.7.4
-Release: alt3
+Release: alt4
 
 Summary: Network UPS Tools
 License: GPL
@@ -34,6 +36,9 @@ Patch25: nut-2.7.4-alt-gdlib.patch
 Patch26: nut-2.7.4-alt-linking.patch
 Patch27: nut-2.7.4-github-504-openssl.patch
 Patch28: nut-2.7.4-man-parralel-build.patch
+Patch29: nut-2.7.4-alt-python-compat.patch
+Patch30: nut-2.7.4-alt-dont-autoreconf.patch
+Patch31: nut-2.7.4-alt-fix-strip.patch
 
 # Fedora patches
 Patch103: nut-2.6.5-quickfix.patch
@@ -61,8 +66,9 @@ Patch109: nut-2.6.5-rmpidf.patch
 %define fdi_hal %_datadir/hal/fdi/information/20thirdparty
 
 PreReq: shadow-utils
-PreReq: libupsclient = %version-%release
+PreReq: libupsclient = %EVR
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: gcc-c++
 BuildRequires: pkgconfig libtool-common
 BuildRequires: libltdl-devel
@@ -104,28 +110,28 @@ BuildRequires: libdbus-glib-devel
 Summary: The UPS information server
 Group: System/Servers
 Requires: shadow-utils
-Requires: libnutscan = %version-%release
-Requires: libupsclient = %version-%release
-Provides: %name-driver = %version-%release
-Obsoletes: %name-driver < %version-%release
-Provides: %name-driver-usb = %version-%release
-Obsoletes: %name-driver-usb < %version-%release
+Requires: libnutscan = %EVR
+Requires: libupsclient = %EVR
+Provides: %name-driver = %EVR
+Obsoletes: %name-driver < %EVR
+Provides: %name-driver-usb = %EVR
+Obsoletes: %name-driver-usb < %EVR
 
 %package driver-snmp
 Summary: Multi-MIB Driver for SNMP UPS equipment
 Group: System/Servers
-Requires: %name-server = %version-%release
+Requires: %name-server = %EVR
 
 %package driver-ipmi
 Summary: Multi-HID Driver for IPMI UPS equipment
 Group: System/Servers
-Requires: %name-server = %version-%release
+Requires: %name-server = %EVR
 
 %package cgi
 Summary: CGI utilities for the Network UPS Tools
 Group: System/Servers
 Requires: webserver
-Requires: libupsclient = %version-%release
+Requires: libupsclient = %EVR
 
 %package -n libupsclient
 Summary: Shared library libupsclient of nut
@@ -144,8 +150,8 @@ Group: Development/C
 Summary: Header files and C programming manuals for nut
 Group: Development/C
 Conflicts: nut-devel
-Requires: libupsclient = %version-%release
-Requires: libnutscan = %version-%release
+Requires: libupsclient = %EVR
+Requires: libnutscan = %EVR
 
 %description
 These programs are part of a developing project to monitor the assortment 
@@ -239,6 +245,53 @@ live status tracking on web pages, and more.
 
 This package includes header files and C programming manuals for nut.
 
+%if_with python2
+%package client
+Summary: The UPS information GUI client
+Group: System/Servers
+BuildArch: noarch
+Requires: python-module-%name = %EVR
+%py_requires gtk.glade
+%py_requires pynotify
+
+%description client
+These programs are part of a developing project to monitor the assortment 
+of UPSes that are found out there in the field.  Many models have serial 
+serial ports of some kind that allow some form of state checking.  This
+capability has been harnessed where possible to allow for safe shutdowns, 
+live status tracking on web pages, and more.
+
+This package contains the UPS information GUI client.
+
+%package -n python-module-%name
+Summary: Python bindings for NUT
+Group: Development/Python
+Requires: %name = %EVR
+
+%description -n python-module-%name
+These programs are part of a developing project to monitor the assortment 
+of UPSes that are found out there in the field.  Many models have serial 
+serial ports of some kind that allow some form of state checking.  This
+capability has been harnessed where possible to allow for safe shutdowns, 
+live status tracking on web pages, and more.
+
+This package contains python bindings for NUT.
+%endif
+
+%package -n python3-module-%name
+Summary: Python bindings for NUT
+Group: Development/Python3
+Requires: %name = %EVR
+
+%description -n python3-module-%name
+These programs are part of a developing project to monitor the assortment 
+of UPSes that are found out there in the field.  Many models have serial 
+serial ports of some kind that allow some form of state checking.  This
+capability has been harnessed where possible to allow for safe shutdowns, 
+live status tracking on web pages, and more.
+
+This package contains python bindings for NUT.
+
 %prep
 %setup
 %patch4 -p1
@@ -250,6 +303,9 @@ This package includes header files and C programming manuals for nut.
 %patch24 -p1
 %patch27 -p1
 %patch28 -p1
+%patch29 -p1
+%patch30 -p1
+%patch31 -p1
 
 %patch103 -p1 -b .quickfix
 %patch105 -p1 -b .dlfix
@@ -264,9 +320,14 @@ This package includes header files and C programming manuals for nut.
 # fix cgi path in html links for current %%cgidir
 sed -i 's@/cgi-bin/nut/@/cgi-bin/@g' data/html/header.html.in
 
+# fixes for nut client
+sed -i 's|=NUT-Monitor|=nut-monitor|'  scripts/python/app/nut-monitor.desktop
+sed -i "s|sys.argv\[0\]|'%_datadir/nut/nut-monitor/nut-monitor'|" scripts/python/app/NUT-Monitor
+
 %build
 %define snmp_opts --with-snmp
 ./autogen.sh
+%autoreconf
 %configure \
 	--disable-static \
 	--sysconfdir=%confdir --datadir=%confdir \
@@ -284,7 +345,8 @@ sed -i 's@/cgi-bin/nut/@/cgi-bin/@g' data/html/header.html.in
 	--with-dev \
 	--with-user=%runas \
 	--with-group=%runas \
-	--disable-strip
+	--enable-strip=no \
+	%nil
 
 sh %SOURCE104 >>include/config.h
 
@@ -348,6 +410,22 @@ mv %buildroot/lib/udev/rules.d/52-nut-ipmipsu.rules %buildroot/lib/udev/rules.d/
 ln -s nut-monitor.service %buildroot%_unitdir/upsmon.service
 ln -s nut-driver.service %buildroot%_unitdir/upsdrv.service
 ln -s nut-server.service %buildroot%_unitdir/upsd.service
+%endif
+
+# install PyNUT
+install -p -D -m 644 scripts/python/module/PyNUT.py %buildroot%python3_sitelibdir/PyNUT.py
+
+# install nut-monitor
+%if_with python2
+install -p -D -m 644 scripts/python/module/PyNUT.py %buildroot%python_sitelibdir/PyNUT.py
+
+mkdir -p %buildroot%_datadir/nut/nut-monitor/pixmaps
+install -p -m 755 scripts/python/app/NUT-Monitor %buildroot%_datadir/nut/nut-monitor/nut-monitor
+install -p -m 644 scripts/python/app/gui-1.3.glade %buildroot%_datadir/nut/nut-monitor
+install -p -m 644 scripts/python/app/pixmaps/* %buildroot%_datadir/nut/nut-monitor/pixmaps/
+install -p -D scripts/python/app/nut-monitor.png %buildroot%_pixmapsdir/nut-monitor.png
+install -p -D -m 644 scripts/python/app/nut-monitor.desktop %buildroot%_desktopdir/nut-monitor.desktop
+ln -sr %buildroot%_datadir/nut/nut-monitor/nut-monitor %buildroot%_bindir/nut-monitor
 %endif
 
 # remove unpackaged files
@@ -551,7 +629,26 @@ fi
 %_pkgconfigdir/*.pc
 %_man3dir/*
 
+%if_with python2
+%files client
+%_bindir/nut-monitor
+%_pixmapsdir/nut-monitor.png
+%_desktopdir/nut-monitor.desktop
+%_datadir/nut
+
+%files -n python-module-%name
+%python_sitelibdir/PyNUT.py*
+%endif
+
+%files -n python3-module-%name
+%python3_sitelibdir/PyNUT.py
+%python3_sitelibdir/__pycache__/PyNUT.*
+
 %changelog
+* Wed Feb 24 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.7.4-alt4
+- Packaged PyNUT GUI into nut-client package (Closes: #39720).
+- Disabled stripping debuginfo.
+
 * Mon Mar 11 2019 Anton Farygin <rider@altlinux.ru> 2.7.4-alt3
 - cleanup build requires for fix FTBFS (closes: #36253)
 
