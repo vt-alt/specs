@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-datetime
-Version: 4.6.4
+Version: 4.6.5
 Release: alt1
 
 %add_findreq_skiplist %_datadir/install2/postinstall.d/*
@@ -71,6 +71,9 @@ alterator module for date/time setup
 %_datadir/install2/postinstall.d/*
 
 %changelog
+* Fri Mar 05 2021 Ivan Razzhivin <underwit@altlinux.org> 4.6.5-alt1
+- add the ability to set several servers
+
 * Wed Feb 24 2021 Ivan Razzhivin <underwit@altlinux.org> 4.6.4-alt1
 - remove dependency on grub-common
 
