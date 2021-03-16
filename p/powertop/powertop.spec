@@ -1,10 +1,10 @@
 Name: powertop
-Version: 2.10
+Version: 2.13
 Release: alt1
-Serial: 1
+Epoch: 1
 
 Summary: Tool that helps you find what software is using the most power
-License: GPLv2 only
+License: GPLv2
 Group: System/Kernel and hardware
 
 Url: https://01.org/powertop/
@@ -16,6 +16,7 @@ Source100: %name.watch
 # Automatically added by buildreq on Tue May 15 2012
 # optimized out: libncurses-devel libstdc++-devel libtinfo-devel pkg-config xz
 BuildRequires: gcc-c++ libncursesw-devel libnl-devel libpci-devel zlib-devel
+BuildRequires: autoconf-archive
 
 %define cachedir %_cachedir/%name
 
@@ -34,8 +35,7 @@ Please note that it also runs just fine with e.g. AMD CPUs. :)
 %setup
 
 %build
-find -name '*.o' -delete
-%autoreconf
+./autogen.sh
 %configure
 %make_build
 
@@ -57,14 +57,24 @@ touch %cachedir/saved_{parameters,results}.powertop
 
 %files -f %name.lang
 %_sbindir/*
+%_datadir/bash-completion
 %_man8dir/*
-%doc README
+%doc README.md
 %dir %cachedir
 %ghost %cachedir/saved_*.powertop
 %_unitdir/%name.service
 %_initdir/%name
 
 %changelog
+* Fri Jun 26 2020 Anton Farygin <rider@altlinux.ru> 1:2.13-alt1
+- 2.13
+
+* Fri Apr 24 2020 Anton Farygin <rider@altlinux.ru> 1:2.12-alt1
+- 2.12
+
+* Mon Oct 07 2019 Anton Farygin <rider@altlinux.ru> 1:2.11-alt1
+- 2.11
+
 * Sat Jan 19 2019 Anton Farygin <rider@altlinux.ru> 1:2.10-alt1
 - 2.10
 
