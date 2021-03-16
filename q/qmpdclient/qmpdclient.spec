@@ -1,6 +1,6 @@
 Name: qmpdclient
 Version: 1.2.2
-Release: alt1.git20130519
+Release: alt1.git20130519.1
 
 Summary: Qt4-based mpd client
 License: %gpl2plus
@@ -12,7 +12,7 @@ Source0: %name-%version.tar
 
 BuildRequires(pre): rpm-build-licenses libqt4-devel >= 4.4.0
 BuildPreReq: gcc-c++ unzip cmake qt4-designer libqt4-sql-interbase
-BuildPreReq: libqt4-sql-sqlite2 libqt4-sql-mysql libqt4-sql-interbase
+BuildPreReq: libqt4-sql-sqlite3 libqt4-sql-mysql libqt4-sql-interbase
 BuildPreReq: libqt4-sql-odbc libqt4-sql-postgresql libXcomposite-devel
 BuildPreReq: libqt4-assistant-devel libXres-devel libXdamage-devel
 BuildPreReq: libXdmcp-devel libXft-devel libxkbfile-devel libXmu-devel
@@ -68,6 +68,9 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %doc AUTHORS Changelog INSTALL README THANKSTO
 
 %changelog
+* Sun May 31 2020 Andrey Cherepanov <cas@altlinux.org> 1.2.2-alt1.git20130519.1
+- FTBFS: buid with libqt4-sql-sqlite3.
+
 * Sun Sep 28 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.2.2-alt1.git20130519
 - Version 1.2.2
 

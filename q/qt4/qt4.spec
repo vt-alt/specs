@@ -21,7 +21,7 @@
 %def_enable docs
 %def_enable sql_pgsql
 %def_enable sql_odbc
-%def_enable sql_sqlite2
+%def_disable sql_sqlite2
 %def_enable sql_ibase
 %def_disable sql_tds
 %def_enable gtkstyle
@@ -42,7 +42,7 @@
 %define minor	8
 %define bugfix	7
 %define beta	%nil
-%define rlz alt20
+%define rlz alt22
 
 Name: %rname%major
 Version: %major.%minor.%bugfix
@@ -54,7 +54,7 @@ Release: %rlz
 Group: System/Libraries
 Summary: Shared library for the Qt%major GUI toolkit
 Url: http://qt-project.org/
-License: GPLv3 / LGPLv2.1
+License: LGPL-2.1-only or GPL-3.0-only
 
 Requires: lib%name
 Requires: %name-sql
@@ -115,12 +115,14 @@ Patch303: CVE-2018-19870.patch
 Patch304: CVE-2018-19871.patch
 Patch305: CVE-2018-19872.patch
 Patch306: CVE-2018-19873.patch
+Patch307: CVE-2020-17507.patch
 #
 Patch320: gcc9-qforeach.patch
 Patch321: Add_support_for_QT_USE_DRAG_DISTANCE_env_var.patch
 Patch322: Better-handling-of-invalid-font-tables.patch
 Patch323: dont_crash_on_broken_gif_images.patch
 Patch324: xmlpatterns_stack_overflow_fix.diff
+Patch325: qtdoc-build-offline-docs.patch
 # ALT
 Patch501: qt-4.8.5-alt-honor-SUSv3-locales.patch
 Patch502: qt-4.7.2-alt-ca-certificates-path.patch
@@ -630,7 +632,7 @@ This package contains example programs.
 
 ##############################################
 %package doc-examples-src
-BuildArch: noarch
+#BuildArch: noarch
 Summary: Examples sources for developing apps which will use Qt%{major}
 Group: Development/KDE and QT
 Requires: %name-common
@@ -736,12 +738,14 @@ Install this package if you want to create RPM packages that use %name
 %patch304 -p1
 %patch305 -p1
 %patch306 -p1
+%patch307 -p1
 #
 %patch320 -p1
 %patch321 -p1
 %patch322 -p1
 %patch323 -p1
 %patch324 -p1
+%patch325 -p1
 # ALT
 %patch501 -p1
 %patch502 -p1
@@ -790,7 +794,7 @@ sed -i "s|^CFG_DEBUG=.*|CFG_DEBUG=yes|" ./configure
 %else
 sed -i "s|^CFG_DEBUG=.*|CFG_DEBUG=no|" ./configure
 %endif
-
+sed -i /meego/d src/plugins/graphicssystems/graphicssystems.pro
 
 %build
 %add_optflags -std=gnu++98 -Wno-deprecated -DOPENSSL_LOAD_CONF -DOPENSSL_NO_SSL2
@@ -835,9 +839,6 @@ CNFGR="\
 	-platform %platform \
 	%{?_enable_debug:-debug}%{!?_enable_debug:-release} -verbose -no-separate-debug-info \
 	-largefile -stl -fast -no-rpath -no-exceptions -no-g++-exceptions -accessibility -no-pch -icu \
-%qIF_ver_gteq %binutils_ver 2.18
-	-reduce-relocations \
-%endif
 	\
 	-graphicssystem %graphicssystem -opengl %opengl_type \
 	-system-zlib -cups -openssl-linked \
@@ -1252,7 +1253,6 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 %if "%opengl_type" == "es2" || "%opengl_type" == "es1"
 %qtdir/lib/libQtMeeGoGraphicsSystemHelper.so.*
 %_libdir/libQtMeeGoGraphicsSystemHelper.so.*
-%qtdir/plugins/graphicssystems/libqmeegographicssystem.so
 %endif
 
 %files -n lib%{name}-sql
@@ -1488,6 +1488,14 @@ install -m 644 %SOURCE104 %buildroot/%_iconsdir/hicolor/64x64/apps/%name.png
 
 
 %changelog
+* Thu Mar 04 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 4.8.7-alt22
+- Applied security fixes (fixes: CVE-2020-17507) (thanks zerg@alt)
+- Fixed build with gcc-10+.
+- Disabled -reduce-relocation option since it causes issues with new binutils.
+
+* Mon Feb 03 2020 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt21
+- build without sqlite2 driver (Closes: 37986)
+
 * Wed Nov 13 2019 Sergey V Turchin <zerg@altlinux.org> 4.8.7-alt20
 - fix compile with gcc9
 

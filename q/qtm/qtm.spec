@@ -2,7 +2,7 @@
 
 Name: qtm
 Version: 1.3.17
-Release: alt1
+Release: alt2.1
 
 Summary: Qt4 blogging client
 License: GPLv2+
@@ -14,7 +14,7 @@ Source: %name-%version.tar.gz
 
 BuildPreReq: cmake gcc-c++ libqt4-devel
 BuildRequires: desktop-file-utils
-BuildPreReq: qt4-designer libqt4-sql-interbase libqt4-sql-sqlite2
+BuildPreReq: qt4-designer libqt4-sql-interbase libqt4-sql-sqlite3
 BuildPreReq: libqt4-sql-mysql libqt4-sql-odbc libqt4-sql-postgresql
 BuildPreReq: libqt4-assistant-devel
 
@@ -30,10 +30,8 @@ mkdir build/
 cd build
 cmake ../ \
         -DCMAKE_INSTALL_PREFIX=%_prefix \
-%ifarch x86_64
-        -DLIB_SUFFIX=64 \
-%endif
-				-DCMAKE_STRIP:FILEPATH="/bin/echo" \
+        -DLIB_SUFFIX=%_libsuff \
+	-DCMAKE_STRIP:FILEPATH="/bin/echo" \
         -DCMAKE_BUILD_TYPE="Release" \
         -DCMAKE_CXX_FLAGS:STRING="%optflags" \
         -DCMAKE_SKIP_RPATH=YES
@@ -60,6 +58,12 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %_man1dir/%name.*
 
 %changelog
+* Thu Jun 04 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.17-alt2.1
+- FTBFS: replace obsoleted libqt4-sql-sqlite2 by libqt4-sql-sqlite3.
+
+* Tue Jul 02 2019 Igor Vlasenko <viy@altlinux.ru> 1.3.17-alt2
+- NMU: fixed LIB_SUFFIX= on non-x86_64
+
 * Sun Sep 28 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.3.17-alt1
 - Version 1.3.17
 
