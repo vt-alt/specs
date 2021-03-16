@@ -1,10 +1,10 @@
 # check deps/npm/package.json for it
-%define npmver 6.14.8
+%define npmver 6.14.10
 # separate build npm
 %def_without npm
 # in other case, note: we will npm-@npmver-@release package! fix release if npmver is unchanged
 
-%define major 14.15
+%define major 14.16
 
 #we need ABI virtual provides where SONAMEs aren't enough/not present so deps
 #break when binary compatibility is broken
@@ -19,9 +19,10 @@
 %global v8_abi 7.9
 %def_without systemv8
 
-# supports only openssl >= 1.0.2
-# see https://github.com/nodejs/node/issues/2783
-%define openssl_version 1.0.2n
+
+# TODO: set 1.1.1j to fix CVE-2021-23840
+# https://bugzilla.altlinux.org/show_bug.cgi?id=39716
+%define openssl_version 1.1.1i
 %def_with systemssl
 
 %global libuv_abi 1.40.0
@@ -50,7 +51,7 @@
 %define oversion %version
 
 Name: node
-Version: %major.1
+Version: %major.0
 Release: alt1
 
 Summary: Evented I/O for V8 Javascript
@@ -380,6 +381,17 @@ rm -rf %buildroot%_datadir/systemtap/tapset
 %endif
 
 %changelog
+* Tue Feb 23 2021 Vitaly Lipatov <lav@altlinux.ru> 14.16.0-alt1
+- new version 14.16.0 (with rpmrb script)
+- CVE-2021-22883: HTTP2 'unknownProtocol' cause Denial of Service by resource exhaustion
+- CVE-2021-22884: DNS rebinding in --inspect
+
+* Fri Feb 05 2021 Vitaly Lipatov <lav@altlinux.ru> 14.15.4-alt1
+- new version 14.15.4 (with rpmrb script)
+- CVE-2020-1971: OpenSSL - EDIPARTYNAME NULL pointer de-reference (High)
+- CVE-2020-8265: use-after-free in TLSWrap (High)
+- CVE-2020-8287: HTTP Request Smuggling in nodejs (Low)
+
 * Mon Nov 16 2020 Vitaly Lipatov <lav@altlinux.ru> 14.15.1-alt1
 - new version 14.15.1 (with rpmrb script)
 - set c-ares >= 1.16.1-alt2
