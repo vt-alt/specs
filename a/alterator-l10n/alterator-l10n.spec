@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.84
+Version: 2.9.85
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Thu Mar 04 2021 Ivan Savin <svn17@altlinux.org> 2.9.85-alt1
+- alterator-update-kernel: update help
+
 * Tue Mar 02 2021 Ivan Razzhivin <underwit@altlinux.org> 2.9.84-alt1
 - alterator-datetime: fix translation
 - alterator-datetime: fix help
