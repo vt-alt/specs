@@ -1,7 +1,7 @@
 %def_without pam
 
 Name: moodle
-Version: 3.10.1
+Version: 3.10.2
 Release: alt1
 
 Summary: The world's open source learning platform
@@ -238,6 +238,9 @@ for ar in *.zip;do unzip "$ar" >/dev/null && rm -f "$ar";done
 %endif
 
 %changelog
+* Mon Mar 08 2021 Andrey Cherepanov <cas@altlinux.org> 3.10.2-alt1
+- New version.
+
 * Sun Jan 17 2021 Andrey Cherepanov <cas@altlinux.org> 3.10.1-alt1
 - New version.
 
