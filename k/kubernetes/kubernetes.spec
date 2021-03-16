@@ -1,16 +1,12 @@
 
 %global import_path github.com/kubernetes/kubernetes
-%global commit 9f2892aab98fe339f3bd70e3c470144299398ace
+%global commit faecb196815e248d3ecfb03c680a4507229c2a56
 
 %global __find_debuginfo_files %nil
 %global _unpackaged_files_terminate_build 1
 
-%set_verify_elf_method unresolved=no
-%add_debuginfo_skiplist %go_root %_bindir
-%brp_strip_none %_bindir/*
-
 Name: kubernetes
-Version: 1.18.8
+Version: 1.20.2
 Release: alt1
 Summary: Container cluster management
 
@@ -38,6 +34,8 @@ Source23: kubelet
 Source24: proxy
 Source25: scheduler
 Source26: kubernetes.tmpfiles
+Source27: crio.conf
+Source28: 99-kubernetes-cri.conf
 
 ExclusiveArch:  %go_arches
 BuildRequires(pre): rpm-build-golang
@@ -86,7 +84,6 @@ Kubernetes services for master host.
 %package node
 Summary: Kubernetes services for node host
 Group: System/Configuration/Other
-Requires: docker-ce
 Requires: conntrack-tools
 Requires: ethtool
 Requires: iptables
@@ -131,6 +128,13 @@ Requires: %name-common = %EVR
 
 %description client
 Kubernetes client tools like kubectl
+
+%package crio
+Summary: Kubernetes crio files
+Group: System/Configuration/Other
+
+%description crio
+Packege contains files specific for using crio.
 
 %prep
 %setup -q
@@ -226,6 +230,12 @@ install -d -m 0755 %buildroot%_sysconfdir/%name/manifests
 install -d -m 0755 %buildroot%_tmpfilesdir
 install -D -m 0644 %SOURCE26 %buildroot%_tmpfilesdir/kubernetes.conf
 
+# load needed module
+install -D -m 0644 %SOURCE27 %buildroot%_modulesloaddir/crio.conf
+
+# install sysctl settings
+install -D -m 0644 %SOURCE28 %buildroot%_sysctldir/99-kubernetes-cri.conf
+
 # install the place the kubelet defaults to put volumes
 install -d %buildroot%_localstatedir/kubelet
 
@@ -258,6 +268,11 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 
 %preun node
 %preun_service kube-proxy
+
+%post crio
+for mod in $(cat %_modulesloaddir/crio.conf); do
+    /sbin/modprobe -b "$mod"
+done
 
 %files common
 %dir %_sysconfdir/%name
@@ -309,7 +324,15 @@ install -p -m 0644 -t %buildroot/%_sysconfdir/systemd/system.conf.d %SOURCE3
 %_bindir/kubectl
 %_datadir/bash-completion/completions/kubectl
 
+%files crio
+%_modulesloaddir/crio.conf
+%_sysctldir/99-kubernetes-cri.conf
+
 %changelog
+* Thu Jan 21 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.20.2-alt1
+- 1.20.2
+- crio support
+
 * Fri Sep 11 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.18.8-alt1
 - 1.18.8
 

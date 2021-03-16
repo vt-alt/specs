@@ -3,7 +3,7 @@
 %global _unpackaged_files_terminate_build 1
 
 Name:     cri-tools
-Version:  1.19.0
+Version:  1.20.0
 Release:  alt1
 
 Summary:  CLI and validation tools for Kubelet Container Runtime Interface (CRI)
@@ -62,6 +62,9 @@ install -Dpm 644 crictl-bash-completion -T %buildroot/%_datadir/bash-completion/
 %doc docs
 
 %changelog
+* Fri Jan 22 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.20.0-alt1
+- new version 1.20.0
+
 * Thu Sep 17 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.19.0-alt1
 - new version 1.19.0
 
