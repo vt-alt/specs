@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.1
-Release: alt4
+Release: alt5
 
 Summary: %Variant documentation
 License: %fdl
@@ -44,6 +44,11 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Mon Mar 15 2021 Elena Mishina <lepata@altlinux.org> 9.1-alt5
+- install-packages-advanced: add epm
+- admin: pacemaker, group policy
+- fix typo
+
 * Mon Nov 30 2020 Elena Mishina <lepata@altlinux.org> 9.1-alt4
 - update Zabbix documentation for 5.0
 
