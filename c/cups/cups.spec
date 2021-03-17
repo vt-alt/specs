@@ -1,14 +1,15 @@
 Name: cups
 Version: 2.3.3
-Release: alt1
+Release: alt2.op2
 
 Summary: Common Unix Printing System - server package
-License: GPL
+License: Apache-2.0
 Group: System/Servers
 
-Url: http://www.cups.org
+Url: https://openprinting.github.io/cups/
 
-Source: v%version.tar.gz
+# https://github.com/OpenPrinting/cups/
+Source: %name-%version.tar
 
 # READMEs
 Source10: README.alt
@@ -34,14 +35,9 @@ Patch6: FC-driverd-timeout.patch
 Patch7: FC-logrotate.patch
 Patch8: FC-usb-paperout.patch
 Patch9: FC-uri-compat.patch
-Patch10: FC-hp-deviceid-oid.patch
-Patch11: FC-ricoh-deviceid-oid.patch
-Patch12: FC-systemd-socket.patch
 Patch13: FC-freebind.patch
 Patch14: FC-ipp-multifile.patch
 Patch15: FC-web-devices-timeout.patch
-Patch16: FC-synconclose.patch
-Patch17: FC-ypbind.patch
 Patch18: FC-failover-backend.patch
 Patch19: FC-lspp.patch
 Patch20: FC-filter-debug.patch
@@ -49,28 +45,20 @@ Patch21: FC-dymo-deviceid.patch
 
 ## Ubuntu patches
 Patch101: Ubuntu-0001-Fix-hyphen-used-as-minus-sign-manpage-errors.patch
-Patch102: Ubuntu-0002-Install-root-backends-world-readable.patch
 Patch103: Ubuntu-0003-Fix-jobs-with-multiple-files-or-multiple-formats.patch
-Patch104: Ubuntu-0004-Fix-conversion-of-PPD-InputSlot-choice-names.patch
-Patch105: Ubuntu-0005-Tests-Ignore-warnings-from-colord-and-Avahi.patch
 Patch106: Ubuntu-0006-Tests-ignore-usb-dnssd-backend-unexpected-exits.patch
 Patch107: Ubuntu-0007-Tests-ignore-loadFile-failures.patch
 Patch108: Ubuntu-0008-Tests-ignore-errors-triggered-on-ipv6-deprived-hosts.patch
 Patch109: Ubuntu-0009-Tests-ignore-the-failure-to-write-uncompressed-data.patch
 Patch110: Ubuntu-0010-Tests-ignore-job-held-message.patch
-Patch111: Ubuntu-0011-Tests-Do-not-run-the-CUPS_EUC_JP-test-case-on-BSD-Hu.patch
-Patch112: Ubuntu-0012-Tests-Make-sure-that-all-scheduled-jobs-are-finished.patch
 Patch113: Ubuntu-0013-Tests-Force-LC_-environment-variables-when-testing-n.patch
 Patch114: Ubuntu-0014-Tests-Use-127.0.0.1-instead-of-localhost-to-help-pbu.patch
 Patch115: Ubuntu-0015-Tests-Force-LC_ALL-C-environment-variable-when-grepp.patch
-Patch116: Ubuntu-0016-Tests-Do-not-test-pdftourf.patch
 Patch117: Ubuntu-0017-Move-cupsd.conf.default-from-SERVERROOT-to-DATADIR.patch
 Patch118: Ubuntu-0018-Patch-to-support-Apple-AirPrint-printing-from-iPhone.patch
 Patch119: Ubuntu-0019-Let-snmp-backend-also-use-manufacturer-specific-MIBs.patch
-Patch120: Ubuntu-0020-Disable-time-stamps-in-conffiles-to-avoid-ever-chang.patch
 Patch121: Ubuntu-0021-Do-not-write-VCS-tags-into-installed-conffiles.patch
 Patch122: Ubuntu-0022-Rename-the-systemd-service-file-from-org.cups.cups.-.patch
-Patch123: Ubuntu-0023-Do-not-use-host-names-for-broadcasting-print-queues-.patch
 Patch124: Ubuntu-0024-CUPS-removes-the-recommended-comments-of-the-NickNam.patch
 Patch125: Ubuntu-0025-Make-log-files-readable-to-group-adm-if-present.patch
 Patch126: Ubuntu-0026-Deactivate-CUPS-own-log-rotating-as-the-system-alrea.patch
@@ -78,11 +66,9 @@ Patch127: Ubuntu-0027-Do-not-mess-with-the-permissions-of-cupsd.conf.patch
 Patch128: Ubuntu-0028-Show-compile-command-lines.patch
 Patch129: Ubuntu-0029-Set-the-default-for-SyncOnClose-to-Yes.patch
 Patch130: Ubuntu-0030-Set-default-job-error-policy-to-retry-job.patch
-Patch131: Ubuntu-0031-Drop-dangling-references-from-cups-lpd.man.patch
 Patch132: Ubuntu-0032-Use-dpkg-architecture-in-cups-config-to-make-it-arch.patch
 Patch133: Ubuntu-0033-Build-mantohtml-with-the-build-architecture-compiler.patch
 Patch134: Ubuntu-0034-po4a-infrastructure-and-translations-for-manpages.patch
-Patch135: Ubuntu-0005-Fix-scheduler-cupsd.conf-load.patch
 Patch136: Ubuntu-0006-Fix-leakage-of-ppd.patch
 Patch137: Ubuntu-0025-Add-Requires-cups.socket-to-cups.service-to-make-sur.patch
 
@@ -140,7 +126,6 @@ need to be assigned to a specific CUPS server by an
 %package ipptool
 Summary: Common Unix Printing System - tool for performing IPP requests
 Group: System/Servers
-License: GPL
 
 %description ipptool
 Sends IPP requests to the specified URI and tests and/or displays the results.
@@ -149,14 +134,12 @@ Sends IPP requests to the specified URI and tests and/or displays the results.
 Summary: Common Unix Printing System - xinetd profile
 Group: System/Servers
 BuildArch: noarch
-License: GPL
 
 %description xinetd
 Common Unix Printing System - xinetd profile
 
 %package -n lib%name
 Summary: Common Unix Printing System - CUPS library
-License: LGPL
 Group: System/Servers
 
 %description -n lib%name
@@ -167,7 +150,6 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 
 %package -n lib%name-devel
 Summary: Common Unix Printing System - Development environment "libcups"
-License: LGPL
 Group: Development/C
 Requires: lib%name = %version-%release
 Provides: %name-devel = %version %name-ddk = %version
@@ -191,14 +173,9 @@ services using the main CUPS library "libcups".
 %patch7 -p1 -b .logrotate
 %patch8 -p1 -b .usb-paperout
 #patch9 -p1 -b .uri-compat
-%patch10 -p1 -b .hp-deviceid-oid
-%patch11 -p1 -b .ricoh-deviceid-oid
-%patch12 -p1 -b .systemd-socket
 %patch13 -p1 -b .freebind
 %patch14 -p1 -b .ipp-multifile
 %patch15 -p1 -b .web-devices-timeout
-%patch16 -p1 -b .synconclose
-%patch17 -p1 -b .ypbind
 %patch18 -p1 -b .failover
 %patch19 -p1 -b .lspp
 %patch20 -p1 -b .filter-debug
@@ -206,28 +183,20 @@ services using the main CUPS library "libcups".
 
 ## Ubuntu apply patches
 %patch101 -p1
-%patch102 -p1
 #patch103 -p1
-%patch104 -p1
-%patch105 -p1
 %patch106 -p1
 %patch107 -p1
 %patch108 -p1
 %patch109 -p1
 %patch110 -p1
-%patch111 -p1
-%patch112 -p1
 %patch113 -p1
 %patch114 -p1
 %patch115 -p1
-%patch116 -p1
 %patch117 -p1
 %patch118 -p1
 #patch119 -p1
-%patch120 -p1
 %patch121 -p1
 #patch122 -p1
-%patch123 -p1
 %patch124 -p1
 ##patch125 -p1
 %patch126 -p1
@@ -235,11 +204,9 @@ services using the main CUPS library "libcups".
 %patch128 -p1
 #patch129 -p1
 %patch130 -p1
-%patch131 -p1
 %patch132 -p1
 %patch133 -p1
 #patch134 -p1
-%patch135 -p1
 ##patch136 -p1
 ##patch137 -p1
 
@@ -247,7 +214,7 @@ services using the main CUPS library "libcups".
 ##patch500 -p1
 %patch501 -p1
 %patch502 -p1
-%patch503 -p1
+%patch503 -p2
 %patch504 -p1
 #patch505 -p1
 %patch506 -p1
@@ -298,6 +265,8 @@ export LIBS="-laudit -lselinux"
    --enable-libpaper \
    --enable-debug \
    --enable-gnutls \
+   --enable-sync-on-close \
+   --with-error-policy=retry-job \
    %nil
 
 %make_build
@@ -416,6 +385,11 @@ chmod 755 %buildroot/usr/lib/cups/backend/ipp
 %config(noreplace) %_sysconfdir/xinetd.d/%name-lpd
 
 %changelog
+* Fri Mar 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt2.op2
+- Updated to upstream version 2.3.3op2 (Fixes: CVE-2020-10001).
+- Project moved to OpenPrinting.
+- Fixed license.
+
 * Thu Jan 28 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt1
 - Updated to upstream version 2.3.3 (Fixes CVE-2019-8842, CVE-2020-3898).
 - Built with gnutls support re-enabled.
