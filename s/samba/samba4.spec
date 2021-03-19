@@ -60,7 +60,7 @@
 %endif
 
 Name:    samba
-Version: 4.12.11
+Version: 4.12.12
 Release: alt1
 
 Group:   System/Servers
@@ -1465,7 +1465,6 @@ TDB_NO_FSYNC=1 %make_build test
 %_samba_mod_libdir/libsamba3-util-samba4.so
 %_samba_mod_libdir/libsmbclient-raw-samba4.so
 %_samba_mod_libdir/libsmbd-base-samba4.so
-%_samba_mod_libdir/libsmbd-conn-samba4.so
 %_samba_mod_libdir/libsmbd-shim-samba4.so
 %_samba_mod_libdir/libsmbldaphelper-samba4.so
 %_samba_mod_libdir/libsmbpasswdparser-samba4.so
@@ -1813,6 +1812,10 @@ TDB_NO_FSYNC=1 %make_build test
 %_includedir/samba-4.0/private
 
 %changelog
+* Fri Mar 12 2021 Evgeny Sinelikov <sin@altlinux.org> 4.12.12-alt1
+- Update to latest release of Samba 4.12 with minor fixes.
+- Remove not needed anymore smbd_conn private library.
+
 * Mon Jan 18 2021 Evgeny Sinelikov <sin@altlinux.org> 4.12.11-alt1
 - Update to latest release of Samba 4.12
 
