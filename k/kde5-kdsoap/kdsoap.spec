@@ -4,7 +4,7 @@
 %define libkdsoap_server libkdsoap-server%sover
 
 Name: kde5-%rname
-Version: 1.9.1
+Version: 1.10.0
 Release: alt1
 %K5init altplace
 
@@ -92,8 +92,12 @@ mv %buildroot/%_datadir/mkspecs/features/* %buildroot/%_K5archdata/mkspecs/featu
 %_K5inc/KDSoap*/
 %_K5link/lib*.so
 %_K5archdata/mkspecs/features/kdsoap.prf
+%_K5archdata/mkspecs/modules/*oap*.pri
 
 %changelog
+* Thu Mar 11 2021 Sergey V Turchin <zerg@altlinux.org> 1.10.0-alt1
+- new version
+
 * Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 1.9.1-alt1
 - new version
 
