@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.10
+Version: 5.11
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -38,7 +38,7 @@ purposes.
 %setup -n %name-%version-%release
 echo -n %version-%release > .tarball-version
 echo -n 2020 > .year
-date +%%Y-%%m-%%d > .strace.1.in.date
+date +%%Y-%%m-%%d > doc/.strace.1.in.date
 
 %build
 echo 'BEGIN OF BUILD ENVIRONMENT INFORMATION'
@@ -81,9 +81,12 @@ echo 'END OF TEST SUITE INFORMATION'
 %_bindir/strace
 %_bindir/strace-log-merge
 %_mandir/man?/*
-%doc COPYING CREDITS NEWS README README-linux-ptrace
+%doc COPYING CREDITS NEWS README doc/README-linux-ptrace
 
 %changelog
+* Wed Feb 17 2021 Dmitry V. Levin <ldv@altlinux.org> 5.11-alt1
+- v5.10 -> v5.11.
+
 * Mon Dec 14 2020 Dmitry V. Levin <ldv@altlinux.org> 5.10-alt1
 - v5.9-13-gd2addc92d -> v5.10.
 
