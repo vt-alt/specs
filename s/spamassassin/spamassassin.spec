@@ -5,7 +5,7 @@
 
 Name: spamassassin
 Version: 3.4.4
-Release: alt2
+Release: alt2.2
 
 Summary: Spam filter for email written in perl
 License: Apache-2.0
@@ -22,6 +22,8 @@ Patch10: spamassassin-deb-10_change_config_paths.patch
 Patch11: spamassassin-deb-20_edit_spamc_pod.patch
 Patch12: spamassassin-deb-55_disable_nagios_epm.patch
 Patch13: spamassassin-deb-90_pod_cleanup.patch
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=961273
+Patch14: spamassassin-deb-961273_dkim.patch
 
 %def_without test
 # normal method nukes on errors :(
@@ -146,6 +148,7 @@ subpackages versions with.
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
 
 %build
 cp -f spamc/spamc.pod spamc/spamc
@@ -261,6 +264,13 @@ sed "s/^[0-9]\+ \+[0-9]\+/$RNDM1 $RNDM2/" -i %_sysconfdir/cron.d/sa-update >/dev
 #%_man3dir/*
 
 %changelog
+* Tue Mar 09 2021 L.A. Kostis <lakostis@altlinux.ru> 3.4.4-alt2.2
+- Fix dkim patch apply.
+
+* Mon Mar 08 2021 L.A. Kostis <lakostis@altlinux.ru> 3.4.4-alt2.1
+- NMU:
+- apply patch from debian to fix warnings in DKIM plugin (DEB #961273)
+
 * Wed Oct 21 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.4-alt2
 - fixed typo in %%changelog
 
