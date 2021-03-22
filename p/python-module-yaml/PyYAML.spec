@@ -3,12 +3,12 @@
 %def_with python3
 
 Name: python-module-yaml
-Version: 5.1.2
-Release: alt1
+Version: 5.4.1
+Release: alt0.p9
 
 Summary: PyYAML, a YAML parser and emitter for Python
 
-License: MIT/X Consortium
+License: MIT
 Group: Development/Python
 Url: https://github.com/yaml/pyyaml
 #BuildArch: noarch
@@ -74,6 +74,21 @@ popd
 %endif
 
 %changelog
+* Thu Mar 18 2021 Andrey Cherepanov <cas@altlinux.org> 5.4.1-alt0.p9
+- Backport version 5.4.x to p9 branch (fixes CVE-2020-1747).
+
+* Fri Feb 19 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.4.1-alt1
+- 5.4.1 released
+
+* Mon Jul 06 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3.1-alt1
+- 5.3.1 released
+
+* Wed Feb 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.3-alt1
+- 5.3 released
+
+* Wed Dec 11 2019 Grigory Ustinov <grenka@altlinux.org> 5.2-alt1
+- Build new version 5.2.
+
 * Mon Aug 05 2019 Grigory Ustinov <grenka@altlinux.org> 5.1.2-alt1
 - Build new version.
 
