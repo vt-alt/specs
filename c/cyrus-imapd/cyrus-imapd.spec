@@ -18,7 +18,7 @@
 %def_with snmp
 
 Name: cyrus-imapd
-Version: 3.2.3
+Version: 3.2.6
 Release: alt1
 
 Summary: A high-performance email, contacts and calendar server
@@ -504,6 +504,9 @@ done
 %dir %_datadir/%name
 
 %changelog
+* Wed Mar 17 2021 Sergey Y. Afonin <asy@altlinux.org> 3.2.6-alt1
+- 3.2.6 (XFER now recognises 3.4 and 3.5 backends)
+
 * Tue Sep 01 2020 Sergey Y. Afonin <asy@altlinux.org> 3.2.3-alt1
 - 3.2.3 (fixed XFER between versions
   https://github.com/cyrusimap/cyrus-imapd/issues/3123)
