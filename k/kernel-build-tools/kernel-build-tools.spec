@@ -1,5 +1,5 @@
 Name: kernel-build-tools
-Version: 0.109
+Version: 0.114
 Release: alt1
 
 Summary: Utilities to build kernel packages for ALT Linux
@@ -22,14 +22,19 @@ Summary: RPM macros to build kernel packages
 Group: Development/Kernel
 Conflicts: rpm-build < 4.0.4-alt1
 
-%ifnarch %ix86
-Provides: kernel-headers-modules-std-pae
+%ifnarch %ix86 x86_64 ppc64le aarch64
+Provides: kernel-headers-modules-std-def
+%endif
+%ifnarch %ix86 x86_64 ppc64le
+Provides: kernel-headers-modules-un-def
+Provides: kernel-headers-modules-std-debug
 %endif
 %ifnarch %ix86 x86_64
-Provides: kernel-headers-modules-std-def
-Provides: kernel-headers-modules-un-def
 Provides: kernel-headers-modules-ovz-el
 Provides: kernel-headers-modules-ovz-el7
+%endif
+%ifnarch %ix86
+Provides: kernel-headers-modules-std-pae
 %endif
 %ifnarch aarch64
 Provides: kernel-headers-modules-mp
@@ -75,8 +80,32 @@ install -Dpm0755 query-kEVR.sh \
 %files -n rpm-build-kernel
 %_rpmmacrosdir/kernel
 %_rpmlibdir/query-kEVR.sh
+%_rpmlibdir/kernel.req*
 
 %changelog
+* Thu Mar 11 2021 Anton V. Boyarshinov <boyarsh@altlinux.org> 0.114-alt1
+- added finding requires for kernel modules
+
+* Thu Aug 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.113-alt1
+- km-create-tag: changed km-karch config handling to fall back to default
+  @karch@ on unmatched flavours.
+
+* Wed Aug 14 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.112-alt1
+- rpm-build-kernel: removed P: kernel-headers-modules-std-def on aarch64.
+- km-create-tag:
+  + added aarch64 and ppc64le to default karch;
+  + changed -a/--arches argument handling to accumulate parameters;
+  + added support of .gear/km-karch config file to map kernel flavour to
+  module's @karch@ specsubst variable.
+
+* Fri Jul 05 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.111-alt1
+- rpm-build-kernel:
+  + removed P: kernel-headers-modules-std-def on ppc64le;
+  + added P: kernel-headers-modules-std-debug on excluded architectures.
+
+* Thu Jul 04 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.110-alt1
+- rpm-build-kernel: removed P: kernel-headers-modules-un-def on ppc64le.
+
 * Fri May 17 2019 Ivan Zakharyaschev <imz@altlinux.org> 0.109-alt1
 - Made the test in the packages produced by %%update_kernel_modules_checkinstall
   not ignore the exit status of update-kernel.

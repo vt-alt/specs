@@ -1,8 +1,8 @@
 Name: kernel-image-old-def
-Release: alt2
+Release: alt1
 epoch:1 
 %define kernel_base_version	4.19
-%define kernel_sublevel .128
+%define kernel_sublevel .182
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -196,7 +196,7 @@ Provides:  kernel-modules-drm-ancient-%kversion-%flavour-%krelease = %version-%r
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease > %version-%release
 Prereq: coreutils
-Requires: %name
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-ancient-%flavour
 The Direct Rendering Modules for ancient cards: mgag200.ko,
@@ -213,7 +213,7 @@ Conflicts: kernel-modules-drm-nouveau-%kversion-%flavour-%krelease > %version-%r
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-nouveau-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -233,7 +233,7 @@ Conflicts: kernel-modules-drm-radeon-%kversion-%flavour-%krelease > %version-%re
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-radeon-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -292,7 +292,7 @@ Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Requires: kernel-modules-v4l-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Requires: %name
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-staging-%flavour
 Drivers and filesystems that are not ready to be merged into the main
@@ -428,6 +428,17 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 make modules_install INSTALL_MOD_PATH=%buildroot
+
+# Move some modules to kernel-image package tree
+# rmi2-core deps
+install -d %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/common/videobuf2/ %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/media.ko %buildroot%modules_dir/kernel/drivers/media-core/ ||:
+mv %buildroot%modules_dir/kernel/drivers/media/v4l2-core/videodev.ko %buildroot%modules_dir/kernel/drivers/media-core/ ||:
+# other deps
+mv %buildroot%modules_dir/kernel/drivers/media/rc/rc-core.ko %buildroot%modules_dir/kernel/drivers/media-core/ ||:
+mv %buildroot%modules_dir/kernel/drivers/media/dvb-core/dvb-core.ko %buildroot%modules_dir/kernel/drivers/media-core/ ||:
+mv %buildroot%modules_dir/kernel/drivers/media/radio/tea575x.ko %buildroot%modules_dir/kernel/drivers/media-core/ ||:
 
 %ifarch aarch64
 mkdir -p %buildroot/lib/devicetree/$KernelVer
@@ -689,6 +700,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging
 
 %changelog
+* Sat Mar 20 2021 Kernel Bot <kernelbot@altlinux.org> 1:4.19.182-alt1
+- v4.19.182
+
 * Tue Jun 16 2020 Kernel Bot <kernelbot@altlinux.org> 1:4.19.128-alt2
 - kiosk mode by mcpain@ added
 

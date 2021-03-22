@@ -1,8 +1,8 @@
 Name: kernel-image-std-debug
-Release: alt1
+Release: alt2
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .104
+%define kernel_sublevel .105
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -202,8 +202,7 @@ Provides:  kernel-modules-drm-ancient-%kversion-%flavour-%krelease = %version-%r
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-drm-ancient-%kversion-%flavour-%krelease > %version-%release
 Prereq: coreutils
-Prereq: %name = %epoch:%version-%release
-Requires(postun): %name = %epoch:%version-%release
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-ancient-%flavour
 The Direct Rendering Modules for ancient cards: mgag200.ko,
@@ -220,8 +219,7 @@ Conflicts: kernel-modules-drm-nouveau-%kversion-%flavour-%krelease > %version-%r
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Prereq: %name = %epoch:%version-%release
-Requires(postun): %name = %epoch:%version-%release
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-nouveau-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -241,8 +239,7 @@ Conflicts: kernel-modules-drm-radeon-%kversion-%flavour-%krelease > %version-%re
 Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Prereq: %name = %epoch:%version-%release
-Requires(postun): %name = %epoch:%version-%release
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-drm-radeon-%flavour
 The Direct Rendering Infrastructure, also known as the DRI, is a framework
@@ -303,8 +300,7 @@ Requires: kernel-modules-drm-%kversion-%flavour-%krelease = %version-%release
 Requires: kernel-modules-v4l-%kversion-%flavour-%krelease = %version-%release
 Prereq: coreutils
 Prereq: module-init-tools >= 3.1
-Prereq: %name = %epoch:%version-%release
-Requires(postun): %name = %epoch:%version-%release
+Requires(pre,post,postun): %name = %EVR
 
 %description -n kernel-modules-staging-%flavour
 Drivers and filesystems that are not ready to be merged into the main
@@ -443,6 +439,17 @@ install -Dp -m644 vmlinux %buildroot/boot/vmlinux-$KernelVer
 install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 %make_build modules_install INSTALL_MOD_PATH=%buildroot
+
+# Move some modules to kernel-image package tree
+# rmi2-core deps
+install -d %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/common/videobuf2/ %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/mc/ %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/v4l2-core/videodev.ko %buildroot%modules_dir/kernel/drivers/media-core/
+# other deps
+mv %buildroot%modules_dir/kernel/drivers/media/rc/rc-core.ko %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/dvb-core/dvb-core.ko %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/radio/tea575x.ko %buildroot%modules_dir/kernel/drivers/media-core/
 
 %ifarch aarch64 %arm
 mkdir -p %buildroot/lib/devicetree/$KernelVer
@@ -636,7 +643,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/build
 %exclude %modules_dir/kernel/drivers/media/
 %exclude %modules_dir/kernel/drivers/staging/
-%exclude %modules_dir/kernel/drivers/gpu/drm
+%exclude %modules_dir/kernel/drivers/gpu/
 %ifnarch aarch64
 %exclude %modules_dir/kernel/drivers/ide/
 %endif
@@ -668,9 +675,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %endif
 
 %files -n kernel-modules-drm-%flavour
-%modules_dir/kernel/drivers/gpu/drm
-%dir %modules_dir/kernel/drivers/media/rc
-%modules_dir/kernel/drivers/media/rc/rc-core.*
+%modules_dir/kernel/drivers/gpu/
 %exclude %modules_dir/kernel/drivers/gpu/drm/nouveau
 %exclude %modules_dir/kernel/drivers/gpu/drm/radeon
 %exclude %modules_dir/kernel/drivers/gpu/drm/mgag200
@@ -710,6 +715,13 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Sat Mar 20 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.105-alt2
+- kernel-image dep on kernel-modules-drm on armh fixed
+
+* Sat Mar 13 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.105-alt1
+- v5.4.105
+- kernel-image dep on kernel-modules-drm fixed
+
 * Tue Mar 09 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.104-alt1
 - v5.4.104
 
