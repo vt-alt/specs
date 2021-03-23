@@ -1,5 +1,5 @@
 Name: spdlog
-Version: 1.3.1
+Version: 1.8.0
 Release: alt1
 
 Summary: Super fast C++ logging library
@@ -13,16 +13,26 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 # Source-url: https://github.com/gabime/%name/archive/v%version.tar.gz
 Source: %name-%version.tar
 
-BuildRequires: ctest gcc-c++ libbenchmark-devel
+BuildRequires: ctest
+BuildRequires: gcc-c++
+BuildRequires: libbenchmark-devel libfmt-devel
 
 %description
+This is a packaged version of the gabime/spdlog header-only C++
+logging library available at Github.
+
+%package -n lib%name
+Summary: Super fast C++ logging library
+Group: Development/C++
+
+%description -n lib%name
 This is a packaged version of the gabime/spdlog header-only C++
 logging library available at Github.
 
 %package -n lib%name-devel
 Summary: Development files for %name
 Group: Development/Other
-#Requires: libstdc++-devel
+Requires: lib%name = %EVR
 
 %description -n lib%name-devel
 The %name-devel package contains C++ header files for developing
@@ -30,26 +40,45 @@ applications that use %name.
 
 %prep
 %setup
-%__subst "s|CHAR_WIDTH|SPDLOG_CHAR_WIDTH|g" include/spdlog/fmt/bundled/format.h
+#__subst "s|CHAR_WIDTH|SPDLOG_CHAR_WIDTH|g" include/spdlog/fmt/bundled/format.h
 
 %build
-%cmake
+%cmake -DSPDLOG_BUILD_SHARED=ON \
+       -DSPDLOG_FMT_EXTERNAL=ON \
+       -DSPDLOG_BUILD_TESTS=ON
 %cmake_build
 
 %install
 %cmakeinstall_std
+# enable external libfmt using
+%__subst "s|// #define SPDLOG_FMT_EXTERNAL|#define SPDLOG_FMT_EXTERNAL|" %buildroot%_includedir/spdlog/tweakme.h
 
 %check
+export LD_LIBRARY_PATH=$(pwd)/BUILD
 %cmake_build test
+
+%files -n lib%name
+%_libdir/libspdlog.so.*
 
 %files -n lib%name-devel
 %doc README.md example/
 %doc LICENSE
-%_includedir/spdlog
+%_includedir/spdlog/
+%_libdir/libspdlog.so
 %_libdir/cmake/spdlog
 %_pkgconfigdir/*.pc
 
 %changelog
+* Sun Sep 20 2020 Vitaly Lipatov <lav@altlinux.ru> 1.8.0-alt1
+- new version 1.8.0 (with rpmrb script)
+
+* Thu Jan 30 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-alt2
+- patch tweakme.h to use external libfmt for the library clients (ALT bug 37969)
+
+* Tue Jan 28 2020 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-alt1
+- new version 1.5.0 (with rpmrb script)
+- build a library, with external libfmt
+
 * Sun Feb 10 2019 Vitaly Lipatov <lav@altlinux.ru> 1.3.1-alt1
 - new version 1.3.1 (with rpmrb script)
 

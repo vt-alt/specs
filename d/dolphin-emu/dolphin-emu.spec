@@ -1,90 +1,91 @@
-%define git_commit 5a939ccfaf79c4a3b451e25d7550f663f0845314
+%define git_version 13817
+%define git_commit 72a6fff36c42989c71765012e26285943085b8c5
+
+%add_optflags %optflags_shared
 
 Name: dolphin-emu
-Version: 5.0
-Release: alt14.git5a939cc
+Version: 5.0.%git_version
+Release: alt0.p9.1
 
 Summary: The Gamecube / Wii Emulator
 License: GPLv2
 Group: Emulators
 
-Url: https://ru.%name.org/
+Url: https://%name.org/
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
 ExclusiveArch: x86_64 aarch64
 
 # https://github.com/%name/dolphin/archive/%git_commit/dolphin-%git_commit.tar.gz
-Source: dolphin-%git_commit.tar
+Source: dolphin-%version.tar
 Patch0: %name-alt-git.patch
 
-BuildPreReq: libbrotli-devel
-BuildPreReq: libexpat-devel
-BuildPreReq: libpcre-devel
-BuildPreReq: libuuid-devel
+BuildPreReq: pkgconfig(expat)
+BuildPreReq: pkgconfig(libbrotlicommon)
+BuildPreReq: pkgconfig(libpcre)
+BuildPreReq: pkgconfig(uuid)
 
-BuildRequires: bzlib-devel
 BuildRequires: cmake
-BuildRequires: libSFML-devel
-BuildRequires: libXcomposite-devel
-BuildRequires: libXcursor-devel
-BuildRequires: libXdamage-devel
-BuildRequires: libXdmcp-devel
-BuildRequires: libXft-devel
-BuildRequires: libXi-devel
-BuildRequires: libXinerama-devel
-BuildRequires: libXmu-devel
-BuildRequires: libXrandr-devel
-BuildRequires: libXxf86vm-devel
-BuildRequires: libalsa-devel
-BuildRequires: libavformat-devel
-BuildRequires: libbluez-devel
-BuildRequires: libcurl-devel
-BuildRequires: libenet-devel
-BuildRequires: libevdev-devel
-BuildRequires: libfmt-devel
-BuildRequires: libhidapi-devel
-BuildRequires: liblzma-devel
-BuildRequires: liblzo2-devel
+BuildRequires: libcubeb-devel
 BuildRequires: libmbedtls-devel
 BuildRequires: libminiupnpc-devel
-BuildRequires: libpng-devel
-BuildRequires: libpugixml-devel
-BuildRequires: libpulseaudio-devel
-BuildRequires: libswresample-devel
-BuildRequires: libswscale-devel
-BuildRequires: libsystemd-devel
-BuildRequires: libudev-devel
-BuildRequires: libusb-devel
-BuildRequires: libzstd-devel
-BuildRequires: qt5-base-devel
+BuildRequires: pkgconfig(Qt5)
+BuildRequires: pkgconfig(alsa)
+BuildRequires: pkgconfig(bzip2)
+BuildRequires: pkgconfig(bluez)
+BuildRequires: pkgconfig(fmt) >= 7.1
+BuildRequires: pkgconfig(hidapi-libusb)
+BuildRequires: pkgconfig(libavformat)
+BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(libenet)
+BuildRequires: pkgconfig(libevdev)
+BuildRequires: pkgconfig(liblzma)
+BuildRequires: pkgconfig(libpng)
+BuildRequires: pkgconfig(libpulse)
+BuildRequires: pkgconfig(libswresample)
+BuildRequires: pkgconfig(libswscale)
+BuildRequires: pkgconfig(libusb-1.0)
+BuildRequires: pkgconfig(libzstd)
+BuildRequires: pkgconfig(lzo2)
+BuildRequires: pkgconfig(minizip-ng)
+BuildRequires: pkgconfig(pugixml)
+BuildRequires: pkgconfig(systemd)
+BuildRequires: pkgconfig(sfml-all)
+BuildRequires: pkgconfig(xcomposite)
+BuildRequires: pkgconfig(xcursor)
+BuildRequires: pkgconfig(xdamage)
+BuildRequires: pkgconfig(xdmcp)
+BuildRequires: pkgconfig(xft)
+BuildRequires: pkgconfig(xi)
+BuildRequires: pkgconfig(xinerama)
+BuildRequires: pkgconfig(xmu)
+BuildRequires: pkgconfig(xrandr)
+BuildRequires: pkgconfig(xxf86vm)
+BuildRequires: pkgconfig(udev)
 
 %description
 Dolphin-emu is a emulator for Gamecube, Wii, Triforce that lets
 you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 
 %prep
-%setup -n dolphin-%git_commit
+%setup -n dolphin-%version
 %patch0 -p1
 
 %build
-%__mkdir_p %_target_platform
-pushd %_target_platform
-
-cmake .. \
-	-DCMAKE_INSTALL_PREFIX:PATH=%prefix \
-	-DCMAKE_C_FLAGS:STRING='%optflags' \
-	-DCMAKE_CXX_FLAGS:STRING='%optflags' \
-	-DCMAKE_SKIP_RPATH:BOOL=TRUE \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
+%cmake .. \
+	-DENABLE_LTO:BOOL=TRUE \
 	-DUSE_SHARED_ENET:BOOL=TRUE \
+	-DDOLPHIN_WC_DESCRIBE:STRING="%(sed 's|\.|-|2' <<< %version)" \
+	-DDOLPHIN_WC_REVISION:STRING="%git_commit" \
+	-DDOLPHIN_WC_BRANCH:STRING="master" \
+	-DDISTRIBUTOR:STRING="ALT Linux Team" \
 	-Wno-dev
 
-popd
-
-%make_build -C %_target_platform
+%cmake_build
 
 %install
-%makeinstall_std -C %_target_platform
+%cmakeinstall_std
+%__install -Dp -m0644 Data/51-usb-device.rules %buildroot%_udevrulesdir/51-%name-usb-device.rules
 %find_lang %name
 
 %files -f %name.lang
@@ -94,8 +95,44 @@ popd
 %_iconsdir/hicolor/256x256/apps/%name.png
 %_iconsdir/hicolor/scalable/apps/%name.svg
 %_man6dir/%{name}*
+%config %_udevrulesdir/51-%name-usb-device.rules
 
 %changelog
+* Sat Mar 13 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13817-alt0.p9.1
+- Build for branch p9 with shared optflags
+
+* Tue Mar 09 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13817-alt1
+- Version 5.0-13817
+
+* Wed Feb 17 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13671-alt2
+- Enable Link Time Optimization
+- Install udev rules for GameCube Controller Adapter, Wiimotes and DolphinBar
+
+* Wed Feb 17 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13671-alt1
+- Version 5.0-13671
+- Add distributor option
+
+* Sun Feb 14 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13653-alt1
+- Version 5.0.13653
+- Build with minizip-ng
+
+* Fri Feb 12 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13633-alt1
+- Version 5.0-13633
+- Use system headers for Vulkan
+
+* Wed Feb 10 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13614-alt2
+- Build with cubeb
+
+* Tue Feb 09 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13614-alt1
+- Version 5.0-13614
+
+* Sun Jan 24 2021 Nazarov Denis <nenderus@altlinux.org> 5.0-alt16.gitcaff472
+- Update to git commit caff472dbf27fbcc5b3d28cbf5b1789592a9f857
+- Use minizip from zlib
+
+* Mon Oct 12 2020 Nazarov Denis <nenderus@altlinux.org> 5.0-alt15.git5a939cc
+- Rebuit with minizip
+
 * Sun Oct 11 2020 Nazarov Denis <nenderus@altlinux.org> 5.0-alt14.git5a939cc
 - Update to git commit 5a939cc (ALT #39062)
 

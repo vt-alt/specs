@@ -1,12 +1,17 @@
 Name: celestia
-Version: 1.6.9.git
-Release: alt2
+Version: 1.6.2.2
+Release: alt1
+Epoch: 1
 
 Summary: A real-time visual space simulation
 
-License: GPL
+License: GPL-2.0
 Group: Education
-URL: http://www.shatters.net/celestia/
+Url: https://celestia.space
+
+Provides: celestia-ui = %EVR
+Provides: celestia-qt = %EVR celestia-gtk = %EVR celestia-glut = %EVR
+Obsoletes: celestia-qt < %EVR celestia-gtk < %EVR celestia-glut < %EVR
 
 # Source-url: https://github.com/CelestiaProject/Celestia/archive/master.zip
 Source: %name-%version.tar
@@ -22,7 +27,6 @@ Patch8: celestia-1.6.1-alt-lua5.2.patch
 Patch9: celestia-1.6.1-alt-fix-build-2.patch
 
 BuildRequires: cmake gcc-c++ libstdc++-devel
-BuildRequires: qt5-base-devel qt5-imageformats
 BuildRequires: libGLEW-devel libXi-devel libXmu-devel libfreeglut-devel
 
 BuildRequires: eigen3
@@ -32,9 +36,6 @@ BuildRequires: zlib-devel liblua5-devel libssl-devel
 BuildRequires: libfmt-devel
 
 BuildRequires: libgtk+2-devel libgtkglext-devel
-
-# drop some warnings from build log
-%add_optflags -Wno-int-in-bool-context
 
 %description
 Celestia is a free real-time space simulation that
@@ -47,9 +48,7 @@ travelthroughout the solar system, to any of over
 %package common
 Group: Education
 Summary: A real-time visual space simulation (common part)
-Requires: celestia-ui = %EVR
-Obsoletes: celestia
-
+#Requires: celestia-ui = %EVR
 %description common
 This is a common part of Celestia
 
@@ -65,8 +64,8 @@ Group: Education
 Summary: A real-time visual space simulation (Qt5 frontend)
 Requires: celestia-common = %EVR
 Provides: celestia-ui = %version-%release
-Provides: celestia
-Obsoletes: celestia
+Provides: celestia = %version-%release
+Obsoletes: celestia < %version-%release
 
 %description qt
 This is a Qt5 frontend to Celestia
@@ -77,7 +76,6 @@ Unlike most planetarium software, Celestia does not
 confine you to the surface of the Earth. You can
 travelthroughout the solar system, to any of over
 100,000 stars, or even beyondthe galaxy.
-
 
 %package gtk
 Group: Education
@@ -111,13 +109,20 @@ confine you to the surface of the Earth. You can
 travelthroughout the solar system, to any of over
 100,000 stars, or even beyondthe galaxy.
 
-
 %prep
 %setup
+%autoreconf
 
 %build
-# -DENABLE_SPICE=ON
-%cmake_insource -DENABLE_GTK=ON -DGIT_COMMIT=\"%version-%release\"
+# drop some warnings from build log
+%add_optflags -Wno-int-in-bool-context
+%configure \
+    --with-gnu-ld \
+    --without-arts \
+    --with-lua \
+    --with-glut \
+    --with-gtk \
+    #
 %make_build
 
 %install
@@ -147,14 +152,13 @@ rm -fv %buildroot%_libdir/libcelmodel.a
 %pre
 [ ! -d %_datadir/apps/%name ] || rm -fr %_datadir/apps/%name
 
-
-%files -f %{name}.lang common
+%files -f %name.lang common
 #_datadir/apps/*
 #_datadir/applnk/*
 #_datadir/config/*
-%_bindir/makestardb
-%_bindir/makexindex
-%_bindir/startextdump
+##%_bindir/makestardb
+##%_bindir/makexindex
+##%_bindir/startextdump
 %_datadir/locale/*/*/celestia_constellations.mo
 #_datadir/mimelnk/*
 #_datadir/services/*
@@ -164,19 +168,25 @@ rm -fv %buildroot%_libdir/libcelmodel.a
 %_desktopdir/%name.desktop
 %doc ChangeLog TRANSLATORS README NEWS
 
-%files gtk
-%_bindir/celestia-gtk
-/etc/alternatives/packages.d/%name-gtk
+%files
+%_bindir/celestia
 
-%files glut
-%_bindir/celestia-glut
-/etc/alternatives/packages.d/%name-glut
+#%files gtk
+#%_bindir/celestia-gtk
+#/etc/alternatives/packages.d/%name-gtk
 
-%files qt
-%_bindir/celestia-qt
-/etc/alternatives/packages.d/%name-qt
+#%files glut
+#%_bindir/celestia-glut
+#/etc/alternatives/packages.d/%name-glut
+
+#%files qt
+#%_bindir/celestia-qt
+#/etc/alternatives/packages.d/%name-qt
 
 %changelog
+* Thu Feb 25 2021 Sergey V Turchin <zerg@altlinux.org> 1:1.6.2.2-alt1
+- new version
+
 * Sat Feb 02 2019 Michael Shigorin <mike@altlinux.org> 1.6.9.git-alt2
 - build with system libfmt
 
@@ -246,7 +256,7 @@ rm -fv %buildroot%_libdir/libcelmodel.a
 - release 1.6.0
 
 * Tue Jun 23 2009 Anton V. Boyarshinov <boyarsh@altlinux.ru> 1.5.1-alt1.1
-- rebuild with libpng.git=1.2.37-alt2 
+- rebuild with libpng.git=1.2.37-alt2
 
 * Mon Jun 08 2009 Anton V. Boyarshinov <boyarsh@altlinux.ru> 1.5.1-alt1
 - release 1.5.1

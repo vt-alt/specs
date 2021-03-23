@@ -5,13 +5,15 @@
 %define liz_confdir	%_sysconfdir/mfs
 %define liz_limits_conf %_sysconfdir/security/limits.d/10-lizardfs.conf
 %define liz_pam_d %_sysconfdir/pam.d/lizardfs
+%define __nprocs 4
 
+%def_without docs
 %def_without ganesha
 
 Summary: LizardFS - distributed, fault tolerant file system
 Name: lizardfs
 Version: 3.13.0
-Release: alt0.rc1.16.g9c119b5c
+Release: alt0.rc3.2
 License: GPLv3
 Group: System/Servers
 Url: https://www.lizardfs.org/
@@ -28,10 +30,15 @@ Source5: ntirpc-1.5.zip
 
 Conflicts: moosefs
 
+ExcludeArch: armh
+
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires(pre): unzip
+%if_with docs
 BuildRequires: asciidoc-a2x
+%endif
 BuildRequires: boost-devel
+BuildRequires: boost-asio-devel
 BuildRequires: boost-filesystem-devel
 BuildRequires: boost-program_options-devel
 BuildRequires: cmake
@@ -41,7 +48,7 @@ BuildRequires: libjudy-devel
 BuildRequires: libpam-devel
 BuildRequires: libdb4-devel
 BuildRequires: libsystemd-devel
-BuildRequires: thrift
+# BuildRequires: thrift
 BuildRequires: zlib-devel
 BuildRequires: libspdlog-devel
 
@@ -54,6 +61,8 @@ http://lizardfs.com
 %package master
 Summary: LizardFS master server
 Group: System/Servers
+Conflicts: moosefs-common
+Conflicts: moosefs-master
 #Requires: pam
 
 %description master
@@ -63,6 +72,8 @@ LizardFS master (metadata) server together with metadata restore utility.
 %package metalogger
 Summary: LizardFS metalogger server
 Group: System/Servers
+Conflicts: moosefs-common
+Conflicts: moosefs-metalogger
 
 %description metalogger
 LizardFS metalogger (metadata replication) server.
@@ -70,6 +81,8 @@ LizardFS metalogger (metadata replication) server.
 %package chunkserver
 Summary: LizardFS data server
 Group: System/Servers
+Conflicts: moosefs-common
+Conflicts: moosefs-chunkserver
 
 %description chunkserver
 LizardFS data server.
@@ -80,6 +93,8 @@ Group: System/Servers
 Requires: fuse
 Requires: libfuse
 Requires: bash-completion
+Conflicts: moosefs-common
+Conflicts: moosefs-client
 
 %description client
 LizardFS client: mfsmount and lizardfs.
@@ -111,7 +126,7 @@ LizardFS fsal plugin for nfs-ganesha.
 %package cgi
 Summary: LizardFS CGI Monitor
 Group: System/Servers
-#Requires: python2
+Conflicts: moosefs-cgi
 
 %description cgi
 LizardFS CGI Monitor.
@@ -120,6 +135,7 @@ LizardFS CGI Monitor.
 Summary: Simple CGI-capable HTTP server to run LizardFS CGI Monitor
 Group: System/Servers
 Requires: %name-cgi = %EVR
+Conflicts: moosefs-cgiserv
 
 %description cgiserv
 Simple CGI-capable HTTP server to run LizardFS CGI Monitor.
@@ -143,7 +159,7 @@ LizardFS cluster management tool.
 %prep
 %setup
 
-#unzip -q -d external %SOURCE3
+#unzip -q -d external SOURCE3
 %if_with ganesha
 unzip -q -d external %SOURCE4
 unzip -q -d external %SOURCE5
@@ -155,13 +171,19 @@ for i in src/tools/mfstools.sh src/master/mfsrestoremaster.in \
 	 utils/coverage.sh utils/cpp-interpreter.sh utils/wireshark/plugins/lizardfs/generate.sh; do
 	sed -i 's@#!/usr/bin/env bash@#!/bin/bash@' $i
 done
-# Remove /usr/bin/env from python2 scripts
-for i in src/cgi/cgiserv.py.in src/cgi/chart.cgi.in src/cgi/lizardfs-cgiserver.py.in src/cgi/mfs.cgi.in; do
+# Remove /usr/bin/env from python2/python3 scripts
+for i in src/cgi/cgiserv.py.in; do
 	sed -i "s@#!/usr/bin/env python2@#!/usr/bin/python2@" $i
+done
+for i in src/cgi/chart.cgi.in src/cgi/lizardfs-cgiserver.py.in src/cgi/mfs.cgi.in utils/wireshark/plugins/lizardfs/make_dissector.py; do
+	sed -i "s@#!/usr/bin/env python3@#!/usr/bin/python3@" $i
 done
 
 %build
 %cmake  \
+%ifnarch i586
+        -DLIB64=YES \
+%endif
 	-DCMAKE_BUILD_TYPE=Release \
 	-DENABLE_TESTS=NO \
 	-DENABLE_DEBIAN_PATHS=YES \
@@ -171,7 +193,11 @@ done
 	-DENABLE_NFS_GANESHA=YES \
 %endif
 	-DENABLE_URAFT=YES \
+%if_with docs
 	-DENABLE_DOCS=YES \
+%else
+	-DENABLE_DOCS=OFF \
+%endif
 	-DENABLE_POLONAISE=OFF
 
 %cmake_build
@@ -247,6 +273,7 @@ popd
 %_sbindir/mfsrestoremaster
 %_sbindir/mfsmetadump
 %_sbindir/mfsmetarestore
+%if_with docs
 %_man5dir/mfsexports.cfg.5*
 %_man5dir/mfstopology.cfg.5*
 %_man5dir/mfsgoals.cfg.5*
@@ -259,6 +286,7 @@ popd
 %_man8dir/mfsmetadump.8*
 %_man8dir/mfsmetarestore.8*
 %_man8dir/mfsrestoremaster.8*
+%endif
 %_unitdir/lizardfs-master.service
 %_initdir/lizardfs-master
 
@@ -277,8 +305,10 @@ popd
 %files metalogger
 %doc NEWS README.md UPGRADE
 %_sbindir/mfsmetalogger
+%if_with docs
 %_man5dir/mfsmetalogger.cfg.5*
 %_man8dir/mfsmetalogger.8*
+%endif
 %_unitdir/lizardfs-metalogger.service
 %_initdir/lizardfs-metalogger
 %attr(0755,%_username,%_groupname) %dir %liz_datadir
@@ -288,9 +318,11 @@ popd
 %files chunkserver
 %doc NEWS README.md UPGRADE
 %_sbindir/mfschunkserver
+%if_with docs
 %_man5dir/mfschunkserver.cfg.5*
 %_man5dir/mfshdd.cfg.5*
 %_man8dir/mfschunkserver.8*
+%endif
 %_udevrulesdir/80-lizardfs-chunkserver.rules
 %_unitdir/lizardfs-chunkserver.service
 %_initdir/lizardfs-chunkserver
@@ -306,12 +338,14 @@ popd
 %_bindir/*
 %exclude %_bindir/lizardfs-admin
 %exclude %_bindir/lizardfs-probe
+%if_with docs
 %_man1dir/*
 %_man5dir/iolimits.cfg.5*
 %_man5dir/mfsmount.cfg.5*
 %_man7dir/mfs.7*
 %_man7dir/moosefs.7*
 %_man7dir/lizardfs.7*
+%endif
 %_sysconfdir/bash_completion.d/lizardfs
 %dir %liz_confdir
 %config(noreplace) %liz_confdir/mfsmount.cfg
@@ -343,8 +377,10 @@ popd
 %doc NEWS README.md UPGRADE
 %_sbindir/lizardfs-cgiserver
 %_sbindir/mfscgiserv
+%if_with docs
 %_man8dir/lizardfs-cgiserver.8*
 %_man8dir/mfscgiserv.8*
+%endif
 %_unitdir/lizardfs-cgiserv.service
 %_initdir/lizardfs-cgiserv
 %_sysconfdir/sysconfig/lizardfs-cgiserv
@@ -352,17 +388,21 @@ popd
 %files adm
 %doc NEWS README.md UPGRADE
 %_bindir/lizardfs-admin
-%_man8dir/lizardfs-admin.8*
 %_bindir/lizardfs-probe
+%if_with docs
+%_man8dir/lizardfs-admin.8*
 %_man8dir/lizardfs-probe.8*
+%endif
 
 %files uraft
 %_sbindir/lizardfs-uraft
 %_sbindir/lizardfs-uraft-helper
 %doc NEWS README.md UPGRADE
+%if_with docs
 %_man8dir/lizardfs-uraft.8*
 %_man8dir/lizardfs-uraft-helper.8*
 %_man5dir/lizardfs-uraft.cfg.5*
+%endif
 %config(noreplace) %liz_confdir/lizardfs-uraft.cfg
 %_initdir/lizardfs-uraft
 %_unitdir/lizardfs-uraft.service
@@ -370,6 +410,29 @@ popd
 %_unitdir/lizardfs-uraft.lizardfs-ha-master.service
 
 %changelog
+* Thu Dec 10 2020 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc3.2
+- update to aa878d3977a1fd25c4a63c9bdce5d5f59b3db784 from upstream
+
+* Sat Nov 07 2020 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc3.1
+- build without Thrift
+
+* Wed Sep 16 2020 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc3
+- 3.13.0-rc3
+
+* Wed Apr 08 2020 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc2.8.c27fe12f
+- update to c27fe12fd0ec2dc5613d98cdc78423a6b788973e from upstream
+- changed python2 to python3
+- fix missing libfmt
+
+* Mon Feb 03 2020 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc1.16.g9c119b5c.3
+- build without docs
+
+* Fri Nov 22 2019 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc1.16.g9c119b5c.2
+- fix python-base dependency
+
+* Wed Jul 10 2019 Andrew A. Vasilyev <andy@altlinux.org> 3.13.0-alt0.rc1.16.g9c119b5c.1
+- add conflicts with moosefs-*
+
 * Mon Jul 08 2019 Alexey Shabalin <shaba@altlinux.org> 3.13.0-alt0.rc1.16.g9c119b5c
 - upstream snapshot (fixed build on 32-bit arch)
 
