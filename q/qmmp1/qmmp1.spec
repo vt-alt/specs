@@ -5,7 +5,7 @@
 
 %define rname qmmp
 Name: qmmp1
-Version: 1.4.3
+Version: 1.4.4
 Release: alt1
 %K5init no_altplace
 
@@ -27,6 +27,7 @@ Patch2: alt-def-plugins.patch
 Patch3: alt-def-statusicon.patch
 Patch4: alt-hide-on-close.patch
 Patch5: alt-def-id3v1-encoding.patch
+Patch6: alt-fix-skins-dir.patch
 
 # Automatically added by buildreq on Tue Apr 26 2016 (-bi)
 # optimized out: cmake-modules elfutils gcc-c++ glib2-devel libEGL-devel libGL-devel libX11-devel libavcodec-devel libavutil-devel libcdio-devel libcdio-paranoia libgpg-error libjson-c libogg-devel libopencore-amrnb0 libopencore-amrwb0 libopus-devel libp11-kit libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-widgets libqt5-x11extras libqt5-xml libsndfile-devel libstdc++-devel perl pkg-config python-base python-modules python3 python3-base qt5-base-devel qt5-tools rpm-build-python3 ruby ruby-stdlibs xorg-kbproto-devel xorg-xproto-devel
@@ -240,6 +241,7 @@ Qmmp Shared library
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %K5build \
@@ -279,6 +281,10 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %_K5link/lib*.so
 
 %changelog
+* Fri Mar 19 2021 Sergey V Turchin <zerg@altlinux.org> 1.4.4-alt1
+- new version
+- fix find skins (closes: 39816)
+
 * Fri Dec 18 2020 Sergey V Turchin <zerg@altlinux.org> 1.4.3-alt1
 - new version
 
