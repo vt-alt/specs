@@ -1,15 +1,16 @@
 Name:    gcompris-qt
-Version: 0.96
-Release: alt2
+Version: 1.1
+Release: alt1
 Summary: Educational suite for kids 2-10 years old
 Summary(ru_RU.UTF8): Набор образовательных игр для детей от 2 до 10 лет
 
-License: GPLv3
+License: GPL-3.0
 Group:   Games/Educational
 URL:     http://www.gcompris.net
 
 Source:  %name-%version.tar
 Source1: qml-box2d.tar
+# Get from http://gcompris.net/download/qt/src/gcompris-qt-%version.tar.xz
 Source2: po-%version.tar
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -71,7 +72,8 @@ tar xf %SOURCE1
 tar xf %SOURCE2
 
 %build
-%cmake -DKDE_INSTALL_APPDIR=%_desktopdir \
+%cmake \
+       -DKDE_INSTALL_APPDIR=%_desktopdir \
        -DKDE_INSTALL_METAINFODIR=%_datadir/metainfo
 %cmake_build
 
@@ -80,7 +82,7 @@ tar xf %SOURCE2
 %find_lang --with-qt %name
 
 %files -f %name.lang
-%doc README README.rst
+%doc README README.md
 %_bindir/%name
 %_libexecdir/qml/Box2D.2.0
 %dir %_datadir/%name
@@ -92,6 +94,19 @@ tar xf %SOURCE2
 %_iconsdir/hicolor/*/apps/%name.*
 
 %changelog
+* Mon Mar 22 2021 Andrey Cherepanov <cas@altlinux.org> 1.1-alt1
+- New version.
+
+* Fri Nov 20 2020 Andrey Cherepanov <cas@altlinux.org> 1.0-alt1
+- New version.
+
+* Mon Jun 29 2020 Andrey Cherepanov <cas@altlinux.org> 0.97.1-alt1
+- New version.
+- Fix License tag according to SPDX.
+
+* Thu Dec 12 2019 Andrey Cherepanov <cas@altlinux.org> 0.97-alt1
+- New version.
+
 * Thu Apr 25 2019 Andrey Cherepanov <cas@altlinux.org> 0.96-alt2
 - Add strict requirement of libqt5-svg.
 - Add static library for build with old kf5-kdoctools.
