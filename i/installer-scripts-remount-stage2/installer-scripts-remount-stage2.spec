@@ -1,5 +1,5 @@
 Name: installer-scripts-remount-stage2
-Version: 0.5.19
+Version: 0.5.20
 Release: alt1
 
 Summary: Shared installer scripts: remount
@@ -48,6 +48,9 @@ __EOF__
 %attr(0755,root,root) %_datadir/install2/initinstall.d/85-start-multipath.sh
 
 %changelog
+* Fri Mar 12 2021 Anton Midyukov <antohami@altlinux.org> 0.5.20-alt1
+- install2-remount-functions: Add mount/umount EFI variable filesystem
+
 * Mon Jul 27 2020 Anton Midyukov <antohami@altlinux.org> 0.5.19-alt1
 - mount_chroot: Fix getting options from /tmp/fstab for /
 
