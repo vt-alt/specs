@@ -1,79 +1,76 @@
-# To update package, grub new sources
-#
-#   gear-remotes-restore
-#   git fetch upstream
-#   git merge upstream/1.7
-#
-# and create new vendor cache for new composer version
-# 
-#   cd .gear
-#   ./get_vendor_cache.sh
-#
-# OR JUST run $ rpmrb NEWVERSION instead of all above
-
 Name: composer
-Version: 1.10.1
+Version: 2.0.11
 Release: alt1
 
 Summary: Composer helps you declare, manage and install dependencies of PHP projects, ensuring you have the right stack everywhere
 
-License: %mit
+License: MIT
 Group: System/Configuration/Packaging
 Url: https://getcomposer.org/
 
-# Source-git: https://github.com/composer/composer
+Packager: Vitaly Lipatov <lav@altlinux.ru>
+
+# Source-url: https://github.com/composer/composer/archive/%version.tar.gz
 Source: %name-%version.tar
+Source1: composer.sh
+Source2: composer.sysconfig
+Source3: compile
+Source4: README.ALT
 
-Packager: Danil Mikhailov <danil@altlinux.org>
+Source10: %name-production-%version.tar
 
-Requires: /usr/bin/php
-
-BuildRequires(pre): rpm-build-licenses
-
-BuildRequires: git-core php7-openssl php7
+Patch1: composer-compiler.patch
 
 BuildArch: noarch
+
+BuildRequires: php7
+
+Requires: %_bindir/php
+Requires: php7-openssl
 
 %description
 Composer helps you declare, manage and install dependencies of PHP projects,
 ensuring you have the right stack everywhere.
 
 %prep
-%setup
+%setup -a 10
+%patch1 -p2
+install %SOURCE3 -D ./compile
+cp %SOURCE4 .
+%__subst "s|src/Composer/Composer.php|disable-date-changing|" src/Composer/Composer.php
 
 %build
 
-#Move vendor cache with build requires
-mv .gear/vendor/ vendor/
-
-#Compile need git log -n1 --pretty=ct HEAD #TODO remove it
-git init
-git config user.email "you@example.com"
-git config user.name "Your Name"
-git add bin/compile
-git commit -am "Fix for compile"
-
+# unused date
+# Note! stat -c%%y output is incompatible with date in python!
+export RELDATE="$(stat -c '%%y' CHANGELOG.md | sed -e 's|\.[0-9]* | |')"
 #build composer.phar
-php -d phar.readonly=off -d date.timezone='Europe/Moscow' bin/compile
+php -d phar.readonly=off -d date.timezone='Europe/Moscow' ./compile %version "$RELDATE"
 
 %install
-mkdir -p %buildroot/%_datadir/
-cp composer.phar %buildroot/%_datadir/
-
-mkdir -p %buildroot/%_bindir/
-install -m 0755 .gear/composer.sh  %buildroot/%_bindir/%name
-
-mkdir -p %buildroot/%_sysconfdir/sysconfig
-install -m 0644 .gear/composer.sysconfig %buildroot%_sysconfdir/sysconfig/%name
+install -m 0755 -D composer.phar %buildroot/%_datadir/composer.phar
+install -m 0755 -D %SOURCE1 %buildroot/%_bindir/%name
+install -m 0644 -D %SOURCE2 %buildroot%_sysconfdir/sysconfig/%name
 
 %files
-%doc .gear/README.ALT
-
+%doc README.ALT
 %attr(755,root,root) %_bindir/%name
 %attr(755,root,root) %_datadir/%name.phar
-%config(noreplace)  %_sysconfdir/sysconfig/%name
+%config(noreplace) %_sysconfdir/sysconfig/%name
 
 %changelog
+* Thu Mar 11 2021 Vitaly Lipatov <lav@altlinux.ru> 2.0.11-alt1
+- new version 2.0.11 (with rpmrb script)
+
+* Wed Feb 03 2021 Vitaly Lipatov <lav@altlinux.ru> 2.0.9-alt1
+- new version 2.0.9 (with rpmrb script)
+
+* Wed Oct 14 2020 Vitaly Lipatov <lav@altlinux.ru> 1.10.15-alt2
+- switch to build from tarball
+
+* Tue Oct 13 2020 Vitaly Lipatov <lav@altlinux.ru> 1.10.15-alt1
+- new version
+
 * Wed Apr 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1.10.1-alt1
 - new version
 - set default memory limit to 512MB
