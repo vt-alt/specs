@@ -1,6 +1,6 @@
 Name: pulseaudio
 Version: 14.2
-Release: alt1
+Release: alt2
 
 Summary: PulseAudio is a networked sound server
 Group: System/Servers
@@ -80,6 +80,7 @@ Summary: PulseAudio daemon
 Group: Sound
 PreReq: shadow-utils
 Requires: lib%name = %version-%release
+Requires: udev-extras >= 0.20090516-alt2
 Conflicts: %name-utils < 0.9.16-alt0.2
 Provides: pulseaudio-bluez = %version-%release
 Obsoletes: pulseaudio-bluez
@@ -322,6 +323,9 @@ find %buildroot%_libdir -name \*.la -delete
 %_datadir/vala/vapi/*
 
 %changelog
+* Thu Mar 18 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 14.2-alt2
+- readded udev-extras req to ease migration from older branches
+
 * Mon Feb 01 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 14.2-alt1
 - 14.2 released
 
