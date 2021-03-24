@@ -4,7 +4,7 @@
 
 Name: gnutls%libgnutls_soname
 Version: 3.6.15
-Release: alt1
+Release: alt2
 
 Summary: A TLS protocol implementation
 # The libgnutls library is LGPLv2.1+, utilities and remaining libraries are GPLv3+
@@ -18,6 +18,16 @@ Patch3: Fix-privkey-verify-broken-test.patch
 Patch4: tests-Use-IPv4-only-in-s_server.patch
 Patch6: gnulib-E2K-fix-for-lcc-1.23.patch
 Patch8: fix-32bit-LTS.patch
+Patch9: fix_gl_tests.patch
+
+# Backported from gnutls-3.7.x
+# Fix for testpkcs11
+Patch100: testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
+# Fix CVE-2021-20231, CVE-2021-20232
+Patch101: gnutls_buffer_append_data-remove-duplicated-code.patch
+Patch102: key_share-avoid-use-after-free-around-realloc.patch
+Patch103: pre_shared_key-avoid-use-after-free-around-realloc.patch
+
 %define libcxx libgnutlsxx%libgnutlsxx28_soname
 %define libssl libgnutls%{libgnutls_openssl_soname}-openssl
 %def_enable guile
@@ -81,7 +91,6 @@ This package contains the GnuTLS runtime library.
 Summary: Development files for lib%name
 Group: Development/C
 Requires: lib%name = %version-%release
-Provides: libgnutls-devel = %version
 Obsoletes: libgnutls-new-devel < %version
 
 %description -n libgnutls-devel
@@ -218,6 +227,12 @@ pushd gl
 popd
 
 %patch8 -p1
+%patch9 -p1
+
+%patch100 -p2
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
 
 touch doc/*.texi
 rm doc/*.info*
@@ -323,6 +338,13 @@ make -k check
 %endif
 
 %changelog
+* Mon Mar 22 2021 Mikhail Efremov <sem@altlinux.org> 3.6.15-alt2
+- Fixed gnulib tests.
+- Fixed CVE-2021-20231, CVE-2021-20232
+    (fixes: CVE-2021-20231, CVE-2021-20232).
+- Fixed testpkcs11.
+- Dropped self-provide from devel subpackage.
+
 * Wed Sep 09 2020 Mikhail Efremov <sem@altlinux.org> 3.6.15-alt1
 - Updated Url tag.
 - Updated to 3.6.15 (fixes: CVE-2020-24659).

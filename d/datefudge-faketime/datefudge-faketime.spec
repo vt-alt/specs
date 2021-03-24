@@ -1,14 +1,12 @@
 Name: datefudge-faketime
-Version: 0.2
-Release: alt2
+Version: 0.3
+Release: alt1
 Summary: datefudge-like wrapper for faketime
-License: %gpl3plus
+License: GPLv3+
 Group: Development/Other
 Url: http://git.altlinux.org/people/sem/packages/datefudge-faketime.git
 Source0: datefudge.in
 BuildArch: noarch
-
-BuildRequires(pre): rpm-build-licenses
 
 Requires: faketime
 # This script was writen based on datefudge-1.21
@@ -29,6 +27,10 @@ install -Dm0755 datefudge %buildroot/%_bindir/datefudge
 %_bindir/datefudge
 
 %changelog
+* Mon Mar 22 2021 Mikhail Efremov <sem@altlinux.org> 0.3-alt1
+- Don't use rpm-build-licenses.
+- Use exec to run faketime.
+
 * Wed Mar 21 2018 Igor Vlasenko <viy@altlinux.ru> 0.2-alt2
 - NMU: added URL
 
