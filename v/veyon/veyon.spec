@@ -1,8 +1,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: veyon
-Version: 4.2.5
-Release: alt4
+Version: 4.5.4
+Release: alt1
 Group: Education
 License: GPLv2
 Url: https://veyon.io/
@@ -11,20 +11,16 @@ Url: https://veyon.io/
 Summary: Open source computer monitoring and classroom management
 Summary(ru.UTF-8): Программа с открытым кодом для контроля компьютеров и организации учебного процесса
 
+Requires: polkit qca-qt5-ossl qt5-translations
+
 Source: %name-%version.tar
-Source1: ultravnc.tar
-Source2: libvncserver.tar
-Source3: x11vnc.tar
 
 Patch1: Unbundle-some-libraries-and-fix-build-alt.patch
-Patch2: Fix-launch-of-Veyon-in-alt.patch
-Patch3: alt-qt5.15.patch
+Patch2: alt-qt-translation.patch
 
 BuildRequires: rpm-build-kf5
 BuildRequires: extra-cmake-modules
 BuildRequires: gcc-c++ make cmake
-BuildRequires: kde5-kldap-devel
-BuildRequires: kf5-kitemmodels-devel
 BuildRequires: qt5-base-devel
 BuildRequires: qt5-tools-devel
 BuildRequires: libjpeg-devel
@@ -39,7 +35,6 @@ BuildRequires: libqca2-devel
 BuildRequires: libqca-qt5-devel
 BuildRequires: libXdamage-devel
 BuildRequires: libXtst-devel
-Requires: polkit qca-qt5-ossl
 
 %description
 Veyon is a free and open source software 
@@ -79,10 +74,11 @@ Veyon доступен на разных языках и предоставля�
 просто установив Veyon у себя на домашнем ПК.
 
 %prep
-%setup -a1 -a2 -a3
+%setup
+rm -rf ./3rdparty
+mv .gear/3rdparty ./
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %build
 %cmake
@@ -104,8 +100,20 @@ Veyon доступен на разных языках и предоставля�
 %_datadir/%name
 
 %changelog
-* Wed Sep 02 2020 Sergey V Turchin <zerg@altlinux.org> 4.2.5-alt4
-- fix compile with Qt 5.15
+* Wed Mar 17 2021 Egor Ignatov <egori@altlinux.org> 4.5.4-alt1
+- new version
+
+* Thu Mar 11 2021 Sergey V Turchin <zerg@altlinux.org> 4.4.2-alt2
+- merge p9 git-history
+
+* Wed Sep 02 2020 Sergey V Turchin <zerg@altlinux.org> 4.4.2-alt1
+- new version
+
+* Fri Aug 28 2020 Sergey V Turchin <zerg@altlinux.org> 4.4.1-alt2
+- Fix load Qt translation
+
+* Tue Aug 25 2020 Sergey V Turchin <zerg@altlinux.org> 4.4.1-alt1
+- New version
 
 * Tue Apr 21 2020 Pavel Moseev <mars@altlinux.org> 4.2.5-alt3
 - Fix launch of Veyon in ALT Workstation x86_64 (closes: #37950)
