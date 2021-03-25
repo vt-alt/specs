@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .105
+%define kernel_sublevel .107
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -643,7 +643,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/build
 %exclude %modules_dir/kernel/drivers/media/
 %exclude %modules_dir/kernel/drivers/staging/
-%exclude %modules_dir/kernel/drivers/gpu/drm
+%exclude %modules_dir/kernel/drivers/gpu/
 %ifnarch aarch64
 %exclude %modules_dir/kernel/drivers/ide/
 %endif
@@ -675,8 +675,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %endif
 
 %files -n kernel-modules-drm-%flavour
-%modules_dir/kernel/drivers/gpu/drm
-%dir %modules_dir/kernel/drivers/media/rc
+%modules_dir/kernel/drivers/gpu/
 %exclude %modules_dir/kernel/drivers/gpu/drm/nouveau
 %exclude %modules_dir/kernel/drivers/gpu/drm/radeon
 %exclude %modules_dir/kernel/drivers/gpu/drm/mgag200
@@ -716,6 +715,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Tue Mar 23 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.107-alt1
+- v5.4.107  (Fixes: CVE-2019-2308)
+
+* Sat Mar 20 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.105-alt2
+- kernel-image dep on kernel-modules-drm on armh fixed
+
 * Sat Mar 13 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.105-alt1
 - v5.4.105
 - kernel-image dep on kernel-modules-drm fixed
