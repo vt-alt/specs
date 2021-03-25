@@ -1,10 +1,12 @@
+%define _unpackaged_files_terminate_build 1
+
 %define oname superlu
 %define over 4.0
 %define somver 4
 %define sover %somver.2.0
 Name: %oname%over
 Version: 4.3
-Release: alt8
+Release: alt9
 
 Summary: A set of subroutines to solve a sparse linear system A*X=B
 License: BSD-like
@@ -151,7 +153,11 @@ for i in libsuperlu_%over libtmglib; do
 	ln -s $i.so.%somver $i.so
 	rm -f *.o
 done
+ln -s libsuperlu_%over.so libsuperlu.so
 popd
+
+# remove unpackaged files
+rm -f %buildroot%_libdir/*.a
 
 %files
 %doc README
@@ -173,6 +179,9 @@ popd
 # - install -p
 
 %changelog
+* Thu Jul 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 4.3-alt9
+- Added devel symlink libsuperlu.so -> libsuperlu_%%over.so.
+
 * Thu Feb 14 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.3-alt8
 - exclude %%arm from crippled arches
 
