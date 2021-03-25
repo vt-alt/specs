@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.15
-Release: alt1
+Release: alt2
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -42,6 +42,7 @@ Patch24: xrdp-0.9.10-scripts-libexec.patch
 Patch25: xrdp-0.9.14-arch.patch
 Patch28: xrdp-0.9.14-vnc-uninit.patch
 Patch30: xrdp-0.9.14-xrdp-ini.patch
+Patch31: xrdp-0.9.15-g_check_user_in_group.patch
 
 BuildPreReq: rpm-build-intro rpm-macros-intro-conflicts
 BuildRequires: libjpeg-devel
@@ -108,6 +109,7 @@ tar xf %SOURCE6
 %patch22 -p1
 %patch25 -p1
 %patch28 -p1
+%patch31 -p1
 
 cp %SOURCE3 %name-init
 
@@ -266,6 +268,9 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Thu Mar 04 2021 Evgeny Sinelnikov <sin@altlinux.org> 0.9.15-alt2
+- Update g_check_user_in_group() with using getgrouplist() for group membership check.
+
 * Tue Dec 29 2020 Andrey Cherepanov <cas@altlinux.org> 0.9.15-alt1
 - New version.
 
