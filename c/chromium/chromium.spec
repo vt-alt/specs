@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        89.0.4389.82
+Version:        89.0.4389.90
 Release:        alt0.1.p9
 
 Summary:        An open source web browser developed by Google
@@ -455,6 +455,16 @@ EOF
 %_altdir/%name
 
 %changelog
+* Wed Mar 24 2021 Andrey Cherepanov <cas@altlinux.org> 89.0.4389.90-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Mon Mar 15 2021 Alexey Gladkov <legion@altlinux.ru> 89.0.4389.90-alt1
+- New version (89.0.4389.90).
+- Security fixes:
+  - CVE-2021-21191: Use after free in WebRTC.
+  - CVE-2021-21192: Heap buffer overflow in tab groups.
+  - CVE-2021-21193: Use after free in Blink.
+
 * Mon Mar 15 2021 Andrey Cherepanov <cas@altlinux.org> 89.0.4389.82-alt0.1.p9
 - Backport new version to p9 branch.
 
