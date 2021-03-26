@@ -4,7 +4,7 @@
 %define dest_dir %_libdir/OpenBoard
 Name: OpenBoard
 Version: 1.5.4
-Release: alt1.1.p9
+Release: alt2.1.p9
 Summary: Interactive whiteboard for schools and universities
 License: GPL-3.0+
 Group: Education
@@ -23,6 +23,8 @@ Patch5: openboard-poppler-0.72.patch
 Patch6: openboard-poppler-0.83.patch
 # fix build with Qt5 >= 5.12
 Patch10: openboard-1.4.1-fix-build-with-qt-5.12.patch
+# Upstream patch
+Patch100: 0001-Update-Russian-translation.patch
 
 BuildRequires: gcc-c++ libgomp-devel
 BuildRequires: desktop-file-utils
@@ -72,6 +74,7 @@ Interactive whiteboard for schools and universities.
 %patch5 -p1
 #patch6 -p1
 #patch10 -p1
+%patch100 -p1
 
 # remove unwanted and nonfree libraries
 sed -i -e 's|-lfdk-aac ||' src/podcast/podcast.pri
@@ -102,6 +105,7 @@ Encoding=UTF-8
 Name=%name
 GenericName=%name
 Comment=Interactive whiteboard for schools and universities
+Comment[ru]=Интерактивная доска для школ и университетов
 Exec=%dest_dir/run.sh "%f"
 Icon=%name
 StartupNotify=true
@@ -161,6 +165,12 @@ cp -R resources/customizations %buildroot%dest_dir/
 %_bindir/%name
 
 %changelog
+* Wed Mar 24 2021 Anton Midyukov <antohami@altlinux.org> 1.5.4-alt2.1.p9
+- Backport Russian translation
+
+* Wed Mar 24 2021 Anton Midyukov <antohami@altlinux.org> 1.5.4-alt3
+- Update Russian translation
+
 * Tue Oct 27 2020 Andrey Cherepanov <cas@altlinux.org> 1.5.4-alt1.1.p9
 - Backport fix to p9 branch (ALT #39107).
 
