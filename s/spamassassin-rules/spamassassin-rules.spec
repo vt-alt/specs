@@ -1,5 +1,7 @@
+%define rev r1887800
+
 Name: spamassassin-rules
-Version: 3.4.4
+Version: 3.4.5
 Release: alt1
 
 Summary: Rules for SpamAssassin
@@ -7,7 +9,7 @@ License: Apache-2.0
 Group: Networking/Mail
 
 URL: http://spamassassin.org/
-Source: http://www.apache.org/dist/spamassassin/source/Mail-SpamAssassin-rules-3.4.4.r1873061.tgz
+Source: http://www.apache.org/dist/spamassassin/source/Mail-SpamAssassin-rules-%version.%rev.tgz
 
 BuildArch: noarch
 
@@ -32,6 +34,9 @@ install -pm644 *.cf %buildroot%_datadir/spamassassin
 %_datadir/spamassassin
 
 %changelog
+* Thu Mar 25 2021 L.A. Kostis <lakostis@altlinux.ru> 3.4.5-alt1
+- 3.4.5 (r1887800)
+
 * Wed Oct 21 2020 Sergey Y. Afonin <asy@altlinux.org> 3.4.4-alt1
 - 3.4.4 (r1873061)
 
