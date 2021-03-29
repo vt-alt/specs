@@ -1,7 +1,7 @@
 %def_enable tsget
 
 Name: openssl1.1
-Version: 1.1.1j
+Version: 1.1.1k
 Release: alt1
 
 Summary: OpenSSL - Secure Sockets Layer and cryptography shared libraries and tools
@@ -466,8 +466,11 @@ LD_LIBRARY_PATH=%buildroot/%_lib \
 %endif
 
 %changelog
+* Thu Mar 25 2021 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1k-alt1
+- Updated to 1.1.1k (fixes CVE-2021-3450, CVE-2021-3449).
+
 * Fri Mar 12 2021 Gleb F-Malinovskiy <glebfm@altlinux.org> 1.1.1j-alt1
-- Updated to 1.1.1j (fixes CVE-2021-23840 CVE-2021-23841).
+- Updated to 1.1.1j (fixes CVE-2021-23840, CVE-2021-23841).
 
 * Mon Feb 01 2021 Andrew Savchenko <bircoph@altlinux.org> 1.1.1i-alt3
 - E2K: Fixed makecontext handling.
