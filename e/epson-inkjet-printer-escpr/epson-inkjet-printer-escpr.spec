@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.7.8
+%define ver     1.7.9
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -85,6 +85,11 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 1.7.9-alt1
+- New version.
+- Supported new models:
+  + Epson EP-M553T Series
+
 * Mon Dec 14 2020 Andrey Cherepanov <cas@altlinux.org> 1.7.8-alt1
 - New version.
 - Supported new models:
