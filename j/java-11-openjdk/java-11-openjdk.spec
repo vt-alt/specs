@@ -186,9 +186,9 @@ BuildRequires: /proc rpm-build-java
 %global rev_build_loop  %{build_loop2} %{build_loop1}
 
 %ifarch %{bootstrap_arches}
-%global bootstrap_build 1
+%global bootstrap_build 0
 %else
-%global bootstrap_build 1
+%global bootstrap_build 0
 %endif
 
 %if %{bootstrap_build}
@@ -449,7 +449,7 @@ BuildRequires: /proc rpm-build-java
 
 Name:    java-%{javaver}-%{origin}
 Version: %{newjavaver}.%{buildver}
-Release: alt1_0.3.eajpp10.M90P.1
+Release: alt1_0.3.eajpp10.M90P.2
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons
 # and this change was brought into RHEL-4. java-1.5.0-ibm packages
 # also included the epoch in their virtual provides. This created a
@@ -1860,6 +1860,9 @@ fi
 
 
 %changelog
+* Tue Mar 30 2021 Igor Vlasenko <viy@altlinux.org> 0:11.0.9.11-alt1_0.3.eajpp10.M90P.2
+- non-bootstrap build w/o java10
+
 * Fri Mar 26 2021 Igor Vlasenko <viy@altlinux.org> 0:11.0.9.11-alt1_0.3.eajpp10.M90P.1
 - backport
 
