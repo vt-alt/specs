@@ -1,24 +1,20 @@
 Name: xfce4-battery-plugin
-Version: 1.1.3
+Version: 1.1.4
 Release: alt1
 
 Summary: Battery monitor plugin for the Xfce panel
-License: %gpl2plus, %lgpl2plus
+License: GPLv2+ and LGPLv2+
 Group: Graphical desktop/XFce
-Url:  https://goodies.xfce.org/projects/panel-plugins/%name
+Url: https://docs.xfce.org/panel-plugins/xfce4-battery-plugin
 Packager: Xfce Team <xfce@packages.altlinux.org>
 
-# Upstream: git://git.xfce.org/panel-plugins/xfce4-battery-plugin
+Vcs: https://gitlab.xfce.org/panel-plugins/xfce4-battery-plugin.git
 Source: %name-%version.tar
 
-Requires: xfce4-panel >= 4.9
-
-BuildRequires(pre): rpm-build-licenses
+Requires: xfce4-panel >= 4.12
 
 BuildPreReq: rpm-build-xfce4 xfce4-dev-tools
 BuildPreReq: libxfce4util-devel libxfce4ui-gtk3-devel libxfce4panel-gtk3-devel
-
-BuildRequires: perl-XML-Parser intltool
 
 %define _unpackaged_files_terminate_build 1
 
@@ -40,7 +36,7 @@ BuildRequires: perl-XML-Parser intltool
 %find_lang %name
 
 %files -f %name.lang
-%doc README AUTHORS NEWS
+%doc README.md AUTHORS NEWS
 %_libdir/xfce4/panel/plugins/*.so
 %_datadir/xfce4/panel/plugins/*.desktop
 %_iconsdir/*/*/*/*
@@ -50,6 +46,13 @@ BuildRequires: perl-XML-Parser intltool
 %exclude %_datadir/locale/uz@Latn/LC_MESSAGES/xfce4-battery-plugin.mo
 
 %changelog
+* Tue Mar 23 2021 Mikhail Efremov <sem@altlinux.org> 1.1.4-alt1
+- Cleanup BR.
+- Added Vcs tag.
+- Updated Url tag.
+- Don't use rpm-build-licenses.
+- Updated to 1.1.4.
+
 * Tue Aug 13 2019 Mikhail Efremov <sem@altlinux.org> 1.1.3-alt1
 - Updated to 1.1.3.
 
