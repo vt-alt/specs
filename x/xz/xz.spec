@@ -1,12 +1,12 @@
 Name: xz
-Version: 5.2.4
+Version: 5.2.5
 Release: alt1
 
 Summary: LZMA/XZ compression programs
 # We don't package scripts to grep, diff, and view compressed files here
 # because they are already packaged in gzip-utils.
 # see COPYING
-License: Public Domain
+License: ALT-Public-Domain
 Group: Archiving/Compression
 URL: http://tukaani.org/xz/
 Source: %name-%version.tar
@@ -59,6 +59,11 @@ This package contains static liblzma compression library.
 %patch -p1
 
 %build
+%ifarch %ix86
+# liblzma uses crc*_x86.S asm code on i686
+%add_optflags -Wa,--generate-missing-build-notes=yes
+%endif
+
 %autoreconf
 %define docdir %_docdir/%name-%version
 %configure --enable-dynamic --disable-scripts --docdir=%docdir
@@ -130,6 +135,9 @@ make -k check
 %_libdir/liblzma.a
 
 %changelog
+* Mon Mar 23 2020 Dmitry V. Levin <ldv@altlinux.org> 5.2.5-alt1
+- 5.2.4 -> v5.2.5-2-gcf1ec551.
+
 * Sat Dec 29 2018 Dmitry V. Levin <ldv@altlinux.org> 5.2.4-alt1
 - 5.2.3 -> 5.2.4.
 

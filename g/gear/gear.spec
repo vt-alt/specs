@@ -1,5 +1,5 @@
 Name: gear
-Version: 2.2.0
+Version: 2.5.0
 Release: alt1
 
 Summary: Get Every Archive from git package Repository
@@ -10,11 +10,13 @@ BuildArch: noarch
 
 Source: %name-%version.tar
 
+Requires: gear-sh-functions = %EVR
+
 # due to gear-srpmimport.
 Requires: faketime
 
-# due to git-diff-tree --no-ext-diff
-Requires: git-core >= 0:1.5.3
+# due to magic signature in pathspec.
+Requires: git-core >= 0:1.9.0
 
 # due to quote_shell_args()
 Requires: libshell >= 0:0.1.0
@@ -33,13 +35,31 @@ This package contains utilities for building RPM packages from GEAR
 repositories and managing GEAR repositories.
 See %_docdir/%name-%version/QUICKSTART.ru_RU.UTF-8 for details.
 
+%package sh-functions
+Summary: GEAR shell functions
+Group: Development/Other
+# git-core is optional
+%filter_from_requires /^git-core/d
+
+%description sh-functions
+This package contains GEAR's shell functions.
+
+%package -n describe-specfile
+Summary: Print specfile name and version using gear's parser
+Group: Development/Other
+Requires: gear-sh-functions = %EVR
+
+%description -n describe-specfile
+This package contains utility which uses GEAR's spec parser to determine
+specfile for its name and version info.
+
 %prep
 %setup
 
 %build
 %make_build
-asciidoc ABOUT.ru.utf8
-asciidoc QUICKSTART.ru.utf8
+asciidoc docs/ABOUT.ru.utf8
+asciidoc docs/QUICKSTART.ru.utf8
 
 %check
 make check
@@ -51,14 +71,58 @@ install -pDm644 contrib/gear-bash_completion \
 ln -s gear-store-tags %buildroot%_bindir/gear-update-tag
 ln -s gear-store-tags.1 %buildroot%_man1dir/gear-update-tag.1
 
+%define _unpackaged_files_terminate_build 1
+
 %files
 %config /etc/bash_completion.d/*
-%_bindir/*
+%_bindir/gear*
+%exclude %_bindir/gear-sh-functions
 %_datadir/%name
-%_mandir/man?/*
-%doc QUICKSTART* ABOUT*
+%_mandir/man?/gear*
+%doc docs/QUICKSTART* docs/ABOUT*
+
+%files sh-functions
+%_bindir/gear-sh-functions
+
+%files -n describe-specfile
+%_bindir/describe-specfile*
+%_man1dir/describe-specfile*
 
 %changelog
+* Wed Mar 17 2021 Dmitry V. Levin <ldv@altlinux.org> 2.5.0-alt1
+- Added exclude= option for tar: and zip: directives
+  (by Alexey Gladkov; closes: #39801).
+- describe-specfile (by Gleb Fotengauer-Malinovskiy):
+  + new utility, prints name and version info for specfile.
+- gear:
+  + change the current workdir back before the last command invocation.
+- gear-changelog (by Arseny Maslennikov):
+  + added --header-only option to only print changelog header.
+- gear-create-tag:
+  + refuse to create tags that do not define all specsubst variables;
+  + implemented -s/--specsubst option (closes: #39783).
+- gear-update-sh-functions (by Gleb Fotengauer-Malinovskiy):
+  + fixed permissions (755 -> 644).
+- Moved gear-sh-functions and describe-specfile to separate
+  subpackages (by Gleb Fotengauer-Malinovskiy).
+- Updated bash completions.
+
+* Sun Dec 27 2020 Dmitry V. Levin <ldv@altlinux.org> 2.4.2-alt1
+- Updated git-core requirement.
+- gear-srpmimport: expanded help text on --stdin option a bit.
+- tests: sort output before comparison in one more place (by Ivan Zakharyaschev).
+
+* Sat Dec 26 2020 Vitaly Chikunov <vt@altlinux.org> 2.4.1-alt1
+- Re-enable multi-threaded compression for xz and zstd.
+
+* Sat Dec 19 2020 Dmitry V. Levin <ldv@altlinux.org> 2.4.0-alt1
+- Added "exclude=" option to "diff" directive
+  (by Vladimir D. Seleznev, Alexey Gladkov, and me).
+
+* Mon Feb 10 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.3.0-alt1
+- gear-update: made --ignore-exclude the default behaviour (closes: #37371),
+  added --honor-exclude option.
+
 * Tue Mar 06 2018 Dmitry V. Levin <ldv@altlinux.org> 2.2.0-alt1
 - gear-srpmimport: honor RPMFILE_SPECFILE.
 - gear-changelog (by Alexey Gladkov):
