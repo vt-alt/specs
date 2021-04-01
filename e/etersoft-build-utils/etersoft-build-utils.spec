@@ -1,12 +1,12 @@
 # NOTE: do not use clean_spec or rpmcs for this spec
 
 Name: etersoft-build-utils
-Version: 2.9.6
+Version: 3.0.7
 Release: alt1
 
 Summary: A set of rpm build utilities from Etersoft
 
-License: Public domain
+License: Apache-2.0
 Group: Development/Other
 Url: http://www.altlinux.org/Etersoft-build-utils
 
@@ -25,6 +25,7 @@ BuildArchitectures: noarch
 Requires: giter >= 1.10
 Requires: eepm >= 2.1.0
 Requires: erc >= 0.9.2
+Requires: estrlist >= 0.2
 
 Requires: rpm-build
 #Requires: rpm-build-compat >= %altcompat_ver
@@ -68,6 +69,59 @@ RECOMMENDED packages: gcc-c++ perl-libwww ccache elinks mutt hasher curl
 %config(noreplace) %_sysconfdir/eterbuild/repos/*
 
 %changelog
+* Wed Mar 24 2021 Vitaly Lipatov <lav@altlinux.ru> 3.0.7-alt1
+- s/regexp_exclude/reg_exclude/
+
+* Wed Mar 10 2021 Vitaly Lipatov <lav@altlinux.ru> 3.0.6-alt1
+- drop hard checkbashisms and gear requires
+- check_reqs.sh: add --detail
+
+* Thu Mar 04 2021 Vitaly Lipatov <lav@altlinux.ru> 3.0.5-alt1
+- rpmgs: fix bugs
+- rpmbb: add --target ARCH support
+
+* Fri Jan 08 2021 Vitaly Lipatov <lav@altlinux.ru> 3.0.4-alt1
+- gitask: allow --test-only for run
+- rpmgs: fix Source-git support, improve commented url detection
+- rpmbsh: add -w support (use tarball for build in hsh)
+- myhsh: add -a for --query-repackage
+- rpmbs: add initial -w support
+- rpmbph: always build src.rpm with -w (correct pack gear repo)
+- rpmbph: use -w more correctly
+- rpmbsh: for -w run myhsh with -a
+- rpmgp: fix src.rpm build
+- rpmbs: use --test-only for build by default (-e is obsoleted now)
+
+* Sun Nov 08 2020 Vitaly Lipatov <lav@altlinux.ru> 3.0.3-alt1
+- rpmreqs: update
+- rpmgs: big rewrite to improve gear-uupdate and gear-uupdate support
+- rpmgs: add support for git url in the comment before Source line
+- rpmbsh: don't remove packages from hasher if failed
+
+* Sat Oct 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.0.2-alt1
+- rpmgs: remove all exclude vendor dir for composer
+- change myhsh -b to myhsh -p
+- myhsh: add -b BINARYREPO support
+- remove obsoleted mkpatch
+- loginhsh: enable network by default
+- gitask: add ls --all for all tasks
+- gitask: add support for tasks with # in the begin
+
+* Sun Oct 11 2020 Vitaly Lipatov <lav@altlinux.ru> 3.0.1-alt1
+- gita: delsub allows list of subtask or packages (mixed)
+- set Apache license, add LICENSE file
+
+* Sat Oct 10 2020 Vitaly Lipatov <lav@altlinux.ru> 3.0.0-alt1
+- gitask: use improved message
+- rpmbs: disable obsoleted checking
+- rpmgs: improve node modules support
+- gear: fix tar_dir_from_rules
+- gitask: fix quota command
+- rpmbs: don't change branch for upload
+- gitask: add acl command (in favor of gacl)
+- rpmgs: verbose preinstall-hook
+- use external estrlist
+
 * Sun Mar 22 2020 Vitaly Lipatov <lav@altlinux.ru> 2.9.6-alt1
 - gitask: add ls -a support
 - rpmbs: show task always after creating
