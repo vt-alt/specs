@@ -1,6 +1,6 @@
 Name:		transgui
 Version:	5.18.0
-Release:	alt2
+Release:	alt3
 
 Summary:	An App to remotely control a Transmission Bit-Torrent client
 Summary(ru_RU.UTF8): Приложение для удаленного управления Бит-торрент-клиентом Transmission
@@ -14,6 +14,8 @@ Url:		https://github.com/transmission-remote-gui/transgui
 Source:	%name-%version.tar
 Source1:	%name.desktop
 Source2:	%name.1
+
+Patch0:		%name-5.18.0_Duplicate_object_member_status.diff
 
 BuildRequires(pre): rpm-build-ubt
 BuildRequires: /usr/bin/convert lazarus
@@ -40,6 +42,7 @@ GUI швидше і має більше можливостей, ніж вбуд�
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 lazbuild -B transgui.lpi
@@ -77,6 +80,10 @@ rm -f %buildroot%_datadir/%name/lang/transgui.template
 %_datadir/%name/lang
 
 %changelog
+* Mon Mar 08 2021 Motsyo Gennadi <drool@altlinux.ru> 5.18.0-alt3
+- fix error 'Duplicate object member: "status"'
+  https://github.com/transmission-remote-gui/transgui/issues/1325
+
 * Tue May 05 2020 Motsyo Gennadi <drool@altlinux.ru> 5.18.0-alt2
 - ExclusiveArch %ix86 x86_64 only (lazarus)
 
