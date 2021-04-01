@@ -1,5 +1,5 @@
 Name: kodi
-Version: 18.8
+Version: 19.0
 Release: alt1
 
 Summary: Kodi Media Center
@@ -9,7 +9,9 @@ Url: http://kodi.tv
 
 ExclusiveArch: armh aarch64 %ix86 x86_64
 
+Requires: kodi-bin = %version-%release
 Requires: kodi-data = %version-%release
+Requires: kodi-x11 = %version-%release
 
 Source0: %name-%version-%release.tar
 
@@ -35,6 +37,7 @@ BuildRequires: pkgconfig(gl)
 BuildRequires: pkgconfig(glesv2)
 BuildRequires: pkgconfig(glu)
 BuildRequires: pkgconfig(gnutls)
+BuildRequires: pkgconfig(gtest)
 BuildRequires: pkgconfig(harfbuzz)
 BuildRequires: pkgconfig(lcms2)
 BuildRequires: pkgconfig(libass)
@@ -65,19 +68,22 @@ BuildRequires: pkgconfig(libpulse-simple)
 BuildRequires: pkgconfig(libswresample)
 BuildRequires: pkgconfig(libswscale)
 BuildRequires: pkgconfig(libtasn1)
+BuildRequires: pkgconfig(libudfread)
 BuildRequires: pkgconfig(libva)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(libxslt)
 BuildRequires: pkgconfig(nettle)
 BuildRequires: pkgconfig(p11-kit-1)
-BuildRequires: pkgconfig(python2)
+BuildRequires: pkgconfig(python3)
+BuildRequires: pkgconfig(spdlog)
 BuildRequires: pkgconfig(sqlite3)
 BuildRequires: pkgconfig(taglib)
 BuildRequires: pkgconfig(tinyxml)
 BuildRequires: pkgconfig(udev)
-BuildRequires: pkgconfig(udfread)
 BuildRequires: pkgconfig(uuid)
 BuildRequires: pkgconfig(vdpau)
+BuildRequires: pkgconfig(wayland-protocols)
+BuildRequires: pkgconfig(wayland-client++)
 BuildRequires: pkgconfig(xau)
 BuildRequires: pkgconfig(xcb)
 BuildRequires: pkgconfig(xdamage)
@@ -88,18 +94,33 @@ BuildRequires: pkgconfig(xrandr)
 BuildRequires: pkgconfig(xxf86vm)
 BuildRequires: pkgconfig(zlib)
 
+%package bin
+Summary: Kodi binaries
+Group: Video
+Requires: kodi-data = %version-%release
+
 %package data
 Summary: Kodi architecture-independent data
 Group: Video
 BuildArch: noarch
+AutoReqProv: yes,nopython
 
 %package devel
 Summary: Kodi development part
 Group: Development/C++
 Requires: kodi = %version-%release
 
+%package x11
+Summary: Kodi X11-specific part
+Group: Video
+Requires: kodi-bin = %version-%release
+
 %description
 Kodi is an media-player and entertainment hub for all your digital media.
+
+%description bin
+Kodi is an media-player and entertainment hub for all your digital media.
+This package contains Kodi binaries.
 
 %description data
 Kodi is an media-player and entertainment hub for all your digital media.
@@ -109,13 +130,17 @@ This package contains all architecture-independent data requried for Kodi.
 Kodi is an media-player and entertainment hub for all your digital media.
 This package contains development part of Kodi.
 
+%description x11
+Kodi is an media-player and entertainment hub for all your digital media.
+This package contains X11-specific part of Kodi.
+
 %define __nprocs 8
 %define docdir %_defaultdocdir/%name
-%define cdefs -DGIT_VERSION=%release
+%define cdefs -DGIT_VERSION=%release -DCORE_PLATFORM_NAME="x11 wayland gbm"
 %ifarch armh aarch64
-%define platdefs -DCORE_PLATFORM_NAME=gbm -DGBM_RENDER_SYSTEM=gles
+%define platdefs -DAPP_RENDER_SYSTEM=gles
 %else
-%define platdefs %nil
+%define platdefs -DAPP_RENDER_SYSTEM=gl
 %endif
 
 %prep
@@ -131,29 +156,25 @@ sed -i -e '/Exec=kodi/ s,=,=%_bindir/,' %buildroot%_datadir/xsessions/kodi.deskt
 install -pm0644 -D kodi.wmsession %buildroot%_sysconfdir/X11/wmsession.d/20KODI
 mkdir %buildroot%_libdir/kodi/addons
 
-%add_python_req_skip xbmc
-%add_python_req_skip xbmcgui
-%add_python_req_skip xbmcaddon
-%add_python_req_skip xbmcvfs
+%add_python3_req_skip xbmc
+%add_python3_req_skip xbmcgui
+%add_python3_req_skip xbmcaddon
+%add_python3_req_skip xbmcvfs
 
 %files
 %docdir
-
-%ifnarch armh aarch64
-%config(noreplace) %_sysconfdir/X11/wmsession.d/20KODI
-%_datadir/xsessions/kodi.desktop
-%endif
-
-%_bindir/kodi
-%_bindir/kodi-standalone
-
 %_desktopdir/kodi.desktop
 %_iconsdir/hicolor/*/apps/kodi.png
+
+%files bin
+%_bindir/kodi
+%_bindir/kodi-standalone
 
 %dir %_libdir/kodi
 %_libdir/kodi/addons
 %_libdir/kodi/system
-%_libdir/kodi/kodi-*
+%_libdir/kodi/kodi.bin
+%_libdir/kodi/kodi-xrandr
 
 %files data
 %dir %_datadir/kodi
@@ -167,7 +188,29 @@ mkdir %buildroot%_libdir/kodi/addons
 %_includedir/kodi
 %_datadir/kodi/cmake
 
+%files x11
+%config(noreplace) %_sysconfdir/X11/wmsession.d/20KODI
+%_datadir/xsessions/kodi.desktop
+
 %changelog
+* Sat Feb 20 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt1
+- 19.0 Matrix released
+
+* Fri Dec 11 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt0.20201207
+- 19.0b2 Matrix
+
+* Thu Nov 19 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt0.20201117
+- 19.0b1 Matrix
+
+* Tue Nov 10 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt0.20201031
+- 19.0a3 Matrix
+
+* Thu Oct 08 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt0.20201005
+- 19.0a2 Matrix
+
+* Mon Aug 03 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt0.20200726
+- 19.0a1 Matrix
+
 * Wed Jul 29 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.8-alt1
 - 18.8 Leia released
 

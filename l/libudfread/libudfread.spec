@@ -1,10 +1,10 @@
 Name: libudfread
-Version: 1.0.0
-Release: alt3
+Version: 1.1.1
+Release: alt1
 Summary: library for reading UDF from raw devices and image file
-License: LGPL
+License: LGPLv2.1
 Group: Development/C
-Url: http://git.videolan.org/?p=libudfread.git
+Url: https://code.videolan.org/videolan/libudfread
 Source0: %name-%version.tar
 Patch0: %name-%version-alt.patch
 
@@ -42,6 +42,12 @@ autoreconf -fisv
 %_pkgconfigdir/*.pc
 
 %changelog
+* Mon Nov 30 2020 Anton Farygin <rider@altlinux.ru> 1.1.1-alt1
+- 1.1.1
+
+* Wed Jul 01 2020 Anton Farygin <rider@altlinux.ru> 1.1.0-alt1
+- 1.1.0
+
 * Wed Jun 13 2018 Anton Farygin <rider@altlinux.ru> 1.0.0-alt3
 - rebuilt for aarch64
 

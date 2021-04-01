@@ -1,6 +1,6 @@
 Name: kodi-addon-pvr-vdr-vnsi
-Version: 18.0
-Release: alt1
+Version: 19.0
+Release: alt4
 
 Summary: PVR VDR addon for Kodi
 License: GPL
@@ -9,13 +9,10 @@ Url: https://github.com/FernetMenta/pvr.vdr.vnsi/
 
 Source: %name-%version.tar
 
+ExclusiveArch: armh aarch64 %ix86 x86_64
+
 BuildRequires: cmake gcc-c++ kodi-devel libcec-platform-devel libkodiplatform-devel >= 18.0
-%ifarch %ix86 x86_64
-BuildRequires:libGL-devel
-%endif
-%ifarch armh aarch64
-BuildRequires: libGLES-devel
-%endif
+BuildRequires: libGL-devel libGLES-devel
 
 %description
 %summary
@@ -35,6 +32,18 @@ cmake . -DCMAKE_INSTALL_PREFIX=%prefix -DCMAKE_INSTALL_LIBDIR=%_libdir/kodi
 %_datadir/kodi/addons/pvr.vdr.vnsi
 
 %changelog
+* Wed Feb 24 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt4
+- updated up to 8.2.2-Matrix
+
+* Thu Nov 12 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt3
+- updated up to 8.1.0-Matrix
+
+* Fri Oct 09 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt2
+- follow addon API changes
+
+* Mon Aug 31 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 19.0-alt1
+- updated for kodi 19.0 Matrix
+
 * Thu Jan 31 2019 Sergey Bolshakov <sbolshakov@altlinux.ru> 18.0-alt1
 - updated for Leia
 
