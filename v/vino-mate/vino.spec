@@ -2,7 +2,7 @@
 
 Name: vino-mate
 Version: %ver_major.1
-Release: alt4
+Release: alt5
 
 Summary: A remote desktop system for MATE
 License: GPL
@@ -13,6 +13,7 @@ Packager: Korneechev Evgeniy <ekorneechev@altlinux.org>
 Source: %name-%version.tar.xz
 Patch0: vino-3.8.1-fc-allocation.patch
 Patch1: vino-3.8.1-alt-fixed_MATE.patch
+Patch2: vino-handle-close-notification.patch
 
 BuildRequires: intltool gnome-common desktop-file-utils libnm-devel
 BuildRequires: libgio-devel libgtk+3-devel libsoup-devel libdbus-devel
@@ -32,6 +33,7 @@ connect to a running MATE session using VNC.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 export LDFLAGS="$LDFLAGS -lgcrypt"
@@ -60,6 +62,9 @@ export LDFLAGS="$LDFLAGS -lgcrypt"
 %doc AUTHORS NEWS README docs/TODO docs/remote-desktop.txt docs/debugging.txt
 
 %changelog
+* Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 3.8.1-alt5
+- Handle close notification.
+
 * Mon Dec 17 2018 Evgeniy Korneechev <ekorneechev@altlinux.org> 3.8.1-alt4
 - updated buildreqs
 
