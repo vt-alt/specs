@@ -1,6 +1,6 @@
 Name: fuse3
-Version: 3.4.1
-Release: alt2
+Version: 3.10.2
+Release: alt1
 
 Summary: a tool for creating virtual filesystems
 License: GPL
@@ -10,9 +10,9 @@ Url: https://github.com/libfuse/
 
 Source: %name-%version.tar
 Source1: fuserumount3
-Patch: %name-%version-%release.patch
+Patch: %name-%version-alt.patch
 
-Requires(pre): fuse-common >= 1.1.0
+Requires(pre): fuse-common >= 1.1.1
 
 BuildRequires: meson ninja-build libudev-devel
 
@@ -48,7 +48,7 @@ This package contains development headers.
 %patch -p1
 
 %build
-%meson
+%meson -Duseroot=false
 %meson_build
 
 %install
@@ -75,12 +75,17 @@ else
 fi
 
 %files
-%doc AUTHORS README.md doc/README.NFS doc/kernel.txt doc/html
+%doc AUTHORS README.md doc/README.NFS doc/kernel.txt
 /usr/sbin/mount.fuse3
 %attr(4710,root,fuse) %_bindir/fusermount3
 %attr(0755,root,root) %_bindir/fuserumount3
 %_man1dir/*
 %_man8dir/*
+
+# fuse-common-1.1.1-alt1 contains /etc/fuse.conf
+%exclude %_sysconfdir/fuse.conf
+# fuse-common-1.1.0-alt2 contains /lib/udev/rules.d/60-fuse.rules
+%exclude %_udevrulesdir/99-%name.rules
 
 %files -n lib%name
 /%_lib/lib%name.so.*
@@ -91,6 +96,12 @@ fi
 %_pkgconfigdir/*.pc
 
 %changelog
+* Sun Mar 28 2021 Evgeny Sinelnikov <sin@altlinux.org> 3.10.2-alt1
+- update to latest release requires by newest gvfs from gnome project (fixes: 39759)
+
+* Sun Mar 28 2021 Evgeny Sinelnikov <sin@altlinux.org> 3.4.1-alt3
+- update build with upstream history
+
 * Mon Feb 04 2019 Rustem Bapin <rbapin@altlinux.org> 3.4.1-alt2
 - added fuserumount3 script
 - added pre- and postinstall scriptlets that take account mode of already installed fuse package
