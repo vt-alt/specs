@@ -2,7 +2,7 @@
 
 Name: kde5-%rname
 Version: 5.0.0
-Release: alt6
+Release: alt7
 %K5init
 
 Summary: A powerful batch renamer for KDE5
@@ -12,6 +12,7 @@ Url: https://userbase.kde.org/KRename
 
 Source: %rname-%version.tar
 Patch1: alt-startupinfo-labels-color.patch
+Patch2: alt-cmake.patch
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
@@ -34,6 +35,7 @@ It can also change access and modification dates, permissions, and file ownershi
 %prep
 %setup -n %rname-%version
 %patch1 -p1
+%patch2 -p1
 
 %build
 %K5build
@@ -50,6 +52,9 @@ It can also change access and modification dates, permissions, and file ownershi
 %_K5srv/ServiceMenus/*.desktop
 
 %changelog
+* Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt7
+- fix compile with new environment
+
 * Fri Jun 14 2019 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt6
 - dont use ubt macro
 
