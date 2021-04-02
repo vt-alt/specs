@@ -1,6 +1,6 @@
 %define oname msgpack
 Name: libmsgpack
-Version: 3.1.1
+Version: 3.3.0
 Release: alt2
 
 Summary: Binary-based efficient object serialization library
@@ -13,7 +13,10 @@ Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 # Source-url: https://github.com/msgpack/msgpack-c/releases/download/cpp-%version/%oname-%version.tar.gz
 Source: %name-%version.tar
-Patch: msgpack-fix-int-float-test.patch
+Patch: msgpack-3.2.0-alt-fix-vrefbuffer-use-on-ppc64le.patch
+# actually poor implementation:
+# https://github.com/msgpack/msgpack-c/issues/881
+Patch1: msgpack-3.3.0-alt-drop-broken-test.patch
 
 BuildRequires: cmake zlib-devel
 BuildRequires: gcc-c++ >= 4.8
@@ -42,11 +45,12 @@ Libraries and header files for %name
 
 %prep
 %setup
-#patch0 -p1 -b .fix-int-float-test
-%__subst "s|/lib|/%_lib|g" CMakeLists.txt
+%patch0 -p2
+%patch1 -p1
+subst "s|/lib|/%_lib|g" CMakeLists.txt
 
 %build
-%cmake_insource -DCMAKE_INSTALL_LIBDIR=%_lib -DBUILD_SHARED_LIBS=ON
+%cmake_insource -DCMAKE_INSTALL_LIBDIR=%_lib -DBUILD_SHARED_LIBS=ON -DMSGPACK_CXX11=ON
 %make_build
 
 %check
@@ -68,6 +72,21 @@ export LD_LIBRARY_PATH=$(pwd)
 %_libdir/cmake/msgpack/
 
 %changelog
+* Wed Sep 16 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 3.3.0-alt2
+- restored build on armh
+
+* Tue Sep 08 2020 Vitaly Lipatov <lav@altlinux.ru> 3.3.0-alt1
+- new version 3.3.0 (with rpmrb script)
+
+* Sun Jan 26 2020 Vitaly Lipatov <lav@altlinux.ru> 3.2.1-alt1
+- new version 3.2.1 (with rpmrb script)
+
+* Fri Aug 16 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 3.2.0-alt2
+- Fixed use of vrefbuffer.hpp header on ppc64le.
+
+* Tue Jun 18 2019 Vitaly Lipatov <lav@altlinux.ru> 3.2.0-alt1
+- new version 3.2.0 (with rpmrb script)
+
 * Sun May 12 2019 Vitaly Lipatov <lav@altlinux.ru> 3.1.1-alt2
 - enable tests
 - fix cmake static lib issue (use BUILD_SHARED_LIBS)
