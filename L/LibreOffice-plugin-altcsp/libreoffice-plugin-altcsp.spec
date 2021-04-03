@@ -3,7 +3,7 @@
 
 Name: LibreOffice-plugin-altcsp
 Version: 0.0.1
-Release: alt1
+Release: alt2
 
 Group: File tools
 Summary: LibreOffice plugin for alt-csp-cryptopro
@@ -33,6 +33,9 @@ cp %_licensedir/%license %buildroot%ext_dir/%ext_name/license.txt
 %ext_dir/%ext_name/
 
 %changelog
+* Sat Apr 03 2021 Oleg Solovyov <mcpain@altlinux.org> 0.0.1-alt2
+- remove unused files
+
 * Wed Dec 09 2020 Oleg Solovyov <mcpain@altlinux.org> 0.0.1-alt1
 - initial build
 
