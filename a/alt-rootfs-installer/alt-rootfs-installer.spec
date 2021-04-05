@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.4.3
+Version: 0.4.4
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPL-2.0-or-later
@@ -40,6 +40,13 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Tue Mar 23 2021 Anton Midyukov <antohami@altlinux.org> 0.4.4-alt1
+- Fix HiFive Unleashed OpenSBI script (Thanks arei@)
+- Update supported boards with u-boot 2021.01
+- Clean disklabel in prepare_media
+- Fix GPT part table always
+- mount FIRMPART to ROOTPART/boot/efi
+
 * Sun Dec 27 2020 Anton Midyukov <antohami@altlinux.org> 0.4.3-alt1
 - Fix resize root partition
 
