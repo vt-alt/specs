@@ -9,7 +9,7 @@
 
 Name: dconf
 Version: %ver_major.0
-Release: alt1
+Release: alt1.1
 
 Summary: A simple configuration system
 Group: System/Servers
@@ -22,6 +22,7 @@ Source: %name-%version.tar
 Source: https://download.gnome.org/sources/dconf/%ver_major/%name-%version.tar.xz
 %endif
 Source1: update-dconf-database.filetrigger
+Patch0: dconf-0.32.0-meson-0.52.patch
 
 Provides: %_rpmlibdir/update-dconf-database.filetrigger
 
@@ -108,6 +109,7 @@ This package provides Vala language bindings  for the dconf library
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %meson \
@@ -174,6 +176,9 @@ install -pD -m755 {%_sourcedir,%buildroot%_rpmlibdir}/update-dconf-database.file
 %endif
 
 %changelog
+* Wed Mar 31 2021 Valery Inozemtsev <shrek@altlinux.ru> 0.32.0-alt1.1
+- fixed link_whole usage for meson 0.52.0
+
 * Mon Mar 11 2019 Yuri N. Sedunov <aris@altlinux.org> 0.32.0-alt1
 - 0.32.0
 

@@ -1,18 +1,18 @@
 %def_disable snapshot
 
-%define ver_major 0.51
+%define ver_major 0.52
 %define libname mesonbuild
 # pkexec may be used to "gain elevated privileges" during install
 %def_without polkit
 %def_disable check
 
 Name: meson
-Version: %ver_major.2
-Release: alt1.1
+Version: %ver_major.1
+Release: alt2
 
 Summary: High productivity build system
 Group: Development/Python3
-License: ASL 2.0
+License: Apache-2.0
 Url: http://mesonbuild.com/
 
 %if_disabled snapshot
@@ -20,6 +20,8 @@ Source: https://github.com/mesonbuild/meson/archive/%version/%name-%version.tar.
 %else
 Source: %name-%version.tar
 %endif
+Patch: meson-0.52.1-37475.patch
+
 Source1: %name.macros
 Source2: %name.env
 
@@ -64,6 +66,7 @@ reports, Valgrind, CCache and the like.
 
 %prep
 %setup
+%patch -p1
 
 %build
 %python3_build
@@ -89,6 +92,17 @@ MESON_PRINT_TEST_OUTPUT=1 ./run_tests.py
 
 
 %changelog
+* Sat Nov 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.52.1-alt2
+- finally fixed ALT #37475
+- fixed License tag
+
+* Sat Nov 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.52.1-alt1
+- 0.52.1
+
+* Mon Nov 25 2019 Yuri N. Sedunov <aris@altlinux.org> 0.52.0-alt1
+- updated to 0.52.0-27-ga26c8282
+- fixed ALT #37475
+
 * Fri Aug 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.51.2-alt1.1
 - meson.macros: fixed %%meson_test to allow run tests via wrapper
   like xvfb-run or dbus-run-session

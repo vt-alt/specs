@@ -1,5 +1,5 @@
 Name: libdrm
-Version: 2.4.102
+Version: 2.4.104
 Release: alt1
 Epoch: 1
 Summary: Userspace interface to kernel DRM service
@@ -12,7 +12,7 @@ Source: %name-%version.tar
 Patch: %name-%version.patch
 
 BuildRequires(pre): meson
-BuildRequires: docbook-style-xsl libudev-devel libpciaccess-devel xorg-util-macros xsltproc
+BuildRequires: docbook-style-xsl libudev-devel libpciaccess-devel xorg-util-macros xsltproc python-module-docutils
 
 %description
 This library implements the userspace interface to the kernel DRM
@@ -62,6 +62,12 @@ develop programs which make use of %name
 %_man7dir/*.7*
 
 %changelog
+* Thu Jan 14 2021 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.104-alt1
+- 2.4.104
+
+* Thu Nov 05 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.103-alt1
+- 2.4.103
+
 * Wed May 27 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:2.4.102-alt1
 - 2.4.102
 

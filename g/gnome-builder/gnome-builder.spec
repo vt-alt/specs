@@ -14,7 +14,7 @@
 
 Name: gnome-builder
 Version: %ver_major.4
-Release: alt1
+Release: alt1.1
 
 Summary: Builder - Develop software for GNOME
 License: LGPLv2+
@@ -26,6 +26,7 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%name/%ver_major/%name-%version.ta
 %else
 Source: %name-%version.tar
 %endif
+Patch0: gnome-builder-3.32.4-meson-0.52.patch
 
 %set_typelibdir %_libdir/%name/girepository-1.0
 
@@ -100,6 +101,7 @@ This package provides noarch data needed for Gnome Builder to work.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %meson \
@@ -212,6 +214,9 @@ This package provides noarch data needed for Gnome Builder to work.
 %endif
 
 %changelog
+* Wed Mar 31 2021 Valery Inozemtsev <shrek@altlinux.ru> 3.32.4-alt1.1
+- fixed link_whole usage for meson 0.52.0
+
 * Tue Jul 16 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.4-alt1
 - 3.32.4
 

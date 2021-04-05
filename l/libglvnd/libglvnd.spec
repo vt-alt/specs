@@ -1,5 +1,5 @@
 Name: libglvnd
-Version: 1.3.1
+Version: 1.3.2
 Release: alt0.p9
 Epoch: 7
 Group: System/Libraries
@@ -136,6 +136,9 @@ rm -f %buildroot%_pkgconfigdir/glesv1*.pc
 %_pkgconfigdir/gles*.pc
 
 %changelog
+* Mon Feb 08 2021 Valery Inozemtsev <shrek@altlinux.ru> 7:1.3.2-alt0.p9
+- 1.3.2
+
 * Wed May 20 2020 Valery Inozemtsev <shrek@altlinux.ru> 7:1.3.1-alt0.p9
 - backport to p9 branch
 

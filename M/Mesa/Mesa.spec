@@ -12,6 +12,7 @@
 %define vulkan_intel_arches %ix86 x86_64
 %define virgl_arches %ix86 x86_64 aarch64 ppc64le mipsel
 %define armsoc_arches %arm aarch64
+%define svga_arches %ix86 x86_64
 
 %define opencl_arches %ix86 x86_64 aarch64
 %define gallium_pipe_arches %ix86 x86_64 aarch64 mipsel
@@ -23,8 +24,8 @@
 # Mesa builds radeon and nouveau support as megadrivers
 %define dri_megadriver_arches %radeon_arches %nouveau_arches
 %define gallium_megadriver_arches %radeon_arches %nouveau_arches
-# Building xa requires at least one non swrast gallium driver.
-%define xa_arches %radeon_arches %nouveau_arches %virgl_arches %armsoc_arches
+# XA state tracker requires at least one of the following gallium drivers: nouveau, freedreno, i915, svga
+%define xa_arches %nouveau_arches %virgl_arches %armsoc_arches
 
 %gallium_drivers_add swrast
 %ifarch %radeon_arches
@@ -56,6 +57,9 @@
 %gallium_drivers_add tegra
 %gallium_drivers_add v3d
 %endif
+%ifarch %svga_arches
+%gallium_drivers_add svga
+%endif
 %ifarch %vulkan_intel_arches
 %vulkan_drivers_add intel
 %endif
@@ -64,10 +68,11 @@
 %endif
 %ifarch %armsoc_arches
 %vulkan_drivers_add freedreno
+%vulkan_drivers_add broadcom
 %endif
 
 Name: Mesa
-Version: 20.1.8
+Version: 21.0.1
 Release: alt1
 Epoch: 4
 License: MIT
@@ -87,7 +92,7 @@ BuildRequires: libdrm-devel libexpat-devel libselinux-devel libxcb-devel libSM-d
 BuildRequires: libXdmcp-devel libffi-devel libelf-devel libva-devel libvdpau-devel libXvMC-devel xorg-proto-devel libxshmfence-devel
 BuildRequires: libXrandr-devel libnettle-devel libelf-devel zlib-devel libwayland-client-devel libwayland-server-devel
 BuildRequires: libwayland-egl-devel python3-module-mako wayland-protocols libsensors-devel libzstd-devel libunwind-devel
-BuildRequires: libclc-devel libglvnd-devel >= 1.2.0 llvm-devel >= 10.0.0 clang-devel >= 10.0.0
+BuildRequires: libclc-devel libglvnd-devel >= 1.2.0 llvm-devel >= 11.0.0 clang-devel >= 11.0.0
 
 %description
 Mesa is an OpenGL compatible 3D graphics library
@@ -203,6 +208,13 @@ Requires: libvdpau
 %description -n xorg-dri-nouveau
 DRI driver for nVidia
 
+%package -n xorg-dri-vmwgfx
+Summary: VMWare DRI driver
+Group: System/X11
+
+%description -n xorg-dri-vmwgfx
+DRI driver for VMWare
+
 %package -n xorg-dri-armsoc
 Summary: SoC DRI drivers
 Group: System/X11
@@ -232,6 +244,9 @@ Requires: xorg-dri-intel = %epoch:%version-%release
 %ifarch %armsoc_arches
 Requires: xorg-dri-armsoc = %epoch:%version-%release
 %endif
+%ifarch %svga_arches
+Requires: xorg-dri-vmwgfx = %epoch:%version-%release
+%endif
 
 %description -n mesa-dri-drivers
 Mesa-based DRI drivers
@@ -244,7 +259,7 @@ Mesa-based DRI drivers
 
 %build
 %meson \
-	-Dplatforms=x11,wayland,drm \
+	-Dplatforms=x11,wayland \
 	-Ddri-drivers='%{?dri_drivers}' \
 	-Dgallium-drivers='%{?gallium_drivers}' \
 	-Dvulkan-drivers='%{?vulkan_drivers}' \
@@ -259,8 +274,8 @@ Mesa-based DRI drivers
 	-Dgallium-opencl=icd \
 %endif
 %ifarch %radeon_arches
-	-Dllvm=true \
-	-Dshared-llvm=true \
+	-Dllvm=enabled \
+	-Dshared-llvm=enabled \
 %endif
 	-Dshared-glapi=true \
 %if_enabled egl
@@ -349,7 +364,7 @@ sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 #define _unpackaged_files_terminate_build 1
 
 %files -n libGLX-mesa
-%doc docs/relnotes/%version.html
+%doc docs/relnotes/%version.rst
 %_libdir/libGLX_mesa.so.*
 %_libdir/libglapi.so.*
 
@@ -428,6 +443,9 @@ sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 %dir %_datadir/vulkan
 %dir %_datadir/vulkan/icd.d
 %_datadir/vulkan/icd.d/intel_icd*.json
+%ifarch %gallium_pipe_arches
+%_libdir/gallium-pipe/pipe_iris.so
+%endif
 %endif
 %endif
 
@@ -460,17 +478,65 @@ sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 %endif
 %endif
 
+%ifarch %svga_arches
+%files -n xorg-dri-vmwgfx
+%_libdir/X11/modules/dri/vmwgfx_dri.so
+%_libdir/gallium-pipe/pipe_vmwgfx.so
+%endif
+
 %ifarch %armsoc_arches
 %files -n xorg-dri-armsoc -f xorg-dri-armsoc.list
 %_libdir/libvulkan_freedreno.so
+%_libdir/libvulkan_broadcom.so
 %dir %_datadir/vulkan
 %dir %_datadir/vulkan/icd.d
 %_datadir/vulkan/icd.d/freedreno_icd*.json
+%_datadir/vulkan/icd.d/broadcom_icd*.json
 %endif
 
 %files -n mesa-dri-drivers
 
 %changelog
+* Thu Mar 25 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:21.0.1-alt1
+- 21.0.1
+
+* Fri Mar 19 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:21.0.0-alt2
+- BE-M1000 (aka Baikal-M) SoC initial support
+- wine work again (closes: #39809)
+
+* Fri Mar 12 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:21.0.0-alt1
+- 21.0.0
+
+* Mon Feb 01 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:20.3.4-alt1
+- 20.3.4
+
+* Thu Jan 14 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:20.3.3-alt1
+- 20.3.3
+
+* Thu Dec 31 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.3.2-alt1
+- 20.3.2
+
+* Thu Dec 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.3.1-alt1
+- 20.3.1
+
+* Fri Dec 04 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.3.0-alt1
+- 20.3.0
+
+* Tue Nov 24 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.2.3-alt1
+- 20.2.3
+
+* Sat Nov 07 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.2.2-alt1
+- 20.2.2
+
+* Thu Oct 15 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.2.1-alt1
+- 20.2.1
+
+* Tue Oct 13 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.2.0-alt2
+- rebuild with llvm 11.0.0
+
+* Tue Sep 29 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.2.0-alt1
+- 20.2.0
+
 * Thu Sep 17 2020 Valery Inozemtsev <shrek@altlinux.ru> 4:20.1.8-alt1
 - 20.1.8
 
