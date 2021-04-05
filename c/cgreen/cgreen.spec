@@ -1,13 +1,15 @@
 Name: cgreen
 Version: 1.0
-Release: alt2
+Release: alt3
 
 Summary: Framework for unit testing, written in C
-License: LGPL
+License: LGPL-2.1+
 Group: Development/C
 Url: http://www.lastcraft.com/cgreen.php
 
 Source0: %name-%version.tar
+
+%define _unpackaged_files_terminate_build 1
 
 %description 
 What is it? It's a framework for unit testing, written in C. A tool
@@ -43,10 +45,15 @@ install -m644 cgreen/assertions.h cgreen/constraint.h cgreen/memory.h \
 %files
 %doc README VERSION documentation samples
 %_includedir/*
-%_libdir/*
+%_libdir/*.so*
 
 
 %changelog
+* Tue Mar 30 2021 Mikhail Efremov <sem@altlinux.org> 1.0-alt3
+- Fix License tag.
+- Use _unpackaged_files_terminate_build.
+- Fix packaging on 32bit arches.
+
 * Mon Jun 16 2014 Mikhail Efremov <sem@altlinux.org> 1.0-alt2
 - Fix build.
 
