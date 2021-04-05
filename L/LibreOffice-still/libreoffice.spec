@@ -24,7 +24,7 @@
 
 Name: LibreOffice-still
 %define hversion 7.0
-%define urelease 4.2
+%define urelease 5.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
@@ -135,8 +135,10 @@ BuildRequires: libqrcodegen-cpp-devel
 BuildRequires: libxcbutil-icccm-devel
 BuildRequires: libeot-devel
 BuildRequires: libgraphite2-devel
+%if_with java
 # 7.0.4.2
 BuildRequires:  java-9-openjdk-devel
+%endif
 
 %if_without python
 BuildRequires: python3-dev
@@ -652,6 +654,13 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.5.2-alt1
+- New version.
+- Use -fPIC for build on any architectures.
+
+* Thu Feb 18 2021 Ivan A. Melnikov <iv@altlinux.org> 7.0.4.2-alt2
+- Remove BR: openjdk-devel from non-java builds.
+
 * Fri Feb 05 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.4.2-alt1
 - New version.
 - Add Greek languagepack (ALT #39636).
