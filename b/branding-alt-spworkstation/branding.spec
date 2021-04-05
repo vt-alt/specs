@@ -18,7 +18,7 @@
 
 Name: branding-%flavour
 Version: 8.2
-Release: alt2
+Release: alt5
 Url: https://altsp.su
 
 %ifarch %ix86 x86_64
@@ -56,7 +56,7 @@ License: GPLv2+
 
 Requires(pre):    coreutils
 Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
+Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme
 %branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/light-blue
@@ -118,7 +118,7 @@ License: Different licenses
 Group: Graphics
 BuildArch: noarch
 Provides: design-graphics-%theme  branding-alt-%theme-graphics
-Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
+Obsoletes:  design-graphics-%theme
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
 
 Requires(post,preun): alternatives >= 0.2
@@ -141,8 +141,9 @@ Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
 License:  GPL
 Group:    System/Configuration/Other
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
-Obsoletes: %obsolete_list  branding-alt-%theme-release
+Obsoletes: %obsolete_list
 %branding_add_conflicts %flavour release
+Conflicts: altlinux-release-sisyphus altlinux-release-p9
 
 %description release
 %distro_name release file.
@@ -166,6 +167,21 @@ Distribution license and release notes
 %description notes -l ru_RU.UTF-8
 В данном пакете находится лицензия и дополнительные сведения
 для дистрибутива %distro_name_ru.
+
+%package mate-settings
+BuildArch: noarch
+Summary: MATE settings for %distro_name
+License: Distributable
+Group:   Graphical desktop/GNOME
+Requires: dconf
+Requires: gtk3-theme-clearlooks-phenix
+Requires: x-cursor-theme-jimmac
+%branding_add_conflicts %flavour mate-settings 
+PreReq(post): lightdm-gtk-greeter
+PreReq(post): libgio
+
+%description mate-settings
+MATE settings for %distro_name
 
 %package slideshow
 Summary: Slideshow for %distro_name installer
@@ -213,6 +229,14 @@ make
 %install
 %makeinstall
 find %buildroot -name \*.in -delete
+
+
+#mate-settings
+pushd mate-settings
+install -m 644 -D 50_mate-background.gschema.override '%buildroot%_datadir/glib-2.0/schemas/50_mate-background.gschema.override'
+install -m 644 -D 60_mate-theme.gschema.override '%buildroot%_datadir/glib-2.0/schemas/60_mate-theme.gschema.override'
+popd
+
 
 #bootloader
 %ifarch %ix86 x86_64
@@ -275,6 +299,10 @@ if ! [ -e %_datadir/alt-notes/license.all.html ]; then
 	cp -a %data_cur_dir/alt-notes/license.*.html %_datadir/alt-notes/
 fi
 
+%post mate-settings
+subst 's/#theme-name=/theme-name=Clearlooks-Phenix/' /etc/lightdm/lightdm-gtk-greeter.conf ||:
+/usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
+
 %files alterator
 %config %_altdir/*.rcc
 /usr/share/alterator-browser-qt/design/*.rcc
@@ -302,6 +330,9 @@ fi
 %_datadir/alt-notes/release-notes.*
 %ghost %config(noreplace) %_datadir/alt-notes/license.*.html
 
+%files mate-settings
+%_datadir/glib-2.0/schemas/*.gschema.override
+
 %files slideshow
 /etc/alterator/slideshow.conf
 /usr/share/install2/slideshow
@@ -317,6 +348,16 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Fri Sep 25 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt5
+- licenses replaced from c8.1
+
+* Tue Sep 15 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt4
+- conflicts on altlinux-release-{sisyphus,p9} added
+
+* Fri Sep  4 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt3
+- mate-settings resurrected
+- obsoletes fixed
+
 * Wed May 20 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 8.2-alt2
 - bootmenu bar color fixed
 
