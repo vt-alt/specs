@@ -1,5 +1,5 @@
 Name: alt-csp-cryptopro
-Version: 0.0.5
+Version: 0.1.1
 Release: alt1
 
 Group: File tools
@@ -42,6 +42,16 @@ install -m 0644 BUILD/*.qm %buildroot/%_qt5_translationdir/
 %_datadir/file-manager/actions/alt-csp-cryptopro.desktop
 
 %changelog
+* Mon Apr 05 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.1-alt1
+- fix regression
+- report no errors
+
+* Sun Apr 04 2021 Sergey V Turchin <zerg@altlinux.org> 0.1.0-alt1
+- improve UI
+
+* Sun Apr 04 2021 Oleg Solovyov <mcpain@altlinux.org> 0.0.6-alt1
+- new version
+
 * Mon Feb 01 2021 Oleg Solovyov <mcpain@altlinux.org> 0.0.5-alt1
 - new version (Closes: 39484, 39547, 39548, 39557)
 
