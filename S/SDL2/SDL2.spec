@@ -4,20 +4,27 @@
 %def_with pulse
 
 Name: SDL2
-Version: 2.0.10
-Release: alt1
+Version: 2.0.14
+Release: alt4
 
 Summary: Simple DirectMedia Layer
-License: zlib
+License: Zlib and MIT
 Group: System/Libraries
 
-Url: http://www.libsdl.org/
+Url: https://www.libsdl.org/
 Packager: Nazarov Denis <nenderus@altlinux.org>
 
-Source: http://www.libsdl.org/release/%name-%version.tar.gz
+# https://www.libsdl.org/release/%name-%version.tar.gz
+Source: %name-%version.tar
 
-BuildPreReq: libXext-devel
-BuildPreReq: libdbus-devel
+# RH: ptrdiff_t is not the same as khronos defines on 32bit arches
+Patch0: %name-2.0.9-rh-khrplatform.patch
+
+# http://bugzilla.libsdl.org/show_bug.cgi?id=5418
+Patch1: SDL2-e2k.patch
+
+BuildRequires: libXext-devel
+BuildRequires: libdbus-devel
 
 %{?_with_fcitx:BuildRequires: fcitx-devel}
 BuildRequires: gcc-c++
@@ -32,6 +39,14 @@ BuildRequires: libjack-devel
 %{?_with_pulse:BuildRequires: libpulseaudio-devel}
 BuildRequires: libsamplerate-devel
 BuildRequires: libudev-devel
+# Wayland support
+BuildRequires: libxkbcommon-devel
+BuildRequires: libwayland-client-devel
+BuildRequires: libwayland-cursor-devel
+BuildRequires: libwayland-egl-devel
+BuildRequires: libwayland-server-devel
+BuildRequires: wayland-devel
+BuildRequires: wayland-protocols
 
 %description
 This is the Simple DirectMedia Layer, a generic API that provides low
@@ -62,35 +77,76 @@ to develop SDL applications.
 
 %prep
 %setup
+%patch0 -p1
+%ifarch %e2k
+%patch1 -p1
+%endif
 
 %build
+%add_optflags %(getconf LFS_CFLAGS)
 %configure \
     --enable-video-vulkan \
     --enable-video-wayland \
+    --disable-rpath \
     --disable-static
     
 %make_build
 
 %install
 %makeinstall_std
-%__rm -f %buildroot%_libdir/*.{a,la}
+rm %buildroot%_libdir/*.a
+%set_verify_elf_method strict
+%define _unpackaged_files_terminate_build 1
 
 %files -n lib%name
-%doc BUGS.txt COPYING.txt CREDITS.txt INSTALL.txt README*.txt TODO.txt WhatsNew.txt
+%doc BUGS.txt COPYING.txt CREDITS.txt README*.txt WhatsNew.txt
 %_libdir/lib%name-2.0.so.*
 
 %files -n lib%name-devel
 %_bindir/sdl2-config
-%dir %_includedir/%name
-%_includedir/%name/*.h
+%_includedir/%name/
 %_libdir/lib%name.so
-%dir %_libdir/cmake
-%dir %_libdir/cmake/%name
-%_libdir/cmake/%name/sdl2-config.cmake
+%_libdir/cmake/%name/
 %_pkgconfigdir/sdl2.pc
 %_aclocaldir/sdl2.m4
 
 %changelog
+* Sun Mar 28 2021 Nazarov Denis <nenderus@altlinux.org> 2.0.14-alt4
+- Restore buid with configure
+
+* Sat Mar 27 2021 Nazarov Denis <nenderus@altlinux.org> 2.0.14-alt3
+- Build with cmake
+
+* Fri Jan 08 2021 Michael Shigorin <mike@altlinux.org> 2.0.14-alt2
+- E2K: add upstream system features detection patch (libsdl#5418)
+
+* Wed Dec 23 2020 Nazarov Denis <nenderus@altlinux.org> 2.0.14-alt1
+- Version 2.0.14
+
+* Mon Nov 16 2020 Vladimir D. Seleznev <vseleznv@altlinux.org> 2.0.12-alt4
+- NMU: Actually enable Wayland support (ATL#34657).
+
+* Thu Jul 30 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.0.12-alt3
+- Disabled rpath.
+
+* Mon Mar 16 2020 Nazarov Denis <nenderus@altlinux.org> 2.0.12-alt2
+- Restore khrplatform patch
+
+* Thu Mar 12 2020 Nazarov Denis <nenderus@altlinux.org> 2.0.12-alt1
+- Version 2.0.12
+
+* Sat Dec 28 2019 Dmitry V. Levin <ldv@altlinux.org> 2.0.10-alt3
+- X11_InitKeyboard: do not call XAutoRepeatOn unnecessarily,
+  this fixes SDL2 when the X11 client is untrusted.
+- have_mitshm: use XShmQueryExtension to check for MIT-SHM extension,
+  this fixes SDL2 inside hasher.
+- Added LFS_CFLAGS to CFLAGS, this fixes use of non-LFS functions
+  on 32-bit architectures.
+- Cleaned up spec file.
+
+* Tue Oct 29 2019 Valery Inozemtsev <shrek@altlinux.ru> 2.0.10-alt2
+- Applied patch from Fedora: use khrplatform defines, not ptrdiff_t.
+
 * Thu Aug 29 2019 Alexey Tourbin <at@altlinux.ru> 2.0.10-alt1
 - 2.0.9 -> 2.0.10
 - this new version is required to build 0ad on ppc64le: SDL_cpuinfo.h
@@ -99,31 +155,31 @@ to develop SDL applications.
 * Thu Mar 07 2019 Nazarov Denis <nenderus@altlinux.org> 2.0.9-alt2
 - Add vulkan support (ALT #36246)
 
-* Fri Nov 02 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.9-alt1%ubt
+* Fri Nov 02 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.9-alt1
 - Version 2.0.9
 
-* Sat Mar 17 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.8-alt2%ubt
+* Sat Mar 17 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.8-alt2
 - Add wayland support (ALT #34657)
 
-* Sun Mar 11 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.8-alt1%ubt
+* Sun Mar 11 2018 Nazarov Denis <nenderus@altlinux.org> 2.0.8-alt1
 - Version 2.0.8
 
-* Sun Nov 19 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.7-alt2%ubt
+* Sun Nov 19 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.7-alt2
 - Disable static libraries
 
-* Thu Oct 26 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.7-alt1%ubt
+* Thu Oct 26 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.7-alt1
 - Version 2.0.7
 
 * Sun Oct 08 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.6-alt3.M80P.1
 - Build for branch p8
 
-* Wed Sep 27 2017 Michael Shigorin <mike@altlinux.org> 2.0.6-alt3%ubt
+* Wed Sep 27 2017 Michael Shigorin <mike@altlinux.org> 2.0.6-alt3
 - introduce ibus, fcitx, nas, pulse knobs (on by default)
 
-* Tue Sep 26 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.6-alt2%ubt
+* Tue Sep 26 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.6-alt2
 - Change BuildPreReq to BuildRequires(pre) for rpm-build-ubt (ALT #33921)
 
-* Mon Sep 25 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.6-alt1%ubt
+* Mon Sep 25 2017 Nazarov Denis <nenderus@altlinux.org> 2.0.6-alt1
 - Version 2.0.6
 
 * Wed Nov 30 2016 Ivan Zakharyaschev <imz@altlinux.org> 2.0.5-alt2

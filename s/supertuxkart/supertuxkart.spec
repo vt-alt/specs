@@ -1,6 +1,6 @@
 Name: supertuxkart
 Version: 1.2
-Release: alt1
+Release: alt2
 
 License: GPL-2.0-or-later and GPL-3.0-or-later and CC-BY-SA-3.0
 Url: http://supertuxkart.sourceforge.net
@@ -11,6 +11,7 @@ Packager: Ilya Mashkin <oddity@altlinux.ru>
 # https://github.com/supertuxkart/stk-code
 Source: %name-%version-src.tar.gz
 #Patch: supertuxkart-0.9.3-debian-irrlicht.patch
+Patch: supertuxkart-1.2-debian-ftbfs_sdl.patch
 
 BuildRequires(pre): rpm-build-ninja
 # for aarch64 support
@@ -28,6 +29,7 @@ SuperTuxCart is a kart racing game
 
 %prep
 %setup -n %name-%version
+%patch -p1
 
 %build
 %cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DUSE_SYSTEM_ANGELSCRIPT=OFF -DBUILD_RECORDER=OFF -DCHECK_ASSETS=OFF
@@ -66,6 +68,9 @@ find . -type d \( -name 'CVS' -o -name '.svn' -o -name '.git' -o -name '.hg' -o 
 %exclude %_libdir/libwiiuse.a
 
 %changelog
+* Wed Feb 24 2021 Leontiy Volodin <lvol@altlinux.org> 1.2-alt2
+- Fixed build with last SDL2 (thanks debian for the patch).
+
 * Sat Aug 29 2020 Leontiy Volodin <lvol@altlinux.org> 1.2-alt1
 - 1.2
 
