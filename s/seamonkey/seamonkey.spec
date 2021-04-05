@@ -20,7 +20,7 @@
 %define ciddir %sm_prefix/extensions/%cid
 
 Name: seamonkey
-Version: 2.53.5.1
+Version: 2.53.7
 Release: alt0.1.p9
 Epoch: 1
 Summary: Web browser and mail reader
@@ -42,17 +42,16 @@ Source6: enigmail.tar
 Source7: seamonkey-mozconfig
 Source8: rpm-build.tar
 Source9: cbindgen-vendor.tar
+# Get from http://ftp.mozilla.org/pub/seamonkey/releases/$ver/langpack/seamonkey-$ver.ru.langpack.xpi
 Source10: seamonkey-%{version}.ru.langpack.xpi
 Source11: seamonkey-ru.watch
 
 Patch0: seamonkey-fix-installdirs.patch
-Patch1: seamonkey-2.2-alt-machOS-fix.patch
-Patch2: seamonkey-2.0.14-alt-fix-plugin-path.patch
-Patch3: xulrunner-noarch-extensions.patch
+Patch1: seamonkey-alt-machOS-fix.patch
+Patch2: seamonkey-alt-fix-plugin-path.patch
 %if_with system_mozldap
 Patch5: thunderbird-with-system-mozldap.patch
 %endif
-Patch6: seamonkey-2.13.2-alt-fix-build.patch
 Patch8: seamonkey-2.26-enable-addons.patch
 Patch9: mozilla-js-makefile.patch
 Patch10: firefox-32-baseline-disable.patch
@@ -62,6 +61,8 @@ Patch120: 0020-MOZILLA-1666567-land-NSS-8ebee3cec9cf-UPGRADE_NSS_RE.patch
 Patch121: 0021-MOZILLA-1666567-land-NSS-8fdbec414ce2-UPGRADE_NSS_RE.patch
 Patch122: 0022-MOZILLA-1666567-land-NSS-NSS_3_58_BETA1-UPGRADE_NSS_.patch
 Patch124: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
+Patch125: seamonkey-update-packed_simd-for-rust-1.48.patch
+Patch126: seamonkey-cfg-if-1.10.patch
 
 Requires(pre,postun): urw-fonts
 
@@ -195,24 +196,24 @@ tar -xf %SOURCE6 -C mailnews/extensions/
 #patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p0
 %if_with system_mozldap
 %patch5 -p1 -b .mozldap
 %endif
-%patch6 -p2
 #%%patch8 -p2
 #patch9 -p2
 
 # https://bugzilla.altlinux.org/30322
 %ifarch %{ix86}
-%patch10 -p1
+%patch10 -p2
 %endif
-%patch11 -p1
-%patch12 -p1
-#patch120 -p1
-#patch121 -p1
-#patch122 -p1
-#patch124 -p1
+%patch11 -p2
+%patch12 -p2
+#patch120 -p2
+#patch121 -p2
+#patch122 -p2
+#patch124 -p2
+#patch125 -p0
+#patch126 -p2
 
 ### Copying .mozconfig to build directory
 cp -f %SOURCE7 .mozconfig
@@ -245,7 +246,7 @@ rpath="/$(printf %%s '%sm_prefix' |tr '[:print:]' '_')"
 export LDFLAGS="$LDFLAGS -Wl,-rpath,$rpath"
 export LIBIDL_CONFIG=/usr/bin/libIDL-config-2
 
-export MOZ_BUILD_APP=suite
+export MOZ_BUILD_APP=comm/suite
 
 %ifarch x86_64
 export CFLAGS="$CFLAGS -DHAVE_USR_LIB64_DIR=1"
@@ -268,7 +269,7 @@ export PREFIX="%_prefix"
 export LIBDIR="%_libdir"
 export SHELL="/bin/bash"
 export srcdir="$PWD"
-export MOZILLA_SRCDIR="$srcdir/mozilla"
+export MOZILLA_SRCDIR="$srcdir"
 
 autoconf
 
@@ -284,8 +285,6 @@ export NPROCS=1
 
 # a kludge since 2.26 ...
 mkdir objdir
-ln -s ../objdir mozilla/objdir
-
 %make_build -f client.mk build \
 	-j $NPROCS \
 	MOZ_PARALLEL_BUILD=$NPROCS \
@@ -305,7 +304,7 @@ cd $dir/mailnews/extensions/enigmail
 		STRIP="/bin/true" \
 		MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 	make xpi
-	mv -f -- $dir/mozilla/dist/bin/enigmail-*.xpi $dir/mozilla/dist/xpi-stage/
+	mv -f -- $dir/dist/bin/enigmail-*.xpi $dir/dist/xpi-stage/
 	make clean
 cd -
 %endif
@@ -371,7 +370,7 @@ dir="$PWD/objdir"
 %if_with enigmail
 mkdir -p %buildroot/%enigmail_ciddir
 unzip -q -u -d %buildroot/%enigmail_ciddir -- \
-    $dir/mozilla/dist/xpi-stage/enigmail*.xpi
+    $dir/dist/xpi-stage/enigmail*.xpi
 %endif
 
 ###From Lightning
@@ -392,9 +391,9 @@ cp -a rpm-build/rpm.macros.seamonkey %buildroot/%_sysconfdir/rpm/macros.d/%name
 install -D -m 644 %SOURCE5 %buildroot/%sm_prefix/defaults/preferences/all-altlinux.js
 
 # install icons
-test -e suite/branding/seamonkey/default32.png || cp suite/branding/seamonkey/default{,32}.png
+test -e comm/suite/branding/seamonkey/default32.png || cp comm/suite/branding/seamonkey/default{,32}.png
 for s in 16 32 48 64 128; do
-	install -Dpm0644 suite/branding/seamonkey/default${s}.png %buildroot%_iconsdir/hicolor/${s}x${s}/apps/%name.png
+	install -Dpm0644 comm/suite/branding/seamonkey/default${s}.png %buildroot%_iconsdir/hicolor/${s}x${s}/apps/%name.png
 done
 
 # install search plugins
@@ -469,6 +468,19 @@ ln -s %_datadir/myspell/ru_RU.dic %buildroot/%ciddir/dictionaries/ru.dic
 %_sysconfdir/rpm/macros.d/%name
 
 %changelog
+* Fri Apr 02 2021 Andrey Cherepanov <cas@altlinux.org> 1:2.53.7-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Fri Apr 02 2021 Andrey Cherepanov <cas@altlinux.org> 1:2.53.7-alt1
+- New version.
+
+* Fri Jan 22 2021 Andrey Cherepanov <cas@altlinux.org> 1:2.53.6-alt1
+- New version.
+
+* Mon Jan 18 2021 Andrey Cherepanov <cas@altlinux.org> 1:2.53.5.1-alt2
+- Update packed_simd for rust 1.48.
+- Update cbindgen-vendor.tar.
+
 * Tue Nov 24 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.53.5.1-alt0.1.p9
 - Backport new version to p9 branch.
 
