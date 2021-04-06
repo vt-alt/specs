@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.40
+Version: 0.2.41
 Release: alt1
 
 Summary: Simple image creator
@@ -86,6 +86,11 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Sat Apr 03 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.41-alt1
+- tools/mki-pack-efionly-isoboot, tools/mki-pack-grubpc-isoboot,
+  tools/mki-pack-isoboot:
+  + Set the UUID of the ISO image explicitly (ALT#39855)
+
 * Wed Feb 17 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.40-alt1
 - mki-copy-grubaa64boot:
   + Fix missing escaping a variable bootaa64
