@@ -1,61 +1,67 @@
-%def_without l10n
+%def_with l10n
 %define _hardened_build 1
 %global gitname celeron55
 
-Name:		minetest
-Version:	5.2.0
-Release:	alt1
-Summary:	Multiplayer infinite-world block sandbox with survival mode
-
-Group:		Games/Other
-License:	LGPLv2+ and CC-BY-SA
-URL:		http://minetest.net/index.php
+Name: minetest
+Version: 5.4.0
+Release: alt2
+Summary: Multiplayer infinite-world block sandbox with survival mode
+License: LGPL-2.0+ and CC-BY-SA-3.0
+Group: Games/Other
+URL: http://minetest.net/index.php
 
 # VCS (executable): https://github.com/minetest/minetest.git
 # VCS (data files): https://github.com/minetest/minetest_game.git
 
-
-# curl -L -O http://github.com/celeron55/minetest/tarball/0.4.3/minetest-0.4.3.tar.gz
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.logrotate
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.README
+Source0: %name-%version.tar.gz
+Source1: %{name}.desktop
+Source2: %{name}.service
+Source3: %{name}.rsyslog
+Source4: %{name}.logrotate
+Source5: %{name}.README
+Source6: %{name}_game-%version.tar.gz
+Source7: http://www.gnu.org/licenses/lgpl-2.1.txt
 
-Source0:	%name-%version.tar.gz
-Source1:	%{name}.desktop
-Source2:	%{name}.service
-Source3:	%{name}.rsyslog
-Source4:	%{name}.logrotate
-Source5:	%{name}.README
-Source6:	%{name}_game-%version.tar.gz
-Source7:	http://www.gnu.org/licenses/lgpl-2.1.txt
+BuildRequires(pre): cmake
+BuildRequires(pre): rpm-build-ninja
+BuildRequires: gcc-c++
+BuildRequires: libirrlicht-devel
+BuildRequires: bzip2-devel jthread-devel libsqlite3-devel
+BuildRequires: libpng-devel libjpeg-devel libXxf86vm-devel libGL-devel
+BuildRequires: libopenal-devel libvorbis-devel
+BuildRequires: libfreetype-devel
+BuildRequires: systemd
+BuildRequires: gettext-tools
+BuildRequires: libcurl-devel
+BuildRequires: libuuid-devel
+BuildRequires: libbrotli-devel
+%ifnarch %e2k
+BuildRequires: libluajit-devel
+%endif
+BuildRequires: libncurses-devel
+BuildRequires: libleveldb-devel
+BuildRequires: spatialindex-devel
 
-BuildRequires:	cmake >= 2.6.0
-BuildRequires:	gcc-c++
-BuildRequires:	libirrlicht-devel
-BuildRequires:	bzip2-devel jthread-devel libsqlite3-devel
-BuildRequires:	libpng-devel libjpeg-devel libXxf86vm-devel libGL-devel
-BuildRequires:	libopenal-devel libvorbis-devel
-BuildRequires:	libfreetype-devel
-BuildRequires:	systemd
-BuildRequires:	gettext-tools
-
-Requires:	%name-server = %version-%release
-Requires:	icon-theme-hicolor
+Requires: %name-server = %version-%release
+Requires: icon-theme-hicolor
 
 %description 
 Game of mining, crafting and building in the infinite world of cubic
 blocks with optional hostile creatures, features both single and the
 network multiplayer mode.
 
-%package	server
-Summary:	Minetest multiplayer server
-Group:		Games/Other
+%package server
+Summary: Minetest multiplayer server
+Group: Games/Other
 
-Requires(pre):		shadow-utils
+Requires(pre): shadow-utils
 
-%description	server
+%description server
 Minetest multiplayer server. This package does not require X Window
 System.
 
@@ -70,15 +76,15 @@ popd
 cp %SOURCE7 doc/
 
 %build
-%cmake_insource \
+%cmake_insource -GNinja\
 %if_with l10n
-	-DENABLE_GETTEXT=TRUE \
+    -DENABLE_GETTEXT=TRUE \
 %endif
-	-DJTHREAD_INCLUDE_DIR=%_builddir/%gitname-%name/src/jthread 
-%make_build
+    -DJTHREAD_INCLUDE_DIR=%_builddir/%gitname-%name/src/jthread
+%ninja_build
 
 %install
-%makeinstall_std 
+%ninja_install
 
 # Add desktop file
 install -D -m 0644 %SOURCE1 %buildroot%_desktopdir/%name.desktop
@@ -159,6 +165,16 @@ fi
 %_man6dir/minetestserver.6*
 
 %changelog
+* Tue Apr 06 2021 Andrey Cherepanov <cas@altlinux.org> 5.4.0-alt2
+- Add missing devel packages (ALT #39398).
+- Fix License tag.
+
+* Mon Mar 08 2021 Andrey Cherepanov <cas@altlinux.org> 5.4.0-alt1
+- New version.
+
+* Mon Aug 03 2020 Andrey Cherepanov <cas@altlinux.org> 5.3.0-alt1
+- New version.
+
 * Thu Apr 09 2020 Andrey Cherepanov <cas@altlinux.org> 5.2.0-alt1
 - New version.
 
