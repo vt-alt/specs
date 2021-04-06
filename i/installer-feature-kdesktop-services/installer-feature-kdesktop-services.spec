@@ -1,5 +1,5 @@
 Name: installer-feature-kdesktop-services
-Version: 0.9.3
+Version: 0.10.0
 Release: alt1
 
 Summary: Setup services for start/not start on boot
@@ -28,6 +28,9 @@ install -pm755 *.sh %buildroot%hookdir/
 %hookdir/*
 
 %changelog
+* Mon Apr 05 2021 Sergey V Turchin <zerg@altlinux.org> 0.10.0-alt1
+- enable lightdm first then sddm
+
 * Thu Mar 04 2021 Sergey V Turchin <zerg@altlinux.org> 0.9.3-alt1
 - fix to disable NetworkManager-wait-online
 
