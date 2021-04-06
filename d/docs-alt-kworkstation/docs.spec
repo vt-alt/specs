@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.1
-Release: alt3
+Release: alt4
 
 Summary: %Variant documentation
 License: %fdl
@@ -46,6 +46,11 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Tue Apr 06 2021 Elena Mishina <lepata@altlinux.org> 9.1-alt4
+- fix some typos
+- update screenshots
+- update info: network-configuration
+
 * Tue Mar 02 2021 Elena Mishina <lepata@altlinux.org> 9.1-alt3
 - update to ALT Kworkstation 9.1RC3
 - system-management: add CUPS web-interface, group policy
