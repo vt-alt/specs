@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.20.1
+Version: 5.21.1
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -217,6 +217,37 @@ Requires: psi-plus-plugin-otr psi-plus-plugin-stopspam psi-plus-plugin-storageno
 %description -n kde5-messenger-client-6-mix
 %summary
 
+%package -n kde5-display-manager-0-dummy
+Group: Graphical desktop/KDE
+Summary:  Dummy Display Manager collective package
+Provides: kde5-display-manager = %EVR
+Provides: kde5-display-manager-dummy = %EVR
+Requires: kf5-filesystem
+%description -n kde5-display-manager-0-dummy
+%summary
+
+%package -n kde5-display-manager-4-lightdm
+Group: Graphical desktop/KDE
+Summary:  LightDM Display Manager collective package
+Provides: kde5-display-manager = %EVR
+Provides: kde5-display-manager-lightdm = %EVR
+Requires: kf5-filesystem
+Requires: lightdm-gtk-greeter
+%description -n kde5-display-manager-4-lightdm
+%summary
+
+%package -n kde5-display-manager-5-sddm
+Group: Graphical desktop/KDE
+Summary: SDDM Display Manager collective package
+Provides: kde5-display-manager-2-sddm = %EVR
+Obsoletes: kde5-display-manager-2-sddm < %EVR
+Provides: kde5-display-manager = %EVR
+Provides: kde5-display-manager-sddm = %EVR
+Requires: kf5-filesystem
+Requires: plasma5-sddm-kcm sddm
+%description -n kde5-display-manager-5-sddm
+%summary
+
 %files -n kde5-network-manager-0-dummy
 %files -n kde5-network-manager-2-etcnet
 %files -n kde5-network-manager-4-nm
@@ -243,7 +274,17 @@ Requires: psi-plus-plugin-otr psi-plus-plugin-stopspam psi-plus-plugin-storageno
 %files -n kde5-messenger-client-4-telepathy
 %files -n kde5-messenger-client-6-mix
 
+%files -n kde5-display-manager-0-dummy
+%files -n kde5-display-manager-4-lightdm
+%files -n kde5-display-manager-5-sddm
+
 %changelog
+* Tue Apr 06 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.1-alt1
+- don't prefer lightdm over sddm
+
+* Mon Apr 05 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.0-alt1
+- add virtual kde5-display-manager
+
 * Tue Feb 16 2021 Sergey V Turchin <zerg@altlinux.org> 5.20.1-alt1
 - add konversation to kde5-messenger-client-mix
 
