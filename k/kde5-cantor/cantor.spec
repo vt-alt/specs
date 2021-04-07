@@ -4,17 +4,15 @@
 %def_enable python3
 %def_disable luajit
 
-%define cantor_sover 24
+%define cantor_sover 28
 %define libcantorlibs libcantorlibs%cantor_sover
-%define cantor_pythonbackend_sover 0
-%define libcantor_pythonbackend libcantor_pythonbackend%cantor_pythonbackend_sover
 %define cantor_config_sover 0
 %define libcantor_config libcantor_config%cantor_config_sover
 
 Name: kde5-%rname
-Version: 19.12.3
-Release: alt1
-%K5init
+Version: 20.12.3
+Release: alt2
+%K5init no_appdata
 
 Group: Education
 Summary: KDE Frontend to Mathematical Software
@@ -22,10 +20,12 @@ Url: http://www.kde.org
 License: GPLv2+ / LGPLv2+
 
 Requires: kde5-kalgebra
+Requires: epstool
 
 Source: %rname-%version.tar
 Patch1: alt-lib-so-ver.patch
 Patch2: alt-find-luajit.patch
+Patch3: cantor-20.12.3-alt-octave-backend-default-settings.patch
 
 # Automatically added by buildreq on Wed Mar 30 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig gcc-c++ gtk-update-icon-cache kf5-attica-devel kf5-kdoctools kf5-kdoctools-devel libEGL-devel libGL-devel libgpg-error libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-script libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libqt5-xmlpatterns libstdc++-devel libxcbutil-keysyms pkg-config python-base python-devel python-modules python3 python3-base qt5-base-devel rpm-build-python3 ruby ruby-stdlibs xml-common xml-utils
@@ -71,13 +71,6 @@ Requires: %name-common = %version-%release
 %description -n %libcantorlibs
 KF5 library
 
-%package -n %libcantor_pythonbackend
-Group: System/Libraries
-Summary: KF5 library
-Requires: %name-common = %version-%release
-%description -n %libcantor_pythonbackend
-KF5 library
-
 %package -n %libcantor_config
 Group: System/Libraries
 Summary: KF5 library
@@ -90,6 +83,7 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p1
+%patch3 -p2
 
 #LUA_BASE_VER=`echo "%{get_version libluajit-devel}" | sed -E 's|^([[:digit:]]+\.[[:digit:]]).*|\1|'`
 #pushd src/backends/lua
@@ -105,16 +99,15 @@ KF5 library
 
 %install
 %K5install
-%K5install_move data cantor
+%K5install_move data cantor knsrcfiles
 %find_lang %name --with-kde --all-name
 
 %files common -f %name.lang
 %doc COPYING*
 
 %files
-%config(noreplace) %_K5xdgconf/cantor.knsrc
-%config(noreplace) %_K5xdgconf/cantor_*.knsrc
 %_K5bin/cantor*
+%_K5lib/cantor_pythonbackend.so
 %_K5plug/libcantorpart.so
 %_K5plug/cantor/
 %_K5data/cantor/
@@ -122,6 +115,7 @@ KF5 library
 %_K5xdgapp/org.kde.cantor.desktop
 %_K5icon/*/*/apps/*.*
 %_K5xmlgui/cantor/
+%_K5data/knsrcfiles/*cantor*.knsrc
 
 %files devel
 #%_K5inc/cantor_version.h
@@ -133,14 +127,40 @@ KF5 library
 %files -n %libcantorlibs
 %_K5lib/libcantorlibs.so.%cantor_sover
 %_K5lib/libcantorlibs.so.*
-%files -n %libcantor_pythonbackend
-%_K5lib/libcantor_pythonbackend.so.%cantor_pythonbackend_sover
-%_K5lib/libcantor_pythonbackend.so.*
 %files -n %libcantor_config
 %_K5lib/libcantor_config.so.%cantor_config_sover
 %_K5lib/libcantor_config.so.*
 
 %changelog
+* Tue Mar 23 2021 Egor Ignatov <egori@altlinux.org> 20.12.3-alt2
+- fix octave backend
+
+* Fri Mar 12 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.3-alt1
+- new version
+
+* Wed Mar 10 2021 Egor Ignatov <egori@altlinux.org> 20.12.2-alt2
+- Fix octave backend
+  + Add epstool dependency to prevent crash on plotting
+  + Add patch to use gnuplot graphics toolkit by default
+
+* Wed Feb 17 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.2-alt1
+- new version
+
+* Tue Dec 22 2020 Sergey V Turchin <zerg@altlinux.org> 20.12.0-alt1
+- new version
+
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.3-alt1
+- new version
+
+* Thu Oct 15 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.2-alt1
+- new version
+
+* Wed Sep 23 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.1-alt1
+- new version
+
+* Wed Aug 19 2020 Sergey V Turchin <zerg@altlinux.org> 20.04.3-alt1
+- new version
+
 * Fri Mar 13 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
