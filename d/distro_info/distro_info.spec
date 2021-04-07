@@ -1,5 +1,5 @@
 Name: distro_info
-Version: 1.9
+Version: 2.1
 Release: alt1
 
 Summary: Get various info about a system and used distro
@@ -32,6 +32,15 @@ install -m0644 -D man/distro_info.1 %buildroot%_man1dir/distro_info.1
 %_man1dir/*
 
 %changelog
+* Mon Apr 05 2021 Vitaly Lipatov <lav@altlinux.ru> 2.1-alt1
+- distro_info: fix package type detection for Kali Linux
+- distro_info: add -z for print current CPU MHz
+- distro_info: fix c9f1 detection
+
+* Thu Mar 04 2021 Vitaly Lipatov <lav@altlinux.ru> 2.0-alt1
+- distro_info: fix bashism
+- distro_info: fix --distro-arch for rpm based systems
+
 * Tue Feb 16 2021 Vitaly Lipatov <lav@altlinux.ru> 1.9-alt1
 - distro_info: use getconf LONG_BIT for get_bit_size
 - distro_info: fix get_arch for arm64 and armv7

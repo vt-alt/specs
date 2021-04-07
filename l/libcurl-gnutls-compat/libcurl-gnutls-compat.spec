@@ -9,7 +9,7 @@
 
 Name: libcurl-gnutls-compat
 Version: 1.0
-Release: alt1
+Release: alt2
 
 Summary: Libcurl-gnutls compatibility library
 
@@ -25,7 +25,7 @@ Provides: %libname3(CURL_GNUTLS_3)%libsuffix
 Provides: libcurl3-gnutls
 
 Provides: %libname4%libsuffix
-Provides: %libname4(CURL_GNUTLS_4)%libsuffix
+Provides: %libname4(CURL_GNUTLS_3)%libsuffix
 Provides: libcurl4-gnutls
 
 %description
@@ -42,6 +42,9 @@ ln -s %_libdir/libgnurl.so.4 %buildroot%_libdir/%libname4
 %_libdir/%libname4
 
 %changelog
+* Mon Mar 29 2021 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt2
+- use CURL_GNUTLS_3 for libname4
+
 * Wed Jan 06 2021 Vitaly Lipatov <lav@altlinux.ru> 1.0-alt1
 - initial build for ALT Sisyphus
 

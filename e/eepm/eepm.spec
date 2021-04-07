@@ -1,5 +1,5 @@
 Name: eepm
-Version: 3.8.9
+Version: 3.9.8
 Release: alt1
 
 Summary: Etersoft EPM package manager
@@ -135,6 +135,46 @@ mkdir -p %buildroot/var/lib/eepm/
 %_bindir/yum
 
 %changelog
+* Mon Apr 05 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.8-alt1
+- assistant.sh: upgrade to 4.2, preinstall fontconfig-disable-type1-font-for-assistant
+- epm-print: fix constructname
+- distr_info: fix c9f1 detection
+
+* Tue Mar 30 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.7-alt1
+- play code.sh: fix code download
+
+* Tue Mar 30 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.6-alt1
+- tools_eget: improve error handling
+- fix spotify-client repack (ALT bug 39817)
+- fix install zoom on ALTLinux i586
+- epm-print constructname: fix bashism
+
+* Sat Mar 27 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.5-alt1
+- distr_info: add -z for print current CPU MHz
+- epm-remove: fix remove skipping on failed deps
+
+* Mon Mar 15 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.4-alt1
+- glusterfs9: skip devel packages during upgrade
+- repack.d/PacketTracer.sh: add repack for Cisco PacketTracer
+- distr_info: fix package type detection for Kali Linux
+
+* Tue Mar 09 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.3-alt1
+- prescription.d/code.sh: fix for deb based system
+- add repack.d/sbb.sh (Sberbank client)
+- don't require rpm directly
+
+* Thu Mar 04 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.2-alt1
+- epm-sh-altlinux-contents-index: use rsync -z only for uncompressed files
+- epm-restore: add nupkg restore support
+- distro_info: fix --distro-arch for rpm based systems
+
+* Wed Mar 03 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.1-alt1
+- rewrite contents_index retrieving
+- epm-sh-altlinux-contents-index: improve content_index list informativity
+
+* Wed Mar 03 2021 Vitaly Lipatov <lav@altlinux.ru> 3.9.0-alt1
+- epm: use rsync to get contents_index for ALT (with rsyncable gzip mirror)
+
 * Thu Feb 25 2021 Vitaly Lipatov <lav@altlinux.ru> 3.8.9-alt1
 - epm-play: fix duplicates in the installed list
 - epm remove: don't try removing after rpm -e said there is not such package
