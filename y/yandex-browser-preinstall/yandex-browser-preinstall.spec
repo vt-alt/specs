@@ -1,17 +1,19 @@
 Name: yandex-browser-preinstall
 Version: 0.4
-Release: alt3
+Release: alt4
 
 Summary: Set correct environment for Yandex.Browser
-License: GPL
+License: GPLv3
 Group: Networking/WWW
 
-Url: https://browser.yandex.ru/
+Url: http://git.altlinux.org/people/nenderus/packages/yandex-browser-preinstall.git
 Packager: Nazarov Denis <nenderus@altlinux.org>
 BuildArch: noarch
 
 Source0: yandex-browser
 Source1: yandex-browser-beta
+
+Requires: jq
 
 %description
 Set correct environment for Yandex.Browser
@@ -25,6 +27,9 @@ Set correct environment for Yandex.Browser
 %_sysconfdir/default/yandex-browser-beta
 
 %changelog
+* Mon Apr 05 2021 Nazarov Denis <nenderus@altlinux.org> 0.4-alt4
+- Add require on jq (ALT #39880)
+
 * Tue Jan 15 2019 Nazarov Denis <nenderus@altlinux.org> 0.4-alt3
 - Drop macro ubt (ALT #35904)
 
