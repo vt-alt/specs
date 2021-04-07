@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.21.1
+Version: 5.21.2
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -232,7 +232,7 @@ Summary:  LightDM Display Manager collective package
 Provides: kde5-display-manager = %EVR
 Provides: kde5-display-manager-lightdm = %EVR
 Requires: kf5-filesystem
-Requires: lightdm-gtk-greeter
+Requires: lightdm-gtk-greeter lightdm-gtk-greeter-settings
 %description -n kde5-display-manager-4-lightdm
 %summary
 
@@ -279,6 +279,9 @@ Requires: plasma5-sddm-kcm sddm
 %files -n kde5-display-manager-5-sddm
 
 %changelog
+* Tue Apr 06 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.2-alt1
+- add requires for lightdm-gtk-greeter-settings
+
 * Tue Apr 06 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.1-alt1
 - don't prefer lightdm over sddm
 
