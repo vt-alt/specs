@@ -1,22 +1,23 @@
-%define _localstatedir %{_var}
+%define _unpackaged_files_terminate_build 1
 
 Name: fprintd
-Version: 1.90.1
+Version: 1.90.9
 Release: alt1
 Summary: D-Bus service for Fingerprint reader access
 Group: System/Servers
 Url: https://www.freedesktop.org/wiki/Software/fprint/fprintd
 License: GPLv2+
 
+# https://gitlab.freedesktop.org/libfprint/fprintd
 Source: %name-%version.tar
 Source1: system-auth-fprintd
+
 Patch: %name-%version.patch
-Patch1: %name-0.4.1-alt-build.patch
-Patch3: %name-0.4.1-alt-pam_docs.patch
 
 BuildRequires(pre): meson
 BuildRequires: libdbus-glib-devel
 BuildRequires: pkgconfig(libfprint-2) > 0.1.0
+BuildRequires: libfprint2-gir-devel
 BuildRequires: pkgconfig(glib-2.0) pkgconfig(dbus-glib-1)
 BuildRequires: pkgconfig(gmodule-2.0) pkgconfig(polkit-gobject-1) >= 0.91 pkgconfig(gio-2.0) >= 2.26
 BuildRequires: libpam0-devel
@@ -45,7 +46,7 @@ authentication.
 
 %package devel
 Summary: Development files for %name
-Requires: %name = %version-%release
+Requires: %name = %EVR
 Group: Development/Other
 BuildArch: noarch
 
@@ -56,8 +57,6 @@ fingerprint readers access.
 %prep
 %setup -q
 %patch -p1
-#patch1 -p1
-#patch3 -p1
 
 %build
 %meson
@@ -80,7 +79,6 @@ fingerprint readers access.
 %_unitdir/fprintd.service
 %_datadir/dbus-1/system-services/net.reactivated.Fprint.service
 %_datadir/polkit-1/actions/net.reactivated.fprint.device.policy
-#dir %_localstatedir/lib/fprint
 %_man1dir/fprintd.1*
 
 %files -n pam_fprintd
@@ -94,6 +92,10 @@ fingerprint readers access.
 %_datadir/dbus-1/interfaces/net.reactivated.Fprint.Manager.xml
 
 %changelog
+* Mon Apr 05 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.90.9-alt1
+- Updated to upstream version 1.90.9.
+- Cleaned up spec and patches.
+
 * Thu Aug 13 2020 Anton Farygin <rider@altlinux.ru> 1.90.1-alt1
 - 1.90.1
 

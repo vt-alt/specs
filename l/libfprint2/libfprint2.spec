@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: libfprint2
-Version: 1.90.3
+Version: 1.90.7
 Release: alt1
 
 Summary: Tool kit for fingerprint scanner
@@ -10,6 +10,7 @@ Group: System/Libraries
 
 Url: http://www.freedesktop.org/wiki/Software/fprint/libfprint
 # git://anongit.freedesktop.org/libfprint/libfprint
+# https://gitlab.freedesktop.org/libfprint/libfprint
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
@@ -18,28 +19,46 @@ BuildRequires: libusb-devel libnss-devel glib2-devel libImageMagick-devel libXv-
 BuildRequires: gcc-c++ doxygen 
 BuildRequires: libgio-devel libgusb-devel libudev-devel gtk-doc libcairo-devel cmake
 BuildRequires: /proc python3-module-pygobject3
+BuildRequires: gobject-introspection-devel libgusb-gir-devel
 
 %description
 The fprint project aims to support for consumer fingerprint reader
 devices.
 
+%package gir
+Summary: GObject introspection data for the %name
+Group: System/Libraries
+Requires: %name = %EVR
+
+%description gir
+GObject introspection data for %name
+
 %package devel
 Summary: Development files for %name
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description devel
 The %name-devel package contains libraries and header files for
 developing applications that use %name.
+
+%package gir-devel
+Summary: GObject introspection devel data for %name
+Group: System/Libraries
+BuildArch: noarch
+Requires: %name-gir = %EVR
+Requires: %name-devel = %EVR
+
+%description gir-devel
+GObject introspection devel data for %name
 
 %prep
 %setup
 %patch -p1
 
 %build
-# introspection lacks at least GUsb*.gir in Sysiphus
 %meson -Ddrivers=all \
-       -Dintrospection=false \
+       -Dintrospection=true \
        -Dudev_rules=true \
        -Dudev_rules_dir=%_sysconfdir/udev/rules.d/ \
        -Dgtk-examples=false \
@@ -58,6 +77,9 @@ export LD_LIBRARY_PATH="libfprint"
 %_libdir/*.so.*
 %_sysconfdir/udev/rules.d/60-libfprint-2-autosuspend.rules
 
+%files gir
+%_libdir/girepository-1.0/*.typelib
+
 %files devel
 %doc HACKING.md
 %doc %_datadir/gtk-doc/html/libfprint-2
@@ -65,7 +87,14 @@ export LD_LIBRARY_PATH="libfprint"
 %_libdir/*.so
 %_pkgconfigdir/libfprint-2.pc
 
+%files gir-devel
+%_datadir/gir-1.0/*.gir
+
 %changelog
+* Mon Apr 05 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.90.7-alt1
+- Updated to upstream version 1.90.7.
+- Enabled introspection since it's required for fprintd tests now.
+
 * Wed Sep 30 2020 Anton Farygin <rider@altlinux.ru> 1.90.3-alt1
 - 1.90.3
 
