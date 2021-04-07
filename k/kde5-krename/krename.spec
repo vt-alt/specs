@@ -1,18 +1,20 @@
 %define rname krename
 
 Name: kde5-%rname
-Version: 5.0.0
-Release: alt7
-%K5init
+Version: 5.0.1
+Release: alt1
+%K5init altplace no_appdata
 
 Summary: A powerful batch renamer for KDE5
 Group: File tools
-License: GPL
-Url: https://userbase.kde.org/KRename
+License: GPL-2.0
+Url: https://invent.kde.org/utilities/krename
 
 Source: %rname-%version.tar
+Source10: po-ru.po
 Patch1: alt-startupinfo-labels-color.patch
 Patch2: alt-cmake.patch
+Patch3: alt-desktopfile.patch
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: extra-cmake-modules gcc-c++
@@ -36,6 +38,8 @@ It can also change access and modification dates, permissions, and file ownershi
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+cat %SOURCE10 >po/ru/krename.po
 
 %build
 %K5build
@@ -52,6 +56,9 @@ It can also change access and modification dates, permissions, and file ownershi
 %_K5srv/ServiceMenus/*.desktop
 
 %changelog
+* Wed Apr 07 2021 Sergey V Turchin <zerg@altlinux.org> 5.0.1-alt1
+- new version
+
 * Thu Aug 27 2020 Sergey V Turchin <zerg@altlinux.org> 5.0.0-alt7
 - fix compile with new environment
 
