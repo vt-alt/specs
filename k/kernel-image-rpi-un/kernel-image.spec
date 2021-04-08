@@ -6,7 +6,7 @@ epoch:1
 %define kernel_need_version	5.10
 # Used when kernel-source-x.y does not currently exist in repository.
 %define kernel_base_version	5.10
-%define kernel_sublevel .20
+%define kernel_sublevel .27
 %define kernel_extra_version	%nil
 # kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
@@ -290,6 +290,12 @@ install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 make modules_install INSTALL_MOD_PATH=%buildroot
 find %buildroot -name '*.ko' | xargs gzip
 
+# Move some modules to kernel-image package tree
+install -d %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/common/videobuf2/ %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/rc/rc-core.ko.xz %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/radio/tea575x.ko.xz %buildroot%modules_dir/kernel/drivers/media-core/
+
 mkdir -p %buildroot/lib/devicetree/$KernelVer
 find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
 
@@ -490,6 +496,16 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Apr 07 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.10.27-alt1
+- Updated to 5.10.27 (still RPi-specific)
+- https://github.com/raspberrypi/linux.git rpi-5.10.y
+- commit 7773c5ccb1b23de78b34f7234ff3aafd12ecac53
+- (closes: 39767)
+- CONFIG_PPS=y
+- CONFIG_PPS_CLIENT_KTIMER=m
+- CONFIG_PPS_CLIENT_LDISC=m
+- CONFIG_PPS_CLIENT_GPIO=m
+
 * Thu Mar 11 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.10.20-alt1
 - Updated to 5.10.20 (still RPi-specific)
 - https://github.com/raspberrypi/linux.git rpi-5.10.y
