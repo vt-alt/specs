@@ -1,6 +1,6 @@
 Name:    task-edu
-Version: 1.0
-Release: alt3
+Version: 1.2
+Release: alt1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
 Group:   Education
@@ -31,7 +31,7 @@ Requires: gimp
 Requires: gimp-help-ru
 Requires: gimp-plugin-gutenprint
 Requires: gimp-plugin-refocus-it
-Requires: java-1.8.0-openjdk-devel
+Requires: java-devel
 Requires: kdenlive
 Requires: scribus
 %ifnarch %e2k
@@ -112,15 +112,7 @@ Requires: fdisk
 Requires: debhelper
 Requires: keyutils
 Requires: krb5-kinit
-# Installer features
-Requires: installer-feature-xdg-user-dirs
 Requires: xdg-user-dirs-gtk
-Requires: installer-feature-auto-domain
-Requires: installer-feature-online-repo
-%ifnarch %e2k
-Requires: installer-feature-repo-add
-%endif
-Requires: installer-feature-resolver-bind-stage3
 Requires: openresolv-bind
 # GUI utilities
 Requires: gparted
@@ -178,7 +170,6 @@ Requires: alterator-logs
 Requires: alterator-net-general
 Requires: alterator-net-openvpn
 Requires: alterator-net-wifi
-Requires: alterator-postinstall
 Requires: alterator-sslkey
 Requires: alterator-updates
 # Communications
@@ -232,8 +223,6 @@ Requires: recoll-full
 # Append all modules from xscreensaver
 Requires: desktop-screensaver-modules-xscreensaver
 Requires: desktop-screensaver-modules-xscreensaver-gl
-# Use first user in first time of lightdm run
-Requires: installer-feature-lightdm-stage3
 Requires: systemd-settings-enable-showstatus
 Requires: systemd-settings-disable-dumpcore
 Requires: systemd-settings-enable-log-to-tty12
@@ -304,6 +293,7 @@ Requires: scratch-desktop
 %endif
 %ifnarch %e2k
 Requires: kde5-khelpcenter
+Requires: trikStudioJunior
 %endif
 %description gradeschool
 %{summary}.
@@ -349,6 +339,10 @@ Requires: kde5-khelpcenter
 %ifarch %ix86 x86_64 aarch64 ppc64le
 Requires: freecad
 %endif
+Requires: python-module-pip
+Requires: python-module-pip-docs
+Requires: python3-module-pip
+Requires: python3-module-pip-docs
 %description highschool
 %{summary}.
 
@@ -384,6 +378,10 @@ Requires: python3-module-pygame
 Requires: python3-module-pygame-doc
 Requires: python3-modules-curses
 Requires: python3-modules-nis
+Requires: python-module-pip
+Requires: python-module-pip-docs
+Requires: python3-module-pip
+Requires: python3-module-pip-docs
 %description secondary-vocational
 %{summary}.
 
@@ -428,6 +426,10 @@ Requires: python3-module-pygame
 Requires: python3-module-pygame-doc
 Requires: python3-modules-curses
 Requires: python3-modules-nis
+Requires: python-module-pip
+Requires: python-module-pip-docs
+Requires: python3-module-pip
+Requires: python3-module-pip-docs
 %description university
 %{summary}.
 
@@ -458,7 +460,6 @@ Group: Education
 Requires: italc3-master
 %endif
 Requires: itest-server
-Requires: installer-feature-init-italc
 Requires: ansible
 %ifnarch %e2k armh
 Requires: semaphore
@@ -475,7 +476,6 @@ Group: Education
 %ifnarch %e2k
 Requires: puppetserver
 Requires: puppetdb
-Requires: installer-feature-repo-add
 %endif
 %ifnarch %e2k armh
 Requires: semaphore
@@ -488,7 +488,6 @@ Requires: mariadb-client
 Requires: nano
 Requires: apt-rsync
 Requires: apt-repo
-Requires: installer-feature-online-repo
 Requires: setbranding
 Requires: htop
 Requires: bash-completion
@@ -498,7 +497,6 @@ Requires: perl-DBD-mysql
 Requires: openfire
 Requires: alterator-datetime
 Requires: alterator-console
-Requires: alterator-postinstall
 Requires: apache2-httpd-worker
 Requires: mariadb-server
 Requires: installed-db-office-server-mediawiki
@@ -508,7 +506,6 @@ Requires: alterator-fbi
 #Requires: alterator-bacula
 Requires: alterator-ca
 Requires: alterator-ddns
-Requires: installer-feature-resolver-bind-stage3
 Requires: alterator-dhcp
 Requires: alterator-firsttime
 Requires: alterator-kdc
@@ -538,16 +535,6 @@ Requires: alterator-xinetd
 Requires: alterator-postfix-dovecot
 Requires: alterator-ulogd
 Requires: xauth
-Requires: installer-feature-apache2-indexhtml-stage3
-Requires: installer-feature-apache2-userdir-stage3
-Requires: installer-feature-network-shares-client-stage3
-Requires: installer-feature-nfs-client-stage3
-Requires: installer-feature-nfs-server-stage3
-%ifarch %ix86 x86_64
-Requires: installer-feature-pxeboot-stage3
-%endif
-Requires: installer-feature-shm-defaults-stage3
-Requires: installer-feature-start-avahi
 Requires: xrdp
 %ifarch %ix86 x86_64
 Requires: docker-ce
@@ -611,5 +598,14 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Wed Apr 07 2021 Andrey Cherepanov <cas@altlinux.org> 1.2-alt1
+- Use java-devel instead of java-1.8.0-openjdk-devel.
+- Add trikStudioJunior to task-edu-gradeschool.
+- Add pip both for Python and Python3 for task-edu-highschool,
+  task-edu-secondary-vocational and task-edu-university.
+
+* Sat Apr 03 2021 Andrey Cherepanov <cas@altlinux.org> 1.1-alt1
+- Remove installer-feature* packages.
+
 * Thu Apr 01 2021 Andrey Cherepanov <cas@altlinux.org> 1.0-alt3
 - Initial build for Sisyphus.
