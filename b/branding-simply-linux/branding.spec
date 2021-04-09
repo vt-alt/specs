@@ -48,7 +48,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 9.0.91
+Version: 9.0.92
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -111,6 +111,9 @@ BuildArch: noarch
 Provides: plymouth-theme-%theme
 Requires: plymouth-plugin-script
 Requires: plymouth
+
+# ALT bug #39593
+Conflicts: system-logo
 
 %branding_add_conflicts simply-linux bootsplash
 
@@ -418,9 +421,6 @@ echo $lang > lang
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
-shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/boot.png
-# deprecated
-shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/boot.png
 
 %ifarch %ix86 x86_64
 %preun bootloader
@@ -521,6 +521,12 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Thu Apr 08 2021 Mikhail Efremov <sem@altlinux.org> 9.0.92-alt1
+- bootloader: Don't set GRUB_BACKGROUND.
+- menu: Add shotcut desktop file.
+- bootsplash: Conflict with system-logo.
+- menu: Add obs-studio desktop file.
+
 * Wed Feb 24 2021 Mikhail Efremov <sem@altlinux.org> 9.0.91-alt1
 - grub: Use KEYMAP_MIDDLE label text.
 - xfce-settings: Show power manager in tray.
