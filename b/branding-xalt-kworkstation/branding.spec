@@ -13,7 +13,7 @@
 
 %define major 9
 %define minor 1
-%define bugfix 3
+%define bugfix 4
 %define altversion %major.%minor
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
@@ -206,9 +206,9 @@ ALT index.html welcome page.
 %setup -n %name
 
 %if_enabled gfxboot
-%define x86 boot
+%define x86 grub boot
 %else
-%define x86 %nil
+%define x86 grub
 %endif
 
 mkdir design-bootloader-source-copy
@@ -331,18 +331,22 @@ popd
 mkdir -p %buildroot/usr/share/install2/slideshow
 install -m 0644 slideshow/*  %buildroot/usr/share/install2/slideshow/
 
-#bootloader
+
+%if_enabled gfxboot
 %pre bootloader
 [ -s /usr/share/gfxboot/%theme ] && rm -fr  /usr/share/gfxboot/%theme ||:
 [ -s /boot/splash/%theme ] && rm -fr  /boot/splash/%theme ||:
+%endif
 
 %post bootloader
+%if_enabled gfxboot
 %__ln_s -nf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
 cd boot/splash/%theme/
 echo $lang > lang
 [ "$lang" = "C" ] || echo lang | cpio -o --append -F message
+%endif
 . shell-config
 shell_config_set /etc/sysconfig/grub2 GRUB_THEME /boot/grub/themes/%theme/theme.txt
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
@@ -351,24 +355,18 @@ shell_config_set /etc/sysconfig/grub2 GRUB_BACKGROUND /boot/grub/themes/%theme/g
 # deprecated
 shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/grub.png
 
+%if_enabled gfxboot
 %preun bootloader
 [ $1 = 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
     %__rm -f /boot/splash/message
+%endif
 
 %post indexhtml
 %_sbindir/indexhtml-update
 
-%if_enabled gfxboot
-%files bootloader
-%_datadir/gfxboot/%theme
-/boot/splash/%theme
-/boot/grub/themes/%theme
-%endif
-
-#bootsplash
 %post bootsplash
-sed -i "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
+sed -i "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf ||:
 
 %post gnome-settings
 %gconf2_set string /desktop/gnome/interface/font_name Sans 11
@@ -381,6 +379,12 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 --load='/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' /apps/panel
 
 
+%files bootloader
+/boot/grub/themes/%theme
+%if_enabled gfxboot
+%_datadir/gfxboot/%theme
+/boot/splash/%theme
+%endif
 
 %files alterator
 %config %_altdir/*.rcc
@@ -402,7 +406,6 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_sysconfdir/*-*
 %_sysconfdir/buildreqs/packages/ignore.d/*
 %dir %_datadir/%name/
-
 
 %files notes
 %_datadir/alt-notes/*
@@ -436,6 +439,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Wed Apr 07 2021 Sergey V Turchin <zerg at altlinux dot org> 9.1.4-alt1
+- package grub theme for aarch64
+
 * Mon Jan 18 2021 Sergey V Turchin <zerg at altlinux dot org> 9.1.3-alt1
 - add english license text
 
