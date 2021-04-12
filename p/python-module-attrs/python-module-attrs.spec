@@ -3,7 +3,7 @@
 %def_with python3
 
 Name: python-module-%pkgname
-Version: 19.1.0
+Version: 19.3.0
 Release: alt1
 
 Summary: Python attributes without boilerplate
@@ -76,6 +76,9 @@ popd
 %endif
 
 %changelog
+* Wed Nov 13 2019 Vladimir Didenko <cow@altlinux.org> 19.3.0-alt1
+- New version
+
 * Wed Mar 13 2019 Vladimir Didenko <cow@altlinux.org> 19.1.0-alt1
 - New version
 

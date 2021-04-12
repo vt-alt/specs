@@ -1,20 +1,14 @@
 %define branch 1.11
-%define version %branch.23
-%define release alt1
+%define version %branch.29
+%define release alt2
 %define origname Django
 %define oname django
-%define py3_name python3-module-%oname
 
-%def_with python3
-%def_without check
+%def_disable check
 
 %setup_python_module django
 %add_python_req_skip cx_Oracle
 %add_findreq_skiplist %python_sitelibdir/%modulename/contrib/gis/db/backends/*/*
-%if_with python3
-%add_python3_req_skip cx_Oracle
-%add_findreq_skiplist %python3_sitelibdir/%oname/contrib/gis/db/backends/*/*
-%endif
 
 Summary: A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
 Name: python-module-%oname
@@ -27,74 +21,38 @@ BuildArch: noarch
 URL: http://www.djangoproject.com/
 Provides: Django = %EVR
 Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11 <= 1.11.22-alt1
-Obsoletes: python-module-django1.5 <= 1.5.0-alt3
+Obsoletes: python-module-django2.2 < %EVR
+Obsoletes: python-module-django1.5 < %EVR
 Conflicts: python-module-django1.0 python-module-django1.1
 Conflicts: python-module-django1.2
-
-#BuildPreReq: %py_dependencies setuptools
-#BuildPreReq: python-module-memcached python-module-mock
-
-# Automatically added by buildreq on Fri Jan 29 2016 (-bi)
-# optimized out: python-base python-devel python-module-funcsigs python-module-pbr python-module-setuptools python-module-six python-module-unittest2 python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-json python-modules-logging python-modules-unittest python-modules-xml python3 python3-base python3-module-cffi python3-module-cryptography python3-module-cssselect python3-module-enum34 python3-module-genshi python3-module-ntlm python3-module-pip python3-module-pycparser python3-module-setuptools tzdata
-BuildRequires: python-module-mock python-modules-sqlite3 python-modules-wsgiref python3-module-html5lib python3-module-pbr python3-module-unittest2 python3-modules-sqlite3 rpm-build-python3
-BuildRequires: python-module-six
-
-#BuildRequires: python-modules-encodings python-modules-sqlite3
-#BuildRequires: python-modules-xml
-#BuildRequires: python-modules-ctypes
-
-%if_with python3
-BuildRequires(pre): rpm-build-python3
-BuildRequires: python3-module-six
-#BuildPreReq: python3-devel python3-module-distribute
-#BuildPreReq: python3-module-memcached python3-module-mock
-#BuildPreReq: python-tools-2to3
-
-%add_python3_req_skip hotshot StringIO
-%endif
-
-%if_with check
-#BuildPreReq: python-modules-json
-#BuildPreReq: python-modules-wsgiref
-%if_with python3
-#BuildPreReq: python3-modules-sqlite3
-%endif
-%endif
-
-%description
-%summary
-
-%package tests
-Summary: Tests for Django
-Group: Development/Python
-BuildArch: noarch
-Requires: %name = %EVR
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-tests <= 1.11.22-alt1
-Obsoletes: python-module-django1.5-tests <= 1.5.0-alt3
+Provides: %name-tests = %EVR
+Provides: %name%branch-tests = %EVR
+Obsoletes: %name%branch-tests < %EVR
+Obsoletes: python-module-django1.5-tests < %EVR
 Conflicts: python-module-django1.0-tests
 Conflicts: python-module-django1.1-tests
 Conflicts: python-module-django1.2-tests
 
-%description tests
-%summary
 
-This package contains tests for Django.
+BuildRequires(pre): rpm-build-python
+BuildRequires: python-module-six
 
-%package mod_python
-Summary: mod_python support for Django.
-Group: Development/Python
-Requires: %name = %EVR
-Requires: apache2-mod_python
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-mod_python <= 1.11.22-alt1
-Obsoletes: python-module-django1.5-mod_python <= 1.5.0-alt3
-Conflicts: python-module-django1.0-mod_python
-Conflicts: python-module-django1.1-mod_python
-Conflicts: python-module-django1.2-mod_python
+%if_enabled check
+BuildRequires: python-module-sqlparse
+BuildRequires: python-module-pytz
+BuildRequires: python-modules-sqlite3
+BuildRequires: python-module-jinja2
+BuildRequires: python-module-numpy
+BuildRequires: python-module-pylibmc
+BuildRequires: python-module-memcached
+BuildRequires: python-module-yaml
+BuildRequires: python-module-enum34
+BuildRequires: python-module-selenium
+BuildRequires: python-module-mock
+BuildRequires: python-modules-wsgiref
+%endif
 
-%description mod_python
+%description
 %summary
 
 %package dbbackend-mysql
@@ -102,8 +60,8 @@ Summary: MySQLSQL support for Django.
 Group: Development/Python
 Requires: %name = %EVR
 %py_requires MySQLdb
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-dbbackend-mysql <= 1.11.22-alt1
+Provides: %name%branch-tests-mysql = %EVR
+Obsoletes: %name%branch-tests-mysql < %EVR
 Obsoletes: python-module-django1.5-dbbackend-mysql <= 1.5.0-alt3
 Conflicts: python-module-django1.0-dbbackend-mysql
 Conflicts: python-module-django1.1-dbbackend-mysql
@@ -117,8 +75,8 @@ Summary: PostgreSQL support for Django. (via psycopg)
 Group: Development/Python
 Requires: %name = %EVR
 %py_requires psycopg
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-dbbackend-psycopg <= 1.11.22-alt1
+Provides: %name%branch-psycopg = %EVR
+Obsoletes: %name%branch-psycopg < %EVR
 Obsoletes: python-module-django1.5-dbbackend-psycopg <= 1.5.0-alt3
 Conflicts: python-module-django1.0-dbbackend-psycopg
 Conflicts: python-module-django1.1-dbbackend-psycopg
@@ -132,8 +90,8 @@ Summary: PostgreSQL support for Django. (via psycopg2)
 Group: Development/Python
 Requires: %name = %EVR
 %py_requires psycopg2
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-dbbackend-psycopg2 <= 1.11.22-alt1
+Provides: %name%branch-psycopg2 = %EVR
+Obsoletes: %name%branch-psycopg2 < %EVR
 Obsoletes: python-module-django1.5-dbbackend-psycopg2 <= 1.5.0-alt3
 Conflicts: python-module-django1.0-dbbackend-psycopg2
 Conflicts: python-module-django1.1-dbbackend-psycopg2
@@ -147,8 +105,8 @@ Summary: SQLite3 support for Django.
 Group: Development/Python
 Requires: %name = %EVR
 %py_requires sqlite3
-Provides: %name%branch = %EVR
-Obsoletes: python-module-django1.11-dbbackend-sqlite3 <= 1.11.22-alt1
+Provides: %name%branch-sqlite3 = %EVR
+Obsoletes: %name%branch-sqlite3 < %EVR
 Obsoletes: python-module-django1.5-dbbackend-sqlite3 <= 1.5.0-alt3
 Conflicts: python-module-django1.0-dbbackend-sqlite3
 Conflicts: python-module-django1.1-dbbackend-sqlite3
@@ -157,104 +115,11 @@ Conflicts: python-module-django1.2-dbbackend-sqlite3
 %description dbbackend-sqlite3
 %summary
 
-%if_with python3
-%package -n %py3_name
-Summary: A high-level Python 3 Web framework that encourages rapid development and clean, pragmatic design.
-Group: Development/Python3
-BuildArch: noarch
-Provides: %py3_name%branch = %EVR
-%py3_provides django.utils.six.moves
-%py3_provides django.utils.six.moves.urllib.parse
-%py3_provides django.utils.six.moves.urllib.request
-Obsoletes: python3-module-django1.11 <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5 <= 1.5.0-alt3
-
-%description -n %py3_name
-%summary
-
-%package -n %py3_name-tests
-Summary: Tests for Django (Python 3)
-Group: Development/Python3
-BuildArch: noarch
-Requires: %py3_name = %EVR
-Provides: %py3_name%branch-tests = %EVR
-Obsoletes: python3-module-django1.11-tests <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-tests <= 1.5.0-alt3
-%add_python3_req_skip new
-
-%description -n %py3_name-tests
-%summary
-
-This package contains tests for Django.
-
-%package -n %py3_name-mod_python
-Summary: mod_python support for Django (Python 3)
-Group: Development/Python3
-Requires: %py3_name = %EVR
-Requires: apache2-mod_python
-Provides: %py3_name%branch-mod_python = %EVR
-Obsoletes: python3-module-django1.11-mod_python <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-mod_python <= 1.5.0-alt3
-
-%description -n %py3_name-mod_python
-%summary
-
-%package -n %py3_name-dbbackend-mysql
-Summary: MySQLSQL support for Django (Python 3)
-Group: Development/Python3
-Requires: %py3_name = %EVR
-Provides: %py3_name%branch-dbbackend-mysql = %EVR
-Obsoletes: python3-module-django1.11-dbbackend-mysql <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-dbbackend-mysql <= 1.5.0-alt3
-%py3_requires MySQLdb
-
-%description -n %py3_name-dbbackend-mysql
-%summary
-
-%package -n %py3_name-dbbackend-psycopg
-Summary: PostgreSQL support for Django. (via psycopg) (Python 3)
-Group: Development/Python3
-Requires: %py3_name = %EVR
-Provides: %py3_name%branch-dbbackend-psycopg = %EVR
-Obsoletes: python3-module-django1.11-dbbackend-psycopg <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-dbbackend-psycopg <= 1.5.0-alt3
-%py3_requires psycopg
-
-%description -n %py3_name-dbbackend-psycopg
-%summary
-
-%package -n %py3_name-dbbackend-psycopg2
-Summary: PostgreSQL support for Django. (via psycopg2) (Python 3)
-Group: Development/Python3
-Requires: %py3_name = %EVR
-Provides: %py3_name%branch-dbbackend-psycopg2 = %EVR
-Obsoletes: python3-module-django1.11-dbbackend-psycopg2 <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-dbbackend-psycopg2 <= 1.5.0-alt3
-%py3_requires psycopg2
-
-%description -n %py3_name-dbbackend-psycopg2
-%summary
-
-%package -n %py3_name-dbbackend-sqlite3
-Summary: SQLite3 support for Django (Python 3)
-Group: Development/Python3
-Requires: %py3_name = %EVR
-Provides: %py3_name%branch-dbbackend-sqlite3 = %EVR
-Obsoletes: python3-module-django1.11-dbbackend-sqlite3 <= 1.11.22-alt1
-Obsoletes: python3-module-django1.5-dbbackend-sqlite3 <= 1.5.0-alt3
-%py3_requires sqlite3
-
-%description -n %py3_name-dbbackend-sqlite3
-%summary
-
-%endif
-
 %package doc
 Summary: Django documentation
-Group: Development/Python
+Group: Development/Documentation
 Provides: %name%branch-doc = %EVR
-Provides: %py3_name%branch-doc = %EVR
-Obsoletes: python-module-django1.11-doc <= 1.11.22-alt1
+Obsoletes: %name%branch-doc < %EVR
 Obsoletes: python-module-django1.5-doc <= 1.5.0-alt3
 Obsoletes: python3-module-django-doc <= 1.5.0-alt1.alpha
 Conflicts: python-module-django1.0-doc
@@ -270,68 +135,27 @@ Conflicts: python-module-django1.2-doc
 # Use system six instead of bundled
 find -type f -name '*.py*' -exec sed -i 's|django.utils.six|six|'  -- '{}' +
 
-%if_with python3
-rm -rf ../python3
-cp -a . ../python3
-pushd ../python3
-find -type f -name '*.py*' -exec sed -i 's|%_bindir/env python|%_bindir/python3|' -- '{}' +
+find -type f -name '*.py*' -exec sed -i 's|%_bindir/env python|%_bindir/python2|' -- '{}' +
 find -type f -name '*.py' -exec sed -i 's|.*from future_builtins import zip.*||' -- '{}' +
-popd
-%endif
 
 %build
 %python_build
-%if_with python3
-pushd ../python3
-%python3_build
-popd
-%endif
 
 %install
 export LC_ALL=en_US.UTF-8
-
-mkdir -p %buildroot/%_sysconfdir/bash_completion.d
-
 %python_install
 mv %buildroot%_bindir/django-admin.py %buildroot%_bindir/django-admin.py2
-for i in $(find %buildroot%python_sitelibdir -name '*test*'); do
-	echo $i |sed 's|%buildroot\(.*\)|%%exclude \1\*|' >>%oname.notests
-	echo $i |sed 's|%buildroot\(.*\)|\1\*|' >>%oname.tests
-done
+
+# remove .po files
+find %buildroot -name "*.po" | xargs rm -f
 
 
-%if_with python3
-pushd ../python3
-%python3_install
-for i in $(find %buildroot%python3_sitelibdir -name '*test*'); do
-	echo $i |sed 's|%buildroot\(.*\)|%%exclude \1\*|' >>%oname.notests
-	echo $i |sed 's|%buildroot\(.*\)|\1\*|' >>%oname.tests
-done
-popd
-%endif
-
-
-install -m 0755 extras/django_bash_completion %buildroot/%_sysconfdir/bash_completion.d/django.sh
-
-%if_with check
 %check
-# Run tests
-pushd tests
-LANG="en_US.UTF-8" PYTHONPATH=%buildroot/%python_sitelibdir ./runtests.py --settings=test_sqlite
-popd
-%if_with python3
-pushd ../python3/tests
-LANG="en_US.UTF-8" PYTHONPATH=%buildroot/%python_sitelibdir ./runtests.py --settings=test_sqlite
-popd
-%endif
-# End tests
-%endif
+export PYTHONPATH=$(pwd)
+cd tests
+LANG="en_US.UTF-8" python runtests.py --settings=test_sqlite --verbosity=2 --parallel 1
 
-
-%files -f %oname.notests
-#%%exclude %python_sitelibdir/%modulename/core/handlers/modpython.py*
-#%%exclude %python_sitelibdir/%modulename/contrib/auth/handlers/modpython.py*
-
+%files
 %_bindir/django-admin.py2
 %python_sitelibdir/*
 
@@ -340,44 +164,8 @@ popd
 %exclude %python_sitelibdir/%modulename/db/backends/postgresql_psycopg2/
 %exclude %python_sitelibdir/%modulename/db/backends/sqlite3/
 
-#%%exclude %python_sitelibdir/%modulename/__pycache__
-#%%exclude %python_sitelibdir/%modulename/*/__pycache__
-#%%exclude %python_sitelibdir/%modulename/*/*/__pycache__
-#%%exclude %python_sitelibdir/%modulename/*/*/*/__pycache__
-#%%exclude %python_sitelibdir/%modulename/*/*/*/*/__pycache__
-#%%exclude %python_sitelibdir/%modulename/*/*/*/*/*/__pycache__
-
-%config %_sysconfdir/bash_completion.d/django.sh
-
-%files tests -f %oname.tests
-
-%if_with python3
-%files -n %py3_name -f ../python3/%oname.notests
-%_bindir/django-admin
-%_bindir/django-admin.py
-%python3_sitelibdir/*
-#exclude %python3_sitelibdir/%oname/core/handlers/modpython.py*
-#exclude %python3_sitelibdir/%oname/contrib/auth/handlers/modpython.py*
-
-%exclude %python3_sitelibdir/%oname/db/backends/mysql/
-#exclude %python3_sitelibdir/%oname/db/backends/postgresql/
-%exclude %python3_sitelibdir/%oname/db/backends/postgresql_psycopg2/
-%exclude %python3_sitelibdir/%oname/db/backends/sqlite3/
-
-%exclude %python3_sitelibdir/%oname/*/*/*/test*
-%exclude %python3_sitelibdir/%oname/*/*/*/*/test*
-
-%files -n %py3_name-tests -f ../python3/%oname.tests
-%python3_sitelibdir/%oname/*/*/*/test*
-%python3_sitelibdir/%oname/*/*/*/*/test*
-%endif
-
 %files doc
 %doc docs
-
-#%%files mod_python
-#%%python_sitelibdir/%modulename/core/handlers/modpython.py*
-#%%python_sitelibdir/%modulename/contrib/auth/handlers/modpython.py*
 
 %files dbbackend-mysql
 %python_sitelibdir/%modulename/db/backends/mysql/
@@ -391,25 +179,20 @@ popd
 %files dbbackend-sqlite3
 %python_sitelibdir/%modulename/db/backends/sqlite3/
 
-%if_with python3
-#files -n %py3_name-mod_python
-#python3_sitelibdir/%oname/core/handlers/modpython.py*
-#python3_sitelibdir/%oname/contrib/auth/handlers/modpython.py*
-
-%files -n %py3_name-dbbackend-mysql
-%python3_sitelibdir/%oname/db/backends/mysql/
-
-#files -n %py3_name-dbbackend-psycopg
-#python3_sitelibdir/%oname/db/backends/postgresql/
-
-%files -n %py3_name-dbbackend-psycopg2
-%python3_sitelibdir/%oname/db/backends/postgresql_psycopg2/
-
-%files -n %py3_name-dbbackend-sqlite3
-%python3_sitelibdir/%oname/db/backends/sqlite3/
-%endif
-
 %changelog
+* Wed Feb 24 2021 Alexey Shabalin <shaba@altlinux.org> 1.11.29-alt2
+- rename package to python-module-django back
+
+* Sun Apr 12 2020 Alexey Shabalin <shaba@altlinux.org> 1.11.29-alt1
+- 1.11.29
+- build only for python2
+- merge tests package to main
+- enable tests
+- Fixes for the following security vulnerabilities:
+  + CVE-2019-19844: Potential account hijack via password reset form
+  + CVE-2020-7471: Potential SQL injection via StringAgg(delimiter)
+  + CVE-2020-9402: Potential SQL injection via tolerance parameter in GIS functions and aggregates on Oracle
+
 * Mon Aug 05 2019 Alexey Shabalin <shaba@altlinux.org> 1.11.23-alt1
 - 1.11.23
 - Fixes for the following security vulnerabilities:
