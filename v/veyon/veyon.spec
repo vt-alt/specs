@@ -2,7 +2,7 @@
 
 Name: veyon
 Version: 4.5.4
-Release: alt1
+Release: alt3
 Group: Education
 License: GPLv2
 Url: https://veyon.io/
@@ -12,6 +12,8 @@ Summary: Open source computer monitoring and classroom management
 Summary(ru.UTF-8): Программа с открытым кодом для контроля компьютеров и организации учебного процесса
 
 Requires: polkit qca-qt5-ossl qt5-translations
+
+Obsoletes: italc3
 
 Source: %name-%version.tar
 
@@ -37,21 +39,21 @@ BuildRequires: libXdamage-devel
 BuildRequires: libXtst-devel
 
 %description
-Veyon is a free and open source software 
+Veyon is a free and open source software
 for computer monitoring and classroom management supporting Windows and Linux.
 It enables teachers to view and control computer labs and interact with students.
 Veyon is available in different languages and provides lots of useful features:
 
 * see what's going on in computer labs in overview mode and take screenshots
 * remote control computers to support and help users
-* broadcast teacher's screen to students in realtime by using demo mode 
+* broadcast teacher's screen to students in realtime by using demo mode
 (either in fullscreen or in a window)
 * lock workstations for attracting attention to teacher
 * send text messages to students
 * powering on/off and rebooting computers remote
 * remote logoff and remote execution of arbitrary commands/scripts
-* home schooling - Veyon's network technology is not restricted to a subnet 
-and therefore students at home can join lessons via VPN connections 
+* home schooling - Veyon's network technology is not restricted to a subnet
+and therefore students at home can join lessons via VPN connections
 just by installing the Veyon service.
 
 %description -l ru_RU.UTF-8
@@ -100,6 +102,15 @@ mv .gear/3rdparty ./
 %_datadir/%name
 
 %changelog
+* Sat Apr 10 2021 Egor Ignatov <egori@altlinux.org> 4.5.4-alt3
+- Clean up spec
+
+* Wed Mar 24 2021 Egor Ignatov <egori@altlinux.org> 4.5.4-alt2
+- Fixed:
+  + ALT Education authentification error (#37960)
+  + Incorrect display of the Computers list (#37952)
+  + Typo in russian translation
+
 * Wed Mar 17 2021 Egor Ignatov <egori@altlinux.org> 4.5.4-alt1
 - new version
 
