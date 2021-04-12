@@ -2,7 +2,7 @@ Name: kernel-image-std-def
 Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .108
+%define kernel_sublevel .111
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -138,7 +138,6 @@ BuildRequires: ccache
 Requires: bootloader-utils >= 0.4.24-alt1
 Requires: module-init-tools >= 3.1
 Requires: mkinitrd >= 1:2.9.9-alt1
-Requires: startup >= 0.8.3-alt1
 
 Provides: kernel = %kversion
 
@@ -440,6 +439,8 @@ install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 %make_build modules_install INSTALL_MOD_PATH=%buildroot
 
+install -d %buildroot%modules_dir/updates
+
 # Move some modules to kernel-image package tree
 # rmi2-core deps
 install -d %buildroot%modules_dir/kernel/drivers/media-core/
@@ -638,6 +639,7 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 /boot/System.map-%kversion-%flavour-%krelease
 /boot/config-%kversion-%flavour-%krelease
 %dir %modules_dir/
+%dir %modules_dir/updates
 %defattr(0600,root,root,0700)
 %modules_dir/*
 %exclude %modules_dir/build
@@ -715,6 +717,18 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Sat Apr 10 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.111-alt1
+- v5.4.111
+
+* Thu Apr 08 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.110-alt1
+- v5.4.110
+
+* Wed Mar 31 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.109-alt1
+- v5.4.109
+
+* Tue Mar 30 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.108-alt2
+- changelog entry for p9
+
 * Sat Mar 27 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.108-alt1
 - v5.4.108
 
@@ -1104,6 +1118,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 
 * Tue Sep 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.14-alt1
 - v5.2.14
+
+* Tue Sep 10 2019 Kernel Bot <kernelbot@altlinux.org> 1:4.19.72-alt1
+- v4.19.72
 
 * Fri Sep 06 2019 Kernel Bot <kernelbot@altlinux.org> 1:5.2.12-alt1
 - v5.2.12
