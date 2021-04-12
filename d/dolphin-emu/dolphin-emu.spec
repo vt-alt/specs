@@ -1,10 +1,12 @@
-%define git_version 13817
-%define git_commit 72a6fff36c42989c71765012e26285943085b8c5
+# git describe upstream | sed 's/-g[0-9a-f]*\(+*\)$/\1/'
+%define git_version 5.0-13963
+# git show-ref --heads --hash upstream
+%define git_commit 5513d5f4f732fb1e436765ab87e7d60ba02b1ad6
 
 %add_optflags %optflags_shared
 
 Name: dolphin-emu
-Version: 5.0.%git_version
+Version: 5.0.13963
 Release: alt0.p9.1
 
 Summary: The Gamecube / Wii Emulator
@@ -29,6 +31,7 @@ BuildRequires: cmake
 BuildRequires: libcubeb-devel
 BuildRequires: libmbedtls-devel
 BuildRequires: libminiupnpc-devel
+BuildRequires: llvm11.0-devel-static
 BuildRequires: pkgconfig(Qt5)
 BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(bzip2)
@@ -75,7 +78,7 @@ you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 %cmake .. \
 	-DENABLE_LTO:BOOL=TRUE \
 	-DUSE_SHARED_ENET:BOOL=TRUE \
-	-DDOLPHIN_WC_DESCRIBE:STRING="%(sed 's|\.|-|2' <<< %version)" \
+	-DDOLPHIN_WC_DESCRIBE:STRING="%git_version" \
 	-DDOLPHIN_WC_REVISION:STRING="%git_commit" \
 	-DDOLPHIN_WC_BRANCH:STRING="master" \
 	-DDISTRIBUTOR:STRING="ALT Linux Team" \
@@ -98,6 +101,16 @@ you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 %config %_udevrulesdir/51-%name-usb-device.rules
 
 %changelog
+* Sat Apr 10 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13963-alt0.p9.1
+- Build for branch p9
+
+* Wed Apr 07 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13963-alt1
+- Version 5.0-13963
+
+* Sun Mar 14 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13827-alt1
+- Version 5.0-13827
+- Enables LLVM support
+
 * Sat Mar 13 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13817-alt0.p9.1
 - Build for branch p9 with shared optflags
 
