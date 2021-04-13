@@ -2,7 +2,7 @@
 %define oname ALTMediaWriter
 
 Name:           altmediawriter
-Version:        0.6.1
+Version:        0.6.2
 Release:        alt1
 Summary:        ALT Media Writer
 Group:          System/Configuration/Other
@@ -59,6 +59,9 @@ appstream-util validate-relax --nonet %buildroot/%_datadir/appdata/%name.appdata
 
 
 %changelog
+* Mon Apr 12 2021 Dmitry Degtyarev <kevl@altlinux.org> 0.6.2-alt1
+- 0.6.2
+
 * Thu Nov 05 2020 Dmitry Degtyarev <kevl@altlinux.org> 0.6.1-alt1
 - Fix arch and file type translations
 - Fix missing header on some Qt versions
