@@ -3,8 +3,8 @@
 %define theme education
 %define Theme Education
 %define codename FalcoRusticolus
-%define status %nil
-%define status_en %nil
+%define status beta
+%define status_en beta
 %define flavour %brand-%theme
 
 %define gtk_theme Breeze
@@ -18,8 +18,8 @@
 %define design_graphics_abi_bugfix 0
 
 Name: branding-%flavour
-Version: 9.1
-Release: alt1
+Version: 9.2
+Release: alt0.2.beta
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -137,10 +137,10 @@ This package contains some graphics for %distro_name design.
 BuildArch: noarch
 Summary:  %distro_name release file
 Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
-License:  GPL
+License:  Distributable
 Group:    System/Configuration/Other
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
-Obsoletes: %obsolete_list  branding-alt-%theme-release
+Obsoletes: %obsolete_list
 %branding_add_conflicts %flavour release
 Requires: pam-limits-desktop
 
@@ -465,6 +465,14 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.2.beta
+- installer: add logo to bottom left corner.
+
+* Sat Apr 03 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.1.beta
+- 9.2 beta
+- Fix links and update copyright years in indexhtml.
+- Fix overrided menu item for missing application behaviour.
+
 * Tue Jun 30 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt1
 - 9.1
 - Return idle3 to menu and complete its localization.
