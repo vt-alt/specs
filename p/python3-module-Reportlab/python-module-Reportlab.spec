@@ -1,79 +1,33 @@
 %define rname reportlab
 %define oname Reportlab
 
-%def_without python3
-
-Name: python-module-%oname
-Version: 3.4.0
-Release: alt5
+Name: python3-module-%oname
+Version: 3.5.66
+Release: alt1
 
 Summary: The Reportlab Toolkit
 
 License: BSD license (see LICENSE.txt for details)
-Group: Development/Python
+Group: Development/Python3
 Url: http://www.reportlab.org
 
 # Source-url: %__pypi_url %rname
 Source: reportlab-%version.tar
 
-BuildRequires(pre): rpm-macros-sphinx
-# Automatically added by buildreq on Wed Jan 27 2016 (-bi)
-# optimized out: elfutils python-base python-devel python-module-PyStemmer python-module-Pygments python-module-babel python-module-cssselect python-module-jinja2 python-module-jinja2-tests python-module-markupsafe python-module-pytz python-module-setuptools python-module-six python-module-snowballstemmer python-module-sphinx python-module-sphinx_rtd_theme python-modules python-modules-compiler python-modules-ctypes python-modules-email python-modules-encodings python-modules-json python-modules-logging python-modules-multiprocessing python-modules-unittest python3 python3-base
-BuildRequires: python-module-alabaster python-module-docutils python-module-html5lib python-module-objects.inv python3-devel rpm-build-python3 time
-
-BuildRequires: python-dev
-
-#BuildRequires: rpm-build-python >= 0.8
-#BuildRequires: python-devel python-module-sphinx-devel
-%if_with python3
+BuildRequires(pre): rpm-build-intro >= 2.2.5
+BuildRequires(pre): rpm-macros-sphinx3
 BuildRequires(pre): rpm-build-python3
-#BuildRequires: python3-devel
-%endif
 
-%add_python_req_skip rlextra
-
-Provides: python-reportlab
+BuildRequires: python3-module-sphinx
 
 %description
 The ReportLab Toolkit.
 An Open Source Python library for generating PDFs and graphics.
 
-%package -n python3-module-%oname
-Summary: The Reportlab Toolkit
-Group: Development/Python3
-%add_python3_req_skip rlextra __main__
-
-%description -n python3-module-%oname
-The ReportLab Toolkit.
-An Open Source Python library for generating PDFs and graphics.
-
-%package -n python3-module-%oname-tests
-Summary: Tests for Reportlab Toolkit
-Group: Development/Python3
-Requires: python3-module-%oname = %version-%release
-
-%description -n python3-module-%oname-tests
-The ReportLab Toolkit.
-An Open Source Python library for generating PDFs and graphics.
-
-This package contains tests for Reportlab Toolkit.
-
-%package tests
-Summary: Tests for Reportlab Toolkit
-Group: Development/Python
-Requires: %name = %version-%release
-
-%description tests
-The ReportLab Toolkit.
-An Open Source Python library for generating PDFs and graphics.
-
-This package contains tests for Reportlab Toolkit.
-
 %package docs
 Summary: Documentation for Reportlab Toolkit
 Group: Development/Documentation
 BuildArch: noarch
-Conflicts: %name < %version-%release
 
 %description docs
 The ReportLab Toolkit.
@@ -82,65 +36,30 @@ An Open Source Python library for generating PDFs and graphics.
 This package contains documentation for Reportlab Toolkit.
 
 %prep
-%setup -n reportlab-%{version}
-
-%if_with python3
-cp -fR . ../python3
-%endif
-
-%prepare_sphinx docs
-ln -s ../objects.inv docs/source/
+%setup -n reportlab-%version
 
 %build
 %add_optflags -fno-strict-aliasing
-%python_build_debug
-
-%if_with python3
-pushd ../python3
 %python3_build_debug
-popd
-%endif
 
-%make -C docs html
+%make -C docs html SPHINXBUILD=sphinx-build-3
 
 %install
-%add_optflags -fno-strict-aliasing
-%python_build_install --optimize=2 \
-	--record=INSTALLED_FILES
-
-cp -fR tests %buildroot%python_sitelibdir/%rname/
-
-%if_with python3
-pushd ../python3
 %python3_install
-cp -fR tests %buildroot%python3_sitelibdir/%rname/
-popd
-%endif
+%python3_prune
 
-%files -f INSTALLED_FILES
+%files
 %doc *.txt
-%python_sitelibdir/%rname
-%exclude %python_sitelibdir/%rname/tests
-
-%files tests
-%python_sitelibdir/%rname/tests
+%python3_sitelibdir/%rname/
+%python3_sitelibdir/%rname-*.egg-info/
 
 %files docs
 %doc docs/build/html docs/userguide demos
 
-%if_with python3
-%files -n python3-module-%oname
-%doc *.txt
-%python3_sitelibdir/*
-%exclude %python3_sitelibdir/%rname/tests
-
-%files -n python3-module-%oname-tests
-%python3_sitelibdir/%rname/tests
-%endif
-
 %changelog
-* Wed Apr 07 2021 Vitaly Lipatov <lav@altlinux.ru> 3.4.0-alt5
-- build python2 module only
+* Wed Apr 07 2021 Vitaly Lipatov <lav@altlinux.ru> 3.5.66-alt1
+- build python3 separately
+- new version 3.5.66 (with rpmrb script) (ALT bug 39865)
 
 * Sun Apr 07 2019 Michael Shigorin <mike@altlinux.org> 3.4.0-alt3
 - added explicit BR: python-dev to ease e2k python upgrade
