@@ -1,5 +1,5 @@
 Name: alt-csp-cryptopro
-Version: 0.1.1
+Version: 0.1.5
 Release: alt1
 
 Group: File tools
@@ -42,6 +42,19 @@ install -m 0644 BUILD/*.qm %buildroot/%_qt5_translationdir/
 %_datadir/file-manager/actions/alt-csp-cryptopro.desktop
 
 %changelog
+* Tue Apr 13 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.5-alt1
+- fail if there are untrusted certs
+
+* Tue Apr 13 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.4-alt1
+- new version (Closes: #39547)
+
+* Fri Apr 09 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.3-alt1
+- quit without pop-ups in case of errors in headless mode
+
+* Wed Apr 07 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.2-alt1
+- implement headless signature verifying
+- ignore cprocsp-rdr-gui-gtk-64 package (Closes: #39547)
+
 * Mon Apr 05 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.1-alt1
 - fix regression
 - report no errors

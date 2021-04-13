@@ -14,8 +14,8 @@
 %define libokularcore libokular5core%sover
 
 Name: kde5-%rname
-Version: 19.12.3
-Release: alt1
+Version: 20.12.3
+Release: alt2
 %K5init %{?_enable_obsolete_kde4:no_altplace} %{!?_enable_obsolete_kde4:no_appdata}
 
 Group: Office
@@ -32,9 +32,12 @@ Obsoletes: kde4graphics-okular < %version-%release
 %endif
 
 Source: %rname-%version.tar
+Source10: alt-loading-ru.po
 Patch1: alt-chm-encoding.patch
 Patch2: alt-def-memory-level.patch
 Patch3: alt-print-truncate-title.patch
+Patch4: alt-add-indication-for-document-loading-process.patch
+Patch5: alt-cryptopro-verifying.patch
 
 # Automatically added by buildreq on Tue Jan 19 2016 (-bi)
 # optimized out: cmake cmake-modules docbook-dtds docbook-style-xsl elfutils fontconfig gcc-c++ gtk-update-icon-cache kf5-kdoctools-devel libEGL-devel libGL-devel libdbusmenu-qt52 libfreetype-devel libgpg-error libjson-c libpoppler1-qt5 libqca-qt5 libqt5-core libqt5-dbus libqt5-gui libqt5-network libqt5-printsupport libqt5-qml libqt5-quick libqt5-svg libqt5-test libqt5-widgets libqt5-x11extras libqt5-xml libstdc++-devel libxcbutil-keysyms pkg-config python-base python-modules python3 python3-base qt5-base-devel ruby ruby-stdlibs xml-common xml-utils xz zlib-devel
@@ -46,9 +49,9 @@ BuildRequires: zlib-devel libdiscount-devel
 BuildRequires: ebook-tools-devel libdjvu-devel libjpeg-devel libpoppler-qt5-devel libqca-qt5-devel libspectre-devel libtiff-devel
 BuildRequires: kde5-libkexiv2-devel
 BuildRequires: plasma5-libkscreen-devel
-#BuildRequires: kf5-purpose-devel
+BuildRequires: kf5-purpose-devel
 BuildRequires: kf5-kactivities-devel kf5-karchive-devel kf5-kauth-devel kf5-kbookmarks-devel kf5-kcodecs-devel kf5-kcompletion-devel kf5-kconfig-devel
-BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel kf5-kdelibs4support kf5-kdelibs4support-devel
+BuildRequires: kf5-kconfigwidgets-devel kf5-kcoreaddons-devel kf5-kcrash-devel kf5-kdbusaddons-devel
 BuildRequires: kf5-kdesignerplugin-devel kf5-kdoctools kf5-kdoctools-devel-static kf5-kemoticons-devel kf5-kguiaddons-devel kf5-khtml-devel
 BuildRequires: kf5-ki18n-devel kf5-kiconthemes-devel kf5-kinit-devel kf5-kio-devel kf5-kitemmodels-devel kf5-kitemviews-devel kf5-kjobwidgets-devel
 BuildRequires: kf5-kjs-devel kf5-knotifications-devel kf5-kparts-devel kf5-kpty-devel kf5-kservice-devel kf5-ktextwidgets-devel
@@ -106,10 +109,22 @@ KF5 library
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p2
+%patch5 -p2
 sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
+
+tmp_file=`mktemp`
+msgcat --use-first po/ru/okular.po %SOURCE10 >"$tmp_file"
+cat "$tmp_file" >po/ru/okular.po
+rm -f "$tmp_file"
 
 %build
 %K5build \
+%if_enabled mobile
+    -DOKULAR_UI=both \
+%else
+    -DOKULAR_UI=desktop \
+%endif
     -DLIBZIP_INCLUDE_DIR=%_includedir/libzip \
     -DINCLUDE_INSTALL_DIR=%_K5inc \
     -Ddiscount_INCLUDE_DIR=%_includedir \
@@ -189,6 +204,45 @@ sed -i '/^add_subdirectory.*ooo/d' generators/CMakeLists.txt
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Wed Apr 07 2021 Oleg Solovyov <mcpain@altlinux.org> 20.12.3-alt2
+- implement gost signatures verifying
+
+* Thu Mar 11 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.3-alt1
+- new version
+
+* Fri Feb 19 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.2-alt2
+- build with kf5-purpose
+
+* Fri Feb 05 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.2-alt1
+- new version
+
+* Thu Jan 14 2021 Sergey V Turchin <zerg@altlinux.org> 20.12.1-alt1
+- new version
+
+* Fri Dec 18 2020 Sergey V Turchin <zerg@altlinux.org> 20.12.0-alt1
+- new version
+
+* Wed Nov 25 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.3-alt1
+- new version
+
+* Wed Nov 11 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.2-alt3
+- apply patch for document loading progress
+
+* Tue Nov 03 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.2-alt2
+- don't apply patch for document loading progress
+
+* Wed Oct 14 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.2-alt1
+- new version
+
+* Fri Sep 18 2020 Sergey V Turchin <zerg@altlinux.org> 20.08.1-alt1
+- new version
+
+* Fri Aug 14 2020 Sergey V Turchin <zerg@altlinux.org> 20.04.3-alt1
+- new version
+
+* Mon Jul 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 19.12.3-alt2
+- Added indicator for document loading (related to ALT bug #38664)
+
 * Thu Mar 12 2020 Sergey V Turchin <zerg@altlinux.org> 19.12.3-alt1
 - new version
 
