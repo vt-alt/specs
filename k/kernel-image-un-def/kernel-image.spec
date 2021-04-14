@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
-Release: alt1
+Release: alt2
 epoch:1 
 %define kernel_base_version	5.10
-%define kernel_sublevel .28
+%define kernel_sublevel .29
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -234,6 +234,22 @@ and to the kernel.  The first major use for the DRI is to create fast
 OpenGL implementations.
 
 These are modules for your ALT Linux system
+
+%ifarch aarch64
+%package -n kernel-modules-midgard-be-m1000-%flavour
+Summary: Non-DRM driver for Mali Midgard GPU for BE-M1000 SoC
+Group: System/Kernel and hardware
+Prereq: coreutils
+Prereq: module-init-tools >= 3.1
+Prereq: %name = %epoch:%version-%release
+Requires(postun): %name = %epoch:%version-%release
+
+%description -n kernel-modules-midgard-be-m1000-%flavour
+Kernel part of non-DRM driver for Mali T628 GPU. Requires a proprietary
+userspace library (libmali.so) to make use of GPU. Suitable for BE-M1000
+SoC only. Use the open source panfrost driver included in
+kernel-modules-drm-%flavour package unless you know what are you doing.
+%endif
 
 %package -n kernel-modules-ide-%flavour
 Summary: IDE  driver modules (obsolete by PATA)
@@ -600,6 +616,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %exclude %modules_dir/kernel/drivers/media/
 %exclude %modules_dir/kernel/drivers/staging/
 %exclude %modules_dir/kernel/drivers/gpu/drm
+%ifarch aarch64
+%exclude %modules_dir/kernel/drivers/gpu/arm
+%endif
 %ifnarch aarch64
 %exclude %modules_dir/kernel/drivers/ide/
 %endif
@@ -654,6 +673,11 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/gpu/drm/mga
 %modules_dir/kernel/drivers/gpu/drm/via
 
+%ifarch aarch64
+%files -n kernel-modules-midgard-be-m1000-%flavour
+%modules_dir/kernel/drivers/gpu/arm/midgard/
+%endif
+
 %files -n kernel-modules-ide-%flavour
 %modules_dir/kernel/drivers/ide/
 %endif
@@ -665,6 +689,13 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Mon Apr 12 2021 Alexey Sheplyakov <asheplyakov@altlinux.org> 1:5.10.29-alt2
+- Moved quasi-open source Mali T628 driver `mali_kbase` into subpackage
+- panfrost is loaded by default on BE-M1000
+
+* Sat Apr 10 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.29-alt1
+- v5.10.29
+
 * Thu Apr 08 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.28-alt1
 - v5.10.28  (Fixes: CVE-2021-29657)
 
