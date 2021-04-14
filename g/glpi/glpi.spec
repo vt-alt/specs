@@ -1,7 +1,7 @@
 %define installdir %webserver_webappsdir/%name
 
 Name: glpi
-Version: 9.5.3
+Version: 9.5.4
 Release: alt1
 
 Summary: IT and asset management software
@@ -113,6 +113,7 @@ fi
 %installdir/js
 %installdir/lib
 %installdir/locales
+%installdir/marketplace
 %installdir/pics
 %installdir/plugins
 %installdir/public
@@ -138,6 +139,20 @@ fi
 %files php7
 
 %changelog
+* Wed Mar 31 2021 Pavel Zilke <zidex at altlinux dot org> 9.5.4-alt1
+- New version 9.5.4
+- This is a security release, upgrading is recommended
+- Security fixes:
+ + CVE-2021-21326 : Horizontal Privilege Escalation
+ + CVE-2021-21255 : entities switch IDOR
+ + CVE-2021-21258 : XSS injection in ajax/kanban
+ + CVE-2021-21314 : XSS injection on ticket update
+ + CVE-2021-21312 : Stored XSS on documents
+ + CVE-2021-21313 : XSS on tabs
+ + CVE-2021-21325 : Stored XSS in budget type
+ + CVE-2021-21327 : Unsafe Reflection in getItemForItemtype()
+ + CVE-2021-21324 : Insecure Direct Object Reference (IDOR) on "Solutions"
+
 * Sat Dec 05 2020 Pavel Zilke <zidex at altlinux dot org> 9.5.3-alt1
 - New version 9.5.3
 - This is a security release, upgrading is recommended
