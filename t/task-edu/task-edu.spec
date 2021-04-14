@@ -1,5 +1,5 @@
 Name:    task-edu
-Version: 1.2
+Version: 1.4
 Release: alt1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
@@ -71,7 +71,7 @@ Requires: chromium-disable-webfonts
 %endif
 Requires: fonts-otf-mozilla-fira
 %ifarch %ix86 x86_64 %e2k
-Requires: italc3-client
+Requires: veyon
 %endif
 Requires: itest
 Requires: kumir2
@@ -340,9 +340,7 @@ Requires: kde5-khelpcenter
 Requires: freecad
 %endif
 Requires: python-module-pip
-Requires: python-module-pip-docs
 Requires: python3-module-pip
-Requires: python3-module-pip-docs
 %description highschool
 %{summary}.
 
@@ -457,7 +455,7 @@ Summary(ru_RU.UTF-8): Образовательное программное об
 Summary: Software for teachers
 Group: Education
 %ifnarch armh
-Requires: italc3-master
+Requires: veyon
 %endif
 Requires: itest-server
 Requires: ansible
@@ -598,6 +596,12 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 1.4-alt1
+- Replace italc3 to veyon. 
+
+* Sun Apr 11 2021 Andrey Cherepanov <cas@altlinux.org> 1.3-alt1
+- Remove documentation for pip.
+
 * Wed Apr 07 2021 Andrey Cherepanov <cas@altlinux.org> 1.2-alt1
 - Use java-devel instead of java-1.8.0-openjdk-devel.
 - Add trikStudioJunior to task-edu-gradeschool.
