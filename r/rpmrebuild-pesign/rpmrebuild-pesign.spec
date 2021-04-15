@@ -1,5 +1,5 @@
 Name: rpmrebuild-pesign
-Version: 0.2.3
+Version: 0.2.4
 Release: alt1
 
 Summary: Signer for packages containing PE format files
@@ -29,6 +29,9 @@ install -pm755 pesign-change-{files,spec}.sh \
 %_libexecdir/rpmrebuild/plugins/pesign*
 
 %changelog
+* Tue Oct 27 2020 Alexey Shabalin <shaba@altlinux.org> 0.2.4-alt1
+- Add systemd-boot sign support
+
 * Mon Mar 18 2019 Nikolai Kostrigin <nickel@altlinux.org> 0.2.3-alt1
 - Prevent second signing of shim<efi_arch>.efi binaries signed by Microsoft
 
