@@ -1,6 +1,6 @@
 Name: firmware-linux
-Version: 20200422
-Release: alt2
+Version: 20210403
+Release: alt1
 
 Summary: Firmware files used by the Linux kernel
 License: GPL+ and GPLv2+ and MIT and Redistributable, no modification permitted
@@ -82,6 +82,282 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/liquidio
 
 %changelog
+* Mon Apr 05 2021 Cronbuild Service <cronbuild@altlinux.org> 20210403-alt1
+- upstream changes (GIT 0dd245d):
+  + rtl_bt: Add rtl8723bs_config-OBDA0623.bin symlink (thx Hans de Goede)
+  + brcm: Add nvram for the Chuwi Hi8 (CWI509) tablet (thx Hans de Goede)
+  + brcm: Add nvram for the Predia Basic tablet (thx Hans de Goede)
+  + qcom: sm8250: update remoteproc firmware (thx Dmitry Baryshkov)
+  + qcom: update a650 firmware files (thx Dmitry Baryshkov)
+
+* Sun Mar 28 2021 Cronbuild Service <cronbuild@altlinux.org> 20210322-alt1
+- upstream changes (GIT 3f026a2):
+  + rtl_bt: Update RTL8822C BT(UART I/F) FW to 0x59A_76A3 (thx hildawu)
+  + amdgpu: update sienna cichlid firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update vega20 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update picasso firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update navi12 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update renoir firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: update raven firmware for 20.50 (thx Alex Deucher)
+  + amdgpu: add initial support for navy flounder (thx Alex Deucher)
+
+* Sun Mar 21 2021 Cronbuild Service <cronbuild@altlinux.org> 20210310-alt1
+- upstream changes (GIT 3568f96):
+  + Update firmware file for Intel Bluetooth AX210 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + rtw88: 8822c: Update normal firmware to v9.9.6 (thx Zong-Zhe Yang)
+  + iwlwifi: add new FWs from core59-66 release (thx Luca Coelho)
+  + iwlwifi: update 9000-family firmwares (thx Luca Coelho)
+  + iwlwifi: update 7265D firmware (thx Luca Coelho)
+
+* Sun Mar 07 2021 Cronbuild Service <cronbuild@altlinux.org> 20210305-alt1
+- upstream changes (GIT e425f76):
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.2406 (thx Petr Machata)
+  + add frimware for mediatek bluetooth chip (MT7921) (thx mark-yw.chen)
+  + rtw89: 8852a: add firmware v0.9.12.2 (thx Ping-Ke Shih)
+  + WHENCE: add missing symlink for BananaPi M3 (thx maximilian attems)
+  + brcm: Fix Raspberry Pi 4B NVRAM file (thx Matthias Brugger)
+  + silabs: add new firmware for WF200 (thx J?r?me Pouiller)
+
+* Sun Feb 14 2021 Cronbuild Service <cronbuild@altlinux.org> 20210211-alt1
+- upstream changes (GIT f7915a0):
+  + amdgpu: add initial firmware for green sardine (thx Alex Deucher)
+  + rtw88: RTL8822C: Update normal firmware to v9.9.5 (thx Zong-Zhe Yang)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.2304 (thx Petr Machata)
+  + add firmware for MT7921 (thx Sean Wang)
+  + rtw88: RTL8821C: Update firmware to v24.8 (thx Guo-Feng Fan)
+  + Update firmware file for Intel Bluetooth AX210 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + i915: Add DMC v2.01 for ADL-S (thx Anusha Srivatsa)
+  + i915: Add HuC v7.7.1 for DG1 (thx Anusha Srivatsa)
+  + i915: Add GuC v49.0.1 for DG1 (thx Anusha Srivatsa)
+  + qcom: Add venus firmware files for VPU-1.0 (thx Dmitry Baryshkov)
+  + qcom: Add SM8250 Compute DSP firmware (thx Dmitry Baryshkov)
+  + qcom: Add SM8250 Audio DSP firmware (thx Dmitry Baryshkov)
+  + qcom: add firmware files for Adreno a650 (thx Dmitry Baryshkov)
+
+* Sun Jan 24 2021 Cronbuild Service <cronbuild@altlinux.org> 20210111-alt1
+- upstream changes (GIT 0578970):
+  + brcm: Link RPi4's WiFi firmware with DMI machine name. (thx Jeremy Linton)
+
+* Mon Jan 11 2021 Cronbuild Service <cronbuild@altlinux.org> 20210108-alt1
+- upstream changes (GIT d528862):
+  + brcm: Add NVRAM for Vamrs 96boards Rock960 (thx Peter Robinson)
+  + brcm: Update Raspberry Pi 3B+/4B NVRAM for downstream changes (thx Peter Robinson)
+  + cypress: Fix link direction (thx Jeremy Linton)
+  + cypress: Link the new cypress firmware to the old brcm files (thx Peter Robinson)
+  + brcm: remove old brcm firmwares that have newer cypress variants (thx Peter Robinson)
+
+* Mon Jan 04 2021 Cronbuild Service <cronbuild@altlinux.org> 20201116-alt1
+- upstream changes (GIT f580dc2):
+  + rtl_bt: Update RTL8822C BT(UART I/F) FW to 0x059A_25CB (thx Hilda Wu)
+  + rtl_bt: Update RTL8822C BT(USB I/F) FW to 0x099a_7253 (thx Max Chou)
+  + rtl_bt: Add firmware and config files for RTL8852A BT USB chip (thx Max Chou)
+  + rtl_bt: Update RTL8821C BT(USB I/F) FW to 0x829a_7644 (thx Max Chou)
+
+* Mon Dec 21 2020 Cronbuild Service <cronbuild@altlinux.org> 20201216-alt1
+- upstream changes (GIT 646f159):
+  + Update firmware file for Intel Bluetooth AX210 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9560 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9260 (thx Kiran K)
+  + add firmware for Lontium LT9611UXC DSI to HDMI bridge (thx Dmitry Baryshkov)
+  + mediatek: update MT8173 VPU firmware to v1.1.6 (thx Irui Wang)
+  + QCA : Updated firmware files for WCN3991 (thx sampnimm)
+
+* Sun Dec 06 2020 Cronbuild Service <cronbuild@altlinux.org> 20201130-alt1
+- upstream changes (GIT 7455a36):
+  + Update firmware file for Intel Bluetooth AX210 (thx Kiran K)
+  + i915: Add GuC firmware v49.0.1 for all platforms (thx John Harrison)
+  + i915: Remove duplicate KBL DMC entry (thx John Harrison)
+
+* Mon Nov 30 2020 Cronbuild Service <cronbuild@altlinux.org> 20201123-alt1
+- upstream changes (GIT b362fd4):
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.2018 (thx Petr Machata)
+
+* Sun Nov 22 2020 Cronbuild Service <cronbuild@altlinux.org> 20201120-alt1
+- upstream changes (GIT bc9cd0b):
+  + Update AMD SEV firmware (thx John Allen)
+  + amdgpu: add sienna cichlid firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update vega20 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update renoir firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update navi12 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware for 20.45 (thx Alex Deucher)
+  + amdgpu: update raven firmware for 20.45 (thx Alex Deucher)
+
+* Sun Nov 15 2020 Cronbuild Service <cronbuild@altlinux.org> 20201109-alt1
+- upstream changes (GIT 2ea8667):
+  + rtlwifi: v88.2 firmware files for RTL8192CU (thx Reto Schneider)
+  + rtw88: RTL8822C: Update firmware to v9.9.4 (thx Tzu-En Huang)
+  + Revert "rtw88: RTL8822C: Update firmware to v9.9.4" (thx Josh Boyer)
+  + vpdma: Move firmware to ti directory (thx Nikhil Devshatwar)
+  + amdgpu: update picasso VCN firmware (thx Alex Deucher)
+  + amdgpu: update raven2 VCN firmware (thx Alex Deucher)
+  + amdgpu: update raven VCN firmware (thx Alex Deucher)
+  + rtw88: RTL8822C: Update firmware to v9.9.4 (thx Tzu-En Huang)
+  + rtl_bt: Update RTL8822C BT(USB I/F) FW to 0x099A_281A (thx Max Chou)
+  + QCA: Update Bluetooth firmware for QCA6390 (thx Rocky Liao)
+  + qcom : updated venus firmware files for v5.4 (thx Asit Shah)
+  + QCA : Fixed BT SSR due to command timeout / IO fatal error (thx Asit Shah)
+
+* Sun Oct 25 2020 Cronbuild Service <cronbuild@altlinux.org> 20201023-alt1
+- upstream changes (GIT dae4b4c):
+  + cypress: add Cypress firmware and clm_blob files (thx Chi-Hsien Lin)
+  + rtl_bt: Update RTL8821C BT FW to 0xAA6C_A99E (thx Max Chou)
+  + ath10k: add SDIO firmware for QCA9377 WiFi (thx Christian Hewitt)
+  + ice: update package file to 1.3.16.0 (thx Tony Nguyen)
+  + mediatek: separate venc service thread (thx Irui Wang)
+  + QCA : Updated firmware file for WCN3991 (thx Asit Shah)
+  + iwlwifi: update and add new FWs from core56-54 release (thx Luca Coelho)
+  + iwlwifi: update 3168, 7265D, 8000C and 8265 firmwares (thx Luca Coelho)
+  + i915: Add DG1 DMC v2.02 (thx Anusha Srivatsa)
+  + qcom : updated venus firmware files for v5.4 (thx Asit Shah)
+
+* Sun Oct 11 2020 Cronbuild Service <cronbuild@altlinux.org> 20200929-alt1
+- upstream changes (GIT 58d41d0):
+  + ice: Add comms package file for Intel E800 series driver (thx Tony Nguyen)
+  + copy-firmware: Always write Link: entries (thx Tony Nguyen)
+  + amdgpu: update vega20 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update renoir firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update raven firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update picasso firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update navi12 firmware for 20.40 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware for 20.40 (thx Alex Deucher)
+  + Add new VPDMA firmware 1b8.bin (thx Nikhil Devshatwar)
+  + QCA : Updated firmware files for WCN3991 (thx Asit Shah)
+
+* Sun Oct 04 2020 Cronbuild Service <cronbuild@altlinux.org> 20200923-alt1
+- upstream changes (GIT b78a66c):
+  + Update firmware for Cadence MHDP8546 DP bridge (thx Swapnil Jakhade)
+  + Update firmware patch for Intel Bluetooth 7265 (D1) (thx Kiran K)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.1312 (thx Petr Machata)
+  + nvidia: move firmware symlinks to WHENCE (thx Peter Robinson)
+  + move i915 firmware symlinks to WHENCE (thx Peter Robinson)
+  + move iwlwifi-7265D-10.ucode symlink to WHENCE (thx Peter Robinson)
+  + Update Marvell Switchdev firmware with ABI changes (thx Vadym Kochan)
+
+* Mon Sep 28 2020 Cronbuild Service <cronbuild@altlinux.org> 20200915-alt1
+- upstream changes (GIT 00a84c5):
+  + Update AMD SEV firmware (thx John Allen)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9560 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9260 (thx Kiran K)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.1310 (thx Petr Machata)
+  + mediatek: update MT7915 firmware to 20200819 (thx Ryder Lee)
+  + brcm: Fix a stale symlink for RPi3 model b+ (thx Takashi Iwai)
+  + qcom: Add updated a5xx and a6xx microcode (thx Jordan Crouse)
+
+* Tue Sep 01 2020 Cronbuild Service <cronbuild@altlinux.org> 20200901-alt1
+- upstream changes (GIT d5f9eea):
+  + wl18xx: update firmware file 8.9.0.0.83 (thx Raz Bouganim)
+  + mt7615: update firmware to 20200814 version (thx Shayne Chen)
+
+* Wed Aug 26 2020 Cronbuild Service <cronbuild@altlinux.org> 20200819-alt1
+- upstream changes (GIT 74bd44f):
+  + amdgpu: add navi12 firmware from 20.30 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware for 20.30 (thx Alex Deucher)
+
+* Tue Aug 18 2020 Cronbuild Service <cronbuild@altlinux.org> 20200817-alt1
+- upstream changes (GIT 7a30af1):
+  + brcm: Add brcmfmac43455-sdio.raspberrypi,3-model-a-plus.txt
+    symlink (thx Peter Robinson)
+  + rtl_bt: Update RTL8822C BT UART firmware to 0x0599_8A4F (thx Hilda Wu)
+  + i915: Add DMC firmware 2.02 for RKL (thx Jos? Roberto de Souza)
+  + i915: Add DMC firmware 2.08 for TGL (thx Jos? Roberto de Souza)
+  + i915: Add HuC firwmare v7.5.0 for TGL (thx Jos? Roberto de Souza)
+
+* Tue Aug 11 2020 Cronbuild Service <cronbuild@altlinux.org> 20200804-alt1
+- upstream changes (GIT c331aa9):
+  + amdgpu: update vega20 firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update renoir firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update raven firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update picasso firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware for 20.30 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware for 20.30 (thx Alex Deucher)
+
+* Wed Aug 05 2020 Cronbuild Service <cronbuild@altlinux.org> 20200803-alt1
+- upstream changes (GIT 9bc3789):
+  + update NXP SDSD-8997 firmware image (thx Ganapathi Bhat)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.1036 (thx Petr Machata)
+
+* Tue Jul 21 2020 Cronbuild Service <cronbuild@altlinux.org> 20200720-alt1
+- upstream changes (GIT 2b823fc):
+  + Update AMD SEV firmware (thx John Allen)
+  + rtl_nic: update firmware for RTL8125B (thx Heiner Kallweit)
+
+* Wed Jul 15 2020 Cronbuild Service <cronbuild@altlinux.org> 20200714-alt1
+- upstream changes (GIT f39b687):
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9560 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9260 (thx Kiran K)
+  + wilc1000: add wilc1000 v15.4 FW (thx Ajay Singh)
+  + QCA: Update Bluetooth firmware for QCA6390 (thx Rocky Liao)
+
+* Tue Jul 07 2020 Cronbuild Service <cronbuild@altlinux.org> 20200702-alt1
+
+
+* Tue Jun 30 2020 Cronbuild Service <cronbuild@altlinux.org> 20200629-alt1
+- upstream changes (GIT 1a0c0c2):
+  + amdgpu: add UVD firmware for SI asics (thx Alex Deucher)
+  + amdgpu: update renoir firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update picasso firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update raven2 firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update raven firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: add vega20 TA firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update vega20 firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update vega12 firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update vega10 firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update navi10 firmware from 20.20 release (thx Alex Deucher)
+  + amdgpu: update navi14 firmware from 20.20 release (thx Alex Deucher)
+
+* Wed Jun 24 2020 Cronbuild Service <cronbuild@altlinux.org> 20200615-alt1
+- upstream changes (GIT 3890db3):
+  + rtl_nic: add firmware for RTL8125B (thx Heiner Kallweit)
+
+* Tue Jun 16 2020 Cronbuild Service <cronbuild@altlinux.org> 20200527-alt1
+- upstream changes (GIT 887d2a1):
+  + Update firmware file for Intel Bluetooth AX200 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth AX201 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9560 (thx Amit K Bag)
+  + Update firmware file for Intel Bluetooth 9260 (thx Amit K Bag)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2007.1168 (thx Petr Machata)
+  + rtw88: RTL8822C: update firmware version to v9.9 (thx Yan-Hsuan Chuang)
+  + cxgb4: Update firmware to revision 1.24.17.0 (thx Vishal Kulkarni)
+  + mrvl: add firmware for Prestera ASIC devices (thx Vadym Kochan)
+
+* Tue Jun 02 2020 Cronbuild Service <cronbuild@altlinux.org> 20200519-alt1
+- upstream changes (GIT 8ba6fa6):
+  + iwlwifi: update and add new FWs from core50-70 and core52-81
+    releases (thx Luca Coelho)
+  + rtw88: RTL8821C: add firmware file v24.5 (thx Yan-Hsuan Chuang)
+  + iwlwifi: update FWs to core47-142 release (thx Luca Coelho)
+  + iwlwifi: update 8265 FW (thx Luca Coelho)
+  + rtw88: update firmware information and README (thx Yan-Hsuan Chuang)
+  + add firmware for MT7915E (thx Ryder Lee)
+  + QCA: Add Bluetooth firmware for QCA9377 (thx Christian Hewitt)
+  + add rebb firmware for mt7663 (thx Lorenzo Bianconi)
+
 * Thu May 28 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 20200422-alt2
 - netronome and liquidio moved to subpackages
 - hardlinking identical files
