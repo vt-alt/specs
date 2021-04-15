@@ -3,7 +3,7 @@
 %define _altdata_dir %_datadir/alterator
 
 Name: alterator-pkg
-Version: 2.7.4
+Version: 2.7.6
 Release: alt1
 
 %add_findreq_skiplist %_libexecdir/alterator/backend3/pkg-init
@@ -61,6 +61,14 @@ additional package installation
 %_alterator_backend3dir/*
 
 %changelog
+* Mon Apr 05 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.7.6-alt1
+- Use same image top directory location as Metadata for cdrom, disk, nfs and
+  cifs methods in case when sources.list packages replaced in other subdirectory
+  with other stage2 files.
+
+* Thu Mar 18 2021 Paul Wolneykien <manowar@altlinux.org> 2.7.5-alt1
+- Use the AUTOINSTALL envvar as an additional autoinstall indicator.
+
 * Thu Sep 24 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 2.7.4-alt1
 - apt-mark all base packages as manual
 

@@ -1,6 +1,6 @@
 Name: installer
-Version: 1.10.8
-Release: alt3
+Version: 1.10.9
+Release: alt1
 
 Summary: Installer common parts
 License: GPLv2+
@@ -111,6 +111,10 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Tue Mar 30 2021 Evgeny Sinelnikov <sin@altlinux.org> 1.10.9-alt1
+- Update image_url with PREFIX for automatic methods (cdrom, disk, nfs and cifs)
+  with mounted image directory using in cp-metadata script (closes: 39788)
+
 * Fri Mar 12 2021 Anton Midyukov <antohami@altlinux.org> 1.10.8-alt3
 - Add mount EFI variable filesystem
 
