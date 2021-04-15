@@ -7,7 +7,7 @@
 Name: cura
 Epoch: 1
 Version: 4.7.1
-Release: alt1
+Release: alt1.p9
 Summary: 3D printer control software
 License: LGPLv3+
 
@@ -117,6 +117,9 @@ desktop-file-validate %buildroot%_datadir/applications/%name.desktop
 %_libexecdir/%name
 
 %changelog
+* Wed Apr 14 2021 Anton Midyukov <antohami@altlinux.org> 1:4.7.1-alt1.p9
+- Use qt style gtk instead material
+
 * Fri Sep 18 2020 Anton Midyukov <antohami@altlinux.org> 1:4.7.1-alt1
 - New version 4.7.1
 
