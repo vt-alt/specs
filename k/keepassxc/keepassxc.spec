@@ -1,5 +1,5 @@
 Name: keepassxc
-Version:  2.6.2
+Version:  2.6.4
 Release:  alt1
 
 Summary: KeePassXC Password Safe - light-weight cross-platform password manager
@@ -85,6 +85,12 @@ find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
 %endif
 
 %changelog
+* Mon Feb 01 2021 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.4-alt1
+- Updated to v2.6.4.
+
+* Sun Jan 17 2021 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.3-alt1
+- Updated to v2.6.3.
+
 * Thu Oct 22 2020 Pavel Nakonechnyi <zorg@altlinux.org> 2.6.2-alt1
 - Updated to v2.6.2.
 
