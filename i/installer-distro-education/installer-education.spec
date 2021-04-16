@@ -1,13 +1,11 @@
 Name:    installer-distro-education
-Version: 9.1
-Release: alt2.1.p9
+Version: 9.2
+Release: alt0.p9.1
 
 Summary: Installer common files for ALT Education
 License: GPL-2.0
 Group: System/Configuration/Other
 Source: %name-%version.tar
-
-BuildArch: noarch
 
 BuildRequires: alterator rpm-devel
 
@@ -43,6 +41,7 @@ Requires: installer-feature-hwtweaks-stage2
 Requires: installer-feature-set-tz
 Requires: installer-feature-runlevel5-stage2
 Requires: installer-feature-xdg-user-dirs
+Requires: installer-feature-auto-domain
 Requires: installer-feature-services
 
 %description stage2
@@ -65,6 +64,12 @@ Requires: alterator-luks
 Requires: installer-feature-nfs-client-stage3
 Requires: installer-feature-setup-network-stage3
 Requires: installer-feature-online-repo
+%ifnarch %e2k
+Requires: installer-feature-repo-add
+%endif
+Requires: installer-feature-resolver-bind-stage3
+Requires: installer-feature-lightdm-stage3
+Requires: installer-feature-quota-stage2
 Requires: installer-feature-bell-off-stage3
 Requires: installer-feature-efi-stage3
 
@@ -107,6 +112,15 @@ rm -rf %buildroot%_datadir/alterator/help/ru_RU \
 %_datadir/install2/initinstall.d/10-vm-profile.sh
 
 %changelog
+* Tue Apr 13 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.p9.1
+- Backport new version to p9 branch.
+- Do not build as noarch.
+
+* Tue Apr 06 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt1
+- Remove orphained hook for lightdm theme set.
+- Add all needed installer-features from mkimage-profiles.
+- Update enabled and disabled services from mkimage-profiles.
+
 * Sat Jul 04 2020 Andrey Cherepanov <cas@altlinux.org> 9.1-alt2.1.p9
 - Build package as noarch.
 
