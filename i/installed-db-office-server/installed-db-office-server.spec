@@ -1,8 +1,8 @@
 Name: installed-db-office-server
-Version: 1.4.7
+Version: 1.4.8
 Release: alt1
 Summary: Databases and config files for moodle, mediawiki and rujel (common)
-License: GPL
+License: GPL-2.0+
 Group: System/Configuration/Other
 Source: %name.tar.gz
 BuildArch: noarch
@@ -104,6 +104,11 @@ mkdir -p %buildroot/var/www/webapps/mediawiki
 
 
 %changelog
+* Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.8-alt1
+- Set strong password during mediawiki deploy.
+- Do not set password for MySQL during root password change.
+- Set License to GPL-2.0+.
+
 * Thu Jul 02 2020 Andrey Cherepanov <cas@altlinux.org> 1.4.7-alt1
 - Fix set admin password for nextcloud.
 
