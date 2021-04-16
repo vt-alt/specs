@@ -12,6 +12,13 @@
 %define icon_theme Papirus-Light
 %define window_theme Smoothwall
 
+# Enable compositing on ix86 and x86_64 only
+%ifarch %ix86 x86_64
+%define xfwm4_compositing true
+%else
+%define xfwm4_compositing false
+%endif
+
 %define design_graphics_abi_epoch 0
 %define design_graphics_abi_major 12
 %define design_graphics_abi_minor 0
@@ -19,13 +26,14 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt0.2.beta
+Release: alt0.6.beta
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
-%endif
-BuildRequires: cpio fonts-ttf-dejavu fonts-ttf-google-droid-sans
 BuildRequires: design-bootloader-source >= 5.0-alt2
+BuildRequires: cpio
+%endif
+BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-sans
 
 BuildRequires(pre): rpm-macros-branding
 BuildRequires: libalternatives-devel
@@ -281,7 +289,6 @@ Requires(post): indexhtml-common
 %distro_name_ru.
 
 %package menu
-BuildArch: noarch
 Summary: Menu for %distro_name
 License: Distributable
 Group: Graphical desktop/Other
@@ -307,15 +314,9 @@ Some system settings for %distro_name.
 %prep
 %setup -n branding
 
-%ifnarch %arm
-%define x86 boot
-%else
-%define x86 %nil
-%endif
-
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' X86='%x86' GTK_THEME='%gtk_theme' KDE_THEME='%kde_theme' ICON_THEME='%icon_theme' WINDOW_THEME='%window_theme' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' GTK_THEME='%gtk_theme' KDE_THEME='%kde_theme' ICON_THEME='%icon_theme' WINDOW_THEME='%window_theme' XFWM4_COMPOSITING='%xfwm4_compositing' ./configure
 make
 
 %install
@@ -323,14 +324,16 @@ make
 find %buildroot -name \*.in -delete
 
 #bootloader
-%ifarch %ix86 x86_64
 %pre bootloader
+%ifarch %ix86 x86_64
 [ -s /usr/share/gfxboot/%theme ] && rm -fr  /usr/share/gfxboot/%theme ||:
+%endif
+%ifarch %ix86 x86_64 aarch64
 [ -s /boot/splash/%theme ] && rm -fr  /boot/splash/%theme ||:
 %endif
 
 %post bootloader
-%ifarch %ix86 x86_64
+%ifarch %ix86 x86_64 aarch64
 %__ln_s -nf %theme/message /boot/splash/message
 . /etc/sysconfig/i18n
 lang=$(echo $LANG | cut -d. -f 1)
@@ -344,7 +347,7 @@ shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_NORMAL %grub_normal
 shell_config_set /etc/sysconfig/grub2 GRUB_COLOR_HIGHLIGHT %grub_high
 %endif
 
-%ifarch %ix86 x86_64
+%ifarch %ix86 x86_64 aarch64
 %preun bootloader
 [ $1 = 0 ] || exit 0
 [ "`readlink /boot/splash/message`" != "%theme/message" ] ||
@@ -365,12 +368,12 @@ sed -i '/pam_env\.so/ {
 %ifarch %ix86 x86_64
 %_datadir/gfxboot/%theme
 /boot/splash/%theme
-/boot/grub/themes/%theme
 %endif
+/boot/grub/themes/%theme
 
 #bootsplash
 %post bootsplash
-%ifarch %ix86 x86_64
+%ifarch %ix86 x86_64 aarch64
 subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 [ -f /etc/sysconfig/grub2 ] && \
       subst "s|GRUB_WALLPAPER=.*|GRUB_WALLPAPER=/usr/share/plymouth/themes/%theme/grub.jpg|" \
@@ -401,10 +404,8 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 %_iconsdir/hicolor/*/apps/alt-%theme.png
 
 %files bootsplash
-%ifarch %ix86 x86_64
 %_datadir/plymouth/themes/%theme/*
 %_pixmapsdir/system-logo.png
-%endif
 
 %files release
 %_sysconfdir/*-release
@@ -465,6 +466,18 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Thu Apr 15 2021 Evgeny Sinelnikov <sin@altlinux.org> 9.2-alt0.6.beta
+- Enable boot branding for all platforms
+
+* Thu Apr 15 2021 Evgeny Sinelnikov <sin@altlinux.org> 9.2-alt0.5.beta
+- Enable xfce4 compositing on ix86 and x86_64 only
+
+* Thu Apr 15 2021 Evgeny Sinelnikov <sin@altlinux.org> 9.2-alt0.4.beta
+- Disable gfxboot and splash building for aarch64
+
+* Wed Apr 14 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.3.beta
+- Package grub theme for aarch64.
+
 * Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.2.beta
 - installer: add logo to bottom left corner.
 
