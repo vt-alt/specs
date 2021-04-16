@@ -30,7 +30,7 @@ Version: %hversion.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt1
+Release: alt2
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -79,6 +79,9 @@ Patch404: alt-004-shortint.patch
 Patch410: alt-006-unversioned-desktop-files.patch
 Patch411: alt-007-libqrcodegen-include-path.patch
 Patch412: alt-008-mkdir-for-external-project.patch
+
+## Upstream fixes
+Patch500: 3236020.diff
 
 %set_verify_elf_method unresolved=relaxed
 %add_findreq_skiplist %lodir/share/config/webcast/*
@@ -317,6 +320,9 @@ echo Direct build
 %patch410 -p1
 %patch411 -p1
 %patch412 -p1
+
+# Apply upstream patches
+%patch500 -p1
 
 # Hack in proper LibreOffice PATH in libreofficekit
 sed -i 's@/libreoffice/@/LibreOffice/@g' libreofficekit/Library_libreofficekitgtk.mk
@@ -654,6 +660,9 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Fri Apr 09 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.5.2-alt2
+- docxexport: export russianUpper/russianLower numbering.
+
 * Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.5.2-alt1
 - New version.
 - Use -fPIC for build on any architectures.
