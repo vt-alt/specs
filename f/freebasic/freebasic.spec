@@ -1,5 +1,5 @@
 Name:		freebasic
-Version:	1.07.2
+Version:	1.07.3
 Release:	alt1
 
 Summary:	FreeBASIC language compiler
@@ -72,6 +72,9 @@ cp -a doc/html/* %buildroot%_docdir/freebasic
 %_man1dir/*
 
 %changelog
+* Fri Apr 16 2021 Andrey Cherepanov <cas@altlinux.org> 1.07.3-alt1
+- New version.
+
 * Sun Dec 27 2020 Andrey Cherepanov <cas@altlinux.org> 1.07.2-alt1
 - New version.
 
