@@ -35,7 +35,7 @@
 Name: qt5-base
 %define major  5
 Version: 5.12.9
-Release: alt1
+Release: alt1.M90P.1
 %define libname  lib%gname
 
 Group: System/Libraries
@@ -68,6 +68,7 @@ Patch1008: alt-mkspecs-features.patch
 Patch1009: alt-false-detect-groupswitchmodifier.patch
 Patch1010: alt-glx-check-version.patch
 Patch1011: alt-kernel-requires.patch
+Patch1012: alt-backport-qmenu-fixes.patch
 # Upstream
 Patch2000: Add-RISC-V-detection.patch
 
@@ -397,6 +398,7 @@ EGL integration library for the Qt%major toolkit
 %patch1009 -p1
 %patch1010 -p2
 %patch1011 -p1
+%patch1012 -p1
 #
 %patch2000 -p1
 
@@ -820,6 +822,9 @@ ln -s `relative %buildroot/%_qt5_headerdir %buildroot/%_qt5_prefix/include` %bui
 
 
 %changelog
+* Thu Apr 15 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 5.12.9-alt1.M90P.1
+- Backported QMenu updates from Qt-5.15.2 (Closes: 38709).
+
 * Mon Jun 22 2020 Sergey V Turchin <zerg@altlinux.org> 5.12.9-alt1
 - new version
 
