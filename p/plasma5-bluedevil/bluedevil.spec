@@ -2,7 +2,7 @@
 
 Name: plasma5-%rname
 Version: 5.18.5
-Release: alt1
+Release: alt2
 Epoch: 1
 %K5init altplace no_appdata
 
@@ -12,6 +12,8 @@ Url: http://www.kde.org
 License: GPL-2.0-or-later
 
 Requires: bluez >= 5.0 obexd
+
+Patch0: alt-kio-fix-sendfile.patch
 
 Source: %rname-%version.tar
 
@@ -67,6 +69,8 @@ KF5 library
 %prep
 %setup -n %rname-%version
 
+%patch0 -p2
+
 %build
 %K5build \
     -DLIBEXEC_INSTALL_DIR=%_K5exec \
@@ -98,7 +102,18 @@ mv %buildroot/%_K5xdgmime/bluedevil-mime.xml %buildroot/%_K5xdgmime/kf5-bluedevi
 #%_K5srv/kded/*.desktop
 %_K5xdgmime/*.xml
 
+%post
+printf "Updating mime database: "
+if update-mime-database /usr/share/mime/ &>/dev/null; then
+	echo "OK"
+else
+	echo "FAIL"
+fi
+
 %changelog
+* Mon Apr 12 2021 Egor Ignatov <egori@altlinux.org> 1:5.18.5-alt2
+- Fixes to make sendfile work from KIO
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 1:5.18.5-alt1
 - new version
 
