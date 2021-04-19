@@ -1,9 +1,9 @@
 %define module_name rtl8821cu
 %define module_version 5.4.1
-%define module_release alt1
+%define module_release alt3
 
 %define flavour	un-def
-%define karch %ix86 x86_64
+%define karch %ix86 x86_64 aarch64
 BuildRequires(pre): rpm-build-kernel
 BuildRequires(pre): kernel-headers-modules-un-def
 
@@ -23,7 +23,7 @@ URL: https://github.com/brektrou/rtl8821CU
 Packager: Kernel Maintainer Team <kernel@packages.altlinux.org>
 
 ExclusiveOS: Linux
-ExclusiveArch: %ix86 x86_64
+ExclusiveArch: %karch
 
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
 Provides: kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%release
@@ -33,6 +33,9 @@ Conflicts: kernel-modules-%module_name-%kversion-%flavour-%krelease > %version-%
 BuildRequires(pre): rpm-build-kernel
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name = %module_version
+BuildRequires: bc
+
+Patch0: rtl8821cu-no-float.patch
 
 %description
 %{summary}.
@@ -41,6 +44,8 @@ BuildRequires: kernel-source-%module_name = %module_version
 rm -rf kernel-source-%module_name-%module_version
 tar xvf %kernel_src/kernel-source-%module_name-%module_version.tar.bz2
 %setup -D -T -n kernel-source-%module_name-%module_version
+
+%patch0 -p0
 
 %build
 . %_usrsrc/linux-%kversion-%flavour/gcc_version.inc
