@@ -13,8 +13,9 @@
 
 %define major 9
 %define minor 1
-%define bugfix 4
+%define bugfix 5
 %define altversion %major.%minor
+
 Name: branding-%fakebrand-%smalltheme
 Version: %major.%minor.%bugfix
 Release: alt1
@@ -39,6 +40,7 @@ BuildRequires: ImageMagick fontconfig bc libGConf-devel /usr/bin/fribidi
 %define status_ru %nil
 %define ProductName %Brand %Theme %altversion
 %define ProductName_ru %Brand_ru %Theme_ru %altversion
+%define branding_data_dir %_datadir/%name
 
 %define variants alt-kdesktop alt-server alt-starterkit alt-workstation altlinux-kdesktop altlinux-desktop altlinux-office-desktop altlinux-office-server altlinux-lite altlinux-workbench altlinux-sisyphus sisyphus-server school-master school-server school-teacher school-lite school-junior altlinux-gnome-desktop sisyphus-server-light
 
@@ -60,7 +62,7 @@ Distro-specific packages with design and texts
 Group: System/Configuration/Boot and Init
 Summary: Graphical boot logo for grub2, lilo and syslinux
 License: GPL
-PreReq: coreutils
+Requires(pre,postun): coreutils
 Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 %description bootloader
@@ -75,7 +77,7 @@ Provides: plymouth-theme-%theme plymouth(system-theme)
 Requires: plymouth-plugin-script
 Requires: plymouth-plugin-label
 Requires: fonts-ttf-dejavu
-PreReq: plymouth
+Requires(pre,postun): plymouth
 %description bootsplash
 This package contains graphics for boot process, displayed via Plymouth
 
@@ -90,7 +92,7 @@ Provides: alterator-icons design-alterator design-alterator-%theme
 Obsoletes:  branding-alt-%theme-browser-qt  branding-altlinux-%theme-browser-qt 
 Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-alterator ";done )
 Obsoletes: design-alterator-server design-alterator-desktop design-altertor-browser-desktop  design-altertor-browser-server 
-PreReq(post,preun): alternatives >= 0.2 alterator
+Requires: alternatives >= 0.2 alterator
 %description alterator
 Design for QT and web alterator for %Brand %Theme
 
@@ -103,7 +105,7 @@ Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_mino
 Provides: design-graphics-%theme  branding-alt-%theme-graphics design-graphics-kdesktop
 Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme design-graphics-kdesktop
 Provides: gnome-session-splash = %version-%release
-PreReq(post,preun): alternatives >= 0.2
+Requires: alternatives >= 0.2
 Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-graphics ";done )
 %description graphics
 This package contains some graphics for ALT design.
@@ -142,7 +144,7 @@ Summary: KDE4 settings for %ProductName
 License: Distributable
 Group: Graphical desktop/KDE
 Conflicts: %(for n in %variants ; do [ "$n" = %brand-%theme ] || echo -n "branding-$n-kde4-settings ";done )
-PreReq: %name-graphics
+Requires(pre,postun): %name-graphics
 %description kde4-settings
 KDE4 settings for %ProductName
 
@@ -254,7 +256,7 @@ cat >%buildroot/etc/alternatives/packages.d/%name-graphics <<__EOF__
 __EOF__
 
 
-#release
+# release
 mkdir -p %buildroot%_sysconfdir/buildreqs/packages/ignore.d/
 install -pD -m644 /dev/null %buildroot%_sysconfdir/buildreqs/packages/ignore.d/%name-release
 echo "%ProductName %status (%codename)" >%buildroot%_sysconfdir/altlinux-release
@@ -262,7 +264,6 @@ for n in fedora redhat system; do
 	ln -s altlinux-release %buildroot%_sysconfdir/$n-release
 done
 # os-release
-mkdir -p %buildroot/%_datadir/%name
 cat >>%buildroot/%_sysconfdir/os-release <<__EOF__
 NAME="%Brand"
 VERSION="%altversion %status"
@@ -276,6 +277,12 @@ BUG_REPORT_URL="https://bugs.altlinux.org/"
 DOCUMENTATION_URL="https://docs.altlinux.org/"
 SUPPORT_URL="https://support.basealt.ru/"
 __EOF__
+# save release
+mkdir -p %buildroot/%branding_data_dir
+mv %buildroot/%_sysconfdir/altlinux-release %buildroot/%branding_data_dir/
+> %buildroot/%_sysconfdir/altlinux-release
+mv %buildroot/%_sysconfdir/os-release %buildroot/%branding_data_dir/
+> %buildroot/%_sysconfdir/os-release
 
 #notes
 pushd notes
@@ -368,6 +375,14 @@ shell_config_set /etc/sysconfig/grub2 GRUB_WALLPAPER /boot/grub/themes/%theme/gr
 %post bootsplash
 sed -i "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf ||:
 
+%post release
+if ! [ -e %_sysconfdir/altlinux-release ]; then
+       cp -a %branding_data_dir/altlinux-release %_sysconfdir/altlinux-release ||:
+fi
+if ! [ -e %_sysconfdir/os-release ]; then
+       cp -a %branding_data_dir/os-release %_sysconfdir/os-release ||:
+fi
+
 %post gnome-settings
 %gconf2_set string /desktop/gnome/interface/font_name Sans 11
 %gconf2_set string /desktop/gnome/interface/monospace_font_name Monospace 10
@@ -403,9 +418,15 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/plymouth/themes/%theme/*
 
 %files release
-%_sysconfdir/*-*
+%ghost %config(noreplace) %_sysconfdir/os-release
+%ghost %config(noreplace) %_sysconfdir/altlinux-release
+%config(noreplace) %_sysconfdir/fedora-release
+%config(noreplace) %_sysconfdir/redhat-release
+%config(noreplace) %_sysconfdir/system-release
 %_sysconfdir/buildreqs/packages/ignore.d/*
-%dir %_datadir/%name/
+%dir %branding_data_dir/
+%branding_data_dir/altlinux-release
+%branding_data_dir/os-release
 
 %files notes
 %_datadir/alt-notes/*
@@ -439,6 +460,9 @@ cat '/%_datadir/themes/%XdgThemeName/panel-default-setup.entries' > \
 %_datadir/kf5/kio_desktop/DesktopLinks/indexhtml.desktop
 
 %changelog
+* Mon Apr 12 2021 Sergey V Turchin <zerg at altlinux dot org> 9.1.5-alt1
+- save original os-release on system upgrade
+
 * Wed Apr 07 2021 Sergey V Turchin <zerg at altlinux dot org> 9.1.4-alt1
 - package grub theme for aarch64
 
