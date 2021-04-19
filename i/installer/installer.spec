@@ -1,5 +1,5 @@
 Name: installer
-Version: 1.10.9
+Version: 1.10.10
 Release: alt1
 
 Summary: Installer common parts
@@ -111,6 +111,9 @@ APT::Cache-Limit "$((32*1024*1024))";
 %_datadir/install2/preinstall.d/30-setup-network.sh
 
 %changelog
+* Fri Apr 09 2021 Oleg Solovyov <mcpain@altlinux.org> 1.10.10-alt1
+- generate hostname via pwqgen, if it's longer than 13 chars (Closes: 39761)
+
 * Tue Mar 30 2021 Evgeny Sinelnikov <sin@altlinux.org> 1.10.9-alt1
 - Update image_url with PREFIX for automatic methods (cdrom, disk, nfs and cifs)
   with mounted image directory using in cp-metadata script (closes: 39788)
