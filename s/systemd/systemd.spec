@@ -1,11 +1,13 @@
 %def_disable check
-
+%define _unpackaged_files_terminate_build 1
 %define _localstatedir %_var
 %add_findreq_skiplist %_x11sysconfdir/xinit.d/*
-%add_findreq_skiplist /lib/kernel/install.d/*
+%add_findreq_skiplist %_prefix/lib/kernel/install.d/*
 %add_findreq_skiplist %_unitdir/local.service
 %add_findreq_skiplist %_unitdir/rc-local.service
 %add_findreq_skiplist %_unitdir/quotaon.service
+%add_findreq_skiplist %_unitdir/initrd-switch-root.service
+%add_findreq_skiplist %_unitdir/systemd-volatile-root.service
 
 %def_enable static_libsystemd
 %def_enable static_libudev
@@ -13,6 +15,7 @@
 %def_enable libcryptsetup
 %def_enable logind
 %def_enable vconsole
+%def_enable initrd
 %def_enable quotacheck
 %def_enable randomseed
 %def_enable coredump
@@ -21,23 +24,28 @@
 %def_disable qrencode
 %def_enable microhttpd
 %def_enable gnutls
+%def_enable openssl
 %def_enable libcurl
 %def_disable libidn
 %def_enable libidn2
 %def_enable libiptc
 %def_enable polkit
 %def_enable efi
+%def_enable homed
+%def_enable pwquality
 %def_enable networkd
 %def_enable timesyncd
 %def_enable resolve
-%ifarch %{ix86} x86_64 aarch64
+%ifarch %{ix86} x86_64 aarch64 %arm
 %def_enable gnuefi
 %endif
+%def_disable p11kit
 %def_enable utmp
 %def_enable xz
 %def_enable zlib
 %def_enable bzip2
 %def_enable lz4
+%def_enable zstd
 
 %def_disable smack
 %def_enable seccomp
@@ -56,17 +64,21 @@
 %def_enable ldconfig
 %endif
 
+%ifnarch riscv64
+%def_enable kexec
+%endif
+
 %ifarch ia64 %ix86 ppc64le x86_64 aarch64
 %define mmap_min_addr 65536
 %else
 %define mmap_min_addr 32768
 %endif
 
-%define ver_major 243
+%define ver_major 246
 
 Name: systemd
 Epoch: 1
-Version: %ver_major.9
+Version: %ver_major.13
 Release: alt1
 Summary: System and Session Manager
 Url: https://www.freedesktop.org/wiki/Software/systemd
@@ -137,8 +149,9 @@ BuildRequires: libaudit-devel
 %{?_enable_zlib:BuildRequires: pkgconfig(zlib)}
 %{?_enable_bzip2:BuildRequires: bzlib-devel}
 %{?_enable_lz4:BuildRequires: pkgconfig(liblz4) >= 1.3.0}
+%{?_enable_zstd:BuildRequires: pkgconfig(libzstd) >= 1.4.0}
 BuildRequires: libkmod-devel >= 15 kmod
-BuildRequires: kexec-tools
+%{?_enable_kexec:BuildRequires: kexec-tools}
 BuildRequires: quota
 BuildRequires: pkgconfig(blkid) >= 2.24
 # temporarily lower libmount version check
@@ -148,9 +161,12 @@ BuildRequires: pkgconfig(mount) >= 2.27
 BuildRequires: pkgconfig(xkbcommon) >= 0.3.0
 BuildRequires: pkgconfig(libpcre2-8)
 BuildRequires: libkeyutils-devel
+BuildRequires: pkgconfig(fdisk)
 
-%{?_enable_libcryptsetup:BuildRequires: libcryptsetup-devel >= 1.6.0}
+%{?_enable_libcryptsetup:BuildRequires: libcryptsetup-devel >= 2.0.1}
 %{?_enable_gcrypt:BuildRequires: libgcrypt-devel >= 1.4.5 libgpg-error-devel >= 1.12}
+%{?_enable_openssl:BuildRequires: pkgconfig(openssl) >= 1.1.0}
+%{?_enable_p11kit:BuildRequires: pkgconfig(p11-kit-1) >= 0.23.3}
 %{?_enable_qrencode:BuildRequires: libqrencode-devel}
 %{?_enable_microhttpd:BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.33}
 %{?_enable_gnutls:BuildRequires: pkgconfig(gnutls) >= 3.1.4}
@@ -161,7 +177,7 @@ BuildRequires: libkeyutils-devel
 %{?_enable_polkit:BuildRequires: pkgconfig(polkit-gobject-1)}
 %{?_enable_gnuefi:BuildRequires: gnu-efi}
 %{?_enable_pstore:BuildRequires: libacl-devel libdw-devel liblzma-devel liblz4-devel}
-
+%{?_enable_pwquality:BuildRequires: pkgconfig(pwquality)}
 # for make check
 #BuildRequires: /proc
 #BuildRequires: lz4
@@ -334,6 +350,16 @@ Conflicts: %name < 1:216-alt1
 pam_systemd registers user sessions with the systemd login manager
 systemd-logind.service, and hence the systemd control group hierarchy.
 
+%package -n pam_%{name}_home
+Group: System/Base
+Summary: Automatically mount home directories managed by systemd-homed.service on login 
+Requires: dbus >= %dbus_ver
+
+%description -n pam_%{name}_home
+pam_systemd_home ensures that home directories managed by systemd-homed.service
+are automatically activated (mounted) on user login,
+and are deactivated (unmounted) when the last session of the user ends.
+
 %package sysvinit
 Group: System/Configuration/Boot and Init
 Summary: systemd System V init tools
@@ -395,7 +421,7 @@ This package contains dbus services and utils from systemd:
 
 %package networkd
 Group: System/Base
-Summary: System service that manages networks
+Summary: System daemon that manages network configurations
 Conflicts: %name < 1:214-alt13
 Requires: %name = %EVR
 Requires: iproute2
@@ -441,6 +467,16 @@ Requires: %name = %EVR
 A portable service is ultimately just an OS tree, either inside of a directory
 tree, or inside a raw disk image containing a Linux file system.
 
+%package homed
+Summary: Home Directory/User Account Manager
+Group: System/Configuration/Other
+Requires: %name = %EVR
+Requires: pam_%{name}_home = %EVR
+
+%description homed
+systemd-homed is a system service that may be used
+to create, remove, change or inspect home directories.
+
 %package analyze
 Group: System/Configuration/Boot and Init
 Summary: Analyze tool for systemd.
@@ -467,6 +503,7 @@ Summary: systemd-boot and bootctl utils
 
 %description boot-efi
 systemd-boot and bootctl utils.
+
 
 %package coredump
 Group: System/Servers
@@ -507,6 +544,8 @@ Requires: udev-hwdb = %EVR
 Requires: systemd-utils = %EVR
 Provides: hotplug = 2004_09_23-alt18
 Obsoletes: hotplug
+Provides: udev-extras = %EVR
+Obsoletes: udev-extras < %EVR
 Conflicts: util-linux <= 2.22-alt2
 Conflicts: DeviceKit
 Conflicts: make-initrd < 2.2.10
@@ -520,16 +559,6 @@ sysfs. /sbin/hotplug provides a notification to userspace when any
 device is added or removed from the system. Using these two features,
 a userspace implementation of a dynamic /dev is now possible that can
 provide a very flexible device naming policy
-
-%package -n udev-extras
-Summary: Extra rules and tools for udev
-Group: System/Configuration/Hardware
-License: GPLv2+
-Requires: udev = %EVR
-
-%description -n udev-extras
-The udev-extras package contains an additional rules and tools
-to create and identify devices
 
 %package -n udev-rules
 Summary: Rule files for udev
@@ -589,6 +618,8 @@ Static library for libudev.
 %meson \
 	-Dlink-udev-shared=false \
 	-Dlink-systemctl-shared=false \
+	-Dlink-networkd-shared=false \
+	-Dlink-timesyncd-shared=false \
 	%{?_enable_static_libsystemd:-Dstatic-libsystemd=pic} \
 	%{?_enable_static_libudev:-Dstatic-libudev=pic} \
 	-Drpmmacrosdir=no \
@@ -603,7 +634,7 @@ Static library for libudev.
 	-Dquotaon-path=/sbin/quotaon \
 	-Dquotacheck-path=/sbin/quotacheck \
 	-Dkmod-path=/bin/kmod \
-	-Dkexec-path=/sbin/kexec \
+	%{?_enable_kexec:-Dkexec-path=/sbin/kexec} \
 	-Dsulogin-path=/sbin/sulogin \
 	-Dmount-path=/bin/mount \
 	-Dumount-path=/bin/umount \
@@ -620,13 +651,16 @@ Static library for libudev.
 	-Dbump-proc-sys-fs-file-max=false \
 	-Dbump-proc-sys-fs-nr-open=false \
 	%{?_enable_elfutils:-Delfutils=true} \
+    %{?_enable_pwquality:-Dpwquality=true} \
 	%{?_enable_xz:-Dxz=true} \
 	%{?_enable_zlib:-Dzlib=true} \
 	%{?_enable_bzip2:-Dbzip2=true} \
 	%{?_enable_lz4:-Dlz4=true} \
+	%{?_enable_zstd:-Dzstd=true} \
 	%{?_enable_libcryptsetup:-Dlibcryptsetup=true} \
 	%{?_enable_logind:-Dlogind=true} \
 	%{?_enable_vconsole:-Dvconsole=true} \
+	%{?_enable_initrd:-Dinitrd=true} \
 	%{?_enable_quotacheck:-Dquotacheck=true} \
 	%{?_enable_randomseed:-Drandomseed=true} \
 	%{?_enable_coredump:-Dcoredump=true} \
@@ -636,12 +670,15 @@ Static library for libudev.
 	%{?_enable_qrencode:-Dqrencode=true} \
 	%{?_enable_microhttpd:-Dmicrohttpd=true} \
 	%{?_enable_gnutls:-Dgnutls=true} \
+    %{?_enable_openssl:-Dopenssl=true } \
+    %{?_enable_p11kit:-Dp11kit=true } \
 	%{?_enable_libcurl:-Dlibcurl=true} \
 	%{?_enable_libidn:-Dlibidn=true} \
 	%{?_enable_libidn2:-Dlibidn2=true} \
 	%{?_enable_libiptc:-Dlibiptc=true} \
 	%{?_enable_polkit:-Dpolkit=true} \
 	%{?_enable_efi:-Defi=true} \
+    %{?_enable_homed:-Dhomed=true} \
 	%{?_enable_networkd:-Dnetworkd=true} \
 	%{?_enable_resolve:-Dresolve=true} \
 	-Ddns-servers="" \
@@ -684,7 +721,7 @@ rm -f %buildroot/usr/lib/rpm/macros.d/macros.systemd
 %find_lang %name
 
 # Make sure these directories are properly owned
-mkdir -p %buildroot%_unitdir/{basic,default,dbus,graphical,poweroff,rescue,reboot}.target.wants
+mkdir -p %buildroot%_unitdir/{basic,dbus,default,graphical,poweroff,rescue,reboot,sysinit}.target.wants
 
 install -m755 %SOURCE2 %buildroot/lib/systemd/systemd-sysv-install
 
@@ -738,6 +775,9 @@ ln -r -s %buildroot%_unitdir/remote-fs.target %buildroot%_unitdir/multi-user.tar
 ln -r -s %buildroot%_unitdir/machines.target %buildroot%_unitdir/multi-user.target.wants
 ln -r -s %buildroot%_unitdir/systemd-quotacheck.service %buildroot%_unitdir/local-fs.target.wants
 ln -r -s %buildroot%_unitdir/quotaon.service %buildroot%_unitdir/local-fs.target.wants
+%if_enabled pstore
+ln -r -s %buildroot%_unitdir/systemd-pstore.service %buildroot%_unitdir/sysinit.target.wants
+%endif
 
 # create drop-in to prevent tty1 to be cleared
 mkdir -p %buildroot%_unitdir/getty@tty1.service.d
@@ -771,7 +811,11 @@ mkdir -p %buildroot%_localstatedir/lib/systemd/coredump
 mkdir -p %buildroot%_localstatedir/lib/systemd/catalog
 mkdir -p %buildroot%_localstatedir/lib/systemd/backlight
 mkdir -p %buildroot%_localstatedir/lib/systemd/rfkill
+mkdir -p %buildroot%_localstatedir/lib/systemd/linger
 mkdir -p %buildroot%_localstatedir/lib/systemd/journal-upload
+mkdir -p %buildroot%_localstatedir/lib/private/systemd/journal-upload
+mkdir -p %buildroot%_logdir/private
+mkdir -p %buildroot%_localstatedir/cache/private
 mkdir -p %buildroot%_localstatedir/lib/systemd/timesync
 mkdir -p %buildroot%_logdir/journal
 touch %buildroot%_localstatedir/lib/systemd/catalog/database
@@ -793,7 +837,7 @@ mkdir -p %buildroot/lib/systemd/system-preset
 mkdir -p %buildroot%_sysconfdir/systemd/system-preset
 mkdir -p %buildroot/lib/systemd/user-preset
 mkdir -p %buildroot%_sysconfdir/systemd/user-preset
-mkdir -p %buildroot/usr/lib/systemd/user-preset
+mkdir -p %buildroot%_prefix/lib/systemd/user-preset
 install -m 0644 %SOURCE34 %buildroot/lib/systemd/system-preset/
 install -m 0644 %SOURCE35 %buildroot/lib/systemd/system-preset/
 install -m 0644 %SOURCE36 %buildroot/lib/systemd/system-preset/
@@ -842,10 +886,10 @@ vm.mmap_min_addr = %mmap_min_addr
 EOF
 
 # define default PATH for system and user
-mkdir -p %buildroot/usr/lib/systemd/user.conf.d
-install -m 0644 %SOURCE11 %buildroot/usr/lib/systemd/user.conf.d/env-path.conf
-#mkdir -p %buildroot/lib/systemd/system.conf.d
-#install -m 0644 %SOURCE12 %buildroot/lib/systemd/system.conf.d/env-path.conf
+mkdir -p %buildroot%_prefix/lib/systemd/user.conf.d
+install -m 0644 %SOURCE11 %buildroot%_prefix/lib/systemd/user.conf.d/env-path.conf
+#mkdir -p %buildroot%_prefix/systemd/system.conf.d
+#install -m 0644 %SOURCE12 %buildroot%_prefix/systemd/system.conf.d/env-path.conf
 
 #######
 # UDEV
@@ -897,7 +941,7 @@ export LD_LIBRARY_PATH=$(pwd)/%{__builddir}/src/shared:$(pwd)/%{__builddir}
 %meson_test
 
 %pre
-%_sbindir/groupadd -r -f systemd-journal >/dev/null 2>&1 ||:
+groupadd -r -f systemd-journal >/dev/null 2>&1 ||:
 
 %post
 # Move old stuff around in /var/lib
@@ -924,7 +968,7 @@ chgrp systemd-journal /run/log/journal/ /run/log/journal/`cat /etc/machine-id 2>
 chmod g+s  /run/log/journal/ /run/log/journal/`cat /etc/machine-id 2> /dev/null` %_logdir/journal/ %_logdir/journal/`cat /etc/machine-id 2> /dev/null` >/dev/null 2>&1 || :
 
 # Apply ACL to the journal directory
-/usr/bin/setfacl -Rnm g:wheel:rx,d:g:wheel:rx,g:adm:rx,d:g:adm:rx %_logdir/journal/ >/dev/null 2>&1 || :
+setfacl -Rnm g:wheel:rx,d:g:wheel:rx,g:adm:rx,d:g:adm:rx %_logdir/journal/ >/dev/null 2>&1 || :
 
 # remove obsolete systemd-readahead file and services symlink
 rm -f /.readahead > /dev/null 2>&1 || :
@@ -935,12 +979,13 @@ rm -f /.readahead > /dev/null 2>&1 || :
 
 if [ $1 -eq 1 ] ; then
         # Enable the services we install by default
-        /bin/systemctl preset-all >/dev/null 2>&1 || :
+        systemctl preset-all >/dev/null 2>&1 || :
+        systemctl --global preset-all >/dev/null 2>&1 || :
 fi
 
 %preun
 if [ $1 -eq 0 ] ; then
-        /bin/systemctl disable \
+        systemctl disable --quiet \
                 remote-fs.target \
                 getty@.service \
                 serial-getty@.service \
@@ -952,22 +997,22 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %post utils
-/sbin/systemd-machine-id-setup >/dev/null 2>&1 || :
+systemd-machine-id-setup >/dev/null 2>&1 || :
 
 %if_enabled networkd
 %pre networkd
-%_sbindir/groupadd -r -f systemd-network >/dev/null 2>&1 ||:
-%_sbindir/useradd -g systemd-network -c 'systemd Network Management' \
+groupadd -r -f systemd-network >/dev/null 2>&1 ||:
+useradd -g systemd-network -c 'systemd Network Management' \
     -d /var/empty -s /dev/null -r -l -M systemd-network >/dev/null 2>&1 ||:
 
-%_sbindir/groupadd -r -f systemd-resolve >/dev/null 2>&1 ||:
-%_sbindir/useradd -g systemd-resolve -c 'systemd Resolver' \
+groupadd -r -f systemd-resolve >/dev/null 2>&1 ||:
+useradd -g systemd-resolve -c 'systemd Resolver' \
     -d /var/empty -s /dev/null -r -l -M systemd-resolve >/dev/null 2>&1 ||:
 
 %post networkd
 if [ $1 -eq 1 ] ; then
         # Enable the services we install by default
-        /bin/systemctl preset \
+        systemctl preset \
                 systemd-networkd.service \
                 systemd-networkd-wait-online.service \
                 systemd-resolved.service \
@@ -976,7 +1021,7 @@ fi
 
 %preun networkd
 if [ $1 -eq 0 ] ; then
-        /bin/systemctl disable \
+        systemctl disable --quiet \
                 systemd-networkd.service \
                 systemd-networkd-wait-online.service \
                 systemd-resolved.service \
@@ -986,26 +1031,19 @@ fi
 
 %if_enabled coredump
 %pre coredump
-%_sbindir/groupadd -r -f systemd-coredump >/dev/null 2>&1 ||:
-%_sbindir/useradd -g systemd-coredump -c 'systemd Core Dumper' \
+groupadd -r -f systemd-coredump >/dev/null 2>&1 ||:
+useradd -g systemd-coredump -c 'systemd Core Dumper' \
     -d /var/empty -s /dev/null -r -l -M systemd-coredump >/dev/null 2>&1 ||:
 %endif
 
 %if_enabled timesyncd
 %pre timesyncd
-%_sbindir/groupadd -r -f systemd-timesync >/dev/null 2>&1 ||:
-%_sbindir/useradd -g systemd-timesync -c 'systemd Time Synchronization' \
+groupadd -r -f systemd-timesync >/dev/null 2>&1 ||:
+useradd -g systemd-timesync -c 'systemd Time Synchronization' \
     -d /var/empty -s /dev/null -r -l -M systemd-timesync >/dev/null 2>&1 ||:
 
 
 %post timesyncd
-if [ $1 -eq 1 ] ; then
-        # Enable the services we install by default
-        /bin/systemctl preset \
-                systemd-timesyncd.service \
-                 >/dev/null 2>&1 || :
-fi
-
 if [ -L %_localstatedir/lib/systemd/timesync ]; then
     rm %_localstatedir/lib/systemd/timesync
     mv %_localstatedir/lib/private/systemd/timesync %_localstatedir/lib/systemd/timesync
@@ -1015,20 +1053,24 @@ if [ -f %_localstatedir/lib/systemd/clock ] ; then
     mv %_localstatedir/lib/systemd/clock %_localstatedir/lib/systemd/timesync/
 fi
 
+%post_service systemd-timesyncd.service
+
 %preun timesyncd
-if [ $1 -eq 0 ] ; then
-        /bin/systemctl disable \
-                systemd-timesyncd.service \
-                 >/dev/null 2>&1 || :
-fi
+%preun_service systemd-timesyncd.service
 
 %endif
+
+%post homed
+%post_service systemd-homed.service
+
+%preun homed
+%preun_service systemd-homed.service
 
 %post -n libnss-systemd
 if [ -f /etc/nsswitch.conf ] ; then
             grep -E -q '^(passwd|group):.* systemd' /etc/nsswitch.conf ||
             sed -i.rpmorig -r -e '
-                s/^(passwd|group):(.*)/\1: \2 systemd/
+                s/^(passwd|group):(.*)/\1:\2 systemd/
                 ' /etc/nsswitch.conf >/dev/null 2>&1 || :
 fi
 update_chrooted all
@@ -1044,9 +1086,29 @@ if [ "$1" = "0" ]; then
 fi
 update_chrooted all
 
+#%post -n libnss-resolve
+#if [ -f /etc/nsswitch.conf ] ; then
+#        grep -E -q '^hosts:.* resolve' /etc/nsswitch.conf ||
+#        sed -i.rpmorig -r -e '
+#                s/^(hosts):(.*) files( mdns4_minimal .NOTFOUND=return.)? dns myhostname/\1:\2 resolve [!UNAVAIL=return] myhostname files\3 dns/
+#                ' /etc/nsswitch.conf >/dev/null 2>&1 || :
+#fi
+#update_chrooted all
+
+#%postun -n libnss-resolve
+#if [ "$1" = "0" ]; then
+#        if [ -f /etc/nsswitch.conf ] ; then
+#                sed -i.rpmorig -e '
+#                        /^hosts:/ !b
+#                        s/[[:blank:]]\+resolve\+[[:blank:]]*\[[^]]*\]*/      /
+#                        ' /etc/nsswitch.conf >/dev/null 2>&1 || :
+#        fi
+#fi
+#update_chrooted all
+
 %post -n libnss-myhostname
 if [ -f /etc/nsswitch.conf ] ; then
-        grep -v -E -q '^hosts:.* myhostname' /etc/nsswitch.conf &&
+        grep -E -q '^hosts:.* myhostname' /etc/nsswitch.conf ||
         sed -i.rpmorig -e '
                 /^hosts:/ !b
                 /\<myhostname\>/ b
@@ -1068,22 +1130,18 @@ update_chrooted all
 
 %post -n libnss-mymachines
 if [ -f /etc/nsswitch.conf ] ; then
+        grep -E -q '^hosts:.* mymachines' /etc/nsswitch.conf ||
         sed -i.rpmorig -e '
                 /^hosts:/ !b
                 /\<mymachines\>/ b
                 s/[[:blank:]]*$/ mymachines/
                 ' /etc/nsswitch.conf >/dev/null 2>&1 || :
 
+# Cleanup. sinse v246 nss-mymachines: drop support for UID/GID resolving
+        grep -v -E -q '^(passwd|group):.* mymachines' /etc/nsswitch.conf ||
         sed -i.rpmorig -e '
-                /^passwd:/ !b
-                /\<mymachines\>/ b
-                s/[[:blank:]]*$/ mymachines/
-                ' /etc/nsswitch.conf >/dev/null 2>&1 || :
-
-        sed -i.rpmorig -e '
-                /^group:/ !b
-                /\<mymachines\>/ b
-                s/[[:blank:]]*$/ mymachines/
+                /^(passwd|group):/ !b
+                s/[[:blank:]]\+mymachines\>//
                 ' /etc/nsswitch.conf >/dev/null 2>&1 || :
 fi
 update_chrooted all
@@ -1096,23 +1154,15 @@ if [ "$1" = "0" ]; then
                         s/[[:blank:]]\+mymachines\>//
                         ' /etc/nsswitch.conf >/dev/null 2>&1 || :
 
-                sed -i.rpmorig -e '
-                        /^passwd:/ !b
-                        s/[[:blank:]]\+mymachines\>//
-                        ' /etc/nsswitch.conf >/dev/null 2>&1 || :
-
-                sed -i.rpmorig -e '
-                        /^group:/ !b
-                        s/[[:blank:]]\+mymachines\>//
-                        ' /etc/nsswitch.conf >/dev/null 2>&1 || :
         fi
 fi
+
 update_chrooted all
 
 %if_enabled microhttpd
 %pre journal-remote
-%_sbindir/groupadd -r -f systemd-journal-remote ||:
-%_sbindir/useradd -g systemd-journal-remote -c 'Journal Remote' \
+groupadd -r -f systemd-journal-remote ||:
+useradd -g systemd-journal-remote -c 'Journal Remote' \
     -d %_logdir/journal/remote -s /dev/null -r -l systemd-journal-remote >/dev/null 2>&1 ||:
 
 %post journal-remote
@@ -1139,13 +1189,13 @@ fi
 %endif
 
 %pre -n udev
-%_sbindir/groupadd -r -f cdrom >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f tape >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f dialout >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f input >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f video >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f render >/dev/null 2>&1 ||:
-%_sbindir/groupadd -r -f vmusers >/dev/null 2>&1 ||:
+groupadd -r -f cdrom >/dev/null 2>&1 ||:
+groupadd -r -f tape >/dev/null 2>&1 ||:
+groupadd -r -f dialout >/dev/null 2>&1 ||:
+groupadd -r -f input >/dev/null 2>&1 ||:
+groupadd -r -f video >/dev/null 2>&1 ||:
+groupadd -r -f render >/dev/null 2>&1 ||:
+groupadd -r -f vmusers >/dev/null 2>&1 ||:
 
 %post -n udev
 %post_service udevd
@@ -1186,6 +1236,7 @@ fi
 /lib/systemd/systemd-pstore
 %_man5dir/pstore.*
 %_man8dir/systemd-pstore.*
+%_tmpfilesdir/systemd-pstore.conf
 %endif
 
 %_bindir/busctl
@@ -1199,6 +1250,7 @@ fi
 %_bindir/systemd-mount
 %_bindir/systemd-umount
 %_bindir/systemd-path
+/bin/systemd-repart
 /bin/systemd-run
 %_bindir/systemd-stdio-bridge
 /lib/systemd/systemd
@@ -1235,6 +1287,7 @@ fi
 /lib/systemd/systemd-volatile-root
 /lib/systemd/systemd-sysv-install
 /lib/systemd/systemd-sulogin-shell
+/lib/systemd/systemd-xdg-autostart-condition
 
 %dir /lib/environment.d
 /lib/environment.d/99-environment.conf
@@ -1270,6 +1323,9 @@ fi
 %if_enabled coredump
 %exclude %_unitdir/systemd-coredump*
 %exclude %_unitdir/*/systemd-coredump*
+%endif
+%if_enabled homed
+%exclude %_unitdir/systemd-homed*
 %endif
 
 %exclude %_unitdir/*udev*
@@ -1312,7 +1368,9 @@ fi
 %_man5dir/os-release*
 %_man5dir/*sleep.conf*
 %_man5dir/*system.conf*
+%_man5dir/*systemd1*
 %_man5dir/*user*
+%_man5dir/repart.d.*
 %_man5dir/systemd.automount*
 %_man5dir/systemd.exec*
 %_man5dir/systemd.kill*
@@ -1354,6 +1412,7 @@ fi
 %_man8dir/systemd-quota*
 %_man8dir/systemd-random-seed*
 %_man8dir/systemd-rc-local-generator*
+%_man8dir/systemd-repart*
 %_man8dir/systemd-remount*
 %_man8dir/systemd-rfkill*
 %_man8dir/systemd-run-generator*
@@ -1368,15 +1427,19 @@ fi
 %_man8dir/systemd-shutdown*
 %_man8dir/systemd-poweroff*
 %_man8dir/systemd-volatile-root*
+%_man8dir/systemd-xdg-autostart-generator*
 
 %exclude %_mandir/*/*sysusers*
 %exclude %_datadir/factory
 %exclude %_tmpfilesdir/etc.conf
 
-/usr/lib/systemd
+%_prefix/lib/systemd
 /lib/systemd/system-generators
 %if_enabled efi
 %exclude /lib/systemd/system-generators/systemd-bless-boot-generator
+%if_enabled gnuefi
+%exclude %_prefix/lib/systemd/boot
+%endif
 %endif
 
 %dir /lib/systemd/system-preset
@@ -1402,11 +1465,16 @@ fi
 %endif
 
 %ghost %dir %_logdir/journal
+%ghost %attr(0700,root,root) %dir %_logdir/private
+%ghost %attr(0700,root,root) %dir %_localstatedir/cache/private
+%ghost %attr(0700,root,root) %dir %_localstatedir/lib/private
 %dir %_localstatedir/lib/systemd
 %dir %_localstatedir/lib/systemd/catalog
+%ghost %dir %_localstatedir/lib/private/systemd
 %_rpmlibdir/journal-catalog.filetrigger
 %ghost %_localstatedir/lib/systemd/catalog/database
 %ghost %_localstatedir/lib/systemd/random-seed
+%ghost %dir %_localstatedir/lib/systemd/linger
 
 %_defaultdocdir/%name-%version
 %_logdir/README
@@ -1415,10 +1483,10 @@ fi
 %_man8dir/kernel-install.*
 %dir %_sysconfdir/kernel
 %dir %_sysconfdir/kernel/install.d
-%dir /lib/kernel
-%dir /lib/kernel/install.d
-/lib/kernel/install.d/*
-%exclude /lib/kernel/install.d/50-depmod.install
+%dir %_prefix/lib/kernel
+%dir %_prefix/lib/kernel/install.d
+%_prefix/lib/kernel/install.d/*
+%exclude %_prefix/lib/kernel/install.d/50-depmod.install
 
 %files -n libsystemd
 /%_lib/libsystemd.so.*
@@ -1456,7 +1524,28 @@ fi
 %files -n pam_%name
 %config %_sysconfdir/pam.d/systemd-user
 /%_lib/security/pam_systemd.so
-%_man8dir/pam_systemd*
+%_man8dir/pam_systemd.*
+
+%if_enabled homed
+%files -n pam_%{name}_home
+/%_lib/security/pam_systemd_home.so
+%_man8dir/pam_systemd_home.*
+
+%files homed
+%config(noreplace) %_sysconfdir/systemd/homed.conf
+/bin/homectl
+/lib/systemd/systemd-homed
+/lib/systemd/systemd-homework
+%_unitdir/systemd-homed*
+%_datadir/dbus-1/system.d/org.freedesktop.home1.conf
+%_datadir/dbus-1/system-services/org.freedesktop.home1.service
+%if_enabled polkit
+%_datadir/polkit-1/actions/org.freedesktop.home1.policy
+%endif
+%_man1dir/homectl.*
+%_man5dir/*home*
+%_man8dir/systemd-homed.*
+%endif
 
 %files sysvinit
 /sbin/init
@@ -1551,6 +1640,9 @@ fi
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.machine1.conf
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.import1.conf
 %exclude %_datadir/dbus-1/system.d/org.freedesktop.timesync1.conf
+%if_enabled homed
+%exclude %_datadir/dbus-1/system.d/org.freedesktop.home1.conf
+%endif
 %_datadir/dbus-1/system-services/org.freedesktop.*.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.systemd1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.resolve1.service
@@ -1559,6 +1651,9 @@ fi
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.import1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.portable1.service
 %exclude %_datadir/dbus-1/system-services/org.freedesktop.timesync1.service
+%if_enabled homed
+%exclude %_datadir/dbus-1/system-services/org.freedesktop.home1.service
+%endif
 %if_enabled polkit
 %_datadir/polkit-1/actions/*.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.systemd1.policy
@@ -1567,10 +1662,16 @@ fi
 %exclude %_datadir/polkit-1/actions/org.freedesktop.machine1.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.import1.policy
 %exclude %_datadir/polkit-1/actions/org.freedesktop.portable1.policy
+%if_enabled homed
+%exclude %_datadir/polkit-1/actions/org.freedesktop.home1.policy
+%endif
 %endif
 
 /bin/loginctl
 /lib/systemd/systemd-logind
+/bin/userdbctl
+/lib/systemd/systemd-userdbd
+/lib/systemd/systemd-userwork
 %_bindir/hostnamectl
 /lib/systemd/systemd-hostnamed
 %_bindir/localectl
@@ -1586,12 +1687,14 @@ fi
 %exclude %_datadir/zsh/site-functions/_udevadm
 
 %_mandir/*/*login*
+%_mandir/*/*userdb*
 %exclude %_man3dir/*
 %_mandir/*/*hostname*
 %exclude %_man8dir/*myhostname*
 %exclude %_man8dir/*mymachines*
 %_mandir/*/*locale*
 %_mandir/*/*timedate*
+%_man5dir/*LogControl1*
 
 %if_enabled networkd
 %files networkd
@@ -1625,9 +1728,14 @@ fi
 %_unitdir/*resolv*
 %_unitdir/*/*resolv*
 /lib/systemd/network/80-container-host0.network
+/lib/systemd/network/80-wifi-adhoc.network
+/lib/systemd/network/80-wifi-ap.network.example
+/lib/systemd/network/80-wifi-station.network.example
 %_mandir/*/*networkd*
+%_mandir/*/systemd-network-generator*
 %_mandir/*/*netdev*
 %_mandir/*/*resolved*
+%_mandir/*/*resolve1*
 %_mandir/*/*dnssd*
 %_man1dir/networkctl.*
 %_man1dir/resolvectl.*
@@ -1663,6 +1771,7 @@ fi
 /lib/systemd/systemd-pull
 /lib/systemd/network/80-container-ve.network
 /lib/systemd/network/80-container-vz.network
+/lib/systemd/network/80-vm-vt.network
 %_datadir/dbus-1/system-services/org.freedesktop.machine1.service
 %_datadir/dbus-1/system-services/org.freedesktop.import1.service
 %if_enabled polkit
@@ -1716,7 +1825,6 @@ fi
 %files journal-remote
 %dir %attr(2755,systemd-journal-remote,systemd-journal-remote) %_logdir/journal/remote
 %config(noreplace) %_sysconfdir/systemd/journal-remote.conf
-%dir %attr(0755,systemd-journal-upload,systemd-journal-upload) %_var/lib/systemd/journal-upload
 /lib/systemd/systemd-journal-gatewayd
 /lib/systemd/systemd-journal-remote
 %_unitdir/systemd-journal-gatewayd.*
@@ -1733,6 +1841,8 @@ fi
 
 %if_enabled libcurl
 %config(noreplace) %_sysconfdir/systemd/journal-upload.conf
+%ghost %dir %_localstatedir/lib/systemd/journal-upload
+%ghost %dir %_localstatedir/lib/private/systemd/journal-upload
 /lib/systemd/systemd-journal-upload
 %_unitdir/systemd-journal-upload.service
 %_man8dir/systemd-journal-upload*
@@ -1754,9 +1864,9 @@ fi
 %_man8dir/systemd-bless*
 %_man8dir/systemd-boot*
 %if_enabled gnuefi
-%dir /lib/systemd/boot
-%dir /lib/systemd/boot/efi
-/lib/systemd/boot/efi/*
+%dir %_prefix/lib/systemd/boot
+%dir %_prefix/lib/systemd/boot/efi
+%_prefix/lib/systemd/boot/efi/*
 %endif
 %endif
 
@@ -1823,8 +1933,10 @@ fi
 /lib/udev/udevd
 /lib/udev/ata_id
 /lib/udev/cdrom_id
+/lib/udev/fido_id
 /lib/udev/mtd_probe
 /lib/udev/scsi_id
+/lib/udev/v4l_id
 /sbin/udevadm
 /sbin/udevd
 /sbin/systemd-hwdb
@@ -1839,18 +1951,12 @@ fi
 %_datadir/bash-completion/completions/udevadm
 %_datadir/zsh/site-functions/_udevadm
 
-%files -n udev-extras
-/lib/udev/v4l_id
-/lib/udev/rules.d/78-sound-card.rules
-
 %files -n udev-rules
 %dir %_sysconfdir/udev/rules.d
 %config(noreplace) %_sysconfdir/udev/rules.d/*
 /lib/udev/initramfs-rules.d
 /lib/udev/rules.d
 
-# extras
-%exclude /lib/udev/rules.d/78-sound-card.rules
 # systemd
 %exclude /lib/udev/rules.d/70-uaccess.rules
 %exclude /lib/udev/rules.d/71-seat.rules
@@ -1863,29 +1969,108 @@ fi
 /lib/udev/hwdb.d
 
 %changelog
-* Sat Oct 03 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.9-alt1
+* Wed Mar 31 2021 Alexey Shabalin <shaba@altlinux.org> 1:246.13-alt1
+- 246.13
+- disable post scripts for libnss-resolve (fix update on p9)
+
+* Mon Mar 01 2021 Alexey Shabalin <shaba@altlinux.org> 1:246.10-alt1
+- 246.10
+
+* Wed Feb 03 2021 Alexey Shabalin <shaba@altlinux.org> 1:243.9-alt2
+- revert kernelinstalldir path /usr/lib/kernel/install.d -> /lib/kernel/install.d
+- add cloud@altlinux.org key to import-pubring.gpg
+- enable systemd-pstore.service by default
+
+* Sun Nov 08 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.6-alt5
+- add cloud@altlinux.org key to import-pubring.gpg
+
+* Mon Oct 19 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.6-alt4
+- revert kernelinstalldir path /usr/lib/kernel/install.d -> /lib/kernel/install.d
+- build systemd-boot for arm
+
+* Fri Oct 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.6-alt3
+- dhcp-server: offer router address as next-server (sbolshakov@)
+
+* Sat Oct 03 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.6-alt2
+- kernelinstalldir path /usr/lib/kernel/install.d -> /lib/kernel/install.d
+- install kernel-install script to /sbin
+- move systemd-boot and bootctl utils to systemd-boot-efi package
+
+ Alexey Shabalin <shaba@altlinux.org> 1:243.9-alt1
 - 243.9 (Fixes: CVE-2020-13776)
 - kernelinstalldir path /usr/lib/kernel/install.d -> /lib/kernel/install.d
 - install kernel-install script to /sbin
 - move systemd-boot and bootctl utils to systemd-boot-efi package
 
-* Fri Apr 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1:243.8-alt2
-- add resolve files, located at /run to the list of tracked by altlinux-libresolv files
+* Mon Sep 21 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.6-alt1
+- 246.6
 
-* Mon Mar 30 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.8-alt1
-- 243.8 (v243-stable branch)
+* Wed Sep 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.5-alt1
+- 246.5
+
+* Tue Sep 08 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.4-alt1
+- 246.4
+
+* Mon Aug 10 2020 Alexey Shabalin <shaba@altlinux.org> 1:246.1-alt1
+- 246.1
+
+* Mon Aug 03 2020 Alexey Shabalin <shaba@altlinux.org> 1:246-alt1
+- 246
+
+* Mon Jul 27 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.7-alt1
+- 245.7
+
+* Tue Jul 07 2020 Nikita Ermakov <arei@altlinux.org> 1:245.6-alt2
+- disable kexec-tools for riscv64
+
+* Thu Jun 04 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.6-alt1
+- 245.6
+
+* Thu Apr 30 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.5-alt1
+- 245.5
+
+* Fri Apr 10 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1:245.4-alt2
+- add resolve files, located at /run, to the list of tracked by altlinux-libresolv files
+
+* Wed Apr 08 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.4-alt1
+- 245.4
+
+* Mon Mar 30 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.3-alt1
+- 245.3 (v245-stable branch)
 - drop altlinux-kmsg-loglevel.service and altlinux-save-dmesg.service
 
-* Wed Mar 11 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt3
-- fixed PATH env for units
+* Tue Mar 24 2020 Alexey Shabalin <shaba@altlinux.org> 1:245.2-alt1
+- 245.2 (v245-stable branch)
 
-* Mon Mar 09 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt2
-- move resolve1 and network1 polkit policy from systemd-services to systemd-networkd
+* Fri Mar 13 2020 Alexey Shabalin <shaba@altlinux.org> 1:245-alt3
+- disable p11kit support (before enable, need move libp11-kit and libffi to /lib)
+
+* Wed Mar 11 2020 Alexey Shabalin <shaba@altlinux.org> 1:245-alt2
+- v245-stable branch (084df9c616fdfbcbf3d7fbe7dc6b975f1fa359d2)
+
+* Fri Mar 06 2020 Alexey Shabalin <shaba@altlinux.org> 1:245-alt1
+- 245
 - move org.freedesktop.timesync1.service from systemd-service to systemd-timesyncd
+- move resolve1 and network1 polkit policy from systemd-services to systemd-networkd
+- build with -Dlink-networkd-shared=false and -Dlink-timesyncd-shared=false
 - fixed package network.target and network-online.target
+- package userdb to systemd-services
+- build systemd-homed
 
-* Sun Feb 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:243.7-alt1
-- 243.7 (Fixes: CVE-2020-1712)
+* Mon Feb 17 2020 Alexey Shabalin <shaba@altlinux.org> 1:244.3-alt2
+- move systemd-network-generator.service to systemd-networkd package
+- avoid requires quota package
+
+* Sun Feb 16 2020 Alexey Shabalin <shaba@altlinux.org> 1:244.3-alt1
+- 244.3 (Fixes: CVE-2020-1712)
+
+* Thu Dec 19 2019 Alexey Shabalin <shaba@altlinux.org> 1:244.1-alt1
+- 244.1 (v244-stable branch)
+
+* Wed Dec 04 2019 Alexey Shabalin <shaba@altlinux.org> 1:244-alt1
+- 244
+- switch default-hierarchy to unified (cgroup-v2)
+- drop udev-extras package
 
 * Fri Nov 22 2019 Alexey Shabalin <shaba@altlinux.org> 1:243.4-alt1
 - 243.4 (v243-stable branch)
@@ -2262,7 +2447,7 @@ fi
 - update altlinux-openresolv units
 - run first_time before display-manager (ALT#29200)
 - add systemd-logind shell wrapper
-- revert aloow copy to /etc/localtime (Debian patch)
+- revert allow copy to /etc/localtime (Debian patch)
 - make hostnamed/localed/logind/machined/timedated D-Bus activatable (Debian patch)
 - split systemd-network support from main tmpfiles.d/systemd.conf
 - move hostnamed/localed/logind/machined/timedated and *ctl utils to systemd-service package
