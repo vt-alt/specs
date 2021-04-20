@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.86
+Version: 2.9.87
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,10 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Tue Apr 13 2021 Ivan Razzhivin <underwit@altlinux.org> 2.9.87-alt1
+- alterator-multiseat: update translation
+- alterator-multiseat: update help
+
 * Tue Apr 06 2021 Ivan Razzhivin <underwit@altlinux.org> 2.9.86-alt1
 - alterator-multiseat: add translation
 - alterator-multiseat: add help
