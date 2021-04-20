@@ -1,8 +1,6 @@
-%global myname make-initrd
-
 Name: make-initrd
-Version: 2.11.0
-Release: alt3
+Version: 2.16.0
+Release: alt1
 
 Summary: Creates an initramfs image
 License: GPL-3.0
@@ -19,6 +17,8 @@ BuildRequires: bzlib-devel
 BuildRequires: liblzma-devel
 BuildRequires: libzstd-devel
 BuildRequires: libelf-devel
+BuildRequires: libshell
+BuildRequires: make-initrd-busybox
 
 Provides: make-initrd(crc32c) = 1
 
@@ -36,8 +36,8 @@ Requires: chrooted-resolv service util-linux
 # Feature qemu
 Requires: pciutils
 
-# setsid, timeout
-Requires: make-initrd-busybox >= 1.24.2-alt2
+# setsid, timeout, start-stop-daemon
+Requires: make-initrd-busybox >= 1.32.1-alt3
 
 # depinfo
 Requires: libkmod >= 8-alt1
@@ -148,6 +148,16 @@ AutoReq: noshell, noshebang
 %description ucode
 CPU microcode autoloading module for %name
 
+%package iscsi
+Summary: iSCSI module for %name
+Group: System/Base
+Requires: %name = %version-%release
+Requires: open-iscsi
+AutoReq: noshell, noshebang
+
+%description iscsi
+iSCSI module for %name
+
 %prep
 %setup -q
 
@@ -177,48 +187,121 @@ fi
 %config(noreplace) %_sysconfdir/initrd.mk
 %_bindir/*
 %_sbindir/*
-%_datadir/%myname
+%_datadir/%name
 %_man1dir/*
 /lib/initrd
-%exclude %_datadir/%myname/features/devmapper
-%exclude %_datadir/%myname/features/lvm
-%exclude %_datadir/%myname/features/luks
-%exclude %_datadir/%myname/features/nfsroot
-%exclude %_datadir/%myname/features/multipath
-%exclude %_datadir/%myname/features/plymouth
-%exclude %_datadir/%myname/features/mdadm
-%exclude %_datadir/%myname/features/ucode
-%exclude %_datadir/%myname/guess/ucode
+%exclude %_datadir/%name/features/devmapper
+%exclude %_datadir/%name/features/lvm
+%exclude %_datadir/%name/features/luks
+%exclude %_datadir/%name/features/nfsroot
+%exclude %_datadir/%name/features/multipath
+%exclude %_datadir/%name/features/plymouth
+%exclude %_datadir/%name/features/mdadm
+%exclude %_datadir/%name/features/ucode
+%exclude %_datadir/%name/guess/ucode
+%exclude %_datadir/%name/features/iscsi
 %doc Documentation/*.md
 
 %files devmapper
-%_datadir/%myname/features/devmapper
+%_datadir/%name/features/devmapper
 
 %files lvm
-%_datadir/%myname/features/lvm
+%_datadir/%name/features/lvm
 
 %files luks
-%_datadir/%myname/features/luks
+%_datadir/%name/features/luks
 
 %files nfs
-%_datadir/%myname/features/nfsroot
+%_datadir/%name/features/nfsroot
 
 %files multipath
-%_datadir/%myname/features/multipath
+%_datadir/%name/features/multipath
 
 %files plymouth
-%_datadir/%myname/features/plymouth
+%_datadir/%name/features/plymouth
 
 %files mdadm
-%_datadir/%myname/features/mdadm
+%_datadir/%name/features/mdadm
 
 %ifarch %ix86 x86_64
 %files ucode
-%_datadir/%myname/features/ucode
-%_datadir/%myname/guess/ucode
+%_datadir/%name/features/ucode
+%_datadir/%name/guess/ucode
 %endif
 
+%files iscsi
+%_datadir/%name/features/iscsi
+
 %changelog
+* Mon Apr 12 2021 Alexey Gladkov <legion@altlinux.ru> 2.16.0-alt1
+- Runtime:
+  + ueventd tries to process events again if it did not work the first time.
+  + Move READONLY handle to fstab service.
+  + Fix polld service dependency.
+- New feature:
+  + iscsi: feature adds you to perform a diskless system boot using pxe
+  and iSCSI (thx Mikhail Chernonog) (ALT#27354).
+- Feature mdadm:
+  + md-raid-member handler assume that it has successfully processed all the events.
+- Feature pipeline:
+  + Use ro,loop options only for a non-device files.
+
+* Tue Apr 06 2021 Alexey Gladkov <legion@altlinux.ru> 2.15.0-alt1
+- Runtime:
+  + Allow init= to be symlink
+  + Fix root=NUMBER
+  + Show on console stopped services
+  + Make killall messages more informative
+- Utilities:
+  + initrd-put: Copy absolute symlinks (ALT#39877)
+- Misc:
+  + Make a compatibility symlink only if the file doesn't exist
+  + Create initramfs filesystem structure based on system filesystem
+  + Add more documentation
+
+* Tue Mar 30 2021 Alexey Gladkov <legion@altlinux.ru> 2.14.0-alt1
+- Feature mdadm:
+  + Generate udev rules for guessed raid devices.
+- Feature pipeline:
+  + Fix possible race in the waitdev.
+- Feature network:
+  + Always import runtime environment.
+- Runtime:
+  + Use wrapper around readlink for portability.
+  + Use start-stop-daemon from busybox.
+  + Udev variables $ID_\* are optional.
+  + Add default udev rules.
+  + Add support for root=SERIAL=\*.
+- Utilities:
+  + initrd-put: Handle symlinks in the root directory.
+  + initrd-put: Get the canonical path correctly.
+  + initrd-put: Set mode and owner after directories creation.
+  + depinfo: Do not show an error if softdep is not found.
+- Build:
+  + Add busybox and libshell as submodules.
+- Misc:
+  + All make messages should go to stderr.
+
+* Tue Mar 09 2021 Alexey Gladkov <legion@altlinux.ru> 2.13.0-alt1
+- Feature guestfs:
+  + Add lable utilities (thx Mikhail Gordeev)
+- Feature mdadm:
+  + Assemble only $MOUNTPOINTS related raids (thx Slava Aseev)
+- Runtime:
+  + Support root=PARTLABEL= and root=PARTUUID=
+- Utilities:
+  + depinfo: Show builtin modules hierarchically if --tree specified.
+- Misc:
+  + Improve man-pages.
+  + Add more tests.
+
+* Sat Jan 30 2021 Alexey Gladkov <legion@altlinux.ru> 2.12.0-alt1
+- Feature lkrg:
+  + Respect kernel version when we check for a kernel module (thx Vladimir D. Seleznev).
+- Misc:
+  + initrd-put: Properly handle the situation when the copy_file_range is not
+    implemented.
+
 * Wed Oct 07 2020 Alexey Gladkov <legion@altlinux.ru> 2.11.0-alt3
 - Utilities:
   + initrd-put: Properly handle the situation when the copy_file_range is not implemented
