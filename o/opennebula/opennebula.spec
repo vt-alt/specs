@@ -3,13 +3,15 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 %define oneadmin_home /var/lib/one
+%define oneadmin_uid 9869
+%define oneadmin_gid 9869
 
 %add_findreq_skiplist /var/lib/one/*
 
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
 Version: 5.10.5
-Release: alt4
+Release: alt5
 License: Apache-2.0
 Group: System/Servers
 Url: https://opennebula.org
@@ -371,9 +373,11 @@ mv %buildroot%_libexecdir/flow %buildroot%_datadir/flow
 #popd
 
 %pre common
-%_sbindir/groupadd -r -f oneadmin 2>/dev/null ||:
-%_sbindir/useradd -r -M -g oneadmin -G disk,wheel -c 'Opennebula Daemon User' \
-        -s /bin/bash -d %oneadmin_home oneadmin 2>/dev/null ||:
+groupadd -r -f -g %oneadmin_gid oneadmin 2>/dev/null ||:
+useradd -r -M -g oneadmin -G disk,wheel -c 'Opennebula Daemon User' \
+        -s /bin/bash -d %oneadmin_home \
+	-u %oneadmin_uid -g %oneadmin_gid \
+	oneadmin 2>/dev/null ||:
 
 %post server
 %post_service %name
@@ -389,7 +393,7 @@ if [ $1 = 1 ]; then
     if [ ! -d %oneadmin_home/.ssh ]; then
         su oneadmin -c "ssh-keygen -N '' -t rsa -f %oneadmin_home/.ssh/id_rsa"
         cp -p %oneadmin_home/.ssh/id_rsa.pub %oneadmin_home/.ssh/authorized_keys
-        /bin/chmod 600 %oneadmin_home/.ssh/authorized_keys
+        chmod 600 %oneadmin_home/.ssh/authorized_keys
     fi
 fi
 
@@ -411,7 +415,7 @@ fi
 %preun_service %name-novnc
 
 %pre node-kvm
-%_sbindir/usermod -a -G vmusers oneadmin  2>/dev/null ||:
+usermod -a -G vmusers oneadmin  2>/dev/null ||:
 
 #Modify /etc/libvirt/qemu.conf to set oneadmin user as running user for libvirt daemon
 #Otherwise, you might get some errors like :
@@ -433,7 +437,7 @@ elif [ $1 = 2 ]; then
 fi
 
 %pre node-lxd
-%_sbindir/usermod -a -G lxd oneadmin  2>/dev/null ||:
+usermod -a -G lxd oneadmin  2>/dev/null ||:
 
 #%post ruby
 #cat <<EOF
@@ -687,6 +691,11 @@ fi
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Wed Apr 14 2021 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt5
+- adduser oneadmin with static UID and GID = 9869
+  (for compat with shared cluster FS like NFS or GlusterFS
+  and compat with upstream packages)
+
 * Fri Jul 24 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt4
 - adopt check enable support-tab in yaml files patch for 5.10
 
