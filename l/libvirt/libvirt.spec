@@ -49,7 +49,6 @@
 %endif
 
 # Then the hypervisor drivers that talk via a native remote protocol
-%def_with phyp
 %ifarch %ix86 x86_64
 %def_with esx
 %else
@@ -81,6 +80,7 @@
 %def_without numactl
 %endif
 %def_with selinux
+%define selinux_mount "/sys/fs/selinux"
 
 # A few optional bits
 %def_without netcf
@@ -88,12 +88,12 @@
 %def_without hal
 %def_with yajl
 %def_with sanlock
-%if_enabled lxc
+%if_with lxc
 %def_with fuse
 %else
 %def_without fuse
 %endif
-%def_with pm_utils
+%def_without pm_utils
 
 %else  #server_drivers
 %def_without libvirtd
@@ -104,7 +104,6 @@
 %def_without vbox
 %def_without libxl
 %def_without vmware
-%def_without phyp
 %def_without esx
 %def_without hyperv
 %def_without network
@@ -129,7 +128,7 @@
 %def_with yajl
 %def_without sanlock
 %def_without fuse
-%def_with pm_utils
+%def_without pm_utils
 %endif #server_drivers
 
 %if_with  qemu
@@ -180,20 +179,21 @@
 %endif
 
 Name: libvirt
-Version: 5.10.0
+Version: 6.6.0
 Release: alt2
 Summary: Library providing a simple API virtualization
 License: LGPLv2+
 Group: System/Libraries
 Url: https://libvirt.org/
 Source0: %name-%version.tar
-Source1: gnulib-%name-%version.tar
 Source2: keycodemapdb-%name-%version.tar
 
+Source10: libvirt.dm-mod.modules
 Source11: libvirtd.init
 Source12: virtlockd.init
 Source13: virtlogd.init
 Source14: libvirt-guests.init
+Source21: libvirtd.tmpfiles
 
 Patch1: %name-%version.patch
 
@@ -211,14 +211,14 @@ Requires: %name-libs = %EVR
 %{?_with_udev:BuildRequires: udev libudev-devel >= 219 libpciaccess-devel}
 %{?_with_yajl:BuildRequires: libyajl-devel >= 2.0.1}
 %{?_with_sanlock:BuildRequires: sanlock-devel >= 1.8}
-%{?_with_libpcap:BuildRequires: libpcap-devel}
+%{?_with_libpcap:BuildRequires: libpcap-devel >= 1.5.0}
 %{?_with_libnl:BuildRequires: libnl-devel}
 %{?_with_selinux:BuildRequires: libselinux-devel}
 %{?_with_network:BuildRequires: dnsmasq iptables iptables-ipv6 radvd openvswitch}
 %{?_with_nwfilter:BuildRequires: ebtables}
 %{?_with_sasl:BuildRequires: libsasl2-devel >= 2.1.6}
 %{?_with_libssh:BuildRequires: pkgconfig(libssh) >= 0.7}
-%{?_with_dbus:BuildRequires: libdbus-devel >= 1.0.0}
+%{?_with_dbus:BuildRequires: libdbus-devel >= 1.0.0 dbus}
 %{?_with_polkit:BuildRequires: polkit}
 %{?_with_storage_fs:BuildRequires: util-linux}
 %{?_with_qemu:BuildRequires: qemu-img}
@@ -233,7 +233,6 @@ Requires: %name-libs = %EVR
 %{?_with_storage_vstorage:BuildRequires: /usr/sbin/vstorage}
 %{?_with_numactl:BuildRequires: libnuma-devel}
 %{?_with_capng:BuildRequires: libcap-ng-devel}
-%{?_with_phyp:BuildRequires: libssh2-devel}
 %{?_with_netcf:BuildRequires: netcf-devel >= 0.1.8}
 %{?_with_esx:BuildRequires: libcurl-devel}
 %{?_with_hyperv:BuildRequires: libwsman-devel}
@@ -244,24 +243,25 @@ Requires: %name-libs = %EVR
 %{?_with_bash_completion:BuildRequires: pkgconfig(bash-completion) >= 2.0}
 
 BuildRequires: /proc
-BuildRequires: bridge-utils libblkid-devel
+BuildRequires: libblkid-devel
 BuildRequires: libgcrypt-devel libgnutls-devel >= 3.2.0 libp11-kit-devel
 BuildRequires: libreadline-devel
 BuildRequires: libtasn1-devel
 BuildRequires: libattr-devel attr
 BuildRequires: libacl-devel
-BuildRequires: glib2-devel >= 2.48
-BuildRequires: perl-Pod-Parser perl-XML-XPath
+BuildRequires: glib2-devel >= 2.48 libgio-devel
 BuildRequires: libxml2-devel xml-utils xsltproc
 BuildRequires: python3 python3-devel
+BuildRequires: python3-module-docutils
 BuildRequires: zlib-devel
-BuildRequires: iproute2 perl-Pod-Parser
+BuildRequires: iproute2
 BuildRequires: dmidecode
-BuildRequires: libtirpc-devel
+BuildRequires: libtirpc-devel /usr/bin/rpcgen
 BuildRequires: glibc-utils
 BuildRequires: kmod
 BuildRequires: radvd
 BuildRequires: dnsmasq
+BuildRequires: mdevctl
 BuildRequires: libxfs-devel
 
 %description
@@ -297,7 +297,6 @@ for specific drivers.
 Summary: Default configuration files for the libvirtd daemon
 Group: System/Servers
 BuildArch: noarch
-Requires: bridge-utils
 Requires: dnsmasq
 %if_with driver_modules
 Requires: %name-daemon-driver-network = %EVR
@@ -348,6 +347,7 @@ iptables and ip6tables capabilities
 Summary: Nodedev driver plugin for the libvirtd daemon
 Group: System/Libraries
 Requires: %name-daemon = %EVR
+Requires: mdevctl
 
 %description daemon-driver-nodedev
 The nodedev driver plugin for the libvirtd daemon, providing
@@ -780,21 +780,18 @@ Libvirt plugin for NSS for translating domain names into IP addresses.
 %endif
 
 %prep
-%setup -a1
+%setup
 mkdir -p src/keycodemapdb
 tar -xf %SOURCE2 -C src/keycodemapdb --strip-components 1
 
 %patch1 -p1
-# git and rsync aren't needed for build.
-sed -i '/^\(git\|rsync\)[[:space:]]/d' bootstrap.conf
 # disable virnetsockettest test
 sed -i 's/virnetsockettest //' tests/Makefile.am
 # disable vircgrouptest test
 sed -i 's/vircgrouptest //' tests/Makefile.am
 
 %build
-
-./bootstrap --no-git --gnulib-srcdir=gnulib-%name-%version
+%autoreconf
 %define _configure_script ../configure
 mkdir %_vpath_builddir
 pushd %_vpath_builddir
@@ -816,7 +813,6 @@ pushd %_vpath_builddir
 		%{subst_with vbox} \
 		%{subst_with libxl} \
 		%{subst_with vmware} \
-		%{subst_with phyp} \
 		%{subst_with esx} \
 		%{subst_with hyperv} \
 		%{subst_with network} \
@@ -834,6 +830,7 @@ pushd %_vpath_builddir
 		%{subst_with_dash storage_sheepdog} \
 		%{subst_with numactl} \
 		%{subst_with selinux} \
+		--with-selinux-mount="%selinux_mount" \
 		%{subst_with netcf} \
 		%{subst_with udev} \
 		%{subst_with hal} \
@@ -931,7 +928,8 @@ grep -qs '^'\$dir'' && /sbin/service libvirtd condrestart ||:
 EOF
 install -pD -m 755 filetrigger %buildroot%_rpmlibdir/%name.filetrigger
 
-install -pD -m644 libvirtd.tmpfiles %buildroot/lib/tmpfiles.d/libvirtd.conf
+install -pD -m644 %SOURCE10 %buildroot%_sysconfdir/modules-load.d/libvirt-dm-mod.conf
+install -pD -m644 %SOURCE21 %buildroot/lib/tmpfiles.d/libvirtd.conf
 %endif
 
 %find_lang %name
@@ -998,6 +996,7 @@ fi
 %files
 
 %files docs
+%doc NEWS.rst README.rst
 %doc docs/*.xml
 %doc docs/html docs/*.gif
 
@@ -1038,6 +1037,7 @@ fi
 %dir %attr(0700, root, root) %_logdir/libvirt
 %dir %attr(0700, root, root) %_sysconfdir/libvirt/nwfilter
 %config(noreplace) %_sysconfdir/sysconfig/libvirtd
+%config(noreplace) %_sysconfdir/sysconfig/virtproxyd
 %config /lib/tmpfiles.d/libvirtd.conf
 %_unitdir/libvirtd*
 %_unitdir/virtproxyd*
@@ -1121,6 +1121,7 @@ fi
 %if_with driver_modules
 %if_with network
 %files daemon-driver-network
+%config(noreplace) %_sysconfdir/sysconfig/virtnetworkd
 %config(noreplace) %_sysconfdir/libvirt/virtnetworkd.conf
 %_datadir/augeas/lenses/virtnetworkd.aug
 %_datadir/augeas/lenses/tests/test_virtnetworkd.aug
@@ -1132,6 +1133,7 @@ fi
 
 %if_with udev
 %files daemon-driver-nodedev
+%config(noreplace) %_sysconfdir/sysconfig/virtnodedevd
 %config(noreplace) %_sysconfdir/libvirt/virtnodedevd.conf
 %_datadir/augeas/lenses/virtnodedevd.aug
 %_datadir/augeas/lenses/tests/test_virtnodedevd.aug
@@ -1140,6 +1142,7 @@ fi
 %_libdir/%name/connection-driver/libvirt_driver_nodedev.so
 
 %files daemon-driver-interface
+%config(noreplace) %_sysconfdir/sysconfig/virtinterfaced
 %config(noreplace) %_sysconfdir/libvirt/virtinterfaced.conf
 %_datadir/augeas/lenses/virtinterfaced.aug
 %_datadir/augeas/lenses/tests/test_virtinterfaced.aug
@@ -1150,6 +1153,7 @@ fi
 
 %if_with nwfilter
 %files daemon-driver-nwfilter
+%config(noreplace) %_sysconfdir/sysconfig/virtnwfilterd
 %config(noreplace) %_sysconfdir/libvirt/virtnwfilterd.conf
 %_datadir/augeas/lenses/virtnwfilterd.aug
 %_datadir/augeas/lenses/tests/test_virtnwfilterd.aug
@@ -1159,6 +1163,7 @@ fi
 %endif
 
 %files daemon-driver-secret
+%config(noreplace) %_sysconfdir/sysconfig/virtsecretd
 %config(noreplace) %_sysconfdir/libvirt/virtsecretd.conf
 %_datadir/augeas/lenses/virtsecretd.aug
 %_datadir/augeas/lenses/tests/test_virtsecretd.aug
@@ -1169,6 +1174,8 @@ fi
 %files daemon-driver-storage
 
 %files daemon-driver-storage-core
+%config(noreplace) %_sysconfdir/modules-load.d/libvirt-dm-mod.conf
+%config(noreplace) %_sysconfdir/sysconfig/virtstoraged
 %config(noreplace) %_sysconfdir/libvirt/virtstoraged.conf
 %_datadir/augeas/lenses/virtstoraged.aug
 %_datadir/augeas/lenses/tests/test_virtstoraged.aug
@@ -1241,6 +1248,7 @@ fi
 
 %if_with qemu
 %files daemon-driver-qemu
+%config(noreplace) %_sysconfdir/sysconfig/virtqemud
 %config(noreplace) %_sysconfdir/libvirt/virtqemud.conf
 %_datadir/augeas/lenses/virtqemud.aug
 %_datadir/augeas/lenses/tests/test_virtqemud.aug
@@ -1256,10 +1264,13 @@ fi
 %dir %attr(0700, root, root) %_logdir/swtpm/libvirt/qemu
 %_datadir/augeas/lenses/libvirtd_qemu.aug
 %_datadir/augeas/lenses/tests/test_libvirtd_qemu.aug
+%_bindir/virt-qemu-run
+%_man1dir/virt-qemu-run.1*
 %endif
 
 %if_with lxc
 %files daemon-driver-lxc
+%config(noreplace) %_sysconfdir/sysconfig/virtlxcd
 %config(noreplace) %_sysconfdir/libvirt/virtlxcd.conf
 %_datadir/augeas/lenses/virtlxcd.aug
 %_datadir/augeas/lenses/tests/test_virtlxcd.aug
@@ -1277,6 +1288,7 @@ fi
 
 %if_with libxl
 %files daemon-driver-libxl
+%config(noreplace) %_sysconfdir/sysconfig/virtxend
 %config(noreplace) %_sysconfdir/libvirt/virtxend.conf
 %_datadir/augeas/lenses/virtxend.aug
 %_datadir/augeas/lenses/tests/test_virtxend.aug
@@ -1293,6 +1305,7 @@ fi
 
 %if_with vbox
 %files daemon-driver-vbox
+%config(noreplace) %_sysconfdir/sysconfig/virtvboxd
 %config(noreplace) %_sysconfdir/libvirt/virtvboxd.conf
 %_datadir/augeas/lenses/virtvboxd.aug
 %_datadir/augeas/lenses/tests/test_virtvboxd.aug
@@ -1383,8 +1396,35 @@ fi
 %_datadir/libvirt/api
 
 %changelog
+* Sat Apr 17 2021 Alexey Shabalin <shaba@altlinux.org> 6.6.0-alt2
+- backport fixes from 6.7.0 and 6.8.0 (Fixes: CVE-2020-25637)
+
 * Thu Oct 15 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt2
 - use glusterfs without version
+
+* Mon Aug 10 2020 Alexey Shabalin <shaba@altlinux.org> 6.6.0-alt1
+- 6.6.0 (Fixes: CVE-2020-14339)
+
+* Fri Jul 10 2020 Alexey Shabalin <shaba@altlinux.org> 6.5.0-alt1
+- 6.5.0
+
+* Fri May 08 2020 Alexey Shabalin <shaba@altlinux.org> 6.3.0-alt1
+- 6.3.0
+
+* Tue Apr 14 2020 Alexey Shabalin <shaba@altlinux.org> 6.2.0-alt2
+- drop requires on bridge-utils
+
+* Wed Apr 08 2020 Alexey Shabalin <shaba@altlinux.org> 6.2.0-alt1
+- 6.2.0
+
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 6.1.0-alt1
+- 6.1.0
+
+* Sun Mar 22 2020 Vitaly Lipatov <lav@altlinux.ru> 6.0.0-alt2
+- use glusterfs without version
+
+* Fri Jan 24 2020 Alexey Shabalin <shaba@altlinux.org> 6.0.0-alt1
+- 6.0.0
 
 * Mon Dec 16 2019 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt1
 - 5.10.0

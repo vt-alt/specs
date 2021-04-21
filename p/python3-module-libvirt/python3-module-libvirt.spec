@@ -1,21 +1,21 @@
 
 Summary: Python bindings for the libvirt library
-Name: python-module-libvirt
-Version: 5.10.0
-Release: alt2
+Name: python3-module-libvirt
+Version: 7.0.0
+Release: alt1
 Url: http://libvirt.org
 #git://libvirt.org/libvirt-python.git
 Source: %name-%version.tar
 License: LGPLv2+
-Group: Development/Python
+Group: Development/Python3
 
 Requires: libvirt-client
 BuildRequires: libvirt-devel >= 2.0.0
-BuildRequires(pre): rpm-build-python
-BuildRequires: python-devel
+BuildRequires(pre): rpm-build-python3
+BuildRequires: python3-devel
 
-Obsoletes: libvirt-python < %version-%release
-Provides: libvirt-python = %version-%release
+Obsoletes: libvirt-python3 < %version-%release
+Provides: libvirt-python3 = %version-%release
 
 %description
 The libvirt-python package contains a module that permits applications
@@ -27,18 +27,43 @@ of recent versions of Linux (and other OSes).
 %setup -q
 
 %build
-%python_build
+%python3_build
 
 %install
-%python_install
+%python3_install
 
 %files
-%python_sitelibdir/*
-%doc  NEWS README COPYING COPYING.LESSER examples
+%python3_sitelibdir/*
+%doc README COPYING COPYING.LESSER examples
 
 %changelog
-* Mon Jul 27 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt2
-- build python2 module only
+* Mon Jan 18 2021 Alexey Shabalin <shaba@altlinux.org> 7.0.0-alt1
+- new version 7.0.0
+
+* Fri Dec 04 2020 Alexey Shabalin <shaba@altlinux.org> 6.10.0-alt1
+- new version 6.10.0
+
+* Mon Sep 07 2020 Alexey Shabalin <shaba@altlinux.org> 6.7.0-alt1
+- new version 6.7.0
+
+* Mon Aug 10 2020 Alexey Shabalin <shaba@altlinux.org> 6.6.0-alt1
+- new version 6.6.0
+
+* Fri Jul 24 2020 Alexey Shabalin <shaba@altlinux.org> 6.5.0-alt1
+- new version 6.5.0
+
+* Fri May 08 2020 Alexey Shabalin <shaba@altlinux.org> 6.3.0-alt1
+- new version 6.3.0
+
+* Wed Apr 08 2020 Alexey Shabalin <shaba@altlinux.org> 6.2.0-alt1
+- new version 6.2.0
+
+* Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 6.1.0-alt1
+- new version 6.1.0
+
+* Fri Jan 24 2020 Alexey Shabalin <shaba@altlinux.org> 6.0.0-alt1
+- 6.0.0
+- Drop support for python 2
 
 * Wed Dec 18 2019 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt1
 - new version 5.10.0
