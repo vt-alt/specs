@@ -1,24 +1,36 @@
 Name: bluefish
-Version: 2.2.9
+Version: 2.2.11
 Release: alt1
 
-Summary: A GTK2 web development application for experienced users
+Summary: A GTK3 web development application for experienced users
 
 Serial: 2
 
 Url: http://bluefish.openoffice.nl
-License: GPL
+License: GPL-3.0-or-later
 Group: Editors
 
 Source: %name-%version.tar.bz2
+
+# Fedora patchs
+# Avoid potential aliasing issues in zencoding plugin
+Patch0: bluefish-2.2.10-strict-aliasing.patch
+
+# Avoid use of /usr/bin/env in shipped scripts
+# Also change /usr/bin/python → /usr/bin/python2 (for now)
+Patch1: bluefish-2.2.11-shellbang.patch
+
+# Strip all python content if we don't have Python
+Patch2: bluefish-2.2.11-no-python.patch
+
 Requires: bluefish-common = %serial:%version-%release
 
-# Until 3.0
-BuildRequires: libgtk+2-devel
-
-# Automatically added by buildreq on Sun Jun 19 2011
-# optimized out: fontconfig fontconfig-devel glib2-devel libatk-devel libcairo-devel libfreetype-devel libgdk-pixbuf libgdk-pixbuf-devel libgio-devel libgtk+2-devel libpango-devel perl-Encode perl-XML-Parser pkg-config shared-mime-info xml-common xml-utils
-BuildRequires: intltool libenchant-devel libgucharmap-devel libxml2-devel man
+BuildRequires: intltool
+BuildRequires: libgtk+3-devel
+BuildRequires: libgucharmap-devel
+BuildRequires: libxml2-devel
+BuildRequires: libenchant-devel
+BuildRequires: libappstream-glib
 
 %description
 Bluefish is a powerful editor for experienced web designers and programmers.
@@ -41,6 +53,10 @@ These are common files.
 #for N in src/plugin_*/po; do test -r $N/Makefile.in.in && echo $N || ln -s /usr/share/intltool/Makefile.in.in $N/;done
 find data -type f -name \*.py -exec sed -i 's/\r//' {} \;
 
+%patch0
+%patch1
+%patch2
+
 %build
 #autoreconf
 %configure --disable-update-databases --disable-xml-catalog-update
@@ -49,6 +65,9 @@ find data -type f -name \*.py -exec sed -i 's/\r//' {} \;
 %install
 # No makeinstall macros here, because of hardcoded DESTDIR-only
 make install DESTDIR=%buildroot
+
+# Unpackaged files
+rm %buildroot%_libdir/%name/*.la
 
 %find_lang %name
 for c in `echo src/plugin_*`; do
@@ -62,11 +81,12 @@ cat %{name}_plugin_*.lang >> %name.lang
 
 %files common -f %name.lang
 %exclude %_defaultdocdir/%name
-%doc data/bflang/sample.bflang2 AUTHORS COPYING ChangeLog NEWS README TODO
+%doc data/bflang/sample.bflang2 AUTHORS COPYING ChangeLog README TODO
 %dir %_datadir/%name
 %_datadir/%name/*
 %_datadir/pixmaps/*
 %_datadir/applications/*
+%_datadir/appdata/%name.appdata.xml
 %_datadir/mime/packages/*
 %_iconsdir/hicolor/*/*/*.??g
 %_man1dir/*
@@ -74,6 +94,11 @@ cat %{name}_plugin_*.lang >> %name.lang
 %_datadir/xml/%name/*
 
 %changelog
+* Sat May 23 2020 Anton Midyukov <antohami@altlinux.org> 2:2.2.11-alt1
+- New version 2.2.11
+- build with gtk3
+- disable python support
+
 * Thu Jul 14 2016 Fr. Br. George <george@altlinux.ru> 2:2.2.9-alt1
 - Autobuild version bump to 2.2.9
 
