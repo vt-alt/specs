@@ -1,5 +1,5 @@
 Name: startup-rescue
-Version: 0.35
+Version: 0.36
 Release: alt1
 
 Summary: The system startup scripts for rescue disk
@@ -65,6 +65,9 @@ install -pm755 rescue-remote.init %buildroot%_initdir/rescue-remote
 %_initdir/rescue-remote
 
 %changelog
+* Tue Apr 13 2021 Anton Midyukov <antohami@altlinux.org> 0.36-alt1
+- find-fstab: ignore ram device (Closes: 39835)
+
 * Fri Mar 12 2021 Anton Midyukov <antohami@altlinux.org> 0.35-alt1
 - Add mount EFI variable filesystem
 
