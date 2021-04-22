@@ -7,7 +7,7 @@
 
 Name: plasma5-%rname
 Version: 5.18.5
-Release: alt1
+Release: alt1.M90P.1
 Epoch: 2
 %K5init altplace
 
@@ -20,6 +20,7 @@ Source: %rname-%version.tar
 Source10: pam-kf5-screenlocker
 Patch1: alt-def-screenlocker.patch
 Patch2: alt-greeter-path.patch
+Patch3: alt-pam-support.patch
 
 BuildRequires(pre): rpm-build-kf5 rpm-build-ubt
 BuildRequires: extra-cmake-modules gcc-c++ qt5-base-devel qt5-declarative-devel qt5-x11extras-devel
@@ -74,6 +75,7 @@ KF5 library
 %setup -n %rname-%version
 %patch1 -p1
 %patch2 -p1
+%patch3 -p2
 
 %build
 %K5build \
@@ -121,6 +123,9 @@ install -m 0644 %SOURCE10 %buildroot/%_sysconfdir/pam.d/kf5-screenlocker
 %_K5lib/libKScreenLocker.so.%sover
 
 %changelog
+* Thu Apr 08 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2:5.18.5-alt1.M90P.1
+- Implemented better PAM support
+
 * Thu May 07 2020 Sergey V Turchin <zerg@altlinux.org> 2:5.18.5-alt1
 - new version
 
