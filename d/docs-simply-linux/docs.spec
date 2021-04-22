@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.09
-Release: alt1
+Release: alt3
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,13 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Wed Apr 21 2021 Elena Mishina <lepata@altlinux.org> 9.09-alt3
+- update to Simply Linux 9.1
+- add alterator-update-kernel, obs-studio
+
+* Thu Mar 11 2021 Elena Mishina <lepata@altlinux.org> 9.09-alt2
+- update to beta version of Simply Linux 9.1
+
 * Tue Feb 02 2021 Elena Mishina <lepata@altlinux.org> 9.09-alt1
 - update to alpha version of Simply Linux 9.1
 
