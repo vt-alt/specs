@@ -15,7 +15,7 @@
 
 Name: kde5-%rname
 Version: 20.12.3
-Release: alt2
+Release: alt3
 %K5init %{?_enable_obsolete_kde4:no_altplace} %{!?_enable_obsolete_kde4:no_appdata}
 
 Group: Office
@@ -204,6 +204,9 @@ rm -f "$tmp_file"
 %_K5lib/libOkular5Core.so.*
 
 %changelog
+* Wed Apr 21 2021 Oleg Solovyov <mcpain@altlinux.org> 20.12.3-alt3
+- update patch
+
 * Wed Apr 07 2021 Oleg Solovyov <mcpain@altlinux.org> 20.12.3-alt2
 - implement gost signatures verifying
 
