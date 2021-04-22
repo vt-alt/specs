@@ -1,19 +1,26 @@
 %def_with doxygen
 %def_without check
 %def_disable static
-
 %define major 1.13
 
 Name: sofia-sip
-Version: 1.13.1
-Release: alt0.d10a3d268c
+Version: 1.13.3
+Release: alt1
+BuildRequires:  gcc-c++
+BuildRequires:  openssl-devel >= 0.9.7
+BuildRequires:  glib2-devel >=  2.4
+BuildRequires:  lksctp-tools
+BuildRequires:  autoconf
+BuildRequires:  automake
 
 Summary: Sofia SIP User-Agent library 
 License: LGPLv2.1
 Group: System/Libraries
 Url: http://sofia-sip.sourceforge.net/
 
-Source: %name-%version-%release.tar
+# https://github.com/freeswitch/sofia-sip
+Source: %name-%version.tar
+Patch0: %name-%version-%release.patch
 
 BuildRequires: glib2-devel libssl-devel %{?_with_doxygen: doxygen graphviz fonts-ttf-liberation} %{?_with_check: libcheck-devel}
 
@@ -79,6 +86,7 @@ Command line utilities for Sofia SIP UA library.
 
 %prep
 %setup
+%patch0 -p1
 
 %build
 %autoreconf
@@ -140,6 +148,9 @@ install -pm0644 man/man1/* %buildroot/%_man1dir/
 %_man1dir/*
 
 %changelog
+* Tue Apr 13 2021 Anton Farygin <rider@altlinux.org> 1.13.3-alt1
+- 1.13.3
+
 * Mon Aug 31 2020 Anton Farygin <rider@altlinux.ru> 1.13.1-alt0.d10a3d268c
 - 1.13.1
 

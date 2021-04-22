@@ -1,5 +1,5 @@
 Name: freeswitch
-Version: 1.10.5
+Version: 1.10.6
 Release: alt1
 Epoch: 1
 
@@ -28,9 +28,9 @@ BuildRequires: libpcap-devel perl-devel
 BuildRequires: libcelt-devel libmpg123-devel liblame-devel libshout2-devel
 BuildRequires: libopenr2.3-devel libspandsp3-devel libsofia-sip-devel
 BuildRequires: libnet-snmp-devel libnl-devel libsensors3-devel zlib-devel
-BuildRequires: libuuid-devel postgresql-devel
+BuildRequires: libuuid-devel postgresql-devel libsofia-sip-devel
 BuildRequires: java-common java-1.8.0-openjdk-devel /proc libavformat-devel libavutil-devel libavresample-devel libswscale-devel
-BuildRequires: libmemcached-devel libopus-devel libbroadvoice-devel libcodec2-devel libImageMagick-devel 
+BuildRequires: libmemcached-devel libopus-devel libbroadvoice-devel libcodec2-devel libImageMagick-devel
 BuildRequires: flite-devel libyuv-devel libfreetype-devel libvpx-devel libsilk-devel libg7221-devel libvlc-devel libavcodec-devel libx264-devel
 
 %ifarch %ix86 x86_64
@@ -119,6 +119,10 @@ Requires: %name-daemon = %version-%release
 Summary: VLC support for the FreeSWITCH open source telephony platform
 Group: System/Servers
 
+%package imagick
+Summary: ImageMagick support for the FreeSWITCH open source telephony platform
+Group: System/Servers
+
 %package av
 Summary: FFMpeg support for the FreeSWITCH open source telephony platform
 Group: System/Servers
@@ -155,6 +159,9 @@ Perl support for the FreeSWITCH open source telephony platform
 
 %description vlc
 VLC support for the FreeSWITCH open source telephony platform
+
+%description imagick
+ImageMagick support for the FreeSWITCH open source telephony platform
 
 %description av
 FFMpeg support for the FreeSWITCH open source telephony platform
@@ -445,6 +452,9 @@ fi
 %files vlc
 %_libdir/%name/mod_vlc.so*
 
+%files imagick
+%_libdir/%name/mod_imagick.so*
+
 %files av
 %_libdir/%name/mod_av.so
 
@@ -529,6 +539,15 @@ fi
 %_datadir/%name/htdocs/portal
 
 %changelog
+* Tue Apr 13 2021 Anton Farygin <rider@altlinux.org> 1:1.10.6-alt1
+- 1.10.6
+
+* Fri Feb 26 2021 Anton Farygin <rider@altlinux.org> 1:1.10.5-alt3
+- fixed build with gcc-9
+
+* Sun Nov 08 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.5-alt2
+- built ImageMagick support (closes: #39215)
+
 * Mon Aug 31 2020 Anton Farygin <rider@altlinux.ru> 1:1.10.5-alt1
 - 1.10.5
 
