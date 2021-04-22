@@ -48,7 +48,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-simply-linux
-Version: 9.0.92
+Version: 9.1
 Release: alt1
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
@@ -521,6 +521,9 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Mon Apr 19 2021 Mikhail Efremov <sem@altlinux.org> 9.1-alt1
+- release: Fix CPE_NAME.
+
 * Thu Apr 08 2021 Mikhail Efremov <sem@altlinux.org> 9.0.92-alt1
 - bootloader: Don't set GRUB_BACKGROUND.
 - menu: Add shotcut desktop file.
