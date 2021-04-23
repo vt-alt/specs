@@ -2,7 +2,7 @@
 #
 
 Name: dehydrated
-Version: 0.6.2
+Version: 0.7.0
 Release: alt1
 
 Summary: ACME client for signing certificates implemented in Bash
@@ -15,6 +15,8 @@ Packager: Nikolay A. Fetisov <naf@altlinux.org>
 
 Source0: %name-%version.tar
 Patch0:  %name-%version-%release.patch
+
+Patch1:  %name-0.7.0-alt-os-release.patch
 
 Source1: %name.config
 
@@ -45,6 +47,8 @@ Current features:
 %prep
 %setup -n %name-%version
 %patch0
+
+%patch1
 
 %build
 mv -- docs/examples .
@@ -94,6 +98,12 @@ touch -- %buildroot%_sysconfdir/%name/conf.d/local.sh
 
 
 %changelog
+* Tue Mar 09 2021 Nikolay A. Fetisov <naf@altlinux.org> 0.7.0-alt1
+- New version
+
+* Wed Sep 04 2019 Nikolay A. Fetisov <naf@altlinux.org> 0.6.5-alt1
+- New version
+
 * Wed May 09 2018 Nikolay A. Fetisov <naf@altlinux.org> 0.6.2-alt1
 - New version
 
