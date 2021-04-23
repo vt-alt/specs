@@ -1,6 +1,6 @@
 Name: firmware-linux
 Version: 20210403
-Release: alt1
+Release: alt2
 
 Summary: Firmware files used by the Linux kernel
 License: GPL+ and GPLv2+ and MIT and Redistributable, no modification permitted
@@ -82,6 +82,9 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/liquidio
 
 %changelog
+* Thu Apr 22 2021 Dmitry Terekhin <jqt4@altlinux.org> 20210403-alt2
+- brcm: Add symlinks for brcm devices
+
 * Mon Apr 05 2021 Cronbuild Service <cronbuild@altlinux.org> 20210403-alt1
 - upstream changes (GIT 0dd245d):
   + rtl_bt: Add rtl8723bs_config-OBDA0623.bin symlink (thx Hans de Goede)
