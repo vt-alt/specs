@@ -1,6 +1,6 @@
 Name:    installer-distro-education
 Version: 9.2
-Release: alt0.p9.1
+Release: alt1.p9.1
 
 Summary: Installer common files for ALT Education
 License: GPL-2.0
@@ -112,6 +112,12 @@ rm -rf %buildroot%_datadir/alterator/help/ru_RU \
 %_datadir/install2/initinstall.d/10-vm-profile.sh
 
 %changelog
+* Tue Apr 20 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt1.p9.1
+- Backport new version to p9 branch.
+
+* Tue Apr 20 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt2
+- Set default size for root filesystem to 50 GiB.
+
 * Tue Apr 13 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.p9.1
 - Backport new version to p9 branch.
 - Do not build as noarch.
