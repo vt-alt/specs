@@ -1,6 +1,6 @@
 Name:    task-edu
-Version: 1.4
-Release: alt1
+Version: 1.4.1
+Release: alt0.p9.1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
 Group:   Education
@@ -59,6 +59,7 @@ Requires: gnome-games-aisleriot
 %endif
 Requires: xsane
 Requires: xsane-gimp2
+Requires: xsane-doc-ru
 Requires: simple-scan
 Requires: brasero
 %ifnarch armh
@@ -596,6 +597,9 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Fri Apr 23 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt0.p9.1
+- Add xsane-doc-ru.
+
 * Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 1.4-alt1
 - Replace italc3 to veyon. 
 
