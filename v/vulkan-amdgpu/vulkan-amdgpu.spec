@@ -13,8 +13,8 @@
 %endif
 
 Name: vulkan-amdgpu
-Version: 2020.Q2.2
-Release: alt1
+Version: 2021.Q1.3
+Release: alt1.p9.1
 License: MIT
 Url: https://github.com/GPUOpen-Drivers/AMDVLK
 Summary: AMD Open Source Driver For Vulkan
@@ -25,10 +25,11 @@ ExclusiveArch: %ix86 x86_64
 Requires: vulkan-filesystem
 
 BuildRequires(pre): rpm-macros-cmake
-BuildRequires: gcc7-c++ cmake python3-devel curl libstdc++7-devel libxcb-devel libssl-devel llvm-devel
+BuildRequires: gcc8-c++ cmake python3-devel curl libstdc++8-devel libxcb-devel libssl-devel llvm-devel
 BuildRequires: libX11-devel libxshmfence-devel libXrandr-devel spirv-headers libspirv-tools-devel glslang-devel
 %if_with wayland
 BuildRequires: wayland-devel libwayland-server-devel libwayland-client-devel libwayland-cursor-devel libwayland-egl-devel
+BuildRequires: libffi-devel
 %endif
 
 Source0: xgl.tar.xz
@@ -62,7 +63,7 @@ popd
 %build
 # build amdvlk.so
 pushd %_builddir/xgl
-export GCC_VERSION=7 \
+export GCC_VERSION=8 \
 %cmake \
 	-DCMAKE_AR:PATH=%_bindir/gcc-ar \
 	-DCMAKE_NM:PATH=%_bindir/gcc-nm \
@@ -92,6 +93,45 @@ install -p -m644 %SOURCE6 %buildroot%_vkdir/amd_icd.json
 %ghost %attr(644,root,root) %config(missingok) %_sysconfdir/amd/*.cfg
 
 %changelog
+* Sun Apr 18 2021 Nazarov Denis <nenderus@altlinux.org> 2021.Q1.3-alt1.p9.1
+- Build for branch p9
+
+* Wed Feb 24 2021 L.A. Kostis <lakostis@altlinux.ru> 2021.Q1.3-alt2
+- Fix wayland client BR.
+
+* Wed Feb 24 2021 L.A. Kostis <lakostis@altlinux.ru> 2021.Q1.3-alt1
+- 2021-2-8 update:
+  + icd: bump vulkan API version to 1.2.168
+  + llvm: Updated to 97bea7830b74
+  + spvgen: Updated to 6b84106b7e10
+  + llpc: Updated to ca7003a056d3
+  + pal: Updated to 5262df4eae03
+  + xgl: Updated to a2c6ddfd9063
+
+* Mon Dec 28 2020 L.A. Kostis <lakostis@altlinux.ru> 2020.Q4.6-alt2
+- Rebuild w/ gcc9.
+
+* Tue Dec 15 2020 L.A. Kostis <lakostis@altlinux.ru> 2020.Q4.6-alt1
+- 2020-12-14 update:
+  + icd: bump vulkan API version to 1.2.162
+  + metrohash: Updated to 3c566dd9cda4
+  + llvm: Updated to a0777f490501
+  + spvgen: Updated to fb798cb760a4
+  + llpc: Updated to e2d38b0c8042
+  + pal: Updated to f92844ecbba3
+  + xgl: Updated to 86f61a31988a
+
+* Sun Sep 06 2020 L.A. Kostis <lakostis@altlinux.ru> 2020.Q3.4-alt1
+- 2020-8-24 update:
+  + xgl: 598c6832a4983f5b75b38a589fca5be80a2f3bb0
+  + pal: bebb2b0d0d70625d825cd386a1360154709487f2
+  + llpc: 9b5cb15acc8ff789420ed9ed593e35c81303d10c
+  + spvgen: 1813b88297ef56f56d5f851886257cac79179705
+  + llvm: 30cb97a1d0efebb4317f9abeec8d90a5a83d4837
+  + metrohash: 712f76fee75d69b23a1ea8f6465752c3ccaaf9a2
+  + cwpack: 7387247eb9889ddcabbc1053b9c2052e253b088e
+- icd: bump vulkan version api version to 1.2.150.
+
 * Thu May 07 2020 L.A. Kostis <lakostis@altlinux.ru> 2020.Q2.2-alt1
 - 2020-4-30 update:
   + xgl: d8c926b86b1245badc67e5d55b0eaa45d4a910a0
