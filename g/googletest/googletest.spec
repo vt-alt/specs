@@ -1,17 +1,18 @@
 %define sover 0
 
 Name: googletest
-Version: 1.8.1
+Version: 1.10.0
 Release: alt1
 
 Summary: Google's framework for writing C++ tests
-License: BSD
+License: BSD-3-Clause
 Group: Development/C++
 
 Url: https://github.com/google/%name
 
-Source: https://github.com/google/%name/archive/release-%version/%name-release-%version.tar.gz
-Patch0: %name-soname-alt.patch
+# https://github.com/google/%name/archive/release-%version/%name-release-%version.tar.gz
+Source: %name-release-%version.tar
+Patch0: %name-alt-soname.patch
 
 BuildRequires: cmake
 BuildRequires: gcc-c++
@@ -70,13 +71,6 @@ Development environment for gmock
 %patch0 -p1
 
 %build
-
-# Generate gtest-config
-pushd googletest
-%autoreconf
-%configure
-popd
-
 %__mkdir_p %_target_platform
 pushd %_target_platform
 
@@ -93,26 +87,22 @@ popd
 
 %install
 %makeinstall_std -C %_target_platform
-%__install -Dp -m0644 googletest/m4/gtest.m4 %buildroot%_aclocaldir/gtest.m4
-%__install -Dp -m0755 googletest/scripts/gtest-config %buildroot%_bindir/gtest-config
 
 %files -n libgtest%sover
-%doc googletest/CHANGES googletest/CONTRIBUTORS googletest/LICENSE
+%doc googletest/CONTRIBUTORS googletest/LICENSE googletest/README.md
 %_libdir/libgtest.so.*
 %_libdir/libgtest_main.so.*
 
 %files -n libgtest-devel
-%_bindir/gtest-config
 %_libdir/libgtest.so
 %_libdir/libgtest_main.so
 %_libdir/cmake/GTest
 %_pkgconfigdir/gtest.pc
 %_pkgconfigdir/gtest_main.pc
 %_includedir/gtest
-%_aclocaldir/gtest.m4
 
 %files -n libgmock%sover
-%doc googlemock/CHANGES googlemock/CONTRIBUTORS googlemock/LICENSE
+%doc googlemock/CONTRIBUTORS googlemock/LICENSE googlemock/README.md
 %_libdir/libgmock.so.*
 %_libdir/libgmock_main.so.*
 
@@ -124,6 +114,9 @@ popd
 %_includedir/gmock
 
 %changelog
+* Sat Jun 27 2020 Nazarov Denis <nenderus@altlinux.org> 1.10.0-alt1
+- Version 1.10.0 (ALT #38645)
+
 * Sat Jan 26 2019 Nazarov Denis <nenderus@altlinux.org> 1.8.1-alt1
 - Version 1.8.1 (ALT #35575)
 
