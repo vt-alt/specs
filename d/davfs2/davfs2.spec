@@ -1,11 +1,11 @@
 Name: davfs2
-Version: 1.5.5
+Version: 1.6.0
 Release: alt1
 
 Summary: Linux file system driver that allows you to mount a WebDAV server as a local file system.
 License: GPLv3+
 Group: Networking/Other
-Url: http://savannah.nongnu.org/projects/%name/
+Url: http://savannah.nongnu.org/projects/davfs2/
 
 Source: %name-%version.tar
 
@@ -58,6 +58,12 @@ ln -sf %_sbindir/umount.davfs %buildroot/sbin/umount.davfs
 %exclude %_mandir/es
 
 %changelog
+* Tue Sep 15 2020 Anton Farygin <rider@altlinux.ru> 1.6.0-alt1
+- 1.6.0
+
+* Tue Jan 14 2020 Anton Farygin <rider@altlinux.ru> 1.5.6-alt1
+- 1.5.6
+
 * Sun Mar 17 2019 Anton Farygin <rider@altlinux.ru> 1.5.5-alt1
 - 1.5.5
 
