@@ -1,8 +1,8 @@
 Name: kernel-image-un-def
-Release: alt2
+Release: alt1
 epoch:1 
 %define kernel_base_version	5.10
-%define kernel_sublevel .29
+%define kernel_sublevel .32
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -689,6 +689,12 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Fri Apr 23 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.32-alt1
+- v5.10.32  (Fixes: CVE-2021-23133)
+
+* Fri Apr 16 2021 Kernel Bot <kernelbot@altlinux.org> 1:5.10.31-alt1
+- v5.10.31  (Fixes: CVE-2020-25670, CVE-2020-25671, CVE-2020-25672)
+
 * Mon Apr 12 2021 Alexey Sheplyakov <asheplyakov@altlinux.org> 1:5.10.29-alt2
 - Moved quasi-open source Mali T628 driver `mali_kbase` into subpackage
 - panfrost is loaded by default on BE-M1000
