@@ -49,7 +49,7 @@
 
 Name: branding-simply-linux
 Version: 9.1
-Release: alt1
+Release: alt2
 
 BuildRequires: fonts-ttf-dejavu fonts-ttf-google-droid-serif fonts-ttf-google-droid-sans fonts-ttf-google-droid-sans-mono
 %ifarch %ix86 x86_64
@@ -306,6 +306,8 @@ Summary: Some system settings for Simply Linux
 License: GPLv2+
 Group: System/Base
 BuildArch: noarch
+# Due to /usr/share/install3/lightdm-gtk-greeter.conf
+Conflicts: branding-alt-workstation-mate-settings
 
 %description system-settings
 Some system settings for Simply Linux.
@@ -521,6 +523,13 @@ fi
 %_datadir/install3/*
 
 %changelog
+* Mon Apr 26 2021 Mikhail Efremov <sem@altlinux.org> 9.1-alt2
+- menu: Add TryExec to all desktop files.
+- xfwm4.xml.in: Don't force window content display (by Ivan A. Melnikov).
+- menu: Use TryExec it shotcut desktop file.
+- system-settings: Add conflict with
+  branding-alt-workstation-mate-settings (closes: #39592).
+
 * Mon Apr 19 2021 Mikhail Efremov <sem@altlinux.org> 9.1-alt1
 - release: Fix CPE_NAME.
 
