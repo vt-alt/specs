@@ -1,33 +1,34 @@
-Name:           onboard
-Version:        1.4.1
-Release:        alt2
+Name: onboard
+Version: 1.4.1
+Release: alt3
 
-Summary:        Simple on-screen Keyboard
-License:        GPLv3
-Group:          Graphical desktop/GNOME 
-URL:            https://launchpad.net/onboard/
+Summary: Simple on-screen Keyboard
+License: GPL-3.0+
+Group: Graphical desktop/GNOME 
+URL: https://launchpad.net/onboard/
 
-Source0:        http://launchpad.net/%name/0.96/%version/+download/%name-%version.tar.gz
+Source0: http://launchpad.net/%name/0.96/%version/+download/%name-%version.tar.gz
+Source1: ru.po 
 
 BuildRequires(pre): etersoft-build-utils rpm-build-gnome python3-devel
-BuildRequires:  gcc-c++
-BuildRequires:  desktop-file-utils
-BuildRequires:  intltool
-BuildRequires:  libXi-devel
-BuildRequires:  libXtst-devel
-BuildRequires:  libxkbcommon-devel
-BuildRequires:  libcanberra-devel
-BuildRequires:  libdconf-devel
-BuildRequires:  libgtk+3-devel 
-BuildRequires:  libhunspell-devel
-BuildRequires:  libxkbfile-devel
-BuildRequires:  python3-module-distutils-extra >= 2.12
-BuildRequires:  libappindicator-gtk3-gir-devel
-BuildRequires:  libudev-devel
+BuildRequires: gcc-c++
+BuildRequires: desktop-file-utils
+BuildRequires: intltool
+BuildRequires: libXi-devel
+BuildRequires: libXtst-devel
+BuildRequires: libxkbcommon-devel
+BuildRequires: libcanberra-devel
+BuildRequires: libdconf-devel
+BuildRequires: libgtk+3-devel 
+BuildRequires: libhunspell-devel
+BuildRequires: libxkbfile-devel
+BuildRequires: python3-module-distutils-extra >= 2.12
+BuildRequires: libappindicator-gtk3-gir-devel
+BuildRequires: libudev-devel
 
-Requires:  python3-module-dbus
+Requires: python3-module-dbus
 # see ALT bug #35174
-Requires:  iso-codes
+Requires: iso-codes
 
 %filter_from_requires /^python3(pypredict.lm)/d
 
@@ -46,6 +47,7 @@ GNOME Shell support for onboard.
 
 %prep
 %setup -q
+install -Dpm0644 %SOURCE1 po/ru.po
 
 %build
 %python3_build
@@ -54,12 +56,10 @@ GNOME Shell support for onboard.
 %python3_install
 
 desktop-file-install --dir %buildroot%_desktopdir       \
-    --remove-category="X-GNOME-PersonalSettings"        \
-    --add-category="Utility;"                           \
+    --remove-category="Accessibility"        \
     build/share/applications/%name.desktop
 desktop-file-install --dir %buildroot%_desktopdir       \
-    --remove-category="X-GNOME-PersonalSettings"        \
-    --add-category="Utility;"                           \
+    --remove-category="Accessibility"        \
     build/share/applications/%name-settings.desktop
 
 mkdir -p %buildroot%_datadir/locale
@@ -92,6 +92,11 @@ rm -rf %buildroot%_iconsdir/ubuntu-mono-*
 %_datadir/gnome-shell/extensions/Onboard_Indicator@onboard.org
 
 %changelog
+* Mon Apr 26 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt3
+- Complete Russian translation (thanks Olesya Gerasimenko).
+- Remove Accessability category from desktop files.
+- Fix License tag according to SPDX.
+
 * Fri Aug 03 2018 Anton Midyukov <antohami@altlinux.org> 1.4.1-alt2
 - Added requires to iso-codes (ALT#35174)
 
