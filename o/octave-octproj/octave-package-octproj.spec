@@ -4,13 +4,13 @@ BuildRequires: makeinfo
 %def_with _octave_arch
 %define octpkg octproj
 Name: octave-%octpkg
-Version: 1.1.5
-Release: alt5
-Summary: GNU Octave bindings to PROJ.4
+Version: 2.0.1
+Release: alt1
+Summary: GNU Octave bindings to PROJ
 
 Group: Sciences/Mathematics
 License: GPLv3+
-URL: http://trac.osgeo.org/proj/
+URL: https://bitbucket.org/jgpallero/octproj/
 
 Source0: https://downloads.sourceforge.net/project/octave/Octave%%20Forge%%20Packages/Individual%%20Package%%20Releases/%{octpkg}-%{version}.tar.gz
 
@@ -23,14 +23,14 @@ BuildArch: noarch
 %endif
 Provides: octave(octproj) = %version
 
-# SystemRequirements: libproj-dev (>= 4.5.0) (Debian system)
-BuildRequires: libproj-devel >= 4.5.0
-# Depends: Octave (>= 2.9.7)
-Requires: octave >= 2.9.7
+# SystemRequirements: libproj-dev (>= 6.3.0) (Debian system)
+BuildRequires: libproj-devel >= 6.3.0
+# Depends: Octave (>= 3.0.0)
+Requires: octave >= 3.0.0
 
 
 %description
-This package allows to call functions of PROJ.4 library for
+This package allows to call functions of PROJ library for
 
 %prep
 %setup -q -n %{octpkg}-%{version}
@@ -42,13 +42,19 @@ This package allows to call functions of PROJ.4 library for
 %octave_install
 
 %files
-%doc DESCRIPTION NEWS COPYING doc
+%doc NEWS DESCRIPTION COPYING doc
 %_datadir/octave/packages/%octpkg-%version
 %if_with _octave_arch
 %_libdir/octave/packages/%octpkg-%version
 %endif
 
 %changelog
+* Tue Dec 01 2020 Igor Vlasenko <viy@altlinux.ru> 2.0.1-alt1
+- regenerated from template by package builder
+
+* Sun Oct 06 2019 Vladislav Zavjalov <slazav@altlinux.org> 1.1.5-alt6
+- Fix build with libproj 6.2.0 (use ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 1.1.5-alt5
 - rebuild with octave 5
 

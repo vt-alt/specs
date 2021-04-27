@@ -2,7 +2,7 @@
 
 Name: libspatialite
 Version: 4.3.0a
-Release: alt2
+Release: alt3
 Summary: Enables SQLite to support spatial data
 Group: System/Libraries
 License: MPLv1.1 or GPLv2+ or LGPLv2+
@@ -36,6 +36,7 @@ developing applications that use %name.
 %setup
 
 %build
+%add_optflags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1
 %configure \
     --disable-static \
     %{?_geocallback}
@@ -63,6 +64,9 @@ rm -f %buildroot%_libdir/*.la
 %_libdir/pkgconfig/spatialite.pc
 
 %changelog
+* Fri Oct 04 2019 Vladislav Zavjalov <slazav@altlinux.org> 4.3.0a-alt3
+- Rebuild with libproj 6.2.0 (use DACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Sat Feb 16 2019 Vladislav Zavjalov <slazav@altlinux.org> 4.3.0a-alt2
 - Rebuild with libproj 5.2.0
 

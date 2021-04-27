@@ -1,5 +1,5 @@
 Name: libproj
-Version: 5.2.0
+Version: 6.3.1
 Release: alt1
 
 Summary: PROJ.4 - cartographic projections library
@@ -8,7 +8,7 @@ License: MIT
 Url: https://proj4.org/
 Source: proj-%version.tar.gz
 
-BuildRequires: gcc-c++ libstdc++-devel
+BuildRequires: gcc-c++ libstdc++-devel libsqlite3-devel sqlite3
 
 %description
 This package contains the PROJ.4 cartographic projections library.
@@ -39,14 +39,11 @@ This package contains PROJ.4 static library.
 %endif #enabled static
 
 %package nad
-Summary: PROJ.4 US and Canadian datum shift grids
+Summary: Empty package. US and Canadian datum shift grids moved to libproj
 Group: Sciences/Geosciences
-Requires: %name = %version-%release
-Obsoletes: proj-nad
-Provides:  proj-nad
 BuildArch: noarch
 %description nad
-This package contains additional US and Canadian datum shift grids for PROJ.4.
+Empty package. US and Canadian datum shift grids moved to libproj
 
 %prep
 %setup
@@ -60,12 +57,12 @@ This package contains additional US and Canadian datum shift grids for PROJ.4.
 
 %install
 %makeinstall
-install -p -m 0644 nad/pj_out27.dist nad/pj_out83.dist nad/td_out.dist %buildroot%_datadir/proj
-install -p -m 0755 nad/test27 nad/test83 nad/testvarious %buildroot%_datadir/proj
 
 %files
 %doc NEWS AUTHORS COPYING README ChangeLog
 %_libdir/*.so.*
+%_datadir/proj/*
+%dir %_datadir/proj
 
 %files -n proj
 %_bindir/*
@@ -74,6 +71,8 @@ install -p -m 0755 nad/test27 nad/test83 nad/testvarious %buildroot%_datadir/pro
 %files devel
 %_mandir/man3/*.3*
 %_includedir/*.h
+%_includedir/proj/*.hpp
+%dir %_includedir/proj
 %_libdir/*.so
 %_pkgconfigdir/*.pc
 
@@ -83,13 +82,15 @@ install -p -m 0755 nad/test27 nad/test83 nad/testvarious %buildroot%_datadir/pro
 %endif
 
 %files nad
-%doc nad/README
-%attr(0755,root,root) %_datadir/proj/test27
-%attr(0755,root,root) %_datadir/proj/test83
-%attr(0755,root,root) %_datadir/proj/testvarious
-%_datadir/proj
 
 %changelog
+* Thu Mar 19 2020 Vladislav Zavjalov <slazav@altlinux.org> 6.3.1-alt1
+- 6.3.1
+
+* Thu Oct 03 2019 Vladislav Zavjalov <slazav@altlinux.org> 6.2.0-alt1
+- move all datafiles from libproj-nad subpackage to libproj
+- 6.2.0
+
 * Fri Feb 15 2019 Vladislav Zavjalov <slazav@altlinux.org> 5.2.0-alt1
 - 5.2.0
 

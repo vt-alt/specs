@@ -1,33 +1,32 @@
 %define oname fiona
 
-%def_with python3
 %def_disable check
 
-Name: python-module-%oname
-Version: 1.8.6
-Release: alt1
+Name: python3-module-%oname
+Version: 1.8.17
+Release: alt2
 Summary: Fiona reads and writes spatial data files
 License: BSD
-Group: Development/Python
+Group: Development/Python3
 Url: https://pypi.python.org/pypi/Fiona/
 
 # https://github.com/Toblerity/Fiona.git
 Source: %name-%version.tar
 
-BuildRequires(pre): rpm-macros-sphinx
-BuildRequires: libgdal-devel gcc-c++
-BuildRequires: python-devel
-BuildRequires: python-module-alabaster python-module-objects.inv
-BuildRequires: python-module-Cython python-module-html5lib python-module-nose python-module-notebook python-module-pytest
-%if_with python3
+Patch: use_sphinx-apidoc-3.patch
+
 BuildRequires(pre): rpm-build-python3
+BuildRequires(pre): rpm-macros-sphinx3
+BuildRequires: libgdal-devel gcc-c++
 BuildRequires: python3-devel
-BuildRequires: python3-module-Cython python3-module-html5lib python3-module-nose python3-module-notebook python3-module-pytest
-%endif
+BuildRequires: python3-module-Cython python3-module-pytest
+BuildRequires: python3-module-sphinx
 
 Conflicts: fio
-%py_provides %oname
-%py_requires logging json cligj six click click_plugins
+Conflicts: python-module-fiona < %EVR
+Obsoletes: python-module-fiona < %EVR
+%py3_provides %oname
+%py3_requires logging json cligj six click click_plugins
 
 %description
 Fiona is OGR's neat, nimble, no-nonsense API for Python programmers.
@@ -40,26 +39,9 @@ data using multi-layered GIS formats and zipped virtual file systems and
 integrates readily with other Python GIS packages such as pyproj, Rtree,
 and Shapely.
 
-%package -n python3-module-%oname
-Summary: Fiona reads and writes spatial data files
-Group: Development/Python3
-%py3_provides %oname
-%py3_requires logging json cligj six click click_plugins
-
-%description -n python3-module-%oname
-Fiona is OGR's neat, nimble, no-nonsense API for Python programmers.
-
-Fiona is designed to be simple and dependable. It focuses on reading and
-writing data in standard Python IO style and relies upon familiar Python
-types and protocols such as files, dictionaries, mappings, and iterators
-instead of classes specific to OGR. Fiona can read and write real-world
-data using multi-layered GIS formats and zipped virtual file systems and
-integrates readily with other Python GIS packages such as pyproj, Rtree,
-and Shapely.
-
 %package pickles
 Summary: Pickles for %oname
-Group: Development/Python
+Group: Development/Python3
 
 %description pickles
 Fiona is OGR's neat, nimble, no-nonsense API for Python programmers.
@@ -94,77 +76,58 @@ This package contains documentation for %oname.
 
 %prep
 %setup
+%patch -p1
 
-%if_with python3
-cp -fR . ../python3
-%endif
-
-%prepare_sphinx .
+%prepare_sphinx3 .
 ln -s ../objects.inv docs/
 
 %build
 %add_optflags -fno-strict-aliasing
-%python_build_debug
-
-%if_with python3
-pushd ../python3
 %python3_build_debug
-popd
-%endif
 
 %install
-%if_with python3
-pushd ../python3
 %python3_install
-popd
-pushd %buildroot%_bindir
-for i in $(ls); do
-	mv $i $i.py3
-done
-popd
-%endif
 
-%python_install
-
-python setup.py build_ext -i
+python3 setup.py build_ext -i
 export PYTHONPATH=$PWD
-%make -C docs pickle
-%make -C docs html
+%make SPHINXBUILD="sphinx-build-3" -C docs pickle
+%make SPHINXBUILD="sphinx-build-3" -C docs html
 
-cp -fR docs/_build/pickle %buildroot%python_sitelibdir/%oname/
+cp -fR docs/_build/pickle %buildroot%python3_sitelibdir/%oname/
 
 %check
 export LC_ALL=en_US.UTF-8
-python setup.py test
-%if_with python3
-pushd ../python3
 python3 setup.py test
-popd
-%endif
 
 %files
 %doc CHANGES.txt CREDITS.txt *.rst examples
 %_bindir/*
-%if_with python3
-%exclude %_bindir/*.py3
-%endif
-%python_sitelibdir/*
-%exclude %python_sitelibdir/*/pickle
+%python3_sitelibdir/*
+%exclude %python3_sitelibdir/*/pickle
 
 %files pickles
-%python_sitelibdir/*/pickle
+%python3_sitelibdir/*/pickle
 
 %files docs
 %doc docs/_build/html docs/*.txt
 
-%if_with python3
-%files -n python3-module-%oname
-%doc CHANGES.txt CREDITS.txt *.rst examples
-%_bindir/*.py3
-%python3_sitelibdir/*
-%endif
-
 %changelog
+* Sun Nov 01 2020 Vitaly Lipatov <lav@altlinux.ru> 1.8.17-alt2
+- fix build
+
+* Wed Sep 16 2020 Grigory Ustinov <grenka@altlinux.org> 1.8.17-alt1
+- Automatically updated to 1.8.17.
+
+* Thu Mar 19 2020 Grigory Ustinov <grenka@altlinux.org> 1.8.13-alt1
+- Build new version.
+- Add conflict on python-module-fiona (Closes: #37383).
+
+* Thu Oct 24 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.9-alt1
+- Build new version.
+
+* Mon Sep 30 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.8-alt1
+- Build new version.
+
 * Tue Mar 19 2019 Grigory Ustinov <grenka@altlinux.org> 1.8.6-alt1
 - Build new version.
 

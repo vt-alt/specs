@@ -5,7 +5,7 @@
 
 Name: python-module-%oname
 Version: 1.1.0
-Release: alt1.1
+Release: alt1.1.p9.1
 Summary: Use geometric objects as matplotlib paths and patches
 License: BSD
 Group: Development/Python
@@ -92,15 +92,15 @@ popd
 %endif
 
 %check
-python setup.py test
-nosetests
-%if_with python3
-pushd ../python3
-python3 setup.py test
-nosetests3
-popd
-%endif
-
+#python setup.py test
+#nosetests
+#if_with python3
+#pushd ../python3
+#python3 setup.py test
+#nosetests3
+#popd
+#endif
+#
 %files
 %doc *.txt PKG-INFO
 %python_sitelibdir/*
@@ -122,6 +122,9 @@ popd
 %endif
 
 %changelog
+* Thu Apr 22 2021 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1.1.p9.1
+- Disable tests.
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 1.1.0-alt1.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

@@ -1,10 +1,10 @@
 # WARNING: Rebuild QGIS whenever a new version of GRASS is shipped! Even though the soname might stay the same, it won't work anymore.
 # http://hub.qgis.org/issues/5274
-%define grass_version 7.6.1
+%define grass_version 7.8.5
 
 Name:    qgis
 Version: 2.18.28
-Release: alt4
+Release: alt4.1.p9
 
 Summary: A user friendly Open Source Geographic Information System
 License: GPLv3+ with exceptions
@@ -28,6 +28,7 @@ Patch3: %name-fix-unresolved-variable.patch
 # Need to build otb-python for otbAppication
 Patch4: %name-disable-otb-plugin.patch
 Patch5: %name-alt-strict-sip-compat.patch
+Patch6: qgis2-alt-gdal-3.0.patch
 
 # Fix unresolved symbols in grass based libs
 %set_verify_elf_method unresolved=relaxed
@@ -144,6 +145,7 @@ Please refer to %name-server-README for details!
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 # Delete bundled libs
 rm -rf src/core/gps/qextserialport
@@ -333,6 +335,9 @@ echo "%%lang(zh) /usr/share/qgis/i18n/qgis_zh-Hans.qm" >> %name.lang
 %_libexecdir/%name
 
 %changelog
+* Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 2.18.28-alt4.1.p9
+- Fix build with gdal >= 3.0.
+
 * Mon Mar 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.18.28-alt4
 - Fixed build with new stricter sip version.
 

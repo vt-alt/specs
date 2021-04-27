@@ -2,9 +2,11 @@
 
 %define oname shapely
 
+%def_disable check
+
 Name: python-module-%oname
 Version: 1.7
-Release: alt1.b1
+Release: alt1.b1.p9.1
 
 Summary: Planar geometries, predicates, and operations
 
@@ -151,6 +153,12 @@ popd
 %python3_sitelibdir/*/examples
 
 %changelog
+* Thu Apr 22 2021 Andrey Cherepanov <cas@altlinux.org> 1.7-alt1.b1.p9.1
+- Backport changes to p9 branch.
+
+* Sun Feb 14 2021 Grigory Ustinov <grenka@altlinux.org> 1.7-alt2.b1
+- Disable check for building python3.9.
+
 * Fri Jan 24 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1.7-alt1.b1
 - Updated to upstream version 1.7b1 (Closes: #37910)
 

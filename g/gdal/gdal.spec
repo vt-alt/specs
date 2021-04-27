@@ -5,12 +5,12 @@
 %def_with mysql
 %def_with pg
 %def_with sqlite
-%def_with python3
+%def_with python
 
 Summary: The Geospatial Data Abstraction Library (GDAL)
 Name: gdal
-Version: 2.2.3
-Release: alt3.1.M90P.4
+Version: 3.0.4
+Release: alt1.1.M90P.1
 Group: Sciences/Geosciences
 
 License: MIT
@@ -26,24 +26,17 @@ Patch5: %name-alt-libproj.so_name.patch
 Patch6: %name-alt-python3.patch
 Patch7: %name-2.2.3-alt-mysql8-transition.patch
 Patch8: %name-alt-libjasper-compat.patch
-Patch9:  upstream-fix-CVE-2019-17545.patch
-Patch10: upstream-fix-CVE-2019-17546.patch
 
 %define libname lib%name
 
-BuildRequires: doxygen gcc-c++ libMySQL-devel libcfitsio-devel libcurl-devel libexpat-devel libgeos-devel libgif-devel libhdf5-devel libjasper-devel libjpeg-devel libnumpy-devel libpng-devel libsqlite3-devel libunixODBC-devel libxerces-c28-devel perl-devel postgresql-devel python-module-genshi python-module-xlwt python-modules-ctypes swig
+BuildRequires: doxygen gcc-c++ libMySQL-devel libcfitsio-devel libcurl-devel libexpat-devel libgeos-devel libgif-devel libhdf5-devel libjasper-devel libjpeg-devel libnumpy-devel libpng-devel libsqlite3-devel libunixODBC-devel libxerces-c28-devel perl-devel postgresql-devel swig
 
 BuildRequires: chrpath libnetcdf-devel
+BuildRequires: libproj-devel
 BuildRequires: perl-Encode
-BuildRequires: python-devel python-module-setuptools
-%if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel libnumpy-py3-devel python3-module-genshi
 BuildRequires: python3-module-xlwt
-BuildRequires: /usr/bin/2to3
-%endif
-
-Requires: libproj
 
 %description
 The Geospatial Data Abstraction Library (GDAL) is a unifying
@@ -95,7 +88,6 @@ Provides: python-module-osgeo = %version
 %description -n python-module-%name
 Python module for %name.
 
-%if_with python3
 %package -n python3-module-%name
 Summary: The Python bindings for the GDAL library
 Group: Development/Python3
@@ -105,7 +97,6 @@ Provides: python3-module-osgeo = %version
 
 %description -n python3-module-%name
 Python module for %name.
-%endif
 
 %if_with perl
 %package -n perl-Geo-GDAL
@@ -123,19 +114,21 @@ Perl modules for GDAL/OGR.
 #patch0 -p1
 %patch2 -p2
 %patch3 -p2
-%patch5 -p2
+#%patch5 -p2
 %patch6 -p2
 %patch7 -p0
 %patch8 -p2
-%patch9 -p2
-%patch10 -p2
-
-%if_with python3
-cp -fR swig/python swig/python3
-%endif
 
 %build
+# hack! remove!
+#add_optflags -fpermissive
+CXXFLAGS="$CXXFLAGS -fpermissive" ; export CXXFLAGS ;
+# end hack
 %add_optflags -fno-strict-aliasing -I%_includedir/netcdf
+%ifarch %e2k
+# lcc 1.23 can't do those __builtin_functions (mcst#3588)
+%add_optflags -D__INTEL_COMPILER
+%endif
 %configure \
         --enable-static=no \
         --disable-rpath \
@@ -164,7 +157,7 @@ cp -fR swig/python swig/python3
 	%{subst_with mysql} \
 	%{subst_with pg} \
 	%{subst_with sqlite} \
-	--with-python \
+	%{subst_with python} \
 	--with-pythonlib=%python_libdir \
 	%{subst_with perl} \
 	--without-php \
@@ -174,7 +167,12 @@ cp -fR swig/python swig/python3
 	--with-xerces-lib=%_libdir\
 	--without-pcraster        \
 	--with-threads \
-	--with-netcdf=%prefix
+	--without-netcdf \
+%ifnarch x86_64
+	--with-avx=no \
+	--with-sse=no \
+	--with-ssse3=no
+%endif
 #	--with-grass=%_libdir/grass62 \
 
 %if_with perl
@@ -190,12 +188,9 @@ popd
 make docs
 make -B man
 
-%if_with python3
-pushd swig/python3
-find -type f -name '*.py' -exec 2to3 -w -n '{}' +
+pushd swig/python
 %python3_build_debug
 popd
-%endif
 
 %install
 mkdir -p %buildroot%python_sitelibdir
@@ -214,13 +209,11 @@ do
 	chrpath -d $i ||:
 done
 
-%if_with python3
-pushd swig/python3
+pushd swig/python
 %python3_install
 popd
 sed -i 's|__bool__ = __nonzero__||' \
 	%buildroot%python3_sitelibdir/osgeo/ogr.py
-%endif
 
 %files
 %_datadir/%name
@@ -249,14 +242,13 @@ sed -i 's|__bool__ = __nonzero__||' \
 %files -n %libname
 %_libdir/*.so.*
 
+%if_with python
 %files -n python-module-%name
 %python_sitelibdir/*
-#exclude %python_sitelibdir/[^o]*
+%endif
 
-%if_with python3
 %files -n python3-module-%name
 %python3_sitelibdir/*
-%endif
 
 %if_with perl
 %files -n perl-Geo-GDAL
@@ -267,6 +259,10 @@ sed -i 's|__bool__ = __nonzero__||' \
 %endif
 
 %changelog
+* Wed Mar 24 2021 Andrey Cherepanov <cas@altlinux.org> 3.0.4-alt1.1.M90P.1
+- Backport new version to p9 branch (ALT #39819).
+- Build python-module-gdal.
+
 * Wed Oct 14 2020 Vitaly Lipatov <lav@altlinux.ru> 2.2.3-alt3.1.M90P.4
 - NMU: fix build with libjasper 2.0.22
 
@@ -276,8 +272,21 @@ sed -i 's|__bool__ = __nonzero__||' \
 * Tue Oct 06 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.2
 - Fixed build with new libjasper.
 
+* Sat Sep 19 2020 Igor Vlasenko <viy@altlinux.ru> 3.0.4-alt1.2
+- NMU: fixed build (build w/o python2) (closes: #38911)
+- TODO: remove -fpermissive quick hack
+- TODO: build --with-netcdf
+
 * Fri Aug 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2.2.3-alt3.1.M90P.1
 - Fixed build dependencies.
+
+* Thu Apr 16 2020 Michael Shigorin <mike@altlinux.org> 3.0.4-alt1.1
+- E2K: fix build with lcc 1.23
+
+* Thu Feb 27 2020 Anton V. Boyarshinov <boyarsh@altlinux.org> 3.0.4-alt1
+- update to 3.0.4
+- unconditional python3
+- stop 2to3 usage
 
 * Thu Apr 25 2019 Vitaly Lipatov <lav@altlinux.ru> 2.2.3-alt3.1
 - drop unneeded python3-module-BeautifulSoup req
@@ -399,7 +408,7 @@ sed -i 's|__bool__ = __nonzero__||' \
 - packaged utils binaries, not wrappers (#23397)
 - packaged docs and mans
 
-* Wed Apr 22 2010 Egor Vyscrebentsov <evyscr@altlinux.org> 1.7.1-alt1
+* Thu Apr 22 2010 Egor Vyscrebentsov <evyscr@altlinux.org> 1.7.1-alt1
 - new version: 1.7.1
 - enabled perl bindings
 - fixed python bindings

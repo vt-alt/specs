@@ -3,7 +3,7 @@
 %define oname shapelib
 Name: libshape
 Version: 1.4.1
-Release: alt2
+Release: alt3
 Summary: API in "C" for Shapefile handling
 Group: Development/C
 # No version of the LGPL is given.
@@ -31,6 +31,7 @@ This package contains libshp and the appropriate header files.
 %setup -n %oname-%version
 
 %build
+%add_optflags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1
 %autoreconf
 %configure --disable-static
 %make_build
@@ -50,6 +51,9 @@ This package contains libshp and the appropriate header files.
 %_pkgconfigdir/*
 
 %changelog
+* Fri Oct 04 2019 Vladislav Zavjalov <slazav@altlinux.org> 1.4.1-alt3
+- fix build with libproj 6.2.0 (use DACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Fri Feb 15 2019 Vladislav Zavjalov <slazav@altlinux.org> 1.4.1-alt2
 - rebuild with libproj 5.2.0
 - remove ubt macro

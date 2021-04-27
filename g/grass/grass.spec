@@ -1,14 +1,14 @@
-%define shortver 76
-%define libver 7.6
+%define shortver 78
+%define libver 7.8
 
 Name:    grass
-Version: 7.6.1
+Version: 7.8.5
 Release: alt1
 
 %def_with mysql
 %def_with postgres
 %def_with sqlite
-%def_without python3
+%def_with python3
 # liblas-config
 %def_without liblas
 # Missing
@@ -22,12 +22,11 @@ Summary: Geographic Resources Analysis Support System
 License: %gpl2plus
 Group:   Sciences/Geosciences
 URL:     https://grass.osgeo.org
+#VCS: https://github.com/OSGeo/grass
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
-# https://grass.osgeo.org/%name%shortver/source/%name-%version.tar.gz
 Source: %name-%version.tar
-Source1: %name.watch
 
 Patch0: %name-pkgconf.patch
 Patch1: %name-use-simplejson.patch
@@ -45,12 +44,15 @@ BuildRequires: flex gcc-c++
 %if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
-BuildRequires: python-tools-2to3
+BuildRequires: python3-module-six
+BuildRequires: python3-module-simplejson
 %else
 BuildRequires(pre): rpm-build-python
 BuildRequires: python-devel
+BuildRequires: python-module-six
+BuildRequires: python-module-simplejson
 %endif
-BuildRequires: libfftw-devel libjpeg-devel libpng-devel libtiff-devel zlib-devel
+BuildRequires: libfftw3-devel libjpeg-devel libpng-devel libtiff-devel zlib-devel
 BuildRequires: libncurses-devel libtinfo-devel
 BuildRequires: postgresql-devel libmariadb-devel libsqlite3-devel
 BuildRequires: libqt4-core libXmu-devel swig libfreetype-devel readline-devel libGLU-devel
@@ -89,9 +91,11 @@ BuildRequires: python-modules-distutils
 # internal modules
 %if_with python3
 %add_python3_req_skip srs wms_base wms_cap_parsers
+%add_python3_lib_path %_libdir/%grassdir
 %else
 %add_python_req_skip srs wms_base wms_cap_parsers
 %endif
+%add_findreq_skiplist %_libdir/%grassdir/etc/*
 
 %description
 GRASS (Geographic Resources Analysis Support System) is an
@@ -263,12 +267,11 @@ rm -rf %buildroot%_libdir/%grassdir/share %buildroot%_libdir/*.a
 
 # Prepare python files for Python 3
 %if_with python3
-2to3 -w -n --no-diffs %buildroot%python3_sitelibdir/grass/lib/vector.py %buildroot%_libdir/grass%shortver/scripts/*
-find %buildroot -type f | xargs -l1 subst 's,^#!/usr/bin/env python,#!%_bindir/python3,'
-%ifarch %ix86
-subst 's/\<\([0-9]\+\)L\>/\1/' %buildroot%python3_sitelibdir/grass/lib/ogsf.py \
-                               %buildroot%python3_sitelibdir/grass/lib/raster.py
-%endif
+find %buildroot -type f | xargs -l1 subst 's,^#!/usr/bin/env python.*$,#!%__python3,'
+#%ifarch %ix86
+#subst 's/\<\([0-9]\+\)L\>/\1/' %buildroot%python3_sitelibdir/grass/lib/ogsf.py \
+#                               %buildroot%python3_sitelibdir/grass/lib/raster.py
+#%endif
 %endif
 
 # Mark localization files
@@ -281,9 +284,8 @@ subst 's/\<\([0-9]\+\)L\>/\1/' %buildroot%python3_sitelibdir/grass/lib/ogsf.py \
 %preun
 rm -f %_libdir/%grassdir/locks
 
-%add_findreq_skiplist %_libdir/%grassdir/etc/*
-
 %files -f %name.lang
+%doc AUTHORS CHANGES translators.csv contributors.csv contributors_extra.csv doc
 %_bindir/*
 %dir %_libdir/%grassdir
 %dir %_libdir/grass
@@ -301,17 +303,19 @@ rm -f %_libdir/%grassdir/locks
 %_man1dir/*.1grass*
 
 %files -n lib%name
-%doc AUTHORS COPYING GPL.TXT CHANGES translators.csv contributors.csv contributors_extra.csv doc
 %_libdir/lib%{name}_*.%libver.so
 
 %files devel
-%doc TODO doc SUBMITTING*
 %_pkgconfigdir/%name.pc
 %_includedir/%name
 %exclude %_libdir/lib%{name}_*.%libver.so
 %_libdir/lib%{name}_*.so
 
 %changelog
+* Mon Apr 19 2021 Andrey Cherepanov <cas@altlinux.org> 7.8.5-alt1
+- New version.
+- Build with Python3.
+
 * Thu Mar 28 2019 Andrey Cherepanov <cas@altlinux.org> 7.6.1-alt1
 - New version.
 - Remove bundled copy of liblz4 (ALT #36396).

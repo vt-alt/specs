@@ -2,7 +2,7 @@ Summary: Imports map data from www.OpenStreetMap.org to a PostgresSQL database
 Name: osm2pgsql
 Group: Databases
 Version: 0.96.0
-Release: alt2
+Release: alt3
 
 License: GPLv2+
 Url: https://github.com/openstreetmap/osm2pgsql
@@ -33,6 +33,7 @@ geospatial analysis.
 %setup
 
 %build
+%add_optflags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1
 %cmake
 %cmake_build
 
@@ -46,6 +47,9 @@ geospatial analysis.
 %_man1dir/%name.*
 
 %changelog
+* Sun Oct 06 2019 Vladislav Zavjalov <slazav@altlinux.org> 0.96.0-alt3
+- Rebuild with libproj 6.2.0 (use ACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
 * Sat Feb 16 2019 Vladislav Zavjalov <slazav@altlinux.org> 0.96.0-alt2
 - Rebuild with libproj 5.2.0.
 

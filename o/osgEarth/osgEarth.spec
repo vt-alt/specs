@@ -1,8 +1,8 @@
 %define osg_version %(pkg-config --modversion openscenegraph)
 
 Name: osgEarth
-Version: 2.10.2
-Release: alt2
+Version: 3.1
+Release: alt1
 
 Summary: Dynamic map generation toolkit for OpenSceneGraph
 License: LGPL
@@ -10,6 +10,7 @@ Group: Graphics
 
 Url: http://osgearth.org
 Source: osgearth-%version.tar
+Patch: geos-3_8-support.patch
 Packager: Dmitry Derjavin <dd@altlinux.org>
 
 # Automatically added by buildreq on Wed Sep 22 2010
@@ -86,6 +87,7 @@ This package contains sample data files for osgEarth.
 
 %prep
 %setup -n osgearth-%version
+%patch -p1
 
 %build
 %ifarch %e2k
@@ -126,6 +128,15 @@ popd
 %_datadir/osgEarth
 
 %changelog
+* Mon Dec 07 2020 Andrey Cherepanov <cas@altlinux.org> 3.1-alt1
+- New version.
+
+* Tue Jun 16 2020 Andrey Cherepanov <cas@altlinux.org> 3.0-alt1
+- New version.
+
+* Tue Mar 03 2020 Grigory Ustinov <grenka@altlinux.org> 2.10.2-alt3
+- Fix build with gdal 3.0.4.
+
 * Sat Jul 13 2019 Michael Shigorin <mike@altlinux.org> 2.10.2-alt2
 - ensure our CXXFLAGS instead of hardwired -O2
 - E2K: explicit -std=c++11

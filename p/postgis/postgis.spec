@@ -1,20 +1,20 @@
-%define pg_ver 11
+%define pg_ver 12
 
 Name: postgis
-Version: 2.5.2
-Release: alt1
+Version: 3.1.1
+Release: alt0.p9.1
 
 Summary: Geographic Information Systems Extensions to PostgreSQL
 Summary(ru_RU.UTF-8): Геоинформационные расширения для PostgreSQL
-License: GPLv2
+License: GPL-2.0
 Group: Databases
 Url: http://postgis.refractions.net
 
 Source: %name-%version.tar
 Source1: create_template_postgis
 Source2: postgis.watch
-Patch1: %name-alt-fix-build-with-postgresql10.patch
 
+BuildRequires: gcc-c++
 BuildRequires: ImageMagick-tools
 BuildRequires: docbook-dtds
 BuildRequires: docbook-style-xsl
@@ -56,26 +56,17 @@ This package contains shared library for PostgreSQL server
 %description -n postgresql%pg_ver-%name -l ru_RU.UTF-8
 Подгружаемая postgis библиотека для PostgreSQL сервера
 
-
-%package devel
-Summary:	The development files for PostGIS
-Group:		Development/Databases
-Requires:	%name = %EVR
-
-%description devel
-Development headers and libraries for PostGIS.
-
 %prep
 %setup
-#patch1 -p2
 subst "s|PGSQL_DOCDIR|DOCDIR|g" doc/Makefile.in
 
 %build
 export PCRE_CPPFLAGS=-I/usr/include/pcre
 ./autogen.sh
 %configure \
+	--disable-static \
 	--with-gui \
-	--enable-raster \
+	--with-raster \
 	--with-xsldir=%_datadir/xml/docbook/xsl-stylesheets
 %make all docs comments
 
@@ -94,25 +85,43 @@ rm -rf %buildroot%_libdir/liblwgeom.a
 %_bindir/shp2pgsql*
 %_bindir/raster2pgsql
 %_man1dir/*
-%_libdir/liblwgeom*
 %_datadir/pgsql/applications/shp2pgsql-gui.desktop
 %_datadir/pgsql/icons/hicolor/*/apps/shp2pgsql-gui.png
 
 %files -n postgresql%pg_ver-%name
 %_bindir/create_template_postgis
 %_libdir/pgsql/%{name}*.so
-%_libdir/pgsql/rt%{name}*.so
 %_libdir/pgsql/address_standardizer*.so
 %_datadir/pgsql/contrib/postgis-*/*.sql
 %_datadir/pgsql/contrib/postgis-*/*.pl
 %_datadir/pgsql/extension
 %doc %_datadir/doc/postgresql/extension/README.address_standardizer
 
-%files devel
-%_includedir/liblwgeom.h
-%_includedir/liblwgeom_topo.h
-
 %changelog
+* Wed Apr 21 2021 Andrey Cherepanov <cas@altlinux.org> 3.1.1-alt0.p9.1
+- Backport new version to p9 branch for PostgreSQL 12.
+
+* Mon Feb 01 2021 Andrey Cherepanov <cas@altlinux.org> 3.1.1-alt1
+- New version.
+
+* Mon Dec 28 2020 Andrey Cherepanov <cas@altlinux.org> 3.1.0-alt1
+- New version.
+
+* Sun Nov 22 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.3-alt1
+- New version (build with PosgreSQL 13).
+
+* Sat Aug 22 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.2-alt1
+- New version.
+
+* Thu May 28 2020 Andrey Cherepanov <cas@altlinux.org> 3.0.1-alt1
+- New version.
+
+* Thu Dec 12 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.3-alt2
+- Rebuild with PostgreSQL 12.
+
+* Tue Aug 13 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.3-alt1
+- New version.
+
 * Tue Mar 19 2019 Andrey Cherepanov <cas@altlinux.org> 2.5.2-alt1
 - New version.
 - Require postgresql11 (ALT #36240).

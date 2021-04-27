@@ -1,13 +1,16 @@
 Name: mapsoft
-Version: 20190213
-Release: alt2
-License: GPL
+Version: 20210121
+Release: alt0.1.p9
+License: GPL3.0
+
 Summary: mapsoft - programs for working with maps and geodata
 Group: Sciences/Geosciences
 Url: http://github.org/ushakov/mapsoft
 Packager: Vladislav Zavjalov <slazav@altlinux.org>
 
 Source: %name-%version.tar
+Patch1: 0001-skip-convs_gtiles.patch
+Patch2: 0002-alt-fix-build.patch
 
 BuildRequires: boost-devel gcc-c++ libcurl-devel libzip-devel zlib-devel
 BuildRequires: libcairomm-devel libpixman-devel libgtkmm2-devel
@@ -16,6 +19,7 @@ BuildRequires: libusb-devel libyaml-devel libxml2-devel proj-devel
 BuildRequires: libjansson-devel libshape-devel
 BuildRequires: python-devel scons swig m4
 BuildRequires: /usr/bin/gs netpbm transfig ImageMagick-tools /usr/bin/pod2man
+BuildRequires: boost-geometry-devel perl-Text-Iconv
 
 %package tools
 Summary: mapsoft-tools - rarely-used tools from mapsoft package
@@ -38,8 +42,15 @@ mapsoft-vmap - programs for working with vector maps
 
 %prep
 %setup -q
+%patch1 -p1
+%patch2 -p1
 
 %build
+# boost::spirit crashes with -O2 on 32-bit systems
+%if "%_lib" == "lib64"
+export CCFLAGS=-O2
+%endif
+
 scons -Q minimal=1
 
 %install
@@ -50,6 +61,7 @@ scons -Q minimal=1 -Q prefix=%buildroot install
 %_bindir/mapsoft_mapview
 %_mandir/man1/mapsoft_convert.*
 %_mandir/man1/mapsoft_mapview.*
+%_desktopdir/mapsoft_mapview.*
 
 %files tools
 %_bindir/convs_*
@@ -67,8 +79,47 @@ scons -Q minimal=1 -Q prefix=%buildroot install
 %_datadir/mapsoft/*
 %_datadir/xfig/Libraries/*
 %_mandir/man1/mapsoft_vmap.*
+%_bindir/map_rescale
+%_bindir/*.sh
+%_bindir/map_*_gk
+%_bindir/map_*_nom
+%_bindir/mapsoft_wp_parse
 
 %changelog
+* Sat Mar 27 2021 Andrey Cherepanov <cas@altlinux.org> 20210121-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Thu Jan 21 2021 Vladislav Zavjalov <slazav@altlinux.org> 20210121-alt1
+- scripts/mapsoft_wp_parse: fix name conversions
+- skip convs_gtiles program in Altlinux build (build problem with new boost)
+- vector/data: add new types: point 0x650B, 0x650C (glacier names)
+- vector/vmap3/vmap_mmb_filter: convert glacier names to points
+- vector/vmap3: add vmap_put_track and vmap_get_track programs
+- programs/mapsoft_map2fig: put images into compound object; add 50px margins
+
+* Sat Dec 12 2020 Vladislav Zavjalov <slazav@altlinux.org> 20201212-alt1
+- img_io/gobj_vmap: draw pattens with solid color at small scales (A.Kazantsev)
+- fix for gcc-10
+- fix a few compilation warnings (with -Wall) and a couple of possible related errors
+- remove -O2 flag on i586 and armh (problem with new boost::spirit)
+
+* Sun Dec 01 2019 Vladislav Zavjalov <slazav@altlinux.org> 20191201-alt1
+- fix a few problems in vmap_render and convs_gtiles (thanks to A.Kazantsev)
+- add GPL3.0 license (Altlinux requires ambiguous license for all packages)
+- fix python shebang (python -> python2)
+
+* Sun Nov 10 2019 Vladislav Zavjalov <slazav@altlinux.org> 20191110-alt1
+- add more scripts to mapsoft_vmap package
+
+* Fri Oct 04 2019 Vladislav Zavjalov <slazav@altlinux.org> 20190916-alt2
+- fix build with libproj 6.2.0 (use DACCEPT_USE_OF_DEPRECATED_PROJ_API_H)
+
+* Mon Sep 16 2019 Vladislav Zavjalov <slazav@altlinux.org> 20190916-alt1
+- Fix build with new scons/python
+- mapsoft_geofig: --raw option
+- mapsoft_mapview: add desktop file
+- mapsoft_vmap: fix error in label creation introduced in 2018-06-16
+
 * Fri Feb 15 2019 Vladislav Zavjalov <slazav@altlinux.org> 20190213-alt2
 - rebuild with libproj 5.2.0
 

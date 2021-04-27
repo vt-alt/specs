@@ -1,3 +1,4 @@
+%define _unpackaged_files_terminate_build 1
 Group: Development/Other
 # BEGIN SourceDeps(oneline):
 BuildRequires(pre): rpm-build-perl
@@ -33,38 +34,41 @@ BuildRequires: gcc-c++
 %{bcond_without perl_PDL_enables_optional_test}
 
 Name:           perl-PDL
-%global cpan_version 2.019
-Version:        2.19.0
-Release:        alt3_3
+%global cpan_version 2.024
+Version:        2.032
+Release:        alt1
 Summary:        The Perl Data Language
 License:        GPL+ or Artistic
 Url:            http://pdl.perl.org/
-Source0:        https://cpan.metacpan.org/authors/id/C/CH/CHM/PDL-%{cpan_version}.tar.gz
+Source0:        http://www.cpan.org/authors/id/E/ET/ETJ/PDL-%{version}.tar.gz
 # Uncomment to enable PDL::IO::Browser
 # Patch0:         perl-PDL-2.4.10-settings.patch
-Patch1:         perl-PDL-2.8.0-hdf.patch
 # Disable Proj support when it's not compatible, bug #839651
 Patch2:         PDL-2.4.10-Disable-PDL-GIS-Proj.patch
 # Compile Slatec as PIC, needed for ARM
-Patch3:         PDL-2.6.0.90-Compile-Slatec-code-as-PIC.patch
+Patch3:         PDL-2.029-Compile-Slatec-code-as-PIC.patch
 # Disable Slatec code crashing on PPC64, bug #1041304
 Patch4:         PDL-2.14.0-Disable-PDL-Slatec.patch
 Patch5:         PDL-2.17.0-Update-additional-deps-for-Basic-Core.patch
 BuildRequires:  coreutils
-BuildRequires:  libfftw-devel
+#BuildRequires:  libfftw3-devel
 BuildRequires:  findutils
 BuildRequires:  libfreeglut-devel
 BuildRequires:  gcc-c++
 BuildRequires:  gcc-fortran
 BuildRequires:  libgd3-devel
 BuildRequires:  libgsl-devel >= 1.0
-BuildRequires:  hdf-devel
+%ifnarch %e2k
+# archdep, requires patching the patched source
+BuildRequires:  hdf-static hdf hdf-devel
+%endif
 BuildRequires:  libXi-devel
 BuildRequires:  libXmu-devel
 BuildRequires:  perl-devel
 BuildRequires:  rpm-build-perl
 BuildRequires:  perl-devel
 # perl(Astro::FITS::Header) not packaged yet
+BuildRequires:  perl(blib.pm)
 # Modified perl(Carp) bundled
 # Modified perl(Carp::Heavy) bundled
 BuildRequires:  perl(Config.pm)
@@ -118,6 +122,7 @@ BuildRequires:  perl(POSIX.pm)
 BuildRequires:  perl(Scalar/Util.pm)
 BuildRequires:  perl(SelfLoader.pm)
 BuildRequires:  perl(Symbol.pm)
+BuildRequires:  perl(Term/ReadKey.pm)
 BuildRequires:  perl(Text/Balanced.pm)
 BuildRequires:  perl(version.pm)
 # Tests:
@@ -141,7 +146,7 @@ BuildRequires:  perl(Storable.pm)
 %if %{with perl_PDL_enables_proj}
 # Needed by PDL::GIS::Proj
 BuildRequires:  libproj-devel
-BuildRequires:  proj-nad
+BuildRequires:  proj-datumgrid
 %endif
 # Need by PDL::IO::Browser, currently disabled
 # BuildRequires:  ncurses-devel
@@ -170,7 +175,6 @@ Provides:       perl(PDL/PP/PDLCode.pm) = %{version}
 Provides:       perl(PDL/PP/SymTab.pm) = %{version}
 Provides:       perl(PDL/PP/XS.pm) = %{version}
 Provides:       perl(PDL/Graphics/TriD/Objects.pm) = %{version}
-Provides:       perl(PGPLOT.pm) = %{version}
 
 
 
@@ -179,11 +183,11 @@ Provides:       perl(PGPLOT.pm) = %{version}
 # Remove under-specified dependencies
 
 Source44: import.info
-%filter_from_requires /^perl(\(OpenGL.Config\|PDL.Demos.Screen\|Tk\|Win32.DDE.Client\).pm)/d
+%filter_from_requires /^perl(\(OpenGL.Config\|PDL.Demos.Screen\|PDL.Graphics.PGPLOT\|PDL.Graphics.PGPLOT.Window\|Tk\|Win32.DDE.Client\).pm)/d
 %filter_from_provides /^perl(Inline.pm)/d
 %filter_from_provides /^perl(Win32.*.pm)/d
 %filter_from_requires /^perl(\(Data.Dumper\|File.Spec\|Filter.Simple\|Inline\|Module.Compile\|OpenGL\|Text.Balanced\).pm)/d
-Patch33: PDL-2.018-alt-link-Slatec-hack.patch
+Patch33: PDL-2.029-alt-link-Slatec-hack.patch
 
 %description
 PDL ("Perl Data Language") gives standard Perl the ability to
@@ -193,10 +197,9 @@ turns perl into a free, array-oriented, numerical language similar to
 such commercial packages as IDL and MatLab.
 
 %prep
-%setup -q -n PDL-%{cpan_version}
+%setup -q -n PDL-%{version}
 # Uncomment to enable PDL::IO::Browser
 # %%patch0 -p1 -b .settings
-%patch1 -p1 -b .hdf
 %if %{without perl_PDL_enables_proj}
 %patch2 -p1 -b .proj
 %endif
@@ -228,16 +231,17 @@ perl -Mblib Doc/scantree.pl %{buildroot}%{perl_vendor_archlib}
 perl -pi -e "s|%{buildroot}/|/|g" %{buildroot}%{perl_vendor_archlib}/PDL/pdldoc.db
 find %{buildroot}%{perl_vendor_archlib} -type f -name "*.pm" | xargs chmod -x
 find %{buildroot} -type f -name '*.bs' -empty -delete
-chmod -R u+w %{buildroot}/*
+# %{_fixperms} %{buildroot}/*
 
 %check
 unset DISPLAY
 export PERL5LIB=`pwd`/blib/lib
+%ifnarch armh
 make test
+%endif
 
 %files
-%doc --no-dereference COPYING
-%doc Changes INTERNATIONALIZATION Known_problems README TODO
+%doc Changes INTERNATIONALIZATION README Bugs.pod Doc Example
 %{_bindir}/*
 %{perl_vendor_archlib}/Inline/*
 %{perl_vendor_archlib}/PDL*
@@ -245,6 +249,43 @@ make test
 %{_mandir}/man1/*.1*
 
 %changelog
+* Wed Mar 24 2021 Igor Vlasenko <viy@altlinux.org> 2.032-alt1
+- automated CPAN update
+
+* Mon Mar 15 2021 Igor Vlasenko <viy@altlinux.org> 2.029-alt1
+- automated CPAN update
+
+* Tue Feb 16 2021 Igor Vlasenko <viy@altlinux.ru> 2.026-alt1
+- automated CPAN update
+
+* Mon Nov 23 2020 Igor Vlasenko <viy@altlinux.ru> 2.025-alt1
+- automated CPAN update
+
+* Mon Sep 28 2020 Igor Vlasenko <viy@altlinux.ru> 2.24.0-alt2_1
+- manually removed BuildRequires:  libfftw3-devel
+
+* Mon Sep 21 2020 Igor Vlasenko <viy@altlinux.ru> 2.24.0-alt1_1
+- new version
+
+* Fri Apr 17 2020 Igor Vlasenko <viy@altlinux.ru> 2.21.0-alt1_3
+- added e2k patch
+
+* Tue Mar 03 2020 Igor Vlasenko <viy@altlinux.ru> 2.021-alt1
+- automated CPAN update
+
+* Mon Feb 24 2020 Igor Vlasenko <viy@altlinux.ru> 2.20.0-alt1_2
+- new version
+
+* Wed Nov 20 2019 Igor Vlasenko <viy@altlinux.ru> 2.19.0-alt4_9
+- update to new release by fcimport
+
+* Sun Oct 06 2019 Vladislav Zavjalov <slazav@altlinux.org> 2.19.0-alt4
+- rebuild with libproj 6.2.0
+- remove dependency on proj-nad (all these data are in libproj package now)
+
+* Sat May 25 2019 Igor Vlasenko <viy@altlinux.ru> 2.19.0-alt3_5
+- update to new release by fcimport
+
 * Sat Feb 16 2019 Vladislav Zavjalov <slazav@altlinux.org> 2.19.0-alt3_3
 - rebuild with libproj 5.2.2
 

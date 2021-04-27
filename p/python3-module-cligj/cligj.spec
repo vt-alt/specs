@@ -1,94 +1,60 @@
 %define _unpackaged_files_terminate_build 1
 %define oname cligj
 
-%def_with python3
+%def_without check
 
-Name: python-module-%oname
-Version: 0.4.0
-Release: alt2.1
+Name: python3-module-%oname
+Version: 0.7.0
+Release: alt1
+
 Summary: Click params for GeoJSON CLI
+
 License: MIT
-Group: Development/Python
+Group: Development/Python3
 Url: https://pypi.python.org/pypi/cligj/
 
-# https://github.com/mapbox/cligj.git
+# Source-url: %__pypi_url %oname
 Source: %name-%version.tar
 BuildArch: noarch
 
-BuildPreReq: python-devel python-module-setuptools
-BuildPreReq: python-module-click-tests
-BuildRequires: python-module-pytest
-%if_with python3
 BuildRequires(pre): rpm-build-python3
 BuildPreReq: python3-devel python3-module-setuptools
 BuildRequires: python3-module-pytest
-BuildPreReq: python3-module-click-tests
-%endif
-
-%py_provides %oname
-%py_requires click
+BuildPreReq: python3-module-click
 
 %description
-Common arguments and options for GeoJSON processing commands, using
-Click.
-
-%package -n python3-module-%oname
-Summary: Click params for GeoJSON CLI
-Group: Development/Python3
-%py3_provides %oname
-%py3_requires click
-
-%description -n python3-module-%oname
 Common arguments and options for GeoJSON processing commands, using
 Click.
 
 %prep
 %setup
 
-%if_with python3
-cp -fR . ../python3
-%endif
-
 %build
-%python_build_debug
-
-%if_with python3
-pushd ../python3
 %python3_build_debug
-popd
-%endif
 
 %install
-%python_install
-
-%if_with python3
-pushd ../python3
 %python3_install
-popd
-%endif
 
 %check
-export LC_ALL=en_US.UTF-8
-export PYTHONPATH=$PWD
-py.test -vv
-%if_with python3
-pushd ../python3
 export PYTHONPATH=$PWD
 py.test3 -vv
-popd
-%endif
 
 %files
 %doc *.rst
-%python_sitelibdir/*
-
-%if_with python3
-%files -n python3-module-%oname
-%doc *.rst
 %python3_sitelibdir/*
-%endif
 
 %changelog
+* Thu Nov 05 2020 Vitaly Lipatov <lav@altlinux.ru> 0.7.0-alt1
+- new version 0.7.0 (with rpmrb script)
+
+* Thu Nov 05 2020 Vitaly Lipatov <lav@altlinux.ru> 0.5.0-alt2
+- build python3 package separately
+
+* Mon Jun 03 2019 Vitaly Lipatov <lav@altlinux.ru> 0.5.0-alt1
+- new version 0.5.0 (with rpmrb script)
+- switch to build from tarball
+- disable check (old code? NameError: name '__nonzero__' is not defined)
+
 * Fri Feb 02 2018 Stanislav Levin <slev@altlinux.org> 0.4.0-alt2.1
 - (NMU) Fix Requires and BuildRequires to python-setuptools
 

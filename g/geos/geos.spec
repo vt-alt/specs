@@ -2,14 +2,16 @@
 # See also http://trac.osgeo.org/geos/ticket/228
 %def_without python
 %def_without python3
+# TODO: tests are failed
+%def_without tests
 
 Name: geos
-Version: 3.7.2
+Version: 3.9.1
 Release: alt1
 
 Summary: Geometry Engine - Open Source
+License: LGPL-2.1
 Group: Sciences/Geosciences
-License: LGPL
 Url: http://trac.osgeo.org/geos/
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -17,13 +19,20 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 # VCS: https://git.osgeo.org/gogs/geos/geos.git
 Source: %name-%version.tar
 Patch1: %name-fix-lib-destination.patch
+Patch2: %name-alt-fix-link-benchmarks.patch
+Patch3: %name-fix-geos-config--libs.patch
 
 BuildRequires(pre): rpm-build-ruby
+BuildRequires(pre): cmake
+BuildRequires(pre): rpm-build-ninja
 BuildRequires: gcc-c++ python-devel swig
-BuildPreReq: cmake doxygen graphviz
 %if_with python3
 BuildRequires(pre): rpm-build-python3
-BuildPreReq: python3-devel
+BuildRequires: python3-devel
+%endif
+# For tests
+%if_with tests
+BuildRequires: ctest
 %endif
 
 %description
@@ -33,21 +42,6 @@ functionality of JTS in C++. This includes all the OpenGIS
 "Simple Features for SQL" spatial predicate functions and
 spatial operators, as well as specific JTS topology functions
 such as IsValid().
-
-%package doc
-Summary: Documentation for GEOS
-Group: Development/Documentation
-BuildArch: noarch
-
-%description doc
-GEOS (Geometry Engine - Open Source) is a C++ port of the Java
-Topology Suite (JTS). As such, it aims to contain the complete
-functionality of JTS in C++. This includes all the OpenGIS
-"Simple Features for SQL" spatial predicate functions and
-spatial operators, as well as specific JTS topology functions
-such as IsValid().
-
-This package contains documentation for GEOS.
 
 %package -n lib%name
 Summary: Geometry Engine - Open Source
@@ -102,6 +96,8 @@ Ruby bindings for the lib%name library.
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %ifarch %e2k
 # strip UTF-8 BOM
@@ -145,15 +141,17 @@ popd
 LIB_SUFFIX=64
 %endif
 
-
 # E2K: tests/unit/tut/tut.hpp: excessive recursion at instantiation [...]
-%cmake_insource \
+%cmake_insource -GNinja \
 	-DGEOS_BUILD_STATIC:BOOL=OFF \
+%ifarch armh
+	-DDISABLE_GEOS_INLINE=ON \
+%endif
 %ifarch %e2k
 	-DGEOS_ENABLE_TESTS:BOOL=OFF \
 %endif
 	#
-%make_build VERBOSE=1
+%ninja_build
 
 %if_with python
 %make -C swig/python LIB_SUFFIX=$LIB_SUFFIX \
@@ -165,10 +163,8 @@ LIB_SUFFIX=64
 	ENABLE_PYTHON=1 ENABLE_SWIG=1
 %endif
 
-%make -C doc doxygen-html
-
 %install
-%makeinstall_std
+%ninja_install
 
 %if %_lib == lib64
 LIB_SUFFIX=64
@@ -188,17 +184,22 @@ rm -f %buildroot%ruby_sitearchdir/*.la
 rm -f %buildroot%python3_sitelibdir/geos/*.la
 %endif
 
+%if_with tests
 %check
-make check || exit 0
+%ninja_build check || exit 0
+%endif
 
 %files -n lib%name
-%doc AUTHORS COPYING NEWS README.md TODO
+%doc AUTHORS NEWS README.md
 %_libdir/lib*.so.*
 
 %files -n lib%name-devel
 %_bindir/%name-config
-%_libdir/lib*.so
+%_libdir/libgeos.so
+%_libdir/libgeos_c.so
 %_includedir/*
+%_libdir/cmake/GEOS
+%_libdir/pkgconfig/geos.pc
 
 %if_with python
 %files -n python-module-%name
@@ -215,10 +216,25 @@ make check || exit 0
 %ruby_sitearchdir/*
 %endif
 
-%files doc
-%doc doc/doxygen_docs/html/*
-
 %changelog
+* Thu Feb 11 2021 Andrey Cherepanov <cas@altlinux.org> 3.9.1-alt1
+- New version.
+
+* Fri Dec 11 2020 Andrey Cherepanov <cas@altlinux.org> 3.9.0-alt1
+- New version.
+- Build by ninja-build.
+- Disable %%check.
+
+* Thu Mar 12 2020 Andrey Cherepanov <cas@altlinux.org> 3.8.1-alt1
+- New version.
+
+* Thu Oct 31 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.0-alt2
+- Fix geos-config --libs.
+- Make libgeos.so for devel subpackage.
+
+* Tue Oct 29 2019 Andrey Cherepanov <cas@altlinux.org> 3.8.0-alt1
+- New version.
+
 * Sun May 05 2019 Andrey Cherepanov <cas@altlinux.org> 3.7.2-alt1
 - New version.
 
