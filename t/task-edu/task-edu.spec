@@ -1,5 +1,5 @@
 Name:    task-edu
-Version: 1.4.1
+Version: 1.4.2
 Release: alt0.p9.1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
@@ -7,7 +7,7 @@ Group:   Education
 
 # Education (base part)
 Requires: audacity
-%ifnarch %e2k
+%ifarch %ix86 x86_64 aarch64
 Requires: blender
 %endif
 Requires: bluefish
@@ -234,7 +234,9 @@ Requires: ipset
 Requires: vlan-utils
 # Group policy management
 Requires: alterator-gpupdate
+%ifnarch armh
 Requires: adp
+%endif
 %ifarch %e2k
 Requires: rtc
 %endif
@@ -281,7 +283,6 @@ Requires: python3-tools
 Requires: python3-module-pygame
 Requires: python3-module-pygame-doc
 Requires: python3-modules-curses
-Requires: python3-modules-nis
 Requires: afce
 # KDE5 localization and profile
 Requires: kde5-profile
@@ -376,11 +377,8 @@ Requires: python3-tools
 Requires: python3-module-pygame
 Requires: python3-module-pygame-doc
 Requires: python3-modules-curses
-Requires: python3-modules-nis
 Requires: python-module-pip
-Requires: python-module-pip-docs
 Requires: python3-module-pip
-Requires: python3-module-pip-docs
 %description secondary-vocational
 %{summary}.
 
@@ -424,11 +422,8 @@ Requires: python3-tools
 Requires: python3-module-pygame
 Requires: python3-module-pygame-doc
 Requires: python3-modules-curses
-Requires: python3-modules-nis
 Requires: python-module-pip
-Requires: python-module-pip-docs
 Requires: python3-module-pip
-Requires: python3-module-pip-docs
 %description university
 %{summary}.
 
@@ -521,6 +516,9 @@ Requires: alterator-netinst
 %endif
 Requires: alterator-net-openvpn
 Requires: alterator-net-routing
+Requires: alterator-net-bond
+Requires: alterator-net-bridge
+Requires: alterator-net-iptables
 Requires: alterator-openldap
 Requires: samba4
 Requires: alterator-openvpn-server
@@ -535,6 +533,7 @@ Requires: alterator-postfix-dovecot
 Requires: alterator-ulogd
 Requires: xauth
 Requires: xrdp
+Requires: pulseaudio-module-xrdp
 %ifarch %ix86 x86_64
 Requires: docker-ce
 Requires: lsb
@@ -597,11 +596,26 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.2-alt0.p9.1
+- Backport new version to p9 branch.
+- Return scilab and qgis.
+
+* Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.2-alt1
+- Add pulseaudio-module-xrdp, alterator-net-bond, alterator-net-bridge
+  and alterator-net-iptables to task-edu-server-apps.
+
 * Fri Apr 23 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt0.p9.1
 - Add xsane-doc-ru.
 
+* Fri Apr 23 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.1-alt1
+- Update for Sisyphus.
+- Move from qgis to qgis3.
+- Completely remove documentation for pip.
+- Add xsane-doc-ru.
+- Remove python3-modules-nis.
+
 * Mon Apr 12 2021 Andrey Cherepanov <cas@altlinux.org> 1.4-alt1
-- Replace italc3 to veyon. 
+- Replace italc3 to veyon.
 
 * Sun Apr 11 2021 Andrey Cherepanov <cas@altlinux.org> 1.3-alt1
 - Remove documentation for pip.
