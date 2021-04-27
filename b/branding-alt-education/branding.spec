@@ -3,14 +3,14 @@
 %define theme education
 %define Theme Education
 %define codename FalcoRusticolus
-%define status beta
-%define status_en beta
+%define status %nil
+%define status_en %nil
 %define flavour %brand-%theme
 
 %define gtk_theme Breeze
 %define kde_theme Breeze
 %define icon_theme Papirus-Light
-%define window_theme Smoothwall
+%define window_theme Smoothwall-Breeze
 
 # Enable compositing on ix86 and x86_64 only
 %ifarch %ix86 x86_64
@@ -26,7 +26,7 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt0.6.beta
+Release: alt0.9.rc1
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -64,7 +64,6 @@ License: GPL-2.0
 
 Requires(pre):    coreutils
 Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 %branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/light-blue
@@ -105,10 +104,9 @@ Group: System/Configuration/Other
 BuildArch: noarch
 Provides: design-alterator-browser-%theme  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
 Provides: alterator-icons design-alterator design-alterator-%theme
-Obsoletes:  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt 
 
 %branding_add_conflicts %flavour alterator
-Obsoletes: design-alterator-server design-alterator-desktop design-altertor-browser-desktop  design-altertor-browser-server branding-altlinux-backup-server-alterator
+Obsoletes: design-alterator-server design-alterator-desktop design-altertor-browser-desktop design-altertor-browser-server branding-altlinux-backup-server-alterator
 Requires(post,preun): alternatives >= 0.2 alterator
 
 %description alterator
@@ -124,8 +122,7 @@ Summary(ru_RU.UTF-8): Тема для дистрибутива %distro_name_ru
 License: Different licenses
 Group: Graphics
 BuildArch: noarch
-Provides: design-graphics-%theme  branding-alt-%theme-graphics
-Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
+Provides: design-graphics-%theme
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
 
 Requires(post,preun): alternatives >= 0.2
@@ -161,7 +158,6 @@ Requires: pam-limits-desktop
 %package notes
 BuildArch: noarch
 Provides:  alt-license-theme = %version alt-notes-%theme
-Obsoletes: alt-license-%theme alt-notes-%theme
 Summary:   Distribution license and release notes
 Summary(ru_RU.UTF-8): Лицензия и дополнительные сведения для дистрибутива %distro_name_ru
 License:   Distributable
@@ -209,6 +205,7 @@ Requires: icon-theme-Papirus
 Requires: icon-theme-Papirus-Dark
 Requires: icon-theme-Papirus-Light
 Requires: gtk-theme-breeze
+Requires: xfwm4-theme-Smoothwall-Breeze
 Requires(post): lightdm-gtk-greeter
 # XFCE plugins
 Requires: xfce4-whiskermenu-plugin
@@ -235,7 +232,7 @@ BuildArch: noarch
 Summary: MATE settings for %distro_name
 License: Distributable
 Group:   Graphical desktop/GNOME
-Requires: gksu
+Requires: beesu
 Requires: dconf
 # Specified themes
 Requires: icon-theme-ePapirus
@@ -273,7 +270,6 @@ Summary(ru_RU.UTF-8): Стартовая страница для дистриб�
 License:  distributable
 Group:    System/Base
 Provides: indexhtml indexhtml-%theme = %version indexhtml-Desktop = 1:5.0
-Obsoletes: indexhtml-desktop indexhtml-Desktop
 %branding_add_conflicts %flavour indexhtml
 
 Requires: xdg-utils
@@ -466,6 +462,17 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.9.rc1
+- Use Smoothwall-Breeze window theme in XFCE.
+
+* Mon Apr 26 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.8.rc1
+- 9.2 rc1.
+- whisker menu: Use dm-tool to switch users.
+
+* Fri Apr 23 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.7.beta
+- Do not obsolete packages itself without version.
+- Replace gksu by beesu.
+
 * Thu Apr 15 2021 Evgeny Sinelnikov <sin@altlinux.org> 9.2-alt0.6.beta
 - Enable boot branding for all platforms
 
