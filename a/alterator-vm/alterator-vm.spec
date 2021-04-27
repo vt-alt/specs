@@ -1,5 +1,5 @@
 Name: alterator-vm
-Version: 0.4.21
+Version: 0.4.22
 Release: alt1
 
 Summary: Alterator module for volume management
@@ -38,6 +38,9 @@ install -pD -m0644 profile.scm %buildroot%_cachedir/alterator/vm-profile.scm
 %_cachedir/alterator/vm-profile.scm
 
 %changelog
+* Thu Apr 22 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.22-alt1
+- tree: fix partitions order if there are encryptred (Closes: #39896)
+
 * Thu Apr 15 2021 Oleg Solovyov <mcpain@altlinux.org> 0.4.21-alt1
 - EFI: show warning if there is no /boot/efi partition
 - fix crash at specific conditions when going back and cancelling pending
