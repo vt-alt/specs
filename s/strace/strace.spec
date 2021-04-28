@@ -1,5 +1,5 @@
 Name: strace
-Version: 5.11
+Version: 5.12
 Release: alt1
 
 Summary: Tracks and displays system calls associated with a running process
@@ -16,6 +16,10 @@ Conflicts: rpm-utils <= 0:0.9.11-alt1
 
 # for -k option
 BuildRequires: libdw-devel binutils-devel
+
+# for --secontext option
+BuildRequires: libselinux-devel
+
 # for test suite
 %{?!_without_check:%{?!_disable_check:BuildRequires: /proc /dev/kvm}}
 
@@ -84,6 +88,9 @@ echo 'END OF TEST SUITE INFORMATION'
 %doc COPYING CREDITS NEWS README doc/README-linux-ptrace
 
 %changelog
+* Mon Apr 26 2021 Dmitry V. Levin <ldv@altlinux.org> 5.12-alt1
+- v5.11 -> v5.12.
+
 * Wed Feb 17 2021 Dmitry V. Levin <ldv@altlinux.org> 5.11-alt1
 - v5.10 -> v5.11.
 
