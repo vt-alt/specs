@@ -7,7 +7,7 @@
 
 Name: icu
 Version: %(echo %real_ver_major | sed -e 's|\(.\)|\1.|').%real_ver_minor
-Release: alt1
+Release: alt2
 Epoch: 1
 
 Summary: International Components for Unicode
@@ -79,6 +79,8 @@ support. This package contains sample code for ICU
 %add_optflags -finput-charset=utf8
 %endif
 
+sed -ri '/^LDFLAGSICUDT=/ s,-nodefaultlibs -nostdlib,,' source/config/mh-linux
+
 %build
 export PYTHON=%__python3
 %add_optflags -D_FILE_OFFSET_BITS=64
@@ -125,6 +127,10 @@ cd source
 %_datadir/icu/samples
 
 %changelog
+* Wed Apr 21 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:6.5.1-alt2
+- source/config/mh-linux:
+  cleaned LDFLAGSICUDT to avoid linking problems on armh
+
 * Sun Oct 06 2019 Yuri N. Sedunov <aris@altlinux.org> 1:6.5.1-alt1
 - 6.5.1
 
