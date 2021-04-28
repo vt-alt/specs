@@ -1,10 +1,9 @@
 %def_enable drm
 %def_enable glx
-%def_enable egl
 %def_enable x11
 
 Name: libva
-Version: 2.7.1
+Version: 2.11.0
 Release: alt1
 
 Summary: Video Acceleration (VA) API for Linux
@@ -21,9 +20,6 @@ BuildRequires: libdrm-devel
 %endif
 %if_enabled glx
 BuildRequires: libGL-devel
-%endif
-%if_enabled egl
-BuildRequires: libEGL-devel
 %endif
 %if_enabled x11
 BuildRequires: libXext-devel libXfixes-devel
@@ -57,7 +53,6 @@ This package provides the development environment for libva
 %configure \
 	%{subst_enable drm} \
 	%{subst_enable glx} \
-	%{subst_enable egl} \
 	%{subst_enable x11} \
 	--disable-static
 %make_build
@@ -74,6 +69,19 @@ This package provides the development environment for libva
 %_pkgconfigdir/*.pc
 
 %changelog
+* Sun Mar 28 2021 Anton Farygin <rider@altlinux.org> 2.11.0-alt1
+- 2.11.0
+- removed knob for egl backend accroding to changes in upstream
+
+* Sun Jan 03 2021 Anton Farygin <rider@altlinux.ru> 2.10.0-alt1
+- 2.10.0
+
+* Tue Sep 15 2020 Anton Farygin <rider@altlinux.ru> 2.9.0-alt1
+- 2.9.0
+
+* Mon Jun 29 2020 Anton Farygin <rider@altlinux.ru> 2.8.0-alt1
+- 2.8.0
+
 * Thu May 14 2020 Anton Farygin <rider@altlinux.ru> 2.7.1-alt1
 - 2.7.1
 
@@ -104,13 +112,13 @@ This package provides the development environment for libva
 * Mon Jun 04 2018 Anton Farygin <rider@altlinux.ru> 2.1.0-alt1
 - 2.1.0
 
-* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 1.8.3-alt2%ubt
+* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 1.8.3-alt2
 - bump release to jump over p8
 
-* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 1.8.3-alt1.1%ubt
+* Thu Aug 03 2017 Michael Shigorin <mike@altlinux.org> 1.8.3-alt1.1
 - BOOTSTRAP: introduce wayland knob (on by default)
 
-* Thu Jul 06 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt1%ubt
+* Thu Jul 06 2017 Anton Farygin <rider@altlinux.ru> 1.8.3-alt1
 - 1.8.3
 - dummy_drv_video.so removed by upstream
 

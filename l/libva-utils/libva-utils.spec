@@ -1,5 +1,5 @@
 Name: libva-utils
-Version: 2.7.1
+Version: 2.11.1
 Release: alt1
 Summary: Tools for VAAPI (including vainfo)
 License: MIT and BSD
@@ -36,6 +36,7 @@ autoreconf -fisv
 %build
 %configure --disable-static \
 	--enable-glx \
+	%nil
 
 %make_build
 
@@ -59,6 +60,7 @@ autoreconf -fisv
 %_bindir/putsurface
 %_bindir/putsurface_wayland
 %_bindir/sfcsample
+%_bindir/vacopy
 %_bindir/vppscaling_n_out_usrptr
 %_bindir/vppblending
 %_bindir/vppchromasitting
@@ -68,6 +70,24 @@ autoreconf -fisv
 
 
 %changelog
+* Tue Apr 13 2021 Anton Farygin <rider@altlinux.org> 2.11.1-alt1
+- 2.11.1
+
+* Sun Mar 28 2021 Anton Farygin <rider@altlinux.org> 2.11.0-alt1
+- 2.11.0
+
+* Thu Dec 31 2020 Anton Farygin <rider@altlinux.ru> 2.10.0-alt1
+- 2.10.0
+
+* Mon Oct 12 2020 Anton Farygin <rider@altlinux.ru> 2.9.1-alt1
+- 2.9.1
+
+* Tue Sep 15 2020 Anton Farygin <rider@altlinux.ru> 2.9.0-alt1
+- 2.9.0
+
+* Mon Jun 29 2020 Anton Farygin <rider@altlinux.ru> 2.8.0-alt1
+- 2.8.0
+
 * Wed Apr 08 2020 Anton Farygin <rider@altlinux.ru> 2.7.1-alt1
 - 2.7.1
 
