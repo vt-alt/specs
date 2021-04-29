@@ -8,7 +8,7 @@
 
 Name: docs-%variant
 Version: 9.2
-Release: alt1
+Release: alt2
 
 Summary: %Variant documentation
 License: %fdl
@@ -43,6 +43,10 @@ ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationd
 %_documentationdir
 
 %changelog
+* Wed Apr 28 2021 Elena Mishina <lepata@altlinux.org> 9.2-alt2
+- update to latest public distr
+- add alterator-update-kernel, synfigstudio
+
 * Thu Apr 15 2021 Elena Mishina <lepata@altlinux.org> 9.2-alt1
 - update to ALT Education 9.2Beta
 - educational-resources: add veyon, trik-studio
