@@ -1,7 +1,7 @@
 %def_enable  clang
 %def_disable shared_libraries
 %def_enable  widevine
-%def_disable ffmpeg
+%def_enable  ffmpeg
 %def_enable  google_api_keys
 
 %ifndef build_parallel_jobs
@@ -33,8 +33,8 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium-gost
-Version:        88.0.4324.150
-Release:        alt0.1.p9
+Version:        89.0.4389.114
+Release:        alt0.p9.1
 
 Summary:        An open source web browser developed by Google
 License:        BSD-3-Clause and LGPL-2.1+
@@ -90,11 +90,11 @@ Patch015: 0015-ALT-Add-missing-header-on-aarch64.patch
 Patch016: 0016-FEDORA-vtable-symbol-undefined.patch
 Patch017: 0017-FEDORA-remove-noexcept.patch
 Patch018: 0018-ALT-disable-asm-on-x86-in-dav1d.patch
-Patch019: 0019-ALT-Fix-build.patch
-Patch020: 0020-Move-offending-function-to-chromeos-only.patch
-Patch021: 0021-ALT-Do-not-use-no-canonical-prefixes-clang-option.patch
-Patch022: 0022-GCC-do-not-pass-unique_ptr-to-DCHECK_NE-but-the-actu.patch
-Patch023: 0023-IWYU-include-headers-for-std-vector-and-std-unique_p.patch
+Patch019: 0019-Move-offending-function-to-chromeos-only.patch
+Patch020: 0020-ALT-Do-not-use-no-canonical-prefixes-clang-option.patch
+Patch021: 0021-GCC-do-not-pass-unique_ptr-to-DCHECK_NE-but-the-actu.patch
+Patch022: 0022-IWYU-add-ctime-for-std-time.patch
+Patch023: 0023-Fix-libva-redefinitions.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -163,6 +163,7 @@ BuildRequires:  pkgconfig(xrender)
 BuildRequires:  pkgconfig(xscrnsaver)
 BuildRequires:  pkgconfig(xt)
 BuildRequires:  pkgconfig(xcb-proto)
+BuildRequires:  pkgconfig(xshmfence)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(wayland-client)
@@ -214,9 +215,6 @@ tar -xf %SOURCE1
 
 sed -E 's@^((diff --git|[-+]{3}) a)/(.*)@\1/third_party/boringssl/src/\3@' < chromium-gost/patch/boringssl.patch | patch -p1
 sed -E 's@^((diff --git|[-+]{3}) a)/(.*)@\1/third_party/boringssl/src/\3@' < chromium-gost/patch/chromium.patch | patch -p1
-
-echo > "third_party/adobe/flash/flapper_version.h"
-
 # lost sources
 for f in .rpm/blinkpy-common/*.py; do
 	t="third_party/blink/tools/blinkpy/common/${f##*/}"
@@ -277,7 +275,6 @@ gn_arg() { CHROMIUM_GN_DEFINES="$CHROMIUM_GN_DEFINES $*"; }
 gn_arg custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
 gn_arg host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 gn_arg is_official_build=true
-gn_arg is_desktop_linux=true
 gn_arg use_custom_libcxx=false
 gn_arg use_sysroot=false
 gn_arg use_gio=true
@@ -326,6 +323,7 @@ else
 fi
 gn_arg is_cfi=false
 gn_arg use_cfi_icall=false
+gn_arg chrome_pgo_phase=0
 %else
 gn_arg is_clang=false
 %endif
@@ -489,6 +487,66 @@ EOF
 %_altdir/%name
 
 %changelog
+* Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 89.0.4389.114-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Sun Apr 18 2021 Fr. Br. George <george@altlinux.ru> 89.0.4389.114-alt1
+- Build GOST version
+
+* Thu Apr 08 2021 Alexey Gladkov <legion@altlinux.ru> 89.0.4389.114-alt0
+- New version (89.0.4389.114).
+- Security fixes:
+  - CVE-2021-21194: Use after free in screen capture.
+  - CVE-2021-21195: Use after free in V8.
+  - CVE-2021-21196: Heap buffer overflow in TabStrip.
+  - CVE-2021-21197: Heap buffer overflow in TabStrip.
+  - CVE-2021-21198: Out of bounds read in IPC.
+  - CVE-2021-21199: Use Use after free in Aura.
+
+* Mon Mar 15 2021 Alexey Gladkov <legion@altlinux.ru> 89.0.4389.90-alt1
+- New version (89.0.4389.90).
+- Security fixes:
+  - CVE-2021-21191: Use after free in WebRTC.
+  - CVE-2021-21192: Heap buffer overflow in tab groups.
+  - CVE-2021-21193: Use after free in Blink.
+
+* Tue Mar 09 2021 Alexey Gladkov <legion@altlinux.ru> 89.0.4389.82-alt1
+- New version (89.0.4389.82).
+- Security fixes:
+  - CVE-2020-27844: Heap buffer overflow in OpenJPEG.
+  - CVE-2021-21159: Heap buffer overflow in TabStrip.
+  - CVE-2021-21160: Heap buffer overflow in WebAudio.
+  - CVE-2021-21161: Heap buffer overflow in TabStrip.
+  - CVE-2021-21162: Use after free in WebRTC.
+  - CVE-2021-21163: Insufficient data validation in Reader Mode.
+  - CVE-2021-21164: Insufficient data validation in Chrome for iOS.
+  - CVE-2021-21165: Object lifecycle issue in audio.
+  - CVE-2021-21166: Object lifecycle issue in audio.
+  - CVE-2021-21167: Use after free in bookmarks.
+  - CVE-2021-21168: Insufficient policy enforcement in appcache.
+  - CVE-2021-21169: Out of bounds memory access in V8.
+  - CVE-2021-21170: Incorrect security UI in Loader.
+  - CVE-2021-21171: Incorrect security UI in TabStrip and Navigation.
+  - CVE-2021-21172: Insufficient policy enforcement in File System API.
+  - CVE-2021-21173: Side-channel information leakage in Network Internals.
+  - CVE-2021-21174: Inappropriate implementation in Referrer.
+  - CVE-2021-21175: Inappropriate implementation in Site isolation.
+  - CVE-2021-21176: Inappropriate implementation in full screen mode.
+  - CVE-2021-21177: Insufficient policy enforcement in Autofill.
+  - CVE-2021-21178: Inappropriate implementation in Compositing.
+  - CVE-2021-21179: Use after free in Network Internals.
+  - CVE-2021-21180: Use after free in tab search.
+  - CVE-2021-21181: Side-channel information leakage in autofill.
+  - CVE-2021-21182: Insufficient policy enforcement in navigations.
+  - CVE-2021-21183: Inappropriate implementation in performance APIs.
+  - CVE-2021-21184: Inappropriate implementation in performance APIs.
+  - CVE-2021-21185: Insufficient policy enforcement in extensions.
+  - CVE-2021-21186: Insufficient policy enforcement in QR scanning.
+  - CVE-2021-21187: Insufficient data validation in URL formatting.
+  - CVE-2021-21188: Use after free in Blink.
+  - CVE-2021-21189: Insufficient policy enforcement in payments.
+  - CVE-2021-21190: Uninitialized Use in PDFium.
+
 * Tue Feb 09 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.150-alt0.1.p9
 - Backport new version to p9 branch.
 - Add provide for webclient (ALT #39666).
@@ -510,13 +568,6 @@ EOF
   - CVE-2021-21145: Use after free in Fonts.
   - CVE-2021-21146: Use after free in Navigation.
   - CVE-2021-21147: Inappropriate implementation in Skia.
-
-* Fri Jan 29 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.96-alt0.1.p9
-- Backport new version to p9 branch.
-
-* Thu Jan 28 2021 Fr. Br. George <george@altlinux.ru> 88.0.4324.96-alt1
-- Build GOST version
-- Add missing symlink (closes: #39572)
 
 * Sun Jan 24 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.96-alt1
 - New version (88.0.4324.96).
