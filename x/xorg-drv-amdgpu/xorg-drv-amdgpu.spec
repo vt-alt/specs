@@ -1,6 +1,6 @@
 Name: xorg-drv-amdgpu
-Version: 19.0.1
-Release: alt1
+Version: 19.1.0
+Release: alt3
 Summary: AMD GPU video driver for the Xorg X server
 License: MIT/X11
 Group: System/X11
@@ -12,6 +12,7 @@ Requires: xorg-dri-radeon
 Source: %name-%version.tar
 Patch: %name-%version-%release.patch
 
+ExclusiveArch: %ix86 x86_64 aarch64 ppc64le %e2k
 BuildRequires(Pre): xorg-sdk xorg-util-macros
 BuildRequires: libGL-devel libgbm-devel libudev-devel xorg-proto-devel
 
@@ -20,6 +21,7 @@ BuildRequires: libGL-devel libgbm-devel libudev-devel xorg-proto-devel
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 %autoreconf
@@ -39,6 +41,15 @@ BuildRequires: libGL-devel libgbm-devel libudev-devel xorg-proto-devel
 %_man4dir/*
 
 %changelog
+* Fri Apr 09 2021 Michael Shigorin <mike@altlinux.org> 19.1.0-alt3
+- ExclusiveArch += %%e2k (works fine there)
+
+* Thu Apr 08 2021 Valery Inozemtsev <shrek@altlinux.ru> 19.1.0-alt2
+- cherry-pick upstream build fix for GCC 10
+
+* Mon Oct 14 2019 Valery Inozemtsev <shrek@altlinux.ru> 19.1.0-alt1
+- 19.1.0
+
 * Wed Mar 20 2019 Valery Inozemtsev <shrek@altlinux.ru> 19.0.1-alt1
 - 19.0.1
 
