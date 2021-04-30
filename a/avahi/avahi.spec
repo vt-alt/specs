@@ -7,7 +7,7 @@
 
 Name: avahi
 Version: 0.8
-Release: alt1
+Release: alt2
 
 Summary: Local network service discovery
 License: LGPLv2
@@ -452,6 +452,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.8-alt2
+- avoid infinite-loop in avahi-daemon (closes: #39357) (fixes: CVE-2021-3468)
+
 * Fri Jul 24 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.8-alt1
 - 0.8 released
 
