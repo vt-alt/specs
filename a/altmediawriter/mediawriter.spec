@@ -2,7 +2,7 @@
 %define oname ALTMediaWriter
 
 Name:           altmediawriter
-Version:        0.6.2
+Version:        0.6.3
 Release:        alt1
 Summary:        ALT Media Writer
 Group:          System/Configuration/Other
@@ -59,6 +59,9 @@ appstream-util validate-relax --nonet %buildroot/%_datadir/appdata/%name.appdata
 
 
 %changelog
+* Thu Apr 22 2021 Dmitry Degtyarev <kevl@altlinux.org> 0.6.3-alt1
+- 0.6.3 (closes: 39932)
+
 * Mon Apr 12 2021 Dmitry Degtyarev <kevl@altlinux.org> 0.6.2-alt1
 - 0.6.2
 
