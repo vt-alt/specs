@@ -1,5 +1,5 @@
 Name:    task-edu
-Version: 1.4.2
+Version: 1.4.3
 Release: alt0.p9.1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
@@ -460,6 +460,7 @@ Requires: semaphore
 %endif
 Requires: virt-viewer
 Requires: OpenBoard
+Requires: touchegg
 %description teacher
 %{summary}.
 
@@ -596,6 +597,12 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Wed Apr 28 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Wed Apr 28 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt1
+- Add touchegg to task-edu-teacher.
+
 * Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.2-alt0.p9.1
 - Backport new version to p9 branch.
 - Return scilab and qgis.

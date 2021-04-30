@@ -1,6 +1,6 @@
 Name:     touchegg
-Version:  2.0.8
-Release:  alt0.1.p9
+Version:  2.0.9
+Release:  alt0.p9.1
 
 Summary:  Linux multi-touch gesture recognizer
 License:  GPL-3.0
@@ -15,15 +15,18 @@ Patch1:   touchegg-alt-remove-static.patch
 BuildRequires(pre): rpm-build-ninja
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: libudev-devel
-BuildRequires: libinput-devel
-BuildRequires: libpugixml-devel
-BuildRequires: libcairo-devel
-BuildRequires: libXtst-devel
+BuildRequires: libXdmcp-devel
 BuildRequires: libXrandr-devel
+BuildRequires: libXtst-devel
+BuildRequires: libcairo-devel
 BuildRequires: libgtk+3-devel
+BuildRequires: libinput-devel
 BuildRequires: libpcre-devel
 BuildRequires: libstdc++-devel-static
+BuildRequires: libpugixml-devel
+BuildRequires: libudev-devel
+BuildRequires: libffi-devel
+BuildRequires: libsystemd-devel
 
 %description
 Touchegg is an app that runs in the background and transform the gestures you
@@ -56,6 +59,12 @@ make on your touchpad into visible actions in your desktop.
 %_unitdir/%name.service
 
 %changelog
+* Wed Apr 28 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.9-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Tue Apr 20 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.9-alt1
+- New version.
+
 * Sun Feb 28 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.8-alt0.1.p9
 - Backport new version to p9 branch.
 

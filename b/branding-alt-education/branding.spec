@@ -26,7 +26,7 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt0.9.rc1
+Release: alt1
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -309,6 +309,11 @@ Some system settings for %distro_name.
 
 %prep
 %setup -n branding
+%ifarch %e2k
+# 2021: no chromium port available
+grep -rl chromium xfce-settings/etcskel/.config/xfce4/panel |
+	xargs -r -- sed -i 's,chromium,firefox,g;s,Chromium,Firefox,g'
+%endif
 
 %build
 autoconf
@@ -462,6 +467,12 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Fri Apr 30 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt1
+- 9.2 release.
+
+* Thu Apr 29 2021 Michael Shigorin <mike@altlinux.org> 9.2-alt0.9.rc1.1
+- E2K: s/chromium/firefox/g
+
 * Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt0.9.rc1
 - Use Smoothwall-Breeze window theme in XFCE.
 
