@@ -15,7 +15,7 @@
 %endif
 
 Name: NetworkManager-openvpn
-Version: 1.8.12
+Version: 1.8.14
 Release: alt1%git_date
 License: GPLv2+
 Group: System/Configuration/Networking
@@ -98,11 +98,14 @@ make check
 %endif
 %_libexecdir/NetworkManager/nm-openvpn-auth-dialog
 %_libdir/NetworkManager/libnm-vpn-plugin-openvpn-editor.so
-%_datadir/appdata/*.xml
+%_datadir/metainfo/*.xml
 
 %exclude %_libdir/NetworkManager/*.la
 
 %changelog
+* Thu Apr 22 2021 Mikhail Efremov <sem@altlinux.org> 1.8.14-alt1
+- Updated to 1.8.14.
+
 * Mon Apr 20 2020 Mikhail Efremov <sem@altlinux.org> 1.8.12-alt1
 - Added Vcs tag.
 - Don't use rpm-build-licenses.
