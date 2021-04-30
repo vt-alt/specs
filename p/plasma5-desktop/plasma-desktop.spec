@@ -8,7 +8,7 @@
 
 Name: plasma5-desktop
 Version: 5.18.5
-Release: alt2
+Release: alt3
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -222,6 +222,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Thu Apr 29 2021 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt3
+- show tasks from all screens on taskbar by default
+
 * Tue Jul 28 2020 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt2
 - support chromium-gost in favorites menu
 
