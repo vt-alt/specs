@@ -1,8 +1,8 @@
 Name: kernel-image-std-def
-Release: alt2
+Release: alt1
 epoch:2
 %define kernel_base_version	5.4
-%define kernel_sublevel .111
+%define kernel_sublevel .115
 %define kernel_extra_version	%nil
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
 # Numeric extra version scheme developed by Alexander Bokovoy:
@@ -438,7 +438,7 @@ echo "Kernel built $KernelVer"
 
 %if_enabled docs
 # psdocs, pdfdocs don't work yet
-%make_build SPHINXOPTS="-j $([ %__nprocs -ge 8 ] && echo 8 || echo %__nprocs)" htmldocs
+%make_build SPHINXOPTS="-j $([ %__nprocs -ge 4 ] && echo 4 || echo %__nprocs)" htmldocs
 %endif
 
 %install
@@ -741,6 +741,9 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed Apr 28 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.115-alt1
+- v5.4.115
+
 * Mon Apr 26 2021 Alexey Sheplyakov <asheplyakov@altlinux.org> 2:5.4.111-alt2
 - panfrost:
   + backported fixes from 5.10.y stable branch
@@ -750,6 +753,11 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
   + LVDS panel support (Edelweiss monoblock)
   + PCI-E driver for SDK-M 4.4/5.1 firmware
   + Moved non-DRM Midgard driver to kernel-modules-midgard-be-m1000 subpackage
+* Fri Apr 23 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.114-alt1
+- v5.4.114  (Fixes: CVE-2021-23133)
+
+* Fri Apr 16 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.113-alt1
+- v5.4.113  (Fixes: CVE-2020-25670, CVE-2020-25671, CVE-2020-25672)
 
 * Sat Apr 10 2021 Kernel Bot <kernelbot@altlinux.org> 2:5.4.111-alt1
 - v5.4.111
