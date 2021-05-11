@@ -6,7 +6,7 @@
 
 Name: icu%real_ver_major
 Version: %(echo %real_ver_major | sed -e 's|\(.\)|\1.|').%real_ver_minor
-Release: alt2
+Release: alt3
 Epoch: 1
 
 Summary: International Components for Unicode
@@ -45,6 +45,8 @@ support. This package contains the runtime libraries for ICU
 %add_optflags -finput-charset=utf8
 %endif
 
+sed -ri '/^LDFLAGSICUDT=/ s,-nodefaultlibs -nostdlib,,' source/config/mh-linux
+
 %build
 export PYTHON=%__python3
 %add_optflags -D_FILE_OFFSET_BITS=64
@@ -74,6 +76,10 @@ cd source
 %exclude %_man8dir/*
 
 %changelog
+* Wed Apr 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 1:6.4.2-alt3
+- source/config/mh-linux:
+  cleaned LDFLAGSICUDT to avoid linking problems on armh
+
 * Sat Oct 12 2019 Yuri N. Sedunov <aris@altlinux.org> 1:6.4.2-alt2
 - icu64 compat library
 
