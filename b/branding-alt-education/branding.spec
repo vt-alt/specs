@@ -26,7 +26,7 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt1
+Release: alt2
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -467,6 +467,9 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Thu May 06 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt2
+- Disable forced icon theme Oxygen for LibreOffice
+
 * Fri Apr 30 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt1
 - 9.2 release.
 
