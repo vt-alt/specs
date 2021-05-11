@@ -20,7 +20,7 @@
 
 Name: libmozjs%ver_major
 Version: %ver_major.1.0
-Release: alt1
+Release: alt2
 
 Summary: JavaScript interpreter and libraries
 Group: System/Libraries
@@ -106,7 +106,7 @@ export PYTHON=/usr/bin/python
 	--with-system-zlib \
 	%{?_with_system_icu:--with-system-icu} \
 	--with-intl-api \
-%ifarch %{arm} aarch64 ppc ppc64
+%ifarch ppc ppc64
 	--disable-ion
 %endif
 
@@ -163,6 +163,9 @@ cp -p js/src/js-config.h %buildroot/%_includedir/mozjs-%ver_major
 
 
 %changelog
+* Wed Apr 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 60.1.0-alt2
+- fix build on arm
+
 * Mon Jul 30 2018 Yuri N. Sedunov <aris@altlinux.org> 60.1.0-alt1
 - first build for Sisyphus
 
