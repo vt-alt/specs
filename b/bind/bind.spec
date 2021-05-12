@@ -1,6 +1,6 @@
 Name: bind
-Version: 9.11.28
-%define src_version 9.11.28
+Version: 9.11.31
+%define src_version 9.11.31
 Release: alt1
 
 Summary: ISC BIND - DNS server
@@ -211,7 +211,6 @@ sed -i '/# Large File/iAC_SYS_LARGEFILE/' configure.ac
 	--includedir=%{_includedir}/bind9 \
 	--with-libtool \
 	--with-gssapi=yes \
-	--disable-isc-spnego \
 	#
 
 %make_build
@@ -427,6 +426,9 @@ fi
 %exclude %docdir/COPYRIGHT
 
 %changelog
+* Thu Apr 29 2021 Stanislav Levin <slev@altlinux.org> 9.11.31-alt1
+- 9.11.28 -> 9.11.31 (fixes: CVE-2021-25214, CVE-2021-25215, CVE-2021-25216).
+
 * Thu Feb 18 2021 Stanislav Levin <slev@altlinux.org> 9.11.28-alt1
 - 9.11.25 -> 9.11.28 (fixes: CVE-2020-8625).
 
