@@ -10,7 +10,7 @@
 
 Name: orc
 Version: %ver_major.30.1
-Release: alt0.2
+Release: alt0.3
 
 Summary: The Oil Runtime Compiler
 Group: Development/Other
@@ -24,7 +24,7 @@ Source: https://gstreamer.freedesktop.org/src/orc/%name-%version.tar.xz
 Source: %name-%version.tar
 %endif
 
-BuildRequires(pre): meson rpm-macros-valgrind
+BuildRequires(pre): meson rpm-macros-valgrind /proc
 BuildRequires: glib2-devel >= 2.10.0 gtk-doc
 %{?_enable_valgrind:BuildRequires: valgrind-devel}
 
@@ -106,6 +106,12 @@ This package contains documentation for Orc.
 
 %prep
 %setup
+%ifarch %arm aarch64 
+# oficially broken on arm arches
+# https://gitlab.freedesktop.org/gstreamer/orc/-/issues/20
+# https://gitlab.freedesktop.org/gstreamer/orc/-/issues/33
+sed -i /exec_opcodes_sys/d testsuite/meson.build
+%endif
 
 %build
 %meson \
@@ -146,6 +152,9 @@ export LD_LIBRARY_PATH=%buildroot%_libdir
 %_datadir/gtk-doc/html/%name
 
 %changelog
+* Wed Apr 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.4.30.1-alt0.3
+- skip known broken test case on arm arches
+  
 * Thu Sep 26 2019 Yuri N. Sedunov <aris@altlinux.org> 0.4.30.1-alt0.2
 - fixed %%check section for %%e2k
 
