@@ -1,5 +1,5 @@
 Name: mkimage
-Version: 0.2.41
+Version: 0.2.42
 Release: alt1
 
 Summary: Simple image creator
@@ -86,6 +86,11 @@ fi
 # - maybe Require: %%name-preinstall in the main package sometime later
 
 %changelog
+* Wed Apr 07 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.42-alt1
+- mki-build-propagator: Not require mar for build propagator
+- mki-pack-efionly-isoboot: Create GPT with MBR Protective instead Hybrid MBR
+- mki-pack-grubpc-isoboot: Add --mbr-force-bootable option
+
 * Sat Apr 03 2021 Alexey Gladkov <legion@altlinux.ru> 0.2.41-alt1
 - tools/mki-pack-efionly-isoboot, tools/mki-pack-grubpc-isoboot,
   tools/mki-pack-isoboot:
