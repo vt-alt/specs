@@ -1,7 +1,7 @@
 Name:		beebeep
 Summary:	Secure Network Chat
-Version:	5.8.2
-Release:	alt0.1.p9
+Version:	5.8.4
+Release:	alt0.p9.1
 Group:		Networking/Chat
 
 Url:		http://sourceforge.net/projects/beebeep/
@@ -21,7 +21,7 @@ without a server.
 
 %build
 qmake-qt5 "QMAKE_CFLAGS+=%optflags" "QMAKE_CXXFLAGS+=%optflags" -recursive -o Makefile beebeep-desktop.pro
-%make_build
+%make_build all
 
 %install
 mkdir -p %buildroot%_bindir
@@ -51,8 +51,14 @@ convert -resize 16x16 src/images/%name.png %buildroot%_miconsdir/%name.png
 %_liconsdir/%name.png
 
 %changelog
-* Fri Nov 27 2020 Motsyo Gennadi <drool@altlinux.ru> 5.8.2-alt0.1.p9
+* Sun May 09 2021 Motsyo Gennadi <drool@altlinux.ru> 5.8.4-alt0.p9.1
 - build for p9
+
+* Sat May 08 2021 Motsyo Gennadi <drool@altlinux.ru> 5.8.4-alt1
+- 5.8.4
+
+* Sat Nov 28 2020 Motsyo Gennadi <drool@altlinux.ru> 5.8.3-alt0.svn1449
+- svn stapshot 1449
 
 * Thu Nov 26 2020 Motsyo Gennadi <drool@altlinux.ru> 5.8.2-alt1
 - initial build for ALT Linux

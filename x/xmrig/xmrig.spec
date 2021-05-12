@@ -1,5 +1,5 @@
 Name:		xmrig
-Version:	6.7.0
+Version:	6.12.1
 Release:	alt0.p9.1
 Summary:	RandomX and CryptoNight CPU miner
 Url:		https://github.com/xmrig/xmrig
@@ -9,8 +9,9 @@ Source0:	%name.tar.xz
 
 Patch0:		%name-6.3.0-minimum_donate_0.diff
 Patch1:		%name-5.10.0-Wno-class-memaccess_alt_rm.diff
+Patch2:		%name-6.8.1-maes_armh.diff
 
-BuildRequires:	cmake gcc-c++ libmicrohttpd-devel libssl-devel-static libstdc++-devel-static libuv-devel libkrb5-devel zlib-devel
+BuildRequires:	cmake gcc-c++ libmicrohttpd-devel libssl-devel-static libstdc++-devel-static libuv-devel libkrb5-devel zlib-devel libcpuid-devel
 
 ExcludeArch:	ppc64le aarch64 armh
 
@@ -24,6 +25,11 @@ on C++.
 %setup -n %name
 %patch0 -p1
 %patch1 -p1
+
+%ifarch armh
+# To fix "unrecognized command-line option '-maes'" for armh
+%patch2 -p1
+%endif
 
 %build
 mkdir ./build && cd ./build
@@ -44,8 +50,26 @@ install -Dp -m 0755 ./%name %buildroot%_bindir/%name
 %_bindir/*
 
 %changelog
-* Sat Jan 02 2021 Motsyo Gennadi <drool@altlinux.ru> 6.7.0-alt0.p9.1
+* Sun May 09 2021 Motsyo Gennadi <drool@altlinux.ru> 6.12.1-alt0.p9.1
 - build for p9
+
+* Sat May 08 2021 Motsyo Gennadi <drool@altlinux.ru> 6.12.1-alt1
+- 6.12.1
+
+* Mon Apr 12 2021 Motsyo Gennadi <drool@altlinux.ru> 6.11.2-alt1
+- 6.11.2
+
+* Sun Feb 14 2021 Motsyo Gennadi <drool@altlinux.ru> 6.8.2-alt1
+- 6.8.2
+
+* Sat Feb 06 2021 Motsyo Gennadi <drool@altlinux.ru> 6.8.1-alt2.1
+- fix diff-file name
+
+* Fri Feb 05 2021 Motsyo Gennadi <drool@altlinux.ru> 6.8.1-alt1
+- 6.8.1
+
+* Tue Feb 02 2021 Motsyo Gennadi <drool@altlinux.ru> 6.8.0-alt1
+- 6.8.0
 
 * Sat Jan 02 2021 Motsyo Gennadi <drool@altlinux.ru> 6.7.0-alt1
 - 6.7.0
