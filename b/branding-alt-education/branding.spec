@@ -26,7 +26,7 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt2
+Release: alt3
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -190,7 +190,6 @@ Obsoletes: branding-%flavour-kde4-settings < %version-%release
 KDE settings for %distro_name (for KDE4 and KF5)
 
 %package xfce-settings
-BuildArch: noarch
 Summary: Default settings for XFCE for %distro_name
 License: Distributable
 Group: Graphical desktop/XFce
@@ -467,6 +466,9 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Wed May 12 2021 Dmitry Terekhin <jqt4@altlinux.org> 9.2-alt3
+- Convert xfce-settings to architecture-dependent
+
 * Thu May 06 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt2
 - Disable forced icon theme Oxygen for LibreOffice
 
