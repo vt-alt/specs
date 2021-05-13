@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA.
 
 %define pkg     epson-inkjet-printer-escpr
-%define ver     1.7.9
+%define ver     1.7.10
 %define rel     1
 
 # used in RPM macro set for the LSB Driver Development Kit
@@ -85,6 +85,9 @@ gzip -n9 %buildroot%_datadir/cups/model/%name/*.ppd
 %_datadir/cups/model/%name
 
 %changelog
+* Mon May 10 2021 Andrey Cherepanov <cas@altlinux.org> 1.7.10-alt1
+- New version.
+
 * Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 1.7.9-alt1
 - New version.
 - Supported new models:
