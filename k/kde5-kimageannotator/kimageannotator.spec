@@ -4,7 +4,7 @@
 %define libkimageannotator libkimageannotator%sover
 
 Name: kde5-%rname
-Version: 0.4.0
+Version: 0.4.2
 Release: alt1
 %K5init altplace
 
@@ -14,8 +14,7 @@ Url: https://github.com/ksnip/kImageAnnotator
 License: LGPL-3.0
 
 Source: %rname-%version.tar
-Patch1: alt-soversion.patch
-Patch2: alt-void-return.patch
+Patch1: alt-void-return.patch
 
 # Automatically added by buildreq on Fri Feb 05 2021 (-bi)
 # optimized out: cmake-modules elfutils fontconfig-devel gcc-c++ glibc-kernheaders-generic glibc-kernheaders-x86 libICE-devel libSM-devel libX11-devel libXau-devel libXext-devel libXfixes-devel libXi-devel libXmu-devel libXrender-devel libXt-devel libctf-nobfd0 libfreetype-devel libglvnd-devel libqt5-core libqt5-gui libqt5-svg libqt5-widgets libsasl2-3 libssl-devel libstdc++-devel libxcb-devel libxkbcommon-devel pkg-config python-modules python2-base python3 python3-base python3-module-paste qt5-base-devel qt5-tools rpm-build-python3 sh4 xorg-proto-devel xorg-xf86miscproto-devel
@@ -54,7 +53,6 @@ KF5 library
 %prep
 %setup -n %rname-%version
 %patch1 -p1
-%patch2 -p1
 
 
 %build
@@ -81,5 +79,8 @@ KF5 library
 %_K5lib/libkImageAnnotator.so.*
 
 %changelog
+* Wed May 12 2021 Sergey V Turchin <zerg@altlinux.org> 0.4.2-alt1
+- new version
+
 * Fri Feb 05 2021 Sergey V Turchin <zerg@altlinux.org> 0.4.0-alt1
 - initial build
