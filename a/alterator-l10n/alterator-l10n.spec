@@ -1,5 +1,5 @@
 Name: alterator-l10n
-Version: 2.9.88
+Version: 2.9.89
 Release: alt1
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -115,6 +115,9 @@ make check
 %lang(de) %_datadir/locale/de/LC_MESSAGES/*.mo
 
 %changelog
+* Thu May 13 2021 Anton Midyukov <antohami@altlinux.org> 2.9.89-alt1
+- alterator-grub: update help
+
 * Wed Apr 21 2021 Oleg Solovyov <mcpain@altlinux.org> 2.9.88-alt1
 - alterator-vm: update strings
 
