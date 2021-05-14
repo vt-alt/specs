@@ -1,5 +1,8 @@
+# Unpackaged files in buildroot should terminate build
+%define _unpackaged_files_terminate_build 1
+
 Name: openscad
-Version: 2019.05
+Version: 2021.01
 Release: alt1
 Summary: The Programmers Solid 3D CAD Modeller
 # COPYING contains a linking exception for CGAL
@@ -10,12 +13,16 @@ Group: Engineering
 Url: http://www.%name.org/
 
 Source0: %name-%version.tar
+#Source1: ru.po
 #Source-url: https://github.com/%name/%name/releases/download/%name-%version/%name-%version.src.tar.gz
 Patch: openscad-polyclipping.patch
 
+# needed cgal-devel on armh
+ExcludeArch: armh
+
 BuildRequires(pre): rpm-macros-cmake rpm-build-python3
 BuildRequires: cmake
-BuildRequires: cgal libcgal-devel libcgal-qt5-devel
+BuildRequires: cgal-devel
 BuildRequires: ImageMagick-tools
 BuildRequires: xorg-xvfb xvfb-run
 BuildRequires: boost-asio-devel boost-context-devel boost-coroutine-devel boost-devel boost-filesystem-devel boost-flyweight-devel boost-geometry-devel boost-graph-parallel-devel boost-interprocess-devel boost-locale-devel boost-lockfree-devel boost-log-devel boost-math-devel boost-mpi-devel boost-msm-devel boost-multiprecision-devel boost-polygon-devel boost-program_options-devel boost-python-devel boost-python-headers boost-signals-devel boost-wave-devel
@@ -38,9 +45,9 @@ BuildRequires: qt5-base-devel qt5-designer
 BuildRequires: qt5-multimedia-devel
 BuildRequires: flex
 BuildRequires: libqscintilla2-qt5-devel
-Requires: font(liberationmono)
-Requires: font(liberationsans)
-Requires: font(liberationserif)
+BuildRequires: libcairo-devel
+BuildRequires: lib3mf-devel
+
 Requires: %name-MCAD = %EVR
 %add_python3_path %_datadir/%name/libraries/MCAD
 
@@ -59,8 +66,8 @@ Group: Engineering
 Summary: OpenSCAD Parametric CAD Library
 License: LGPLv2+ and LGPLv2 and LGPLv3+ and (GPLv3 or LGPLv2) and (GPLv3+ or LGPLv2) and (CC-BY-SA or LGPLv2+) and (CC-BY-SA or LGPLv2) and CC-BY and BSD and MIT and Public Domain
 Url: https://www.github.com/openscad/MCAD
-Requires: %name = %version-%release
-BuildArch: noarch
+Requires: %name = %EVR
+#BuildArch: noarch
 
 %description MCAD
 This library contains components commonly used in designing and moching up
@@ -70,6 +77,11 @@ changes, however many things are already working.
 %prep
 %setup
 %patch -p1
+
+#cp -f %SOURCE1 locale/ru.po
+
+# Unbundle polyclipping
+rm src/ext/polyclipping -rf
 
 # Remove unwanted things from MCAD, such as nonworking Python tests
 pushd libraries/MCAD
@@ -116,13 +128,14 @@ popd
 %attr(755,root,root) %_bindir/%name
 %_datadir/metainfo/*.xml
 %_desktopdir/%name.desktop
-%_pixmapsdir/%name.png
+%_iconsdir/hicolor/*/apps/%name.png
 %_datadir/mime/packages/%name.xml
 %dir %_datadir/%name
 %_datadir/%name/examples
 %_datadir/%name/color-schemes
 %_datadir/%name/locale
 %dir %_datadir/%name/libraries
+%_datadir/%name/templates
 %_man1dir/*
 
 %files MCAD
@@ -131,6 +144,28 @@ popd
 %_datadir/%name/libraries/MCAD
 
 %changelog
+* Thu May 13 2021 Anton Midyukov <antohami@altlinux.org> 2021.01-alt1
+- New version 2021.01
+- ExcludeArch: armh
+
+* Tue Dec 01 2020 Anton Midyukov <antohami@altlinux.org> 2019.05-alt7
+- Not required fonts (Closes: 39356)
+
+* Thu Sep 17 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2019.05-alt6
+- Rebuilt with boost-1.74.0.
+
+* Thu Jun 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2019.05-alt5
+- Rebuilt with boost-1.73.0.
+
+* Wed Apr 15 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2019.05-alt4
+- Rebuilt with cgal 5.0.2.
+
+* Fri Apr 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 2019.05-alt3
+- Rebuilt with boost-1.72.0.
+
+* Mon Dec 23 2019 Anton Midyukov <antohami@altlinux.org> 2019.05-alt2
+- Update russian translation (thanks Alexander Kurachenko)
+
 * Wed Nov 27 2019 Anton Midyukov <antohami@altlinux.org> 2019.05-alt1
 - New version 2019.05
 - switch to gear

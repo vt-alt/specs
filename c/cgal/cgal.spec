@@ -1,81 +1,44 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: cgal
-Version: 4.12
-Release: alt2%ubt
+Version: 5.0.2
+Release: alt1.1
 Summary: Easy access to efficient and reliable geometric algorithms
 License: Free for non-commertial using
 Group: Sciences/Mathematics
-Url: http://www.cgal.org/
+Url: https://www.cgal.org/
 
+# https://github.com/CGAL/cgal/releases
 Source: CGAL-%version.tar
 Source1: CGAL-%version-doc_html.tar
 
-# https://gforge.inria.fr/frs/download.php/32357/cgal_manual.pdf
-Source2: cgal_manual.pdf
-Source5: %name.pc
-
-Requires: lib%name = %EVR
-
-BuildRequires(pre): rpm-build-ubt
 BuildRequires: gcc-c++ gcc-fortran cmake qt5-base-devel qt5-svg-devel
 BuildRequires: boost-devel libgmp-devel libgmpxx-devel eigen3
 BuildRequires: libGLU-devel libGL-devel libmpfr-devel libtbb-devel
 BuildRequires: zlib-devel libX11 phonon-devel
 BuildRequires: liblapack-devel libtaucs-devel
 
+ExcludeArch: armh
+
 %description
 The goal of the CGAL Open Source Project is to provide easy access to
 efficient and reliable geometric algorithms in the form of a C++
 library.
 
-%package -n lib%name
-Summary: Shared libraries of CGAL
-Group: System/Libraries
-
-%description -n lib%name
-The goal of the CGAL Open Source Project is to provide easy access to
-efficient and reliable geometric algorithms in the form of a C++
-library.
-
-This Package contains shared libraries of CGAL.
-
-%package -n lib%name-qt5
-Summary: Shared libraries of CGAL (Qt5 interface)
-Group: System/Libraries
-Requires: lib%name = %EVR
-
-%description -n lib%name-qt5
-The goal of the CGAL Open Source Project is to provide easy access to
-efficient and reliable geometric algorithms in the form of a C++
-library.
-
-This Package contains shared libraries of CGAL (Qt5 interface).
-
-%package -n lib%name-devel
+%package devel
 Summary: Development files of CGAL
 Group: Development/C++
-Requires: lib%name = %EVR
+Conflicts: %name < %EVR
+Obsoletes: %name < %EVR
+Conflicts: lib%name-devel < %EVR
+Obsoletes: lib%name-devel < %EVR
 
-%description -n lib%name-devel
+%description devel
 The goal of the CGAL Open Source Project is to provide easy access to
 efficient and reliable geometric algorithms in the form of a C++
 library.
 
 This Package contains developemnt files of CGAL.
-
-%package -n lib%name-qt5-devel
-Summary: Development files of CGAL (Qt5 interface)
-Group: Development/C++
-Requires: lib%name-devel = %EVR
-Requires: lib%name-qt5 = %EVR
-
-%description -n lib%name-qt5-devel
-The goal of the CGAL Open Source Project is to provide easy access to
-efficient and reliable geometric algorithms in the form of a C++
-library.
-
-This Package contains developemnt files of CGAL (Qt5 interface).
 
 %package devel-doc
 Summary: Documentation for CGAL
@@ -92,16 +55,13 @@ Thid package contains development documentation for CGAL.
 %prep
 %setup
 
-install -p -m644 %SOURCE5 .
-sed -i 's|@VERSION@|%version|g' %name.pc
-sed -i 's|@LIBDIR@|%_libdir|g' %name.pc
-
 %build
 %cmake \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCGAL_INSTALL_DOC_DIR=%_defaultdocdir/%name \
 	-DWITH_demos:BOOL=false \
-	-DWITH_examples:BOOL=false
+	-DWITH_examples:BOOL=false \
+	%nil
 
 %cmake_build VERBOSE=1
 
@@ -110,48 +70,41 @@ sed -i 's|@LIBDIR@|%_libdir|g' %name.pc
 
 install -d %buildroot%_docdir/%name
 cp -fR doc_html %buildroot%_docdir/%name
-install -p -m644 %SOURCE2 %buildroot/%_docdir/%name
 cp -fR examples %buildroot%_docdir/%name
 
 pushd %buildroot%_docdir/%name
 tar -xf %SOURCE1
 popd
 
-install -d %buildroot%_pkgconfigdir
-install -p -m644 %name.pc %buildroot%_pkgconfigdir
-
-%files
+%files devel
 %_bindir/*
 %_man1dir/*
-
-%files -n lib%name
-%_libdir/*.so.*
-%exclude %_libdir/*_Qt?.so.*
-
-%files -n lib%name-qt5
-%_libdir/*_Qt5.so.*
-
-%files -n lib%name-devel
 %_includedir/*
-%_libdir/*.so
-%exclude %_libdir/*_Qt?.so
 %_libdir/cmake/CGAL
-%_pkgconfigdir/*
-
-%files -n lib%name-qt5-devel
-%_libdir/*_Qt5.so
 
 %files devel-doc
 %doc %_docdir/%{name}*
 
 %changelog
-* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.12-alt2%ubt
+* Thu Jul 23 2020 Andrey Cherepanov <cas@altlinux.org> 5.0.2-alt1.1
+- NMU: exclude armh from build architectures.
+
+* Wed Apr 15 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 5.0.2-alt1
+- Updated to upstream version 5.0.2.
+
+* Sat Jun 22 2019 Igor Vlasenko <viy@altlinux.ru> 4.12-alt4
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 4.12-alt3
+- NMU: remove %%ubt from release
+
+* Thu May 31 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.12-alt2
 - NMU: rebuilt with boost-1.67.0
 
-* Fri Apr 27 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.12-alt1%ubt
+* Fri Apr 27 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.12-alt1
 - Updated to upstream version 4.12.
 
-* Tue Sep 12 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 4.10-alt2%ubt
+* Tue Sep 12 2017 Aleksei Nikiforov <darktemplar@altlinux.org> 4.10-alt2
 - Rebuilt with boost 1.65.0.
 - Added %%ubt to release.
 
