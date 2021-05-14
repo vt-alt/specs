@@ -13,8 +13,8 @@
 %endif
 
 Name: vulkan-amdgpu
-Version: 2021.Q1.3
-Release: alt1.p9.1
+Version: 2021.Q2.2
+Release: alt0.p9.1
 License: MIT
 Url: https://github.com/GPUOpen-Drivers/AMDVLK
 Summary: AMD Open Source Driver For Vulkan
@@ -26,7 +26,7 @@ Requires: vulkan-filesystem
 
 BuildRequires(pre): rpm-macros-cmake
 BuildRequires: gcc8-c++ cmake python3-devel curl libstdc++8-devel libxcb-devel libssl-devel llvm-devel
-BuildRequires: libX11-devel libxshmfence-devel libXrandr-devel spirv-headers libspirv-tools-devel glslang-devel
+BuildRequires: libX11-devel libxshmfence-devel libXrandr-devel spirv-headers libspirv-tools-devel libspirv-cross-devel glslang-devel
 %if_with wayland
 BuildRequires: wayland-devel libwayland-server-devel libwayland-client-devel libwayland-cursor-devel libwayland-egl-devel
 BuildRequires: libffi-devel
@@ -93,9 +93,22 @@ install -p -m644 %SOURCE6 %buildroot%_vkdir/amd_icd.json
 %ghost %attr(644,root,root) %config(missingok) %_sysconfdir/amd/*.cfg
 
 %changelog
-* Sun Apr 18 2021 Nazarov Denis <nenderus@altlinux.org> 2021.Q1.3-alt1.p9.1
+* Wed May 05 2021 Nazarov Denis <nenderus@altlinux.org> 2021.Q2.2-alt0.p9.1
 - Build for branch p9
 
+* Tue May 04 2021 L.A. Kostis <lakostis@altlinux.ru> 2021.Q2.2-alt1
+- 2021-4-28 update (closes #40022):
+ + update spvgen BR
+ + json: bump vulkan API version to 1.2.174.
+ + llvm: Updated to d2e97f487956
+ + spvgen: Updated to 59823e6c3557
+ + llpc: Updated to 28c4e99487eb
+ + pal: Updated to 0168557a0715
+ + xgl: Updated to f1467f0dfd3d
+
+* Sun Apr 18 2021 Nazarov Denis <nenderus@altlinux.org> 2021.Q1.3-alt1.p9.1
+- Build for branch p9
+ 
 * Wed Feb 24 2021 L.A. Kostis <lakostis@altlinux.ru> 2021.Q1.3-alt2
 - Fix wayland client BR.
 
