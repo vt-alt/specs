@@ -1,11 +1,11 @@
 Name:     bookworm
 Version:  1.1.2
-Release:  alt2
+Release:  alt4
 
 Summary:  Simple, focused eBook reader
 
 License:  GPLv3
-Group: Office
+Group:    Office
 URL:      https://github.com/babluboy/bookworm
 
 # Source-git: https://github.com/babluboy/bookworm.git
@@ -13,12 +13,11 @@ Source:  %name-%version.tar
 
 Patch1: %name-%version.patch
 
-BuildRequires(pre): rpm-macros-fedora-compat
+BuildRequires(pre): rpm-build-python3
+BuildRequires(pre): meson
 BuildRequires: libgranite-devel
 BuildRequires: libgranite-vala
 BuildRequires: libgee0.8-devel
-BuildRequires: meson
-BuildRequires: ninja-build
 BuildRequires: libpoppler-glib-devel
 BuildRequires: libvala-devel vala
 BuildRequires: libwebkit2gtk-devel
@@ -31,7 +30,6 @@ BuildRequires: libsqlite3-devel
 Requires: icon-theme-hicolor
 
 %description
-
 Read the books you love without having to worry about the different
 format complexities like epub, pdf, mobi, cbr, etc. This version
 supports EPUB, MOBI, FB2, PDF, FB2 and Comics (CBR and CBZ) formats
@@ -41,7 +39,12 @@ with support for more formats to follow soon.
 %setup -q -n %name-%version
 %patch1 -p1
 # add python3 support fix
-sed -i 's|#!.*python2$|#!/usr/bin/python3|' $(grep -Rl '#!.*python2$' *)
+sed -i 's|#!.*python.*$|#!/usr/bin/python3|' $(grep -Rl '#!.*python.*$' *)
+find . -name '*.pyc' -print -delete
+# fix *.py files permissions
+( cd %_builddir/%name-%version/data/scripts/mobi_lib
+	chmod 644 *.py
+)
 
 %build
 %meson
@@ -50,25 +53,42 @@ sed -i 's|#!.*python2$|#!/usr/bin/python3|' $(grep -Rl '#!.*python2$' *)
 %install
 %meson_install
 %find_lang com.github.babluboy.bookworm
-desktop-file-validate %buildroot%_datadir/applications/com.github.babluboy.bookworm.desktop
-appstream-util validate-relax --nonet %buildroot%_metainfodir/com.github.babluboy.bookworm.appdata.xml
+desktop-file-validate %buildroot%_desktopdir/com.github.babluboy.bookworm.desktop
+appstream-util validate-relax --nonet %buildroot%_datadir/metainfo/com.github.babluboy.bookworm.appdata.xml
 ( cd %buildroot%_bindir
   ln -s com.github.babluboy.bookworm bookworm
 )
+
+%__python3 -m compileall %buildroot%_datadir
 
 %files -f com.github.babluboy.bookworm.lang
 %_bindir/com.github.babluboy.bookworm
 %_bindir/bookworm
 %_datadir/com.github.babluboy.bookworm/
-%_datadir/applications/com.github.babluboy.bookworm.desktop
+%_desktopdir/com.github.babluboy.bookworm.desktop
 %_datadir/glib-2.0/schemas/com.github.babluboy.bookworm.gschema.xml
-%_datadir/icons/hicolor/*/apps/com.github.babluboy.bookworm.svg
-%_metainfodir/com.github.babluboy.bookworm.appdata.xml
-
+%_iconsdir/hicolor/*/apps/com.github.babluboy.bookworm.svg
+%_datadir/metainfo/com.github.babluboy.bookworm.appdata.xml
 %doc README.md
-%doc COPYING
 
 %changelog
+* Wed May 05 2021 Evgeniy Kukhtinov <neurofreak@altlinux.org> 1.1.2-alt4
+- Fix bytecompillation of python files
+	+ Remove upstream *.pyc files from source
+	+ Fix python files permissions to 644
+	+ Fix python files build
+- Clean-up spec
+
+* Sat Apr 10 2021 Evgeniy Kukhtinov <neurofreak@altlinux.org> 1.1.2-alt3
+- Fix mismatch of python shebangs and code
+  Make python code for mobi format really work
+- Move to python3
+  + pick recent upstream code
+  + pick patch from PR to upstream: https://github.com/babluboy/bookworm/pull/346
+- Bytecompile python stuff to ensure correct syntax and to avoid runtime JIT compilation
+
+Thanks to bircoph@ in ALT#39613
+
 * Sun Mar 07 2021 Evgeniy Kukhtinov <neurofreak@altlinux.org> 1.1.2-alt2
 - change description and make com.github.babluboy.bookworm symlink
 
