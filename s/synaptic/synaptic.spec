@@ -4,7 +4,7 @@
 
 Name: synaptic
 Version: 0.58
-Release: alt23
+Release: alt24
 
 Summary: Graphical front-end for APT
 Summary(ru_RU.UTF-8): Графическая оболочка для APT
@@ -20,7 +20,7 @@ Source2: %name.conf
 
 Patch1: %name-%version-alt.patch
 
-BuildRequires: libapt-devel >= 0.5.15lorg2-alt59
+BuildRequires: libapt-devel >= 0.5.15lorg2-alt70
 %if_enabled autotools
 BuildRequires: intltool
 %endif
@@ -54,10 +54,6 @@ Synaptic - это графическая оболочка для APT (Advanced P
 %prep
 %setup
 %patch1 -p1
-
-# remove gmo file to tell autotools recreate it
-rm -fv -- po/ru.gmo
-rm -fv -- po/uk.gmo
 
 install -p -m644 %SOURCE1 pixmaps/hicolor/16x16/package-supported.png
 
@@ -96,10 +92,17 @@ install -p -m644 %SOURCE2 %buildroot%_sysconfdir/apt/apt.conf.d/%name.conf
 
 %exclude %_desktopdir/%{name}*.desktop
 %exclude %_datadir/pixmaps/%name.png
-# find_lang misses this locale
-%exclude %_datadir/locale/sr@Latn
 
 %changelog
+* Tue May 11 2021 Ivan Zakharyaschev <imz@altlinux.org> 0.58-alt24
+- Fixed a use-after-free bug (appearing as garbage being shown in the size
+  columns, notably after recompilation with gcc10). (ALT#40010)
+- Unset Synaptic::supported-text in the packaged configuration file. (That's
+  the straight way to get "Package is supported" translated in the UI rather
+  than the previous hack in the code.)
+- Included the sr@latin translation in the package.
+  (It got excluded before because of an outdated sr@Latn name.)
+
 * Tue Jul 30 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 0.58-alt23
 - Rebuilt with new Apt.
 
