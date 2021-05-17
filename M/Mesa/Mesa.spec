@@ -72,7 +72,7 @@
 %endif
 
 Name: Mesa
-Version: 21.0.2
+Version: 21.0.3
 Release: alt1
 Epoch: 4
 License: MIT
@@ -497,6 +497,9 @@ sed -i '/.*dri\/r[a236].*/d' xorg-dri-armsoc.list
 %files -n mesa-dri-drivers
 
 %changelog
+* Fri Apr 30 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:21.0.3-alt1
+- 21.0.3
+
 * Thu Apr 08 2021 Valery Inozemtsev <shrek@altlinux.ru> 4:21.0.2-alt1
 - 21.0.2
 
