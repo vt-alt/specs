@@ -14,9 +14,9 @@
 # version-release
 
 %define nv_version 460
-%define nv_release 56
-%define nv_minor %nil
-%define pkg_rel alt237
+%define nv_release 73
+%define nv_minor 01
+%define pkg_rel alt238
 %define set_gl_nvidia_ver 1.5.2
 
 %define tbver %{nv_version}.%{nv_release}.%{nv_minor}
@@ -330,6 +330,9 @@ fi
 /lib/systemd/system-sleep/nvidia
 
 %changelog
+* Mon Apr 26 2021 Sergey V Turchin <zerg@altlinux.org> 460.73.01-alt238
+- new version
+
 * Wed Mar 03 2021 Sergey V Turchin <zerg@altlinux.org> 460.56-alt237
 - new version
 
