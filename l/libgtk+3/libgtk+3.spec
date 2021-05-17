@@ -23,7 +23,7 @@
 
 Name: libgtk+3
 Version: %ver_major.11
-Release: alt1
+Release: alt1.M90P.1
 
 Summary: The GIMP ToolKit (GTK+)
 Group: System/Libraries
@@ -60,6 +60,8 @@ Patch1: gtk+-3.24.9-alt-build.patch
 
 Provides: libgtk3-engine-adwaita = %version-%release
 Obsoletes: libgtk3-engine-adwaita < 3.13.0
+#https://bugzilla.altlinux.org/39972
+Provides: gtk3 = %EVR
 
 Requires: %name-schemas = %version-%release
 Requires: gtk-update-icon-cache = %version-%release
@@ -459,6 +461,9 @@ cp examples/*.c examples/Makefile* %buildroot/%_docdir/%name-devel-%version/exam
 %exclude %fulllibpath/*/*.la
 
 %changelog
+* Fri Apr 23 2021 Leontiy Volodin <lvol@altlinux.org> 3.24.11-alt1.M90P.1
+- added provides for third party applications (ALT #39972)
+
 * Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.11-alt1
 - 3.24.11
 
