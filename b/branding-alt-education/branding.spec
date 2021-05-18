@@ -26,7 +26,7 @@
 
 Name: branding-%flavour
 Version: 9.2
-Release: alt3
+Release: alt4
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -466,6 +466,9 @@ subst 's/^#\?clock-format=.*/clock-format=%A, %x %H:%M/' /etc/lightdm/lightdm-gt
 #config %_localstatedir/ldm/.pam_environment
 
 %changelog
+* Mon May 17 2021 Andrey Cherepanov <cas@altlinux.org> 9.2-alt4
+- Replace smplayer by vlc as default player (it has best perfomance on aarch64).
+
 * Wed May 12 2021 Dmitry Terekhin <jqt4@altlinux.org> 9.2-alt3
 - Convert xfce-settings to architecture-dependent
 
