@@ -1,6 +1,6 @@
 Name: codeblocks
 Version: 20.03
-Release: alt1
+Release: alt4
 
 Summary: Code::Blocks is open source, cross platform free C++ IDE
 Summary(ru_RU.UTF-8): Code::Blocks это кросс-платформенная свободная среда разработки для C++ с открытым исходным кодом
@@ -21,9 +21,11 @@ Patch1: codeblocks-ebuild.conf.patch
 Patch2: %name-%version-FortranProject_autotools_build.patch
 Patch3: %name-%version-add-shebang-to-gdb-fortran-extension.patch
 Patch4: %name-%version-multi-arch.patch
+Patch5: %name-%version-fix-empty-arduino-page.patch
 
 Requires: automake >= 1.7 libwxGTK3.1 gcc gcc-c++ gdb xterm gamin mythes-en
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: boost-devel gcc-c++ libICE-devel libgamin-devel libgtk+3-devel
 BuildRequires: libhunspell-devel libwxGTK-contrib-gizmos-devel libwxGTK3.1-devel
 BuildRequires: tinyxml-devel zip zlib-devel bzlib-devel
@@ -47,6 +49,7 @@ Summary: Code::Blocks contrib plugins
 Summary(ru_RU.UTF-8): Дополнительные плагины для Code::Blocks
 Group: Development/C++
 Requires: codeblocks = %EVR
+%add_python3_req_skip gdb
 
 %description contrib
 Additional Code::Blocks plugins.
@@ -75,6 +78,10 @@ cp %SOURCE4 .
 %patch2 -p2
 %patch3 -p2
 %patch4 -p1
+%patch5 -p2
+
+# https://sourceforge.net/p/codeblocks/tickets/936/
+sed -ri '/^\s+#pragma implementation/ s,cbkeybinder,cbKeyConfigPanel,' src/plugins/contrib/keybinder/cbkeyConfigPanel.cpp
 
 %build
 msgfmt %name.po -o %name.mo
@@ -304,6 +311,15 @@ install -m 644 -D %name.mo %buildroot%_datadir/%name/locale/ru_RU/%name.mo
 %_libdir/pkgconfig/wxsmith-contrib.pc
 
 %changelog
+* Sun May 16 2021 Grigory Ustinov <grenka@altlinux.org> 20.03-alt4
+- Fix empty arduino project page (more carefully).
+
+* Tue Apr 27 2021 Grigory Ustinov <grenka@altlinux.org> 20.03-alt3
+- Fix empty arduino project page.
+
+* Thu Apr 09 2020 Grigory Ustinov <grenka@altlinux.org> 20.03-alt2
+- Fix for arm (thx to sbloshakov@).
+
 * Mon Mar 30 2020 Grigory Ustinov <grenka@altlinux.org> 20.03-alt1
 - Build new version.
 - Reworked FortranProject patch, so it still works.
