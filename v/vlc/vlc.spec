@@ -6,7 +6,7 @@
 
 Name: vlc
 Version: 3.0.11.1
-Release: alt2
+Release: alt3
 
 Summary: VLC media player
 License: GPLv2
@@ -1399,6 +1399,9 @@ chmod 755 %buildroot%_libexecdir/rpm/vlc.filetrigger
 %files maxi
 
 %changelog
+* Fri Apr 30 2021 Alexey Sheplyakov <asheplyakov@altlinux.org> 3.0.11.1-alt3
+- Fixed VLC getting stuck on close on X11. Closes #40019 (upstream: #25197)
+
 * Sun Oct 04 2020 Anton Farygin <rider@altlinux.ru> 3.0.11.1-alt2
 - fixed build with qt-5.15
 
