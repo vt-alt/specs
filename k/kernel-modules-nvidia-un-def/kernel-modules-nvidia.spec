@@ -7,7 +7,7 @@
 %define modesetmodule_name	nvidia-modeset
 %define uvmmodule_name		nvidia-uvm
 %define drmmodule_name		nvidia-drm
-%define package_version	460.73.01
+%define package_version	460.80
 %define module_version	%package_version
 %ifarch %ix86 armh
 %define module_version	390.143
@@ -22,29 +22,12 @@
 %if "%xorg_ver" == ""
 %define xorg_ver %{get_version xorg-x11-server}
 %endif
-%define legacy1 %nil
-%nvIF_ver_lt %xorg_ver 1.6
-%define legacy1 71.86.13
-%endif
-%define legacy1_src %(echo %legacy1 | tr -d .)
 
-%define legacy2 %nil
-%nvIF_ver_lt %xorg_ver 1.13
-%define legacy2 96.43.23
+%define legacy6 %nil
+%nvIF_ver_lt %xorg_ver 1.21
+%define legacy6 390.143
 %endif
-%define legacy2_src %(echo %legacy2 | tr -d .)
-
-%define legacy3 %nil
-%nvIF_ver_lt %xorg_ver 1.16
-%define legacy3 173.14.39
-%endif
-%define legacy3_src %(echo %legacy3 | tr -d .)
-
-%define legacy4 %nil
-%nvIF_ver_lt %xorg_ver 1.20
-%define legacy4 304.137
-%endif
-%define legacy4_src %(echo %legacy4 | tr -d .)
+%define legacy6_src %(echo %legacy6 | tr -d .)
 
 %define legacy5 %nil
 %nvIF_ver_lt %xorg_ver 1.21
@@ -52,11 +35,29 @@
 %endif
 %define legacy5_src %(echo %legacy5 | tr -d .)
 
-%define legacy6 %nil
-%nvIF_ver_lt %xorg_ver 1.21
-%define legacy6 390.143
+%define legacy4 %nil
+%nvIF_ver_lt %xorg_ver 1.20
+%define legacy4 304.137
 %endif
-%define legacy6_src %(echo %legacy6 | tr -d .)
+%define legacy4_src %(echo %legacy4 | tr -d .)
+
+%define legacy3 %nil
+%nvIF_ver_lt %xorg_ver 1.16
+%define legacy3 173.14.39
+%endif
+%define legacy3_src %(echo %legacy3 | tr -d .)
+
+%define legacy2 %nil
+%nvIF_ver_lt %xorg_ver 1.13
+%define legacy2 96.43.23
+%endif
+%define legacy2_src %(echo %legacy2 | tr -d .)
+
+%define legacy1 %nil
+%nvIF_ver_lt %xorg_ver 1.6
+%define legacy1 71.86.13
+%endif
+%define legacy1_src %(echo %legacy1 | tr -d .)
 
 %ifarch %ix86 armh
 %define legacy6 %nil
@@ -69,7 +70,7 @@
 %define legacy2 %nil
 %define legacy1 %nil
 %endif
-%define mod_ver_list %module_version %legacy1 %legacy2 %legacy3 %legacy4 %legacy5 %legacy6
+%define mod_ver_list %module_version %legacy6 %legacy5 %legacy4 %legacy3 %legacy2 %legacy1
 
 %define module_dir /lib/modules/%kversion-%flavour-%krelease/nVidia
 %define module_local_dir /lib/modules/nvidia
@@ -97,23 +98,23 @@ BuildRequires(pre): kernel-headers-modules-un-def
 BuildRequires: rpm-utils
 BuildRequires: kernel-headers-modules-%flavour = %kepoch%kversion-%krelease
 BuildRequires: kernel-source-%module_name-%module_srcver
-%if "%legacy1" != "%nil"
-BuildRequires: kernel-source-%module_name-%legacy1_src
-%endif
-%if "%legacy2" != "%nil"
-BuildRequires: kernel-source-%module_name-%legacy2_src
-%endif
-%if "%legacy3" != "%nil"
-BuildRequires: kernel-source-%module_name-%legacy3_src
-%endif
-%if "%legacy4" != "%nil"
-BuildRequires: kernel-source-%module_name-%legacy4_src
+%if "%legacy6" != "%nil"
+BuildRequires: kernel-source-%module_name-%legacy6_src
 %endif
 %if "%legacy5" != "%nil"
 BuildRequires: kernel-source-%module_name-%legacy5_src
 %endif
-%if "%legacy6" != "%nil"
-BuildRequires: kernel-source-%module_name-%legacy6_src
+%if "%legacy4" != "%nil"
+BuildRequires: kernel-source-%module_name-%legacy4_src
+%endif
+%if "%legacy3" != "%nil"
+BuildRequires: kernel-source-%module_name-%legacy3_src
+%endif
+%if "%legacy2" != "%nil"
+BuildRequires: kernel-source-%module_name-%legacy2_src
+%endif
+%if "%legacy1" != "%nil"
+BuildRequires: kernel-source-%module_name-%legacy1_src
 %endif
 
 Provides:  	kernel-modules-%module_name-%kversion-%flavour-%krelease = %version-%release
@@ -125,23 +126,23 @@ Conflicts: modutils < 2.4.27-alt4
 PreReq: kernel-image-%flavour = %kepoch%kversion-%krelease
 Requires: kernel-modules-drm-%flavour = %kepoch%kversion-%krelease
 Requires:       nvidia_glx_%module_version
-%if "%legacy1" != "%nil"
-Requires:       nvidia_glx_%legacy1
-%endif
-%if "%legacy2" != "%nil"
-Requires:       nvidia_glx_%legacy2
-%endif
-%if "%legacy3" != "%nil"
-Requires:       nvidia_glx_%legacy3
-%endif
-%if "%legacy4" != "%nil"
-Requires:       nvidia_glx_%legacy4
+%if "%legacy6" != "%nil"
+Requires:       nvidia_glx_%legacy6
 %endif
 %if "%legacy5" != "%nil"
 Requires:       nvidia_glx_%legacy5
 %endif
-%if "%legacy6" != "%nil"
-Requires:       nvidia_glx_%legacy6
+%if "%legacy4" != "%nil"
+Requires:       nvidia_glx_%legacy4
+%endif
+%if "%legacy3" != "%nil"
+Requires:       nvidia_glx_%legacy3
+%endif
+%if "%legacy2" != "%nil"
+Requires:       nvidia_glx_%legacy2
+%endif
+%if "%legacy1" != "%nil"
+Requires:       nvidia_glx_%legacy1
 %endif
 
 %description
@@ -280,7 +281,10 @@ fi
 * %(date "+%%a %%b %%d %%Y") %{?package_signer:%package_signer}%{!?package_signer:%packager} %version-%release
 - Build for kernel-image-%flavour-%kversion-%krelease.
 
-* Mon Apr 26 2021 Sergey V Turchin <zerg at altlinux dot org> 440.31-alt1
+* Mon May 17 2021 Sergey V Turchin <zerg at altlinux dot org> 460.80-alt1
+- new release(460.80)
+
+* Mon Apr 26 2021 Sergey V Turchin <zerg at altlinux dot org> 460.73.01-alt1
 - new releases(460.73.01, 390.143)
 
 * Fri Mar 12 2021 Sergey V Turchin <zerg at altlinux dot org> 460.56-alt2
