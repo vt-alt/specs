@@ -1,4 +1,4 @@
-%define git_version befbc92f3c11eedd8626487211d200c0b44786d9
+%define git_version 5ef401921d7a88aea18ec7558f7f9374ebd8f5a6
 %define _unpackaged_files_terminate_build 1
 
 %def_with ocf
@@ -42,7 +42,7 @@
 %endif
 
 Name: ceph
-Version: 14.2.20
+Version: 14.2.21
 Release: alt1
 Summary: User space components of the Ceph file system
 Group: System/Base
@@ -1542,6 +1542,9 @@ fi
 %endif
 
 %changelog
+* Sat May 15 2021 Alexey Shabalin <shaba@altlinux.org> 14.2.21-alt1
+- 14.2.21 (Fixes: CVE-2021-3531, CVE-2021-3524, CVE-2021-3509).
+
 * Tue Apr 20 2021 Alexey Shabalin <shaba@altlinux.org> 14.2.20-alt1
 - 14.2.20 (Fixes: CVE-2021-20288).
 
