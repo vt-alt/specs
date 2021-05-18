@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
-Version: 0.9.15
-Release: alt2
+Version: 0.9.16
+Release: alt1
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -268,6 +268,12 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Tue May 04 2021 Andrey Cherepanov <cas@altlinux.org> 0.9.16-alt1
+- New version.
+
+* Thu Apr 01 2021 Andrey Cherepanov <cas@altlinux.org> 0.9.15-alt3
+- Allow DISPLAY=:0 for chansrv (https://github.com/neutrinolabs/xrdp/issues/1846).
+
 * Thu Mar 04 2021 Evgeny Sinelnikov <sin@altlinux.org> 0.9.15-alt2
 - Update g_check_user_in_group() with using getgrouplist() for group membership check.
 
