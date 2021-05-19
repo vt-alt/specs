@@ -1,5 +1,5 @@
 Name: alterator-multiseat
-Version: 0.0.3
+Version: 0.0.4
 Release: alt1
 
 Source: %name-%version.tar
@@ -31,6 +31,13 @@ alterator module for setup multiseat configuration
 %_datadir/alterator/ui/*
 
 %changelog
+* Fri May 14 2021 Ivan Razzhivin <underwit@altlinux.org> 0.0.4-alt1
+- fix list-seats (closes: #39917, #39964)
+- reboot when activate
+- show drm/card0
+- small fixes
+- change message for pop-up dialog
+
 * Fri Apr 16 2021 Ivan Razzhivin <underwit@altlinux.org> 0.0.3-alt1
 - disable saving configuration
 - hide /drm/card0
