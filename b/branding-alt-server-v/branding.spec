@@ -17,8 +17,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.1
-Release: alt3
+Version: 9.2
+Release: alt1
 Url: https://basealt.ru
 
 %ifarch %ix86 x86_64
@@ -317,6 +317,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Tue May 18 2021 Andrew A. Vasilyev <andy@altlinux.org> 9.2-alt1
+- version 9.2
+
 * Wed Oct 14 2020 Alexey Shabalin <shaba@altlinux.org> 9.1-alt3
 - define codename as Altostratus
 
