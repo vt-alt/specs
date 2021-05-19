@@ -1,7 +1,7 @@
 %global optflags %optflags -I%_includedir/KF5 -L%_libdir/kf5/devel
 
 Name:		ksnip
-Version:	1.8.0
+Version:	1.8.2
 Release:	alt1
 
 Summary:	Window Snipping Tool
@@ -65,5 +65,8 @@ desktop-file-validate %buildroot%_datadir/applications/*.desktop
 %_datadir/metainfo/org.ksnip.ksnip.appdata.xml
 
 %changelog
+* Fri May 14 2021 Evgeniy Kukhtinov <neurofreak@altlinux.org> 1.8.2-alt1
+- new version
+
 * Fri Mar 12 2021 Evgeniy Kukhtinov <neurofreak@altlinux.org> 1.8.0-alt1
 - Initial build in Sisyphus
