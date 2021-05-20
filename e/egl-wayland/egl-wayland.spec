@@ -3,7 +3,7 @@
 %define libnvidia_egl_wayland libnvidia-egl-wayland%sover
 
 Name: egl-wayland
-Version: 1.1.6
+Version: 1.1.7
 Release: alt1
 Epoch: 1
 
@@ -41,18 +41,22 @@ Summary: Wayland EGL External Platform library development package
 Wayland EGL External Platform library development package
 
 %prep
-%setup -q
+%setup
 %patch1 -p1
 %autoreconf
 
 %build
+%ifarch %e2k
+# lcc barfs on include/wayland-eglstream-server.h:87
+%add_optflags -Wno-error=signed-one-bit-field -Wno-error=maybe-uninitialized
+%endif
 %configure
 %make_build
 
 %install
 %makeinstall_std
-install -m 0755 -d %buildroot/%_datadir/egl/egl_external_platform.d/
-install -pm 0644 %SOURCE1 %buildroot/%_datadir/egl/egl_external_platform.d/
+install -pDm644 %SOURCE1 \
+	%buildroot/%_datadir/egl/egl_external_platform.d/10_nvidia_wayland.json
 
 %files -n %libnvidia_egl_wayland
 %doc README.md COPYING
@@ -66,6 +70,16 @@ install -pm 0644 %SOURCE1 %buildroot/%_datadir/egl/egl_external_platform.d/
 %_datadir/wayland-eglstream/
 
 %changelog
+* Fri May 14 2021 Sergey V Turchin <zerg@altlinux.org> 1:1.1.7-alt1
+- new version
+
+* Thu Apr 15 2021 Michael Shigorin <mike@altlinux.org> 1:1.1.6-alt1.2
+- E2K: *workaround* ftbfs with lcc
+
+* Thu Apr 15 2021 Michael Shigorin <mike@altlinux.org> 1:1.1.6-alt1.1
+- E2K: workaround ftbfs with lcc
+- minor spec cleanup
+
 * Wed Mar 03 2021 Sergey V Turchin <zerg@altlinux.org> 1:1.1.6-alt1
 - new version
 
