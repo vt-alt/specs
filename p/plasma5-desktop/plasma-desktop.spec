@@ -8,7 +8,7 @@
 
 Name: plasma5-desktop
 Version: 5.18.5
-Release: alt3
+Release: alt4
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -79,6 +79,13 @@ Provides: kf5-plasma-desktop-common = %EVR
 Obsoletes: kf5-plasma-desktop-common < %EVR
 %description common
 %name common package
+
+%package maxi
+Summary: %name maximum package
+Group: System/Configuration/Packaging
+Requires: %name
+%description maxi
+%name maximum package.
 
 %package devel
 Group: Development/KDE and QT
@@ -163,6 +170,7 @@ KF5 library
 #%config(noreplace) %_K5xdgconf/*
 %_K5dbus/system.d/*.conf
 %_K5bin/*
+%exclude %_K5bin/*emojier*
 %_K5exec/*
 %_K5libexecdir/kauth/*
 %_K5cf_bin/*
@@ -176,6 +184,7 @@ KF5 library
 %_K5qml/org/kde/plasma/activityswitcher/
 %_K5qml/org/kde/activities/settings/
 %_K5xdgapp/*
+%exclude %_K5xdgapp/*emojier*
 %_K5cfg/*
 %_K5srv/ServiceMenus/*.desktop
 %_K5srv/kded/*.desktop
@@ -200,11 +209,17 @@ KF5 library
 %_K5data/kcmmouse/
 %_K5data/kdisplay/
 %_K5data/kglobalaccel/*.desktop
+%exclude %_K5data/kglobalaccel/*emojier*.desktop
 %_K5data/kfontinst/
 %_K5data/konqsidebartng/
 %_K5data/knsrcfiles/*.knsrc
 %_K5dbus_srv/*.service
 %_K5dbus_sys_srv/*.service
+
+%files maxi
+%_K5bin/*emojier*
+%_K5xdgapp/*emojier*
+%_K5data/kglobalaccel/*emojier*.desktop
 
 %files -n polkit-kde-plasma-desktop
 %_datadir/polkit-1/actions/*fontinst*.policy
@@ -222,6 +237,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Wed May 19 2021 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt4
+- split ibus emojier into separate subpackage
+
 * Thu Apr 29 2021 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt3
 - show tasks from all screens on taskbar by default
 
