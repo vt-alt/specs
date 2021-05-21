@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.4.10
+Version: 1.4.12
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,21 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Fri May 21 2021 Anton Midyukov <antohami@altlinux.org> 1.4.12-alt1
+- fix VM_SAVE_TARBALL parameter support
+- grub: save ang read default menu item (thanks jqt4@, sin@)
+
+* Mon May 17 2021 Anton Midyukov <antohami@altlinux.org> 1.4.11-alt1
+- build-vm: Add ability to build .img.xz (thanks sem@)
+- reports.mk: optimiztion for generate rpm and srpms lists (thanks mike@)
+- reports.mk: generate targets.svgz instead targets.png
+- add VM_SAVE_TARBALL parameter
+- add MKIMAGE_PREFIX parameter
+- kernel: optimization use/kernel/initrd-setup
+- set STAGE1_INITRD_BOOTARGS in initrd-propagator
+- slinux 9.1
+- education 9.2
+
 * Mon Apr 26 2021 Anton Midyukov <antohami@altlinux.org> 1.4.10-alt1
 - build propagator and copy kernel in mkimage-profiles
 - copy kernel to boot/ directory on iso image
