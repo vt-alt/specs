@@ -6,8 +6,8 @@
 
 %define prog_name            postgresql
 %define postgresql_major     12
-%define postgresql_minor     5
-%define postgresql_altrel    5
+%define postgresql_minor     6
+%define postgresql_altrel    1.M90P.1
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -782,6 +782,13 @@ fi
 %endif
 
 %changelog
+* Tue May 18 2021 Alexei Takaseev <taf@altlinux.org> 12.6-alt1.M90P.1
+- Fixes CVE-2021-32027, CVE-2021-32028, CVE-2021-32029
+
+* Wed Apr 07 2021 Alexei Takaseev <taf@altlinux.org> 12.6-alt1
+- 12.6
+- Update 1C patch
+
 * Tue Feb 16 2021 Alexei Takaseev <taf@altlinux.org> 12.5-alt5
 - Decrased shared_buffers from 4G to 512M (lost when reapplay
   new 1C patch)

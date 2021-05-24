@@ -6,8 +6,8 @@
 
 %define prog_name            postgresql
 %define postgresql_major     10
-%define postgresql_minor     16
-%define postgresql_altrel    1
+%define postgresql_minor     17
+%define postgresql_altrel    0.M90P.1
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -769,6 +769,9 @@ fi
 %endif
 
 %changelog
+* Tue May 18 2021 Alexei Takaseev <taf@altlinux.org> 10.17-alt0.M90P.1
+- 10.17 (Fixes CVE-2021-32027, CVE-2021-32028)
+
 * Thu Feb 11 2021 Alexei Takaseev <taf@altlinux.org> 10.16-alt1
 - 10.16
 
