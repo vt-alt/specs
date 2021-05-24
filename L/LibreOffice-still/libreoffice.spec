@@ -24,13 +24,13 @@
 
 Name: LibreOffice-still
 %define hversion 7.0
-%define urelease 5.2
+%define urelease 6.2
 Version: %hversion.%urelease
 %define uversion %version.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt2
+Release: alt1
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -87,7 +87,9 @@ Patch500: 3236020.diff
 %add_findreq_skiplist %lodir/share/config/webcast/*
 %add_findreq_skiplist %lodir/sdk/examples/python/toolpanel/toolpanel.py 
 %add_findprov_skiplist %_libdir/liblibreofficekitgtk.so
+%add_python3_path %_libdir/%name/sdk/examples/python/
 
+BuildRequires(pre): rpm-build-python3
 BuildRequires: cppunit-devel flex fonts-ttf-liberation gcc-c++ git-core gperf gst-plugins1.0-devel hunspell-en imake libGConf-devel libGLEW-devel libabw-devel libbluez-devel libcdr-devel libclucene-core-devel libcmis-devel libcups-devel libdbus-glib-devel libetonyek-devel libexpat-devel libexttextcat-devel libfreehand-devel libglm-devel libgtk+2-devel libgtk+3-devel libharfbuzz-devel libhunspell-devel libhyphen-devel libjpeg-devel liblangtag-devel liblcms2-devel libldap-devel liblpsolve-devel libmspub-devel libmwaw-devel libmythes-devel libneon-devel libnss-devel libodfgen-devel libredland-devel libsane-devel libvigra-devel libvisio-devel libwpd10-devel libwpg-devel libwps-devel libxslt-devel mdds-devel perl-Archive-Zip postgresql-devel python3-dev unzip xorg-cf-files zip
 BuildRequires: python2.7(distutils) libunixODBC-devel libX11-devel libXext-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libssl-devel
 BuildRequires: xsltproc
@@ -660,6 +662,12 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Mon May 17 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.6.2-alt1
+- New version.
+
+* Tue May 04 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.5.2-alt3
+- Use python3 autoreq for python scripts.
+
 * Fri Apr 09 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.5.2-alt2
 - docxexport: export russianUpper/russianLower numbering.
 
