@@ -1,6 +1,6 @@
 Name:    variety
 Version: 0.8.5
-Release: alt1
+Release: alt2
 
 Summary: Wallpaper downloader and manager for Linux systems
 License: GPL-3.0
@@ -60,7 +60,19 @@ echo "__variety_data_directory__ = \"%_datadir/%name\"" > variety_lib/variety_bu
 %python3_install
 rm -f %buildroot%_defaultdocdir/%name/README.md
 
-%files
+# Install icons and desktop file
+install -Dpm0644 build/share/applications/variety.desktop %buildroot%_desktopdir/%name.desktop
+for s in 16 24 32 48 64 128 256;do \
+    install -Dpm0644 data/media/variety${s}.png %buildroot%_iconsdir/hicolor/${s}x${s}/apps/%name.png; \
+done
+install -Dpm0644 data/media/variety.svg %buildroot%_iconsdir/hicolor/scalable/apps/%name.svg
+
+# Install localization files
+mkdir -p %buildroot%_datadir/locale
+cp -av build/mo/* %buildroot%_datadir/locale
+%find_lang %name
+
+%files -f %name.lang
 %doc AUTHORS README.md
 %_bindir/%name
 %python3_sitelibdir/jumble
@@ -69,7 +81,13 @@ rm -f %buildroot%_defaultdocdir/%name/README.md
 %python3_sitelibdir/*.egg-info
 %_datadir/%name
 %_datadir/metainfo/%name.appdata.xml
+%_desktopdir/%name.desktop
+%_iconsdir/hicolor/*/apps/%name.png
+%_iconsdir/hicolor/scalable/apps/%name.svg
 
 %changelog
+* Thu May 20 2021 Andrey Cherepanov <cas@altlinux.org> 0.8.5-alt2
+- Add icons, desktop file and localization files.
+
 * Wed May 19 2021 Andrey Cherepanov <cas@altlinux.org> 0.8.5-alt1
 - Initial build for Sisyphus
