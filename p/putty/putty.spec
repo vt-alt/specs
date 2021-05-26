@@ -1,5 +1,5 @@
 Name: putty
-Version: 0.71
+Version: 0.75
 Release: alt1
 
 Summary: Free SSH, Telnet and Rlogin client
@@ -14,7 +14,7 @@ Source3: putty.desktop
 Source4: %name.watch
 Packager: Michael Shigorin <mike@altlinux.org>
 
-BuildRequires: libgtk+2-devel
+BuildRequires: libgtk+3-devel
 
 %description
 This is the Unix port of the popular Windows ssh client, PuTTY. It
@@ -31,7 +31,10 @@ sed -i 's|g_strcasecmp|g_ascii_strcasecmp|g' unix/gtkfont.c
 %build
 cd unix
 # no $DISPLAY at buildtime. Define RELEASE/SNAPSHOT/SVN_REV here.
-%configure --disable-gtktest CFLAGS="-Wall -Werror -Wstrict-aliasing -Wno-unused -DRELEASE=%version"
+%configure \
+	--disable-gtktest \
+	CFLAGS="-Wall -Werror -Wstrict-aliasing -Wno-unused -DRELEASE=%version" \
+	LIBS="-lm"
 %make_build
 
 mkdir -p %buildroot{%_bindir,%_man1dir}
@@ -54,6 +57,19 @@ install -pDm644 %SOURCE3 %buildroot%_desktopdir/%name.desktop
 %_liconsdir/*.png
 
 %changelog
+* Sat May 08 2021 Michael Shigorin <mike@altlinux.org> 0.75-alt1
+- new version (watch file uupdate)
+- explicit -lm
+
+* Sat Jun 27 2020 Michael Shigorin <mike@altlinux.org> 0.74-alt1
+- new version (watch file uupdate)
+
+* Mon Sep 30 2019 Michael Shigorin <mike@altlinux.org> 0.73-alt1
+- new version (watch file uupdate)
+
+* Sun Jul 21 2019 Michael Shigorin <mike@altlinux.org> 0.72-alt1
+- new version (watch file uupdate)
+
 * Sat Mar 16 2019 Michael Shigorin <mike@altlinux.org> 0.71-alt1
 - new version (watch file uupdate)
 
