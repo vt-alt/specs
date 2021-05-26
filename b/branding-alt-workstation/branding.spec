@@ -15,12 +15,16 @@
 %define design_graphics_abi_minor 0
 %define design_graphics_abi_bugfix 0
 
+#alterantives weights
+%define alterator_browser_weight 53
+%define artworks_weight 000012000053
+
 %define data_cur_dir %_datadir/branding-data-current
 
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.1
+Version: 9.1.900
 Release: alt1
 Url: https://basealt.ru
 
@@ -58,8 +62,8 @@ Summary(ru_RU.UTF-8): Тема для экрана выбора варианто
 License: GPLv2+
 
 Requires(pre):    coreutils
-Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
-Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
+Provides:  design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme
+Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme
 %branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/light-blue
@@ -96,7 +100,7 @@ This package contains graphics for boot process for %distro_name
 %package alterator
 Summary: Design for alterator for %distro_name
 Summary(ru_RU.UTF-8): Тема для "Центра управления системой" и QT для дистрибутива %distro_name_ru
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 BuildArch: noarch
 Provides: design-alterator-browser-%theme  branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
@@ -120,8 +124,8 @@ Summary(ru_RU.UTF-8): Тема для дистрибутива %distro_name_ru
 License: Different licenses
 Group: Graphics
 BuildArch: noarch
-Provides: design-graphics-%theme  branding-alt-%theme-graphics
-Obsoletes:  branding-alt-%theme-graphics design-graphics-%theme
+Provides: design-graphics-%theme
+Obsoletes: design-graphics-%theme
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
 
 Requires(post,preun): alternatives >= 0.2
@@ -141,10 +145,10 @@ This package contains some graphics for %distro_name design.
 BuildArch: noarch
 Summary:  %distro_name release file
 Summary(ru_RU.UTF-8): Описание дистрибутива %distro_name_ru
-License:  GPL
+License:  GPLv2+
 Group:    System/Configuration/Other
-Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme  branding-alt-%theme-release
-Obsoletes: %obsolete_list  branding-alt-%theme-release
+Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme
+Obsoletes: %obsolete_list
 %branding_add_conflicts %flavour release
 Requires: pam-limits-desktop
 
@@ -193,6 +197,8 @@ Requires(post): libgio
 # To avoid install check conflicts
 Requires: %name-graphics = %EVR
 Conflicts: installer-feature-lightdm-stage3 < 0.1.0-alt1
+# Due to /usr/share/install3/lightdm-gtk-greeter.conf
+Conflicts: branding-simply-linux-system-settings
 
 %description mate-settings
 MATE settings for %distro_name
@@ -240,7 +246,7 @@ Requires(post): indexhtml-common
 
 %build
 autoconf
-THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' ./configure
+THEME=%theme NAME='%Brand %Theme' BRAND_FNAME='%brand' BRAND='%brand' STATUS_EN=%status_en STATUS=%status VERSION=%version PRODUCT_NAME_RU='%distro_name_ru' PRODUCT_NAME='%distro_name' CODENAME='%codename' GTK_THEME='%gtk_theme' ICON_THEME='%icon_theme' ALTERATOR_BROWSER_WEIGHT=%alterator_browser_weight ARTWORKS_WEIGHT='%artworks_weight' ./configure
 make
 
 %install
@@ -359,6 +365,15 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Tue May 25 2021 Mikhail Efremov <sem@altlinux.org> 9.1.900-alt1
+- graphics: Fix duplicate alternatives.
+- mate-settings: Conflict with branding-simply-linux-system-settings.
+- alterator: Fix duplicate alternatives.
+
+* Mon Nov 23 2020 Mikhail Efremov <sem@altlinux.org> 9.1-alt2
+- bootloader,graphics,release: Drop self provides/obsoletes.
+- alterator,release: Fix license tag.
+
 * Fri Jul 17 2020 Mikhail Efremov <sem@altlinux.org> 9.1-alt1
 - Bump version.
 
