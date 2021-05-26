@@ -2,7 +2,7 @@
 %define module Logoved-DB
 
 Name: perl-%module
-Version: 0.017
+Version: 0.018
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -119,6 +119,9 @@ cp -a hooks %buildroot%_datadir/srpmtools/
 %endif
 
 %changelog
+* Mon May 17 2021 Igor Vlasenko <viy@altlinux.org> 0.018-alt1
+- new version
+
 * Wed Nov 04 2020 Igor Vlasenko <viy@altlinux.ru> 0.017-alt1
 - new version
 
