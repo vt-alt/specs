@@ -1,7 +1,8 @@
+%define _without_test 0
 %define module Logoved-Stream
 
 Name: perl-%module
-Version: 0.027
+Version: 0.028
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -55,6 +56,9 @@ Repocop listener for Logoved-Stream beehive log parser.
 %perl_vendor_privlib/Logoved/Stream/Out/Listener/Repocop*
 
 %changelog
+* Wed May 19 2021 Igor Vlasenko <viy@altlinux.org> 0.028-alt1
+- updated files processing warnings
+
 * Sat Dec 26 2020 Igor Vlasenko <viy@altlinux.ru> 0.027-alt1
 - support for rpm-build-4.0.4-alt163
 
