@@ -11,7 +11,7 @@
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
 Version: 5.10.5
-Release: alt5
+Release: alt7
 License: Apache-2.0
 Group: System/Servers
 Url: https://opennebula.org
@@ -70,7 +70,7 @@ Requires: rsync
 Requires: iputils
 Requires: %name-common = %EVR
 Requires: gem-%name-cli = %EVR
-Obsoletes: %name-ozones
+Obsoletes: %name-ozones < %EVR
 #TODO: Requires http://rubygems.org/gems/net-ldap
 
 %description server
@@ -230,6 +230,7 @@ Conflicts: lxd >= 3.1.0
 %ifarch aarch64 ppc64 ppc64le x86_64
 Requires: rbd-nbd
 %endif
+Requires: systemd-settings-disable-kill-user-processes
 
 %description node-lxd
 Configures an OpenNebula node providing lxd.
@@ -691,6 +692,13 @@ usermod -a -G lxd oneadmin  2>/dev/null ||:
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Mon May 17 2021 Mikhail Gordeev <obirvalger@altlinux.org> 5.10.5-alt7
+- fix regexp matching file output for qcow images
+
+* Thu May 13 2021 Andrew A. Vasilyev <andy@altlinux.org> 5.10.5-alt6
+- lxd: increase the image size to store all additional packages
+- node-lxd: disable killing of vnc server
+
 * Wed Apr 14 2021 Alexey Shabalin <shaba@altlinux.org> 5.10.5-alt5
 - adduser oneadmin with static UID and GID = 9869
   (for compat with shared cluster FS like NFS or GlusterFS
