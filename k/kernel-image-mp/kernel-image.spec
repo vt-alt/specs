@@ -1,4 +1,4 @@
-%define kernel_base_version	5.10
+%define kernel_base_version	5.11
 %define kernel_sublevel        .16
 %define kernel_extra_version	%nil
 
@@ -261,6 +261,21 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Wed Apr 21 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.11.16-alt1
+- 5.11.16
+
+* Wed Apr 07 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.11.12-alt1
+- 5.11.12
+
+* Mon Mar 22 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.11.8-alt1
+- 5.11.8
+
+* Mon Mar 08 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.11.4-alt1
+- 5.11.4
+
+* Mon Feb 15 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.11.0-alt1
+- 5.11
+
 * Mon Feb 15 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 5.10.16-alt1
 - 5.10.16
 
