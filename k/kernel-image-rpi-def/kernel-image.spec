@@ -1,12 +1,12 @@
 %def_disable check
 
 Name: kernel-image-rpi-def
-Release: alt2
-epoch:1 
-%define kernel_need_version	5.4
+Release: alt1
+epoch:1
+%define kernel_need_version	5.10
 # Used when kernel-source-x.y does not currently exist in repository.
-%define kernel_base_version	5.4
-%define kernel_sublevel .83
+%define kernel_base_version	5.10
+%define kernel_sublevel .36
 %define kernel_extra_version	%nil
 # kernel version is need version
 Version: %kernel_need_version%kernel_sublevel%kernel_extra_version
@@ -166,6 +166,7 @@ Provides:  kernel-modules-staging-%kversion-%flavour-%krelease = %version-%relea
 Conflicts: kernel-modules-staging-%kversion-%flavour-%krelease < %version-%release
 Conflicts: kernel-modules-staging-%kversion-%flavour-%krelease > %version-%release
 Requires: kernel-modules-v4l-%kversion-%flavour-%krelease = %version-%release
+Requires(pre,post,postun): %name = %EVR
 Requires(pre): coreutils
 Requires(pre): module-init-tools >= 3.1
 Requires(pre): %name = %epoch:%version-%release
@@ -292,6 +293,18 @@ install -Dp -m644 .config %buildroot/boot/config-$KernelVer
 
 make modules_install INSTALL_MOD_PATH=%buildroot
 find %buildroot -name '*.ko' | xargs gzip
+
+# Move some modules to kernel-image package tree
+install -d %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/common/videobuf2/ %buildroot%modules_dir/kernel/drivers/media-core/
+%ifarch %arm
+mv %buildroot%modules_dir/kernel/drivers/media/mc/ %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/v4l2-core/videodev.ko.gz %buildroot%modules_dir/kernel/drivers/media-core/
+%endif
+%ifarch aarch64
+mv %buildroot%modules_dir/kernel/drivers/media/rc/rc-core.ko.xz %buildroot%modules_dir/kernel/drivers/media-core/
+mv %buildroot%modules_dir/kernel/drivers/media/radio/tea575x.ko.xz %buildroot%modules_dir/kernel/drivers/media-core/
+%endif
 
 mkdir -p %buildroot/lib/devicetree/$KernelVer
 find arch/%arch_dir/boot/dts -type f -name \*.dtb | xargs -iz install -pm0644 z %buildroot/lib/devicetree/$KernelVer
@@ -493,6 +506,23 @@ grep -qE '^(\[ *[0-9]+\.[0-9]+\] *)?reboot: Power down' boot.log || {
 %modules_dir/kernel/drivers/staging/
 
 %changelog
+* Wed May 19 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.10.36-alt1
+- Updated to 5.10.36 (still RPi-specific)
+- https://github.com/raspberrypi/linux.git rpi-5.10.y
+- commit b657cd2f27d9171b75c846f21e7b4bb581b3ed29
+- To allow put comments in iptables ruleset
+- CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+- (closes: 39767)
+- CONFIG_PPS=y
+- CONFIG_PPS_CLIENT_KTIMER=m
+- CONFIG_PPS_CLIENT_LDISC=m
+- CONFIG_PPS_CLIENT_GPIO=m
+- To VC4 driver can emulate framebuffer on RPi3
+- CONFIG_DRM_FBDEV_OVERALLOC=100
+- add ZRam support
+- CONFIG_ZSMALLOC=m
+- CONFIG_ZRAM=m
+
 * Mon Mar 01 2021 Dmitry Terekhin <jqt4@altlinux.org> 1:5.4.83-alt2
 - To work bluetooth on RPi3
 - CONFIG_SERIAL_DEV_BUS=y
