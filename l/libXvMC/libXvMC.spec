@@ -1,5 +1,5 @@
 Name: libXvMC
-Version: 1.0.11
+Version: 1.0.12
 Release: alt1
 
 Summary: The XvMC Library
@@ -19,7 +19,6 @@ The XvMC Library
 %package devel
 Summary: The XvMC Library and Header Files
 Group: Development/C
-Requires: %name = %version-%release
 
 %description devel
 %name-devel contains the libraries and header files needed to
@@ -33,6 +32,7 @@ develop programs which make use of %name.
 %autoreconf
 %configure \
 	--disable-static
+
 %make_build
 
 %install
@@ -51,6 +51,9 @@ touch %buildroot%_sysconfdir/X11/XvMCConfig
 %_pkgconfigdir/*.pc
 
 %changelog
+* Thu Mar 12 2020 Valery Inozemtsev <shrek@altlinux.ru> 1.0.12-alt1
+- 1.0.12
+
 * Mon Mar 18 2019 Valery Inozemtsev <shrek@altlinux.ru> 1.0.11-alt1
 - 1.0.11
 
