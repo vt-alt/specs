@@ -3,7 +3,7 @@
 
 Name: grub
 Version: 2.02
-Release: alt29.qa3
+Release: alt29.qa4
 
 Summary: GRand Unified Bootloader
 License: GPL-3
@@ -544,6 +544,11 @@ grub-efi-autoupdate || {
 } >&2
 
 %changelog
+* Mon May 17 2021 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa4
+- switch default graphics mode from "800x600" to "auto" (refer to ALT#39948)
+- grub-efi-autoupdate: fix --removable installations were not updated
+- update alt-add-strings-and-translation-for-installer patch
+
 * Mon Mar 01 2021 Nikolai Kostrigin <nickel@altlinux.org> 2.02-alt29.qa3
 - fix OS ALT installer translation and make it common for all distributions
   + update alt-add-translation-for-installer patch (antohami@)
