@@ -1,6 +1,6 @@
 Name:    task-edu
 Version: 1.4.3
-Release: alt0.p9.1
+Release: alt1.p9.1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
 Group:   Education
@@ -218,7 +218,9 @@ Requires: color-prompt-and-man
 Requires: shutter
 Requires: screenkey
 # Mozilla
+%ifnarch ppc64le
 Requires: thunderbird
+%endif
 # Search
 Requires: recoll-full
 # Append all modules from xscreensaver
@@ -597,6 +599,12 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Fri May 14 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt1.p9.1
+- Backport fixes fo new Thunderbird version to p9 branch.
+
+* Tue May 11 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt2
+- Do not require thunderbird on ppc64le.
+
 * Wed Apr 28 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt0.p9.1
 - Backport new version to p9 branch.
 

@@ -1,6 +1,6 @@
 
 Name: kde5-virtual
-Version: 5.21.2
+Version: 5.21.4
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -244,7 +244,7 @@ Obsoletes: kde5-display-manager-2-sddm < %EVR
 Provides: kde5-display-manager = %EVR
 Provides: kde5-display-manager-sddm = %EVR
 Requires: kf5-filesystem
-Requires: plasma5-sddm-kcm sddm
+Requires: sddm sddm-theme-breeze plasma5-sddm-kcm
 %description -n kde5-display-manager-5-sddm
 %summary
 
@@ -263,7 +263,9 @@ Requires: plasma5-sddm-kcm sddm
 
 %files -n kde5-email-client-0-dummy
 %files -n kde5-email-client-2-kmail
+%ifnarch ppc64le
 %files -n kde5-email-client-4-thunderbird
+%endif
 
 %files -n kde5-audio-player-0-dummy
 %files -n kde5-audio-player-2-elisa
@@ -279,6 +281,12 @@ Requires: plasma5-sddm-kcm sddm
 %files -n kde5-display-manager-5-sddm
 
 %changelog
+* Wed May 12 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.4-alt1
+- don't require thunderbird on ppc64le
+
+* Fri Apr 23 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.3-alt1
+- requires sddm-theme-breeze for kde5-display-manager-sddm
+
 * Tue Apr 06 2021 Sergey V Turchin <zerg@altlinux.org> 5.21.2-alt1
 - add requires for lightdm-gtk-greeter-settings
 

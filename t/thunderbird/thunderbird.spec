@@ -12,7 +12,7 @@
 %define llvm_version      11.0
 
 Name: 	 thunderbird
-Version: 78.8.0
+Version: 78.10.2
 Release: alt0.1.p9
 
 Summary: Thunderbird is Mozilla's e-mail client
@@ -62,6 +62,8 @@ Patch124: 0024-MOZILLA-1605273-only-run-CRLite-on-certificates-with.patch
 Patch50: enigmail-use-juniorModeForceOff.patch
 Patch52: enigmail-gost.patch
 Patch53: enigmail-disable-pEpAutoDownload.patch
+
+ExcludeArch: ppc64le
 
 BuildRequires(pre): mozilla-common-devel
 BuildRequires(pre): rpm-build-mozilla.org
@@ -178,7 +180,7 @@ The package contains Lightning - an integrated calendar for Thunderbird.
 %package wayland
 Summary: Thunderbird Wayland launcher
 Group: Networking/Mail
-BuildArch: noarch
+#BuildArch: noarch
 Requires: %name
 
 %description wayland
@@ -238,7 +240,7 @@ Thunderbird development kit.
 %package -n rpm-build-%name
 Summary:  RPM helper macros to rebuild thunderbird packages
 Group: Development/Other
-BuildArch: noarch
+#BuildArch: noarch
 
 Requires: mozilla-common-devel
 Requires: rpm-build-mozilla.org
@@ -648,6 +650,50 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Wed May 19 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.2-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Tue May 18 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.2-alt1
+- New version (78.10.2).
+- Security fixes:
+  + CVE-2021-29957 Partial protection of inline OpenPGP message not indicated
+  + CVE-2021-29956 Thunderbird stored OpenPGP secret keys without master password protection
+
+* Fri May 14 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.1-alt0.1.p9
+- Backport new version to p9 branch.
+
+* Wed May 05 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.1-alt1
+- New version (78.10.1).
+- Security fixes:
+  + CVE-2021-29951 Thunderbird Maintenance Service could have been started or stopped by domain users
+- Do not build for ppc64le.
+
+* Mon Apr 26 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.0-alt1
+- New version (78.10.0).
+- Security fixes:
+  + CVE-2021-23994 Out of bound write due to lazy initialization
+  + CVE-2021-23995 Use-after-free in Responsive Design Mode
+  + CVE-2021-23998 Secure Lock icon could have been spoofed
+  + CVE-2021-23961 More internal network hosts could have been probed by a malicious webpage
+  + CVE-2021-23999 Blob URLs may have been granted additional privileges
+  + CVE-2021-24002 Arbitrary FTP command execution on FTP servers using an encoded URL
+  + CVE-2021-29945 Incorrect size computation in WebAssembly JIT could lead to null-reads
+  + CVE-2021-29946 Port blocking could be bypassed
+  + CVE-2021-29948 Race condition when reading from disk while verifying signatures
+  + CVE-2021-23991 An attacker may use Thunderbird's OpenPGP key refresh mechanism to poison an existing key
+  + CVE-2021-23992 A crafted OpenPGP key with an invalid user ID could be used to confuse the user
+  + CVE-2021-23993 Inability to send encrypted OpenPGP email after importing a crafted OpenPGP key
+  + CVE-2021-29949 Thunderbird might execute an alternative OTR library
+  + CVE-2021-23981 Texture upload into an unbound backing buffer resulted in an out-of-bound read
+  + CVE-2021-23982 Internal network hosts could have been probed by a malicious webpage
+  + CVE-2021-23984 Malicious extensions could have spoofed popup information
+  + CVE-2021-23987 Memory safety bugs fixed in Thunderbird 78.9
+
+* Wed Mar 10 2021 Andrey Cherepanov <cas@altlinux.org> 78.8.1-alt1
+- New version (78.8.1).
+- Security fixes:
+  + CVE-2021-29950 Logic issue potentially leaves key material unlocked
+
 * Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 78.8.0-alt0.1.p9
 - Backport new version to p9 branch.
 
