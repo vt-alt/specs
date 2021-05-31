@@ -2,8 +2,8 @@
 %def_with ffmpeg
 
 Name: guacamole-server
-Version: 1.2.0
-Release: alt1.M90P.1
+Version: 1.3.0
+Release: alt3
 Summary: Server-side native components that form the Guacamole proxy
 License: Apache-2.0
 Url: http://guac-dev.org/
@@ -13,6 +13,7 @@ Source0: %name-%version.tar
 Source1: %name.sysconfig
 Source2: %name.service
 Source3: %name.conf
+Patch: %name-%version.patch
 
 Requires: guacd
 Requires: libguac-client-ssh
@@ -35,7 +36,7 @@ BuildRequires: pkgconfig(libssl)
 BuildRequires: pkgconfig(libtelnet)
 BuildRequires: pkgconfig(libvncserver)
 BuildRequires: pkgconfig(libwebp)
-BuildRequires: pkgconfig(ossp-uuid)
+BuildRequires: pkgconfig(uuid)
 BuildRequires: pkgconfig(pango)
 BuildRequires: pkgconfig(vorbis)
 BuildRequires: pkgconfig(winpr2)
@@ -145,9 +146,7 @@ framework to translate between arbitrary protocols and the Guacamole protocol.
 
 %prep
 %setup
-
-# p9 hack
-sed -i s,-Werror,,g `find . -name Makefile.am`
+%patch -p1
 
 %build
 %autoreconf
@@ -243,8 +242,14 @@ useradd -r -g %username -c 'Guacamole proxy daemon' \
 %attr(750,%username,%username) %_sharedstatedir/guacd
 
 %changelog
-* Wed Dec 16 2020 Igor Vlasenko <viy@altlinux.ru> 1.2.0-alt1.M90P.1
-- p9 backport
+* Thu Apr 15 2021 Alexey Shabalin <shaba@altlinux.org> 1.3.0-alt3
+- Build with libuuid instead ossp-uuid.
+
+* Mon Apr 05 2021 Alexey Shabalin <shaba@altlinux.org> 1.3.0-alt2
+- fix build with freerdp-2.0.0
+
+* Tue Jan 19 2021 Alexey Shabalin <shaba@altlinux.org> 1.3.0-alt1
+- new version 1.3.0
 
 * Tue Dec 08 2020 Alexey Shabalin <shaba@altlinux.org> 1.2.0-alt2
 - Add virtual package guacamole-server with depends on:
