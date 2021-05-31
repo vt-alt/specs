@@ -4,7 +4,7 @@
 
 Name: kernel-image-skit
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt3
+Release: alt4
 
 Provides: kernel-modules-dm-secdel-skit = %version-%release
 
@@ -18,7 +18,7 @@ Provides: kernel-modules-dm-secdel-skit = %version-%release
 
 # Build options
 # You can change compiler version by editing this line:
-%define kgcc_version	7
+%define kgcc_version	8
 
 ## Don't edit below this line ##################################
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Fri May 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt4
+- VIRTIO drivers added
+
 * Tue Nov 17 2020 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt3
 - CONFIG_CRYPTO_CRC32C=m
 
