@@ -9,7 +9,6 @@
 
 %def_enable sdl
 %def_enable curses
-%def_enable bluez
 %def_enable vnc
 %def_enable vnc_sasl
 %def_enable vnc_jpeg
@@ -19,7 +18,9 @@
 %def_enable alsa
 %def_enable pulseaudio
 %def_enable oss
+%def_disable jack
 %def_enable aio
+%def_enable io_uring
 %def_enable blobs
 %def_enable smartcard
 %def_enable libusb
@@ -40,6 +41,7 @@
 %def_enable rbd
 %endif
 %def_enable libnfs
+%def_enable zstd
 %def_enable seccomp
 %def_enable glusterfs
 %def_enable gtk
@@ -59,7 +61,6 @@
 %def_disable tcmalloc
 %def_disable jemalloc
 %def_enable replication
-%def_disable vxhs
 %def_enable rdma
 %def_enable lzo
 %def_enable snappy
@@ -70,6 +71,8 @@
 %def_enable libxml2
 %def_disable libpmem
 %def_enable libudev
+%def_enable libdaxctl
+%def_disable brlapi
 
 %define power64 ppc64 ppc64p7 ppc64le
 %define mips32 mips mipsel mipsr6 mipsr6el
@@ -99,27 +102,35 @@
 %global kvm_package   system-aarch64
 %def_enable qemu_kvm
 %endif
+%ifarch riscv64
+%global kvm_package   system-riscv
+%def_enable qemu_kvm
+%endif
 %ifarch %mips_arch
 %global kvm_package   system-mips
 %endif
 
 %def_enable have_kvm
 
-%define audio_drv_list %{?_enable_oss:oss} %{?_enable_alsa:alsa} %{?_enable_sdl:sdl} %{?_enable_pulseaudio:pa}
+%define audio_drv_list %{?_enable_oss:oss} %{?_enable_alsa:alsa} %{?_enable_sdl:sdl} %{?_enable_pulseaudio:pa} %{?_enable_jack:jack}
 %define block_drv_list curl dmg %{?_enable_glusterfs:gluster} %{?_enable_libiscsi:iscsi} %{?_enable_libnfs:nfs} %{?_enable_rbd:rbd} %{?_enable_libssh:ssh}
-%define ui_list %{?_enable_gtk:gtk} %{?_enable_curses:curses} %{?_enable_sdl:sdl} %{?_enable_spice:spice-app}
-%define qemu_arches aarch64 alpha arm cris hppa lm32 m68k microblaze mips moxie nios2 or1k ppc riscv s390x sh4 sparc tricore unicore32 x86 xtensa
+%define ui_list %{?_enable_gtk:gtk} %{?_enable_curses:curses} %{?_enable_sdl:sdl} %{?_enable_opengl:opengl}
+%define ui_spice_list %{?_enable_spice:app core}
+%define device_usb_list redirect smartcard
+%define device_display_list virtio-gpu-pci %{?_enable_virglrenderer:virtio-gpu} virtio-vga
+%define qemu_arches aarch64 alpha arm avr cris hppa m68k microblaze mips moxie nios2 or1k ppc riscv rx s390x sh4 sparc tricore x86 xtensa
 
 %global _group vmusers
 %global rulenum 90
 %global _libexecdir /usr/libexec
 %global _localstatedir /var
+%global firmwarepath /usr/share/qemu:/usr/share/seabios:/usr/share/seavgabios:/usr/share/ipxe:/usr/share/ipxe.efi
 
 # }}}
 
 Name: qemu
-Version: 4.2.1
-Release: alt4
+Version: 5.2.0
+Release: alt6
 
 Summary: QEMU CPU Emulator
 License: BSD-2-Clause AND BSD-3-Clause AND GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.1-or-later AND MIT
@@ -127,7 +138,9 @@ Group: Emulators
 Url: https://www.qemu.org
 # git://git.qemu.org/qemu.git
 Source0: %name-%version.tar
-Source100: keycodemapdb-%name-%version.tar
+Source100: keycodemapdb.tar
+Source101: berkeley-testfloat-3.tar
+Source102: berkeley-softfloat-3.tar
 Source2: qemu-kvm.control.in
 Source4: qemu-kvm.rules
 # qemu-kvm back compat wrapper
@@ -139,9 +152,6 @@ Source10: qemu-guest-agent.init
 Source11: qemu-ga.sysconfig
 # /etc/qemu/bridge.conf
 Source12: bridge.conf
-# PR manager service
-Source14: qemu-pr-helper.service
-Source15: qemu-pr-helper.socket
 
 Patch: qemu-alt.patch
 
@@ -153,31 +163,28 @@ Requires: %name-system = %EVR
 Requires: %name-user = %EVR
 
 BuildRequires(pre): rpm-build-python3
-BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static
+BuildRequires: meson >= 0.55.0
+BuildRequires: glibc-devel-static zlib-devel-static glib2-devel-static libpcre-devel-static libattr-devel-static
 BuildRequires: glib2-devel >= 2.48 libgio-devel
-BuildRequires: makeinfo perl-podlators perl-devel python-module-sphinx
-BuildRequires: libattr-devel-static libcap-devel libcap-ng-devel
+BuildRequires: makeinfo perl-devel python3-module-sphinx
+BuildRequires: libcap-ng-devel
 BuildRequires: libxfs-devel
 BuildRequires: zlib-devel libcurl-devel libpci-devel glibc-kernheaders
 BuildRequires: ipxe-roms-qemu >= 1:20161208-alt1.git26050fd seavgabios seabios >= 1.7.4-alt2 libfdt-devel >= 1.5.0.0.20.2431 qboot
 BuildRequires: libpixman-devel >= 0.21.8
 BuildRequires: python3-devel
-# Upstream disables iasl for big endian and QEMU checks for this.
-%ifnarch s390 s390x ppc ppc64
-BuildRequires: iasl
-%endif
-BuildRequires: libpcre-devel-static
 %{?_enable_sdl:BuildRequires: libSDL2-devel}
 %{?_enable_curses:BuildRequires: libncursesw-devel}
-%{?_enable_bluez:BuildRequires: libbluez-devel}
 %{?_enable_alsa:BuildRequires: libalsa-devel}
 %{?_enable_pulseaudio:BuildRequires: libpulseaudio-devel}
+%{?_enable_jack:BuildRequires: libjack-devel}
 %{?_enable_vnc_sasl:BuildRequires: libsasl2-devel}
 %{?_enable_vnc_jpeg:BuildRequires: libjpeg-devel}
 %{?_enable_vnc_png:BuildRequires: libpng-devel}
 %{?_enable_xkbcommon:BuildRequires: libxkbcommon-devel}
 %{?_enable_vde:BuildRequires: libvde-devel}
 %{?_enable_aio:BuildRequires: libaio-devel}
+%{?_enable_io_uring:BuildRequires: liburing-devel}
 %{?_enable_spice:BuildRequires: libspice-server-devel >= 0.12.5 spice-protocol >= 0.12.3}
 BuildRequires: libuuid-devel
 %{?_enable_smartcard:BuildRequires: libcacard-devel >= 2.5.1}
@@ -187,9 +194,10 @@ BuildRequires: libuuid-devel
 %{?_enable_rbd:BuildRequires: ceph-devel}
 %{?_enable_libiscsi:BuildRequires: libiscsi-devel >= 1.9.0}
 %{?_enable_libnfs:BuildRequires: libnfs-devel >= 1.9.3}
+%{?_enable_zstd:BuildRequires: libzstd-devel >= 1.4.0}
 %{?_enable_seccomp:BuildRequires: libseccomp-devel >= 2.3.0}
 %{?_enable_glusterfs:BuildRequires: pkgconfig(glusterfs-api)}
-%{?_enable_gtk:BuildRequires: libgtk+3-devel >= 3.14.0 libvte3-devel >= 0.32.0}
+%{?_enable_gtk:BuildRequires: libgtk+3-devel >= 3.22.0 libvte3-devel >= 0.32.0}
 %{?_enable_gnutls:BuildRequires: libgnutls-devel >= 3.1.18}
 %{?_enable_nettle:BuildRequires: libnettle-devel >= 2.7.1}
 %{?_enable_gcrypt:BuildRequires: libgcrypt-devel >= 1.5.0}
@@ -208,27 +216,42 @@ BuildRequires: libslirp-devel
 %{?_enable_bzip2:BuildRequires: bzlib-devel}
 %{?_enable_lzfse:BuildRequires: liblzfse-devel}
 %{?_enable_xen:BuildRequires: libxen-devel}
-%{?_enable_vxhs:BuildRequires: libvxhs-devel}
 %{?_enable_mpath:BuildRequires: libudev-devel libmultipath-devel}
 %{?_enable_libxml2:BuildRequires: libxml2-devel}
 %{?_enable_libpmem:BuildRequires: libpmem-devel}
 %{?_enable_libudev:BuildRequires: libudev-devel}
+%{?_enable_libdaxctl:BuildRequires: libdaxctl-devel}
+# used by some linux user impls
+BuildRequires: libdrm-devel
 
 %global requires_all_modules         \
 Requires: %name-block-curl = %EVR    \
 Requires: %name-block-dmg = %EVR     \
-%{?_enable_glusterfs:Requires: %name-block-gluster = %EVR} \
-%{?_enable_libiscsi:Requires: %name-block-iscsi = %EVR}    \
-%{?_enable_libnfs:Requires: %name-block-nfs = %EVR}        \
-%{?_enable_rbd:Requires: %name-block-rbd = %EVR}           \
-%{?_enable_alsa:Requires: %name-audio-alsa = %EVR}         \
-%{?_enable_oss:Requires: %name-audio-oss = %EVR}           \
-%{?_enable_pulseaudio:Requires: %name-audio-pa = %EVR}     \
-%{?_enable_sdl:Requires: %name-audio-sdl = %EVR}           \
-%{?_enable_curses:Requires: %name-ui-curses = %EVR}        \
-%{?_enable_spice:Requires: %name-ui-spice-app = %EVR}
+%{?_enable_glusterfs:Requires: %name-block-gluster = %EVR}  \
+%{?_enable_libiscsi:Requires: %name-block-iscsi = %EVR}     \
+%{?_enable_libnfs:Requires: %name-block-nfs = %EVR}         \
+%{?_enable_rbd:Requires: %name-block-rbd = %EVR}            \
+%{?_enable_libssh:Requires: %name-block-ssh = %EVR}         \
+%{?_enable_alsa:Requires: %name-audio-alsa = %EVR}          \
+%{?_enable_oss:Requires: %name-audio-oss = %EVR}            \
+%{?_enable_pulseaudio:Requires: %name-audio-pa = %EVR}      \
+%{?_enable_jack:Requires: %name-audio-jack = %EVR}          \
+%{?_enable_sdl:Requires: %name-audio-sdl = %EVR}            \
+%{?_enable_spice:Requires: %name-audio-spice = %EVR}        \
+%{?_enable_curses:Requires: %name-ui-curses = %EVR}         \
+%{?_enable_spice:Requires: %name-ui-spice-app = %EVR}       \
+%{?_enable_spice:Requires: %name-ui-spice-core = %EVR}      \
+%{?_enable_spice:Requires: %name-device-display-qxl = %EVR} \
+Requires: %name-device-display-virtio-gpu-pci = %EVR        \
+Requires: %name-device-display-virtio-vga = %EVR            \
+%{?_enable_virglrenderer:Requires: %name-device-display-virtio-gpu = %EVR} \
+%{?_enable_brlapi:Requires: %name-char-baum = %EVR}         \
+%{?_enable_spice:Requires: %name-char-spice = %EVR}         \
+Requires: %name-device-usb-redirect = %EVR                  \
+Requires: %name-device-usb-smartcard = %EVR
 
-
+##%%{?_enable_opengl:Requires: %name-ui-opengl = %EVR}         \
+##%%{?_enable_opengl:Requires: %name-ui-egl-headless = %EVR}   \
 ##%%{?_enable_gtk:Requires: %name-ui-gtk = %EVR}        \
 ##%%{?_enable_sdl:Requires: %name-ui-sdl = %EVR}
 
@@ -372,7 +395,7 @@ compiled for one CPU on another CPU. \
 %{expand:%(for i in %qemu_arches; do echo %%do_package_user user-binfmt $i Requires: qemu-user-$i Conflicts: qemu-user-static-binfmt-$i; done)}
 
 %if_enabled user_static
-%{expand:%(for i in %qemu_arches; do echo %%do_package_user user-static $i Requires: qemu-aux; done)}
+%{expand:%(for i in %qemu_arches; do echo %%do_package_user user-static $i; done)}
 %{expand:%(for i in %qemu_arches; do echo %%do_package_user user-static-binfmt $i Requires: qemu-user-static-$i Conflicts: qemu-user-binfmt-$i; done)}
 %endif
 
@@ -399,11 +422,13 @@ a virtfs helper.
 
 %global do_package_block() \
 %%package block-%%{1} \
-Summary: QEMU %%{1} audio driver \
+Summary: QEMU %%{1} block driver \
 Group: Emulators \
 Requires: %%name-common = %%EVR \
+\
 %%description block-%%{1} \
 This package provides the additional %%{1} block driver for QEMU. \
+\
 %%files block-%%{1} \
 %%_libdir/qemu/block-%%{1}*.so
 
@@ -414,24 +439,118 @@ This package provides the additional %%{1} block driver for QEMU. \
 Summary: QEMU %%{1} audio driver \
 Group: Emulators \
 Requires: %%name-common = %%EVR \
+\
 %%description audio-%%{1} \
 This package provides the additional %%{1} audio driver for QEMU. \
+\
 %%files audio-%%{1} \
 %%_libdir/qemu/audio-%%{1}.so
 
-%{expand:%(for i in %audio_drv_list; do echo %%do_package_audio $i; done)}
+%{expand:%(for i in %audio_drv_list spice; do echo %%do_package_audio $i; done)}
 
 %global do_package_ui() \
 %%package ui-%%{1} \
 Summary: QEMU %%{1} UI driver \
 Group: Emulators \
 Requires: %%name-common = %%EVR \
+%%if %%{1} == gtk \
+Requires: %%name-ui-opengl = %%EVR \
+%%endif \
+%%if %%{1} == sdl \
+Requires: %%name-ui-opengl = %%EVR \
+%%endif \
+\
 %%description ui-%%{1} \
 This package provides the additional %%{1} UI for QEMU. \
+\
 %%files ui-%%{1} \
 %%_libdir/qemu/ui-%%{1}.so
 
 %{expand:%(for i in %ui_list; do echo %%do_package_ui $i; done)}
+
+%global do_package_ui_spice() \
+%%package ui-spice-%%{1} \
+Summary: QEMU spice-%%{1} UI driver \
+Group: Emulators \
+Requires: %%name-common = %%EVR \
+%%if %%{1} == "core" \
+Requires: %%name-ui-opengl = %%EVR \
+%%endif \
+%%if %%{1} == "app" \
+Requires: %%name-ui-spice-core = %%EVR \
+Requires: %%name-char-spice = %%EVR \
+%%endif \
+\
+%%description ui-spice-%%{1} \
+This package provides the additional %%{1} UI for QEMU. \
+\
+%%files ui-spice-%%{1} \
+%%_libdir/qemu/ui-spice-%%{1}.so
+
+%{expand:%(for i in %ui_spice_list; do echo %%do_package_ui_spice $i; done)}
+
+%package  ui-egl-headless
+Summary: QEMU EGL headless driver
+Group: Emulators
+Requires: %name-common = %EVR
+Requires: %name-ui-opengl = %EVR
+
+%description ui-egl-headless
+This package provides the additional egl-headless UI for QEMU.
+
+%package device-display-qxl
+Summary: QEMU QXL display device
+Group: Emulators
+Requires: %name-common = %EVR
+Requires: %name-ui-spice-core = %EVR
+
+%description device-display-qxl
+This package provides the QXL display device for QEMU.
+
+%global do_package_device_display() \
+%%package device-display-%%{1} \
+Summary: QEMU display-%%{1} device \
+Group: Emulators \
+Requires: %%name-common = %%EVR \
+\
+%%description device-display-%%{1} \
+This package provides the additional device display-%%{1} for QEMU. \
+\
+%%files device-display-%%{1} \
+%%_libdir/qemu/hw-display-%%{1}.so
+
+%{expand:%(for i in %device_display_list; do echo %%do_package_device_display $i; done)}
+
+%global do_package_device_usb() \
+%%package device-usb-%%{1} \
+Summary: QEMU usb-%%{1} device \
+Group: Emulators \
+Requires: %%name-common = %%EVR \
+\
+%%description device-usb-%%{1} \
+This package provides the additional device usb-%%{1} for QEMU. \
+\
+%%files device-usb-%%{1} \
+%%_libdir/qemu/hw-usb-%%{1}.so
+
+%{expand:%(for i in %device_usb_list; do echo %%do_package_device_usb $i; done)}
+
+%package char-baum
+Summary: QEMU Baum chardev driver
+Group: Emulators
+Requires: %name-common = %EVR
+
+%description char-baum
+This package provides the Baum chardev driver for QEMU.
+
+%package char-spice
+Summary: QEMU spice chardev driver
+Group: Emulators
+Requires: %name-common = %EVR
+Requires: %name-ui-spice-core = %EVR
+
+%description char-spice
+This package provides the spice chardev driver for QEMU.
 
 %package guest-agent
 Summary: QEMU guest agent
@@ -466,14 +585,6 @@ QEMU is a generic and open source processor emulator which achieves
 good emulation speed by using dynamic translation.
 
 This is an auxiliary package.
-
-%package -n ivshmem-tools
-Summary: Client and server for QEMU ivshmem device
-Group: Emulators
-
-%description -n ivshmem-tools
-This package provides client and server tools for QEMU's ivshmem device.
-
 
 %global do_package_system() \
 %%package system-%%{1} \
@@ -520,6 +631,10 @@ This package provides the system emulator for %%{1}. \
 %%_datadir/%%name/palcode-clipper \
 %%endif \
 \
+%%if %%{1} == arm \
+%%_datadir/%%name/npcm7xx_bootrom.bin \
+%%endif \
+\
 %%if %%{1} == hppa \
 %%_datadir/%%name/hppa-firmware.img \
 %%endif \
@@ -529,10 +644,7 @@ This package provides the system emulator for %%{1}. \
 %%endif \
 \
 %%if %%{1} == s390x \
-%%_datadir/%%name/s390-* \
-%%ifarch s390x \
-%%_sysconfdir/sysctl.d/50-kvm-s390x.conf \
-%%endif \
+%%_datadir/%%name/s390-*.img \
 %%endif \
 \
 %%if %%{1} == sparc \
@@ -543,7 +655,6 @@ This package provides the system emulator for %%{1}. \
 %%if %%{1} == ppc \
 %%_datadir/%%name/bamboo.dtb \
 %%_datadir/%%name/canyonlands.dtb \
-%%_datadir/%%name/ppc_rom.bin \
 %%_datadir/%%name/qemu_vga.ndrv \
 %%_datadir/%%name/skiboot.lid \
 %%_datadir/%%name/u-boot* \
@@ -551,8 +662,8 @@ This package provides the system emulator for %%{1}. \
 %%_datadir/%%name/slof.bin \
 %%endif \
 \
-%%%if %%{1} == riscv \
-%%_datadir/%%name/opensbi*.bin \
+%%if %%{1} == riscv \
+%%_datadir/%%name/opensbi* \
 %%endif \
 \
 %%_bindir/qemu-system-%%{1}* \
@@ -563,8 +674,9 @@ This package provides the system emulator for %%{1}. \
 %prep
 %setup
 
-mkdir -p ui/keycodemapdb
 tar -xf %SOURCE100 -C ui/keycodemapdb --strip-components 1
+tar -xf %SOURCE101 -C tests/fp/berkeley-testfloat-3 --strip-components 1
+tar -xf %SOURCE102 -C tests/fp/berkeley-softfloat-3 --strip-components 1
 
 %patch -p1
 cp -f %SOURCE2 qemu-kvm.control.in
@@ -577,7 +689,7 @@ export buildldflags="VL_LDFLAGS=-Wl,--build-id"
 
 run_configure() {
 # non-GNU configure
-./configure \
+    ../configure \
 	--disable-git-update \
 	--prefix=%prefix \
 	--sysconfdir=%_sysconfdir \
@@ -586,34 +698,30 @@ run_configure() {
 	--libexecdir=%_libexecdir \
 	--localstatedir=%_localstatedir \
 	--with-pkgversion=%name-%version-%release \
-%ifarch s390 %mips64
-	--enable-tcg-interpreter \
-%endif
-	--extra-ldflags="$extraldflags -Wl,-z,relro -Wl,-z,now" \
-	--extra-cflags="%optflags" \
 	--disable-werror \
 	--disable-debug-tcg \
 	--disable-sparse \
 	--disable-strip \
-	--python=%{__python3} \
+	--firmwarepath=%firmwarepath \
 	 "$@"
 }
 
 %if_enabled user_static
+mkdir build-static
+pushd build-static
 # non-GNU configure
 run_configure \
 	--static \
 	--enable-user \
 	--enable-linux-user \
 	--enable-attr \
-	--audio-drv-list= \
-	--disable-kvm \
-	--disable-pie \
-	--disable-system \
+	--enable-tcg \
+	--extra-ldflags="$extraldflags -Wl,-Ttext-segment=0x60000000" \
+	--audio-drv-list="" \
 	--disable-auth-pam \
 	--disable-avx2 \
+	--disable-avx512f \
 	--disable-blobs \
-	--disable-bluez \
 	--disable-bochs \
 	--disable-brlapi \
 	--disable-bsd-user \
@@ -622,7 +730,6 @@ run_configure \
 	--disable-capstone \
 	--disable-cloop \
 	--disable-cocoa \
-	--disable-coroutine-pool \
 	--disable-crypto-afalg \
 	--disable-curl \
 	--disable-curses \
@@ -642,13 +749,18 @@ run_configure \
 	--disable-hvf \
 	--disable-iconv \
 	--disable-jemalloc \
+	--disable-keyring \
+	--disable-kvm \
+	--disable-libdaxctl \
 	--disable-libiscsi \
 	--disable-libnfs \
 	--disable-libpmem \
 	--disable-libssh \
+	--disable-libudev \
 	--disable-libusb \
 	--disable-libxml2 \
 	--disable-linux-aio \
+	--disable-linux-io-uring \
 	--disable-live-block-migration \
 	--disable-lzfse \
 	--disable-lzo \
@@ -660,6 +772,7 @@ run_configure \
 	--disable-numa \
 	--disable-opengl \
 	--disable-parallels \
+	--disable-pie \
 	--disable-pvrdma \
 	--disable-qcow1 \
 	--disable-qed \
@@ -667,6 +780,7 @@ run_configure \
 	--disable-rbd \
 	--disable-rdma \
 	--disable-replication \
+	--disable-rng-none \
 	--disable-sdl \
 	--disable-sdl-image \
 	--disable-seccomp \
@@ -676,18 +790,19 @@ run_configure \
 	--disable-snappy \
 	--disable-sparse \
 	--disable-spice \
+	--disable-system \
 	--disable-tcmalloc \
 	--disable-tools \
 	--disable-tpm \
 	--disable-usb-redir \
 	--disable-vde \
 	--disable-vdi \
-	--disable-vte \
 	--disable-vhost-crypto \
 	--disable-vhost-kernel \
 	--disable-vhost-net \
 	--disable-vhost-scsi \
 	--disable-vhost-user \
+	--disable-vhost-vdpa \
 	--disable-vhost-vsock \
 	--disable-vhost-user-fs \
 	--disable-virglrenderer \
@@ -698,38 +813,42 @@ run_configure \
 	--disable-vnc-sasl \
 	--disable-vte \
 	--disable-vvfat \
-	--disable-vxhs \
 	--disable-whpx \
 	--disable-xen \
 	--disable-xen-pci-passthrough \
 	--disable-xfsctl \
+	--disable-xkbcommon \
+	--disable-zstd \
 	--without-default-devices
 
-
 # Please do not touch this
-sed -i "/TARGET_ARM/ {
+sed -i "/cpu_get_model/ {
 N
-/cpu_model/ s,any,cortex-a8,
-}" linux-user/main.c
+N
+/return / s,any,cortex-a8,
+}" ../linux-user/arm/target_elf.h
 
 %make_build V=1 $buildldflags
 
 %if_with arm
-mv arm-linux-user/qemu-arm arm-linux-user/qemu-armh
+mv qemu-arm qemu-armh
 
-sed -i '/cpu_model =/ s,cortex-a8,cortex-a53,' linux-user/main.c
+sed -i '/return / s,cortex-a8,cortex-a53,' ../linux-user/arm/target_elf.h
 %make_build V=1 $buildldflags
-mv arm-linux-user/qemu-arm arm-linux-user/qemu-aarch64
+mv qemu-arm qemu-aarch64
 
-sed -i '/cpu_model =/ s,cortex-a53,any,' linux-user/main.c
+exit 0
+
+sed -i '/return / s,cortex-a53,any,' ../linux-user/arm/target_elf.h
 %make_build V=1 $buildldflags
 %endif
 
-find -regex '.*linux-user/qemu.*' -perm 755 -exec mv '{}' '{}'.static ';'
-
-%make_build clean
+popd
 %endif
 
+# Build for non-static qemu-*
+mkdir build-dynamic
+pushd build-dynamic
 # non-GNU configure
 run_configure \
 	--enable-system \
@@ -740,7 +859,6 @@ run_configure \
 	--enable-modules \
 	%{?_enable_sdl:--enable-sdl} \
 	%{?_disable_curses:--disable-curses} \
-	%{subst_enable bluez} \
 	%{subst_enable vnc} \
 	%{?_enable_gtk:--enable-gtk --enable-vte} \
 	%{?_disable_vnc_tls:--disable-vnc-tls} \
@@ -750,10 +868,11 @@ run_configure \
 	%{?_disable_xkbcommon:--disable-xkbcommon} \
 	%{?_disable_vde:--disable-vde} \
 	%{?_disable_aio:--disable-linux-aio} \
+	%{?_disable_io_uring:--disable-linux-io-uring} \
 	%{?_disable_blobs: --disable-blobs} \
 	%{subst_enable spice} \
 	--audio-drv-list="%audio_drv_list" \
-	--disable-brlapi \
+	%{subst_enable brlapi} \
 	--enable-curl \
 	%{subst_enable virglrenderer} \
 	%{subst_enable tpm} \
@@ -768,6 +887,7 @@ run_configure \
 	%{subst_enable libusb} \
 	%{?_enable_usb_redir:--enable-usb-redir} \
 	%{subst_enable opengl} \
+	%{subst_enable zstd} \
 	%{subst_enable seccomp} \
 	%{subst_enable libiscsi} \
 	%{subst_enable rbd} \
@@ -784,7 +904,6 @@ run_configure \
 	%{subst_enable tcmalloc} \
 	%{subst_enable jemalloc} \
 	%{subst_enable replication} \
-	%{subst_enable vxhs} \
 	%{subst_enable lzo} \
 	%{subst_enable snappy} \
 	%{subst_enable bzip2} \
@@ -792,31 +911,44 @@ run_configure \
 	%{?_disable_guest_agent:--disable-guest-agent} \
 	%{subst_enable tools} \
 	%{subst_enable libpmem} \
+	%{subst_enable libdaxctl} \
 	--enable-xkbcommon \
+	--extra-ldflags="$extraldflags" \
 	--disable-xen
 
 %make_build V=1 $buildldflags
+popd
 
 sed -i 's/@GROUP@/%_group/g' qemu-kvm.control.in
 
 %install
-%makeinstall_std
-
 %define docdir %_docdir/%name-%version
-mv %buildroot%_docdir/qemu %buildroot%docdir
-install -m644 LICENSE MAINTAINERS %buildroot%docdir/
-for emu in %buildroot%_bindir/qemu-system-*; do
-    ln -sf qemu.1.xz %buildroot%_man1dir/$(basename $emu).1.xz
-done
 
 %if_enabled user_static
-find -regex '.*linux-user/qemu.*\.static' -exec install -m755 '{}' %buildroot%_bindir ';'
+pushd build-static
+%makeinstall_std
+# Rename all QEMU user emulators to have a -static suffix
+for src in %buildroot%_bindir/qemu-*
+do
+  mv $src $src.static
+done
+
 for f in %buildroot%_bindir/qemu-*.static; do
     [ -f "$f" ]
     symlink="${f%%.static}-static"
     ln -sfr "$f" "$symlink"
 done
+popd
 %endif
+
+pushd build-dynamic
+%makeinstall_std
+popd
+mv %buildroot%_docdir/qemu %buildroot%docdir
+install -D -p -m0644 -t %buildroot%docdir README.rst COPYING COPYING.LIB LICENSE
+for emu in %buildroot%_bindir/qemu-system-*; do
+    ln -sf qemu.1.xz %buildroot%_man1dir/$(basename $emu).1.xz
+done
 
 %if_enabled qemu_kvm
 install -m 0755 %SOURCE5 %buildroot%_bindir/qemu-kvm
@@ -843,8 +975,8 @@ mkdir -p %buildroot%_logdir
 touch %buildroot%_logdir/qga-fsfreeze-hook.log
 
 # Install qemu-pr-helper service
-install -m 0644 %SOURCE14 %buildroot%_unitdir/qemu-pr-helper.service
-install -m 0644 %SOURCE15 %buildroot%_unitdir/qemu-pr-helper.socket
+install -m 0644 contrib/systemd/qemu-pr-helper.service %buildroot%_unitdir/qemu-pr-helper.service
+install -m 0644 contrib/systemd/qemu-pr-helper.socket %buildroot%_unitdir/qemu-pr-helper.socket
 # Install rules to use the bridge helper with libvirt's virbr0
 install -m 0644 %SOURCE12 %buildroot%_sysconfdir/%name
 
@@ -867,19 +999,16 @@ rm -f %buildroot%_datadir/%name/vgabios*bin
 # Provided by package seabios
 rm -f %buildroot%_datadir/%name/bios.bin
 rm -f %buildroot%_datadir/%name/bios-256k.bin
+rm -f %buildroot%_datadir/%name/bios-microvm.bin
 # Provided by package sgabios
 #rm -f %buildroot%_datadir/%name/sgabios.bin
 # Provided by package qboot
-rm -f %buildroot%_datadir/%name/bios-microvm.bin
+rm -f %buildroot%_datadir/%name/qboot.rom
 # Provided by package edk2
 rm %buildroot%_datadir/%name/edk2-*
-rm -r %buildroot%_datadir/%name/firmware
+rm %buildroot%_datadir/%name/firmware/*
 
 rm %buildroot%_datadir/%name/qemu-nsis.bmp
-rm %buildroot%_datadir/%name/vhost-user/50-qemu-gpu.json
-
-# not package tilegx arch
-rm %buildroot%_bindir/qemu-tilegx*
 
 
 # the pxe ipxe images will be symlinks to the images on
@@ -891,15 +1020,18 @@ for rom in e1000 ne2k_pci pcnet rtl8139 virtio eepro100 e1000e vmxnet3 ; do
   ln -r -s %buildroot%_datadir/ipxe.efi/efi-${rom}.rom %buildroot%_datadir/%name/efi-${rom}.rom
 done
 
-for bios in vgabios vgabios-cirrus vgabios-qxl vgabios-stdvga vgabios-vmware vgabios-virtio ; do
+for bios in vgabios vgabios-cirrus vgabios-qxl vgabios-stdvga vgabios-vmware vgabios-virtio vgabios-ramfb vgabios-bochs-display vgabios-ati ; do
   ln -r -s %buildroot%_datadir/seavgabios/${bios}.bin %buildroot%_datadir/%name/${bios}.bin
 done
 
-ln -r -s %buildroot%_datadir/seabios/{bios,bios-256k}.bin %buildroot%_datadir/%name/
-ln -r -s %buildroot%_datadir/qboot/bios-microvm.bin %buildroot%_datadir/%name/
+ln -r -s %buildroot%_datadir/seabios/{bios,bios-256k,bios-microvm}.bin %buildroot%_datadir/%name/
+ln -r -s %buildroot%_datadir/qboot/bios.bin %buildroot%_datadir/%name/qboot.rom
 
 mkdir -p %buildroot%_binfmtdir
 ./scripts/qemu-binfmt-conf.sh --systemd ALL --exportdir %buildroot%_binfmtdir --qemu-path %_bindir
+
+# Drop qemu-mipsn32*.conf -- see https://bugzilla.altlinux.org/39619
+rm -rf %buildroot%_binfmtdir/*mipsn32*
 
 for f in %buildroot%_binfmtdir/*.conf; do
     [ -f "$f" ]
@@ -986,6 +1118,7 @@ fi
 %_datadir/%name/trace-events-all
 %_datadir/%name/*.rom
 %_datadir/%name/vgabios*.bin
+%dir %_datadir/%name/firmware
 %_man1dir/%name.1*
 %_sysconfdir/udev/rules.d/%rulenum-%name-kvm.rules
 %_controldir/*
@@ -1026,19 +1159,45 @@ fi
 %_man8dir/qemu-nbd.8*
 
 %files tools
-%_bindir/virtfs-proxy-helper
+%_libexecdir/virtfs-proxy-helper
 %_man1dir/virtfs-proxy-helper.*
 %attr(4710,root,vmusers) %_libexecdir/qemu-bridge-helper
+%if_enabled virglrenderer
 %_libexecdir/vhost-user-gpu
+%_datadir/%name/vhost-user/50-qemu-gpu.json
+%endif
+%_libexecdir/virtiofsd
+%_man1dir/virtiofsd.*
+%_datadir/qemu/vhost-user/50-qemu-virtiofsd.json
+%_bindir/qemu-storage-daemon
 %if_enabled mpath
 %_bindir/qemu-pr-helper
 %_unitdir/qemu-pr-helper.service
 %_unitdir/qemu-pr-helper.socket
+%_man8dir/qemu-pr-helper.*
 %endif
 %_bindir/elf2dmp
 %_bindir/qemu-edid
 %_bindir/qemu-keymap
 %config(noreplace) %_sysconfdir/%name/bridge.conf
+
+%if_enabled opengl
+%files ui-egl-headless
+%_libdir/qemu/ui-egl-headless.so
+%endif
+
+%if_enabled brlapi
+%files char-baum
+%_libdir/qemu/chardev-baum.so
+%endif
+
+%if_enabled spice
+%files char-spice
+%_libdir/qemu/chardev-spice.so
+
+%files device-display-qxl
+%_libdir/qemu/hw-display-qxl.so
+%endif
 
 %files guest-agent
 %_bindir/qemu-ga
@@ -1061,22 +1220,61 @@ fi
 %dir %docdir/
 %docdir/LICENSE
 
-%files -n ivshmem-tools
-%_bindir/ivshmem-client
-%_bindir/ivshmem-server
-
 %changelog
+* Tue May 04 2021 Alexey Shabalin <shaba@altlinux.org> 5.2.0-alt6
+- backport to p9 (ALT #39996)
+- Fixed execute fsfreeze hook (ALT #37000)
+
+* Mon Apr 12 2021 Ivan A. Melnikov <iv@altlinux.org> 5.2.0-alt5
+- Move qemu-user-static text segment to 0x60000000 (ALT #39178)
+- Drop qemu-aux dependency from qemu-user-static (ALT #39815)
+- Drop qemu-mipsn32*.conf from binfmt config packages (ALT #39619)
+
+* Mon Feb 01 2021 Andrew A. Vasilyev <andy@altlinux.org> 5.2.0-alt4
+- Add the Kunpeng-920 CPU model.
+
+* Sun Jan 17 2021 Alexey Shabalin <shaba@altlinux.org> 5.2.0-alt3
+- Switch bios-microvm.bin from qboot to seabios
+- Package /usr/share/qemu/firmware dir
+- Define firmware path as --firmwarepath for configure
+
+* Thu Jan 14 2021 Ivan A. Melnikov <iv@altlinux.org> 5.2.0-alt2
+- fix elf loading in qemu-user (altbug #39141)
+- restore special CPU selection for ARM qemu-user-static
+
 * Thu Dec 24 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt4
 - Fixes: CVE-2020-25723
 
 * Tue Dec 22 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt3
 - Add ipxe-roms-qemu to requires for all arches
 
+* Tue Dec 15 2020 Alexey Shabalin <shaba@altlinux.org> 5.2.0-alt1
+- 5.2.0 (Fixes: CVE-2020-14364)
+- Drop ivshmem-tools package
+- Drop lm32 and unicore32 arches
+- Add new packages:
+  + qemu-audio-spice
+  + qemu-char-spice
+  + qemu-display-virtio-gpu-pci
+  + qemu-display-virtio-vga
+  + qemu-display-virtio-gpu
+  + qemu-ui-spice-core
+  + qemu-ui-opengl
+  + qemu-ui-egl-headless
+
 * Tue Nov 17 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt2
 - Fixes: CVE-2020-15863, CVE-2020-24352, CVE-2020-14364
 
+* Thu Aug 13 2020 Alexey Shabalin <shaba@altlinux.org> 5.1.0-alt1
+- 5.1.0 (Fixes: CVE-2020-13253, CVE-2020-13754, CVE-2020-10761, CVE-2020-13800, CVE-2020-10717)
+
 * Mon Jul 06 2020 Alexey Shabalin <shaba@altlinux.org> 4.2.1-alt1
 - 4.2.1 (Fixes: CVE-2020-1983, CVE-2020-10761, CVE-2020-1711, CVE-2020-13800, CVE-2020-11869, CVE-2020-13361)
+
+* Thu Apr 30 2020 Alexey Shabalin <shaba@altlinux.org> 5.0.0-alt1
+- 5.0.0 (Fixes: VE-2018-12617, CVE-2020-1711)
+- drop bluez support
+- build emulator for RX
 
 * Sun Apr  5 2020 Nikita Ermakov <arei@altlinux.org> 4.2.0-alt3
 - Fix FP context saving in RISC-V target.

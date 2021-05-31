@@ -2,10 +2,11 @@
 Summary: Python bindings for the libvirt library
 Name: python-module-libvirt
 Version: 5.10.0
-Release: alt2
+Release: alt3
 Url: http://libvirt.org
 #git://libvirt.org/libvirt-python.git
 Source: %name-%version.tar
+Patch: %name-%version.patch
 License: LGPLv2+
 Group: Development/Python
 
@@ -25,6 +26,7 @@ of recent versions of Linux (and other OSes).
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 %python_build
@@ -37,6 +39,9 @@ of recent versions of Linux (and other OSes).
 %doc  NEWS README COPYING COPYING.LESSER examples
 
 %changelog
+* Fri May 21 2021 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt3
+- adopt for build with libvirt > 6.9.0
+
 * Mon Jul 27 2020 Alexey Shabalin <shaba@altlinux.org> 5.10.0-alt2
 - build python2 module only
 

@@ -11,7 +11,7 @@
 
 Name: python-module-%{_name}3
 Version: %ver_major.2
-Release: alt1
+Release: alt2
 
 Summary: Python bindings for GObject
 Group: Development/Python
@@ -23,6 +23,7 @@ Source: ftp://ftp.gnome.org/pub/gnome/sources/%_name/%ver_major/%_name-%version.
 %else
 Source: %_name-%version.tar
 %endif
+Patch: pygobject-3.38.0-alt-meson-0.55_build.patch
 
 %setup_python_module pygobject3
 
@@ -141,8 +142,12 @@ Development documentation for %_name.
 
 %prep
 %setup -n %_name-%version
+%patch -p1
 %setup -D -c -n %_name-%version
 mv %_name-%version py3build
+pushd py3build
+%patch -p1
+popd
 
 %build
 %define opts %{?_disable_pycairo:-Dpycairo=false} %{?_disable_tests:-Dtests=false}
@@ -202,6 +207,9 @@ popd
 %endif
 
 %changelog
+* Fri Apr 30 2021 Alexey Shabalin <shaba@altlinux.org> 3.32.2-alt2
+- fixed build with meson-0.55
+
 * Sun Jun 23 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt1
 - 3.32.2
 

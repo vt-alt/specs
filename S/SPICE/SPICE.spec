@@ -1,12 +1,11 @@
 %define _unpackaged_files_terminate_build 1
-%def_disable celt051
 %def_enable opus
 %def_enable lz4
 %def_enable gstreamer
 %def_disable manual
 
 Name: SPICE
-Version: 0.14.3
+Version: 0.15.0
 Release: alt1
 Summary: Implements the SPICE protocol
 Group: Graphical desktop/Other
@@ -25,11 +24,10 @@ BuildRequires: libjpeg-devel libpixman-devel >= 0.17.7 zlib-devel
 BuildRequires: libssl-devel >= 1.1.0 libsasl2-devel openssl
 BuildRequires: libcacard-devel >= 2.5.1
 BuildRequires: python3-module-six python3-module-pyparsing
-BuildRequires: glib2-devel >= 2.38 libgio-devel >= 2.38
+BuildRequires: glib2-devel >= 2.38
 BuildRequires: libgdk-pixbuf-devel >= 2.26
-BuildRequires: spice-protocol >= 0.14.0
+BuildRequires: spice-protocol >= 0.14.3
 %{?_enable_manual:BuildRequires: asciidoc asciidoc-a2x}
-%{?_enable_celt051:BuildRequires: libcelt051-devel >= 0.5.1.1}
 %{?_enable_opus:BuildRequires: libopus-devel >= 0.9.14}
 %{?_enable_lz4:BuildRequires: liblz4-devel}
 %{?_enable_gstreamer:BuildRequires: gstreamer1.0-devel gst-plugins1.0-devel gst-plugins1.0-gir-devel liborc-devel}
@@ -94,6 +92,9 @@ rm -f %buildroot%_libdir/libspice-server.la
 %_pkgconfigdir/spice-server.pc
 
 %changelog
+* Thu Apr 22 2021 Alexey Shabalin <shaba@altlinux.org> 0.15.0-alt1
+- 0.15.0 (Fixes: CVE-2020-14355)
+
 * Wed Mar 25 2020 Alexey Shabalin <shaba@altlinux.org> 0.14.3-alt1
 - 0.14.3
 

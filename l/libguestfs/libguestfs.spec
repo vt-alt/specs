@@ -18,8 +18,8 @@
 
 Summary: Tools for accessing and modifying virtual machine disk images
 Name: libguestfs
-Version: 1.42.0
-Release: alt2
+Version: 1.44.1
+Release: alt0.p9
 License: LGPLv2+
 Group: System/Libraries
 Url: http://libguestfs.org/
@@ -36,6 +36,7 @@ Patch2: %name-%version-alt-fixes-common.patch
 
 BuildRequires: /proc
 BuildRequires: gcc gcc-c++ flex
+#BuildRequires: rpcgen
 BuildRequires: glibc-utils libselinux-devel libaugeas-devel
 BuildRequires: libgio-devel libgtk+3-devel
 BuildRequires: gtk-doc
@@ -135,6 +136,7 @@ License: GPLv2+
 Requires: %name = %EVR
 Provides: %name-tools = %EVR
 Obsoletes: %name-tools < %EVR
+Requires: db4-utils
 %if_enabled bash_completion
 Provides: bash-completion-libguestfs = %EVR
 Obsoletes: bash-completion-libguestfs < %EVR
@@ -302,7 +304,6 @@ export PYTHON=%__python3
 	%{subst_enable rust} \\\
 	%{subst_enable static} \\\
 	--with-default-backend=libvirt \\\
-	--with-distro=ALT \\\
 	--with-extra="ALTLinux,release=%version-%release,libvirt" \\\
 	--with-qemu="qemu-kvm qemu-system-%_build_arch qemu" \\\
 	--disable-silent-rules \\\
@@ -574,6 +575,21 @@ rm -f %buildroot%_man1dir/guestfs-release-notes*
 %endif #erlang
 
 %changelog
+* Wed May 12 2021 Alexey Shabalin <shaba@altlinux.org> 1.44.1-alt0.p9
+- Backport to p9
+
+* Mon Apr 05 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.44.1-alt1
+- 1.44.1
+
+* Wed Feb 10 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.44.0-alt1
+- 1.44.0
+
+* Tue Dec 26 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.42.0-alt4
+- Add requires to db4-utils (Closes: 39365)
+
+* Thu Dec 24 2020 Anton Farygin <rider@altlinux.ru> 1.42.0-alt3
+- added rpcgen to build requires against glibc 2.32
+
 * Tue Jun 30 2020 Alexey Shabalin <shaba@altlinux.org> 1.42.0-alt2
 - Set default guestfs appliance path to $libdir/guestfs
 

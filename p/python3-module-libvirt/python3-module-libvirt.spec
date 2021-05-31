@@ -1,9 +1,9 @@
 
 Summary: Python bindings for the libvirt library
 Name: python3-module-libvirt
-Version: 7.0.0
+Version: 7.3.0
 Release: alt1
-Url: http://libvirt.org
+Url: https://libvirt.org
 #git://libvirt.org/libvirt-python.git
 Source: %name-%version.tar
 License: LGPLv2+
@@ -13,6 +13,8 @@ Requires: libvirt-client
 BuildRequires: libvirt-devel >= 2.0.0
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-devel
+# For check
+BuildRequires: pytest3
 
 Obsoletes: libvirt-python3 < %version-%release
 Provides: libvirt-python3 = %version-%release
@@ -32,11 +34,21 @@ of recent versions of Linux (and other OSes).
 %install
 %python3_install
 
+%check
+%{python3_setup:} test
+
 %files
 %python3_sitelibdir/*
 %doc README COPYING COPYING.LESSER examples
 
 %changelog
+* Wed May 05 2021 Alexey Shabalin <shaba@altlinux.org> 7.3.0-alt1
+- new version 7.3.0
+- enable check
+
+* Tue Apr 06 2021 Alexey Shabalin <shaba@altlinux.org> 7.2.0-alt1
+- new version 7.2.0
+
 * Mon Jan 18 2021 Alexey Shabalin <shaba@altlinux.org> 7.0.0-alt1
 - new version 7.0.0
 
@@ -98,34 +110,34 @@ of recent versions of Linux (and other OSes).
 * Tue Oct 09 2018 Alexey Shabalin <shaba@altlinux.org> 4.8.0-alt1
 - new version 4.8.0
 
-* Thu Sep 13 2018 Alexey Shabalin <shaba@altlinux.org> 4.7.0-alt1%ubt
+* Thu Sep 13 2018 Alexey Shabalin <shaba@altlinux.org> 4.7.0-alt1
 - 4.7.0
 
-* Sun Aug 12 2018 Alexey Shabalin <shaba@altlinux.org> 4.6.0-alt1%ubt
+* Sun Aug 12 2018 Alexey Shabalin <shaba@altlinux.org> 4.6.0-alt1
 - 4.6.0
 
-* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 4.5.0-alt1%ubt
+* Wed Jul 11 2018 Alexey Shabalin <shaba@altlinux.ru> 4.5.0-alt1
 - 4.5.0
 
-* Tue Jun 05 2018 Alexey Shabalin <shaba@altlinux.ru> 4.4.0-alt1%ubt
+* Tue Jun 05 2018 Alexey Shabalin <shaba@altlinux.ru> 4.4.0-alt1
 - 4.4.0
 
-* Wed Apr 25 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.2.0-alt2%ubt
+* Wed Apr 25 2018 Aleksei Nikiforov <darktemplar@altlinux.org> 4.2.0-alt2
 - (NMU) Rebuilt with python-3.6.4.
 
-* Sun Apr 01 2018 Alexey Shabalin <shaba@altlinux.ru> 4.2.0-alt1%ubt
+* Sun Apr 01 2018 Alexey Shabalin <shaba@altlinux.ru> 4.2.0-alt1
 - 4.2.0
 
-* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 4.0.0-alt1%ubt
+* Wed Feb 07 2018 Alexey Shabalin <shaba@altlinux.ru> 4.0.0-alt1
 - 4.0.0
 
-* Fri Dec 08 2017 Alexey Shabalin <shaba@altlinux.ru> 3.10.0-alt1%ubt
+* Fri Dec 08 2017 Alexey Shabalin <shaba@altlinux.ru> 3.10.0-alt1
 - 3.10.0
 
-* Mon Sep 04 2017 Alexey Shabalin <shaba@altlinux.ru> 3.7.0-alt1%ubt
+* Mon Sep 04 2017 Alexey Shabalin <shaba@altlinux.ru> 3.7.0-alt1
 - 3.7.0
 
-* Wed Aug 09 2017 Alexey Shabalin <shaba@altlinux.ru> 3.6.0-alt1%ubt
+* Wed Aug 09 2017 Alexey Shabalin <shaba@altlinux.ru> 3.6.0-alt1
 - 3.6.0
 
 * Wed Jul 12 2017 Alexey Shabalin <shaba@altlinux.ru> 3.5.0-alt1

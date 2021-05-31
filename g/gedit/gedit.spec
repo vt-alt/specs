@@ -11,8 +11,8 @@
 %def_enable gtk_doc
 
 Name: gedit
-Version: %ver_major.0
-Release: alt1
+Version: %ver_major.2
+Release: alt2
 
 Summary: gEdit is a small but powerful text editor for GNOME
 License: GPLv2
@@ -25,6 +25,8 @@ Source: %name-%version.tar
 Source: %gnome_ftp/%name/%ver_major/%name-%version.tar.xz
 %endif
 Patch: %name-3.10.1-alt-settings.patch
+Patch1: 0001-filebrowser-fix-build-order-for-enum-typesh.patch
+Patch2: gedit-alt-meson-0.55_build.patch
 
 # use python3
 AutoReqProv: nopython
@@ -125,6 +127,8 @@ This package contains documentation needed to develop plugins for gedit.
 %prep
 %setup
 #%%patch -p1 -b .settings
+%patch1 -p1
+%patch2 -p1
 
 %build
 %meson \
@@ -214,6 +218,13 @@ desktop-file-install --dir %buildroot%_desktopdir \
 %endif
 
 %changelog
+* Fri Apr 30 2021 Alexey Shabalin <shaba@altlinux.org> 3.32.2-alt2
+- backport to p9
+- fixed build with meson-0.55
+
+* Wed May 15 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.2-alt1
+- 3.32.2
+
 * Mon Mar 11 2019 Yuri N. Sedunov <aris@altlinux.org> 3.32.0-alt1
 - 3.32.0
 

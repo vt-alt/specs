@@ -1,13 +1,13 @@
 %def_disable snapshot
 
-%define ver_major 0.52
+%define ver_major 0.55
 %define libname mesonbuild
 # pkexec may be used to "gain elevated privileges" during install
 %def_without polkit
 %def_disable check
 
 Name: meson
-Version: %ver_major.1
+Version: %ver_major.3
 Release: alt2
 
 Summary: High productivity build system
@@ -20,16 +20,15 @@ Source: https://github.com/mesonbuild/meson/archive/%version/%name-%version.tar.
 %else
 Source: %name-%version.tar
 %endif
-Patch: meson-0.52.1-37475.patch
 
 Source1: %name.macros
 Source2: %name.env
 
 BuildArch: noarch
 
-%define python_ver 3.5
+%define python_ver 3.5.2
 Requires: python3 >= %python_ver
-Requires: ninja-build
+Requires: ninja-build >= 1.7
 
 #grep -n "from __main__" -r *
 #mesonbuild/minstall.py:23:from __main__ import __file__ as main_file
@@ -66,7 +65,6 @@ reports, Valgrind, CCache and the like.
 
 %prep
 %setup
-%patch -p1
 
 %build
 %python3_build
@@ -92,6 +90,39 @@ MESON_PRINT_TEST_OUTPUT=1 ./run_tests.py
 
 
 %changelog
+* Tue Apr 27 2021 Alexey Shabalin <shaba@altlinux.org> 0.55.3-alt2
+- build to p9
+- meson.macros: added %%__meson_test for builtin "meson test" command
+- meson.macros: added --no-rebuild to %%__meson_test
+
+* Sun Sep 13 2020 Yuri N. Sedunov <aris@altlinux.org> 0.55.3-alt1
+- 0.55.3
+
+* Fri Sep 11 2020 Yuri N. Sedunov <aris@altlinux.org> 0.55.2-alt1
+- 0.55.2
+
+* Thu Aug 20 2020 Yuri N. Sedunov <aris@altlinux.org> 0.55.1-alt1
+- 0.55.1
+
+* Tue Jun 16 2020 Yuri N. Sedunov <aris@altlinux.org> 0.54.3-alt1
+- 0.54.3
+- meson.macros: export modern fortran FCFLAGS
+
+* Fri May 29 2020 Yuri N. Sedunov <aris@altlinux.org> 0.54.2-alt1
+- 0.54.2
+
+* Mon Apr 27 2020 Yuri N. Sedunov <aris@altlinux.org> 0.54.1-alt1
+- 0.54.1
+
+* Mon Mar 30 2020 Yuri N. Sedunov <aris@altlinux.org> 0.54.0-alt1
+- 0.54.0
+
+* Tue Mar 03 2020 Yuri N. Sedunov <aris@altlinux.org> 0.53.2-alt1
+- 0.53.2
+
+* Fri Jan 24 2020 Yuri N. Sedunov <aris@altlinux.org> 0.53.1-alt1
+- 0.53.1
+
 * Sat Nov 30 2019 Yuri N. Sedunov <aris@altlinux.org> 0.52.1-alt2
 - finally fixed ALT #37475
 - fixed License tag

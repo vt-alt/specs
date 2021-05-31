@@ -2,8 +2,8 @@
 %define _libexecdir /usr/libexec
 
 Name: virt-manager
-Version: 3.1.0
-Release: alt2
+Version: 3.2.0
+Release: alt1
 Summary: Virtual Machine Manager
 
 Group: Emulators
@@ -133,6 +133,9 @@ done
 %_man1dir/virt-xml.1*
 
 %changelog
+* Thu Nov 19 2020 Alexey Shabalin <shaba@altlinux.org> 3.2.0-alt1
+- new version 3.2.0
+
 * Tue Oct 06 2020 Alexey Shabalin <shaba@altlinux.org> 3.1.0-alt2
 - fixed build on p9
 

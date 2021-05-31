@@ -1,16 +1,14 @@
 
 Name: virt-viewer
-Version: 8.0
-Release: alt3
+Version: 9.0
+Release: alt1
 
 Summary: Virtual Machine Viewer
 Group: System/Configuration/Other
-License: GPL
-Url: http://virt-manager.org/
-# Vcs https://pagure.io/virt-viewer.git
+License: GPL-2.0+
+Url: https://gitlab.com/virt-viewer/virt-viewer
+# Vcs https://gitlab.com/virt-viewer/virt-viewer
 Source: %name-%version.tar
-Source1: ru.po
-Patch1: virt-viewer-add-translatable-string.patch
 
 Obsoletes: spice-client < 0.12.5-alt3
 
@@ -18,11 +16,12 @@ BuildRequires: glib2-devel >= 2.40 libgio-devel
 BuildRequires: libxml2-devel
 BuildRequires: libvirt-devel >= 0.9.7 libvirt-glib-devel >= 0.1.8
 BuildRequires: libgtk+3-devel >= 3.12
-BuildRequires: perl-podlators intltool
+BuildRequires: perl-podlators gettext
 BuildRequires: libspice-gtk3-devel >= 0.35 libspice-glib-devel spice-protocol >= 0.12.7
 BuildRequires: libgtk3vnc-devel >= 0.4.0
 BuildRequires: libvte3-devel
 BuildRequires: libgovirt-devel >= 0.3.3 librest-devel >= 0.8
+BuildRequires: bash-completion
 
 %description
 Virt Viewer provides a graphical viewer for the guest OS
@@ -34,13 +33,10 @@ using SSL/TLS encryption.
 
 %prep
 %setup
-%patch1 -p1
-cp -f %SOURCE1 po/
 
 %build
 mkdir -p m4
 touch ChangeLog AUTHORS
-intltoolize --force
 %autoreconf
 %configure \
 	--disable-static \
@@ -64,8 +60,12 @@ intltoolize --force
 %_datadir/appdata/remote-viewer.appdata.xml
 %_iconsdir/hicolor/*/apps/*
 %_iconsdir/hicolor/*/devices/*
+%_datadir/bash-completion/completions/virt-viewer
 
 %changelog
+* Sat May 09 2020 Alexey Shabalin <shaba@altlinux.org> 9.0-alt1
+- new version 9.0
+
 * Tue Apr 23 2019 Pavel Moseev <mars@altlinux.org> 8.0-alt3
 - update translation
 
