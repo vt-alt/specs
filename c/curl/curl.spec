@@ -2,7 +2,7 @@
 %def_with check
 
 Name: curl
-Version: 7.76.0
+Version: 7.77.0
 Release: alt1
 
 Summary: Gets a file from a FTP, GOPHER or HTTP server
@@ -154,6 +154,16 @@ applications that utilize lib%name.
 %_libdir/*.a
 
 %changelog
+* Wed May 26 2021 Anton Farygin <rider@altlinux.ru> 7.77.0-alt1
+- 7.77.0
+- Fixes:
+  * CVE-2021-22897 schannel cipher selection surprise
+  * CVE-2021-22898 TELNET stack contents disclosure
+  * CVE-2021-22901 TLS session caching disaster
+
+* Thu Apr 15 2021 Anton Farygin <rider@altlinux.ru> 7.76.1-alt1
+- 7.76.1
+
 * Wed Mar 31 2021 Anton Farygin <rider@altlinux.org> 7.76.0-alt1
 - 7.76.0
 - Fixes:
