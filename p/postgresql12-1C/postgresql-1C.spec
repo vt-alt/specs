@@ -7,7 +7,7 @@
 %define prog_name            postgresql
 %define postgresql_major     12
 %define postgresql_minor     6
-%define postgresql_altrel    1.M90P.1
+%define postgresql_altrel    1.M90P.2
 
 # Look at: src/interfaces/libpq/Makefile
 %define libpq_major          5
@@ -782,6 +782,9 @@ fi
 %endif
 
 %changelog
+* Wed May 19 2021 Alexei Takaseev <taf@altlinux.org> 12.6-alt1.M90P.2
+- Update 1C patch
+
 * Tue May 18 2021 Alexei Takaseev <taf@altlinux.org> 12.6-alt1.M90P.1
 - Fixes CVE-2021-32027, CVE-2021-32028, CVE-2021-32029
 
