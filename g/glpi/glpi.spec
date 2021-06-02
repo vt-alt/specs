@@ -1,7 +1,7 @@
 %define installdir %webserver_webappsdir/%name
 
 Name: glpi
-Version: 9.5.4
+Version: 9.5.5
 Release: alt1
 
 Summary: IT and asset management software
@@ -85,7 +85,7 @@ fi
 
 %preun apache2
 if [ "$1" = "0" ]; then
-  a2dissite %name
+  a2dissite %name ||:
 fi
 
 %postun apache2
@@ -139,6 +139,13 @@ fi
 %files php7
 
 %changelog
+* Thu May 13 2021 Pavel Zilke <zidex at altlinux dot org> 9.5.5-alt1
+- New version 9.5.5
+- This is a security release, upgrading is recommended
+- Security fixes:
+ + CVE-2021-3486 : Stored XSS in plugins information
+
+
 * Wed Mar 31 2021 Pavel Zilke <zidex at altlinux dot org> 9.5.4-alt1
 - New version 9.5.4
 - This is a security release, upgrading is recommended
