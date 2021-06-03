@@ -1,6 +1,6 @@
 Name: polkit-sysvinit
-Version: 0.4.2
-Release: alt1
+Version: 0.4.3
+Release: alt1.1
 
 Summary: Allow media/network changes to xgrp users
 License: public domain
@@ -14,6 +14,7 @@ Source3: 60-gnome-gparted.rules
 Source4: 60-xfce4-pm-helper.rules
 Source5: 60-xfce-power-backlight-helper.rules
 Source6: 60-cpu-x.rules
+Source7: 60-kernel-manager.rules
 
 Packager: Michael Shigorin <mike@altlinux.org>
 
@@ -32,12 +33,18 @@ on SysVinit-based systems.
 %install
 mkdir -p %buildroot%pkdir
 install -pm644 %SOURCE0 %SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 \
- %SOURCE5 %SOURCE6 %buildroot%pkdir
+ %SOURCE5 %SOURCE6 %SOURCE7 %buildroot%pkdir
 
 %files
 %pkdir/*
 
 %changelog
+* Mon May 24 2021 Anton Midyukov <antohami@altlinux.org> 0.4.3-alt1.1
+- fix changelog
+
+* Sun May 23 2021 Anton Midyukov <antohami@altlinux.org> 0.4.3-alt1
+- Added 60-kernel-manager.rules (thx Speccyfighter).
+
 * Tue Dec 29 2020 Anton Midyukov <antohami@altlinux.org> 0.4.2-alt1
 - Added modify-device* and open-device* rules
   for gnome-disk-utility support (thx Speccyfighter).
