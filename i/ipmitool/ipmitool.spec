@@ -1,7 +1,7 @@
 Name: ipmitool
 Summary: ipmitool - Utility for IPMI control
 Version: 1.8.18
-Release: alt3
+Release: alt4
 License: BSD
 URL: http://ipmitool.sourceforge.net/
 Group: System/Kernel and hardware
@@ -52,6 +52,11 @@ install -pD -m755 contrib/bmclanconf %buildroot%_sbindir/
 %_datadir/%name
 
 %changelog
+* Sat Feb 27 2021 Anton Farygin <rider@altlinux.org> 1.8.18-alt4
+- applied patches from upstream git to fix security issue (Fixes: CVE-2020-5208)
+  see https://github.com/ipmitool/ipmitool/security/advisories/GHSA-g659-9qxw-p7cp
+- added upstream fix FTBFS with gcc-10
+
 * Thu Nov 22 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 1.8.18-alt3
 - revisit openssl-1.1 support
 
