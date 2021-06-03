@@ -4,7 +4,7 @@
 
 Name: wcslib
 Version: 5.19.1
-Release: alt1%ubt
+Release: alt2
 
 Group: System/Libraries
 Summary: An implementation of the FITS World Coordinate System standard
@@ -80,6 +80,9 @@ rm -rf %buildroot/%_docdir/wcslib-*
 %_man1dir/*
 
 %changelog
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 5.19.1-alt2
+- NMU: remove %ubt from release
+
 * Wed Aug 29 2018 Sergey V Turchin <zerg@altlinux.org> 5.19.1-alt1%ubt
 - new version
 
