@@ -1,14 +1,15 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
 Version: 2.9.22
-Release: alt1
+Release: alt2
 
 Group:   System/Configuration/Other
-License: GPLv3
+License: GPL-3.0
 Source0: %name-%version.tar
 Source1: hacking.tar
 
 Patch0: %name-alt.patch
+Patch1: ansible-apt_rpm-list-of-packages-support.patch
 
 Url: http://www.ansible.com
 
@@ -58,6 +59,7 @@ are transferred to managed machines automatically.
 # Restore non-exported hacking subdirectory
 tar xf %SOURCE1
 %patch0 -p1
+%patch1 -p1
 
 %build
 %python3_build
@@ -84,6 +86,9 @@ find %buildroot%python3_sitelibdir/ansible_test/_data -name \*.ps1 -delete
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Sun May 30 2021 Andrey Cherepanov <cas@altlinux.org> 2.9.22-alt2
+- Support installing a list of packages (ALT #40121).
+
 * Tue May 25 2021 Andrey Cherepanov <cas@altlinux.org> 2.9.22-alt1
 - New version.
 
