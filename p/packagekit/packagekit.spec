@@ -3,12 +3,12 @@
 Summary:   Package management service
 Name:      packagekit
 Version:   1.1.12
-Release:   alt12
+Release:   alt12.p9.1
 License:   GPLv2+ and LGPLv2+
 Group:     Other
 URL:       http://www.freedesktop.org/software/PackageKit/
 
-# https://github.com/hughsie/PackageKit.git
+# https://github.com/PackageKit/PackageKit.git
 Source: %name-%version.tar
 Patch1: %name-%version-alt.patch
 
@@ -31,6 +31,11 @@ BuildRequires: libgtk+2-devel
 BuildRequires: libgtk+3-devel
 
 BuildRequires: boost-devel
+
+# It provides the stuff needed to run the APT backend: the download methods
+# (/usr/lib*/apt/methods/), conf files (/etc/apt/), and cache dirs
+# (/var/cache/apt/archives/).
+Requires: apt
 
 %description
 PackageKit is a D-Bus abstraction layer that allows the session user
@@ -145,6 +150,15 @@ touch %buildroot%_localstatedir/PackageKit/upgrade_lock
 
 %find_lang PackageKit
 
+# We have to choose against which executable to verify the symbols
+# in the backend modules. I've chosen the one that rarely gets to be used
+# (packagekit-direct), so that it receives more "testing" and problems like
+# https://github.com/PackageKit/PackageKit/issues/477 don't stay unnoticed.
+#export RPM_LD_PRELOAD_packagekit=%buildroot%_libexecdir/packagekitd
+export RPM_LD_PRELOAD_packagekit=%buildroot%_libexecdir/packagekit-direct
+export RPM_FILES_TO_LD_PRELOAD_packagekit='%_libdir/packagekit-backend/*.so'
+%set_verify_elf_method strict
+
 %post
 SYSTEMCTL=systemctl
 if sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1; then
@@ -249,6 +263,10 @@ rm -f %_localstatedir/PackageKit/upgrade_lock ||:
 %python3_sitelibdir_noarch/*
 
 %changelog
+* Mon May 24 2021 Ivan Zakharyaschev <imz@altlinux.org> 1.1.12-alt12.p9.1
+- Fixed /usr/lib/packagekit-direct (that didn't work, because
+  it couldn't load the APT backend). (Backported 1.2.3-alt2's changes.)
+
 * Mon Oct 14 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 1.1.12-alt12
 - Imported changes from upstream.
 
