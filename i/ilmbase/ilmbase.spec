@@ -2,7 +2,7 @@
 %define rname IlmBase
 %define libsover 25
 Name: ilmbase
-Version: 2.5.3
+Version: 2.5.6
 Release: alt1
 
 %define common %name%libsover-common
@@ -159,6 +159,9 @@ make -C BUILD install DESTDIR=%buildroot
 %_libdir/cmake/IlmBase/
 
 %changelog
+* Wed May 26 2021 Sergey V Turchin <zerg@altlinux.org> 2.5.6-alt1
+- new version
+
 * Mon Oct 26 2020 Sergey V Turchin <zerg@altlinux.org> 2.5.3-alt1
 - new version
 
