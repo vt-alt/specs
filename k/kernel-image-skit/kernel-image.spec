@@ -4,7 +4,7 @@
 
 Name: kernel-image-skit
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt4
+Release: alt5
 
 Provides: kernel-modules-dm-secdel-skit = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Thu Jun 03 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt5
+- ISO9660 support added
+
 * Fri May 28 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt4
 - VIRTIO drivers added
 
