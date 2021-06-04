@@ -1,12 +1,12 @@
 # git describe upstream | sed 's/-g[0-9a-f]*\(+*\)$/\1/'
-%define git_version 5.0-13963
+%define git_version 5.0-14095
 # git show-ref --heads --hash upstream
-%define git_commit 5513d5f4f732fb1e436765ab87e7d60ba02b1ad6
+%define git_commit f60d29f2b79f6e8cca6c00c9b6e8cbfbb0fde6ef
 
 %add_optflags %optflags_shared
 
 Name: dolphin-emu
-Version: 5.0.13963
+Version: 5.0.14095
 Release: alt0.p9.1
 
 Summary: The Gamecube / Wii Emulator
@@ -101,6 +101,12 @@ you run Wii/GCN/Tri games on your Windows/Linux/Mac PC system.
 %config %_udevrulesdir/51-%name-usb-device.rules
 
 %changelog
+* Sat May 29 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.14095-alt0.p9.1
+- Build for branch p9
+
+* Fri May 28 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.14095-alt1
+- Version 5.0-14095
+
 * Sat Apr 10 2021 Nazarov Denis <nenderus@altlinux.org> 5.0.13963-alt0.p9.1
 - Build for branch p9
 
