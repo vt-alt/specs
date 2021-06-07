@@ -12,7 +12,7 @@
 %endif
 
 Name: openvswitch
-Version: 2.14.1
+Version: 2.14.2
 Release: alt0.p9
 
 Summary: An open source, production quality, multilayer virtual switch
@@ -434,6 +434,9 @@ fi
 %endif
 
 %changelog
+* Thu May 27 2021 Alexey Shabalin <shaba@altlinux.org> 2.14.2-alt0.p9
+- 2.14.2 (Fixes: CVE-2020-35498)
+
 * Tue Jan 19 2021 Alexey Shabalin <shaba@altlinux.org> 2.14.1-alt0.p9
 - backport to p9
 

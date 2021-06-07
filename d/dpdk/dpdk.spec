@@ -18,7 +18,7 @@
 
 
 Name: dpdk
-Version: 19.11.5
+Version: 19.11.8
 Release: alt1
 Url: http://dpdk.org
 License: BSD-3-Clause AND GPL-2.0-only AND LGPL-2.1-only
@@ -319,6 +319,12 @@ sed -i -e 's:-%machine_tmpl-:-%machine-:g' %buildroot/%_sysconfdir/profile.d/dpd
 %endif
 
 %changelog
+* Thu May 27 2021 Alexey Shabalin <shaba@altlinux.org> 19.11.8-alt1
+- Update to LTS release 19.11.8.
+
+* Sun Mar 14 2021 Alexey Shabalin <shaba@altlinux.org> 19.11.6-alt1
+- Update to LTS release 19.11.6.
+
 * Wed Dec 16 2020 Alexey Shabalin <shaba@altlinux.org> 19.11.5-alt1
 - Update to LTS release 19.11.5
 - Add libdpdk package
