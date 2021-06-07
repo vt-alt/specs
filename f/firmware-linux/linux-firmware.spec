@@ -1,6 +1,6 @@
 Name: firmware-linux
-Version: 20210403
-Release: alt2
+Version: 20210518
+Release: alt1
 
 Summary: Firmware files used by the Linux kernel
 License: GPL+ and GPLv2+ and MIT and Redistributable, no modification permitted
@@ -56,18 +56,12 @@ firmware for LiquidIO II Smart NICs
 %setup -n %name-%version
 %patch -p1
 
-%build
-## *TODO* check these too
-rm -rf ess korg sb16 yamaha
-
-# Remove source files we don't need to install
-rm -f usbdux/*dux */*.asm *spec
-
 %install
-mkdir -p %buildroot/lib/firmware
-cp -a * %buildroot/lib/firmware
+DESTDIR=%buildroot FIRMWAREDIR=lib/firmware make install
 hardlink -cv %buildroot/lib/firmware
-rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
+
+## *TODO* check these too
+rm -rf %buildroot/lib/firmware{ess,korg,sb16,yamaha}
 
 %files
 %doc WHENCE LICEN?E.*
@@ -82,6 +76,70 @@ rm %buildroot/lib/firmware/{WHENCE,LICENCE.*,*.py}
 /lib/firmware/liquidio
 
 %changelog
+* Mon May 24 2021 Cronbuild Service <cronbuild@altlinux.org> 20210518-alt1
+- upstream changes (GIT f846292):
+  + nvidia: fix symlinks for tu104/tu106 acr unload firmware (thx Ben Skeggs)
+  + rtw88: 8822c: Update normal firmware to v9.9.10 (thx Chin-Yen Lee)
+
+* Mon May 17 2021 Cronbuild Service <cronbuild@altlinux.org> 20210512-alt1
+- upstream changes (GIT 55d9649):
+  + iwlwifi: update 8000 family firmwares (thx Luca Coelho)
+  + iwlwifi: update 9000-family firmwares to core60-51 (thx Luca Coelho)
+  + iwlwifi: add new FWs from core60-51 release (thx Luca Coelho)
+  + nvidia: Update Tegra194 XUSB firmware to v60.09 (thx JC Kuo)
+  + nvidia: Update Tegra186 XUSB firmware to v55.18 (thx JC Kuo)
+  + nvidia: Update Tegra210 XUSB firmware to v50.26 (thx JC Kuo)
+  + update firmware for mhdp8546 (thx Parshuram Thombare)
+  + i915: Add ADL-P DMC Support (thx Anusha Srivatsa)
+  + amdgpu: add new polaris 12 MC firmware (thx Alex Deucher)
+  + firmware: nvidia: Add VIC firmware for Tegra194 (thx Mikko Perttunen)
+  + qcom: add gpu firmwares for sc7280 (thx Akhil P Oommen)
+  + brcm: Add a link to enable khadas VIM2's WiFi (thx Jian-Hong Pan)
+  + rtw89: 8852a: update fw to v0.13.8.0 (thx Ping-Ke Shih)
+  + rtl_bt: Update RTL8852A BT USB firmware to 0xD9A8_7893 (thx hildawu)
+  + qcom: Add venus firmware files for VPU-2.0 (thx smagar)
+  + rtw89: 8852a: update fw to v0.13.8.0 (thx Ping-Ke Shih)
+  + Update firmware file for Intel Bluetooth AX210 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9560 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 9260 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX200 (thx Kiran K)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + Intel BT 7265: Fix Security Issues (thx Kiran K)
+  + Update firmware file for Intel Bluetooth 8265 (thx Kiran K)
+  + qcom: update venus firmware files for v5.4 (thx smagar)
+  + mrvl: prestera: Add Marvell Prestera Switchdev firmware 3.0
+    version (thx Vadym Kochan)
+  + rtw88: 8822c: Update normal firmware to v9.9.9 (thx Po-Hao Huang)
+  + brcm: add missing symlink for Pi Zero W NVRAM file (thx Michel Piquemal)
+  + amdgpu: update arcturus firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update navy flounder firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update sienna cichlid firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update vega20 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update picasso firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update navi14 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update green sardine firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update vega12 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update navi12 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update vega10 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update renoir firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update navi10 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update raven2 firmware from 21.10 (thx Alex Deucher)
+  + amdgpu: update raven firmware from 21.10 (thx Alex Deucher)
+  + rtl_nic: add new firmware for RTL8153 and RTL8156 series (thx Hayes Wang)
+  + cxgb4: Update firmware to revision 1.25.4.0 (thx Raju Rangoju)
+  + Mellanox: Add new mlxsw_spectrum firmware xx.2008.2438 (thx Petr Machata)
+  + brcm: Link CM4's WiFi firmware with DMI machine name. (thx Jeremy Linton)
+  + Update firmware file for Intel Bluetooth AX201 (thx Kiran K)
+  + amdgpu: update navi14 smc firmware (thx Alex Deucher)
+  + amdgpu: update navi10 SMC firmware (thx Alex Deucher)
+  + QCA: Update Bluetooth firmware for QCA6174 (thx Rocky Liao)
+  + WHENCE: link to similar config file for rtl8821a support (thx maximilian attems)
+  + nfp: update Agilio SmartNIC flower firmware to rev AOTC-2.14.A.6 (thx Louis Peens)
+  + amdgpu: add arcturus firmware (thx Alex Deucher)
+
+* Sat Apr 24 2021 Anton Midyukov <antohami@altlinux.org> 20210403-alt3
+- use Makefile for install (Closes: 39980)
+
 * Thu Apr 22 2021 Dmitry Terekhin <jqt4@altlinux.org> 20210403-alt2
 - brcm: Add symlinks for brcm devices
 
