@@ -8,7 +8,7 @@
 
 Name: plasma5-desktop
 Version: 5.18.5
-Release: alt4
+Release: alt5
 %K5init altplace no_appdata
 
 Group: Graphical desktop/KDE
@@ -34,7 +34,7 @@ Patch10: alt-def-session.patch
 Patch11: alt-def-key-numlock.patch
 Patch12: alt-def-layout-indicator.patch
 Patch13: alt-def-taskman.patch
-#
+Patch14: alt-def-desktop-icons.patch
 Patch15: alt-menu-add-tooltip.patch
 #
 Patch17: alt-def-krunners.patch
@@ -135,7 +135,7 @@ KF5 library
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-#
+%patch14 -p1
 %patch15 -p1
 #
 %patch17 -p1
@@ -237,6 +237,9 @@ KF5 library
 %_K5lib/libkfontinstui.so.%kfontinstui_sover
 
 %changelog
+* Wed Jun 02 2021 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt5
+- arrange desktop icons by columns by default
+
 * Wed May 19 2021 Sergey V Turchin <zerg@altlinux.org> 5.18.5-alt4
 - split ibus emojier into separate subpackage
 
