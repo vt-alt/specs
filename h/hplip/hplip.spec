@@ -28,8 +28,8 @@
 %endif
 
 Name:    hplip
-Version: 3.21.2
-Release: alt2
+Version: 3.21.4
+Release: alt1
 Epoch:   1
 
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
@@ -172,7 +172,6 @@ Patch9: hplip-3.18.6-alt-auth.patch
 Patch10: http://www.linuxprinting.org/download/printing/hpijs/hpijs-1.4.1-rss.1.patch
 # it is patch 10 rediffed
 Patch12: hplip-3.16.11-alt-fax-setup.patch
-Patch13: hplip-alt-fix-PPD-file-choose-in-qt5.patch
 # Localization files made for old qt3 forms
 Patch14: hplip-alt-use-l10n.patch
 # Use python3 in service file
@@ -211,27 +210,38 @@ Patch125: hplip-noernie.patch
 Patch126: hplip-appdata.patch
 Patch127: hplip-check-cups.patch
 Patch130: hplip-typo.patch
-# python3 - recent HP release removed encoding/decoding to utf-8 in fax/pmlfax.py -
-# that results in text string going into translate function in base/utils.py, which
-# expects binary string because of parameters. Remove this patch if base/utils.py
-# code gets fixed.
 Patch131: hplip-use-binary-str.patch
-# m278-m281 doesn't work correctly again
-Patch132: hplip-colorlaserjet-mfp-m278-m281.patch
-Patch133: hplip-error-print.patch
-Patch134: hplip-hpfax-importerror-print.patch
-Patch135: hplip-wifisetup.patch
-Patch137: hplip-keyserver.patch
-Patch142: hplip-add-ppd-crash.patch
-Patch143: hplip-missing-links.patch
-Patch144: hplip-hplj-3052.patch
-Patch145: hplip-hpmud-string-parse.patch
-Patch146: hplip-m278-m281-needs-plugin.patch
-Patch147: hplip-hpcups-crash.patch
-Patch148: hplip-covscan.patch
-Patch149: hplip-logging-segfault.patch
-Patch150: hplip-systray-blockerror.patch
-Patch152: hplip-missing-drivers.patch
+Patch132: hplip-error-print.patch
+Patch133: hplip-hpfax-importerror-print.patch
+Patch134: hplip-wifisetup.patch
+Patch135: hplip-keyserver.patch
+Patch136: 0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
+#Patch137: 0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
+Patch138: 0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
+Patch139: hplip-add-ppd-crash.patch
+Patch140: hplip-missing-links.patch
+Patch141: hplip-hplj-3052.patch
+Patch142: hplip-hpmud-string-parse.patch
+Patch143: hplip-m278-m281-needs-plugin.patch
+Patch144: hplip-hpcups-crash.patch
+Patch145: hplip-covscan.patch
+Patch146: hplip-logging-segfault.patch
+Patch147: hplip-systray-blockerror.patch
+Patch148: hplip-missing-drivers.patch
+Patch149: hplip-model-mismatch.patch
+Patch150: hplip-unicodeerror.patch
+Patch151: hplip-fix-Wreturn-type-warning.patch
+Patch152: hplip-configure-python.patch
+Patch153: hplip-dialog-infinite-loop.patch
+Patch154: hplip-find-driver.patch
+Patch155: hplip-clean-ldl.patch
+Patch156: hplip-revert-plugins.patch
+#Patch157: hplip-thread-isalive-removed.patch
+#Patch158: hplip-timeb-removed.patch
+Patch159: hplip-check-userperms.patch
+Patch160: hplip-fab-import.patch
+Patch161: hplip-hpsetup-noscanjets.patch
+Patch162: hplip-systray-qt5.patch
 # end fedora patches
 
 # ubuntu patches
@@ -258,11 +268,9 @@ Patch319: HP-LaserJet_4000-PostScript-PPD.patch
 Patch320: ui-patch-upstream-like.patch
 Patch321: 0021-Add-include-cups-ppd.h-in-various-places-as-CUPS-2.2.patch
 Patch322: 0022-Fix-list-wrapping-in-scan.py-to-fix-generated-manpag.patch
-Patch323: 0023-Fix-handling-of-unicode-filenames-in-sixext.py.patch
+#Patch323: 0023-Fix-handling-of-unicode-filenames-in-sixext.py.patch
 Patch324: 0024-Make-dat2drv-and-locateppd-build-dependent-of-class-.patch
 Patch325: 0025-Remove-all-ImageProcessor-functionality-which-is-clo.patch
-Patch326: 0026-Call-QMessageBox-constructors-of-PyQT5-with-the-corr.patch
-Patch327: 0027-Fixed-incomplete-removal-of-hp-toolbox-features-whic.patch
 Patch328: 0028-hp-check-Fix-core.distro-vs.-core.distro_name-mixups.patch
 Patch329: 0029-Make-base.g.xint-more-generous-in-what-it-can-take.patch
 # end debian patches
@@ -581,21 +589,36 @@ rm prnt/hpcups/ErnieFilter.{cpp,h} prnt/hpijs/ernieplatform.h
 %patch127 -p1 -b .check-cups
 %patch130 -p1 -b .typo
 %patch131 -p1 -b .use-binary-str
-%patch132 -p1 -b .colorlaserjet-mfp-m278-m281
-%patch133 -p1 -b .error-print-fix
-%patch134 -p1 -b .hpfax-import-error-print
-%patch135 -p1 -b .wifisetup-bad-call-fix
-%patch137 -p1 -b .keyserver
-%patch142 -p1 -b .add-ppd-crash
-%patch143 -p1 -b .missing-links
-%patch144 -p1 -b .hp-laserjet-3052-broken-scanning
-%patch145 -p1 -b .hpmud-string-parse
-%patch146 -p1 -b .m278-m281-needs-plugin
-%patch147 -p1 -b .hpcups-crash
-%patch148 -p1 -b .covscan
-%patch149 -p1 -b .logging-segfault
-%patch150 -p1 -b .systray-blockerror
-%patch152 -p1 -b .missing-drivers
+%patch132 -p1 -b .error-print-fix
+%patch133 -p1 -b .hpfax-import-error-print
+%patch134 -p1 -b .wifisetup-bad-call-fix
+%patch135 -p1 -b .keyserver
+%patch136 -p1 -b .qmsgbox-typos-fix
+%patch138 -p1 -b .toolbox-crash
+%patch139 -p1 -b .add-ppd-crash
+%patch140 -p1 -b .missing-links
+%patch141 -p1 -b .hp-laserjet-3052-broken-scanning
+%patch142 -p1 -b .hpmud-string-parse
+%patch143 -p1 -b .m278-m281-needs-plugin
+%patch144 -p1 -b .hpcups-crash
+%patch145 -p1 -b .covscan
+%patch146 -p1 -b .logging-segfault
+%patch147 -p1 -b .systray-blockerror
+%patch148 -p1 -b .missing-drivers
+%patch149 -p1 -b .model-mismatch
+%patch150 -p1 -b .unicodeerror
+%patch151 -p1 -b .Wreturn-fix
+%patch152 -p1 -b .configure-python
+%patch153 -p1 -b .dialog-infinite-loop
+%patch154 -p1 -b .find-driver
+%patch155 -p1 -b .clean-ldl
+%patch156 -p1 -b .revert-plugins
+#patch157 -p1 -b .thread-isalive-removed
+#patch158 -p1 -b .timed-removed
+%patch159 -p1 -b .check-userperms
+%patch160 -p1 -b .fab-import
+%patch161 -p1 -b .hpsetup-noscanjets
+%patch162 -p1 -b .systray-qt5
 
 # from fedora 3.9.12-3/3.10.9-9
 sed -i.duplex-constraints \
@@ -624,11 +647,9 @@ sed -i.duplex-constraints \
 %patch320 -p1
 %patch321 -p1
 %patch322 -p1
-%patch323 -p1
+#patch323 -p1
 %patch324 -p1
 %patch325 -p2
-%patch326 -p1
-%patch327 -p1
 %patch328 -p1
 %patch329 -p1
 
@@ -640,7 +661,6 @@ tar -xf %SOURCE6
 #%patch10 -p1
 #popd
 %patch12 -p1
-%patch13 -p2
 %if_with l10n
 %patch14 -p2
 %endif
@@ -727,6 +747,7 @@ EOF
     --with-mimedir=%{_datadir}/cups/mime \
     --disable-foomatic-rip-hplip-install \
     --enable-pp-build \
+    --disable-imageProcessor_build \
 %if_enabled PPDs
     --enable-foomatic-ppd-install \
     --enable-foomatic-drv-install \
@@ -1189,6 +1210,11 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Thu May 13 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.4-alt1
+- New version.
+- Added support for the following new printers:
+  + HP Envy 6400 series
+
 * Fri Feb 26 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.2-alt2
 - Add M125ra model.
 
