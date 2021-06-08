@@ -3,12 +3,12 @@
 %def_without static
 
 Name: qalculate
-Version: 2.8.2
+Version: 3.19.0
 Release: alt1
 
 Summary: A very versatile desktop calculator
 Group: Office
-License: GPL
+License: GPL-2.0+
 Url: https://qalculate.github.io/
 
 # https://github.com/Qalculate/libqalculate.git
@@ -98,8 +98,11 @@ rm -f %buildroot%_libdir/*.a
 
 %files
 %_bindir/*
+%_man1dir/*.1*
 
 %files common -f %name.lang
+%doc COPYING
+%doc AUTHORS ChangeLog README README.md README.translate
 %_datadir/qalculate
 
 %if_with static
@@ -108,6 +111,36 @@ rm -f %buildroot%_libdir/*.a
 %endif
 
 %changelog
+* Sat May 29 2021 Anton Midyukov <antohami@altlinux.org> 3.19.0-alt1
+- Updated to upstream version 3.19.0.
+
+* Tue Mar 16 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 3.17.0-alt1
+- Updated to upstream version 3.17.0.
+
+* Wed Jan 13 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 3.16.1-alt1
+- Updated to upstream version 3.16.1.
+
+* Mon Sep 28 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.13.0-alt1
+- Updated to upstream version 3.13.0.
+
+* Tue Aug 11 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.12.1-alt1
+- Updated to upstream version 3.12.1.
+
+* Thu Jul 02 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.11.0-alt1
+- Updated to upstream version 3.11.0.
+
+* Fri Jun 19 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.10.0-alt1
+- Updated to upstream version 3.10.0.
+
+* Wed Apr 08 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 3.8.0-alt1
+- Updated to upstream version 3.8.0.
+
+* Fri Aug 02 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.3.0-alt1
+- Updated to upstream version 3.3.0.
+
+* Mon Jun 03 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 3.2.0-alt1
+- Updated to upstream version 3.2.0.
+
 * Tue Jan 15 2019 Aleksei Nikiforov <darktemplar@altlinux.org> 2.8.2-alt1
 - Updated to upstream version 2.8.2.
 
