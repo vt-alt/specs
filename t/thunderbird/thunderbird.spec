@@ -12,8 +12,8 @@
 %define llvm_version      11.0
 
 Name: 	 thunderbird
-Version: 78.10.2
-Release: alt0.1.p9
+Version: 78.11.0
+Release: alt0.p9.1
 
 Summary: Thunderbird is Mozilla's e-mail client
 License: MPL-2.0
@@ -650,6 +650,15 @@ chmod +x %buildroot%_bindir/thunderbird-wayland
 %_rpmmacrosdir/%r_name
 
 %changelog
+* Fri Jun 04 2021 Andrey Cherepanov <cas@altlinux.org> 78.11.0-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Thu Jun 03 2021 Andrey Cherepanov <cas@altlinux.org> 78.11.0-alt1
+- New version (78.11.0).
+- Security fixes:
+  + CVE-2021-29964 Out of bounds-read when parsing a `WM_COPYDATA` message
+  + CVE-2021-29967 Memory safety bugs fixed in Thunderbird 78.11
+
 * Wed May 19 2021 Andrey Cherepanov <cas@altlinux.org> 78.10.2-alt0.1.p9
 - Backport new version to p9 branch.
 
