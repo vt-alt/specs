@@ -3,8 +3,8 @@
 %define libgnutls_openssl_soname 27
 
 Name: gnutls%libgnutls_soname
-Version: 3.6.15
-Release: alt2
+Version: 3.6.16
+Release: alt1
 
 Summary: A TLS protocol implementation
 # The libgnutls library is LGPLv2.1+, utilities and remaining libraries are GPLv3+
@@ -19,14 +19,6 @@ Patch4: tests-Use-IPv4-only-in-s_server.patch
 Patch6: gnulib-E2K-fix-for-lcc-1.23.patch
 Patch8: fix-32bit-LTS.patch
 Patch9: fix_gl_tests.patch
-
-# Backported from gnutls-3.7.x
-# Fix for testpkcs11
-Patch100: testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
-# Fix CVE-2021-20231, CVE-2021-20232
-Patch101: gnutls_buffer_append_data-remove-duplicated-code.patch
-Patch102: key_share-avoid-use-after-free-around-realloc.patch
-Patch103: pre_shared_key-avoid-use-after-free-around-realloc.patch
 
 %define libcxx libgnutlsxx%libgnutlsxx28_soname
 %define libssl libgnutls%{libgnutls_openssl_soname}-openssl
@@ -229,11 +221,6 @@ popd
 %patch8 -p1
 %patch9 -p1
 
-%patch100 -p2
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-
 touch doc/*.texi
 rm doc/*.info*
 rm aclocal.m4 m4/{libtool,lt*}.m4
@@ -338,6 +325,10 @@ make -k check
 %endif
 
 %changelog
+* Mon May 31 2021 Mikhail Efremov <sem@altlinux.org> 3.6.16-alt1
+- Updated to 3.6.16 (fixes: CVE-2021-20305).
+- Dropped obsoleted patches.
+
 * Mon Mar 22 2021 Mikhail Efremov <sem@altlinux.org> 3.6.15-alt2
 - Fixed gnulib tests.
 - Fixed CVE-2021-20231, CVE-2021-20232
