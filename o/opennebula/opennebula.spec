@@ -11,12 +11,13 @@
 Name: opennebula
 Summary: Cloud computing solution for Data Center Virtualization
 Version: 5.10.5
-Release: alt7
+Release: alt8
 License: Apache-2.0
 Group: System/Servers
 Url: https://opennebula.org
 
 Source0: %name-%version.tar
+Source1: lxd-init.sh
 
 BuildRequires(pre): rpm-build-ruby rpm-build-python3 rpm-macros-nodejs
 BuildRequires: gcc-c++
@@ -138,6 +139,7 @@ BuildArch: noarch
 
 Requires: %name-common = %EVR
 Requires: gem-%name = %EVR
+Requires: python3-module-numpy
 
 %description sunstone
 Browser based UI for administrating a OpenNebula cloud. Also includes
@@ -358,6 +360,7 @@ install -p -D -m 755 src/vmm_mad/remotes/lib/lxd/svncterm_server/svncterm_server
 install -p -D -m 755 src/vmm_mad/remotes/lib/lxd/catfstab %buildroot%_bindir/catfstab
 install -p -D -m 644 share/pkgs/ALT/opennebula-lxd.modprobe %buildroot%_sysconfdir/modprobe.d/opennebula-lxd.conf
 install -p -D -m 644 share/pkgs/ALT/opennebula-lxd.modules %buildroot%_sysconfdir/modules-load.d/opennebula-lxd.conf
+install -p -D -m 755 %SOURCE1 %buildroot%_sysconfdir/firsttime.d/opennebula-lxd-init
 
 # cleanup
 rm -f %buildroot%_datadir/one/Gemfile
@@ -440,6 +443,22 @@ fi
 %pre node-lxd
 usermod -a -G lxd oneadmin  2>/dev/null ||:
 
+%post node-lxd
+if [ $1 = 1 ]; then
+    if ! grep -qs '^root:' /etc/subuid \
+       && ! grep -qs '^root:' /etc/subgid \
+       && ! grep -qs '^lxd:' /etc/subuid \
+       && ! grep -qs '^lxd:' /etc/subuid
+   then
+       [ -f /etc/subuid ] || touch /etc/subuid
+       [ -f /etc/subgid ] || touch /etc/subgid
+       echo root:100000:65536 >> /etc/subuid
+       echo root:100000:65536 >> /etc/subgid
+       echo lxd:100000:65536 >> /etc/subuid
+       echo lxd:100000:65536 >> /etc/subgid
+   fi
+fi
+
 #%post ruby
 #cat <<EOF
 #Please remember to execute %_datadir/one/install_gems to install all the
@@ -472,6 +491,7 @@ usermod -a -G lxd oneadmin  2>/dev/null ||:
 %config(noreplace) %_sysconfdir/modprobe.d/opennebula-lxd.conf
 %config(noreplace) %_sysconfdir/modules-load.d/opennebula-lxd.conf
 %config(noreplace) %_sysconfdir/sudoers.d/opennebula-node-lxd
+%_sysconfdir/firsttime.d/opennebula-lxd-init
 
 # %files node-xen
 
@@ -692,6 +712,10 @@ usermod -a -G lxd oneadmin  2>/dev/null ||:
 %exclude %_man1dir/oneprovision.1*
 
 %changelog
+* Wed May 26 2021 Mikhail Gordeev <obirvalger@altlinux.org> 5.10.5-alt8
+- node-lxd: setup lxd in post and firsttime.d
+- add requires to python3-module-numpy to improve vnc speed
+
 * Mon May 17 2021 Mikhail Gordeev <obirvalger@altlinux.org> 5.10.5-alt7
 - fix regexp matching file output for qcow images
 
