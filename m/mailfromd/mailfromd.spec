@@ -7,7 +7,7 @@
 
 Name: mailfromd
 
-%define baseversion 8.10
+%define baseversion 8.11
 
 %if %snapshot
 %define snapshotdate 20210215
@@ -24,7 +24,6 @@ Summary: Universal flexible smtp data supervisor for Sendmail, MeTA1 and Postfix
 
 License: GPL-3.0-or-later
 Group: System/Servers
-Requires: makemap m4
 
 Url: http://puszcza.gnu.org.ua/projects/mailfromd/
 %if %snapshot
@@ -59,12 +58,17 @@ Patch1: mailfromd-savsrv.c-not_cache_mf_timeout.diff
 #Errata
 #Patch10:
 
+Requires: makemap m4
+
 BuildRequires: flex libdb4-devel libgcrypt-devel libgdbm-devel libgnutls-devel libldap-devel libncurses-devel libpam-devel libreadline-devel libtokyocabinet-devel
 
 BuildRequires: libmailutils-devel >= 3.6
 BuildRequires: mailutils
 BuildRequires: makeinfo
 BuildRequires: libadns-devel >= 1.5
+
+# geoip2
+BuildRequires: libmaxminddb-devel
 
 %if_enabled mfl
 BuildRequires: emacs-nox
@@ -313,6 +317,10 @@ rm -f %_localstatedir/mailfromd-clamav/*.db &>/dev/null ||:
 %files locales -f mailfromd.lang
 
 %changelog
+* Mon Jun 07 2021 Sergey Y. Afonin <asy@altlinux.org> 8.11-alt1
+- new version
+- built with libmaxminddb-devel (GeoIP2)
+
 * Wed Feb 24 2021 Sergey Y. Afonin <asy@altlinux.org> 8.10-alt1
 - new version
 - added "%%def_enable mfl" for allow to build without GNU Emacs extension
