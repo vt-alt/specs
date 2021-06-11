@@ -1,5 +1,5 @@
 Name: mkimage-profiles
-Version: 1.4.12
+Version: 1.4.13
 Release: alt1
 
 Summary: ALT based distribution metaprofile
@@ -128,6 +128,21 @@ mv %buildroot%mpdir/doc/mkimage-profiles.7 %buildroot%_man7dir/
 %endif
 
 %changelog
+* Mon Jun 07 2021 Anton Midyukov <antohami@altlinux.org> 1.4.13-alt1
+- add parametr's BRANCH, NO_SYMLINK
+- fix usage AUTOCLEAN parameter with DEBUG
+- use variable REPORT from ~/.mkimage/profiles.mk
+- move logs to reports directory, if enable REPORT
+- fix build pdf documentation after clean
+- update documetation
+- build starterkits from regular.mk profile
+- cnc-rt: uses lxqt DE instead of lxde
+- cnc-rt: Not add efi=runtime to EFI_BOOTARGS
+- kernel: add missing virtio kernel modules to VM_INITRDMODULES
+- server-v: 9.2 beta
+- workstation: 9.2 beta
+- education: added last commits
+
 * Fri May 21 2021 Anton Midyukov <antohami@altlinux.org> 1.4.12-alt1
 - fix VM_SAVE_TARBALL parameter support
 - grub: save ang read default menu item (thanks jqt4@, sin@)
