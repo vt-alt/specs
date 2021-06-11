@@ -24,7 +24,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: branding-%flavour
-Version: 9.1.900
+Version: 9.1.910
 Release: alt1
 Url: https://basealt.ru
 
@@ -365,6 +365,9 @@ fi
 #_iconsdir/hicolor/*/apps/alt-%theme-desktop.png
 
 %changelog
+* Thu Jun 10 2021 Mikhail Efremov <sem@altlinux.org> 9.1.910-alt1
+- Bump version.
+
 * Tue May 25 2021 Mikhail Efremov <sem@altlinux.org> 9.1.900-alt1
 - graphics: Fix duplicate alternatives.
 - mate-settings: Conflict with branding-simply-linux-system-settings.
