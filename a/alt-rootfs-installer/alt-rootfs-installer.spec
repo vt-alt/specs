@@ -1,5 +1,5 @@
 Name: alt-rootfs-installer
-Version: 0.4.5
+Version: 0.5.0
 Release: alt1
 Summary: Installer rootfs archive to any specified block device
 License: GPL-2.0-or-later
@@ -25,6 +25,7 @@ install -d %buildroot%_datadir/%name/socs.d
 cp -a socs.d/* %buildroot%_datadir/%name/socs.d/
 install -d %buildroot%_datadir/%name/boards.d
 cp -a boards.d/* %buildroot%_datadir/%name/boards.d/
+cp -a log %buildroot%_datadir/%name/
 
 install -d %buildroot%_bindir
 install -pm 0755 %name %buildroot%_bindir/
@@ -40,6 +41,10 @@ install -pm 644 AUTHORS COPYING README SUPPORTED-BOARDS \
 %_datadir/%name/
 
 %changelog
+* Mon Jun 07 2021 Anton Midyukov <antohami@altlinux.org> 0.5.0-alt1
+- Added new logging subsystem (thanks arei@)
+- Update message output
+
 * Fri May 21 2021 Anton Midyukov <antohami@altlinux.org> 0.4.5-alt1
 - Fixed unmounting MEDIA, when writing image
 - Fixed imposition info messages
