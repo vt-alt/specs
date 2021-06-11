@@ -1,7 +1,7 @@
 Summary: Tool to manage your infrastructure
 Name: salt
-Version: 3002.2
-Release: alt1
+Version: 3003
+Release: alt2
 Url: http://saltstack.org
 #VCS: https://github.com/saltstack/salt
 License: Apache-2.0
@@ -164,7 +164,7 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %preun_service salt-minion
 
 %files -n python3-module-salt
-%doc AUTHORS README* LICENSE HACKING.rst
+%doc AUTHORS README*
 %config(noreplace) %dir %_sysconfdir/salt
 %config(noreplace) %dir %_sysconfdir/salt/pki
 %python3_sitelibdir/*
@@ -239,6 +239,18 @@ install -D -m 0644 %SOURCE2 %buildroot%_sysconfdir/logrotate.d/salt-minion
 %_man1dir/salt-proxy.1.*
 
 %changelog
+* Fri Apr 02 2021 Andrey Cherepanov <cas@altlinux.org> 3003-alt2
+- Fixed: CVE-2020-28243, CVE-2020-28972, CVE-2020-35662, CVE-2021-3148,
+  CVE-2021-3144, CVE-2021-25281, CVE-2021-25282, CVE-2021-25283,
+  CVE-2021-25284, CVE-2021-25315, CVE-2021-3197, CVE-2020-16846,
+  CVE-2020-17490, CVE-2020-25592
+
+* Thu Apr 01 2021 Andrey Cherepanov <cas@altlinux.org> 3003-alt1
+- New version.
+
+* Wed Mar 10 2021 Andrey Cherepanov <cas@altlinux.org> 3002.5-alt1
+- New version.
+
 * Thu Nov 19 2020 Andrey Cherepanov <cas@altlinux.org> 3002.2-alt1
 - New version.
 
