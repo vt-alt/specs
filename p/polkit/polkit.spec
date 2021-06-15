@@ -3,7 +3,7 @@
 
 Name: polkit
 Version: 0.116
-Release: alt2.M90P.1
+Release: alt2.M90P.2
 
 Summary: PolicyKit Authorization Framework
 License: LGPLv2+
@@ -142,6 +142,9 @@ touch ChangeLog
 %exclude %_datadir/polkit-1/actions/org.freedesktop.policykit.examples.pkexec.policy
 
 %changelog
+* Tue Jun 08 2021 Denis Medvedev <nbr@altlinux.org> 0.116-alt2.M90P.2
+- (Fixes: CVE-2021-3560)
+
 * Thu Dec 17 2020 Ivan Savin <svn17@altlinux.org> 0.116-alt2.M90P.1
 - Added the ability to add user_of_subject to user_identities list
   if user_of_subject is a member of the group with administrator
