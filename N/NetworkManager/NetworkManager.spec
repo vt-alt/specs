@@ -66,7 +66,7 @@
 
 Name: NetworkManager
 Version: 1.18.10
-Release: alt2%git_hash
+Release: alt3%git_hash
 License: GPLv2+ and LGPLv2+
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
@@ -795,6 +795,14 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Thu Jun 10 2021 Mikhail Efremov <sem@altlinux.org> 1.18.10-alt3
+- Backported from NM > 1.20 (closes: #39997):
+  + libnm: let nm_utils_security_valid() reject TKIP with SAE (WPA3).
+  + libnm: let nm_utils_security_valid() reject adhoc mode with SAE.
+  + libnm/utils: add SAE security type.
+  + tui: wifi: support WPA3-Personal (SAE).
+  + libnm-core: support SAE when determining AP compatibility.
+
 * Wed Feb 24 2021 Mikhail Efremov <sem@altlinux.org> 1.18.10-alt2
 - Patches from upstream:
   + device: fix crash releasing destroyed slave

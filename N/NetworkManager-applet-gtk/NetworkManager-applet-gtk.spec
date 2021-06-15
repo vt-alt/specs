@@ -1,14 +1,12 @@
-%define nm_version 1.4.1-alt1.git20160914
-#define git_date .git20180106
-%define git_date %nil
+%define nm_version 1.18.10-alt3
+#define git_hash .g5d8a9fda
+%define git_hash %nil
 
 %define _unpackaged_files_terminate_build 1
 
 %def_without appindicator
 %def_with team
 %def_without selinux
-%def_with gcr
-%def_without libnm_gtk
 
 %ifarch %e2k
 %define more_warnings no
@@ -17,8 +15,8 @@
 %endif
 
 Name: NetworkManager-applet-gtk
-Version: 1.8.24
-Release: alt3%git_date
+Version: 1.22.0
+Release: alt2%git_hash
 License: GPLv2+
 Group: Graphical desktop/GNOME
 Summary: Panel applet for use with NetworkManager
@@ -26,42 +24,24 @@ Url: https://wiki.gnome.org/Projects/NetworkManager
 Vcs: https://gitlab.gnome.org/GNOME/network-manager-applet.git
 Source: nm-applet-%version.tar
 Patch: nm-applet-%version-%release.patch
-# Method 'disabled' was added in NM-1.20
-# We are have NM-1.18 still, so revert this
-# change for now. This patch reverts commit
-# 31c0d3c6b8db22ba464024be7e7cbe31da983a29
-Patch1: remove-disable-method.patch
 
-BuildPreReq: libdbus-devel libdbus-glib libgtk+3-devel libtool libpolkit1-devel
+BuildRequires(pre): meson
 
-BuildRequires: libwireless-devel
+BuildRequires: libgtk+3-devel libtool
 BuildRequires: libnotify-devel
-%if_with libnm_gtk
-BuildRequires: NetworkManager-devel >= %nm_version
-BuildRequires: libnm-util-devel >= %nm_version
-BuildRequires: libnm-glib-devel >= %nm_version
-BuildRequires: libnm-glib-vpn-devel >= %nm_version
-BuildRequires: NetworkManager-glib-gir-devel >= %nm_version
-%endif
 BuildRequires: libnm-devel >= %nm_version
 BuildRequires: libnm-gir-devel >= %nm_version
-BuildRequires: iso-codes-devel
-BuildRequires: gnome-common
 BuildRequires: libgudev-devel
 BuildRequires: libmm-glib-devel
-BuildRequires: gobject-introspection-devel libgtk+3-gir-devel
 BuildRequires: libsecret-devel
-BuildRequires: mobile-broadband-provider-info
-BuildRequires: gtk-doc
+BuildRequires: libnma-devel >= 1.8.28-alt1
 %{?_with_appindicator:BuildRequires: libappindicator-gtk3-devel}
 %{?_with_team:BuildRequires: libjansson-devel}
 %{?_with_selinux:BuildRequires: libselinux-devel}
-%{?_with_gcr:BuildRequires: gcr-libs-devel}
 
 Requires: NetworkManager-daemon >= %nm_version
 Requires: dbus-tools-gui
 Requires: mobile-broadband-provider-info
-#Requires: polkit-gnome
 Requires: iso-codes
 
 Obsoletes: NetworkManager-gnome < 0.9.8.4
@@ -71,193 +51,83 @@ Provides: NetworkManager-gnome = %version-%release
 This package contains GNOME utilities and applications for use with
 NetworkManager, including a panel applet for wireless networks.
 
-%if_with libnm_gtk
-%package -n libnm-gtk
-License: GPLv2+
-Group: Graphical desktop/GNOME
-Summary: Private libraries for NetworkManager GUI support (libnm-glib version)
-
-%description -n libnm-gtk
-This package contains private libraries to be used only by nm-applet and
-the GNOME Control Center.
-
-This library will be obsolete by libnma in the future.
-
-%package -n libnm-gtk-devel
-License: GPLv2+
-Group: Development/GNOME and GTK+
-Summary: Private header files for NetworkManager GUI support (libnm-glib version)
-Requires: libnm-gtk = %version-%release
-Requires: libnm-util-devel >= %nm_version
-Requires: libnm-glib-devel >= %nm_version
-Requires: libnm-glib-vpn-devel >= %nm_version
-Requires: libgtk+3-devel
-
-%description -n libnm-gtk-devel
-This package contains private header and pkg-config files to be used
-only by nm-applet and the GNOME control center.
-
-This library will be obsolete by libnma in the future.
-
-%package -n libnm-gtk-gir
-License: GPLv2+
-Group: System/Libraries
-Summary: GObject introspection data for the libnm-gtk
-Requires: libnm-gtk = %version-%release
-
-%description -n libnm-gtk-gir
-GObject introspection data for the libnm-gtk.
-
-%package -n libnm-gtk-gir-devel
-License: GPLv2+
-Group: System/Libraries
-Summary: GObject introspection devel data for the libnm-gtk
-BuildArch: noarch
-Requires: libnm-gtk-gir = %version-%release
-Requires: libnm-gtk-devel = %version-%release
-
-%description -n libnm-gtk-gir-devel
-GObject introspection devel data for the libnm-gtk.
-%endif
-
-%package -n libnma
-License: GPLv2+
-Group: Graphical desktop/GNOME
-Summary: Private libraries for NetworkManager GUI support (libnm version)
-
-%description -n libnma
-This package contains private libraries to be used only by nm-applet and
-the GNOME Control Center.
-
-%package -n libnma-devel
-License: GPLv2+
-Group: Development/GNOME and GTK+
-Summary: Private header files for NetworkManager GUI support (libnm version)
-Requires: libnma = %version-%release
-Requires: libnm-devel >= %nm_version
-Requires: libgtk+3-devel
-
-%description -n libnma-devel
-This package contains private header and pkg-config files to be used
-only by nm-applet and the GNOME control center.
-
-%package -n libnma-gir
-License: GPLv2+
-Group: System/Libraries
-Summary: GObject introspection data for the libnma
-Requires: libnma = %version-%release
-
-%description -n libnma-gir
-GObject introspection data for the libnma.
-
-%package -n libnma-gir-devel
-License: GPLv2+
-Group: System/Libraries
-Summary: GObject introspection devel data for the libnma
-BuildArch: noarch
-Requires: libnma-gir = %version-%release
-Requires: libnma-devel = %version-%release
-
-%description -n libnma-gir-devel
-GObject introspection devel data for the libnma.
-
-%package -n libnma-devel-doc
-Summary: Development documentation for libnma-devel-doc
-Group: Development/Documentation
-BuildArch: noarch
-
-%description -n libnma-devel-doc
-This package contains development documentation for libnma-devel-doc.
-
 %prep
 %setup -n nm-applet-%version
 %patch -p1
-%patch1 -p1
 %build
-
-%autoreconf
-# Use GETTEXT_PACKAGE as PACKAGE:
-# these variables are not the same and gettext doesn't use GETTEXT_PACKAGE at all.
-sed -i 's/^PACKAGE = @PACKAGE@/PACKAGE = @GETTEXT_PACKAGE@/' po/Makefile.in.in
-%configure \
-	--disable-static \
-	--libexecdir=%_libexecdir/NetworkManager \
-	--localstatedir=%_var \
-	%{subst_with selinux} \
-	%{subst_with gcr} \
-	--with-wwan \
-	%{subst_with appindicator} \
-	%{subst_with team} \
-	--enable-introspection \
-%if_with libnm_gtk
-	--with-libnm-gtk \
+%meson \
+    --libexecdir==%_libexecdir/NetworkManager \
+    --localstatedir=%_var \
+%if_with selinux
+    -Dselinux=true \
 %else
-	--without-libnm-gtk \
+    -Dselinux=false \
 %endif
-	--without-libnma-gtk4 \
-	--enable-mobile-broadband-provider-info \
-	--enable-gtk-doc \
-	--disable-silent-rules \
-	--enable-more-warnings=%more_warnings
+%if_with appindicator
+    -Dappindicator=yes \
+%else
+    -Dappindicator=no \
+%endif
+%if_with team
+    -Dteam=true \
+%else
+    -Dteam=false \
+%endif
+	-Dwwan=true
 
-%make_build
+%meson_build -v
 
 %install
-%makeinstall_std
+%meson_install
 %find_lang nm-applet
 
 # For VPN plugins
 mkdir -p %buildroot/%_datadir/gnome-vpn-properties
 
 %check
-make check
+%meson_test
 
 %files -f nm-applet.lang
 %_bindir/*
 %_iconsdir/hicolor/*/apps/*
 %_sysconfdir/xdg/autostart/nm-applet.desktop
 %_datadir/GConf/gsettings/nm-applet.convert
-%_datadir/glib-2.0/schemas/org.gnome.nm-applet.gschema.xml
 %doc %_man1dir/*.*
 
 %_datadir/applications/*.desktop
 %_datadir/metainfo/*.xml
 %dir %_datadir/gnome-vpn-properties
 
-%if_with libnm_gtk
-%files -n libnm-gtk
-%_libdir/libnm-gtk.so.*
-
-%files -n libnm-gtk-devel
-%_includedir/libnm-gtk/
-%_libdir/libnm-gtk.so
-%_pkgconfigdir/libnm-gtk.pc
-
-%files -n libnm-gtk-gir
-%_libdir/girepository-1.0/NMGtk-1.0.typelib
-
-%files -n libnm-gtk-gir-devel
-%_datadir/gir-1.0/NMGtk-1.0.gir
-%endif
-
-%files -n libnma
-%_libdir/libnma.so.*
-
-%files -n libnma-devel
-%_includedir/libnma/
-%_libdir/libnma.so
-%_pkgconfigdir/libnma.pc
-
-%files -n libnma-gir
-%_libdir/girepository-1.0/NMA-1.0.typelib
-
-%files -n libnma-gir-devel
-%_datadir/gir-1.0/NMA-1.0.gir
-
-%files -n libnma-devel-doc
-%doc %_datadir/gtk-doc/html/libnma
-
 %changelog
+* Thu Jun 10 2021 Mikhail Efremov <sem@altlinux.org> 1.22.0-alt2
+- Remove 'disabled' IPv6 method with NM < 1.20.
+- Support of NMU_SEC_SAE is added to NM-1.18.10-alt3.
+
+* Tue May 11 2021 Mikhail Efremov <sem@altlinux.org> 1.22.0-alt1
+- Updated to 1.22.0.
+
+* Wed Mar 10 2021 Mikhail Efremov <sem@altlinux.org> 1.21.0-alt1.g5d8a9fda
+- Upstream git snapshot.
+
+* Fri Feb 12 2021 Mikhail Efremov <sem@altlinux.org> 1.20.0-alt1
+- Updated to 1.20.0.
+
+* Sat Sep 19 2020 Mikhail Efremov <sem@altlinux.org> 1.19.0-alt1.gab06222e
+- Add 'disabled' IPv6 method again.
+- Upstream git snapshot.
+
+* Fri Jul 03 2020 Mikhail Efremov <sem@altlinux.org> 1.18.0-alt1
+- Updated to 1.18.0.
+
+* Mon Mar 30 2020 Mikhail Efremov <sem@altlinux.org> 1.16.0-alt2
+- Fixed wireless page.
+
+* Fri Mar 27 2020 Mikhail Efremov <sem@altlinux.org> 1.16.0-alt1
+- Drop libnma.
+- Remove libnm-gtk from spec.
+- Drop obsoleted patch.
+- Updated to 1.16.0.
+
 * Wed Feb 19 2020 Mikhail Efremov <sem@altlinux.org> 1.8.24-alt3
 - Remove 'disabled' IPv6 method (closes: #38121).
 
