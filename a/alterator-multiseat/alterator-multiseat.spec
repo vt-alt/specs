@@ -1,5 +1,5 @@
 Name: alterator-multiseat
-Version: 0.0.4
+Version: 0.0.5
 Release: alt1
 
 Source: %name-%version.tar
@@ -31,6 +31,12 @@ alterator module for setup multiseat configuration
 %_datadir/alterator/ui/*
 
 %changelog
+* Mon May 31 2021 Ivan Razzhivin <underwit@altlinux.org> 0.0.5-alt1
+- refactoring get_device_name function (closes: #40097)
+- add the ability to save and restore the config
+- remove device_flush call from cache_seat_rm_all and cache_seat_remove (closes: #40098)
+- mark a seat when it is active
+
 * Fri May 14 2021 Ivan Razzhivin <underwit@altlinux.org> 0.0.4-alt1
 - fix list-seats (closes: #39917, #39964)
 - reboot when activate
