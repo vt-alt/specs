@@ -1,4 +1,4 @@
-%define kernel_base_version 5.5
+%define kernel_base_version 5.10
 %define kernel_source kernel-source-%kernel_base_version
 
 Name: glibc-kernheaders
@@ -128,7 +128,7 @@ building most standard programs and are also needed to build glibc. \
 
 # In the kernel tree:
 # ls arch/*/include/uapi/asm/Kbuild | sed -n 's|^arch/\([^/ ]\+\)/.*|\1|p' | sort | xargs echo %%define kernel_arches
-%define kernel_arches alpha arc arm arm64 c6x csky h8300 hexagon ia64 m68k microblaze mips nds32 nios2 openrisc parisc powerpc riscv s390 sh sparc unicore32 x86 xtensa
+%define kernel_arches alpha arc arm arm64 c6x csky h8300 hexagon ia64 m68k microblaze mips nds32 nios2 openrisc parisc powerpc riscv s390 sh sparc x86 xtensa
 
 # ls arch/*/include/uapi/asm/Kbuild | sed -n 's|^arch/\([^/ ]\+\)/.*|%%do_package \1 1|p' | sort
 %do_package alpha 1
@@ -152,7 +152,6 @@ building most standard programs and are also needed to build glibc. \
 %do_package s390 1
 %do_package sh 1
 %do_package sparc 1
-%do_package unicore32 1
 %do_package x86 1
 %do_package xtensa 1
 
@@ -309,7 +308,6 @@ cd - > /dev/null
 %do_files s390 1
 %do_files sh 1
 %do_files sparc 1
-%do_files unicore32 1
 %do_files x86 1
 %do_files xtensa 1
 
@@ -323,6 +321,21 @@ cd - > /dev/null
 %hdr_dir/include/asm
 
 %changelog
+* Sun Dec 13 2020 Dmitry V. Levin <ldv@altlinux.org> 5.10-alt1
+- v5.9 -> v5.10.
+
+* Sun Oct 11 2020 Dmitry V. Levin <ldv@altlinux.org> 5.9-alt1
+- v5.8 -> v5.9.
+
+* Sun Aug 02 2020 Dmitry V. Levin <ldv@altlinux.org> 5.8-alt1
+- v5.7 -> v5.8.
+
+* Sun May 31 2020 Dmitry V. Levin <ldv@altlinux.org> 5.7-alt1
+- v5.6 -> v5.7.
+
+* Sun Mar 29 2020 Dmitry V. Levin <ldv@altlinux.org> 5.6-alt1
+- v5.5 -> v5.6.
+
 * Mon Jan 27 2020 Dmitry V. Levin <ldv@altlinux.org> 5.5-alt1
 - v5.4 -> v5.5.
 
