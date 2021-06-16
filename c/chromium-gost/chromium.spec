@@ -33,13 +33,13 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium-gost
-Version:        89.0.4389.114
+Version:        91.0.4472.77
 Release:        alt0.p9.1
 
 Summary:        An open source web browser developed by Google
 License:        BSD-3-Clause and LGPL-2.1+
 Group:          Networking/WWW
-Url:            http://www.chromium.org
+Url:            https://www.chromium.org
 
 Source0:        chromium.tar.zst
 Source1:        depot_tools.tar
@@ -92,9 +92,8 @@ Patch017: 0017-FEDORA-remove-noexcept.patch
 Patch018: 0018-ALT-disable-asm-on-x86-in-dav1d.patch
 Patch019: 0019-Move-offending-function-to-chromeos-only.patch
 Patch020: 0020-ALT-Do-not-use-no-canonical-prefixes-clang-option.patch
-Patch021: 0021-GCC-do-not-pass-unique_ptr-to-DCHECK_NE-but-the-actu.patch
-Patch022: 0022-IWYU-add-ctime-for-std-time.patch
-Patch023: 0023-Fix-libva-redefinitions.patch
+Patch021: 0021-ALT-Disable-NOMERGE-attribute.patch
+Patch022: 0022-IWYU-include-limits-for-std-numeric_limits.patch
 ### End Patches
 
 BuildRequires: /proc
@@ -139,6 +138,7 @@ BuildRequires:  pkgconfig(libavformat)
 BuildRequires:  pkgconfig(libavcodec)
 BuildRequires:  pkgconfig(libavutil)
 %endif
+BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(freetype2)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(expat)
@@ -169,6 +169,7 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-egl)
+BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  python
 BuildRequires:  python-modules-json
 BuildRequires:  python-modules-distutils
@@ -210,11 +211,13 @@ tar -xf %SOURCE1
 %patch020 -p1
 %patch021 -p1
 %patch022 -p1
-%patch023 -p1
 ### Finish apply patches
 
 sed -E 's@^((diff --git|[-+]{3}) a)/(.*)@\1/third_party/boringssl/src/\3@' < chromium-gost/patch/boringssl.patch | patch -p1
 sed -E 's@^((diff --git|[-+]{3}) a)/(.*)@\1/third_party/boringssl/src/\3@' < chromium-gost/patch/chromium.patch | patch -p1
+# Try to fix #39677
+sed -i 's/std::string data_dir_basename = "chromium"/std::string data_dir_basename = "chromium-gost"/' chrome/common/chrome_paths_linux.cc
+
 # lost sources
 for f in .rpm/blinkpy-common/*.py; do
 	t="third_party/blink/tools/blinkpy/common/${f##*/}"
@@ -317,7 +320,11 @@ gn_arg is_clang=true
 gn_arg clang_use_chrome_plugins=false
 gn_arg use_lld=true
 if [ "$bits" = 64 ]; then
+%ifarch aarch64
+    gn_arg use_thin_lto=false                                                                                                                                                                  
+%else
     gn_arg use_thin_lto=true
+%endif
 else
     gn_arg use_thin_lto=false
 fi
@@ -413,11 +420,11 @@ for f in *.bin *.so* *.pak swiftshader locales icudtl.dat; do
 	[ ! -e "$f" ] ||
 		cp -at %buildroot%_libdir/%name -- "$f"
 done
+popd
 
 # Remove garbage
-find -name '*.TOC' -delete
-
-popd
+find %buildroot%_libdir/%name -name '*.TOC' -delete
+find %buildroot%_libdir/%name/locales -name '*.pak.info' -delete
 
 # Icons
 for size in 24 48 64 128 256; do
@@ -487,8 +494,64 @@ EOF
 %_altdir/%name
 
 %changelog
+* Fri Jun 11 2021 Andrey Cherepanov <cas@altlinux.org> 91.0.4472.77-alt0.p9.1
+- Backport new version to p9 branch.
+- Disable thin_lto on aarch64.
+
+* Wed Jun 09 2021 Fr. Br. George <george@altlinux.ru> 91.0.4472.77-alt1
+- Build GOST Version
+- Separate user-data-dir from chromium's one (Closes: #39677)
+
+* Fri May 28 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.77-alt0
+- New version (91.0.4472.77).
+- Security fixes:
+  - CVE-2021-21212: Insufficient data validation in networking.
+  - CVE-2021-30521: Heap buffer overflow in Autofill.
+  - CVE-2021-30522: Use after free in WebAudio.
+  - CVE-2021-30523: Use after free in WebRTC.
+  - CVE-2021-30524: Use after free in TabStrip.
+  - CVE-2021-30525: Use after free in TabGroups.
+  - CVE-2021-30526: Out of bounds write in TabStrip.
+  - CVE-2021-30527: Use after free in WebUI.
+  - CVE-2021-30528: Use after free in WebAuthentication.
+  - CVE-2021-30529: Use after free in Bookmarks.
+  - CVE-2021-30530: Out of bounds memory access in WebAudio.
+  - CVE-2021-30531: Insufficient policy enforcement in Content Security Policy.
+  - CVE-2021-30532: Insufficient policy enforcement in Content Security Policy.
+  - CVE-2021-30533: Insufficient policy enforcement in PopupBlocker.
+  - CVE-2021-30534: Insufficient policy enforcement in iFrameSandbox.
+  - CVE-2021-30535: Double free in ICU.
+  - CVE-2021-30536: Out of bounds read in V8.
+  - CVE-2021-30537: Insufficient policy enforcement in cookies.
+  - CVE-2021-30538: Insufficient policy enforcement in content security policy.
+  - CVE-2021-30539: Insufficient policy enforcement in content security policy.
+  - CVE-2021-30540: Incorrect security UI in payments.
+
 * Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 89.0.4389.114-alt0.p9.1
 - Backport new version to p9 branch.
+
+* Sun Apr 18 2021 Alexey Gladkov <legion@altlinux.ru> 90.0.4430.72-alt1
+- New version (90.0.4430.72).
+- Security fixes:
+  - CVE-2021-21201: Use after free in permissions.
+  - CVE-2021-21202: Use after free in extensions.
+  - CVE-2021-21203: Use after free in Blink.
+  - CVE-2021-21204: Use after free in Blink.
+  - CVE-2021-21205: Insufficient policy enforcement in navigation.
+  - CVE-2021-21207: Use after free in IndexedDB.
+  - CVE-2021-21208: Insufficient data validation in QR scanner.
+  - CVE-2021-21209: Inappropriate implementation in storage.
+  - CVE-2021-21210: Inappropriate implementation in Network.
+  - CVE-2021-21211: Inappropriate implementation in Navigation.
+  - CVE-2021-21212: Incorrect security UI in Network Config UI.
+  - CVE-2021-21213: Use after free in WebMIDI.
+  - CVE-2021-21214: Use after free in Network API.
+  - CVE-2021-21215: Inappropriate implementation in Autofill.
+  - CVE-2021-21216: Inappropriate implementation in Autofill.
+  - CVE-2021-21217: Uninitialized Use in PDFium.
+  - CVE-2021-21218: Uninitialized Use in PDFium.
+  - CVE-2021-21219: Uninitialized Use in PDFium.
+  - CVE-2021-21221: Insufficient validation of untrusted input in Mojo.
 
 * Sun Apr 18 2021 Fr. Br. George <george@altlinux.ru> 89.0.4389.114-alt1
 - Build GOST version
@@ -547,14 +610,7 @@ EOF
   - CVE-2021-21189: Insufficient policy enforcement in payments.
   - CVE-2021-21190: Uninitialized Use in PDFium.
 
-* Tue Feb 09 2021 Andrey Cherepanov <cas@altlinux.org> 88.0.4324.150-alt0.1.p9
-- Backport new version to p9 branch.
-- Add provide for webclient (ALT #39666).
-
-* Mon Feb 08 2021 Fr. Br. George <george@altlinux.ru> 88.0.4324.150-alt1
-- Build GOST version
-
-* Sat Feb 06 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.150-alt0
+* Sat Feb 06 2021 Alexey Gladkov <legion@altlinux.ru> 88.0.4324.150-alt1
 - New version (88.0.4324.150).
 - Security fixes:
   - CVE-2021-21148: Heap buffer overflow in V8.
