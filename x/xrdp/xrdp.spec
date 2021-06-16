@@ -1,7 +1,7 @@
 %global _unpackaged_files_terminate_build 1
 Name: 	 xrdp
 Version: 0.9.16
-Release: alt1
+Release: alt2
 
 Summary: An open source remote desktop protocol (RDP) server
 
@@ -248,8 +248,8 @@ fi
 %ghost %_localstatedir/log/xrdp-sesman.log
 %ghost %config(noreplace) %attr(0400,root,root) %verify(not size md5 mtime) %_sysconfdir/xrdp/rsakeys.ini
 %ghost %config(noreplace) %attr(0400,root,root) %verify(not size md5 mtime) %_sysconfdir/xrdp/*.pem
-%config %_sysconfdir/xrdp/sesman.ini
-%config %_sysconfdir/xrdp/xrdp.ini
+%config(noreplace) %_sysconfdir/xrdp/sesman.ini
+%config(noreplace) %_sysconfdir/xrdp/xrdp.ini
 %_bindir/xrdp*
 %_sbindir/xrdp*
 %_libdir/%name
@@ -268,6 +268,9 @@ fi
 %_x11modulesdir/input/*.so
 
 %changelog
+* Fri Jun 11 2021 Andrey Cherepanov <cas@altlinux.org> 0.9.16-alt2
+- Do not replace sesman.ini and xrdp.ini during package update.
+
 * Tue May 04 2021 Andrey Cherepanov <cas@altlinux.org> 0.9.16-alt1
 - New version.
 
