@@ -1,7 +1,9 @@
+# due to kcmshell4
+%filter_from_requires /^kde4base-runtime-core/d
 Group: Graphical desktop/Other
 # BEGIN SourceDeps(oneline):
-BuildRequires(pre): rpm-macros-alternatives rpm-macros-fedora-compat
-BuildRequires: /usr/bin/desktop-file-install pkgconfig(cairo-xlib) pkgconfig(fontconfig) pkgconfig(gio-2.0) pkgconfig(glib-2.0) pkgconfig(uuid) pkgconfig(xkbcommon)
+BuildRequires(pre): rpm-macros-alternatives rpm-macros-cmake rpm-macros-fedora-compat
+BuildRequires: /usr/bin/desktop-file-install pkgconfig(cairo-xlib) pkgconfig(fontconfig) pkgconfig(gio-2.0) pkgconfig(glib-2.0) pkgconfig(xkbcommon)
 # END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
@@ -11,8 +13,8 @@ BuildRequires: /usr/bin/desktop-file-install pkgconfig(cairo-xlib) pkgconfig(fon
 
 Name:			fcitx
 Summary:		An input method framework
-Version:		4.2.9.6
-Release:		alt2_4
+Version:		4.2.9.8
+Release:		alt2_1.p9.1
 License:		GPLv2+
 URL:			https://fcitx-im.org/wiki/Fcitx
 Source0:		http://download.fcitx-im.org/fcitx/%{name}-%{version}_dict.tar.xz
@@ -21,14 +23,16 @@ BuildRequires:		gcc-c++
 BuildRequires:		libpango-devel libpango-gir-devel, libdbus-devel, opencc-devel
 BuildRequires:		wget, intltool, chrpath, sysconftool, opencc
 BuildRequires:		ctest cmake, libtool, doxygen icu-utils libicu-devel
-BuildRequires:		libqt4-declarative libqt4-devel libqt4-help qt4-designer qt4-doc-html qt5-declarative-devel qt5-designer qt5-tools gtk3-demo libgail3-devel libgtk+3 libgtk+3-devel libgtk+3-gir-devel gtk-builder-convert gtk-demo libgail-devel libgtk+2-devel libgtk+2-gir-devel, libicu
-BuildRequires:		xorg-pmproto-devel xorg-proto-devel xorg-xf86miscproto-devel, xorg-xtrans-devel
+BuildRequires:		libqt4-declarative libqt4-devel libqt4-help qt4-designer qt4-doc-html qt5-declarative-devel qt5-designer qt5-tools gtk3-demo libgail3-devel libgtk+3 libgtk+3-devel libgtk+3-gir-devel gtk-builder-convert gtk-demo libgail-devel libgtk+2-devel, libicu-devel
+BuildRequires:		libX11-devel libXvMC-devel xorg-proto-devel, xorg-xtrans-devel
 BuildRequires:		gobject-introspection-devel, libxkbfile-devel
 BuildRequires:		libenchant-devel, iso-codes-devel icu-utils libicu-devel
 BuildRequires:		libX11-devel, libdbus-glib-devel, dbus-tools-gui
 BuildRequires:		desktop-file-utils, libxml2-devel
 BuildRequires:		lua-devel, extra-cmake-modules
 BuildRequires:		xkeyboard-config-devel
+BuildRequires:		libuuid-devel
+BuildRequires:		libjson-c-devel
 Requires:		%{name}-data = %{version}-%{release}
 Requires:		imsettings
 Requires:		%{name}-libs = %{version}-%{release}
@@ -145,16 +149,15 @@ This package contains table engine for Fcitx.
 
 %prep
 %setup -q
+# bash4
 sed -i '1s,env bash,env bash4,' data/script/fcitx-diagnose.sh
 
 %build
-mkdir -p build
-pushd build
-%{fedora_cmake} .. -DENABLE_GTK3_IM_MODULE=On -DENABLE_QT_IM_MODULE=On -DENABLE_OPENCC=On -DENABLE_LUA=On -DENABLE_GIR=On -DENABLE_XDGAUTOSTART=Off
-make VERBOSE=1 %{?_smp_mflags}
+%{fedora_v2_cmake} -DENABLE_GTK3_IM_MODULE=On -DENABLE_QT_IM_MODULE=On -DENABLE_OPENCC=On -DENABLE_LUA=On -DENABLE_GIR=On -DENABLE_XDGAUTOSTART=Off
+%fedora_v2_cmake_build 
 
 %install
-%makeinstall_std INSTALL="install -p" -C build
+%fedora_v2_cmake_install 
 
 find %{buildroot}%{_libdir} -name '*.la' -delete -print
 
@@ -299,10 +302,33 @@ EOF
 %files gtk3
 %{_libdir}/gtk-3.0/%{gtk3_binary_version}/immodules/im-fcitx.so
 
+%ifnarch riscv64
 %files qt4
 %{_libdir}/qt4/plugins/inputmethods/qtim-fcitx.so
+%endif
 
 %changelog
+* Mon Jun 07 2021 Andrey Cherepanov <cas@altlinux.org> 4.2.9.8-alt2_1.p9.1
+- Backport new version to p9 branch (ALT #40162).
+
+* Mon May 17 2021 Igor Vlasenko <viy@altlinux.org> 4.2.9.8-alt2_2
+- build w/o kde4
+
+* Tue Nov 24 2020 Igor Vlasenko <viy@altlinux.ru> 4.2.9.8-alt2_1
+- updated buildrequires
+
+* Fri Sep 11 2020 Igor Vlasenko <viy@altlinux.ru> 4.2.9.8-alt1_1
+- new version
+
+* Thu Jun 18 2020 Nikita Ermakov <arei@altlinux.org> 4.2.9.7-alt1_3
+- Exclude qt4 support for riscv64
+
+* Tue Mar 24 2020 Igor Vlasenko <viy@altlinux.ru> 4.2.9.7-alt1_2
+- update to new release by fcimport
+
+* Tue Oct 08 2019 Sergey V Turchin <zerg@altlinux.org> 4.2.9.6-alt2_4.1
+- drop requires to kde4
+
 * Mon Apr 15 2019 Igor Vlasenko <viy@altlinux.ru> 4.2.9.6-alt2_4
 - rebuild (closes: #36598)
 
