@@ -11,7 +11,7 @@
 
 Name: branding-%flavour
 Version: p9
-Release: alt8
+Release: alt9
 
 Url: http://en.altlinux.org/starterkits
 
@@ -38,7 +38,7 @@ Source: branding.tar
 
 Group: Graphics
 Summary: System/Base
-License: GPL
+License: GPLv2+
 
 %description
 Distro-specific packages with design and texts
@@ -46,7 +46,7 @@ Distro-specific packages with design and texts
 %package bootloader
 Group: System/Configuration/Boot and Init
 Summary: Graphical boot logo for grub2, lilo and syslinux
-License: GPL
+License: GPLv2+
 
 %ifarch %ix86 x86_64
 BuildRequires: gfxboot >= 4
@@ -55,7 +55,7 @@ BuildRequires: design-bootloader-source >= 5.0-alt2
 Requires: coreutils
 Provides: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
 
-Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme branding-alt-%theme-bootloader
+Obsoletes: design-bootloader-system-%theme design-bootloader-livecd-%theme design-bootloader-livecd-%theme design-bootloader-%theme
 %branding_add_conflicts %flavour bootloader
 
 %define grub_normal white/black
@@ -81,7 +81,7 @@ This package contains graphics for boot process, displayed via Plymouth
 
 %package alterator
 Summary: Design for alterator for %Brand %Theme
-License: GPL
+License: GPLv2+
 Group: System/Configuration/Other
 BuildArch: noarch
 Provides: design-alterator-browser-%theme branding-alt-%theme-browser-qt branding-altlinux-%theme-browser-qt
@@ -103,7 +103,7 @@ BuildArch: noarch
 Provides: design-graphics = 12.0.0
 Provides: design-graphics-%theme branding-alt-%theme-graphics
 Provides: design-graphics = %design_graphics_abi_major.%design_graphics_abi_minor.%design_graphics_abi_bugfix
-Obsoletes: branding-alt-%theme-graphics design-graphics-%theme
+Obsoletes: design-graphics-%theme
 Requires: alternatives >= 0.2
 %branding_add_conflicts %flavour graphics
 Conflicts: design-graphics-default
@@ -120,7 +120,7 @@ Summary: %distribution %Theme release file
 Group: System/Configuration/Other
 BuildArch: noarch
 Provides: %(for n in %provide_list; do echo -n "$n-release = %version-%release "; done) altlinux-release-%theme branding-alt-%theme-release
-Obsoletes: %obsolete_list branding-alt-%theme-release
+Obsoletes: %obsolete_list
 Conflicts: %conflicts_list
 %branding_add_conflicts %flavour release
 
@@ -129,7 +129,7 @@ Conflicts: %conflicts_list
 
 %package notes
 Provides: alt-license-theme = %version alt-notes-%theme
-Obsoletes: alt-license-%theme alt-notes-%theme
+Obsoletes: alt-license-%theme
 Summary: Distribution license and release notes
 License: Distributable
 Group: Documentation
@@ -335,6 +335,10 @@ subst "s/Theme=.*/Theme=%theme/" /etc/plymouth/plymouthd.conf
 %_sysconfdir/skel/.config/autostart/*
 
 %changelog
+* Sat May 29 2021 Anton Midyukov <antohami@altlinux.org> p9-alt9
+- Fix License Tag (Replace GPL to GPLv2+)
+- Fix obsolete itself
+
 * Wed Mar 10 2021 Anton Midyukov <antohami@altlinux.org> p9-alt8
 - Fix missing conflicts (Closes: 39779)
 
