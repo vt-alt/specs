@@ -1,5 +1,5 @@
 Name: libX11
-Version: 1.7.1
+Version: 1.7.2
 Release: alt1
 Epoch: 3
 Summary: X11 Library
@@ -85,6 +85,9 @@ rm -f %buildroot%_libdir/X11/locale/common/*.la
 %_datadir/X11/locale
 
 %changelog
+* Tue Jun 08 2021 Valery Inozemtsev <shrek@altlinux.ru> 3:1.7.2-alt1
+- 1.7.2
+
 * Wed May 19 2021 Valery Inozemtsev <shrek@altlinux.ru> 3:1.7.1-alt1
 - 1.7.1 (fixes: CVE-2021-31535)
 
