@@ -1,5 +1,5 @@
 Name: make-initrd-propagator
-Version: 0.44
+Version: 0.45
 Release: alt1
 
 Summary: Put propagator into make-initrd generated image
@@ -39,6 +39,9 @@ mkdir -p %buildroot%_datadir/make-initrd/features/propagator/data/image
 %_datadir/make-initrd/features/propagator
 
 %changelog
+* Mon Feb 08 2021 Anton Midyukov <antohami@altlinux.org> 0.45-alt1
+- init-bottom: Remove additional condition for create live storage
+
 * Tue Jan 05 2021 Anton Midyukov <antohami@altlinux.org> 0.44-alt1
 - init-bottom: Always create alt-live-storage
 
