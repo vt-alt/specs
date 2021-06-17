@@ -1,7 +1,7 @@
 %define zabbix_user	zabbix
 %define zabbix_group	zabbix
 %define zabbix_home	/dev/null
-%define svnrev		eaa427cf19
+%define svnrev		c60195b3f9
 
 %def_with pgsql
 %def_enable java
@@ -9,6 +9,7 @@
 %def_with unixodbc
 
 %def_enable ipv6
+%def_enable agent2
 
 %ifndef _unitdir
 %define _unitdir %systemd_unitdir
@@ -16,8 +17,8 @@
 
 
 Name: zabbix
-Version: 5.0.5
-Release: alt2.1.p9
+Version: 5.0.12
+Release: alt0.p9.1
 Epoch: 1
 
 Summary: A network monitor
@@ -32,6 +33,7 @@ Patch0: %name-%version-alt.patch
 
 #%%{?_enable_java:BuildRequires(pre): java-devel-default}
 BuildRequires(pre): libelf-devel rpm-build-webserver-common rpm-macros-apache2
+%{?_enable_agent2:BuildRequires(pre): rpm-build-golang}
 
 # Automatically added by buildreq on Thu Nov 02 2017 (-bi)
 # optimized out: elfutils glibc-kernheaders-generic glibc-kernheaders-x86 libcom_err-devel libkrb5-devel libnet-snmp30 libp11-kit libpq-devel libsasl2-3 libssl-devel net-snmp-config perl pkg-config python-base python3 rpm-build-python3 xz
@@ -99,6 +101,11 @@ Obsoletes: %name-pgsql < 1:1.1.7-alt1
 
 %package agent
 Summary: %name agent
+Group: Monitoring
+Requires: %name-common >= 1:2.0.4-alt1
+
+%package agent2
+Summary: %name agent2
 Group: Monitoring
 Requires: %name-common >= 1:2.0.4-alt1
 
@@ -259,6 +266,9 @@ Zabbix java gateway
 %description agent
 zabbix network monitor agent.
 
+%description agent2
+zabbix network monitor agent2.
+
 ZABBIX is software for monitoring of your applications, network and servers.
 ZABBIX supports both polling and trapping techniques to collect data from
 monitored hosts. A flexible notification mechanism allows easy and quickly
@@ -294,8 +304,11 @@ zabbix web frontend, edition for php7
 %patch0 -p1
 
 %build
+%ifarch armh
+export CFLAGS=-fPIC
+%endif
 # fix ZABBIX_REVISION
-sed -i -e "s,{ZABBIX_REVISION},%svnrev," include/version.h src/zabbix_java/src/com/zabbix/gateway/GeneralInformation.java
+sed -i -e "s,{ZABBIX_REVISION},%svnrev," include/version.h src/zabbix_java/src/com/zabbix/gateway/GeneralInformation.java src/go/pkg/version/version.go
 
 %autoreconf
 
@@ -311,7 +324,6 @@ sed -i -e "s,{ZABBIX_REVISION},%svnrev," include/version.h src/zabbix_java/src/c
 	--with-openssl \
 	%{subst_with ssh2} \
 	%{subst_with unixodbc} \
-	--with-libpcre-include=/usr/include/pcre \
 	--sysconfdir=/etc/zabbix
 %make dbschema
 %make
@@ -332,7 +344,6 @@ mv src/%{name}_server/%{name}_server src/%{name}_server/%{name}_mysql
 	--with-openssl \
 	%{subst_with ssh2} \
 	%{subst_with unixodbc} \
-	--with-libpcre-include=/usr/include/pcre \
 	--sysconfdir=/etc/zabbix
 %make dbschema
 %make
@@ -354,7 +365,6 @@ mv src/%{name}_server/%{name}_server src/%{name}_server/%{name}_pgsql
 	--with-openssl \
 	%{subst_with ssh2} \
 	%{subst_with unixodbc} \
-	--with-libpcre-include=/usr/include/pcre \
 	--sysconfdir=/etc/zabbix
 %make
 
@@ -362,10 +372,13 @@ mv src/%{name}_proxy/%{name}_proxy src/%{name}_proxy/%{name}_proxy_pgsql
 %make clean
 %endif
 
+export GOFLAGS="-mod=vendor"
+
 %configure --with-sqlite3 \
 	--enable-proxy \
 	%{subst_enable ipv6} \
 	--enable-agent \
+	%{subst_enable agent2} \
 	%{subst_enable java} \
 	--with-libcurl \
 	--with-libxml2 \
@@ -376,12 +389,11 @@ mv src/%{name}_proxy/%{name}_proxy src/%{name}_proxy/%{name}_proxy_pgsql
 	--with-openssl \
 	%{subst_with ssh2} \
 	%{subst_with unixodbc} \
-	--with-libpcre-include=/usr/include/pcre \
 	--sysconfdir=/etc/zabbix
 %make
 
 # adjust in several files /home/zabbix
-find conf -type f -print0 | xargs -0 sed -i \
+find conf src/go/conf -type f -print0 | xargs -0 sed -i \
 	-e "s,/home/zabbix/bin,/usr/sbin,g" \
 	-e "s,PidFile=/tmp,PidFile=%_var/run/zabbix,g" \
 	-e "s,LogFile=/tmp,LogFile=%_logdir/zabbix,g" \
@@ -396,6 +408,7 @@ do
     msgfmt --use-fuzzy -c -o ${pofile%%po}mo $pofile
 done
 
+export GOFLAGS="-mod=vendor"
 %makeinstall
 
 # create directory structure
@@ -417,6 +430,10 @@ install -m0755 src/%{name}_proxy/%{name}_proxy_pgsql %buildroot%_sbindir
 # conf files
 install -m0640 conf/%{name}_{server,agentd,proxy}.conf %buildroot%_sysconfdir/%name
 install -Dpm 644 sources/%name-tmpfiles.conf %buildroot/lib/tmpfiles.d/%name.conf
+%if_enabled agent2
+install -dm0750 %buildroot%_sysconfdir/%name/zabbix_agent2.conf.d
+install -m0640 src/go/conf/zabbix_agent2.conf %buildroot%_sysconfdir/%name/
+%endif
 
 # frontends
 mv ui/locale/*.sh .
@@ -429,6 +446,10 @@ install -pDm0644 sources/%name.conf %buildroot%_sysconfdir/httpd2/conf/addon.d/A
 install -pDm0755 sources/%{name}_agentd.init %buildroot%_initdir/%{name}_agentd
 install -pDm0644 sources/%{name}_agentd.service %buildroot%_unitdir/%{name}_agentd.service
 install -pDm0644 sources/zabbix_server %buildroot%_sysconfdir/sysconfig/zabbix_server
+%if_enabled agent2
+install -pDm0755 sources/%{name}_agent2.init %buildroot%_initdir/%{name}_agent2
+install -pDm0644 sources/%{name}_agent2.service %buildroot%_unitdir/%{name}_agent2.service
+%endif
 %if_with pgsql
 install -pDm0755 sources/%{name}_pgsql.init %buildroot%_initdir/%{name}_pgsql
 install -pDm0644 sources/%{name}_pgsql.service %buildroot%_unitdir/%{name}_pgsql.service
@@ -490,12 +511,6 @@ bzip2 ChangeLog
 %preun_service zabbix_pgsql
 %endif
 
-%post phpfrontend-apache2
-%post_apache2_rpma2chkconfigfile
-
-%postun phpfrontend-apache2
-%post_apache2_rpma2chkconfigfile
-
 %post proxy
 %post_service zabbix_proxy
 
@@ -519,11 +534,11 @@ bzip2 ChangeLog
 %endif
 
 %post agent
-%post_service zabbix_agentd
 if [ $1 -eq 1 ]; then
 	sed -i -e "s,Hostname=Zabbix server,Hostname=$HOSTNAME,g" \
 	%_sysconfdir/%name/%{name}_agentd.conf
 fi
+%post_service zabbix_agentd
 
 %post agent-sudo
 if [ $1 -eq 1 ]; then
@@ -532,6 +547,16 @@ fi
 
 %preun agent
 %preun_service zabbix_agentd
+
+%post agent2
+if [ $1 -eq 1 ]; then
+	sed -i -e "s,Hostname=Zabbix server,Hostname=$HOSTNAME,g" \
+	%_sysconfdir/%name/%{name}_agent2.conf
+fi
+%post_service zabbix_agent2
+
+%preun agent2
+%preun_service zabbix_agent2
 
 %post phpfrontend-engine
 if [ -f %webserver_webappsdir/%name/frontends/php/conf/zabbix.conf.php -a ! -f %webserver_webappsdir/%name/ui/conf/zabbix.conf.php ]
@@ -608,11 +633,18 @@ fi
 %config(noreplace) %attr(0640,root,%zabbix_group) %_sysconfdir/%name/%{name}_agentd.conf
 %dir %attr(0750,root,%zabbix_group) %_sysconfdir/%name/zabbix_agentd.conf.d
 %_initdir/%{name}_agentd
-%_unitdir/*agent*
+%_unitdir/*agentd*
 %_sbindir/%{name}_agentd
 %_bindir/%{name}_sender
 %_man8dir/%{name}_agentd.*
 %_man1dir/%{name}_sender.*
+
+%files agent2
+%config(noreplace) %attr(0640,root,%zabbix_group) %_sysconfdir/%name/%{name}_agent2.conf
+%dir %attr(0750,root,%zabbix_group) %_sysconfdir/%name/zabbix_agent2.conf.d
+%_initdir/%{name}_agent2
+%_unitdir/*agent2*
+%_sbindir/%{name}_agent2
 
 %files agent-sudo
 %config(noreplace) %attr(0400,root,root) %_sysconfdir/sudoers.d/%name
@@ -638,6 +670,34 @@ fi
 %_includedir/%name
 
 %changelog
+* Fri Jun 11 2021 Anton Farygin <rider@altlinux.ru> 1:5.0.12-alt0.p9.1
+- backport 5.0.12 to p9
+
+* Tue Jun 01 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.12-alt3
+- (ALT #40122)
+
+* Mon May 31 2021 Alexey Shabalin <shaba@altlinux.org> 1:5.0.12-alt2
+- Add agent2 package
+
+* Tue May 25 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.12-alt1
+- 5.0.12
+
+* Tue Apr 27 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.11-alt1
+- 5.0.11
+
+* Thu Apr 01 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.10-alt1
+- 5.0.10
+
+* Wed Feb 24 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.9-alt1
+- 5.0.9
+
+* Tue Feb 02 2021 Alexei Takaseev <taf@altlinux.org> 1:5.0.8-alt1
+- 5.0.8
+
+* Thu Dec 03 2020 Alexei Takaseev <taf@altlinux.org> 1:5.0.6-alt1
+- 5.0.6
+- Edit Apache config file (ALT #37494)
+
 * Fri Nov 20 2020 Andrey Cherepanov <cas@altlinux.org> 1:5.0.5-alt2.1.p9
 - Backport new version to p9 branch.
 
