@@ -1,7 +1,7 @@
 Name:     github2spec
 # NOTE update version in github2spec
-Version:  1.4.10
-Release:  alt1
+Version:  1.4.12
+Release:  alt2
 
 Summary:  Script for generation RPM spec file from github using genspec
 License:  MIT
@@ -13,7 +13,7 @@ BuildArch: noarch
 
 BuildPrereq: rpm-build-ruby
 
-Requires: genspec >= 1.3.8
+Requires: genspec >= 1.3.11
 
 Source:   %name-%version.tar
 
@@ -34,6 +34,16 @@ install -Dm755 %name %buildroot%_bindir/%name
 %_bindir/%name
 
 %changelog
+* Fri Mar 19 2021 Mikhail Gordeev <obirvalger@altlinux.org> 1.4.12-alt2
+- Switch back to ruby type (ALT #39821)
+
+* Sat Sep 12 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.4.12-alt1
+- Fix open-uri warning
+
+* Thu Jul 09 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.4.11-alt1
+- Proxy empty branch options to gnespec
+- Add ocaml support
+
 * Fri Feb 22 2019 Mikhail Gordeev <obirvalger@altlinux.org> 1.4.10-alt1
 - Treat NOASSERTION license as none license
 
