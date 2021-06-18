@@ -4,7 +4,7 @@ BuildRequires: perl(Carp.pm) perl(File/Basename.pm) perl(File/Path.pm) perl(File
 %define module RPM-Source-Convert
 
 Name: perl-%module
-Version: 0.689
+Version: 0.690
 Release: alt1
 BuildArch: noarch
 Packager: Igor Yu. Vlasenko <viy@altlinux.org>
@@ -16,8 +16,8 @@ Source: http://www.cpan.org/modules/by-module/RPM/%module-%version.tar.gz
 Url: http://search.cpan.org/dist/%module
 
 BuildRequires: perl-devel perl-RPM-Source-Dependency-Analyzer perl(RPM/Vercmp.pm) perl-DistroMap perl(Source/Package/Comparators/Raw.pm)
-BuildRequires: perl-RPM-Source-Editor > 0.9241
-Requires: perl-RPM-Source-Editor > 0.9241
+BuildRequires: perl-RPM-Source-Editor > 0.9243
+Requires: perl-RPM-Source-Editor > 0.9243
 
 # for srpmbackport
 %package -n srpmbackport
@@ -73,6 +73,9 @@ Utils for porting srpms and spec files from other rpm based distros to Sisyphus
 %_bindir/srpmconvert-*
 
 %changelog
+* Sun Jun 13 2021 Igor Vlasenko <viy@altlinux.org> 0.690-alt1
+- new version
+
 * Sun May 16 2021 Igor Vlasenko <viy@altlinux.org> 0.689-alt1
 - new version
 
