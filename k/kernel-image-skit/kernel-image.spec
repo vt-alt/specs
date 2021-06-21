@@ -4,7 +4,7 @@
 
 Name: kernel-image-skit
 Version: %kernel_base_version%kernel_sublevel%kernel_extra_version
-Release: alt5
+Release: alt6
 
 Provides: kernel-modules-dm-secdel-skit = %version-%release
 
@@ -254,6 +254,9 @@ touch %buildroot%modules_dir/modules.{alias,dep,symbols,builtin}.bin
 %modules_dir/build
 
 %changelog
+* Fri Jun 18 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt6
+- IFB support added
+
 * Thu Jun 03 2021 Sergey Bolshakov <sbolshakov@altlinux.ru> 4.4.189.7-alt5
 - ISO9660 support added
 
