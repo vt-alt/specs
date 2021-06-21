@@ -1,6 +1,6 @@
 Name: cups
 Version: 2.3.3
-Release: alt2.op2
+Release: alt6.op2
 
 Summary: Common Unix Printing System - server package
 License: Apache-2.0
@@ -66,7 +66,6 @@ Patch127: Ubuntu-0027-Do-not-mess-with-the-permissions-of-cupsd.conf.patch
 Patch128: Ubuntu-0028-Show-compile-command-lines.patch
 Patch129: Ubuntu-0029-Set-the-default-for-SyncOnClose-to-Yes.patch
 Patch130: Ubuntu-0030-Set-default-job-error-policy-to-retry-job.patch
-Patch132: Ubuntu-0032-Use-dpkg-architecture-in-cups-config-to-make-it-arch.patch
 Patch133: Ubuntu-0033-Build-mantohtml-with-the-build-architecture-compiler.patch
 Patch134: Ubuntu-0034-po4a-infrastructure-and-translations-for-manpages.patch
 Patch136: Ubuntu-0006-Fix-leakage-of-ppd.patch
@@ -107,7 +106,7 @@ Requires: printer-testpages bc cups-filters
 # optimized out: libcom_err-devel libkrb5-devel libstdc++-devel libsystemd-daemon pkg-config
 BuildRequires: gcc-c++ libacl-devel libaudit-devel libavahi-devel libdbus-devel libpam-devel libpaper-devel libselinux-devel libssl-devel libsystemd-daemon-devel systemd-devel libusb-devel xdg-utils zlib-devel
 
-BuildRequires: dbus python python-module-polib
+BuildRequires: dbus python3 python3-module-polib
 BuildRequires: libgnutls-devel
 
 %description
@@ -204,7 +203,6 @@ services using the main CUPS library "libcups".
 %patch128 -p1
 #patch129 -p1
 %patch130 -p1
-%patch132 -p1
 %patch133 -p1
 #patch134 -p1
 ##patch136 -p1
@@ -276,7 +274,7 @@ cd locale
 make pot
 mv cups_ru.po cups_old_ru.po
 msgmerge cups_old_ru.po cups.pot -C ../alt_ru.po -o cups_ru.po
-python2 ../pofix.py cups_ru.po
+python3 ../pofix.py cups_ru.po
 )
 
 %install
@@ -330,6 +328,59 @@ chmod 755 %buildroot/usr/lib/cups/backend/ipp
 
 %preun
 %preun_service cups
+
+%triggerun -- %name < 2.3.3-alt2.op2
+if [ $2 -gt 0 ]; then
+# This is cups upgrade.
+	SYSTEMCTL=/bin/systemctl
+	if /sbin/sd_booted && "$SYSTEMCTL" --version >/dev/null 2>&1 ; then
+# collect service states
+		enable_lpd_socket=0
+		enable_cups_path=0
+		enable_cups_service=0
+		enable_cups_socket=0
+
+		if "$SYSTEMCTL" is-enabled org.cups.cups-lpd.socket >/dev/null 2>&1 ; then
+			enable_lpd_socket=1
+		fi
+
+		if "$SYSTEMCTL" is-enabled org.cups.cupsd.path >/dev/null 2>&1 ; then
+			enable_cups_path=1
+		fi
+
+		if "$SYSTEMCTL" is-enabled org.cups.cupsd.service >/dev/null 2>&1 ; then
+			enable_cups_service=1
+		fi
+
+		if "$SYSTEMCTL" is-enabled org.cups.cupsd.socket >/dev/null 2>&1 ; then
+			enable_cups_socket=1
+		fi
+
+# disable services with old names
+		"$SYSTEMCTL" disable --now org.cups.cups-lpd.socket ||:
+		"$SYSTEMCTL" disable --now org.cups.cupsd.path ||:
+		"$SYSTEMCTL" disable --now org.cups.cupsd.service ||:
+		"$SYSTEMCTL" disable --now org.cups.cupsd.socket ||:
+
+# re-enable services with new names
+		if [ $enable_lpd_socket -eq 1 ] ; then
+			"$SYSTEMCTL" enable --now cups-lpd.socket
+		fi
+
+		if [ $enable_cups_path -eq 1 ] ; then
+			"$SYSTEMCTL" enable --now cups.path
+		fi
+
+		if [ $enable_cups_service -eq 1 ] ; then
+			"$SYSTEMCTL" enable --now cups.service
+		fi
+
+		if [ $enable_cups_socket -eq 1 ] ; then
+			"$SYSTEMCTL" enable --now cups.socket
+		fi
+	fi
+fi
+
 %files
 %doc README*
 %_docdir/%name
@@ -385,6 +436,18 @@ chmod 755 %buildroot/usr/lib/cups/backend/ipp
 %config(noreplace) %_sysconfdir/xinetd.d/%name-lpd
 
 %changelog
+* Tue Jun 08 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt6.op2
+- Updated service migration script.
+
+* Wed Jun 02 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt5.op2
+- Fixed build without python-module-polib.
+
+* Thu May 27 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt4.op2
+- Added service migration script (Closes: #40107)
+
+* Thu Apr 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt3.op2
+- Removed dpkg-architecture call from cups-config.
+
 * Fri Mar 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 2.3.3-alt2.op2
 - Updated to upstream version 2.3.3op2 (Fixes: CVE-2020-10001).
 - Project moved to OpenPrinting.
