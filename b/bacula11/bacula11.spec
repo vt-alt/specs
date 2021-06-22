@@ -15,8 +15,8 @@
 %define bacula_major 11
 
 Name: bacula%{bacula_major}
-Version: %{bacula_major}.0.0
-Release: alt1
+Version: %{bacula_major}.0.5
+Release: alt2
 
 License: AGPL-3.0
 Summary: Network based backup program
@@ -44,8 +44,6 @@ Source17: generic.xpm
 Patch1: %name-alt.patch
 Patch2: %name-gui-alt.patch
 Patch3: bacula-9.4.0-fedora-seg-fault.patch
-Patch4: %name-upstream-Fix-MySQL-update-procedure.patch
-Patch5: %name-upstream-Fix-update_sqlite3_tables.patch
 
 BuildRequires: gcc-c++
 BuildRequires: libMySQL-devel postgresql-devel
@@ -447,8 +445,6 @@ popd
 %endif
 
 %patch3 -p1
-%patch4 -p2
-%patch5 -p2
 
 mv ../%name-icons-%version icons
 
@@ -457,8 +453,13 @@ rm -f src/lib/lz4.{c,h}
 
 %build
 export MTX=%_sbindir/mtx
-autoheader -B autoconf autoconf/configure.in >autoconf/config.h.in
-autoconf -B autoconf autoconf/configure.in >configure
+
+# Regenerate configure
+pushd autoconf
+sed -i -r 's/(hardcode_into_libs)=.*$/\1=no/' libtool/libtool.m4
+aclocal -I bacula-macros/ -I gettext-macros/ -I libtool/
+popd
+autoconf -I autoconf/ -o configure autoconf/configure.in
 
 %configure \
 	--with-openssl \
@@ -909,6 +910,12 @@ fi
 %endif
 
 %changelog
+* Mon Jun 21 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 11.0.5-alt2
+- Corrected version displayed in web interface.
+
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 11.0.5-alt1
+- Updated to upstream version 11.0.5.
+
 * Thu Feb 04 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 11.0.0-alt1
 - Updated to upstream version 11.0.0.
 
