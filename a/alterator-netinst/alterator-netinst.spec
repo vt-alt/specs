@@ -1,6 +1,6 @@
 Name: alterator-netinst
 Version: 1.9.1
-Release: alt3
+Release: alt4
 
 Source:%name-%version.tar
 
@@ -40,6 +40,11 @@ alterator module for network installations management
 %_bindir/alterator-netinst
 
 %changelog
+* Tue Jun 08 2021 Andrew A. Vasilyev <andy@altlinux.org> 1.9.1-alt4
+- Copy /boot from new images to syslinux directory.
+- Remove user menu.
+- Copy pxelinux.0 from image if exists.
+
 * Mon Aug 27 2018 Paul Wolneykien <manowar@altlinux.org> 1.9.1-alt3
 - Make the package noarch again depending on syslinux-data.
 
