@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.27
+Version: 1.0.28
 Release: alt1
 Summary: In-memory cache Erlang / Elixir library
 Group: Development/Erlang
@@ -45,6 +45,9 @@ In-memory cache Erlang / Elixir library.
 %_erllibdir/%realname-%version
 
 %changelog
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.28-alt1
+- Updated to upstream version 1.0.28.
+
 * Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.27-alt1
 - Updated to upstream version 1.0.27.
 

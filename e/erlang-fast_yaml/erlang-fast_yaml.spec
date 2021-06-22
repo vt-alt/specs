@@ -5,7 +5,7 @@
 %set_verify_elf_method relaxed
 
 Name: erlang-%realname
-Version: 1.0.30
+Version: 1.0.31
 Release: alt1
 Summary: Fast YAML native library for Erlang / Elixir
 Group: Development/Erlang
@@ -44,6 +44,9 @@ It is designed to be fast and efficient.
 %_erllibdir/%realname-%version
 
 %changelog
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.31-alt1
+- Updated to upstream version 1.0.31.
+
 * Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.30-alt1
 - Updated to upstream version 1.0.30.
 

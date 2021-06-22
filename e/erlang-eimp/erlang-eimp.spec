@@ -8,7 +8,7 @@
 %def_disable check
 
 Name: erlang-%realname
-Version: 1.0.19
+Version: 1.0.20
 Release: alt1
 Summary: Erlang Image Manipulation Process
 Group: Development/Erlang
@@ -51,6 +51,9 @@ using external C libraries. It supports WebP, JPEG, PNG and GIF.
 %_erllibdir/%realname-%version
 
 %changelog
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.20-alt1
+- Updated to upstream version 1.0.20.
+
 * Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.0.19-alt1
 - Updated to upstream version 1.0.19.
 

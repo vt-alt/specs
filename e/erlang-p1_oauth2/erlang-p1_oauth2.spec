@@ -3,7 +3,7 @@
 %global realname p1_oauth2
 
 Name: erlang-%realname
-Version: 0.6.8
+Version: 0.6.9
 Release: alt1
 Summary: An Oauth2 implementation for Erlang
 Group: Development/Erlang
@@ -43,6 +43,9 @@ OAuth2. It is a fork of erlang-oauth2 by processone, and is needed by ejabberd.
 %_erllibdir/%realname-%version
 
 %changelog
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.9-alt1
+- Updated to upstream version 0.6.9.
+
 * Tue Jan 12 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 0.6.8-alt1
 - Updated to upstream version 0.6.8.
 

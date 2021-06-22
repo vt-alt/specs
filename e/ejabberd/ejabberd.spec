@@ -9,9 +9,10 @@
 %def_enable pam
 %def_enable zlib
 %def_enable tools
+%def_enable lua
 
 Name: ejabberd
-Version: 21.01
+Version: 21.04
 Release: alt1
 Summary: Fault-tolerant distributed Jabber server written in Erlang
 License: GPL-2.0 with OpenSSL-exception
@@ -65,7 +66,7 @@ BuildRequires: erlang-p1_acme
 %{?_enable_sqlite:BuildRequires: erlang-sqlite3 libsqlite3-devel}
 %{?_enable_pam:BuildRequires: erlang-epam}
 %{?_enable_zlib:BuildRequires: erlang-ezlib}
-%{?_enable_tools:BuildRequires: erlang-luerl}
+%{?_enable_lua:BuildRequires: erlang-luerl}
 
 Requires: erlang
 Requires: jabber-common >= 0.2
@@ -156,7 +157,9 @@ sed -i -e "s|@ERL_LIBS@|%_erllibdir/%name-%version:|g" ejabberdctl.template
 	%{subst_enable sqlite} \
 	%{subst_enable pam} \
 	%{subst_enable zlib} \
-	%{subst_enable tools}
+	%{subst_enable tools} \
+	%{subst_enable lua} \
+	%nil
 
 #--enable-user=ejabberd
 
@@ -189,7 +192,9 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %preun_service %name
 
 %files
-%doc COPYING README.md examples
+%doc COPYING
+%doc CODE_OF_CONDUCT.md
+%doc README.md examples
 
 %dir %_sysconfdir/ejabberd
 %config(noreplace) %_sysconfdir/ejabberd/inetrc
@@ -218,6 +223,9 @@ install -p -m 0644 sql/pg.sql    %buildroot%_erllibdir/%name-%version/priv/sql/
 %attr(1770,root,ejabberd) %dir %_lockdir/ejabberd
 
 %changelog
+* Fri Jun 11 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 21.04-alt1
+- Updated to upstream version 21.04.
+
 * Wed Feb 03 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 21.01-alt1
 - Updated to upstream version 21.01.
 
