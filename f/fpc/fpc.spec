@@ -7,8 +7,8 @@
 %def_without help_index
 
 Name: 	  fpc
-Version:  3.2.0
-Release:  alt2
+Version:  3.2.2
+Release:  alt1
 Epoch:    3
 
 Summary:  Free Pascal Compiler -- Meta Package
@@ -53,8 +53,6 @@ Source10: base.%ppctarget.tar.gz
 Patch1: fpc-fpkeys.patch
 # Don't show message on mouse click
 Patch3: fpc-mouse-click.patch
-# Fix http://bugs.freepascal.org/view.php?id=25280
-Patch6: fpc-fix-min-size.patch
 
 # Patches from Debian
 Patch12: fpc-fix-FPCDIR-in-fpcmake.patch
@@ -146,7 +144,6 @@ need, and can skip installing this metapackage.
 pushd fpcsrc
 %patch1 -p0
 %patch3 -p0
-%patch6 -p0
 popd
 %patch12 -p1
 %patch13 -p1
@@ -162,7 +159,7 @@ popd
 %patch26 -p1
 #patch27 -p2
 %patch28 -p2
-%patch29 -p0
+%patch29 -p2
 %patch30 -p2
 %patch31 -p0
 %patch32 -p2
@@ -442,8 +439,9 @@ Compiler:
 %_bindir/webidl2pas
 #
 %fpc_dir/lexyacc
-%fpc_unitdir/utils-lexyacc
 %fpc_fpmdir/utils-lexyacc.fpm
+%fpc_fpmdir/tplylib.fpm
+%fpc_unitdir/tplylib
 %_man1dir/bin2obj.1*
 %_man1dir/chmcmd.1*
 %_man1dir/chmls.1*
@@ -1021,6 +1019,9 @@ Free Pascal runtime library units cross-compiled for win32.
 %endif
 
 %changelog
+* Sun May 30 2021 Andrey Cherepanov <cas@altlinux.org> 3:3.2.2-alt1
+- New version.
+
 * Fri Oct 02 2020 Andrey Cherepanov <cas@altlinux.org> 3:3.2.0-alt2
 - Build without bootstrap.
 

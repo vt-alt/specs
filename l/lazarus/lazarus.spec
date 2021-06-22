@@ -3,8 +3,8 @@
 %define rev 63942
 
 Name:    lazarus
-Version: 2.0.10
-Release: alt4
+Version: 2.0.12
+Release: alt1
 Epoch:   1
 
 Summary: Lazarus Component Library and IDE
@@ -289,6 +289,9 @@ ln -s ../../bin/lazarus %buildroot$LAZARUSDIR/lazarus
 %_libdir/libQt5Pas.so
 
 %changelog
+* Wed Jun 16 2021 Andrey Cherepanov <cas@altlinux.org> 1:2.0.12-alt1
+- New version.
+
 * Thu Dec 17 2020 Andrey Cherepanov <cas@altlinux.org> 1:2.0.10-alt4
 - Translate comment in desktop file into Russian (ALT #36852).
 - Make different weights if alternatives.
