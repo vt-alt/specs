@@ -5,7 +5,7 @@
 %define _documentationdir %_defaultdocdir/documentation
 
 Name: alt-docs-apache2
-Version: 0.2.1
+Version: 0.2.2
 Release: alt1
 
 Summary: apache2-related config for ALT Linux documentation
@@ -56,9 +56,12 @@ cmake \
 
 %postun
 %_sbindir/a2chkconfig > /dev/null
-%postun_apache2conf
+%post_apache2conf
 
 %changelog
+* Tue May 25 2021 Artem Zolochevskiy <azol@altlinux.org> 0.2.2-alt1
+- use updated rpm-macros-apache2
+
 * Tue Oct 27 2009 Artem Zolochevskiy <azol@altlinux.ru> 0.2.1-alt1
 - package provides three aliases:
   + alt-docs (default starting point)

@@ -2,8 +2,8 @@
 #	add systemd init support
 #       use xz for large archives in /usr/share/mailman/cron/nightly_gzip
 Name: mailman
-Version: 2.1.29.0.9.e227c
-Release: alt1
+Version: 2.1.34.0.3.1d42a
+Release: alt2
 Epoch: 5
 
 %define mm_user %name
@@ -24,7 +24,7 @@ Epoch: 5
 Summary: Mailing list manager with built in web access
 License: GPL-2.0-or-later
 Group: System/Servers
-Url: http://www.list.org/
+Url: https://www.list.org/
 
 # http://prdownloads.sourceforge.net/%name/%name-%version.tar.tgz
 # http://bazaar.launchpad.net/~mailman-coders/mailman/2.1
@@ -124,6 +124,11 @@ do
 	echo "Patch ($patch):"
 	patch -s -p1 < debian/patches/$patch
 done
+
+# fix python shebangs
+find . -type f -print0 |
+	xargs -r0 grep -lZ '^#![[:space:]]*/usr/bin/.*python$' -- |
+	xargs -r0 sed -E -i '1 s@^(#![[:space:]]*)/usr/bin/(env[[:space:]]+)?python$@\1%__python@' --
 
 touch src/*.c
 
@@ -270,14 +275,6 @@ else
 	%_prefix/bin/update &> /dev/null ||:
 fi
 
-%post apache2
-%apache2_sbindir/a2chkconfig
-%post_apache2conf
-
-%postun apache2
-%apache2_sbindir/a2chkconfig
-%postun_apache2conf
-
 %preun
 %preun_service mailman
 
@@ -379,6 +376,20 @@ fi
 %docdir/mailman-*
 
 %changelog
+* Thu May 27 2021 Anton Farygin <rider@altlinux.ru> 5:2.1.34.0.3.1d42a-alt2
+- Fixed FTBFS: removed %%post scripts for apache2 due to changes
+  in rpm-build-apache2 and apache2 with migration post-scripts to filetriggers.
+
+* Thu Oct 22 2020 Dmitry V. Levin <ldv@altlinux.org> 5:2.1.34.0.3.1d42a-alt1
+- 2.1.33-4-g0f97bcba -> 2.1.34-3-g1d42a8b8.
+
+* Fri May 29 2020 Dmitry V. Levin <ldv@altlinux.org> 5:2.1.33.0.4.0f97-alt1
+- 2.1.29-9-ge227cb9f -> 2.1.33-4-g0f97bcba.
+- mm_config.py: reset MAILMAN_SITE_LIST to default (closes: #36460).
+
+* Thu Nov 21 2019 Dmitry V. Levin <ldv@altlinux.org> 5:2.1.29.0.9.e227c-alt2
+- Fixed python shebangs.
+
 * Tue Jan 29 2019 Dmitry V. Levin <ldv@altlinux.org> 5:2.1.29.0.9.e227c-alt1
 - 2.1.29 -> 2.1.29-9-ge227cb9f.
 

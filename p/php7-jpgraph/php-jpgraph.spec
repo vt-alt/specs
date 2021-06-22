@@ -5,7 +5,7 @@
 %define docdir %_docdir/%name-%version
 
 Name: php7-%php7_extension
-Version: 4.3.0
+Version: 4.3.4
 Release: alt1
 
 Summary: 2D graph plotting library for PHP
@@ -13,7 +13,6 @@ License: %qpl1
 Group: System/Servers
 
 Url: http://jpgraph.net
-Packager: Aleksey Avdeev <solo@altlinux.ru>
 BuildArch: noarch
 
 #see http://jpgraph.net/download/download.php?p=1
@@ -56,8 +55,6 @@ Requires: %name = %version-%release
 Requires: %extensiondir
 Requires: fonts-ttf-dejavu
 Requires: fonts-ttf-vera
-Requires: fonts-ttf-ms
-#Requires: fonts-ttf-chinese-big5
 
 %description examples
 This package contains examples of using the JpGraph library.
@@ -147,22 +144,6 @@ find %buildroot%_sysconfdir -type f -print0 \
 		-e 's@%%extensiondir([-[:space:]/.,:}%%])@%extensiondir\1@g' \
 		-e 's@%%name([-[:space:]/.,:}%%])@%name\1@g'
 
-%post examples-apache2
-%_sbindir/a2chkconfig >/dev/null
-%post_apache2conf
-
-%postun examples-apache2
-%_sbindir/a2chkconfig >/dev/null
-%postun_apache2conf
-
-%post doc-apache2
-%_sbindir/a2chkconfig >/dev/null
-%post_apache2conf
-
-%postun doc-apache2
-%_sbindir/a2chkconfig >/dev/null
-%postun_apache2conf
-
 %files
 %doc %docdir/
 %exclude %docdir/html/
@@ -189,6 +170,13 @@ find %buildroot%_sysconfdir -type f -print0 \
 %config(noreplace) %apache2_mods_start/100-%name-doc.conf
 
 %changelog
+* Fri May 21 2021 Anton Farygin <rider@altlinux.ru> 4.3.4-alt1
+- 4.3.4
+- removed all rpm post scripts (they moved to filetriggers from apache package)
+
+* Mon Jul 27 2020 Anton Farygin <rider@altlinux.ru> 4.3.0-alt2
+- removed requirement for nonfree ms-ttf fonts (closes: #29430)
+
 * Mon Apr 20 2020 Paul Wolneykien <manowar@altlinux.org> 4.3.0-alt1
 - No more base-doc package.
 - Update spec for the new PHP7 version. No more Apache v1.

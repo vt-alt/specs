@@ -3,7 +3,7 @@
 
 Name: otrs
 Version: 6.0.29
-Release: alt1
+Release: alt2
 
 Summary: Open source Ticket Request System
 Group: Networking/WWW
@@ -120,15 +120,6 @@ cd %installdir/bin/
     %installdir >/dev/null 2>&1
 #./Cron.sh start %otrs_user >/dev/null 2>&1
 
-%postun
-#rm -rf %_docdir/%name-%version/
-
-%post apache2
-%post_apache2_rpma2chkconfigfile
-
-%postun apache2
-%post_apache2_rpma2chkconfigfile
-
 %files
 %doc ARCHIVE
 %doc AUTHORS.md
@@ -160,6 +151,9 @@ cd %installdir/bin/
 %config(noreplace) %attr(0644,root,root) %_sysconfdir/httpd2/conf/addon.d/A.%name.conf
 
 %changelog
+* Fri May 21 2021 Anton Farygin <rider@altlinux.ru> 6.0.29-alt2
+- removed all apache post scripts (they moved to filetriggers from apache2)
+
 * Fri Aug 21 2020 Sergey Y. Afonin <asy@altlinux.org> 6.0.29-alt1
 - New version
 - updated License tag to SPDX syntax

@@ -1,24 +1,19 @@
 # vim: set ft=spec: -*- rpm-spec -*-
 # hey Emacs, its -*- rpm-spec -*-
 
-# %%branch_switch set %%branch_release use
-#%%define branch_switch Mxx
-
 %define macrosname apache2
 
 # do we need to co-exist with apache-ru ?
 %def_enable apache_ru_compat
 
 Name: rpm-macros-%macrosname
-Version: 3.12
-Release: %branch_release alt2
+Version: 3.13.1
+Release: alt1
 
 Summary: RPM macros to Apache2 Web server
 Summary(ru_RU.UTF-8): RPM макросы для веб-сервера Apache2
 License: %asl
 Group: Development/Other
-
-Packager: Aleksey Avdeev <solo@altlinux.ru>
 BuildArch: noarch
 
 # rpm macro definitions
@@ -80,6 +75,13 @@ find %buildroot%_rpmmacrosdir/ -type f -print0 \
 %_rpmmacrosdir/%macrosname-compat
 
 %changelog
+* Fri May 21 2021 Anton Farygin <rider@altlinux.ru> 3.13.1-alt1
+- returned back macro %post_apache2conf
+
+* Mon May 17 2021 Anton Farygin <rider@altlinux.ru> 3.13-alt1
+- removed all macros, which is suitable for post-script in rpm specfile
+- removed branch suffix for release/version (is not needed anymore)
+
 * Thu Mar 31 2016 Sergey Alembekov <rt@altlinux.ru> 3.12-alt2
 - fix apxs path
 - fix htcacheclean binary name
