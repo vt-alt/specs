@@ -1,5 +1,5 @@
 Name:           rpi-imager
-Version:        1.6.1
+Version:        1.6.2
 Release:        alt1
 Summary:        Raspberry Pi Imaging Utility
 Group:          System/Configuration/Other
@@ -41,6 +41,9 @@ operating systems to an SD card ready to use with your Raspberry Pi.
 
 
 %changelog
+* Wed Jun 16 2021 Dmitry Terekhin <jqt4@altlinux.org> 1.6.2-alt1
+- Update to new release 1.6.2
+
 * Thu Apr 08 2021 Dmitry Terekhin <jqt4@altlinux.org> 1.6.1-alt1
 - Update to new release 1.6.1
 - Move added menu item ALT to 2-nd place
