@@ -2,7 +2,7 @@
 %def_with check
 
 Name: libtalloc
-Version: 2.3.1
+Version: 2.3.2
 Release: alt1
 Epoch: 1
 
@@ -92,6 +92,9 @@ make test
 %_libdir/libpytalloc-util.cpython*.so
 
 %changelog
+* Mon Feb 08 2021 Evgeny Sinelnikov <sin@altlinux.org> 1:2.3.2-alt1
+- Update to latest release
+
 * Tue Jan 21 2020 Grigory Ustinov <grenka@altlinux.org> 1:2.3.1-alt1
 - Build new version for python3.8.
 - Build without python2 (now libpytalloc is on python3).

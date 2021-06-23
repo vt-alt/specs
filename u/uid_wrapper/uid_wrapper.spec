@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: uid_wrapper
-Version: 1.2.4
+Version: 1.2.8
 Release: alt1
 
 Summary: A wrapper for privilege separation
@@ -45,11 +45,11 @@ development/testing.
 %check
 pushd BUILD
 LD_LIBRARY_PATH=$(pwd)/tests %make test || \
-    { cat $(find BUILD/Testing -name "*.log"); exit 2; }
+    { find Testing -name "*.log" | xargs cat; exit 2; }
 popd
 
 %files
-%doc AUTHORS README ChangeLog COPYING
+%doc AUTHORS README.md ChangeLog LICENSE
 %_libdir/libuid_wrapper.so*
 %dir %_libdir/cmake/uid_wrapper
 %_libdir/cmake/uid_wrapper/uid_wrapper-config-version.cmake
@@ -58,6 +58,9 @@ popd
 %_man1dir/uid_wrapper.1*
 
 %changelog
+* Sun Feb 07 2021 Evgeny Sinelnikov <sin@altlinux.org> 1.2.8-alt1
+- Update to latest release
+
 * Fri Jul 20 2018 Stanislav Levin <slev@altlinux.org> 1.2.4-alt1
 - Initial build for Sisyphus
 

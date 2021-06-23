@@ -8,7 +8,7 @@
 %endif
 
 Name: libldb
-Version: 2.1.5
+Version: 2.3.0
 Release: alt1
 Summary: A schema-less, ldap like, API and database
 License: LGPLv3+
@@ -20,12 +20,11 @@ Patch: ldb-samba-modules.patch
 Patch1: ldb-alt-fix-python-ldflags.patch
 Patch2: ldb-skip-test_guid_indexed_v1_db-on-mips64el-ppc64le-mipsel.patch
 Patch3: ldb-skip-ldb_lmdb_free_list_test-on-ppc64le.patch
-Patch4: ldb-workaround-for-failure-on-ppc64le.patch
 
 BuildRequires: libpopt-devel libldap-devel xsltproc docbook-style-xsl docbook-dtds
 BuildRequires: libcmocka-devel >= 1.1.3
 BuildRequires: libtdb-devel >= 1.4.3
-BuildRequires: libtalloc-devel >= 2.3.1
+BuildRequires: libtalloc-devel >= 2.3.2
 BuildRequires: libtevent-devel >= 0.10.2
 %if_with mdb
 BuildRequires: liblmdb-devel >= 0.9.16
@@ -88,7 +87,6 @@ Development files for the Python3 bindings for the LDB library
 %patch2 -p1
 %ifarch ppc64le
 %patch3 -p2
-%patch4 -p2
 %endif
 
 %build
@@ -178,8 +176,17 @@ make test
 %_pkgconfigdir/pyldb-util.cpython-*.pc
 
 %changelog
-* Wed Mar 24 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.1.5-alt1
-- Update to the 2.1.5 for latest samba-4.12.14 security release
+* Wed Mar 24 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.3.0-alt1
+- Update to the 2.3.0 for latest samba-4.14.2 security release
+
+* Wed Mar 24 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.2.1-alt1
+- Update to the 2.2.1 for latest samba-4.13.7 security release
+
+* Mon Feb 08 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.2.0-alt1
+- Update to the 2.2.0 for latest samba-4.13 releases
+
+* Thu Oct 29 2020 Ivan A. Melnikov <iv@altlinux.org> 2.1.4-alt2
+- Fix build on mipsel
 
 * Fri Aug 28 2020 Evgeny Sinelnikov <sin@altlinux.org> 2.1.4-alt1
 - Update to the 2.1.4 for latest samba-4.12.6 release

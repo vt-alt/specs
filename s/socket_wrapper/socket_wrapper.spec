@@ -1,5 +1,5 @@
 Name:           socket_wrapper
-Version:        1.2.1
+Version:        1.2.5
 Release:        alt1
 Group:          Development/Other
 License:        BSD
@@ -61,7 +61,7 @@ LD_PRELOAD=src/libsocket_wrapper.so bash -c '>/dev/null'
 popd
 
 %files
-%doc AUTHORS README ChangeLog LICENSE
+%doc AUTHORS README.md CHANGELOG LICENSE
 %_libdir/lib%name.so*
 %dir %_libdir/cmake/%name
 %_libdir/cmake/%name/*.cmake
@@ -69,6 +69,9 @@ popd
 %_man1dir/socket_wrapper.1*
 
 %changelog
+* Sun Feb 07 2021 Evgeny Sinelnikov <sin@altlinux.org> 1.2.5-alt1
+- Update to latest release
+
 * Wed Jan 16 2019 Evgeny Sinelnikov <sin@altlinux.org> 1.2.1-alt1
 - Update to latest release
 - Disable ubt macros due binary package identity change

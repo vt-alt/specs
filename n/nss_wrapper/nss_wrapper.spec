@@ -1,5 +1,5 @@
 Name:           nss_wrapper
-Version:        1.1.5
+Version:        1.1.11
 Release:        alt1
 License:        BSD
 Group:          Development/Other
@@ -42,30 +42,21 @@ development/testing.
 %setup -q
 
 %build
-if test ! -e "obj"; then
-    mkdir obj
-fi
+%cmake \
+  -DUNIT_TESTING=ON
 
-pushd obj
-%cmake_insource \
-  -DUNIT_TESTING=ON \
-  %_builddir/%name-%version
-
-%make VERBOSE=1
-popd
+%cmake_build VERBOSE=1
 
 %install
-pushd obj
-%make DESTDIR=%buildroot install
-popd
+%cmakeinstall_std
 
 %check
-pushd obj
+pushd BUILD
 %make test
 popd
 
 %files
-%doc AUTHORS README ChangeLog LICENSE
+%doc AUTHORS README.md CHANGELOG LICENSE
 %_bindir/nss_wrapper.pl
 %_libdir/libnss_wrapper.so*
 %dir %_libdir/cmake/nss_wrapper
@@ -75,6 +66,9 @@ popd
 %_mandir/man1/nss_wrapper.1*
 
 %changelog
+* Sun Feb 07 2021 Evgeny Sinelnikov <sin@altlinux.org> 1.1.11-alt1
+- Update to latest release.
+
 * Tue Dec 04 2018 Evgeny Sinelnikov <sin@altlinux.org> 1.1.5-alt1
 - Update to latest release with compatibility fixes
 

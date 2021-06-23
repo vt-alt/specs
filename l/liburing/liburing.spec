@@ -1,9 +1,9 @@
 Name: liburing
-Version: 0.6
+Version: 0.7
 Release: alt1
 
 Summary: Linux-native io_uring I/O access library
-License: (GPLv2 with exceptions and LGPLv2+) or MIT
+License: (GPL-2.0-only AND LGPL-2.1-or-later) OR MIT
 Group: System/Libraries
 
 Url: http://git.kernel.dk/cgit/liburing
@@ -61,6 +61,9 @@ linked programs that use Linux-native io_uring.
 %_libdir/%name.a
 
 %changelog
+* Wed Nov 25 2020 Alexey Shabalin <shaba@altlinux.org> 0.7-alt1
+- new version 0.7
+
 * Thu Apr 30 2020 Alexey Shabalin <shaba@altlinux.org> 0.6-alt1
 - Updated to upstream commit 8171778c835b6be517c314cf23dd1f5ae061a117.
 

@@ -8,7 +8,7 @@
 %def_with openssl
 
 Name: sssd
-Version: 2.4.1
+Version: 2.4.2
 Release: alt2
 Group: System/Servers
 Summary: System Security Services Daemon
@@ -20,6 +20,8 @@ Source3: system-auth-sss.pam
 Source4: system-auth-use_first_pass-sss.pam
 Source5: system-auth-sss-only.pam
 Source6: system-auth-use_first_pass-sss-only.pam
+Source7: sssd-example.conf
+Source8: sssd-default.conf
 
 Patch: %name-%version-alt.patch
 
@@ -118,6 +120,9 @@ BuildRequires: nss_wrapper
 BuildRequires: softhsm
 %endif
 %endif
+
+# Due sssd-drop-privileges control for unprivileged mode support
+Requires: local-policy >= 0.4.8
 
 %description
 Provides a set of daemons to manage access to remote directories and
@@ -473,7 +478,7 @@ sed -i -e 's:/usr/bin/python:/usr/bin/python3:' src/tools/sss_obfuscate
 %find_lang sssd
 
 # Prepare empty config file
-install -D -m640 src/examples/sssd-example.conf %buildroot%_sysconfdir/%name/%name.conf
+install -D -m600 %SOURCE8 %buildroot%_sysconfdir/%name/%name.conf
 
 # Copy default logrotate file
 install -D -m644 src/examples/logrotate %buildroot%_sysconfdir/logrotate.d/%name
@@ -526,12 +531,16 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 #preun_service %name
 #preun_service sssd-secrets
 
-%triggerpostun -- %name < 1.14.2-alt5
-%_bindir/gpasswd -a %sssd_user _keytab
+%triggerpostun -- %name < 2.4.2-alt1
+[ "$(control sssd-drop-privileges)" != "unknown" ] ||
+    control sssd-drop-privileges unprivileged
+
+#triggerpostun -- %name < 1.14.2-alt5
+#_bindir/gpasswd -a %sssd_user _keytab
 
 %files -f sssd.lang
 %doc COPYING
-%doc src/examples/sssd-example.conf
+%doc $RPM_SOURCE_DIR/sssd-example.conf
 %_sbindir/%name
 %_initdir/%name
 %_unitdir/%name.service
@@ -794,6 +803,21 @@ chown root:root %_sysconfdir/sssd/sssd.conf
 %python3_sitelibdir_noarch/SSSDConfig/__pycache__/*.py*
 
 %changelog
+* Fri May 07 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.2-alt2
+- Apply internal, domain and service fixes from upstream.
+- Add compatibility support of unprivileged mode with "user = _sssd"
+  due from sssd-2.4.2 default user is set to root.
+
+* Tue Feb 23 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.2-alt1
+- Update to 2.4.2
+- Add CapabilityBoundingSet option as a security hardening measure
+  for systemd service configs
+
+* Tue Feb 16 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.1-alt3
+- Update authentication features:
+  + pam_sss: Don't fail on deskprofiles phase for AD users
+  + pam_sss_gss: support authentication indicators
+
 * Tue Feb 09 2021 Evgeny Sinelnikov <sin@altlinux.org> 2.4.1-alt2
 - Fixate that upstream fixed the memory leak in the
   simple access provider (fixes: OVE-20210209-0001)
