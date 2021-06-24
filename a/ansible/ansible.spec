@@ -1,6 +1,6 @@
 Name: ansible
 Summary: SSH-based configuration management, deployment, and task execution system
-Version: 2.9.22
+Version: 2.9.23
 Release: alt2
 
 Group:   System/Configuration/Other
@@ -10,6 +10,7 @@ Source1: hacking.tar
 
 Patch0: %name-alt.patch
 Patch1: ansible-apt_rpm-list-of-packages-support.patch
+Patch2: ansible_native_concat-use-to_text-rather-than-jinja2.patch
 
 Url: http://www.ansible.com
 
@@ -28,6 +29,7 @@ BuildRequires: python3-module-docutils
 BuildRequires: python3-module-straight-plugin
 
 Requires: ca-certificates >= 2015.10.29
+Requires: openssh-common
 
 %py3_requires yaml
 %py3_requires paramiko
@@ -46,6 +48,7 @@ Requires: ca-certificates >= 2015.10.29
 %py3_provides ansible.module_utils.six.moves.urllib.request
 
 %filter_from_requires /^eepm-yum$/d
+%filter_from_requires /ssh-keygen/d
 
 %description
 Ansible is a radically simple model-driven configuration management,
@@ -60,6 +63,7 @@ are transferred to managed machines automatically.
 tar xf %SOURCE1
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %python3_build
@@ -86,6 +90,13 @@ find %buildroot%python3_sitelibdir/ansible_test/_data -name \*.ps1 -delete
 %doc README.rst changelogs/CHANGELOG-v*.rst CODING_GUIDELINES.md MODULE_GUIDELINES.md
 
 %changelog
+* Tue Jun 22 2021 Andrey Cherepanov <cas@altlinux.org> 2.9.23-alt2
+- Apply upstream patch: ansible_native_concat: use to_text rather than jinja2's
+  text_type (thanks sbolshakov@).
+
+* Tue Jun 22 2021 Andrey Cherepanov <cas@altlinux.org> 2.9.23-alt1
+- New version.
+
 * Sun May 30 2021 Andrey Cherepanov <cas@altlinux.org> 2.9.22-alt2
 - Support installing a list of packages (ALT #40121).
 
