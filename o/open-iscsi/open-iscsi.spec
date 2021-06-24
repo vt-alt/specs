@@ -1,10 +1,11 @@
 %define Name iSCSI
 %define bname iscsi
+
 Name: open-%bname
 %define module_name %name
-Version: 2.0.877
-License: %gpl2plus
-Release: alt1.git73652184
+Version: 2.1.4
+License: GPL-2.0-or-later
+Release: alt2
 Summary: Utils to operate with %Name
 Group: System/Kernel and hardware
 URL: http://%name.org
@@ -14,7 +15,6 @@ Patch: %name-%version-%release.patch
 Conflicts: linux-iscsi
 Provides: iscsi-initiator-utils = 6.%version-%release
 
-BuildRequires(pre): rpm-build-licenses
 BuildRequires: libmount-devel
 BuildRequires: libkmod-devel
 BuildRequires: libssl-devel
@@ -82,7 +82,11 @@ install -pm 644 doc/iscsi-iname.8 %buildroot%_man8dir/
 install -d %buildroot%_logrotatedir
 install -pm 644 iscsiuio/iscsiuiolog %buildroot%_logrotatedir/
 
+mkdir -p %buildroot%_sharedstatedir/%bname/{nodes,send_targets,static,isns,slp,ifaces}
+
 install -d %buildroot%_unitdir
+install -pm 644 etc/systemd/iscsi-init.service %buildroot%_unitdir/
+install -pm 644 etc/systemd/iscsi.service %buildroot%_unitdir/
 install -pm 644 etc/systemd/iscsid.service %buildroot%_unitdir/
 install -pm 644 etc/systemd/iscsid.socket %buildroot%_unitdir/
 install -pm 644 etc/systemd/iscsiuio.service %buildroot%_unitdir/
@@ -111,6 +115,7 @@ fi
 %doc README THANKS etc/iface.example
 %dir %_sysconfdir/%bname
 %config(noreplace) %_sysconfdir/%bname/%{bname}d.conf
+%_sharedstatedir/%bname
 %_initdir/*
 %_tmpfilesdir/*
 %_unitdir/*
@@ -137,6 +142,13 @@ fi
 %_pkgconfigdir/libopeniscsiusr.pc
 
 %changelog
+* Fri Jun 11 2021 Alexey Shabalin <shaba@altlinux.org> 2.1.4-alt2
+- Fixed iscsi-init.service (ALT#40195).
+- Use /var/lib/iscsi/ for configs.
+
+* Sun Apr 11 2021 Alexey Shabalin <shaba@altlinux.org> 2.1.4-alt1
+- 2.1.4
+
 * Fri Dec 21 2018 Alexey Shabalin <shaba@altlinux.org> 2.0.877-alt1.git73652184
 - master snapshot 7365218437ecf8c03860e34c002c76871abf9943
 
