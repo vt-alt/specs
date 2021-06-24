@@ -1,6 +1,6 @@
 Name:    task-edu
 Version: 1.4.3
-Release: alt1.p9.1
+Release: alt2.p9.1
 License: GPL-3.0+
 URL:     https;//www.altlinux.org/Education
 Group:   Education
@@ -491,7 +491,7 @@ Requires: bash-completion
 Requires: dansguardian
 Requires: perl-DBD-mysql
 #Requires: ejudge
-Requires: openfire
+Requires: ejabberd
 Requires: alterator-datetime
 Requires: alterator-console
 Requires: apache2-httpd-worker
@@ -599,6 +599,12 @@ Requires: task-edu-teacher
 %files school
 
 %changelog
+* Wed Jun 16 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.3-alt2.p9.1
+- Backported replacing openfire with ejabberd.
+
+* Tue Jun 15 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.4.3-alt3
+- Replaced openfire with ejabberd.
+
 * Fri May 14 2021 Andrey Cherepanov <cas@altlinux.org> 1.4.3-alt1.p9.1
 - Backport fixes fo new Thunderbird version to p9 branch.
 
