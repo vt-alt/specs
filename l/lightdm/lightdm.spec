@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt10
+Release: alt12
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -32,6 +32,8 @@ Patch14: %name-1.30.0-alt-shells.patch
 Patch15: %name-1.30.0-alt-04-systemd.patch
 Patch16: %name-1.30.0-alt-05-tmpfiles.patch
 Patch17: %name-1.30.0-alt-i18n.patch
+Patch18: lightdm-1.30.0-reread-dmrc-alt.patch
+Patch19: %name-1.30.0-alt-wayland-session.patch
 
 Requires: dm-tool
 
@@ -146,6 +148,8 @@ manager via D-Bus.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p2
+%patch19 -p1
 
 %ifarch %e2k
 # until apx. lcc-1.23.01
@@ -278,6 +282,14 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Thu Jun 17 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.30.0-alt12
+- Disabled using session-wrapper and guest-wrapper settings
+  for wayland sessions (Closes: 40207).
+
+* Fri Feb 26 2021 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt11
+- Quick fix: always re-read .dmrc in order to get the up to date
+  locale settings (patch) (closes: 30329).
+
 * Wed Jul 01 2020 Paul Wolneykien <manowar@altlinux.org> 1.30.0-alt10
 - Added patch to read the locale configuration from /etc/sysconfig/i18n
   (closes: 38640).
