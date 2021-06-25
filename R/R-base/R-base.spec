@@ -1,5 +1,5 @@
 Name: R-base
-Version: 3.5.3
+Version: 3.6.1
 Release: alt1
 
 Summary: A language for data analysis and graphics
@@ -14,7 +14,7 @@ Patch: R-%version-%release.patch
 # Automatically added by buildreq on Thu Mar 03 2011
 BuildRequires: bzlib-devel gcc-c++ gcc-fortran libXmu-devel libjpeg-devel liblzma-devel libpango-devel libpcre-devel libpng-devel libreadline-devel libtiff-devel texlive-collection-latex texlive-dist tk-devel zlib-devel makeinfo texi2dvi libcurl-devel libcairo-devel libtre-devel rpm-build-java java-devel-default
 
-BuildPreReq: liblapack-devel libicu-devel
+BuildPreReq: liblapack-devel libicu-devel libgomp8-devel
 
 %description
 R is `GNU S' - A language and environment for statistical computing
@@ -239,7 +239,6 @@ classification, clustering, ...).
 	%Rbindir/build
 	%Rbindir/check
 	%Rbindir/config
-	%Rbindir/f77_f2c
 	%Rbindir/libtool
 	%Rbindir/mkinstalldirs
 
@@ -335,6 +334,13 @@ classification, clustering, ...).
 %_infodir/R-*.info*
 
 %changelog
+* Mon Oct 07 2019 Kirill Maslinsky <kirill@altlinux.org> 3.6.1-alt1
+- Version 3.6.1
+
+* Sat Apr 27 2019 Kirill Maslinsky <kirill@altlinux.org> 3.6.0-alt1
+- Version 3.6.0
+- Built with OpenMP support
+
 * Tue Mar 12 2019 Kirill Maslinsky <kirill@altlinux.org> 3.5.3-alt1
 - Version 3.5.3
 - R-full metapackage is marked as noarch

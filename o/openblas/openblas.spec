@@ -1,5 +1,11 @@
+
+%def_without lapack
+%ifnarch %e2k
+%def_enable dynamic_arch
+%endif
+
 Name: openblas
-Version: 0.2.20
+Version: 0.3.9
 Release: alt2
 
 Summary: Optimized BLAS library based on GotoBLAS2 1.13 
@@ -9,6 +15,7 @@ Url: https://github.com/xianyi/OpenBLAS
 
 # http://github.com/xianyi/OpenBLAS
 Source: %name-%version.tar
+Patch2000: %name-e2k.patch
 
 BuildRequires: gcc-fortran
 %ifarch ppc64le
@@ -72,12 +79,18 @@ This package contains development files of OpenBLAS.
 
 %prep
 %setup
+%ifarch %e2k
+%patch2000 -p1
+%endif
 
 %build
 FLAGS="%optflags %optflags_shared"
 
-FC="gfortran $FLAGS" F77="g77 $FLAGS" \
-F_COMPILER="gfortran $FLAGS" C_COMPILER="gcc $FLAGS" \
+# FC/CC - path to compiler
+# F_COMPILER/C_COMPILER - compiler type (GCC, CLANG, GFORTRAN, etc.)
+# COMMON_OPT - compiler options
+FC="gfortran" F77="g77" CC="gcc" \
+F_COMPILER="GFORTRAN" C_COMPILER="GCC" \
 %make_build SMP=1 \
 %if "%_lib" == "lib64"
 	BINARY=64 \
@@ -90,15 +103,23 @@ F_COMPILER="gfortran $FLAGS" C_COMPILER="gcc $FLAGS" \
 %ifarch aarch64
 	TARGET=ARMV8 \
 %endif
-	DYNAMIC_ARCH=1 \
+	COMMON_OPT="$FLAGS" \
+	%{?_enable_dynamic_arch:DYNAMIC_ARCH=1} \
 	ALLOC_HUGETLB=1 \
-	NO_LAPACK=1
+	%{?_without_lapack:NO_LAPACK=1} \
+	%{nil}
 
 %install
 %make_install OPENBLAS_LIBRARY_DIR=%buildroot%_libdir \
 	      OPENBLAS_INCLUDE_DIR=%buildroot%_includedir/openblas \
 	      install
 sed -i 's,%buildroot,,' %buildroot%_pkgconfigdir/openblas.pc
+
+%check
+make tests \
+	%{?_enable_dynamic_arch:DYNAMIC_ARCH=1} \
+	%{?_without_lapack:NO_LAPACK=1} \
+	%{nil}
 
 %files -n lib%name
 %doc README* *.txt
@@ -112,6 +133,13 @@ sed -i 's,%buildroot,,' %buildroot%_pkgconfigdir/openblas.pc
 %_includedir/openblas
 
 %changelog
+* Sat Jun 05 2021 Ilya Kurdyukov <ilyakurdyukov@altlinux.org> 0.3.9-alt2
+- fixed passing of compiler options, added check
+- added patch with e2k architecture support (no optimizations)
+
+* Sat Apr 25 2020 Kirill Maslinsky <kirill@altlinux.org> 0.3.9-alt1
+- Version 0.3.9
+
 * Wed May 15 2019 Gleb F-Malinovskiy <glebfm@altlinux.org> 0.2.20-alt2
 - Added BR: libgomp-devel on ppc64le architecture.
 
