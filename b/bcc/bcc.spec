@@ -21,7 +21,7 @@
 
 Name:		bcc
 Version:	0.16.0
-Release:	alt3
+Release:	alt4
 Summary:	BPF Compiler Collection (BCC)
 Group:		Development/Debuggers
 License:	Apache-2.0
@@ -161,13 +161,13 @@ export LDFLAGS="-fuse-ld=lld -Wl,--as-needed $LDFLAGS -lLLVM -lclang-cpp -lelf"
 	-DUSINGISYSTEM:BOOL=no \
 	-DPYTHON_CMD=python3 \
 	%{?lua_config}
-%cmake_build VERBOSE=1
+%cmake_build
 
 %install
 %set_verify_elf_method relaxed
 pathfix.py -pni %__python3 tools
 
-%cmake_install install DESTDIR=%buildroot VERBOSE=1
+%cmake_install
 
 # Cannot make noarch package because bcc exists not on all arches
 install -d %buildroot/%python3_sitelibdir
@@ -222,6 +222,9 @@ fi
 %_man8dir/*
 
 %changelog
+* Wed May 26 2021 Arseny Maslennikov <arseny@altlinux.org> 0.16.0-alt4
+- NMU: spec: adapted to new cmake macros.
+
 * Sat Dec 05 2020 Vitaly Chikunov <vt@altlinux.org> 0.16.0-alt3
 - Spin off -static package and fix wrongly packaged .a libs.
 - Do not package libbcc-loader-static.a.

@@ -6,7 +6,7 @@
 
 Name: cmake
 Version: 3.16.3
-Release: alt1
+Release: alt2
 
 Summary: Cross-platform, open-source make system
 
@@ -292,6 +292,10 @@ popd
 %filter_from_requires /^gnustep-Backbone.*/d
 
 %changelog
+* Wed May 26 2021 Arseny Maslennikov <arseny@altlinux.org> 3.16.3-alt2
+- macros: Introduced wrappers to stay compatible with Sisyphus.
+- macros: Allowed easy override of build artifact directory.
+
 * Fri Jan 24 2020 Vitaly Lipatov <lav@altlinux.ru> 3.16.3-alt1
 - new version 3.16.3 (with rpmrb script)
 

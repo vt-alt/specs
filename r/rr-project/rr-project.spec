@@ -1,6 +1,6 @@
 Name:		rr-project
 Version:	5.2.0
-Release:	alt1
+Release:	alt2
 Summary:	Record and Replay Framework
 Group:		Development/Debuggers
 License:	AS
@@ -35,7 +35,7 @@ subst "s!/bin/rr_page_!lib/rr/rr_page_!" src/AddressSpace.cc
 %cmake_build
 
 %install
-%cmake_install install DESTDIR=%buildroot
+%cmake_install
 mv %buildroot/%_bindir/rr_* %buildroot/usr/lib/rr/
 subst '1s:/usr/bin/bash:/bin/bash:' %buildroot%_bindir/signal-rr-recording.sh
 
@@ -47,6 +47,9 @@ subst '1s:/usr/bin/bash:/bin/bash:' %buildroot%_bindir/signal-rr-recording.sh
 /usr/lib/rr
 
 %changelog
+* Wed May 26 2021 Arseny Maslennikov <arseny@altlinux.org> 5.2.0-alt2
+- NMU: spec: adapt to new cmake macros.
+
 * Thu Jun 14 2018 Vitaly Chikunov <vt@altlinux.ru> 5.2.0-alt1
 - First build of rr for ALT.
 

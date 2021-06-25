@@ -1,13 +1,13 @@
 Name: jed
 Version: 0.99.19
-Release: alt2.qa2.1
+Release: alt2.qa2.2
 Serial: 2
 
 %define srcname %name-0.99-19
 
 Summary: A fast, compact editor based on the slang screen library
 Summary(ru_RU.KOI8-R): Небольшой, быстрый текстовый редактор для программистов.
-License: GPL
+License: GPLv2
 Group: Editors
 Url: http://www.jedsoft.org/jed/
 
@@ -160,7 +160,8 @@ sed -i '
 
 touch src/Makefile
 
-%make_build all xjed rgrep getmail JED_ROOT=%_datadir/%name
+%make_build all JED_ROOT=%_datadir/%name
+%make_build xjed rgrep getmail JED_ROOT=%_datadir/%name
 
 %set_verify_info_method relaxed
 
@@ -220,6 +221,9 @@ while ps -C jed > /dev/null; do sleep 1; done
 %_man1dir/rgrep.1*
 
 %changelog
+* Wed Jan 13 2021 Fr. Br. George <george@altlinux.ru> 2:0.99.19-alt2.qa2.2
+- Fix parallel build
+
 * Sat Dec 05 2015 Igor Vlasenko <viy@altlinux.ru> 2:0.99.19-alt2.qa2.1
 - NMU: added BR: texinfo
 

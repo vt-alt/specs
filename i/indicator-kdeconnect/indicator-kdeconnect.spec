@@ -4,7 +4,7 @@
 
 Name:     indicator-kdeconnect
 Version:  0.9.4
-Release:  alt2
+Release:  alt3
 
 Summary:  KDE Connect for non-KDE desktops
 License:  LGPL-2.1
@@ -81,8 +81,8 @@ with Caja (Mate file manager).
 %setup
 
 %build
-%cmake
-NPROCS=1 %cmake_build VERBOSE=1
+%cmake -G'Unix Makefiles'
+%cmake_build VERBOSE=1 -j1
 
 %install
 %cmakeinstall_std
@@ -113,6 +113,9 @@ rm -rf %buildroot%_datadir/locale/zh_{Hans,Hant}
 
 
 %changelog
+* Wed May 26 2021 Arseny Maslennikov <arseny@altlinux.org> 0.9.4-alt3
+- NMU: spec: we do not support env vars before %%cmake_build in p9.
+
 * Thu Mar 21 2019 Ivan A. Melnikov <iv@altlinux.org> 0.9.4-alt2
 - mark subpackages as noarch where appropriate;
 - disable racy parallel build.

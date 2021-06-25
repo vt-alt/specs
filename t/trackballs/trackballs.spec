@@ -1,6 +1,6 @@
 Name: trackballs
 Version: 1.3.1
-Release: alt1
+Release: alt2
 
 Summary: Steer a marble ball through a labyrinth
 License: GPLv2+
@@ -51,7 +51,7 @@ level editor and high quality soundeffects and background music.
 %cmake_build
 
 %install
-%cmake_install DESTDIR=%buildroot install
+%cmake_install
 
 %find_lang %name
 
@@ -68,6 +68,9 @@ level editor and high quality soundeffects and background music.
 %doc AUTHORS.md FAQ.md NEWS.md README.md TODO.md
 
 %changelog
+* Tue Apr 20 2021 Arseny Maslennikov <arseny@altlinux.org> 1.3.1-alt2
+- NMU: spec: adapt to new cmake macros.
+
 * Thu Nov 22 2018 Sergey Bolshakov <sbolshakov@altlinux.ru> 1.3.1-alt1
 - 1.3.1 released
 

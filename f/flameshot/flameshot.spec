@@ -1,6 +1,6 @@
 Name: flameshot
 Version: 0.8.0
-Release: alt1
+Release: alt2
 
 Summary: Powerful yet simple to use screenshot software
 
@@ -31,7 +31,7 @@ find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
 %cmake_build
 
 %install
-%cmake_install DESTDIR=%buildroot install
+%cmake_install
 
 %files
 %doc LICENSE README.md
@@ -48,6 +48,9 @@ find -name '*.cpp' -o -name '*.h' | xargs sed -ri 's,^\xEF\xBB\xBF,,'
 %_datadir/metainfo/%name.metainfo.xml
 
 %changelog
+* Tue Apr 13 2021 Arseny Maslennikov <arseny@altlinux.org> 0.8.0-alt2
+- NMU: Adapted to altlinux.org/CMakeMigration2021.
+
 * Mon Sep 21 2020 Grigory Ustinov <grenka@altlinux.org> 0.8.0-alt1
 - Automatically updated to 0.8.0.
 
