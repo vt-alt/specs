@@ -1,24 +1,24 @@
+%define oname html2text
 Name: python3-module-html2text
-Version: 2016.9.19
+Version: 2020.1.16
 Release: alt1
 
 Summary: Converts a page of HTML into clean, easy-to-read plain ASCII text
+
 Group: Development/Python
 License: GPLv3+
 Url: http://www.aaronsw.com/2002/html2text/
+
 BuildArch: noarch
 
+# Source-url: %__pypi_url %oname
+Source: %name-%version.tar
+
+BuildRequires: python3-module-pytest
 BuildRequires(pre): rpm-build-python3
-#BuildPreReq: python3-module-setuptools-tests
+BuildRequires(pre): rpm-build-intro
 
-# https://github.com/szepeviktor/html2text.git
-Source0: https://pypi.python.org/packages/22/c0/2d02a1fb9027f54796af2c2d38cf3a5b89319125b03734a9964e6db8dfa0/html2text-%{version}.tar.gz
-
-%py3_provides html2text
-
-# Automatically added by buildreq on Thu Jan 28 2016 (-bi)
-# optimized out: python-base python3 python3-base python3-module-setuptools
-BuildRequires: python3-module-pytest rpm-build-python3
+#Conflicts: python-module-html2text
 
 %description
 html2text is a Python script that convers a page of HTML into clean,
@@ -26,7 +26,7 @@ easy-to-read plain ASCII text.  Better yet, that ASCII also happens to
 be valid Markdown (a text-to-HTML format).
 
 %prep
-%setup -q -n html2text-%{version}
+%setup
 
 %build
 %python3_build
@@ -37,13 +37,19 @@ be valid Markdown (a text-to-HTML format).
 mv %buildroot%_bindir/html2text %buildroot%_bindir/html2text.py3
 
 %check
-PYTHONPATH=%buildroot%python3_sitelibdir python3 setup.py test
+#export PYTHONPATH=%buildroot%python3_sitelibdir
+#python3_test
+# TODO:
+#tox.py3
 
 %files
 %_bindir/html2text.py3
 %python3_sitelibdir/*
 
 %changelog
+* Sat Mar 21 2020 Vitaly Lipatov <lav@altlinux.ru> 2020.1.16-alt1
+- new version 2020.1.16 (with rpmrb script) (ALT bug 37305)
+
 * Fri Jan 06 2017 Igor Vlasenko <viy@altlinux.ru> 2016.9.19-alt1
 - automated PyPI update
 
