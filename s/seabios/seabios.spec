@@ -1,8 +1,8 @@
 %define debug_level 1
 
 Name: seabios
-Version: 1.13.0
-Release: alt2
+Version: 1.14.0
+Release: alt4
 Summary: Open-source legacy BIOS implementation
 
 Group: Emulators
@@ -11,13 +11,15 @@ ExclusiveArch: x86_64
 License: LGPLv3
 Url: http://www.seabios.org
 
-# git://git.seabios.org/seabios.git
+Vcs: https://git.seabios.org/seabios.git
 Source: %name-%version.tar
+Source2: 30-seabios-256k.json
 Patch: %name-%version-snapshot.patch
 
 Patch0001: 0001-Workaround-for-a-win8.1-32-S4-resume-bug.patch
 Patch0002: 0002-reserve-more-memory-on-fseg.patch
 Patch0003: 0003-vgabios-Reorder-video-modes-to-work-around-a-Windows.patch
+Patch4: alt-skip-flags-when-parse-objdump-section.patch
 
 Source10: config.vga.cirrus
 Source11: config.vga.isavga
@@ -32,6 +34,7 @@ Source19: config.vga.virtio
 Source20: config.vga.bochs-display
 Source21: config.vga.ramfb
 Source22: config.vga.ati
+Source23: config.seabios-microvm
 
 BuildRequires: python3
 BuildRequires: acpica
@@ -59,6 +62,7 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 %patch0001 -p1
 %patch0002 -p1
 %patch0003 -p1
+%patch4 -p1
 
 echo %version > .version
 
@@ -85,6 +89,7 @@ build_bios %SOURCE15 Csm16.bin bios-csm.bin
 build_bios %SOURCE16 bios.bin.elf bios-coreboot.bin
 build_bios %SOURCE17 bios.bin bios.bin
 build_bios %SOURCE18 bios.bin bios-256k.bin
+build_bios %SOURCE23 bios.bin bios-microvm.bin
 
 # seavgabios
 for config in %SOURCE10 %SOURCE11 %SOURCE12 %SOURCE13 %SOURCE14 %SOURCE19 %SOURCE20 %SOURCE21 %SOURCE22 ; do
@@ -98,21 +103,44 @@ install -m 0644 binaries/bios.bin %buildroot%_datadir/%name/bios.bin
 install -m 0644 binaries/bios-256k.bin %buildroot%_datadir/%name/bios-256k.bin
 install -m 0644 binaries/bios-csm.bin %buildroot%_datadir/%name/bios-csm.bin
 install -m 0644 binaries/bios-coreboot.bin %buildroot%_datadir/%name/bios-coreboot.bin
+install -m 0644 binaries/bios-microvm.bin %buildroot%_datadir/%name/bios-microvm.bin
 
 mkdir -p %buildroot%_datadir/seavgabios
 install -m 0644 binaries/vgabios*.bin %buildroot%_datadir/seavgabios
 ln -r -s %buildroot%_datadir/seavgabios/vgabios-isavga.bin %buildroot%_datadir/seavgabios/vgabios.bin
 
+# For distro-provided firmware packages, the specification
+# (https://git.qemu.org/?p=qemu.git;a=blob;f=docs/interop/firmware.json)
+# says the JSON "descriptor files" to be searched in this directory:
+# `/usr/share/firmware/`.  Create it.
+mkdir -p %buildroot%_datadir/qemu/firmware
+for f in %_sourcedir/*seabios*.json; do
+    install -pm 644 $f %buildroot%_datadir/qemu/firmware
+done
+
 %files
 %doc COPYING COPYING.LESSER README
 %dir %_datadir/%name
 %_datadir/%name/bios*.bin
+%_datadir/qemu/firmware/*seabios*.json
 
 %files -n seavgabios
 %dir %_datadir/seavgabios
 %_datadir/seavgabios/vgabios*.bin
 
 %changelog
+* Sun Dec 27 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.0-alt4
+- Add firmware descriptor file 30-seabios-256k.json
+
+* Sat Dec 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.0-alt3
+- add microvm bios
+
+* Sat Dec 19 2020 Mikhail Gordeev <obirvalger@altlinux.org> 1.14.0-alt2
+- Fix rebuild: skip flags when parse objdump section
+
+* Sat Sep 19 2020 Alexey Shabalin <shaba@altlinux.org> 1.14.0-alt1
+- 1.14.0
+
 * Mon Jul 20 2020 Alexey Shabalin <shaba@altlinux.org> 1.13.0-alt2
 - disable cross build
 
