@@ -2,8 +2,8 @@
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: vulkan
-Version: 1.2.141
-Release: alt1.1
+Version: 1.2.166
+Release: alt1
 Summary: Khronos group Vulkan API SDK
 
 Group: System/Libraries
@@ -25,9 +25,9 @@ BuildRequires: libImageMagick-devel libpciaccess-devel libsystemd-devel
 BuildRequires: python3-devel libxcb-devel libXau-devel libXdmcp-devel libX11-devel libXrandr-devel
 BuildRequires: wayland-devel libwayland-server-devel libwayland-client-devel libwayland-cursor-devel libwayland-egl-devel
 # strict requires due internal dependency
-BuildRequires: glslang-devel = 8.13.3743
-BuildRequires: libspirv-tools-devel = 2020.3
-BuildRequires: spirv-headers >= 1.5.3
+BuildRequires: glslang-devel = 11.1.0
+BuildRequires: libspirv-tools-devel = 2020.6
+BuildRequires: spirv-headers >= 1.5.4
 
 # textrel due asm optimisation in loader code
 %ifarch i586
@@ -188,6 +188,12 @@ chrpath -d %buildroot%_bindir/vulkaninfo
 %dir %_datadir/vulkan/implicit_layer.d
 
 %changelog
+* Fri Feb 05 2021 Nazarov Denis <nenderus@altlinux.org> 1.2.166-alt1
+- Updated to v1.2.166.
+
+* Tue Sep 08 2020 L.A. Kostis <lakostis@altlinux.ru> 1.2.152-alt1
+- Updated to v1.2.152.
+
 * Tue Jul 14 2020 L.A. Kostis <lakostis@altlinux.ru> 1.2.141-alt1.1
 - Applied fix for e2k (by @mike):
   + E2K: ftbfs workaround (selective -Wno-error).

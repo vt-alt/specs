@@ -1,8 +1,9 @@
+%define sover 11
 %define build_type RelWithDebInfo
 %define _cmake %cmake -DCMAKE_BUILD_TYPE=%build_type -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 Name: glslang
-Version: 8.13.3743
+Version: 11.1.0
 Release: alt1
 
 Summary: OpenGL and OpenGL ES shader front end and validator
@@ -18,7 +19,7 @@ Patch1: %{name}-alt-shared-opt.patch
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++
-BuildRequires: python3-devel libspirv-tools-devel = 2020.3
+BuildRequires: python3-devel libspirv-tools-devel >= 2020.6
 
 %description
 glslang is the official reference compiler front end for the OpenGL
@@ -33,11 +34,11 @@ range (IDs are not as tightly packed around zero), but will compress
 better when multiple modules are compressed together, since
 compressor's dictionary can find better cross module commonality.
 
-%package -n lib%{name}0
+%package -n lib%name%sover
 Summary: %{name} shared libraries
 Group: Development/C++
 
-%description -n lib%{name}0
+%description -n lib%name%sover
 Contains shared libraries used by %{name}.
 
 %package devel
@@ -51,7 +52,7 @@ Requires: %name = %EVR
 %prep
 %setup
 %patch0 -p2
-%patch1 -p2
+#%patch1 -p2
 
 %build
 %_cmake \
@@ -68,7 +69,7 @@ popd
 %doc README-spirv-remap.txt
 %_bindir/*
 
-%files -n lib%{name}0
+%files -n lib%name%sover
 %_libdir/*.so.*
 
 %files devel
@@ -79,6 +80,12 @@ popd
 %_includedir/SPIRV
 
 %changelog
+* Fri Feb 05 2021 Nazarov Denis <nenderus@altlinux.org> 11.1.0-alt1
+- Version 11.1.0
+
+* Sat Sep 12 2020 L.A. Kostis <lakostis@altlinux.ru> 8.13.3743-alt1.1
+- Fix dependencies.
+
 * Thu Jun 04 2020 L.A. Kostis <lakostis@altlinux.ru> 8.13.3743-alt1
 - stable release April 27, 2020 (8.13.3743).
 - update -alt patches.
