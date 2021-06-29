@@ -1,6 +1,6 @@
 # BEGIN SourceDeps(oneline):
 BuildRequires(pre): rpm-build-tcl rpm-helper
-BuildRequires: libelf-devel perl(Curses.pm) perl(ExtUtils/testlib.pm) perl(Sys/Hostname.pm) perl(Time/Local.pm) perl(autouse.pm) perl(subs.pm) pkgconfig(check) zlib-devel
+BuildRequires: /usr/bin/scp libelf-devel perl(Curses.pm) perl(ExtUtils/testlib.pm) perl(Sys/Hostname.pm) perl(Time/Local.pm) perl(autouse.pm) perl(subs.pm) pkgconfig(check) zlib-devel
 # END SourceDeps(oneline)
 # see https://bugzilla.altlinux.org/show_bug.cgi?id=10382
 %define _localstatedir %{_var}
@@ -29,7 +29,7 @@ Name:           torque
 Summary:        The Torque resource and queue manager
 Group:          Sciences/Computer science
 Version:        6.1.2
-Release:        alt2_3
+Release:        alt3_5
 License:        TORQUEv1.1
 URL:            http://www.adaptivecomputing.com/products/open-source/torque/
 
@@ -503,6 +503,12 @@ sed -i 's|MYSERVERNAME|'"$HOSTNAME"'|g' %{torquedir}/server_priv/serverdb
 
 
 %changelog
+* Thu Sep 10 2020 Igor Vlasenko <viy@altlinux.ru> 6.1.2-alt3_5
+- don't pack /etc/ld.so.conf.d/torque.conf (closes: #37530)
+
+* Tue Feb 25 2020 Igor Vlasenko <viy@altlinux.ru> 6.1.2-alt2_5
+- update
+
 * Sun Jul 21 2019 Igor Vlasenko <viy@altlinux.ru> 6.1.2-alt2_3
 - fixed build
 

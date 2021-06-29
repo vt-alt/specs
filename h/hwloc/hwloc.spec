@@ -1,11 +1,11 @@
 Name: hwloc
-Version: 1.9
+Version: 2.5.0
 Release: alt1
 Summary: Portable Hardware Locality (hwloc)
 License: BSD
 Group: Development/Tools
 Url: http://www.open-mpi.org/projects/hwloc/
-Packager: Eugeny A. Rostovtsev (REAL) <real at altlinux.org>
+
 
 Source: %name-%version.tar
 
@@ -87,6 +87,7 @@ This package contains documentation for hwloc.
 %autoreconf
 %configure \
 	--with-sysroot=%prefix \
+	--localstatedir=%_runtimedir \
 	--with-x \
 	--enable-doxygen \
 	--disable-silent-rules
@@ -99,8 +100,13 @@ This package contains documentation for hwloc.
 %files
 %doc AUTHORS COPYING NEWS README
 %_bindir/*
+%ifarch %ix86 x86_64
+%_sbindir/*
+%endif
+%_desktopdir/lstopo.desktop
 %_datadir/%name
 %_man1dir/*
+%_datadir/bash-completion/completions/hwloc
 
 %files -n lib%name
 %_libdir/*.so.*
@@ -117,6 +123,9 @@ This package contains documentation for hwloc.
 %doc doc/doxygen-doc/html
 
 %changelog
+* Wed Jun 16 2021 Andrey Cherepanov <cas@altlinux.org> 2.5.0-alt1
+- New version.
+
 * Thu May 29 2014 Eugeny A. Rostovtsev (REAL) <real at altlinux.org> 1.9-alt1
 - Version 1.9
 
