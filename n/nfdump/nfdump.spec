@@ -8,7 +8,7 @@
 %endif
 
 Name: nfdump
-Version: 1.6.22
+Version: 1.6.23
 Release: alt1
 Summary: collect and process netflow data
 Group: Monitoring
@@ -183,6 +183,9 @@ rm -f %buildroot%_libdir/libnfdump.a
 %endif
 
 %changelog
+* Wed Jun 23 2021 Sergey Y. Afonin <asy@altlinux.org> 1.6.23-alt1
+- 1.6.23
+
 * Wed Feb 10 2021 Sergey Y. Afonin <asy@altlinux.org> 1.6.22-alt1
 - 1.6.22
 
