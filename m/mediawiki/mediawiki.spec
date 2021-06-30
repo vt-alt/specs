@@ -1,5 +1,5 @@
 %define webappdir %webserver_webappsdir/mediawiki
-%define major 1.35
+%define major 1.36
 
 Name: mediawiki
 Version: %major.1
@@ -31,6 +31,7 @@ BuildRequires(pre): rpm-macros-apache2
 BuildRequires(pre): rpm-build-licenses
 BuildRequires(pre): rpm-build-mediawiki >= 0.5
 BuildRequires(pre): rpm-build-webserver-common
+BuildRequires(pre): rpm-build-python3
 
 BuildRequires: apache2-devel
 
@@ -59,7 +60,7 @@ Requires: webserver-common
 Requires: php7-libs >= 7.3.19
 Requires: php7-dom php7-fileinfo php7-mbstring php7-mcrypt php7-xmlreader php7-gd
 Requires: diffutils
-Requires: php7-opcache
+Requires: php7-opcache php7-apcu php7-intl
 Requires: pear-Mail >= 1.4.1
 
 AutoProv:no
@@ -260,6 +261,7 @@ rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/tools/test.selser.sh
 rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/debug_selser.sh
 rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/*.js
 rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/toolcheck.js.sh
+rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/parsoid/bin/start-rt-test.sh
 rm -rfv %buildroot%_mediawikidir/extensions/VisualEditor/lib/ve/bin/
 rm -rfv %buildroot%_mediawikidir/extensions/VisualEditor/bin/
 rm -rfv %buildroot%_mediawikidir/vendor/wikimedia/wikipeg/tools/impact
@@ -362,15 +364,14 @@ php %webappdir/wiki/maintenance/update.php || :
 fi
 
 %post -n %name-apache2
-%_sbindir/a2chkconfig >/dev/null
-%post_service %apache2_dname
-exit 0
+if [ "$CONF_OK" = "1" ]; then
+    service %apache2_dname condrestart ||:
+fi
 
 %postun -n %name-apache2
-%_sbindir/a2chkconfig >/dev/null
-%post_service %apache2_dname
-exit 0
-
+if [ "$1" = "0" ] ; then # last uninstall
+    service %apache2_dname condrestart ||:
+fi
 
 %files
 
@@ -418,6 +419,27 @@ exit 0
 %_mediawiki_settings_dir/50-PdfHandler.php
 
 %changelog
+* Sun Jun 27 2021 Vitaly Lipatov <lav@altlinux.ru> 1.36.1-alt1
+- new version 1.36.1 (with rpmrb script)
+- (T280226, CVE-2021-35197): Prevent blocked users from purging pages
+
+* Sat Jun 26 2021 Vitaly Lipatov <lav@altlinux.ru> 1.36.0-alt2
+- fix httpd2 reload
+
+* Sun Jun 06 2021 Vitaly Lipatov <lav@altlinux.ru> 1.36.0-alt1
+- new version 1.36.0 (with rpmrb script)
+
+* Wed May 12 2021 Vitaly Lipatov <lav@altlinux.ru> 1.35.2-alt2
+- fix build
+
+* Sat Apr 24 2021 Vitaly Lipatov <lav@altlinux.ru> 1.35.2-alt1
+- new version 1.35.2 (with rpmrb script)
+- (T270453, CVE-2021-30153) (T270713, CVE-2021-30152)
+- (T270988, CVE-2021-30155) (T272386, CVE-2021-30159)
+- (T276843, CVE-2021-20270, CVE-2021-27291)
+- (T277009, CVE-2021-30158) (T278014, CVE-2021-30154)
+- (T278058, CVE-2021-30157) (T279451, CVE-2021-30458)
+
 * Wed Dec 23 2020 Vitaly Lipatov <lav@altlinux.ru> 1.35.1-alt1
 - new version 1.35.1 (with rpmrb script)
 - T268894, CVE-2020-35474, T268917, CVE-2020-35475
