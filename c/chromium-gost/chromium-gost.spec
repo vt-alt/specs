@@ -33,7 +33,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium-gost
-Version:        91.0.4472.77
+Version:        91.0.4472.114
 Release:        alt0.p9.1
 
 Summary:        An open source web browser developed by Google
@@ -170,6 +170,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-cursor)
+BuildRequires:  pkgconfig(dri)
 BuildRequires:  python
 BuildRequires:  python-modules-json
 BuildRequires:  python-modules-distutils
@@ -321,7 +322,7 @@ gn_arg clang_use_chrome_plugins=false
 gn_arg use_lld=true
 if [ "$bits" = 64 ]; then
 %ifarch aarch64
-    gn_arg use_thin_lto=false                                                                                                                                                                  
+    gn_arg use_thin_lto=false
 %else
     gn_arg use_thin_lto=true
 %endif
@@ -494,9 +495,40 @@ EOF
 %_altdir/%name
 
 %changelog
+* Mon Jun 28 2021 Andrey Cherepanov <cas@altlinux.org> 91.0.4472.114-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Sat Jun 26 2021 Fr. Br. George <george@altlinux.ru> 91.0.4472.114-alt1
+- Build GOST version
+
+* Fri Jun 25 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.114-alt0
+- New version (91.0.4472.114).
+- Security fixes:
+  - CVE-2021-30554: Use after free in WebGL.
+  - CVE-2021-30555: Use after free in Sharing.
+  - CVE-2021-30556: Use after free in WebAudio.
+  - CVE-2021-30557: Use after free in TabGroups.
+
+* Wed Jun 16 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.106-alt1
+- New version (91.0.4472.106).
+
 * Fri Jun 11 2021 Andrey Cherepanov <cas@altlinux.org> 91.0.4472.77-alt0.p9.1
 - Backport new version to p9 branch.
 - Disable thin_lto on aarch64.
+
+* Thu Jun 10 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.101-alt1
+- New version (91.0.4472.101).
+- Security fixes:
+  - CVE-2021-30544: Use after free in BFCache.
+  - CVE-2021-30545: Use after free in Extensions.
+  - CVE-2021-30546: Use after free in Autofill.
+  - CVE-2021-30547: Out of bounds write in ANGLE.
+  - CVE-2021-30548: Use after free in Loader.
+  - CVE-2021-30549: Use after free in Spell check.
+  - CVE-2021-30550: Use after free in Accessibility.
+  - CVE-2021-30551: Type Confusion in V8.
+  - CVE-2021-30552: Use after free in Extensions.
+  - CVE-2021-30553: Use after free in Network service.
 
 * Wed Jun 09 2021 Fr. Br. George <george@altlinux.ru> 91.0.4472.77-alt1
 - Build GOST Version
@@ -527,10 +559,7 @@ EOF
   - CVE-2021-30539: Insufficient policy enforcement in content security policy.
   - CVE-2021-30540: Incorrect security UI in payments.
 
-* Tue Apr 27 2021 Andrey Cherepanov <cas@altlinux.org> 89.0.4389.114-alt0.p9.1
-- Backport new version to p9 branch.
-
-* Sun Apr 18 2021 Alexey Gladkov <legion@altlinux.ru> 90.0.4430.72-alt1
+* Mon Apr 19 2021 Alexey Gladkov <legion@altlinux.ru> 90.0.4430.72-alt1
 - New version (90.0.4430.72).
 - Security fixes:
   - CVE-2021-21201: Use after free in permissions.
