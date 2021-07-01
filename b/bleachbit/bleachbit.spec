@@ -1,5 +1,5 @@
 Name:     bleachbit
-Version:  4.3.0
+Version:  4.4.0
 Release:  alt1
 
 Summary:  Remove unnecessary files, free space, and maintain privacy
@@ -13,7 +13,7 @@ Source0:  %name-%version.tar
 Patch1:   %name-apt-rpm-specific.patch
 Patch2:   %name-alt-reasonable-config.patch
 
-BuildArch:      noarch
+BuildArch: noarch
 
 BuildRequires(pre): rpm-build-gnome python3-devel
 
@@ -39,9 +39,15 @@ make -C po local
 
 %install
 %makeinstall_std prefix=%_prefix
-
-sed -i -e '/^#!\//, 1d' %buildroot%_datadir/bleachbit/CLI.py
-sed -i -e '/^#!\//, 1d' %buildroot%_datadir/bleachbit/GUI.py
+# Create desktop file to run BleachBit as Administrator
+pushd %buildroot%_desktopdir
+cp org.bleachbit.BleachBit.desktop org.bleachbit.BleachBit-root.desktop
+subst 's/^Name=BleachBit$/Name=BleachBit as Administrator/g' org.bleachbit.BleachBit-root.desktop
+subst 's/^GenericName\[ru\]=.*$/GenericName[ru]=Очистка от ненужных файлов (с правами администратора)/' org.bleachbit.BleachBit-root.desktop
+subst 's/^Exec=bleachbit$/Exec=pkexec bleachbit/g' org.bleachbit.BleachBit-root.desktop
+popd
+subst '/^#!\//, 1d' %buildroot%_datadir/bleachbit/CLI.py
+subst '/^#!\//, 1d' %buildroot%_datadir/bleachbit/GUI.py
 rm -f %buildroot%_datadir/%name/Windows.py*
 
 %find_lang %name
@@ -56,6 +62,10 @@ rm -f %buildroot%_datadir/%name/Windows.py*
 %_datadir/polkit-1/actions/*.policy
 
 %changelog
+* Mon Jun 28 2021 Andrey Cherepanov <cas@altlinux.org> 4.4.0-alt1
+- New version.
+- Add menu entry to run progras as administrator.
+
 * Sat Jun 05 2021 Andrey Cherepanov <cas@altlinux.org> 4.3.0-alt1
 - New version.
 
