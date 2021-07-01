@@ -1,5 +1,5 @@
 Name:    gnucash-docs
-Version: 4.5
+Version: 4.6
 Release: alt1
 
 Summary: Documentation for the Gnucash
@@ -46,6 +46,9 @@ This is the documentation module for GnuCash.
 #%%_datadir/omf/gnucash-*/
 
 %changelog
+* Mon Jun 28 2021 Andrey Cherepanov <cas@altlinux.org> 4.6-alt1
+- New version.
+
 * Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 4.5-alt1
 - New version.
 

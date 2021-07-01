@@ -4,7 +4,7 @@
 %def_with aqbanking
 
 Name: 	 gnucash
-Version: 4.5
+Version: 4.6
 Release: alt1
 
 Summary: GnuCash is an application to keep track of your finances
@@ -19,7 +19,7 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 Source:  %name-%version.tar
 Source1: gtest.tar
 Source2: %name.1
-# This source got from https://sourceforge.net/projects/gnucash/files/gnucash%20(unstable)/3.906/gnucash-3.906.tar.bz2
+# This source got from https://sourceforge.net/projects/gnucash/files/gnucash%20(stable)/4.6/gnucash-4.6.tar.bz2
 Source3: gnc-vcs-info.h
 Source4: ChangeLog
 Source5: %name-README.RU
@@ -157,11 +157,10 @@ cp %SOURCE9 gnucash/gnome
        -DGENERATE_SWIG_WRAPPERS=ON \
        -DGMOCK_ROOT=%_builddir/%name-%version/gtest \
        -DGTEST_ROOT=%_builddir/%name-%version/gtest
-%ninja_build -C BUILD
+%ninja_build -C "%_cmake__builddir"
 
 %install
-%ninja_install -C BUILD
-
+%ninja_install -C "%_cmake__builddir"
 mv %buildroot%_libdir/lib* %buildroot%_libdir/gnucash/
 
 rm -rf %buildroot%_bindir/gnucash-valgrind \
@@ -209,6 +208,12 @@ rm -rf %buildroot%_datadir/guile/site/*/tests \
 %files quotes
 
 %changelog
+* Sun Jun 27 2021 Andrey Cherepanov <cas@altlinux.org> 4.6-alt1
+- New version.
+
+* Tue Apr 27 2021 Arseny Maslennikov <arseny@altlinux.org> 4.5-alt1.1
+- NMU: spec: adapted to new cmake macros.
+
 * Mon Mar 29 2021 Andrey Cherepanov <cas@altlinux.org> 4.5-alt1
 - New version.
 
