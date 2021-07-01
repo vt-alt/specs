@@ -29,7 +29,7 @@
 %define default_client_secret h_PrTP1ymJu83YTLyz-E25nP
 
 Name:           chromium
-Version:        91.0.4472.101
+Version:        91.0.4472.114
 Release:        alt0.p9.1
 
 Summary:        An open source web browser developed by Google
@@ -161,6 +161,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-cursor)
+BuildRequires:  pkgconfig(dri)
 BuildRequires:  python
 BuildRequires:  python-modules-json
 BuildRequires:  python-modules-distutils
@@ -461,6 +462,20 @@ EOF
 %_altdir/%name
 
 %changelog
+* Mon Jun 28 2021 Andrey Cherepanov <cas@altlinux.org> 91.0.4472.114-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Fri Jun 25 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.114-alt1
+- New version (91.0.4472.114).
+- Security fixes:
+  - CVE-2021-30554: Use after free in WebGL.
+  - CVE-2021-30555: Use after free in Sharing.
+  - CVE-2021-30556: Use after free in WebAudio.
+  - CVE-2021-30557: Use after free in TabGroups.
+
+* Wed Jun 16 2021 Alexey Gladkov <legion@altlinux.ru> 91.0.4472.106-alt1
+- New version (91.0.4472.106).
+
 * Fri Jun 11 2021 Andrey Cherepanov <cas@altlinux.org> 91.0.4472.101-alt0.p9.1
 - Backport new version to p9 branch.
 - Disable thin_lto on aarch64.
