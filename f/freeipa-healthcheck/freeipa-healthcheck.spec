@@ -3,8 +3,8 @@
 %def_with check
 
 Name: freeipa-healthcheck
-Version: 0.6
-Release: alt1
+Version: 0.9
+Release: alt0.M90P.1
 
 Summary: Check the health of a FreeIPA installation
 License: GPLv3
@@ -20,11 +20,11 @@ Requires: python3-module-%name = %EVR
 
 BuildRequires(pre): rpm-build-python3
 BuildRequires: python3-module-ipaserver
-BuildRequires: python3-module-pytest-runner
 
 %if_with check
-BuildRequires: python3-module-tox
-BuildRequires: python3-module-pytest
+BuildRequires: python3(tox)
+BuildRequires: python3(pytest)
+BuildRequires: python3(pylint)
 BuildRequires: /proc
 %endif
 
@@ -36,6 +36,7 @@ identification, diagnosis and potentially repair of problems.
 Summary: FreeIPA-healthcheck python3 bindings and documentation
 License: GPLv3
 Group: Development/Python3
+Requires: python3-module-lib389 >= 1.4.1.11
 
 %description -n python3-module-%name
 This FreeIPA-healthcheck Python3 module contains the library binding for
@@ -83,8 +84,9 @@ mv %buildroot%python3_sitelibdir_noarch/* %buildroot%python3_sitelibdir/
 %preun_service ipa-healthcheck
 
 %check
-export TOXENV=py3
-tox.py3 --sitepackages -vv
+export PIP_NO_INDEX=YES
+export TOXENV=py3,lint
+tox.py3 --sitepackages -vvr
 
 %files
 %doc README.md COPYING
@@ -106,5 +108,20 @@ tox.py3 --sitepackages -vv
 %python3_sitelibdir/ipaclustercheck/
 
 %changelog
+* Wed Jun 30 2021 Stanislav Levin <slev@altlinux.org> 0.9-alt0.M90P.1
+- Backported to P9.
+
+* Fri Jun 18 2021 Stanislav Levin <slev@altlinux.org> 0.9-alt1
+- 0.8 -> 0.9.
+
+* Tue Mar 30 2021 Stanislav Levin <slev@altlinux.org> 0.8-alt1
+- 0.7 -> 0.8.
+
+* Fri Nov 06 2020 Stanislav Levin <slev@altlinux.org> 0.7-alt1
+- 0.6 -> 0.7.
+
+* Thu Aug 06 2020 Stanislav Levin <slev@altlinux.org> 0.6-alt2
+- Applied upstream fixes.
+
 * Wed Jul 22 2020 Stanislav Levin <slev@altlinux.org> 0.6-alt1
 - Initial build (by Ivan Alekseev <qwetwe@altlinux.org>).
