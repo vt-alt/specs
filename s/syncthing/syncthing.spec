@@ -7,15 +7,14 @@
 Name: syncthing
 Summary: FOSS Continuous File Synchronisation
 Summary(ru_RU.UTF-8): Свободная программа непрерывной синхронизации файлов
-Version: 1.5.0
+Version: 1.17.0
 Release: alt1
 License: MPL-2.0
 Group: Networking/Other
-Url:https://github.com/syncthing/syncthing
+Url: https://github.com/syncthing/syncthing
 
 Packager: Anton Midyukov <antohami@altlinux.org>
-
-#Source-url: https://github.com/syncthing/syncthing/releases/download/v%version/syncthing-source-v%version.tar.gz
+# Source-url: https://github.com/syncthing/syncthing/releases/download/v%version/syncthing-source-v%version.tar.gz
 Source: %name-%version.tar
 BuildRequires(pre): rpm-macros-golang rpm-build-golang
 BuildRequires: go >= 1.3
@@ -55,19 +54,6 @@ This package contains the main syncthing server tools:
 * stdiscosrv, the syncthing discovery server for discovering nodes
   to connect to indirectly over the internet.
 
-%package cli
-Summary: Continuous File Synchronization (CLI)
-Group: Networking/Other
-
-%description cli
-Syncthing replaces other file synchronization services with something
-open, trustworthy and decentralized. Your data is your data alone and
-you deserve to choose where it is stored, if it is shared with some
-third party and how it's transmitted over the Internet. Using syncthing,
-that control is returned to you.
-
-This package contains the CLI program.
-
 %prep
 %setup
 
@@ -96,11 +82,14 @@ export BUILD_HOST=alt-linux
 export LDFLAGS="-X %goipath/lib/build.Version=v%version -X %goipath/lib/build.Stamp=$(date +%s) -X %goipath/lib/build.User=$USER -X %goipath/lib/build.Host=$BUILD_HOST"
 export BUILDTAGS="noupgrade"
 
+export LDFLAGS="-X %{goipath}/lib/build.Program=syncthing $COMMON_LDFLAGS"
 %gobuild -o _bin/syncthing %goipath/cmd/syncthing
+export LDFLAGS="-X %{goipath}/lib/build.Program=stdiscosrv $COMMON_LDFLAGS"
 %gobuild -o _bin/stdiscosrv %goipath/cmd/stdiscosrv
+export LDFLAGS="-X %{goipath}/lib/build.Program=strelaysrv $COMMON_LDFLAGS"
 %gobuild -o _bin/strelaysrv %goipath/cmd/strelaysrv
+export LDFLAGS="-X %{goipath}/lib/build.Program=strelaypoolsrv $COMMON_LDFLAGS"
 %gobuild -o _bin/strelaypoolsrv %goipath/cmd/strelaypoolsrv
-%gobuild -o _bin/stcli %goipath/cmd/stcli
 
 %install
 export GO111MODULE=off
@@ -112,7 +101,6 @@ cp -pav _bin/syncthing %buildroot/%_bindir/
 cp -pav _bin/stdiscosrv %buildroot/%_bindir/
 cp -pav _bin/strelaysrv %buildroot/%_bindir/
 cp -pav _bin/strelaypoolsrv %buildroot/%_bindir/
-cp -pav _bin/stcli %buildroot/%_bindir/
 
 # install man pages
 mkdir -p %buildroot/%_man1dir
@@ -209,12 +197,14 @@ export GO111MODULE=off
 %_man1dir/stdiscosrv*
 %_man1dir/strelaysrv*
 
-%files cli
-%doc LICENSE
-%doc README.md AUTHORS
-%_bindir/stcli
-
 %changelog
+* Sun Jun 27 2021 Anton Midyukov <antohami@altlinux.org> 1.17.0-alt1
+- new version (1.17.0) with rpmgs script
+- drop cli subpackage
+
+* Thu Jul 16 2020 Anton Midyukov <antohami@altlinux.org> 1.7.1-alt1
+- new version 1.7.1
+
 * Wed May 20 2020 Anton Midyukov <antohami@altlinux.org> 1.5.0-alt1
 - new version 1.5.0
 
