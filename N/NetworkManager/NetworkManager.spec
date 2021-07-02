@@ -1,5 +1,5 @@
-#define git_hash .git173782d7331e
-%define git_hash %nil
+%define git_hash .gite2fdbc2b7482
+#define git_hash %nil
 
 %define dbus_version 1.2.12-alt2
 %define libdbus_glib_version 0.76
@@ -65,8 +65,8 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: NetworkManager
-Version: 1.18.10
-Release: alt3%git_hash
+Version: 1.18.11
+Release: alt1%git_hash
 License: GPLv2+ and LGPLv2+
 Group: System/Configuration/Networking
 Summary: Install NetworkManager daemon and plugins
@@ -795,6 +795,12 @@ fi
 %exclude %_libdir/pppd/%ppp_version/*.la
 
 %changelog
+* Thu Jul 01 2021 Mikhail Efremov <sem@altlinux.org> 1.18.11-alt1.gite2fdbc2b7482
+- Backported patch from NM-1.32.2 (fixes: CVE-2020-13529):
+  + dhcp/systemd: ignore FORCERENEW requests for DHCPV4 to workaround
+    CVE-2020-13529.
+- Upstream git snapshot (nm-1-18 branch).
+
 * Thu Jun 10 2021 Mikhail Efremov <sem@altlinux.org> 1.18.10-alt3
 - Backported from NM > 1.20 (closes: #39997):
   + libnm: let nm_utils_security_valid() reject TKIP with SAE (WPA3).
