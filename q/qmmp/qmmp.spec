@@ -1,12 +1,12 @@
 %define branch 0.12
-%define svn svn9359
+%define svn svn10121
 
-%define rel alt1
+%define rel alt0.p9
 
-Version: %branch.7
+Version: %branch.14
 Epoch: 1
 Name: qmmp
-Release: %rel.%svn
+Release: %rel.%svn.1
 Summary: QMMP - Qt-based multimedia player
 Summary(ru_RU.UTF8): Qmmp - мультимедиа проигрыватель на базе Qt
 Summary(uk_UA.UTF8): Qmmp - мультимедіа програвач на базі Qt
@@ -18,8 +18,8 @@ Source0: %name-%branch.tar.bz2
 
 Requires: unzip winamplike-skins lib%name = %version-%release
 
-Provides: %name-out-pulseaudio
-Obsoletes: %name-out-pulseaudio
+Provides: %name-out-pulseaudio %name-docs
+Obsoletes: %name-out-pulseaudio %name-docs
 
 BuildPreReq: rpm-build-wlskins doxygen
 
@@ -32,6 +32,8 @@ BuildRequires: libprojectM-devel >= 2.0.1 jackit-devel xorg-xf86miscproto-devel
 BuildRequires: libenca-devel libcddb-devel libmms-devel >= 0.4 libwildmidi-devel >= 0.2.3.4
 BuildRequires: libgme-devel libGLU-devel libsidplayfp-devel >= 1.0.3 libshout2-devel
 BuildRequires: libcdio-paranoia-devel libarchive-devel libopusfile-devel
+
+ExcludeArch:	armh
 
 %description
 QMMP is an audio-player, written with help of Qt library.
@@ -200,14 +202,6 @@ Other features:
 - Підтримка ReplayGain
 - Скробблер Last.fm/Libre.fm
 - Підтримка CDDB
-
-%package -n %name-docs
-Summary: Documentation for Qmmp
-Group: Documentation
-BuildArch: noarch
-
-%description -n %name-docs
-Documentation for Qmmp
 
 %package -n lib%name
 Summary: Shared libraries for Qmmp
@@ -663,7 +657,6 @@ programs which make use of Qmmp.
 %package -n %name-full
 Summary: QMMP - Qt-based multimedia player
 Group: Sound
-BuildArch: noarch
 Requires: qmmp qmmp-in-wavpack qmmp-mpris qmmp-notifier
 Requires: qmmp-eff-soxr qmmp-in-ffmpeg qmmp-in-mplayer
 Requires: qmmp-in-flac qmmp-out-alsa qmmp-in-modplug qmmp-in-midi
@@ -692,11 +685,14 @@ cmake \
 	-DQMMP_DEFAULT_OUTPUT=pulse \
 	-DLIB_DIR:STRING=%_lib \
 	-DUSE_OSS:BOOL=TRUE
+
+
 %make_build VERBOSE=1
 
 cd doc && doxygen Doxyfile
 
 %install
+# # with CMake
 %make DESTDIR=%buildroot install
 
 mkdir -p %buildroot%_datadir/%name-0
@@ -704,6 +700,7 @@ ln -s %_wlskindir %buildroot%_datadir/%name-0/skins
 mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 
 %files
+%doc AUTHORS ChangeLog* README* doc/html
 %dir %_libdir/%name-%branch
 %dir %_libdir/%name-%branch/Input
 %dir %_libdir/%name-%branch/Ui
@@ -903,12 +900,21 @@ mkdir -p %buildroot/{%_miconsdir,%_niconsdir,%_liconsdir}
 %_includedir/%name-0/%{name}ui/*.h
 %_libdir/*.so
 
-%files -n %name-docs
-%doc AUTHORS ChangeLog* README* doc/html
-
 %files -n %name-full
 
 %changelog
+* Mon Jun 28 2021 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.14-alt0.p9.svn10121.1
+- build for p9
+
+* Mon Jun 28 2021 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.14-alt1.svn10121
+- 0.12.14 svn10121 version
+
+* Sun Dec 27 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.10-alt1.1.svn9612
+- ExcludeArch armh
+
+* Sun Dec 27 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.10-alt1.svn9612
+- 0.12.10 svn9612 version
+
 * Sun Apr 26 2020 Motsyo Gennadi <drool@altlinux.ru> 1:0.12.7-alt1.svn9359
 - 0.12.7 svn9359 version
 
