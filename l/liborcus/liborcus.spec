@@ -1,6 +1,6 @@
 %def_without python
 Name: liborcus
-Version: 0.15.4
+Version: 0.16.1
 Release: alt1
 Summary: Standalone file import filter library for spreadsheet documents
 
@@ -9,7 +9,7 @@ License: MPL-2.0
 Url: https://gitlab.com/orcus/orcus
 Source: orcus-%version.tar.gz
 
-%define libver 0.15
+%define libver 0.16
 
 # Automatically added by buildreq on Thu Jul 25 2013
 # optimized out: boost-devel boost-intrusive-devel libstdc++-devel pkg-config
@@ -96,6 +96,9 @@ ln -s %name-%libver.pc %buildroot%_pkgconfigdir/%name.pc
 %endif
 
 %changelog
+* Fri Feb 12 2021 Fr. Br. George <george@altlinux.ru> 0.16.1-alt1
+- Autobuild version bump to 0.16.1
+
 * Thu Aug 06 2020 Andrey Cherepanov <cas@altlinux.org> 0.15.4-alt1
 - NMU: New version needed by LibreOffice 6.4
 

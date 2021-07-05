@@ -6,6 +6,7 @@
 %def_without fetch
 %def_without lto
 %def_with dconf
+%def_without orcus
 
 # enable kde5 UI
 %def_enable kde5
@@ -30,7 +31,7 @@ Version: %hversion.%urelease
 %define lodir %_libdir/%name
 %define uname libreoffice5
 %define conffile %_sysconfdir/sysconfig/%uname
-Release: alt1
+Release: alt2
 
 Summary: LibreOffice Productivity Suite (Still version)
 License: LGPL-3.0+ and MPL-2.0
@@ -135,7 +136,13 @@ BuildRequires: kf5-kdelibs4support
 # 6.3.5.2
 BuildRequires: fontforge
 # 6.4.5.2
+%if_with orcus
+# Build with system liborcus
 BuildRequires: liborcus-devel >= 0.15.0
+%else
+# Build with bundled liborcus
+BuildRequires: boost-devel-headers boost-interprocess-devel boost-program_options-devel gcc-c++ zlib-devel boost-filesystem-devel mdds-devel python3-devel
+%endif
 BuildRequires: libqrcodegen-cpp-devel
 BuildRequires: libxcbutil-icccm-devel
 BuildRequires: libeot-devel
@@ -390,6 +397,7 @@ fi
 	--disable-lto \
         --with-vendor="ALT Linux Team" \
         --without-system-poppler \
+        %{?_without_orcus:--without-system-orcus } \
         %{subst_enable mergelibs} \
         --enable-odk \
 	--disable-firebird-sdbc \
@@ -662,6 +670,9 @@ install -Dpm0644 sysui/desktop/man/unopkg.1 %buildroot%_man1dir/unopkg.1
 %_includedir/LibreOfficeKit
 
 %changelog
+* Wed May 19 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.6.2-alt2
+- Build with bundled liborcus-0.15.
+
 * Mon May 17 2021 Andrey Cherepanov <cas@altlinux.org> 7.0.6.2-alt1
 - New version.
 

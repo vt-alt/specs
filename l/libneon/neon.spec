@@ -1,18 +1,15 @@
 Name: libneon
-Version: 0.30.2
+Version: 0.31.2
 Release: alt1
 Summary: neon is an HTTP and WebDAV client library
 License: LGPLv2+
 Group: System/Libraries
-Url: http://www.webdav.org/neon/
-Packager: Valery Inozemtsev <shrek@altlinux.ru>
+Url: https://notroj.github.io/neon/
 
 Obsoletes: %{name}0.25 %{name}0.26
 
 Source: neon-%version.tar.gz
 Patch1: neon-0.27.0-multilib.patch
-Patch2: neon-0.30.2-lockprintf.patch
-Patch3: neon-0.30.2-sysuioh.patch
 
 BuildRequires: libexpat-devel libkrb5-devel libssl-devel openssl zlib-devel libgssapi-devel xmlto
 
@@ -38,8 +35,6 @@ worry about the lower-level stuff.
 %prep
 %setup -n neon-%version
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %configure \
@@ -55,7 +50,7 @@ worry about the lower-level stuff.
 %install
 %makeinstall_std
 %define docdir %_docdir/neon-%version
-install -pm644 AUTHORS BUGS NEWS README THANKS TODO doc/*.txt \
+install -pm644 AUTHORS BUGS NEWS README* THANKS TODO doc/*.txt \
 	%buildroot/%docdir/
 %find_lang neon
 
@@ -63,6 +58,7 @@ install -pm644 AUTHORS BUGS NEWS README THANKS TODO doc/*.txt \
 %_libdir/lib*.so.*
 
 %files devel
+%doc 
 %_bindir/*
 %_includedir/*
 %_libdir/lib*.so
@@ -72,6 +68,9 @@ install -pm644 AUTHORS BUGS NEWS README THANKS TODO doc/*.txt \
 %docdir
 
 %changelog
+* Sat Feb 13 2021 Fr. Br. George <george@altlinux.ru> 0.31.2-alt1
+- Autobuild version bump to 0.31.2
+
 * Wed Sep 12 2018 Valery Inozemtsev <shrek@altlinux.ru> 0.30.2-alt1
 - 0.30.2
 
@@ -135,7 +134,7 @@ install -pm644 AUTHORS BUGS NEWS README THANKS TODO doc/*.txt \
 * Thu Aug 21 2008 Valery Inozemtsev <shrek@altlinux.ru> 0.28.3-alt1
 - fixed CVE-2008-3746
 
-* Sat Aug 11 2008 Valery Inozemtsev <shrek@altlinux.ru> 0.28.2-alt3
+* Mon Aug 11 2008 Valery Inozemtsev <shrek@altlinux.ru> 0.28.2-alt3
 - added provides libneon0.25-devel, libneon0.26-devel
 
 * Sun Aug 03 2008 Valery Inozemtsev <shrek@altlinux.ru> 0.28.2-alt2
