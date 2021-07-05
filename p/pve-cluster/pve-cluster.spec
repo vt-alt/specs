@@ -1,6 +1,6 @@
 Name: pve-cluster
 Summary: Cluster Infrastructure for PVE
-Version: 6.1.8
+Version: 6.2.1
 Release: alt1
 License: GPLv3
 Group: System/Servers
@@ -11,8 +11,8 @@ ExclusiveArch: x86_64 aarch64
 Requires: bridge-utils chrony ntpdate corosync2 fuse rrd-cached ksmtuned openvswitch
 Requires: sqlite3 vixie-cron faketime tzdata openssh-server openssh-clients
 
-Source0: %name.tar
-Source1: pve-access-control.tar
+Source0: %name.tar.xz
+Source1: pve-access-control.tar.xz
 Source2: pve-apiclient.tar.xz
 
 Patch0: %name.patch
@@ -34,7 +34,7 @@ on all nodes.
 
 %package -n pve-access-control
 Summary: PVE access control library
-Version: 6.1.2
+Version: 6.1.3
 Group: Development/Perl
 
 %description -n pve-access-control
@@ -183,6 +183,11 @@ fi
 %_man1dir/pveum.1*
 
 %changelog
+* Tue Dec 08 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.1-alt1
+- pve-cluster 6.2-1
+- pve-access-control 6.1-3
+- pve-apiclient 3.1-2
+
 * Tue Jul 14 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.1.8-alt1
 - pve-cluster 6.1-8
 - pve-access-control 6.1-2

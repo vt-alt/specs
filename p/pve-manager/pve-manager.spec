@@ -1,7 +1,7 @@
 Name: pve-manager
 Summary: The Proxmox Virtual Environment
-Version: 6.2.4
-Release: alt1.M90P.1
+Version: 6.3.3
+Release: alt4
 License: GPLv3
 Group: System/Servers
 Url: https://git.proxmox.com/
@@ -78,6 +78,8 @@ Patch45: qemu-server-xhci.patch
 Patch46: pve-manager-timezone.patch
 Patch47: qemu-server-pci-rng-audio-M90P.patch
 Patch50: pve-container-ENV.patch
+Patch51: pve-manager-ver-v.patch
+Patch52: pve-qmeventd.patch
 
 BuildRequires: glib2-devel libnetfilter_log-devel pve-doc-generator pve-storage librados2-perl libsystemd-daemon-devel
 BuildRequires: perl-AnyEvent-AIO perl-AnyEvent-HTTP perl-AptPkg perl-Crypt-SSLeay perl-File-ReadBackwards
@@ -91,17 +93,17 @@ This package contains the PVE management tools
 
 %package -n pve-container
 Summary: PVE Container management tool
-Version: 3.1.5
+Version: 3.3.2
 Group: Development/Perl
 PreReq: shadow-submap
-Requires: pve-lxc >= 2.1.0 dtach perl-Crypt-Eksblowfish >= 0.009-alt5_15
+Requires: pve-lxc dtach pve-lxc-syscalld
 
 %description -n pve-container
 Tool to manage Linux Containers on PVE
 
 %package -n pve-firewall
 Summary: PVE Firewall
-Version: 4.1.2
+Version: 4.1.3
 Group: System/Servers
 Requires: ebtables ipset iptables iptables-ipv6 shorewall shorewall6 iproute2 >= 4.10.0
 
@@ -110,7 +112,7 @@ This package contains the PVE Firewall
 
 %package -n pve-ha-manager
 Summary: PVE HA Manager
-Version: 3.0.9
+Version: 3.1.1
 Group: System/Servers
 
 %description -n pve-ha-manager
@@ -118,7 +120,7 @@ HA Manager PVE
 
 %package -n pve-ha-simulator
 Summary: PVE HA Simulator
-Version: 3.0.9
+Version: 3.1.1
 Group: System/Servers
 
 %description -n pve-ha-simulator
@@ -126,7 +128,7 @@ PVE HA Simulator
 
 %package -n pve-qemu-server
 Summary: Qemu Server Tools
-Version: 6.2.2
+Version: 6.3.2
 Group: System/Servers
 Requires: socat genisoimage pve-qemu-system >= 4.1.1-alt1
 Provides: qemu-server = %version-%release
@@ -137,7 +139,7 @@ This package contains the Qemu Server tools used by PVE
 
 %package -n pve-guest-common
 Summary: PVE common guest-related modules
-Version: 3.0.10
+Version: 3.1.3
 Group: System/Servers
 
 %description -n pve-guest-common
@@ -145,7 +147,7 @@ This package contains a common code base used by pve-container and qemu-server
 
 %package -n pve-http-server
 Summary: PVE Asynchrounous HTTP Server Implementation
-Version: 3.0.5
+Version: 3.1.1
 Group: System/Servers
 Requires: fonts-font-awesome
 
@@ -203,6 +205,8 @@ This is used to implement the PVE REST API
 %patch46 -p0 -b .timezone
 %patch47 -p0 -b .rng
 %patch50 -p0 -b .ENV
+%patch51 -p0 -b .ver-v
+%patch52 -p0 -b .qmevent
 
 find -name Makefile | while read m; do
 	sed -i '/^.*\/usr\/share\/dpkg.*/d' $m;
@@ -215,14 +219,14 @@ done
 install -m0644 %SOURCE5 pve-i18n/ru.po
 
 %build
-for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit pve-mini-journalreader/src; do
+for d in pve-manager pve-firewall/src pve-ha-manager/src pve-widget-toolkit/src pve-mini-journalreader/src; do
     pushd $d
-    %make PACKAGE="pve-manager" VERSION="6.2-4" PVERELEASE="6.2" REPOID="9824574a"
+    %make PACKAGE="pve-manager" VERSION="6.3-3" PVERELEASE="6.3" REPOID="17558967"
     popd
 done
 
 %install
-for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit pve-i18n pve-mini-journalreader/src pve-acme/src; do
+for d in pve-manager pve-firewall/src pve-ha-manager/src pve-container/src qemu-server pve-guest-common pve-http-server extjs pve-widget-toolkit/src pve-i18n pve-mini-journalreader/src pve-acme/src; do
     pushd $d
     %make DESTDIR=%buildroot install
     popd
@@ -383,6 +387,7 @@ __EOF__
 %perl_vendor_privlib/PVE/API2/ACMEPlugin.pm
 %perl_vendor_privlib/PVE/API2/APT.pm
 %perl_vendor_privlib/PVE/API2/Backup.pm
+%perl_vendor_privlib/PVE/API2/BackupInfo.pm
 %perl_vendor_privlib/PVE/API2/Ceph.pm
 %perl_vendor_privlib/PVE/API2/Certificates.pm
 %perl_vendor_privlib/PVE/API2/Cluster.pm
@@ -398,10 +403,10 @@ __EOF__
 %perl_vendor_privlib/PVE/API2/Replication.pm
 %perl_vendor_privlib/PVE/API2/ReplicationConfig.pm
 %perl_vendor_privlib/PVE/API2/Hardware.pm
-%perl_vendor_privlib/PVE/API2/Scan.pm
 %dir %perl_vendor_privlib/PVE/API2/Hardware
 %dir %perl_vendor_privlib/PVE/API2/Ceph
 %perl_vendor_privlib/PVE/API2/Hardware/PCI.pm
+%perl_vendor_privlib/PVE/API2/Hardware/USB.pm
 %perl_vendor_privlib/PVE/API2/Ceph/FS.pm
 %perl_vendor_privlib/PVE/API2/Ceph/MDS.pm
 %perl_vendor_privlib/PVE/API2/Ceph/MGR.pm
@@ -409,6 +414,7 @@ __EOF__
 %perl_vendor_privlib/PVE/API2/Ceph/OSD.pm
 %dir %perl_vendor_privlib/PVE/API2/Cluster
 %perl_vendor_privlib/PVE/API2/Cluster/Ceph.pm
+%perl_vendor_privlib/PVE/API2/Cluster/MetricServer.pm
 %perl_vendor_privlib/PVE/CLI/pveceph.pm
 %perl_vendor_privlib/PVE/CLI/pvenode.pm
 %perl_vendor_privlib/PVE/CLI/pvesr.pm
@@ -548,6 +554,7 @@ __EOF__
 %_datadir/zsh/vendor-completions/_qmrestore
 %config(noreplace) %_sysconfdir/modules-load.d/qemu-server.conf
 %systemd_unitdir/qmeventd.service
+%systemd_unitdir/qmeventd.socket
 %_prefix/lib/qemu-server
 %_sbindir/qm
 %_sbindir/qmrestore
@@ -568,6 +575,7 @@ __EOF__
 %perl_vendor_privlib/PVE/CLI/qm.pm
 %perl_vendor_privlib/PVE/CLI/qmrestore.pm
 %perl_vendor_privlib/PVE/VZDump/QemuServer.pm
+%perl_vendor_privlib/PVE/QemuServer/CGroup.pm
 %perl_vendor_privlib/PVE/QemuServer/Memory.pm
 %perl_vendor_privlib/PVE/QemuServer/PCI.pm
 %perl_vendor_privlib/PVE/QemuServer/USB.pm
@@ -603,6 +611,30 @@ __EOF__
 %perl_vendor_privlib/PVE/APIServer
 
 %changelog
+* Mon Jun 28 2021 Valery Inozemtsev <shrek@altlinux.ru> 6.3.3-alt4
+- pve-guests.service wants qmeventd.service
+
+* Mon May 31 2021 Valery Inozemtsev <shrek@altlinux.ru> 6.3.3-alt3
+- qemu-server: naming network interfaces as in branch p9
+
+* Tue May 18 2021 Andrew A. Vasilyev <andy@altlinux.org> 6.3.3-alt2
+- merge changelog with p9
+
+* Fri Dec 11 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.3.3-alt1
+- pve-manager 6.3-3
+- pve-container 3.3-2
+- pve-firewall 4.1-3
+- pve-ha-manager 3.1-1
+- qemu-server 6.3-2
+- pve-guest-common 3.1-3
+- pve-http-server 3.1-1
+- pve-widget-toolkit 2.4-3
+- pve-i18n 2.2-2
+- pve-acme 1.0.6
+
+* Fri Oct 09 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.4-alt2
+- fixed booting VM on Kunpeng-920
+
 * Fri Oct 09 2020 Valery Inozemtsev <shrek@altlinux.ru> 6.2.4-alt1.M90P.1
 - fixed booting VM on Kunpeng-920
 

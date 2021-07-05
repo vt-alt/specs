@@ -1,4 +1,4 @@
-%global __find_debuginfo_files %nil
+#global __find_debuginfo_files %nil
 
 %define rname qemu
 %define _group vmusers
@@ -8,12 +8,12 @@
 
 Name: pve-%rname
 Version: 5.1.0
-Release: alt2
+Release: alt6
 Epoch: 1
 Summary: QEMU CPU Emulator
-License: GPL/LGPL/BSD
+License: GPL-1 and LGPLv2 and BSD
 Group: Emulators
-Requires: %name-system = %version-%release %name-user = %version-%release
+Requires: %name-system = %EVR %name-user = %EVR
 Conflicts: %rname
 URL: http://www.nongnu.org/qemu/
 
@@ -22,14 +22,13 @@ Source2: qemu-kvm.control.in
 Source4: qemu-kvm.rules
 # qemu-kvm back compat wrapper
 Source5: qemu-kvm.sh
+# /etc/qemu/bridge.conf
+Source12: bridge.conf
 
 Source100: Logo.bmp
-Source101: libproxmox_backup_qemu.so.x86_64-linux
-Source102: libproxmox_backup_qemu.so.aarch64-linux
-Source103: proxmox-backup-qemu.h
 
 Patch100: qemu-3.0.1-uuid.patch
-Patch101: qemu-pbs-link.patch
+
 Patch10: 0001-block-block-copy-always-align-copied-region-to-clust.patch
 Patch11: 0002-Revert-qemu-img-convert-Don-t-pre-zero-images.patch
 Patch12: 0003-usb-fix-setup_len-init-CVE-2020-14364.patch
@@ -85,16 +84,22 @@ Patch61: 0049-PVE-redirect-stderr-to-journal-when-daemonized.patch
 Patch62: 0050-PVE-Add-sequential-job-transaction-support.patch
 Patch63: 0051-PVE-Backup-Use-a-transaction-to-synchronize-job-stat.patch
 Patch64: 0052-PVE-Backup-Use-more-coroutines-and-don-t-block-on-fi.patch
+Patch65: 0053-PVE-fix-and-clean-up-error-handling-for-create_backu.patch
+Patch66: 0054-migration-block-dirty-bitmap-fix-larger-granularity-.patch
+Patch67: 0055-PVE-Migrate-dirty-bitmap-state-via-savevm.patch
+Patch68: 0056-migration-block-dirty-bitmap-migrate-other-bitmaps-e.patch
+Patch69: 0057-cpu-add-Kunpeng-920-cpu-support.patch
 
 ExclusiveArch: x86_64 aarch64
 BuildRequires: acpica bzlib-devel glib2-devel flex libaio-devel libalsa-devel libcap-devel
-BuildRequires: libcap-ng-devel libcurl-devel libfdt-devel libgnutls-devel libiscsi-devel libjemalloc-devel libjpeg-devel
+BuildRequires: libcap-ng-devel libcurl-devel libfdt-devel libgnutls-devel libiscsi-devel libjpeg-devel
 BuildRequires: liblzo2-devel libncurses-devel libnettle-devel libnuma-devel libpixman-devel libpng-devel ceph-devel
 BuildRequires: libsasl2-devel libseccomp-devel libspice-server-devel libssh2-devel libusbredir-devel libxfs-devel
-BuildRequires: makeinfo perl-Pod-Usage python-modules-compiler pkgconfig(glusterfs-api) pkgconfig(virglrenderer)
-BuildRequires: libsystemd-devel libfuse3-devel
-# librdmacm-devel libibverbs-devel libibumad-devel
-BuildRequires: ipxe-roms-qemu seavgabios seabios
+BuildRequires: makeinfo perl-Pod-Usage pkgconfig(glusterfs-api) pkgconfig(virglrenderer)
+BuildRequires: libsystemd-devel ipxe-roms-qemu seavgabios seabios
+#BuildRequires: librdmacm-devel libibverbs-devel libibumad-devel
+BuildRequires: python3-module-sphinx
+BuildRequires: libpve-backup-qemu-devel
 
 %description
 QEMU is a fast processor emulator using dynamic translation to achieve
@@ -121,10 +126,10 @@ Requires(pre): shadow-utils sysvinit-utils
 Requires: seavgabios
 Requires: seabios
 Requires: ipxe-roms-qemu >= 1.0.0-alt4.git93acb5d
-Requires: %name-img = %version-%release
+Requires: %name-img = %EVR
 Requires: edk2-ovmf edk2-aarch64
 Conflicts: %rname-common
-Obsoletes: %name-aux < %version-%release
+Obsoletes: %name-aux < %EVR
 
 %description common
 QEMU is a fast processor emulator using dynamic translation to achieve
@@ -134,8 +139,8 @@ This package contains common files for qemu.
 %package system
 Summary: QEMU CPU Emulator - full system emulation
 Group: Emulators
-Requires: %name-common = %version-%release
-Conflicts: %rname-system
+Requires: %name-common = %EVR pve-backup-client
+Conflicts: %rname-system %rname-ivshmem-tools %rname-tools %rname-kvm-core
 
 %description system
 Full system emulation.  In this mode, QEMU emulates a full system
@@ -150,13 +155,6 @@ Conflicts: %rname-img
 
 %description img
 This package provides a command line tool for manipulating disk images
-
-%package -n ivshmem-tools
-Summary: Client and server for QEMU ivshmem device
-Group: Emulators
-
-%description -n ivshmem-tools
-This package provides client and server tools for QEMU's ivshmem device
 
 %set_verify_elf_method fhs=relaxed
 
@@ -218,17 +216,13 @@ This package provides client and server tools for QEMU's ivshmem device
 %patch62 -p1
 %patch63 -p1
 %patch64 -p1
+%patch65 -p1
+%patch66 -p1
+%patch67 -p1
+%patch68 -p1
+%patch69 -p1
 
 %patch100 -p1
-%patch101 -p1 -b .-lpbs
-
-%ifarch aarch64
-install -m644 %SOURCE102 libproxmox_backup_qemu.so.0
-%else
-install -m644 %SOURCE101 libproxmox_backup_qemu.so.0
-%endif
-ln -s libproxmox_backup_qemu.so.0 libproxmox_backup_qemu.so
-install -m644 %SOURCE103 proxmox-backup-qemu.h
 
 cp -f %SOURCE2 qemu-kvm.control.in
 
@@ -260,7 +254,7 @@ export CFLAGS="%optflags"
         --enable-curl \
         --enable-glusterfs \
         --enable-gnutls \
-        --enable-jemalloc \
+        --disable-jemalloc \
         --enable-libiscsi \
         --enable-libusb \
         --enable-linux-aio \
@@ -280,24 +274,35 @@ sed -i 's/@GROUP@/%_group/g' qemu-kvm.control.in
 
 %install
 %makeinstall_std
-install -pD -m644 libproxmox_backup_qemu.so.0 %buildroot%_libdir/libproxmox_backup_qemu.so.0
+install -m755 pbs-restore %buildroot%_bindir/
 
 %define docdir %_docdir/%name-%version
-#mv %buildroot%_docdir/qemu 
+#mv %buildroot%_docdir/qemu
 mkdir -p %buildroot%docdir
 install -m644 LICENSE MAINTAINERS %buildroot%docdir/
+rm -rf %buildroot%_docdir/qemu
 
 install -m 0755 %SOURCE5 %buildroot%_bindir/qemu-kvm
 ln -r -s %buildroot%_bindir/qemu-kvm %buildroot%_bindir/kvm
 ln -r -s %buildroot%_bindir/qemu-kvm %buildroot%_bindir/qemu
+ln -sf qemu.1.xz %buildroot%_man1dir/qemu-kvm.1.xz
 
 install -m 0755 vma %buildroot%_bindir/vma
 
 rm -f %buildroot%_bindir/check-*
 rm -f %buildroot%_sysconfdir/udev/rules.d/*
+rm -f %buildroot%_desktopdir/%rname.desktop
+rm -rf %buildroot%_iconsdir
 
 install -D -m 0644 %SOURCE4 %buildroot%_sysconfdir/udev/rules.d/%rulenum-%rname-kvm.rules
 install -D -m 0755 %rname-kvm.control.in %buildroot%_controldir/kvm
+
+# TODO:
+# Install qemu-pr-helper service
+#install -m 0644 contrib/systemd/qemu-pr-helper.service %buildroot%_unitdir/qemu-pr-helper.service
+#install -m 0644 contrib/systemd/qemu-pr-helper.socket %buildroot%_unitdir/qemu-pr-helper.socket
+# Install rules to use the bridge helper with libvirt's virbr0
+install -D -m 0644 %SOURCE12 %buildroot%_sysconfdir/%name/bridge.conf
 
 %if_enabled vnc_sasl
 install -D -p -m 0644 qemu.sasl %buildroot%_sysconfdir/sasl2/%rname.conf
@@ -354,14 +359,18 @@ fi
 %files common
 %dir %docdir/
 %docdir/LICENSE
-%_libdir/libproxmox_backup_qemu.so.0
+%docdir/MAINTAINERS
 %_datadir/qemu
 %_datadir/pve-edk2-firmware
+%dir %_sysconfdir/%name
 %_sysconfdir/udev/rules.d/%rulenum-%rname-kvm.rules
 %_controldir/*
 %if_enabled vnc_sasl
 %config(noreplace) %_sysconfdir/sasl2/%rname.conf
 %endif
+%_man7dir/qemu-block-drivers.*
+%_man7dir/qemu-qmp-ref.*
+%_man7dir/qemu-cpu-models.*
 
 %files system -f %rname.lang
 %_bindir/elf2dmp
@@ -369,21 +378,48 @@ fi
 %_bindir/vma
 %_bindir/qemu-edid
 %_bindir/qemu-storage-daemon
-%_libexecdir/qemu-bridge-helper
+%_bindir/qemu-kvm
+%_bindir/kvm
+%_bindir/qemu
+%_man1dir/qemu.*
+%_man1dir/qemu-kvm.1*
+%_bindir/ivshmem-client
+%_bindir/ivshmem-server
+%_bindir/pbs-restore
+%attr(4710,root,vmusers) %_libexecdir/qemu-bridge-helper
+%config(noreplace) %_sysconfdir/%name/bridge.conf
 %_libexecdir/qemu-pr-helper
+# TODO:
+#%_bindir/qemu-pr-helper
+#%_unitdir/qemu-pr-helper.service
+#%_unitdir/qemu-pr-helper.socket
+%_libexecdir/virtfs-proxy-helper
+%_man1dir/virtfs-proxy-helper.*
+%_libexecdir/virtiofsd
+%_man1dir/virtiofsd.*
 
 %files img
 %_bindir/qemu-img
 %_bindir/qemu-io
 %_bindir/qemu-nbd
-%_libexecdir/virtfs-proxy-helper
-%_libexecdir/virtiofsd
-
-#%files -n ivshmem-tools
-#%_bindir/ivshmem-client
-#%_bindir/ivshmem-server
+%_man1dir/qemu-img.1*
+%_man8dir/qemu-nbd.8*
 
 %changelog
+* Mon Mar 29 2021 Alexey Shabalin <shaba@altlinux.org> 1:5.1.0-alt6
+- install /usr/bin/qemu-kvm script
+- update udev rules and control
+- fix perm of qemu-bridge-helper
+
+* Tue Mar 16 2021 Valery Inozemtsev <shrek@altlinux.ru> 1:5.1.0-alt5
+- move PBS into separate package
+
+* Mon Feb 01 2021 Andrew A. Vasilyev <andy@altlinux.org> 1:5.1.0-alt4
+- add Kunpeng 920 cpu support
+
+* Tue Dec 08 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:5.1.0-alt3
+- 5.1.0-7
+
 * Sat Oct 10 2020 Valery Inozemtsev <shrek@altlinux.ru> 1:5.1.0-alt2
 - 5.1.0-3 (fix CVE-2020-14364)
 

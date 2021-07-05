@@ -1,6 +1,6 @@
 Name: pve-spice-client
 Version: 2.0.0
-Release: alt1%ubt
+Release: alt3
 
 Summary: PVE Spice Client
 License: GPLv3
@@ -13,7 +13,7 @@ Requires: virt-viewer
 Provides: spice-ec = %EVR
 Obsoletes: spice-ec < %EVR
 
-BuildRequires(pre): rpm-build-ubt rpm-macros-cmake cmake
+BuildRequires(pre): rpm-macros-cmake cmake
 BuildRequires: qt5-base-devel libqtkeychain-qt5-devel
 
 %description
@@ -35,6 +35,12 @@ Spice remote viewer launcher
 %_desktopdir/*
 
 %changelog
+* Sun Jun 23 2019 Igor Vlasenko <viy@altlinux.ru> 2.0.0-alt3
+- NMU: remove rpm-build-ubt from BR:
+
+* Sat Jun 15 2019 Igor Vlasenko <viy@altlinux.ru> 2.0.0-alt2
+- NMU: remove %ubt from release
+
 * Thu Jun 21 2018 Maxim Voronov <mvoronov@altlinux.org> 2.0.0-alt1%ubt
 - Totally changed GUI.
 - Added possibility to run remote viewer from command line.

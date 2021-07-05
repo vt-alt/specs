@@ -1,12 +1,19 @@
 
 Name: pve-storage-linstor
-Version: 5.1.2
+Version: 5.1.4
 Release: alt1
+
 Summary: LINSTOR Proxmox Plugin
 Group: System/Servers
 License: GPLv2+
-Url: https://github.com/LINBIT/linstor-proxmox.git
+
+Packager: Andrew A. Vasilyev <andy@altlinux.org>
+
+Url: https://github.com/LINBIT/linstor-proxmox
+Vcs: https://github.com/LINBIT/linstor-proxmox.git
+
 Source: %name-%version.tar
+
 ExclusiveArch: x86_64 aarch64
 
 BuildRequires(pre): rpm-build-perl
@@ -18,7 +25,7 @@ Requires: linstor-controller
 %add_perl_lib_path %buildroot%perl_vendor_privlib
 
 %description
-LINSTOR Proxmox Plugin
+LINSTOR Proxmox Plugin.
 
 %prep
 %setup
@@ -46,6 +53,12 @@ LINSTOR Proxmox Plugin
 %perl_vendor_privlib/LINBIT/PluginHelper.pm
 
 %changelog
+* Fri Nov 27 2020 Andrew A. Vasilyev <andy@altlinux.org> 5.1.4-alt1
+- 5.1.4
+
+* Mon Sep 28 2020 Andrew A. Vasilyev <andy@altlinux.org> 5.1.3-alt1
+- 5.1.3
+
 * Tue Jun 23 2020 Andrew A. Vasilyev <andy@altlinux.org> 5.1.2-alt1
 - 5.1.2
 
