@@ -5,7 +5,7 @@
 
 %define rname qmmp
 Name: qmmp1
-Version: 1.4.4
+Version: 1.4.6
 Release: alt1
 %K5init no_altplace
 
@@ -281,6 +281,9 @@ ln -s `relative %_wlskindir %_datadir/%rname/skins` %buildroot/%_datadir/%rname/
 %_K5link/lib*.so
 
 %changelog
+* Fri Jul 02 2021 Sergey V Turchin <zerg@altlinux.org> 1.4.6-alt1
+- new version
+
 * Fri Mar 19 2021 Sergey V Turchin <zerg@altlinux.org> 1.4.4-alt1
 - new version
 - fix find skins (closes: 39816)
