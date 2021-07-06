@@ -4,7 +4,7 @@
 # * JEMALLOC (support in service file?)
 
 Name: manticore
-Version: 3.5.4
+Version: 3.6.0
 Release: alt1
 
 Summary: Manticore full-text search server
@@ -84,7 +84,7 @@ subst 's|SET ( FULL_SHARE_DIR .*|SET ( FULL_SHARE_DIR "/usr/share/manticore" )|'
 # DISABLE_TESTING=ON need for enable api build
 %cmake_insource -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DDISTR_BUILD=rhel8 \
-    -DUSE_GALERA=OFF -DWITH_ICU=OFF -DUSE_JEMALLOC=OFF \
+    -DUSE_GALERA=OFF -DWITH_ICU=OFF -DWITH_COLUMNAR=OFF -DUSE_JEMALLOC=OFF \
     -DWITH_RE2_LIBS=%_libdir \
     -DWITH_STEMMER=OFF \
     -DSYSCONFDIR=/etc/manticoresearch
@@ -136,5 +136,8 @@ tar xfv %SOURCE2
 %_bindir/index_converter
 
 %changelog
+* Thu May 13 2021 Vitaly Lipatov <lav@altlinux.ru> 3.6.0-alt1
+- new version 3.6.0 (with rpmrb script)
+
 * Fri Apr 23 2021 Vitaly Lipatov <lav@altlinux.ru> 3.5.4-alt1
 - initial build for ALT Sisyphus
