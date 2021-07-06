@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0-only
 %define _unpackaged_files_terminate_build 1
 %define _stripped_files_terminate_build 1
+%set_verify_elf_method strict
 
 Name: neomutt
-Version: 20200821
+Version: 20210205
 Release: alt2
 
 %define docdir %_docdir/%name-%version
@@ -20,15 +21,24 @@ Vcs: https://github.com/neomutt/neomutt.git
 #   git subtree pull --prefix test-files/ test-files master --squash
 # Where test-files remote is https://github.com/neomutt/neomutt-test-files
 
-Source: %name-%version.tar
-ExcludeArch: armh
-
-BuildRequires: docbook-style-xsl xsltproc tcl elinks
-BuildRequires: liblua5-devel libnotmuch-devel libdb4.8-devel
-BuildRequires: libgpgme-devel libncursesw-devel libssl-devel libsasl2-devel libidn2-devel
-BuildRequires: zlib-devel libzstd-devel libsqlite3-devel
-
 Requires: mailcap
+
+Source: %name-%version.tar
+BuildRequires: docbook-style-xsl
+BuildRequires: elinks
+BuildRequires: libdb4.8-devel
+BuildRequires: libgpgme-devel
+BuildRequires: libidn2-devel
+BuildRequires: liblua5-devel
+BuildRequires: libncursesw-devel
+BuildRequires: libnotmuch-devel
+BuildRequires: libsasl2-devel
+BuildRequires: libsqlite3-devel
+BuildRequires: libssl-devel
+BuildRequires: libzstd-devel
+BuildRequires: tcl
+BuildRequires: xsltproc
+BuildRequires: zlib-devel
 
 %description
 Neomutt is a small but very powerful text based program for reading
@@ -37,7 +47,10 @@ support for color terminals, MIME, OpenPGP, and a threaded sorting
 mode.
 
 %prep
-%setup -q -n %name-%version
+%setup
+%ifarch armh
+sed -i 's/armle-/armh-/' autosetup/autosetup-config.sub
+%endif
 
 %build
 %configure \
@@ -78,6 +91,21 @@ make -s test
 %docdir
 
 %changelog
+* Sun Jul 04 2021 Vitaly Chikunov <vt@altlinux.org> 20210205-alt2
+- Fix CVE-2021-32055.
+
+* Sun Feb 07 2021 Vitaly Chikunov <vt@altlinux.org> 20210205-alt1
+- Update to 20210205.
+
+* Mon Nov 30 2020 Vitaly Chikunov <vt@altlinux.org> 20201127-alt1
+- Update to 20201127.
+
+* Wed Nov 25 2020 Vitaly Chikunov <vt@altlinux.org> 20201120-alt1
+- Update to 20201120.
+
+* Sun Sep 27 2020 Vitaly Chikunov <vt@altlinux.org> 20200925-alt1
+- Update to 20200925.
+
 * Sat Sep 05 2020 Vitaly Chikunov <vt@altlinux.org> 20200821-alt2
 - Fix alias parsing (closes: 38891).
 
