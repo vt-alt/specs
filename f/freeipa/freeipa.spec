@@ -44,7 +44,7 @@
 
 Name: freeipa
 Version: 4.8.9
-Release: alt0.M90P.2
+Release: alt0.M90P.3
 
 Summary: The Identity, Policy and Audit system
 License: GPLv3+
@@ -1061,6 +1061,9 @@ fi
 %python3_sitelibdir/ipaplatform-*.egg-info/
 
 %changelog
+* Fri Jul 02 2021 Stanislav Levin <slev@altlinux.org> 4.8.9-alt0.M90P.3
+- Improved error message for missing supported NTP (closes: #40343).
+
 * Thu Nov 26 2020 Stanislav Levin <slev@altlinux.org> 4.8.9-alt0.M90P.2
 - Fixed apt transaction on distro-branch upgrade.
 
