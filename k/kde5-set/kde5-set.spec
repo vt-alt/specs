@@ -1,6 +1,6 @@
 
 Name: kde5-set
-Version: 21.01.0
+Version: 21.01.1
 Release: alt1
 
 Group: Graphical desktop/KDE
@@ -84,7 +84,7 @@ Requires: plasma5-xdg-desktop-portal-kde
 Requires: plasma5-workspace-wallpapers
 Requires: plasma5-kwrited
 Requires: plasma5-user-manager kde5-ksystemlog
-Requires: kde5-konversation kde5-kate kde5-krdc
+Requires: kde5-kate kde5-krdc
 Requires: kde5-pim kde5-pim-addons kde5-kcron kde5-kruler kde5-ffmpegthumbs
 Requires: kde5-connect
 Requires: kde5-krfb
@@ -111,7 +111,7 @@ Requires: kde5-dragon
 Requires: kde5-kmousetool kde5-kmag
 Requires: kde5-juk kde5-kmouth
 Requires: kdenlive
-Requires: kde5-k3b kde5-kwave
+Requires: kde5-k3b kde5-kwave kde5-konversation
 Requires: kde5-digikam kde5-kipi-plugins
 %description -n kde5-maxi
 %summary
@@ -200,6 +200,9 @@ Requires: kde5-kaddressbook
 %files -n kde5-pim
 
 %changelog
+* Thu Jul 08 2021 Sergey V Turchin <zerg@altlinux.org> 21.01.1-alt1
+- move kde5-konversation to maxi subpackage
+
 * Mon Apr 05 2021 Sergey V Turchin <zerg@altlinux.org> 21.01.0-alt1
 - require kde5-display-manager instead of sddm
 - temporary discard plasma5-disks
