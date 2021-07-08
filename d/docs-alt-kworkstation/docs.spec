@@ -7,8 +7,8 @@
 %define variants docs-office-server docs-backup-server docs-desktop docs-school-master docs-school-junior docs-school-lite docs-school-server docs-kdesktop docs-school-terminal docs-school-newlite docs-centaurus docs-simply-linux docs-lxdesktop docs-lxdesktop-lite docs-school-teacher docs-alt-education docs-alt-kworkstation docs-alt-server docs-alt-workstation docs-alt-spworkstation docs-alt-server-v
 
 Name: docs-%variant
-Version: 9.1
-Release: alt4
+Version: 9.2
+Release: alt1
 
 Summary: %Variant documentation
 License: %fdl
@@ -27,6 +27,7 @@ Obsoletes: docs-kworkstation <= 8.0
 BuildRequires(pre):rpm-build-licenses
 BuildRequires: publican
 BuildRequires: perl-podlators
+BuildRequires: libwebp-tools
 
 %description
 %Variant documentation.
@@ -40,12 +41,20 @@ BuildRequires: perl-podlators
 %install
 %make_install DESTDIR=%buildroot docdir=%_docsinstalldir install
 ln -s $(relative %_docsinstalldir %_documentationdir) %buildroot%_documentationdir
+sed -i 's/src="images\/\(.*\).png"/src="images\/\1.webp"/g' %buildroot%_docsinstalldir/ru-RU/index.html
+for file in %buildroot%_docsinstalldir/ru-RU/images/*.png; do cwebp $file -o %buildroot%_docsinstalldir/ru-RU/images/$(basename $file .png).webp -quiet && rm $file; done
 
 %files
 %_docsinstalldir
 %_documentationdir
 
 %changelog
+* Wed Jul 07 2021 Elena Mishina <lepata@altlinux.org> 9.2-alt1
+- update to ALT Kworkstation 9.2
+
+* Tue Jul 06 2021 Artem Zolochevskiy <azol@altlinux.org> 9.1-alt5
+- reduce package size
+
 * Tue Apr 06 2021 Elena Mishina <lepata@altlinux.org> 9.1-alt4
 - fix some typos
 - update screenshots
