@@ -1,5 +1,7 @@
+%define _cmake__builddir BUILD
+
 Name:     touchegg
-Version:  2.0.9
+Version:  2.0.11
 Release:  alt0.p9.1
 
 Summary:  Linux multi-touch gesture recognizer
@@ -38,8 +40,7 @@ make on your touchpad into visible actions in your desktop.
 
 %build
 %add_optflags -std=c++17
-%cmake -GNinja \
-       -Wno-dev
+%cmake -GNinja -Wno-dev
 %ninja_build -C BUILD
 
 %install
@@ -59,6 +60,18 @@ make on your touchpad into visible actions in your desktop.
 %_unitdir/%name.service
 
 %changelog
+* Mon Jul 05 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.11-alt0.p9.1
+- Backport new version to p9 branch.
+
+* Mon Jul 05 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.11-alt1
+- New version.
+
+* Tue Jun 08 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.10-alt1
+- New version.
+
+* Wed Apr 28 2021 Arseny Maslennikov <arseny@altlinux.org> 2.0.9-alt1.1
+- NMU: spec: adapted to new cmake macros.
+
 * Wed Apr 28 2021 Andrey Cherepanov <cas@altlinux.org> 2.0.9-alt0.p9.1
 - Backport new version to p9 branch.
 
