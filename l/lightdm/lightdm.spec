@@ -7,7 +7,7 @@
 
 Name: lightdm
 Version: 1.30.0
-Release: alt12
+Release: alt14
 Summary: Lightweight Display Manager
 Group: Graphical desktop/Other
 License: GPLv3+
@@ -34,6 +34,8 @@ Patch16: %name-1.30.0-alt-05-tmpfiles.patch
 Patch17: %name-1.30.0-alt-i18n.patch
 Patch18: lightdm-1.30.0-reread-dmrc-alt.patch
 Patch19: %name-1.30.0-alt-wayland-session.patch
+Patch20: %name-1.30.0-alt-lock-tty.patch
+Patch21: %name-1.30.0-alt-select-vt.patch
 
 Requires: dm-tool
 
@@ -150,6 +152,8 @@ manager via D-Bus.
 %patch17 -p1
 %patch18 -p2
 %patch19 -p1
+%patch20 -p1
+%patch21 -p1
 
 %ifarch %e2k
 # until apx. lcc-1.23.01
@@ -282,6 +286,17 @@ fi
 %_man1dir/dm-tool.*
 
 %changelog
+* Thu Jul 01 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.30.0-alt14
+- Fixed tty locking: enabled it only for wayland sessions.
+
+* Tue Jun 29 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.30.0-alt13
+- Reworked wayland session support to use "wayland-session-wrapper"
+  and "wayland-guest-wrapper" settings.
+- Implemented locking used tty to prevent systemd running getty
+  when wayland session is starting on same tty.
+- Added option "use-free-vt" allowing to force lightdm select first free tty
+  instead of just next tty even if it's used. This option is disabled by default.
+
 * Thu Jun 17 2021 Aleksei Nikiforov <darktemplar@altlinux.org> 1.30.0-alt12
 - Disabled using session-wrapper and guest-wrapper settings
   for wayland sessions (Closes: 40207).
