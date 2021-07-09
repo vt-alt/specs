@@ -16,6 +16,7 @@
 %def_enable logdb
 %def_enable opentsdb
 %def_enable uresolver
+%def_enable uwebsocket
 
 %ifarch %ix86
 %def_enable com485f
@@ -26,8 +27,8 @@
 %define oname uniset2
 
 Name: libuniset2
-Version: 2.10.1
-Release: alt0.M90P.1
+Version: 2.12.1
+Release: alt1.M90P.2
 Summary: UniSet - library for building distributed industrial control systems
 
 License: LGPL-2.1
@@ -371,7 +372,7 @@ Libraries needed to develop for uniset MQTT extension
 
 %build
 %autoreconf
-%configure %{subst_enable docs} %{subst_enable mysql} %{subst_enable sqlite} %{subst_enable pgsql} %{subst_enable python} %{subst_enable rrd} %{subst_enable io} %{subst_enable logicproc} %{subst_enable tests} %{subst_enable mqtt} %{subst_enable api} %{subst_enable netdata} %{subst_enable logdb} %{subst_enable com485f} %{subst_enable opentsdb}
+%configure %{subst_enable docs} %{subst_enable mysql} %{subst_enable sqlite} %{subst_enable pgsql} %{subst_enable python} %{subst_enable rrd} %{subst_enable io} %{subst_enable logicproc} %{subst_enable tests} %{subst_enable mqtt} %{subst_enable api} %{subst_enable netdata} %{subst_enable logdb} %{subst_enable com485f} %{subst_enable opentsdb} %{subst_enable uwebsocket}
 %make_build
 
 %install
@@ -550,12 +551,15 @@ rm -f %buildroot%_docdir/%oname/html/*.md5
 %_includedir/%oname/extensions/mqtt/
 %endif
 
+%if_enabled api
 %if_enabled uresolver
 %files extension-uresolver
 %_bindir/%oname-httpresolver*
 %endif
+%endif
 
 %if_enabled api
+%if_enabled uwebsocket
 %files extension-wsgate
 %_bindir/%oname-wsgate*
 %_libdir/libUniSet2UWebSocketGate*.so.*
@@ -565,11 +569,14 @@ rm -f %buildroot%_docdir/%oname/html/*.md5
 %_libdir/libUniSet2UWebSocketGate*.so
 %_includedir/%oname/extensions/wsgate/
 %endif
+%endif
 
 %files extension-common-devel
 %dir %_includedir/%oname/extensions
 %_includedir/%oname/extensions/*.*
+%if_enabled opentsdb
 %exclude %_includedir/%oname/extensions/BackendOpenTSDB.h
+%endif
 %_libdir/libUniSet2Extensions.so
 %_libdir/libUniSet2MB*.so
 %_libdir/libUniSet2RT*.so
@@ -589,8 +596,20 @@ rm -f %buildroot%_docdir/%oname/html/*.md5
 # history of current unpublished changes
 
 %changelog
-* Sat May 08 2021 Pavel Vainerman <pv@altlinux.ru> 2.10.1-alt0.M90P.1
+* Thu Jul 01 2021 Pavel Vainerman <pv@altlinux.ru> 2.12.1-alt1.M90P.2
 - backport to ALTLinux p9 (by rpmbph script)
+
+* Thu Jul 01 2021 Pavel Vainerman <pv@altlinux.ru> 2.12.1-alt2
+- fixed lib version
+
+* Wed Jun 30 2021 Pavel Vainerman <pv@altlinux.ru> 2.12.1-alt1
+- [unet]: supported ip multicast as transport
+
+* Sat Jun 05 2021 Pavel Vainerman <pv@altlinux.ru> 2.11.1-alt1
+- supported "external xml" for configuration
+
+* Wed May 19 2021 Pavel Vainerman <pv@altlinux.ru> 2.10.1-alt2
+- added new build flags
 
 * Sat May 08 2021 Pavel Vainerman <pv@altlinux.ru> 2.10.1-alt1
 - new release
