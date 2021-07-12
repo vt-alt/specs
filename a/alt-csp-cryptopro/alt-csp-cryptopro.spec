@@ -1,5 +1,5 @@
 Name: alt-csp-cryptopro
-Version: 0.1.5
+Version: 0.1.9
 Release: alt1
 
 Group: File tools
@@ -30,9 +30,9 @@ CryptoPRO GUI tool
 %cmake_build
 
 %install
-%make install -C BUILD DESTDIR=%buildroot
+%cmake_install
 mkdir -p %buildroot/%_qt5_translationdir/
-install -m 0644 BUILD/*.qm %buildroot/%_qt5_translationdir/
+install -m 0644 %_cmake__builddir/*.qm %buildroot/%_qt5_translationdir/
 %find_lang --with-qt --all-name %name
 
 %files -f %name.lang
@@ -42,6 +42,25 @@ install -m 0644 BUILD/*.qm %buildroot/%_qt5_translationdir/
 %_datadir/file-manager/actions/alt-csp-cryptopro.desktop
 
 %changelog
+* Mon Jul 12 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.9-alt1
+- use system alterator style
+- fix ui
+
+* Mon Jul 12 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.8-alt1
+- fix null pointer dereference
+
+* Fri Jul 09 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.7-alt1
+- fix cleaning up result window right after completing task
+- refactor source code
+- update translation
+- remove dead timestamp checking code
+
+* Thu Jul 08 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.6-alt1
+- new version
+
+* Tue Apr 27 2021 Arseny Maslennikov <arseny@altlinux.org> 0.1.5-alt2
+- NMU: spec: adapted to new cmake macros.
+
 * Tue Apr 13 2021 Oleg Solovyov <mcpain@altlinux.org> 0.1.5-alt1
 - fail if there are untrusted certs
 
