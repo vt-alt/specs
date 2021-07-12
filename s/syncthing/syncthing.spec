@@ -7,7 +7,7 @@
 Name: syncthing
 Summary: FOSS Continuous File Synchronisation
 Summary(ru_RU.UTF-8): Свободная программа непрерывной синхронизации файлов
-Version: 1.17.0
+Version: 1.18.0
 Release: alt1
 License: MPL-2.0
 Group: Networking/Other
@@ -79,7 +79,7 @@ popd
 
 # set variables expected by syncthing binaries as additional LDFLAGS
 export BUILD_HOST=alt-linux
-export LDFLAGS="-X %goipath/lib/build.Version=v%version -X %goipath/lib/build.Stamp=$(date +%s) -X %goipath/lib/build.User=$USER -X %goipath/lib/build.Host=$BUILD_HOST"
+export COMMON_LDFLAGS="-X %goipath/lib/build.Version=v%version -X %goipath/lib/build.Stamp=$(date +%s) -X %goipath/lib/build.User=$USER -X %goipath/lib/build.Host=$BUILD_HOST"
 export BUILDTAGS="noupgrade"
 
 export LDFLAGS="-X %{goipath}/lib/build.Program=syncthing $COMMON_LDFLAGS"
@@ -198,6 +198,12 @@ export GO111MODULE=off
 %_man1dir/strelaysrv*
 
 %changelog
+* Mon Jul 12 2021 Anton Midyukov <antohami@altlinux.org> 1.18.0-alt1
+- new version (1.18.0) with rpmgs script
+
+* Mon Jul 12 2021 Anton Midyukov <antohami@altlinux.org> 1.17.0-alt2
+- fix version definition (Closes: 40325)
+
 * Sun Jun 27 2021 Anton Midyukov <antohami@altlinux.org> 1.17.0-alt1
 - new version (1.17.0) with rpmgs script
 - drop cli subpackage
