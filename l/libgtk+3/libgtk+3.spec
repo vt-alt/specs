@@ -16,14 +16,15 @@
 %def_enable wayland
 # broadway (HTML5) gdk backend
 %def_enable broadway
-%def_enable cloudprint
+%def_disable cloudprint
 %def_disable cloudproviders
+%def_disable tracker3
 %def_enable installed_tests
 %def_disable debug
 
 Name: libgtk+3
-Version: %ver_major.11
-Release: alt1.M90P.1
+Version: %ver_major.29
+Release: alt0.M90P.1
 
 Summary: The GIMP ToolKit (GTK+)
 Group: System/Libraries
@@ -58,13 +59,14 @@ Patch1: gtk+-3.24.9-alt-build.patch
 %define cloudproviders_ver 0.2.5
 %define fribidi_ver 0.19.7
 
-Provides: libgtk3-engine-adwaita = %version-%release
+Provides: libgtk3-engine-adwaita = %EVR
 Obsoletes: libgtk3-engine-adwaita < 3.13.0
 #https://bugzilla.altlinux.org/39972
+#https://bugzilla.altlinux.org/39393
 Provides: gtk3 = %EVR
 
-Requires: %name-schemas = %version-%release
-Requires: gtk-update-icon-cache = %version-%release
+Requires: %name-schemas = %EVR
+Requires: gtk-update-icon-cache = %EVR
 Requires: icon-theme-adwaita
 # ALT #32028
 Requires: gtk+3-themes-incompatible
@@ -93,6 +95,7 @@ BuildRequires: libfribidi-devel >= %fribidi_ver
 %{?_enable_wayland:BuildRequires: libwayland-client-devel >= %wayland_ver libwayland-cursor-devel libEGL-devel libwayland-egl-devel libxkbcommon-devel wayland-protocols >= %wayland_protocols_ver}
 %{?_enable_cloudprint:BuildRequires: librest-devel libjson-glib-devel}
 %{?_enable_cloudproviders:BuildRequires: libcloudproviders-devel >= %cloudproviders_ver}
+%{?_enable_tracker3:BuildRequires: pkgconfig(tracker-sparql-3.0)}
 # for examples
 BuildRequires: libcanberra-gtk3-devel libharfbuzz-devel
 # for check
@@ -107,14 +110,13 @@ This package contains X11 part of GTK+. It is required for GNOME 3 desktop
 and programs.
 
 %package schemas
-Summary: GSettings schemas used by GTK+3/4
+Summary: GSettings schemas used by GTK+3
 Group: System/Libraries
 Requires: dconf
 BuildArch: noarch
 
 %description schemas
-This package provides a set of GSettings schemas for settings shared by
-GTK+3 and GTK+4.
+This package provides a set of GTK+3 GSettings schemas.
 
 %package -n gtk-update-icon-cache
 Summary: Icon theme caching utility for GTK+
@@ -128,7 +130,7 @@ a lot of system call and disk seek overhead when the application starts.
 %package devel
 Summary: Development files and tools for GTK+ applications
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %name = %EVR
 Requires: gtk-builder-convert
 
 %description devel
@@ -138,7 +140,7 @@ build programs that use GTK+.
 %package -n gtk3-demo
 Summary: GTK+ widgets demonstration program
 Group: Development/GNOME and GTK+
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n gtk3-demo
 GTK+ is a multi-platform toolkit for creating graphical user interfaces.
@@ -168,7 +170,7 @@ This package contains sources for example programs.
 %package -n %name-devel-static
 Summary: Static libraries for GTK+ (GIMP ToolKit) applications
 Group: Development/GNOME and GTK+
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n %name-devel-static
 GTK+ is a multi-platform toolkit for creating graphical user interfaces.
@@ -177,7 +179,7 @@ This package contains the static libraries for GTK+.
 %package gir
 Summary: GObject introspection data for the GTK+ library
 Group: System/Libraries
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description gir
 GObject introspection data for the GTK+ library
@@ -186,8 +188,8 @@ GObject introspection data for the GTK+ library
 Summary: GObject introspection devel data for the GTK+ library
 Group: System/Libraries
 BuildArch: noarch
-Requires: %name-gir = %version-%release
-Requires: %name-devel = %version-%release
+Requires: %name-gir = %EVR
+Requires: %name-devel = %EVR
 
 %description gir-devel
 GObject introspection devel data for the GTK+ library
@@ -195,7 +197,7 @@ GObject introspection devel data for the GTK+ library
 %package -n libgail3
 Summary: Accessibility implementation for GTK+ and GNOME libraries
 Group: System/Libraries
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description -n libgail3
 GAIL implements the abstract interfaces found in ATK for GTK+ and GNOME libraries,
@@ -204,8 +206,8 @@ enabling accessibility technologies such as at-spi to access those GUIs.
 %package -n libgail3-devel
 Summary: Files to compile applications that use GAIL
 Group: Development/GNOME and GTK+
-Requires: libgail3 = %version-%release
-Requires: %name-devel = %version-%release
+Requires: libgail3 = %EVR
+Requires: %name-devel = %EVR
 
 %description -n libgail3-devel
 This package contains the files required to develop applications against
@@ -214,7 +216,7 @@ the GAIL libraries.
 %package -n libgail3-devel-static
 Summary: Static libraries of GAIL
 Group: Development/GNOME and GTK+
-Requires: libgail3-devel = %version-%release
+Requires: libgail3-devel = %EVR
 
 %description -n libgail3-devel-static
 This package contains the libraries required to compile applications
@@ -236,7 +238,7 @@ This package contains development documentation for GAIL.
 %package tests
 Summary: Tests for the GTK+3 packages
 Group: Development/Other
-Requires: %name = %version-%release
+Requires: %name = %EVR
 
 %description tests
 This package provides tests programs that can be used to verify
@@ -248,14 +250,14 @@ the functionality of the installed GTK+3 packages.
 %prep
 %setup -n %_name-%version
 %patch -p1
-%patch1 -b .cloudprov
+#%%patch1 -b .cloudprov
 
 %{?_enable_snapshot:touch README INSTALL}
 
 %build
 %{?_disable_static:export lt_cv_prog_cc_static_works=no}
 %{?_enable_static:export lt_cv_prog_cc_static_works=yes}
-%add_optflags -D_FILE_OFFSET_BITS=64
+%add_optflags %(getconf LFS_CFLAGS)
 %autoreconf
 %configure \
     %{subst_enable static} \
@@ -270,6 +272,7 @@ the functionality of the installed GTK+3 packages.
     %{?_enable_broadway:--enable-broadway-backend} \
     %{?_enable_installed_tests:--enable-installed-tests} \
     %{subst_enable cloudprint} \
+    %{?_enable_tracker3:--enable-tracker3=yes} \
     %{?_enable_debug:--enable-debug=yes}
 %make_build
 
@@ -388,6 +391,8 @@ cp examples/*.c examples/Makefile* %buildroot/%_docdir/%name-devel-%version/exam
 %_datadir/aclocal/gtk-%api_ver.m4
 %_datadir/gettext/its/gtkbuilder.its
 %_datadir/gettext/its/gtkbuilder.loc
+%dir %_datadir/gtk-%api_ver/valgrind
+%_datadir/gtk-%api_ver/valgrind/*.supp
 %_man1dir/gtk-builder-tool.1*
 
 %if_enabled wayland
@@ -461,8 +466,63 @@ cp examples/*.c examples/Makefile* %buildroot/%_docdir/%name-devel-%version/exam
 %exclude %fulllibpath/*/*.la
 
 %changelog
+* Tue Jul 06 2021 Paul Wolneykien <manowar@altlinux.org> 3.24.29-alt0.M90P.1
+- Build v3.24.29-alt1 for the p9 branch.
+
 * Fri Apr 23 2021 Leontiy Volodin <lvol@altlinux.org> 3.24.11-alt1.M90P.1
 - added provides for third party applications (ALT #39972)
+
+* Fri Apr 23 2021 Yuri N. Sedunov <aris@altlinux.org> 3.24.29-alt1
+- 3.24.29
+
+* Sat Mar 27 2021 Yuri N. Sedunov <aris@altlinux.org> 3.24.28-alt1
+- 3.24.28
+
+* Fri Mar 12 2021 Yuri N. Sedunov <aris@altlinux.org> 3.24.27-alt1
+- 3.24.27
+
+* Tue Feb 23 2021 Yuri N. Sedunov <aris@altlinux.org> 3.24.26-alt1
+- 3.24.26
+
+* Fri Feb 12 2021 Yuri N. Sedunov <aris@altlinux.org> 3.24.25-alt1
+- 3.24.25
+
+* Sun Dec 06 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.24-alt1
+- 3.24.24
+
+* Fri Sep 04 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.23-alt2
+- temporarily disabled tracker3 support for GNOME-3.38 to avoid
+  conflict with tracker-2.0 applications (gnome-{books,documents})
+
+* Fri Sep 04 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.23-alt1
+- 3.24.23
+
+* Thu Aug 20 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.22-alt1
+- 3.24.22
+
+* Mon Jun 29 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.21-alt1
+- 3.24.21
+
+* Mon Apr 27 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.20-alt1
+- 3.24.20
+
+* Fri Apr 10 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.18-alt1
+- 3.24.18
+
+* Fri Apr 03 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.17-alt1
+- 3.24.17
+
+* Fri Mar 27 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.16-alt1
+- 3.24.16
+
+* Wed Mar 04 2020 Yuri N. Sedunov <aris@altlinux.org> 3.24.14-alt1
+- 3.24.14
+
+* Wed Nov 27 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.13-alt1
+- 3.24.13
+
+* Fri Oct 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.12-alt1
+- 3.24.12
 
 * Wed Sep 04 2019 Yuri N. Sedunov <aris@altlinux.org> 3.24.11-alt1
 - 3.24.11
