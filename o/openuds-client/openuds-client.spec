@@ -3,7 +3,7 @@
 
 Name: openuds-client
 Version: 3.0.0
-Release: alt1
+Release: alt2
 Summary: Client for Universal Desktop Services (UDS) Broker
 License: BSD3
 Group: Networking/Remote access
@@ -15,6 +15,11 @@ Source0: %name-%version.tar
 
 BuildArch: noarch
 BuildRequires(pre): rpm-build-xdg rpm-build-python3
+Requires: /usr/bin/xfreerdp
+Requires: /usr/bin/x2goclient
+Requires: /usr/bin/remote-viewer
+%py3_requires paramiko
+%py3_requires Crypto
 
 %description
 This package provides the required components
@@ -37,6 +42,9 @@ popd
 %_desktopdir/UDSClient.desktop
 
 %changelog
+* Fri Jul 09 2021 Alexey Shabalin <shaba@altlinux.org> 3.0.0-alt2
+- Update requires
+
 * Thu Nov 05 2020 Alexey Shabalin <shaba@altlinux.org> 3.0.0-alt1
 - 3.0.0 Release
 

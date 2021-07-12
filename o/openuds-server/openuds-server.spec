@@ -10,7 +10,7 @@
 
 Name: openuds-server
 Version: 3.0.0
-Release: alt7.2
+Release: alt8
 Summary: Universal Desktop Services (UDS) Broker
 License: BSD-3-Clause and MIT and Apache-2.0
 Group: Networking/Remote access
@@ -27,7 +27,6 @@ Source16: openuds-web.service
 Source17: openuds-web.socket
 
 #Patch: %name-%version.patch
-Patch1: openuds-server-add-Russian-language-to-config.patch
 
 Requires: python3-module-django >= 2.2
 Requires: python3-module-django-dbbackend-mysql >= 2.2
@@ -78,7 +77,6 @@ Requires: cert-sh-functions
 %prep
 %setup
 #%patch -p1
-%patch1 -p2
 
 sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
     $(find . -name '*.py')
@@ -114,8 +112,10 @@ install -p -D -m 644 %SOURCE17 %buildroot%_unitdir/openuds-web.socket
         -s /bin/false  -d %_sharedstatedir/openuds openuds >/dev/null 2>&1 ||:
 
 %post
+if [ $1 -eq 1 ]; then
 # ugly hack to set a unique SECRET_KEY
-sed -i "/^SECRET_KEY.*$/{N;s/^.*$/SECRET_KEY='`openssl rand -hex 10`'/}" %_sysconfdir/openuds/settings.py
+	sed -i "/^SECRET_KEY.*$/{N;s/^.*$/SECRET_KEY='`openssl rand -hex 10`'/}" %_sysconfdir/openuds/settings.py
+fi
 
 %post_service openuds-taskmanager
 
@@ -123,12 +123,14 @@ sed -i "/^SECRET_KEY.*$/{N;s/^.*$/SECRET_KEY='`openssl rand -hex 10`'/}" %_sysco
 %preun_service openuds-taskmanager
 
 %post nginx
-%post_service openuds-web
+%post_service openuds-web.socket
+%post_service openuds-web.service
 # Create SSL certificate for HTTPS server
 cert-sh generate nginx-openuds ||:
 
 %preun nginx
-%preun_service openuds-web
+%preun_service openuds-web.service
+%preun_service openuds-web.socket
 
 %files
 %_datadir/openuds
@@ -150,6 +152,10 @@ cert-sh generate nginx-openuds ||:
 %_unitdir/openuds-web.socket
 
 %changelog
+* Fri Jul 09 2021 Alexey Shabalin <shaba@altlinux.org> 3.0.0-alt8
+- Fix Russian translation
+- Update SECRET_KEY config for install only in %%post
+
 * Wed Jun 23 2021 Andrey Cherepanov <cas@altlinux.org> 3.0.0-alt7.2
 - Compile l10n messages using django-admin
 - Add Russian language to server config file
