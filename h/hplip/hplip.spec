@@ -28,8 +28,8 @@
 %endif
 
 Name:    hplip
-Version: 3.21.4
-Release: alt2
+Version: 3.21.6
+Release: alt1
 Epoch:   1
 
 Summary: Solution for printing, scanning, and faxing with Hewlett-Packard inkjet and laser printers.
@@ -1210,6 +1210,11 @@ fi
 #SANE - merge SuSE trigger on installing sane
 
 %changelog
+* Sat Jul 10 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.6-alt1
+- New version.
+- Added support for the following new printers:
+  + HP Envy 6400 series
+
 * Tue Jun 22 2021 Andrey Cherepanov <cas@altlinux.org> 1:3.21.4-alt2
 - Correctly detect ALT distribution, drop strange auth type change from Fedora.
 
